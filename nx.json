@@ -1,21 +1,24 @@
 {
-    "npmScope": "maxmobility",
-    "implicitDependencies": {
-      "angular.json": "*",
-      "package.json": "*",
-      "tsconfig.json": "*",
-      "tslint.json": "*",
-      "nx.json": "*"
+  "npmScope": "maxmobility",
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": "*",
+    "tsconfig.json": "*",
+    "tslint.json": "*",
+    "nx.json": "*"
+  },
+  "projects": {
+    "libs": {
+      "tags": []
     },
-    "projects": {
-      "libs": {
-        "tags": []
-      },
-      "xplat": {
-        "tags": []
-      },
-      "smart-eval-app": {
-        "tags": []
-      }
+    "xplat": {
+      "tags": []
+    },
+    "smart-eval": {
+      "tags": []
+    },
+    "pushtracker": {
+      "tags": []
     }
   }
+}

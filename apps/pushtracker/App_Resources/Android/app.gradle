@@ -1,0 +1,22 @@
+// Add your native dependencies here:
+
+dependencies {
+  implementation 'org.slf4j:slf4j-nop:1.7.25'
+}
+
+repositories {
+  google() // Google's Maven repository
+}
+android {
+  defaultConfig {
+    generatedDensities = []
+    applicationId = "com.permobil.pushtracker"  
+    minSdkVersion 21
+    targetSdkVersion 28
+    versionCode 10000
+    versionName "0.1.0"
+  }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
+  }
+}

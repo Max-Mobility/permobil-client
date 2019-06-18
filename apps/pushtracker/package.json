@@ -1,0 +1,58 @@
+{
+  "nativescript": {
+    "id": "com.permobil.pushtracker",
+    "tns-android": {
+      "version": "5.4.0"
+    },
+    "tns-ios": {
+      "version": "5.4.2"
+    }
+  },
+  "description": "NativeScript Application",
+  "license": "SEE LICENSE IN <your-license-filename>",
+  "repository": "<fill-your-repository-here>",
+  "dependencies": {
+    "@angular/animations": "file:../../node_modules/@angular/animations",
+    "@angular/common": "file:../../node_modules/@angular/common",
+    "@angular/compiler": "file:../../node_modules/@angular/compiler",
+    "@angular/core": "file:../../node_modules/@angular/core",
+    "@angular/forms": "file:../../node_modules/@angular/forms",
+    "@angular/http": "file:../../node_modules/@angular/http",
+    "@angular/platform-browser": "file:../../node_modules/@angular/platform-browser",
+    "@angular/platform-browser-dynamic": "file:../../node_modules/@angular/platform-browser-dynamic",
+    "@angular/router": "file:../../node_modules/@angular/router",
+    "@ngx-translate/core": "file:../../node_modules/@ngx-translate/core",
+    "@maxmobility/private-keys": "file:../../node_modules/@maxmobility/private-keys",
+    "email-validator": "file:../../node_modules/email-validator",
+    "kinvey-nativescript-sdk": "file:../../node_modules/kinvey-nativescript-sdk",
+    "nativescript-angular": "file:../../node_modules/nativescript-angular",
+    "nativescript-appversion": "file:../../node_modules/nativescript-appversion",
+    "nativescript-drop-down": "file:../../node_modules/nativescript-drop-down",
+    "nativescript-email": "file:../../node_modules/nativescript-email",
+    "nativescript-feedback": "file:../../node_modules/nativescript-feedback",
+    "nativescript-floatingactionbutton": "file:../../node_modules/nativescript-floatingactionbutton",
+    "nativescript-geolocation": "file:./plugins/nativescript-geolocation.tgz",
+    "nativescript-gif": "file:../../node_modules/nativescript-gif",
+    "nativescript-permissions": "file:../../node_modules/nativescript-permissions",
+    "nativescript-sentry": "file:../../node_modules/nativescript-sentry",
+    "nativescript-snackbar": "file:../../node_modules/nativescript-snackbar",
+    "nativescript-theme-core": "file:../../node_modules/nativescript-theme-core",
+    "nativescript-toasty": "file:../../node_modules/nativescript-toasty",
+    "nativescript-ui-listview": "file:../../node_modules/nativescript-ui-listview",
+    "reflect-metadata": "file:../../node_modules/reflect-metadata",
+    "rxjs": "file:../../node_modules/rxjs",
+    "tns-core-modules": "~5.4.2",
+    "zone.js": "file:../../node_modules/zone.js"
+  },
+  "devDependencies": {
+    "@angular/compiler-cli": "file:../../node_modules/@angular/compiler-cli",
+    "@angular/language-service": "file:../../node_modules/@angular/language-service",
+    "@ngtools/webpack": "file:../../node_modules/@ngtools/webpack",
+    "nativescript-dev-sass": "~1.7.0",
+    "nativescript-dev-webpack": "~0.24.1",
+    "nativescript-dev-typescript": "~0.10.0",
+    "tns-platform-declarations": "file:../../node_modules/tns-platform-declarations"
+  },
+  "gitHead": "8c1a4866a66daab09bf5ef8e5a96472687192373",
+  "readme": "NativeScript Application"
+}

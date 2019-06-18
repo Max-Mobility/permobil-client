@@ -1,10 +1,5 @@
 import { APP_BASE_HREF, CommonModule } from '@angular/common';
-import {
-  ModuleWithProviders,
-  NgModule,
-  Optional,
-  SkipSelf
-} from '@angular/core';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { throwIfAlreadyLoaded } from '@maxmobility/helpers';
 import { NxModule } from '@nrwl/nx';
 import { CORE_PROVIDERS } from './services';
