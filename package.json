@@ -10,7 +10,7 @@
     "clean": "rm -rf hooks node_modules package-lock.json && npm i",
     "clean.nativescript.bluetooth": "cd nativescript-bluetooth && rm -rf hooks node_modules && npm i",
     "clean.xplat.mobile": "cd xplat/mobile && rm -rf hooks node_modules && npm i",
-    "nuki": "npm run clean && npm run clean.nativescript.bluetooth && npm run clean.xplat.mobile && npm run sea.clean && npm run tslint",
+    "nuki": "npm run clean && npm run clean.nativescript.bluetooth && npm run clean.xplat.mobile && npm run se.clean && npm run tslint",
     "**************** end CLEAN SECTION": "************************************************************************",
     "**************** PUSHTRACKER APP ****************************": "************************************************************************",
     "pt.clean": "cd apps/pushtracker&& rm -rf hooks node_modules platforms package-lock.json && npm i",
