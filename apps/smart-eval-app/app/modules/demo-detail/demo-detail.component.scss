@@ -1,0 +1,61 @@
+@import '../../scss/variables';
+
+.topSlide {
+  background-image: url('~/assets/images/background_1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  image {
+    margin: 10, 0, 10, 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.button {
+  background-color: $permobil-hero;
+  border-color: transparent;
+  border-width: 1;
+}
+
+.serial-number-label {
+  font-size: 13;
+  color: $white;
+  padding: 2 4;
+}
+
+.demo-btn {
+  width: 28;
+  font-size: 24;
+  padding: 0, 0, 0, 0;
+  margin: 0 5 0 5;
+  color: $white;
+  horizontal-align: center;
+  vertical-align: center;
+  background-color: transparent;
+  border: none;
+  border-color: transparent;
+  border-width: 1 1 1 1;
+  android-elevation: 0;
+  android-dynamic-elevation-offset: 0;
+}
+
+.orange-text {
+  color: #ff671f;
+}
+
+.info {
+  padding: 0, 0, 0, 15;
+  color: $white;
+  font-size: 16;
+  vertical-align: center;
+}
+
+.demo-image {
+  margin: 10;
+  width: 90%;
+  height: 90%;
+  border-radius: 4;
+}

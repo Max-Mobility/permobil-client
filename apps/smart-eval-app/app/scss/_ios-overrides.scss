@@ -1,0 +1,33 @@
+@import '~nativescript-theme-core/scss/platforms/index.ios';
+@import './variables';
+
+listview {
+  height: 100%;
+}
+RadListView {
+  height: 100%;
+}
+
+Switch {
+  margin: 0 5 0 5;
+  padding: 0;
+}
+
+Switch[checked='true'] {
+  color: #ff671f;
+  background-color: #b88c78;
+}
+
+Switch[checked='false'] {
+  color: #fff;
+  background-color: $permobil-hero;
+}
+
+button {
+  border-radius: 4;
+  min-height: 36;
+  min-width: 64;
+  padding: 10 10 10 10;
+  font-size: 18;
+  margin: 8 16 8 16;
+}

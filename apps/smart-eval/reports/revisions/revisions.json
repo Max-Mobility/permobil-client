@@ -1,0 +1,14 @@
+[
+	{
+		"level": "DRAFT",
+		"date": "2018-08-23",
+		"description": "Draft document",
+		"author": "William Emfinger"
+	},
+	{
+		"level": "RELEASE",
+		"date": "2018-08-28",
+		"description": "Release of 1.0 of Software Verification Test Results Document",
+		"author": "William Emfinger"
+	}
+]

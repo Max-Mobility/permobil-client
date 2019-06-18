@@ -1,0 +1,740 @@
+<MaxActionBar [title]="'trial.title' | translate"> </MaxActionBar>
+
+<GridLayout iosOverflowSafeArea="true">
+  <Carousel
+    #carousel
+    ios:indicatorOffset="0,-10"
+    ios:finite="true"
+    ios:bounce="false"
+    indicatorColor="#66ccff"
+    indicatorColorUnselected="#cceeff"
+    height="100%"
+  >
+    // Page 1
+    <CarouselItem height="100%">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          row="0"
+          height="20%"
+          width="100%"
+          class="topSlide"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
+          <image
+            src="~/assets/images/trial-setup.png"
+            stretch="aspectFit"
+          ></image>
+        </StackLayout>
+
+        // First Page: Configure Trial
+        <ScrollView class="trial-scroll-view" row="1">
+          <StackLayout
+            class="trial-stack-layout"
+            orientation="vertical"
+            horizontalAlignment="center"
+          >
+            // Heading and description
+            <label
+              [text]="'trial.set-up' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.select-options' | translate"
+              class="slideDescription"
+              textWrap="true"
+            ></label>
+
+            // Trial Name
+            <TextField
+              [hint]="'trial.name' | translate"
+              autocorrect="false"
+              [text]="trial.name"
+              (textChange)="onTextChange('name', $event)"
+              class="trial-name-textfield"
+            ></TextField>
+
+            // Trial options
+            <label
+              [text]="'trial.recommendation' | translate"
+              textWrap="true"
+              class="trial-recommendation"
+            ></label>
+
+            // Terrain Options
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'trial.flat-surfaces' | translate"
+                class="value-label-left"
+              ></label>
+              <Switch
+                dock="right"
+                [checked]="trial.flat"
+                (checkedChange)="onSwitchChecked('flat', $event)"
+              ></Switch>
+            </DockLayout>
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'trial.ramp-incline' | translate"
+                class="value-label-left"
+              ></label>
+              <Switch
+                dock="right"
+                [checked]="trial.rampIncline"
+                (checkedChange)="onSwitchChecked('rampIncline', $event)"
+              ></Switch>
+            </DockLayout>
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'trial.other' | translate"
+                class="value-label-left"
+              ></label>
+              <Switch
+                dock="right"
+                [checked]="trial.other"
+                (checkedChange)="onSwitchChecked('other', $event)"
+              ></Switch>
+            </DockLayout>
+
+            <TextField
+              [hint]="'trial.description' | translate"
+              *ngIf="trial.other"
+              autocorrect="false"
+              [text]="trial.other_description"
+              (textChange)="onTextChange('other_description', $event)"
+              class="trial-description-textfield"
+            ></TextField>
+
+            // SmartDrive Settings:
+            <label
+              [text]="'pushtracker.settings.label' | translate"
+              class="section"
+            ></label>
+            // EZ On
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.ez-on' | translate"
+                class="value-label-left"
+              ></label>
+              <Switch
+                dock="right"
+                [checked]="settings.ezOn"
+                (checkedChange)="onSettingsSwitchChanged('ezOn', $event)"
+              ></Switch>
+            </DockLayout>
+            // Control Mode
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.control-mode.label' | translate"
+                class="value-label-left"
+              ></label>
+              <DropDown
+                #controlModeDropDown
+                [hint]="'pushtracker.settings.control-mode.label' | translate"
+                dock="right"
+                [items]="ControlModeOptions"
+                (selectedIndexChanged)="
+                  onSettingsDropdownChanged('controlMode', $event)
+                "
+              ></DropDown>
+            </DockLayout>
+            // Units
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.units.label' | translate"
+                class="value-label-left"
+              ></label>
+              <DropDown
+                #unitsDropDown
+                [hint]="'pushtracker.settings.units.label' | translate"
+                dock="right"
+                [items]="UnitsOptions"
+                (selectedIndexChanged)="
+                  onSettingsDropdownChanged('units', $event)
+                "
+              ></DropDown>
+            </DockLayout>
+            // Max Speed
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.max-speed' | translate"
+                class="value-label-left"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.maxSpeed.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                [value]="settings.maxSpeed / 10"
+                (valueChange)="onSettingsSliderChange('maxSpeed', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+            // Acceleration
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.acceleration' | translate"
+                class="value-label-left"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.acceleration.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                [value]="settings.acceleration / 10"
+                (valueChange)="onSettingsSliderChange('acceleration', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+            // Tap Sensitivity
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.tap-sensitivity' | translate"
+                class="value-label-left"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.tapSensitivity.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                verticalAlignment="center"
+                [value]="settings.tapSensitivity / 10"
+                (valueChange)="onSettingsSliderChange('tapSensitivity', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+
+            <!--
+              // Push Settings:
+              <Label [text]="'pushtracker.push-settings.label' | translate" class="section"></Label>
+              // Push Threshold
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.threshold' | translate" class="value-label-left"></Label>
+                <Label verticalAlignment="center" dock="right" [text]="pushSettings.threshold.toFixed(0)" row="0" col="1" class="value"></Label>
+              </DockLayout>
+              <GridLayout rows="auto" columns="*, auto">
+                <Slider minValue="0" maxValue="10" verticalAlignment="center" [value]="pushSettings.threshold"
+                  (valueChange)="onPushSettingsSliderUpdate('threshold', $event)" row="0" col="0"></Slider>
+              </GridLayout>
+              // Time Window
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.time-window' | translate" class="value-label-left"></Label>
+                <Label verticalAlignment="center" dock="right" [text]="pushSettings.timeWindow.toFixed(0)" row="0" col="1" class="value"></Label>
+              </DockLayout>
+              <GridLayout rows="auto" columns="*, auto">
+                <Slider minValue="0" maxValue="50" verticalAlignment="center" [value]="pushSettings.timeWindow"
+                  (valueChange)="onPushSettingsSliderUpdate('timeWindow', $event)" row="0" col="0"></Slider>
+              </GridLayout>
+              // Clear Counter
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.clear-counter' | translate" class="value-label-left"></Label>
+                <Switch dock="right" [checked]="pushSettings.clearCounter" (checkedChange)="onPushSettingsChecked('clearCounter', $event)"></Switch>
+              </DockLayout>
+            -->
+            <button
+              [text]="'buttons.next' | translate"
+              class="permobil-ocean-btn"
+              (tap)="goToNextSlide($event)"
+            ></button>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+
+    // Page 2 Start with SmartDrive Trial
+    <CarouselItem height="100%">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          row="0"
+          height="20%"
+          width="100%"
+          class="topSlide"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
+          <image src="~/assets/images/trial-sd.png" stretch="aspectFit"></image>
+        </StackLayout>
+
+        <ScrollView class="trial-scroll-view" row="1">
+          <StackLayout
+            class="trial-stack-layout"
+            orientation="vertical"
+            horizontalAlignment="center"
+          >
+            // Heading and description
+            <label
+              [text]="'trial.phase-1' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.with-sd' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.phase-1-desc' | translate"
+              class="slideDescription"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.evaluator-range' | translate"
+              textWrap="true"
+              class="trial-recommendation"
+            ></label>
+            <label
+              [text]="'trial.smartdrive-connection' | translate"
+              textWrap="true"
+              class="trial-recommendation"
+            ></label>
+
+            <button
+              #startWith
+              [text]="'trial.start' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onStartWithTrial()"
+            ></button>
+            <button
+              #stopWith
+              [text]="'trial.stop' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onStopWithTrial()"
+            ></button>
+            <button
+              #cannotCompleteWith
+              [text]="'trial.unable' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onCannotCompleteWith()"
+            ></button>
+            <button
+              #nextWith
+              [text]="'buttons.next' | translate"
+              class="permobil-ocean-btn"
+              (tap)="goToNextSlide($event)"
+            ></button>
+
+            // Data Fields
+            <GridLayout
+              rows="auto, auto, auto, auto"
+              columns="auto, *, auto, *"
+            >
+              <label
+                row="0"
+                col="0"
+                [text]="'trial.pushes' | translate"
+                class="value-label-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="1"
+                [text]="pushWithDisplay"
+                class="value-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="2"
+                [text]="'trial.average-speed' | translate"
+                class="value-label-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="3"
+                [text]="speedWithDisplay"
+                class="value-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="0"
+                [text]="'trial.time' | translate"
+                class="value-label-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="1"
+                [text]="timeWithDisplay"
+                class="value-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="2"
+                [text]="'trial.distance' | translate"
+                class="value-label-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="3"
+                [text]="distanceDisplay"
+                class="value-right"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+
+    // Page 3 Without SmartDrive Trial
+    <CarouselItem height="100%">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          row="0"
+          height="20%"
+          width="100%"
+          class="topSlide"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
+          <image
+            src="~/assets/images/trial-no-sd.png"
+            stretch="aspectFit"
+          ></image>
+        </StackLayout>
+
+        <ScrollView class="trial-scroll-view" row="1">
+          <StackLayout
+            class="trial-stack-layout"
+            orientation="vertical"
+            horizontalAlignment="center"
+          >
+            // Heading and description
+            <label
+              [text]="'trial.phase-2' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.without-sd' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.phase-2-desc' | translate"
+              class="slideDescription"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="'trial.evaluator-range' | translate"
+              textWrap="true"
+              class="trial-recommendation"
+            ></label>
+
+            <button
+              #startWithout
+              row="2"
+              [text]="'trial.start' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onStartWithoutTrial()"
+            ></button>
+            <button
+              #stopWithout
+              row="2"
+              [text]="'trial.stop' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onStopWithoutTrial()"
+            ></button>
+            <button
+              #cannotCompleteWithout
+              [text]="'trial.unable' | translate"
+              class="permobil-ocean-btn"
+              (tap)="onCannotCompleteWithout()"
+            ></button>
+            <button
+              #nextWithout
+              row="2"
+              [text]="'buttons.next' | translate"
+              class="permobil-ocean-btn"
+              (tap)="goToNextSlide($event)"
+            ></button>
+
+            // Data Fields
+            <GridLayout
+              rows="auto, auto, auto, auto"
+              columns="auto, *, auto, *"
+            >
+              <label
+                row="0"
+                col="0"
+                [text]="'trial.pushes' | translate"
+                class="value-label-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="1"
+                [text]="pushWithoutDisplay"
+                class="value-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="2"
+                [text]="'trial.average-speed' | translate"
+                class="value-label-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="0"
+                col="3"
+                [text]="speedWithoutDisplay"
+                class="value-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="0"
+                [text]="'trial.time' | translate"
+                class="value-label-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="1"
+                [text]="timeWithoutDisplay"
+                class="value-left"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="2"
+                [text]="'trial.distance' | translate"
+                class="value-label-right"
+                textWrap="true"
+              ></label>
+              <label
+                row="1"
+                col="3"
+                [text]="distanceDisplay"
+                class="value-right"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+
+    // Page 4 Trial Complete
+    <CarouselItem height="100%">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          row="0"
+          height="20%"
+          width="100%"
+          class="topSlide"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
+          <image
+            src="~/assets/images/trial-complete.png"
+            stretch="aspectFit"
+          ></image>
+        </StackLayout>
+
+        <ScrollView class=" trial-scroll-view" row="1">
+          <StackLayout
+            class="trial-stack-layout"
+            orientation="vertical"
+            horizontalAlignment="center"
+          >
+            // Heading and description
+            <label
+              [text]="'trial.complete' | translate"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+
+            <label
+              [text]="'trial.push_accuracy_disclaimer' | translate"
+              class="trial-recommendation"
+              textWrap="true"
+            ></label>
+
+            <StackLayout>
+              // Data Fields with SmartDrive
+              <label
+                [text]="'trial.with-sd' | translate"
+                class="sub-heading"
+                textWrap="true"
+                margin="30,0,0,15"
+              ></label>
+              <GridLayout
+                rows="auto, auto, auto, auto"
+                columns="auto, *, auto, *"
+              >
+                <label
+                  row="0"
+                  col="0"
+                  [text]="'trial.pushes' | translate"
+                  class="value-label-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="1"
+                  [text]="pushWithDisplay"
+                  class="value-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="2"
+                  [text]="'trial.average-speed' | translate"
+                  class="value-label-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="3"
+                  [text]="speedWithDisplay"
+                  class="value-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="0"
+                  [text]="'trial.time' | translate"
+                  class="value-label-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="1"
+                  [text]="timeWithDisplay"
+                  class="value-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="2"
+                  [text]="'trial.distance' | translate"
+                  class="value-label-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="3"
+                  [text]="distanceDisplay"
+                  class="value-right"
+                  textWrap="true"
+                ></label>
+              </GridLayout>
+
+              // Data Fields without SmartDrive
+              <label
+                [text]="'trial.without-sd' | translate"
+                class="sub-heading"
+                textWrap="true"
+                margin="30,0,0,15"
+              ></label>
+              <GridLayout
+                rows="auto, auto, auto, auto"
+                columns="auto, *, auto, *"
+              >
+                <label
+                  row="0"
+                  col="0"
+                  [text]="'trial.pushes' | translate"
+                  class="value-label-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="1"
+                  [text]="pushWithoutDisplay"
+                  class="value-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="2"
+                  [text]="'trial.average-speed' | translate"
+                  class="value-label-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="0"
+                  col="3"
+                  [text]="speedWithoutDisplay"
+                  class="value-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="0"
+                  [text]="'trial.time' | translate"
+                  class="value-label-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="1"
+                  [text]="timeWithoutDisplay"
+                  class="value-left"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="2"
+                  [text]="'trial.distance' | translate"
+                  class="value-label-right"
+                  textWrap="true"
+                ></label>
+                <label
+                  row="1"
+                  col="3"
+                  [text]="distanceDisplay"
+                  class="value-right"
+                  textWrap="true"
+                ></label>
+              </GridLayout>
+
+              <button
+                row="2"
+                [text]="'trial.summary' | translate"
+                class="permobil-ocean-btn"
+                marginTop="20"
+                width="50%"
+                (tap)="onSummaryTap()"
+              ></button>
+            </StackLayout>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+  </Carousel>
+</GridLayout>

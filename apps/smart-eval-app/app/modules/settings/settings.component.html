@@ -1,0 +1,34 @@
+<MaxActionBar title="Debug Menu"> </MaxActionBar>
+
+<StackLayout class="grid-layout light-background">
+  <Label class="page-icon fa" text="&#xf013;"></Label>
+  <Label
+    class="page-placeholder"
+    text="<!-- Page content goes here -->"
+  ></Label>
+  <Button
+    text="Stop Bluetooth"
+    class="debug-button"
+    (tap)="onStopBT()"
+  ></Button>
+  <Button
+    text="Restart Bluetooth"
+    class="debug-button"
+    (tap)="onRestartBT()"
+  ></Button>
+  <Button
+    text="Upload OTAs to Kinvey"
+    class="debug-button"
+    (tap)="onUploadFiles()"
+  ></Button>
+  <Button
+    text="Reload firmware files"
+    class="debug-button"
+    (tap)="onReload()"
+  ></Button>
+  <Button
+    text="Redownload firmware files"
+    class="debug-button"
+    (tap)="onRedownload()"
+  ></Button>
+</StackLayout>

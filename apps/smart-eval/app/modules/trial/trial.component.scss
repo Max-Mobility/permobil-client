@@ -1,0 +1,162 @@
+// Custom common variables
+@import '../../scss/carousel';
+@import '../../scss/variables';
+
+.trial-scroll-view {
+  height: 80%;
+}
+
+.topSlide {
+  background-image: url('~/assets/images/background_1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  image {
+    margin: 10, 0, 10, 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.trial-stack-layout {
+  horizontal-align: center;
+  width: 100%;
+  padding: 0, 0, 30, 0;
+
+  .section {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+    margin: 20, 5;
+  }
+
+  button {
+    width: 45%;
+  }
+
+  // ensure all the labels are colored WHITE
+  label {
+    color: $white;
+  }
+
+  .slider-container {
+    Slider {
+      width: 80%;
+      margin: 5, 25, 10, 25;
+      vertical-align: center;
+      horizontal-align: center;
+    }
+  }
+
+  DockLayout {
+    margin: 10, 10;
+
+    DropDown {
+      background-color: $permobil-hero;
+      placeholder-color: rgba(250, 250, 250, 0.5);
+      color: $white;
+      border-radius: 2;
+      width: 35%;
+      padding: 2;
+      margin: 5, 0;
+      text-align: right;
+      vertical-align: center;
+      horizontal-align: right;
+    }
+
+    .value {
+      min-width: 50%;
+      font-family: $os-Light;
+      text-align: right;
+      margin: 0, 5;
+    }
+    .setting {
+      color: #fff;
+      font-weight: 500;
+      text-align: left;
+    }
+  }
+}
+
+TextField {
+  margin: 15, 15, 75, 15;
+}
+
+.trial-recommendation {
+  color: $white;
+  font-family: $os-SemiBold;
+  font-size: 13;
+  text-align: left;
+  margin: 0, 15, 0, 15;
+}
+
+.trial-item {
+  text-overflow: none;
+  word-wrap: normal;
+  color: #fff;
+  font-weight: 500;
+  margin: 10, 0, 10, 15;
+}
+
+.trial-description-textfield {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 7;
+  font-size: 14;
+  margin: 5, 15, 5, 15;
+  color: #fff;
+  border-radius: 2;
+  placeholder-color: lightgray;
+}
+
+.trial-name-textfield {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 7;
+  margin: 5, 15, 5, 15;
+  color: #fff;
+  border-radius: 2;
+  placeholder-color: lightgray;
+}
+
+.sub-heading {
+  text-align: left;
+  font-size: 20;
+  margin: 20, 0, 10, 15;
+  color: $white;
+  font-weight: 500;
+}
+
+.value-label-left {
+  text-align: right;
+  font-family: $os-Light;
+  font-size: 15;
+  margin: 5, 10, 0, 15;
+  color: #fff;
+}
+
+.value-left {
+  text-align: left;
+  width: 100%;
+  font-family: $os-Light;
+  font-size: 15;
+  margin: 5, 5, 0, 10;
+  color: #fff;
+}
+
+.value-label-right {
+  text-align: right;
+  font-family: $os-Light;
+  font-size: 15;
+  margin: 5, 10, 0, 15;
+  color: #fff;
+}
+
+.value-right {
+  text-align: left;
+  width: 100%;
+  font-family: $os-Light;
+  font-size: 15;
+  margin: 5, 5, 0, 10;
+  color: #fff;
+}

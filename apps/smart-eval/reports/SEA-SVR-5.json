@@ -1,0 +1,100 @@
+{
+  "number": "5",
+  "name": "Asynchronous Communications",
+  "reports": [
+    {
+      "number": "1",
+      "revision": "A",
+      "description": "App should support asynchronous communications to the user.",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-24-A",
+          "description": "Asynchronous Communications"
+        },
+        {
+          "name": "SEA-SRS-25-A",
+          "description": "Asynchronous Communications Internal Notification"
+        },
+        {
+          "name": "SEA-SRS-26-A",
+          "description": "Asynchronous Communications External Notification"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Permissions",
+          "preconditions": "App should be freshly installed, without having been run before.",
+          "methods": [
+            "Open the app and login as an existing user."
+          ],
+          "acceptanceCriteria": [
+            "A prompt should display requesting permissions to send notifications to the user."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "In-App Display",
+          "preconditions": "App should be running, logged in, and open to the home page. User should also be signed in to the developer console.",
+          "methods": [
+            "Send a notification with a condition specifically for the logged in user.",
+            "Send a notification with a condition that does not match the logged in user.",
+            "Send a notification without any conditions."
+          ],
+          "acceptanceCriteria": [
+            "The app should inform the user that it has received a notification.",
+            "The app should not display a notification or indicate that it has received a notification.",
+            "The app should inform the user that it has received a notification."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Out-of-App Display",
+          "preconditions": "App should be running, logged in, but not open on the phone - the phone should be open to it's dashboard. User should also be signed in to the developer console.",
+          "methods": [
+            "Send a notification with a condition specifically for the logged in user.",
+            "Send a notification with a condition that does not match the logged in user.",
+            "Send a notification without any conditions."
+          ],
+          "acceptanceCriteria": [
+            "The phone should inform the user that there is a notification from the app.",
+            "The phone should not display a notification or indicate that it has received a notification.",
+            "The phone should inform the user that there is a notification from the app."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "\"Developer Console\" means the console for the backend service provider.",
+      "startDate": "2018-07-31",
+      "endDate": "2018-07-31"
+    }
+  ]
+}

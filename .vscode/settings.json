@@ -1,0 +1,14 @@
+{
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/typings/**": true,
+    "**/hooks/**": true,
+    "**/platforms/**": true,
+    "**/node_modules/**": true,
+    "maxmobility/node_modules/**": true,
+    "maxmobility/apps/smart-eval-app/node_modules/**": true,
+    "maxmobility/nativescript-bluetooth/node_modules/**": true,
+    "maxmobility/nativescript-bluetooth/typings/**": true
+  }
+}

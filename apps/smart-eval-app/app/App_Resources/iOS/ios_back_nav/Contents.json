@@ -1,0 +1,24 @@
+{
+  "images": [
+    {
+      "filename": "ios_back_nav.png",
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "ios_back_nav@2x.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "ios_back_nav@3x.png",
+      "idiom": "universal",
+      "scale": "3x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "template-rendering-intent": "template",
+    "version": 1
+  }
+}

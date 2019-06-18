@@ -1,0 +1,46 @@
+{
+  "number": "4",
+  "name": "Language Support",
+  "reports": [
+    {
+      "number": "1",
+      "revision": "A",
+      "description": "Language Selection",
+      "testerName": "William Emfinger",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "SEA-SRS-22-A",
+          "description": "Internationalization"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Switching Languages",
+          "preconditions": "The app should be running, signed in, and opened to the 'Account' page. ",
+          "methods": [
+            "Select a new 'Language'",
+            "Select the previously active language."
+          ],
+          "acceptanceCriteria": [
+            "The page text should change from the previous language to the new language.",
+            "The page text should change back to the previous language text."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    }
+  ]
+}

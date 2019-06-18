@@ -1,0 +1,5 @@
+pre_install do |installer|
+  installer.analysis_result.specifications.each do |s|
+      s.swift_version = '4.2' unless s.swift_version
+  end
+end

@@ -1,0 +1,127 @@
+<MaxActionBar [title]="'menu.demo-requests' | translate">
+  <!-- <ActionItem (tap)="onFilterListTap($event)">
+    <Button class="" text="Right" class="action-item"></Button>
+  </ActionItem> -->
+</MaxActionBar>
+
+<GridLayout margin-top="30" rows="*, auto" iosOverflowSafeArea="false">
+  // Loading View to show when initially querying for DemoRequests
+  <StackLayout
+    orientation="horizontal"
+    marginLeft="10"
+    row="0"
+    rowSpan="2"
+    *ngIf="!itemsLoaded"
+    horizontalAlignment="center"
+  >
+    <label
+      [text]="'demo-requests.loading' | translate"
+      class="h2 text-middle text-white"
+      textWrap="true"
+    ></label>
+    <ActivityIndicator
+      busy="true"
+      marginLeft="5"
+      width="26"
+      height="26"
+      color="white"
+    ></ActivityIndicator>
+  </StackLayout>
+
+  // Label when no demos are found shows message that no demo requests were
+  found
+  <label
+    row="0"
+    verticalAlignment="center"
+    *ngIf="!items.length && itemsLoaded"
+    horizontalAlignment="center"
+    [text]="'demo-requests.no-demo-requests' | translate"
+    class="text-white"
+  ></label>
+
+  // listview for demo requests
+  <RadListView
+    #listview
+    row="0"
+    height="100%"
+    pullToRefresh="true"
+    backgroundColor="transparent"
+    separatorColor="white"
+    [items]="items"
+    *ngIf="items.length && itemsLoaded"
+    (loaded)="listviewLoaded($event)"
+    (loadMoreItems)="loadMoreItems($event)"
+  >
+    <ng-template let-item="item" let-index="index">
+      <GridLayout rows="*" columns="*, auto" padding="10">
+        <StackLayout col="0">
+          // Requesting User Email
+          <Label [text]="item.user" class="user" textWrap="true"></Label>
+
+          // Entity Created
+          <Label
+            [text]="item._kmd?.ect | date: 'medium'"
+            class="date"
+            textWrap="true"
+          ></Label>
+
+          // Contact_Info
+          <Label
+            [text]="item.contact_info"
+            class="contact-info"
+            textWrap="true"
+            [visibility]="item.contact_info ? 'visible' : 'collapsed'"
+          ></Label>
+        </StackLayout>
+
+        // Demo Request Actions
+        <StackLayout
+          col="1"
+          horizontalAlignment="right"
+          verticalAlignment="middle"
+        >
+          // Claim demo button
+          <Button
+            [text]="'demo-requests.claim' | translate"
+            (tap)="onClaimDemoRequestTap(index)"
+            class="orange-btn"
+            [visibility]="!item.claimed_user ? 'visible' : 'collapsed'"
+          ></Button>
+
+          // Complete request button - if demo has been claimed by the user they
+          can mark it complete when the demo has been dropped off
+          <Button
+            [text]="'demo-requests.complete' | translate"
+            (tap)="onCompleteDemoRequestTap(index)"
+            class="permobil-ocean-btn"
+            [visibility]="
+              item.claimed_user == userId && !item.complete
+                ? 'visible'
+                : 'collapsed'
+            "
+          ></Button>
+
+          // check mark icon to indicate demo request is COMPLETE
+          <label
+            text="&#xf12c;"
+            class="completed-check"
+            [visibility]="
+              item.claimed_user && item.complete == true
+                ? 'visible'
+                : 'collapsed'
+            "
+            (tap)="onDemoRequestItemTap(index)"
+          ></label>
+        </StackLayout>
+      </GridLayout>
+    </ng-template>
+  </RadListView>
+  <!-- <ActivityIndicator
+    row="1"
+    width="50"
+    height="50"
+    horizontalAlignment="center"
+    [busy]="isFetchingData && items.length >= 1"
+    class="activity-indicator"
+  ></ActivityIndicator> -->
+</GridLayout>

@@ -1,0 +1,48 @@
+@import '../../scss/variables';
+
+.user {
+  color: $white;
+  font-size: 16;
+}
+
+.date {
+  color: $white;
+  font-size: 16;
+  padding: 4 0;
+}
+
+.contact-info {
+  margin: 4 0;
+  color: #dedede;
+  font-size: 14;
+  font-family: $os-Light;
+}
+
+.activity-indicator {
+  color: $white;
+}
+
+.claimed-check {
+  background-color: $black;
+  font-family: $material-icon;
+  color: $red;
+  font-size: 22;
+  font-weight: bold;
+  text-align: center;
+  height: 40;
+  width: 40;
+  border-radius: 20;
+}
+
+.completed-check {
+  // background-color: $black;
+  font-family: $material-icon;
+  color: $green;
+  font-size: 22;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  height: 40;
+  width: 40;
+  border-radius: 20;
+}

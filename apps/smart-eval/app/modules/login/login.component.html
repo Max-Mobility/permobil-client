@@ -1,0 +1,55 @@
+<ScrollView backgroundSpanUnderStatusBar="true" height="100%" width="100%">
+  <StackLayout row="0">
+    <label class="app-logo" [text]="'general.title' | translate"></label>
+    <label class="account-icon fa text-white" text="&#xf2be;"></label>
+    <TextField
+      [text]="user.email"
+      class="text-field"
+      (loaded)="onEmailTextFieldLoaded($event)"
+      (textChange)="onEmailTextChange($event)"
+      [hint]="'hints.email' | translate"
+      keyboardType="email"
+      autocorrect="false"
+      autocapitalizationType="none"
+    ></TextField>
+    <label
+      [text]="emailError"
+      class="text-white error"
+      [visibility]="emailError ? 'visible' : 'collapsed'"
+      textWrap="true"
+    ></label>
+    <TextField
+      [(ngModel)]="user.password"
+      class="text-field"
+      [hint]="'hints.password' | translate"
+      secure="true"
+      (loaded)="onPasswordTextFieldLoaded($event)"
+    ></TextField>
+    <label
+      [text]="passwordError"
+      class="text-white error"
+      [visibility]="passwordError ? 'visible' : 'collapsed'"
+      textWrap="true"
+    ></label>
+    <button
+      [text]="'user.login' | translate"
+      class="permobil-ocean-btn login-btn"
+      (loaded)="onSubmitButtonLoaded($event)"
+      (tap)="onSubmitTap()"
+    ></button>
+    <DockLayout stretchLastChild="false">
+      <button
+        dock="left"
+        [text]="'user.forgot-password' | translate"
+        class="btn-transparent text-white forgot"
+        (tap)="navToForgotPassword()"
+      ></button>
+      <button
+        dock="right"
+        [text]="'user.sign-up' | translate"
+        class="btn-transparent text-white sign-up"
+        (tap)="navToSignUp()"
+      ></button>
+    </DockLayout>
+  </StackLayout>
+</ScrollView>

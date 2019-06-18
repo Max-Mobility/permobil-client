@@ -1,0 +1,151 @@
+<MaxActionBar [title]="'menu.summary' | translate"> </MaxActionBar>
+
+<GridLayout rows="auto, *, auto" cols="*">
+  <StackLayout class="topSlide" height="20%" width="100%">
+    <image src="~/assets/images/trial-summary.png" stretch="aspectFit"></image>
+  </StackLayout>
+
+  <ScrollView row="1">
+    <StackLayout
+      class="lowerSlide"
+      orientation="vertical"
+      horizontalAlignment="center"
+    >
+      // Heading
+      <label
+        [text]="'menu.summary' | translate"
+        class="slideLowerLabel"
+        textWrap="true"
+      ></label>
+
+      // Stats and Questionaire
+      <StackLayout class="trial-stack-layout">
+        // summary of user performance
+        <label textWrap="true" class="summaryDescription">
+          <FormattedString>
+            <Span
+              [text]="'summary.user-performed' | translate"
+              color="#fff"
+            ></Span>
+            <Span
+              [text]="pushDiff.toFixed(0) + '% ' + pushComparison()"
+              color="#43D551"
+              fontAttributes="Bold"
+            ></Span>
+            <Span [text]="'summary.pushes' | translate" color="#fff"></Span>
+          </FormattedString>
+        </label>
+
+        // speed
+        <label textWrap="true" class="summaryDescription">
+          <FormattedString>
+            <Span
+              [text]="'summary.average-speed' | translate"
+              color="#fff"
+            ></Span>
+            <Span
+              [text]="speedDiff.toFixed(1) + ' x ' + speedComparison()"
+              color="#43D551"
+              fontAttributes="Bold"
+            ></Span>
+            <Span [text]="'summary.with-sd' | translate" color="#fff"></Span>
+          </FormattedString>
+        </label>
+
+        <!--
+          // cadence
+          <Label textWrap="true" class="summaryDescription">
+            <FormattedString>
+              <Span [text]="'summary.at' | translate" color="#fff"></Span>
+              <Span [text]="totalCadenceWithout.toFixed(1)" color="#FF671F" fontAttributes="Bold"></Span>
+              <Span [text]="'summary.cadence' | translate" color="#fff"></Span>
+            </FormattedString>
+          </Label>
+        -->
+
+        // difficulties
+        <StackLayout *ngFor="let diff of difficulties">
+          <StackLayout *ngIf="diff.show">
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="diff.labelText | translate"
+                class="trial-item"
+                dock="left"
+                textWrap="true"
+                width="70%"
+              ></label>
+              <Switch
+                (checkedChange)="onDifficultyChecked(diff, $event)"
+                [checked]="diff.has"
+                dock="right"
+              ></Switch>
+            </DockLayout>
+            <DockLayout *ngIf="diff.has" stretchLastChild="false">
+              <label
+                [text]="diff.sliderLabelText | translate"
+                dock="left"
+                class="trial-slider-label"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                class="trial-slider-value"
+                style="min-width: 50"
+                [text]="evaluation[diff.key].toFixed(0) + '/10'"
+                row="0"
+                col="1"
+              ></label>
+            </DockLayout>
+            <GridLayout
+              *ngIf="diff.has"
+              rows="auto"
+              columns="*, auto"
+              class="slider-container"
+            >
+              <Slider
+                maxValue="10"
+                margin="10"
+                [value]="evaluation[diff.key].toFixed(0)"
+                (valueChange)="onSliderUpdate(diff.key, $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+            <DockLayout
+              *ngIf="evalIsMax(diff.key, 10)"
+              stretchLastChild="false"
+            >
+              <label
+                [text]="diff.unableText | translate"
+                class="trial-item"
+                dock="left"
+                textWrap="true"
+                width="70%"
+              ></label>
+              <Switch
+                (checkedChange)="onUnableChecked(diff, $event)"
+                [checked]="diff.unable"
+                dock="right"
+              ></Switch>
+            </DockLayout>
+          </StackLayout>
+        </StackLayout>
+      </StackLayout>
+
+      <StackLayout orientation="horizontal" horizontalAlignment="center">
+        <button
+          [text]="'summary.add-trial' | translate"
+          class="permobil-hero-btn"
+          width="45%"
+          (tap)="onBack()"
+        ></button>
+        <button
+          [text]="'general.complete' | translate"
+          class="permobil-ocean-btn"
+          width="45%"
+          (tap)="onComplete()"
+        ></button>
+      </StackLayout>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Devon - updated for Permobil pallette -->
+<resources>
+    <color name="ns_primary">#DCDDDE</color>
+    <color name="ns_primaryDark">#414042</color>
+    <color name="ns_accent">#FF671F</color>
+    <color name="ns_blue">#004F7E</color>
+    <color name="permobil_blue">#0067a6</color>
+    <color name="actionbar_text">#FFF</color>
+</resources>

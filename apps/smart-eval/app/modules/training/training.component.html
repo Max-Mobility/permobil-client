@@ -1,0 +1,65 @@
+<MaxActionBar [title]="'menu.training' | translate"> </MaxActionBar>
+
+<GridLayout iosOverflowSafeArea="true">
+  <Carousel
+    #carousel
+    showIndicator="true"
+    ios:indicatorOffset="0,-10"
+    ios:finite="true"
+    ios:bounce="false"
+    height="100%"
+    indicatorColor="#66ccff"
+    indicatorColorUnselected="#cceeff"
+  >
+    <CarouselItem *ngFor="let slide of slides">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          (loaded)="onTopSlideLoaded($event)"
+          class="topSlide"
+          row="0"
+          width="100%"
+          orientation="horizontal"
+          horizontalAlignment="center"
+        >
+          // only shows when the slide.Image is a gif
+          <Gif
+            (loaded)="onGifLoaded($event)"
+            *ngIf="isGif(slide.Image)"
+            [src]="slide.Image"
+          ></Gif>
+          // show only when not a gif
+          <image
+            *ngIf="!isGif(slide.Image)"
+            [src]="slide.Image"
+            stretch="aspectFit"
+          ></image>
+        </StackLayout>
+        <ScrollView row="1" class="lowerSlide" height="55%">
+          <StackLayout>
+            <label
+              [text]="slide.Label"
+              class="slideLowerLabel"
+              textWrap="true"
+            ></label>
+            <label
+              *ngFor="let bullet of slide.Bullets"
+              [text]="bullet"
+              class="bullet"
+              textWrap="true"
+            ></label>
+            <button
+              *ngIf="
+                slides.indexOf(slide) == slides.length - 1 &&
+                previousUrl == '/eval-entry'
+              "
+              class="permobil-ocean-btn"
+              width="45%"
+              [text]="'buttons.next' | translate"
+              (tap)="onNext()"
+            ></button>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+  </Carousel>
+</GridLayout>

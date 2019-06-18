@@ -1,0 +1,232 @@
+{
+  "number": "1",
+  "name": "Bluetooth Connectivity",
+  "reports": [
+    {
+      "number": "1",
+      "revision": "A",
+      "description": "App should support bluetooth communications with both PushTracker and SmartDrive.",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-1-A",
+          "description": "Pairing to the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-2-A",
+          "description": "Connectivity to the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-3-A",
+          "description": "Data Transmission with the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-4-A",
+          "description": "Connectivity to the SmartDrive"
+        },
+        {
+          "name": "SEA-SRS-5-A",
+          "description": "Data Transmission with the SmartDrive"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Test 1",
+          "preconditions": "The app should be running and opened to the OTA page.",
+          "methods": [
+            "Press the 'Refresh Device List' button.",
+            "Press the 'Begin Updates' button.",
+            "Press the 'Force' button.",
+            "Press the 'Cancel' button."
+          ],
+          "acceptanceCriteria": [
+            "After the 'Searching for Devices' dialog, the SmartDrive should show up as an item in the list.",
+            "The app should show 'Awaiting versions' as the OTA status - within 1 minute the app should show the versions of the SmartDrive BLE and MCU.",
+            "The SmartDrive should reboot and OTA should begin.",
+            "The SmartDrive should reboot and OTA should stop."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Test 2",
+          "preconditions": "The app should be running and opened to the OTA page. A PushTracker running version 1.5 should be present and turned on.",
+          "methods": [
+            "On the PushTracker, begin pairing with the App.",
+            "Tell the PushTracker to connec to the app - then press the 'Refresh Device List' button on the app.",
+            "Press the 'Begin Updates' button.",
+            "Press the 'Start' button (and then the 'Force' button if it shows).",
+            "Press the 'Cancel' button."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker should show pairing success - optionally after the user agrees to the pairing prompt on the phone.",
+            "The PushTracker should show up in the OTA device list.",
+            "The 'Start' button should display underneath the PushTracker.",
+            "The app should display 'Updating' underneath the PushTracker and the PushTracker should show the OTA status.",
+            "The PushTracker should reboot."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "startDate": "2018-07-23",
+      "endDate": "2018-07-23",
+      "notes": ""
+    },
+    {
+      "number": "2",
+      "revision": "A",
+      "description": "OTA Data Integrity",
+      "testerName": "William Emfinger",
+      "testLevel": [
+        "System"
+      ],
+      "requirements": [
+        {
+          "name": "SEA-SRS-2-A",
+          "description": "Connectivity to the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-3-A",
+          "description": "Data Transmission with the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-4-A",
+          "description": "Connectivity to the SmartDrive"
+        },
+        {
+          "name": "SEA-SRS-5-A",
+          "description": "Data Transmission with the SmartDrive"
+        },
+        {
+          "name": "SEA-SRS-19-A",
+          "description": "OTA Interface"
+        },
+        {
+          "name": "SEA-SRS-20-A",
+          "description": "OTA Status Display"
+        }
+      ],
+      "tests": [
+        {
+          "name": "PT OTA",
+          "preconditions": "The app should be running and opened to the OTA page. A pushtracker running version 1.5 should be on and already paired, but not connected to the app.",
+          "methods": [
+            "Press the right button on the PushTracker to initiate app connection. Press 'Refresh Device List' in the app.",
+            "Press 'Begin Updates' in the app, then press the 'Start' button, then press the 'Force' button.",
+            "Wait until the OTA finishes - the PT must reboot. After the PT reboots, press the right button on the PT to turn it on and then press the right button to connect to the app."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker should show up in the list of devices.",
+            "The app should show 'Updating' and the PT should show the OTA status.",
+            "The PushTracker should go into the 'pairing to app' setting menu - indicating that it has lost its pairing information and the OTA succeeded."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "SD OTA",
+          "preconditions": "The app should be running and opened to the OTA page. A SmartDrive running version 1.4 should be on and not connected to a PushTracker.",
+          "methods": [
+            "Press 'Refresh Device List' in the app.",
+            "Press 'Begin Updates' and then 'Start' for the SmartDrive.",
+            "Wait until the OTA finishes and the ota status is displayed for the SmartDrive."
+          ],
+          "acceptanceCriteria": [
+            "The SmartDRive should show up in the list of devices.",
+            "The app should show the firmware versions (1.4) for the SmartDrive and should then continue through the ota process.",
+            "The OTA status displayed should be 'Complete'"
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    },
+    {
+      "number": "3",
+      "revision": "A",
+      "description": "App should gather activity data from the PushTracker during an evaluation.",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-2-A",
+          "description": "Connectivity to the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-3-A",
+          "description": "Data Transmission with the PushTracker"
+        },
+        {
+          "name": "SEA-SRS-16-A",
+          "description": "Evaluation Activity Data Collection"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Test 1",
+          "preconditions": "The app should be running and opened to the trial page of the evaluation section. A PushTracker running version 1.5 should be turned on and already paired with the app. The PushTracker should already be paired with a SmartDrive and the SmartDrive should be on.",
+          "methods": [
+            "Navigate to the 'Phase 1' page and press the 'Start' button.",
+            "Press the right button on the PushTracker to initiate an app connection, wait 10 seconds, then press the 'Start' button in the app.",
+            "Perform some push motions with the PushTracker. Connect the PushTracker to a SmartDrive and activate the SmartDrive for at least 3 seconds. Deactivate the SmartDrive. Press the 'Stop' button in the app."
+          ],
+          "acceptanceCriteria": [
+            "The app should inform you to connect the PushTracker.",
+            "The trial should start.",
+            "The trial should stop and should display the activity data collected from the PushTracker."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    }
+  ]
+}

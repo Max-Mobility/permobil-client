@@ -1,0 +1,251 @@
+<MaxActionBar [title]="'menu.demos' | translate">
+  // Add Demo Button
+  <ActionItem
+    (tap)="addDemo()"
+    [visibility]="userType == 1 || userType == 2 ? 'visible' : 'collapsed'"
+    ios.systemIcon="4"
+    ios.position="right"
+    text="Add"
+    color="#fff"
+  >
+  </ActionItem>
+
+  <ActionItem
+    (tap)="loadDemoUnits()"
+    ios.systemIcon="13"
+    ios.position="right"
+    text="Refresh"
+    color="#fff"
+  >
+  </ActionItem>
+</MaxActionBar>
+
+<GridLayout margin-top="30" rows="*, auto" iosOverflowSafeArea="false">
+  // Loading View to show when loading demo units
+  <StackLayout
+    orientation="horizontal"
+    marginLeft="10"
+    row="0"
+    rowSpan="2"
+    *ngIf="!demoUnitsLoaded"
+    horizontalAlignment="center"
+  >
+    <label
+      [text]="'demos.loading' | translate"
+      class="h2 text-middle text-white"
+      textWrap="true"
+    ></label>
+    <ActivityIndicator
+      busy="true"
+      marginLeft="5"
+      width="26"
+      height="26"
+      color="white"
+    ></ActivityIndicator>
+  </StackLayout>
+
+  // Label when no demos are found
+  <label
+    row="0"
+    verticalAlignment="center"
+    *ngIf="!Demos.length && demoUnitsLoaded"
+    horizontalAlignment="center"
+    [text]="'demos.no-demos' | translate"
+    class="text-white"
+  ></label>
+
+  <ListView
+    #demoListView
+    row="0"
+    backgroundColor="transparent"
+    [items]="Demos"
+    *ngIf="Demos.length && demoUnitsLoaded"
+  >
+    <ng-template let-item="item" let-index="index">
+      <GridLayout
+        rows="auto, auto"
+        columns="auto, *, *"
+        (tap)="onDemoTap(index)"
+      >
+        <!--
+          Note: we should probably have model type so that we can have the image pulled from a server according to MX2+ vs MX3 vs others.
+        -->
+        <image
+          *ngIf="!item.sd_image"
+          backgroundColor="white"
+          col="0"
+          height="100"
+          width="100"
+          class="demo-image"
+          src="~/assets/images/stock-image.png"
+          stretch="aspectFit"
+        ></image>
+        <image
+          *ngIf="item.sd_image"
+          class="demo-image"
+          col="0"
+          width="100"
+          height="100"
+          [src]="item.sd_image"
+          stretch="aspectFit"
+        ></image>
+
+        <GridLayout col="1" colSpan="2" rows="*, *, *" columns="auto, *, auto">
+          // SD Serial Number & Model
+          <label text="&#xf071;" row="0" col="0" class="mdi icon"></label>
+          <label
+            [text]="item.smartdrive_serial_number || '# ??'"
+            row="0"
+            col="1"
+            colSpan="2"
+            [class]="
+              item.owner_id === currentUserId ? 'info demo-owner' : 'info'
+            "
+          ></label>
+          <label [text]="item.model" row="0" col="2" class="info"></label> // SD
+          Firmware versions
+          <label text="&#xf628;" row="1" col="0" class="mdi icon"></label>
+          <label row="1" col="1" class="info" textWrap="true">
+            <FormattedString>
+              <Span
+                [text]="('demos.firmware-string' | translate) + ': '"
+              ></Span>
+              <Span [text]="item.version_string"></Span>
+            </FormattedString>
+          </label>
+          <label
+            row="1"
+            col="2"
+            class="mdi icon"
+            [text]="item.version_badge(currentVersion)"
+          ></label>
+          // Demo Location
+          <label text="&#xf5f5;" row="2" col="0" class="mdi icon"></label>
+          <label
+            [text]="item.location_string"
+            row="2"
+            col="1"
+            colSpan="2"
+            class="info"
+            textWrap="true"
+          ></label>
+        </GridLayout>
+
+        <StackLayout row="1" col="2" orientation="horizontal">
+          // Location update button
+          <button
+            text="&#xf1a4;"
+            class="demo-action-btn btn-transparent"
+            (tap)="onUpdateLocationButtonTap(item)"
+          ></button>
+          // Rep Demo Actions (hand to clinician or retrieve from clinician)
+          <button
+            text="&#xf1d8;"
+            class="demo-action-btn btn-transparent"
+            [visibility]="userType == 1 ? 'visible' : 'collapsed'"
+            (tap)="onRepDemoActionButtonTap(item)"
+          ></button>
+        </StackLayout>
+      </GridLayout>
+    </ng-template>
+  </ListView>
+
+  // Clinician Request Unit Button
+  <button
+    #requestDemoBtn
+    row="1"
+    [text]="'demos.request-demo-action' | translate"
+    class="requestDemoBtn"
+    (tap)="onShowNewDemoForm()"
+    [visibility]="userType == 0 || userType == 2 ? 'visible' : 'collapsed'"
+  ></button>
+
+  // Hidden Layout containing the Demo Request Form
+  <StackLayout
+    #demoRequestForm
+    class="demoRequestForm"
+    rowSpan="2"
+    opacity="0"
+    translationY="1200"
+  >
+    <GridLayout
+      rows="*"
+      columns="auto, *, auto"
+      orientation="horizontal"
+      width="100%"
+      height="32"
+    >
+      <Label
+        col="0"
+        [text]="'demos.new-demo-request' | translate"
+        class="title"
+        textWrap="true"
+      ></Label>
+      <Label
+        col="2"
+        text="&#xf156;"
+        class="mdi close-icon"
+        (tap)="onCloseDemoRequestForm()"
+      ></Label>
+    </GridLayout>
+
+    <Label text="" class="hr-light" marginBottom="10" textWrap="true"></Label>
+
+    // Contact Info
+    <TextView
+      class="input"
+      ios:class="ios-input"
+      editable="true"
+      [hint]="'demos.request.contact_info' | translate"
+      [(ngModel)]="demorequest.contact_info"
+    ></TextView>
+
+    // Distance
+    <Label
+      class="label"
+      [text]="'demos.request-demo-distance' | translate"
+      textWrap="true"
+    ></Label>
+    <GridLayout rows="auto, auto" columns="auto, *, auto">
+      <Label
+        verticalAlignment="middle"
+        row="0"
+        col="0"
+        text="25"
+        textWrap="true"
+      ></Label>
+      <Slider
+        row="0"
+        col="1"
+        class="input"
+        minValue="25"
+        maxValue="250"
+        [value]="demorequest.maxDistance"
+        (valueChange)="onMaxDistanceSliderChange($event)"
+      ></Slider>
+      <Label
+        verticalAlignment="middle"
+        row="0"
+        col="2"
+        text="250+"
+        textWrap="true"
+      ></Label>
+      // actual slider value
+      <Label
+        horizontalAlignment="center"
+        row="1"
+        col="1"
+        [text]="demorequest.maxDistance"
+        textWrap="true"
+      ></Label>
+    </GridLayout>
+
+    <Button
+      class="permobil-primary-btn"
+      verticalAlignment="bottom"
+      [text]="'general.submit' | translate"
+      (tap)="onSubmitDemoRequestTap()"
+    ></Button>
+  </StackLayout>
+  // end hidden layout
+</GridLayout>

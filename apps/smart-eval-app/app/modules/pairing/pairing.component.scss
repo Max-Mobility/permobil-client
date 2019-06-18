@@ -1,0 +1,118 @@
+// Custom common variables
+@import '../../scss/variables';
+
+.topSlide {
+  background-image: url('~/assets/images/background_1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  Gif {
+    vertical-align: middle;
+    horizontal-align: center;
+  }
+
+  .label {
+    vertical-align: middle;
+    horizontal-align: center;
+    text-align: center;
+    font-family: $os-Light;
+    font-size: 40;
+    margin: 20, 20, 10, 15;
+    color: $white;
+  }
+}
+
+.lowerSlide {
+  // background-color: $permobil-hero;
+  horizontal-align: center;
+
+  StackLayout {
+    horizontal-align: center;
+    width: 100%;
+    padding: 0, 0, 30, 0;
+
+    .section {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: underline;
+      margin: 20, 5;
+    }
+
+    .label {
+      text-align: left;
+      font-family: $os-Light;
+      font-size: 25;
+      margin: 20, 0, 10, 15;
+      color: $white;
+    }
+
+    .bullet {
+      color: #fff;
+      font-family: $os-Light;
+      font-size: 13;
+      text-align: left;
+      margin: 10, 20, 10, 15;
+    }
+
+    .item {
+      // vertical-align: center;
+      text-overflow: none;
+      word-wrap: normal;
+      color: #fff;
+      font-weight: 500;
+      margin: 10, 0, 10, 15;
+    }
+
+    .saveButton {
+      color: #fff;
+      background-color: $permobil-ocean;
+      border-radius: 2;
+      padding: 20;
+      margin: 20, 20, 30, 20;
+    }
+
+    .slider-container {
+      Slider {
+        width: 80%;
+        margin: 5, 25, 10, 25;
+        vertical-align: center;
+        horizontal-align: center;
+      }
+    }
+
+    // ensure all the labels are colored WHITE
+    label {
+      color: $white;
+    }
+
+    DockLayout {
+      margin: 10, 10;
+
+      DropDown {
+        background-color: $permobil-hero;
+        placeholder-color: rgba(250, 250, 250, 0.5);
+        color: $white;
+        border-radius: 2;
+        width: 35%;
+        padding: 0, 0;
+        margin: 5, 0;
+        text-align: right;
+        vertical-align: center;
+        horizontal-align: right;
+      }
+
+      .value {
+        min-width: 50%;
+        font-family: $os-Light;
+        text-align: right;
+        margin: 0, 5;
+      }
+      .setting {
+        color: #fff;
+        font-weight: 500;
+        text-align: left;
+      }
+    }
+  }
+}

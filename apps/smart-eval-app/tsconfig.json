@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noEmitHelpers": true,
+        "noEmitOnError": false,
+        "removeComments": true,
+        "skipLibCheck": true,
+        "noImplicitUseStrict": true,
+        "declaration": false,
+        "lib": [
+            "es6",
+            "dom",
+            "es2015.iterable"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "app/*"
+            ],
+            "@maxmobility/*": [
+                "../../libs/*"
+            ],
+            "@maxmobility/mobile": [
+                "../../xplat/mobile/index.ts"
+            ],
+            "@maxmobility/mobile/*": [
+                "../../xplat/mobile/*"
+            ],
+            "*": [
+                "./node_modules/tns-core-modules/*",
+                "./node_modules/*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "platforms",
+        "nativescript-bluetooth"
+    ]
+}

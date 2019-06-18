@@ -1,0 +1,219 @@
+<MaxActionBar [title]="'eval-entry.title' | translate"> </MaxActionBar>
+
+<GridLayout rows="auto, *" cols="*" width="100%">
+  <StackLayout
+    class="topSlide"
+    height="20%"
+    width="100%"
+    orientation="horizontal"
+    horizontalAlignment="center"
+  >
+    <image src="~/assets/images/evaluation.png" stretch="aspectFit"></image>
+  </StackLayout>
+
+  <ScrollView row="1" class="" orientation="vertical">
+    <StackLayout class="eval-stack-layout" width="100%">
+      // Title
+      <label
+        [text]="'eval-entry.heading' | translate"
+        class="heading"
+        textWrap="true"
+      ></label>
+      // PAIN
+      <GridLayout class="eval-item" rows="auto, auto" columns="*, auto">
+        <label
+          row="0"
+          col="0"
+          class="eval-label"
+          [text]="'eval-entry.pain-question' | translate"
+          textWrap="true"
+        ></label>
+        <Switch
+          row="0"
+          col="1"
+          (checkedChange)="onPushingPainChecked($event)"
+          [checked]="hasPushingPain"
+        ></Switch>
+        <GridLayout
+          row="1"
+          colSpan="2"
+          *ngIf="hasPushingPain"
+          class="eval-item"
+          rows="auto, auto"
+          columns="*, auto"
+        >
+          <label
+            row="0"
+            col="0"
+            class="eval-slider-label"
+            [text]="'eval-entry.pain-label' | translate"
+            textWrap="true"
+          ></label>
+          <label
+            row="0"
+            col="1"
+            class="eval-slider-value-label"
+            [text]="evaluation.pushing_pain.toFixed(0) + ' / 10'"
+          ></label>
+          <Slider
+            row="1"
+            colSpan="2"
+            maxValue="10"
+            [value]="evaluation.pushing_pain"
+            (valueChange)="onSliderUpdate('pushing_pain', $event)"
+          ></Slider>
+        </GridLayout>
+      </GridLayout>
+
+      // FATIGUE
+      <GridLayout class="eval-item" rows="auto, auto" columns="*, auto">
+        <label
+          row="0"
+          col="0"
+          class="eval-label"
+          [text]="'eval-entry.fatigue-question' | translate"
+          textWrap="true"
+        ></label>
+        <Switch
+          row="0"
+          col="1"
+          (checkedChange)="onPushingFatigueChecked($event)"
+          [checked]="hasPushingFatigue"
+        ></Switch>
+        <GridLayout
+          row="1"
+          colSpan="2"
+          *ngIf="hasPushingFatigue"
+          class="eval-item"
+          rows="auto, auto"
+          columns="*, auto"
+        >
+          <label
+            row="0"
+            col="0"
+            class="eval-slider-label"
+            [text]="'eval-entry.fatigue-label' | translate"
+            textWrap="true"
+          ></label>
+          <label
+            row="0"
+            col="1"
+            class="eval-slider-value-label"
+            [text]="evaluation.pushing_fatigue.toFixed(0) + ' / 10'"
+          ></label>
+          <Slider
+            row="1"
+            colSpan="2"
+            maxValue="10"
+            [value]="evaluation.pushing_fatigue"
+            (valueChange)="onSliderUpdate('pushing_fatigue', $event)"
+          ></Slider>
+        </GridLayout>
+      </GridLayout>
+
+      // INDEPENDENCE
+      <GridLayout class="eval-item" rows="auto, auto" columns="*, auto">
+        <label
+          row="0"
+          col="0"
+          class="eval-label"
+          [text]="'eval-entry.independence-question' | translate"
+          textWrap="true"
+        ></label>
+        <Switch
+          row="0"
+          col="1"
+          (checkedChange)="onIndependenceChecked($event)"
+          [checked]="impactsIndependence"
+        ></Switch>
+        <GridLayout
+          row="1"
+          colSpan="2"
+          *ngIf="impactsIndependence"
+          class="eval-item"
+          rows="auto, auto"
+          columns="*, auto"
+        >
+          <label
+            row="0"
+            col="0"
+            class="eval-slider-label"
+            [text]="'eval-entry.independence-label' | translate"
+            textWrap="true"
+          ></label>
+          <label
+            row="0"
+            col="1"
+            class="eval-slider-value-label"
+            [text]="evaluation.impact_on_independence.toFixed(0) + ' / 10'"
+          ></label>
+          <Slider
+            row="1"
+            colSpan="2"
+            maxValue="10"
+            [value]="evaluation.impact_on_independence"
+            (valueChange)="onSliderUpdate('impact_on_independence', $event)"
+          ></Slider>
+        </GridLayout>
+      </GridLayout>
+
+      <GridLayout class="eval-item" rows="auto" columns="*, auto">
+        <label
+          col="0"
+          [text]="'eval-entry.years-question' | translate"
+          class="eval-label"
+          textWrap="true"
+        ></label>
+        <DropDown
+          #yearDropdown
+          col="1"
+          [hint]="'eval-entry.years-label' | translate"
+          class="dropdown"
+          [items]="years"
+          (selectedIndexChanged)="selectedIndexChanged('years', $event)"
+        ></DropDown>
+      </GridLayout>
+
+      <GridLayout class="eval-item" rows="auto" columns="*, auto">
+        <label
+          col="0"
+          [text]="'eval-entry.chair-question' | translate"
+          class="eval-label"
+          textWrap="true"
+        ></label>
+        <DropDown
+          #chairDropdown
+          col="1"
+          [hint]="'eval-entry.chair-label' | translate"
+          class="dropdown"
+          [items]="chair"
+          (selectedIndexChanged)="selectedIndexChanged('chair', $event)"
+        ></DropDown>
+      </GridLayout>
+
+      <GridLayout class="eval-item" rows="auto" columns="*, auto">
+        <label
+          col="0"
+          [text]="'eval-entry.chair-type.question' | translate"
+          class="eval-label"
+          textWrap="true"
+        ></label>
+        <DropDown
+          #chairTypeDropdown
+          col="1"
+          [hint]="'eval-entry.chair-type.label' | translate"
+          class="dropdown"
+          [items]="chairType"
+          (selectedIndexChanged)="selectedIndexChanged('chairType', $event)"
+        ></DropDown>
+      </GridLayout>
+
+      <button
+        (tap)="onNext()"
+        [text]="'buttons.next' | translate"
+        class="permobil-ocean-btn"
+        width="45%"
+      ></button>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

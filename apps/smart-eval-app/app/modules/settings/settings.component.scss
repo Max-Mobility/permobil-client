@@ -1,0 +1,25 @@
+// Custom common variables
+@import '../../scss/variables';
+@import '../../scss/_carousel';
+
+.grid-layout {
+  padding: 20, 10, 20, 10;
+  horizontal-align: center;
+}
+
+.hero {
+  background-color: $permobil-hero;
+}
+
+label {
+  horizontal-align: center;
+}
+
+.debug-button {
+  width: auto;
+  height: auto;
+  color: #fff;
+  background-color: $permobil-ocean;
+  border-radius: 2;
+  margin: 10;
+}

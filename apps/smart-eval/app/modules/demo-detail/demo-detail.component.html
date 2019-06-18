@@ -1,0 +1,277 @@
+<MaxActionBar [allowNav]="false" [title]="title">
+  // using an action item to simulate the iOS back navigation button so we can
+  confirm with user before navigating back
+  <ActionItem
+    android:visibility="false"
+    ios.position="left"
+    (tap)="confirmUserBackNav()"
+  >
+    <image src="res://ios_back_nav/ios_back_nav"></image>
+  </ActionItem>
+
+  <ActionItem
+    (tap)="onSave()"
+    ios.systemIcon="3"
+    ios.position="right"
+    [text]="'general.save' | translate"
+    color="white"
+  >
+  </ActionItem>
+</MaxActionBar>
+
+<GridLayout padding="0" margin="0" rows="auto, *" cols="auto">
+  <StackLayout
+    class="topSlide"
+    row="0"
+    height="30%"
+    width="100%"
+    orientation="horizontal"
+    horizontalAlignment="center"
+  >
+    <AbsoluteLayout width="40%" height="80%" margin="5%">
+      <image
+        #sdImage
+        *ngIf="demo.sd_image"
+        class="demo-image"
+        [src]="demo.sd_image"
+        stretch="aspectFit"
+        (tap)="onUpdateSDImageTap()"
+      ></image>
+      <image
+        *ngIf="!demo.sd_image"
+        class="demo-image"
+        src="~/assets/images/sd-stock.png"
+        stretch="aspectFit"
+        (tap)="onUpdateSDImageTap()"
+      ></image>
+      <label
+        top="15%"
+        left="10%"
+        (tap)="onUpdateSDImageTap()"
+        text="&#xf100;"
+        class="mdi  demo-btn orange-text"
+      ></label>
+    </AbsoluteLayout>
+    <AbsoluteLayout width="40%" height="80%" margin="5%">
+      <image
+        #ptImage
+        *ngIf="demo.pt_image"
+        class="demo-image"
+        [src]="demo.pt_image"
+        stretch="aspectFit"
+        (tap)="onUpdatePTImageTap()"
+      ></image>
+      <image
+        *ngIf="!demo.pt_image"
+        class="demo-image"
+        src="~/assets/images/pt-stock.png"
+        stretch="aspectFit"
+        (tap)="onUpdatePTImageTap()"
+      ></image>
+      <label
+        top="15%"
+        left="10%"
+        (tap)="onUpdatePTImageTap()"
+        text="&#xf100;"
+        class="mdi demo-btn orange-text"
+      ></label>
+    </AbsoluteLayout>
+  </StackLayout>
+
+  <ScrollView row="1" class="" height="70%">
+    <StackLayout orientation="vertical" width="100%">
+      // SmartDrive Serial
+      <DockLayout stretchLastChild="true" margin="15, 10, 5, 0">
+        <label
+          dock="top"
+          [text]="'general.serial' | translate"
+          class="serial-number-label"
+        ></label>
+        <button
+          dock="left"
+          (tap)="onScan('smartdrive')"
+          text="&#xf072;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <button
+          dock="left"
+          (tap)="onEditSD()"
+          text="&#xf3ed;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <label [text]="sd_serial_label" class="info" dock="left"></label>
+      </DockLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+
+      // PT Serial
+      <!--
+        <StackLayout orientation="horizontal" margin="5, 10, 5, 0">
+          <Label text="&#xf072;" class="mdi demo-btn"></Label>
+          <Button (tap)="onScan('pushtracker')" text="&#xf100;" class="mdi demo-btn orange-text"></Button>
+          <Button (tap)="onEditPT()" text="&#xf3ed;" class="mdi demo-btn orange-text"></Button>
+          <Label [text]="pt_serial_label" class="info"></Label>
+        </StackLayout>
+      -->
+      <DockLayout stretchLastChild="true" margin="5, 10, 5, 0">
+        <label
+          dock="top"
+          [text]="'general.serial' | translate"
+          class="serial-number-label"
+        ></label>
+        <button
+          dock="left"
+          (tap)="onScan('pushtracker')"
+          text="&#xf072;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <button
+          dock="left"
+          (tap)="onEditPT()"
+          text="&#xf3ed;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <label [text]="pt_serial_label" class="info" dock="left"></label>
+      </DockLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+
+      // Location
+      <GridLayout
+        rows="*, *"
+        columns="auto, *"
+        orientation="horizontal"
+        margin="5, 10, 5, 0"
+      >
+        <button
+          rowSpan="2"
+          col="0"
+          text="&#xf1a4;"
+          class="mdi demo-btn orange-text"
+          (tap)="onUpdateLocationButtonTap(demo)"
+        ></button>
+        <label
+          row="0"
+          col="1"
+          [text]="demo.location_string"
+          class="info"
+          textWrap="true"
+        ></label>
+        <ContentView row="1" col="1" height="200" width="100%">
+          // we set the lat and lng of the map in the `mapReady` event to ensure
+          we have coords and the map won't throw errors
+          <!--
+            <Mapbox
+              accessToken="pk.eyJ1IjoiZmluZ2VyNTYzIiwiYSI6ImNqYXZmYTZ0bDVtYmcyd28yZ2ZwandxYWcifQ.ROCLEdkuzALMsVQedcIeAQ"
+              mapStyle="satellite_streets"
+              zoomLevel="14"
+              disableZoom="false"
+              disableRotation="true"
+              disableScroll="true"
+              disableTilt="true"
+              showUserLocation="false"
+              (mapReady)="onMapReady($event)"
+            >
+            </Mapbox>
+          -->
+
+          <Mapbox
+            [accessToken]="mapboxToken"
+            mapStyle="satellite_streets"
+            zoomLevel="14"
+            disableZoom="false"
+            disableRotation="true"
+            disableScroll="true"
+            disableTilt="true"
+            showUserLocation="false"
+            (mapReady)="onMapReady($event)"
+          >
+          </Mapbox>
+        </ContentView>
+      </GridLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+
+      // SD MCU Version
+      <DockLayout
+        (onTap)="onVersionTap()"
+        stretchLastChild="true"
+        margin="5, 10, 10, 0"
+      >
+        <label text="&#xf628;" class="mdi demo-btn"></label>
+        <button
+          dock="left"
+          (tap)="onVersionTap()"
+          text="&#xf0af;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <label
+          class="mdi demo-btn"
+          [text]="demo.version_badge(currentVersion, 'mcu')"
+        ></label>
+        <label class="info" textWrap="true">
+          <FormattedString>
+            <Span [text]="demo.mcu_version_string"></Span>
+            <Span [text]="mcu_version_label"></Span>
+          </FormattedString>
+        </label>
+      </DockLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+
+      // SD BLE Version
+      <DockLayout
+        (onTap)="onVersionTap()"
+        stretchLastChild="true"
+        margin="5, 10, 10, 0"
+      >
+        <label text="&#xf628;" class="mdi demo-btn"></label>
+        <button
+          dock="left"
+          (tap)="onVersionTap()"
+          text="&#xf0af;"
+          class="mdi  demo-btn orange-text"
+        ></button>
+        <label
+          class="mdi demo-btn"
+          [text]="demo.version_badge(currentVersion, 'ble')"
+        ></label>
+        <label class="info" textWrap="true">
+          <FormattedString>
+            <Span [text]="demo.ble_version_string"></Span>
+            <Span [text]="ble_version_label"></Span>
+          </FormattedString>
+        </label>
+      </DockLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+
+      // PT Version
+      <DockLayout
+        (onTap)="onVersionTap()"
+        stretchLastChild="true"
+        margin="5, 10, 10, 0"
+      >
+        <label text="&#xf628;" class="mdi demo-btn"></label>
+        <button
+          dock="left"
+          (tap)="onVersionTap()"
+          text="&#xf0af;"
+          class="mdi demo-btn orange-text"
+        ></button>
+        <label
+          class="mdi demo-btn"
+          [text]="demo.version_badge(currentVersion, 'pt')"
+        ></label>
+        <label class="info" textWrap="true">
+          <FormattedString>
+            <Span [text]="demo.pt_version_string"></Span>
+            <Span [text]="pt_version_label"></Span>
+          </FormattedString>
+        </label>
+      </DockLayout>
+
+      <label class="hr-light m-10" backgroundColor="#FFF" width="100%"></label>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

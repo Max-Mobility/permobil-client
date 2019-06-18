@@ -1,0 +1,50 @@
+@import 'scss/variables';
+@import 'scss/common';
+
+// Custom common variables
+.accept {
+  background-color: $permobil-hero;
+  vertical-align: center;
+  horizontal-align: center;
+}
+
+.header {
+  color: $white;
+  margin: 10, 20;
+  padding: 10;
+  font-size: 18;
+  vertical-align: center;
+  text-align: left;
+  width: 100%;
+}
+
+.label {
+  color: $white;
+  padding: 5;
+  margin: 5, 10;
+  padding: 5, 10;
+  font-size: 16;
+  vertical-align: center;
+  text-align: left;
+  width: 70%;
+}
+
+.btn {
+  border-radius: 2;
+  color: white;
+  margin: 5, 10, 5, 10;
+}
+
+.link {
+  margin: 0, 10;
+  color: $permobil-orange;
+  background-color: $permobil-hero;
+}
+
+.cancel {
+  background-color: $permobil-hero;
+}
+
+.submit {
+  background-color: $permobil-ocean;
+}

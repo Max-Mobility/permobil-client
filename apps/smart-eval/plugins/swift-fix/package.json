@@ -1,0 +1,11 @@
+{
+    "name": "@_/nativescript-swift-fix",
+    "version": "1.0.0",
+    "nativescript": {
+      "platforms": {
+        "android": "4.2.0",
+        "ios": "4.2.0"
+      }
+    }
+  }
+  

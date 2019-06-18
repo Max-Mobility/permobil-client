@@ -1,0 +1,111 @@
+<ScrollView height="100%" width="100%">
+  <StackLayout>
+    <label class="app-logo" [text]="'general.title' | translate"></label>
+    <label class="account-icon fa text-white" text="&#xf2be;"></label>
+    <GridLayout rows="auto, auto" columns="auto, *">
+      // Language Dropdown
+      <label
+        row="0"
+        col="0"
+        class="label"
+        [text]="'user.language' | translate"
+      ></label>
+      <DropDown
+        row="0"
+        col="1"
+        class="dropdown"
+        [hint]="'user.language' | translate"
+        [selectedIndex]="selectedLanguageIndex"
+        [items]="languages"
+        (selectedIndexChanged)="onLanguageChanged($event)"
+      ></DropDown>
+      // User Type Dropdown
+      <label
+        row="1"
+        col="0"
+        class="label"
+        [text]="'user.type' | translate"
+      ></label>
+      <DropDown
+        row="1"
+        col="1"
+        class="dropdown"
+        [hint]="'user.type' | translate"
+        [selectedIndex]="selectedUserTypeIndex"
+        [items]="usertypes"
+        (selectedIndexChanged)="onUserTypeChanged($event)"
+      ></DropDown>
+    </GridLayout>
+    <TextField
+      #firstName
+      [(ngModel)]="user.first_name"
+      class="text-field"
+      [hint]="'user.first-name' | translate"
+      autocorrect="true"
+      autocapitalizationType="words"
+      (returnPress)="onReturnPress($event)"
+    ></TextField>
+    <label
+      [text]="firstNameError"
+      class="error"
+      *ngIf="firstNameError"
+      textWrap="true"
+    ></label>
+    <TextField
+      #lastName
+      [(ngModel)]="user.last_name"
+      class="text-field"
+      [hint]="'user.last-name' | translate"
+      autocorrect="true"
+      autocapitalizationType="words"
+      (returnPress)="onReturnPress($event)"
+    ></TextField>
+    <label
+      [text]="lastNameError"
+      class="error"
+      *ngIf="lastNameError"
+      textWrap="true"
+    ></label>
+    <TextField
+      [text]="user.email"
+      class="text-field"
+      [hint]="'user.email' | translate"
+      keyboardType="email"
+      autocorrect="false"
+      autocapitalizationType="none"
+      (textChange)="onEmailTextChange($event)"
+    ></TextField>
+    <label
+      [text]="emailError"
+      class="error"
+      *ngIf="emailError"
+      textWrap="true"
+    ></label>
+    <TextField
+      #password
+      [(ngModel)]="user.password"
+      class="text-field"
+      [hint]="'user.password' | translate"
+      secure="true"
+      autocorrect="false"
+      (returnPress)="onReturnPress($event)"
+    ></TextField>
+    <label
+      [text]="passwordError"
+      class="error"
+      *ngIf="passwordError"
+      textWrap="true"
+    ></label>
+    <button
+      [text]="'user.sign-up' | translate"
+      class="permobil-ocean-btn"
+      marginTop="15"
+      (tap)="onSubmitTap()"
+    ></button>
+    <button
+      [text]="'user.back-to-login' | translate"
+      class="btn-transparent text-white"
+      (tap)="navToLogin()"
+    ></button>
+  </StackLayout>
+</ScrollView>

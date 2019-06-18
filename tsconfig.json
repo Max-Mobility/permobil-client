@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "target": "es5",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom", "webworker"],
+    "baseUrl": ".",
+    "paths": {
+      "@maxmobility/*": ["libs/*"],
+      "@maxmobility/mobile": ["xplat/mobile/index.ts"],
+      "@maxmobility/mobile/*": ["xplat/mobile/*"],
+      "@maxmobility/web": ["xplat/web/index.ts"],
+      "@maxmobility/web/*": ["xplat/web/*"]
+    }
+  },
+  "exclude": ["apps/smart-eval-app", "node_modules", "tmp"]
+}

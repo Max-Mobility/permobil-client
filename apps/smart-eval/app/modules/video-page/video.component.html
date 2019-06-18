@@ -1,0 +1,17 @@
+<MaxActionBar [title]="title"> </MaxActionBar>
+
+<ScrollView tkMainContent>
+  <StackLayout orientation="vertical" horizontalAlignment="center" width="100%">
+    <YoutubePlayer
+      id="player"
+      (loaded)="playerLoaded($event)"
+      android:width="90%"
+      ios:height="300"
+      [options]="options"
+      apiKey="AIzaSyBLlWMu4GcwFcUmcBtK7R9gWBtloBswfHg"
+      backgroundColor="gray"
+    ></YoutubePlayer>
+    <label [text]="title" class="title" textWrap="true"></label>
+    <label [text]="desc" class="bullet" textWrap="true"></label>
+  </StackLayout>
+</ScrollView>

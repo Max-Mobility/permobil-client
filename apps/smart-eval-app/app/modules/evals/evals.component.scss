@@ -1,0 +1,87 @@
+// Custom common variables
+@import '../../scss/common';
+@import '../../scss/variables';
+
+.loader {
+  margin: 5;
+  vertical-align: middle;
+  horizontal-align: center;
+  width: 100%;
+  height: 100%;
+
+  label {
+    text-align: center;
+    color: $white;
+  }
+
+  ActivityIndicator {
+    horizontal-align: center;
+  }
+}
+
+.no-evals-container {
+  margin: 5;
+  vertical-align: middle;
+  horizontal-align: center;
+  width: 100%;
+  height: 100%;
+
+  label {
+    text-align: center;
+    color: $white;
+  }
+}
+
+#noEvalsLabel {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+  horizontal-align: center;
+  margin: 4;
+  font-size: 16;
+  color: $white;
+}
+
+.list-line {
+  background-color: $permobil-orange;
+  width: 5;
+  border-radius: 2;
+  vertical-align: middle;
+  margin: 4 4 4 2;
+  padding: 2 5 2 0;
+}
+
+.evals-list {
+  height: 100%;
+  width: 100%;
+  color: $white;
+
+  .eval-block {
+    // margin: 8 5 20 1;
+    padding: 8 5 20 2;
+    // margin: 2 2 6 2;
+  }
+
+  .eval-data {
+    font-size: 17;
+    padding: 4;
+  }
+
+  .trial-name {
+    font-size: 20;
+    padding: 4;
+  }
+
+  .trial-label {
+    font-size: 17;
+    color: $permobil-steel;
+    padding: 4;
+  }
+
+  .trial-data {
+    font-size: 14;
+    margin-left: 5;
+    padding-left: 10;
+  }
+}

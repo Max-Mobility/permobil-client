@@ -1,0 +1,473 @@
+<MaxActionBar [title]="'menu.home' | translate" allowNav="false">
+  <ActionItem ios.position="right" (tap)="onAccountButtonTap()">
+    <label text="&#xf2be;" class="account-icon fa"></label>
+  </ActionItem>
+</MaxActionBar>
+
+<GridLayout rows="*, *" columns="*">
+  // Main Layout
+  <ScrollView row="0" rowSpan="2" col="0" class="main-scroll-view">
+    <GridLayout rows="auto, auto, auto, auto, auto, auto" columns="*">
+      //Connectivity
+      <GridLayout
+        rows="auto, auto, *"
+        columns="*, auto"
+        class="list-grid-layout"
+        row="0"
+      >
+        <label
+          row="0"
+          col="0"
+          [text]="'menu.connectivity' | translate"
+          class="list-heading"
+          (tap)="chevronButtonTapped('/pairing')"
+        ></label>
+        <label
+          row="0"
+          col="1"
+          horizontalAlignment="right"
+          text="&#xf142;"
+          class="mdi chev"
+          (tap)="chevronButtonTapped('/pairing')"
+        ></label>
+        <label
+          row="1"
+          [text]="'menu.con-desc' | translate"
+          class="list-description"
+          textWrap="true"
+        ></label>
+
+        <RadListView
+          row="2"
+          colSpan="2"
+          [items]="connectivityItems"
+          ios:height="210"
+        >
+          <ng-template tkListItemTemplate let-item="item">
+            <GridLayout rows="140, auto" class="list-item-layout">
+              <image
+                row="0"
+                colSpan="2"
+                src="~/assets/images/background_1.jpg"
+                stretch="aspectFill"
+              ></image>
+              <image
+                row="0"
+                [src]="item.Image"
+                margin="20"
+                (tap)="connectivityThumbTapped(item)"
+                stretch="aspectFit"
+              ></image>
+              <label
+                row="1"
+                [text]="item.Description | translate"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </ng-template>
+          <ListViewLinearLayout
+            tkListViewLayout
+            dynamicItemSize="false"
+            scrollDirection="Horizontal"
+          ></ListViewLinearLayout>
+        </RadListView>
+      </GridLayout>
+
+      // Videos
+      <GridLayout
+        rows="auto, auto, auto, *"
+        columns="*, auto"
+        class="list-grid-layout"
+        row="2"
+      >
+        <label
+          row="0"
+          colSpan="2"
+          class="hr-light m-10"
+          backgroundColor="#FF671F"
+          width="92.5%"
+        ></label>
+        <label
+          row="1"
+          col="0"
+          [text]="'menu.videos-title' | translate"
+          class="list-heading"
+          (tap)="chevronButtonTapped('/videos')"
+        ></label>
+        <label
+          row="1"
+          col="1"
+          horizontalAlignment="right"
+          text="&#xf142;"
+          class="mdi chev"
+          (tap)="chevronButtonTapped('/videos')"
+        ></label>
+        <label
+          row="2"
+          colSpan="2"
+          [text]="'menu.videos-description' | translate"
+          class="list-description"
+          textWrap="true"
+        ></label>
+
+        <RadListView row="3" colSpan="2" [items]="videoItems" ios:height="160">
+          <ng-template tkListItemTemplate let-item="item">
+            <GridLayout
+              rows="*"
+              class="list-item-layout"
+              (tap)="videoThumbTapped(item)"
+            >
+              <image
+                row="0"
+                colSpan="2"
+                src="~/assets/images/video-item-background.png"
+                stretch="aspectFill"
+              ></image>
+              <label
+                row="0"
+                [text]="item.Title"
+                class="faq-question"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </ng-template>
+          <ListViewLinearLayout
+            tkListViewLayout
+            dynamicItemSize="false"
+            scrollDirection="Horizontal"
+          ></ListViewLinearLayout>
+        </RadListView>
+      </GridLayout>
+
+      // Evaluation-Clinical Tools
+      <GridLayout
+        rows="auto, auto, auto, *"
+        columns="*, auto"
+        class="list-grid-layout"
+        row="3"
+        [visibility]="userType != 3 ? 'visible' : 'collapsed'"
+      >
+        <label
+          row="0"
+          colSpan="2"
+          class="hr-light m-10"
+          backgroundColor="#FF671F"
+          width="92.5%"
+        ></label>
+        <label
+          row="1"
+          col="0"
+          [text]="'menu.clinical-tools' | translate"
+          class="list-heading"
+          (tap)="chevronButtonTapped('/eval-entry')"
+        ></label>
+        <label
+          row="1"
+          col="1"
+          horizontalAlignment="right"
+          text="&#xf142;"
+          class="mdi chev"
+          (tap)="chevronButtonTapped('/eval-entry')"
+        ></label>
+        <label
+          row="2"
+          colSpan="2"
+          [text]="'menu.clinical-tools-desc' | translate"
+          class="list-description"
+          textWrap="true"
+        ></label>
+
+        <RadListView row="3" colSpan="2" [items]="evalItems" ios:height="210">
+          <ng-template tkListItemTemplate let-item="item">
+            <GridLayout rows="140, auto" class="list-item-layout">
+              <image
+                row="0"
+                colSpan="2"
+                src="~/assets/images/background_1.jpg"
+                stretch="aspectFill"
+              ></image>
+              <image
+                row="0"
+                colSpan="2"
+                [src]="item.Image"
+                margin="20"
+                (tap)="evalThumbTapped(item)"
+                stretch="aspectFit"
+              ></image>
+              <label
+                row="1"
+                [text]="item.Description | translate"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </ng-template>
+          <ListViewLinearLayout
+            tkListViewLayout
+            dynamicItemSize="false"
+            scrollDirection="Horizontal"
+          ></ListViewLinearLayout>
+        </RadListView>
+      </GridLayout>
+
+      // Demos
+
+      <GridLayout
+        rows="auto, 40, auto, *, auto"
+        columns="100, auto, auto, *"
+        class="list-grid-layout"
+        row="4"
+        [visibility]="userType == 1 || userType == 2 ? 'visible' : 'collapsed'"
+      >
+        <label
+          row="0"
+          colSpan="4"
+          class="hr-light m-10"
+          backgroundColor="#FF671F"
+          width="92.5%"
+        ></label>
+
+        <label
+          row="1"
+          col="0"
+          [text]="'menu.demos' | translate"
+          class="list-heading"
+          (tap)="chevronButtonTapped('/demos')"
+        ></label>
+
+        // refresh button
+        <button
+          row="1"
+          col="1"
+          text="&#xf450;"
+          class="mdi btn-transparent refresh-btn"
+          *ngIf="demoUnitsLoaded"
+          (tap)="loadDemoUnits()"
+        ></button>
+
+        // demo requests button
+        <button
+          row="1"
+          col="2"
+          text="&#xf5c7;"
+          class="mdi btn-transparent refresh-btn"
+          *ngIf="demoUnitsLoaded"
+          (tap)="chevronButtonTapped('/demo-requests')"
+          [visibility]="
+            userType == 1 || userType == 2 ? 'visible' : 'collapsed'
+          "
+        ></button>
+
+        <label
+          row="1"
+          col="3"
+          horizontalAlignment="right"
+          text="&#xf142;"
+          class="mdi chev"
+          (tap)="chevronButtonTapped('/demos')"
+        ></label>
+
+        <label
+          row="2"
+          colSpan="4"
+          [text]="'menu.demos-desc' | translate"
+          class="list-description"
+          textWrap="true"
+        ></label>
+
+        // Loading View for the delay to fetch and load demos to smooth out UI
+        <StackLayout
+          orientation="horizontal"
+          marginLeft="10"
+          row="3"
+          colSpan="4"
+          *ngIf="!demoUnitsLoaded"
+        >
+          <label
+            [text]="'demos.loading' | translate"
+            class="h2 text-middle"
+            textWrap="true"
+          ></label>
+          <ActivityIndicator
+            busy="true"
+            marginLeft="5"
+            width="26"
+            height="26"
+          ></ActivityIndicator>
+        </StackLayout>
+
+        // Stock demo unit when no demo units are found
+        <GridLayout
+          rows="140, *"
+          marginLeft="10"
+          row="3"
+          colSpan="4"
+          class="list-item-layout"
+          *ngIf="!Demos.length && demoUnitsLoaded"
+          horizontalAlignment="left"
+        >
+          <image
+            row="0"
+            width="130"
+            margin="5"
+            src="~/assets/images/stock-image.png"
+            (tap)="demoThumbTapped(null)"
+            backgroundImage="~/assets/images/background_1.jpg"
+            stretch="aspectFill"
+          ></image>
+          <label
+            row="1"
+            class="new-demo"
+            color="white"
+            [text]="'menu.new-demo' | translate"
+            textWrap="true"
+          ></label>
+        </GridLayout>
+
+        // Demo unit listview
+        <RadListView
+          row="3"
+          colSpan="4"
+          [items]="Demos"
+          *ngIf="Demos.length && demoUnitsLoaded"
+          ios:height="312"
+        >
+          <ng-template tkListItemTemplate let-item="item">
+            <GridLayout rows="auto, auto" columns="*" class="list-item-layout">
+              <image
+                row="0"
+                *ngIf="!item.sd_image"
+                width="130"
+                margin="5"
+                src="~/assets/images/stock-image.png"
+                (tap)="demoThumbTapped(item)"
+                backgroundImage="~/assets/images/background_1.jpg"
+                stretch="aspectFill"
+              ></image>
+              <image
+                row="0"
+                *ngIf="item.sd_image"
+                width="130"
+                margin="5"
+                [src]="item.sd_image"
+                (tap)="demoThumbTapped(item)"
+                stretch="aspectFill"
+              ></image>
+              <GridLayout
+                row="1"
+                rows="auto, auto, auto"
+                class="demo-item-description"
+              >
+                <label
+                  row="0"
+                  textWrap="true"
+                  [text]="item.smartdrive_serial_number || '# ??'"
+                ></label>
+                <label
+                  row="1"
+                  textWrap="true"
+                  [text]="item.location_string"
+                ></label>
+                <label
+                  row="2"
+                  textWrap="true"
+                  [backgroundColor]="
+                    item.isUpToDate(currentVersion) ? 'green' : 'red'
+                  "
+                >
+                  <FormattedString>
+                    <Span [text]="item.version_string"></Span>
+                    <Span
+                      class="mdi"
+                      [text]="' ' + item.version_badge(currentVersion)"
+                    ></Span>
+                  </FormattedString>
+                </label>
+              </GridLayout>
+            </GridLayout>
+          </ng-template>
+          <ListViewLinearLayout
+            tkListViewLayout
+            dynamicItemSize="true"
+            ios:itemWidth="160"
+            scrollDirection="Horizontal"
+          ></ListViewLinearLayout>
+        </RadListView>
+      </GridLayout>
+
+      // FAQs
+      <GridLayout
+        rows="auto, auto, auto, *"
+        columns="*, auto"
+        class="list-grid-layout"
+        row="5"
+      >
+        <label
+          row="0"
+          colSpan="2"
+          class="hr-light m-10"
+          backgroundColor="#FF671F"
+          width="92.5%"
+        ></label>
+        <label
+          row="1"
+          col="0"
+          [text]="'menu.faq' | translate"
+          class="list-heading"
+          (tap)="chevronButtonTapped('/faq')"
+        ></label>
+        <label
+          row="1"
+          col="1"
+          horizontalAlignment="right"
+          text="&#xf142;"
+          class="mdi chev"
+          (tap)="chevronButtonTapped('/faq')"
+        ></label>
+        <label
+          row="2"
+          [text]="'menu.faq-desc' | translate"
+          class="list-description"
+          textWrap="true"
+        ></label>
+
+        <RadListView row="3" colSpan="2" [items]="faqItems" ios:height="160">
+          <ng-template tkListItemTemplate let-item="item">
+            <GridLayout
+              rows="*"
+              class="list-item-layout"
+              (tap)="faqThumbTapped(item)"
+            >
+              <image
+                row="0"
+                colSpan="2"
+                src="~/assets/images/background_1.jpg"
+                stretch="aspectFill"
+              ></image>
+              <label
+                row="0"
+                [text]="item.question"
+                class="faq-question"
+                textWrap="true"
+              ></label>
+            </GridLayout>
+          </ng-template>
+          <ListViewLinearLayout
+            tkListViewLayout
+            dynamicItemSize="false"
+            scrollDirection="Horizontal"
+          ></ListViewLinearLayout>
+        </RadListView>
+      </GridLayout>
+    </GridLayout>
+  </ScrollView>
+
+  // Fab Menu
+  <Fab
+    row="1"
+    col="0"
+    class="fab"
+    (tap)="fabTap($event)"
+    icon="res://more_horiz"
+    rippleColor="#f1f1f1"
+  ></Fab>
+</GridLayout>

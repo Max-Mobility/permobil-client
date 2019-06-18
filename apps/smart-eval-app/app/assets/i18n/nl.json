@@ -1,0 +1,866 @@
+{
+  "bluetooth": {
+    "connection-success": "Succesvol verbonden met PushTracker!",
+    "enable-bluetooth": "Smart Evaluatie heeft vastgesteld dat Bluetooth niet is ingeschakeld op uw apparaat. Schakel Bluetooth in om OTA's uit te voeren en evaluaties uit te voeren.",
+    "errors": {
+      "unavailable": {
+        "message": "Bluetooth-service niet beschikbaar - wordt opnieuw geïnitialiseerd!",
+        "title": "Bluetooth niet beschikbaar"
+      }
+    },
+    "pairing-success": "Succesvol gekoppeld met PushTracker!",
+    "pt_app_conn_instructions": "Om de PushTracker met de Smart Evaluation-app te verbinden, moet u de app op uw telefoon hebben geopend en vervolgens op de rechterknop van de PushTracker drukken en deze loslaten. Hiermee sluit je je PushTracker aan op je app of neem je de pairing-instellingen van de PushTracker mee. Na het koppelen moet u het instellingenmenu verlaten en vervolgens op de rechterknop drukken om verbinding te maken met de app. Als je problemen ondervindt, zet je de PushTracker op SLEEP en zet je hem aan.",
+    "sd_app_conn_instructions": "Om de Smart Evaluation-app een SmartDrive te kunnen zien en ermee te kunnen verbinden, moet de SmartDrive zijn ingeschakeld en moet de stroomhulp UIT/'SD Uit' staan. Als u problemen ondervindt, zet u de SmartDrive UIT en vervolgens AAN.",
+    "searching": "Zoeken naar apparaten",
+    "service-failure": "Bluetooth-servicestoring",
+    "waiting": "Wacht tot Bluetooth wordt geïnitialiseerd"
+  },
+  "buttons": {
+    "back": "terug",
+    "more-info": "Meer informatie",
+    "next": "volgende"
+  },
+  "demo-detail": {
+    "connect-pt": "Sluit een PushTracker aan.",
+    "scan-pt": "PT: druk op de scan- of bewerkingsknop",
+    "scan-sd": "SD: druk op de scan- of bewerkingsknop",
+    "cancel-scan": "Scan annuleren",
+    "sd-serial-required": "Het SmartDrive-serienummer is vereist.",
+    "saving-demo": "Demo opslaan ...",
+    "scan-msg": "Scannen a",
+    "sd-or-pt": "SmartDrive of PushTracker",
+    "enter-serial-title": "Voer het serienummer in",
+    "enter-serial-message": "Voer het SmartDrive-serienummer in",
+    "enter-pt-serial": "Voer het PushTracker- of Wristband-serienummer in.",
+    "invalid-sd-serial": "is geen geldig SmartDrive-serienummer.",
+    "invalid-pt-serial": "is geen geldig PushTracker- of Wristband-serienummer.",
+    "geolocation-disabled": "Locatie kan worden uitgeschakeld, wilt u de instellingen op uw apparaat openen om de locatie in te schakelen voor de Smart Evaluation-app?",
+    "leaving-new-demo": "Waarschuwing: je hebt een niet-opgeslagen demo-eenheid. Weet je zeker dat je wilt afsluiten zonder op te slaan?"
+  },
+  "demos": {
+    "demo-change-owner-location-required": "Uw locatie is vereist om het eigendom van de demo-eenheid over te dragen. Hierdoor kan Smart Eval de laatst bekende locatie van demo-eenheden voor inventaris volgen.",
+    "demo-request-error": "Er is een fout opgetreden bij het aanvragen van een demo. Probeer het opnieuw en rapporteer feedback met het probleem als het doorgaat.",
+    "demo-request-location-is-required": "Uw locatie is vereist om een ​​demo-unit-aanvraag in te dienen. Uw locatie wordt gebruikt om contact op te nemen met vertegenwoordigers in de buurt van uw locatie voor het demoverzoek.",
+    "demo-request-success": "Verzoek demo-eenheid succesvol.",
+    "demo-to-clinician-action": "Demo overhandigen aan clinicus",
+    "demos-title": "demos",
+    "firmware-string": "firmware",
+    "loading": "Demo's laden ...",
+    "location-calculating": "Locatie wordt berekend ...",
+    "location-confirm-message": "Wilt u de locatie van de demo bijwerken naar",
+    "no-demos": "Geen demo's gevonden voor uw huidige gebruiker.",
+    "owner-color-explanation": "Artikelen met een oranje serienummer zijn in uw bezit. Artikelen zonder het oranje serienummer moeten in het bezit van een clinicus zijn.",
+    "request-demo-action": "Demo aanvragen bij Rep.",
+    "request-demo-distance": "Stel de maximale afstand in mijlen in vanaf uw locatie waar u een demo van een vertegenwoordiger wilt aanvragen.",
+    "retrieve-from-clinician-action": "Haal de demo op bij de clinicus",
+    "submit-btn": "voorleggen",
+    "new-demo-request": "New Demo Request",
+    "saving-request": "Demo-aanvraag opslaan ...",
+    "request": {
+      "contact_info": "Nieuw Demo-verzoek",
+      "distance": "Afstand (mijlen)"
+    }
+  },
+  "demo-requests": {
+    "no-demo-requests": "Geen actieve demo-aanvragen gevonden.",
+    "loading": "Demo-aanvragen laden ...",
+    "claim": "Vordering",
+    "claim_confirm": "Wil je dit Demo-verzoek claimen?",
+    "claimed": "Forwarded draai",
+    "complete": "Compleet",
+    "complete_confirm": "Wilt u deze aanvraag als voltooid markeren?",
+    "completed": "Demo-aanvraag voltooid",
+    "demo_is_complete_msg": "Demomelding is voltooid.",
+    "claimed_by_other": "Deze demo is geclaimd door een andere gebruiker."
+  },
+  "dialogs": {
+    "camera": "Camera",
+    "cancel": "annuleren",
+    "close": "Dichtbij",
+    "confirm": "Bevestigen",
+    "confirm-photo-delete": "Weet je zeker dat je deze foto wilt verwijderen?",
+    "no": "Nee",
+    "ok": "OK",
+    "sms": "Tekst bericht",
+    "success": "Succes!",
+    "warning": "Waarschuwing",
+    "yes": "Ja",
+    "yes-delete": "Ja, verwijderen",
+    "yes-login": "Ja, inloggen!"
+  },
+  "error": {
+    "email": "Er is helaas een fout opgetreden bij het uploaden van die foto."
+  },
+  "eval-entry": {
+    "chair-label": "Stoel maken",
+    "chair-options": [
+      "kleuren",
+      "Invacare/Küschall",
+      "Karman",
+      "Ki",
+      "Motion Composites",
+      "Panthera",
+      "Quickie/Sopur/RGK",
+      "TiLite",
+      "De beste",
+      "Anders"
+    ],
+    "chair-question": "Wat is je handmatige rolstoel?",
+    "chair-type": {
+      "label": "Stoel type",
+      "options": ["Vouwframe", "Stijf frame"],
+      "question": "Welk type is uw handbewogen rolstoel?"
+    },
+    "fatigue-label": "Slechtste vermoeidheidsniveau ervaren:",
+    "fatigue-question": "Heb je vermoeidheid door te duwen?",
+    "heading": "Vragenlijst",
+    "independence-label": "Slechtste impact op onafhankelijkheid:",
+    "independence-question": "Heeft dit invloed op uw onafhankelijkheid?",
+    "pain-label": "Slechtste pijnniveau ervaren:",
+    "pain-question": "Heeft u pijn bij het duwen?",
+    "title": "Voer een evaluatie uit",
+    "years-label": "jaren",
+    "years-options": ["1", "2", "3", "4", "5+", "10+", "20+", "30+"],
+    "years-question": "Hoeveel jaar zit u in een stoel met de hand?"
+  },
+  "evals": {
+    "confirm-lmn-email-message": "Wil je deze evaluatie per e-mail versturen?",
+    "confirm-lmn-email-title": "E-mail",
+    "evals-loading-error": "Er is een fout opgetreden bij het laden van uw evaluaties.",
+    "incomplete-dialog": {
+      "message": "U hebt een evaluatie die nog niet is voltooid. Zou je eraan willen werken?",
+      "title": "Beoordeling hervatten?"
+    },
+    "loading": "Evals laden ...",
+    "no-evals-message": "Geen evaluaties gevonden.",
+    "no-evals-search-result": "Geen evaluaties gevonden voor datum",
+    "reset-btn": "Reset",
+    "search-btn": "Zoeken",
+    "select-date": "Selecteer Eval Datum",
+    "title": "evaluaties",
+    "with-smartdrive": "Met SmartDrive:",
+    "without-smartdrive": "Zonder SmartDrive:"
+  },
+  "faqs": [
+    {
+      "answer": "Over het algemeen moet u deze dingen controleren: 1) dat uw SmartDrive is ingeschakeld, 2) dat uw PushTracker in de 'SD On'-modus staat - het blauwe lampje moet knipperen en 3) dat u zich in de MX2-modus bevindt - waarin een dubbele tik zal de motor inschakelen.",
+      "question": "Waarom werkt mijn SmartDrive niet?"
+    },
+    {
+      "answer": "Helaas, nee - de SmartDrive kan uw stoel niet afremmen. Dit betekent dat nadat u de motor hebt uitgezet, u handmatig de handranden moet grijpen en uw stoel tot stilstand moet brengen. Dit betekent ook dat uw SmartDrive u niet kan vertragen als u een helling of heuvel afdaalt.",
+      "question": "Kan mijn SmartDrive mij vertragen?"
+    },
+    {
+      "answer": "Nee, de enige keer dat u uw PushTracker opnieuw moet koppelen aan uw SmartDrive is na het uitvoeren van een OTA-update (over-the-air). Hierna gaat de PushTracker automatisch naar de koppelingsmodus wanneer u verbinding probeert te maken of 'SD aan' zet.",
+      "question": "Moet ik mijn PushTracker opnieuw koppelen met mijn SmartDrive?"
+    },
+    {
+      "answer": "Als u Android gebruikt, is het mogelijk omdat de telefoon de koppelingsinformatie heeft opgeslagen, waardoor de PushTracker geen solide verbinding tot stand kan brengen. Om dit op te lossen, opent u eenvoudig het Bluetooth-instellingenmenu van uw telefoon en klikt u op 'Vergeet' in de PushTracker die in dat menu verschijnt. Zodra u dat hebt gedaan, start u de Smart Evaluation-app opnieuw en moet de PushTracker betrouwbaar kunnen verbinden - zonder dat u opnieuw aan de telefoon hoeft te koppelen!",
+      "question": "Waarom maakt mijn PushTracker geen verbinding met mijn telefoon?"
+    },
+    {
+      "answer": "De SmartDrive is veilig voor kinderen om te gebruiken, maar we raden u wel aan om te zorgen voor veiligheid door ze te trainen op juiste tapping- en remtechnieken. Bovendien hebben we de mogelijkheid opgenomen om de maximumsnelheid van de SmartDrive (van 0,5 mijl per uur tot maximaal 5,5 mijl per uur) en de acceleratie van de SmartDrive te beperken. Voor iemand die net leert pushen of een SmartDrive te gebruiken, raden we aan om beide zeer laag in te stellen.",
+      "question": "Hoe kan ik de SmartDrive veilig maken voor kinderen?"
+    },
+    {
+      "answer": "Je zou actief moeten zijn en de wereld in gaan! Met duwen echter, in tegenstelling tot het algemene advies met lopen (waar mensen echt niet te veel kunnen lopen) - mensen KUNNEN teveel pushen! Als je te veel duwt, heb je meer kans op pijn en letsel in je armen en schouders - wat je mobiliteit en onafhankelijkheid kan beperken. Met de SmartDrive kun je nog steeds rondduwen in je stoel zoals je normaal zou doen - je kunt nu sneller en met minder inspanning verder gaan! Gebruik het wanneer je ergens snel moet zijn of een grote heuvel op moet - dood je schouders niet als dat niet nodig is! Geniet van je reis met je SmartDrive!",
+      "question": "Waarom zou ik een SmartDrive willen?"
+    },
+    {
+      "answer": "Als u zowel de PushTracker- als Smart Evaluation-apps op uw telefoon hebt, moet u ervoor zorgen dat alleen degene waarmee u de PushTracker wilt verbinden, actief is - anders kan de PushTracker verbinding maken met de andere app dan degene die u van plan bent!",
+      "question": "PushTracker-app en slimme evaluatie-app"
+    }
+  ],
+  "firmware": {
+    "1.2": [
+      "'About' toegevoegd aan PushTracker 'Instellingen' menu met de firmwareversies van de PushTracker, SmartDrive Bluetooth (BLE) en SmartDrive Microcontroller (MCU). Toont ook de meest recente foutcode en informatie."
+    ],
+    "1.3": {
+      "0": "Toevoeging van de 'EZ-ON'-modus voor PushTracker - u kunt nu de power-assist AAN- EN UITSCHAKELEN /' SD On '&' SD Off 'door te tikken!"
+    },
+    "1.4": [
+      "Toevoeging van de 'EZ-ON'-modus voor PushTracker - u kunt nu de power-assist AAN- EN UITSCHAKELEN /' SD On '&' SD Off 'door te tikken!"
+    ],
+    "1.5": [
+      "Vernieuwde bedrijfslogo-branding bij het opstarten van PushTracker uit de slaapstand.",
+      "Toon nu het geschatte bereik van de aandrijving op de PushTracker in het scherm met de batterijstatus van DisplayInfo.",
+      "Toon nu de OTA-statusbalk en het percentage op PushTracker bij het uitvoeren van PushTracker OTA.",
+      "Wanneer de SD niet is gepaard (bijvoorbeeld na OTA) en de linkerknop is ingedrukt om 'SD On' in te schakelen, gaat de PushTracker direct naar de koppeling naar de SD-modus.",
+      "Wanneer de PushTracker niet met de telefoon is gekoppeld (bijvoorbeeld na OTA) en de rechterknop is ingedrukt om verbinding te maken met de telefoon, gaat de PushTracker rechtstreeks naar de telefoonmodus.",
+      "Bugfixes voor het koppelingsproces voor het verwerken van meerdere apparaten."
+    ],
+    "1.6": [
+      "PushTracker kan nu pushdetectie-instellingen ontvangen van de smartphone-app.",
+      "PushTracker verzendt nu de huidige instellingen voor pushdetectie bij initialisatie van de app-verbinding.",
+      "Aangepaste standaard push-detectie-instellingen op de PushTracker.",
+      "PushTracker toont nu een vinkje tijdens de indicatie van de telefoonverbinding als het met succes verbinding maakt of al is verbonden met de telefoon wanneer de gebruiker de verbinding tot stand brengt."
+    ],
+    "not-found": [
+      "We konden de beschrijving voor de nieuwste firmware niet vinden!"
+    ]
+  },
+  "general": {
+    "back": "terug",
+    "camera-permission": "Cameratoestemming",
+    "complete": "Compleet",
+    "demo": "demonstratie",
+    "edit": "BEWERK",
+    "email-us": "E-mail ons op info@sketchpoints.io",
+    "error": "Het spijt ons dat er een fout is opgetreden.",
+    "export": "Exporteren",
+    "help": "Helpen",
+    "need-help": "Hulp nodig?",
+    "no-camera-permission-android": "Smart Evaluation heeft geen toestemming om uw camera te openen. Je kunt camera-toestemming inschakelen via de applicatie in Instellingen op je apparaat.",
+    "no-camera-permission-ios-confirm": "Smart Evaluation heeft geen toestemming om uw camera te openen. Wilt u de app-instellingen openen om de camera in te schakelen?",
+    "no-connection": "Misschien bent u uw internetverbinding kwijtgeraakt. Slimme evaluatie werkt het beste bij verbinding met internet om ervoor te zorgen dat de nieuwste gegevens worden gesynchroniseerd met de servers.",
+    "photo-album-tle": "Fotoalbum",
+    "picture": "afbeelding",
+    "profile": "Profiel",
+    "save": "Opslaan",
+    "saving": "Besparing",
+    "updating": "Updaten",
+    "serial": "serie-",
+    "submit": "voorleggen",
+    "tip": "Tip",
+    "title": "Slimme evaluatie",
+    "tweet-us": "Tweet op ons",
+    "twitter-unknown": "Twitter onbekend! Het spijt me zo!",
+    "update": "Bijwerken",
+    "version": "Versie"
+  },
+  "hints": {
+    "email": "E-mail ...",
+    "password": "Wachtwoord..."
+  },
+  "item": {
+    "delete-lbl": "Verwijder"
+  },
+  "languages": {
+    "de": "Duitse",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "it": "Italiaans",
+    "nl": "Nederlands",
+    "ru": "Russisch",
+    "sv": "Zweeds",
+    "zh": "Chinese"
+  },
+  "menu": {
+    "clinical-tools": "Klinische hulpmiddelen",
+    "clinical-tools-desc": "Training over het gebruik van SmartDrive",
+    "con-desc": "Hoe u uw PushTracker en SmartDrive kunt gebruiken",
+    "connect-app": "Verbind een Pushtracker met Smart Eval App",
+    "connectivity": "Apparaatoverzicht",
+    "demo-refresh": "Demo's vernieuwen",
+    "demos": "demos",
+    "demos-desc": "Demo locatie en beheer",
+    "demo-requests": "Demo-aanvragen",
+    "eval": "Begin de SmartDrive-evaluatie",
+    "eval-history": "Eerdere evaluaties bekijken",
+    "eval-title": "Begin de SmartDrive-evaluatie",
+    "faq": "Veelgestelde vragen",
+    "faq-desc": "Enkele veelgestelde vragen",
+    "home": "SmartDrive",
+    "new-demo": "U hebt geen demo's geregistreerd voor uw account. Tik op de afbeelding hierboven om een ​​nieuwe demo-eenheid aan uw account te registreren.",
+    "ota": "Update een PushTracker en SmartDrive",
+    "pair-pt-app": "Koppel een PushTracker aan Smart Eval App",
+    "pair-pt-sd": "Koppel een PushTracker aan een SmartDrive",
+    "summary": "Samenvatting",
+    "training": "SmartDrive-training",
+    "trial": "Begin een SmartDrive-proef.",
+    "trial-title": "Begin een SmartDrive-proef.",
+    "videos-description": "Trainings- en gebruiksvideo's voor SmartDrive en PushTracker",
+    "videos-title": "videos"
+  },
+  "home": {
+    "quick-actions": {
+      "learn": "Leer hoe u SmartDrive / PushTracker kunt gebruiken",
+      "register-demo": "Registreer demo",
+      "request-demo": "Demo aanvragen",
+      "start-eval": "Start de evaluatie",
+      "update": "Update SmartDrive / PushTracker",
+      "demo-requests": "Demo-aanvragen"
+    }
+  },
+  "account": {
+    "version": "Versie",
+    "build": "Bouwen",
+    "database": "Database"
+  },
+  "ota": {
+    "action": {
+      "cancel": "annuleren",
+      "force": "Dwingen",
+      "pause": "pauze",
+      "resume": "Hervatten",
+      "retry": "Opnieuw proberen",
+      "start": "Begin"
+    },
+    "begin": "Updates starten",
+    "cancel": "Annuleer alle Firmware-updates",
+    "check_firmware_error": "Er is een fout opgetreden bij het downloaden van de nieuwste firmware. Probeer het opnieuw, meld het feedback als het probleem zich blijft voordoen.",
+    "check_new_firmware": "Controleer op nieuwe firmware",
+    "check_new_firmware_message": "Wilt u nieuwe firmware controleren en downloaden?",
+    "downloading": "Laatste firmwaregegevens ophalen van de server",
+    "errors": {
+      "devices": {
+        "message": "Geen PushTrackers of SmartDrives gevonden!",
+        "title": "Geen apparaten"
+      },
+      "sd_connection": {
+        "message": "Slechte verbinding met SmartDrive, voer de SmartDrive uit met het volgende:",
+        "title": "SmartDrive-verbindingsfout!"
+      }
+    },
+    "pt": {
+      "state": {
+        "awaiting-ready": "Wachten op PushTracker",
+        "awaiting-version": "In afwachting van versie",
+        "canceled": "geannuleerd",
+        "canceling": "annuleren",
+        "complete": "Compleet",
+        "failed": "mislukt",
+        "not-started": "Niet begonnen",
+        "rebooting": "Herstart, koppel je PushTracker opnieuw en sluit hem opnieuw aan",
+        "timeout": "Time-out",
+        "updating": "Updaten",
+        "verifying-update": "Het verifiëren"
+      }
+    },
+    "refresh": "Zoeken naar SmartDrives",
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "Wachten op BLE",
+        "awaiting-mcu-ready": "Wachten op MCU",
+        "awaiting-versions": "In afwachting van versies",
+        "canceled": "geannuleerd",
+        "canceling": "annuleren",
+        "comm-failure": "Communicatiefout, start uw SmartDrive opnieuw op",
+        "complete": "Compleet",
+        "failed": "mislukt",
+        "not-started": "Niet begonnen",
+        "rebooting-ble": "BLE opnieuw opstarten",
+        "rebooting-mcu": "MCU herstarten",
+        "timeout": "Time-out",
+        "updating-ble": "BLE updaten",
+        "updating-mcu": "MCU bijwerken",
+        "verifying-update": "Het verifiëren"
+      }
+    },
+    "title": "Firmware-updates",
+    "up-to-date": "(Bijgewerkt)",
+    "version": "Versie",
+    "warnings": {
+      "leaving": {
+        "message": "Waarschuwing: je verlaat de OTA-pagina tijdens een OTA - dit zal alle lopende OTA's annuleren! Weet je zeker dat je wilt vertrekken?",
+        "title": "Waarschuwing"
+      },
+      "starting": {
+        "message": "Waarschuwing: je moet deze pagina niet verlaten tijdens het uitvoeren van OTA firmware-updates van de SmartDrive of PushTracker. Als u deze pagina verlaat of de app doodt, worden de OTA's geannuleerd of mogelijk mislukt.",
+        "title": "OTA starten"
+      },
+      "multiple-devices": {
+        "title": "Meerdere apparaten",
+        "message": "Waarschuwing: het wordt aanbevolen om een ​​OTA op één apparaat tegelijk uit te voeren. Sta een apparaat toe om het bijwerken te voltooien voordat u aanvullende OTA's start."
+      }
+    }
+  },
+  "pairing": [
+    {
+      "Bullets": [
+        "Houd de rechter platte knop op je PushTracker drie seconden lang ingedrukt om het instellingenmenu te openen",
+        "Druk op de rechterknop om naar het telefoon-/PT-pictogram te bladeren.",
+        "Druk op de knop links omhoog om het koppelen te starten.",
+        "Opmerking: op sommige Android-apparaten ontvangt u tijdens het koppelen mogelijk een bericht over een 'Incorrect Pin or Passkey'. Zolang PushTracker laat zien dat het verbonden is, kunt u dit negeren."
+      ],
+      "Image": "~/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Uw PushTracker koppelen aan Smart Evaluation-app"
+    },
+    {
+      "Bullets": [
+        "Open de Smart Evaluation-app en druk op de rechter platte knop op de PushTracker",
+        "U ziet een melding 'Succes' in de Smart Evaluation-app.",
+        "Opmerking: als u geen melding 'Succes' ziet in de Smart Evaluation-app, moet u uw PushTracker mogelijk opnieuw koppelen"
+      ],
+      "Image": "~/assets/images/gifs/PT-APP-CONNECTION1.gif",
+      "Label": "Uw PushTracker verbinden met de Smart Evaluation-app"
+    },
+    {
+      "Bullets": [
+        "Zorg ervoor dat er geen andere SmartDrives in de buurt zijn wanneer u dit doet!",
+        "Voor een PushTracker die niet aan een SmartDrive is gekoppeld, drukt u op de linkerknop en ziet u onmiddellijk het SD-pictogram van de PT (Bt symobol).",
+        "Druk vervolgens nogmaals op de linkerknop om het koppelen te starten.",
+        "U ziet een vinkje bij de PushTracker wanneer dit lukt",
+        "Voor een PushTracker die opnieuw moet worden gekoppeld aan een SmartDrive:",
+        "Houd de rechter platte knop op je PushTracker drie seconden lang ingedrukt om het instellingenmenu te openen",
+        "Druk op de rechterknop om naar het pictogram van de PT-SD te bladeren.",
+        "Druk op de knop links omhoog om het koppelen van uw PushTracker met uw SmartDrive te starten."
+      ],
+      "Image": "~/assets/images/gifs/PT-SD-CONNECT2.gif",
+      "Label": "Uw PushTracker koppelen aan uw SmartDrive"
+    }
+  ],
+  "pushtracker": {
+    "push-settings": {
+      "clear-counter": "Teller wissen",
+      "copy-dialog": {
+        "message": "PushTracker's push-instellingen verschillen van de opgeslagen push-instellingen, wilt u de opgeslagen push-instellingen overschrijven met de PushTracker push-instellingen?",
+        "title": "Kopiëren van PushTracker?"
+      },
+      "label": "Druk op Instellingen",
+      "out-of-date-dialog": {
+        "message": "PushTracker moet ten minste versie 1.6 zijn om PushSettings te kunnen ontvangen. PushSettings zullen worden genegeerd.",
+        "title": "PushTracker is verouderd"
+      },
+      "threshold": "Drempel",
+      "time-window": "Tijdsvenster"
+    },
+    "settings": {
+      "acceleration": "Versnelling",
+      "control-mode": {
+        "label": "Besturingsmodus"
+      },
+      "copy-dialog": {
+        "message": "De instellingen van PushTracker verschillen van de opgeslagen instellingen, wilt u de opgeslagen instellingen overschrijven met de PushTracker-instellingen?",
+        "title": "Kopiëren van PushTracker?"
+      },
+      "ez-on": "EZ-On",
+      "label": "instellingen",
+      "max-speed": "Maximale snelheid",
+      "save-button": "Opslaan in PushTracker",
+      "save-dialogs": {
+        "failed": {
+          "message": "We konden de PushTracker-instellingen niet opslaan in uw PushTracker.",
+          "title": "Instellingen mislukt opslaan"
+        }
+      },
+      "saving": "PushTracker-instellingen opslaan",
+      "tap-sensitivity": "Tik op Gevoeligheid",
+      "units": {
+        "english": "Engels",
+        "label": "eenheden",
+        "metric": "Metriek"
+      }
+    },
+    "state": {
+      "connected": {
+        "msg": "PushTrackers zijn succesvol verbonden:",
+        "title": "Verbonden"
+      },
+      "connecting": {
+        "msg": "PushTrackers zijn verbonden/verbonden, maar er is geen versie-informatie ontvangen. Mogelijk moet u uw PushTracker ontkoppelen en opnieuw verbinden om de versiegegevens op te halen.",
+        "title": "Aansluiten"
+      },
+      "disconnected": {
+        "msg": "PushTrackers zijn gekoppeld, maar niet verbonden. Verbind uw PushTracker door op de rechterknop te drukken en los te laten. Als u geen verbinding kunt maken, moet u uw PushTracker mogelijk opnieuw koppelen aan uw telefoon via het instellingenmenu van PushTracker.",
+        "title": "Verbinding verbroken"
+      },
+      "paired": {
+        "msg": "PushTrackers zijn gekoppeld, maar niet verbonden. Verbind uw PushTracker door op de rechterknop te drukken en los te laten. Als u geen verbinding kunt maken, moet u uw PushTracker mogelijk opnieuw koppelen aan uw telefoon via het instellingenmenu van PushTracker.",
+        "title": "Gekoppelde"
+      },
+      "unknown": {
+        "msg": "Er zijn tot nu toe geen PushTrackers gekoppeld of verbonden. Koppel uw PushTracker alstublieft door in het instellingenmenu van de PushTracker te gaan.",
+        "title": "Geen bekende push-trackers"
+      }
+    }
+  },
+  "sign-up": {
+    "not-permobil-email-error": "De huidige e-mail kan zich niet als vertegenwoordiger aanmelden.",
+    "user-type-clinician": "Clinician/ATP",
+    "user-type-end-user": "Eindgebruiker",
+    "user-type-rep": "Vertegenwoordiger",
+    "user-exists": "Er bestaat al een account voor deze e-mail."
+  },
+  "summary": {
+    "add-trial": "Test toevoegen",
+    "at": "op",
+    "average-speed": "Gemiddelde snelheid was",
+    "cadence": " pusht per minuut, de cadans van de gebruiker is uitzonderlijk hoog. Overweeg om de plaatsing van het achterwiel en de efficiënte duwtechniek te bekijken.",
+    "coast-time": "Gemiddelde kusttijd was",
+    "complete": "Evaluatie voltooien?",
+    "confirm": "Weet je zeker dat je klaar bent met de evaluatie?",
+    "difficulty-flat": "Moeilijkheden op vlak oppervlak?",
+    "difficulty-incline": "Moeilijkheidsgraad op helling?",
+    "difficulty-other": "Moeilijkheden op andere oppervlakken?",
+    "difficulty-ramp": "Moeilijkheidsgraad op Ramp?",
+    "difficulty-ramp-incline": "Moeilijkheidsgraad op helling/helling?",
+    "email-subject": "Smart Evaluation Summary",
+    "errors": {
+      "save-failed": {
+        "message": "Kan evaluatie niet opslaan in database, foutmelding:",
+        "title": "Fout bij opslaan van evaluatie"
+      }
+    },
+    "fewer": "minder",
+    "flat-surface-difficulty": "Vlakke oppervlakteruwheid",
+    "higher": "hoger",
+    "incline-difficulty": "Hellingsmoeilijkheden",
+    "lmnTemplate": [
+      "Deze e-mail is gegenereerd en verzonden door de Smart Evaluation-app.",
+      "",
+      "Push-pijn van de gebruiker: {{# evaluation.pushing_pain}} {{round}} {{/ evaluation.pushing_pain}} {{^ evaluation.pushing_pain}} 0 {{/ evaluation.pushing_pain}}/10",
+      "Stuwmoeheid van de gebruiker: {{# evaluation.pushing_fatigue}} {{round}} {{/ evaluation.pushing_fatigue}} {{^ evaluation.pushing_fatigue}} 0 {{/ evaluation.pushing_fatigue}}/10",
+      "Gevolgen voor de onafhankelijkheid van de gebruiker: {{# evaluation.impact_on_independence}} {{round}} {{/ evaluation.impact_on_independence}} {{^ evaluation.impact_on_independence}} 0 {{/ evaluation.impact_on_independence}}/10",
+      "",
+      "{{# Trials._array}}",
+      "Proef '{{name}}':",
+      "  Had Flats: {{#flat}} Ja {{/ flat}} {{^ flat}} Nee {{/ flat}}",
+      "  Had Ramp/helling: {{#rampIncline}} Ja {{/ rampIncline}} {{^ rampIncline}} Nee {{/ hellinghoogte]}",
+      "{{#other}} Had andere: '{{other_description}}' {{/ other}}",
+      "  Afstand: {{#distance}} {{toFixed}} {{/ distance}} {{^ distance}} 0.00 {{/ distance}} m",
+      "{{#klaar met}}",
+      "  Met SD:",
+      "    duwt: {{with_pushes}}",
+      "    coast: {{#with_coast}} {{toFixed}} {{/ with_coast}} {{^ with_coast}} 0 {{/ with_coast}} s",
+      "    tijd: {{#with_elapsed}} {{toTimeString}} {{/ with_elapsed}}",
+      "{{}} #UnableToCompleteWith",
+      "    De gebruiker kon de proef niet voltooien met de SmartDrive.",
+      "{{/}} UnableToCompleteWith",
+      "{{/klaar met}}",
+      "{{^}} FinishedWith",
+      "  De proef met SD niet voltooid!",
+      "{{/klaar met}}",
+      "{{}} #FinishedWithout",
+      "  Zonder SD:",
+      "    duwt: {{without_pushes}}",
+      "    coast: {{#without_coast}} {{toFixed}} {{/ without_coast}} {{^ without_coast}} 0 {{/ without_coast}} s",
+      "    tijd: {{#without_elapsed}} {{toTimeString}} {{/ without_elapsed}}",
+      "{{}} #UnableToCompleteWithout",
+      "    De gebruiker kon de proef niet voltooien zonder de SmartDrive.",
+      "{{/}} UnableToCompleteWithout",
+      "{{/}} FinishedWithout",
+      "{{^}} FinishedWithout",
+      "  De proef niet zonder SD voltooid!",
+      "{{/}} FinishedWithout",
+      "{{}} /Trials._array",
+      "{{^}} Trials._array",
+      "{{}} #Pogingen",
+      "Proef '{{name}}':",
+      "  Had Flats: {{#flat}} Ja {{/ flat}} {{^ flat}} Nee {{/ flat}}",
+      "  Had Ramp/helling: {{#rampIncline}} Ja {{/ rampIncline}} {{^ rampIncline}} Nee {{/ hellinghoogte]}",
+      "{{#other}} Had andere: '{{other_description}}' {{/ other}}",
+      "  Afstand: {{#distance}} {{toFixed}} {{/ distance}} {{^ distance}} 0.00 {{/ distance}} m",
+      "{{#klaar met}}",
+      "  Met SD:",
+      "    duwt: {{with_pushes}}",
+      "    coast: {{#with_coast}} {{toFixed}} {{/ with_coast}} {{^ with_coast}} 0 {{/ with_coast}} s",
+      "    tijd: {{#with_elapsed}} {{toTimeString}} {{/ with_elapsed}}",
+      "{{}} #UnableToCompleteWith",
+      "    De gebruiker kon de proef niet voltooien met de SmartDrive.",
+      "{{/}} UnableToCompleteWith",
+      "{{/klaar met}}",
+      "{{^}} FinishedWith",
+      "  De proef met SD niet voltooid!",
+      "{{/klaar met}}",
+      "{{}} #FinishedWithout",
+      "  Zonder SD:",
+      "    duwt: {{without_pushes}}",
+      "    coast: {{#without_coast}} {{toFixed}} {{/ without_coast}} {{^ without_coast}} 0 {{/ without_coast}} s",
+      "    tijd: {{#without_elapsed}} {{toTimeString}} {{/ without_elapsed}}",
+      "{{}} #UnableToCompleteWithout",
+      "    De gebruiker kon de proef niet voltooien zonder de SmartDrive.",
+      "{{/}} UnableToCompleteWithout",
+      "{{/}} FinishedWithout",
+      "{{^}} FinishedWithout",
+      "  De proef niet zonder SD voltooid!",
+      "{{/}} FinishedWithout",
+      "{{/}} Proeven",
+      "{{}} /Trials._array",
+      "",
+      "{{# Evaluation.flat_difficulty}}",
+      "Gebruikersproblemen met flats: {{round}}/10",
+      "{{# Evaluation.unableToCompleteFlat}}",
+      "  - opmerking: de gebruiker kon het vlakke gedeelte van de evaluatie niet voltooien.",
+      "{{}} /Evaluation.unableToCompleteFlat",
+      "{{}} /Evaluation.flat_difficulty",
+      "{{# Evaluation.ramp_incline_difficulty}}",
+      "De moeilijkheid van gebruikers met hellingen/hellingen: {{round}}/10",
+      "{{# Evaluation.unableToCompleteRampIncline}}",
+      "  - opmerking: de gebruiker kon het helling/hellinggedeelte van de evaluatie niet voltooien.",
+      "{{}} /Evaluation.unableToCompleteRampIncline",
+      "{{}} /Evaluation.ramp_incline_difficulty",
+      "{{# Evaluation.other_difficulty}}",
+      "De moeilijkheid van de gebruiker met andere: {{round}}/10",
+      "{{# Evaluation.unableToCompleteOther}}",
+      "  - opmerking: de gebruiker kon het andere deel van de evaluatie niet voltooien.",
+      "{{}} /Evaluation.unableToCompleteOther",
+      "{{}} /Evaluation.other_difficulty",
+      "",
+      "Door de gebruiker uitgevoerde {{pushDiff}}% {{pushComparison}} pusht met SmartDrive.",
+      "",
+      "Gemiddelde kusttijd was {{coastDiff}} keer {{coastComparison}} met SmartDrive",
+      "",
+      "Gemiddelde snelheid was {{speedDiff}} keer {{speedComparison}} met SmartDrive",
+      ""
+    ],
+    "lower": "lager",
+    "more": "Meer",
+    "other-surface-difficulty": "Andere problemen met het oppervlak",
+    "pushes": " duwt met SmartDrive.",
+    "ramp-difficulty": "Ramp moeilijkheidsgraad",
+    "ramp-incline-difficulty": "Ramp/helling moeilijkheidsgraad",
+    "unable-flat": "Kan Flat niet voltooien?",
+    "unable-other": "Kan Other Surface niet voltooien?",
+    "unable-ramp-incline": "Kan helling/helling niet voltooien?",
+    "user-performed": "Gebruiker uitgevoerd",
+    "with-sd": " met SmartDrive."
+  },
+  "training": [
+    {
+      "Bullets": [
+        "Druk op de tuimelschakelaar om de SmartDrive in te schakelen en vooruit om uit te schakelen.",
+        "De SmartDrive wordt op de stoel bevestigd door de vlakken in de klem uit te lijnen met de opnamesleuven op de SmartDrive",
+        "Nadat de SmartDrive en de flats zijn uitgelijnd, laat u de SmartDrive op de klemstangen zakken en draait u de SmartDrive naar beneden om de SmartDrive draaibaar aan de klem en daarmee de rolstoel te bevestigen.",
+        "In deze positie rust het gewicht van de SmartDrive op de grond.",
+        "Om de SmartDrive van de stoel te verwijderen, tilt u hem op met de hendel om de SmartDrive los te maken van de klem - het omgekeerde van de bevestigingsprocedure."
+      ],
+      "Image": "~/assets/images/gifs/SD-POWER.gif",
+      "Label": "SmartDrive gebruiken"
+    },
+    {
+      "Bullets": [
+        "Druk op de knop op de PushTracker om in te schakelen.",
+        "Houd de linker omhoog-knop 3 seconden ingedrukt om de slaapstand 'zzz' in te schakelen en de PushTracker uit te schakelen."
+      ],
+      "Image": "~/assets/images/gifs/PT-ON-OFF.gif",
+      "Label": "Aansturen van PushTracker"
+    },
+    {
+      "Bullets": [
+        "Houd uw pols recht, maak contact op de duwrand met de palm van uw hand.",
+        "Een rood licht zal oplichten bij een succesvolle tik.",
+        "Tip: u hoeft geen contact te maken met de PushTracker-band.",
+        "Tip: beweeg uw hand niet in een 'fishtail'-achtige beweging. Dit zal leiden tot inconsistente tikherkenning."
+      ],
+      "Image": "~/assets/images/Stop.png",
+      "Label": "Tik op Gebaar"
+    },
+    {
+      "Bullets": [
+        "Dubbeltik om de SmartDrive te starten. Het zal dan beginnen te versnellen.",
+        "Tik vervolgens een keer om de gewenste snelheid in te stellen.",
+        "Om de snelheid te verhogen, geeft u een snellere duw en vervolgens enkele tik om de gewenste snelheid in te stellen.",
+        "Als u niet tikt, versnelt de SmartDrive tot de maximale snelheid die wordt bestuurd door de Max Speed-instelling van de PushTracker."
+      ],
+      "Image": "~/assets/images/start-coast.png",
+      "Label": "Snel starten en instellen"
+    },
+    {
+      "Bullets": [
+        "Dubbeltik om de SmartDrive uit te schakelen.",
+        "Dan kusten en remmen met je handen.",
+        "Tip: om snel te stoppen, tikt u één keer tikken gevolgd door snel tikken en pakken.",
+        "Opmerking: als u de SmartDrive uitschakelt, stopt u alleen de SmartDrive-motor; u moet nog steeds remmen met uw handen om uw stoel tot stilstand te brengen."
+      ],
+      "Image": "~/assets/images/Stop2.png",
+      "Label": "Stoppen"
+    },
+    {
+      "Bullets": [
+        "Houd de push-rand van de richting die u wilt gaan zacht vast om te sturen.",
+        "Lichte grip zorgt ervoor dat je kunt buigen.",
+        "Laat de duwrand door je handen glijden."
+      ],
+      "Image": "~/assets/images/Steer.png",
+      "Label": "stuurinrichting"
+    },
+    {
+      "Bullets": [
+        "Als u wilt keren, houdt u de drukrand van de richting die u wilt gaan stevig vast.",
+        "Met stevige grip kun je draaien.",
+        "Hoe vaster je grip, hoe scherper je zult draaien.",
+        "Tip: een optimale zwaartepuntpositie van de achterwielen vermindert de grip die nodig is om scherpe bochten te maken.",
+        "Opmerking: mogelijk moet u de SmartDrive uitzetten wanneer u zeer scherpe bochten wilt maken."
+      ],
+      "Image": "~/assets/images/turn.png",
+      "Label": "Draaien"
+    }
+  ],
+  "training_component": {
+    "swipe-left-message": "Veeg naar links om meer dia's te bekijken."
+  },
+  "trial": {
+    "accelleration": "Versnelling",
+    "average-speed": "Gemiddelde snelheid:",
+    "coast-time": "Coast Time:",
+    "complete": "Proef voltooid",
+    "connect_pushtracker_more_info": "Een PushTracker moet verbonden zijn met de Smart Evaluation-app om te kunnen communiceren. Raadpleeg het gedeelte Connectiviteit op het startscherm of druk op het pictogram voor connectiviteit rechtsboven.",
+    "description": "Cursus of Obstakel Beschrijving",
+    "distance": "Afstand:",
+    "errors": {
+      "failed-start": {
+        "message": "Kan de proef niet starten, fout:",
+        "title": "Kon proefversie niet starten"
+      },
+      "failed-stop": {
+        "message": "Kon de proef niet stoppen, foutmelding:",
+        "title": "Kon Trial niet stoppen"
+      },
+      "pt-reconnect": {
+        "message": "Uw PushTracker heeft zijn versie niet verzonden, ontkoppel en verbind de PushTracker opnieuw om de versie-informatie opnieuw naar de Smart Evaluation-app te verzenden.",
+        "title": "Onbekende PushTracker-versie"
+      },
+      "pt-same-distance": {
+        "message": "Uw PushTracker heeft geen bijgewerkte afstandsinformatie ontvangen van uw SmartDrive - zorg ervoor dat ze zijn aangesloten/'SD aan' zonder dat de motor rijdt voordat de proef wordt gestopt.",
+        "title": "Ongeldige afstand"
+      },
+      "pt-unknown-distance": {
+        "message": "Uw PushTracker heeft geen afstandsinformatie ontvangen van de SmartDrive - zorg ervoor dat ze zijn aangesloten/'SD aan' zonder dat de motor rijdt voordat u de proef start.",
+        "title": "Onbekende afstand"
+      },
+      "pt-version": {
+        "message": "Je PushTracker-versie is verouderd, voer een OTA uit! Huidige versie:",
+        "title": "PushTracker-versiefout"
+      },
+      "timeout": "Time-out",
+      "too-many-pts": "Te veel PushTrackers aangesloten - sluit er maar een aan!"
+    },
+    "evaluator-range": "Opmerking: de PushTracker hoeft tijdens deze fase niet op de telefoon aangesloten te blijven - hij hoeft alleen aan het begin en het einde te worden verbonden.",
+    "flat-surfaces": "Vlakke oppervlakten",
+    "inclines": "hellingen",
+    "max-speed": "Maximale snelheid",
+    "name": "Voer de proefnaam in",
+    "other": "Anders",
+    "phase-1": "Fase 1",
+    "phase-1-desc": "Doorloop de proefcursus met de SmartDrive - druk op start om te beginnen.",
+    "phase-2": "Fase 2",
+    "phase-2-desc": "Herhaal nu dezelfde proefcursus zonder de SmartDrive - druk op start om te beginnen.",
+    "please-connect-pt": "Verbind alstublieft uw PushTracker",
+    "push_accuracy_disclaimer": "De push-tracker gebruikt beweging om duwingen te detecteren. Dit kan een variërende nauwkeurigheid veroorzaken, afhankelijk van hoe de gebruiker de push-tracker draagt ​​en meebeweegt. Een betere meeteenheid voor evaluatie is het relatieve verschil tussen de pushs met de SmartDrive en zonder de SmartDrive.",
+    "pushes": "duwt:",
+    "ramp": "Ramp",
+    "ramp-incline": "Opritten/hellingen",
+    "recommendation": "Opmerking: proeven worden aangeraden om oprijplaten, meerdere soorten oppervlakken te bevatten en moeten minimaal enkele minuten of 100 meter/100 meter duren.",
+    "select-options": "Selecteer opties en instellingen voor SmartDrive-proef.",
+    "set-up": "Proefopstelling",
+    "smartdrive-connection": "Opmerking: voordat u met deze proef begint, moet u ervoor zorgen dat de PushTracker en SmartDrive zijn aangesloten/'SD aan' om ervoor te zorgen dat de PushTracker over de nieuwste afstandsinformatie beschikt.",
+    "start": "Begin",
+    "starting-trial": "Startende proef - kan tot 10 seconden duren.",
+    "stop": "Hou op",
+    "stopping-trial": "Proefperiode stoppen - kan tot 10 seconden duren.",
+    "summary": "Samenvatting",
+    "time": "Tijd:",
+    "title": "proces",
+    "unable": "Kan niet voltooien",
+    "with-sd": "Met SmartDrive",
+    "without-sd": "Zonder SmartDrive"
+  },
+  "user": {
+    "accept": {
+      "accept-error": {
+        "message": "U moet de overeenkomst en het privacybeleid lezen en accepteren om een ​​account te registreren!",
+        "title": "Overeenkomstfout"
+      },
+      "agreement-button": "Bekijk eindgebruikersovereenkomst",
+      "header": "U moet de eindgebruikersovereenkomst accepteren en de privacykennisgeving lezen om Smart Evaluation te kunnen activeren en gebruiken",
+      "privacy-button": "Privacybeleid bekijken",
+      "privacy-policy": "Ik heb het privacybeleid gelezen en begrepen",
+      "privacy-policy-title": "Accepteer het Privacybeleid",
+      "user-agreement": "Ik heb de eindgebruikersovereenkomst gelezen, begrepen en ga hiermee akkoord",
+      "user-agreement-title": "Accepteer de gebruikersovereenkomst"
+    },
+    "account": "Account",
+    "account-creating": "Een account aanmaken...",
+    "account-error": "Er is een fout opgetreden bij het ophalen van uw accountgegevens. Probeer het later opnieuw.",
+    "account-reset": "Account opnieuw instellen?",
+    "account-reset-confirm": "Weet je zeker dat je je account wilt resetten (verwijder al je gegevens/instellingen)?",
+    "account-update": "Update gebruikersaccount?",
+    "account-update-complete": "Uw profiel is bijgewerkt.",
+    "account-update-confirm": "Stuur deze instellingen naar de server?",
+    "account-update-error": "Er is een fout opgetreden bij het bijwerken van je profiel. Probeer het opnieuw.",
+    "back-to-login": "Terug naar Inloggen",
+    "change-pass": "Wachtwoord wijzigen",
+    "check-email": "Controleer uw e-mail voor instructies over het opnieuw instellen van uw wachtwoord.",
+    "company": "Bedrijf",
+    "consent": {
+      "beta-test": "Ik kies voor het testen van firmware-bèta en begrijp de bijbehorende risico's.",
+      "header": "U kunt uw toestemmingen op elk moment tijdens het gebruik van de dienst opgeven of intrekken door naar de pagina 'Account' van de toepassing te gaan.",
+      "product-development": "Ik geef toestemming voor het gebruik van mijn gegevens voor onderzoek zoals beschreven in het privacybeleid",
+      "research": "Ik geef toestemming voor het gebruik van mijn gegevens voor productontwikkeling zoals beschreven in het privacybeleid"
+    },
+    "consent-form-title": "Privacybeleid Toestandsformulier",
+    "email": "E-mail",
+    "email-error": "is geen geldig e-mailadres.",
+    "email-invalid": "Email is ongeldig",
+    "email-required": "E-mail is verplicht.",
+    "email-sent": "Email verzonden",
+    "end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
+    "error": "Fout",
+    "feedback-email-subject": "Smart Evaluation Feedback",
+    "first-name": "Voornaam",
+    "first-name-error": "Voornaam is verplicht",
+    "forgot-password": "Wachtwoord vergeten",
+    "form-invalid": "Het formulier is ongeldig Vul alstublieft alle velden in.",
+    "language": "Taal",
+    "last-name": "Achternaam",
+    "last-name-error": "Achternaam is verplicht",
+    "logged-in": "Je bent nu ingelogd",
+    "login": "log in",
+    "logout": "Uitloggen",
+    "ok": "OK",
+    "password": "Wachtwoord",
+    "password-change": "Wachtwoord wijzigen?",
+    "password-change-confirm": "Weet je zeker dat je je wachtwoord wilt wijzigen?",
+    "password-error": "Een wachtwoord is verplicht.",
+    "phone": "Telefoon",
+    "privacy-policy-site": "https://privacy.permobil.com",
+    "provide-feedback-btn": "Feedback verzenden",
+    "provide-feedback-confirm-message": "Wilt u feedback sturen via uw geconfigureerde e-mailclient?",
+    "provide-feedback-confirm-title": "Geef feedback?",
+    "reset-acct": "Account opnieuw instellen",
+    "reset-pass-desc": "Voer de e-mail voor uw account in om uw wachtwoord opnieuw in te stellen. U ontvangt een e-mail met instructies om uw wachtwoord opnieuw in te stellen.",
+    "sign-in": "Aanmelden",
+    "sign-in-error-1": "Er is een fout opgetreden tijdens inloggen. Controleer uw e-mailadres en wachtwoord.",
+    "sign-in-error-2": "Ongeldige e-mail en/of wachtwoord. Probeer het opnieuw.",
+    "sign-out": "Afmelden",
+    "sign-out-confirm": "Weet je zeker dat je wilt uitloggen?",
+    "sign-up": "inschrijven",
+    "sign-up-error": "Kon niet aanmelden:",
+    "sign-up-success": "Jouw gebruikersnaam is:",
+    "signing-in": "Inloggen...",
+    "submitting": "Het indienen van ...",
+    "success": "succes",
+    "type": "Gebruikerstype",
+    "unsaved": "U heeft niet-opgeslagen wijzigingen. Weet je zeker dat je wilt afsluiten zonder op te slaan?",
+    "updated": "Je profiel is succesvol bijgewerkt!"
+  },
+  "videos": [
+    {
+      "Description": "Deze video is een overzicht van SmartDrive die wordt gebruikt door mensen van verschillende leeftijden en omstandigheden in verschillende omgevingen.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/overview-thumb.jpg",
+      "Title": "SmartDrive introductie",
+      "Url": "8fn26J59WJ4"
+    },
+    {
+      "Description": "Deze video behandelt de basisbediening en functionaliteit van de SmartDrive en PushTracker.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/sd-basic-op-thumb.jpg",
+      "Title": "SmartDrive MX2 Basisbediening",
+      "Url": "uhA3-svjQFg"
+    },
+    {
+      "Description": "Deze video behandelt de basisbediening en functionaliteit van de PushTracker.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/pt-basic-op-thumb.jpg",
+      "Title": "PushTracker basisbediening",
+      "Url": "6_M1J8HZXIk"
+    },
+    {
+      "Description": "Deze video behandelt de stappen die moeten worden uitgevoerd bij het uitvoeren van een SmartDrive-evaluatie of -training.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/eval-thumb.jpg",
+      "Title": "SmartDrive Evaluatie en Training",
+      "Url": "45Kj7zJpDcM"
+    },
+    {
+      "Description": "In deze video worden Chels en Steph geïnterviewd over de vele aspecten van hun leven en hoe ze zijn beïnvloed door SmartDrive.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/interview-thumb.jpg",
+      "Title": "Interview met Chels en Steph",
+      "Url": "hFid9ks551A"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+<ScrollView margin-top="30" class="accept" height="100%">
+  <StackLayout class="accept">
+    <label
+      class="app-logo"
+      margin="30, 0, 10, 0"
+      [text]="'general.title' | translate"
+    ></label>
+    <label
+      class="app-logo"
+      margin="0, 0, 10, 0"
+      [text]="'user.consent-form-title' | translate"
+    ></label>
+    // agreements // end user agreement
+    <label
+      class="header"
+      textWrap="true"
+      [text]="'user.accept.header' | translate"
+    ></label>
+    <button
+      [text]="'user.accept.agreement-button' | translate"
+      class="btn link"
+      (tap)="openWebsite('user.end-user-agreement-site')"
+    ></button>
+    <DockLayout stretchLastChild="true">
+      <label
+        dock="left"
+        class="label"
+        textWrap="true"
+        [text]="'user.accept.user-agreement' | translate"
+      ></label>
+      <Switch
+        dock="right"
+        [(ngModel)]="user.has_agreed_to_user_agreement"
+      ></Switch>
+    </DockLayout>
+    // privacy policy
+    <button
+      [text]="'user.accept.privacy-button' | translate"
+      class="btn link"
+      (tap)="openWebsite('user.privacy-policy-site')"
+    ></button>
+    <DockLayout stretchLastChild="true">
+      <label
+        dock="left"
+        class="label"
+        textWrap="true"
+        [text]="'user.accept.privacy-policy' | translate"
+      ></label>
+      <Switch dock="right" [(ngModel)]="user.has_read_privacy_policy"></Switch>
+    </DockLayout>
+    // consent
+    <label
+      class="header"
+      textWrap="true"
+      [text]="'user.consent.header' | translate"
+    ></label>
+    <DockLayout stretchLastChild="true">
+      <label
+        dock="left"
+        class="label"
+        textWrap="true"
+        [text]="'user.consent.product-development' | translate"
+      ></label>
+      <Switch
+        dock="right"
+        [(ngModel)]="user.consent_to_product_development"
+      ></Switch>
+    </DockLayout>
+    <DockLayout stretchLastChild="true">
+      <label
+        dock="left"
+        class="label"
+        textWrap="true"
+        [text]="'user.consent.research' | translate"
+      ></label>
+      <Switch dock="right" [(ngModel)]="user.consent_to_research"></Switch>
+    </DockLayout>
+    <GridLayout rows="auto" columns="*,*">
+      <button
+        col="0"
+        class="btn cancel"
+        [text]="'dialogs.cancel' | translate"
+        (tap)="cancel()"
+      ></button>
+      <button
+        col="1"
+        class="btn submit"
+        [text]="'dialogs.ok' | translate"
+        (tap)="close()"
+      ></button>
+    </GridLayout>
+  </StackLayout>
+</ScrollView>

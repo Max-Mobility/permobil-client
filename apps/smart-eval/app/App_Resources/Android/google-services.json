@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1053576736707",
+    "firebase_url": "https://max-mobility-smart-evaluation.firebaseio.com",
+    "project_id": "max-mobility-smart-evaluation",
+    "storage_bucket": "max-mobility-smart-evaluation.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053576736707:android:fe53ed569d353ff9",
+        "android_client_info": {
+          "package_name": "com.permobil.smarteval"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1053576736707-3e35mt9ur9stfhavspe39cdm67s3jfi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlWMu4GcwFcUmcBtK7R9gWBtloBswfHg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,87 @@
+// Custom common variables
+@import '../../scss/variables';
+@import '../../scss/common';
+
+.account-layout {
+  horizontal-align: center;
+  width: 100%;
+}
+
+.action-item {
+  color: $white;
+  font-size: 18;
+  text-transform: none;
+}
+
+.account-item {
+  vertical-align: center;
+  text-overflow: none;
+  text-align: left;
+  word-wrap: normal;
+  color: $white;
+  font-weight: 500;
+  margin: 15;
+}
+
+.account-icon {
+  margin: 15 0 20 0;
+  color: $permobil-ocean;
+  font-size: 60;
+  text-align: center;
+}
+
+.account-picture {
+  margin: 15 0 20 0;
+  color: $permobil-ocean;
+  horizontal-align: center;
+  border-color: $permobil-ocean;
+  border-width: 10;
+  border-radius: 100;
+  width: 100;
+  height: 100;
+}
+
+.account-text-entry {
+  color: $white;
+  text-align: right;
+  margin: 15;
+}
+
+.error {
+  font-size: 15;
+  font-weight: 300;
+  color: $permobil-orange;
+  margin: 5, 20, 5, 35;
+}
+
+.account-dock {
+  margin: 10, 20;
+}
+
+.consent {
+  color: $white;
+  font-size: 15;
+  width: 70%;
+  vertical-align: center;
+  text-align: left;
+}
+
+.label {
+  color: $white;
+  padding: 5;
+  margin: 10 20;
+  font-size: 18;
+  vertical-align: center;
+  text-align: left;
+}
+
+.dropdown {
+  background-color: $permobil-hero;
+  placeholder-color: rgba(250, 250, 250, 0.5);
+  color: $white;
+  border-radius: 2;
+  padding: 5;
+  margin: 10 20;
+  vertical-align: center;
+  text-align: right;
+}

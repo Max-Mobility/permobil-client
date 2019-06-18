@@ -1,0 +1,170 @@
+// Custom common variables
+@import '../../scss/variables';
+
+.topSlide {
+  background-image: url('~/assets/images/background_1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  image {
+    margin: 10, 0, 10, 0;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.top {
+  background: #fff;
+}
+
+button,
+TextField {
+  margin: 15, 15, 75, 15;
+}
+
+.trial-stack-layout {
+  margin: 15, 10, 10, 10;
+}
+
+.docklayout-options {
+  padding: 5;
+}
+
+.summaryDescription {
+  margin: 5, 5, 5, 5;
+  padding: 5, 5, 10, 0;
+  font-family: $os-Light;
+  // font-size: 14;
+  // color: #fff;
+}
+
+.trial-item {
+  vertical-align: center;
+  text-overflow: none;
+  word-wrap: normal;
+  color: #fff;
+  font-family: $os-Light;
+  margin: 5, 5, 5, 5;
+  padding: 10, 15, 10, 0;
+}
+
+.trial-slider-label {
+  color: $permobil-titan;
+  font-family: $os-Light;
+  margin: 5, 0, 0, 15;
+}
+
+.trial-slider-value {
+  color: #fff;
+  font-family: $os-Light;
+  margin: 5, 0, 5, 15;
+}
+
+.slider-container {
+  Slider {
+    width: 80%;
+    margin: 5, 25, 10, 25;
+    vertical-align: center;
+    horizontal-align: center;
+  }
+}
+
+.trial-name-textfield {
+  background-color: rgba(80, 135, 180, 0.1);
+  padding: 7;
+  margin: 10, 20, 10, 20;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #b1b1b1;
+  border-radius: 2;
+  color: #fff;
+  placeholder-color: lightgray;
+}
+
+image {
+  margin: 10, 0, 10, 10;
+}
+
+.icon {
+  font-size: 30em;
+  padding: 10;
+  color: $permobil-ocean;
+  text-shadow: 5px, 5px, 5px, $permobil-icon-shadow-orange;
+}
+
+.bullet {
+  color: #fff;
+  font-family: $os-Light;
+  font-size: 13;
+  text-align: left;
+  margin: 10, 20, 0, 20;
+}
+
+.value-label-left {
+  // background: black;
+  text-align: left;
+  font-family: $os-Light;
+  font-size: 20;
+  margin: 10, 10, 10, 15;
+  color: #fff;
+}
+
+.value-left {
+  // background: black;
+  text-align: left;
+  width: 100%;
+  font-family: $os-Light;
+  font-size: 20;
+  margin: 10, 20, 10, 10;
+  color: #fff;
+}
+
+.value-label-right {
+  // background: black;
+  text-align: left;
+  font-family: $os-Light;
+  font-size: 20;
+  margin: 10, 10, 10, 15;
+  color: #fff;
+}
+
+.value-right {
+  // background: black;
+  text-align: left;
+  width: 100%;
+  font-family: $os-Light;
+  font-size: 20;
+  margin: 10, 20, 10, 10;
+  color: #fff;
+}
+
+.slide-indicator-inactive {
+  background-color: #fff;
+  opacity: 0.4;
+  width: 10;
+  height: 10;
+  margin-left: 2.5;
+  margin-right: 2.5;
+  margin-top: 0;
+  border-radius: 5;
+}
+
+.slide-indicator-active {
+  background-color: #fff;
+  opacity: 0.9;
+  width: 10;
+  height: 10;
+  margin-left: 2.5;
+  margin-right: 2.5;
+  margin-top: 0;
+  border-radius: 5;
+}
+
+.gridImage {
+  background-image: '~/assets/images/background_1.jpg';
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}

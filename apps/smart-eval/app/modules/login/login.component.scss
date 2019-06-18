@@ -1,0 +1,24 @@
+@import '../../scss/variables';
+
+.login-btn {
+  height: auto;
+  margin: 20;
+}
+
+.forgot {
+  margin: 0, 0, 0, 20;
+  padding: 0;
+  text-align: left;
+}
+
+.sign-up {
+  margin: 0, 20, 0, 0;
+  padding: 0;
+  text-align: right;
+}
+
+.error {
+  font-size: 15;
+  font-weight: 300;
+  margin: 5, 20, 5, 25;
+}

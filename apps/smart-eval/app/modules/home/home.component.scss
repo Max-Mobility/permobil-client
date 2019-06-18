@@ -1,0 +1,115 @@
+// Custom common variables
+@import '../../scss/common';
+@import '../../scss/variables';
+
+.account-icon {
+  color: $white;
+  font-size: 30;
+  margin: 10;
+  padding: 0, 10;
+}
+
+.main-scroll-view {
+  background-color: #fff;
+  // padding: 0, 30, 0, 30;
+  margin: 0, 0, 0, 0;
+  height: 100%;
+}
+
+.chev {
+  font-size: 32;
+  margin: 5, 5, 0, 0;
+}
+
+.refresh-btn {
+  color: $permobil-ocean;
+  margin: 0;
+  padding: 0;
+  font-size: 22;
+  height: 23;
+  horizontal-align: left;
+  vertical-align: center;
+}
+
+// Styles for the main parent Grid which contains the various list sections
+.list-grid-layout {
+  margin: 10, 0, 10, 0;
+
+  .list-heading {
+    font-family: $os-SemiBold;
+    text-align: left;
+    font-size: 20;
+    font-weight: 400;
+    margin: 5, 10, 5, 10;
+    color: $permobil-charcoal;
+  }
+  .list-description {
+    font-family: $os-Light;
+    color: $permobil-charcoal;
+    font-size: 15;
+    font-weight: 400;
+    margin: 5, 10, 5, 10;
+  }
+}
+
+// General List Item Styles
+.list-item-layout {
+  // height: 140;
+  width: 150;
+  // margin: 5, 10, 5, 10;
+  image {
+    border: solid;
+    border-radius: 4;
+    margin: 5, 10, 5, 10;
+  }
+  label {
+    font-family: $os-Light;
+    color: $permobil-charcoal;
+    font-size: 15;
+    font-weight: 400;
+    margin: 5, 10, 5, 10;
+  }
+
+  .faq-question {
+    padding: 15;
+    horizontal-align: center;
+    vertical-align: center;
+    text-align: center;
+    font-size: 16;
+    font-weight: 500;
+    color: $white;
+  }
+}
+
+// Demo unit list styles
+
+.new-demo {
+  font-size: 14;
+  padding: 5;
+  color: #fff;
+  background-color: $permobil-ocean;
+  font-family: $os-Light;
+}
+
+.demo-item-description {
+  label,
+  StackLayout {
+    font-family: $os-Light;
+    // width: 140;
+    font-size: 14;
+    padding: 5;
+    color: #fff;
+    margin: 5, 10, 5, 10;
+    background-color: $permobil-ocean;
+    border-radius: 3;
+  }
+}
+
+.fab {
+  height: 60;
+  width: 60; /// this is required on iOS - Android does not require width so you might need to adjust styles
+  margin: 15;
+  background-color: $permobil-orange;
+  horizontal-align: right;
+  vertical-align: bottom;
+}

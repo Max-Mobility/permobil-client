@@ -1,0 +1,37 @@
+@import '../../scss/variables';
+
+.icon {
+  font-size: 20em;
+  padding: 0, 0, 0, 15;
+  color: $permobil-ocean;
+  horizontal-align: center;
+}
+
+.faq-question {
+  font-weight: 500;
+  color: #fff;
+  margin: 10;
+  font-size: 20;
+}
+
+.faq-answer {
+  color: #fff;
+  margin: 10;
+  font-size: 16;
+  horizontal-align: right;
+  padding: 0;
+}
+
+.heading {
+  font-family: $os-SemiBold;
+  text-align: left;
+  font-size: 20;
+  padding: 5;
+  color: $permobil-charcoal;
+}
+
+NavigationButton {
+  width: 35;
+  height: 35;
+  padding: 15, 0, 0, 15;
+}

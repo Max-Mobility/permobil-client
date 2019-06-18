@@ -1,0 +1,22 @@
+<MaxActionBar [title]="'menu.faq' | translate"> </MaxActionBar>
+
+<StackLayout margin-top="30">
+  <ListView backgroundColor="transparent" [items]="faqs">
+    <ng-template let-item="item">
+      <DockLayout>
+        <label
+          dock="top"
+          [text]="item.question"
+          textWrap="true"
+          class="faq-question"
+        ></label>
+        <label
+          dock="bottom"
+          [text]="item.answer"
+          textWrap="true"
+          class="faq-answer"
+        ></label>
+      </DockLayout>
+    </ng-template>
+  </ListView>
+</StackLayout>

@@ -1,0 +1,28 @@
+// Add your native dependencies here:
+dependencies {
+  implementation "com.google.android.gms:play-services-location:12.0.1"
+  implementation 'org.slf4j:slf4j-nop:1.7.25'
+}
+
+repositories {
+  google() // Google's Maven repository
+}
+
+android {    
+  defaultConfig {  
+    generatedDensities = []
+    applicationId = "com.permobil.smarteval"  
+    minSdkVersion 21
+    targetSdkVersion 28
+    versionCode 10002
+    versionName "1.0.04"
+  }  
+  aaptOptions {  
+    additionalParameters "--no-version-vectors"  
+  }
+  project.ext {
+    googlePlayServicesVersion = "12.0.1"
+    firebaseMessagingVersion = "12.0.1"
+    supportVersion = "28.+"
+  }
+} 

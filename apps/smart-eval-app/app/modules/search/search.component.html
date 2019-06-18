@@ -1,0 +1,35 @@
+<MaxActionBar title="Eval"> </MaxActionBar>
+
+<StackLayout class="page page-content" tkMainContent>
+  <Carousel indicatorColor="#66ccff" indicatorColorUnselected="#cceeff">
+    <CarouselItem *ngFor="let slide of slides">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout
+          row="0"
+          class="topSlide"
+          orientation="vertical"
+          horizontalAlignment="center"
+        >
+          <Image [src]="slide.Image" stretch="aspectFit"></Image>
+        </StackLayout>
+        <StackLayout
+          row="1"
+          class="lowerSlide"
+          orientation="vertical"
+          horizontalAlignment="center"
+        >
+          <Label
+            [text]="slide.Label"
+            class="slideLowerLabel"
+            textWrap="true"
+          ></Label>
+          <Label
+            [text]="slide.Description"
+            class="slideDescription"
+            textWrap="true"
+          ></Label>
+        </StackLayout>
+      </GridLayout>
+    </CarouselItem>
+  </Carousel>
+</StackLayout>

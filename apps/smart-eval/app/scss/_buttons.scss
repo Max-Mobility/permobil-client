@@ -1,0 +1,61 @@
+/*** Buttons **/
+@import 'variables';
+
+.permobil-primary-btn {
+  background-color: $permobil-primary;
+  color: $white;
+}
+
+.permobil-hero-btn {
+  background-color: $permobil-hero;
+  color: $white;
+}
+
+.permobil-ocean-btn {
+  background-color: $permobil-ocean;
+  color: $white;
+}
+
+.image-button-background {
+  background-repeat: no-repeat;
+  background-size: 80% 60%;
+  background-position: center top;
+}
+
+.light-btn {
+  background-color: $white;
+  color: $black;
+}
+
+.dark-btn {
+  background-color: $grey;
+  color: $white;
+}
+
+.pink-btn {
+  background-color: $accent;
+  color: $white;
+}
+
+.blue-btn {
+  background-color: $blue;
+  color: $white;
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 1;
+  android-elevation: 0;
+  android-dynamic-elevation-offset: 0;
+}
+
+.white-btn {
+  background-color: $white;
+  color: $primary;
+}
+
+.orange-btn {
+  background-color: $permobil-orange;
+  color: $white;
+}

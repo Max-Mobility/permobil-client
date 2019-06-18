@@ -1,0 +1,35 @@
+<MaxActionBar [title]="'menu.videos-title' | translate"> </MaxActionBar>
+
+<StackLayout marginTop="30" iosOverflowSafeArea="false">
+  <ListView
+    iosOverflowSafeArea="false"
+    height="100%"
+    marginLeft="5"
+    backgroundColor="transparent"
+    separatorColor="transparent"
+    [items]="videos"
+    (itemTap)="onItemTap($event)"
+  >
+    <ng-template let-item="item">
+      <GridLayout rows="*" columns="145, *">
+        <GridLayout rows="auto" columns="*" class="video-layout">
+          <GridLayout row="0" class="video-title">
+            <label textWrap="true" [text]="item.Title"></label>
+          </GridLayout>
+        </GridLayout>
+        <!-- <Image col="0" class="thumb" [src]="item.Thumb" ></Image> -->
+        <GridLayout col="1" rows="auto, *, auto" columns="*" height="100%">
+          <!--
+            <Label row="0" class="title" textWrap="true"  [text]="item.Title"></Label>
+          -->
+          <label
+            class="video-description"
+            row="1"
+            textWrap="true"
+            [text]="item.Description"
+          ></label>
+        </GridLayout>
+      </GridLayout>
+    </ng-template>
+  </ListView>
+</StackLayout>

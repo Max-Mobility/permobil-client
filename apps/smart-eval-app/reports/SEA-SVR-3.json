@@ -1,0 +1,262 @@
+{
+  "number": "3",
+  "name": "Interface",
+  "reports": [
+    {
+      "number": "1",
+      "revision": "A",
+      "description": "Dashboard",
+      "testerName": "William Emfinger",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "SEA-SRS-13-A",
+          "description": "Application Menu"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Display",
+          "preconditions": "The app should be running, signed in, and open to the app's landing page.",
+          "methods": [
+            "Navigate (swipe) around the page."
+          ],
+          "acceptanceCriteria": [
+            "The app should show grouped, actionable content associated with different pages. Each section of content should have a meaningful description of what it is or relates to."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    },
+    {
+      "number": "2",
+      "revision": "A",
+      "description": "Evaluation",
+      "testerName": "William Emfinger",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "SEA-SRS-14-A",
+          "description": "Evaluation Interface"
+        },
+        {
+          "name": "SEA-SRS-15-A",
+          "description": "Evaluation User Data Collection"
+        },
+        {
+          "name": "SEA-SRS-17-A",
+          "description": "Evaluation Information Display"
+        },
+        {
+          "name": "SEA-SRS-18-A",
+          "description": "Evaluation Report Generation"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Questionnaire",
+          "preconditions": "The app should be running, signed in, and open to the dashboard.",
+          "methods": [
+            "Press the 'Clinical Tools' button.",
+            "Fill out the questionnaire and press 'Next'",
+            "Swipe through the training pages and press the 'Next' button.",
+            "Fill out the questionnaire, navigate to the 'Trial Complete' page and press 'Summary'.",
+            "Press the 'Complete' button and agree to the confirmation.",
+            "Enter in your own email address as the destination and send the email to yourself."
+          ],
+          "acceptanceCriteria": [
+            "The app should naviage to a 'Perform an Evaluation' page with a questionnaire.",
+            "The app should navigate to a 'Training' page with information about the SmartDrive / PushTracker.",
+            "The app should navigate to a 'Trial' page with another questionnaire.",
+            "The app should navigate to a 'Summary' page with text describing the trial. The values in the text will be '0' - which is acceptable since we did not use the PushTracker or SmartDrive.",
+            "The app should open into the user's preferred and set-up email app on the phone - sending an email from their account with the evaluation data as the body of the email.",
+            "The email should send and the app should return to the foreground, navigated to the 'Home' screen."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "The values for the trial / evaluation will be predominantly 0 - which is OK since this only tests the evaluation interface - other tests confirm data collection for the evaluation.",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    },
+    {
+      "number": "3",
+      "revision": "A",
+      "description": "OTA Interface",
+      "testerName": "William Emfinger",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "SEA-SRS-19-A",
+          "description": "OTA Interface"
+        },
+        {
+          "name": "SEA-SRS-20-A",
+          "description": "OTA Status Display"
+        }
+      ],
+      "tests": [
+        {
+          "name": "OTA Page",
+          "preconditions": "The app should be running, signed in, and open to the 'Home' page.",
+          "methods": [
+            "Navigate to the OTA Page by pressing the 'Update a PushTracker or SmartDrive' button."
+          ],
+          "acceptanceCriteria": [
+            "The app should navigate to the 'Firmware Updates' page - which should show the latest version of the firmware at the top, and some information about the features of the firmware at the bottom."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Device Checking",
+          "preconditions": "OTA Page test is complete",
+          "methods": [
+            "Press the 'Begin Updates' button."
+          ],
+          "acceptanceCriteria": [
+            "The app should indicate that there are no PushTrackers or SmartDrives to update."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Device Display",
+          "preconditions": "Device Checking test is complete. A PushTracker that has already been paired with the app is on and connected. A SmartDrive that is not connected to a PushTracker is on.",
+          "methods": [
+            "Press the 'Refresh Device List' button.",
+            "Press the 'Begin Updates' button.",
+            "Press 'Start' on both the PushTracker and SmartDrive.",
+            "Press 'Pause' on both devices.",
+            "Press 'Resume' on both devices.",
+            "Press 'Cancel' on both devices."
+          ],
+          "acceptanceCriteria": [
+            "Both the PushTracker and SmartDrive should be shown.",
+            "Both the PushTracker and SmartDrive should have 'Start' buttons. The PushTracker's version should show, the SmartDrive's versions should show as unknown.",
+            "The version info for the SmartDrive should show, both devices should show that they are updating. Controls to 'Pause' or 'Cancel' should show for each device.",
+            "Both devices should now have a 'Resume' button and the ota progress for each device should stop increasing.",
+            "Both devices should now have a 'Pause' button again and the ota progress should resume increasing.",
+            "Both devices should reboot and the app should show 'Canceled' for each device."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "If the versions of the devices used for testing already match the latest version, you will have to press 'Force' after pressing 'Start' before OTA will continue.",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    },
+    {
+      "number": "4",
+      "revision": "A",
+      "description": "Demo Unit Management",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-21-A",
+          "description": "Demo Unit Interface"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Addition",
+          "preconditions": "The app should be running, signed in, and open to the 'Home' page.",
+          "methods": [
+            "Navigate to the 'Demos' page by selecting the 'Demos' header.",
+            "Press the 'Add' button",
+            "Press the 'Save' button",
+            "Enter a SmartDrive serial number and a PushTracker serial number. Press 'Save'.",
+            "Navigate back to the 'Demos' page"
+          ],
+          "acceptanceCriteria": [
+            "The app should navigate to the 'Demos' page and display any demo units that have been registered to the account.",
+            "The app should navigate to a 'Demo' page that has no demo details.'",
+            "The app should inform the user that the demo cannot be saved because it lacks sufficient details.",
+            "The app should inform the user that the demo unit is being saved.",
+            "The app should navigate to the 'Demos' page and a demo unit item with the same serial number as was entered above should be now present."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Demo Unit View",
+          "preconditions": "The app should be running, signed in, open to the 'Home' page, and the account should have at least one Demo unit registered to it.",
+          "methods": [
+            "Select one of the Demo Units displayed on the 'Home' screen."
+          ],
+          "acceptanceCriteria": [
+            "The app should navigate to the 'Demo' detail page with the correct demo unit information filled in and displayed to the user."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-25",
+      "endDate": "2018-07-25"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+@import '../../scss/variables';
+
+.button {
+  background-color: $permobil-hero;
+  border-color: transparent;
+  border-width: 1;
+}
+
+.requestDemoBtn {
+  width: 99%;
+  margin: 4;
+  color: $white;
+  background-color: $permobil-orange;
+}
+
+.icon {
+  font-size: 24;
+  margin: 5, 5, 5, 0;
+  color: #fff;
+  text-align: left;
+  vertical-align: center;
+}
+
+.icon-scan {
+  font-size: 24;
+  border: none;
+  background-color: transparent;
+  color: #ff671f;
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 1 1 1 1;
+  android-elevation: 0;
+  android-dynamic-elevation-offset: 0;
+}
+
+.demo-image {
+  border-radius: 4;
+  margin: 5, 5, 5, 10;
+}
+
+.info {
+  margin: 0, 10, 0, 0;
+  color: #fff;
+  font-size: 14;
+  text-wrap: true;
+  vertical-align: center;
+}
+
+.heading {
+  text-align: left;
+  font-size: 20;
+  padding: 5;
+  color: #fff;
+}
+
+.description {
+  color: #fff;
+  padding: 0;
+}
+
+.demo-action-btn {
+  color: $white;
+  font-size: 20;
+  font-family: $material-icon;
+}
+
+.demo-owner {
+  color: $permobil-orange;
+  font-weight: bold;
+}
+
+// hidden demo request form layout
+.demoRequestForm {
+  background-color: $white;
+  color: $black;
+  margin: 10;
+  padding: 5;
+  border-radius: 5;
+  height: 95%;
+  width: 95%;
+
+  .title {
+    font-family: $os-SemiBold;
+    text-align: left;
+    font-size: 20;
+    font-weight: 400;
+    margin: 5, 10, 5, 10;
+    color: $permobil-charcoal;
+  }
+
+  .close-icon {
+    vertical-align: top;
+    horizontal-align: right;
+    font-size: 22;
+    font-weight: 400;
+    margin: 5;
+  }
+
+  .input {
+    margin: 12 8;
+  }
+
+  .ios-input {
+    background-color: rgba(80, 135, 180, 0.5);
+    padding: 5;
+    margin: 5, 20, 5, 20;
+    color: $white;
+    border-radius: 2;
+    placeholder-color: $permobil-titan;
+  }
+
+  Slider {
+    padding: 5;
+    color: $permobil-primary;
+    background-color: $permobil-orange;
+  }
+}

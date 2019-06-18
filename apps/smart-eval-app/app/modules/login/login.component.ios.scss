@@ -1,0 +1,33 @@
+@import '../../scss/variables';
+
+.login-btn {
+  height: 40;
+  margin: 20;
+}
+
+.text-field {
+  background-color: rgba(80, 135, 180, 0.5);
+  padding: 5;
+  margin: 5, 20, 5, 20;
+  color: $white;
+  border-radius: 2;
+  placeholder-color: $permobil-titan;
+}
+
+.forgot {
+  margin: 0, 0, 0, 20;
+  padding: 0;
+  text-align: left;
+}
+
+.sign-up {
+  margin: 0, 20, 0, 0;
+  padding: 0;
+  text-align: right;
+}
+
+.error {
+  font-size: 15;
+  font-weight: 300;
+  margin: 5, 20, 5, 20;
+}

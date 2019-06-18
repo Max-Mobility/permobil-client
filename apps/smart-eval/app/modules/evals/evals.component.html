@@ -1,0 +1,194 @@
+<MaxActionBar
+  [title]="
+    evals.length
+      ? evals.length + ' ' + ('evals.title' | translate)
+      : ('evals.title' | translate)
+  "
+>
+  <ActionItem (tap)="onSearchTap()" ios.position="right">
+    <button class="" [text]="searchBtnText" class="action-item"></button>
+  </ActionItem>
+</MaxActionBar>
+
+<ScrollView>
+  <StackLayout>
+    // Loading indicator - shown while data is being fetched
+    <StackLayout *ngIf="!evalsLoaded" class="loader">
+      <label
+        [text]="'evals.loading' | translate"
+        class="h2"
+        textWrap="true"
+      ></label>
+      <ActivityIndicator busy="true" width="26" height="26"></ActivityIndicator>
+    </StackLayout>
+
+    <StackLayout
+      *ngIf="evalsLoaded && evals.length < 1"
+      class="no-evals-container"
+      height="100%"
+      verticalAlignment="middle"
+    >
+      <label
+        #noEvalsLabel
+        [text]="'evals.no-evals-message' | translate"
+        class="h2"
+        textWrap="true"
+      ></label>
+    </StackLayout>
+
+    // Evals ListView
+    <StackLayout
+      class="evals-list"
+      *ngFor="let eval of evals"
+      (tap)="onEvalItemTap($event)"
+    >
+      <DockLayout>
+        // want this to span the rows vertically, using height 100% isn't
+        working
+        <label
+          dock="left"
+          height="95%"
+          minHeight="95%"
+          class="list-line"
+          textWrap="true"
+        ></label>
+
+        <StackLayout dock="right" class="eval-block">
+          // Eval Data
+          <WrapLayout dock="right" orientation="horizontal">
+            <label
+              [text]="eval._kmd.ect | date: 'short'"
+              class="eval-data"
+              textWrap="true"
+            ></label>
+            <label
+              [text]="
+                ('eval-entry.chair-label' | translate) + ': ' + eval.chair
+              "
+              *ngIf="eval.chair"
+              class="eval-data"
+            ></label>
+          </WrapLayout>
+
+          // Trials for the Eval
+          <GridLayout
+            rows="*, *, *, *, *, *, *"
+            columns="*, *"
+            class="list-group-item"
+            *ngFor="let trial of eval.trials; index as i; count as c"
+          >
+            <label
+              row="0"
+              colSpan="2"
+              class="trial-name"
+              [text]="
+                ('trial.title' | translate) + ': ' + (trial.name || i + 1)
+              "
+              textWrap="true"
+            ></label>
+
+            // General Info of the Trial
+            <label
+              row="1"
+              col="0"
+              [text]="
+                ('trial.flat-surfaces' | translate) +
+                ': ' +
+                ((trial.flat ? 'dialogs.yes' : 'dialogs.no') | translate)
+              "
+              class="trial-data"
+            ></label>
+            <label
+              row="1"
+              col="1"
+              [text]="
+                ('trial.ramp-incline' | translate) +
+                ': ' +
+                ((trial.rampIncline ? 'dialogs.yes' : 'dialogs.no') | translate)
+              "
+              class="trial-data"
+            ></label>
+            <label
+              row="2"
+              col="0"
+              [text]="('trial.distance' | translate) + (trial.distance || '0')"
+              class="trial-data"
+            ></label>
+            <label
+              row="2"
+              col="1"
+              [text]="
+                ('trial.max-speed' | translate) +
+                ': ' +
+                (trial.max_speed || '0')
+              "
+              class="trial-data"
+            ></label>
+
+            // Without SmartDrive
+            <label
+              row="3"
+              colSpan="2"
+              [text]="'evals.without-smartdrive' | translate"
+              class="trial-label"
+              textWrap="true"
+            ></label>
+
+            <label
+              row="4"
+              col="0"
+              [text]="
+                ('trial.pushes' | translate) + (trial.without_pushes || '0')
+              "
+              class="trial-data"
+            ></label>
+            <label
+              row="4"
+              col="1"
+              [text]="
+                ('trial.time' | translate) + timeString(trial.without_elapsed)
+              "
+              class="trial-data"
+            ></label>
+
+            // With SmartDrive
+            <label
+              row="5"
+              colSpan="2"
+              [text]="'evals.with-smartdrive' | translate"
+              class="trial-label"
+              textWrap="true"
+            ></label>
+            <label
+              row="6"
+              col="0"
+              [text]="('trial.pushes' | translate) + (trial.with_pushes || '0')"
+              class="trial-data"
+            ></label>
+            <label
+              row="6"
+              col="1"
+              [text]="
+                ('trial.time' | translate) + timeString(trial.with_elapsed)
+              "
+              class="trial-data"
+            ></label>
+          </GridLayout>
+          <button
+            text="&#xf1ee;"
+            class="mdi btn-transparent"
+            verticalAlignment="middle"
+            horizontalAlignment="right"
+            fontSize="22"
+            (tap)="onEmailBtnTap(eval)"
+          ></button>
+          <label
+            class="hr-light m-10"
+            backgroundColor="#FF671F"
+            width="92.5%"
+          ></label>
+        </StackLayout>
+      </DockLayout>
+    </StackLayout>
+  </StackLayout>
+</ScrollView>

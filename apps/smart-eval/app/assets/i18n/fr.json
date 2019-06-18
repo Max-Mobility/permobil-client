@@ -1,0 +1,864 @@
+{
+  "bluetooth": {
+    "connection-success": "Connecté avec succès avec PushTracker!",
+    "enable-bluetooth": "Smart Evaluation a détecté que Bluetooth n'est pas activé sur votre appareil. Activez s'il vous plaît Bluetooth pour effectuer des OTA et effectuer des évaluations.",
+    "errors": {
+      "unavailable": {
+        "message": "Service Bluetooth indisponible - réinitialisation!",
+        "title": "Bluetooth non disponible"
+      }
+    },
+    "pairing-success": "Jumelé avec succès avec PushTracker!",
+    "pt_app_conn_instructions": "Pour connecter le PushTracker à l'application Smart Evaluation, vous devez l'avoir ouverte sur votre téléphone, puis appuyer sur le bouton de droite du PushTracker et le relâcher. Cela connectera votre PushTracker à votre application ou vous amènera dans les paramètres de couplage du PushTracker. Après la liaison, vous devrez quitter le menu des paramètres, puis appuyer sur le bouton droit pour vous connecter à l'application. Si vous rencontrez des problèmes, placez le Push-Tracker sur SLEEP, puis allumez-le.",
+    "sd_app_conn_instructions": "Pour que l'application Smart Evaluation puisse voir et se connecter à un lecteur SmartDrive, vous devez activer les lecteurs SmartDrive et Power Assist OFF/'SD Off'. Si vous rencontrez des problèmes, éteignez puis rallumez le SmartDrive.",
+    "searching": "Recherche de périphériques",
+    "service-failure": "Échec du service Bluetooth",
+    "waiting": "En attente d'initialisation de Bluetooth"
+  },
+  "buttons": {
+    "back": "Retour",
+    "more-info": "Plus d'informations",
+    "next": "Suivant"
+  },
+  "demo-detail": {
+    "connect-pt": "Veuillez connecter un PushTracker.",
+    "scan-pt": "PT: appuyez sur le bouton numériser ou modifier",
+    "scan-sd": "SD: Appuyez sur le bouton numériser ou modifier",
+    "cancel-scan": "Annuler la numérisation",
+    "sd-serial-required": "Le numéro de série SmartDrive est requis.",
+    "saving-demo": "Sauvegarde démo ...",
+    "scan-msg": "Scannez un",
+    "sd-or-pt": "SmartDrive ou PushTracker",
+    "enter-serial-title": "Entrer le numéro de série",
+    "enter-serial-message": "Veuillez entrer le numéro de série SmartDrive",
+    "enter-pt-serial": "Veuillez saisir le numéro de série du PushTracker ou du bracelet.",
+    "invalid-sd-serial": "n'est pas un numéro de série SmartDrive valide.",
+    "invalid-pt-serial": "n'est pas un numéro de série PushTracker ou Wristband valide.",
+    "geolocation-disabled": "L'emplacement peut être désactivé. Souhaitez-vous ouvrir les paramètres de votre appareil pour activer l'emplacement de l'application Smart Evaluation?",
+    "leaving-new-demo": "Attention: vous avez une unité de démonstration non sauvegardée. Êtes-vous sûr de vouloir quitter sans enregistrer?"
+  },
+  "demos": {
+    "demo-change-owner-location-required": "Votre emplacement est requis pour transférer la propriété de l’unité de démonstration. Cela permet à Smart Eval de suivre le dernier emplacement connu des unités de démonstration pour l'inventaire.",
+    "demo-request-error": "Une erreur est survenue lors de la demande de démonstration. Veuillez réessayer et signaler des commentaires sur le problème s'il persiste.",
+    "demo-request-location-is-required": "Votre emplacement est requis pour soumettre une demande d'unité de démonstration. Votre site est utilisé pour contacter des représentants à proximité de votre site pour la demande de démonstration.",
+    "demo-request-success": "Demande de l'unité de démonstration réussie.",
+    "demo-to-clinician-action": "Remettre la démo au clinicien",
+    "demos-title": "Démos",
+    "firmware-string": "Micrologiciel",
+    "loading": "Chargement de démos ...",
+    "location-calculating": "L'emplacement est en cours de calcul ...",
+    "location-confirm-message": "Voulez-vous mettre à jour l'emplacement de la démo sur",
+    "no-demos": "Aucune démo trouvée pour votre utilisateur actuel.",
+    "owner-color-explanation": "Les articles avec un numéro de série orange sont en votre possession. Les articles sans numéro de série orange doivent être en la possession du clinicien.",
+    "request-demo-action": "Demander une démo du représentant",
+    "request-demo-distance": "Définissez la distance maximale, en miles, depuis votre position géographique pour demander une démonstration à un représentant.",
+    "retrieve-from-clinician-action": "Récupérer la démo du clinicien",
+    "submit-btn": "Soumettre",
+    "new-demo-request": "Nouvelle demande de démonstration",
+    "saving-request": "Enregistrement de la demande de démonstration ...",
+    "request": {
+      "contact_info": "Informations de contact",
+      "distance": "Distance (milles)"
+    }
+  },
+  "demo-requests": {
+    "no-demo-requests": "Aucune demande de démonstration active trouvée.",
+    "loading": "Chargement des demandes de démonstration ...",
+    "claim": "Prétendre",
+    "claim_confirm": "Voulez-vous réclamer cette demande de démonstration?",
+    "claimed": "Demande de démonstration réclamée",
+    "complete": "Achevée",
+    "complete_confirm": "Voulez-vous marquer cette demande comme étant terminée?",
+    "completed": "Demande de démonstration complétée",
+    "demo_is_complete_msg": "La demande de démonstration est terminée.",
+    "claimed_by_other": "Cette démo a été revendiquée par un autre utilisateur."
+  },
+  "dialogs": {
+    "camera": "Caméra",
+    "cancel": "annuler",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "confirm-photo-delete": "Êtes-vous sûr de vouloir supprimer cette photo?",
+    "no": "Non",
+    "ok": "D'accord",
+    "sms": "Message texte",
+    "success": "Succès!",
+    "warning": "Attention",
+    "yes": "Oui",
+    "yes-delete": "Oui, supprimer",
+    "yes-login": "Oui, connectez-vous!"
+  },
+  "error": {
+    "email": "Désolé, une erreur s'est produite lors du téléchargement de cette photo."
+  },
+  "eval-entry": {
+    "chair-label": "Chaise faire",
+    "chair-options": [
+      "Couleurs",
+      "Invacare/Küschall",
+      "Karman",
+      "Ki",
+      "Composites de mouvement",
+      "Panthera",
+      "Quickie/Sopur/RGK",
+      "TiLite",
+      "Extrémité supérieure",
+      "Autre"
+    ],
+    "chair-question": "Quel est votre fauteuil roulant manuel?",
+    "chair-type": {
+      "label": "Type de chaise",
+      "options": ["Cadre pliant", "Cadre rigide"],
+      "question": "De quel type est votre fauteuil roulant manuel?"
+    },
+    "fatigue-label": "Pire niveau de fatigue expérimenté:",
+    "fatigue-question": "Avez-vous la fatigue de pousser?",
+    "heading": "Questionnaire",
+    "independence-label": "Le pire impact sur l'indépendance:",
+    "independence-question": "Cela a-t-il un impact sur votre indépendance?",
+    "pain-label": "Pire niveau de douleur expérimenté:",
+    "pain-question": "Avez-vous mal à force de pousser?",
+    "title": "Effectuer une évaluation",
+    "years-label": "années",
+    "years-options": ["1", "2", "3", "4", "5+", "10+", "20+", "30+"],
+    "years-question": "Combien d'années avez-vous été sur une chaise manuelle?"
+  },
+  "evals": {
+    "confirm-lmn-email-message": "Voulez-vous envoyer cette évaluation par courrier électronique?",
+    "confirm-lmn-email-title": "Email",
+    "evals-loading-error": "Une erreur s'est produite lors de la tentative de chargement de vos évaluations.",
+    "incomplete-dialog": {
+      "message": "Vous avez une évaluation qui n'a pas été complétée. Voulez-vous continuer à y travailler?",
+      "title": "Reprendre l'évaluation?"
+    },
+    "loading": "Chargement des évaluations ...",
+    "no-evals-message": "Aucune évaluation trouvée.",
+    "no-evals-search-result": "Aucune évaluation trouvée pour la date",
+    "reset-btn": "Réinitialiser",
+    "search-btn": "Chercher",
+    "select-date": "Sélectionnez la date d'évaluation",
+    "title": "Évaluations",
+    "with-smartdrive": "Avec SmartDrive:",
+    "without-smartdrive": "Sans SmartDrive:"
+  },
+  "faqs": [
+    {
+      "answer": "En règle générale, vous devez vérifier les éléments suivants: 1) votre SmartDrive est sous tension, 2) votre PushTracker est en mode 'SD On' - le voyant bleu doit clignoter, et 3) que vous êtes en mode MX2 - dans lequel un double tap va engager le moteur.",
+      "question": "Pourquoi mon SmartDrive n'est-il pas attrayant?"
+    },
+    {
+      "answer": "Malheureusement, non, le SmartDrive est incapable de freiner votre fauteuil. Cela signifie qu'après avoir éteint le moteur, vous devrez saisir manuellement les mains courantes et arrêter votre fauteuil. Cela signifie également que votre SmartDrive ne peut pas vous ralentir en descendant une rampe ou une colline.",
+      "question": "Mon SmartDrive peut-il me ralentir?"
+    },
+    {
+      "answer": "Non, le seul moment où vous devez relier votre PushTracker à votre SmartDrive est après avoir effectué une mise à jour OTA (Over The Air). Après cela, le PushTracker passe automatiquement en mode de couplage lorsque vous essayez de vous connecter ou d'activer «SD On».",
+      "question": "Dois-je relier mon PushTracker à mon SmartDrive?"
+    },
+    {
+      "answer": "Si vous utilisez Android, cela peut être dû au fait que le téléphone a enregistré les informations de couplage, ce qui empêchera le PushTracker d’établir une connexion solide. Pour résoudre ce problème, ouvrez simplement le menu des paramètres Bluetooth de votre téléphone et cliquez sur «Oublier» dans le PushTracker affiché dans ce menu. Une fois que vous avez fait cela, redémarrez l'application Smart Evaluation et le PushTracker devrait pouvoir se connecter de manière fiable, sans avoir à se reconnecter au téléphone!",
+      "question": "Pourquoi mon PushTracker ne se connecte-t-il pas à mon téléphone?"
+    },
+    {
+      "answer": "Le SmartDrive est sûr pour les enfants - mais nous recommandons le meilleur moyen de garantir la sécurité, c'est de les former aux techniques de frappe et de freinage appropriées. De plus, nous avons inclus la possibilité de limiter la vitesse maximale du SmartDrive (de 0,5 km/h à 5,5 km/h) ainsi que l’accélération du SmartDrive. Pour les personnes qui apprennent à pousser ou à utiliser un lecteur SmartDrive, il est recommandé de régler les deux valeurs très bas.",
+      "question": "Comment puis-je rendre le SmartDrive sûr pour les enfants?"
+    },
+    {
+      "answer": "Vous devriez être actif et sortir dans le monde! En poussant cependant, contrairement au conseil général en marchant (où les gens ne peuvent vraiment pas marcher trop) - les gens PEUVENT trop pousser! Si vous poussez trop, vous aurez plus de risques de ressentir de la douleur et des blessures aux bras et aux épaules, ce qui peut limiter votre mobilité et votre indépendance. Avec le SmartDrive, vous pouvez toujours vous déplacer comme d'habitude, vous pouvez désormais aller plus loin et avec moins d'effort! Utilisez-le lorsque vous devez vous rendre rapidement ou en haut d'une colline - ne vous tuez pas les épaules si vous n'êtes pas obligé! Profitez de votre voyage avec votre SmartDrive!",
+      "question": "Pourquoi devrais-je vouloir un SmartDrive?"
+    },
+    {
+      "answer": "Si vous avez à la fois les applications PushTracker et Smart Evaluation sur votre téléphone, vous devez vous assurer que seule celle à laquelle vous souhaitez connecter le PushTracker est en cours d'exécution - sinon le PushTracker pourrait se connecter à une autre application que celle que vous souhaitez!",
+      "question": "Application PushTracker et application d'évaluation intelligente"
+    }
+  ],
+  "firmware": {
+    "1.2": [
+      "Ajout du menu 'Paramètres' à propos de 'PushTracker' qui affiche les versions de micrologiciel du PushTracker, du SmartDrive Bluetooth (BLE) et du Microcontrôleur SmartDrive (MCU). Affiche également le code d'erreur et les informations les plus récents."
+    ],
+    "1.3": [
+      "Ajout du mode 'EZ-ON' pour PushTracker - vous pouvez maintenant activer / désactiver l'assistance électrique / 'SD On' et 'SD Off' en tapotant!"
+    ],
+    "1.4": [
+      "Ajout du mode 'EZ-ON' pour PushTracker - vous pouvez maintenant activer / désactiver l'assistance électrique / 'SD On' et 'SD Off' en tapotant!"
+    ],
+    "1.5": [
+      "Logo de la société mis à jour lors du démarrage de PushTracker à partir du mode veille",
+      "Affichez maintenant la plage de conduite estimée sur l’écran d’état de la batterie du PushTracker in DisplayInfo.",
+      "Maintenant, affichez la barre d’état OTA et le pourcentage sur PushTracker lorsque vous exécutez PushTracker OTA.",
+      "Lorsque la carte SD n'est pas appariée (par exemple après OTA) et que vous appuyez sur le bouton de gauche pour activer la fonction \"SD\", le PushTracker passe directement en association avec le mode SD.",
+      "Lorsque le PushTracker n'est pas associé au téléphone (par exemple après OTA) et que vous appuyez sur le bouton droit pour vous connecter au téléphone, le PushTracker passe directement en mode d'appariement au téléphone.",
+      "Correction de bogues dans le processus de couplage pour la gestion de plusieurs périphériques."
+    ],
+    "1.6": [
+      "PushTracker peut désormais recevoir les paramètres de détection Push de l'application pour smartphone.",
+      "PushTracker envoie maintenant les paramètres de détection Push actuels lors de l'initialisation de la connexion à l'application.",
+      "Réglages des paramètres de détection de push par défaut sur le PushTracker.",
+      "PushTracker affiche maintenant une coche lors de l’indication de connexion téléphonique s’il se connecte correctement ou est déjà connecté au téléphone lorsque l’utilisateur établit la connexion."
+    ],
+    "not-found": ["Nous n'avons pas trouvé la description du dernier firmware!"]
+  },
+  "general": {
+    "back": "Retour",
+    "camera-permission": "Permission de caméra",
+    "complete": "Achevée",
+    "demo": "Démo",
+    "edit": "modifier",
+    "email-us": "Écrivez-nous à info@sketchpoints.io",
+    "error": "Nous sommes désolés, une erreur est survenue.",
+    "export": "Exportation",
+    "help": "Aidez-moi",
+    "need-help": "Besoin d'aide pour?",
+    "no-camera-permission-android": "Smart Evaluation n'a pas la permission d'ouvrir votre appareil photo. Vous pouvez activer l'autorisation de la caméra sous l'application dans les paramètres de votre appareil.",
+    "no-camera-permission-ios-confirm": "Smart Evaluation n'a pas la permission d'ouvrir votre appareil photo. Voulez-vous ouvrir les paramètres de l'application pour activer l'appareil photo?",
+    "no-connection": "Vous avez peut-être perdu votre connexion Internet. Smart Evaluation fonctionne mieux lorsqu'il est connecté à Internet pour s'assurer que les données les plus récentes sont synchronisées avec les serveurs.",
+    "photo-album-tle": "Album photo",
+    "picture": "Image",
+    "profile": "Profil",
+    "save": "Sauvegarder",
+    "saving": "Économie",
+    "updating": "Mise à jour",
+    "serial": "En série",
+    "submit": "Soumettre",
+    "tip": "Pointe",
+    "title": "Évaluation intelligente",
+    "tweet-us": "Tweet à nous",
+    "twitter-unknown": "Twitter inconnu! Désolé!",
+    "update": "Mettre à jour",
+    "version": "Version"
+  },
+  "hints": {
+    "email": "Email...",
+    "password": "Mot de passe..."
+  },
+  "item": {
+    "delete-lbl": "Effacer"
+  },
+  "languages": {
+    "de": "Allemand",
+    "en": "Anglais",
+    "es": "Espanol",
+    "fr": "français",
+    "it": "Italien",
+    "nl": "Néerlandais",
+    "ru": "russe",
+    "sv": "suédois",
+    "zh": "chinois"
+  },
+  "menu": {
+    "clinical-tools": "Outils cliniques",
+    "clinical-tools-desc": "Formation à l'utilisation de SmartDrive",
+    "con-desc": "Comment utiliser votre PushTracker et votre SmartDrive",
+    "connect-app": "Connecter un Pushtracker à l'application Smart Eval",
+    "connectivity": "Vue d'ensemble de l'appareil",
+    "demo-refresh": "Actualiser les démos",
+    "demo-requests": "Demandes de démonstration",
+    "demos": "Démos",
+    "demos-desc": "Emplacement et gestion de la démonstration",
+    "eval": "Commencer l'évaluation SmartDrive",
+    "eval-history": "Voir les évaluations passées",
+    "eval-title": "Commencer l'évaluation SmartDrive",
+    "faq": "FAQ",
+    "faq-desc": "Quelques questions fréquemment posées",
+    "home": "SmartDrive",
+    "new-demo": "Vous n'avez pas de démos enregistrées sur votre compte. Appuyez sur l'image ci-dessus pour enregistrer une nouvelle unité de démonstration sur votre compte.",
+    "ota": "Mettre à jour un PushTracker et un SmartDrive",
+    "pair-pt-app": "Associer un PushTracker à l'application Smart Eval",
+    "pair-pt-sd": "Associer un PushTracker à un SmartDrive",
+    "summary": "Résumé",
+    "training": "Formation SmartDrive",
+    "trial": "Commencer un essai SmartDrive.",
+    "trial-title": "Commencer un essai SmartDrive.",
+    "videos-description": "Vidéos de formation et d'utilisation pour SmartDrive et PushTracker",
+    "videos-title": "Vidéos"
+  },
+  "home": {
+    "quick-actions": {
+      "learn": "Apprenez à utiliser SmartDrive / Pushtracker",
+      "register-demo": "Enregistrer la démo",
+      "request-demo": "Demander une démo",
+      "start-eval": "Commencer l'évaluation",
+      "update": "Mettre à jour SmartDrive / Pushtracker",
+      "demo-requests": "Demandes de démonstration"
+    }
+  },
+  "account": {
+    "version": "Version",
+    "build": "Construire",
+    "database": "Base de données"
+  },
+  "ota": {
+    "action": {
+      "cancel": "annuler",
+      "force": "Obliger",
+      "pause": "Pause",
+      "resume": "CV",
+      "retry": "Réessayez",
+      "start": "Début"
+    },
+    "begin": "Commencer les mises à jour",
+    "cancel": "Annuler toutes les mises à jour du micrologiciel",
+    "check_firmware_error": "Une erreur s'est produite lors du téléchargement du dernier micrologiciel. Réessayez, si le problème persiste, merci de signaler vos commentaires.",
+    "check_new_firmware": "Vérifier le nouveau firmware",
+    "check_new_firmware_message": "Voulez-vous vérifier et télécharger un nouveau firmware?",
+    "downloading": "Récupération des dernières données du micrologiciel du serveur",
+    "errors": {
+      "devices": {
+        "message": "Aucun PushTrackers ou SmartDrives trouvé!",
+        "title": "Aucun appareil"
+      },
+      "sd_connection": {
+        "message": "Mauvaise connexion avec SmartDrive, veuillez redémarrer le SmartDrive avec l'adresse suivante:",
+        "title": "Erreur de connexion SmartDrive!"
+      }
+    },
+    "pt": {
+      "state": {
+        "awaiting-ready": "En attente sur PushTracker",
+        "awaiting-version": "Version en attente",
+        "canceled": "Annulé",
+        "canceling": "Annulation",
+        "complete": "Achevée",
+        "failed": "Échoué",
+        "not-started": "Pas commencé",
+        "rebooting": "Redémarrage, veuillez relier et reconnecter votre PushTracker",
+        "timeout": "Temps libre",
+        "updating": "Mise à jour",
+        "verifying-update": "Vérification"
+      }
+    },
+    "refresh": "Recherche de SmartDrives",
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "En attente sur BLE",
+        "awaiting-mcu-ready": "En attente sur MCU",
+        "awaiting-versions": "En attente de versions",
+        "canceled": "Annulé",
+        "canceling": "Annulation",
+        "comm-failure": "Erreur de communication. Veuillez redémarrer votre SmartDrive.",
+        "complete": "Achevée",
+        "failed": "Échoué",
+        "not-started": "Pas commencé",
+        "rebooting-ble": "Redémarrage de BLE",
+        "rebooting-mcu": "Redémarrage MCU",
+        "timeout": "Temps libre",
+        "updating-ble": "Mise à jour de BLE",
+        "updating-mcu": "Mise à jour du MCU",
+        "verifying-update": "Vérification"
+      }
+    },
+    "title": "Mises à jour du micrologiciel",
+    "up-to-date": "(À jour)",
+    "version": "Version",
+    "warnings": {
+      "leaving": {
+        "message": "Attention: vous quittez la page OTA pendant un OTA - cela annulera tous les OTA en cours! Êtes-vous sûr de vouloir quitter?",
+        "title": "Attention"
+      },
+      "starting": {
+        "message": "Avertissement: vous ne devez pas quitter cette page lorsque vous effectuez des mises à jour du micrologiciel OTA du SmartDrive ou du PushTracker. Si vous quittez cette page ou si vous supprimez l'application, les OTA seront annulés ou risquent d'échouer.",
+        "title": "Démarrer OTA"
+      },
+      "multiple-devices": {
+        "title": "Plusieurs appareils",
+        "message": "Avertissement: Il est recommandé d’effectuer un OTA sur un périphérique à la fois. Veuillez permettre à un appareil de terminer la mise à jour avant de démarrer des OTA supplémentaires."
+      }
+    }
+  },
+  "pairing": [
+    {
+      "Bullets": [
+        "Appuyez et maintenez enfoncé le bouton plat droit de votre PushTracker pendant trois secondes pour accéder au menu des paramètres.",
+        "Appuyez sur le bouton droit pour afficher l’icône téléphone/PT.",
+        "Appuyez sur le bouton en haut à gauche pour lancer la liaison.",
+        "Remarque: sur certains appareils Android, lors du couplage, vous pouvez recevoir un message concernant un code PIN ou un mot de passe incorrect. Tant que le PushTracker indique qu'il est connecté, vous pouvez l'ignorer."
+      ],
+      "Image": "~/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Coupler votre application PushTracker to Smart Evaluation"
+    },
+    {
+      "Bullets": [
+        "Lorsque l’application Smart Evaluation est ouverte, appuyez sur le bouton plat droit du PushTracker.",
+        "Vous verrez une notification \"Réussite\" dans l'application Smart Evaluation.",
+        "Remarque: si vous ne voyez pas de notification «Réussite» dans l'application Smart Evaluation, vous devrez peut-être relier votre PushTracker."
+      ],
+      "Image": "~/assets/images/gifs/PT-APP-CONNECTION1.gif",
+      "Label": "Connecter votre application PushTracker to Smart Evaluation"
+    },
+    {
+      "Bullets": [
+        "Assurez-vous qu'il n'y a pas d'autres SmartDrives à proximité!",
+        "Pour un PushTracker qui n’a pas été couplé à un SmartDrive, appuyez sur le bouton gauche et vous verrez immédiatement l’icône PT (Bt symobol) SD.",
+        "Appuyez ensuite à nouveau sur le bouton gauche pour lancer le jumelage.",
+        "Vous verrez une coche sur le Push-Tracker avec succès",
+        "Pour un PushTracker qui doit être jumelé à un lecteur SmartDrive:",
+        "Appuyez et maintenez enfoncé le bouton plat droit de votre PushTracker pendant trois secondes pour accéder au menu des paramètres.",
+        "Appuyez sur le bouton droit pour atteindre l’icône PT-SD.",
+        "Appuyez sur le bouton en haut à gauche pour lancer le couplage de votre PushTracker avec votre SmartDrive."
+      ],
+      "Image": "~/assets/images/gifs/PT-SD-CONNECT2.gif",
+      "Label": "Coupler votre PushTracker à votre SmartDrive"
+    }
+  ],
+  "pushtracker": {
+    "push-settings": {
+      "clear-counter": "Effacer le compteur",
+      "copy-dialog": {
+        "message": "Les paramètres Push de PushTracker diffèrent des paramètres Push enregistrés. Voulez-vous écraser les paramètres Push enregistrés avec les paramètres Push de PushTracker?",
+        "title": "Copier de PushTracker?"
+      },
+      "label": "Paramètres Push",
+      "out-of-date-dialog": {
+        "message": "PushTracker doit être au moins de la version 1.6 pour recevoir les PushSettings. Les PushSettings seront ignorés.",
+        "title": "PushTracker périmé"
+      },
+      "threshold": "Seuil",
+      "time-window": "Fenêtre de temps"
+    },
+    "settings": {
+      "acceleration": "Accélération",
+      "control-mode": {
+        "label": "Mode de contrôle"
+      },
+      "copy-dialog": {
+        "message": "Les paramètres de PushTracker diffèrent des paramètres enregistrés. Voulez-vous écraser les paramètres enregistrés avec les paramètres de PushTracker?",
+        "title": "Copier de PushTracker?"
+      },
+      "ez-on": "EZ-On",
+      "label": "Réglages",
+      "max-speed": "vitesse maximale",
+      "save-button": "Enregistrer dans PushTracker",
+      "save-dialogs": {
+        "failed": {
+          "message": "Nous n'avons pas pu enregistrer les paramètres de PushTracker sur votre PushTracker.",
+          "title": "Echec de l'enregistrement des paramètres"
+        }
+      },
+      "saving": "Enregistrement des paramètres PushTracker",
+      "tap-sensitivity": "Touchez la sensibilité",
+      "units": {
+        "english": "Anglais",
+        "label": "des unités",
+        "metric": "métrique"
+      }
+    },
+    "state": {
+      "connected": {
+        "msg": "Les PushTrackers sont connectés avec succès:",
+        "title": "Connecté"
+      },
+      "connecting": {
+        "msg": "Les PushTrackers se connectent / sont connectés, mais aucune information sur la version n'a été reçue. Vous devrez peut-être déconnecter et reconnecter votre PushTracker pour obtenir les informations de version.",
+        "title": "De liaison"
+      },
+      "disconnected": {
+        "msg": "Les PushTrackers sont liés mais ne sont pas connectés. Veuillez connecter votre PushTracker en appuyant sur le bouton de droite et en le relâchant. Si vous ne parvenez pas à vous connecter, vous devrez peut-être relier votre PushTracker à votre téléphone en utilisant le menu des paramètres de PushTracker.",
+        "title": "Débranché"
+      },
+      "paired": {
+        "msg": "Les PushTrackers sont liés mais ne sont pas connectés. Veuillez connecter votre PushTracker en appuyant sur le bouton de droite et en le relâchant. Si vous ne parvenez pas à vous connecter, vous devrez peut-être relier votre PushTracker à votre téléphone en utilisant le menu des paramètres de PushTracker.",
+        "title": "Jumelé"
+      },
+      "unknown": {
+        "msg": "Aucun PushTrackers n'a été associé ou connecté jusqu'à présent. Veuillez associer votre PushTracker en allant dans le menu des paramètres de PushTracker.",
+        "title": "Pas de PushTrackers connus"
+      }
+    }
+  },
+  "sign-up": {
+    "not-permobil-email-error": "L'e-mail actuel ne peut pas s'inscrire en tant que représentant.",
+    "user-type-clinician": "Clinicien / ATP",
+    "user-type-end-user": "Utilisateur final",
+    "user-type-rep": "Représentant",
+    "user-exists": "Un compte existe déjà pour cet email."
+  },
+  "summary": {
+    "add-trial": "Ajouter un essai",
+    "at": "à",
+    "average-speed": "La vitesse moyenne était",
+    "cadence": " coups par minute, la cadence de l'utilisateur est exceptionnellement élevée. Envisagez de placer la roue arrière et une technique de poussée efficace.",
+    "coast-time": "Le temps moyen de la côte était",
+    "complete": "Évaluation complète?",
+    "confirm": "Êtes-vous sûr d'en avoir terminé avec l'évaluation?",
+    "difficulty-flat": "Difficulté sur une surface plane?",
+    "difficulty-incline": "Difficulté en pente?",
+    "difficulty-other": "Difficulté sur une autre surface?",
+    "difficulty-ramp": "Difficulté sur la rampe?",
+    "difficulty-ramp-incline": "Difficulté sur rampe/pente?",
+    "email-subject": "Résumé de l'évaluation intelligente",
+    "errors": {
+      "save-failed": {
+        "message": "Impossible d'enregistrer l'évaluation dans la base de données, erreur:",
+        "title": "Erreur d'enregistrement de l'évaluation"
+      }
+    },
+    "fewer": "moins",
+    "flat-surface-difficulty": "Difficulté de la surface plane",
+    "higher": "plus haute",
+    "incline-difficulty": "Difficulté inclinée",
+    "lmnTemplate": [
+      "Cet e-mail a été généré et envoyé par l'application Smart Evaluation.",
+      "",
+      "Douleurs poussantes de l'utilisateur: {{# evaluation.pushing_pain}} {{round}} {{/ evaluation.pushing_pain}} {{^ evaluation.pushing_pain}} 0 {{evaluation_pushing_pain}}/10",
+      "Fatigue des utilisateurs: {{# evaluation.pushing_fatigue}} {{round}} {{/ evaluation.pushing_fatigue}} {{^ evaluation.pushing_fatigue}} 0 {{/ evaluation.pushing_fatigue}}/10",
+      "Impact sur l'indépendance de l'utilisateur: {{# evaluation.impact_on_independence}} {{round}} {{/ evaluation.impact_on_independence}} {{^ evaluation.impact_on_independence}} 0 {{/ evaluation.impact_on_independence}}/10",
+      "",
+      "{{# trial._array}}",
+      "Essai '{{name}}':",
+      "  Had Flats: {{#flat}} Oui {{/ flat}} {{^ flat}} Non {{/ flat}}",
+      "  Had Ramp/Incline: {{#rampIncline}} Oui {{/ / rampIncline}} {{^ rampIncline}} Non {{/ rampIncline}}",
+      "{{#other}} Had Other: '{{other_description}}' {{/ other}}",
+      "  Distance: {{#distance}} {{toFixed}} {{/ distance}} {{^ distance}} 0.00 {{/ distance}} m",
+      "{{#fini avec}}",
+      "  Avec SD:",
+      "    pousse: {{with_pushes}}",
+      "    côte: {{#with_coast}} {{toFixed}} {{/ with_coast}} {{^ with_coast}} 0 {{/ with_coast}} s",
+      "    heure: {{#with_elapsed}} {{toTimeString}} {{/ with_elapsed}}",
+      "{{#unableToCompleteWith}}",
+      "    L'utilisateur n'a pas pu terminer l'essai avec le SmartDrive.",
+      "{{/ incapableToCompleteWith}}",
+      "{{/fini avec}}",
+      "{{^ terminé avec}}",
+      "  N'a pas terminé le procès avec SD!",
+      "{{/fini avec}}",
+      "{{#finishedWithout}}",
+      "  Sans SD:",
+      "    pousse: {{without_pushes}}",
+      "    côte: {{#without_coast}} {{toFixed}} {{/ sans_coast}} {{^ sans_coast}} 0 {{/ sans_coast}} s",
+      "    heure: {{#without_elapsed}} {{toTimeString}} {{/ sans_elapsed}}",
+      "{{#unableToCompleteWithout}}",
+      "    L'utilisateur n'a pas pu terminer l'essai sans le SmartDrive.",
+      "{{/ incapableToCompleteWithout}}",
+      "{{/ finishWithout}}",
+      "{{^ terminéSans}}",
+      "  N'a pas terminé le procès sans SD!",
+      "{{/ finishWithout}}",
+      "{{/trials._array}}",
+      "{{^ trial._array}}",
+      "{{#essais}}",
+      "Essai '{{name}}':",
+      "  Had Flats: {{#flat}} Oui {{/ flat}} {{^ flat}} Non {{/ flat}}",
+      "  Had Ramp/Incline: {{#rampIncline}} Oui {{/ / rampIncline}} {{^ rampIncline}} Non {{/ rampIncline}}",
+      "{{#other}} Had Other: '{{other_description}}' {{/ other}}",
+      "  Distance: {{#distance}} {{toFixed}} {{/ distance}} {{^ distance}} 0.00 {{/ distance}} m",
+      "{{#fini avec}}",
+      "  Avec SD:",
+      "    pousse: {{with_pushes}}",
+      "    côte: {{#with_coast}} {{toFixed}} {{/ with_coast}} {{^ with_coast}} 0 {{/ with_coast}} s",
+      "    heure: {{#with_elapsed}} {{toTimeString}} {{/ with_elapsed}}",
+      "{{#unableToCompleteWith}}",
+      "    L'utilisateur n'a pas pu terminer l'essai avec le SmartDrive.",
+      "{{/ incapableToCompleteWith}}",
+      "{{/fini avec}}",
+      "{{^ terminé avec}}",
+      "  N'a pas terminé le procès avec SD!",
+      "{{/fini avec}}",
+      "{{#finishedWithout}}",
+      "  Sans SD:",
+      "    pousse: {{without_pushes}}",
+      "    côte: {{#without_coast}} {{toFixed}} {{/ sans_coast}} {{^ sans_coast}} 0 {{/ sans_coast}} s",
+      "    heure: {{#without_elapsed}} {{toTimeString}} {{/ sans_elapsed}}",
+      "{{#unableToCompleteWithout}}",
+      "    L'utilisateur n'a pas pu terminer l'essai sans le SmartDrive.",
+      "{{/ incapableToCompleteWithout}}",
+      "{{/ finishWithout}}",
+      "{{^ terminéSans}}",
+      "  N'a pas terminé le procès sans SD!",
+      "{{/ finishWithout}}",
+      "{{/essais}}",
+      "{{/trials._array}}",
+      "",
+      "{{# evaluation.flat_difficulty}}",
+      "Problème de l'utilisateur avec les appartements: {{round}}/10",
+      "{{# evaluation.unableToCompleteFlat}}",
+      "  - Remarque: l'utilisateur n'a pas pu terminer la partie plate de l'évaluation.",
+      "{{/evaluation.unableToCompleteFlat}}",
+      "{{/evaluation.flat_difficulty}}",
+      "{{# evaluation.ramp_incline_difficulty}}",
+      "Problème de l'utilisateur avec les rampes/pentes: {{round}}/10",
+      "{{# evaluation.unableToCompleteRampIncline}}",
+      "  - remarque: l'utilisateur n'a pas pu terminer la partie de l'évaluation sur la rampe/l'inclinaison.",
+      "{{/evaluation.unableToCompleteRampIncline}}",
+      "{{/evaluation.ramp_incline_difficulty}}",
+      "{{# evaluation.other_difficulty}}",
+      "Problème de l'utilisateur avec d'autres: {{round}}/10",
+      "{{# evaluation.unableToCompleteOther}}",
+      "  - Remarque: l'utilisateur n'a pas pu terminer l'autre partie de l'évaluation.",
+      "{{/evaluation.unableToCompleteOther}}",
+      "{{/evaluation.other_difficulty}}",
+      "",
+      "L'utilisateur a effectué {{pushDiff}}% {{pushComparison}} avec SmartDrive.",
+      "",
+      "Le temps moyen de la côte était de {{coastDiff}} fois {{coastComparison}} avec SmartDrive",
+      "",
+      "La vitesse moyenne était de {{speedDiff}} fois {{speedComparison}} avec SmartDrive",
+      ""
+    ],
+    "lower": "inférieur",
+    "more": "Plus",
+    "other-surface-difficulty": "Autre difficulté de surface",
+    "pushes": " pousse avec SmartDrive.",
+    "ramp-difficulty": "Difficulté de la rampe",
+    "ramp-incline-difficulty": "Niveau de rampe/inclinaison",
+    "unable-flat": "Impossible de terminer plat?",
+    "unable-other": "Impossible de terminer l'autre surface?",
+    "unable-ramp-incline": "Impossible d'achever la rampe/l'inclinaison?",
+    "user-performed": "Utilisateur effectué",
+    "with-sd": " avec SmartDrive."
+  },
+  "training": [
+    {
+      "Bullets": [
+        "Appuyez de nouveau sur l'interrupteur à bascule pour allumer le SmartDrive, puis sur pour le mettre hors tension.",
+        "Le SmartDrive se fixe au fauteuil en alignant les parties plates de la pince avec les fentes de réception du SmartDrive",
+        "Après avoir aligné le SmartDrive et les méplats, abaissez le SmartDrive par-dessus les tiges de fixation et faites-le pivoter vers le bas pour fixer de manière pivotante le SmartDrive à la fixation et ainsi au fauteuil roulant.",
+        "Dans cette position, le poids du SmartDrive repose sur le sol.",
+        "Pour détacher le lecteur SmartDrive du fauteuil, soulevez avec la poignée pour dégager le lecteur SmartDrive de la pince, en sens inverse de la procédure de fixation."
+      ],
+      "Image": "~/assets/images/gifs/SD-POWER.gif",
+      "Label": "Alimenter SmartDrive"
+    },
+    {
+      "Bullets": [
+        "Appuyez sur l'un des boutons du PushTracker pour l'allumer.",
+        "Appuyez sur le bouton de gauche surélevé et maintenez-le enfoncé pendant 3 secondes pour passer en mode veille 'zzz' et éteindre le PushTracker."
+      ],
+      "Image": "~/assets/images/gifs/PT-ON-OFF.gif",
+      "Label": "Mise sous tension de PushTracker"
+    },
+    {
+      "Bullets": [
+        "En gardant votre poignet droit, établissez un contact sur la jante avec la paume de votre main.",
+        "Une lumière rouge s’illuminera lorsqu’un robinet réussit.",
+        "Conseil: Vous n'avez pas besoin de contacter la bande PushTracker.",
+        "Conseil: évitez de déplacer votre main dans une \"queue de poisson\" comme un mouvement. Cela entraînera une reconnaissance de frappe incohérente."
+      ],
+      "Image": "~/assets/images/Stop.png",
+      "Label": "Tap Gesture"
+    },
+    {
+      "Bullets": [
+        "Appuyez deux fois pour lancer le SmartDrive. Il va alors commencer à accélérer.",
+        "Ensuite, appuyez une fois pour définir la vitesse souhaitée.",
+        "Pour augmenter la vitesse, appuyez plus rapidement, puis tapez une fois pour régler la vitesse souhaitée.",
+        "Si vous ne tapez pas, le SmartDrive accélérera jusqu'à la vitesse maximale contrôlée par le paramètre Vitesse maximale du PushTracker."
+      ],
+      "Image": "~/assets/images/start-coast.png",
+      "Label": "Vitesse de démarrage et de réglage"
+    },
+    {
+      "Bullets": [
+        "Appuyez deux fois pour désengager le SmartDrive.",
+        "Puis côte et freinez avec vos mains.",
+        "Conseil: pour arrêter rapidement, effectuez une frappe simple, suivie d’une prise rapide combinée et saisie.",
+        "Remarque: le fait de désengager le SmartDrive n'arrête que le moteur SmartDrive. Vous devrez quand même freiner avec vos mains pour immobiliser votre fauteuil."
+      ],
+      "Image": "~/assets/images/Stop2.png",
+      "Label": "Arrêt"
+    },
+    {
+      "Bullets": [
+        "Pour vous diriger, saisissez doucement le bouton-poussoir de la direction dans laquelle vous souhaitez aller.",
+        "Une légère adhérence vous permettra de virer.",
+        "Permettez à la jante de glisser entre vos mains."
+      ],
+      "Image": "~/assets/images/Steer.png",
+      "Label": "Pilotage"
+    },
+    {
+      "Bullets": [
+        "Pour vous retourner, tenez fermement le bouton-poussoir de la direction dans laquelle vous souhaitez aller.",
+        "Une prise ferme vous permettra de tourner.",
+        "Plus vous agrippez, plus vous tournez.",
+        "Astuce: Une position optimale du centre de gravité des roues arrière réduira l'adhérence nécessaire pour faire des virages serrés.",
+        "Remarque: Vous devrez peut-être désengager le SmartDrive lorsque vous souhaitez effectuer des virages très serrés."
+      ],
+      "Image": "~/assets/images/turn.png",
+      "Label": "Tournant"
+    }
+  ],
+  "training_component": {
+    "swipe-left-message": "Balayez vers la gauche pour voir plus de diapositives."
+  },
+  "trial": {
+    "accelleration": "Accélération",
+    "average-speed": "Vitesse moyenne:",
+    "coast-time": "Temps côtier:",
+    "complete": "Essai terminé",
+    "connect_pushtracker_more_info": "Un PushTracker doit être connecté à l'application Smart Evaluation pour pouvoir communiquer. Veuillez consulter la section Connectivité sur l'écran d'accueil ou appuyez sur l'icône de connectivité en haut à droite.",
+    "description": "Description du parcours ou de l'obstacle",
+    "distance": "Distance:",
+    "errors": {
+      "failed-start": {
+        "message": "Impossible de démarrer l'essai, erreur:",
+        "title": "Impossible de commencer le procès"
+      },
+      "failed-stop": {
+        "message": "Impossible d'arrêter le procès, erreur:",
+        "title": "Impossible d'arrêter le procès"
+      },
+      "pt-reconnect": {
+        "message": "Votre PushTracker n'a pas encore envoyé sa version. Veuillez déconnecter et reconnecter le PushTracker pour renvoyer les informations de version à l'application Smart Evaluation.",
+        "title": "Version inconnue de PushTracker"
+      },
+      "pt-same-distance": {
+        "message": "Votre PushTracker n'a pas reçu d'informations de distance actualisées de votre SmartDrive - assurez-vous qu'ils sont connectés / \"SD On\" sans moteur en marche avant l'arrêt de l'essai.",
+        "title": "Distance invalide"
+      },
+      "pt-unknown-distance": {
+        "message": "Votre PushTracker n’a pas reçu d’informations sur la distance du SmartDrive - assurez-vous qu’ils sont connectés / «SD On» sans moteur en marche avant de commencer l’essai.",
+        "title": "Distance inconnue"
+      },
+      "pt-version": {
+        "message": "Votre version de PushTracker est obsolète, veuillez effectuer un OTA! Version actuelle:",
+        "title": "Erreur de version de PushTracker"
+      },
+      "timeout": "Temps libre",
+      "too-many-pts": "Trop de PushTrackers connectés - veuillez n'en connecter qu'un!"
+    },
+    "evaluator-range": "Remarque: le PushTracker n'a pas besoin de rester connecté au téléphone tout au long de cette phase - il n'a qu'à se connecter au début et à la fin.",
+    "flat-surfaces": "Surfaces plates",
+    "inclines": "Les pentes",
+    "max-speed": "vitesse maximale",
+    "name": "Entrez le nom de l'essai",
+    "other": "Autre",
+    "phase-1": "La phase 1",
+    "phase-1-desc": "Suivez le cours d’essai avec le SmartDrive - appuyez sur Start pour commencer.",
+    "phase-2": "Phase 2",
+    "phase-2-desc": "Maintenant, refaites le même cours d’essai sans le SmartDrive - appuyez sur Start pour commencer.",
+    "please-connect-pt": "Veuillez connecter votre PushTracker",
+    "push_accuracy_disclaimer": "Le suiveur de poussée utilise le mouvement pour détecter les poussées. Cela peut entraîner une précision variable en fonction de la manière dont l'utilisateur s'use et se déplace avec le suiveur de poussée. Une meilleure mesure pour l'évaluation est la différence relative entre les poussées avec le SmartDrive et sans le SmartDrive.",
+    "pushes": "Pousse:",
+    "ramp": "Rampe",
+    "ramp-incline": "Rampes/Pentes",
+    "recommendation": "Remarque: les essais sont recommandés pour contenir des rampes, plusieurs types de surface, et devraient durer au moins quelques minutes ou 100 mètres.",
+    "select-options": "Sélectionnez les options et les paramètres pour l'essai SmartDrive.",
+    "set-up": "Configuration d'essai",
+    "smartdrive-connection": "Remarque: avant de commencer cette version d'essai, assurez-vous que les connexions PushTracker et SmartDrive sont connectées/«SD On» pour vous assurer que le PushTracker dispose des informations de distance les plus récentes.",
+    "start": "Début",
+    "starting-trial": "Début de la période d'essai - peut prendre jusqu'à 10 secondes.",
+    "stop": "Arrêtez",
+    "stopping-trial": "Arrêt du procès - peut prendre jusqu'à 10 secondes.",
+    "summary": "Résumé",
+    "time": "Temps:",
+    "title": "Procès",
+    "unable": "Ne peut pas terminer",
+    "with-sd": "Avec SmartDrive",
+    "without-sd": "Sans SmartDrive"
+  },
+  "user": {
+    "accept": {
+      "accept-error": {
+        "message": "Vous devez lire et accepter le contrat et la politique de confidentialité pour créer un compte!",
+        "title": "Erreur d'accord"
+      },
+      "agreement-button": "Voir l'accord de l'utilisateur final",
+      "header": "Vous devez accepter les conditions d'utilisation et lire la déclaration de confidentialité pour pouvoir activer et utiliser Smart Evaluation.",
+      "privacy-button": "Voir la politique de confidentialité",
+      "privacy-policy": "J'ai lu et compris la politique de confidentialité",
+      "privacy-policy-title": "Accepter la politique de confidentialité",
+      "user-agreement": "J'ai lu, compris et accepté les conditions d'utilisation",
+      "user-agreement-title": "Accepter l'accord de l'utilisateur final"
+    },
+    "account": "Compte",
+    "account-creating": "La création du compte...",
+    "account-error": "Une erreur s'est produite lors de la tentative de récupération des informations de votre compte. Réessayez plus tard.",
+    "account-reset": "Réinitialiser le compte?",
+    "account-reset-confirm": "Êtes-vous sûr de vouloir réinitialiser votre compte (supprimer toutes vos données/paramètres)?",
+    "account-update": "Mettre à jour le compte d'utilisateur?",
+    "account-update-complete": "Votre profil a été mis a jour.",
+    "account-update-confirm": "Envoyer ces paramètres au serveur?",
+    "account-update-error": "Une erreur est survenue lors de la mise à jour de votre profil. Veuillez réessayer.",
+    "back-to-login": "Retour connexion",
+    "change-pass": "Changer le mot de passe",
+    "check-email": "Consultez votre courrier électronique pour obtenir des instructions sur la réinitialisation de votre mot de passe.",
+    "company": "Entreprise",
+    "consent": {
+      "beta-test": "J'accepte les tests bêta du micrologiciel et comprends les risques associés.",
+      "header": "Vous pouvez donner ou retirer votre consentement à tout moment pendant l'utilisation du service en accédant à la page \"Compte\" de l'application.",
+      "product-development": "Je donne mon consentement à l'utilisation de mes données à des fins de recherche, comme indiqué dans la politique de confidentialité",
+      "research": "Je donne mon consentement à l'utilisation de mes données pour le développement du produit, tel que décrit dans la politique de confidentialité"
+    },
+    "consent-form-title": "Formulaire de consentement à la politique de confidentialité",
+    "email": "Email",
+    "email-error": "n'est pas une adresse email valide.",
+    "email-invalid": "Le courriel est invalide",
+    "email-required": "Email est requis.",
+    "email-sent": "Email envoyé",
+    "end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
+    "error": "erreur",
+    "feedback-email-subject": "Commentaires d'évaluation intelligents",
+    "first-name": "Prénom",
+    "first-name-error": "Le prénom est requis",
+    "forgot-password": "Mot de passe oublié",
+    "form-invalid": "Le formulaire est invalide. Merci de remplir tous les champs.",
+    "language": "La langue",
+    "last-name": "Nom de famille",
+    "last-name-error": "Le nom est requis",
+    "logged-in": "Vous êtes maintenant connecté",
+    "login": "S'identifier",
+    "logout": "Connectez - Out",
+    "ok": "D'accord",
+    "password": "Mot de passe",
+    "password-change": "Changer le mot de passe?",
+    "password-change-confirm": "Êtes-vous sûr de vouloir changer votre mot de passe?",
+    "password-error": "Mot de passe requis.",
+    "phone": "Téléphone",
+    "privacy-policy-site": "https://privacy.permobil.com",
+    "provide-feedback-btn": "Envoyer des commentaires",
+    "provide-feedback-confirm-message": "Souhaitez-vous envoyer des commentaires via votre client de messagerie configuré?",
+    "provide-feedback-confirm-title": "Fournir une réponse?",
+    "reset-acct": "Réinitialiser le compte",
+    "reset-pass-desc": "Pour réinitialiser votre mot de passe, entrez l'adresse e-mail de votre compte. Vous recevrez un email avec les instructions pour réinitialiser votre mot de passe.",
+    "sign-in": "se connecter",
+    "sign-in-error-1": "Une erreur s'est produite lors de la connexion. Vérifiez votre email et votre mot de passe.",
+    "sign-in-error-2": "E-mail et/ou mot de passe invalide. Veuillez réessayer.",
+    "sign-out": "Déconnexion",
+    "sign-out-confirm": "Êtes-vous certain de vouloir vous déconnecter?",
+    "sign-up": "S'inscrire",
+    "sign-up-error": "Impossible de s'inscrire:",
+    "sign-up-success": "Votre nom d'utilisateur est:",
+    "signing-in": "Connectez-vous...",
+    "submitting": "Soumission...",
+    "success": "Succès",
+    "type": "Type d'utilisateur",
+    "unsaved": "Vous avez des changements non enregistrés. Êtes-vous sûr de vouloir quitter sans enregistrer?",
+    "updated": "Votre profil a été mis à jour avec succès!"
+  },
+  "videos": [
+    {
+      "Description": "Cette vidéo est une vue d'ensemble de SmartDrive utilisé par des personnes d'âges et de circonstances différents dans des environnements variés.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/overview-thumb.jpg",
+      "Title": "Introduction de SmartDrive",
+      "Url": "8fn26J59WJ4"
+    },
+    {
+      "Description": "Cette vidéo présente le fonctionnement de base et les fonctionnalités du SmartDrive et du PushTracker.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/sd-basic-op-thumb.jpg",
+      "Title": "Fonctionnement de base du SmartDrive MX2",
+      "Url": "uhA3-svjQFg"
+    },
+    {
+      "Description": "Cette vidéo couvre le fonctionnement de base et les fonctionnalités du PushTracker.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/pt-basic-op-thumb.jpg",
+      "Title": "Opération de base de PushTracker",
+      "Url": "6_M1J8HZXIk"
+    },
+    {
+      "Description": "Cette vidéo présente les étapes à suivre pour effectuer une évaluation ou une formation SmartDrive.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/eval-thumb.jpg",
+      "Title": "Évaluation et formation SmartDrive",
+      "Url": "45Kj7zJpDcM"
+    },
+    {
+      "Description": "Dans cette vidéo, Chels et Steph sont interviewés sur les nombreux aspects de leur vie et sur l'impact de SmartDrive sur leur vie.",
+      "Route": "/video",
+      "Thumb": "~/assets/images/interview-thumb.jpg",
+      "Title": "Entretien avec Chels et Steph",
+      "Url": "hFid9ks551A"
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+<MaxActionBar [title]="'menu.connectivity' | translate"> </MaxActionBar>
+
+<GridLayout iosOverflowSafeArea="true">
+  <Carousel
+    #carousel
+    (loaded)="onCarouselLoad()"
+    ios:indicatorOffset="0,-10"
+    ios:finite="true"
+    ios:bounce="false"
+    height="100%"
+    indicatorColor="#66ccff"
+    indicatorColorUnselected="#cceeff"
+  >
+    // For all the info / gifs:
+    <CarouselItem *ngFor="let slide of slides">
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout row="0" class="topSlide" height="35%">
+          <Gif
+            *ngIf="slide.Image.indexOf('.gif') > -1"
+            [src]="slide.Image"
+            (tap)="onGifTap($event)"
+            ios:height="100%"
+            ios:width="167"
+            android:height="100%"
+            android:width="100%"
+          ></Gif>
+        </StackLayout>
+
+        <ScrollView row="1" class="lowerSlide" height="65%">
+          <StackLayout>
+            <label [text]="slide.Label" class="label" textWrap="true"></label>
+            <label
+              *ngFor="let bullet of slide.Bullets"
+              [text]="bullet"
+              class="bullet"
+              textWrap="true"
+            ></label>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+
+    // for pushtracker settings control
+    <CarouselItem>
+      <GridLayout rows="auto, *" cols="*">
+        <StackLayout row="0" class="topSlide" height="35%">
+          <image
+            src="~/assets/images/pt-settings-gear.png"
+            stretch="aspectFit"
+          ></image>
+        </StackLayout>
+
+        <ScrollView row="1" class="lowerSlide" height="65%">
+          <StackLayout>
+            // TITLE
+            <label
+              [text]="'pushtracker.settings.label' | translate"
+              class="label"
+              textWrap="true"
+            ></label>
+            // EZ On
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.ez-on' | translate"
+                class="setting"
+              ></label>
+              <Switch
+                dock="right"
+                [checked]="settings.ezOn"
+                (checkedChange)="onSettingsChecked('ezOn', $event)"
+              ></Switch>
+            </DockLayout>
+            // Control Mode
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.control-mode.label' | translate"
+                class="setting"
+              ></label>
+              <DropDown
+                #controlModeDropDown
+                [hint]="'pushtracker.settings.control-mode.label' | translate"
+                dock="right"
+                [items]="ControlModeOptions"
+                (selectedIndexChanged)="
+                  onSettingsDropdown('controlMode', $event)
+                "
+              ></DropDown>
+            </DockLayout>
+            // Units
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.units.label' | translate"
+                class="setting"
+              ></label>
+              <DropDown
+                #unitsDropDown
+                [hint]="'pushtracker.settings.units.label' | translate"
+                dock="right"
+                [items]="UnitsOptions"
+                (selectedIndexChanged)="onSettingsDropdown('units', $event)"
+              ></DropDown>
+            </DockLayout>
+            // Max Speed
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.max-speed' | translate"
+                class="setting"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.maxSpeed.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                [value]="settings.maxSpeed / 10"
+                (valueChange)="onSettingsUpdate('maxSpeed', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+            // Acceleration
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.acceleration' | translate"
+                class="setting"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.acceleration.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                [value]="settings.acceleration / 10"
+                (valueChange)="onSettingsUpdate('acceleration', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+            // Tap Sensitivity
+            <DockLayout stretchLastChild="false">
+              <label
+                [text]="'pushtracker.settings.tap-sensitivity' | translate"
+                class="setting"
+              ></label>
+              <label
+                verticalAlignment="center"
+                dock="right"
+                [text]="settings.tapSensitivity.toFixed(0) + '%'"
+                row="0"
+                col="1"
+                class="value"
+              ></label>
+            </DockLayout>
+            <GridLayout rows="auto" columns="*, auto" class="slider-container">
+              <Slider
+                minValue="0"
+                maxValue="10"
+                [value]="settings.tapSensitivity / 10"
+                (valueChange)="onSettingsUpdate('tapSensitivity', $event)"
+                row="0"
+                col="0"
+              ></Slider>
+            </GridLayout>
+
+            <!--
+              // Push Settings:
+              <Label [text]="'pushtracker.push-settings.label' | translate" class="section"></Label>
+              // Push Threshold
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.threshold' | translate" class="setting"></Label>
+                <Label verticalAlignment="center" dock="right" [text]="pushSettings.threshold.toFixed(0)" row="0" col="1" class="value"></Label>
+              </DockLayout>
+              <GridLayout rows="auto" columns="*, auto">
+                <Slider minValue="0" maxValue="10" verticalAlignment="center" [value]="pushSettings.threshold"
+                  (valueChange)="onPushSettingsUpdate('threshold', $event)" row="0" col="0"></Slider>
+              </GridLayout>
+              // Time Window
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.time-window' | translate" class="setting"></Label>
+                <Label verticalAlignment="center" dock="right" [text]="pushSettings.timeWindow.toFixed(0)" row="0" col="1" class="value"></Label>
+              </DockLayout>
+              <GridLayout rows="auto" columns="*, auto">
+                <Slider minValue="0" maxValue="50" verticalAlignment="center" [value]="pushSettings.timeWindow"
+                  (valueChange)="onPushSettingsUpdate('timeWindow', $event)" row="0" col="0"></Slider>
+              </GridLayout>
+              // Clear Counter
+              <DockLayout stretchLastChild="false">
+                <Label [text]="'pushtracker.push-settings.clear-counter' | translate" class="setting"></Label>
+                <Switch dock="right" [checked]="pushSettings.clearCounter" (checkedChange)="onPushSettingsChecked('clearCounter', $event)"></Switch>
+              </DockLayout>
+            -->
+
+            // Send these settings to PushTracker
+            <button
+              [text]="'pushtracker.settings.save-button' | translate"
+              class="saveButton"
+              (tap)="onSaveSettings($event)"
+            ></button>
+          </StackLayout>
+        </ScrollView>
+      </GridLayout>
+    </CarouselItem>
+  </Carousel>
+</GridLayout>

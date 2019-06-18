@@ -1,0 +1,20 @@
+@import '~nativescript-theme-core/scss/platforms/index.android';
+@import './variables';
+
+ListView {
+  height: 100%;
+}
+
+RadListView {
+  height: 100%;
+}
+
+Switch {
+  margin: 0 5 0 5;
+  padding: 0;
+}
+
+button {
+  padding: 6;
+  margin: 8;
+}

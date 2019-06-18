@@ -1,0 +1,89 @@
+// Custom common variables
+@import '../../scss/variables';
+@import '../../scss/carousel';
+
+.topSlide {
+  background-image: url('~/assets/images/background_1.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  margin: 0;
+
+  image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  Gif {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.lowerSlide {
+  horizontal-align: center;
+
+  StackLayout {
+    horizontal-align: center;
+    width: 100%;
+    padding: 0, 0, 30, 0;
+  }
+}
+
+.back-button {
+  width: 150;
+  height: 40;
+  color: $permobil-charcoal;
+  background-color: $permobil-ocean;
+  border-radius: 2;
+  margin: 45, 10, 50, 10;
+}
+
+.submit-button {
+  background-color: $permobil-ocean;
+  color: white;
+  padding: 10;
+  margin-top: 20;
+  border-radius: 2;
+}
+
+.icon {
+  font-size: 30em;
+  padding: 10;
+  color: $permobil-ocean;
+  text-shadow: 5px, 5px, 5px, $permobil-icon-shadow-orange;
+}
+
+.bullet {
+  color: #fff;
+  font-family: $os-Light;
+  font-size: 13;
+  text-align: left;
+  margin: 10, 20, 10, 15;
+}
+
+.slide-indicator-inactive {
+  background-color: #fff;
+  opacity: 0.4;
+  width: 10;
+  height: 10;
+  margin-left: 2.5;
+  margin-right: 2.5;
+  margin-top: 0;
+  border-radius: 5;
+}
+
+.slide-indicator-active {
+  background-color: #fff;
+  opacity: 0.9;
+  width: 10;
+  height: 10;
+  margin-left: 2.5;
+  margin-right: 2.5;
+  margin-top: 0;
+  border-radius: 5;
+}

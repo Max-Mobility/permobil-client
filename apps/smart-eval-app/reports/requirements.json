@@ -1,0 +1,210 @@
+[
+  {
+    "name": "SEA-SRS-1-A: Pairing to the PushTracker",
+    "short": "SEA-SRS-1-A",
+    "value": {
+      "name": "SEA-SRS-1-A",
+      "description": "Pairing to the PushTracker"
+    }
+  },
+  {
+    "name": "SEA-SRS-10-A: Authentication",
+    "short": "SEA-SRS-10-A",
+    "value": {
+      "name": "SEA-SRS-10-A",
+      "description": "Authentication"
+    }
+  },
+  {
+    "name": "SEA-SRS-11-A: Authentication Indication",
+    "short": "SEA-SRS-11-A",
+    "value": {
+      "name": "SEA-SRS-11-A",
+      "description": "Authentication Indication"
+    }
+  },
+  {
+    "name": "SEA-SRS-12-A: Main Display Screen",
+    "short": "SEA-SRS-12-A",
+    "value": {
+      "name": "SEA-SRS-12-A",
+      "description": "Main Display Screen"
+    }
+  },
+  {
+    "name": "SEA-SRS-13-A: Application Menu",
+    "short": "SEA-SRS-13-A",
+    "value": {
+      "name": "SEA-SRS-13-A",
+      "description": "Application Menu"
+    }
+  },
+  {
+    "name": "SEA-SRS-14-A: Evaluation Interface",
+    "short": "SEA-SRS-14-A",
+    "value": {
+      "name": "SEA-SRS-14-A",
+      "description": "Evaluation Interface"
+    }
+  },
+  {
+    "name": "SEA-SRS-15-A: Evaluation User Data Collection",
+    "short": "SEA-SRS-15-A",
+    "value": {
+      "name": "SEA-SRS-15-A",
+      "description": "Evaluation User Data Collection"
+    }
+  },
+  {
+    "name": "SEA-SRS-16-A: Evaluation Activity Data Collection",
+    "short": "SEA-SRS-16-A",
+    "value": {
+      "name": "SEA-SRS-16-A",
+      "description": "Evaluation Activity Data Collection"
+    }
+  },
+  {
+    "name": "SEA-SRS-17-A: Evaluation Information Display",
+    "short": "SEA-SRS-17-A",
+    "value": {
+      "name": "SEA-SRS-17-A",
+      "description": "Evaluation Information Display"
+    }
+  },
+  {
+    "name": "SEA-SRS-18-A: Evaluation Report Generation",
+    "short": "SEA-SRS-18-A",
+    "value": {
+      "name": "SEA-SRS-18-A",
+      "description": "Evaluation Report Generation"
+    }
+  },
+  {
+    "name": "SEA-SRS-19-A: OTA Interface",
+    "short": "SEA-SRS-19-A",
+    "value": {
+      "name": "SEA-SRS-19-A",
+      "description": "OTA Interface"
+    }
+  },
+  {
+    "name": "SEA-SRS-2-A: Connectivity to the PushTracker",
+    "short": "SEA-SRS-2-A",
+    "value": {
+      "name": "SEA-SRS-2-A",
+      "description": "Connectivity to the PushTracker"
+    }
+  },
+  {
+    "name": "SEA-SRS-20-A: OTA Status Display",
+    "short": "SEA-SRS-20-A",
+    "value": {
+      "name": "SEA-SRS-20-A",
+      "description": "OTA Status Display"
+    }
+  },
+  {
+    "name": "SEA-SRS-21-A: Demo Unit Interface",
+    "short": "SEA-SRS-21-A",
+    "value": {
+      "name": "SEA-SRS-21-A",
+      "description": "Demo Unit Interface"
+    }
+  },
+  {
+    "name": "SEA-SRS-22-A: Internationalization",
+    "short": "SEA-SRS-22-A",
+    "value": {
+      "name": "SEA-SRS-22-A",
+      "description": "Internationalization"
+    }
+  },
+  {
+    "name": "SEA-SRS-23-A: Multi-platform support",
+    "short": "SEA-SRS-23-A",
+    "value": {
+      "name": "SEA-SRS-23-A",
+      "description": "Multi-platform support"
+    }
+  },
+  {
+    "name": "SEA-SRS-24-A: Asynchronous Communications",
+    "short": "SEA-SRS-24-A",
+    "value": {
+      "name": "SEA-SRS-24-A",
+      "description": "Asynchronous Communications"
+    }
+  },
+  {
+    "name": "SEA-SRS-25-A: Asynchronous Communications Internal Notification",
+    "short": "SEA-SRS-25-A",
+    "value": {
+      "name": "SEA-SRS-25-A",
+      "description": "Asynchronous Communications Internal Notification"
+    }
+  },
+  {
+    "name": "SEA-SRS-26-A: Asynchronous Communications External Notification",
+    "short": "SEA-SRS-26-A",
+    "value": {
+      "name": "SEA-SRS-26-A",
+      "description": "Asynchronous Communications External Notification"
+    }
+  },
+  {
+    "name": "SEA-SRS-3-A: Data Transmission with the PushTracker",
+    "short": "SEA-SRS-3-A",
+    "value": {
+      "name": "SEA-SRS-3-A",
+      "description": "Data Transmission with the PushTracker"
+    }
+  },
+  {
+    "name": "SEA-SRS-4-A: Connectivity to the SmartDrive",
+    "short": "SEA-SRS-4-A",
+    "value": {
+      "name": "SEA-SRS-4-A",
+      "description": "Connectivity to the SmartDrive"
+    }
+  },
+  {
+    "name": "SEA-SRS-5-A: Data Transmission with the SmartDrive",
+    "short": "SEA-SRS-5-A",
+    "value": {
+      "name": "SEA-SRS-5-A",
+      "description": "Data Transmission with the SmartDrive"
+    }
+  },
+  {
+    "name": "SEA-SRS-6-A: Connection to Backend",
+    "short": "SEA-SRS-6-A",
+    "value": {
+      "name": "SEA-SRS-6-A",
+      "description": "Connection to Backend"
+    }
+  },
+  {
+    "name": "SEA-SRS-7-A: User Account Creation",
+    "short": "SEA-SRS-7-A",
+    "value": {
+      "name": "SEA-SRS-7-A",
+      "description": "User Account Creation"
+    }
+  },
+  {
+    "name": "SEA-SRS-8-A: User Account View",
+    "short": "SEA-SRS-8-A",
+    "value": {
+      "name": "SEA-SRS-8-A",
+      "description": "User Account View"
+    }
+  },
+  {
+    "name": "SEA-SRS-9-A: User Account Editing",
+    "short": "SEA-SRS-9-A",
+    "value": {
+      "name": "SEA-SRS-9-A",
+      "description": "User Account Editing"
+    }
+  }
+]

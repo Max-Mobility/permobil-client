@@ -1,0 +1,164 @@
+{
+  "number": "2",
+  "name": "Account Management",
+  "reports": [
+    {
+      "number": "1",
+      "revision": "A",
+      "description": "Backend Connection",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-6-A",
+          "description": "Connection to Backend"
+        },
+        {
+          "name": "SEA-SRS-7-A",
+          "description": "User Account Creation"
+        },
+        {
+          "name": "SEA-SRS-10-A",
+          "description": "Authentication"
+        },
+        {
+          "name": "SEA-SRS-11-A",
+          "description": "Authentication Indication"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Account Creation",
+          "preconditions": "The app should be running and opened to the 'Sign Up' page. The phone should be connected to the internet through either WiFi or Cellular networks.",
+          "methods": [
+            "Press the 'Sign Up' button.",
+            "Input new account information. Press the 'Sign Up' button.",
+            "Agree to both the User Agreement and the Privacy Policy and press 'OK'."
+          ],
+          "acceptanceCriteria": [
+            "The app should report that the required accout information is missing.",
+            "The app should show the privacy policy and end user agreement.",
+            "The app should show a dialog indicating it is creating an account on the server - after which it should display a dialog indicating the username of the newly created account. That user name should be the email address that was provided."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Account Login",
+          "preconditions": "The app should be running and opened to the 'Login' page. The phone should be connected to the internet through either WiFi or cellular networks.",
+          "methods": [
+            "Enter invalid credentials. Press 'Login'.",
+            "Enter valid credentials. Press 'Login'."
+          ],
+          "acceptanceCriteria": [
+            "The app should display a dialog indicating that the credentials are invalid.",
+            "The app should display a dialog indicating that it is signing in - after which it should navigate to the home page."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Account Logout",
+          "preconditions": "The app should be running, signed in, and open to the 'Home' page.",
+          "methods": [
+            "Navigate to the 'Account' page. Press 'Sign Out' and agree to the confirmation dialog."
+          ],
+          "acceptanceCriteria": [
+            "The app should sign out and navigate to the 'Login' page."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    },
+    {
+      "number": "2",
+      "revision": "A",
+      "description": "Account Management",
+      "testerName": "William Emfinger",
+      "testLevel": "System",
+      "requirements": [
+        {
+          "name": "SEA-SRS-8-A",
+          "description": "User Account View"
+        },
+        {
+          "name": "SEA-SRS-9-A",
+          "description": "User Account Editing"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Viewing",
+          "preconditions": "The app should be running, signed in, and open to the 'Home' page.",
+          "methods": [
+            "Navigate to the 'Account' page."
+          ],
+          "acceptanceCriteria": [
+            "The app should show the account information associated with the account."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        },
+        {
+          "name": "Editing",
+          "preconditions": "The app should be running, signed in, and open to the 'Account' page.",
+          "methods": [
+            "Edit one of the account information fields. Press the 'Save' button and agree to the confirmation dialog."
+          ],
+          "acceptanceCriteria": [
+            "The app should display a dialog indicating the data was updated successfully."
+          ],
+          "results": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "SKIP",
+            "SKIP",
+            "SKIP",
+            "SKIP"
+          ],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "2018-07-24",
+      "endDate": "2018-07-24"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="login_email_textfield" />
+    <item type="id" name="login_password_textfield" />
+    <item type="id" name="login_submit_button" />
+</resources>

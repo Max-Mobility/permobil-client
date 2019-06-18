@@ -1,0 +1,127 @@
+// customized variables
+@import 'variables';
+@import 'carousel';
+@import 'buttons';
+@import 'action-bar';
+@import 'forms';
+@import 'sliders';
+// theme standard rulesets
+@import '~nativescript-theme-core/scss/index';
+
+/*** Fonts ***/
+.mdi {
+  font-family: $material-icon;
+}
+
+.fa {
+  font-family: $fa;
+}
+
+.ionicon {
+  font-family: $ionicon;
+}
+
+// Branding
+.logo {
+  margin: 100, 50, 30, 50;
+}
+
+.app-logo {
+  font-size: 20;
+  font-family: $os;
+  color: $white;
+  margin: 100, 0, 0, 0;
+  text-align: center;
+}
+
+.account-icon {
+  margin: 15 0 20 0;
+  color: $permobil-ocean;
+  font-size: 60;
+  text-align: center;
+}
+
+.permobil-hero {
+  background-color: $permobil-hero;
+}
+
+label {
+  font-family: $os-Light;
+}
+
+.light-background {
+  background-color: $white;
+}
+
+.firmWareCheckButton {
+  margin: 30, 50, 50, 50;
+}
+
+// Common page class
+.page-content {
+  .page-placeholder {
+    color: $page-icon-color;
+    font-size: $page-content-placeholder-font-size;
+    vertical-align: center;
+  }
+  .page-icon {
+    font-size: 50;
+    color: $page-icon-color;
+    margin-top: 20%;
+  }
+}
+
+.blue-gradient-down {
+  background: linear-gradient(to bottom, #004f7e, #0070b3);
+}
+
+.text-accent {
+  color: $accent;
+}
+
+.text-blue {
+  color: $blue;
+}
+
+.text-grey {
+  color: $grey;
+}
+
+.text-red {
+  color: $red;
+}
+
+.text-warning {
+  color: $warning;
+}
+
+.text-green {
+  color: $green;
+}
+
+.text-white {
+  color: $white;
+}
+
+.text-black {
+  color: $black;
+}
+
+.align-center {
+  horizontal-align: center;
+  vertical-align: center;
+}
+
+.text-middle {
+  vertical-align: center;
+}
+
+.bold {
+  font-weight: bold;
+  font-family: $os-SemiBold;
+}
+
+.very-bold {
+  font-weight: 700;
+  font-family: $os-SemiBold;
+}
