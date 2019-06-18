@@ -31,7 +31,7 @@
     "nativescript-email": "file:../../node_modules/nativescript-email",
     "nativescript-feedback": "file:../../node_modules/nativescript-feedback",
     "nativescript-floatingactionbutton": "file:../../node_modules/nativescript-floatingactionbutton",
-    "nativescript-geolocation": "file:./plugins/nativescript-geolocation.tgz",
+    "nativescript-geolocation": "file:../../node_modules/nativescript-geolocation",
     "nativescript-gif": "file:../../node_modules/nativescript-gif",
     "nativescript-permissions": "file:../../node_modules/nativescript-permissions",
     "nativescript-sentry": "file:../../node_modules/nativescript-sentry",

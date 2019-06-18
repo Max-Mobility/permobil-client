@@ -3,7 +3,5 @@
     "v8Flags": "--expose_gc",
     "markingMode": "none"
   },
-  "main": "main.js",
-  "name": "Smart Evaluation",
-  "version": "3.4.3"
+  "main": "main.js"
 }
