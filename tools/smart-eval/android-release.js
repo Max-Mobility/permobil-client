@@ -14,7 +14,8 @@ function askKeystorePassword() {
     prompt.get(
       {
         name: 'keystore_password',
-        description: 'What is the Smart Evaluation keystore password?'
+        description:
+          'What is the Smart Evaluation Mobile App keystore password?'
       },
       (err, result) => {
         if (err) {
@@ -23,7 +24,7 @@ function askKeystorePassword() {
         }
         if (!result.keystore_password) {
           return console.log(
-            'The keystore password is required to produce a signed release APK for Android.'
+            'The keystore password is required to produce a signed release AAB for Android.'
           );
         }
         keyPassword = result.keystore_password;
@@ -39,8 +40,8 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    // `npm run nuki && cd apps/eval-mobile && tns build android --release --bundle --env.aot --env.uglify --key-store-path ./tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --copy-to ./tools/smart-eval.apk`,
-    `tns build android --release --bundle --env.aot --env.uglify --key-store-path ./tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./tools/smart-eval.aab`,
+    `npm run nuki && cd apps/eval-mobile && tns build android --release --bundle --env.aot --env.uglify --key-store-path ./tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smart-eval.aab`,
+    // `tns build android --release --bundle --env.aot --env.uglify --key-store-path ../tools/smarteval-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./smart-eval.aab`,
     (err, stdout, stderr) => {
       if (err) {
         console.error('Error executing the android-release command.', err);
@@ -48,7 +49,7 @@ askKeystorePassword().then(result => {
       }
 
       console.log(
-        'Android release finished. A new release APK should be located in the maxmobility/apps/eval-mobile/tools/ directory.'
+        'Android release finished. A new release APK should be located in the permobil-mobile/apps/smart-eval/ directory.'
       );
     }
   );
