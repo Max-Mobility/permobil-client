@@ -110,6 +110,7 @@ Thumbs.db
 *.jks
 *.keystore
 *.apk
+*.aab
 *.ipa
 *.cer
 
