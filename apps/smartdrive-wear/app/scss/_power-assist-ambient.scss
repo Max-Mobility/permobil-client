@@ -1,0 +1,88 @@
+@import 'variables';
+
+$sd-battery-color: #B9B9B9;
+$sd-battery-rim-color: $black;
+$watch-battery-color: #B9B9B9;
+$watch-battery-rim-color: $black;
+
+$connected-color: #B9B9B9;
+$activated-color: #B9B9B9;
+$deactivated-color: #B9B9B9;
+$disconnected-color: #B9B9B9;
+$training-color: #B9B9B9;
+$tap-color: #B9B9B9;
+
+.batteryIconStack {
+  background-color: transparent;
+}
+
+.powerAssistCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 100%;
+  height: 100%;
+}
+
+.tapCircle {
+	bar-color: $tap-color;
+	rim-color: $tap-color;
+  background-color: transparent;
+  fill-color: transparent;
+  width: 100%;
+  height: 100%;
+}
+
+.sdBatteryCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 90%;
+  height: 90%;
+  bar-color: $sd-battery-color;
+  rim-color: $sd-battery-rim-color;
+}
+
+.watchBatteryCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 80%;
+  height: 80%;
+  bar-color: $watch-battery-color;
+  rim-color: $watch-battery-rim-color;
+}
+
+.topValue {
+  color: $ambient-white;
+  font-size: 18;
+  horizontal-align: $center;
+  vertical-align: top;
+}
+
+.topValueDescription {
+  color: $ambient-white;
+  font-size: 10;
+  horizontal-align: $center;
+  vertical-align: top;
+}
+
+
+.powerAssist-active,
+.powerAssist-deactive,
+.powerAssist-training {
+    @extend .power-assist-btn;
+  color: $ambient-white;
+  background-color: $black;
+}
+
+.currentTime {
+  color: $ambient-white;
+  font-size: 18;
+  horizontal-align: $center;
+  vertical-align: bottom;
+}
+
+.currentTimeMeridiem {
+  color: $ambient-white;
+  font-size: 10;
+  horizontal-align: $center;
+  vertical-align: bottom;
+}

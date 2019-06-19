@@ -1,0 +1,54 @@
+@import 'variables';
+
+/** Change Settings Page **/
+#changeSettingsPage {
+  margin: 4;
+
+  .increase-btn {
+    @extend .circle-image-btn;
+    color: $white;
+  }
+
+  .decrease-btn {
+    @extend .circle-image-btn;
+    color: $white;
+  }
+
+  .cancel-btn {
+    @extend .circle-image-btn;
+    color: $white;
+    background-color: gray;
+  }
+
+  .confirm-btn {
+    @extend .circle-image-btn;
+    color: $white;
+    background-color: $permobil-hero;
+  }
+
+  .value-circle {
+    height: 100;
+    width: 100;
+    border-radius: 50;
+    horizontal-align: $center;
+    vertical-align: $center;
+    background-color: $permobil-hero;
+    color: $white;
+
+    .changeSettingsTitle {
+      color: $white;
+      text-align: $center;
+      horizontal-align: $center;
+      vertical-align: $center;
+    }
+
+    .changeSettingsValue {
+      color: $white;
+      font-size: 24;
+      font-weight: bold;
+      text-align: $center;
+      horizontal-align: $center;
+      vertical-align: $center;
+    }
+  }
+}
