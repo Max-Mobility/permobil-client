@@ -1,15 +1,4 @@
-import {
-  BluetoothService,
-  DataKeys,
-  Log,
-  Prop,
-  SensorChangedEventData,
-  SensorService,
-  SentryService,
-  SERVICES,
-  SmartDrive,
-  SqliteService
-} from '@permobil/core';
+import { BluetoothService, DataKeys, Log, Prop, SensorChangedEventData, SensorService, SentryService, SERVICES, SmartDrive, SqliteService } from '@permobil/core';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -24,10 +13,7 @@ import * as themes from 'nativescript-themes';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { Vibrate } from 'nativescript-vibrate';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
-import {
-  showFailure,
-  showSuccess
-} from 'nativescript-wear-os/packages/dialogs';
+import { showFailure, showSuccess } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
@@ -37,32 +23,27 @@ import { action } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { Repeater } from 'tns-core-modules/ui/repeater';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import {
-  currentSystemTime,
-  currentSystemTimeMeridiem,
-  hideOffScreenLayout,
-  showOffScreenLayout
-} from '../../utils';
+import { currentSystemTime, currentSystemTimeMeridiem, hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
 export class MainViewModel extends Observable {
-  @Prop() smartDriveCurrentBatteryPercentage: number = 0;
-  @Prop() watchCurrentBatteryPercentage: number = 0;
-  @Prop() watchIsCharging: boolean = false;
+  @Prop() smartDriveCurrentBatteryPercentage = 0;
+  @Prop() watchCurrentBatteryPercentage = 0;
+  @Prop() watchIsCharging = false;
   @Prop() powerAssistRingColor: Color = PowerAssist.InactiveRingColor;
-  @Prop() estimatedDistance: number = 0.0;
-  @Prop() estimatedDistanceDisplay: string = '0.0';
-  @Prop() estimatedDistanceDescription: string = 'Estimated Range (mi)';
-  @Prop() currentSpeed: number = 0.0;
-  @Prop() currentSpeedDisplay: string = '0.0';
-  @Prop() currentSpeedDescription: string = 'Speed (mph)';
+  @Prop() estimatedDistance = 0.0;
+  @Prop() estimatedDistanceDisplay = '0.0';
+  @Prop() estimatedDistanceDescription = 'Estimated Range (mi)';
+  @Prop() currentSpeed = 0.0;
+  @Prop() currentSpeedDisplay = '0.0';
+  @Prop() currentSpeedDescription = 'Speed (mph)';
   @Prop() currentTime;
   @Prop() currentTimeMeridiem;
-  @Prop() powerAssistActive: boolean = false;
-  @Prop() isTraining: boolean = false;
+  @Prop() powerAssistActive = false;
+  @Prop() isTraining = false;
   /**
    * Boolean to track the settings swipe layout visibility.
    */
@@ -83,9 +64,9 @@ export class MainViewModel extends Observable {
    */
   lastTapTime: number;
   lastAccelZ: number = null;
-  tapLockoutTimeMs: number = 200;
-  maxTapSensitivity: number = 3.5;
-  minTapSensitivity: number = 1.5;
+  tapLockoutTimeMs = 200;
+  maxTapSensitivity = 3.5;
+  minTapSensitivity = 1.5;
   SENSOR_DELAY_US: number = 25 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 50 * 1000;
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
@@ -99,17 +80,17 @@ export class MainViewModel extends Observable {
   /**
    * Boolean to track if the SmartDrive motor is on.
    */
-  @Prop() public motorOn = false;
+  @Prop() motorOn = false;
 
   /**
    * Boolean to track if the user has tapped (for indication).
    */
-  @Prop() public hasTapped = false;
+  @Prop() hasTapped = false;
 
   /**
    * Data to bind to the Battery Usage Chart repeater.
    */
-  @Prop() public batteryChartData;
+  @Prop() batteryChartData;
   /**
    * Used to indicate the highest value in the battery chart.
    */
@@ -117,7 +98,7 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Distance Chart repeater.
    */
-  @Prop() public distanceChartData;
+  @Prop() distanceChartData;
   /**
    * Used to indicate the highest value in the distance chart.
    */
@@ -125,12 +106,12 @@ export class MainViewModel extends Observable {
   /**
    * Units of distance for the distance chart.
    */
-  @Prop() distanceUnits: string = 'mi';
+  @Prop() distanceUnits = 'mi';
 
   /**
    * Data to bind to the Error History repeater
    */
-  @Prop() public errorHistoryData;
+  @Prop() errorHistoryData;
 
   /**
    * State Management for Sensor Monitoring / Data Collection
@@ -160,7 +141,7 @@ export class MainViewModel extends Observable {
   private watchBatteryRing: AnimatedCircle;
   private smartDriveBatteryRing: AnimatedCircle;
   private _settingsLayout: SwipeDismissLayout;
-  public _changeSettingsLayout: SwipeDismissLayout;
+  _changeSettingsLayout: SwipeDismissLayout;
   private _errorHistoryLayout: SwipeDismissLayout;
   private _vibrator: Vibrate = new Vibrate();
   private _sentryService: SentryService;

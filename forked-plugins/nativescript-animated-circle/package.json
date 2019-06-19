@@ -1,0 +1,66 @@
+{
+  "name": "nativescript-animated-circle",
+  "version": "1.3.0",
+  "description": "Animated circle progress in your NativeScript applications.",
+  "main": "animated-circle",
+  "typings": "index.d.ts",
+  "nativescript": {
+    "platforms": {
+      "android": "3.0.0",
+      "ios": "3.0.0"
+    }
+  },
+  "scripts": {
+    "tsc": "tsc -skipLibCheck",
+    "build": "npm i && tsc",
+    "test.android": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
+    "test.ios": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\" --exclude \"*demo*/platforms/**\"",
+    "plugin.link": "npm link && cd ../demo && npm link nativescript-geolocation && cd ../src",
+    "plugin.tscwatch": "npm run tsc -- -w",
+    "demo.ios": "npm i && npm run tsc && cd ../demo && tns run ios --syncAllFiles",
+    "demo.android": "npm i && npm run tsc && cd ../demo && tns run android --syncAllFiles",
+    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**'",
+    "precommit": "lint-staged",
+    "development.setup": "npm run setup && npm link && cd ../demo && npm link nativescript-animated-circle && cd ../src",
+    "generate.typings.ios": "cd ../demo && TNS_DEBUG_METADATA_PATH=\"$(pwd)/metadata\" tns build ios && TNS_TYPESCRIPT_DECLARATIONS_PATH=\"$(pwd)/typings\" tns build ios && echo 'Now look for your library typings in demo/typings!'",
+    "make-changelog": "cd ../ && github_changelog_generator -u bradmartin -p nativescript-animated-circle"
+  },
+  "lint-staged": {
+    "*.ts, *.js, *.css, *.scss, *.md, *.html, *.xml": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "keywords": [
+    "ecosystem:nativescript",
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "circle"
+  ],
+  "author": {
+    "name": "Sean Perkins",
+    "email": "sean@devonite.com"
+  },
+  "contributors": [
+    {
+      "name": "Brad Martin",
+      "url": "https://github.com/bradmartin",
+      "email": "bradwaynemartin@gmail.com"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/sean-perkins/nativescript-animated-circle/issues"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/sean-perkins/nativescript-animated-circle",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "tns-core-modules": "../../node_modules/tns-core-modules",
+    "tns-platform-declarations": "../../node_modules/tns-platform-declarations",
+    "typescript": "../../node_modules/typescript"
+  },
+  "dependencies": {}
+}
