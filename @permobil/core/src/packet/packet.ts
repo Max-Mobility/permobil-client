@@ -1,4 +1,6 @@
+/// @ts-ignore
 const PacketBinding = require('./packet_bindings');
+/// @ts-ignore
 const Buffer = require('buffer').Buffer;
 
 export class Packet {

@@ -19,9 +19,9 @@
     "release-build": "cd tools && node android-release.js"
   },
   "dependencies": {
-    "@permobil-wear/core": "file:../../libs/core",
     "@maxmobility/private-keys": "../../node_modules/@maxmobility/private-keys",
-    "@permobil/core": "../../node_modules/@permobil-core",
+    "@permobil/core": "file:../../@permobil/core",
+    "@permobil/nativescript": "file:../../@permobil/nativescript",
     "buffer": "../../node_modules/buffer",
     "date-fns": "../../node_modules/date-fns",
     "injection-js": "../../node_modules/injection-js",

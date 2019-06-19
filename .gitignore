@@ -115,11 +115,11 @@ Thumbs.db
 *.cer
 
 # project specifics
-## ignore
+################################ IGNORE ################################
 nativescript-bluetooth/**/*.js
 apps/**/report/
 
-## dont ignore
+################################ DO NOT IGNORE ################################
 !nativescript-bluetooth/base64.js
 !**/typings/*.d.ts
 
@@ -128,5 +128,9 @@ apps/**/report/
 !libs/core/packet/packet_bindings.js
 
 !apps/smart-eval/plugins/swift-fix/**
-!apps/smart-eval/webpack.config.js
 !apps/smart-eval/plugins/bluetooth/**
+
+
+!@permobil/core/src/packet/packet_bindings.js
+
+!**/webpack.config.js
