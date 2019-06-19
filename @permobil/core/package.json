@@ -6,20 +6,6 @@
   "typings": "./src/index.d.ts",
   "author": "Max-Mobility",
   "devDependencies": {
-    "husky": "^2.4.1",
-    "lint-staged": "^8.2.1",
-    "prettier": "^1.18.2",
-    "typescript": "^3.4.5",
-    "tslint": "^5.17.0"
-  },
-  "lint-staged": {
-    "*.ts, *.js, *.json, *.scss, *.css, *.html, *.xml, *.md": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true
+    "typescript": "^3.4.5"
   }
 }
