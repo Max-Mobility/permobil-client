@@ -3,19 +3,19 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "tslint": "tslint -p tsconfig.json -c tslint.json",
+    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\"",
     "global.installs": "npm i -g rimraf && npm i -g typescript",
-    "build.bluetooth": "cd nativescript-bluetooth && rm -rf node_modules *.tgz && npm i && tsc && npm pack",
+    "build.bluetooth": "cd nativescript-bluetooth && rimraf node_modules *.tgz && npm i && tsc && npm pack",
     "e2e": "ng e2e",
     "ns.setup": "npm uninstall -g nativescript && npm install -g nativescript",
     "*************************** CLEAN SECTION": "***************************",
-    "clean": "rm -rf hooks node_modules package-lock.json && npm i",
-    "clean.nativescript.bluetooth": "cd nativescript-bluetooth && rm -rf hooks node_modules && npm i",
-    "clean.xplat.mobile": "cd xplat/mobile && rm -rf hooks node_modules && npm i",
+    "clean": "rimraf hooks node_modules package-lock.json && npm i",
+    "clean.nativescript.bluetooth": "cd nativescript-bluetooth && rimraf hooks node_modules && npm i",
+    "clean.xplat.mobile": "cd xplat/mobile && rimraf hooks node_modules && npm i",
     "nuki": "npm run clean && npm run clean.nativescript.bluetooth && npm run clean.xplat.mobile && npm run se.clean && npm run pt.clean",
     "*************************** end CLEAN SECTION": "***************************",
     "*************************** PushTracker Mobile ***************************": "***************************",
-    "pt.m.clean": "cd apps/pushtracker-mobile && rm -rf hooks node_modules platforms package-lock.json && npm i",
+    "pt.m.clean": "cd apps/pushtracker-mobile && rimraf hooks node_modules platforms package-lock.json && npm i",
     "pt.m.a": "npm i && cd apps/pushtracker-mobile && tns run android --env.aot",
     "pt.m.start.android": "npm i && cd apps/pushtracker-mobile-mobile && tns run android --env.aot",
     "pt.m.start.android.report": "npm i && cd apps/pushtracker-mobile && tns run android --env.aot --env.report",
@@ -28,7 +28,7 @@
     "pt.m.android.framestats": "adb shell dumpsys gfxinfo com.permobil.pushtracker framestats > framestats.txt",
     "*************************** end PushTracker Mobile ***************************": "***************************",
     "*************************** Smart Eval ***************************": "***************************",
-    "se.clean": "cd apps/smart-eval-mobile && rm -rf hooks node_modules platforms package-lock.json && npm i",
+    "se.clean": "cd apps/smart-eval-mobile && rimraf hooks node_modules platforms package-lock.json && npm i",
     "se.a": "npm i && cd apps/smart-eval-mobile && tns run android --env.aot",
     "se.start.android": "npm i && cd apps/smart-eval-mobile && tns run android --env.aot",
     "se.start.android.report": "npm i && cd apps/smart-eval-mobile && tns run android --env.aot --env.report",
@@ -152,7 +152,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "tsc && npm run tslint"
+      "pre-push": "npm run tslint"
     }
   },
   "lint-staged": {

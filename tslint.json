@@ -1,4 +1,7 @@
 {
+  "linterOptions": {
+    "exclude": ["node_modules", "platforms", "hooks", "assets", ".vscode"]
+  },
   "rules": {
     "class-name": false,
     "comment-format": [true, "check-space"],

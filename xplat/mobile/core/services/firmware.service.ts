@@ -58,7 +58,7 @@ export class FirmwareService {
       await this.loadFromFS();
       await this.downloadFirmwares();
     } catch (error) {
-      //this._logService.logException(`${error}`);
+      // this._logService.logException(`${error}`);
     }
   }
 
@@ -281,7 +281,7 @@ export class FirmwareService {
             reject(err);
           });
       } catch (error) {
-        //this._logService.logException(`${error}`);
+        // this._logService.logException(`${error}`);
         reject(error);
       }
     });

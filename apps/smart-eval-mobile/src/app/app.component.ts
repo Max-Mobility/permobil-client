@@ -87,7 +87,7 @@ export class AppComponent {
         console.log(args.error.message);
         console.log(args.error.stack);
         console.log(args.error.nativeError);
-        //report the exception in your analytics solution here
+        // report the exception in your analytics solution here
         this._logService.logException(args.error);
       }
     );

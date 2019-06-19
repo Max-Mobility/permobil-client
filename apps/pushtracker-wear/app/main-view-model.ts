@@ -1,4 +1,4 @@
-import { SentryKeys } from "@maxmobility/private-keys";
+import { SentryKeys } from '@maxmobility/private-keys';
 import { BluetoothService, Prop, SensorService, SentryService, SERVICES, SqliteService } from '@permobil-wear/core';
 import { Log } from '@permobil/core';
 import { ReflectiveInjector } from 'injection-js';

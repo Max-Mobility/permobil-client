@@ -72,7 +72,7 @@ export class SmartDrive extends Observable {
     'e7add780-b042-4876-aae1-112855353cc1',
     'e8add780-b042-4876-aae1-112855353cc1',
     'e9add780-b042-4876-aae1-112855353cc1',
-    //'eaadd780-b042-4876-aae1-112855353cc1',
+    // 'eaadd780-b042-4876-aae1-112855353cc1',
     'ebadd780-b042-4876-aae1-112855353cc1'
   ];
   static DataCharacteristic = SmartDrive.Characteristics[1];
@@ -598,13 +598,13 @@ export class SmartDrive extends Observable {
               !this.ableToSend ||
               !this.notifying
             ) {
-              //console.log('NOT WRITING TO SD!');
+              // console.log('NOT WRITING TO SD!');
               writeFirmwareTimeoutID = timer.setTimeout(() => {
-                //console.log('trying now!');
+                // console.log('trying now!');
                 writeFirmwareSector(device, fw, characteristic, nextState);
               }, 500);
             } else if (index < fileSize) {
-              //console.log(`Writing ${index} / ${fileSize} of ota to ${device}`);
+              // console.log(`Writing ${index} / ${fileSize} of ota to ${device}`);
               let data = null;
               if (device === 'SmartDrive') {
                 const p = new Packet();
@@ -936,7 +936,7 @@ export class SmartDrive extends Observable {
       p.data(dataKey, boundData);
       const transmitData = p.toUint8Array();
       p.destroy();
-      //console.log(`sending ${transmitData}`);
+      // console.log(`sending ${transmitData}`);
 
       return this._bluetoothService.write({
         peripheralUUID: this.address,
@@ -1164,7 +1164,7 @@ export class SmartDrive extends Observable {
     /* Motor Info
            struct {
            Motor::State state;
-           uint8_t      batteryLevel; // [0,100] integer percent. 
+           uint8_t      batteryLevel; // [0,100] integer percent.
            uint8_t      version;      // Major.Minor version as the MAJOR and MINOR nibbles of the byte.
            uint8_t      padding;
            float        distance;
