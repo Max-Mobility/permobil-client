@@ -8,7 +8,7 @@ import { LoggingService } from './logging.service';
 @Injectable()
 export class DemoService {
   constructor(@Inject(LoggingService) private _logService: LoggingService) {
-    //this.load();
+    // this.load();
   }
   static Demos = new ObservableArray<Demo>([]);
 

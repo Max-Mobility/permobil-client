@@ -1,0 +1,21 @@
+// Add your native dependencies here:
+dependencies {
+  implementation 'org.slf4j:slf4j-nop:1.7.25'
+  implementation 'com.android.support:wear:28.0.0'
+  implementation 'com.google.android.support:wearable:2.4.0'
+  compileOnly 'com.google.android.wearable:wearable:2.4.0'
+}
+
+android {  
+  defaultConfig {  
+    generatedDensities = []
+    applicationId = "com.permobil.smartdrive.wearos"
+    minSdkVersion 26 // WearOS 2.0 minimum SDK is 25 - https://developer.android.com/training/wearables/apps/packaging.html
+    targetSdkVersion 28
+    versionCode 10003
+    versionName "0.2.0"
+  }  
+  aaptOptions {  
+    additionalParameters "--no-version-vectors"  
+  }  
+} 

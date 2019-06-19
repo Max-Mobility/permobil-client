@@ -1,0 +1,60 @@
+@import 'variables';
+
+/** Fonts **/
+.ionicon {
+  font-family: $ionicon;
+}
+
+Page {
+  background-color: $black;
+}
+
+.page {
+  background-color: $black;
+}
+
+/** Buttons **/
+.power-assist-btn {
+  border-radius: 50%;
+  width: 100%;
+  height: 40%;
+  horizontal-align: $center;
+  vertical-align: center;
+}
+
+.circle-image-btn {
+  height: 48;
+  width: 48;
+  border-radius: 24;
+  vertical-align: center;
+  horizontal-align: center;
+
+  StackLayout {
+    height: 48;
+    width: 48;
+    border-radius: 24;
+    height: 100%;
+    width: 100%;
+    vertical-align: center;
+    horizontal-align: center;
+
+    label {
+      font-family: $ionicon;
+      font-size: 36;
+      vertical-align: center;
+      horizontal-align: center;
+    }
+  }
+}
+
+/** Label Line Chart Styles **/
+.chart-title {
+  horizontal-align: center;
+  text-align: center;
+  font-size: 13;
+}
+
+/** Battery Icon on Main page for Power Assist **/
+.batteryIcon {
+  background-color: $black;
+}

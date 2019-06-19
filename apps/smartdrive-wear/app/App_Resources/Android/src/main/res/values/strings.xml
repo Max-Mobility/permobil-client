@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartDrive MX2+</string>
+    <string name="title_activity_kimera">SmartDrive MX2+</string>
+    <string name="complications_provider_service_label">SmartDrive Data</string>
+</resources>

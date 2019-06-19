@@ -1,0 +1,17 @@
+@import 'variables';
+@import 'common';
+@import 'charts-default';
+@import 'change-settings-default';
+@import 'power-assist-default';
+@import 'settings-list-default';
+
+label {
+  color: $white;
+}
+
+.hr-blue {
+  background-color: #336699;
+  width: 100%;
+  height: 2;
+  margin: 0;
+}

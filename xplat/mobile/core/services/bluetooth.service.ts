@@ -405,7 +405,7 @@ export class BluetoothService {
     // stop listening for events
     this.clearEventListeners();
     // disconnect
-    //await this.disconnectAll(); // TODO: doesn't work right now
+    // await this.disconnectAll(); // TODO: doesn't work right now
     // stop advertising
     this._bluetooth.stopAdvertising();
     return Promise.resolve();
@@ -578,7 +578,7 @@ export class BluetoothService {
     };
     if (device.address && this.isSmartDrive(device)) {
       const sd = this.getOrMakeSmartDrive(device);
-      //sd.handleConnect();
+      // sd.handleConnect();
     }
     // TODO: this event is not emitted by the android part of the bluetooth library
   }

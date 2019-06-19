@@ -19,5 +19,5 @@
       "@maxmobility/web/*": ["xplat/web/*"]
     }
   },
-  "exclude": ["apps/smart-eval-app", "node_modules", "tmp"]
+  "exclude": ["platforms", "hooks", "node_modules", "tmp"]
 }
