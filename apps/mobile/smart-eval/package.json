@@ -60,14 +60,14 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "~0.800.3",
+    "@angular/cli": "~8.0.3",
     "@angular/compiler-cli": "~8.0.2",
     "@angular/language-service": "~8.0.2",
     "@ngtools/webpack": "~8.0.3",
-    "@angular-devkit/build-angular": "~0.800.3",
-    "@angular/cli": "~8.0.3",
-    "nativescript-dev-sass": "~1.7.0",
-    "nativescript-dev-webpack": "~0.24.1",
+    "nativescript-dev-sass": "^1.7.0",
     "nativescript-dev-typescript": "~0.10.0",
+    "nativescript-dev-webpack": "~0.24.1",
     "tns-platform-declarations": "~5.4.2"
   }
 }
