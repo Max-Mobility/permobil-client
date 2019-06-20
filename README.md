@@ -6,7 +6,7 @@ Wear OS apps are built using plain NativeScript to avoid having additional javas
 
 ## Setup
 
-Execute `npm run setup`
+Execute `npm run setup.all`
 
 ## Running the Smart Evaluation Mobile app
 
