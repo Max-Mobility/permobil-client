@@ -12,15 +12,9 @@ import * as orientation from 'nativescript-orientation';
 import { Sentry } from 'nativescript-sentry';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as application from 'tns-core-modules/application';
-import {
-  connectionType,
-  startMonitoring,
-  stopMonitoring
-} from 'tns-core-modules/connectivity';
-// import { LoggingService, UserService } from '@maxmobility/mobile';
-import { LoggingService, UserService } from '../services';
-// import { User } from '@maxmobility/core';
+import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
 import { User } from './models';
+import { LoggingService, UserService } from './services';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 
 // Register Custom Elements for Angular

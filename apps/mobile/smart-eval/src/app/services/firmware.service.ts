@@ -5,7 +5,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { knownFolders, path } from 'tns-core-modules/file-system';
 import * as httpModule from 'tns-core-modules/http';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { User } from '../app/models/user.model';
+import { User } from '../models/user.model';
 import { LoggingService } from './logging.service';
 
 @Injectable()

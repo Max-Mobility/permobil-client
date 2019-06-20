@@ -6,7 +6,7 @@ import 'nativescript-master-technology'; // util functions (https://github.com/N
 import 'reflect-metadata';
 import * as app from 'tns-core-modules/application';
 import { AppModule } from './app/app.module';
-import { BluetoothService } from './services';
+import { BluetoothService } from './app/services';
 
 // If built with env.uglify
 declare const __UGLIFIED__;

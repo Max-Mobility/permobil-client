@@ -19,10 +19,10 @@ import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import * as utils from 'tns-core-modules/utils/utils';
-import { DemoService, FileService, LoggingService, UserService } from '../../../services';
 // import { Demo, DidYouKnow, User, UserTypes } from '@maxmobility/core';
 // import { DemoService, FileService, LoggingService, UserService } from '@maxmobility/mobile';
 import { Demo, DidYouKnow, User, UserTypes } from '../../models';
+import { DemoService, FileService, LoggingService, UserService } from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
 
 @Component({

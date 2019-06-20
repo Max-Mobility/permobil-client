@@ -11,7 +11,6 @@ import { Page } from 'tns-core-modules/ui/page';
 import { Slider } from 'tns-core-modules/ui/slider';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { BluetoothService, EvaluationService, LoggingService, ProgressService, SettingsService } from '../../../services';
 // import {
 //   Evaluation,
 //   PushTracker,
@@ -25,6 +24,7 @@ import { BluetoothService, EvaluationService, LoggingService, ProgressService, S
 //   ProgressService
 // } from '@maxmobility/mobile';
 import { Evaluation, PushTracker, Trial } from '../../models';
+import { BluetoothService, EvaluationService, LoggingService, ProgressService, SettingsService } from '../../services';
 
 @Component({
   selector: 'trial',

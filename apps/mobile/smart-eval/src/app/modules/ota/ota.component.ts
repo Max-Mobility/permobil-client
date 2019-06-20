@@ -14,7 +14,6 @@ import { alert, confirm } from 'tns-core-modules/ui/dialogs';
 import { Label } from 'tns-core-modules/ui/label';
 import { Page } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
-import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../../services';
 // import { PushTracker, SmartDrive } from '@maxmobility/core';
 // import {
 //   BluetoothService,
@@ -23,6 +22,7 @@ import { BluetoothService, FirmwareService, LoggingService, ProgressService } fr
 //   ProgressService
 // } from '@maxmobility/mobile';
 import { PushTracker, SmartDrive } from '../../models';
+import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'ota',

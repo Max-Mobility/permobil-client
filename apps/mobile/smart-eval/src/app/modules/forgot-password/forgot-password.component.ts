@@ -12,7 +12,7 @@ import { Page } from 'tns-core-modules/ui/page';
 //   ProgressService,
 //   UserService
 // } from '@maxmobility/mobile';
-import { LoggingService, ProgressService, UserService } from '../../../services';
+import { LoggingService, ProgressService, UserService } from '../../services';
 
 @Component({
   selector: 'forgot-password',

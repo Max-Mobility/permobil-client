@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-// import { DemoRequest, User } from '@maxmobility/core';
-// import { LoggingService, ProgressService } from '@maxmobility/mobile';
-import { DemoRequest, User } from '../../models';
-import { LoggingService, ProgressService } from '../../../services';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
@@ -11,6 +7,10 @@ import { isIOS } from 'tns-core-modules/platform';
 import { confirm } from 'tns-core-modules/ui/dialogs/dialogs';
 import { ListView } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
+// import { DemoRequest, User } from '@maxmobility/core';
+// import { LoggingService, ProgressService } from '@maxmobility/mobile';
+import { DemoRequest, User } from '../../models';
+import { LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'demo-requests',

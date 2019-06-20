@@ -11,7 +11,6 @@ import { switchMap } from 'rxjs/operators';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
 import { confirm } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { BluetoothService, LoggingService, ProgressService, SettingsService } from '../../../services';
 // import { PushTracker, SettingsService } from '@maxmobility/core';
 // import {
 //   BluetoothService,
@@ -19,6 +18,7 @@ import { BluetoothService, LoggingService, ProgressService, SettingsService } fr
 //   ProgressService
 // } from '@maxmobility/mobile';
 import { PushTracker } from '../../models';
+import { BluetoothService, LoggingService, ProgressService, SettingsService } from '../../services';
 
 @Component({
   selector: 'pairing',

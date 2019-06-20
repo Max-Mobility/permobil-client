@@ -4,6 +4,7 @@ import { PROVIDERS } from './services';
 @NgModule({
   imports: [],
   declarations: [],
-  exports: [...PROVIDERS]
+  exports: [],
+  providers: [...PROVIDERS]
 })
 export class PermobilCoreModule {}

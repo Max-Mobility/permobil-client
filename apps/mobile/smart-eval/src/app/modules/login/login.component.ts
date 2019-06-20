@@ -1,10 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  isIosSimulator,
-  setMarginForIosSafeArea,
-  preventKeyboardFromShowing
-} from '@permobil/nativescript';
+import { isIosSimulator, preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -15,11 +11,7 @@ import { alert } from 'tns-core-modules/ui/dialogs';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 // import { LoggingService, preventKeyboardFromShowing, ProgressService, UserService } from '@maxmobility/mobile';
-import {
-  LoggingService,
-  ProgressService,
-  UserService
-} from '../../../services';
+import { LoggingService, ProgressService, UserService } from '../../services';
 
 declare const com;
 

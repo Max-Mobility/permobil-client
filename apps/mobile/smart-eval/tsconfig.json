@@ -21,5 +21,19 @@
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
     }
   },
-  "exclude": ["node_modules", "platforms", "nativescript-bluetooth", "forked-plugins"]
+  "files": [
+    "./node_modules/tns-platform-declarations/android/android-platform-23.d.ts",
+    "./node_modules/tns-platform-declarations/android/android-support-28.d.ts",
+    "./node_modules/tns-platform-declarations/android/common.d.ts",
+    "./node_modules/tns-platform-declarations/ios.d.ts",
+    "../../../forked-plugins/nativescript-bluetooth/index.ts",
+    // "./src/app.module.ngfactory.d.ts",
+    "./src/main.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "platforms",
+    "../../../forked-plugins/nativescript-bluetooth/**",
+    "../../../forked-plugins/**"
+  ]
 }

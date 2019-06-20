@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 // import { LoggingService } from '@maxmobility/mobile';
-import { LoggingService } from '../../../services';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'faq',

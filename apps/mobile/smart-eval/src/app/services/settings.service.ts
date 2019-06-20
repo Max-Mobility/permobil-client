@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PushTracker } from '../app/models';
+import { PushTracker } from '../models';
 
 @Injectable()
 export class SettingsService {

@@ -1,7 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-// import { CORE_PROVIDERS } from '@maxmobility/core';
-// import { MobileCoreModule } from '@maxmobility/mobile';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PermobilCoreModule } from '@permobil/angular';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
@@ -18,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { PrivacyPolicyComponent } from './privacy-policy';
+import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
 
 export function createBarcodeScanner() {
@@ -42,7 +41,6 @@ export function createTranslateLoader() {
     NativeScriptRouterModule,
     NativeScriptUIListViewModule,
     SharedModule,
-    // MobileCoreModule,
     PermobilCoreModule,
     AppRoutingModule,
     HttpClientModule,
@@ -57,7 +55,7 @@ export function createTranslateLoader() {
   ],
   declarations: [AppComponent, PrivacyPolicyComponent],
   providers: [
-    // ...CORE_PROVIDERS,
+    ...PROVIDERS,
     ModalDialogService,
     { provide: BarcodeScanner, useFactory: createBarcodeScanner }
   ],

@@ -1,8 +1,4 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-// import { Demo, DemoRequest, User } from '@maxmobility/core';
-import { Demo, DemoRequest, User } from '../../models';
-// import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '@maxmobility/mobile';
-import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '../../../services';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -20,6 +16,10 @@ import { ListView } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { Slider } from 'tns-core-modules/ui/slider';
 import * as utils from 'tns-core-modules/utils/utils';
+// import { Demo, DemoRequest, User } from '@maxmobility/core';
+import { Demo, DemoRequest, User } from '../../models';
+// import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '@maxmobility/mobile';
+import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
 
 @Component({

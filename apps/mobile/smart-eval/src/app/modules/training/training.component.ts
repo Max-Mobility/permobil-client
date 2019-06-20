@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 // import { LoggingService } from '@maxmobility/mobile';
-import { LoggingService } from '../../../services';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'training',

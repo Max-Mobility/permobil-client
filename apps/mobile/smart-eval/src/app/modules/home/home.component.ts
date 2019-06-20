@@ -10,7 +10,6 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as dialogs from 'tns-core-modules/ui/dialogs';
 import { AnimationCurve } from 'tns-core-modules/ui/enums/enums';
 import { Page } from 'tns-core-modules/ui/page';
-import { BluetoothService, DemoService, FileService, FirmwareService, LoggingService, UserService } from '../../../services';
 // import { Demo, RouterExtService, User, UserTypes } from '@maxmobility/core';
 // import {
 //   BluetoothService,
@@ -21,6 +20,7 @@ import { BluetoothService, DemoService, FileService, FirmwareService, LoggingSer
 //   UserService
 // } from '@maxmobility/mobile';
 import { Demo, User, UserTypes } from '../../models';
+import { BluetoothService, DemoService, FileService, FirmwareService, LoggingService, UserService } from '../../services';
 
 @Component({
   selector: 'home',

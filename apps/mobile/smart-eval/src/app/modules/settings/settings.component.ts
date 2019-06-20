@@ -8,7 +8,7 @@ import { isAndroid, isIOS } from 'tns-core-modules/platform';
 //   LoggingService,
 //   ProgressService
 // } from '@maxmobility/mobile';
-import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../../services';
+import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'settings',

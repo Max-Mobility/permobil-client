@@ -5,7 +5,7 @@ import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import { isIOS } from 'tns-core-modules/platform';
 import * as timer from 'tns-core-modules/timer';
-import { BluetoothService } from '../../services';
+import { BluetoothService } from '../services';
 
 enum OTAState {
   not_started = 'ota.pt.state.not-started',

@@ -6,7 +6,7 @@ import { YoutubePlayer } from 'nativescript-youtubeplayer';
 import { Subscription } from 'rxjs';
 import { Page } from 'tns-core-modules/ui/page';
 // import { LoggingService } from '@maxmobility/mobile';
-import { LoggingService } from '../../../services';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'video',
