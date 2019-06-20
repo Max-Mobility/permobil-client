@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DemoRequest, User } from '@maxmobility/core';
-import { LoggingService, ProgressService } from '@maxmobility/mobile';
+// import { DemoRequest, User } from '@maxmobility/core';
+// import { LoggingService, ProgressService } from '@maxmobility/mobile';
+import { DemoRequest, User } from '../../models';
+import { LoggingService, ProgressService } from '../../../services';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';

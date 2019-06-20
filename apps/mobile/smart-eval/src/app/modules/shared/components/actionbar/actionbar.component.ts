@@ -1,10 +1,11 @@
 import { Component, Input, NgZone } from '@angular/core';
-import { BluetoothService, PushTrackerState } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { Feedback } from 'nativescript-feedback';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import { ActionBar } from 'tns-core-modules/ui/action-bar';
+// import { BluetoothService, PushTrackerState } from '@maxmobility/mobile';
+import { BluetoothService, PushTrackerState } from '../../../../../services';
 
 @Component({
   selector: 'MaxActionBar',

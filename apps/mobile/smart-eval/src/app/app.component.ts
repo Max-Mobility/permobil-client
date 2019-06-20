@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { User } from '@maxmobility/core';
-import { LoggingService, UserService } from '@maxmobility/mobile';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
@@ -14,7 +12,15 @@ import * as orientation from 'nativescript-orientation';
 import { Sentry } from 'nativescript-sentry';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as application from 'tns-core-modules/application';
-import { connectionType, startMonitoring, stopMonitoring } from 'tns-core-modules/connectivity';
+import {
+  connectionType,
+  startMonitoring,
+  stopMonitoring
+} from 'tns-core-modules/connectivity';
+// import { LoggingService, UserService } from '@maxmobility/mobile';
+import { LoggingService, UserService } from '../services';
+// import { User } from '@maxmobility/core';
+import { User } from './models';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 
 // Register Custom Elements for Angular
@@ -40,7 +46,7 @@ export class AppComponent {
     private _router: RouterExtensions
   ) {
     // init sentry - DNS key is in the SmartEvalKinvey package
-    Sentry.init(SentryKeys.SENTRY_DSN);
+    Sentry.init(SentryKeys.SMARTEVAL_DSN);
 
     // REGISTER FOR PUSH NOTIFICATIONS
     if (UserService.hasRegistered === false) {

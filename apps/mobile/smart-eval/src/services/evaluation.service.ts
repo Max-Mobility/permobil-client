@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
-import { Evaluation } from '../models/evaluation.model';
+import { Evaluation } from '../app/models';
 import { LoggingService } from './logging.service';
 
 @Injectable()

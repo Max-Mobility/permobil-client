@@ -1,28 +1,7 @@
-import {
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import {
-  Evaluation,
-  PushTracker,
-  SettingsService,
-  Trial
-} from '@maxmobility/core';
-import {
-  BluetoothService,
-  EvaluationService,
-  LoggingService,
-  ProgressService
-} from '@maxmobility/mobile';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterExtensions } from 'nativescript-angular/router';
-import {
-  DropDown,
-  SelectedIndexChangedEventData
-} from 'nativescript-drop-down';
+import { DropDown, SelectedIndexChangedEventData } from 'nativescript-drop-down';
 import { Feedback } from 'nativescript-feedback';
 import { SnackBar } from 'nativescript-snackbar';
 import { isIOS } from 'tns-core-modules/platform';
@@ -32,6 +11,20 @@ import { Page } from 'tns-core-modules/ui/page';
 import { Slider } from 'tns-core-modules/ui/slider';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { TextField } from 'tns-core-modules/ui/text-field';
+import { BluetoothService, EvaluationService, LoggingService, ProgressService, SettingsService } from '../../../services';
+// import {
+//   Evaluation,
+//   PushTracker,
+//   SettingsService,
+//   Trial
+// } from '@maxmobility/core';
+// import {
+//   BluetoothService,
+//   EvaluationService,
+//   LoggingService,
+//   ProgressService
+// } from '@maxmobility/mobile';
+import { Evaluation, PushTracker, Trial } from '../../models';
 
 @Component({
   selector: 'trial',

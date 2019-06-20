@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import { Observer } from 'rxjs/Observer';
+import { Observable, Observer } from 'rxjs';
 import { File, Folder, knownFolders, path } from 'tns-core-modules/file-system';
 
 export class TNSTranslateLoader {

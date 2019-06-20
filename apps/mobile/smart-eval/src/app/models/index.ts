@@ -7,5 +7,5 @@ export * from './pairing.model';
 export * from './pushtracker.model';
 export * from './smartdrive.model';
 export * from './trial.model';
-export * from './user-model';
+export * from './user.model';
 

@@ -1,20 +1,8 @@
 import { ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
-import { Demo, RouterExtService, User, UserTypes } from '@maxmobility/core';
-import {
-  BluetoothService,
-  DemoService,
-  FileService,
-  FirmwareService,
-  LoggingService,
-  UserService
-} from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
+import { RouterExtService } from '@permobil/angular';
 import { RouterExtensions } from 'nativescript-angular/router';
-import {
-  Feedback,
-  FeedbackPosition,
-  FeedbackType
-} from 'nativescript-feedback';
+import { Feedback, FeedbackPosition, FeedbackType } from 'nativescript-feedback';
 import { Fab } from 'nativescript-floatingactionbutton';
 import { Color } from 'tns-core-modules/color';
 import { EventData } from 'tns-core-modules/data/observable';
@@ -22,6 +10,17 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as dialogs from 'tns-core-modules/ui/dialogs';
 import { AnimationCurve } from 'tns-core-modules/ui/enums/enums';
 import { Page } from 'tns-core-modules/ui/page';
+import { BluetoothService, DemoService, FileService, FirmwareService, LoggingService, UserService } from '../../../services';
+// import { Demo, RouterExtService, User, UserTypes } from '@maxmobility/core';
+// import {
+//   BluetoothService,
+//   DemoService,
+//   FileService,
+//   FirmwareService,
+//   LoggingService,
+//   UserService
+// } from '@maxmobility/mobile';
+import { Demo, User, UserTypes } from '../../models';
 
 @Component({
   selector: 'home',

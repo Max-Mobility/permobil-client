@@ -120,7 +120,7 @@ nativescript-bluetooth/**/*.js
 apps/**/report/
 
 ################################ DO NOT IGNORE ################################
-!nativescript-bluetooth/base64.js
+!forked-plugins/nativescript-bluetooth/base64.js
 !**/typings/*.d.ts
 
 !tools/**/*.js

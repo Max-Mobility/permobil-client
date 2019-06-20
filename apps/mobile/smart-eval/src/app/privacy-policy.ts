@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { User } from '@maxmobility/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/directives/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import * as utilityModule from 'tns-core-modules/utils/utils';
+// import { User } from '@maxmobility/core';
+import { User } from './models';
 
 @Component({
   selector: 'privacy-policy',

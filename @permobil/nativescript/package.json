@@ -1,8 +1,11 @@
 {
   "name": "@permobil/nativescript",
   "version": "0.1.0",
-  "description": "Shared nativescript services, utilities, etc.",
+  "description": "Shared nativescript services, utilities, etc. Nothing Angular specific here.",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "author": "Max-Mobility"
+  "author": "Max-Mobility",
+  "devDependencies": {
+    "tns-platform-declarations": "~5.4.2"
+  }
 }

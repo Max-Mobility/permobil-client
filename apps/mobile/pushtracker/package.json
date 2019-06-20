@@ -4,6 +4,7 @@
   },
   "dependencies": {
     "@maxmobility/private-keys": "git+https://github.com/autochair/maxmobility-private-keys.git#master",
+    "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "@angular/animations": "~8.0.1",

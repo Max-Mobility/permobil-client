@@ -1,6 +1,4 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { Evaluation, Trial } from '@maxmobility/core';
-import { EvaluationService, LoggingService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as mustache from 'mustache';
@@ -10,6 +8,10 @@ import { Toasty } from 'nativescript-toasty';
 import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm } from 'tns-core-modules/ui/dialogs/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { EvaluationService, LoggingService } from '../../../services';
+// import { Evaluation, Trial } from '@maxmobility/core';
+// import { EvaluationService, LoggingService } from '@maxmobility/mobile';
+import { Evaluation, Trial } from '../../models';
 
 @Component({
   selector: 'evals',

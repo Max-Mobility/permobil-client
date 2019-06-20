@@ -1,6 +1,10 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { LoggingService, preventKeyboardFromShowing, ProgressService, UserService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  isIosSimulator,
+  setMarginForIosSafeArea,
+  preventKeyboardFromShowing
+} from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -10,7 +14,12 @@ import { Button } from 'tns-core-modules/ui/button';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { isIosSimulator, setMarginForIosSafeArea } from '../../utils';
+// import { LoggingService, preventKeyboardFromShowing, ProgressService, UserService } from '@maxmobility/mobile';
+import {
+  LoggingService,
+  ProgressService,
+  UserService
+} from '../../../services';
 
 declare const com;
 
@@ -116,11 +125,11 @@ export class LoginComponent implements OnInit {
         // we don't need to send this exception to Kinvey, just extra noise
         // Brad - changing this to show a Toast to not block user and not logging the exception
         // see: https://sentry.io/share/issue/d48735572d9641678348f451a9d00e78/
-        new Toasty(
-          {text: errorMessage,
+        new Toasty({
+          text: errorMessage,
           duration: ToastDuration.SHORT,
-          position: ToastPosition.CENTER}
-        ).show();
+          position: ToastPosition.CENTER
+        }).show();
       } else {
         alert({
           title: this._translateService.instant('user.error'),

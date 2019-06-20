@@ -1,7 +1,5 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Demo, DidYouKnow, User, UserTypes } from '@maxmobility/core';
-import { DemoService, FileService, LoggingService, UserService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -12,7 +10,7 @@ import * as email from 'nativescript-email';
 import { ImageCropper, Result as ImageCropperResult } from 'nativescript-imagecropper';
 import * as LS from 'nativescript-localstorage';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as http from 'tns-core-modules/http';
 import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
@@ -21,6 +19,10 @@ import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import * as utils from 'tns-core-modules/utils/utils';
+import { DemoService, FileService, LoggingService, UserService } from '../../../services';
+// import { Demo, DidYouKnow, User, UserTypes } from '@maxmobility/core';
+// import { DemoService, FileService, LoggingService, UserService } from '@maxmobility/mobile';
+import { Demo, DidYouKnow, User, UserTypes } from '../../models';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
 
 @Component({

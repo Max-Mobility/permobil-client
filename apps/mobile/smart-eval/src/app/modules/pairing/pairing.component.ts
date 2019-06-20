@@ -1,31 +1,24 @@
-import {
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { PushTracker, SettingsService } from '@maxmobility/core';
-import {
-  BluetoothService,
-  LoggingService,
-  ProgressService
-} from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { PageRoute } from 'nativescript-angular/router';
 import { DropDown } from 'nativescript-drop-down';
 import { Feedback } from 'nativescript-feedback';
 import { Gif } from 'nativescript-gif';
 import { SnackBar } from 'nativescript-snackbar';
+import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
-import {
-  ChangedData,
-  ObservableArray
-} from 'tns-core-modules/data/observable-array';
+import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
 import { confirm } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { BluetoothService, LoggingService, ProgressService, SettingsService } from '../../../services';
+// import { PushTracker, SettingsService } from '@maxmobility/core';
+// import {
+//   BluetoothService,
+//   LoggingService,
+//   ProgressService
+// } from '@maxmobility/mobile';
+import { PushTracker } from '../../models';
 
 @Component({
   selector: 'pairing',

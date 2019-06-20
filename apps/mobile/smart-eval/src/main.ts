@@ -1,12 +1,12 @@
 // this import should be first in order to load some required settings (like globals and reflect-metadata)
 import { enableProdMode } from '@angular/core';
-import { BluetoothService } from '@maxmobility/mobile';
 import { platformNativeScriptDynamic } from 'nativescript-angular/platform';
 import 'nativescript-localstorage'; // for local/session storage plugin
 import 'nativescript-master-technology'; // util functions (https://github.com/NathanaelA/nativescript-master-technology)
 import 'reflect-metadata';
 import * as app from 'tns-core-modules/application';
 import { AppModule } from './app/app.module';
+import { BluetoothService } from './services';
 
 // If built with env.uglify
 declare const __UGLIFIED__;

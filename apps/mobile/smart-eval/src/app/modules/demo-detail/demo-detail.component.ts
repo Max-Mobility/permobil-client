@@ -1,6 +1,4 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { Demo, PushTracker } from '@maxmobility/core';
-import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '@maxmobility/mobile';
 import { MapboxKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
@@ -23,6 +21,10 @@ import { View } from 'tns-core-modules/ui/core/view';
 import { action, alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import * as utils from 'tns-core-modules/utils/utils';
+import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '../../../services';
+// import { Demo, PushTracker } from '@maxmobility/core';
+// import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '@maxmobility/mobile';
+import { Demo, PushTracker } from '../../models';
 
 @Component({
   selector: 'demo',

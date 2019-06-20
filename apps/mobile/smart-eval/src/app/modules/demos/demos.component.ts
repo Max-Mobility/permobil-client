@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Demo, DemoRequest, User } from '@maxmobility/core';
-import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '@maxmobility/mobile';
+// import { Demo, DemoRequest, User } from '@maxmobility/core';
+import { Demo, DemoRequest, User } from '../../models';
+// import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '@maxmobility/mobile';
+import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '../../../services';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';

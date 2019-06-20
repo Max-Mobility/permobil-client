@@ -1,12 +1,14 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Evaluation } from '@maxmobility/core';
-import { EvaluationService, LoggingService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { DropDown } from 'nativescript-drop-down';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { confirm } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { EvaluationService, LoggingService } from '../../../services';
+// import { Evaluation } from '@maxmobility/core';
+// import { EvaluationService, LoggingService } from '@maxmobility/mobile';
+import { Evaluation } from '../../models';
 
 @Component({
   selector: 'eval-entry',

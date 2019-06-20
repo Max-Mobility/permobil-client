@@ -1,29 +1,28 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { PushTracker, SmartDrive } from '@maxmobility/core';
-import {
-  BluetoothService,
-  FirmwareService,
-  LoggingService,
-  ProgressService
-} from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Carousel, CarouselItem } from 'nativescript-carousel';
 import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import * as app from 'tns-core-modules/application';
 import { Color } from 'tns-core-modules/color';
-import {
-  ChangedData,
-  ObservableArray
-} from 'tns-core-modules/data/observable-array';
+import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { EventData } from 'tns-core-modules/ui/core/view';
 import { alert, confirm } from 'tns-core-modules/ui/dialogs';
 import { Label } from 'tns-core-modules/ui/label';
 import { Page } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
+import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../../services';
+// import { PushTracker, SmartDrive } from '@maxmobility/core';
+// import {
+//   BluetoothService,
+//   FirmwareService,
+//   LoggingService,
+//   ProgressService
+// } from '@maxmobility/mobile';
+import { PushTracker, SmartDrive } from '../../models';
 
 @Component({
   selector: 'ota',

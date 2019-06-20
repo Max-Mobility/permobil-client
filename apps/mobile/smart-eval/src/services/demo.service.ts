@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { fromBase64 } from 'tns-core-modules/image-source/image-source';
-import { Demo } from '../models/demo.model';
+import { Demo } from '../app/models';
 import { LoggingService } from './logging.service';
 
 @Injectable()

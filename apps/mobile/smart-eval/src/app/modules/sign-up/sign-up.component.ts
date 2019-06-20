@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { User, UserTypes } from '@maxmobility/core';
-import { LoggingService, preventKeyboardFromShowing, ProgressService, UserService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
+import { preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogService } from 'nativescript-angular/directives/dialogs';
@@ -10,8 +9,11 @@ import { SelectedIndexChangedEventData, ValueList } from 'nativescript-drop-down
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { LoggingService, ProgressService, UserService } from '../../../services';
+// import { User, UserTypes } from '@maxmobility/core';
+// import { LoggingService, preventKeyboardFromShowing, ProgressService, UserService } from '@maxmobility/mobile';
+import { User, UserTypes } from '../../models';
 import { PrivacyPolicyComponent } from '../../privacy-policy';
-import { setMarginForIosSafeArea } from '../../utils';
 
 @Component({
   selector: 'eval-login',

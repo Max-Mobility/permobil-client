@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { RouterExtService } from '@maxmobility/core';
-import { LoggingService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
+import { RouterExtService } from '@permobil/angular';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
+// import { LoggingService } from '@maxmobility/mobile';
+import { LoggingService } from '../../../services';
 
 @Component({
   selector: 'training',

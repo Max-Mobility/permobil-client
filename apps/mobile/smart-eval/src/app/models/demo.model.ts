@@ -1,9 +1,11 @@
-import { PushTracker } from '@maxmobility/core';
-import { LocationService } from '@maxmobility/mobile';
+// import { PushTracker } from '@maxmobility/core';
+// import { LocationService } from '@maxmobility/mobile';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as imageSource from 'tns-core-modules/image-source';
+import { LocationService } from '../../services';
+import { PushTracker } from '../models';
 
 export class Record extends Observable {
   time: Date;

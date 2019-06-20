@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
-import { LoggingService } from '@maxmobility/mobile';
 import * as orientation from 'nativescript-orientation';
 import { YoutubePlayer } from 'nativescript-youtubeplayer';
-import { Subscription } from 'rxjs/Subscription';
+// import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { Page } from 'tns-core-modules/ui/page';
+// import { LoggingService } from '@maxmobility/mobile';
+import { LoggingService } from '../../../services';
 
 @Component({
   selector: 'video',

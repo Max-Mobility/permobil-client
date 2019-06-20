@@ -9,8 +9,8 @@ import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { STORAGE_KEYS } from '../enums';
-import { PushTracker, SmartDrive } from '../models';
+import { STORAGE_KEYS } from '../app/enums';
+import { PushTracker, SmartDrive } from '../app/models';
 import { LoggingService } from './logging.service';
 
 export enum PushTrackerState {

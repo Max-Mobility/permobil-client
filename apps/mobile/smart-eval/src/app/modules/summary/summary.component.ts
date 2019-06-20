@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { EvaluationStatus, Trial } from '@maxmobility/core';
-import { EvaluationService, LoggingService } from '@maxmobility/mobile';
 import { TranslateService } from '@ngx-translate/core';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as mustache from 'mustache';
@@ -9,6 +7,10 @@ import * as email from 'nativescript-email';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert, confirm } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { EvaluationService, LoggingService } from '../../../services';
+// import { EvaluationStatus, Trial } from '@maxmobility/core';
+// import { EvaluationService, LoggingService } from '@maxmobility/mobile';
+import { EvaluationStatus, Trial } from '../../models';
 
 @Component({
   selector: 'summary',

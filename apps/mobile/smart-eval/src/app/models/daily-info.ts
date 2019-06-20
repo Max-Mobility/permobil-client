@@ -1,4 +1,5 @@
-const Packet = require('../packet/packet');
+// const Packet = require('../packet/packet');
+import * as Packet from '@permobil/core/src/packet/packet';
 
 export class DailyInfo {
   // public members

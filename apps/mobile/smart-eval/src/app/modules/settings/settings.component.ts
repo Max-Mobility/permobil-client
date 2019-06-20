@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import {
-  BluetoothService,
-  FirmwareService,
-  LoggingService,
-  ProgressService
-} from '@maxmobility/mobile';
 import { Kinvey } from 'kinvey-nativescript-sdk';
 import * as fs from 'tns-core-modules/file-system';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
+// import {
+//   BluetoothService,
+//   FirmwareService,
+//   LoggingService,
+//   ProgressService
+// } from '@maxmobility/mobile';
+import { BluetoothService, FirmwareService, LoggingService, ProgressService } from '../../../services';
 
 @Component({
   selector: 'settings',
