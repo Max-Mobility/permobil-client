@@ -971,11 +971,11 @@ export class MainViewModel extends Observable {
   }
 
   saveNewSmartDrive(): Promise<any> {
-    new Toasty(
-      'Scanning for SmartDrives...',
-      ToastDuration.LONG,
-      ToastPosition.CENTER
-    ).show();
+    new Toasty({
+      text: 'Scanning for SmartDrives...',
+      duration: ToastDuration.LONG,
+      position: ToastPosition.CENTER
+    }).show();
 
     // scan for smartdrives
     return this._bluetoothService
@@ -1025,11 +1025,11 @@ export class MainViewModel extends Observable {
     if (!smartDrive) return;
     this._smartDrive = smartDrive;
 
-    new Toasty(
-      'Connecting to ' + this._savedSmartDriveAddress,
-      ToastDuration.SHORT,
-      ToastPosition.CENTER
-    ).show();
+    new Toasty({
+      text: 'Connecting to ' + this._savedSmartDriveAddress,
+      duration: ToastDuration.SHORT,
+      position: ToastPosition.CENTER
+    }).show();
 
     // need to make sure we unregister disconnect event since it may have been registered
     this._smartDrive.off(
@@ -1161,14 +1161,15 @@ export class MainViewModel extends Observable {
       this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
       // indicate failure
       Log.E('send settings failed', err);
-      new Toasty(
-        'Failed to send settings to ' +
+      new Toasty({
+        text:
+          'Failed to send settings to ' +
           this._savedSmartDriveAddress +
           ' ' +
           err,
-        ToastDuration.SHORT,
-        ToastPosition.CENTER
-      ).show();
+        duration: ToastDuration.SHORT,
+        position: ToastPosition.CENTER
+      }).show();
     });
   }
 
@@ -1178,11 +1179,11 @@ export class MainViewModel extends Observable {
   async onSmartDriveConnect(args: any) {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
-    new Toasty(
-      'Connected to ' + this._savedSmartDriveAddress,
-      ToastDuration.SHORT,
-      ToastPosition.CENTER
-    ).show();
+    new Toasty({
+      text: 'Connected to ' + this._savedSmartDriveAddress,
+      duration: ToastDuration.SHORT,
+      position: ToastPosition.CENTER
+    }).show();
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
   }
 
@@ -1198,9 +1199,11 @@ export class MainViewModel extends Observable {
       this.onSmartDriveDisconnect,
       this
     );
-    new Toasty(`Disconnected from ${this._smartDrive.address}`)
-      .setToastPosition(ToastPosition.CENTER)
-      .show();
+    new Toasty({
+      text: `Disconnected from ${this._smartDrive.address}`,
+      duration: ToastDuration.SHORT,
+      position: ToastPosition.CENTER
+    }).show();
   }
 
   async onSmartDriveError(args: any) {
@@ -1310,20 +1313,19 @@ export class MainViewModel extends Observable {
               SmartDriveData.Errors.newError(errorCode, errorId)
             )
             .catch(err => {
-              new Toasty(
-                `Failed Saving SmartDrive Error: ${err}`,
-                ToastDuration.LONG
-              )
-                .setToastPosition(ToastPosition.CENTER)
-                .show();
+              new Toasty({
+                text: `Failed Saving SmartDrive Error: ${err}`,
+                position: ToastPosition.CENTER,
+                duration: ToastDuration.LONG
+              }).show();
             });
         }
       })
       .catch(err => {
-        new Toasty(
-          `Failed getting SmartDrive Error: ${err}`,
-          ToastDuration.LONG
-        )
+        new Toasty({
+          text: `Failed getting SmartDrive Error: ${err}`,
+          duration: ToastDuration.LONG
+        })
           .setToastPosition(ToastPosition.CENTER)
           .show();
       });
@@ -1429,9 +1431,11 @@ export class MainViewModel extends Observable {
       })
       .catch(err => {
         Log.E('Failed saving usage:', err);
-        new Toasty(`Failed saving usage: ${err}`, ToastDuration.LONG)
-          .setToastPosition(ToastPosition.CENTER)
-          .show();
+        new Toasty({
+          text: `Failed saving usage: ${err}`,
+          duration: ToastDuration.LONG,
+          position: ToastPosition.CENTER
+        }).show();
       });
   }
 
