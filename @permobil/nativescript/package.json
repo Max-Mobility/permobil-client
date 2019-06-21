@@ -5,7 +5,10 @@
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "author": "Max-Mobility",
+  "dependencies": {
+    "tns-core-modules": "~5.4.3"
+  },
   "devDependencies": {
-    "tns-platform-declarations": "~5.4.2"
+    "tns-platform-declarations": "~5.4.3"
   }
 }
