@@ -1425,7 +1425,7 @@ export class MainViewModel extends Observable {
     this.throttleSettings.throttleMode =
       appSettings.getString(DataKeys.SD_THROTTLE_MODE) || 'Active';
     this.throttleSettings.maxSpeed =
-      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 70;
+      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 30;
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
