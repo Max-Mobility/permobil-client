@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "setup": "npm run global.installs && npm run setup.mobile && npm run setup.wear && npm run setup.ns.bluetooth && npm run setup.ns.animated-circle",
-    "setup.all": "npm i && npm run global.installs && npm run setup.mobile && npm run setup.wear && npm run setup.@permobil && npm run setup.ns.bluetooth && npm run setup.ns.animated.circle",
-    "setup.all.non-global": "npm i && npm run setup.mobile && npm run setup.wear && npm run setup.ns.bluetooth && npm run setup.ns.animated.circle",
+    "setup.all": "npm i && npm run global.installs && npm run setup.all.non-global",
+    "setup.all.non-global": "npm i && npm run setup.mobile && npm run setup.wear && npm run setup.@permobil && npm run setup.ns.bluetooth && npm run setup.ns.animated.circle",
     "setup.mobile": "cd apps/mobile/pushtracker && npm i && cd ../smart-eval && npm i",
     "setup.wear": "cd apps/wear/pushtracker && npm i && cd ../smartdrive && npm i",
     "setup.sd.wear": "cd apps/wear/smartdrive && npm i",
