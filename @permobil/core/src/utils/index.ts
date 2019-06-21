@@ -1,2 +1,4 @@
 export * from './log.util';
-export * from './time-to-string';
+export * from './number.util';
+export * from './time-to-string.util';
+

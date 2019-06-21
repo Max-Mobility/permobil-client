@@ -1,4 +1,5 @@
-import { BluetoothService, DataKeys, Log, Prop, SensorChangedEventData, SensorService, SentryService, SERVICES, SmartDrive, SqliteService } from '@permobil/core';
+import { Log } from '@permobil/core';
+import { Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -22,7 +23,10 @@ import { device } from 'tns-core-modules/platform';
 import { action } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { Repeater } from 'tns-core-modules/ui/repeater';
+import { DataKeys } from '../../enums';
+import { SmartDrive } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
+import { BluetoothService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
 import { currentSystemTime, currentSystemTimeMeridiem, hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();

@@ -114,6 +114,8 @@ Thumbs.db
 *.ipa
 *.cer
 
+*.d.ts
+
 # project specifics
 ################################ IGNORE ################################
 nativescript-bluetooth/**/*.js
@@ -121,7 +123,7 @@ apps/**/report/
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-bluetooth/base64.js
-!**/typings/*.d.ts
+!**/typings/**/*.d.ts
 
 !tools/**/*.js
 !apps/smart-eval/tools/**/*.js
