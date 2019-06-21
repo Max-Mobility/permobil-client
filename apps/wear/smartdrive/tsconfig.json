@@ -21,7 +21,7 @@
                 "app/*"
             ],
             "@permobil/*": [
-                "../../libs/*"
+                "../../permobil/*"
             ],
             "*": [
                 "./node_modules/tns-core-modules/*",
