@@ -9,7 +9,10 @@ export declare class AnimatedCircle extends Common {
     initNativeView(): void;
     onLayout(left: any, top: any, right: any, bottom: any): void;
     readonly ios: any;
+    spin(): void;
+    stopSpinning(): void;
     progress: number;
+    spinBarColor: Color;
     rimColor: Color;
     barColor: Color;
     clockwise: boolean;
