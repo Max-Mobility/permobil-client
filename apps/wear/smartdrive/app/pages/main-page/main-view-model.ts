@@ -578,7 +578,7 @@ export class MainViewModel extends Observable {
     Log.D('App low memory', args.android);
     // TODO: determine if we need to stop for this - we see this
     // even even when the app is using very little memory
-    //this.fullStop();
+    // this.fullStop();
   }
 
   onAppUncaughtError(args?: any) {
@@ -873,7 +873,8 @@ export class MainViewModel extends Observable {
         const fileMetaDatas = response.content.toJSON().filter(f => {
           const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
           const fw = f['_filename'];
-          return true; //!currentVersions[fw] || v > currentVersions[fw].version;
+			// TODO: this is to force the download all the time - remove this when done debugging!
+          return true; // !currentVersions[fw] || v > currentVersions[fw].version;
         });
         if (fileMetaDatas && fileMetaDatas.length) {
           // Log.D('got fileMetaDatas', fileMetaDatas);
@@ -911,7 +912,7 @@ export class MainViewModel extends Observable {
               // this is a file we have - update the table
               const id = currentVersions[f.name].id;
               // save the binary data to disk
-              let fileName = currentVersions[f.name].filename;
+              const fileName = currentVersions[f.name].filename;
               LS.setItem(fileName, f.data);
               // update current versions
               currentVersions[f.name].version = f.version;
@@ -1033,7 +1034,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
-        Log.E("Couldn't get files:", err);
+        Log.E('Couldn't get files:', err);
         this.updateProgressText = `Error getting updates: ${err}`;
         this.hasUpdateData = false;
         this.checkingForUpdates = false;
@@ -1357,7 +1358,7 @@ export class MainViewModel extends Observable {
     alert({
       title: 'Saved Settings',
       message:
-        "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
+        'CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance.',
       okButtonText: 'OK'
     });
   }
@@ -1867,7 +1868,7 @@ export class MainViewModel extends Observable {
         return data;
       })
       .catch(err => {
-        Log.E("Couldn't get firmware metadata:", err);
+        Log.E('Could not get firmware metadata:', err);
       });
   }
 
