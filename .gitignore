@@ -114,25 +114,15 @@ Thumbs.db
 *.ipa
 *.cer
 
-*.d.ts
 
 # project specifics
 ################################ IGNORE ################################
 nativescript-bluetooth/**/*.js
 apps/**/report/
+*.d.ts
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-bluetooth/base64.js
 !**/typings/**/*.d.ts
-
-!tools/**/*.js
-!apps/smart-eval/tools/**/*.js
-!libs/core/packet/packet_bindings.js
-
-!apps/smart-eval/plugins/swift-fix/**
-!apps/smart-eval/plugins/bluetooth/**
-
-
 !@permobil/core/src/packet/packet_bindings.js
-
 !**/webpack.config.js
