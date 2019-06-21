@@ -243,56 +243,52 @@
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
-	// Updates "Page" -- need to wrap this in a component
+	  // Updates "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onUpdatesLayoutLoaded }}" class="page" translateX="500" visibility="{{ isUpdatesLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%" disableInsetConstraint="true">
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
-         // SmartDrive Update Progress Circle
-         <nac:AnimatedCircle id="updateProgressCircle"
-							 loaded="{{ onUpdateProgressCircleLoaded }}"
-							 rowSpan="3" colSpan="3"
-							 class="updateProgressCircle"
-							 width="100%" height="100%"
-							 animated="true" animateFrom="0" clockwise="true"
-							 rimWidth="2" barWidth="8"
-							 progress="{{ smartDrive.otaProgress }}">
-           <GridLayout
-			   rows="15, auto, auto, *, auto, auto, 15"
-			   columns="30, *, 30"
-			   class="circleDetails">
+          // SmartDrive Update Progress Circle
+          <nac:AnimatedCircle id="updateProgressCircle"
+                              loaded="{{ onUpdateProgressCircleLoaded }}"
+                              rowSpan="3" colSpan="3"
+                              class="updateProgressCircle"
+                              width="100%" height="100%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ smartDrive.otaProgress }}">
+            <GridLayout
+                rows="15, auto, auto, *, auto, auto, 15"
+                columns="30, *, 30"
+                class="circleDetails">
               <Label row="1" col="1" class="topValue" horizontalAlignment="center"
-					 text="{{ smartDrive.otaState }}"
-					 visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+                     text="{{ smartDrive.otaState }}"
+                     visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
-					 text="Update Status"
-					 visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
-			  <Label row="3" col="1" horizontalAlignment="center"
-					 verticalAlignment="middle" textWrap="true"
-					 text="{{ updateProgressText }}"
-					 visibility="{{ !smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
-			  <Button row="3" col="1" class="powerAssist-active"
-					  text="Cancel"
-					  tap="{{ cancelUpdates }}"
-					  visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
-			  <!--
-			  <ListView items="{{ smartDrive.otaActions }}"
-						visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}">
-				<ListView.itemTemplate>
-				  <Button row="3" col="1" class="powerAssist-deactive"
-						  text="{{ this }}"
-						  tap="{{ onUpdateAction }}"
-						  visibility="{{ hasUpdateData ? 'visible' : 'collapsed' }}"/>
-				</ListView.itemTemplate>
-			  </ListView>
-			  -->
+                     text="Update Status"
+                     visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+              <Label row="3" col="1" horizontalAlignment="center"
+                     verticalAlignment="middle" textWrap="true"
+                     text="{{ updateProgressText }}"
+                     visibility="{{ !smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
+
+              <StackLayout row="3" col="1"
+                           visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}">
+                <Repeater items="{{ smartDrive.otaActions }}"
+                          loaded="{{ onUpdateActionsRepeaterLoaded }}">
+                  <Repeater.itemTemplate>
+                    <Button tap="{{ $parents['Repeater'].onUpdateTap }}" text="{{ $value }}"/>
+                  </Repeater.itemTemplate>
+                </Repeater>
+              </StackLayout>
+
               <Label row="4" col="1" class="currentTime"
-					 text="{{ currentTime }}" textWrap="true" />
+                     text="{{ currentTime }}" textWrap="true" />
               <Label row="5" col="1" class="currentTimeMeridiem"
-					 text="{{ currentTimeMeridiem }}" textWrap="true" />
+                     text="{{ currentTimeMeridiem }}" textWrap="true" />
             </GridLayout>
           </nac:AnimatedCircle>
         </GridLayout>
-	  </wol:WearOsLayout>
+      </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
     // Settings Layout "Page" -- need to wrap this in a component

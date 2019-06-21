@@ -13,7 +13,6 @@ import { Pager } from 'nativescript-pager';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
-import * as LS from 'nativescript-localstorage';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
 import {
   showFailure,
@@ -910,13 +909,13 @@ export class MainViewModel extends Observable {
             }
             Log.D('Downloading FW update', f['_filename']);
             return getFile(url).then(data => {
-              const fileData = data.readSync();
+              const fileData = new Uint8Array(data.readSync());
               return {
                 version: SmartDriveData.Firmwares.versionStringToByte(
                   f['version']
                 ),
                 name: f['_filename'],
-                data: new Uint8Array(fileData),
+                data: fileData,
                 changes:
                   f['change_notes'][device.language] || f['change_notes']['en']
               };
@@ -934,12 +933,10 @@ export class MainViewModel extends Observable {
             if (currentVersions[f.name]) {
               // this is a file we have - update the table
               const id = currentVersions[f.name].id;
-              // save the binary data to disk
-              const fileName = currentVersions[f.name].filename;
-              LS.setItem(fileName, f.data);
               // update current versions
               currentVersions[f.name].version = f.version;
               currentVersions[f.name].changes = f.changes;
+              currentVersions[f.name].data = f.data;
               return this._sqliteService.updateInTable(
                 SmartDriveData.Firmwares.TableName,
                 {
@@ -957,14 +954,11 @@ export class MainViewModel extends Observable {
                 undefined,
                 f.changes
               );
-              // save the binary data to disk
-              const fileName = newFirmware[SmartDriveData.Firmwares.FileName];
-              LS.setItem(fileName, f.data);
               // update current versions
               currentVersions[f.name] = {
                 version: f.version,
-                filename: fileName,
-                changes: f.changes
+                changes: f.changes,
+                data: f.data
               };
               return this._sqliteService.insertIntoTable(
                 SmartDriveData.Firmwares.TableName,
@@ -1008,10 +1002,8 @@ export class MainViewModel extends Observable {
             okButtonText: 'Ok'
           }).then(() => {
             Log.D('Beginning SmartDrive update');
-            const bleFileName = currentVersions['SmartDriveBLE.ota'].filename;
-            const mcuFileName = currentVersions['SmartDriveMCU.ota'].filename;
-            const mcuFw = LS.getItem(mcuFileName);
-            const bleFw = LS.getItem(bleFileName);
+            const bleFw = currentVersions['SmartDriveBLE.ota'].data;
+            const mcuFw = currentVersions['SmartDriveMCU.ota'].data;
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
             // disable swipe close of the updates layout
@@ -1049,11 +1041,11 @@ export class MainViewModel extends Observable {
           });
         } else {
           // smartdrive is already up to date
-          hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-          this.isUpdatesLayoutEnabled = false;
+          showSuccess('SmartDrive is up to date!');
           setTimeout(() => {
-            showSuccess('SmartDrive is up to date!');
-          }, 100);
+            hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
+            this.isUpdatesLayoutEnabled = false;
+          }, 2000);
         }
       })
       .catch(err => {
@@ -1076,7 +1068,11 @@ export class MainViewModel extends Observable {
   }
 
   onUpdateAction(args: any) {
-    Log.D('update action:', args);
+    Log.D('onUpdateAction');
+    let action = (args.object as any).bindingContext;
+    Log.D('action', action);
+    let _this = (args.object as any).page.bindingContext;
+    _this.smartDrive.onOTAActionTap(action);
   }
 
   /**
@@ -1210,6 +1206,12 @@ export class MainViewModel extends Observable {
         this.updateSpeedDisplay();
       })
       .catch(err => {});
+  }
+
+  onUpdateActionsRepeaterLoaded(args) {
+    const rpter = args.object as Repeater;
+    // get distance data from db here then handle the data binding and
+    // calculating the Max Value for the chart and some sizing checks
   }
 
   onBatteryChartRepeaterLoaded(args) {
@@ -1885,7 +1887,6 @@ export class MainViewModel extends Observable {
         mds.map(md => {
           data[md[SmartDriveData.Firmwares.FirmwareName]] = {
             version: md[SmartDriveData.Firmwares.VersionName],
-            filename: md[SmartDriveData.Firmwares.FileName],
             id: md[SmartDriveData.Firmwares.IdName],
             changes: md[SmartDriveData.Firmwares.ChangesName]
           };

@@ -213,12 +213,12 @@ export class PushTracker extends DeviceBase {
           this.otaProgress = 0;
           // set the state
           this.otaState = PushTracker.OTAState.not_started;
-          this.otaActions = [];
+          this.setOtaActions();
           if (this.connected) {
             if (this.version !== 0xff) {
               haveVersion = true;
             }
-            this.otaActions = ['ota.action.start'];
+            this.setOtaActions(['ota.action.start']);
           }
           // stop the timer
           if (otaIntervalID) {
@@ -240,7 +240,7 @@ export class PushTracker extends DeviceBase {
         };
         const otaStartHandler = data => {
           this.otaState = PushTracker.OTAState.awaiting_version;
-          this.otaActions = ['ota.action.cancel'];
+          this.setOtaActions(['ota.action.cancel']);
           this.otaStartTime = new Date();
           // start the timeout timer
           if (otaTimeoutID) {
@@ -253,20 +253,20 @@ export class PushTracker extends DeviceBase {
         const otaReadyHandler = data => {
           startedOTA = true;
           this.otaState = PushTracker.OTAState.updating;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaForceHandler = data => {
           startedOTA = true;
           this.otaState = PushTracker.OTAState.awaiting_ready;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaPauseHandler = data => {
           paused = true;
-          this.otaActions = ['ota.action.resume', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.resume', 'ota.action.cancel']);
         };
         const otaResumeHandler = data => {
           paused = false;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaCancelHandler = data => {
           this.otaState = PushTracker.OTAState.canceling;
@@ -339,7 +339,7 @@ export class PushTracker extends DeviceBase {
         ) => {
           cancelOTA = true;
           startedOTA = false;
-          this.otaActions = [];
+          this.setOtaActions();
           // stop timers
           if (otaIntervalID) {
             timer.clearInterval(otaIntervalID);
@@ -357,7 +357,7 @@ export class PushTracker extends DeviceBase {
           } else if (doRetry) {
             this.on(PushTracker.ota_cancel_event, otaCancelHandler);
             this.on(PushTracker.ota_retry_event, otaRetryHandler);
-            this.otaActions = ['ota.action.retry'];
+            this.setOtaActions(['ota.action.retry']);
             otaIntervalID = timer.setInterval(runOTA, 250);
           } else {
             resolve(reason);
@@ -367,15 +367,15 @@ export class PushTracker extends DeviceBase {
           switch (this.otaState) {
             case PushTracker.OTAState.not_started:
               if (this.connected && this.ableToSend) {
-                this.otaActions = ['ota.action.start'];
+                this.setOtaActions(['ota.action.start']);
               } else {
-                this.otaActions = [];
+                this.setOtaActions();
               }
               break;
             case PushTracker.OTAState.awaiting_version:
               if (this.ableToSend && haveVersion) {
                 if (this.version === fwVersion) {
-                  this.otaActions = ['ota.action.force', 'ota.action.cancel'];
+                  this.setOtaActions(['ota.action.force', 'ota.action.cancel']);
                 } else {
                   this.otaState = PushTracker.OTAState.awaiting_ready;
                 }
@@ -424,7 +424,7 @@ export class PushTracker extends DeviceBase {
               if (!paused) {
                 this.otaCurrentTime = new Date();
               }
-              this.otaActions = [];
+              this.setOtaActions();
               if (this.ableToSend && !hasRebooted) {
                 // send stop ota command
                 this.sendPacket(
@@ -457,7 +457,7 @@ export class PushTracker extends DeviceBase {
               stopOTA('OTA Complete', true, false);
               break;
             case PushTracker.OTAState.canceling:
-              this.otaActions = [];
+              this.setOtaActions();
               this.otaProgress = 0;
               cancelOTA = true;
               if (!startedOTA) {
