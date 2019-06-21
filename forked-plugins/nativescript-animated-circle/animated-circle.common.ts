@@ -7,6 +7,12 @@ import {
   InheritedCssProperty
 } from 'tns-core-modules/ui/core/view';
 
+export const spinBarColorProperty = new InheritedCssProperty<Style, Color>({
+  name: 'spinBarColor',
+  cssName: 'spin-bar-color',
+  equalityComparer: Color.equals,
+  valueConverter: value => new Color(value)
+});
 export const rimColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'rimColor',
   cssName: 'rim-color',
@@ -32,10 +38,13 @@ export class Common extends ContentView {
 // augmenting style definitino so it includes rimColor and barColor
 declare module 'tns-core-modules/ui/styling/style' {
   interface Style {
+    spinBarColor: Color;
     rimColor: Color;
     barColor: Color;
   }
 }
+// defines 'spinBarColor' property on Style class
+spinBarColorProperty.register(Style);
 // defines 'rimColor' property on Style class
 rimColorProperty.register(Style);
 // defines 'barColor' property on Style class

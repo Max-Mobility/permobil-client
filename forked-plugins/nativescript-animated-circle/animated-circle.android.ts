@@ -1,5 +1,6 @@
 import {
   Common,
+  spinBarColorProperty,
   rimColorProperty,
   barColorProperty
 } from './animated-circle.common';
@@ -24,7 +25,7 @@ export class AnimatedCircle extends Common {
   private _barWidth: number;
   private _rimColor = new Color('#FF5722');
   private _rimWidth = 5;
-  private _spinBarColor: any;
+  private _spinBarColor = new Color('green');
   private _startAngle: number;
   private _text = '';
   private _textColor = new Color('orange');
@@ -68,10 +69,19 @@ export class AnimatedCircle extends Common {
     this._android.setAutoTextSize(false);
     this._android.setBarStrokeCap(android.graphics.Paint.Cap.ROUND);
     this._android.setTextMode(at.grabner.circleprogress.TextMode.TEXT);
+    this._android.setShowTextWhileSpinning(true);
     this._android.setTextScale(1.1);
     this._android.setTextSize(300);
     this._android.setUnitVisible(false);
     this._updateAnimatedCircle();
+  }
+
+  public spin() {
+    this.android.spin();
+  }
+
+  public stopSpinning() {
+    this.android.stopSpinning();
   }
 
   public disposeNativeView() {
@@ -106,6 +116,8 @@ export class AnimatedCircle extends Common {
         }
       });
     }
+    this._android.setOuterContourSize(0);
+    this._android.setInnerContourSize(0);
   }
 
   get android() {
@@ -171,6 +183,13 @@ export class AnimatedCircle extends Common {
     this._barColor = value;
     this._updateAnimatedCircle();
   }
+  set spinBarColor(value: any) {
+    this._spinBarColor = value;
+    this._updateAnimatedCircle();
+  }
+  get spinBarColor() {
+    return this._spinBarColor;
+  }
 
   [rimColorProperty.setNative](value: any) {
     this._rimColor = value;
@@ -190,6 +209,15 @@ export class AnimatedCircle extends Common {
     return this._barColor;
   }
 
+  [spinBarColorProperty.setNative](value: any) {
+    this._spinBarColor = value;
+    this._updateAnimatedCircle();
+  }
+
+  [spinBarColorProperty.getDefault]() {
+    return this._spinBarColor;
+  }
+
   set rimWidth(value: number) {
     this._rimWidth = Number(value);
     this._updateAnimatedCircle();
@@ -197,15 +225,6 @@ export class AnimatedCircle extends Common {
 
   get rimWidth() {
     return this._rimWidth;
-  }
-
-  set spinBarColor(value: any) {
-    this._spinBarColor = value;
-    this._updateAnimatedCircle();
-  }
-
-  get spinBarColor() {
-    return this._spinBarColor;
   }
 
   set startAngle(value: number) {
@@ -279,7 +298,7 @@ export class AnimatedCircle extends Common {
         this.android.setRimColor(this.rimColor.argb);
       }
       if (this.spinBarColor) {
-        this.android.setSpinBarColor(new Color(this.spinBarColor).argb);
+        this.android.setSpinBarColor(this.spinBarColor.argb);
       }
       if (this.startAngle) {
         this.android.setStartAngle(this.startAngle);

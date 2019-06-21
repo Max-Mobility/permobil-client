@@ -1,5 +1,6 @@
 import {
   Common,
+  spinBarColorProperty,
   rimColorProperty,
   barColorProperty
 } from './animated-circle.common';
@@ -46,6 +47,10 @@ export class AnimatedCircle extends Common {
     return this._ios;
   }
 
+  public spin() {}
+
+  public stopSpinning() {}
+
   /**
    * The percentage value completed (whole number)
    */
@@ -53,6 +58,12 @@ export class AnimatedCircle extends Common {
     this._ios.progressValue = Number(value / 100);
   }
 
+  get spinBarColor(): Color {
+    return this._ios.alternativeColor;
+  }
+  set spinBarColor(value: Color) {
+    this._ios.alternativeColor = value.ios;
+  }
   get rimColor(): Color {
     return this._ios.alternativeColor;
   }
@@ -78,6 +89,13 @@ export class AnimatedCircle extends Common {
    */
   [barColorProperty.setNative](value: any) {
     this._ios.progressColor = value.ios;
+  }
+
+  /**
+   * The fill color of the percentage completed
+   */
+  [spinBarColorProperty.setNative](value: any) {
+    this._ios.alternativeColor = value.ios;
   }
 
   /**
