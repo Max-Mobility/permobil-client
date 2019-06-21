@@ -1,8 +1,7 @@
-import { bindingTypeToString, mod, Packet, SD_OTA_State } from '@permobil/core';
+import { bindingTypeToString, ISmartDriveEvents, mod, Packet, SD_OTA_State } from '@permobil/core';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
-import { ISmartDriveEvents } from '../interfaces';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
 

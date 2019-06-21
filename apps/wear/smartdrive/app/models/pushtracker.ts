@@ -1,8 +1,6 @@
-import { bindingTypeToString, Packet } from '@permobil/core';
+import { bindingTypeToString, IPushTrackerEvents, Packet, PT_OTA_State } from '@permobil/core';
 import { isIOS } from 'tns-core-modules/platform';
 import * as timer from 'tns-core-modules/timer';
-import { PT_OTA_State } from '../enums';
-import { IPushTrackerEvents } from '../interfaces';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
 
