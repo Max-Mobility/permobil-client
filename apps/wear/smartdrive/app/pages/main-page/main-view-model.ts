@@ -873,7 +873,7 @@ export class MainViewModel extends Observable {
         const fileMetaDatas = response.content.toJSON().filter(f => {
           const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
           const fw = f['_filename'];
-			// TODO: this is to force the download all the time - remove this when done debugging!
+          // TODO: this is to force the download all the time - remove this when done debugging!
           return true; // !currentVersions[fw] || v > currentVersions[fw].version;
         });
         if (fileMetaDatas && fileMetaDatas.length) {
@@ -1034,7 +1034,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
-        Log.E('Couldn't get files:', err);
+        Log.E('Could not get files:', err);
         this.updateProgressText = `Error getting updates: ${err}`;
         this.hasUpdateData = false;
         this.checkingForUpdates = false;
