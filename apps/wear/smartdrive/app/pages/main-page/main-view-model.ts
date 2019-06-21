@@ -1069,9 +1069,9 @@ export class MainViewModel extends Observable {
 
   onUpdateAction(args: any) {
     Log.D('onUpdateAction');
-    let action = (args.object as any).bindingContext;
+    const action = (args.object as any).bindingContext;
     Log.D('action', action);
-    let _this = (args.object as any).page.bindingContext;
+    const _this = (args.object as any).page.bindingContext;
     _this.smartDrive.onOTAActionTap(action);
   }
 
