@@ -57,8 +57,9 @@ export class SensorService extends Observable {
   /**
    * Starts all of the device sensors for data collection.
    * @param delay [number | SensorDelay] - Default is GAME.
+   * @param maxReportingLatency [number] - Default is null.
    */
-  startDeviceSensors(
+  startAllDeviceSensors(
     delay = SensorDelay.GAME,
     maxReportingDelay: number = null
   ) {
@@ -146,9 +147,42 @@ export class SensorService extends Observable {
   }
 
   /**
+   * Starts the specified device sensor for data collection.
+   * @param sensorType [number] - Android sensor type to start.
+   * @param delay [number | SensorDelay] - Default is GAME.
+   * @param maxReportingLatency [number] - Default is null.
+   */
+  startDeviceSensor(
+    sensorType: number,
+    delay = SensorDelay.GAME,
+    maxReportingDelay: number = null
+  ) {
+    const sensor = this.androidSensorClass.startSensor(
+      sensorType,
+      delay,
+      maxReportingDelay
+    );
+    if (sensor) this.registeredSensors.push(sensor);
+  }
+
+  /**
+   * Iterates all the sensors and unregisters them.
+   * @param sensorType [number] - Android sensor type to stop.
+   */
+  stopDeviceSensor(
+    sensorType: number
+  ) {
+    this.registeredSensors.forEach(sensor => {
+      if (sensor.getType() === sensorType) {
+        this.androidSensorClass.stopSensor(sensor);
+      }
+    });
+  }
+
+  /**
    * Iterates all the sensors and unregisters them.
    */
-  stopDeviceSensors() {
+  stopAllDeviceSensors() {
     this.registeredSensors.forEach(sensor => {
       this.androidSensorClass.stopSensor(sensor);
     });

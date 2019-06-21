@@ -154,7 +154,6 @@ export class MainViewModel extends Observable {
   /**
    * State Management for Sensor Monitoring / Data Collection
    */
-  private _isListeningDeviceSensors = false;
   private watchBeingWorn = false;
 
   /**
@@ -265,8 +264,6 @@ export class MainViewModel extends Observable {
           // paused happens any time a new activity is shown
           // in front, e.g. showSuccess / showFailure - so we
           // probably don't want to fullstop on paused
-          // TODO: determine if we want this!
-          this.fullStop();
         }
       }
     );
@@ -279,7 +276,7 @@ export class MainViewModel extends Observable {
           // doesn't seem to fire. Therefore we want to make
           // sure to re-enable device sensors since the
           // suspend event will have disabled them.
-          this.enableDeviceSensors();
+          this.enableBodySensor();
         }
       }
     );
@@ -524,7 +521,7 @@ export class MainViewModel extends Observable {
   }
 
   fullStop() {
-    this.disableDeviceSensors();
+    this.disableAllSensors();
     this.disablePowerAssist();
   }
 
@@ -768,30 +765,54 @@ export class MainViewModel extends Observable {
     this.togglePowerAssist();
   }
 
-  disableDeviceSensors() {
+  /**
+   * Sensor Management
+   */
+  enableBodySensor() {
     try {
-      this._sensorService.stopDeviceSensors();
+      this._sensorService.startDeviceSensor(
+        android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
+      );
     } catch (err) {
-      Log.E('Error disabling the device sensors:', err);
-    }
-    this._isListeningDeviceSensors = false;
-    return;
-  }
-
-  enableDeviceSensors() {
-    try {
-      if (!this._isListeningDeviceSensors) {
-        this._sensorService.startDeviceSensors(
-          this.SENSOR_DELAY_US,
-          this.MAX_REPORTING_INTERVAL_US
-        );
-        this._isListeningDeviceSensors = true;
-      }
-    } catch (err) {
-      Log.E('Error starting the device sensors', err);
+      // Log.E('Error starting the body sensor', err);
     }
   }
 
+  enableTapSensor() {
+    try {
+      this._sensorService.startDeviceSensor(
+        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
+      );
+    } catch (err) {
+      // Log.E('Error starting the tap sensor', err);
+    }
+  }
+
+  disableAllSensors() {
+    try {
+      this._sensorService.stopAllDeviceSensors();
+    } catch (err) {
+      // Log.E('Error disabling the device sensors:', err);
+    }
+  }
+
+  disableTapSensor() {
+    try {
+      this._sensorService.stopDeviceSensor(
+        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
+      );
+    } catch (err) {
+      // Log.E('Error disabling the device sensors:', err);
+    }
+  }
+
+  /**
+   * Main Menu Tap Handlers
+   */
   onAboutTap() {
     if (this.aboutScrollView) {
       // reset to to the top when entering the page
@@ -802,6 +823,7 @@ export class MainViewModel extends Observable {
   }
 
   onTrainingTap() {
+    this.enableTapSensor();
     this.wakeLock.acquire();
     keepAwake();
     this.isTraining = true;
@@ -811,6 +833,7 @@ export class MainViewModel extends Observable {
   }
 
   onExitTrainingModeTap() {
+    this.disableTapSensor();
     if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.isTraining = false;
@@ -1484,6 +1507,7 @@ export class MainViewModel extends Observable {
     return this.connectToSavedSmartDrive()
       .then(didConnect => {
         if (didConnect) {
+          this.enableTapSensor();
           this._ringTimerId = setInterval(
             this.blinkPowerAssistRing.bind(this),
             this.RING_TIMER_INTERVAL_MS
@@ -1498,6 +1522,7 @@ export class MainViewModel extends Observable {
   }
 
   disablePowerAssist() {
+    this.disableTapSensor();
     if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.powerAssistState = PowerAssist.State.Inactive;
