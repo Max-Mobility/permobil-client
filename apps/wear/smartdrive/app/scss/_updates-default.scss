@@ -1,0 +1,58 @@
+@import 'variables';
+
+$update-progress-color: #009ac7;
+$update-progress-rim-color: #696969;
+$update-progress-spinner-color: #009ac7;
+
+$activated-color: #db4537;
+$deactivated-color: #00a73c;
+
+.updateProgressCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 100%;
+  height: 100%;
+  bar-color: $update-progress-color;
+  rim-color: $update-progress-rim-color;
+  spin-bar-color: $update-progress-spinner-color;
+}
+
+.topValue {
+  color: $white;
+  font-size: 18;
+  horizontal-align: $center;
+  vertical-align: top;
+}
+
+.topValueDescription {
+  color: $white;
+  font-size: 10;
+  horizontal-align: $center;
+  vertical-align: top;
+}
+
+.powerAssist-active {
+    @extend .power-assist-btn;
+  color: $white;
+  background-color: $activated-color;
+}
+
+.powerAssist-deactive {
+    @extend .power-assist-btn;
+  color: $white;
+  background-color: $deactivated-color;
+}
+
+.currentTime {
+  color: $white;
+  font-size: 18;
+  horizontal-align: $center;
+  vertical-align: bottom;
+}
+
+.currentTimeMeridiem {
+  color: $white;
+  font-size: 10;
+  horizontal-align: $center;
+  vertical-align: bottom;
+}

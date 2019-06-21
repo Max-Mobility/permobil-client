@@ -3,6 +3,7 @@ import { Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
+import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
@@ -11,43 +12,60 @@ import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
 import { Pager } from 'nativescript-pager';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
-import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { Vibrate } from 'nativescript-vibrate';
+import * as LS from 'nativescript-localstorage';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
-import { showFailure, showSuccess } from 'nativescript-wear-os/packages/dialogs';
+import {
+  showFailure,
+  showSuccess
+} from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { request, getFile } from 'tns-core-modules/http';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
+import {
+  ObservableArray,
+  ChangedData
+} from 'tns-core-modules/data/observable-array';
 import { device } from 'tns-core-modules/platform';
-import { action } from 'tns-core-modules/ui/dialogs';
+import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { Repeater } from 'tns-core-modules/ui/repeater';
 import { DataKeys } from '../../enums';
 import { SmartDrive } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
-import { currentSystemTime, currentSystemTimeMeridiem, hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
+import { ScrollView, ScrollEventData } from 'tns-core-modules/ui/scroll-view';
+import { ItemEventData } from 'tns-core-modules/ui/list-view';
+import {
+  currentSystemTime,
+  currentSystemTimeMeridiem,
+  hideOffScreenLayout,
+  showOffScreenLayout
+} from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
 export class MainViewModel extends Observable {
-  @Prop() smartDriveCurrentBatteryPercentage = 0;
-  @Prop() watchCurrentBatteryPercentage = 0;
-  @Prop() watchIsCharging = false;
+  @Prop() smartDriveCurrentBatteryPercentage: number = 0;
+  @Prop() watchCurrentBatteryPercentage: number = 0;
+  @Prop() watchIsCharging: boolean = false;
   @Prop() powerAssistRingColor: Color = PowerAssist.InactiveRingColor;
-  @Prop() estimatedDistance = 0.0;
-  @Prop() estimatedDistanceDisplay = '0.0';
-  @Prop() estimatedDistanceDescription = 'Estimated Range (mi)';
-  @Prop() currentSpeed = 0.0;
-  @Prop() currentSpeedDisplay = '0.0';
-  @Prop() currentSpeedDescription = 'Speed (mph)';
+  @Prop() estimatedDistance: number = 0.0;
+  @Prop() estimatedDistanceDisplay: string = '0.0';
+  @Prop() estimatedDistanceDescription: string = 'Estimated Range (mi)';
+  @Prop() currentSpeed: number = 0.0;
+  @Prop() currentSpeedDisplay: string = '0.0';
+  @Prop() currentSpeedDescription: string = 'Speed (mph)';
   @Prop() currentTime;
   @Prop() currentTimeMeridiem;
-  @Prop() powerAssistActive = false;
-  @Prop() isTraining = false;
+  @Prop() powerAssistActive: boolean = false;
+  @Prop() isTraining: boolean = false;
+  @Prop() pairSmartDriveText: string = 'Pair SmartDrive';
+  @Prop() hasUpdateData: boolean = false;
   /**
    * Boolean to track the settings swipe layout visibility.
    */
@@ -60,6 +78,14 @@ export class MainViewModel extends Observable {
    * Boolean to track the error history swipe layout visibility.
    */
   @Prop() isErrorHistoryLayoutEnabled = false;
+  @Prop() isAboutLayoutEnabled = false;
+
+  /**
+   * Boolean to track the updates swipe layout visibility.
+   */
+  @Prop() isUpdatesLayoutEnabled = false;
+  @Prop() updateProgressText: string = 'Checking for Updates';
+  @Prop() checkingForUpdates: boolean = false;
 
   /**
    *
@@ -68,11 +94,12 @@ export class MainViewModel extends Observable {
    */
   lastTapTime: number;
   lastAccelZ: number = null;
-  tapLockoutTimeMs = 200;
-  maxTapSensitivity = 3.5;
-  minTapSensitivity = 1.5;
-  SENSOR_DELAY_US: number = 25 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 50 * 1000;
+  tapLockoutTimeMs: number = 200;
+  tapTimeoutId: any = null;
+  maxTapSensitivity: number = 3.5;
+  minTapSensitivity: number = 1.5;
+  SENSOR_DELAY_US: number = 40 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
 
@@ -84,17 +111,17 @@ export class MainViewModel extends Observable {
   /**
    * Boolean to track if the SmartDrive motor is on.
    */
-  @Prop() motorOn = false;
+  @Prop() public motorOn = false;
 
   /**
    * Boolean to track if the user has tapped (for indication).
    */
-  @Prop() hasTapped = false;
+  @Prop() public hasTapped = false;
 
   /**
    * Data to bind to the Battery Usage Chart repeater.
    */
-  @Prop() batteryChartData;
+  @Prop() public batteryChartData;
   /**
    * Used to indicate the highest value in the battery chart.
    */
@@ -102,7 +129,7 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Distance Chart repeater.
    */
-  @Prop() distanceChartData;
+  @Prop() public distanceChartData;
   /**
    * Used to indicate the highest value in the distance chart.
    */
@@ -110,12 +137,19 @@ export class MainViewModel extends Observable {
   /**
    * Units of distance for the distance chart.
    */
-  @Prop() distanceUnits = 'mi';
+  @Prop() distanceUnits: string = 'mi';
 
   /**
    * Data to bind to the Error History repeater
    */
-  @Prop() errorHistoryData;
+  @Prop() public errorHistoryData = new ObservableArray();
+
+  @Prop() public mcuVersion: string = '---';
+  @Prop() public bleVersion: string = '---';
+  @Prop() public sdSerialNumber: string = '---';
+  @Prop() public watchSerialNumber: string = '---';
+  @Prop() public appVersion: string = '---';
+  @Prop() public databaseId: string = KinveyService.api_app_key;
 
   /**
    * State Management for Sensor Monitoring / Data Collection
@@ -126,9 +160,12 @@ export class MainViewModel extends Observable {
   /**
    * SmartDrive Data / state management
    */
+  public smartDrive: SmartDrive;
   private settings = new SmartDrive.Settings();
   private tempSettings = new SmartDrive.Settings();
-  private _smartDrive: SmartDrive;
+  private throttleSettings = new SmartDrive.ThrottleSettings();
+  private tempThrottleSettings = new SmartDrive.ThrottleSettings();
+  private hasSentSettings: boolean = false;
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
@@ -139,25 +176,188 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
+  private wakeLock: any = null;
   private pager: Pager;
-  private powerAssistRing: AnimatedCircle;
-  private tapRing: AnimatedCircle;
-  private watchBatteryRing: AnimatedCircle;
-  private smartDriveBatteryRing: AnimatedCircle;
+  private settingsScrollView: ScrollView;
+  private errorsScrollView: ScrollView;
+  private aboutScrollView: ScrollView;
+  private updateProgressCircle: AnimatedCircle;
   private _settingsLayout: SwipeDismissLayout;
-  _changeSettingsLayout: SwipeDismissLayout;
+  public _changeSettingsLayout: SwipeDismissLayout;
   private _errorHistoryLayout: SwipeDismissLayout;
+  private _aboutLayout: SwipeDismissLayout;
+  private _updatesLayout: SwipeDismissLayout;
   private _vibrator: Vibrate = new Vibrate();
   private _sentryService: SentryService;
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
+  private _networkService: NetworkService;
+  private _kinveyService: KinveyService;
 
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
+  private chargingWorkTimeoutId: any = null;
+
+  isActivityThis(activity: any) {
+    // TODO: This is a hack to determine which activity is being updated!
+    return `${activity}`.includes('com.permobil.smartdrive.MainActivity');
+  }
+
+  requestReadPhoneStatePermission(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      // grab the permission dialog result
+      application.android.on(
+        application.AndroidApplication.activityRequestPermissionsEvent,
+        (args: application.AndroidActivityRequestPermissionsEventData) => {
+          for (let i = 0; i < args.permissions.length; i++) {
+            if (
+              args.grantResults[i] ===
+              android.content.pm.PackageManager.PERMISSION_DENIED
+            ) {
+              reject('Permission denied');
+              return;
+            }
+          }
+          resolve();
+        }
+      );
+
+      const activity =
+        application.android.foregroundActivity ||
+        application.android.startActivity;
+
+      // invoke the permission dialog
+      (android.support.v4.app.ActivityCompat as any).requestPermissions(
+        activity,
+        [android.Manifest.permission.READ_PHONE_STATE],
+        227
+      );
+    });
+  }
+
   constructor() {
     super();
+
+    // initialize the wake lock here
+    const context = android.content.Context;
+    const powerManager = application.android.context.getSystemService(
+      context.POWER_SERVICE
+    );
+    this.wakeLock = powerManager.newWakeLock(
+      android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+      'com.permobil.smartdrive.wearos::WakeLock'
+    );
+
+    // handle ambient mode callbacks
+    application.on('updateAmbient', args => {
+      Log.D('updateAmbient', args.data, currentSystemTime());
+      this.currentTime = currentSystemTime();
+      this.currentTimeMeridiem = currentSystemTimeMeridiem();
+    });
+
+    // Activity lifecycle event handlers
+    application.android.on(
+      application.AndroidApplication.activityPausedEvent,
+      (args: application.AndroidActivityBundleEventData) => {
+        if (this.isActivityThis(args.activity)) {
+          // paused happens any time a new activity is shown
+          // in front, e.g. showSuccess / showFailure - so we
+          // probably don't want to fullstop on paused
+          // TODO: determine if we want this!
+          this.fullStop();
+        }
+      }
+    );
+    application.android.on(
+      application.AndroidApplication.activityResumedEvent,
+      (args: application.AndroidActivityBundleEventData) => {
+        if (this.isActivityThis(args.activity)) {
+          // resumed happens after an app is re-opened out of
+          // suspend, even though the app level resume event
+          // doesn't seem to fire. Therefore we want to make
+          // sure to re-enable device sensors since the
+          // suspend event will have disabled them.
+          this.enableDeviceSensors();
+        }
+      }
+    );
+    application.android.on(
+      application.AndroidApplication.activityStoppedEvent,
+      (args: application.AndroidActivityBundleEventData) => {
+        if (this.isActivityThis(args.activity)) {
+          // similar to the app suspend / exit event.
+          this.fullStop();
+        }
+      }
+    );
+
+    // handle application lifecycle events
+    this.registerAppEventHandlers();
+
+    console.time('Sentry_Init');
+    // init sentry - DNS key for permobil-wear Sentry project
+    Sentry.init(
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    );
+    console.timeEnd('Sentry_Init');
+
+    const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
+    this._sentryService = injector.get(SentryService);
+    this._bluetoothService = injector.get(BluetoothService);
+    this._sensorService = injector.get(SensorService);
+    this._sqliteService = injector.get(SqliteService);
+    this._networkService = injector.get(NetworkService);
+    this._kinveyService = injector.get(KinveyService);
+
+    // register for network service events
+    this.registerNetworkEventHandlers();
+
+    console.time('SQLite_Init');
+    // create / load tables for smartdrive data
+    this._sqliteService
+      .makeTable(
+        SmartDriveData.Info.TableName,
+        SmartDriveData.Info.IdName,
+        SmartDriveData.Info.Fields
+      )
+      .then(() => {
+        return this._sqliteService.makeTable(
+          SmartDriveData.Errors.TableName,
+          SmartDriveData.Errors.IdName,
+          SmartDriveData.Errors.Fields
+        );
+      })
+      .then(() => {
+        return this._sqliteService.makeTable(
+          SmartDriveData.Firmwares.TableName,
+          SmartDriveData.Firmwares.IdName,
+          SmartDriveData.Firmwares.Fields
+        );
+      })
+      .then(() => {
+        Log.D('Tables complete');
+        console.timeEnd('SQLite_Init');
+      })
+      .catch(err => {
+        Log.E(`Couldn't make table:`, err);
+      });
+
+    // load serial number from settings / memory
+    const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
+    if (savedSerial && savedSerial.length) {
+      this.watchSerialNumber = savedSerial;
+      this._kinveyService.watch_serial_number = this.watchSerialNumber;
+    }
+    const packageManager = application.android.context.getPackageManager();
+    const packageInfo = packageManager.getPackageInfo(
+      application.android.context.getPackageName(),
+      0
+    );
+    const versionName = packageInfo.versionName;
+    const versionCode = packageInfo.versionCode;
+    this.appVersion = versionName;
 
     // handle ambient mode callbacks
     application.on('enterAmbient', args => {
@@ -185,50 +385,25 @@ export class MainViewModel extends Observable {
           child._onCssStateChange();
         }
       }
+
+      const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
+      if (!savedSerial) {
+        // update about page info
+        Log.D('Requesting permissions!');
+        this.requestReadPhoneStatePermission()
+          .then(p => {
+            this.watchSerialNumber = android.os.Build.getSerial();
+            appSettings.setString(
+              DataKeys.WATCH_SERIAL_NUMBER,
+              this.watchSerialNumber
+            );
+            this._kinveyService.watch_serial_number = this.watchSerialNumber;
+          })
+          .catch(e => {
+            Log.E('permission denied!', e);
+          });
+      }
     });
-
-    // handle ambient mode callbacks
-    application.on('updateAmbient', args => {
-      Log.D('updateAmbient', args.data, currentSystemTime());
-    });
-
-    // handle application lifecycle events
-    this.registerAppEventHandlers();
-
-    console.time('Sentry_Init');
-    // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
-    console.timeEnd('Sentry_Init');
-
-    const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
-    this._sentryService = injector.get(SentryService);
-    this._bluetoothService = injector.get(BluetoothService);
-    this._sensorService = injector.get(SensorService);
-    this._sqliteService = injector.get(SqliteService);
-
-    console.time('SQLite_Init');
-    // create / load tables for smartdrive data
-    this._sqliteService
-      .makeTable(
-        SmartDriveData.Info.TableName,
-        SmartDriveData.Info.IdName,
-        SmartDriveData.Info.Fields
-      )
-      .catch(err => {
-        Log.E(`Couldn't make SmartDriveData.Info table:`, err);
-      });
-    this._sqliteService
-      .makeTable(
-        SmartDriveData.Errors.TableName,
-        SmartDriveData.Errors.IdName,
-        SmartDriveData.Errors.Fields
-      )
-      .catch(err => {
-        Log.E(`Couldn't make SmartDriveData.Errors table:`, err);
-      });
-    console.timeEnd('SQLite_Init');
 
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
@@ -263,8 +438,13 @@ export class MainViewModel extends Observable {
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_AC ||
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_USB ||
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
-      // do work that we need while charging
-      setTimeout(this.doWhileCharged.bind(this), this.CHARGING_WORK_PERIOD_MS);
+      if (this.watchIsCharging && this.chargingWorkTimeoutId === null) {
+        // do work that we need while charging
+        this.chargingWorkTimeoutId = setTimeout(
+          this.doWhileCharged.bind(this),
+          this.CHARGING_WORK_PERIOD_MS
+        );
+      }
     };
 
     application.android.registerBroadcastReceiver(
@@ -293,23 +473,6 @@ export class MainViewModel extends Observable {
       timeReceiverCallback
     );
 
-    // Now set up the sensor service:
-    // this._sensorService.on(
-    //   SensorService.AccuracyChanged,
-    //   (args: AccuracyChangedEventData) => {
-    //     const sensor = args.data.sensor;
-    //     const accuracy = args.data.accuracy;
-    //     if (sensor.getType() === android.hardware.Sensor.TYPE_HEART_RATE) {
-    //       this.heartRateAccuracy = accuracy;
-    //       // save the heart rate
-    //       appSettings.setNumber(
-    //         DataKeys.HEART_RATE,
-    //         parseInt(this.heartRate, 10)
-    //       );
-    //     }
-    //   }
-    // );
-
     this._sensorService.on(
       SensorService.SensorChanged,
       (args: SensorChangedEventData) => {
@@ -322,7 +485,6 @@ export class MainViewModel extends Observable {
           android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
         ) {
           this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-          // Log.D('WatchBeingWorn: ' + this.watchBeingWorn);
           if (!this.watchBeingWorn && this.powerAssistActive) {
             // disable power assist if the watch is taken off!
             this.disablePowerAssist();
@@ -334,13 +496,11 @@ export class MainViewModel extends Observable {
         }
       }
     );
-    // now enable the sensors
-    this.enableDeviceSensors();
 
     // load savedSmartDriveAddress from settings / memory
     const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
     if (savedSDAddr && savedSDAddr.length) {
-      this._savedSmartDriveAddress = savedSDAddr;
+      this.updateSmartDrive(savedSDAddr);
     }
 
     // load settings from memory
@@ -349,6 +509,7 @@ export class MainViewModel extends Observable {
 
     Log.D(
       'Device Info: ---',
+      'Serial Number: ' + this.watchSerialNumber,
       'Manufacturer: ' + device.manufacturer,
       'Model: ' + device.model,
       'OS: ' + device.os,
@@ -358,6 +519,20 @@ export class MainViewModel extends Observable {
       'Device Language: ' + device.language,
       'UUID: ' + device.uuid
     );
+
+    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+  }
+
+  fullStop() {
+    this.disableDeviceSensors();
+    this.disablePowerAssist();
+  }
+
+  updateSmartDrive(address: string) {
+    this._savedSmartDriveAddress = address;
+    this.smartDrive = this._bluetoothService.getOrMakeSmartDrive({
+      address: address
+    });
   }
 
   /**
@@ -368,7 +543,6 @@ export class MainViewModel extends Observable {
     application.on(application.resumeEvent, this.onAppResume.bind(this));
     application.on(application.suspendEvent, this.onAppSuspend.bind(this));
     application.on(application.exitEvent, this.onAppExit.bind(this));
-    application.on(application.displayedEvent, this.onAppDisplayed.bind(this));
     application.on(application.lowMemoryEvent, this.onAppLowMemory.bind(this));
     application.on(
       application.uncaughtErrorEvent,
@@ -381,7 +555,6 @@ export class MainViewModel extends Observable {
     application.off(application.resumeEvent, this.onAppResume.bind(this));
     application.off(application.suspendEvent, this.onAppSuspend.bind(this));
     application.off(application.exitEvent, this.onAppExit.bind(this));
-    application.off(application.displayedEvent, this.onAppDisplayed.bind(this));
     application.off(application.lowMemoryEvent, this.onAppLowMemory.bind(this));
     application.off(
       application.uncaughtErrorEvent,
@@ -389,31 +562,23 @@ export class MainViewModel extends Observable {
     );
   }
 
-  onAppLaunch(args?: any) {
-    Log.D('App launch');
-  }
+  onAppLaunch(args?: any) {}
 
-  onAppResume(args?: any) {
-    Log.D('App resume');
-  }
+  onAppResume(args?: any) {}
 
   onAppSuspend(args?: any) {
-    Log.D('App suspend');
     this.fullStop();
   }
 
   onAppExit(args?: any) {
-    Log.D('App exit');
     this.fullStop();
-  }
-
-  onAppDisplayed(args?: any) {
-    Log.D('App displayed');
   }
 
   onAppLowMemory(args?: any) {
-    Log.D('App low memory', args);
-    this.fullStop();
+    Log.D('App low memory', args.android);
+    // TODO: determine if we need to stop for this - we see this
+    // even even when the app is using very little memory
+    //this.fullStop();
   }
 
   onAppUncaughtError(args?: any) {
@@ -421,57 +586,98 @@ export class MainViewModel extends Observable {
     this.fullStop();
   }
 
-  fullStop() {
-    Log.D('Disabling power assist');
-    this.disablePowerAssist();
+  /**
+   * Network manager event handlers
+   */
+  registerNetworkEventHandlers() {
+    this._networkService.on(
+      NetworkService.network_available_event,
+      this.onNetworkAvailable.bind(this)
+    );
+    this._networkService.on(
+      NetworkService.network_lost_event,
+      this.onNetworkLost.bind(this)
+    );
+  }
+
+  unregisterNetworkEventHandlers() {
+    this._networkService.off(
+      NetworkService.network_available_event,
+      this.onNetworkAvailable.bind(this)
+    );
+    this._networkService.off(
+      NetworkService.network_lost_event,
+      this.onNetworkLost.bind(this)
+    );
+  }
+  onNetworkAvailable(args: any) {
+    // Log.D('Network available - sending errors');
+    return this.sendErrorsToServer(10)
+      .then(ret => {
+        // Log.D('Network available - sending info');
+        return this.sendInfosToServer(10);
+      })
+      .then(ret => {
+        // Log.D('Network available - sending settings');
+        return this.sendSettingsToServer();
+      })
+      .then(ret => {
+        // Log.D('Have sent data to server - unregistering from network');
+        // unregister network since we're done sending that data now
+        this._networkService.unregisterNetwork();
+      })
+      .catch(e => {
+        Log.E('Error sending data to server', e);
+        // unregister network since we're done sending that data now
+        this._networkService.unregisterNetwork();
+      });
+  }
+
+  onNetworkLost(args: any) {
+    Log.D('Network Lost!');
   }
 
   doWhileCharged() {
-    // TODO: send errors to kinvey here
-    // TODO: send usage data to kinvey here
     if (this.watchIsCharging) {
+      // request network here
+      // Log.D('Watch charging - requesting network');
+      this._networkService.requestNetwork({
+        timeoutMs: this.CHARGING_WORK_PERIOD_MS / 2
+      });
       // re-schedule any work that may still need to be done
-      setTimeout(this.doWhileCharged.bind(this), this.CHARGING_WORK_PERIOD_MS);
+      this.chargingWorkTimeoutId = setTimeout(
+        this.doWhileCharged.bind(this),
+        this.CHARGING_WORK_PERIOD_MS
+      );
+    } else {
+      // clear the timeout id since we're not re-spawning it
+      this.chargingWorkTimeoutId = null;
     }
   }
 
+  /**
+   * View Loaded event handlers
+   */
   onPagerLoaded(args: any) {
     const page = args.object as Page;
     this.pager = page.getViewById('pager') as Pager;
   }
 
-  onPowerAssistCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.powerAssistRing = page.getViewById(
-      'powerAssistCircle'
-    ) as AnimatedCircle;
-    (this.powerAssistRing as any).android.setOuterContourSize(0);
-    (this.powerAssistRing as any).android.setInnerContourSize(0);
-  }
-
-  onTapCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.tapRing = page.getViewById('tapCircle') as AnimatedCircle;
-    (this.tapRing as any).android.setOuterContourSize(0);
-    (this.tapRing as any).android.setInnerContourSize(0);
-  }
-
-  onSmartDriveCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.smartDriveBatteryRing = page.getViewById(
-      'smartDriveBatteryCircle'
-    ) as AnimatedCircle;
-    (this.smartDriveBatteryRing as any).android.setOuterContourSize(0);
-    (this.smartDriveBatteryRing as any).android.setInnerContourSize(0);
-  }
-
-  onWatchCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.watchBatteryRing = page.getViewById(
-      'watchBatteryCircle'
-    ) as AnimatedCircle;
-    (this.watchBatteryRing as any).android.setOuterContourSize(0);
-    (this.watchBatteryRing as any).android.setInnerContourSize(0);
+  tapAxisIsPrimary(accel: any) {
+    const max = Math.max(
+      Math.abs(accel.z),
+      Math.max(Math.abs(accel.x), Math.abs(accel.y))
+    );
+    const xPercent = Math.abs(accel.x / max);
+    const yPercent = Math.abs(accel.y / max);
+    const zPercent = Math.abs(accel.z / max);
+    const outOfAxisThreshold = 0.5;
+    return (
+      max > this.minTapSensitivity &&
+      zPercent > 0.9 &&
+      xPercent < outOfAxisThreshold &&
+      yPercent < outOfAxisThreshold
+    );
   }
 
   handleAccel(acceleration: any, timestamp: number) {
@@ -485,22 +691,30 @@ export class MainViewModel extends Observable {
     }
     // now get the z-axis acceleration
     let acc = acceleration.z;
-    const diff = acc - this.lastAccelZ;
+    let diff = acc - this.lastAccelZ;
     this.lastAccelZ = acc;
+    // block motions where the primary axis of movement isn't the
+    // z-axis
+    if (!this.tapAxisIsPrimary(acceleration)) {
+      return;
+    }
+    // block high frequency tapping
+    if (this.lastTapTime !== null) {
+      const timeDiffNs = timestamp - this.lastTapTime;
+      const timeDiffThreshold = this.tapLockoutTimeMs * 1000 * 1000; // convert to ns
+      if (timeDiffNs < timeDiffThreshold) {
+        return;
+      }
+    }
+    // respond to both axes for tapping if the motor is on
     if (this.motorOn) {
-      // respond to both axes for tapping if the motor is on
+      diff = Math.abs(diff);
       acc = Math.abs(acc);
     }
     const threshold =
       this.maxTapSensitivity -
       (this.maxTapSensitivity - this.minTapSensitivity) *
         (this.settings.tapSensitivity / 100.0);
-    // get time diff in ms - stamps are in ns
-    const timeDiffMs = (timestamp - this.lastTapTime) / (1000 * 1000);
-    // block high frequency tapping
-    if (timeDiffMs < this.tapLockoutTimeMs) {
-      return;
-    }
     // must have a high enough abs(accel.z) and it must be a jerk
     // movement - high difference between previous accel and current
     // accel
@@ -515,20 +729,23 @@ export class MainViewModel extends Observable {
   handleTap(timestamp: number) {
     this.hasTapped = true;
     // timeout for updating the power assist ring
-    setTimeout(() => {
+    if (this.tapTimeoutId) {
+      clearTimeout(this.tapTimeoutId);
+    }
+    this.tapTimeoutId = setTimeout(() => {
       this.hasTapped = false;
-    }, this.tapLockoutTimeMs / 2);
+    }, (this.tapLockoutTimeMs * 3) / 2);
     // now send
     if (
       this.powerAssistActive &&
-      this._smartDrive &&
-      this._smartDrive.ableToSend
+      this.smartDrive &&
+      this.smartDrive.ableToSend
     ) {
       if (this.motorOn) {
         this._vibrator.cancel();
         this._vibrator.vibrate((this.tapLockoutTimeMs * 3) / 4);
       }
-      this._smartDrive.sendTap().catch(err => Log.E('could not send tap', err));
+      this.smartDrive.sendTap().catch(err => Log.E('could not send tap', err));
     } else if (this.isTraining) {
       // vibrate for tapping while training
       this._vibrator.cancel();
@@ -538,8 +755,8 @@ export class MainViewModel extends Observable {
 
   stopSmartDrive() {
     // turn off the motor if SD is connected
-    if (this._smartDrive && this._smartDrive.ableToSend) {
-      return this._smartDrive
+    if (this.smartDrive && this.smartDrive.ableToSend) {
+      return this.smartDrive
         .stopMotor()
         .catch(err => Log.E('Could not stop motor', err));
     } else {
@@ -575,15 +792,17 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onLedSettingsTap() {
-    Log.D('LED Settings tapped.');
-  }
-
-  onUpdatesTap() {
-    showSuccess('No updates available.', 4);
+  onAboutTap() {
+    if (this.aboutScrollView) {
+      // reset to to the top when entering the page
+      this.aboutScrollView.scrollToVerticalOffset(0, true);
+    }
+    showOffScreenLayout(this._aboutLayout);
+    this.isAboutLayoutEnabled = true;
   }
 
   onTrainingTap() {
+    this.wakeLock.acquire();
     keepAwake();
     this.isTraining = true;
     this.powerAssistState = PowerAssist.State.Training;
@@ -592,6 +811,7 @@ export class MainViewModel extends Observable {
   }
 
   onExitTrainingModeTap() {
+    if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.isTraining = false;
     this.powerAssistState = PowerAssist.State.Inactive;
@@ -599,10 +819,270 @@ export class MainViewModel extends Observable {
   }
 
   /**
+   * Updates Page Handlers
+   */
+  onUpdateProgressCircleLoaded(args: any) {
+    const page = args.object as Page;
+    this.updateProgressCircle = page.getViewById(
+      'updateProgressCircle'
+    ) as AnimatedCircle;
+  }
+
+  onUpdatesTap() {
+    if (this.smartDrive) {
+      showOffScreenLayout(this._updatesLayout);
+      this.isUpdatesLayoutEnabled = true;
+      this.checkForUpdates();
+    } else {
+      showFailure('No SmartDrive paired to the app!');
+    }
+  }
+
+  onUpdatesLayoutLoaded(args) {
+    this._updatesLayout = args.object as SwipeDismissLayout;
+    this._updatesLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+      // Log.D('dismissedEvent', args.object);
+      // hide the offscreen layout when dismissed
+      hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
+      this.isUpdatesLayoutEnabled = false;
+    });
+  }
+
+  async checkForUpdates() {
+    this.updateProgressText = 'Checking for Updates';
+    this.checkingForUpdates = true;
+    this.hasUpdateData = false;
+    let currentVersions = {};
+    // @ts-ignore
+    this.updateProgressCircle.spin();
+    return this.getFirmwareMetadata()
+      .then(md => {
+        currentVersions = md;
+        Log.D('Current FW Versions:', currentVersions);
+        const query = {
+          $or: [
+            { _filename: 'SmartDriveBLE.ota' },
+            { _filename: 'SmartDriveMCU.ota' }
+          ],
+          firmware_file: true
+        };
+        return this._kinveyService.getFile(undefined, query);
+      })
+      .then(response => {
+        let promises = [];
+        const fileMetaDatas = response.content.toJSON().filter(f => {
+          const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
+          const fw = f['_filename'];
+          return true; //!currentVersions[fw] || v > currentVersions[fw].version;
+        });
+        if (fileMetaDatas && fileMetaDatas.length) {
+          // Log.D('got fileMetaDatas', fileMetaDatas);
+          // now download the files
+          promises = fileMetaDatas.map(f => {
+            let url = f['_downloadURL'];
+            // make sure they're https!
+            if (!url.startsWith('https:')) {
+              url = url.replace('http:', 'https:');
+            }
+            Log.D('Downloading FW update', f['_filename']);
+            return getFile(url).then(data => {
+              const fileData = data.readSync();
+              return {
+                version: SmartDriveData.Firmwares.versionStringToByte(
+                  f['version']
+                ),
+                name: f['_filename'],
+                data: new Uint8Array(fileData),
+                changes:
+                  f['change_notes'][device.language] || f['change_notes']['en']
+              };
+            });
+          });
+        }
+        return Promise.all(promises);
+      })
+      .then(files => {
+        let promises = [];
+        if (files && files.length) {
+          Log.D('Updating metadata and writing file data.');
+          promises = files.map(f => {
+            // update the data in the db
+            if (currentVersions[f.name]) {
+              // this is a file we have - update the table
+              const id = currentVersions[f.name].id;
+              // save the binary data to disk
+              let fileName = currentVersions[f.name].filename;
+              LS.setItem(fileName, f.data);
+              // update current versions
+              currentVersions[f.name].version = f.version;
+              currentVersions[f.name].changes = f.changes;
+              return this._sqliteService.updateInTable(
+                SmartDriveData.Firmwares.TableName,
+                {
+                  [SmartDriveData.Firmwares.VersionName]: f.version
+                },
+                {
+                  [SmartDriveData.Firmwares.IdName]: id
+                }
+              );
+            } else {
+              // this is a file we don't have in the table
+              const newFirmware = SmartDriveData.Firmwares.newFirmware(
+                f.version,
+                f.name,
+                undefined,
+                f.changes
+              );
+              // save the binary data to disk
+              const fileName = newFirmware[SmartDriveData.Firmwares.FileName];
+              LS.setItem(fileName, f.data);
+              // update current versions
+              currentVersions[f.name] = {
+                version: f.version,
+                filename: fileName,
+                changes: f.changes
+              };
+              return this._sqliteService.insertIntoTable(
+                SmartDriveData.Firmwares.TableName,
+                newFirmware
+              );
+            }
+          });
+        }
+        return Promise.all(promises);
+      })
+      .then(() => {
+        // now see what we need to do with the data
+        Log.D('Finished downloading updates.');
+        this.hasUpdateData = true;
+        this.updateProgressText = '';
+        this.checkingForUpdates = false;
+        // @ts-ignore
+        this.updateProgressCircle.stopSpinning();
+        // do we need to update? - check against smartdrive version
+        const bleVersion = currentVersions['SmartDriveBLE.ota'].version;
+        const mcuVersion = currentVersions['SmartDriveMCU.ota'].version;
+        if (
+          !this.smartDrive.isMcuUpToDate(mcuVersion) ||
+          !this.smartDrive.isBleUpToDate(bleVersion)
+        ) {
+          // get info out to tell the user
+          const version = SmartDriveData.Firmwares.versionByteToString(
+            Math.max(mcuVersion, bleVersion)
+          );
+          Log.D('got version', version);
+          // show dialog to user informing them of the version number and changes
+          const title = `Version ${version}`;
+          const changes = Object.keys(currentVersions).map(
+            k => currentVersions[k].changes
+          );
+          const msg = flatten(changes).join('\n');
+          Log.D('got changes', changes);
+          alert({
+            title: title,
+            message: msg,
+            okButtonText: 'Ok'
+          }).then(() => {
+            Log.D('Beginning SmartDrive update');
+            const bleFileName = currentVersions['SmartDriveBLE.ota'].filename;
+            const mcuFileName = currentVersions['SmartDriveMCU.ota'].filename;
+            const mcuFw = LS.getItem(mcuFileName);
+            const bleFw = LS.getItem(bleFileName);
+            Log.D('mcu length:', typeof mcuFw, mcuFw.length);
+            Log.D('ble length:', typeof bleFw, bleFw.length);
+            // disable swipe close of the updates layout
+            (this._updatesLayout as any).swipeable = false;
+            // smartdrive needs to update
+            this.smartDrive
+              .performOTA(
+                bleFw,
+                mcuFw,
+                bleVersion,
+                mcuVersion,
+                300 * 1000,
+                true
+              )
+              .then(otaStatus => {
+                const status = otaStatus.replace('OTA', 'Update');
+                this.updateProgressText = status;
+                Log.D('update status:', otaStatus);
+                if (status === 'Update Complete') {
+                  showSuccess('SmartDrive update completed successfully!');
+                }
+                // re-enable swipe close of the updates layout
+                (this._updatesLayout as any).swipeable = true;
+              })
+              .catch(err => {
+                const msg = `Update failed: ${err}`;
+                Log.E(msg);
+                this.updateProgressText = msg;
+                showFailure(msg);
+                // re-enable swipe close of the updates layout
+                (this._updatesLayout as any).swipeable = true;
+              });
+            // send the start command automatically
+            this.smartDrive.onOTAActionTap('ota.action.start');
+          });
+        } else {
+          // smartdrive is already up to date
+          hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
+          this.isUpdatesLayoutEnabled = false;
+          setTimeout(() => {
+            showSuccess('SmartDrive is up to date!');
+          }, 100);
+        }
+      })
+      .catch(err => {
+        Log.E("Couldn't get files:", err);
+        this.updateProgressText = `Error getting updates: ${err}`;
+        this.hasUpdateData = false;
+        this.checkingForUpdates = false;
+        // @ts-ignore
+        this.updateProgressCircle.stopSpinning();
+      });
+  }
+
+  cancelUpdates() {
+    this.updateProgressText = 'Update Cancelled';
+    // re-enable swipe close of the updates layout
+    (this._updatesLayout as any).swipeable = true;
+    if (this.smartDrive) {
+      this.smartDrive.cancelOTA();
+    }
+  }
+
+  onUpdateAction(args: any) {
+    Log.D('update action:', args);
+  }
+
+  /**
+   * Error History Page Handlers
+   */
+
+  onErrorHistoryLayoutLoaded(args) {
+    // show the chart
+    this._errorHistoryLayout = args.object as SwipeDismissLayout;
+    this.errorsScrollView = this._errorHistoryLayout.getViewById(
+      'errorsScrollView'
+    ) as ScrollView;
+    this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+      // Log.D('dismissedEvent', args.object);
+      // hide the offscreen layout when dismissed
+      hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
+      this.isErrorHistoryLayoutEnabled = false;
+      // clear the error history data when it's not being displayed to save on memory
+      this.errorHistoryData.splice(0, this.errorHistoryData.length);
+    });
+  }
+
+  /**
    * Setings page handlers
    */
   onSettingsLayoutLoaded(args) {
     this._settingsLayout = args.object as SwipeDismissLayout;
+    this.settingsScrollView = this._settingsLayout.getViewById(
+      'settingsScrollView'
+    ) as ScrollView;
     this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
@@ -611,14 +1091,17 @@ export class MainViewModel extends Observable {
     });
   }
 
-  onErrorHistoryLayoutLoaded(args) {
+  onAboutLayoutLoaded(args) {
     // show the chart
-    this._errorHistoryLayout = args.object as SwipeDismissLayout;
-    this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._aboutLayout = args.object as SwipeDismissLayout;
+    this.aboutScrollView = this._aboutLayout.getViewById(
+      'aboutScrollView'
+    ) as ScrollView;
+    this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
-      this.isErrorHistoryLayoutEnabled = false;
+      hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
+      this.isAboutLayoutEnabled = false;
     });
   }
 
@@ -717,14 +1200,42 @@ export class MainViewModel extends Observable {
     // calculating the Max Value for the chart and some sizing checks
   }
 
+  onLoadMoreErrors(args: ItemEventData) {
+    // TODO: show loading indicator
+    this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
+      // TODO: hide loading indicator
+      this.errorHistoryData.push(...recents);
+      if (!this.errorHistoryData.length) {
+        // TODO: say that there were no errors
+      }
+    });
+  }
+
   showErrorHistory() {
+    // clear out any pre-loaded data
+    this.errorHistoryData.splice(0, this.errorHistoryData.length);
+    if (this.errorsScrollView) {
+      // reset to to the top when entering the page
+      this.errorsScrollView.scrollToVerticalOffset(0, true);
+    }
+    // TODO: say that we're loading
     // load the error data
-    this.getRecentErrors(10);
+    this.getRecentErrors(10).then(recents => {
+      // TODO: hide loading indicator
+      this.errorHistoryData.push(...recents);
+      if (!this.errorHistoryData.length) {
+        // TODO: say that there were no errors
+      }
+    });
     showOffScreenLayout(this._errorHistoryLayout);
     this.isErrorHistoryLayoutEnabled = true;
   }
 
   onSettingsTap() {
+    if (this.settingsScrollView) {
+      // reset to to the top when entering the page
+      this.settingsScrollView.scrollToVerticalOffset(0, true);
+    }
     showOffScreenLayout(this._settingsLayout);
     this.isSettingsLayoutEnabled = true;
   }
@@ -732,6 +1243,7 @@ export class MainViewModel extends Observable {
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
     this.tempSettings.copy(this.settings);
+    this.tempThrottleSettings.copy(this.throttleSettings);
     const tappedId = args.object.id as string;
     switch (tappedId.toLowerCase()) {
       case 'maxspeed':
@@ -749,6 +1261,12 @@ export class MainViewModel extends Observable {
       case 'units':
         this.changeSettingKeyString = 'Units';
         break;
+      case 'throttlemode':
+        this.changeSettingKeyString = 'Throttle Mode';
+        break;
+      case 'throttlespeed':
+        this.changeSettingKeyString = 'Throttle Speed';
+        break;
       default:
         break;
     }
@@ -763,19 +1281,25 @@ export class MainViewModel extends Observable {
   updateSettingsChangeDisplay() {
     switch (this.changeSettingKeyString) {
       case 'Max Speed':
-        this.changeSettingKeyValue = `${this.tempSettings.maxSpeed}%`;
+        this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
         break;
       case 'Acceleration':
-        this.changeSettingKeyValue = `${this.tempSettings.acceleration}%`;
+        this.changeSettingKeyValue = `${this.tempSettings.acceleration} %`;
         break;
       case 'Tap Sensitivity':
-        this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity}%`;
+        this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
         break;
       case 'Control Mode':
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
         return;
       case 'Units':
         this.changeSettingKeyValue = `${this.tempSettings.units}`;
+        return;
+      case 'Throttle Mode':
+        this.changeSettingKeyValue = `${this.tempThrottleSettings.throttleMode}`;
+        return;
+      case 'Throttle Speed':
+        this.changeSettingKeyValue = `${this.tempThrottleSettings.maxSpeed} %`;
         return;
       default:
         break;
@@ -824,18 +1348,29 @@ export class MainViewModel extends Observable {
     this.isChangeSettingsLayoutEnabled = false;
     // SAVE THE VALUE to local data for the setting user has selected
     this.settings.copy(this.tempSettings);
+    this.throttleSettings.copy(this.tempThrottleSettings);
+    this.hasSentSettings = false;
     this.saveSettings();
     // now update any display that needs settings:
     this.updateSettingsDisplay();
+    // warning / indication to the user that they've updated their settings
+    alert({
+      title: 'Saved Settings',
+      message:
+        "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
+      okButtonText: 'OK'
+    });
   }
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.changeSettingKeyString);
+    this.tempThrottleSettings.increase(this.changeSettingKeyString);
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap(args) {
     this.tempSettings.decrease(this.changeSettingKeyString);
+    this.tempThrottleSettings.decrease(this.changeSettingKeyString);
     this.updateSettingsChangeDisplay();
   }
 
@@ -863,9 +1398,20 @@ export class MainViewModel extends Observable {
     this.settings.controlMode =
       appSettings.getString(DataKeys.SD_CONTROL_MODE) || 'MX2+';
     this.settings.units = appSettings.getString(DataKeys.SD_UNITS) || 'English';
+    this.throttleSettings.throttleMode =
+      appSettings.getString(DataKeys.SD_THROTTLE_MODE) || 'Active';
+    this.throttleSettings.maxSpeed =
+      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 70;
+    this.hasSentSettings = appSettings.getBoolean(
+      DataKeys.SD_SETTINGS_DIRTY_FLAG
+    );
   }
 
   saveSettings() {
+    appSettings.setBoolean(
+      DataKeys.SD_SETTINGS_DIRTY_FLAG,
+      this.hasSentSettings
+    );
     appSettings.setNumber(DataKeys.SD_MAX_SPEED, this.settings.maxSpeed);
     appSettings.setNumber(DataKeys.SD_ACCELERATION, this.settings.acceleration);
     appSettings.setNumber(
@@ -874,6 +1420,14 @@ export class MainViewModel extends Observable {
     );
     appSettings.setString(DataKeys.SD_CONTROL_MODE, this.settings.controlMode);
     appSettings.setString(DataKeys.SD_UNITS, this.settings.units);
+    appSettings.setString(
+      DataKeys.SD_THROTTLE_MODE,
+      this.throttleSettings.throttleMode
+    );
+    appSettings.setNumber(
+      DataKeys.SD_THROTTLE_SPEED,
+      this.throttleSettings.maxSpeed
+    );
   }
 
   updatePowerAssistRing(color?: any) {
@@ -903,7 +1457,7 @@ export class MainViewModel extends Observable {
         this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
       } else {
         if (this.powerAssistRingColor === PowerAssist.InactiveRingColor) {
-          if (this._smartDrive.ableToSend) {
+          if (this.smartDrive.ableToSend) {
             this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
           } else {
             this.updatePowerAssistRing(PowerAssist.DisconnectedRingColor);
@@ -921,6 +1475,7 @@ export class MainViewModel extends Observable {
       showFailure('You must wear the watch to activate power assist.');
       return;
     }
+    this.wakeLock.acquire();
     keepAwake();
     this.powerAssistState = PowerAssist.State.Disconnected;
     this.powerAssistActive = true;
@@ -933,21 +1488,16 @@ export class MainViewModel extends Observable {
             this.RING_TIMER_INTERVAL_MS
           );
         } else {
-          allowSleepAgain();
-          this.powerAssistState = PowerAssist.State.Inactive;
-          this.powerAssistActive = false;
-          this.updatePowerAssistRing();
+          this.disablePowerAssist();
         }
       })
       .catch(err => {
-        allowSleepAgain();
-        this.powerAssistState = PowerAssist.State.Inactive;
-        this.powerAssistActive = false;
-        this.updatePowerAssistRing();
+        this.disablePowerAssist();
       });
   }
 
   disablePowerAssist() {
+    if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.powerAssistState = PowerAssist.State.Inactive;
     this.powerAssistActive = false;
@@ -975,16 +1525,21 @@ export class MainViewModel extends Observable {
   }
 
   saveNewSmartDrive(): Promise<any> {
-    new Toasty({
-      text: 'Scanning for SmartDrives...',
-      duration: ToastDuration.LONG,
-      position: ToastPosition.CENTER
-    }).show();
-
-    // scan for smartdrives
+    let scanDisplayId = null;
+    // ensure bluetoothservice is functional
     return this._bluetoothService
-      .scanForSmartDrives(3)
+      .initialize()
       .then(() => {
+        this.pairSmartDriveText = 'Scanning';
+        scanDisplayId = setInterval(() => {
+          this.pairSmartDriveText += '.';
+        }, 1000);
+        // scan for smartdrives
+        return this._bluetoothService.scanForSmartDrives(3);
+      })
+      .then(() => {
+        clearInterval(scanDisplayId);
+        this.pairSmartDriveText = 'Pair SmartDrive';
         Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
         // make sure we have smartdrives
@@ -1009,10 +1564,9 @@ export class MainViewModel extends Observable {
           // if user selected one of the smartdrives in the action dialog, attempt to connect to it
           if (addresses.indexOf(result) > -1) {
             // save the smartdrive here
-            this._savedSmartDriveAddress = result;
+            this.updateSmartDrive(result);
             appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-
-            // showSuccess(`Paired to SmartDrive ${result}`);
+            showSuccess(`Paired to SmartDrive ${result}`);
             return true;
           } else {
             return false;
@@ -1020,61 +1574,58 @@ export class MainViewModel extends Observable {
         });
       })
       .catch(error => {
+        clearInterval(scanDisplayId);
+        this.pairSmartDriveText = 'Pair SmartDrive';
         Log.E('could not scan', error);
+        showFailure(`Could not scan: ${error}`);
         return false;
       });
   }
 
   connectToSmartDrive(smartDrive) {
     if (!smartDrive) return;
-    this._smartDrive = smartDrive;
-
-    new Toasty({
-      text: 'Connecting to ' + this._savedSmartDriveAddress,
-      duration: ToastDuration.SHORT,
-      position: ToastPosition.CENTER
-    }).show();
+    this.smartDrive = smartDrive;
 
     // need to make sure we unregister disconnect event since it may have been registered
-    this._smartDrive.off(
+    this.smartDrive.off(
       SmartDrive.smartdrive_disconnect_event,
       this.onSmartDriveDisconnect,
       this
     );
     // set the event listeners for mcu_version_event and smartdrive_distance_event
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_connect_event,
       this.onSmartDriveConnect,
       this
     );
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_disconnect_event,
       this.onSmartDriveDisconnect,
       this
     );
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_mcu_version_event,
       this.onSmartDriveVersion,
       this
     );
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_distance_event,
       this.onDistance,
       this
     );
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_motor_info_event,
       this.onMotorInfo,
       this
     );
-    this._smartDrive.on(
+    this.smartDrive.on(
       SmartDrive.smartdrive_error_event,
       this.onSmartDriveError,
       this
     );
 
     // now connect to smart drive
-    return this._smartDrive
+    return this.smartDrive
       .connect()
       .then(() => {
         return true;
@@ -1113,33 +1664,33 @@ export class MainViewModel extends Observable {
   }
 
   async disconnectFromSmartDrive() {
-    if (this._smartDrive && this._smartDrive.connected) {
-      this._smartDrive.off(
+    if (this.smartDrive && this.smartDrive.connected) {
+      this.smartDrive.off(
         SmartDrive.smartdrive_connect_event,
         this.onSmartDriveConnect,
         this
       );
-      this._smartDrive.off(
+      this.smartDrive.off(
         SmartDrive.smartdrive_mcu_version_event,
         this.onSmartDriveVersion,
         this
       );
-      this._smartDrive.off(
+      this.smartDrive.off(
         SmartDrive.smartdrive_distance_event,
         this.onDistance,
         this
       );
-      this._smartDrive.off(
+      this.smartDrive.off(
         SmartDrive.smartdrive_motor_info_event,
         this.onMotorInfo,
         this
       );
-      this._smartDrive.off(
+      this.smartDrive.off(
         SmartDrive.smartdrive_error_event,
         this.onSmartDriveError,
         this
       );
-      this._smartDrive.disconnect().then(() => {
+      this.smartDrive.disconnect().then(() => {
         this.motorOn = false;
         this.powerAssistActive = false;
       });
@@ -1149,8 +1700,8 @@ export class MainViewModel extends Observable {
   retrySmartDriveConnection() {
     if (
       this.powerAssistActive &&
-      this._smartDrive &&
-      !this._smartDrive.connected
+      this.smartDrive &&
+      !this.smartDrive.connected
     ) {
       setTimeout(() => {
         this.connectToSavedSmartDrive();
@@ -1160,21 +1711,25 @@ export class MainViewModel extends Observable {
 
   sendSmartDriveSettings() {
     // send the current settings to the SD
-    return this._smartDrive.sendSettingsObject(this.settings).catch(err => {
-      // make sure we retry this while we're connected
-      this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
-      // indicate failure
-      Log.E('send settings failed', err);
-      new Toasty({
-        text:
+    return this.smartDrive
+      .sendSettingsObject(this.settings)
+      .then(() => {
+        return this.smartDrive.sendThrottleSettingsObject(
+          this.throttleSettings
+        );
+      })
+      .catch(err => {
+        // make sure we retry this while we're connected
+        this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
+        // indicate failure
+        Log.E('send settings failed', err);
+        showFailure(
           'Failed to send settings to ' +
-          this._savedSmartDriveAddress +
-          ' ' +
-          err,
-        duration: ToastDuration.SHORT,
-        position: ToastPosition.CENTER
-      }).show();
-    });
+            this._savedSmartDriveAddress +
+            ' ' +
+            err
+        );
+      });
   }
 
   /*
@@ -1183,31 +1738,27 @@ export class MainViewModel extends Observable {
   async onSmartDriveConnect(args: any) {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
-    new Toasty({
-      text: 'Connected to ' + this._savedSmartDriveAddress,
-      duration: ToastDuration.SHORT,
-      position: ToastPosition.CENTER
-    }).show();
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
   }
 
   async onSmartDriveDisconnect(args: any) {
+    if (this.motorOn) {
+      // record disconnect error - the SD should never be on when
+      // we disconnect!
+      const errorCode = this.smartDrive.getBleDisconnectError();
+      this.saveErrorToDatabase(errorCode, undefined);
+    }
     this.motorOn = false;
     if (this.powerAssistActive) {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.updatePowerAssistRing();
       this.retrySmartDriveConnection();
     }
-    this._smartDrive.off(
+    this.smartDrive.off(
       SmartDrive.smartdrive_disconnect_event,
       this.onSmartDriveDisconnect,
       this
     );
-    new Toasty({
-      text: `Disconnected from ${this._smartDrive.address}`,
-      duration: ToastDuration.SHORT,
-      position: ToastPosition.CENTER
-    }).show();
   }
 
   async onSmartDriveError(args: any) {
@@ -1225,8 +1776,8 @@ export class MainViewModel extends Observable {
     const motorInfo = args.data.motorInfo;
 
     // update motor state
-    if (this.motorOn !== this._smartDrive.driving) {
-      if (this._smartDrive.driving) {
+    if (this.motorOn !== this.smartDrive.driving) {
+      if (this.smartDrive.driving) {
         this._vibrator.cancel();
         this._vibrator.vibrate(250); // vibrate for 250 ms
       } else {
@@ -1234,10 +1785,10 @@ export class MainViewModel extends Observable {
         this._vibrator.vibrate([0, 250, 50, 250]); // vibrate twice
       }
     }
-    this.motorOn = this._smartDrive.driving;
+    this.motorOn = this.smartDrive.driving;
     // determine if we've used more battery percentage
     const batteryChange =
-      this.smartDriveCurrentBatteryPercentage - this._smartDrive.battery;
+      this.smartDriveCurrentBatteryPercentage - this.smartDrive.battery;
     // only check against 1 so that we filter out charging and only
     // get decreases due to driving / while connected
     if (batteryChange === 1) {
@@ -1250,9 +1801,9 @@ export class MainViewModel extends Observable {
       });
     }
     // update battery percentage
-    this.smartDriveCurrentBatteryPercentage = this._smartDrive.battery;
+    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
     // save the updated smartdrive battery
-    appSettings.setNumber(DataKeys.SD_BATTERY, this._smartDrive.battery);
+    appSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
     // update speed display
     this.currentSpeed = motorInfo.speed;
     this.updateSpeedDisplay();
@@ -1265,18 +1816,18 @@ export class MainViewModel extends Observable {
 
     // save to the database
     this._throttledSmartDriveSaveFn({
-      driveDistance: this._smartDrive.driveDistance,
-      coastDistance: this._smartDrive.coastDistance
+      driveDistance: this.smartDrive.driveDistance,
+      coastDistance: this.smartDrive.coastDistance
     });
 
     // save the updated distance
     appSettings.setNumber(
       DataKeys.SD_DISTANCE_CASE,
-      this._smartDrive.coastDistance
+      this.smartDrive.coastDistance
     );
     appSettings.setNumber(
       DataKeys.SD_DISTANCE_DRIVE,
-      this._smartDrive.driveDistance
+      this.smartDrive.driveDistance
     );
   }
 
@@ -1284,23 +1835,49 @@ export class MainViewModel extends Observable {
     // Log.D('onSmartDriveVersion event');
     const mcuVersion = args.data.mcu;
 
+    // update version displays
+    this.mcuVersion = this.smartDrive.mcu_version_string;
+    this.bleVersion = this.smartDrive.ble_version_string;
+
     // save the updated SmartDrive version info
-    appSettings.setNumber(
-      DataKeys.SD_VERSION_MCU,
-      this._smartDrive.mcu_version
-    );
-    appSettings.setNumber(
-      DataKeys.SD_VERSION_BLE,
-      this._smartDrive.ble_version
-    );
+    appSettings.setNumber(DataKeys.SD_VERSION_MCU, this.smartDrive.mcu_version);
+    appSettings.setNumber(DataKeys.SD_VERSION_BLE, this.smartDrive.ble_version);
   }
 
   /*
    * DATABASE FUNCTIONS
    */
-  saveErrorToDatabase(errorCode: number, errorId: number) {
+  getFirmwareMetadata() {
+    return this._sqliteService
+      .getAll({ tableName: SmartDriveData.Firmwares.TableName })
+      .then(objs => {
+        // @ts-ignore
+        return objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
+      })
+      .then(mds => {
+        const data = {};
+        mds.map(md => {
+          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
+            version: md[SmartDriveData.Firmwares.VersionName],
+            filename: md[SmartDriveData.Firmwares.FileName],
+            id: md[SmartDriveData.Firmwares.IdName],
+            changes: md[SmartDriveData.Firmwares.ChangesName]
+          };
+        });
+        return data;
+      })
+      .catch(err => {
+        Log.E("Couldn't get firmware metadata:", err);
+      });
+  }
+
+  saveErrorToDatabase(errorCode: string, errorId: number) {
+    if (errorId === undefined) {
+      // we use this when saving a local error
+      errorId = -1;
+    }
     // get the most recent error
-    this._sqliteService
+    return this._sqliteService
       .getLast(SmartDriveData.Errors.TableName, SmartDriveData.Errors.IdName)
       .then(obj => {
         // Log.D('From DB: ', obj);
@@ -1309,51 +1886,45 @@ export class MainViewModel extends Observable {
         const lastErrorCode = obj && obj[2];
         const lastErrorId = obj && obj[3];
         // make sure this isn't an error we've seen before
-        if (errorId !== lastErrorId) {
+        if (errorId === -1 || errorId !== lastErrorId) {
+          const newError = SmartDriveData.Errors.newError(errorCode, errorId);
           // now save the error into the table
           return this._sqliteService
-            .insertIntoTable(
-              SmartDriveData.Errors.TableName,
-              SmartDriveData.Errors.newError(errorCode, errorId)
-            )
+            .insertIntoTable(SmartDriveData.Errors.TableName, newError)
             .catch(err => {
-              new Toasty({
-                text: `Failed Saving SmartDrive Error: ${err}`,
-                position: ToastPosition.CENTER,
-                duration: ToastDuration.LONG
-              }).show();
+              showFailure(`Failed Saving SmartDrive Error: ${err}`);
             });
         }
       })
       .catch(err => {
-        new Toasty({
-          text: `Failed getting SmartDrive Error: ${err}`,
-          duration: ToastDuration.LONG
-        })
-          .setToastPosition(ToastPosition.CENTER)
-          .show();
+        showFailure(`Failed getting SmartDrive Error: ${err}`);
       });
   }
 
-  getRecentErrors(numErrors: number) {
+  getRecentErrors(numErrors: number, offset: number = 0) {
+    let errors = [];
     return this._sqliteService
       .getAll({
         tableName: SmartDriveData.Errors.TableName,
         orderBy: SmartDriveData.Errors.IdName,
         ascending: false,
-        limit: numErrors
+        limit: numErrors,
+        offset: offset
       })
       .then(rows => {
-        this.errorHistoryData = rows.map(obj => {
-          return {
-            time: format(new Date(obj && +obj[1]), 'YYYY-MM-DD HH:mm'),
-            code: obj && obj[2]
-          };
-        });
+        if (rows && rows.length) {
+          errors = rows.map(r => {
+            return {
+              time: format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
+              code: r && r[2]
+            };
+          });
+        }
+        return errors;
       })
       .catch(err => {
         Log.E(`couldn't get errors`, err);
-        return [];
+        return errors;
       });
   }
 
@@ -1395,7 +1966,6 @@ export class MainViewModel extends Observable {
         return this.getTodaysUsageInfoFromDatabase();
       })
       .then(u => {
-        console.log('Got usage:', u);
         if (u[SmartDriveData.Info.IdName]) {
           // there was a record, so we need to update it. we add the
           // already used battery plus the amount of new battery
@@ -1410,7 +1980,8 @@ export class MainViewModel extends Observable {
             {
               [SmartDriveData.Info.BatteryName]: updatedBattery,
               [SmartDriveData.Info.DriveDistanceName]: updatedDriveDistance,
-              [SmartDriveData.Info.CoastDistanceName]: updatedCoastDistance
+              [SmartDriveData.Info.CoastDistanceName]: updatedCoastDistance,
+              [SmartDriveData.Info.HasBeenSentName]: 0
             },
             {
               [SmartDriveData.Info.IdName]: u.id
@@ -1435,11 +2006,7 @@ export class MainViewModel extends Observable {
       })
       .catch(err => {
         Log.E('Failed saving usage:', err);
-        new Toasty({
-          text: `Failed saving usage: ${err}`,
-          duration: ToastDuration.LONG,
-          position: ToastPosition.CENTER
-        }).show();
+        showFailure(`Failed saving usage: ${err}`);
       });
   }
 
@@ -1447,13 +2014,10 @@ export class MainViewModel extends Observable {
     return this._sqliteService
       .getLast(SmartDriveData.Info.TableName, SmartDriveData.Info.IdName)
       .then(e => {
-        const id = e && e[0];
         const date = new Date((e && e[1]) || null);
-        const battery = e && e[2];
-        const drive = e && e[3];
-        const coast = e && e[4];
-        if (isToday(date)) {
-          return SmartDriveData.Info.newInfo(id, date, battery, drive, coast);
+        if (e && e[1] && isToday(date)) {
+          // @ts-ignore
+          return SmartDriveData.Info.loadInfo(...e);
         } else {
           return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
         }
@@ -1469,12 +2033,11 @@ export class MainViewModel extends Observable {
     const usageInfo = dates.map(d => {
       return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
     });
-    // console.log('usage info', usageInfo);
     return this.getRecentInfoFromDatabase(6)
       .then(objs => {
         objs.map(o => {
           // @ts-ignore
-          const obj = SmartDriveData.Info.newInfo(...o);
+          const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
           const usageDate = dates[index];
@@ -1486,7 +2049,7 @@ export class MainViewModel extends Observable {
         return usageInfo;
       })
       .catch(err => {
-        console.log('error getting rececnt info:', err);
+        console.log('error getting recent info:', err);
         return usageInfo;
       });
   }
@@ -1498,5 +2061,134 @@ export class MainViewModel extends Observable {
       ascending: false,
       limit: numRecentEntries
     });
+  }
+
+  getUnsentInfoFromDatabase(numEntries: number) {
+    return this._sqliteService.getAll({
+      tableName: SmartDriveData.Info.TableName,
+      queries: {
+        [SmartDriveData.Info.HasBeenSentName]: 0
+      },
+      orderBy: SmartDriveData.Info.IdName,
+      ascending: true,
+      limit: numEntries
+    });
+  }
+
+  /**
+   * Network Functions
+   */
+  sendSettingsToServer() {
+    if (!this.hasSentSettings) {
+      const settingsObj = {
+        settings: this.settings.toObj(),
+        throttleSettings: this.throttleSettings.toObj()
+      };
+      return this._kinveyService
+        .sendSettings(settingsObj)
+        .then(() => {
+          this.hasSentSettings = true;
+          appSettings.setBoolean(
+            DataKeys.SD_SETTINGS_DIRTY_FLAG,
+            this.hasSentSettings
+          );
+        })
+        .catch(err => {});
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  sendErrorsToServer(numErrors: number) {
+    return this._sqliteService
+      .getAll({
+        tableName: SmartDriveData.Errors.TableName,
+        orderBy: SmartDriveData.Errors.IdName,
+        queries: {
+          [SmartDriveData.Errors.HasBeenSentName]: 0
+        },
+        ascending: true,
+        limit: numErrors
+      })
+      .then(errors => {
+        if (errors && errors.length) {
+          // now send them one by one
+          const promises = errors.map(e => {
+            // @ts-ignore
+            e = SmartDriveData.Errors.loadError(...e);
+            return this._kinveyService.sendError(
+              e,
+              e[SmartDriveData.Errors.UuidName]
+            );
+          });
+          return Promise.all(promises);
+        }
+      })
+      .then(rets => {
+        if (rets && rets.length) {
+          const promises = rets
+            .map(r => r.content.toJSON())
+            .map(r => {
+              const id = r['_id'];
+              return this._sqliteService.updateInTable(
+                SmartDriveData.Errors.TableName,
+                {
+                  [SmartDriveData.Errors.HasBeenSentName]: 1
+                },
+                {
+                  [SmartDriveData.Errors.UuidName]: id
+                }
+              );
+            });
+          return Promise.all(promises);
+        }
+      })
+      .catch(e => {
+        Log.E('Error sending errors to server:', e);
+      });
+  }
+
+  sendInfosToServer(numInfo: number) {
+    return this.getUnsentInfoFromDatabase(numInfo)
+      .then(infos => {
+        if (infos && infos.length) {
+          // now send them one by one
+          const promises = infos.map(i => {
+            // @ts-ignore
+            i = SmartDriveData.Info.loadInfo(...i);
+            // update info date here
+            i[SmartDriveData.Info.DateName] = new Date(
+              i[SmartDriveData.Info.DateName]
+            );
+            return this._kinveyService.sendInfo(
+              i,
+              i[SmartDriveData.Info.UuidName]
+            );
+          });
+          return Promise.all(promises);
+        }
+      })
+      .then(rets => {
+        if (rets && rets.length) {
+          const promises = rets
+            .map(r => r.content.toJSON())
+            .map(r => {
+              const id = r['_id'];
+              return this._sqliteService.updateInTable(
+                SmartDriveData.Info.TableName,
+                {
+                  [SmartDriveData.Info.HasBeenSentName]: 1
+                },
+                {
+                  [SmartDriveData.Info.UuidName]: id
+                }
+              );
+            });
+          return Promise.all(promises);
+        }
+      })
+      .catch(e => {
+        Log.E('Error sending infos to server:', e);
+      });
   }
 }

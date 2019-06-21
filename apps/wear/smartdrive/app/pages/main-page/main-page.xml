@@ -1,19 +1,19 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-  xmlns:nac="nativescript-animated-circle" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
-  xmlns:lv="nativescript-wear-os/packages/listview" 
-  xmlns:pager="nativescript-pager" 
-  xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" 
-  xmlns:box="nativescript-wear-os/packages/box-inset-layout" 
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+  xmlns:nac="nativescript-animated-circle"
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+  xmlns:lv="nativescript-wear-os/packages/listview"
+  xmlns:pager="nativescript-pager"
+  xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
+  xmlns:box="nativescript-wear-os/packages/box-inset-layout"
   xmlns:RL="nativescript-ng-ripple/ripple-view" navigatingTo="navigatingTo" actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">
 
-    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ isChangeSettingsLayoutEnabled ? 'collapsed':'visible' }}">
+    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ (isChangeSettingsLayoutEnabled || isUpdatesLayoutEnabled || isAboutLayoutEnabled) ? 'collapsed':'visible' }}">
       // Activate Power Assist Screen
       <pager:PagerItem>
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
           // Power Assist Circle
-          <nac:AnimatedCircle id="powerAssistCircle"  loaded="{{ onPowerAssistCircleLoaded }}"
+          <nac:AnimatedCircle id="powerAssistCircle"
 							  rowSpan="3" colSpan="3"
 							  class="powerAssistCircle"
 							  width="100%" height="100%"
@@ -24,7 +24,7 @@
 							  visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
 		  // Tap indication circle
-          <nac:AnimatedCircle id="tapCircle"  loaded="{{ onTapCircleLoaded }}"
+          <nac:AnimatedCircle id="tapCircle"
 							  rowSpan="3" colSpan="3"
 							  class="tapCircle"
 							  width="100%" height="100%"
@@ -33,7 +33,7 @@
 							  visibility="{{ hasTapped ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
          // SmartDrive Battery Circle
-         <nac:AnimatedCircle id="smartDriveBatteryCircle" loaded="{{ onSmartDriveCircleLoaded }}"
+         <nac:AnimatedCircle id="smartDriveBatteryCircle"
 							 rowSpan="3" colSpan="3"
 							 class="sdBatteryCircle"
 							 width="90%" height="90%"
@@ -42,7 +42,7 @@
 							 progress="{{ smartDriveCurrentBatteryPercentage }}">
           </nac:AnimatedCircle>
          // Watch Battery Circle
-         <nac:AnimatedCircle id="watchBatteryCircle" loaded="{{ onWatchCircleLoaded }}"
+         <nac:AnimatedCircle id="watchBatteryCircle"
 							 rowSpan="3" colSpan="3"
 							 class="watchBatteryCircle"
 							 width="84%" height="84%"
@@ -152,15 +152,15 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple row="1" rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ onLedSettingsTap }}">
-                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label col="1" text="LED Settings" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple row="2" rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ onUpdatesTap }}">
                   <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label col="1" text="Updates" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple row="2" rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
+                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label col="1" text="About" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple row="3" rippleColor="#ddd">
@@ -178,58 +178,126 @@
     // Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ isSettingsLayoutEnabled && !isChangeSettingsLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%">
-        <ScrollView height="100%">
-          <GridLayout rows="*,*,*,*,*,*,*" columns="*">
-            <RL:Ripple row="0" rippleColor="#ddd">
+        <StackLayout height="100%">
+          <Label text="SmartDrive Settings" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          <ScrollView height="100%" id="settingsScrollView">
+			<StackLayout>
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Max Speed" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="1" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="acceleration" tap="{{ onChangeSettingsItemTap }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Acceleration" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="2" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="tapSensitivity" tap="{{ onChangeSettingsItemTap }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Tap Sensitivity" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="3" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Control Mode" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="4" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Units" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="5" rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="units" tap="{{ showErrorHistory }}">
+            <RL:Ripple rippleColor="#ddd">
+              <GridLayout rows="*" columns="15, *" id="throttleMode" tap="{{ onChangeSettingsItemTap }}">
+                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="0" col="1" text="Throttle Mode" class="settings-label" textWrap="true" />
+              </GridLayout>
+            </RL:Ripple>
+            <RL:Ripple rippleColor="#ddd">
+              <GridLayout rows="*" columns="15, *" id="throttleSpeed" tap="{{ onChangeSettingsItemTap }}">
+                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="0" col="1" text="Throttle Max Speed" class="settings-label" textWrap="true" />
+              </GridLayout>
+            </RL:Ripple>
+            <RL:Ripple rippleColor="#ddd">
+              <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="0" col="1" text="Error History" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="6" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ saveNewSmartDrive }}">
                 <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Pair SmartDrive" class="settings-label" textWrap="true" />
+                <Label row="0" col="1" text="{{ pairSmartDriveText }}" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-          </GridLayout>
-        </ScrollView>
+        </StackLayout>
+          </ScrollView>
+        </StackLayout>
       </wol:WearOsLayout>
+    </sdl:SwipeDismissLayout>
+
+	// Updates "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onUpdatesLayoutLoaded }}" class="page" translateX="500" visibility="{{ isUpdatesLayoutEnabled ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout height="100%" width="100%" disableInsetConstraint="true">
+        <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
+         // SmartDrive Update Progress Circle
+         <nac:AnimatedCircle id="updateProgressCircle"
+							 loaded="{{ onUpdateProgressCircleLoaded }}"
+							 rowSpan="3" colSpan="3"
+							 class="updateProgressCircle"
+							 width="100%" height="100%"
+							 animated="true" animateFrom="0" clockwise="true"
+							 rimWidth="2" barWidth="8"
+							 progress="{{ smartDrive.otaProgress }}">
+           <GridLayout
+			   rows="15, auto, auto, *, auto, auto, 15"
+			   columns="30, *, 30"
+			   class="circleDetails">
+              <Label row="1" col="1" class="topValue" horizontalAlignment="center"
+					 text="{{ smartDrive.otaState }}"
+					 visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+              <Label row="2" col="1" class="topValueDescription" textWrap="true"
+					 text="Update Status"
+					 visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+			  <Label row="3" col="1" horizontalAlignment="center"
+					 verticalAlignment="middle" textWrap="true"
+					 text="{{ updateProgressText }}"
+					 visibility="{{ !smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
+			  <Button row="3" col="1" class="powerAssist-active"
+					  text="Cancel"
+					  tap="{{ cancelUpdates }}"
+					  visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
+			  <!--
+			  <ListView items="{{ smartDrive.otaActions }}"
+						visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}">
+				<ListView.itemTemplate>
+				  <Button row="3" col="1" class="powerAssist-deactive"
+						  text="{{ this }}"
+						  tap="{{ onUpdateAction }}"
+						  visibility="{{ hasUpdateData ? 'visible' : 'collapsed' }}"/>
+				</ListView.itemTemplate>
+			  </ListView>
+			  -->
+              <Label row="4" col="1" class="currentTime"
+					 text="{{ currentTime }}" textWrap="true" />
+              <Label row="5" col="1" class="currentTimeMeridiem"
+					 text="{{ currentTimeMeridiem }}" textWrap="true" />
+            </GridLayout>
+          </nac:AnimatedCircle>
+        </GridLayout>
+	  </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
     // Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout id="changeSettingsPage" row="0" rowSpan="2" col="0" height="100%" width="100%" loaded="{{ onChangeSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ isChangeSettingsLayoutEnabled ? 'visible':'collapsed' }}">
-      <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">     
+      <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">
         // Increase the config value
         <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
           <StackLayout tap="{{ onIncreaseSettingsTap }}">
@@ -264,13 +332,13 @@
 	// Error History "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onErrorHistoryLayoutLoaded }}" class="page" translateX="500" visibility="{{ isErrorHistoryLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%">
-        <ScrollView>
-          <StackLayout>
-            <Label text="SmartDrive Error History" class="chart-title" textWrap="true" />
-            <Label text="" row="1" col="0" class="hr-blue" />
-            // might want to switch to listview here depending how many items are going to be in this list
-            <Repeater row="2" colSpan="1" items="{{ errorHistoryData }}">
-              <Repeater.itemTemplate>
+        <StackLayout height="100%">
+          <Label text="SmartDrive Error History" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          // TODO: might want to switch to listview here depending how many items are going to be in this list
+          <ScrollView height="100%" id="errorsScrollView">
+            <ListView row="2" colSpan="1" items="{{ errorHistoryData }}" loadMoreItems="{{ onLoadMoreErrors }}">
+              <ListView.itemTemplate>
                 <RL:Ripple rippleColor="#ddd">
                   <GridLayout rows="auto, auto" columns="15, *">
                     <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
@@ -278,10 +346,67 @@
                     <Label row="1" col="1" text="{{ time }}" class="settings-label" textWrap="true" />
                   </GridLayout>
                 </RL:Ripple>
-              </Repeater.itemTemplate>
-            </Repeater>
-          </StackLayout>
-        </ScrollView>
+              </ListView.itemTemplate>
+            </ListView>
+          </ScrollView>
+        </StackLayout>
+      </wol:WearOsLayout>
+    </sdl:SwipeDismissLayout>
+
+	// About "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onAboutLayoutLoaded }}" class="page" translateX="500" visibility="{{ isAboutLayoutEnabled ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout height="100%" width="100%">
+        <StackLayout height="100%">
+          <Label text="Information" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          // TODO: might want to switch to listview here depending how many items are going to be in this list
+          <ScrollView height="100%" id="aboutScrollView">
+			<StackLayout>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="SmartDrive MCU Version" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ mcuVersion }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="SmartDrive BLE Version" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="SmartDrive Serial Number" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="TicWatch Serial Number" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="App Version" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+				<GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Database ID" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+				</GridLayout>
+              </RL:Ripple>
+			</StackLayout>
+          </ScrollView>
+        </StackLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 

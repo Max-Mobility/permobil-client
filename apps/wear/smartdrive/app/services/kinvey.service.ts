@@ -14,6 +14,7 @@ export class KinveyService {
   public static api_activity_db = '/PushTrackerActivity';
 
   private _auth: string = null;
+  public watch_serial_number: string = null;
 
   constructor() {
     // configure authorization here:
@@ -35,6 +36,7 @@ export class KinveyService {
     delete o.has_been_sent;
     // set watch_uuid for log
     o.watch_uuid = device.uuid;
+    o.watch_serial_number = this.watch_serial_number;
   }
 
   getFile(
