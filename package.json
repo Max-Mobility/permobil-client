@@ -14,7 +14,7 @@
     "setup.@permobil/nativescript": "cd @permobil/angular && npm i && tsc",
     "setup.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && npm i && tsc",
     "setup.ns.animated.circle": "cd forked-plugins/nativescript-animated-circle && npm i && tsc",
-    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\"",
+    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\"",
     "global.installs": "npm i -g rimraf && npm i -g typescript",
     "*************************** CLEAN SECTION": "***************************",
     "clean": "rimraf hooks node_modules package-lock.json",
