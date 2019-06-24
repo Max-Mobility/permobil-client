@@ -1,15 +1,5 @@
 import { Observable } from 'tns-core-modules/data/observable';
-import {
-  BluetoothCommon,
-  ConnectionState,
-  ConnectOptions,
-  DisconnectOptions,
-  WriteOptions,
-  ReadOptions,
-  ReadResult,
-  StopNotifyingOptions,
-  StartNotifyingOptions
-} from './common';
+import { ConnectOptions, DisconnectOptions, ReadOptions, ReadResult, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from './common';
 
 export declare class BluetoothCommon extends Observable {
   constructor();
