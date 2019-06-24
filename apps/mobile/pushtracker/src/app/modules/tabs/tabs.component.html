@@ -1,20 +1,27 @@
-<TabView androidTabsPosition="bottom">
+<TabView
+  androidTabsPosition="bottom"
+  androidSelectedTabHighlightColor="#0067a6"
+  selectedTabTextColor="#0067a6"
+  tabTextFontSize="14"
+  iosIconRenderingMode="alwaysOriginal"
+  (selectedIndexChanged)="tabViewIndexChange($event)"
+>
   <page-router-outlet
-    *tabItem="{ title: 'Home' }"
+    *tabItem="homeTabItem"
     name="homeTab"
     actionBarVisibility="never"
   >
   </page-router-outlet>
 
   <page-router-outlet
-    *tabItem="{ title: 'Journey' }"
+    *tabItem="journeyTabItem"
     name="journeyTab"
     actionBarVisibility="never"
   >
   </page-router-outlet>
 
   <page-router-outlet
-    *tabItem="{ title: 'Profile' }"
+    *tabItem="profileTabItem"
     name="profileTab"
     actionBarVisibility="never"
   >

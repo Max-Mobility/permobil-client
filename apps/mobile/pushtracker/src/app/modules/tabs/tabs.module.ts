@@ -1,9 +1,6 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
-import {
-  NativeScriptRouterModule,
-  NSEmptyOutletComponent
-} from 'nativescript-angular/router';
+import { NativeScriptRouterModule, NSEmptyOutletComponent } from 'nativescript-angular/router';
 import { TabsComponent } from './tabs.component';
 
 @NgModule({
@@ -26,6 +23,12 @@ import { TabsComponent } from './tabs.component';
             outlet: 'journeyTab',
             component: NSEmptyOutletComponent,
             loadChildren: '../journey-tab/journey-tab.module#JourneyTabModule'
+          },
+          {
+            path: 'profile',
+            outlet: 'profileTab',
+            component: NSEmptyOutletComponent,
+            loadChildren: '../profile-tab/profile-tab.module#ProfileTabModule'
           }
         ]
       }
