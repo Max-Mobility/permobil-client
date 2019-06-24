@@ -100,7 +100,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm run tslint"
+      "pre-push": "prettier && npm run tslint"
     }
   },
   "lint-staged": {
