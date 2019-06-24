@@ -4,7 +4,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 
 @Component({
   moduleId: module.id,
-  selector: 'tabs-page',
+  selector: 'tabs',
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {

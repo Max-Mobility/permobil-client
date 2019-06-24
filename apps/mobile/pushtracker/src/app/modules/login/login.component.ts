@@ -40,14 +40,10 @@ export class LoginComponent implements OnInit {
   }
 
   async submit() {
-    Log.D('submit tap');
-    // this._routerExtensions.navigate(['/tabs']);
-    // Navigate to welcome page with clearHistory
+    Log.D('submit tap, just going to open the tabs/default for now');
+    // Navigate to tabs home with clearHistory
     this._routerExtensions
-      .navigate(['../tabs'], { clearHistory: true })
-      .then(r => {
-        Log.D('r', r);
-      })
+      .navigate(['/tabs/default'], { clearHistory: true })
       .catch(err => {
         Log.E(err);
       });

@@ -9,7 +9,7 @@ import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { DropDownModule } from 'nativescript-drop-down/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
@@ -42,7 +42,7 @@ export function createTranslateLoader() {
       }
     })
   ],
-  declarations: [AppComponent],
+  declarations: [AppComponent, ...COMPONENTS],
   providers: [...PROVIDERS, ModalDialogService],
   schemas: [NO_ERRORS_SCHEMA]
 })
