@@ -1,0 +1,24 @@
+<ScrollView height="100%" width="100%">
+  <GridLayout
+    height="100%"
+    width="100%"
+    rows="auto, auto, auto, auto, auto, auto"
+    columns="*"
+  >
+    <Label
+      row="0"
+      class="align-center text-violet h3"
+      text="Pushtracker Mobile"
+      textWrap="true"
+    ></Label>
+    <Image row="1" class="align-center" src="res://icon" stretch="none"></Image>
+    <TextField row="2" hint="Email..." [text]="user.email"></TextField>
+    <TextField
+      row="3"
+      hint="Password..."
+      secure="true"
+      [text]="user.password"
+    ></TextField>
+    <Button row="4" text="SUBMIT" (tap)="submit()"></Button>
+  </GridLayout>
+</ScrollView>
