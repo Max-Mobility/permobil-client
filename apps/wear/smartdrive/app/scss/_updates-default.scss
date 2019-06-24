@@ -1,11 +1,16 @@
 @import 'variables';
+@import 'common';
 
 $update-progress-color: #009ac7;
 $update-progress-rim-color: #696969;
 $update-progress-spinner-color: #009ac7;
 
-$activated-color: #db4537;
-$deactivated-color: #00a73c;
+$start-color: #00a73c;
+$pause-color: #ff8900;
+$resume-color: #00a73c;
+$cancel-color: #db4537;
+$force-color: #ff8900;
+$retry-color: #00a73c;
 
 .updateProgressCircle {
   background-color: transparent;
@@ -20,6 +25,7 @@ $deactivated-color: #00a73c;
 .action-label {
   font-size: 15;
   font-weight: normal;
+  text-align: $center;
   color: $white;
   vertical-align: $center;
   horizontal-align: $center;
@@ -40,16 +46,40 @@ $deactivated-color: #00a73c;
   vertical-align: top;
 }
 
-.powerAssist-active {
-    @extend .power-assist-btn;
+.action-start {
+    @extend .updates-btn;
   color: $white;
-  background-color: $activated-color;
+  background-color: $start-color;
 }
 
-.powerAssist-deactive {
-    @extend .power-assist-btn;
+.action-pause {
+    @extend .updates-btn;
   color: $white;
-  background-color: $deactivated-color;
+  background-color: $pause-color;
+}
+
+.action-resume {
+    @extend .updates-btn;
+  color: $white;
+  background-color: $resume-color;
+}
+
+.action-cancel {
+    @extend .updates-btn;
+  color: $white;
+  background-color: $cancel-color;
+}
+
+.action-force {
+    @extend .updates-btn;
+  color: $white;
+  background-color: $force-color;
+}
+
+.action-retry {
+    @extend .updates-btn;
+  color: $white;
+  background-color: $retry-color;
 }
 
 .currentTime {

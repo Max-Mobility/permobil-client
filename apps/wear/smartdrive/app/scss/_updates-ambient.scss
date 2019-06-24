@@ -1,11 +1,9 @@
 @import 'variables';
+@import 'common';
 
 $update-progress-color: #B9B9B9;
 $update-progress-rim-color: $black;
 $update-progress-spinner-color: #B9B9B9;
-
-$activated-color: #B9B9B9;
-$deactivated-color: #B9B9B9;
 
 .updateProgressCircle {
   background-color: transparent;
@@ -20,6 +18,7 @@ $deactivated-color: #B9B9B9;
 .action-label {
   font-size: 15;
   font-weight: normal;
+  text-align: $center;
   color: $ambient-white;
   vertical-align: $center;
   horizontal-align: $center;
@@ -40,10 +39,13 @@ $deactivated-color: #B9B9B9;
   vertical-align: top;
 }
 
-.powerAssist-active,
-.powerAssist-deactive,
-.powerAssist-training {
-    @extend .power-assist-btn;
+.action-start,
+.action-pause,
+.action-resume,
+.action-cancel,
+.action-force,
+.action-retry {
+    @extend .updates-btn;
   color: $ambient-white;
   background-color: $black;
 }

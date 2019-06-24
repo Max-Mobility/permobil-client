@@ -882,17 +882,31 @@ export class MainViewModel extends Observable {
   }
 
   onSmartDriveOtaStatus(args: any) {
+    let canSwipeDismiss = true;
+    // get the current progress of the update
     const progress = args.data.progress;
-    // TODO: these replacements are just until we get translations working!
-    const actions = args.data.actions.map(a => a.replace('ota.action.', ''));
+    // TODO: translate the state instead of just replacing it!
     const state = args.data.state.replace('ota.sd.state.', '');
+    // TODO: translate the label instead of just replacing it!
+    const actions = args.data.actions.map(a => {
+      if (a.includes('cancel')) {
+        canSwipeDismiss = false;
+      }
+      const actionClass = 'action-' + last(a.split('.'));
+      const actionLabel = a.replace('ota.action.', '');
+      return {
+        'label': actionLabel,
+        'func': this.smartDrive.onOTAActionTap.bind(this.smartDrive, a),
+        'action': a,
+        'class': actionClass
+      };
+    });
+    // now set the renderable bound data
     this.smartDriveOtaProgress = progress;
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, ...actions);
     this.smartDriveOtaState = state;
-    if (actions.indexOf('cancel') > -1) {
-        // disable swipe close of the updates layout
-        (this._updatesLayout as any).swipeable = false;
-    }
+    // disable swipe close of the updates layout
+    (this._updatesLayout as any).swipeable = canSwipeDismiss;
   }
 
   checkForUpdates() {
@@ -998,6 +1012,8 @@ export class MainViewModel extends Observable {
         const bleVersion = currentVersions['SmartDriveBLE.ota'].version;
         const mcuVersion = currentVersions['SmartDriveMCU.ota'].version;
         if (
+          // TODO: this is to force the ota
+          true ||
           !this.smartDrive.isMcuUpToDate(mcuVersion) ||
           !this.smartDrive.isBleUpToDate(bleVersion)
         ) {
@@ -1102,12 +1118,6 @@ export class MainViewModel extends Observable {
     if (this.smartDrive) {
       this.smartDrive.cancelOTA();
     }
-  }
-
-  onUpdateAction(args: any) {
-    const index = args.index;
-    const action = this.smartDrive.otaActions.getItem(index) as string;
-    this.smartDrive.onOTAActionTap(action);
   }
 
   /**
@@ -1837,7 +1847,7 @@ export class MainViewModel extends Observable {
     this._bluetoothService.readRssi(this.smartDrive.address)
       .then((args: any) => {
         this._rssi = (this._rssi * 9 / 10) + (args.value * 1 / 10);
-        this.currentSignalStrength = `${this._rssi}`;
+        this.currentSignalStrength = `${this._rssi.toFixed(1)}`;
       });
 
     // send current settings to SD
