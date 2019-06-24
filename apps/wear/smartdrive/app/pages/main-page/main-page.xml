@@ -268,27 +268,29 @@
               rows="15, auto, auto, *, auto, auto, 15"
               columns="30, *, 30"
               class="circleDetails">
-            <Label row="1" col="1" class="topValue" horizontalAlignment="center"
-                   text="{{ smartDriveOtaState }}"
-                   visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
-            <Label row="2" col="1" class="topValueDescription" textWrap="true"
+            // NOTE: I altered the order of the description / display
+            <Label row="1" col="1" class="topValueDescription" textWrap="true"
                    text="Update Status"
+                   visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
+            <Label row="2" col="1" class="topValue" horizontalAlignment="center"
+                   text="{{ smartDriveOtaState }}"
                    visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
             <Label row="3" col="1" horizontalAlignment="center"
                    verticalAlignment="middle" textWrap="true"
                    text="{{ updateProgressText }}"
                    visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
-            <ListView row="3" col="1"
-                      items="{{ smartDriveOtaActions }}"
-                      itemTap="{{ onUpdateAction }}"
+            <Repeater row="3" col="1" items="{{ smartDriveOtaActions }}"
                       visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-              <ListView.itemTemplate>
-                <StackLayout height="50%" verticalAlignment="center">
-                  <Label text="{{ $value }}" class="action-label"/>
-                </StackLayout>
-              </ListView.itemTemplate>
-            </ListView>
-
+              <Repeater.itemsLayout>
+                <FlexboxLayout justifyContent="center"
+                               alignContent="center"
+                               alignItems="center"
+                               flexDirection="column" />
+              </Repeater.itemsLayout>
+              <Repeater.itemTemplate>
+                <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}"/>
+              </Repeater.itemTemplate>
+            </Repeater>
             <Label row="4" col="1" class="currentTime"
                    text="{{ currentTime }}" textWrap="true" />
             <Label row="5" col="1" class="currentTimeMeridiem"
