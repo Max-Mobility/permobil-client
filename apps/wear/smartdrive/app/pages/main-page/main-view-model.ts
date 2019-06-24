@@ -49,22 +49,27 @@ const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
 export class MainViewModel extends Observable {
+  // battery display
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
   @Prop() watchCurrentBatteryPercentage: number = 0;
   @Prop() watchIsCharging: boolean = false;
   @Prop() powerAssistRingColor: Color = PowerAssist.InactiveRingColor;
+  // smartdrive data display
+  @Prop() displayRssi: boolean = false;
   @Prop() estimatedDistance: number = 0.0;
   @Prop() estimatedDistanceDisplay: string = '0.0';
   @Prop() estimatedDistanceDescription: string = 'Estimated Range (mi)';
   @Prop() currentSpeed: number = 0.0;
   @Prop() currentSpeedDisplay: string = '0.0';
   @Prop() currentSpeedDescription: string = 'Speed (mph)';
+  @Prop() currentSignalStrength: string = '--';
+  // time display
   @Prop() currentTime;
   @Prop() currentTimeMeridiem;
+  // state variables
   @Prop() powerAssistActive: boolean = false;
   @Prop() isTraining: boolean = false;
-  @Prop() pairSmartDriveText: string = 'Pair SmartDrive';
-  @Prop() hasUpdateData: boolean = false;
+
   /**
    * Boolean to track the settings swipe layout visibility.
    */
@@ -72,6 +77,7 @@ export class MainViewModel extends Observable {
   @Prop() isChangeSettingsLayoutEnabled = false;
   @Prop() changeSettingKeyString = '';
   @Prop() changeSettingKeyValue;
+  @Prop() pairSmartDriveText: string = 'Pair SmartDrive';
 
   /**
    * Boolean to track the error history swipe layout visibility.
@@ -85,6 +91,7 @@ export class MainViewModel extends Observable {
   @Prop() isUpdatesLayoutEnabled = false;
   @Prop() updateProgressText: string = 'Checking for Updates';
   @Prop() isUpdatingSmartDrive: boolean = false;
+  @Prop() hasUpdateData: boolean = false;
   @Prop() checkingForUpdates: boolean = false;
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
@@ -1366,6 +1373,10 @@ export class MainViewModel extends Observable {
     this.updateChartData();
   }
 
+  toggleDisplay() {
+    this.displayRssi = !this.displayRssi;
+  }
+
   updateSpeedDisplay() {
     if (this.settings.units === 'English') {
       // update distance units
@@ -1821,7 +1832,14 @@ export class MainViewModel extends Observable {
     this.saveErrorToDatabase(errorType, errorId);
   }
 
+  private _rssi = 0;
   async onMotorInfo(args: any) {
+    this._bluetoothService.readRssi(this.smartDrive.address)
+      .then((args: any) => {
+        this._rssi = (this._rssi * 9/10) + (args.value * 1/10);
+        this.currentSignalStrength = `${this._rssi}`;
+      });
+
     // send current settings to SD
     this._onceSendSmartDriveSettings();
     // Log.D('onMotorInfo event');

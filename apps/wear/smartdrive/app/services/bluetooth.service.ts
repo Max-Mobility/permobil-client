@@ -274,6 +274,10 @@ export class BluetoothService {
     return this._bluetooth.stopNotifying(opts);
   }
 
+  public readRssi(address: string) {
+    return this._bluetooth.readRSSI(address);
+  }
+
   public write(opts: any) {
     return this._bluetooth.write(opts);
   }

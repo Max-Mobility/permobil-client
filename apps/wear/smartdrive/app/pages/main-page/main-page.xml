@@ -1,11 +1,11 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd"
-  xmlns:nac="nativescript-animated-circle"
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-  xmlns:lv="nativescript-wear-os/packages/listview"
-  xmlns:pager="nativescript-pager"
-  xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
-  xmlns:box="nativescript-wear-os/packages/box-inset-layout"
-  xmlns:RL="nativescript-ng-ripple/ripple-view" navigatingTo="navigatingTo" actionBarHidden="true">
+      xmlns:nac="nativescript-animated-circle"
+      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+      xmlns:lv="nativescript-wear-os/packages/listview"
+      xmlns:pager="nativescript-pager"
+      xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
+      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
+      xmlns:RL="nativescript-ng-ripple/ripple-view" navigatingTo="navigatingTo" actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">
 
     <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ (isChangeSettingsLayoutEnabled || isUpdatesLayoutEnabled || isAboutLayoutEnabled) ? 'collapsed':'visible' }}">
@@ -14,75 +14,85 @@
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
           // Power Assist Circle
           <nac:AnimatedCircle id="powerAssistCircle"
-							  rowSpan="3" colSpan="3"
-							  class="powerAssistCircle"
-							  width="100%" height="100%"
-							  animated="true" animateFrom="0"
-							  rimColor="{{ powerAssistRingColor }}"
-							  barColor="{{ powerAssistRingColor }}"
-							  clockwise="true" rimWidth="12" progress="100"
-							  visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
+                              rowSpan="3" colSpan="3"
+                              class="powerAssistCircle"
+                              width="100%" height="100%"
+                              animated="true" animateFrom="0"
+                              rimColor="{{ powerAssistRingColor }}"
+                              barColor="{{ powerAssistRingColor }}"
+                              clockwise="true" rimWidth="12" progress="100"
+                              visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
-		  // Tap indication circle
+          // Tap indication circle
           <nac:AnimatedCircle id="tapCircle"
-							  rowSpan="3" colSpan="3"
-							  class="tapCircle"
-							  width="100%" height="100%"
-							  rimWidth="12" progress="100"
-							  animated="true" animateFrom="0"
-							  visibility="{{ hasTapped ? 'visible':'collapsed' }}">
+                              rowSpan="3" colSpan="3"
+                              class="tapCircle"
+                              width="100%" height="100%"
+                              rimWidth="12" progress="100"
+                              animated="true" animateFrom="0"
+                              visibility="{{ hasTapped ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
-         // SmartDrive Battery Circle
-         <nac:AnimatedCircle id="smartDriveBatteryCircle"
-							 rowSpan="3" colSpan="3"
-							 class="sdBatteryCircle"
-							 width="90%" height="90%"
-							 animated="true" animateFrom="0" clockwise="true"
-							 rimWidth="2" barWidth="8"
-							 progress="{{ smartDriveCurrentBatteryPercentage }}">
+          // SmartDrive Battery Circle
+          <nac:AnimatedCircle id="smartDriveBatteryCircle"
+                              rowSpan="3" colSpan="3"
+                              class="sdBatteryCircle"
+                              width="90%" height="90%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ smartDriveCurrentBatteryPercentage }}">
           </nac:AnimatedCircle>
-         // Watch Battery Circle
-         <nac:AnimatedCircle id="watchBatteryCircle"
-							 rowSpan="3" colSpan="3"
-							 class="watchBatteryCircle"
-							 width="84%" height="84%"
-							 animated="true" animateFrom="0" clockwise="true"
-							 rimWidth="2" barWidth="8"
-							 progress="{{ watchCurrentBatteryPercentage }}">
+          // Watch Battery Circle
+          <nac:AnimatedCircle id="watchBatteryCircle"
+                              rowSpan="3" colSpan="3"
+                              class="watchBatteryCircle"
+                              width="84%" height="84%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ watchCurrentBatteryPercentage }}">
             <GridLayout rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
               <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-					 text="{{ estimatedDistanceDisplay }}"
-					 visibility="{{ motorOn ? 'collapsed':'visible' }}"/>
+                     text="{{ estimatedDistanceDisplay }}"
+                     tap="{{ toggleDisplay }}"
+                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
-					 text="{{ estimatedDistanceDescription }}"
-					 visibility="{{ motorOn ? 'collapsed':'visible' }}"/>
+                     text="{{ estimatedDistanceDescription }}"
+                     tap="{{ toggleDisplay }}"
+                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
               <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-					 text="{{ currentSpeedDisplay }}"
-					 visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+                     text="{{ currentSignalStrength }}"
+                     tap="{{ toggleDisplay }}"
+                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
-					 text="{{ currentSpeedDescription }}"
-					 visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+                     text="Signal Strength (dB)"
+                     tap="{{ toggleDisplay }}"
+                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
+              <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
+                     text="{{ currentSpeedDisplay }}"
+                     visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+              <Label row="2" col="1" class="topValueDescription" textWrap="true"
+                     text="{{ currentSpeedDescription }}"
+                     visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-deactive"
-					  text="Activate Power Assist"
-					  tap="{{ enablePowerAssist }}"
-					  visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
+                      text="Activate Power Assist"
+                      tap="{{ enablePowerAssist }}"
+                      visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-active"
-					  text="Deactivate Power Assist"
-					  tap="{{ disablePowerAssist }}"
-					  visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
+                      text="Deactivate Power Assist"
+                      tap="{{ disablePowerAssist }}"
+                      visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-active"
-					  text="Stop"
-					  tap="{{ stopSmartDrive }}"
-					  visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+                      text="Stop"
+                      tap="{{ stopSmartDrive }}"
+                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-training"
-					  width="100%" height="40%" borderRadius="50%"
-					  text="Exit Training Mode"
-					  tap="{{ onExitTrainingModeTap }}"
-					  visibility="{{ isTraining ? 'visible':'collapsed' }}" />
+                      width="100%" height="40%" borderRadius="50%"
+                      text="Exit Training Mode"
+                      tap="{{ onExitTrainingModeTap }}"
+                      visibility="{{ isTraining ? 'visible':'collapsed' }}" />
               <Label row="4" col="1" class="currentTime"
-					 text="{{ currentTime }}" textWrap="true" />
+                     text="{{ currentTime }}" textWrap="true" />
               <Label row="5" col="1" class="currentTimeMeridiem"
-					 text="{{ currentTimeMeridiem }}" textWrap="true" />
+                     text="{{ currentTimeMeridiem }}" textWrap="true" />
             </GridLayout>
           </nac:AnimatedCircle>
 
@@ -182,113 +192,111 @@
           <Label text="SmartDrive Settings" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
           <ScrollView height="100%" id="settingsScrollView">
-			<StackLayout>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Max Speed" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="acceleration" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Acceleration" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="tapSensitivity" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Tap Sensitivity" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Control Mode" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Units" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="throttleMode" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Throttle Mode" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="throttleSpeed" tap="{{ onChangeSettingsItemTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Throttle Max Speed" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="Error History" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ saveNewSmartDrive }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="{{ pairSmartDriveText }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-        </StackLayout>
+            <StackLayout>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Max Speed" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="acceleration" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Acceleration" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="tapSensitivity" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Tap Sensitivity" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Control Mode" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Units" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="throttleMode" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Throttle Mode" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="throttleSpeed" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Throttle Max Speed" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="Error History" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ saveNewSmartDrive }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ pairSmartDriveText }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+            </StackLayout>
           </ScrollView>
         </StackLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
-	  // Updates "Page" -- need to wrap this in a component
+    // Updates "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onUpdatesLayoutLoaded }}" class="page" translateX="500" visibility="{{ isUpdatesLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%" disableInsetConstraint="true">
-        <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
-          // SmartDrive Update Progress Circle
-          <nac:AnimatedCircle id="updateProgressCircle"
-                              loaded="{{ onUpdateProgressCircleLoaded }}"
-                              rowSpan="3" colSpan="3"
-                              class="updateProgressCircle"
-                              width="100%" height="100%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8"
-                              progress="{{ smartDriveOtaProgress }}">
-            <GridLayout
-                rows="15, auto, auto, *, auto, auto, 15"
-                columns="30, *, 30"
-                class="circleDetails">
-              <Label row="1" col="1" class="topValue" horizontalAlignment="center"
-                     text="{{ smartDriveOtaState }}"
-                     visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="Update Status"
-                     visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
-              <Label row="3" col="1" horizontalAlignment="center"
-                     verticalAlignment="middle" textWrap="true"
-                     text="{{ updateProgressText }}"
-                     visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
-              <StackLayout row="3" col="1" class="power-assist-btn">
-                <ListView
-                    height="100%"
-                    items="{{ smartDriveOtaActions }}"
-                    itemTap="{{ onUpdateAction }}"
-                    visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-                  <ListView.itemTemplate>
-                    <Label text="{{ $value }}" class="action-label"/>
-                  </ListView.itemTemplate>
-                </ListView>
-              </StackLayout>
-
-              <Label row="4" col="1" class="currentTime"
-                     text="{{ currentTime }}" textWrap="true" />
-              <Label row="5" col="1" class="currentTimeMeridiem"
-                     text="{{ currentTimeMeridiem }}" textWrap="true" />
+        // SmartDrive Update Progress Circle
+        <nac:AnimatedCircle id="updateProgressCircle"
+                            loaded="{{ onUpdateProgressCircleLoaded }}"
+                            class="updateProgressCircle"
+                            width="100%" height="100%"
+                            animated="true" animateFrom="0" clockwise="true"
+                            rimWidth="2" barWidth="8"
+                            progress="{{ smartDriveOtaProgress }}">
+          <GridLayout
+              rows="15, auto, auto, *, auto, auto, 15"
+              columns="30, *, 30"
+              class="circleDetails">
+            <Label row="1" col="1" class="topValue" horizontalAlignment="center"
+                   text="{{ smartDriveOtaState }}"
+                   visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
+            <Label row="2" col="1" class="topValueDescription" textWrap="true"
+                   text="Update Status"
+                   visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
+            <Label row="3" col="1" horizontalAlignment="center"
+                   verticalAlignment="middle" textWrap="true"
+                   text="{{ updateProgressText }}"
+                   visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
+            <GridLayout row="3" col="1"
+                        rows="*,*,*,*,*"
+                        cols="*"
+                        visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
+              <ListView
+                  items="{{ smartDriveOtaActions }}"
+                  itemTap="{{ onUpdateAction }}">
+                <ListView.itemTemplate>
+                  <Label row="{{ $index }}" text="{{ $value }}" class="action-label"/>
+                </ListView.itemTemplate>
+              </ListView>
             </GridLayout>
-          </nac:AnimatedCircle>
-        </GridLayout>
+
+            <Label row="4" col="1" class="currentTime"
+                   text="{{ currentTime }}" textWrap="true" />
+            <Label row="5" col="1" class="currentTimeMeridiem"
+                   text="{{ currentTimeMeridiem }}" textWrap="true" />
+          </GridLayout>
+        </nac:AnimatedCircle>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
@@ -326,7 +334,7 @@
       </GridLayout>
     </sdl:SwipeDismissLayout>
 
-	// Error History "Page" -- need to wrap this in a component
+    // Error History "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onErrorHistoryLayoutLoaded }}" class="page" translateX="500" visibility="{{ isErrorHistoryLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%">
         <StackLayout height="100%">
@@ -350,7 +358,7 @@
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
-	// About "Page" -- need to wrap this in a component
+    // About "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onAboutLayoutLoaded }}" class="page" translateX="500" visibility="{{ isAboutLayoutEnabled ? 'visible':'collapsed' }}">
       <wol:WearOsLayout height="100%" width="100%">
         <StackLayout height="100%">
@@ -358,50 +366,50 @@
           <Label text="" row="1" col="0" class="hr-blue" />
           // TODO: might want to switch to listview here depending how many items are going to be in this list
           <ScrollView height="100%" id="aboutScrollView">
-			<StackLayout>
+            <StackLayout>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="SmartDrive MCU Version" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ mcuVersion }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="SmartDrive BLE Version" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="SmartDrive Serial Number" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="TicWatch Serial Number" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="App Version" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-				<GridLayout rows="auto, auto" columns="15, *">
+                <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="Database ID" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
-				</GridLayout>
+                </GridLayout>
               </RL:Ripple>
-			</StackLayout>
+            </StackLayout>
           </ScrollView>
         </StackLayout>
       </wol:WearOsLayout>

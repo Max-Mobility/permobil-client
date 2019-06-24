@@ -1,5 +1,5 @@
 import { CLog, CLogTypes } from '../common';
-import { Bluetooth } from './android_main';
+import { Bluetooth, deviceToPeripheral } from './android_main';
 
 @JavaProxy('com.nativescript.TNS_BluetoothGattCallback')
 export class TNS_BluetoothGattCallback extends android.bluetooth
@@ -313,6 +313,24 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
       CLogTypes.info,
       `---- TNS_BluetoothGattCallback.onReadRemoteRssi ---- gatt: ${gatt} rssi: ${rssi}, status: ${status}`
     );
+
+    const device = gatt.getDevice();
+    const stateObject = this._owner.get().connections[device.getAddress()];
+    if (stateObject) {
+      if (stateObject.onReadRSSIPromise) {
+        stateObject.onReadRSSIPromise({
+          value: rssi,
+          status: status
+        });
+      }
+    }
+
+    this._owner.get().sendEvent(Bluetooth.device_rssi_change_event, {
+      device: deviceToPeripheral(device),
+      rssi: rssi,
+      status: status,
+      gatt: gatt
+    });
   }
 
   /**
