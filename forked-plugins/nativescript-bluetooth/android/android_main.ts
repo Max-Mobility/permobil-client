@@ -52,7 +52,11 @@ export function deviceToCentral(
 export function deviceToPeripheral(
   dev: android.bluetooth.BluetoothDevice
 ): Peripheral {
-  const uuid = dev.getUuids()[0].toString();
+  const uuids = dev.getUuids();
+  let uuid = null;
+  if (uuids && uuids.length) {
+    uuid = uuids[0].toString();
+  }
   return {
     device: dev,
     UUID: uuid,
@@ -548,6 +552,31 @@ export class Bluetooth extends BluetoothCommon {
         resolve();
       } catch (ex) {
         CLog(CLogTypes.error, `Bluetooth.disconnect ---- error: ${ex}`);
+        reject(ex);
+      }
+    });
+  }
+
+  readRSSI(peripheralUUID: string) {
+    return new Promise((resolve, reject) => {
+      try {
+        const stateObject = this.connections[peripheralUUID];
+        if (!stateObject) {
+          reject('The peripheral is disconnected');
+          return;
+        }
+        const gatt = stateObject.device;
+
+        CLog(CLogTypes.info, `Bluetooth.readRSSI ---- gatt: ${gatt}`);
+
+        stateObject.onReadRSSIPromise = resolve;
+        if (!gatt.readRemoteRssi()) {
+          reject(
+            'Failed to read remote rssi for ' + peripheralUUID
+          );
+        }
+      } catch (ex) {
+        CLog(CLogTypes.error, `Bluetooth.readRSSI ---- error: ${ex}`);
         reject(ex);
       }
     });

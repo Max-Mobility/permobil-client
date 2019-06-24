@@ -17,6 +17,15 @@ $deactivated-color: #B9B9B9;
   rim-color: $update-progress-rim-color;
 }
 
+.action-label {
+  font-size: 15;
+  font-weight: normal;
+  color: $ambient-white;
+  vertical-align: $center;
+  horizontal-align: $center;
+  margin: 2 0 2 0;
+}
+
 .topValue {
   color: $ambient-white;
   font-size: 18;

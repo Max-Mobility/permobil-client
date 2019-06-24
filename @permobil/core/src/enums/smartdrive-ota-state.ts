@@ -1,5 +1,6 @@
 export enum SD_OTA_State {
   not_started = 'ota.sd.state.not-started',
+  awaiting_connection = 'ota.sd.state.awaiting-connection',
   awaiting_versions = 'ota.sd.state.awaiting-versions',
   awaiting_mcu_ready = 'ota.sd.state.awaiting-mcu-ready',
   updating_mcu = 'ota.sd.state.updating-mcu',

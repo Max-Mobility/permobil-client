@@ -81,7 +81,10 @@ export class DeviceBase extends Observable {
   }
 
   public setOtaActions(actions?: string[]) {
-    this.otaActions.splice(0, this.otaActions.length, ...actions);
+    if (actions)
+      this.otaActions.splice(0, this.otaActions.length, ...actions);
+    else
+      this.otaActions.splice(0, this.otaActions.length);
   }
 
   public sendSettings(
