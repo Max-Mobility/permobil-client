@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1049623759647",
+    "firebase_url": "https://pushtrackermobile.firebaseio.com",
+    "project_id": "pushtrackermobile",
+    "storage_bucket": "pushtrackermobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049623759647:android:1557fa18478d50ab",
+        "android_client_info": {
+          "package_name": "com.permobil.pushtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1049623759647-s69lf10bkc9leqj8qg6qrig1ba70pv15.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB27z-Gpbs3Sc1SloRXAMj8WIdMRYcnu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049623759647-s69lf10bkc9leqj8qg6qrig1ba70pv15.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

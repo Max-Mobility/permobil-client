@@ -1,0 +1,63 @@
+// Import the theme’s variables. If you’re using a color scheme
+// other than “light”, switch the path to the alternative scheme,
+// for example '~nativescript-theme-core/scss/dark'.
+@import '~nativescript-theme-core/scss/light';
+
+/**** Fonts *****/
+$material-icon: 'Material Design Icons', materialdesignicons-webfont;
+$fa: FontAwesome, 'FontAwesome', fontawesome-webfont, 'fontawesome-webfont';
+$ionicon: ionicons, 'ionicons', Ionicons, 'Ionicons';
+$os: 'OpenSans-Regular', 'OpenSans', 'Open Sans', Open Sans;
+$os-Light: 'OpenSans-Light', 'OpenSans Light';
+$os-SemiBold: 'OpenSans-SemiBold', 'Open Sans SemiBold';
+$os-SemiBold-Italic: 'OpenSans-SemiBoldItalic', 'Open Sans SemiBold Italic';
+/**************/
+
+// Permobil Colors
+$permobil-hero: #004f7e !default;
+$permobil-prussian: #002855;
+$permobil-primary: #0067a6 !default;
+$permobil-ocean: #009ac7 !default;
+$permobil-sky: #89d4e3;
+$permobil-charcoal: #413642 !default;
+$permobil-steel: #a7a9a2 !default;
+$permobil-titan: #dcddde !default;
+$blue-50: rgba($permobil-hero, 0.5) !default;
+$blue-20: rgba($permobil-hero, 0.2) !default;
+$blue-10: rgba($permobil-hero, 0.1) !default;
+
+// Permobil Accents
+$permobil-yellow: #fbff22 !default;
+$permobil-orange: #ff671f !default;
+$permobil-lime: #c4d600;
+$permobil-cousteau: #00c1d5;
+$permobil-rose: #e31c79;
+$permobil-violet: #753bbd;
+$permobil-icon-shadow-orange: rgba(255, 103, 31, 0.6);
+
+$success-light: #00e676 !default;
+$error-light: #ed473f !default;
+$page-icon-color: #d7d7d7 !default;
+
+// Sizes
+$page-content-placeholder-font-size: 20;
+
+/**
+ * Theme variables overrides
+**/
+
+// Colors
+$background: #fff;
+$primary: lighten(#000, 13%);
+$secondary: lighten(#000, 46%);
+$disabled: lighten(#000, 62%);
+$accent: $permobil-hero;
+$error: $error-light;
+$warning: $error-light;
+
+// Text colors
+$text-color-light: #fff;
+$white: #fff;
+$black: #000;
+$red: #ff0000;
+$green: #66ff66;

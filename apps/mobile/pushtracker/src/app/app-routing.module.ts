@@ -1,14 +1,27 @@
 import { NgModule } from '@angular/core';
-import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { Routes } from '@angular/router';
-
-import { ItemsComponent } from './item/items.component';
-import { ItemDetailComponent } from './item/item-detail.component';
+import { NativeScriptRouterModule } from 'nativescript-angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/items', pathMatch: 'full' },
-  { path: 'items', component: ItemsComponent },
-  { path: 'item/:id', component: ItemDetailComponent }
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadChildren: './modules/login/login.module#LoginModule'
+  },
+  {
+    path: 'sign-up',
+    loadChildren: './modules/sign-up/sign-up.module#SignUpModule'
+  },
+  {
+    path: 'forgot-password',
+    loadChildren:
+      './modules/forgot-password/forgot-password.module#ForgotPasswordModule'
+  },
+  { path: 'tabs', loadChildren: './modules/tabs/tabs.module#TabsModule' }
 ];
 
 @NgModule({

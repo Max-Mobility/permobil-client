@@ -1,0 +1,54 @@
+// customized variables
+@import 'variables';
+@import 'buttons';
+@import 'action-bar';
+// theme standard rulesets
+@import '~nativescript-theme-core/scss/index';
+
+/*** Fonts ***/
+.mdi {
+  font-family: $material-icon;
+}
+
+.fa {
+  font-family: $fa;
+}
+
+.ionicon {
+  font-family: $ionicon;
+}
+
+label {
+  font-family: $os-Light;
+}
+
+.text-white {
+  color: $white;
+}
+
+.text-black {
+  color: $black;
+}
+
+.text-violet {
+  color: $permobil-violet;
+}
+
+.align-center {
+  horizontal-align: center;
+  vertical-align: center;
+}
+
+.text-middle {
+  vertical-align: center;
+}
+
+.bold {
+  font-weight: bold;
+  font-family: $os-SemiBold;
+}
+
+.very-bold {
+  font-weight: 700;
+  font-family: $os-SemiBold;
+}
