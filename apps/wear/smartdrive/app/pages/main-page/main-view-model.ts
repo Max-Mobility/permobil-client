@@ -920,6 +920,8 @@ export class MainViewModel extends Observable {
         if (fileMetaDatas && fileMetaDatas.length) {
           // Log.D('got fileMetaDatas', fileMetaDatas);
           // now download the files
+          promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
+          /* - for if we want to download them sequentially
           return fileMetaDatas.reduce((promiseChain, currentFile) => {
             return promiseChain.then(chainResults =>
                                      SmartDriveData.Firmwares.download(currentFile)
@@ -928,7 +930,9 @@ export class MainViewModel extends Observable {
                                           )
                                     );
           }, Promise.resolve([]));
+          */
         }
+        return Promise.all(promises);
       })
       .then(files => {
         let promises = [];

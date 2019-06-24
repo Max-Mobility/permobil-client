@@ -156,7 +156,7 @@ export namespace SmartDriveData {
           f['change_notes'][device.language] || f['change_notes']['en']
         };
       });
-    };
+    }
 
     export const FilePath = '/assets/firmwares/';
 
