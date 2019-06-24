@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Log } from '@permobil/core';
 
 @Component({
-  selector: 'home-tab',
+  selector: 'profile',
   moduleId: module.id,
-  templateUrl: './home-tab.component.html'
+  templateUrl: './profile-tab.component.html'
 })
-export class HomeTabComponent implements OnInit {
+export class ProfileTabComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    Log.D('home-tab.component ngOnInit');
+    Log.D('profile-tab.component ngOnInit');
   }
 }
