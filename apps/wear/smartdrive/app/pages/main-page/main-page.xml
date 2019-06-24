@@ -255,30 +255,31 @@
                               width="100%" height="100%"
                               animated="true" animateFrom="0" clockwise="true"
                               rimWidth="2" barWidth="8"
-                              progress="{{ smartDrive.otaProgress }}">
+                              progress="{{ smartDriveOtaProgress }}">
             <GridLayout
                 rows="15, auto, auto, *, auto, auto, 15"
                 columns="30, *, 30"
                 class="circleDetails">
               <Label row="1" col="1" class="topValue" horizontalAlignment="center"
-                     text="{{ smartDrive.otaState }}"
-                     visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+                     text="{{ smartDriveOtaState }}"
+                     visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
                      text="Update Status"
-                     visibility="{{ smartDrive.isUpdating ? 'visible' : 'hidden' }}"/>
+                     visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
               <Label row="3" col="1" horizontalAlignment="center"
                      verticalAlignment="middle" textWrap="true"
                      text="{{ updateProgressText }}"
-                     visibility="{{ !smartDrive.isUpdating ? 'visible' : 'collapsed' }}"/>
-
-              <StackLayout row="3" col="1"
-                           visibility="{{ smartDrive.isUpdating ? 'visible' : 'collapsed' }}">
-                <Repeater items="{{ smartDrive.otaActions }}"
-                          loaded="{{ onUpdateActionsRepeaterLoaded }}">
-                  <Repeater.itemTemplate>
-                    <Button tap="{{ $parents['Repeater'].onUpdateTap }}" text="{{ $value }}"/>
-                  </Repeater.itemTemplate>
-                </Repeater>
+                     visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
+              <StackLayout row="3" col="1" class="power-assist-btn">
+                <ListView
+                    height="100%"
+                    items="{{ smartDriveOtaActions }}"
+                    itemTap="{{ onUpdateAction }}"
+                    visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
+                  <ListView.itemTemplate>
+                    <Label text="{{ $value }}" class="action-label"/>
+                  </ListView.itemTemplate>
+                </ListView>
               </StackLayout>
 
               <Label row="4" col="1" class="currentTime"

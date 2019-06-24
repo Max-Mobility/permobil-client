@@ -20,7 +20,6 @@ import {
 } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { request, getFile } from 'tns-core-modules/http';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import {
@@ -41,7 +40,8 @@ import {
   currentSystemTime,
   currentSystemTimeMeridiem,
   hideOffScreenLayout,
-  showOffScreenLayout
+  showOffScreenLayout,
+  promiseSerial
 } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -84,7 +84,11 @@ export class MainViewModel extends Observable {
    */
   @Prop() isUpdatesLayoutEnabled = false;
   @Prop() updateProgressText: string = 'Checking for Updates';
+  @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() checkingForUpdates: boolean = false;
+  @Prop() smartDriveOtaProgress: number = 0;
+  @Prop() smartDriveOtaState: string = null;
+  @Prop() public smartDriveOtaActions = new ObservableArray();
 
   /**
    *
@@ -870,8 +874,23 @@ export class MainViewModel extends Observable {
     });
   }
 
-  async checkForUpdates() {
+  onSmartDriveOtaStatus(args: any) {
+    const progress = args.data.progress;
+    // TODO: these replacements are just until we get translations working!
+    const actions = args.data.actions.map(a => a.replace('ota.action.', ''));
+    const state = args.data.state.replace('ota.sd.state.', '');
+    this.smartDriveOtaProgress = progress;
+    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, ...actions);
+    this.smartDriveOtaState = state;
+    if (actions.indexOf('cancel') > -1) {
+        // disable swipe close of the updates layout
+        (this._updatesLayout as any).swipeable = false;
+    }
+  }
+
+  checkForUpdates() {
     this.updateProgressText = 'Checking for Updates';
+    this.isUpdatingSmartDrive = false;
     this.checkingForUpdates = true;
     this.hasUpdateData = false;
     let currentVersions = {};
@@ -901,28 +920,15 @@ export class MainViewModel extends Observable {
         if (fileMetaDatas && fileMetaDatas.length) {
           // Log.D('got fileMetaDatas', fileMetaDatas);
           // now download the files
-          promises = fileMetaDatas.map(f => {
-            let url = f['_downloadURL'];
-            // make sure they're https!
-            if (!url.startsWith('https:')) {
-              url = url.replace('http:', 'https:');
-            }
-            Log.D('Downloading FW update', f['_filename']);
-            return getFile(url).then(data => {
-              const fileData = new Uint8Array(data.readSync());
-              return {
-                version: SmartDriveData.Firmwares.versionStringToByte(
-                  f['version']
-                ),
-                name: f['_filename'],
-                data: fileData,
-                changes:
-                  f['change_notes'][device.language] || f['change_notes']['en']
-              };
-            });
-          });
+          return fileMetaDatas.reduce((promiseChain, currentFile) => {
+            return promiseChain.then(chainResults =>
+                                     SmartDriveData.Firmwares.download(currentFile)
+                                     .then(currentResult =>
+                                           [ ...chainResults, currentResult ]
+                                          )
+                                    );
+          }, Promise.resolve([]));
         }
-        return Promise.all(promises);
       })
       .then(files => {
         let promises = [];
@@ -1001,13 +1007,18 @@ export class MainViewModel extends Observable {
             message: msg,
             okButtonText: 'Ok'
           }).then(() => {
+            this.isUpdatingSmartDrive = true;
             Log.D('Beginning SmartDrive update');
             const bleFw = currentVersions['SmartDriveBLE.ota'].data;
             const mcuFw = currentVersions['SmartDriveMCU.ota'].data;
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
-            // disable swipe close of the updates layout
-            (this._updatesLayout as any).swipeable = false;
+            // register for smartdrive ota status events
+            this.smartDrive.on(
+              SmartDrive.smartdrive_ota_status_event,
+              this.onSmartDriveOtaStatus,
+              this
+            );
             // smartdrive needs to update
             this.smartDrive
               .performOTA(
@@ -1019,6 +1030,7 @@ export class MainViewModel extends Observable {
                 true
               )
               .then(otaStatus => {
+                this.isUpdatingSmartDrive = false;
                 const status = otaStatus.replace('OTA', 'Update');
                 this.updateProgressText = status;
                 Log.D('update status:', otaStatus);
@@ -1027,17 +1039,28 @@ export class MainViewModel extends Observable {
                 }
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
+                // un-register for smartdrive ota status events
+                this.smartDrive.off(
+                  SmartDrive.smartdrive_ota_status_event,
+                  this.onSmartDriveOtaStatus,
+                  this
+                );
               })
               .catch(err => {
+                this.isUpdatingSmartDrive = false;
                 const msg = `Update failed: ${err}`;
                 Log.E(msg);
                 this.updateProgressText = msg;
                 showFailure(msg);
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
+                // un-register for smartdrive ota status events
+                this.smartDrive.off(
+                  SmartDrive.smartdrive_ota_status_event,
+                  this.onSmartDriveOtaStatus,
+                  this
+                );
               });
-            // send the start command automatically
-            this.smartDrive.onOTAActionTap('ota.action.start');
           });
         } else {
           // smartdrive is already up to date
@@ -1049,10 +1072,13 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
+        // re-enable swipe close of the updates layout
+        (this._updatesLayout as any).swipeable = true;
         Log.E('Could not get files:', err);
         this.updateProgressText = `Error getting updates: ${err}`;
         this.hasUpdateData = false;
         this.checkingForUpdates = false;
+        this.isUpdatingSmartDrive = false;
         // @ts-ignore
         this.updateProgressCircle.stopSpinning();
       });
@@ -1068,11 +1094,9 @@ export class MainViewModel extends Observable {
   }
 
   onUpdateAction(args: any) {
-    Log.D('onUpdateAction');
-    const action = (args.object as any).bindingContext;
-    Log.D('action', action);
-    const _this = (args.object as any).page.bindingContext;
-    _this.smartDrive.onOTAActionTap(action);
+    const index = args.index;
+    const action = this.smartDrive.otaActions.getItem(index) as string;
+    this.smartDrive.onOTAActionTap(action);
   }
 
   /**
@@ -1156,18 +1180,20 @@ export class MainViewModel extends Observable {
         // update distance data
         let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
         const distanceData = sdData.map(e => {
-          const dist = e[SmartDriveData.Info.DriveDistanceName];
           let diff = 0;
-          // make sure we only compute diffs between valid distances
-          if (oldestDist > 0) {
-            diff = dist - oldestDist;
-            // used for range computation
-            sumDistance += diff;
-          }
-          oldestDist = Math.max(dist, oldestDist);
-          diff = SmartDrive.motorTicksToMiles(diff);
-          if (this.settings.units === 'Metric') {
-            diff = diff * 1.609;
+          const dist = e[SmartDriveData.Info.DriveDistanceName];
+          if (dist > 0) {
+            // make sure we only compute diffs between valid distances
+            if (oldestDist > 0) {
+              diff = dist - oldestDist;
+              // used for range computation
+              sumDistance += diff;
+            }
+            oldestDist = Math.max(dist, oldestDist);
+            diff = SmartDrive.motorTicksToMiles(diff);
+            if (this.settings.units === 'Metric') {
+              diff = diff * 1.609;
+            }
           }
           return {
             day: format(new Date(e.date), 'dd'),
@@ -1206,12 +1232,6 @@ export class MainViewModel extends Observable {
         this.updateSpeedDisplay();
       })
       .catch(err => {});
-  }
-
-  onUpdateActionsRepeaterLoaded(args) {
-    const rpter = args.object as Repeater;
-    // get distance data from db here then handle the data binding and
-    // calculating the Max Value for the chart and some sizing checks
   }
 
   onBatteryChartRepeaterLoaded(args) {

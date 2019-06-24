@@ -38,11 +38,22 @@ export class SmartDrive extends DeviceBase {
   public static smartdrive_distance_event = 'smartdrive_distance_event';
   public static smartdrive_motor_info_event = 'smartdrive_motor_info_event';
   public static smartdrive_error_event = 'smartdrive_error_event';
+  // ota events
   public static smartdrive_ota_ready_event = 'smartdrive_ota_ready_event';
   public static smartdrive_ota_ready_ble_event =
     'smartdrive_ota_ready_ble_event';
   public static smartdrive_ota_ready_mcu_event =
     'smartdrive_ota_ready_mcu_event';
+  public static smartdrive_ota_status_event =
+    'smartdrive_ota_status_event';  // sends state, actions, progress
+  public static smartdrive_ota_started_event =
+    'smartdrive_ota_started_event';
+  public static smartdrive_ota_canceled_event =
+    'smartdrive_ota_canceled_event';
+  public static smartdrive_ota_completed_event =
+    'smartdrive_ota_completed_event';
+  public static smartdrive_ota_failed_event =
+    'smartdrive_ota_failed_event';
 
   // NON STATIC:
   public events: ISmartDriveEvents;
@@ -61,7 +72,6 @@ export class SmartDrive extends DeviceBase {
   @Prop() mcuOTAProgress: number = 0;
   @Prop() notifying: boolean = false;
   @Prop() driving: boolean = false;
-  @Prop() isUpdating: boolean = false;
 
   // private members
   private doBLEUpdate: boolean = false;
@@ -237,11 +247,9 @@ export class SmartDrive extends DeviceBase {
     // wait to get ble version
     // wait to get mcu version
     // check versions
-    this.isUpdating = true;
     return new Promise((resolve, reject) => {
       if (!bleFirmware || !mcuFirmware || !bleFWVersion || !mcuFWVersion) {
         const msg = `Bad version (${bleFWVersion}, ${mcuFWVersion}), or firmware (${bleFirmware}, ${mcuFirmware})!`;
-        this.isUpdating = false;
         reject(msg);
       } else {
         // set up variables to keep track of the ota
@@ -347,7 +355,6 @@ export class SmartDrive extends DeviceBase {
           otaIntervalID = timer.setInterval(runOTA, 250);
         };
         const otaStartHandler = () => {
-          this.isUpdating = true;
           // set the progresses
           this.bleOTAProgress = 0;
           this.mcuOTAProgress = 0;
@@ -365,7 +372,6 @@ export class SmartDrive extends DeviceBase {
           }, otaTimeout);
         };
         const otaForceHandler = () => {
-          this.isUpdating = true;
           startedOTA = true;
           this.doMCUUpdate = true;
           this.doBLEUpdate = true;
@@ -384,7 +390,6 @@ export class SmartDrive extends DeviceBase {
           this.otaState = SmartDrive.OTAState.canceling;
         };
         const otaTimeoutHandler = () => {
-          this.isUpdating = false;
           startedOTA = false;
           stopOTA('OTA Timeout', false, true);
           this.otaState = SmartDrive.OTAState.timeout;
@@ -427,21 +432,18 @@ export class SmartDrive extends DeviceBase {
         };
         const otaMCUReadyHandler = data => {
           startedOTA = true;
-          this.isUpdating = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got MCU OTAReady from ${this.address}`);
           this.otaState = SmartDrive.OTAState.updating_mcu;
         };
         const otaBLEReadyHandler = data => {
           startedOTA = true;
-          this.isUpdating = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got BLE OTAReady from ${this.address}`);
           this.otaState = SmartDrive.OTAState.updating_ble;
         };
         const otaReadyHandler = data => {
           startedOTA = true;
-          this.isUpdating = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got OTAReady from ${this.address}`);
           if (this.otaState === SmartDrive.OTAState.awaiting_mcu_ready) {
@@ -537,7 +539,6 @@ export class SmartDrive extends DeviceBase {
           success: boolean = false,
           doRetry: boolean = false
         ) => {
-          this.isUpdating = false;
           startedOTA = false;
           cancelOTA = true;
           this.setOtaActions();
@@ -564,7 +565,6 @@ export class SmartDrive extends DeviceBase {
           };
 
           const finish = () => {
-            this.isUpdating = false;
             if (success) {
               resolve(reason);
             } else if (doRetry) {
@@ -573,17 +573,23 @@ export class SmartDrive extends DeviceBase {
               resolve(reason);
             }
           };
-          return this.stopNotifyCharacteristics(SmartDrive.Characteristics)
-            .then(() => {
-              console.log(`Disconnecting from ${this.address}`);
-              return this._bluetoothService.disconnect({
-                UUID: this.address
-              });
-            })
+          // send a state update
+          this.sendEvent(SmartDrive.smartdrive_ota_status_event, {
+            progress: this.otaProgress,
+            actions: this.otaActions.slice(),
+            state: this.otaState
+          });
+          return this.disconnect()
             .then(finish)
             .catch(finish);
         };
         const runOTA = () => {
+          // send a state update
+          this.sendEvent(SmartDrive.smartdrive_ota_status_event, {
+            progress: this.otaProgress,
+            actions: this.otaActions.slice(),
+            state: this.otaState
+          });
           switch (this.otaState) {
             case SmartDrive.OTAState.not_started:
               this.setOtaActions(['ota.action.start']);
@@ -832,17 +838,13 @@ export class SmartDrive extends DeviceBase {
               }
               break;
             case SmartDrive.OTAState.canceled:
-              this.isUpdating = false;
               stopOTA('OTA Canceled', false);
               break;
             case SmartDrive.OTAState.failed:
-              this.isUpdating = false;
               break;
             case SmartDrive.OTAState.comm_failure:
-              this.isUpdating = false;
               break;
             case SmartDrive.OTAState.timeout:
-              this.isUpdating = false;
               break;
             default:
               break;

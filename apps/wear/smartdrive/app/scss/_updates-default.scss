@@ -17,6 +17,15 @@ $deactivated-color: #00a73c;
   spin-bar-color: $update-progress-spinner-color;
 }
 
+.action-label {
+  font-size: 15;
+  font-weight: normal;
+  color: $white;
+  vertical-align: $center;
+  horizontal-align: $center;
+  margin: 2 0 2 0;
+}
+
 .topValue {
   color: $white;
   font-size: 18;

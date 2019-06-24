@@ -1,5 +1,7 @@
 import { knownFolders, path } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
+import { getFile } from 'tns-core-modules/http';
+import { device } from 'tns-core-modules/platform';
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -133,6 +135,28 @@ export namespace SmartDriveData {
       { name: FileName, type: 'TEXT' },
       { name: ChangesName, type: 'TEXT' }
     ];
+
+    export function download(f) {
+      let url = f['_downloadURL'];
+      // make sure they're https!
+      if (!url.startsWith('https:')) {
+        url = url.replace('http:', 'https:');
+      }
+      console.log('Downloading FW update', f['_filename']);
+      return getFile(url).then(data => {
+        console.log('Got FW', f['_filename']);
+        const fileData = new Uint8Array(data.readSync());
+        return {
+          version: SmartDriveData.Firmwares.versionStringToByte(
+            f['version']
+          ),
+          name: f['_filename'],
+          data: fileData,
+          changes:
+          f['change_notes'][device.language] || f['change_notes']['en']
+        };
+      });
+    };
 
     export const FilePath = '/assets/firmwares/';
 
