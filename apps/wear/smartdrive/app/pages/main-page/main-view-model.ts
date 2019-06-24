@@ -13,7 +13,6 @@ import { Pager } from 'nativescript-pager';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
-import * as LS from 'nativescript-localstorage';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
 import {
   showFailure,
@@ -154,7 +153,6 @@ export class MainViewModel extends Observable {
   /**
    * State Management for Sensor Monitoring / Data Collection
    */
-  private _isListeningDeviceSensors = false;
   private watchBeingWorn = false;
 
   /**
@@ -265,8 +263,6 @@ export class MainViewModel extends Observable {
           // paused happens any time a new activity is shown
           // in front, e.g. showSuccess / showFailure - so we
           // probably don't want to fullstop on paused
-          // TODO: determine if we want this!
-          this.fullStop();
         }
       }
     );
@@ -279,7 +275,7 @@ export class MainViewModel extends Observable {
           // doesn't seem to fire. Therefore we want to make
           // sure to re-enable device sensors since the
           // suspend event will have disabled them.
-          this.enableDeviceSensors();
+          this.enableBodySensor();
         }
       }
     );
@@ -524,7 +520,7 @@ export class MainViewModel extends Observable {
   }
 
   fullStop() {
-    this.disableDeviceSensors();
+    this.disableAllSensors();
     this.disablePowerAssist();
   }
 
@@ -768,30 +764,54 @@ export class MainViewModel extends Observable {
     this.togglePowerAssist();
   }
 
-  disableDeviceSensors() {
+  /**
+   * Sensor Management
+   */
+  enableBodySensor() {
     try {
-      this._sensorService.stopDeviceSensors();
+      this._sensorService.startDeviceSensor(
+        android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
+      );
     } catch (err) {
-      Log.E('Error disabling the device sensors:', err);
-    }
-    this._isListeningDeviceSensors = false;
-    return;
-  }
-
-  enableDeviceSensors() {
-    try {
-      if (!this._isListeningDeviceSensors) {
-        this._sensorService.startDeviceSensors(
-          this.SENSOR_DELAY_US,
-          this.MAX_REPORTING_INTERVAL_US
-        );
-        this._isListeningDeviceSensors = true;
-      }
-    } catch (err) {
-      Log.E('Error starting the device sensors', err);
+      // Log.E('Error starting the body sensor', err);
     }
   }
 
+  enableTapSensor() {
+    try {
+      this._sensorService.startDeviceSensor(
+        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
+      );
+    } catch (err) {
+      // Log.E('Error starting the tap sensor', err);
+    }
+  }
+
+  disableAllSensors() {
+    try {
+      this._sensorService.stopAllDeviceSensors();
+    } catch (err) {
+      // Log.E('Error disabling the device sensors:', err);
+    }
+  }
+
+  disableTapSensor() {
+    try {
+      this._sensorService.stopDeviceSensor(
+        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
+      );
+    } catch (err) {
+      // Log.E('Error disabling the device sensors:', err);
+    }
+  }
+
+  /**
+   * Main Menu Tap Handlers
+   */
   onAboutTap() {
     if (this.aboutScrollView) {
       // reset to to the top when entering the page
@@ -802,6 +822,7 @@ export class MainViewModel extends Observable {
   }
 
   onTrainingTap() {
+    this.enableTapSensor();
     this.wakeLock.acquire();
     keepAwake();
     this.isTraining = true;
@@ -811,6 +832,7 @@ export class MainViewModel extends Observable {
   }
 
   onExitTrainingModeTap() {
+    this.disableTapSensor();
     if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.isTraining = false;
@@ -887,13 +909,13 @@ export class MainViewModel extends Observable {
             }
             Log.D('Downloading FW update', f['_filename']);
             return getFile(url).then(data => {
-              const fileData = data.readSync();
+              const fileData = new Uint8Array(data.readSync());
               return {
                 version: SmartDriveData.Firmwares.versionStringToByte(
                   f['version']
                 ),
                 name: f['_filename'],
-                data: new Uint8Array(fileData),
+                data: fileData,
                 changes:
                   f['change_notes'][device.language] || f['change_notes']['en']
               };
@@ -911,12 +933,10 @@ export class MainViewModel extends Observable {
             if (currentVersions[f.name]) {
               // this is a file we have - update the table
               const id = currentVersions[f.name].id;
-              // save the binary data to disk
-              const fileName = currentVersions[f.name].filename;
-              LS.setItem(fileName, f.data);
               // update current versions
               currentVersions[f.name].version = f.version;
               currentVersions[f.name].changes = f.changes;
+              currentVersions[f.name].data = f.data;
               return this._sqliteService.updateInTable(
                 SmartDriveData.Firmwares.TableName,
                 {
@@ -934,14 +954,11 @@ export class MainViewModel extends Observable {
                 undefined,
                 f.changes
               );
-              // save the binary data to disk
-              const fileName = newFirmware[SmartDriveData.Firmwares.FileName];
-              LS.setItem(fileName, f.data);
               // update current versions
               currentVersions[f.name] = {
                 version: f.version,
-                filename: fileName,
-                changes: f.changes
+                changes: f.changes,
+                data: f.data
               };
               return this._sqliteService.insertIntoTable(
                 SmartDriveData.Firmwares.TableName,
@@ -985,10 +1002,8 @@ export class MainViewModel extends Observable {
             okButtonText: 'Ok'
           }).then(() => {
             Log.D('Beginning SmartDrive update');
-            const bleFileName = currentVersions['SmartDriveBLE.ota'].filename;
-            const mcuFileName = currentVersions['SmartDriveMCU.ota'].filename;
-            const mcuFw = LS.getItem(mcuFileName);
-            const bleFw = LS.getItem(bleFileName);
+            const bleFw = currentVersions['SmartDriveBLE.ota'].data;
+            const mcuFw = currentVersions['SmartDriveMCU.ota'].data;
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
             // disable swipe close of the updates layout
@@ -1026,11 +1041,11 @@ export class MainViewModel extends Observable {
           });
         } else {
           // smartdrive is already up to date
-          hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-          this.isUpdatesLayoutEnabled = false;
+          showSuccess('SmartDrive is up to date!');
           setTimeout(() => {
-            showSuccess('SmartDrive is up to date!');
-          }, 100);
+            hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
+            this.isUpdatesLayoutEnabled = false;
+          }, 2000);
         }
       })
       .catch(err => {
@@ -1053,7 +1068,11 @@ export class MainViewModel extends Observable {
   }
 
   onUpdateAction(args: any) {
-    Log.D('update action:', args);
+    Log.D('onUpdateAction');
+    const action = (args.object as any).bindingContext;
+    Log.D('action', action);
+    const _this = (args.object as any).page.bindingContext;
+    _this.smartDrive.onOTAActionTap(action);
   }
 
   /**
@@ -1187,6 +1206,12 @@ export class MainViewModel extends Observable {
         this.updateSpeedDisplay();
       })
       .catch(err => {});
+  }
+
+  onUpdateActionsRepeaterLoaded(args) {
+    const rpter = args.object as Repeater;
+    // get distance data from db here then handle the data binding and
+    // calculating the Max Value for the chart and some sizing checks
   }
 
   onBatteryChartRepeaterLoaded(args) {
@@ -1402,7 +1427,7 @@ export class MainViewModel extends Observable {
     this.throttleSettings.throttleMode =
       appSettings.getString(DataKeys.SD_THROTTLE_MODE) || 'Active';
     this.throttleSettings.maxSpeed =
-      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 70;
+      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 30;
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
@@ -1484,6 +1509,7 @@ export class MainViewModel extends Observable {
     return this.connectToSavedSmartDrive()
       .then(didConnect => {
         if (didConnect) {
+          this.enableTapSensor();
           this._ringTimerId = setInterval(
             this.blinkPowerAssistRing.bind(this),
             this.RING_TIMER_INTERVAL_MS
@@ -1498,6 +1524,7 @@ export class MainViewModel extends Observable {
   }
 
   disablePowerAssist() {
+    this.disableTapSensor();
     if (this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
     this.powerAssistState = PowerAssist.State.Inactive;
@@ -1860,7 +1887,6 @@ export class MainViewModel extends Observable {
         mds.map(md => {
           data[md[SmartDriveData.Firmwares.FirmwareName]] = {
             version: md[SmartDriveData.Firmwares.VersionName],
-            filename: md[SmartDriveData.Firmwares.FileName],
             id: md[SmartDriveData.Firmwares.IdName],
             changes: md[SmartDriveData.Firmwares.ChangesName]
           };

@@ -1,5 +1,6 @@
 import { Packet } from '@permobil/core';
 import { Observable } from 'tns-core-modules/data/observable';
+import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { BluetoothService } from './../services';
 
 export class DeviceBase extends Observable {
@@ -70,13 +71,17 @@ export class DeviceBase extends Observable {
   public otaStartTime: Date;
   public otaCurrentTime: Date;
   public otaEndTime: Date;
-  public otaActions: string[] = [];
+  public otaActions = new ObservableArray();
 
   public _bluetoothService: BluetoothService;
 
   constructor(btService: BluetoothService) {
     super();
     this._bluetoothService = btService;
+  }
+
+  public setOtaActions(actions?: string[]) {
+    this.otaActions.splice(0, this.otaActions.length, ...actions);
   }
 
   public sendSettings(
