@@ -278,18 +278,16 @@
                    verticalAlignment="middle" textWrap="true"
                    text="{{ updateProgressText }}"
                    visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
-            <GridLayout row="3" col="1"
-                        rows="*,*,*,*,*"
-                        cols="*"
-                        visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-              <ListView
-                  items="{{ smartDriveOtaActions }}"
-                  itemTap="{{ onUpdateAction }}">
-                <ListView.itemTemplate>
-                  <Label row="{{ $index }}" text="{{ $value }}" class="action-label"/>
-                </ListView.itemTemplate>
-              </ListView>
-            </GridLayout>
+            <ListView row="3" col="1"
+                      items="{{ smartDriveOtaActions }}"
+                      itemTap="{{ onUpdateAction }}"
+                      visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
+              <ListView.itemTemplate>
+                <StackLayout height="50%" verticalAlignment="center">
+                  <Label text="{{ $value }}" class="action-label"/>
+                </StackLayout>
+              </ListView.itemTemplate>
+            </ListView>
 
             <Label row="4" col="1" class="currentTime"
                    text="{{ currentTime }}" textWrap="true" />

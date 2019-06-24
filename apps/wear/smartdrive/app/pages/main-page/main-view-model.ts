@@ -1836,7 +1836,7 @@ export class MainViewModel extends Observable {
   async onMotorInfo(args: any) {
     this._bluetoothService.readRssi(this.smartDrive.address)
       .then((args: any) => {
-        this._rssi = (this._rssi * 9/10) + (args.value * 1/10);
+        this._rssi = (this._rssi * 9 / 10) + (args.value * 1 / 10);
         this.currentSignalStrength = `${this._rssi}`;
       });
 
