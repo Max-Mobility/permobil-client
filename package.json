@@ -2,6 +2,9 @@
   "name": "permobil-client",
   "version": "0.1.0",
   "scripts": {
+    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\"",
+    "global.installs": "npm i -g rimraf && npm i -g typescript",
+    "*************************** SETUP": "***************************",
     "setup": "npm run global.installs && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear && npm run setup.forked.plugins",
     "setup.all": "npm i && npm run global.installs && npm run setup.all.non-global",
     "setup.all.non-global": "npm i && npm run setup.mobile && npm run setup.wear && npm run setup.@permobil && npm run setup.forked.plugins",
@@ -18,8 +21,7 @@
     "setup.forked.plugins": "npm run setup.ns.bluetooth && npm run setup.ns.animated.circle",
     "setup.ns.bluetooth": "cd forked-plugins/nativescript-bluetooth && npm i && tsc",
     "setup.ns.animated.circle": "cd forked-plugins/nativescript-animated-circle && npm i && tsc",
-    "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\"",
-    "global.installs": "npm i -g rimraf && npm i -g typescript",
+    "*************************** end SETUP": "***************************",
     "*************************** CLEAN SECTION": "***************************",
     "clean": "rimraf hooks node_modules package-lock.json",
     "clean.all": "npm run clean && npm run clean.@permobil && npm run clean.pt.mobile && npm run clean.se.mobile && npm run clean.pt.wear && npm run clean.sd.wear && npm run clean.forked.plugins",
@@ -99,15 +101,16 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "prettier && npm run tslint"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "*.ts, *.js, *.json, *.scss, *.css, *.html, *.xml, *.md": [
-      "prettier --write",
-      "git add"
-    ]
+    "linters": {
+      "**/*.{js, css, ts, json, scss, html, xml, md}": [
+        "prettier --write",
+        "git add"
+      ]
+    }
   },
   "prettier": {
     "semi": true,

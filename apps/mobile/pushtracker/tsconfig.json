@@ -10,6 +10,7 @@
             "es6",
             "dom",
             "es2015.iterable"
+            
         ],
         "baseUrl": ".",
         "paths": {
