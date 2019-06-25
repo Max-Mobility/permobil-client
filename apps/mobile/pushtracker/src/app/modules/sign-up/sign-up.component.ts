@@ -16,8 +16,7 @@ import { LoggingService, ProgressService, UserService } from '../../services';
 @Component({
   selector: 'sign-up',
   moduleId: module.id,
-  templateUrl: 'sign-up.component.html',
-  styleUrls: ['sign-up.component.scss']
+  templateUrl: 'sign-up.component.html'
 })
 export class SignUpComponent implements OnInit {
   private static LOG_TAG = 'sign-up.component ';

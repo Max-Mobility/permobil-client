@@ -12,8 +12,7 @@ import { LoggingService, ProgressService, UserService } from '../../services';
 @Component({
   selector: 'forgot-password',
   moduleId: module.id,
-  templateUrl: 'forgot-password.component.html',
-  styleUrls: ['forgot-password.component.scss']
+  templateUrl: 'forgot-password.component.html'
 })
 export class ForgotPasswordComponent implements OnInit {
   private static LOG_TAG = 'forgot-password.component ';

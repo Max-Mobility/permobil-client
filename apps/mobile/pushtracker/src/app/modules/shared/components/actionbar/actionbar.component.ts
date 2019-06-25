@@ -10,8 +10,7 @@ import { BluetoothService, PushTrackerState } from '../../../../services';
 @Component({
   selector: 'MaxActionBar',
   moduleId: module.id,
-  templateUrl: 'actionbar.component.html',
-  styleUrls: ['actionbar.component.scss']
+  templateUrl: 'actionbar.component.html'
 })
 export class ActionbarComponent extends ActionBar {
   @Input() title: string;
