@@ -13,14 +13,12 @@ import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as http from 'tns-core-modules/http';
-import { ImageAsset } from 'tns-core-modules/image-asset/image-asset';
+import { ImageAsset } from 'tns-core-modules/image-asset';
 import { fromBase64, ImageSource } from 'tns-core-modules/image-source/image-source';
 import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import * as utils from 'tns-core-modules/utils/utils';
-// import { Demo, DidYouKnow, User, UserTypes } from '@maxmobility/core';
-// import { DemoService, FileService, LoggingService, UserService } from '@maxmobility/mobile';
 import { Demo, DidYouKnow, User, UserTypes } from '../../models';
 import { DemoService, FileService, LoggingService, UserService } from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
@@ -531,15 +529,15 @@ export class AccountComponent implements OnInit {
   private _mapLanguageToFlagAsset(language: string) {
     switch (language) {
       case 'en':
-        return '~/assets/images/flags/usa-flag.png';
+        return '~/app/assets/images/flags/usa-flag.png';
       case 'es':
-        return '~/assets/images/flags/spain-flag.png';
+        return '~/app/assets/images/flags/spain-flag.png';
       case 'de':
-        return '~/assets/images/flags/germany-flag.png';
+        return '~/app/assets/images/flags/germany-flag.png';
       case 'fr':
-        return '~/assets/images/flags/france-flag.png';
+        return '~/app/assets/images/flags/france-flag.png';
       case 'nl':
-        return '~/assets/images/flags/netherlands-flag.png';
+        return '~/app/assets/images/flags/netherlands-flag.png';
     }
   }
 }

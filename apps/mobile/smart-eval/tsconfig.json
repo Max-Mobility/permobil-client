@@ -30,6 +30,6 @@
     // "./src/app.module.ngfactory.d.ts",
     "./src/main.ts"
   ],
-  "include": ["./src/**/*.module.ts"],
+  "include": ["./src/app/**/*.module.ts"],
   "exclude": ["node_modules", "platforms"]
 }
