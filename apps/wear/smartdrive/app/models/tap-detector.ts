@@ -24,7 +24,7 @@ export class TapDetector {
       // initialize the memory for the output
       this.tapDetectorOutput = Array.create('[F', 1);
       const elements = Array.create('float', 1);
-      elements[0] = new java.lang.Float("0.0");
+      elements[0] = new java.lang.Float('0.0');
       this.tapDetectorOutput[0] = elements;
       // load the model file
       this.tfliteModel = this.loadModelFile();

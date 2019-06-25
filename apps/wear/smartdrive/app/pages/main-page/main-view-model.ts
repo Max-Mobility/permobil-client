@@ -697,7 +697,7 @@ export class MainViewModel extends Observable {
     }
     // ignore tapping if we're not on the users wrist
     if (!this.watchBeingWorn) {
-      //return;
+      return;
     }
     // now get the z-axis acceleration
     let acc = acceleration.z;
