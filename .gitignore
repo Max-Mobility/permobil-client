@@ -118,6 +118,7 @@ apps/**/report/
 
 ################################ DO NOT IGNORE ################################
 !forked-plugins/nativescript-bluetooth/base64.js
+!**/references.d.ts
 !**/typings/**/*.d.ts
 !@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
