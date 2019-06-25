@@ -529,15 +529,15 @@ export class AccountComponent implements OnInit {
   private _mapLanguageToFlagAsset(language: string) {
     switch (language) {
       case 'en':
-        return '~/app/assets/images/flags/usa-flag.png';
+        return '~/assets/images/flags/usa-flag.png';
       case 'es':
-        return '~/app/assets/images/flags/spain-flag.png';
+        return '~/assets/images/flags/spain-flag.png';
       case 'de':
-        return '~/app/assets/images/flags/germany-flag.png';
+        return '~/assets/images/flags/germany-flag.png';
       case 'fr':
-        return '~/app/assets/images/flags/france-flag.png';
+        return '~/assets/images/flags/france-flag.png';
       case 'nl':
-        return '~/app/assets/images/flags/netherlands-flag.png';
+        return '~/assets/images/flags/netherlands-flag.png';
     }
   }
 }
