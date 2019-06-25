@@ -3,6 +3,9 @@
     "id": "com.permobil.pushtracker",
     "tns-android": {
       "version": "5.4.0"
+    },
+    "tns-ios": {
+      "version": "5.4.2"
     }
   },
   "dependencies": {
@@ -40,6 +43,7 @@
     "nativescript-sentry": "~1.9.1",
     "nativescript-snackbar": "~4.1.2",
     "nativescript-theme-core": "~1.0.6",
+    "nativescript-themes": "~2.0.1",
     "nativescript-toasty": "~2.0.0",
     "nativescript-ui-listview": "~6.4.0",
     "reflect-metadata": "~0.1.13",
