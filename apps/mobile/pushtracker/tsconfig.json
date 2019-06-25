@@ -30,6 +30,6 @@
     // "./src/app.module.ngfactory.d.ts",
     "./src/main.ts"
   ],
-  "include": ["./src/**/*.module.ts", "../../../forked-plugins/nativescript-animated-circle/**/*.ts"],
+  "include": ["./src/app/**/*.module.ts", "../../../forked-plugins/nativescript-animated-circle/**/*.ts"],
   "exclude": ["node_modules", "platforms"]
 }
