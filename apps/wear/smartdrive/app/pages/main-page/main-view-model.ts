@@ -109,6 +109,8 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   maxTapSensitivity: number = 3.5;
   minTapSensitivity: number = 1.5;
+  maxTapDetectorConfidence: number = 1.0;
+  minTapDetectorConfidence: number = 0.6;
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
@@ -699,6 +701,21 @@ export class MainViewModel extends Observable {
     if (!this.watchBeingWorn) {
       return;
     }
+    // set tap sensitivity threshold
+    const tapDetectorThreshold =
+      this.maxTapDetectorConfidence -
+      (this.maxTapDetectorConfidence - this.minTapDetectorConfidence) *
+      (this.settings.tapSensitivity / 100.0);
+    this.tapDetector.threshold = tapDetectorThreshold;
+    // TODO: testing tap detector
+    const didTap = this.tapDetector.detectTap([
+      acceleration.x,
+      acceleration.y,
+      acceleration.z
+    ]);
+    // TODO: EVERYTHING BELOW HERE IS OLD CODE AND WILL NEED TO BE
+    // REFACTORED AFTER THE TFLITE UPDATE
+    // -----------------------------------------------------------
     // now get the z-axis acceleration
     let acc = acceleration.z;
     let diff = acc - this.lastAccelZ;
@@ -716,13 +733,6 @@ export class MainViewModel extends Observable {
         return;
       }
     }
-    // TODO: testing tap detector
-    const didTap = this.tapDetector.detectTap([
-      acceleration.x,
-      acceleration.y,
-      acceleration.z
-    ]);
-    Log.D('didTap', didTap);
     // respond to both axes for tapping if the motor is on
     if (this.motorOn) {
       diff = Math.abs(diff);

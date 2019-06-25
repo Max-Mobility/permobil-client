@@ -42,19 +42,19 @@ export class TapDetector {
 
   public detectTap(inputData: number[]) {
     try {
-      console.log('tap detector input', inputData);
+      // console.log('tap detector input', inputData);
       // reset pointer to 0
       this.tapDetectorInput.rewind();
       // format all input
       inputData.map(d => {
         this.tapDetectorInput.putFloat(d);
       });
-      console.log('raw input data', this.tapDetectorInput);
+      // console.log('raw input data', this.tapDetectorInput);
       // run the inference
       this.tflite.run(this.tapDetectorInput, this.tapDetectorOutput);
-      console.log('tap detector output', this.tapDetectorOutput);
+      // console.log('tap detector output', this.tapDetectorOutput);
       const prediction = this.tapDetectorOutput[0][0];
-      console.log('prediction', prediction);
+      // console.log('prediction', prediction);
       // get the ouput and check against threshold
       return prediction > this.threshold;
     } catch (e) {
