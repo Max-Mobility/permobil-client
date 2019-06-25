@@ -55,7 +55,7 @@ export class TabsComponent {
    * @param args [SelectedIndexChangedEventData]
    */
   tabViewIndexChange(args: SelectedIndexChangedEventData) {
-    if (args.newIndex) {
+    if (args.newIndex >= 0) {
       switch (args.newIndex) {
         case 0:
           Log.D('HomeTab Active');
