@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
+import { AppResourceIcons } from '~/app/enums';
 
 @Component({
   moduleId: module.id,
@@ -21,15 +22,15 @@ export class TabsComponent {
   ) {
     this.homeTabItem = {
       title: 'Home',
-      iconSource: 'res://home_active'
+      iconSource: AppResourceIcons.HOME_ACTIVE
     };
     this.journeyTabItem = {
       title: 'Journey',
-      iconSource: 'res://journey_inactive'
+      iconSource: AppResourceIcons.JOURNEY_INACTIVE
     };
     this.profileTabItem = {
       title: 'Profile',
-      iconSource: 'res://profile_inactive'
+      iconSource: AppResourceIcons.PROFILE_INACTIVE
     };
   }
 
@@ -60,45 +61,45 @@ export class TabsComponent {
           Log.D('HomeTab Active');
           this.homeTabItem = {
             title: 'Home',
-            iconSource: 'res://home_active'
+            iconSource: AppResourceIcons.HOME_ACTIVE
           };
           this.journeyTabItem = {
             title: 'Journey',
-            iconSource: 'res://journey_inactive'
+            iconSource: AppResourceIcons.JOURNEY_INACTIVE
           };
           this.profileTabItem = {
             title: 'Profile',
-            iconSource: 'res://profile_inactive'
+            iconSource: AppResourceIcons.PROFILE_INACTIVE
           };
           break;
         case 1:
           Log.D('JourneyTab Active');
           this.homeTabItem = {
             title: 'Home',
-            iconSource: 'res://home_inactive'
+            iconSource: AppResourceIcons.HOME_INACTIVE
           };
           this.journeyTabItem = {
             title: 'Journey',
-            iconSource: 'res://journey_active'
+            iconSource: AppResourceIcons.JOURNEY_ACTIVE
           };
           this.profileTabItem = {
             title: 'Profile',
-            iconSource: 'res://profile_inactive'
+            iconSource: AppResourceIcons.PROFILE_INACTIVE
           };
           break;
         case 2:
           Log.D('ProfileTab Active');
           this.homeTabItem = {
             title: 'Home',
-            iconSource: 'res://home_inactive'
+            iconSource: AppResourceIcons.HOME_INACTIVE
           };
           this.journeyTabItem = {
             title: 'Journey',
-            iconSource: 'res://journey_inactive'
+            iconSource: AppResourceIcons.JOURNEY_INACTIVE
           };
           this.profileTabItem = {
             title: 'Profile',
-            iconSource: 'res://profile_active'
+            iconSource: AppResourceIcons.PROFILE_ACTIVE
           };
           break;
       }
