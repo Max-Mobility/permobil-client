@@ -3,8 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { AppResourceIcons } from '~/app/enums';
+import { AppResourceIcons } from '../../enums';
 
 @Component({
   moduleId: module.id,
@@ -18,8 +19,12 @@ export class TabsComponent {
   constructor(
     private _translateService: TranslateService,
     private _routerExtension: RouterExtensions,
-    private _activeRoute: ActivatedRoute
+    private _activeRoute: ActivatedRoute,
+    private _page: Page
   ) {
+    // hide the actionbar on the root tabview
+    this._page.actionBarHidden = true;
+
     this.homeTabItem = {
       title: 'Home',
       iconSource: AppResourceIcons.HOME_ACTIVE
