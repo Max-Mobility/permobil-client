@@ -31,7 +31,7 @@ import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { Repeater } from 'tns-core-modules/ui/repeater';
 import { DataKeys } from '../../enums';
-import { SmartDrive } from '../../models';
+import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
 import { ScrollView, ScrollEventData } from 'tns-core-modules/ui/scroll-view';
@@ -102,6 +102,7 @@ export class MainViewModel extends Observable {
    * SmartDrive Related Data
    *
    */
+  tapDetector: TapDetector = null;
   lastTapTime: number;
   lastAccelZ: number = null;
   tapLockoutTimeMs: number = 200;
@@ -211,7 +212,7 @@ export class MainViewModel extends Observable {
 
   isActivityThis(activity: any) {
     // TODO: This is a hack to determine which activity is being updated!
-    return `${activity}`.includes('com.permobil.smartdrive.MainActivity');
+    return `${activity}`.includes(application.android.packageName);
   }
 
   requestReadPhoneStatePermission(): Promise<boolean> {
@@ -480,6 +481,7 @@ export class MainViewModel extends Observable {
       timeReceiverCallback
     );
 
+    // Tap / Gesture detection related code:
     this._sensorService.on(
       SensorService.SensorChanged,
       (args: SensorChangedEventData) => {
@@ -503,6 +505,7 @@ export class MainViewModel extends Observable {
         }
       }
     );
+    this.tapDetector = new TapDetector();
 
     // load savedSmartDriveAddress from settings / memory
     const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
@@ -917,7 +920,7 @@ export class MainViewModel extends Observable {
     let currentVersions = {};
     // @ts-ignore
     this.updateProgressCircle.spin();
-    return this.getFirmwareMetadata()
+    return this.getFirmwareData()
       .then(md => {
         currentVersions = md;
         Log.D('Current FW Versions:', currentVersions);
@@ -931,15 +934,24 @@ export class MainViewModel extends Observable {
         return this._kinveyService.getFile(undefined, query);
       })
       .then(response => {
+        const mds = response.content.toJSON();
         let promises = [];
-        const fileMetaDatas = response.content.toJSON().filter(f => {
+        const maxes = mds.reduce((maxes, md) => {
+          const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
+          const fwName = md['_filename'];
+          if (!maxes[fwName]) maxes[fwName] = 0;
+          maxes[fwName] = Math.max(v, maxes[fwName]);
+          return maxes;
+        }, {});
+        const fileMetaDatas = mds.filter(f => {
           const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
-          const fw = f['_filename'];
-          // TODO: this is to force the download all the time - remove this when done debugging!
-          return true; // !currentVersions[fw] || v > currentVersions[fw].version;
+          const fwName = f['_filename'];
+          const current = currentVersions[fwName];
+          const currentVersion = current && current.version;
+          const isMax = (v === maxes[fwName]);
+          return isMax && (!current || v > currentVersion);
         });
         if (fileMetaDatas && fileMetaDatas.length) {
-          // Log.D('got fileMetaDatas', fileMetaDatas);
           // now download the files
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
           /* - for if we want to download them sequentially
@@ -968,6 +980,12 @@ export class MainViewModel extends Observable {
               currentVersions[f.name].version = f.version;
               currentVersions[f.name].changes = f.changes;
               currentVersions[f.name].data = f.data;
+              // save binary file to fs
+              Log.D('saving file', currentVersions[f.name].filename);
+              SmartDriveData.Firmwares.saveToFileSystem({
+                filename: currentVersions[f.name].filename,
+                data: f.data
+              });
               return this._sqliteService.updateInTable(
                 SmartDriveData.Firmwares.TableName,
                 {
@@ -989,8 +1007,15 @@ export class MainViewModel extends Observable {
               currentVersions[f.name] = {
                 version: f.version,
                 changes: f.changes,
+                filename: newFirmware[SmartDriveData.Firmwares.FileName],
                 data: f.data
               };
+              // save binary file to fs
+              Log.D('saving file', currentVersions[f.name].filename);
+              SmartDriveData.Firmwares.saveToFileSystem({
+                filename: currentVersions[f.name].filename,
+                data: f.data
+              });
               return this._sqliteService.insertIntoTable(
                 SmartDriveData.Firmwares.TableName,
                 newFirmware
@@ -1036,8 +1061,8 @@ export class MainViewModel extends Observable {
           }).then(() => {
             this.isUpdatingSmartDrive = true;
             Log.D('Beginning SmartDrive update');
-            const bleFw = currentVersions['SmartDriveBLE.ota'].data;
-            const mcuFw = currentVersions['SmartDriveMCU.ota'].data;
+            const bleFw = new Uint8Array(currentVersions['SmartDriveBLE.ota'].data);
+            const mcuFw = new Uint8Array(currentVersions['SmartDriveMCU.ota'].data);
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
             // register for smartdrive ota status events
@@ -1053,8 +1078,7 @@ export class MainViewModel extends Observable {
                 mcuFw,
                 bleVersion,
                 mcuVersion,
-                300 * 1000,
-                true
+                300 * 1000
               )
               .then(otaStatus => {
                 this.isUpdatingSmartDrive = false;
@@ -1927,7 +1951,7 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  getFirmwareMetadata() {
+  getFirmwareData() {
     return this._sqliteService
       .getAll({ tableName: SmartDriveData.Firmwares.TableName })
       .then(objs => {
@@ -1935,15 +1959,21 @@ export class MainViewModel extends Observable {
         return objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       })
       .then(mds => {
-        const data = {};
-        mds.map(md => {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName]
-          };
-        });
-        return data;
+        // make the metadata
+        return mds.reduce((data, md) => {
+          const fname = md[SmartDriveData.Firmwares.FileName];
+          const blob = SmartDriveData.Firmwares.loadFromFileSystem({ filename: fname });
+          if (blob && blob.length) {
+            data[md[SmartDriveData.Firmwares.FirmwareName]] = {
+              version: md[SmartDriveData.Firmwares.VersionName],
+              filename: fname,
+              id: md[SmartDriveData.Firmwares.IdName],
+              changes: md[SmartDriveData.Firmwares.ChangesName],
+              data: blob
+            };
+          }
+          return data;
+        }, {});
       })
       .catch(err => {
         Log.E('Could not get firmware metadata:', err);

@@ -1,4 +1,4 @@
-import { knownFolders, path } from 'tns-core-modules/file-system';
+import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
 import { getFile } from 'tns-core-modules/http';
 import { device } from 'tns-core-modules/platform';
@@ -136,6 +136,22 @@ export namespace SmartDriveData {
       { name: ChangesName, type: 'TEXT' }
     ];
 
+    export function loadFromFileSystem(f) {
+      const file = File.fromPath(f.filename || f[SmartDriveData.Firmwares.FileName]);
+      return file.readSync((err) => {
+        console.error('Could not load from fs:', err);
+      });
+    }
+
+    export function saveToFileSystem(f) {
+      const file = File.fromPath(f.filename || f[SmartDriveData.Firmwares.FileName]);
+      console.log('f.filename', f.filename, file);
+      console.log('f.data', typeof f.data, f.data.length);
+      file.writeSync(f.data, (err) => {
+        console.error('Could not save to fs:', err);
+      });
+    }
+
     export function download(f) {
       let url = f['_downloadURL'];
       // make sure they're https!
@@ -145,7 +161,7 @@ export namespace SmartDriveData {
       console.log('Downloading FW update', f['_filename']);
       return getFile(url).then(data => {
         console.log('Got FW', f['_filename']);
-        const fileData = new Uint8Array(data.readSync());
+        const fileData = data.readSync();
         return {
           version: SmartDriveData.Firmwares.versionStringToByte(
             f['version']
@@ -157,8 +173,6 @@ export namespace SmartDriveData {
         };
       });
     }
-
-    export const FilePath = '/assets/firmwares/';
 
     export function versionByteToString(version: number): string {
       if (version === 0xff || version === 0x00) {
@@ -176,7 +190,9 @@ export namespace SmartDriveData {
     export function getFileName(firmware: string): string {
       return path.join(
         knownFolders.currentApp().path,
-        SmartDriveData.Firmwares.FilePath + firmware
+        'assets',
+        'firmwares',
+        firmware
       );
     }
 

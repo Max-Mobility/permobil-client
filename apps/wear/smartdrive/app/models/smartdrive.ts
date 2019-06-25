@@ -248,7 +248,9 @@ export class SmartDrive extends DeviceBase {
     // wait to get mcu version
     // check versions
     return new Promise((resolve, reject) => {
-      if (!bleFirmware || !mcuFirmware || !bleFWVersion || !mcuFWVersion) {
+      if ((!bleFirmware && bleFWVersion) ||
+          (!mcuFirmware && mcuFWVersion) ||
+          (!mcuFWVersion && !bleFWVersion)) {
         const msg = `Bad version (${bleFWVersion}, ${mcuFWVersion}), or firmware (${bleFirmware}, ${mcuFirmware})!`;
         reject(msg);
       } else {
@@ -260,6 +262,8 @@ export class SmartDrive extends DeviceBase {
         let haveMCUVersion = false;
         let haveBLEVersion = false;
 
+        const canDoMCUUpdate = (mcuFWVersion && mcuFirmware && mcuFirmware.length > 0);
+        const canDoBLEUpdate = (bleFWVersion && bleFirmware && bleFirmware.length > 0);
         this.doBLEUpdate = false;
         this.doMCUUpdate = false;
 
@@ -373,8 +377,8 @@ export class SmartDrive extends DeviceBase {
         };
         const otaForceHandler = () => {
           startedOTA = true;
-          this.doMCUUpdate = true;
-          this.doBLEUpdate = true;
+          this.doMCUUpdate = canDoMCUUpdate;
+          this.doBLEUpdate = canDoBLEUpdate;
           this.otaState = SmartDrive.OTAState.awaiting_mcu_ready;
           this.setOtaActions(['ota.action.cancel']);
         };
@@ -420,14 +424,14 @@ export class SmartDrive extends DeviceBase {
           bleVersion = data.data.ble;
           haveBLEVersion = true;
           if (autoForce || bleVersion < bleFWVersion) {
-            this.doBLEUpdate = true;
+            this.doBLEUpdate = canDoBLEUpdate;
           }
         };
         const mcuVersionHandler = data => {
           mcuVersion = data.data.mcu;
           haveMCUVersion = true;
           if (autoForce || mcuVersion < mcuFWVersion) {
-            this.doMCUUpdate = true;
+            this.doMCUUpdate = canDoMCUUpdate;
           }
         };
         const otaMCUReadyHandler = data => {
