@@ -7,6 +7,8 @@ import { Log } from '@permobil/core';
   templateUrl: './journey-tab.component.html'
 })
 export class JourneyTabComponent implements OnInit {
+  distancePercentage;
+  coastPercentage;
   constructor() {}
 
   ngOnInit(): void {
