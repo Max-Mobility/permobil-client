@@ -1,12 +1,14 @@
-import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { android as androidApp } from 'tns-core-modules/application';
+import { knownFolders, path } from 'tns-core-modules/file-system';
+
+declare const org: any;
 
 export class TapDetector {
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
   public threshold: number = 0.75;
 
   private modelPath: string = null;
-  private tflite: org.tensorflow.lite.Interpreter = null;
+  private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
   private tapDetectorOutput = Array.create('float', 1);
 
@@ -24,7 +26,10 @@ export class TapDetector {
       // create the tflite interpreter
       const tfliteOptions = new org.tensorflow.lite.Interpreter.Options();
       tfliteOptions.setNumThreads(1);
-      this.tflite = new org.tensorflow.lite.Interpreter(this.tfliteModel, tfliteOptions);
+      this.tflite = new org.tensorflow.lite.Interpreter(
+        this.tfliteModel,
+        tfliteOptions
+      );
     } catch (e) {
       console.error('Could not initialize TapDetector:', e);
     }
@@ -33,21 +38,20 @@ export class TapDetector {
   public detectTap(inputData: number[]) {
     if (this.tflite) {
       this.tflite.run(inputData, this.tapDetectorOutput);
-      return (this.tapDetectorOutput[0] > this.threshold);
+      return this.tapDetectorOutput[0] > this.threshold;
     } else {
       return false;
     }
   }
 
   private loadModelFile() {
-    const activity =
-      androidApp.foregroundActivity ||
-      androidApp.startActivity;
+    const activity = androidApp.foregroundActivity || androidApp.startActivity;
 
     console.log('loading model file', this.modelPath);
     const fileDescriptor = activity.getAssets().openFd(this.modelPath);
-    const inputStream =
-      new java.io.FileInputStream(fileDescriptor.getFileDescriptor());
+    const inputStream = new java.io.FileInputStream(
+      fileDescriptor.getFileDescriptor()
+    );
     const fileChannel = inputStream.getChannel();
     const startOffset = fileDescriptor.getStartOffset();
     const declaredLength = fileDescriptor.getDeclaredLength();
