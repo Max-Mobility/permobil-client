@@ -5,8 +5,8 @@ import 'nativescript-localstorage'; // for local/session storage plugin
 import 'nativescript-master-technology'; // util functions (https://github.com/NathanaelA/nativescript-master-technology)
 import 'reflect-metadata';
 import * as app from 'tns-core-modules/application';
-import { AppModule } from './app/app.module';
-import { BluetoothService } from './app/services';
+import { AppModule } from './app.module';
+import { BluetoothService } from './services';
 
 // If built with env.uglify
 declare const __UGLIFIED__;
