@@ -1,14 +1,14 @@
-import { knownFolders, path, Folder, File } from "tns-core-modules/file-system";
-import { android as androidApp } from "tns-core-modules/application";
+import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
+import { android as androidApp } from 'tns-core-modules/application';
 
 export class TapDetector {
-  public tapDetectorModelFileName: string = "tapDetectorLSTM.tflite";
+  public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
   public threshold: number = 0.75;
 
   private modelPath: string = null;
   private tflite: org.tensorflow.lite.Interpreter = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
-  private tapDetectorOutput = Array.create("float", 1);
+  private tapDetectorOutput = Array.create('float', 1);
 
   constructor() {
     // get the path to the model
