@@ -5,6 +5,7 @@ import { Log } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { AnimatedCircle } from 'nativescript-animated-circle';
 import { Fab } from 'nativescript-floatingactionbutton';
 import { Gif } from 'nativescript-gif';
 import { Sentry } from 'nativescript-sentry';
@@ -14,6 +15,7 @@ import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
+registerElement('AnimatedCircle', () => AnimatedCircle);
 
 @Component({
   selector: 'ns-app',
