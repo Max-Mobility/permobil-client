@@ -1,3 +1,54 @@
-<GridLayout>
-  <Label text="FUCKING HELL YEAH" textWrap="true"></Label>
+<GridLayout rows="*, *, *" columns="auto, *, auto">
+  // Main Activity Circles
+  <GridLayout
+    row="0"
+    colSpan="3"
+    rows="*, auto, *"
+    columns="*, auto, *"
+    height="100%"
+    width="100%"
+  >
+    // Distance Circle (outer/purple)
+    <nac:AnimatedCircle
+      id="distanceCircle"
+      rowSpan="3"
+      colSpan="3"
+      class="distanceCircle"
+      width="98%"
+      height="98%"
+      animated="true"
+      animateFrom="0"
+      clockwise="true"
+      rimWidth="2"
+      barWidth="8"
+      [progress]="distanceCirclePercentage"
+    >
+    </nac:AnimatedCircle>
+    // Coast Time Circle (inner/teal)
+    <nac:AnimatedCircle
+      id="coastTimeCircle"
+      rowSpan="3"
+      colSpan="3"
+      class="coastTimeCircle"
+      width="90%"
+      height="90%"
+      animated="true"
+      animateFrom="0"
+      clockwise="true"
+      rimWidth="2"
+      barWidth="8"
+      [progress]="coastTimeCirclePercentage"
+    >
+      <GridLayout rows="*" columns="*" class="circleDetails">
+        <Label [text]="milesToGoText" textWrap="true"></Label>
+        
+      </GridLayout>
+    </nac:AnimatedCircle>
+  </GridLayout>
+  <Label
+    padding="50"
+    margin="100"
+    text="FUCKING HELL YEAH"
+    textWrap="true"
+  ></Label>
 </GridLayout>

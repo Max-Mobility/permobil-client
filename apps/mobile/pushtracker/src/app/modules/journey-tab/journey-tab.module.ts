@@ -2,6 +2,7 @@ import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { JourneyDetailComponent } from './journey-detail.component';
+import { JourneyTabComponent } from './journey-tab.component';
 
 @NgModule({
   imports: [
@@ -9,10 +10,11 @@ import { JourneyDetailComponent } from './journey-detail.component';
     NativeScriptRouterModule,
     NativeScriptRouterModule.forChild([
       { path: '', redirectTo: 'journey' },
+      { path: 'journey', component: JourneyTabComponent},
       { path: 'journey/:id', component: JourneyDetailComponent }
     ])
   ],
-  declarations: [JourneyDetailComponent],
+  declarations: [JourneyTabComponent, JourneyDetailComponent],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })
