@@ -1,0 +1,16 @@
+@import 'variables';
+
+.avatarCircle {
+  background-color: $permobil-primary;
+  height: 60;
+  width: 60;
+  border-radius: 30;
+  text-align: center;
+
+  label {
+    color: $white;
+    font-size: 36;
+    horizontal-align: center;
+    vertical-align: center;
+  }
+}

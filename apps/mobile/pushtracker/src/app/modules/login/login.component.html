@@ -11,7 +11,12 @@
       text="Pushtracker Mobile"
       textWrap="true"
     ></Label>
-    <Image row="1" class="align-center" src="~/assets/images/permobil_logo_transparent.png" stretch="none"></Image>
+    <Image
+      row="1"
+      class="align-center"
+      src="~/assets/images/permobil_logo_transparent.png"
+      stretch="none"
+    ></Image>
     <TextField row="2" hint="Email..." [text]="user.email"></TextField>
     <TextField
       row="3"
@@ -19,6 +24,6 @@
       secure="true"
       [text]="user.password"
     ></TextField>
-    <Button row="4" text="SUBMIT" (tap)="submit()"></Button>
+    <Button row="4" text="SUBMIT" (tap)="submit()" class="submitBtn"></Button>
   </GridLayout>
 </ScrollView>

@@ -1,0 +1,33 @@
+@import 'variables';
+
+$sd-battery-rim-color: #696969;
+
+.distanceCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 98%;
+  height: 98%;
+  bar-color: $permobil-violet;
+  rim-color: $sd-battery-rim-color;
+}
+
+.coastTimeCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 90%;
+  height: 90%;
+  bar-color: $permobil-cousteau;
+  rim-color: $sd-battery-rim-color;
+}
+
+.circleDetails {
+  height: 60%;
+  width: 60%;
+  border-radius: 50%;
+  background-color: #9c85be;
+  android-elevation: 6;
+
+  label {
+    color: $permobil-violet;
+  }
+}

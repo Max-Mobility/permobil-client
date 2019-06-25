@@ -1,7 +1,5 @@
 // customized variables
 @import 'variables';
-@import 'buttons';
-@import 'action-bar';
 // theme standard rulesets
 @import '~nativescript-theme-core/scss/index';
 
@@ -22,18 +20,6 @@ label {
   font-family: $os-Light;
 }
 
-.text-white {
-  color: $white;
-}
-
-.text-black {
-  color: $black;
-}
-
-.text-violet {
-  color: $permobil-violet;
-}
-
 .align-center {
   horizontal-align: center;
   vertical-align: center;
@@ -51,4 +37,12 @@ label {
 .very-bold {
   font-weight: 700;
   font-family: $os-SemiBold;
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 1;
+  android-elevation: 0;
+  android-dynamic-elevation-offset: 0;
 }

@@ -1,7 +1,45 @@
-<ActionBar title="Journey"></ActionBar>
+<ActionBar title="Journey" class="action-bar" flat="true"></ActionBar>
 
-<GridLayout>
+// Journey Data ListView
+<StackLayout>
   <Label text="hello journey man" textWrap="true"></Label>
+
+  <GridLayout rows="*, *, *, *" columns="auto, *, auto, auto, auto">
+    <Label row="0" col="0" text="Today" textWrap="true"></Label>
+    <Label row="0" col="2" text="> 60s" textWrap="true"></Label>
+    <Label row="0" col="3" text=">> 1.8 mi" textWrap="true"></Label>
+    <GridLayout rows="*, *" columns="*">
+      // Distance Circle (outer/purple)
+      <AnimatedCircle
+        row="0"
+        col="0"
+        width="98%"
+        height="98%"
+        class="distanceCircle"
+        animated="true"
+        animateFrom="0"
+        clockwise="true"
+        rimWidth="2"
+        barWidth="8"
+        [progress]="distancePercentage"
+      >
+      </AnimatedCircle>
+      <AnimatedCircle
+        row="0"
+        col="0"
+        width="90%"
+        height="90%"
+        class="coastCircle"
+        animated="true"
+        animateFrom="0"
+        clockwise="true"
+        rimWidth="2"
+        barWidth="8"
+        [progress]="coastPercentage"
+      >
+      </AnimatedCircle>
+    </GridLayout>
+  </GridLayout>
 
   <!-- <ListView [items]="items" class="list-group">
         <ng-template let-item="item">
@@ -9,4 +47,4 @@
                 class="list-group-item"></Label>
         </ng-template>
     </ListView> -->
-</GridLayout>
+</StackLayout>

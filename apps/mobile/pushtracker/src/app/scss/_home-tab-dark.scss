@@ -1,0 +1,14 @@
+@import 'variables';
+
+.home-tab-layout {
+  background-color: $black;
+}
+
+.infoBtn {
+  background-color: $black;
+  color: $white;
+  height: 30;
+  width: 30;
+  border-radius: 15;
+  horizontal-align: right;
+}

@@ -1,20 +1,14 @@
-@import '../../scss/variables';
+@import 'variables';
 
-$sd-battery-rim-color: #696969;
-
-.distanceCircle {
-  background-color: transparent;
-  fill-color: transparent;
-  width: 98%;
-  height: 98%;
-  bar-color: $permobil-cousteau;
-  rim-color: $sd-battery-rim-color;
+.home-tab-layout {
+  background-color: $white;
 }
 
-.circleDetails {
-  height: 80;
-  width: 80;
-  border-radius: 40;
-  background-color: purple;
-  android-elevation: 4;
+.infoBtn {
+  background-color: $grey;
+  color: $black;
+  height: 30;
+  width: 30;
+  border-radius: 15;
+  horizontal-align: right;
 }

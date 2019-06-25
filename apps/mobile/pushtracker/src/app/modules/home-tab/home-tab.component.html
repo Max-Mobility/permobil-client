@@ -1,4 +1,12 @@
-<GridLayout rows="*, *, *" columns="auto, *, auto">
+<GridLayout rows="*, *, *" columns="auto, *, auto" class="home-tab-layout">
+  <Button
+    row="0"
+    col="2"
+    text="info"
+    class="infoBtn"
+    (tap)="onInfoTap()"
+  ></Button>
+
   // Main Activity Circles
   <GridLayout
     row="0"
@@ -9,7 +17,7 @@
     width="100%"
   >
     // Distance Circle (outer/purple)
-    <nac:AnimatedCircle
+    <AnimatedCircle
       id="distanceCircle"
       rowSpan="3"
       colSpan="3"
@@ -23,9 +31,9 @@
       barWidth="8"
       [progress]="distanceCirclePercentage"
     >
-    </nac:AnimatedCircle>
+    </AnimatedCircle>
     // Coast Time Circle (inner/teal)
-    <nac:AnimatedCircle
+    <AnimatedCircle
       id="coastTimeCircle"
       rowSpan="3"
       colSpan="3"
@@ -41,9 +49,8 @@
     >
       <GridLayout rows="*" columns="*" class="circleDetails">
         <Label [text]="milesToGoText" textWrap="true"></Label>
-        
       </GridLayout>
-    </nac:AnimatedCircle>
+    </AnimatedCircle>
   </GridLayout>
   <Label
     padding="50"

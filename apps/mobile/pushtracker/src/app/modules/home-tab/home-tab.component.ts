@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Log } from '@permobil/core';
+import * as themes from 'nativescript-themes';
 import { Page } from 'tns-core-modules/ui/page';
 
 @Component({
@@ -21,5 +22,13 @@ export class HomeTabComponent implements OnInit {
 
   ngOnInit(): void {
     Log.D('home-tab.component ngOnInit');
+  }
+
+  onInfoTap() {
+    Log.D('info button tapped.');
+    themes.applyThemeCss(
+      require('../../scss/theme-dark.scss').toString(),
+      'theme-dark.scss'
+    );
   }
 }
