@@ -890,16 +890,23 @@ export class MainViewModel extends Observable {
     const progress = args.data.progress;
     // TODO: translate the state instead of just replacing it!
     const state = args.data.state.replace('ota.sd.state.', '');
-    // TODO: translate the label instead of just replacing it!
+    // throttled function to keep people from pressing it too frequently
+    const throttledOtaActionTap = throttle(
+      this.smartDrive.onOTAActionTap,
+      500,
+      { leading: true, trailing: false }
+    );
+    // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
       if (a.includes('cancel')) {
         canSwipeDismiss = false;
       }
       const actionClass = 'action-' + last(a.split('.'));
+      // TODO: translate the label instead of just replacing it!
       const actionLabel = a.replace('ota.action.', '');
       return {
         'label': actionLabel,
-        'func': this.smartDrive.onOTAActionTap.bind(this.smartDrive, a),
+        'func': throttledOtaActionTap.bind(this.smartDrive, a),
         'action': a,
         'class': actionClass
       };
