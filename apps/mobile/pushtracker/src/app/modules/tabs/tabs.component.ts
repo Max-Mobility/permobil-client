@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 
 @Component({
   moduleId: module.id,
@@ -13,25 +15,26 @@ export class TabsComponent {
   public journeyTabItem;
   public profileTabItem;
   constructor(
-    private routerExtension: RouterExtensions,
-    private activeRoute: ActivatedRoute
+    private _translateService: TranslateService,
+    private _routerExtension: RouterExtensions,
+    private _activeRoute: ActivatedRoute
   ) {
     this.homeTabItem = {
       title: 'Home',
-      iconSource: 'res://baseline_home_black_24'
+      iconSource: 'res://home_active'
     };
     this.journeyTabItem = {
       title: 'Journey',
-      iconSource: 'res://baseline_location_on_black_24'
+      iconSource: 'res://journey_inactive'
     };
     this.profileTabItem = {
       title: 'Profile',
-      iconSource: 'res://baseline_perm_identity_black_24'
+      iconSource: 'res://profile_inactive'
     };
   }
 
   ngOnInit() {
-    this.routerExtension.navigate(
+    this._routerExtension.navigate(
       [
         {
           outlets: {
@@ -41,51 +44,64 @@ export class TabsComponent {
           }
         }
       ],
-      { relativeTo: this.activeRoute }
+      { relativeTo: this._activeRoute }
     );
   }
 
-  tabViewIndexChange(event) {
-    Log.D('TabView Index Change: ' + event.newIndex);
-    if (event.newIndex === 0) {
-      Log.D('HomeTab Active');
-      this.homeTabItem = {
-        title: 'Home',
-        iconSource: 'res://icon'
-      };
-      this.journeyTabItem = {
-        title: 'Journey',
-        iconSource: 'res://baseline_location_on_black_24'
-      };
-      this.profileTabItem = {
-        title: 'Profile',
-        iconSource: 'res://baseline_perm_identity_black_24'
-      };
-    } else if (event.newIndex === 1) {
-      Log.D('JourneyTab Active');
-      this.homeTabItem = {
-        title: 'Home',
-        iconSource: 'res://baseline_home_black_24'
-      };
-      this.journeyTabItem = {
-        title: 'Journey',
-        iconSource: 'res://icon'
-      };
-      this.profileTabItem = {
-        title: 'Profile',
-        iconSource: 'res://baseline_perm_identity_black_24'
-      };
-    } else if (event.newIndex === 2) {
-      Log.D('ProfileTab Active');
-      this.homeTabItem = {
-        title: 'Home',
-        iconSource: 'res://baseline_home_black_24'
-      };
-      this.journeyTabItem = {
-        title: 'Journey',
-        iconSource: 'res://baseline_location_on_black_24'
-      };
-      this.profileTabItem = { title: 'Profile', iconSource: 'res://icon' };
+  /**
+   * Executes when the tabview item index is changed. Usually in response to user interaction changing which tab they are viewing.
+   * Update the icon for the visual indicator which tab is active.
+   * @param args [SelectedIndexChangedEventData]
+   */
+  tabViewIndexChange(args: SelectedIndexChangedEventData) {
+    if (args.newIndex) {
+      switch (args.newIndex) {
+        case 0:
+          Log.D('HomeTab Active');
+          this.homeTabItem = {
+            title: 'Home',
+            iconSource: 'res://home_active'
+          };
+          this.journeyTabItem = {
+            title: 'Journey',
+            iconSource: 'res://journey_inactive'
+          };
+          this.profileTabItem = {
+            title: 'Profile',
+            iconSource: 'res://profile_inactive'
+          };
+          break;
+        case 1:
+          Log.D('JourneyTab Active');
+          this.homeTabItem = {
+            title: 'Home',
+            iconSource: 'res://home_inactive'
+          };
+          this.journeyTabItem = {
+            title: 'Journey',
+            iconSource: 'res://journey_active'
+          };
+          this.profileTabItem = {
+            title: 'Profile',
+            iconSource: 'res://profile_inactive'
+          };
+          break;
+        case 2:
+          Log.D('ProfileTab Active');
+          this.homeTabItem = {
+            title: 'Home',
+            iconSource: 'res://home_inactive'
+          };
+          this.journeyTabItem = {
+            title: 'Journey',
+            iconSource: 'res://journey_inactive'
+          };
+          this.profileTabItem = {
+            title: 'Profile',
+            iconSource: 'res://profile_active'
+          };
+          break;
+      }
     }
   }
 }

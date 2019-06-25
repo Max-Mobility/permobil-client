@@ -4,6 +4,7 @@
   "scripts": {
     "tslint": "tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"  --exclude \"**/platforms/**\"  --exclude \"**/hooks/**\" --exclude \"**/typings/**\" --exclude \"**/*d.ts\"",
     "global.installs": "npm i -g rimraf && npm i -g typescript",
+    "pretty-baby": "prettier --write '@(apps|@permobil|forked-plugins)/**/*.@(scss|component.html|xml|ts|md|js|json)'",
     "*************************** SETUP": "***************************",
     "setup": "npm run global.installs && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear && npm run setup.forked.plugins",
     "setup.all": "npm i && npm run global.installs && npm run setup.all.non-global",
