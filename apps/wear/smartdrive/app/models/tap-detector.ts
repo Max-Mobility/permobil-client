@@ -5,19 +5,11 @@ export class TapDetector {
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
   public threshold: number = 0.75;
 
-  private modelPath: string = null;
   private tflite: org.tensorflow.lite.Interpreter = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
   private tapDetectorOutput = Array.create('float', 1);
 
   constructor() {
-    // get the path to the model
-    this.modelPath = path.join(
-      knownFolders.currentApp().path,
-      'assets',
-      'models',
-      this.tapDetectorModelFileName
-    );
     try {
       // load the model file
       this.tfliteModel = this.loadModelFile();
@@ -43,9 +35,7 @@ export class TapDetector {
     const activity =
       androidApp.foregroundActivity ||
       androidApp.startActivity;
-
-    console.log('loading model file', this.modelPath);
-    const fileDescriptor = activity.getAssets().openFd(this.modelPath);
+    const fileDescriptor = activity.getAssets().openFd(this.tapDetectorModelFileName);
     const inputStream =
       new java.io.FileInputStream(fileDescriptor.getFileDescriptor());
     const fileChannel = inputStream.getChannel();
@@ -56,10 +46,5 @@ export class TapDetector {
       startOffset,
       declaredLength
     );
-    /*
-    return File.fromPath(this.modelPath).readSync((err) => {
-      console.error('Could not load tflite model:', err);
-    });
-    */
   }
 }

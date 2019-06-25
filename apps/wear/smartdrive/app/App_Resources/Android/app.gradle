@@ -7,8 +7,8 @@ dependencies {
   compileOnly 'com.google.android.wearable:wearable:2.4.0'
 }
 
-android {  
-  defaultConfig {  
+android {
+  defaultConfig {
     generatedDensities = []
     applicationId = "com.permobil.smartdrive.wearos"
     minSdkVersion 26 // WearOS 2.0 minimum SDK is 25 - https://developer.android.com/training/wearables/apps/packaging.html
@@ -18,8 +18,10 @@ android {
 		ndk {
 			abiFilters 'armeabi-v7a', 'arm64-v8a'
 		}
-  }  
-  aaptOptions {  
-    additionalParameters "--no-version-vectors"  
-  }  
-} 
+  }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
+    noCompress "tflite"
+    noCompress "lite"
+  }
+}
