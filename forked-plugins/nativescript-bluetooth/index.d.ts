@@ -96,6 +96,12 @@ export class Bluetooth extends BluetoothCommon {
 
   disconnect(options: DisconnectOptions): Promise<any>;
 
+  /**
+   * Android Only currently.
+   * @param peripheralUUID
+   */
+  readRSSI(peripheralUUID: string);
+
   read(options: ReadOptions): Promise<ReadResult>;
 
   write(options: WriteOptions): Promise<any>;
