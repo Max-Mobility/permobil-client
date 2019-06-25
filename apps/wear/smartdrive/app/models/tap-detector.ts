@@ -9,10 +9,23 @@ export class TapDetector {
 
   private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
-  private tapDetectorOutput = Array.create('float', 1);
+  private tapDetectorInput = null;
+  private tapDetectorOutput = null;
 
   constructor() {
     try {
+      // initialize the memory for the input
+      this.tapDetectorInput = java.nio.ByteBuffer.allocateDirect(
+        3 * 4 // 3 channels of 4-byte floating point data
+      );
+      this.tapDetectorInput.order(
+        java.nio.ByteOrder.nativeOrder()
+      );
+      // initialize the memory for the output
+      this.tapDetectorOutput = Array.create('[F', 1);
+      const elements = Array.create('float', 1);
+      elements[0] = new java.lang.Float("0.0");
+      this.tapDetectorOutput[0] = elements;
       // load the model file
       this.tfliteModel = this.loadModelFile();
       // create the tflite interpreter
@@ -28,10 +41,24 @@ export class TapDetector {
   }
 
   public detectTap(inputData: number[]) {
-    if (this.tflite) {
-      this.tflite.run(inputData, this.tapDetectorOutput);
-      return this.tapDetectorOutput[0] > this.threshold;
-    } else {
+    try {
+      console.log('tap detector input', inputData);
+      // reset pointer to 0
+      this.tapDetectorInput.rewind();
+      // format all input
+      inputData.map(d => {
+        this.tapDetectorInput.putFloat(d);
+      });
+      console.log('raw input data', this.tapDetectorInput);
+      // run the inference
+      this.tflite.run(this.tapDetectorInput, this.tapDetectorOutput);
+      console.log('tap detector output', this.tapDetectorOutput);
+      const prediction = this.tapDetectorOutput[0][0];
+      console.log('prediction', prediction);
+      // get the ouput and check against threshold
+      return prediction > this.threshold;
+    } catch (e) {
+      console.error('could not detect tap:', e);
       return false;
     }
   }

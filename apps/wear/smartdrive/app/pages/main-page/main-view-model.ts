@@ -697,7 +697,7 @@ export class MainViewModel extends Observable {
     }
     // ignore tapping if we're not on the users wrist
     if (!this.watchBeingWorn) {
-      return;
+      //return;
     }
     // now get the z-axis acceleration
     let acc = acceleration.z;
@@ -716,6 +716,13 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // TODO: testing tap detector
+    const didTap = this.tapDetector.detectTap([
+      acceleration.x,
+      acceleration.y,
+      acceleration.z
+    ]);
+    Log.D('didTap', didTap);
     // respond to both axes for tapping if the motor is on
     if (this.motorOn) {
       diff = Math.abs(diff);
