@@ -1,4 +1,5 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptRouterModule, NSEmptyOutletComponent } from 'nativescript-angular/router';
 import { TabsComponent } from './tabs.component';
@@ -32,7 +33,8 @@ import { TabsComponent } from './tabs.component';
           }
         ]
       }
-    ])
+    ]),
+    TranslateModule
   ],
   declarations: [TabsComponent],
   providers: [],

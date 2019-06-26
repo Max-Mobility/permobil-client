@@ -1,4 +1,5 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { HomeTabComponent } from './home-tab.component';
@@ -10,7 +11,8 @@ import { HomeTabComponent } from './home-tab.component';
     NativeScriptRouterModule.forChild([
       { path: '', redirectTo: 'home' },
       { path: 'home', component: HomeTabComponent }
-    ])
+    ]),
+    TranslateModule
   ],
   declarations: [HomeTabComponent],
   providers: [],
