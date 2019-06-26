@@ -67,7 +67,7 @@ export class TapDetector {
       const inputCount = this.tflite.getInputTensorCount();
       console.log('TapDetector::TapDetector(): input tensor count = ',
                   inputCount);
-      for (let i=0; i<inputCount; i++) {
+      for (let i = 0; i < inputCount; i++) {
         console.log('TapDetector::TapDetector(): input tensor ' + i + ' type = ',
                     this.tflite.getInputTensor(i).dataType());
         console.log('TapDetector::TapDetector(): input tensor ' + i + ' shape = ',
@@ -76,7 +76,7 @@ export class TapDetector {
       const outputCount = this.tflite.getOutputTensorCount();
       console.log('TapDetector::TapDetector(): output tensor count = ',
                   outputCount);
-      for (let i=0; i<outputCount; i++) {
+      for (let i = 0; i < outputCount; i++) {
         console.log('TapDetector::TapDetector(): output tensor ' + i + ' type = ',
                     this.tflite.getOutputTensor(i).dataType());
         console.log('TapDetector::TapDetector(): output tensor ' + i + ' shape = ',
