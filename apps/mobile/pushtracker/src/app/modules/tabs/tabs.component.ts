@@ -16,6 +16,15 @@ export class TabsComponent {
   public homeTabItem;
   public journeyTabItem;
   public profileTabItem;
+
+  private _homeTabTitle = this._translateService.instant('home-tab.title');
+  private _journeyTabTitle = this._translateService.instant(
+    'journey-tab.title'
+  );
+  private _profileTabTitle = this._translateService.instant(
+    'profile-tab.title'
+  );
+
   constructor(
     private _translateService: TranslateService,
     private _routerExtension: RouterExtensions,
@@ -26,15 +35,15 @@ export class TabsComponent {
     this._page.actionBarHidden = true;
 
     this.homeTabItem = {
-      title: 'Home',
+      title: this._homeTabTitle,
       iconSource: AppResourceIcons.HOME_ACTIVE
     };
     this.journeyTabItem = {
-      title: 'Journey',
+      title: this._journeyTabTitle,
       iconSource: AppResourceIcons.JOURNEY_INACTIVE
     };
     this.profileTabItem = {
-      title: 'Profile',
+      title: this._profileTabTitle,
       iconSource: AppResourceIcons.PROFILE_INACTIVE
     };
   }
@@ -65,45 +74,45 @@ export class TabsComponent {
         case 0:
           Log.D('HomeTab Active');
           this.homeTabItem = {
-            title: 'Home',
+            title: this._homeTabTitle,
             iconSource: AppResourceIcons.HOME_ACTIVE
           };
           this.journeyTabItem = {
-            title: 'Journey',
+            title: this._journeyTabTitle,
             iconSource: AppResourceIcons.JOURNEY_INACTIVE
           };
           this.profileTabItem = {
-            title: 'Profile',
+            title: this._profileTabTitle,
             iconSource: AppResourceIcons.PROFILE_INACTIVE
           };
           break;
         case 1:
           Log.D('JourneyTab Active');
           this.homeTabItem = {
-            title: 'Home',
+            title: this._homeTabTitle,
             iconSource: AppResourceIcons.HOME_INACTIVE
           };
           this.journeyTabItem = {
-            title: 'Journey',
+            title: this._journeyTabTitle,
             iconSource: AppResourceIcons.JOURNEY_ACTIVE
           };
           this.profileTabItem = {
-            title: 'Profile',
+            title: this._profileTabTitle,
             iconSource: AppResourceIcons.PROFILE_INACTIVE
           };
           break;
         case 2:
           Log.D('ProfileTab Active');
           this.homeTabItem = {
-            title: 'Home',
+            title: this._homeTabTitle,
             iconSource: AppResourceIcons.HOME_INACTIVE
           };
           this.journeyTabItem = {
-            title: 'Journey',
+            title: this._journeyTabTitle,
             iconSource: AppResourceIcons.JOURNEY_INACTIVE
           };
           this.profileTabItem = {
-            title: 'Profile',
+            title: this._profileTabTitle,
             iconSource: AppResourceIcons.PROFILE_ACTIVE
           };
           break;

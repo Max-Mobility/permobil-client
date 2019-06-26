@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import * as themes from 'nativescript-themes';
 import { Page } from 'tns-core-modules/ui/page';
@@ -13,11 +14,15 @@ export class HomeTabComponent implements OnInit {
   coastTimeCirclePercentage: number;
   milesToGoText: string;
 
-  constructor(private _page: Page) {
-    this._page.actionBarHidden = false;
-    this.distanceCirclePercentage = 85;
+  constructor(
+    private _page: Page,
+    private _translateService: TranslateService
+  ) {
+    this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.coastTimeCirclePercentage = 68;
-    this.milesToGoText = '0.4 miles to go';
+    this.milesToGoText = `0.4 ${this._translateService.instant(
+      'home-tab.miles-to-go'
+    )}`;
   }
 
   ngOnInit(): void {
@@ -26,9 +31,15 @@ export class HomeTabComponent implements OnInit {
 
   onInfoTap() {
     Log.D('info button tapped.');
+
+    // themes.applyThemeCss(
+    //   require('../../scss/theme-dark.scss').toString(),
+    //   'theme-dark.scss'
+    // );
+
     themes.applyThemeCss(
-      require('../../scss/theme-dark.scss').toString(),
-      'theme-dark.scss'
+      require('../../scss/theme-default.scss').toString(),
+      'theme-default.scss'
     );
   }
 }
