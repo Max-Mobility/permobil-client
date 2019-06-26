@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "Немецкий",
+    "en": "английский",
+    "es": "испанский",
+    "fr": "Французский",
+    "it": "итальянский",
+    "ja": "японский язык",
+    "ko": "корейский язык",
+    "nl": "Голландский",
+    "ru": "русский",
+    "sv": "шведский",
+    "zh-CN": "Китайский упрощенный"
+  },
+  "tab-titles": {
+    "home": "Главная",
+    "journey": "Поездка",
+    "profile": "Профиль"
+  },
+  "generic-terms": {
+    "distance": "Расстояние",
+    "coast-time": "Время побережья",
+    "pushes": "Толчки",
+    "travel": "Путешествовать",
+    "miles": "миль",
+    "today": "сегодня",
+    "afternoon": "после полудня",
+    "roll": "рулон",
+    "gender": "Пол",
+    "birthday": "день рождения",
+    "weight": "Вес",
+    "height": "Рост",
+    "units": "Единицы",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Максимальная скорость",
+    "acceleration": "ускорение",
+    "tap-sensitivity": "Чувствительность",
+    "mode": "Режим"
+  },
+  "home-tab": {
+    "title": "Главная"
+  },
+  "journey-tab": {
+    "title": "Поездка"
+  },
+  "profile-tab": {
+    "title": "Профиль",
+    "activity-goals": "Цели деятельности",
+    "about-you": "О вас",
+    "chair-info": "Информация о кресле"
+  },
+  "settings-component": {
+    "title": "настройки"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "독일 사람",
+    "en": "영어",
+    "es": "스페인 사람",
+    "fr": "프랑스 국민",
+    "it": "이탈리아 사람",
+    "ja": "일본어",
+    "ko": "한국어",
+    "nl": "네덜란드 사람",
+    "ru": "러시아인",
+    "sv": "스웨덴어",
+    "zh-CN": "중국어 간체"
+  },
+  "tab-titles": {
+    "home": "집",
+    "journey": "여행",
+    "profile": "윤곽"
+  },
+  "generic-terms": {
+    "distance": "거리",
+    "coast-time": "해안 시간",
+    "pushes": "푸시",
+    "travel": "여행",
+    "miles": "마일즈",
+    "today": "오늘",
+    "afternoon": "대낮",
+    "roll": "롤",
+    "gender": "성별",
+    "birthday": "생일",
+    "weight": "무게",
+    "height": "신장",
+    "units": "단위",
+    "smartdrive": "SmartDrive",
+    "max-speed": "최대 속도",
+    "acceleration": "가속",
+    "tap-sensitivity": "탭 감도",
+    "mode": "방법"
+  },
+  "home-tab": {
+    "title": "집"
+  },
+  "journey-tab": {
+    "title": "여행"
+  },
+  "profile-tab": {
+    "title": "윤곽",
+    "activity-goals": "활동 목표",
+    "about-you": "너에 대해서",
+    "chair-info": "의자 정보"
+  },
+  "settings-component": {
+    "title": "설정"
+  }
+}

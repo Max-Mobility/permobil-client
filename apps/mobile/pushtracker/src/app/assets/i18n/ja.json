@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "ドイツ人",
+    "en": "英語",
+    "es": "スペイン語",
+    "fr": "フランス語",
+    "it": "イタリアの",
+    "ja": "日本人",
+    "ko": "韓国語",
+    "nl": "オランダの",
+    "ru": "ロシア",
+    "sv": "スウェーデンの",
+    "zh-CN": "中国語（簡体字"
+  },
+  "tab-titles": {
+    "home": "ホーム",
+    "journey": "旅",
+    "profile": "プロフィール"
+  },
+  "generic-terms": {
+    "distance": "距離",
+    "coast-time": "コーストタイム",
+    "pushes": "プッシュ",
+    "travel": "旅行",
+    "miles": "マイル",
+    "today": "今日",
+    "afternoon": "午後",
+    "roll": "ロール",
+    "gender": "性別",
+    "birthday": "お誕生日",
+    "weight": "重量",
+    "height": "高さ",
+    "units": "単位",
+    "smartdrive": "SmartDrive",
+    "max-speed": "マックス・スピード",
+    "acceleration": "加速度",
+    "tap-sensitivity": "タップ感度",
+    "mode": "モード"
+  },
+  "home-tab": {
+    "title": "ホーム"
+  },
+  "journey-tab": {
+    "title": "旅"
+  },
+  "profile-tab": {
+    "title": "プロフィール",
+    "activity-goals": "活動目標",
+    "about-you": "あなたについて",
+    "chair-info": "チェア情報"
+  },
+  "settings-component": {
+    "title": "設定"
+  }
+}

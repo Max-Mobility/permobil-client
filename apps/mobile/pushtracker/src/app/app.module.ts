@@ -17,7 +17,7 @@ import { TNSTranslateLoader } from './utils';
 
 // factories
 export function createTranslateLoader() {
-  return new TNSTranslateLoader('/assets/i18n/');
+  return new TNSTranslateLoader('/app/assets/i18n/');
 }
 
 @NgModule({

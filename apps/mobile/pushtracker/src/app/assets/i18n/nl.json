@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "Duitse",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "it": "Italiaans",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "nl": "Nederlands",
+    "ru": "Russisch",
+    "sv": "Zweeds",
+    "zh-CN": "Versimpeld Chinees"
+  },
+  "tab-titles": {
+    "home": "Huis",
+    "journey": "Reis",
+    "profile": "Profiel"
+  },
+  "generic-terms": {
+    "distance": "Afstand",
+    "coast-time": "Kusttijd",
+    "pushes": "duwt",
+    "travel": "Reizen",
+    "miles": "mijlen",
+    "today": "Vandaag",
+    "afternoon": "middag",
+    "roll": "rollen",
+    "gender": "Geslacht",
+    "birthday": "Verjaardag",
+    "weight": "Gewicht",
+    "height": "Hoogte",
+    "units": "eenheden",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Maximale snelheid",
+    "acceleration": "Versnelling",
+    "tap-sensitivity": "Tik op Gevoeligheid",
+    "mode": "mode"
+  },
+  "home-tab": {
+    "title": "Huis"
+  },
+  "journey-tab": {
+    "title": "Reis"
+  },
+  "profile-tab": {
+    "title": "Profiel",
+    "activity-goals": "Activiteitsdoelen",
+    "about-you": "Over jou",
+    "chair-info": "Voorzitter Info"
+  },
+  "settings-component": {
+    "title": "instellingen"
+  }
+}
