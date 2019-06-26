@@ -5,7 +5,7 @@ declare const org: any;
 
 export class TapDetector {
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
-  public threshold: number = 0.75;
+  public threshold: number = 0.5;
 
   private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
@@ -13,21 +13,17 @@ export class TapDetector {
   private tapDetectorOutput: java.util.Map<java.lang.Integer, java.lang.Object> = null;
 
   private inputData = null;
-  private previousStateH = null;
-  private previousStateC = null;
+  private previousState = null;
   private parsedPrediction = null;
 
   constructor() {
     try {
       // initialize the memory for the states
-      this.previousStateH = Array.create('[F', 1);
-      this.previousStateH[0] = Array.create('float', 32);
-      this.previousStateC = Array.create('[F', 1);
-      this.previousStateC[0] = Array.create('float', 32);
+      this.previousState = Array.create('[F', 1);
+      this.previousState[0] = Array.create('float', 64);
       // set initial states to 0
-      for (let i = 0; i < 32; i++) {
-        this.previousStateH[0][i] = new java.lang.Float('0.0');
-        this.previousStateC[0][i] = new java.lang.Float('0.0');
+      for (let i = 0; i < 64; i++) {
+        this.previousState[0][i] = new java.lang.Float('0.0');
       }
       // initialize the memory for the input
       this.inputData = Array.create('[F', 1);
@@ -37,10 +33,9 @@ export class TapDetector {
       inputElements[2] = new java.lang.Float('0.0');
       this.inputData[0] = inputElements;
       // this.inputData = Array.create('float', 3);
-      this.tapDetectorInput = Array.create(java.lang.Object, 3);
-      this.tapDetectorInput[2] = this.inputData;
-      this.tapDetectorInput[1] = this.previousStateH;
-      this.tapDetectorInput[0] = this.previousStateC;
+      this.tapDetectorInput = Array.create(java.lang.Object, 2);
+      this.tapDetectorInput[0] = this.inputData;
+      this.tapDetectorInput[1] = this.previousState;
       // initialize the memory for the prediction
       this.parsedPrediction = Array.create('[F', 1);
       const outputElements = Array.create('float', 1);
@@ -49,16 +44,12 @@ export class TapDetector {
       // initialize the memory for the output
       this.tapDetectorOutput = new java.util.HashMap<java.lang.Integer, java.lang.Object>();
       this.tapDetectorOutput.put(
-        new java.lang.Integer(2),
+        new java.lang.Integer(1),
         this.parsedPrediction
       );
       this.tapDetectorOutput.put(
-        new java.lang.Integer(1),
-        this.previousStateH
-      );
-      this.tapDetectorOutput.put(
         new java.lang.Integer(0),
-        this.previousStateC
+        this.previousState
       );
       // load the model file
       this.tfliteModel = this.loadModelFile();
@@ -104,7 +95,7 @@ export class TapDetector {
       this.tflite.runForMultipleInputsOutputs(this.tapDetectorInput, this.tapDetectorOutput);
       // console.log('tap detector output', this.tapDetectorOutput);
       const prediction = this.parsedPrediction[0][0];
-      console.log('prediction', prediction);
+      // console.log('prediction', prediction);
       // get the ouput and check against threshold
       return prediction > this.threshold;
     } catch (e) {

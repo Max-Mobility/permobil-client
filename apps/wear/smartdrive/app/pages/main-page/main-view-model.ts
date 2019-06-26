@@ -109,8 +109,8 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   maxTapSensitivity: number = 3.5;
   minTapSensitivity: number = 1.5;
-  maxTapDetectorConfidence: number = 1.0;
-  minTapDetectorConfidence: number = 0.6;
+  maxTapDetectorConfidence: number = 1.5;
+  minTapDetectorConfidence: number = 0.5;
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
@@ -386,6 +386,7 @@ export class MainViewModel extends Observable {
     // handle ambient mode callbacks
     application.on('exitAmbient', args => {
       Log.D('*** exitAmbient ***');
+      this.enableBodySensor();
       themes.applyThemeCss(defaultTheme, 'theme-default.scss');
 
       if (this.pager) {
@@ -713,6 +714,21 @@ export class MainViewModel extends Observable {
       acceleration.y,
       acceleration.z
     ]);
+    // block high frequency tapping
+    if (this.lastTapTime !== null) {
+      const timeDiffNs = timestamp - this.lastTapTime;
+      const timeDiffThreshold = this.tapLockoutTimeMs * 1000 * 1000; // convert to ns
+      if (timeDiffNs < timeDiffThreshold) {
+        return;
+      }
+    }
+    if (didTap) {
+      // record that there has been a tap
+      this.lastTapTime = timestamp;
+      // user has met threshold for tapping
+      this.handleTap(timestamp);
+    }
+    return;
     // TODO: EVERYTHING BELOW HERE IS OLD CODE AND WILL NEED TO BE
     // REFACTORED AFTER THE TFLITE UPDATE
     // -----------------------------------------------------------
