@@ -2,6 +2,9 @@
 
 .home-tab-layout {
   background-color: $black;
+  height: 100%;
+  width: 100%;
+  padding: 10;
 }
 
 .infoBtn {
@@ -11,4 +14,32 @@
   width: 30;
   border-radius: 15;
   horizontal-align: right;
+  vertical-align: top;
+}
+
+.circleDetails {
+  height: 60%;
+  width: 60%;
+  border-radius: 50%;
+  background-color: $black;
+  android-elevation: 10;
+
+  label {
+    color: $white;
+    horizontal-align: center;
+    vertical-align: center;
+  }
+}
+
+.dataDetails {
+  horizontal-align: center;
+  vertical-align: center;
+
+  label {
+    color: $white;
+    font-weight: bold;
+    text-align: center;
+    horizontal-align: center;
+    vertical-align: center;
+  }
 }

@@ -2,13 +2,44 @@
 
 .home-tab-layout {
   background-color: $white;
+  height: 100%;
+  width: 100%;
+  padding: 10;
 }
 
 .infoBtn {
-  background-color: $grey;
+  background-color: $permobil-steel;
   color: $black;
-  height: 30;
-  width: 30;
-  border-radius: 15;
+  height: 40;
+  width: 40;
+  border-radius: 20;
   horizontal-align: right;
+  vertical-align: top;
+}
+
+.circleDetails {
+  height: 100;
+  width: 100;
+  border-radius: 50;
+  background-color: #9c85be;
+  android-elevation: 10;
+
+  label {
+    color: $white;
+    horizontal-align: center;
+    vertical-align: center;
+  }
+}
+
+.dataDetails {
+  horizontal-align: center;
+  vertical-align: center;
+
+  label {
+    color: $black;
+    font-weight: bold;
+    text-align: center;
+    horizontal-align: center;
+    vertical-align: center;
+  }
 }

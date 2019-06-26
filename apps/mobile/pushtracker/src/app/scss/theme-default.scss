@@ -6,3 +6,8 @@
 @import 'journey-tab-default';
 @import 'login-default';
 @import 'profile-tab-default';
+
+TabView {
+  android-selected-tab-highlight-color: $permobil-primary;
+  selected-tab-text-color: $permobil-primary;
+}

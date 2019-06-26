@@ -1,56 +1,121 @@
-<GridLayout rows="20, *, auto" columns="auto, *, auto" class="home-tab-layout">
-  <Button
-    row="0"
-    col="2"
-    text="info"
-    class="infoBtn"
-    (tap)="onInfoTap()"
-  ></Button>
-
-  // Main Activity Circles
+<ScrollView>
   <GridLayout
-    row="0"
-    rowSpan="2"
-    colSpan="3"
-    rows="*, auto, *"
-    columns="*, auto, *"
-    height="95%"
-    width="95%"
+    rows="45, *, *, auto, auto"
+    columns="auto, *, auto"
+    class="home-tab-layout"
   >
-    // Distance Circle (outer/purple)
-    <AnimatedCircle
-      id="distanceCircle"
-      rowSpan="3"
+    <Button
+      row="0"
+      col="2"
+      text="info"
+      class="infoBtn"
+      (tap)="onInfoTap()"
+    ></Button>
+
+    // Main Activity Circles
+    <GridLayout
+      row="0"
+      rowSpan="2"
       colSpan="3"
-      class="distanceCircle"
-      width="100%"
-      height="100%"
-      animated="true"
-      animateFrom="0"
-      clockwise="true"
-      rimWidth="30"
-      barWidth="30"
-      [progress]="distanceCirclePercentage"
+      rows="*, auto, *"
+      columns="*, auto, *"
+      height="95%"
+      width="95%"
     >
-    </AnimatedCircle>
-    // Coast Time Circle (inner/teal)
-    <AnimatedCircle
-      id="coastTimeCircle"
-      rowSpan="3"
+      // Distance Circle (outer/purple)
+      <AnimatedCircle
+        id="distanceCircle"
+        rowSpan="3"
+        colSpan="3"
+        class="distanceCircle"
+        width="100%"
+        height="100%"
+        animated="true"
+        animateFrom="0"
+        clockwise="true"
+        rimWidth="30"
+        barWidth="30"
+        [progress]="distanceCirclePercentage"
+      >
+      </AnimatedCircle>
+      // Coast Time Circle (inner/teal)
+      <AnimatedCircle
+        id="coastTimeCircle"
+        rowSpan="3"
+        colSpan="3"
+        class="coastTimeCircle"
+        width="85%"
+        height="85%"
+        animated="true"
+        animateFrom="0"
+        clockwise="true"
+        rimWidth="30"
+        barWidth="30"
+        [progress]="coastTimeCirclePercentage"
+      >
+        <GridLayout rows="*" columns="*" class="circleDetails">
+          <Label [text]="milesToGoText" textWrap="true"></Label>
+        </GridLayout>
+      </AnimatedCircle>
+    </GridLayout>
+
+    // Data Details
+
+    <GridLayout
+      row="2"
+      col="0"
       colSpan="3"
-      class="coastTimeCircle"
-      width="85%"
-      height="85%"
-      animated="true"
-      animateFrom="0"
-      clockwise="true"
-      rimWidth="30"
-      barWidth="30"
-      [progress]="coastTimeCirclePercentage"
+      rows="*, *, *, *"
+      columns="auto, *, *, auto"
     >
-      <GridLayout rows="*" columns="*" class="circleDetails">
-        <Label [text]="milesToGoText" textWrap="true"></Label>
-      </GridLayout>
-    </AnimatedCircle>
+      <Label row="0" col="0" text="80/100" textWrap="true"></Label>
+    </GridLayout>
+
+    <GridLayout
+      row="3"
+      col="0"
+      colSpan="3"
+      rows="auto, auto"
+      columns="*, *, *, *, *"
+      class="dataDetails"
+    >
+      // push count data
+      <Label row="0" col="0" [text]="pushCountData" textWrap="true"></Label>
+      <Label
+        row="1"
+        col="0"
+        [text]="'general.pushes' | translate"
+        textWrap="true"
+      ></Label>
+      // coast time data
+      <Label row="0" col="2" [text]="coastTimeData" textWrap="true"></Label>
+      <Label
+        row="1"
+        col="2"
+        [text]="'general.coast-time' | translate"
+        textWrap="true"
+      ></Label>
+      // distance data
+      <Label row="0" col="4" [text]="distanceData" textWrap="true"></Label>
+      <Label
+        row="1"
+        col="4"
+        [text]="'general.miles' | translate"
+        textWrap="true"
+      ></Label>
+    </GridLayout>
+
+    // distance per day chart
+    <GridLayout row="4" col="0" colSpan="3" rows="*, *" columns="auto, *, auto">
+      <Label
+        row="0"
+        col="0"
+        text="Travel 3.0 miles per day"
+        textWrap="true"
+      ></Label>
+      <Label row="0" col="2" text="more" textWrap="true"></Label>
+
+      // repeater grid here for data
+    </GridLayout>
   </GridLayout>
-</GridLayout>
+</ScrollView>

@@ -13,6 +13,9 @@ export class HomeTabComponent implements OnInit {
   distanceCirclePercentage: number;
   coastTimeCirclePercentage: number;
   milesToGoText: string;
+  pushCountData: string;
+  coastTimeData: string;
+  distanceData: string;
 
   constructor(
     private _page: Page,
@@ -23,6 +26,9 @@ export class HomeTabComponent implements OnInit {
     this.milesToGoText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
     )}`;
+    this.pushCountData = `1514`;
+    this.coastTimeData = `3.6`;
+    this.distanceData = `2.6`;
   }
 
   ngOnInit(): void {

@@ -6,3 +6,8 @@
 @import 'journey-tab-dark';
 @import 'login-dark';
 @import 'profile-tab-dark';
+
+TabView {
+  android-selected-tab-highlight-color: black;
+  selected-tab-text-color: black;
+}
