@@ -24,6 +24,11 @@ export class TapDetector {
       this.previousStateH[0] = Array.create('float', 32);
       this.previousStateC = Array.create('[F', 1);
       this.previousStateC[0] = Array.create('float', 32);
+      // set initial states to 0
+      for (let i = 0; i < 32; i++) {
+        this.previousStateH[0][i] = new java.lang.Float('0.0');
+        this.previousStateC[0][i] = new java.lang.Float('0.0');
+      }
       // initialize the memory for the input
       this.inputData = Array.create('[F', 1);
       const inputElements = Array.create('float', 3);
