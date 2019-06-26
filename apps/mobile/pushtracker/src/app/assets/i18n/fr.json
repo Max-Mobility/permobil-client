@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "Allemand",
-    "en": "Anglais",
-    "es": "Espanol",
-    "fr": "Français",
-    "it": "Italien",
-    "ja": "Japonais",
-    "ko": "Coréen",
-    "nl": "Néerlandais",
-    "ru": "russe",
-    "sv": "Suédois",
-    "zh-CN": "Chinois simplifié"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Accueil",
     "journey": "Périple",
-    "profile": "Profil"
-  },
-  "generic-terms": {
+    "profile": "Profil",
     "distance": "Distance",
     "coast-time": "Temps côtier",
     "pushes": "Pousse",
     "travel": "Voyage",
     "miles": "Miles",
+    "meters": "Mètres",
+    "kilometers": "Kilomètres",
     "today": "Aujourd'hui",
     "afternoon": "après midi",
     "roll": "rouleau",
@@ -35,10 +22,15 @@
     "max-speed": "Vitesse maximale",
     "acceleration": "Accélération",
     "tap-sensitivity": "Touchez la sensibilité",
-    "mode": "Mode"
+    "mode": "Mode",
+    "day": "journée",
+    "week": "La semaine",
+    "month": "Mois"
   },
   "home-tab": {
-    "title": "Accueil"
+    "title": "Accueil",
+    "miles-to-go": "miles à parcourir",
+    "kilometers-to-go": "kilomètres à parcourir"
   },
   "journey-tab": {
     "title": "Périple"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "Réglages"
+  },
+  "my-activity-component": {
+    "title": "Mon activité"
+  },
+  "days": {
+    "sunday": "dimanche",
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "samedi"
+  },
+  "days-abbreviated": {
+    "sunday": "dim",
+    "monday": "Lun",
+    "tuesday": "Mar",
+    "wednesday": "Mer",
+    "thursday": "Jeu",
+    "friday": "Ven",
+    "saturday": "sam"
+  },
+  "languages": {
+    "de": "Allemand",
+    "en": "Anglais",
+    "es": "Espanol",
+    "fr": "Français",
+    "it": "Italien",
+    "ja": "Japonais",
+    "ko": "Coréen",
+    "nl": "Néerlandais",
+    "ru": "russe",
+    "sv": "Suédois",
+    "zh-CN": "Chinois simplifié"
   }
 }

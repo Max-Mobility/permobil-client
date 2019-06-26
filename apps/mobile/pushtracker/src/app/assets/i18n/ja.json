@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "ドイツ人",
-    "en": "英語",
-    "es": "スペイン語",
-    "fr": "フランス語",
-    "it": "イタリアの",
-    "ja": "日本人",
-    "ko": "韓国語",
-    "nl": "オランダの",
-    "ru": "ロシア",
-    "sv": "スウェーデンの",
-    "zh-CN": "中国語（簡体字"
-  },
-  "tab-titles": {
+  "general": {
     "home": "ホーム",
     "journey": "旅",
-    "profile": "プロフィール"
-  },
-  "generic-terms": {
+    "profile": "プロフィール",
     "distance": "距離",
     "coast-time": "コーストタイム",
     "pushes": "プッシュ",
     "travel": "旅行",
     "miles": "マイル",
+    "meters": "メーター",
+    "kilometers": "キロメートル",
     "today": "今日",
     "afternoon": "午後",
     "roll": "ロール",
@@ -35,10 +22,15 @@
     "max-speed": "マックス・スピード",
     "acceleration": "加速度",
     "tap-sensitivity": "タップ感度",
-    "mode": "モード"
+    "mode": "モード",
+    "day": "日",
+    "week": "週間",
+    "month": "月"
   },
   "home-tab": {
-    "title": "ホーム"
+    "title": "ホーム",
+    "miles-to-go": "まだまだ先",
+    "kilometers-to-go": "行くキロ"
   },
   "journey-tab": {
     "title": "旅"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "設定"
+  },
+  "my-activity-component": {
+    "title": "私の活動"
+  },
+  "days": {
+    "sunday": "日曜日",
+    "monday": "月曜",
+    "tuesday": "火曜日",
+    "wednesday": "水曜日",
+    "thursday": "木曜日",
+    "friday": "金曜日",
+    "saturday": "土曜日"
+  },
+  "days-abbreviated": {
+    "sunday": "日曜日",
+    "monday": "月曜",
+    "tuesday": "火曜日",
+    "wednesday": "水曜日",
+    "thursday": "木曜日",
+    "friday": "金曜日",
+    "saturday": "土曜日"
+  },
+  "languages": {
+    "de": "ドイツ人",
+    "en": "英語",
+    "es": "スペイン語",
+    "fr": "フランス語",
+    "it": "イタリアの",
+    "ja": "日本人",
+    "ko": "韓国語",
+    "nl": "オランダの",
+    "ru": "ロシア",
+    "sv": "スウェーデンの",
+    "zh-CN": "中国語（簡体字"
   }
 }

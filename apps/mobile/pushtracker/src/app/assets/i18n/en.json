@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "German",
-    "en": "English",
-    "es": "Spanish",
-    "fr": "French",
-    "it": "Italian",
-    "ja": "Japanese",
-    "ko": "Korean",
-    "nl": "Dutch",
-    "ru": "Russian",
-    "sv": "Swedish",
-    "zh-CN": "Chinese (Simplified)"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Home",
     "journey": "Journey",
-    "profile": "Profile"
-  },
-  "generic-terms": {
+    "profile": "Profile",
     "distance": "Distance",
     "coast-time": "Coast Time",
     "pushes": "Pushes",
     "travel": "Travel",
     "miles": "Miles",
+    "meters": "Meters",
+    "kilometers": "Kilometers",
     "today": "Today",
     "afternoon": "afternoon",
     "roll": "roll",
@@ -35,10 +22,15 @@
     "max-speed": "Max Speed",
     "acceleration": "Acceleration",
     "tap-sensitivity": "Tap Sensitivity",
-    "mode": "Mode"
+    "mode": "Mode",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
   },
   "home-tab": {
-    "title": "Home"
+    "title": "Home",
+    "miles-to-go": "miles to go",
+    "kilometers-to-go": "kilometers to go"
   },
   "journey-tab": {
     "title": "Journey"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "Settings"
+  },
+  "my-activity-component": {
+    "title": "My Activity"
+  },
+  "days": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+  "days-abbreviated": {
+    "sunday": "Sun",
+    "monday": "Mon",
+    "tuesday": "Tues",
+    "wednesday": "Wed",
+    "thursday": "Thur",
+    "friday": "Fri",
+    "saturday": "Sat"
+  },
+  "languages": {
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nl": "Dutch",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "zh-CN": "Chinese (Simplified)"
   }
 }

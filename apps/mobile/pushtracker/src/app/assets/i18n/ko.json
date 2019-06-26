@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "독일 사람",
-    "en": "영어",
-    "es": "스페인 사람",
-    "fr": "프랑스 국민",
-    "it": "이탈리아 사람",
-    "ja": "일본어",
-    "ko": "한국어",
-    "nl": "네덜란드 사람",
-    "ru": "러시아인",
-    "sv": "스웨덴어",
-    "zh-CN": "중국어 간체"
-  },
-  "tab-titles": {
+  "general": {
     "home": "집",
     "journey": "여행",
-    "profile": "윤곽"
-  },
-  "generic-terms": {
+    "profile": "윤곽",
     "distance": "거리",
     "coast-time": "해안 시간",
     "pushes": "푸시",
     "travel": "여행",
     "miles": "마일즈",
+    "meters": "미터",
+    "kilometers": "킬로미터",
     "today": "오늘",
     "afternoon": "대낮",
     "roll": "롤",
@@ -35,10 +22,15 @@
     "max-speed": "최대 속도",
     "acceleration": "가속",
     "tap-sensitivity": "탭 감도",
-    "mode": "방법"
+    "mode": "방법",
+    "day": "일",
+    "week": "주",
+    "month": "달"
   },
   "home-tab": {
-    "title": "집"
+    "title": "집",
+    "miles-to-go": "가야할",
+    "kilometers-to-go": "갈 킬로미터"
   },
   "journey-tab": {
     "title": "여행"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "설정"
+  },
+  "my-activity-component": {
+    "title": "내 활동"
+  },
+  "days": {
+    "sunday": "일요일",
+    "monday": "월요일",
+    "tuesday": "화요일",
+    "wednesday": "수요일",
+    "thursday": "목요일",
+    "friday": "금요일",
+    "saturday": "토요일"
+  },
+  "days-abbreviated": {
+    "sunday": "일요일",
+    "monday": "월요일",
+    "tuesday": "화요일",
+    "wednesday": "수요일",
+    "thursday": "목요일",
+    "friday": "금요일",
+    "saturday": "토요일"
+  },
+  "languages": {
+    "de": "독일 사람",
+    "en": "영어",
+    "es": "스페인 사람",
+    "fr": "프랑스 국민",
+    "it": "이탈리아 사람",
+    "ja": "일본어",
+    "ko": "한국어",
+    "nl": "네덜란드 사람",
+    "ru": "러시아인",
+    "sv": "스웨덴어",
+    "zh-CN": "중국어 간체"
   }
 }

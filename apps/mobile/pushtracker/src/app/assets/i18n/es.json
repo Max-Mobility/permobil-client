@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "Alemán",
-    "en": "Inglés",
-    "es": "Español",
-    "fr": "Francés",
-    "it": "Italiano",
-    "ja": "Japonés",
-    "ko": "Coreano",
-    "nl": "Holandés",
-    "ru": "Ruso",
-    "sv": "Sueco",
-    "zh-CN": "Chino simplificado"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Casa",
     "journey": "Viaje",
-    "profile": "Perfil"
-  },
-  "generic-terms": {
+    "profile": "Perfil",
     "distance": "Distancia",
     "coast-time": "Hora de la costa",
     "pushes": "Empuja",
     "travel": "Viajar",
     "miles": "Millas",
+    "meters": "Metros",
+    "kilometers": "Kilómetros",
     "today": "Hoy",
     "afternoon": "tarde",
     "roll": "rodar",
@@ -35,10 +22,15 @@
     "max-speed": "Máxima velocidad",
     "acceleration": "Aceleración",
     "tap-sensitivity": "Toque la sensibilidad",
-    "mode": "Modo"
+    "mode": "Modo",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes"
   },
   "home-tab": {
-    "title": "Casa"
+    "title": "Casa",
+    "miles-to-go": "millas que recorrer",
+    "kilometers-to-go": "kilómetros por recorrer"
   },
   "journey-tab": {
     "title": "Viaje"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "Ajustes"
+  },
+  "my-activity-component": {
+    "title": "Mi actividad"
+  },
+  "days": {
+    "sunday": "domingo",
+    "monday": "lunes",
+    "tuesday": "martes",
+    "wednesday": "miércoles",
+    "thursday": "jueves",
+    "friday": "viernes",
+    "saturday": "sábado"
+  },
+  "days-abbreviated": {
+    "sunday": "dom",
+    "monday": "lun",
+    "tuesday": "mar",
+    "wednesday": "mié",
+    "thursday": "jue",
+    "friday": "vie",
+    "saturday": "sáb"
+  },
+  "languages": {
+    "de": "Alemán",
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "it": "Italiano",
+    "ja": "Japonés",
+    "ko": "Coreano",
+    "nl": "Holandés",
+    "ru": "Ruso",
+    "sv": "Sueco",
+    "zh-CN": "Chino simplificado"
   }
 }

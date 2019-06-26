@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "德语",
-    "en": "英语",
-    "es": "西班牙语",
-    "fr": "法国",
-    "it": "意大利",
-    "ja": "日本",
-    "ko": "朝鲜的",
-    "nl": "荷兰人",
-    "ru": "俄语",
-    "sv": "瑞典",
-    "zh-CN": "简体中文"
-  },
-  "tab-titles": {
+  "general": {
     "home": "家",
     "journey": "旅程",
-    "profile": "轮廓"
-  },
-  "generic-terms": {
+    "profile": "轮廓",
     "distance": "距离",
     "coast-time": "海岸时间",
     "pushes": "推",
     "travel": "旅行",
     "miles": "万里",
+    "meters": "米",
+    "kilometers": "公里",
     "today": "万里",
     "afternoon": "下午",
     "roll": "滚",
@@ -35,10 +22,15 @@
     "max-speed": "最大速度",
     "acceleration": "促进",
     "tap-sensitivity": "点击灵敏度",
-    "mode": "模式"
+    "mode": "模式",
+    "day": "天",
+    "week": "周",
+    "month": "月"
   },
   "home-tab": {
-    "title": "家"
+    "title": "Home",
+    "miles-to-go": "要走了几英里",
+    "kilometers-to-go": "公里去"
   },
   "journey-tab": {
     "title": "旅程"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "设置"
+  },
+  "my-activity-component": {
+    "title": "我的活动"
+  },
+  "days": {
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六"
+  },
+  "days-abbreviated": {
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六"
+  },
+  "languages": {
+    "de": "德语",
+    "en": "英语",
+    "es": "西班牙语",
+    "fr": "法国",
+    "it": "意大利",
+    "ja": "日本",
+    "ko": "朝鲜的",
+    "nl": "荷兰人",
+    "ru": "俄语",
+    "sv": "瑞典",
+    "zh-CN": "简体中文"
   }
 }

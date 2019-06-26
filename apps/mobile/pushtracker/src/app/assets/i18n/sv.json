@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "tysk",
-    "en": "engelsk",
-    "es": "spansk",
-    "fr": "franska",
-    "it": "italienska",
-    "ja": "japansk",
-    "ko": "korean",
-    "nl": "holländska",
-    "ru": "ryska",
-    "sv": "svenska",
-    "zh-CN": "Förenklad kinesiska"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Hem",
     "journey": "Resa",
-    "profile": "Profil"
-  },
-  "generic-terms": {
+    "profile": "Profil",
     "distance": "Distans",
     "coast-time": "Coast Time",
     "pushes": "skjuter",
     "travel": "Resa",
     "miles": "miles",
+    "meters": "meter",
+    "kilometers": "kilometer",
     "today": "I dag",
     "afternoon": "eftermiddag",
     "roll": "rulla",
@@ -35,10 +22,15 @@
     "max-speed": "Högsta hastighet",
     "acceleration": "Acceleration",
     "tap-sensitivity": "Tryck på Känslighet",
-    "mode": "Läge"
+    "mode": "Läge",
+    "day": "Dag",
+    "week": "Vecka",
+    "month": "Månad"
   },
   "home-tab": {
-    "title": "Hem"
+    "title": "Hem",
+    "miles-to-go": "mil att gå",
+    "kilometers-to-go": "kilometer att gå"
   },
   "journey-tab": {
     "title": "Resa"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "inställningar"
+  },
+  "my-activity-component": {
+    "title": "Min aktivitet"
+  },
+  "days": {
+    "sunday": "söndag",
+    "monday": "måndag",
+    "tuesday": "tisdag",
+    "wednesday": "onsdag",
+    "thursday": "torsdag",
+    "friday": "fredag",
+    "saturday": "lördag"
+  },
+  "days-abbreviated": {
+    "sunday": "sön",
+    "monday": "mån",
+    "tuesday": "tis",
+    "wednesday": "ons",
+    "thursday": "tor",
+    "friday": "fre",
+    "saturday": "lör"
+  },
+  "languages": {
+    "de": "tysk",
+    "en": "engelsk",
+    "es": "spansk",
+    "fr": "franska",
+    "it": "italienska",
+    "ja": "japansk",
+    "ko": "korean",
+    "nl": "holländska",
+    "ru": "ryska",
+    "sv": "svenska",
+    "zh-CN": "Förenklad kinesiska"
   }
 }

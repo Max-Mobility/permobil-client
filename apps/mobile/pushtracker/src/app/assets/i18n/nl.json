@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "Duitse",
-    "en": "Engels",
-    "es": "Spaans",
-    "fr": "Frans",
-    "it": "Italiaans",
-    "ja": "Japans",
-    "ko": "Koreaans",
-    "nl": "Nederlands",
-    "ru": "Russisch",
-    "sv": "Zweeds",
-    "zh-CN": "Versimpeld Chinees"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Huis",
     "journey": "Reis",
-    "profile": "Profiel"
-  },
-  "generic-terms": {
+    "profile": "Profiel",
     "distance": "Afstand",
     "coast-time": "Kusttijd",
     "pushes": "duwt",
     "travel": "Reizen",
     "miles": "mijlen",
+    "meters": "meters",
+    "kilometers": "kilometers",
     "today": "Vandaag",
     "afternoon": "middag",
     "roll": "rollen",
@@ -35,10 +22,15 @@
     "max-speed": "Maximale snelheid",
     "acceleration": "Versnelling",
     "tap-sensitivity": "Tik op Gevoeligheid",
-    "mode": "mode"
+    "mode": "mode",
+    "day": "Dag",
+    "week": "Week",
+    "month": "Maand"
   },
   "home-tab": {
-    "title": "Huis"
+    "title": "Huis",
+    "miles-to-go": "mijlen te gaan",
+    "kilometers-to-go": "kilometers te gaan"
   },
   "journey-tab": {
     "title": "Reis"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "instellingen"
+  },
+  "my-activity-component": {
+    "title": "Mijn activiteit"
+  },
+  "days": {
+    "sunday": "zondag",
+    "monday": "maandag",
+    "tuesday": "dinsdag",
+    "wednesday": "woensdag",
+    "thursday": "donderdag",
+    "friday": "vrijdag",
+    "saturday": "zaterdag"
+  },
+  "days-abbreviated": {
+    "sunday": "zon",
+    "monday": "maan",
+    "tuesday": "din",
+    "wednesday": "woe",
+    "thursday": "don",
+    "friday": "vri",
+    "saturday": "zat"
+  },
+  "languages": {
+    "de": "Duitse",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "it": "Italiaans",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "nl": "Nederlands",
+    "ru": "Russisch",
+    "sv": "Zweeds",
+    "zh-CN": "Versimpeld Chinees"
   }
 }

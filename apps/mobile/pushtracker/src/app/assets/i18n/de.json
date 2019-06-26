@@ -1,28 +1,15 @@
 {
-  "languages": {
-    "de": "Deutsche",
-    "en": "Englisch",
-    "es": "Spanisch",
-    "fr": "Französisch",
-    "it": "Italienisch",
-    "ja": "japanisch",
-    "ko": "Koreanisch",
-    "nl": "Niederländisch",
-    "ru": "Russisch",
-    "sv": "Schwedisch",
-    "zh-CN": "Vereinfachtes Chinesisch"
-  },
-  "tab-titles": {
+  "general": {
     "home": "Zuhause",
     "journey": "Reise",
-    "profile": "Profil"
-  },
-  "generic-terms": {
+    "profile": "Profil",
     "distance": "Entfernung",
     "coast-time": "Küstenzeit",
     "pushes": "Drückt",
     "travel": "Reise",
     "miles": "Meilen",
+    "meters": "meter",
+    "kilometers": "Kilometer",
     "today": "Heute",
     "afternoon": "Nachmittag",
     "roll": "rollen",
@@ -35,10 +22,15 @@
     "max-speed": "Höchstgeschwindigkeit",
     "acceleration": "Beschleunigung",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
-    "mode": "Modus"
+    "mode": "Modus",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat"
   },
   "home-tab": {
-    "title": "Zuhause"
+    "title": "Zuhause",
+    "miles-to-go": "Meilen zu gehen",
+    "kilometers-to-go": "Kilometer vor dem Ziel"
   },
   "journey-tab": {
     "title": "Reise"
@@ -51,5 +43,39 @@
   },
   "settings-component": {
     "title": "die Einstellungen"
+  },
+  "my-activity-component": {
+    "title": "Meine Aktivität"
+  },
+  "days": {
+    "sunday": "Sonntag",
+    "monday": "Montag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch",
+    "thursday": "Donnerstag",
+    "friday": "Freitag",
+    "saturday": "Samstag"
+  },
+  "days-abbreviated": {
+    "sunday": "Son",
+    "monday": "Mon",
+    "tuesday": "Dien",
+    "wednesday": "Mit",
+    "thursday": "Donn",
+    "friday": "Fre",
+    "saturday": "Sam"
+  },
+  "languages": {
+    "de": "Deutsche",
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "it": "Italienisch",
+    "ja": "japanisch",
+    "ko": "Koreanisch",
+    "nl": "Niederländisch",
+    "ru": "Russisch",
+    "sv": "Schwedisch",
+    "zh-CN": "Vereinfachtes Chinesisch"
   }
 }
