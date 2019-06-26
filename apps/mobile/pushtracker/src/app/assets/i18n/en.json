@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nl": "Dutch",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "zh-CN": "Chinese (Simplified)"
+  },
+  "tab-titles": {
+    "home": "Home",
+    "journey": "Journey",
+    "profile": "Profile"
+  },
+  "generic-terms": {
+    "distance": "Distance",
+    "coast-time": "Coast Time",
+    "pushes": "Pushes",
+    "travel": "Travel",
+    "miles": "Miles",
+    "today": "Today",
+    "afternoon": "afternoon",
+    "roll": "roll",
+    "gender": "Gender",
+    "birthday": "Birthday",
+    "weight": "Weight",
+    "height": "Height",
+    "units": "Units",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Max Speed",
+    "acceleration": "Acceleration",
+    "tap-sensitivity": "Tap Sensitivity",
+    "mode": "Mode"
+  },
+  "home-tab": {
+    "title": "Home"
+  },
+  "journey-tab": {
+    "title": "Journey"
+  },
+  "profile-tab": {
+    "title": "Profile",
+    "activity-goals": "Activity Goals",
+    "about-you": "About You",
+    "chair-info": "Chair Info"
+  },
+  "settings-component": {
+    "title": "Settings"
+  }
+}

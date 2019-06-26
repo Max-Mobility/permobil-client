@@ -36,7 +36,18 @@ export class AppComponent {
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
       this._translateService.setDefaultLang('en');
-      this._translateService.addLangs(['en', 'es']);
+      this._translateService.addLangs([
+        'en',
+        'es',
+        'de',
+        'fr',
+        'ja',
+        'ko',
+        'nl',
+        'ru',
+        'sv',
+        'zh-CN'
+      ]);
     } catch (error) {
       Log.E(error);
       this._logService.logException(error);

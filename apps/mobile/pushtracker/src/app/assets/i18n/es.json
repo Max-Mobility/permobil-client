@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "Alemán",
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "it": "Italiano",
+    "ja": "Japonés",
+    "ko": "Coreano",
+    "nl": "Holandés",
+    "ru": "Ruso",
+    "sv": "Sueco",
+    "zh-CN": "Chino simplificado"
+  },
+  "tab-titles": {
+    "home": "Casa",
+    "journey": "Viaje",
+    "profile": "Perfil"
+  },
+  "generic-terms": {
+    "distance": "Distancia",
+    "coast-time": "Hora de la costa",
+    "pushes": "Empuja",
+    "travel": "Viajar",
+    "miles": "Millas",
+    "today": "Hoy",
+    "afternoon": "tarde",
+    "roll": "rodar",
+    "gender": "Género",
+    "birthday": "Cumpleaños",
+    "weight": "Peso",
+    "height": "Altura",
+    "units": "Unidades",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Máxima velocidad",
+    "acceleration": "Aceleración",
+    "tap-sensitivity": "Toque la sensibilidad",
+    "mode": "Modo"
+  },
+  "home-tab": {
+    "title": "Casa"
+  },
+  "journey-tab": {
+    "title": "Viaje"
+  },
+  "profile-tab": {
+    "title": "Perfil",
+    "activity-goals": "Objetivos de actividad",
+    "about-you": "Acerca de ti",
+    "chair-info": "Información de la silla"
+  },
+  "settings-component": {
+    "title": "Ajustes"
+  }
+}

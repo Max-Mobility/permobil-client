@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "tysk",
+    "en": "engelsk",
+    "es": "spansk",
+    "fr": "franska",
+    "it": "italienska",
+    "ja": "japansk",
+    "ko": "korean",
+    "nl": "holländska",
+    "ru": "ryska",
+    "sv": "svenska",
+    "zh-CN": "Förenklad kinesiska"
+  },
+  "tab-titles": {
+    "home": "Hem",
+    "journey": "Resa",
+    "profile": "Profil"
+  },
+  "generic-terms": {
+    "distance": "Distans",
+    "coast-time": "Coast Time",
+    "pushes": "skjuter",
+    "travel": "Resa",
+    "miles": "miles",
+    "today": "I dag",
+    "afternoon": "eftermiddag",
+    "roll": "rulla",
+    "gender": "Kön",
+    "birthday": "Födelsedag",
+    "weight": "Vikt",
+    "height": "Höjd",
+    "units": "Enheter",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Högsta hastighet",
+    "acceleration": "Acceleration",
+    "tap-sensitivity": "Tryck på Känslighet",
+    "mode": "Läge"
+  },
+  "home-tab": {
+    "title": "Hem"
+  },
+  "journey-tab": {
+    "title": "Resa"
+  },
+  "profile-tab": {
+    "title": "Profil",
+    "activity-goals": "Aktivitetsmål",
+    "about-you": "Om dig",
+    "chair-info": "Stolinfo"
+  },
+  "settings-component": {
+    "title": "inställningar"
+  }
+}

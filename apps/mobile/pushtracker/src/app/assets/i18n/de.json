@@ -1,0 +1,55 @@
+{
+  "languages": {
+    "de": "Deutsche",
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "it": "Italienisch",
+    "ja": "japanisch",
+    "ko": "Koreanisch",
+    "nl": "Niederländisch",
+    "ru": "Russisch",
+    "sv": "Schwedisch",
+    "zh-CN": "Vereinfachtes Chinesisch"
+  },
+  "tab-titles": {
+    "home": "Zuhause",
+    "journey": "Reise",
+    "profile": "Profil"
+  },
+  "generic-terms": {
+    "distance": "Entfernung",
+    "coast-time": "Küstenzeit",
+    "pushes": "Drückt",
+    "travel": "Reise",
+    "miles": "Meilen",
+    "today": "Heute",
+    "afternoon": "Nachmittag",
+    "roll": "rollen",
+    "gender": "Geschlecht",
+    "birthday": "Geburtstag",
+    "weight": "Gewicht",
+    "height": "Höhe",
+    "units": "Einheiten",
+    "smartdrive": "SmartDrive",
+    "max-speed": "Höchstgeschwindigkeit",
+    "acceleration": "Beschleunigung",
+    "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
+    "mode": "Modus"
+  },
+  "home-tab": {
+    "title": "Zuhause"
+  },
+  "journey-tab": {
+    "title": "Reise"
+  },
+  "profile-tab": {
+    "title": "Profil",
+    "activity-goals": "Aktivitätsziele",
+    "about-you": "Über dich",
+    "chair-info": "Lehrstuhlinfo"
+  },
+  "settings-component": {
+    "title": "die Einstellungen"
+  }
+}
