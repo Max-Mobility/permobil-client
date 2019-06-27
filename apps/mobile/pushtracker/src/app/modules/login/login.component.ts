@@ -129,11 +129,7 @@ export class LoginComponent implements OnInit {
   }
 
   navToForgotPassword() {
-    this._routerExtensions.navigate(['/forgot-password'], {
-      transition: {
-        name: 'slideLeft'
-      }
-    });
+    this._routerExtensions.navigate(['/forgot-password'], {});
   }
 
   onEmailTextChange(args) {
@@ -142,11 +138,7 @@ export class LoginComponent implements OnInit {
   }
 
   navToSignUp() {
-    this._routerExtensions.navigate(['/sign-up'], {
-      transition: {
-        name: 'slideLeft'
-      }
-    });
+    this._routerExtensions.navigate(['/sign-up'], {});
   }
 
   private _isEmailValid(text: string): boolean {

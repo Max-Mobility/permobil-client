@@ -25,5 +25,19 @@
         class="submitBtn"
       ></Button>
     </StackLayout>
+    <GridLayout row="2" rows="*" columns="auto, *, auto">
+      <Button
+        col="0"
+        [text]="'general.forgot-password' | translate"
+        (tap)="navToForgotPassword()"
+        class="btn-transparent text-white"
+      ></Button>
+      <Button
+        col="2"
+        [text]="'general.sign-up' | translate"
+        (tap)="navToSignUp()"
+        class="btn-transparent text-white"
+      ></Button>
+    </GridLayout>
   </GridLayout>
 </ScrollView>
