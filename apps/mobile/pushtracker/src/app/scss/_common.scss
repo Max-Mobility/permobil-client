@@ -8,14 +8,6 @@
   font-family: $material-icon;
 }
 
-.fa {
-  font-family: $fa;
-}
-
-.ionicon {
-  font-family: $ionicon;
-}
-
 label {
   font-family: $os-Light;
 }
@@ -45,4 +37,8 @@ label {
   border-width: 1;
   android-elevation: 0;
   android-dynamic-elevation-offset: 0;
+}
+
+.text-white {
+  color: $white;
 }

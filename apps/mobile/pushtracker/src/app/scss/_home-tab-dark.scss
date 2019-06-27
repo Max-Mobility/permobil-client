@@ -5,41 +5,65 @@
   height: 100%;
   width: 100%;
   padding: 10;
-}
 
-.infoBtn {
-  background-color: $black;
-  color: $white;
-  height: 30;
-  width: 30;
-  border-radius: 15;
-  horizontal-align: right;
-  vertical-align: top;
-}
-
-.circleDetails {
-  height: 60%;
-  width: 60%;
-  border-radius: 50%;
-  background-color: $black;
-  android-elevation: 10;
-
-  label {
+  .infoBtn {
+    background-color: $black;
     color: $white;
-    horizontal-align: center;
-    vertical-align: center;
+    font-family: $material-icon;
+    height: 30;
+    width: 30;
+    horizontal-align: right;
+    vertical-align: top;
   }
-}
 
-.dataDetails {
-  horizontal-align: center;
-  vertical-align: center;
-
-  label {
+  .cousteauCircle {
+    background-color: $permobil-cousteau;
     color: $white;
-    font-weight: bold;
+    height: 50;
+    width: 50;
+    border-radius: 25;
     text-align: center;
+    vertical-align: center;
+    horizontal-align: center;
+    android-elevation: 10;
+  }
+
+  .violetCircle {
+    background-color: $permobil-violet;
+    color: $white;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    text-align: center;
+    vertical-align: center;
+    horizontal-align: center;
+    android-elevation: 10;
+  }
+
+  .circleDetails {
+    height: 60%;
+    width: 60%;
+    border-radius: 50%;
+    background-color: $black;
+    android-elevation: 10;
+
+    label {
+      color: $white;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+
+  .dataDetails {
     horizontal-align: center;
     vertical-align: center;
+
+    label {
+      color: $white;
+      font-weight: bold;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center;
+    }
   }
 }

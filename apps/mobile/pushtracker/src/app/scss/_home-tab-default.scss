@@ -5,41 +5,65 @@
   height: 100%;
   width: 100%;
   padding: 10;
-}
 
-.infoBtn {
-  background-color: $permobil-steel;
-  color: $black;
-  height: 40;
-  width: 40;
-  border-radius: 20;
-  horizontal-align: right;
-  vertical-align: top;
-}
-
-.circleDetails {
-  height: 100;
-  width: 100;
-  border-radius: 50;
-  background-color: #9c85be;
-  android-elevation: 10;
-
-  label {
-    color: $white;
-    horizontal-align: center;
-    vertical-align: center;
-  }
-}
-
-.dataDetails {
-  horizontal-align: center;
-  vertical-align: center;
-
-  label {
+  .infoBtn {
+    @extend .btn-transparent;
     color: $black;
-    font-weight: bold;
+    font-family: $material-icon;
+    font-size: 24;
+    height: 30;
+    width: 30;
+    horizontal-align: right;
+    vertical-align: top;
+  }
+
+  .cousteauCircle {
+    background-color: $permobil-cousteau;
+    color: $white;
+    height: 50;
+    width: 50;
+    border-radius: 25;
     text-align: center;
+    vertical-align: center;
+    horizontal-align:center;    android-elevation: 10;
+  }
+
+  .violetCircle {
+    background-color: $permobil-violet;
+    color: $white;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    text-align: center;
+    vertical-align: center;
+    horizontal-align:center;
+    android-elevation: 10;
+  }
+
+  .circleDetails {
+    height: 100;
+    width: 100;
+    border-radius: 50;
+    background-color: #9c85be;
+    android-elevation: 10;
+
+    label {
+      color: $white;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+
+  .dataDetails {
     horizontal-align: center;
     vertical-align: center;
+
+    label {
+      @extend .bold;
+      color: $black;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center;
+    }
   }
 }

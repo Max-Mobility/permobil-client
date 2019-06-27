@@ -22,13 +22,13 @@ export class HomeTabComponent implements OnInit {
     private _translateService: TranslateService
   ) {
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.coastTimeCirclePercentage = 68;
+    this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.milesToGoText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
     )}`;
     this.pushCountData = `1514`;
     this.coastTimeData = `3.6`;
-    this.distanceData = `2.6`;
+    this.distanceData = `2.75`;
   }
 
   ngOnInit(): void {
