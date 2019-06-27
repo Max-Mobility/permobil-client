@@ -1,10 +1,35 @@
 <ActionBar title="Profile" class="action-bar"></ActionBar>
-
-<ScrollView height="100%" width="100%">
-  <GridLayout height="100%" width="100%">
-    <Label text="Profile Here" textWrap="true"></Label>
-    <StackLayout class="avatarCircle">
-      <Label text="B" textWrap="true"></Label>
-    </StackLayout>
-  </GridLayout>
+<ScrollView>
+  <StackLayout>
+    <GridLayout columns="auto,auto,*" rows="*, *, *, *, *" >
+      <StackLayout row="0" col="0" colspan="2" rowspan="2" class="avatarCircle">
+        <Label text="B" textWrap="true"></Label>
+      </StackLayout>
+      <label row="0" col="2" [text]="name"></label>
+      <label row="1" col="2" [text]="email"></label>
+      <label  col="0" row="2" colspan="5" text="Activity Goals"></label>
+      <StackLayout row="3" colspan="3" orientation="vertical">
+        <GridLayout columns="auto,*,auto" rows="auto,*,auto" >
+          <label col="0"  class="label" text="Coast Time"></label>
+          <DropDown
+            col="0"
+            row="1"
+            class="dropdown"
+            [hint]=""
+            [items]="coastTime"
+          ></DropDown>
+          <label col="2" class="label" text="Distance"></label>
+          <DropDown
+            col="2"
+            row="1"
+            class="dropdown"
+            [hint]=""
+            [items]="distance"
+          ></DropDown>
+        </GridLayout>
+      <label  col="0" row="3" colspan="5" text="About you"></label>
+      </StackLayout>
+    </GridLayout>
+  </StackLayout>
 </ScrollView>
+

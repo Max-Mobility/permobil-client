@@ -13,4 +13,14 @@
     horizontal-align: center;
     vertical-align: center;
   }
+  .dropdown {
+    background-color: $permobil-hero;
+    color: $white;
+    border-radius: 2;
+    padding: 5;
+    margin: 10 20;
+    vertical-align: center;
+    text-align: right;
+  }
+
 }
