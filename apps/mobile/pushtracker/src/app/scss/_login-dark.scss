@@ -1,6 +1,41 @@
 @import 'variables';
 
-.submitBtn {
-  color: $white;
-  background-color: $black;
+.fullScreenImage {
+  background-image: url('~/app/assets/images/wheelchair_portrait.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+
+  .loginLayout {
+    height: 100%;
+    width: 100%;
+    padding: 10;
+  }
+
+  .loginForm {
+    // background: linear-gradient(to bottom, #1f1c2cb3, #928dab85);
+    // background: linear-gradient(45deg, #16222a, #3a6073);
+    background: linear-gradient(-45deg, rgba(41, 46, 73, 0.927), #566d7bf4);
+    // background: linear-gradient(to bottom, #654ea3, #eaafc8);
+    color: $white;
+    border-radius: 4;
+    android-elevation: 10;
+    vertical-align: center;
+
+    image {
+      margin: 5;
+    }
+
+    TextField {
+      margin: 5;
+    }
+
+    .submitBtn {
+      color: $white;
+      background-color: $permobil-violet;
+      margin: 8;
+    }
+  }
 }
