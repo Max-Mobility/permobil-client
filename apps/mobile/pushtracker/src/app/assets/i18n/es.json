@@ -25,7 +25,13 @@
     "mode": "Modo",
     "day": "Día",
     "week": "Semana",
-    "month": "Mes"
+    "month": "Mes",
+    "login": "Iniciar sesión",
+    "submit": "Enviar",
+    "email": "Email",
+    "password": "Contraseña",
+    "forgot-password": "Se te olvidó tu contraseña",
+    "sign-up": "Regístrate"
   },
   "home-tab": {
     "title": "Casa",

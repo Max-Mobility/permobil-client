@@ -25,7 +25,13 @@
     "mode": "방법",
     "day": "일",
     "week": "주",
-    "month": "달"
+    "month": "달",
+    "login": "로그인",
+    "submit": "제출",
+    "email": "이메일",
+    "password": "암호",
+    "forgot-password": "비밀번호를 잊으 셨나요",
+    "sign-up": "가입"
   },
   "home-tab": {
     "title": "집",

@@ -25,7 +25,13 @@
     "mode": "模式",
     "day": "天",
     "week": "周",
-    "month": "月"
+    "month": "月",
+    "login": "登录",
+    "submit": "提交",
+    "email": "电子邮件",
+    "password": "密码",
+    "forgot-password": "忘记密码",
+    "sign-up": "注册"
   },
   "home-tab": {
     "title": "Home",

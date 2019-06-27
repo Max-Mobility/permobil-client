@@ -25,7 +25,13 @@
     "mode": "モード",
     "day": "日",
     "week": "週間",
-    "month": "月"
+    "month": "月",
+    "login": "ログイン",
+    "submit": "提出する",
+    "email": "Eメール",
+    "password": "パスワード",
+    "forgot-password": "パスワードをお忘れですか",
+    "sign-up": "Sign Up"
   },
   "home-tab": {
     "title": "ホーム",

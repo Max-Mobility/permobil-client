@@ -25,7 +25,13 @@
     "mode": "Mode",
     "day": "Day",
     "week": "Week",
-    "month": "Month"
+    "month": "Month",
+    "login": "Login",
+    "submit": "Submit",
+    "email": "Email",
+    "password": "Password",
+    "forgot-password": "Forgot Password",
+    "sign-up": "Sign Up"
   },
   "home-tab": {
     "title": "Home",

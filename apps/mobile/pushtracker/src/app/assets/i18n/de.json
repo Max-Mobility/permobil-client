@@ -25,7 +25,13 @@
     "mode": "Modus",
     "day": "Tag",
     "week": "Woche",
-    "month": "Monat"
+    "month": "Monat",
+    "login": "Anmeldung",
+    "submit": "einreichen",
+    "email": "Email",
+    "password": "Passwort",
+    "forgot-password": "Passwort vergessen",
+    "sign-up": "Anmelden"
   },
   "home-tab": {
     "title": "Zuhause",

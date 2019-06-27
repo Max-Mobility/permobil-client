@@ -25,7 +25,13 @@
     "mode": "mode",
     "day": "Dag",
     "week": "Week",
-    "month": "Maand"
+    "month": "Maand",
+    "login": "Log in",
+    "submit": "voorleggen",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "forgot-password": "Wachtwoord vergeten",
+    "sign-up": "Inschrijven"
   },
   "home-tab": {
     "title": "Huis",

@@ -25,7 +25,13 @@
     "mode": "Läge",
     "day": "Dag",
     "week": "Vecka",
-    "month": "Månad"
+    "month": "Månad",
+    "login": "Logga in",
+    "submit": "Lämna",
+    "email": "E-post",
+    "password": "Lösenord",
+    "forgot-password": "Glömt ditt lösenord",
+    "sign-up": "Bli Medlem"
   },
   "home-tab": {
     "title": "Hem",
