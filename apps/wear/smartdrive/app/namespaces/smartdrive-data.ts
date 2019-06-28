@@ -145,8 +145,8 @@ export namespace SmartDriveData {
 
     export function saveToFileSystem(f) {
       const file = File.fromPath(f.filename || f[SmartDriveData.Firmwares.FileName]);
-      console.log('f.filename', f.filename, file);
-      console.log('f.data', typeof f.data, f.data.length);
+      // console.log('f.filename', f.filename, file);
+      // console.log('f.data', typeof f.data, f.data.length);
       file.writeSync(f.data, (err) => {
         console.error('Could not save to fs:', err);
       });

@@ -1,0 +1,80 @@
+{
+  "languages": {
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nl": "Dutch",
+    "zh": "Chinese"
+  },
+  "power-assist": {
+    "estimated-range": "Estimated Range",
+    "speed": "Speed"
+  },
+  "menu": {
+  },
+  "settings": {
+    "pair-smartdrive": "Pair SmartDrive",
+    "scanning": "Scanning",
+    "select-smartdrive": "Select SmartDrive",
+    "paired-to-smartdrive": "Paired to SmartDrive"
+  },
+  "updates": {
+    "checking-for-updates": "Checking for Updates",
+    "up-to-date": "SmartDrive is up to date!",
+    "version": "Version",
+    "success": "SmartDrive update completed successfully!",
+    "failed": "Update failed",
+    "canceled": "Update canceled",
+    "error-getting": "Error getting updates"
+  },
+  "failures": {
+    "no-smartdrive-paired": "No SmartDrive paired to the app!",
+    "must-wear-watch": "You must wear the watch to activate power assist.",
+    "no-smartdrives-found": "No SmartDrives found nearby.",
+    "scan": "Could not scan",
+    "connect": "Could not connect to",
+    "send-settings": "Failed to send settings to",
+    "saving-error": "Failed saving SmartDrive error",
+    "getting-error": "Failed getting SmartDrive error",
+    "saving-usage": "Failed saving usage"
+  },
+  "warnings": {
+    "saved-settings": {
+      "title": "Saved Settings",
+      "message": "CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance."
+    }
+  },
+  "buttons": {
+    "ok": "OK",
+    "dismiss": "Dismiss"
+  },
+  "units": {
+    "english": "English",
+    "metric": "Metric",
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  },
+  "ota": {
+    "action": {
+      "start": "Start",
+      "pause": "Pause",
+      "resume": "Resume",
+      "cancel": "Cancel",
+      "retry": "Retry",
+      "force": "Force"
+    },
+    "sd": {
+      "state": {
+      }
+    }
+  }
+}

@@ -24,7 +24,7 @@ public:
   enum class ControlMode : uint8_t;
   enum class Units : uint8_t;
   enum class AttendantMode : uint8_t;
-  enum class ThrottleMode : uint8_t;
+  enum class SwitchControlMode : uint8_t;
 
   enum class Error : uint8_t
   {
@@ -61,9 +61,9 @@ public:
     Latching
   };
 
-  enum class ThrottleMode : uint8_t
+  enum class SwitchControlMode : uint8_t
   {
-    Active,
+    Momentary,
     Latching
   };
 
@@ -90,15 +90,15 @@ public:
     return (bool)((s->settingsFlags1 >> (uint8_t)boolSetting) & 0x01);
   }
 
-  struct ThrottleSettings
+  struct SwitchControlSettings
   {
-    ThrottleMode throttleMode; /** Bitmask of boolean settings.      */
+    SwitchControlMode mode; /** Bitmask of boolean settings.      */
     uint8_t padding1;
     uint8_t padding2;
     uint8_t padding3;
     float maxSpeed; /** Slider setting, range: [0.1, 1.0] */
   };
-  static const int throttleSettingsLength = sizeof(ThrottleSettings);
+  static const int switchControlSettingsLength = sizeof(SwitchControlSettings);
 };
 
 /*** Packet ***/
@@ -164,7 +164,7 @@ public:
     DisconnectMPGame,
     SetPushSettings,
     SetLEDColor,
-    SetThrottleSettings
+    SetSwitchControlSettings
   };
 
   enum class OTA : uint8_t
@@ -325,7 +325,7 @@ public:
   // The actual data contained in the packet
   union {
     SmartDrive::Settings settings;
-    SmartDrive::ThrottleSettings throttleSettings;
+    SmartDrive::SwitchControlSettings switchControlSettings;
     PushSettings pushSettings;
     VersionInfo versionInfo;
     DailyInfo dailyInfo;
@@ -545,8 +545,8 @@ public:
       case Packet::Command::SetLEDColor:
         // TODO: need to flesh out this packet def.
         break;
-      case Packet::Command::SetThrottleSettings:
-        dataLen = sizeof(throttleSettings);
+      case Packet::Command::SetSwitchControlSettings:
+        dataLen = sizeof(switchControlSettings);
         break;
       default:
         break;
@@ -644,9 +644,9 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
       .value("Advanced", SmartDrive::ControlMode::Advanced)
       .value("Off", SmartDrive::ControlMode::Off);
 
-  emscripten::enum_<SmartDrive::ThrottleMode>("ThrottleMode")
-      .value("Active", SmartDrive::ThrottleMode::Active)
-      .value("Latching", SmartDrive::ThrottleMode::Latching);
+  emscripten::enum_<SmartDrive::SwitchControlMode>("SwitchControlMode")
+      .value("Momentary", SmartDrive::SwitchControlMode::Momentary)
+      .value("Latching", SmartDrive::SwitchControlMode::Latching);
 
   emscripten::value_object<SmartDrive::Settings>("SmartDriveSettings")
       .field("ControlMode", &SmartDrive::Settings::controlMode)
@@ -657,12 +657,12 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
       .field("Acceleration", &SmartDrive::Settings::acceleration)
       .field("MaxSpeed", &SmartDrive::Settings::maxSpeed);
 
-  emscripten::value_object<SmartDrive::ThrottleSettings>("ThrottleSettings")
-      .field("ThrottleMode", &SmartDrive::ThrottleSettings::throttleMode)
-      .field("Padding1", &SmartDrive::ThrottleSettings::padding1)
-      .field("Padding2", &SmartDrive::ThrottleSettings::padding2)
-      .field("Padding3", &SmartDrive::ThrottleSettings::padding3)
-      .field("MaxSpeed", &SmartDrive::ThrottleSettings::maxSpeed);
+  emscripten::value_object<SmartDrive::SwitchControlSettings>("SwitchControlSettings")
+      .field("Mode", &SmartDrive::SwitchControlSettings::mode)
+      .field("Padding1", &SmartDrive::SwitchControlSettings::padding1)
+      .field("Padding2", &SmartDrive::SwitchControlSettings::padding2)
+      .field("Padding3", &SmartDrive::SwitchControlSettings::padding3)
+      .field("MaxSpeed", &SmartDrive::SwitchControlSettings::maxSpeed);
 
   // PACKET BINDINGS
   emscripten::enum_<Packet::Device>("Device")
@@ -777,7 +777,7 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
       .value("DisconnectMPGame", Packet::Command::DisconnectMPGame)
       .value("SetPushSettings", Packet::Command::SetPushSettings)
       .value("SetLEDColor", Packet::Command::SetLEDColor)
-      .value("SetThrottleSettings", Packet::Command::SetThrottleSettings);
+      .value("SetSwitchControlSettings", Packet::Command::SetSwitchControlSettings);
 
   emscripten::enum_<Packet::OTA>("PacketOTAType")
       .value("SmartDrive", Packet::OTA::SmartDrive)
@@ -815,7 +815,7 @@ EMSCRIPTEN_BINDINGS(packet_bindings)
 
       // Actual payload info
       .property("settings", &Packet::settings)
-      .property("throttleSettings", &Packet::throttleSettings)
+      .property("switchControlSettings", &Packet::switchControlSettings)
       .property("pushSettings", &Packet::pushSettings)
       .property("versionInfo", &Packet::versionInfo)
       .property("dailyInfo", &Packet::dailyInfo)
