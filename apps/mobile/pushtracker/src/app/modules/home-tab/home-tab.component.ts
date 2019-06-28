@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import * as themes from 'nativescript-themes';
-import { Page } from 'tns-core-modules/ui/page';
 
 @Component({
   selector: 'home-tab',
@@ -12,18 +11,15 @@ import { Page } from 'tns-core-modules/ui/page';
 export class HomeTabComponent implements OnInit {
   distanceCirclePercentage: number;
   coastTimeCirclePercentage: number;
-  milesToGoText: string;
+  distanceRemainingText: string;
   pushCountData: string;
   coastTimeData: string;
   distanceData: string;
 
-  constructor(
-    private _page: Page,
-    private _translateService: TranslateService
-  ) {
+  constructor(private _translateService: TranslateService) {
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.milesToGoText = `0.4 ${this._translateService.instant(
+    this.distanceRemainingText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
     )}`;
     this.pushCountData = `1514`;

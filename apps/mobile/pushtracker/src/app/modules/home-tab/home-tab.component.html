@@ -1,11 +1,11 @@
-<ScrollView class="home-tab-layout">
+<ScrollView id="home-tab-layout">
   <StackLayout>
     <GridLayout rows="*" columns="auto, *, auto">
       <Button
         row="0"
         col="2"
         text="&#xf44c;"
-        class="infoBtn ionicon"
+        class="info-btn ionicon"
         (tap)="onInfoTap()"
       ></Button>
     </GridLayout>
@@ -41,10 +41,21 @@
         barWidth="30"
         [progress]="coastTimeCirclePercentage"
       >
-        <GridLayout rows="*" columns="*" class="circleDetails">
-          <Label [text]="milesToGoText" textWrap="true"></Label>
-        </GridLayout>
       </AnimatedCircle>
+      <GridLayout
+        row="1"
+        col="1"
+        rows="auto, *, auto"
+        columns="auto, *, auto"
+        class="distance-remaining-circle"
+      >
+        <Label
+          row="1"
+          col="1"
+          [text]="distanceRemainingText"
+          textWrap="true"
+        ></Label>
+      </GridLayout>
     </GridLayout>
 
     // Data Details
@@ -58,45 +69,100 @@
         rowSpan="2"
         col="1"
         text=">"
-        class="cousteauCircle"
+        class="cousteau-circle"
+        verticalAlignment="center"
+        horizontalAlignment="center"
         textWrap="true"
       ></Label>
-      <Label
+
+      <GridLayout
         row="0"
+        rowSpan="2"
         col="2"
-        [text]="coastTimeCirclePercentage + '/100'"
-        textWrap="true"
-      ></Label>
-      <Label
-        row="1"
-        col="2"
-        [text]="'general.coast-time' | translate"
-        textWrap="true"
-      ></Label>
+        class="coast-time-data"
+        verticalAlignment="center"
+        horizontalAlignment="center"
+        rows="*, *"
+        columns="auto, auto"
+      >
+        <Label
+          row="0"
+          col="0"
+          class="coast-time-value bold"
+          verticalAlignment="bottom"
+          horizontalAlignment="left"
+          [text]="coastTimeCirclePercentage"
+          textWrap="true"
+        ></Label>
+        <Label
+          row="0"
+          col="1"
+          class="coast-time-max bold"
+          verticalAlignment="bottom"
+          horizontalAlignment="left"
+          text="/100"
+          textWrap="true"
+        ></Label>
+
+        <Label
+          row="1"
+          colSpan="2"
+          class="bold"
+          verticalAlignment="top"
+          horizontalAlignment="left"
+          [text]="'general.coast-time' | translate"
+          textWrap="true"
+        ></Label>
+      </GridLayout>
 
       <Label
         row="0"
         rowSpan="2"
         col="4"
         text=">>"
-        class="violetCircle"
+        class="violet-circle"
         textWrap="true"
       ></Label>
-      <Label
+
+      <GridLayout
         row="0"
+        rowSpan="2"
         col="5"
-        [text]="distanceCirclePercentage"
-        textWrap="true"
-      ></Label>
-      <Label
-        row="1"
-        col="5"
-        [text]="'general.distance' | translate"
-        textWrap="true"
-      ></Label>
+        class="distance-data"
+        verticalAlignment="center"
+        horizontalAlignment="center"
+        rows="*, *"
+        columns="auto, auto"
+      >
+        <Label
+          row="0"
+          col="0"
+          class="distance-value"
+          [text]="distanceCirclePercentage"
+          textWrap="true"
+        ></Label>
+        <Label
+          row="0"
+          col="1"
+          class="distance-value-max bold"
+          verticalAlignment="bottom"
+          horizontalAlignment="left"
+          text="/5"
+          textWrap="true"
+        ></Label>
+        <Label
+          row="1"
+          col="0"
+          class="bold"
+          verticalAlignment="top"
+          horizontalAlignment="left"
+          [text]="'general.distance' | translate"
+          textWrap="true"
+        ></Label>
+      </GridLayout>
     </GridLayout>
 
-    <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="dataDetails">
+    <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="data-details">
       // push count data
       <Label row="0" col="0" [text]="pushCountData" textWrap="true"></Label>
       <Label

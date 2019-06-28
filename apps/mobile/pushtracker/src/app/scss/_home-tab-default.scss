@@ -1,12 +1,12 @@
 @import 'variables';
 
-.home-tab-layout {
+#home-tab-layout {
   background-color: $white;
   height: 100%;
   width: 100%;
   padding: 10;
 
-  .infoBtn {
+  .info-btn {
     @extend .btn-transparent;
     color: $grey;
     font-size: 18;
@@ -15,37 +15,62 @@
     margin: 4;
   }
 
-  .cousteauCircle {
+  .cousteau-circle {
     background-color: $permobil-cousteau-light;
     color: $permobil-cousteau-dark;
     font-size: 36;
     height: 50;
     width: 50;
     border-radius: 25;
+    margin: 6;
     text-align: center;
-    vertical-align: center;
-    horizontal-align: center;
     android-elevation: 10;
   }
 
-  .violetCircle {
+  .coast-time-data {
+    margin: 0 4 0 4;
+  }
+
+  .coast-time-value {
+    font-size: 28;
+  }
+
+  .coast-time-max {
+    font-size: 16;
+  }
+
+  .violet-circle {
     background-color: $permobil-violet-light;
     color: $permobil-violet-dark;
     font-size: 36;
     height: 50;
     width: 50;
     border-radius: 25;
+    margin: 6;
     text-align: center;
     vertical-align: center;
     horizontal-align: center;
     android-elevation: 10;
   }
 
-  .circleDetails {
-    height: 100;
-    width: 100;
-    border-radius: 50;
+  .distance-data {
+    margin: 0 4 0 4;
+  }
+
+  .distance-value {
+    font-size: 28;
+  }
+  .distance-value-max {
+    font-size: 16;
+  }
+
+  .distance-remaining-circle {
+    height: 140;
+    width: 140;
+    border-radius: 70;
     background-color: $permobil-violet-light;
+    horizontal-align: center;
+    vertical-align: center;
     android-elevation: 10;
 
     label {
@@ -55,7 +80,7 @@
     }
   }
 
-  .dataDetails {
+  .data-details {
     horizontal-align: center;
     vertical-align: center;
 
