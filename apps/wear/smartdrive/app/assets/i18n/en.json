@@ -64,10 +64,10 @@
   },
   "about": {
     "title": "Information",
-    "sd.mcu.version": "SmartDrive MCU Version",
-    "sd.ble.version": "SmartDrive BLE Version",
-    "sd.serial-number": "SmartDrive Serial Number",
-    "watch.serial-number": "TicWatch Serial Number",
+    "sd-mcu-version": "SmartDrive MCU Version",
+    "sd-ble-version": "SmartDrive BLE Version",
+    "sd-serial-number": "SmartDrive Serial Number",
+    "watch-serial-number": "TicWatch Serial Number",
     "version": "App Version",
     "database": "Database ID"
   },

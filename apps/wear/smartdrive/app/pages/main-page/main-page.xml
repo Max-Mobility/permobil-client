@@ -374,28 +374,28 @@
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.sd.mcu.version') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.sd-mcu-version') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ mcuVersion }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.sd.ble.version') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.sd-ble-version') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.sd.serial-number') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.sd-serial-number') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.watch.serial-number') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
