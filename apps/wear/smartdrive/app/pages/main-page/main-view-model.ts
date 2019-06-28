@@ -84,6 +84,7 @@ export class MainViewModel extends Observable {
    */
   @Prop() isSettingsLayoutEnabled = false;
   @Prop() isChangeSettingsLayoutEnabled = false;
+  @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = '';
   @Prop() changeSettingKeyValue;
   @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
@@ -1399,28 +1400,29 @@ export class MainViewModel extends Observable {
     this.tempSettings.copy(this.settings);
     this.tempSwitchControlSettings.copy(this.switchControlSettings);
     const tappedId = args.object.id as string;
+    this.activeSettingToChange = tappedId.toLowerCase();
     // TODO: update these for translation
-    switch (tappedId.toLowerCase()) {
+    switch (this.activeSettingToChange) {
       case 'maxspeed':
-        this.changeSettingKeyString = 'Max Speed';
+        this.changeSettingKeyString = L('settings.max-speed');
         break;
       case 'acceleration':
-        this.changeSettingKeyString = 'Acceleration';
+        this.changeSettingKeyString = L('settings.acceleration');
         break;
       case 'tapsensitivity':
-        this.changeSettingKeyString = 'Tap Sensitivity';
+        this.changeSettingKeyString = L('settings.tap-sensitivity');
         break;
       case 'controlmode':
-        this.changeSettingKeyString = 'Control Mode';
+        this.changeSettingKeyString = L('settings.control-mode');
         break;
       case 'units':
-        this.changeSettingKeyString = 'Units';
+        this.changeSettingKeyString = L('settings.units');
         break;
       case 'switchcontrolmode':
-        this.changeSettingKeyString = 'Switch Control Mode';
+        this.changeSettingKeyString = L('switch-control.mode');
         break;
       case 'switchcontrolspeed':
-        this.changeSettingKeyString = 'Switch Control Speed';
+        this.changeSettingKeyString = L('switch-control.max-speed');
         break;
       default:
         break;
@@ -1435,26 +1437,26 @@ export class MainViewModel extends Observable {
 
   updateSettingsChangeDisplay() {
     // TODO: update these for translation
-    switch (this.changeSettingKeyString) {
-      case 'Max Speed':
+    switch (this.activeSettingToChange) {
+      case 'maxspeed':
         this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
         break;
-      case 'Acceleration':
+      case 'acceleration':
         this.changeSettingKeyValue = `${this.tempSettings.acceleration} %`;
         break;
-      case 'Tap Sensitivity':
+      case 'tapsensitivity':
         this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
         break;
-      case 'Control Mode':
+      case 'controlmode':
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
         return;
-      case 'Units':
+      case 'units':
         this.changeSettingKeyValue = `${this.tempSettings.units}`;
         return;
-      case 'Switch Control Mode':
+      case 'switchcontrolmode':
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.mode}`;
         return;
-      case 'Switch Control Speed':
+      case 'switchcontrolspeed':
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
         return;
       default:
@@ -1485,7 +1487,7 @@ export class MainViewModel extends Observable {
     this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
     // update estimated range display
     this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
-    this.estimatedDistanceDescription = `${L('power-assist.distance')} (${this.distanceUnits})`;
+    this.estimatedDistanceDescription = `${L('power-assist.estimated-range')} (${this.distanceUnits})`;
     if (this.settings.units === 'Metric') {
       // update estimated range display
       this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
@@ -1516,14 +1518,14 @@ export class MainViewModel extends Observable {
   }
 
   onIncreaseSettingsTap() {
-    this.tempSettings.increase(this.changeSettingKeyString);
-    this.tempSwitchControlSettings.increase(this.changeSettingKeyString);
+    this.tempSettings.increase(this.activeSettingToChange);
+    this.tempSwitchControlSettings.increase(this.activeSettingToChange);
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap(args) {
-    this.tempSettings.decrease(this.changeSettingKeyString);
-    this.tempSwitchControlSettings.decrease(this.changeSettingKeyString);
+    this.tempSettings.decrease(this.activeSettingToChange);
+    this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
     this.updateSettingsChangeDisplay();
   }
 

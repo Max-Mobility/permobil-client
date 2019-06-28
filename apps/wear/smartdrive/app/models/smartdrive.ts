@@ -1357,15 +1357,22 @@ export namespace SmartDrive {
     increase(key: string, increment: number = 10): void {
       let index;
       switch (key) {
+        case 'maxspeed':
         case 'Max Speed':
+        case 'max-speed':
           this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
           break;
+        case 'acceleration':
         case 'Acceleration':
           this.acceleration = Math.min(this.acceleration + increment, 100);
           break;
+        case 'tapsensitivity':
+        case 'tap-sensitivity':
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.min(this.tapSensitivity + increment, 100);
           break;
+        case 'control-mode':
+        case 'control-mode':
         case 'Control Mode':
           index = SmartDrive.Settings.ControlMode.Options.indexOf(
             this.controlMode
@@ -1376,6 +1383,7 @@ export namespace SmartDrive {
           );
           this.controlMode = SmartDrive.Settings.ControlMode.Options[index];
           break;
+        case 'units':
         case 'Units':
           index = SmartDrive.Settings.Units.Options.indexOf(this.units);
           index = mod(index + 1, SmartDrive.Settings.Units.Options.length);
@@ -1387,15 +1395,22 @@ export namespace SmartDrive {
     decrease(key: string, increment: number = 10): void {
       let index;
       switch (key) {
+        case 'maxspeed':
         case 'Max Speed':
+        case 'max-speed':
           this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
           break;
+        case 'acceleration':
         case 'Acceleration':
           this.acceleration = Math.max(this.acceleration - increment, 10);
           break;
+        case 'tapsensitivity':
+        case 'tap-sensitivity':
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.max(this.tapSensitivity - increment, 10);
           break;
+        case 'control-mode':
+        case 'control-mode':
         case 'Control Mode':
           index = SmartDrive.Settings.ControlMode.Options.indexOf(
             this.controlMode
@@ -1406,6 +1421,7 @@ export namespace SmartDrive {
           );
           this.controlMode = SmartDrive.Settings.ControlMode.Options[index];
           break;
+        case 'units':
         case 'Units':
           index = SmartDrive.Settings.Units.Options.indexOf(this.units);
           index = mod(index - 1, SmartDrive.Settings.Units.Options.length);
@@ -1484,9 +1500,13 @@ export namespace SmartDrive {
     increase(key: string, increment: number = 10): void {
       let index;
       switch (key) {
+        case 'switchcontrolspeed':
+        case 'switch-control-speed':
         case 'Switch Control Speed':
           this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
           break;
+        case 'switchcontrolmode':
+        case 'switch-control-mode':
         case 'Switch Control Mode':
           index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
             this.mode
@@ -1504,9 +1524,13 @@ export namespace SmartDrive {
     decrease(key: string, increment: number = 10): void {
       let index;
       switch (key) {
+        case 'switchcontrolspeed':
+        case 'switch-control-speed':
         case 'Switch Control Speed':
           this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
           break;
+        case 'switchcontrolmode':
+        case 'switch-control-mode':
         case 'Switch Control Mode':
           index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
             this.mode

@@ -11,17 +11,46 @@
   },
   "power-assist": {
     "estimated-range": "Estimated Range",
-    "speed": "Speed"
+    "speed": "Speed",
+    "activate": "Activate Power Assist",
+    "deactivate": "Deactivate Power Assist",
+    "stop": "Stop",
+    "exit-training": "Exit Training Mode"
+  },
+  "charts": {
+    "battery": {
+      "title": "Daily SmartDrive Battery Usage (%)"
+    },
+    "distance": {
+      "title": "Daily SmartDrive Distance Traveled"
+    }
   },
   "menu": {
+    "title": "Menu",
+    "settings": "Settings",
+    "updates": "Updates",
+    "about": "About",
+    "training": "Training"
+  },
+  "switch-control": {
+    "mode": "Switch Control Mode",
+    "max-speed": "Switch Control Max Speed"
   },
   "settings": {
+    "title": "SmartDrive Settings",
+    "max-speed": "Max Speed",
+    "acceleration": "Acceleration",
+    "tap-sensitivity": "Tap Sensitivity",
+    "control-mode": "Control Mode",
+    "units": "Units",
+    "error-history": "Error History",
     "pair-smartdrive": "Pair SmartDrive",
     "scanning": "Scanning",
     "select-smartdrive": "Select SmartDrive",
     "paired-to-smartdrive": "Paired to SmartDrive"
   },
   "updates": {
+    "status": "Update Status",
     "checking-for-updates": "Checking for Updates",
     "up-to-date": "SmartDrive is up to date!",
     "version": "Version",
@@ -29,6 +58,18 @@
     "failed": "Update failed",
     "canceled": "Update canceled",
     "error-getting": "Error getting updates"
+  },
+  "error-history": {
+    "title": "SmartDrive Error History"
+  },
+  "about": {
+    "title": "Information",
+    "sd.mcu.version": "SmartDrive MCU Version",
+    "sd.ble.version": "SmartDrive BLE Version",
+    "sd.serial-number": "SmartDrive Serial Number",
+    "watch.serial-number": "TicWatch Serial Number",
+    "version": "App Version",
+    "database": "Database ID"
   },
   "failures": {
     "no-smartdrive-paired": "No SmartDrive paired to the app!",
@@ -74,6 +115,21 @@
     },
     "sd": {
       "state": {
+        "not-started": "Not Started",
+        "awaiting-versions": "Awaiting Versions",
+        "awaiting-mcu-ready": "Waiting on MCU",
+        "updating-mcu": "Updating MCU",
+        "awaiting-ble-ready": "Waiting on BLE",
+        "updating-ble": "Updating BLE",
+        "rebooting-ble": "Rebooting BLE",
+        "rebooting-mcu": "Rebooting MCU",
+        "verifying-update": "Verifying",
+        "complete": "Complete",
+        "canceling": "Canceling",
+        "canceled": "Canceled",
+        "failed": "Failed",
+        "comm-failure": "Communications error, please reboot your SmartDrive",
+        "timeout": "Timeout"
       }
     }
   }
