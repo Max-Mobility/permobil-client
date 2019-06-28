@@ -3,8 +3,12 @@ import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { device } from 'tns-core-modules/platform';
 import { getResources, setResources } from 'tns-core-modules/application';
 
+const getDefaultLang = function() {
+  return device.language;
+};
+
 // The current translation object
-let lang = null;
+let lang = getDefaultLang();
 const translations = {};
 // The folder where we look for translation files, default is
 // "~/assets/i18n"
@@ -14,15 +18,12 @@ const i18nPath = path.join(
   'i18n'
 );
 
-const getDefaultLang = function() {
-  return device.language;
-};
-
 const use = function(language?: string) {
-  if (language === lang) {
-    return;
+  if (language) {
+    lang = language;
+  } else {
+    lang = getDefaultLang();
   }
-  lang = language;
 };
 
 const languagePath = function(language: string) {
@@ -52,12 +53,23 @@ const load = async function(language?: string) {
     languagesToLoad.push(...langFiles);
   }
   // now actually load the language files
-  languagesToLoad.map(l => {
-    const fname = languagePath(l);
-    const file = File.fromPath(fname);
-    translations[l] = file.readSync(err => {
-      console.error(`Couldn't load translation file ${fname}: ${err}`);
-    });
+  languagesToLoad.map(async l => {
+    try {
+      const fname = languagePath(l);
+      const file = File.fromPath(fname);
+      // console.log(`Loading translation file ${fname}`);
+      file.readText()
+        .then(text => {
+          translations[l.replace('.json', '')] = JSON.parse(text);
+        })
+        .catch(err => {
+          delete translations[l.replace('.json', '')];
+          console.error(`Couldn't load translation file ${fname}: ${err}`);
+        });
+    } catch (e) {
+      delete translations[l.replace('.json', '')];
+    }
+    // console.log(l.replace('.json', ''), translations[l.replace('.json', '')]);
   });
 };
 
@@ -78,11 +90,16 @@ const update = function(language: string, translation: any) {
   });
 };
 
-const L = function () {
-  if (lang && translations[lang] && arguments.length) {
-    return translations[lang][arguments[0]] || arguments[0];
-  } else if (arguments.length) {
-    return arguments[0];
+const get = function(k, obj) {
+  return k.split('.').reduce((o,i)=>o[i], obj)
+}
+
+const L = function (...args: any[]) {
+  // console.log(lang, !!translations[lang], args.length);
+  if (lang && translations[lang] && args.length) {
+    return get(args[0], translations[lang]) || args[0];
+  } else if (args.length) {
+    return args[0];
   }
 };
 
@@ -92,4 +109,7 @@ setResources(applicationResources);
 // @ts-ignore
 global.L = L;
 
-export { load, update, L };
+// load inital files
+load();
+
+export { getDefaultLang, use, load, update, L };

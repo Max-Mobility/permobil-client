@@ -1,5 +1,12 @@
 import { Log } from '@permobil/core';
-import { Prop } from '@permobil/nativescript';
+import {
+  Prop,
+  L,
+  getDefaultLang,
+  use as useLanguage,
+  load as loadTranslation,
+  update as updateTranslation
+} from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -58,10 +65,12 @@ export class MainViewModel extends Observable {
   @Prop() displayRssi: boolean = false;
   @Prop() estimatedDistance: number = 0.0;
   @Prop() estimatedDistanceDisplay: string = '0.0';
-  @Prop() estimatedDistanceDescription: string = 'Estimated Range (mi)';
+  // 'Estimated Range (mi)';
+  @Prop() estimatedDistanceDescription: string = L('power-assist.estimated-range');
   @Prop() currentSpeed: number = 0.0;
   @Prop() currentSpeedDisplay: string = '0.0';
-  @Prop() currentSpeedDescription: string = 'Speed (mph)';
+  // Speed (mph)';
+  @Prop() currentSpeedDescription: string = L('power-assist.speed');
   @Prop() currentSignalStrength: string = '--';
   // time display
   @Prop() currentTime;
@@ -77,7 +86,7 @@ export class MainViewModel extends Observable {
   @Prop() isChangeSettingsLayoutEnabled = false;
   @Prop() changeSettingKeyString = '';
   @Prop() changeSettingKeyValue;
-  @Prop() pairSmartDriveText: string = 'Pair SmartDrive';
+  @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
 
   /**
    * Boolean to track the error history swipe layout visibility.
@@ -89,7 +98,7 @@ export class MainViewModel extends Observable {
    * SmartDrive Wireless Updates:
    */
   @Prop() isUpdatesLayoutEnabled = false;
-  @Prop() updateProgressText: string = 'Checking for Updates';
+  @Prop() updateProgressText: string = L('updates.checking-for-updates');
   @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() hasUpdateData: boolean = false;
   @Prop() checkingForUpdates: boolean = false;
@@ -254,6 +263,10 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
+
+    // load translation files
+    loadTranslation();
+    useLanguage(getDefaultLang());
 
     // initialize the wake lock here
     const context = android.content.Context;
@@ -910,7 +923,7 @@ export class MainViewModel extends Observable {
       this.isUpdatesLayoutEnabled = true;
       this.checkForUpdates();
     } else {
-      showFailure('No SmartDrive paired to the app!');
+      showFailure(L('failures.no-smartdrive-paired'));
     }
   }
 
@@ -928,8 +941,8 @@ export class MainViewModel extends Observable {
     let canSwipeDismiss = true;
     // get the current progress of the update
     const progress = args.data.progress;
-    // TODO: translate the state instead of just replacing it!
-    const state = args.data.state.replace('ota.sd.state.', '');
+    // translate the state
+    const state = L(args.data.state); // .replace('ota.sd.state.', '');
     // throttled function to keep people from pressing it too frequently
     const throttledOtaActionTap = throttle(
       this.smartDrive.onOTAActionTap,
@@ -942,8 +955,8 @@ export class MainViewModel extends Observable {
         canSwipeDismiss = false;
       }
       const actionClass = 'action-' + last(a.split('.'));
-      // TODO: translate the label instead of just replacing it!
-      const actionLabel = a.replace('ota.action.', '');
+      // translate the label
+      const actionLabel = L(a); // .replace('ota.action.', '');
       return {
         'label': actionLabel,
         'func': throttledOtaActionTap.bind(this.smartDrive, a),
@@ -960,7 +973,10 @@ export class MainViewModel extends Observable {
   }
 
   checkForUpdates() {
-    this.updateProgressText = 'Checking for Updates';
+    // TODO: if updates is swiped while we're doing this - cancel the
+    // operation, or don't allow swiping while we're checking for
+    // updates!
+    this.updateProgressText = L('updates.checking-for-updates'); // 'Checking for Updates';
     this.isUpdatingSmartDrive = false;
     this.checkingForUpdates = true;
     this.hasUpdateData = false;
@@ -1095,7 +1111,7 @@ export class MainViewModel extends Observable {
           );
           Log.D('got version', version);
           // show dialog to user informing them of the version number and changes
-          const title = `Version ${version}`;
+          const title = L('updates.version') + ' ' + version;
           const changes = Object.keys(currentVersions).map(
             k => currentVersions[k].changes
           );
@@ -1133,7 +1149,7 @@ export class MainViewModel extends Observable {
                 this.updateProgressText = status;
                 Log.D('update status:', otaStatus);
                 if (status === 'Update Complete') {
-                  showSuccess('SmartDrive update completed successfully!');
+                  showSuccess(L('updates.success'));
                 }
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
@@ -1146,7 +1162,7 @@ export class MainViewModel extends Observable {
               })
               .catch(err => {
                 this.isUpdatingSmartDrive = false;
-                const msg = `Update failed: ${err}`;
+                const msg = L('updates.failed') + `: ${err}`;
                 Log.E(msg);
                 this.updateProgressText = msg;
                 showFailure(msg);
@@ -1162,7 +1178,7 @@ export class MainViewModel extends Observable {
           });
         } else {
           // smartdrive is already up to date
-          showSuccess('SmartDrive is up to date!');
+          showSuccess(L('updates.up-to-date'));
           setTimeout(() => {
             hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
             this.isUpdatesLayoutEnabled = false;
@@ -1173,7 +1189,7 @@ export class MainViewModel extends Observable {
         // re-enable swipe close of the updates layout
         (this._updatesLayout as any).swipeable = true;
         Log.E('Could not get files:', err);
-        this.updateProgressText = `Error getting updates: ${err}`;
+        this.updateProgressText = L('updates.error-getting') + `: ${err}`;
         this.hasUpdateData = false;
         this.checkingForUpdates = false;
         this.isUpdatingSmartDrive = false;
@@ -1183,7 +1199,7 @@ export class MainViewModel extends Observable {
   }
 
   cancelUpdates() {
-    this.updateProgressText = 'Update Cancelled';
+    this.updateProgressText = L('updates.canceled');
     // re-enable swipe close of the updates layout
     (this._updatesLayout as any).swipeable = true;
     if (this.smartDrive) {
@@ -1383,6 +1399,7 @@ export class MainViewModel extends Observable {
     this.tempSettings.copy(this.settings);
     this.tempSwitchControlSettings.copy(this.switchControlSettings);
     const tappedId = args.object.id as string;
+    // TODO: update these for translation
     switch (tappedId.toLowerCase()) {
       case 'maxspeed':
         this.changeSettingKeyString = 'Max Speed';
@@ -1417,6 +1434,7 @@ export class MainViewModel extends Observable {
   }
 
   updateSettingsChangeDisplay() {
+    // TODO: update these for translation
     switch (this.changeSettingKeyString) {
       case 'Max Speed':
         this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
@@ -1459,26 +1477,20 @@ export class MainViewModel extends Observable {
   }
 
   updateSpeedDisplay() {
-    if (this.settings.units === 'English') {
-      // update distance units
-      this.distanceUnits = 'mi';
-      // update speed display
-      this.currentSpeedDisplay = this.currentSpeed.toFixed(1);
-      this.currentSpeedDescription = 'Speed (mph)';
-      // update estimated range display
-      this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
-      this.estimatedDistanceDescription = 'Estimated Range (mi)';
-    } else {
-      // update distance units
-      this.distanceUnits = 'km';
-      // update speed display
-      this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
-      this.currentSpeedDescription = 'Speed (kph)';
+    // update distance units
+    this.distanceUnits = L('units.distance.' + this.settings.units.toLowerCase());
+    const speedUnits = L('units.speed.' + this.settings.units.toLowerCase());
+    // update speed display
+    this.currentSpeedDisplay = this.currentSpeed.toFixed(1);
+    this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
+    // update estimated range display
+    this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
+    this.estimatedDistanceDescription = `${L('power-assist.distance')} (${this.distanceUnits})`;
+    if (this.settings.units === 'Metric') {
       // update estimated range display
       this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
         1
       );
-      this.estimatedDistanceDescription = 'Estimated Range (km)';
     }
   }
 
@@ -1497,10 +1509,9 @@ export class MainViewModel extends Observable {
     this.updateSettingsDisplay();
     // warning / indication to the user that they've updated their settings
     alert({
-      title: 'Saved Settings',
-      message:
-        'CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance.',
-      okButtonText: 'OK'
+      title: L('warnings.saved-settings.title'),
+      message: L('warnings.saved-settings.message'),
+      okButtonText: L('buttons.ok')
     });
   }
 
@@ -1614,7 +1625,7 @@ export class MainViewModel extends Observable {
   enablePowerAssist() {
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn) {
-      showFailure('You must wear the watch to activate power assist.');
+      showFailure(L('failures.must-wear-watch'));
       return;
     }
     this.wakeLock.acquire();
@@ -1674,7 +1685,7 @@ export class MainViewModel extends Observable {
     return this._bluetoothService
       .initialize()
       .then(() => {
-        this.pairSmartDriveText = 'Scanning';
+        this.pairSmartDriveText = L('settings.scanning');
         scanDisplayId = setInterval(() => {
           this.pairSmartDriveText += '.';
         }, 1000);
@@ -1683,12 +1694,12 @@ export class MainViewModel extends Observable {
       })
       .then(() => {
         clearInterval(scanDisplayId);
-        this.pairSmartDriveText = 'Pair SmartDrive';
+        this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
         // make sure we have smartdrives
         if (BluetoothService.SmartDrives.length <= 0) {
-          showFailure('No SmartDrives found nearby.');
+          showFailure(L('failures.no-smartdrives-found'));
           return false;
         }
 
@@ -1700,17 +1711,17 @@ export class MainViewModel extends Observable {
 
         // present action dialog to select which smartdrive to connect to
         return action({
-          title: '',
-          message: 'Select SmartDrive:',
+          title: L('settings.select-smartdrive'),
+          message: L('settings.select-smartdrive'),
           actions: addresses,
-          cancelButtonText: 'Dismiss'
+          cancelButtonText: L('buttons.dismiss')
         }).then(result => {
           // if user selected one of the smartdrives in the action dialog, attempt to connect to it
           if (addresses.indexOf(result) > -1) {
             // save the smartdrive here
             this.updateSmartDrive(result);
             appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-            showSuccess(`Paired to SmartDrive ${result}`);
+            showSuccess(`${L('settings.paired-to-smartdrive')} ${result}`);
             return true;
           } else {
             return false;
@@ -1719,9 +1730,9 @@ export class MainViewModel extends Observable {
       })
       .catch(error => {
         clearInterval(scanDisplayId);
-        this.pairSmartDriveText = 'Pair SmartDrive';
+        this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.E('could not scan', error);
-        showFailure(`Could not scan: ${error}`);
+        showFailure(`${L('failures.scan')}: ${error}`);
         return false;
       });
   }
@@ -1775,7 +1786,7 @@ export class MainViewModel extends Observable {
         return true;
       })
       .catch(err => {
-        showFailure('Could not connect to ' + smartDrive.address);
+        showFailure(L('failures.connect') + ' ' + smartDrive.address);
         return false;
       });
   }
@@ -1849,7 +1860,7 @@ export class MainViewModel extends Observable {
     ) {
       setTimeout(() => {
         this.connectToSavedSmartDrive();
-      }, 5 * 1000);
+      }, 1 * 1000);
     }
   }
 
@@ -1868,7 +1879,8 @@ export class MainViewModel extends Observable {
         // indicate failure
         Log.E('send settings failed', err);
         showFailure(
-          'Failed to send settings to ' +
+          L('failures.send-settings') +
+            ' ' +
             this._savedSmartDriveAddress +
             ' ' +
             err
@@ -2048,12 +2060,12 @@ export class MainViewModel extends Observable {
           return this._sqliteService
             .insertIntoTable(SmartDriveData.Errors.TableName, newError)
             .catch(err => {
-              showFailure(`Failed Saving SmartDrive Error: ${err}`);
+              showFailure(`${L('failures.saving-error')}: ${err}`);
             });
         }
       })
       .catch(err => {
-        showFailure(`Failed getting SmartDrive Error: ${err}`);
+        showFailure(`${L('failures.getting.error')}: ${err}`);
       });
   }
 
@@ -2162,7 +2174,7 @@ export class MainViewModel extends Observable {
       })
       .catch(err => {
         Log.E('Failed saving usage:', err);
-        showFailure(`Failed saving usage: ${err}`);
+        showFailure(`${L('failures.saving-usage')}: ${err}`);
       });
   }
 
