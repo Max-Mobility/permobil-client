@@ -71,7 +71,7 @@ export class MainViewModel extends Observable {
   @Prop() isTraining: boolean = false;
 
   /**
-   * Boolean to track the settings swipe layout visibility.
+   * SmartDrive Settings UI:
    */
   @Prop() isSettingsLayoutEnabled = false;
   @Prop() isChangeSettingsLayoutEnabled = false;
@@ -86,7 +86,7 @@ export class MainViewModel extends Observable {
   @Prop() isAboutLayoutEnabled = false;
 
   /**
-   * Boolean to track the updates swipe layout visibility.
+   * SmartDrive Wireless Updates:
    */
   @Prop() isUpdatesLayoutEnabled = false;
   @Prop() updateProgressText: string = 'Checking for Updates';
@@ -107,12 +107,15 @@ export class MainViewModel extends Observable {
   lastAccelZ: number = null;
   tapLockoutTimeMs: number = 200;
   tapTimeoutId: any = null;
-  maxTapSensitivity: number = 3.5;
-  minTapSensitivity: number = 1.5;
-  maxTapDetectorConfidence: number = 1.2;
-  minTapDetectorConfidence: number = 0.2;
+  // Tap sensitivity thresholds:
+  maxTapSensitivity: number = 3.5;  // TODO: remove - old
+  minTapSensitivity: number = 1.5;  // TODO: remove - old
+  maxTapDetectorConfidence: number = 1.2;  // TODO: determine good value
+  minTapDetectorConfidence: number = 0.2;  // TODO: determine good value
+  // Sensor listener config:
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
+  // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
 
@@ -509,6 +512,7 @@ export class MainViewModel extends Observable {
       }
     );
     this.tapDetector = new TapDetector();
+    this.enableBodySensor();
 
     // load savedSmartDriveAddress from settings / memory
     const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
@@ -537,7 +541,8 @@ export class MainViewModel extends Observable {
   }
 
   fullStop() {
-    this.disableAllSensors();
+    // this.disableAllSensors();
+    this.disableTapSensor();
     this.disablePowerAssist();
   }
 
