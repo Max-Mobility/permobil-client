@@ -324,6 +324,7 @@ module.exports = env => {
       new CopyWebpackPlugin(
         [
           { from: { glob: 'fonts/**' } },
+          { from: { glob: 'app/fonts/**' } },
           { from: { glob: 'assets/**' } },
           { from: { glob: 'app/assets/**' } },
           { from: { glob: '**/*.jpg' } },
