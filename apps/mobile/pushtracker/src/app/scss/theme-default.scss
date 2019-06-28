@@ -1,6 +1,6 @@
 @import 'variables';
 @import 'common';
-@import 'circles';
+@import 'circles-default';
 @import 'action-bar-default';
 @import 'home-tab-default';
 @import 'journey-tab-default';
@@ -8,6 +8,7 @@
 @import 'profile-tab-default';
 
 TabView {
+  tab-background-color: $white;
   android-selected-tab-highlight-color: $permobil-primary;
   selected-tab-text-color: $permobil-primary;
 }

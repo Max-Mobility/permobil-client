@@ -4,12 +4,8 @@
 @import '~nativescript-theme-core/scss/index';
 
 /*** Fonts ***/
-.mdi {
-  font-family: $material-icon;
-}
-
-label {
-  font-family: $os-Light;
+.ionicon {
+  font-family: $ionicon;
 }
 
 .align-center {

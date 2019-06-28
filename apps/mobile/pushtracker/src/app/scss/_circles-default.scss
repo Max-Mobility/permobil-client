@@ -1,17 +1,17 @@
 @import 'variables';
 
-$sd-battery-rim-color: #f4f5f6;
+$sd-rim-color: #f4f5f6;
 
-.distanceCircle {
+#distanceCircle {
   background-color: transparent;
   fill-color: transparent;
   bar-color: $permobil-violet;
-  rim-color: $sd-battery-rim-color;
+  rim-color: $sd-rim-color;
 }
 
-.coastTimeCircle {
+#coastTimeCircle {
   background-color: transparent;
   fill-color: transparent;
   bar-color: $permobil-cousteau;
-  rim-color: $sd-battery-rim-color;
+  rim-color: $sd-rim-color;
 }

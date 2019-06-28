@@ -1,0 +1,17 @@
+@import 'variables';
+
+$sd-rim-color: transparent;
+
+#distanceCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  bar-color: $permobil-violet;
+  rim-color: $sd-rim-color;
+}
+
+#coastTimeCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  bar-color: $permobil-cousteau;
+  rim-color: $sd-rim-color;
+}

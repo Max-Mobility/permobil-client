@@ -1,6 +1,6 @@
 @import 'variables';
 @import 'common';
-@import 'circles';
+@import 'circles-dark';
 @import 'action-bar-dark';
 @import 'home-tab-dark';
 @import 'journey-tab-dark';
@@ -8,6 +8,7 @@
 @import 'profile-tab-dark';
 
 TabView {
-  android-selected-tab-highlight-color: black;
-  selected-tab-text-color: black;
+  tab-background-color: $black;
+  android-selected-tab-highlight-color: $white;
+  selected-tab-text-color: $white;
 }

@@ -4,8 +4,8 @@
       <Button
         row="0"
         col="2"
-        text="&#xf2fc;"
-        class="infoBtn"
+        text="&#xf44c;"
+        class="infoBtn ionicon"
         (tap)="onInfoTap()"
       ></Button>
     </GridLayout>
@@ -17,7 +17,6 @@
         id="distanceCircle"
         rowSpan="3"
         colSpan="3"
-        class="distanceCircle"
         width="98%"
         height="98%"
         animated="true"
@@ -33,7 +32,6 @@
         id="coastTimeCircle"
         rowSpan="3"
         colSpan="3"
-        class="coastTimeCircle"
         width="83%"
         height="83%"
         animated="true"
@@ -50,7 +48,11 @@
     </GridLayout>
 
     // Data Details
-    <GridLayout height="100" rows="*, *" columns="*, auto, auto, auto, auto, *">
+    <GridLayout
+      height="100"
+      rows="*, *"
+      columns="*, auto, auto, 20, auto, auto, *"
+    >
       <Label
         row="0"
         rowSpan="2"
@@ -62,7 +64,7 @@
       <Label
         row="0"
         col="2"
-        [text]="coastTimeCirclePercentage"
+        [text]="coastTimeCirclePercentage + '/100'"
         textWrap="true"
       ></Label>
       <Label
@@ -75,20 +77,20 @@
       <Label
         row="0"
         rowSpan="2"
-        col="3"
+        col="4"
         text=">>"
         class="violetCircle"
         textWrap="true"
       ></Label>
       <Label
         row="0"
-        col="4"
+        col="5"
         [text]="distanceCirclePercentage"
         textWrap="true"
       ></Label>
       <Label
         row="1"
-        col="4"
+        col="5"
         [text]="'general.distance' | translate"
         textWrap="true"
       ></Label>
@@ -129,7 +131,13 @@
         text="Travel 3.0 miles per day"
         textWrap="true"
       ></Label>
-      <Label row="0" col="2" text="more" textWrap="true"></Label>
+      <Label
+        row="0"
+        col="2"
+        text="&#xf397;"
+        textWrap="true"
+        class="ionicon"
+      ></Label>
 
       // repeater grid here for data
     </GridLayout>

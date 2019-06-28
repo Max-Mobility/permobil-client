@@ -7,18 +7,18 @@
   padding: 10;
 
   .infoBtn {
-    background-color: $black;
+    @extend .btn-transparent;
     color: $white;
-    font-family: $material-icon;
-    height: 30;
-    width: 30;
+    font-size: 18;
     horizontal-align: right;
     vertical-align: top;
+    margin: 4;
   }
 
   .cousteauCircle {
-    background-color: $permobil-cousteau;
-    color: $white;
+    background-color: $permobil-cousteau-light;
+    color: $permobil-cousteau-dark;
+    font-size: 36;
     height: 50;
     width: 50;
     border-radius: 25;
@@ -29,8 +29,9 @@
   }
 
   .violetCircle {
-    background-color: $permobil-violet;
-    color: $white;
+    background-color: $permobil-violet-light;
+    color: $permobil-violet-dark;
+    font-size: 36;
     height: 50;
     width: 50;
     border-radius: 25;
@@ -41,10 +42,11 @@
   }
 
   .circleDetails {
-    height: 60%;
-    width: 60%;
-    border-radius: 50%;
-    background-color: $black;
+    height: 100;
+    width: 100;
+    border-radius: 50;
+    background-color: $permobil-violet-light;
+    color: $permobil-violet-dark;
     android-elevation: 10;
 
     label {

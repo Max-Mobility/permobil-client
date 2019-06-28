@@ -38,14 +38,9 @@ export class HomeTabComponent implements OnInit {
   onInfoTap() {
     Log.D('info button tapped.');
 
-    // themes.applyThemeCss(
-    //   require('../../scss/theme-dark.scss').toString(),
-    //   'theme-dark.scss'
-    // );
-
     themes.applyThemeCss(
-      require('../../scss/theme-default.scss').toString(),
-      'theme-default.scss'
+      require('../../scss/theme-dark.scss').toString(),
+      'theme-dark.scss'
     );
   }
 }

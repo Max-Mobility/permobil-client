@@ -4,7 +4,7 @@
 @import '~nativescript-theme-core/scss/light';
 
 /**** Fonts *****/
-$material-icon: 'Material Design Icons', materialdesignicons-webfont;
+$ionicon: ionicons, 'ionicons', Ionicons, 'Ionicons';
 $os: 'OpenSans-Regular', 'OpenSans', 'Open Sans', Open Sans;
 $os-Light: 'OpenSans-Light', 'OpenSans Light';
 $os-SemiBold: 'OpenSans-SemiBold', 'Open Sans SemiBold';
@@ -28,30 +28,13 @@ $blue-10: rgba($permobil-hero, 0.1) !default;
 $permobil-yellow: #fbff22 !default;
 $permobil-orange: #ff671f !default;
 $permobil-lime: #c4d600;
-$permobil-cousteau: #00c1d5;
 $permobil-rose: #e31c79;
+$permobil-cousteau: #00c1d5;
+$permobil-cousteau-light: #8dd5e3;
+$permobil-cousteau-dark: #008d9d;
 $permobil-violet: #753bbd;
-$permobil-icon-shadow-orange: rgba(255, 103, 31, 0.6);
-
-$success-light: #00e676 !default;
-$error-light: #ed473f !default;
-$page-icon-color: #d7d7d7 !default;
-
-// Sizes
-$page-content-placeholder-font-size: 20;
-
-/**
- * Theme variables overrides
-**/
-
-// Colors
-$background: #fff;
-$primary: lighten(#000, 13%);
-$secondary: lighten(#000, 46%);
-$disabled: lighten(#000, 62%);
-$accent: $permobil-hero;
-$error: $error-light;
-$warning: $error-light;
+$permobil-violet-light: #9c84be;
+$permobil-violet-dark: #502980;
 
 // Text colors
 $text-color-light: #fff;
@@ -59,4 +42,4 @@ $white: #fff;
 $black: #000;
 $red: #ff0000;
 $green: #66ff66;
-$grey: #a7a9a2;
+$grey: rgb(177, 177, 177);

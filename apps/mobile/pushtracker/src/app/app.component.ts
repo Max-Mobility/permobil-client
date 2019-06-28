@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
@@ -9,6 +9,7 @@ import { AnimatedCircle } from 'nativescript-animated-circle';
 import { Fab } from 'nativescript-floatingactionbutton';
 import { Gif } from 'nativescript-gif';
 import { Sentry } from 'nativescript-sentry';
+import * as themes from 'nativescript-themes';
 import * as application from 'tns-core-modules/application';
 import { LoggingService, UserService } from './services';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
@@ -21,13 +22,14 @@ registerElement('AnimatedCircle', () => AnimatedCircle);
   selector: 'ns-app',
   template: '<page-router-outlet></page-router-outlet>'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _userService: UserService,
     private _router: RouterExtensions
   ) {
+    console.time('AppComponent_Constructor');
     // init sentry - DNS key is in the SmartEvalKinvey package
     Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
 
@@ -86,5 +88,15 @@ export class AppComponent {
     } else {
       this._router.navigate(['/login']);
     }
+
+    console.timeEnd('AppComponent_Constructor');
+  }
+
+  ngOnInit() {
+    Log.D(`app.component OnInit`);
+    themes.applyThemeCss(
+      require('./scss/theme-default.scss').toString(),
+      'theme-default.scss'
+    );
   }
 }
