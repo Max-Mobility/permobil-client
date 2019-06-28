@@ -109,8 +109,8 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   maxTapSensitivity: number = 3.5;
   minTapSensitivity: number = 1.5;
-  maxTapDetectorConfidence: number = 1.5;
-  minTapDetectorConfidence: number = 0.5;
+  maxTapDetectorConfidence: number = 1.2;
+  minTapDetectorConfidence: number = 0.2;
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
@@ -175,8 +175,8 @@ export class MainViewModel extends Observable {
   public smartDrive: SmartDrive;
   private settings = new SmartDrive.Settings();
   private tempSettings = new SmartDrive.Settings();
-  private throttleSettings = new SmartDrive.ThrottleSettings();
-  private tempThrottleSettings = new SmartDrive.ThrottleSettings();
+  private switchControlSettings = new SmartDrive.SwitchControlSettings();
+  private tempSwitchControlSettings = new SmartDrive.SwitchControlSettings();
   private hasSentSettings: boolean = false;
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;
@@ -577,7 +577,9 @@ export class MainViewModel extends Observable {
 
   onAppLaunch(args?: any) {}
 
-  onAppResume(args?: any) {}
+  onAppResume(args?: any) {
+      this.enableBodySensor();
+  }
 
   onAppSuspend(args?: any) {
     this.fullStop();
@@ -1374,7 +1376,7 @@ export class MainViewModel extends Observable {
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
     this.tempSettings.copy(this.settings);
-    this.tempThrottleSettings.copy(this.throttleSettings);
+    this.tempSwitchControlSettings.copy(this.switchControlSettings);
     const tappedId = args.object.id as string;
     switch (tappedId.toLowerCase()) {
       case 'maxspeed':
@@ -1392,11 +1394,11 @@ export class MainViewModel extends Observable {
       case 'units':
         this.changeSettingKeyString = 'Units';
         break;
-      case 'throttlemode':
-        this.changeSettingKeyString = 'Throttle Mode';
+      case 'switchcontrolmode':
+        this.changeSettingKeyString = 'Switch Control Mode';
         break;
-      case 'throttlespeed':
-        this.changeSettingKeyString = 'Throttle Speed';
+      case 'switchcontrolspeed':
+        this.changeSettingKeyString = 'Switch Control Speed';
         break;
       default:
         break;
@@ -1426,11 +1428,11 @@ export class MainViewModel extends Observable {
       case 'Units':
         this.changeSettingKeyValue = `${this.tempSettings.units}`;
         return;
-      case 'Throttle Mode':
-        this.changeSettingKeyValue = `${this.tempThrottleSettings.throttleMode}`;
+      case 'Switch Control Mode':
+        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.mode}`;
         return;
-      case 'Throttle Speed':
-        this.changeSettingKeyValue = `${this.tempThrottleSettings.maxSpeed} %`;
+      case 'Switch Control Speed':
+        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
         return;
       default:
         break;
@@ -1483,7 +1485,7 @@ export class MainViewModel extends Observable {
     this.isChangeSettingsLayoutEnabled = false;
     // SAVE THE VALUE to local data for the setting user has selected
     this.settings.copy(this.tempSettings);
-    this.throttleSettings.copy(this.tempThrottleSettings);
+    this.switchControlSettings.copy(this.tempSwitchControlSettings);
     this.hasSentSettings = false;
     this.saveSettings();
     // now update any display that needs settings:
@@ -1499,13 +1501,13 @@ export class MainViewModel extends Observable {
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.changeSettingKeyString);
-    this.tempThrottleSettings.increase(this.changeSettingKeyString);
+    this.tempSwitchControlSettings.increase(this.changeSettingKeyString);
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap(args) {
     this.tempSettings.decrease(this.changeSettingKeyString);
-    this.tempThrottleSettings.decrease(this.changeSettingKeyString);
+    this.tempSwitchControlSettings.decrease(this.changeSettingKeyString);
     this.updateSettingsChangeDisplay();
   }
 
@@ -1533,10 +1535,10 @@ export class MainViewModel extends Observable {
     this.settings.controlMode =
       appSettings.getString(DataKeys.SD_CONTROL_MODE) || 'MX2+';
     this.settings.units = appSettings.getString(DataKeys.SD_UNITS) || 'English';
-    this.throttleSettings.throttleMode =
-      appSettings.getString(DataKeys.SD_THROTTLE_MODE) || 'Active';
-    this.throttleSettings.maxSpeed =
-      appSettings.getNumber(DataKeys.SD_THROTTLE_SPEED) || 30;
+    this.switchControlSettings.mode =
+      appSettings.getString(DataKeys.SD_SWITCHCONTROL_MODE) || 'Active';
+    this.switchControlSettings.maxSpeed =
+      appSettings.getNumber(DataKeys.SD_SWITCHCONTROL_SPEED) || 30;
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
@@ -1556,12 +1558,12 @@ export class MainViewModel extends Observable {
     appSettings.setString(DataKeys.SD_CONTROL_MODE, this.settings.controlMode);
     appSettings.setString(DataKeys.SD_UNITS, this.settings.units);
     appSettings.setString(
-      DataKeys.SD_THROTTLE_MODE,
-      this.throttleSettings.throttleMode
+      DataKeys.SD_SWITCHCONTROL_MODE,
+      this.switchControlSettings.mode
     );
     appSettings.setNumber(
-      DataKeys.SD_THROTTLE_SPEED,
-      this.throttleSettings.maxSpeed
+      DataKeys.SD_SWITCHCONTROL_SPEED,
+      this.switchControlSettings.maxSpeed
     );
   }
 
@@ -1851,8 +1853,8 @@ export class MainViewModel extends Observable {
     return this.smartDrive
       .sendSettingsObject(this.settings)
       .then(() => {
-        return this.smartDrive.sendThrottleSettingsObject(
-          this.throttleSettings
+        return this.smartDrive.sendSwitchControlSettingsObject(
+          this.switchControlSettings
         );
       })
       .catch(err => {
@@ -2231,7 +2233,7 @@ export class MainViewModel extends Observable {
     if (!this.hasSentSettings) {
       const settingsObj = {
         settings: this.settings.toObj(),
-        throttleSettings: this.throttleSettings.toObj()
+        switchControlSettings: this.switchControlSettings.toObj()
       };
       return this._kinveyService
         .sendSettings(settingsObj)

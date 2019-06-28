@@ -62,7 +62,7 @@ export class SmartDrive extends DeviceBase {
   public driveDistance: number = 0; // cumulative total distance the smartDrive has driven
   public coastDistance: number = 0; // cumulative total distance the smartDrive has gone
   public settings = new SmartDrive.Settings();
-  public throttleSettings = new SmartDrive.ThrottleSettings();
+  public switchControlSettings = new SmartDrive.SwitchControlSettings();
 
   // not serialized
   @Prop() device: any = null; // the actual bluetooth device associated with this smartdrive
@@ -904,30 +904,30 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public sendThrottleSettings(mode: string, max_speed: number): Promise<any> {
-    const throttleSettings = super.sendThrottleSettings(mode, max_speed);
+  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
+    const switchControlSettings = super.sendSwitchControlSettings(mode, max_speed);
     return this.sendPacket(
       'Command',
-      'SetThrottleSettings',
-      'throttleSettings',
+      'SetSwitchControlSettings',
+      'switchControlSettings',
       null,
-      throttleSettings
+      switchControlSettings
     );
   }
 
-  public sendThrottleSettingsObject(
-    settings: SmartDrive.ThrottleSettings
+  public sendSwitchControlSettingsObject(
+    settings: SmartDrive.SwitchControlSettings
   ): Promise<any> {
-    const _throttleSettings = super.sendThrottleSettings(
-      settings.throttleMode,
+    const _switchControlSettings = super.sendSwitchControlSettings(
+      settings.mode,
       settings.maxSpeed / 100.0
     );
     return this.sendPacket(
       'Command',
-      'SetThrottleSettings',
-      'throttleSettings',
+      'SetSwitchControlSettings',
+      'switchControlSettings',
       null,
-      _throttleSettings
+      _switchControlSettings
     );
   }
 
@@ -1458,23 +1458,23 @@ export namespace SmartDrive {
     }
   }
 
-  // Standard SmartDrive Settings:
-  export class ThrottleSettings extends Observable {
+  // SmartDrive Switch Control Settings:
+  export class SwitchControlSettings extends Observable {
     // settings classes
-    static ThrottleMode = class {
-      static Options: string[] = ['Active', 'Latching'];
+    static Mode = class {
+      static Options: string[] = ['Momentary', 'Latching']
 
-      static Active = 'Active';
+      static Momentary = 'Momentary';
       static Latching = 'Latching';
 
       static fromSettings(s: any): string {
-        const o = bindingTypeToString('ThrottleMode', s.ThrottleMode);
-        return SmartDrive.ThrottleSettings.ThrottleMode[o];
+        const o = bindingTypeToString('SwitchControlMode', s.mode);
+        return SmartDrive.SwitchControlSettings.Mode[o];
       }
     };
 
     // public members
-    throttleMode: string = SmartDrive.ThrottleSettings.ThrottleMode.Active;
+    mode: string = SmartDrive.SwitchControlSettings.Mode.Momentary;
     maxSpeed = 30;
 
     constructor() {
@@ -1484,19 +1484,19 @@ export namespace SmartDrive {
     increase(key: string, increment: number = 10): void {
       let index;
       switch (key) {
-        case 'Throttle Speed':
+        case 'Switch Control Speed':
           this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
           break;
-        case 'Throttle Mode':
-          index = SmartDrive.ThrottleSettings.ThrottleMode.Options.indexOf(
-            this.throttleMode
+        case 'Switch Control Mode':
+          index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
+            this.mode
           );
           index = mod(
             index + 1,
-            SmartDrive.ThrottleSettings.ThrottleMode.Options.length
+            SmartDrive.SwitchControlSettings.Mode.Options.length
           );
-          this.throttleMode =
-            SmartDrive.ThrottleSettings.ThrottleMode.Options[index];
+          this.mode =
+            SmartDrive.SwitchControlSettings.Mode.Options[index];
           break;
       }
     }
@@ -1504,33 +1504,33 @@ export namespace SmartDrive {
     decrease(key: string, increment: number = 10): void {
       let index;
       switch (key) {
-        case 'Throttle Speed':
+        case 'Switch Control Speed':
           this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
           break;
-        case 'Throttle Mode':
-          index = SmartDrive.ThrottleSettings.ThrottleMode.Options.indexOf(
-            this.throttleMode
+        case 'Switch Control Mode':
+          index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
+            this.mode
           );
           index = mod(
             index - 1,
-            SmartDrive.ThrottleSettings.ThrottleMode.Options.length
+            SmartDrive.SwitchControlSettings.Mode.Options.length
           );
-          this.throttleMode =
-            SmartDrive.ThrottleSettings.ThrottleMode.Options[index];
+          this.mode =
+            SmartDrive.SwitchControlSettings.Mode.Options[index];
           break;
       }
     }
 
     toObj(): any {
       return {
-        throttleMode: this.throttleMode,
+        mode: this.mode,
         maxSpeed: this.maxSpeed
       };
     }
 
     fromSettings(s: any): void {
       // from c++ settings bound array to c++ class
-      this.throttleMode = SmartDrive.ThrottleSettings.ThrottleMode.fromSettings(
+      this.mode = SmartDrive.SwitchControlSettings.Mode.fromSettings(
         s
       );
       // these floats are [0,1] on smartdrive
@@ -1538,14 +1538,14 @@ export namespace SmartDrive {
     }
 
     copy(s: any) {
-      // from a ThrottleSettings class exactly like this
-      this.throttleMode = s.throttleMode;
+      // from a SwitchControlSettings class exactly like this
+      this.mode = s.mode;
       this.maxSpeed = s.maxSpeed;
     }
 
     diff(s: any): boolean {
       return (
-        this.throttleMode !== s.throttleMode || this.maxSpeed !== s.maxSpeed
+        this.mode !== s.mode || this.maxSpeed !== s.maxSpeed
       );
     }
   }

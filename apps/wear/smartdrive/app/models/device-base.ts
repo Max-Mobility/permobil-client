@@ -123,9 +123,9 @@ export class DeviceBase extends Observable {
     return settings;
   }
 
-  public sendThrottleSettings(mode: string, max_speed: number): Promise<any> {
+  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
     const p = new Packet();
-    const settings = p.data('throttleSettings');
+    const settings = p.data('switchControlSettings');
     // convert mode
     // don't have to convert mode since we don't alias it in any way
     // clamp numbers
@@ -134,7 +134,7 @@ export class DeviceBase extends Observable {
     };
     max_speed = clamp(max_speed);
     // now fill in the packet
-    settings.ThrottleMode = Packet.makeBoundData('ThrottleMode', mode);
+    settings.Mode = Packet.makeBoundData('SwitchControlMode', mode);
     settings.MaxSpeed = max_speed;
     p.destroy();
     return settings;
