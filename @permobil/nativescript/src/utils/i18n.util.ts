@@ -39,11 +39,11 @@ const languagePath = function(language: string) {
  */
 const load = async function(language?: string) {
   const languagesToLoad = [];
-  if (langauge) {
-    // only load the specified langauge
+  if (language) {
+    // only load the specified language
     languagesToLoad.push(language);
   } else {
-    // load the langauges found in the folder
+    // load the languages found in the folder
     const langFiles = await Folder.fromPath(i18nPath)
       .getEntities()
       .then(entities => {
@@ -71,7 +71,7 @@ const update = function(language: string, translation: any) {
   // update translations
   translations[language] = translation;
   // save translation file
-  const fname = languagePath(langauge);
+  const fname = languagePath(language);
   const file = File.fromPath(fname);
   file.writeSync(translation, (err) => {
     console.error(`Couldn't write translation file ${fname}: ${err}`);
@@ -86,10 +86,10 @@ const L = function () {
   }
 };
 
-const applicationResources = application.getResources();
+const applicationResources = getResources();
 applicationResources.L = L;
-application.setResources(applicationResources);
+setResources(applicationResources);
+// @ts-ignore
 global.L = L;
 
-export load;
-export update;
+export { load, update, L };
