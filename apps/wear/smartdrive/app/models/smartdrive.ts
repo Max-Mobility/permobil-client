@@ -1462,7 +1462,7 @@ export namespace SmartDrive {
   export class SwitchControlSettings extends Observable {
     // settings classes
     static Mode = class {
-      static Options: string[] = ['Momentary', 'Latching']
+      static Options: string[] = ['Momentary', 'Latching'];
 
       static Momentary = 'Momentary';
       static Latching = 'Latching';
