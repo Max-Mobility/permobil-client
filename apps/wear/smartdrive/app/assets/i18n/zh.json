@@ -1,1 +1,136 @@
-{}
+{
+	"about": {
+		"database": "数据库ID",
+		"sd-ble-version": "SmartDrive BLE版本",
+		"sd-mcu-version": "SmartDrive MCU版本",
+		"sd-serial-number": "SmartDrive序列号",
+		"title": "信息",
+		"version": "应用版本",
+		"watch-serial-number": "TicWatch序列号"
+	},
+	"buttons": {
+		"dismiss": "解雇",
+		"ok": "好"
+	},
+	"charts": {
+		"battery": {
+			"title": "每日SmartDrive电池使用率（%）"
+		},
+		"distance": {
+			"title": "每日SmartDrive行驶距离"
+		}
+	},
+	"error-history": {
+		"title": "SmartDrive错误历史记录"
+	},
+	"failures": {
+		"connect": "无法连接到",
+		"getting-error": "无法获得SmartDrive错误",
+		"must-wear-watch": "您必须佩戴手表才能启动助力功能。",
+		"no-smartdrive-paired": "没有SmartDrive与应用程序配对！",
+		"no-smartdrives-found": "附近找不到SmartDrives。",
+		"saving-error": "保存SmartDrive错误失败",
+		"saving-usage": "保存使用失败",
+		"scan": "无法扫描",
+		"send-settings": "无法发送设置"
+	},
+	"languages": {
+		"de": "德语",
+		"en": "英语",
+		"es": "西班牙语",
+		"fr": "法国",
+		"ja": "日本",
+		"ko": "朝鲜的",
+		"nl": "荷兰人",
+		"zh": "中文"
+	},
+	"menu": {
+		"about": "关于",
+		"settings": "设置",
+		"title": "菜单",
+		"training": "训练",
+		"updates": "更新"
+	},
+	"ota": {
+		"action": {
+			"cancel": "取消",
+			"force": "力",
+			"pause": "暂停",
+			"resume": "恢复",
+			"retry": "重试",
+			"start": "开始"
+		},
+		"sd": {
+			"state": {
+				"awaiting-ble-ready": "等待BLE",
+				"awaiting-mcu-ready": "等待MCU",
+				"awaiting-versions": "等待版本",
+				"canceled": "取消",
+				"canceling": "取消",
+				"comm-failure": "通讯错误，请重启SmartDrive",
+				"complete": "完成",
+				"failed": "失败",
+				"not-started": "没有开始",
+				"rebooting-ble": "重启BLE",
+				"rebooting-mcu": "重启MCU",
+				"timeout": "超时",
+				"updating-ble": "更新BLE",
+				"updating-mcu": "更新MCU",
+				"verifying-update": "验证"
+			}
+		}
+	},
+	"power-assist": {
+		"activate": "激活动力辅助",
+		"deactivate": "停用动力辅助",
+		"estimated-range": "估计范围",
+		"exit-training": "退出训练模式",
+		"speed": "速度",
+		"stop": "停止"
+	},
+	"settings": {
+		"acceleration": "促进",
+		"control-mode": "控制模式",
+		"error-history": "错误历史记录",
+		"max-speed": "最大速度",
+		"pair-smartdrive": "配对SmartDrive",
+		"paired-to-smartdrive": "与SmartDrive配对",
+		"scanning": "扫描",
+		"select-smartdrive": "选择SmartDrive",
+		"tap-sensitivity": "点击灵敏度",
+		"title": "SmartDrive设置",
+		"units": "单位"
+	},
+	"switch-control": {
+		"max-speed": "开关控制最大速度",
+		"mode": "开关控制模式"
+	},
+	"units": {
+		"distance": {
+			"english": "MI",
+			"metric": "千米"
+		},
+		"english": "英语",
+		"metric": "公",
+		"speed": {
+			"english": "英里",
+			"metric": "KPH"
+		}
+	},
+	"updates": {
+		"canceled": "更新已取消",
+		"checking-for-updates": "查询更新",
+		"error-getting": "获取更新时出错",
+		"failed": "更新失败",
+		"status": "更新状态",
+		"success": "SmartDrive更新成功完成！",
+		"up-to-date": "SmartDrive是最新的！",
+		"version": "版"
+	},
+	"warnings": {
+		"saved-settings": {
+			"message": "注意：您必须参考SmartDrive用户手册，了解更改设置如何影响其操作和性能。",
+			"title": "保存的设置"
+		}
+	}
+}

@@ -1,1 +1,136 @@
-{}
+{
+	"about": {
+		"database": "データベースID",
+		"sd-ble-version": "SmartDrive BLEバージョン",
+		"sd-mcu-version": "SmartDrive MCUのバージョン",
+		"sd-serial-number": "SmartDriveシリアル番号",
+		"title": "情報",
+		"version": "アプリのバージョン",
+		"watch-serial-number": "TicWatchのシリアル番号"
+	},
+	"buttons": {
+		"dismiss": "やめる",
+		"ok": "OK"
+	},
+	"charts": {
+		"battery": {
+			"title": "1日のSmartDriveバッテリー使用量（%）"
+		},
+		"distance": {
+			"title": "1日のSmartDrive走行距離"
+		}
+	},
+	"error-history": {
+		"title": "SmartDriveエラー履歴"
+	},
+	"failures": {
+		"connect": "に接続できませんでした",
+		"getting-error": "SmartDriveエラーの取得に失敗しました",
+		"must-wear-watch": "パワーアシストを作動させるには時計を装着しなければなりません。",
+		"no-smartdrive-paired": "SmartDriveはアプリとペアになりません。",
+		"no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
+		"saving-error": "SmartDriveエラーの保存に失敗しました",
+		"saving-usage": "使用法の保存に失敗しました",
+		"scan": "スキャンできませんでした",
+		"send-settings": "に設定を送信できませんでした"
+	},
+	"languages": {
+		"de": "ドイツ人",
+		"en": "英語",
+		"es": "スペイン語",
+		"fr": "フランス語",
+		"ja": "日本人",
+		"ko": "韓国語",
+		"nl": "オランダの",
+		"zh": "中国語"
+	},
+	"menu": {
+		"about": "約",
+		"settings": "設定",
+		"title": "メニュー",
+		"training": "トレーニング",
+		"updates": "更新情報"
+	},
+	"ota": {
+		"action": {
+			"cancel": "キャンセル",
+			"force": "力",
+			"pause": "一時停止",
+			"resume": "履歴書",
+			"retry": "リトライ",
+			"start": "開始"
+		},
+		"sd": {
+			"state": {
+				"awaiting-ble-ready": "BLEを待っています",
+				"awaiting-mcu-ready": "MCUを待っています",
+				"awaiting-versions": "バージョン待ち",
+				"canceled": "キャンセル",
+				"canceling": "キャンセル中",
+				"comm-failure": "通信エラー、SmartDriveを再起動してください",
+				"complete": "コンプリート",
+				"failed": "失敗",
+				"not-started": "始まっていない",
+				"rebooting-ble": "再起動BLE",
+				"rebooting-mcu": "再起動MCU",
+				"timeout": "タイムアウト",
+				"updating-ble": "BLEを更新する",
+				"updating-mcu": "MCUのアップデート",
+				"verifying-update": "確認中"
+			}
+		}
+	},
+	"power-assist": {
+		"activate": "パワーアシストを有効にする",
+		"deactivate": "パワーアシストを無効にする",
+		"estimated-range": "推定範囲",
+		"exit-training": "トレーニングモードを終了",
+		"speed": "速度",
+		"stop": "やめる"
+	},
+	"settings": {
+		"acceleration": "加速度",
+		"control-mode": "制御モード",
+		"error-history": "エラー履歴",
+		"max-speed": "マックス・スピード",
+		"pair-smartdrive": "ペアSmartDrive",
+		"paired-to-smartdrive": "SmartDriveとペアリング",
+		"scanning": "走査",
+		"select-smartdrive": "SmartDriveを選択",
+		"tap-sensitivity": "タップ感度",
+		"title": "SmartDrive設定",
+		"units": "単位"
+	},
+	"switch-control": {
+		"max-speed": "スイッチ制御最大速度",
+		"mode": "制御モードの切り替え"
+	},
+	"units": {
+		"distance": {
+			"english": "ミ",
+			"metric": "km"
+		},
+		"english": "英語",
+		"metric": "メトリック",
+		"speed": {
+			"english": "時速",
+			"metric": "時速"
+		}
+	},
+	"updates": {
+		"canceled": "更新がキャンセルされました",
+		"checking-for-updates": "アップデートの確認",
+		"error-getting": "アップデート取得エラー",
+		"failed": "アップデートに失敗しました",
+		"status": "最新状況",
+		"success": "SmartDriveアップデートは正常に完了しました。",
+		"up-to-date": "SmartDriveは最新のものです。",
+		"version": "バージョン"
+	},
+	"warnings": {
+		"saved-settings": {
+			"message": "注意：設定の変更がその動作とパフォーマンスにどのように影響するかについては、SmartDriveユーザーズマニュアルを参照する必要があります。",
+			"title": "保存した設定"
+		}
+	}
+}
