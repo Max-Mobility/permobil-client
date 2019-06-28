@@ -16,14 +16,14 @@ const i18nPath = path.join(
 
 const getDefaultLang = function() {
   return device.language;
-}
+};
 
 const use = function(language?: string) {
   if (language === lang) {
     return;
   }
   lang = language;
-}
+};
 
 const languagePath = function(language: string) {
   let l = language;
@@ -31,7 +31,7 @@ const languagePath = function(language: string) {
     l += '.json';
   }
   return path.join(i18nPath, l);
-}
+};
 
 /**
  * Load is used when we want to load the translation files into memory
@@ -59,7 +59,7 @@ const load = async function(language?: string) {
       console.error(`Couldn't load translation file ${fname}: ${err}`);
     });
   });
-}
+};
 
 /**
  * Update is used when we download a new translation file from the
@@ -76,7 +76,7 @@ const update = function(language: string, translation: any) {
   file.writeSync(translation, (err) => {
     console.error(`Couldn't write translation file ${fname}: ${err}`);
   });
-}
+};
 
 const L = function () {
   if (lang && translations[lang] && arguments.length) {
