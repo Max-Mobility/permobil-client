@@ -91,8 +91,8 @@ const update = function(language: string, translation: any) {
 };
 
 const get = function(k, obj) {
-  return k.split('.').reduce((o,i)=>o[i], obj)
-}
+  return k.split('.').reduce((o, i) => o[i], obj);
+};
 
 const L = function (...args: any[]) {
   // console.log(lang, !!translations[lang], args.length);
