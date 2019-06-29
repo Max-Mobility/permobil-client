@@ -1,7 +1,21 @@
 @import 'variables';
+.profile-tab-layout{
+  background-color: $white;
+  height: 100%;
+  width: 100%;
+  padding: 10;
 
-.avatarCircle {
-  background-color: $permobil-primary;
+  label {
+    color: $black;
+    font-weight: bold;
+    text-align: left;
+    horizontal-align: left;
+    vertical-align: center;
+  }
+}
+.avatar-circle {
+  background-color: $black;
+  margin: 10 20;
   height: 60;
   width: 60;
   border-radius: 30;
@@ -13,14 +27,26 @@
     horizontal-align: center;
     vertical-align: center;
   }
-  .dropdown {
-    background-color: $permobil-hero;
-    color: $white;
-    border-radius: 2;
-    padding: 5;
-    margin: 10 20;
-    vertical-align: center;
-    text-align: right;
-  }
+}
+.dropdown {
+  background-color: $white;
+  color: $black;
+  border-radius: 2;
+  padding: 2;
+  margin: 2;
+  width: 150;
+  vertical-align: center;
+  text-align: left;
+}
+.activityGoals {
+  horizontal-align: center;
+  vertical-align: center;
 
+  label {
+    color: $black;
+    font-weight: bold;
+    text-align: left;
+    horizontal-align: left;
+    vertical-align: center;
+  }
 }
