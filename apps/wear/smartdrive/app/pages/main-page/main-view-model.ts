@@ -1545,18 +1545,20 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
-    this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || 70;
+      const defaultSettings = new SmartDrive.Settings();
+      const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
+    this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
     this.settings.acceleration =
-      appSettings.getNumber(DataKeys.SD_ACCELERATION) || 30;
+      appSettings.getNumber(DataKeys.SD_ACCELERATION) || defaultSettings.acceleration;
     this.settings.tapSensitivity =
-      appSettings.getNumber(DataKeys.SD_TAP_SENSITIVITY) || 100;
+      appSettings.getNumber(DataKeys.SD_TAP_SENSITIVITY) || defaultSettings.tapSensitivity;
     this.settings.controlMode =
-      appSettings.getString(DataKeys.SD_CONTROL_MODE) || 'MX2+';
-    this.settings.units = appSettings.getString(DataKeys.SD_UNITS) || 'English';
+      appSettings.getString(DataKeys.SD_CONTROL_MODE) || defaultSettings.controlMode;
+    this.settings.units = appSettings.getString(DataKeys.SD_UNITS) || defaultSettings.units;
     this.switchControlSettings.mode =
-      appSettings.getString(DataKeys.SD_SWITCHCONTROL_MODE) || 'Active';
+      appSettings.getString(DataKeys.SD_SWITCHCONTROL_MODE) || defaultSwitchControlSettings.mode;
     this.switchControlSettings.maxSpeed =
-      appSettings.getNumber(DataKeys.SD_SWITCHCONTROL_SPEED) || 30;
+      appSettings.getNumber(DataKeys.SD_SWITCHCONTROL_SPEED) || defaultSwitchControlSettings.maxSpeed;
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
