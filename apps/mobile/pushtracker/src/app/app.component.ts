@@ -9,9 +9,11 @@ import { AnimatedCircle } from 'nativescript-animated-circle';
 import { Fab } from 'nativescript-floatingactionbutton';
 import { Gif } from 'nativescript-gif';
 import { Sentry } from 'nativescript-sentry';
-import * as themes from 'nativescript-themes';
 import * as application from 'tns-core-modules/application';
+import * as appSettings from 'tns-core-modules/application-settings';
+import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService, UserService } from './services';
+import { enableDarkTheme, enableDefaultTheme } from './utils';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 
 registerElement('Gif', () => Gif);
@@ -94,9 +96,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     Log.D(`app.component OnInit`);
-    themes.applyThemeCss(
-      require('./scss/theme-default.scss').toString(),
-      'theme-default.scss'
+    const savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
     );
+    if (savedTheme === APP_THEMES.DEFAULT) {
+      enableDefaultTheme();
+    } else if (savedTheme === APP_THEMES.DARK) {
+      enableDarkTheme();
+    }
   }
 }
