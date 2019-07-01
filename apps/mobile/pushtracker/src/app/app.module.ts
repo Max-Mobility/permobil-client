@@ -11,6 +11,7 @@ import { DropDownModule } from 'nativescript-drop-down/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { AppRoutingModule, COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppInfoComponent } from './modules/app-info/app-info.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
@@ -43,6 +44,7 @@ export function createTranslateLoader() {
     })
   ],
   declarations: [AppComponent, ...COMPONENTS],
+  entryComponents: [AppInfoComponent],
   providers: [...PROVIDERS, ModalDialogService],
   schemas: [NO_ERRORS_SCHEMA]
 })

@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
-import * as themes from 'nativescript-themes';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import { Toasty } from 'nativescript-toasty';
+import { Color } from 'tns-core-modules/color';
+import { LoggingService } from '~/app/services';
+import { AppInfoComponent } from '../app-info/app-info.component';
 
 @Component({
   selector: 'home-tab',
@@ -15,8 +18,15 @@ export class HomeTabComponent implements OnInit {
   pushCountData: string;
   coastTimeData: string;
   distanceData: string;
+  infoItems;
 
-  constructor(private _translateService: TranslateService) {
+
+  constructor(
+    private _translateService: TranslateService,
+    private _logService: LoggingService,
+    private _modalService: ModalDialogService,
+    private _vcRef: ViewContainerRef
+  ) {
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.distanceRemainingText = `0.4 ${this._translateService.instant(
@@ -28,15 +38,28 @@ export class HomeTabComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    Log.D('home-tab.component ngOnInit');
+    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+    this.infoItems = this._translateService.instant(
+      'app-info-component.sections'
+    );
   }
 
   onInfoTap() {
-    Log.D('info button tapped.');
+    console.log('info button tapped');
 
-    themes.applyThemeCss(
-      require('../../scss/theme-dark.scss').toString(),
-      'theme-dark.scss'
-    );
+    this._modalService
+      .showModal(AppInfoComponent, {
+        context: {},
+        fullscreen: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
   }
 }

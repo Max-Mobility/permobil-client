@@ -8,6 +8,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import { Fab } from 'nativescript-floatingactionbutton';
 import { Gif } from 'nativescript-gif';
+import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -19,6 +20,7 @@ import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
 registerElement('AnimatedCircle', () => AnimatedCircle);
+registerElement('LottieView', () => LottieView);
 
 @Component({
   selector: 'ns-app',
@@ -84,9 +86,9 @@ export class AppComponent implements OnInit {
         this._logService.logException(err);
       });
 
-    // if user is logged in, go home, else go to login
+    // if user is logged in, go to default tabs route, else go to login
     if (this._userService.user) {
-      this._router.navigate(['/home']);
+      this._router.navigate(['/tabs/default']);
     } else {
       this._router.navigate(['/login']);
     }
