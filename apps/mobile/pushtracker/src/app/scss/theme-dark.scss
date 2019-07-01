@@ -9,6 +9,7 @@
 
 TabView {
   tab-background-color: $black;
-  android-selected-tab-highlight-color: $white;
-  selected-tab-text-color: $white;
+  // android-selected-tab-highlight-color: $white;
+  tab-text-color: $inactive-grey;
+  selected-tab-text-color: $permobil-primary;
 }
