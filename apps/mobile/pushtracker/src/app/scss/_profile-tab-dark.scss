@@ -12,5 +12,15 @@
     font-size: 36;
     horizontal-align: center;
     vertical-align: center;
+  } 
+  .dropdown {
+    background-color: $black;
+    color: $white;
+    border-radius: 2;
+    padding: 5;
+    margin: 10 20;
+    vertical-align: center;
+    text-align: right;
   }
+  
 }

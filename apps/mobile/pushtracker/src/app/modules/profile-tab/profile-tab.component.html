@@ -1,10 +1,64 @@
-<ActionBar title="Profile" class="action-bar"></ActionBar>
-
-<ScrollView height="100%" width="100%">
-  <GridLayout height="100%" width="100%">
-    <Label text="Profile Here" textWrap="true"></Label>
-    <StackLayout class="avatarCircle">
-      <Label text="B" textWrap="true"></Label>
-    </StackLayout>
-  </GridLayout>
+<ActionBar [title]="'profile-tab.title' | translate" class="action-bar"></ActionBar>
+<ScrollView class="profile-tab-layout">
+  <StackLayout>
+    <GridLayout columns="auto,auto,*" rows="*, *, *, *, *" >
+      <StackLayout row="0" col="0" colspan="2" rowspan="2" class="avatar-circle">
+        <Label text="B" textWrap="true"></Label>
+      </StackLayout>
+      <label row="0" col="2" class="profile-name" [text]="name"></label>
+      <label row="1" col="2" class="profile-email" [text]="email"></label>
+      <label  col="0" row="2" colspan="5" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
+     
+      <StackLayout row="3" colspan="3" orientation="vertical">
+        <StackLayout class="hr-light"></StackLayout>
+        <GridLayout class="activityGoals" columns="auto, *, 40, *,auto" rows="auto,*,auto" >
+          <label col="1"  class="label" [text]="'general.coast-time' | translate"></label>
+          <StackLayout 
+            col="1"
+            row="1"
+          ></StackLayout>
+          <label col="3" class="label" [text]="'general.distance' | translate"></label>
+          <StackLayout
+            col="3"
+            row="1"
+          ></StackLayout>
+        </GridLayout>
+      <label  col="0" row="3" colspan="5" class="section-label" [text]="'profile-tab.about-you' | translate"></label>
+      <StackLayout class="hr-light"></StackLayout>
+      <GridLayout class="activityGoals" columns="auto, *, 40, *,auto" rows="auto, *, *, *, *, auto" >
+          <label col="1"  class="label" [text]="'general.gender' | translate"></label>
+          <StackLayout
+            col="1"
+            row="1"
+            class="dropdown"
+          ></StackLayout>
+          <label col="3" class="label" [text]="'general.birthday' | translate"></label>
+          <StackLayout
+            col="3"
+            row="1"
+            class="dropdown"
+          ></StackLayout>
+          <label col="1" row="2"  class="label" [text]="'general.weight' | translate"></label>
+          <StackLayout
+            col="1"
+            row="3"
+            class="dropdown"
+          ></StackLayout>
+          <label col="3" row="2" class="label" [text]="'general.height' | translate"></label>
+          <StackLayout
+            col="3"
+            row="3"
+            class="dropdown"
+          ></StackLayout>
+          <label col="1"  row="4" class="label" [text]="'profile-tab.chair-info' | translate"></label>
+          <StackLayout
+            col="1"
+            row="5"
+            class="dropdown"
+          ></StackLayout>
+        </GridLayout>
+      </StackLayout>
+    </GridLayout>
+  </StackLayout>
 </ScrollView>
+
