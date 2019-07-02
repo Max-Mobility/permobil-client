@@ -38,7 +38,7 @@ export function clearLightStatusBar() {
 
 export function setDarkStatusBar() {
   if (isAndroid && device.sdkVersion >= '23') {
-    const blackColor = new Color('#111');
+    const blackColor = new Color('#000');
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
       TNSApplication.android.foregroundActivity;
