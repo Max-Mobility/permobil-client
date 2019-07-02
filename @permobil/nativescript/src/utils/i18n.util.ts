@@ -48,7 +48,8 @@ const load = async function(language?: string) {
     const langFiles = await Folder.fromPath(i18nPath)
       .getEntities()
       .then(entities => {
-        return entities.map(e => e.name);
+        return entities.map(e => e.name)
+          .filter(n => !n.includes('babel'));
       });
     languagesToLoad.push(...langFiles);
   }
