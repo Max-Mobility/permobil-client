@@ -1,0 +1,29 @@
+@import '../variables';
+@import 'home-tab-base';
+
+.home-tab-layout {
+  @extend .HOME_TAB_LAYOUT_BASE;
+  background-color: $black;
+
+  .info-btn {
+    @extend .INFO_BTN_BASE;
+    color: $white;
+  }
+
+  .distance-remaining-circle {
+    @extend .DISTANCE_REMAINING_CIRCLE_BASE;
+    background-color: $permobil-violet-light;
+
+    label {
+      color: $white;
+    }
+  }
+
+  .data-details {
+    @extend .DATA_DETAILS_BASE;
+
+    label {
+      color: $white;
+    }
+  }
+}

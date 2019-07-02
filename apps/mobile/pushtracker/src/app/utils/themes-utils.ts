@@ -28,22 +28,22 @@ export function enableDefaultTheme() {
   appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
 }
 
-function setLightNavigationBar() {
-  if (isAndroid && device.sdkVersion >= '26') {
-    const whiteColor = new Color('#fff');
-    const androidActivity: android.app.Activity =
-      TNSApplication.android.startActivity ||
-      TNSApplication.android.foregroundActivity;
-    const window = androidActivity.getWindow();
+// function setLightNavigationBar() {
+//   if (isAndroid && device.sdkVersion >= '26') {
+//     const whiteColor = new Color('#fff');
+//     const androidActivity: android.app.Activity =
+//       TNSApplication.android.startActivity ||
+//       TNSApplication.android.foregroundActivity;
+//     const window = androidActivity.getWindow();
 
-    // if (window) window.setNavigationBarColor(whiteColor.android);
-    const decorView = window.getDecorView();
-    decorView.setSystemUiVisibility(
-      android.view.View.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS |
-        android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-    );
-  }
-}
+//     // if (window) window.setNavigationBarColor(whiteColor.android);
+//     const decorView = window.getDecorView();
+//     decorView.setSystemUiVisibility(
+//       android.view.View.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS |
+//         android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+//     );
+//   }
+// }
 
 function setDarkNavigationBar() {
   if (isAndroid && device.sdkVersion >= '23') {

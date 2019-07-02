@@ -1,0 +1,109 @@
+@import '../variables';
+
+.HOME_TAB_LAYOUT_BASE {
+  height: 100%;
+  width: 100%;
+  padding: 10;
+
+  .INFO_BTN_BASE {
+    @extend .btn-transparent;
+    font-size: 30;
+    font-family: $material-icon;
+    text-align: right;
+    horizontal-align: right;
+    vertical-align: top;
+    margin: 4;
+  }
+
+  .DISTANCE_REMAINING_CIRCLE_BASE {
+    height: 140;
+    width: 140;
+    border-radius: 70;
+    horizontal-align: center;
+    vertical-align: center;
+    android-elevation: 10;
+
+    label {
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+
+  .cousteau-circle {
+    background-color: $permobil-cousteau-light;
+    color: $permobil-cousteau-dark;
+    height: 60;
+    width: 60;
+    border-radius: 30;
+    margin: 6;
+    text-align: center;
+    vertical-align: center;
+    horizontal-align: center;
+    android-elevation: 10;
+
+    label {
+      font-family: $material-icon;
+      font-size: 48;
+      text-align: center;
+      vertical-align: center;
+      horizontal-align: center;
+    }
+  }
+
+  .violet-circle {
+    background-color: $permobil-violet-light;
+    color: $permobil-violet-dark;
+    height: 60;
+    width: 60;
+    border-radius: 30;
+    margin: 6;
+    text-align: center;
+    vertical-align: center;
+    horizontal-align: center;
+    android-elevation: 10;
+
+    > label {
+      font-family: $material-icon;
+      font-size: 48;
+      text-align: center;
+      vertical-align: center;
+      horizontal-align: center;
+    }
+  }
+
+  .coast-time-data {
+    margin: 0 4 0 4;
+  }
+
+  .coast-time-value {
+    font-size: 28;
+  }
+
+  .coast-time-max {
+    font-size: 16;
+  }
+
+  .distance-data {
+    margin: 0 4 0 4;
+  }
+
+  .distance-value {
+    font-size: 28;
+  }
+
+  .distance-value-max {
+    font-size: 16;
+  }
+
+  .DATA_DETAILS_BASE {
+    horizontal-align: center;
+    vertical-align: center;
+
+    label {
+      @extend .bold;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+}

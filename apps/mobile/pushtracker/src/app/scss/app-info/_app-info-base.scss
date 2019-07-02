@@ -1,7 +1,6 @@
-@import 'variables';
+@import '../variables';
 
-.appInfoLayout {
-  background-color: $white;
+.APP_INFO_LAYOUT_BASE {
   height: 100%;
   width: 100%;
 
@@ -9,26 +8,25 @@
     padding: 10;
   }
 
-  .close-btn {
+  .CLOSE_BTN_BASE {
     @extend .btn-transparent;
-    font-size: 24;
-    color: $black;
+    padding: 4;
+    font-size: 32;
     font-family: $material-icon;
     text-align: left;
     horizontal-align: left;
   }
 
-  .more-btn {
+  .MORE_BTN_BASE {
     @extend .btn-transparent;
-    font-size: 24;
-    color: $black;
+    padding: 4;
+    font-size: 32;
     font-family: $material-icon;
     text-align: right;
     horizontal-align: right;
   }
 
-  .title {
-    color: $black;
+  .TITLE_BASE {
     font-size: 26;
     font-family: $os;
     font-weight: bold;
@@ -36,8 +34,7 @@
     horizontal-align: center;
   }
 
-  .section-title {
-    color: $black;
+  .SECTION_TITLE_BASE {
     font-size: 18;
     font-family: $os;
     font-weight: bold;
@@ -46,8 +43,7 @@
     margin: 10 0 10 0;
   }
 
-  .section-text {
-    color: lighten($black, 10%);
+  .SECTION_TEXT_BASE {
     font-size: 14;
     font-family: $os-Light;
     margin: 10 0 30 0;

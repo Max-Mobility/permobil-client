@@ -27,6 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
     private _page: Page,
     private _translateService: TranslateService
   ) {
+    this._page.actionBarHidden = true;
     preventKeyboardFromShowing();
   }
 

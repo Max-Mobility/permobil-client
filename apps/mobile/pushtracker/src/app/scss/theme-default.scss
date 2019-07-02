@@ -1,12 +1,12 @@
+@import 'global';
 @import 'variables';
-@import 'common';
-@import 'app-info-default';
-@import 'circles-default';
-@import 'action-bar-default';
-@import 'home-tab-default';
-@import 'journey-tab-default';
-@import 'login-default';
-@import 'profile-tab-default';
+@import './app-info/app-info-default';
+@import './animated-circles/circles-default';
+@import './action-bar/action-bar-default';
+@import './home-tab/home-tab-default';
+@import './journey-tab/journey-tab-default';
+@import './login/login-default';
+@import './profile-tab/profile-tab-default';
 
 TabView {
   tab-background-color: $white;
