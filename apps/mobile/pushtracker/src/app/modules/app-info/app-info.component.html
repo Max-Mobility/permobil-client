@@ -15,22 +15,16 @@
   (loaded)="onShownModally($event)"
 >
   // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="auto, *, auto">
+  <GridLayout row="0" rows="*" columns="50, *, 50" padding="10">
     <Button
-      #closeModalButton
+      #closeBtn
       row="0"
       col="0"
-      text="&#xf2d7;"
-      class="btn-transparent ionicon"
+      text="&#xe5cd;"
+      class="close-btn"
       (tap)="closeModal($event)"
     ></Button>
-    <Button
-      #moreButton
-      row="0"
-      col="2"
-      text="&#xf397;"
-      class="btn-transparent ionicon"
-    ></Button>
+    <Button row="0" col="2" text="&#xe5d4;" class="more-btn"></Button>
   </GridLayout>
   <ScrollView row="1" height="100%">
     <StackLayout>

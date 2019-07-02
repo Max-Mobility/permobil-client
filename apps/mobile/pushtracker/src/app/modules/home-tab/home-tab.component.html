@@ -4,8 +4,8 @@
       <Button
         row="0"
         col="2"
-        text="&#xf44c;"
-        class="ionicon"
+        text="&#xe88e;"
+        class="info-btn"
         (tap)="onInfoTap()"
       ></Button>
     </GridLayout>
@@ -64,16 +64,10 @@
       rows="*, *"
       columns="*, auto, auto, 20, auto, auto, *"
     >
-      <Label
-        row="0"
-        rowSpan="2"
-        col="1"
-        text=">"
-        class="cousteau-circle"
-        verticalAlignment="center"
-        horizontalAlignment="center"
-        textWrap="true"
-      ></Label>
+      // cousteau circle for coast-time values
+      <StackLayout row="0" rowSpan="2" col="1" class="cousteau-circle">
+        <Label text="&#xe5cc;"></Label>
+      </StackLayout>
 
       <GridLayout
         row="0"
@@ -115,14 +109,10 @@
         ></Label>
       </GridLayout>
 
-      <Label
-        row="0"
-        rowSpan="2"
-        col="4"
-        text=">>"
-        class="violet-circle"
-        textWrap="true"
-      ></Label>
+      // violet-circle for distance values
+      <StackLayout row="0" rowSpan="2" col="4" class="violet-circle">
+        <Label text="&#xe5cc;"></Label>
+      </StackLayout>
 
       <GridLayout
         row="0"

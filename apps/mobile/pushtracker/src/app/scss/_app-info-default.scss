@@ -9,12 +9,22 @@
     padding: 10;
   }
 
-  #closeModalButton {
+  .close-btn {
+    @extend .btn-transparent;
+    font-size: 24;
     color: $black;
+    font-family: $material-icon;
+    text-align: left;
+    horizontal-align: left;
   }
 
-  #moreButton {
+  .more-btn {
+    @extend .btn-transparent;
+    font-size: 24;
     color: $black;
+    font-family: $material-icon;
+    text-align: right;
+    horizontal-align: right;
   }
 
   .title {
