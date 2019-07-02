@@ -82,6 +82,8 @@ export class MainViewModel extends Observable {
   /**
    * SmartDrive Settings UI:
    */
+  @Prop() scanningProgressText: string = L('settings.scanning');
+  @Prop() isScanningLayoutEnabled = false;
   @Prop() isSettingsLayoutEnabled = false;
   @Prop() isChangeSettingsLayoutEnabled = false;
   @Prop() activeSettingToChange = '';
@@ -207,11 +209,13 @@ export class MainViewModel extends Observable {
   private errorsScrollView: ScrollView;
   private aboutScrollView: ScrollView;
   private updateProgressCircle: AnimatedCircle;
+  private scanningProgressCircle: AnimatedCircle;
   private _settingsLayout: SwipeDismissLayout;
   public _changeSettingsLayout: SwipeDismissLayout;
   private _errorHistoryLayout: SwipeDismissLayout;
   private _aboutLayout: SwipeDismissLayout;
   private _updatesLayout: SwipeDismissLayout;
+  private _scanningLayout: SwipeDismissLayout;
   private _vibrator: Vibrate = new Vibrate();
   private _sentryService: SentryService;
   private _bluetoothService: BluetoothService;
@@ -906,6 +910,26 @@ export class MainViewModel extends Observable {
     this.isTraining = false;
     this.powerAssistState = PowerAssist.State.Inactive;
     this.updatePowerAssistRing();
+  }
+
+  /**
+   * Scanning Page Handlers
+   */
+  onScanningProgressCircleLoaded(args: any) {
+    const page = args.object as Page;
+    this.scanningProgressCircle = page.getViewById(
+      'scanningProgressCircle'
+    ) as AnimatedCircle;
+  }
+
+  onScanningLayoutLoaded(args) {
+    this._scanningLayout = args.object as SwipeDismissLayout;
+    this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+      // Log.D('dismissedEvent', args.object);
+      // hide the offscreen layout when dismissed
+      hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
+      this.isScanningLayoutEnabled = false;
+    });
   }
 
   /**
@@ -1632,26 +1656,38 @@ export class MainViewModel extends Observable {
       showFailure(L('failures.must-wear-watch'));
       return;
     }
-    this.wakeLock.acquire();
-    keepAwake();
-    this.powerAssistState = PowerAssist.State.Disconnected;
-    this.powerAssistActive = true;
-    this.updatePowerAssistRing();
-    return this.connectToSavedSmartDrive()
-      .then(didConnect => {
-        if (didConnect) {
-          this.enableTapSensor();
-          this._ringTimerId = setInterval(
-            this.blinkPowerAssistRing.bind(this),
-            this.RING_TIMER_INTERVAL_MS
-          );
-        } else {
+    if (this.hasSavedSmartDrive()) {
+      this.wakeLock.acquire();
+      keepAwake();
+      this.powerAssistState = PowerAssist.State.Disconnected;
+      this.powerAssistActive = true;
+      this.updatePowerAssistRing();
+      return this.connectToSavedSmartDrive()
+        .then(didConnect => {
+          if (didConnect) {
+            this.enableTapSensor();
+            this._ringTimerId = setInterval(
+              this.blinkPowerAssistRing.bind(this),
+              this.RING_TIMER_INTERVAL_MS
+            );
+          } else {
+            this.disablePowerAssist();
+          }
+        })
+        .catch(err => {
           this.disablePowerAssist();
-        }
-      })
-      .catch(err => {
-        this.disablePowerAssist();
-      });
+        });
+    } else {
+      return this.saveNewSmartDrive()
+        .then(didSave => {
+          if (didSave) {
+            return this.enablePowerAssist();
+          }
+        })
+        .catch(err => {
+          Log.E(`Couldn't save new smartdrive: ${err}`);
+        });
+    }
   }
 
   disablePowerAssist() {
@@ -1683,8 +1719,27 @@ export class MainViewModel extends Observable {
     }
   }
 
+  showScanning() {
+    showOffScreenLayout(this._scanningLayout);
+    // disable swipe close of the updates layout
+    (this._scanningLayout as any).swipeable = false;
+    this.isScanningLayoutEnabled = true;
+    // @ts-ignore
+    this.scanningProgressCircle.spin();
+  }
+
+  hideScanning() {
+    // re-enable swipe close of the updates layout
+    (this._scanningLayout as any).swipeable = true;
+    hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
+    this.isScanningLayoutEnabled = false;
+    // @ts-ignore
+    this.scanningProgressCircle.stopSpinning();
+  }
+
   saveNewSmartDrive(): Promise<any> {
     let scanDisplayId = null;
+    this.showScanning();
     // ensure bluetoothservice is functional
     return this._bluetoothService
       .initialize()
@@ -1697,6 +1752,7 @@ export class MainViewModel extends Observable {
         return this._bluetoothService.scanForSmartDrives(3);
       })
       .then(() => {
+        this.hideScanning();
         clearInterval(scanDisplayId);
         this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
@@ -1733,6 +1789,7 @@ export class MainViewModel extends Observable {
         });
       })
       .catch(error => {
+        this.hideScanning();
         clearInterval(scanDisplayId);
         this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.E('could not scan', error);
@@ -1795,11 +1852,13 @@ export class MainViewModel extends Observable {
       });
   }
 
+  hasSavedSmartDrive(): boolean {
+    return this._savedSmartDriveAddress !== null &&
+      this._savedSmartDriveAddress.length > 0;
+  }
+
   connectToSavedSmartDrive(): Promise<any> {
-    if (
-      this._savedSmartDriveAddress === null ||
-      this._savedSmartDriveAddress.length === 0
-    ) {
+    if (!this.hasSavedSmartDrive()) {
       return this.saveNewSmartDrive().then(didSave => {
         if (didSave) {
           return this.connectToSavedSmartDrive();
