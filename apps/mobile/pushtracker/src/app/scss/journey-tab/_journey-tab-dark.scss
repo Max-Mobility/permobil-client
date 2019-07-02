@@ -1,0 +1,7 @@
+@import '../variables';
+@import 'journey-tab-base';
+
+.journey-tab-layout {
+  @extend .JOURNEY_TAB_LAYOUT_BASE;
+  background-color: $black;
+}

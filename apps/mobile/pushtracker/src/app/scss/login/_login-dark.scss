@@ -1,0 +1,21 @@
+@import '../variables';
+@import 'login-base';
+
+.full-screen-image {
+  @extend .FULL_SCREEN_IMAGE_BASE;
+
+  .login-form {
+    @extend .LOGIN_FORM_BASE;
+    background: linear-gradient(
+      45deg,
+      rgba(101, 78, 163, 0.893),
+      rgba(234, 175, 200, 0.824)
+    );
+
+    .submit-btn {
+      @extend .SUBMIT_BTN_BASE;
+      color: $white;
+      background-color: $permobil-cousteau-dark;
+    }
+  }
+}

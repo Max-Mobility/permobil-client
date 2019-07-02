@@ -1,12 +1,16 @@
-<ActionBar
-  [title]="'journey-tab.title' | translate"
-  class="action-bar"
-  flat="true"
-></ActionBar>
+<ActionBar title=" " class="action-bar" flat="true">
+  <ActionItem class="action-item" ios.position="right">
+    <Button class="btn-transparent" text="Right"></Button>
+  </ActionItem>
+</ActionBar>
 
 // Journey Data ListView
-<StackLayout>
-  <Label text="hello journey man" textWrap="true"></Label>
+<StackLayout class="journey-tab-layout" padding="10">
+  <Label
+    class="h1"
+    [text]="'journey-tab.title' | translate"
+    textWrap="true"
+  ></Label>
 
   <GridLayout rows="*, *, *, *" columns="auto, *, auto, auto, auto">
     <Label row="0" col="0" text="Today" textWrap="true"></Label>

@@ -1,0 +1,18 @@
+@import '../variables';
+@import 'action-bar-base';
+
+//Action bar
+ActionBar[title] {
+  font-family: $os;
+}
+
+.action-bar {
+  @extend .ACTION_BAR_BASE;
+  color: $white;
+  background-color: $black;
+
+  .action-item {
+    @extend .ACTION_ITEM_BASE;
+    color: $white;
+  }
+}

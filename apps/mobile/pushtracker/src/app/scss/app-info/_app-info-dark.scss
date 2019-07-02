@@ -1,0 +1,32 @@
+@import '../variables';
+@import 'app-info-base';
+
+.app-info-layout {
+  @extend .APP_INFO_LAYOUT_BASE;
+  background-color: $black;
+
+  .close-btn {
+    @extend .CLOSE_BTN_BASE;
+    color: $white;
+  }
+
+  .more-btn {
+    @extend .MORE_BTN_BASE;
+    color: $white;
+  }
+
+  .title {
+    @extend .TITLE_BASE;
+    color: $white;
+  }
+
+  .section-title {
+    @extend .SECTION_TITLE_BASE;
+    color: $white;
+  }
+
+  .section-text {
+    @extend .SECTION_TEXT_BASE;
+    color: darken($white, 10%);
+  }
+}

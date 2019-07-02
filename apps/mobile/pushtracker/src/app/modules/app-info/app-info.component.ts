@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { View } from 'tns-core-modules/ui/page/page';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -28,21 +27,11 @@ export class AppInfoComponent implements OnInit {
   }
 
   onShownModally(args) {
-    Log.D('onShownModally fired');
-    const p = args.object as View;
-    // p.visibility = 'visible';
-    // p.animate({
-    //   opacity: 1,
-    //   translate: {
-    //     x: 0,
-    //     y: 0
-    //   },
-    //   duration: 300
-    // });
+    Log.D('app-info.component modal shown');
   }
 
   closeModal(event) {
-    Log.D('close modal');
-    this._params.closeCallback('return value');
+    Log.D('app-info.component modal closed');
+    this._params.closeCallback('some value');
   }
 }

@@ -1,0 +1,61 @@
+@import '../variables';
+
+.PROFILE_TAB_LAYOUT_BASE {
+  height: 100%;
+  width: 100%;
+  padding: 10;
+
+  .PROFILE_NAME_BASE {
+    font-weight: bold;
+    text-align: left;
+    horizontal-align: left;
+    vertical-align: bottom;
+  }
+
+  .PROFILE_EMAIL_BASE {
+    font-weight: normal;
+    text-align: left;
+    horizontal-align: left;
+    vertical-align: top;
+  }
+
+  .SECTION_LABEL_BASE {
+    font-weight: bold;
+    text-align: left;
+    horizontal-align: left;
+    vertical-align: center;
+    margin: 20 40 10 10;
+  }
+
+  .AVATAR_CIRCLE_BASE {
+    margin: 10 20;
+    height: 60;
+    width: 60;
+    border-radius: 30;
+    text-align: center;
+
+    label {
+      font-size: 36;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+
+  .ACTIVITY_GOALS_BASE {
+    horizontal-align: center;
+    vertical-align: center;
+
+    label {
+      text-align: left;
+      margin-top: 20;
+      horizontal-align: left;
+      vertical-align: center;
+    }
+    StackLayout {
+      border-width: 2;
+      border-radius: 6;
+      width: 100%;
+      height: 60;
+    }
+  }
+}

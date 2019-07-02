@@ -1,6 +1,6 @@
-@import 'variables';
+@import '../variables';
 
-.fullScreenImage {
+.FULL_SCREEN_IMAGE_BASE {
   background-image: url('~/app/assets/images/wheelchair_portrait.jpg');
   background-repeat: no-repeat;
   background-position: center;
@@ -8,19 +8,15 @@
   height: 100%;
   width: 100%;
 
-  .loginLayout {
+  .login-layout {
     height: 100%;
     width: 100%;
     padding: 10;
   }
 
-  .loginForm {
+  .LOGIN_FORM_BASE {
+    color: $white;
     // background: linear-gradient(to bottom, #1f1c2cb3, #928dab85);
-    background: linear-gradient(
-      45deg,
-      rgba(22, 34, 42, 0.8),
-      rgba(58, 96, 115, 0.8)
-    );
     // background: linear-gradient(
     //   -45deg,
     //   rgba(41, 46, 73, 0.8),
@@ -31,7 +27,6 @@
     //   rgba(101, 78, 163, 0.893),
     //   rgba(234, 175, 200, 0.824)
     // );
-    color: $white;
     border-radius: 4;
     vertical-align: center;
     android-elevation: 10;
@@ -43,11 +38,10 @@
     TextField {
       margin: 5;
     }
+  }
 
-    .submitBtn {
-      color: $white;
-      background-color: $permobil-violet;
-      margin: 8;
-    }
+  .SUBMIT_BTN_BASE {
+    color: $white;
+    margin: 8;
   }
 }

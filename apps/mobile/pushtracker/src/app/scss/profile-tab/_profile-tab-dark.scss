@@ -1,0 +1,42 @@
+@import '../variables';
+@import 'profile-tab-base';
+
+.profile-tab-layout {
+  @extend .PROFILE_TAB_LAYOUT_BASE;
+  background-color: $black;
+
+  .profile-name {
+    @extend .PROFILE_NAME_BASE;
+    color: $white;
+  }
+
+  .profile-email {
+    @extend .PROFILE_EMAIL_BASE;
+    color: $white;
+  }
+
+  .section-label {
+    @extend .SECTION_LABEL_BASE;
+    color: $white;
+  }
+
+  .avatar-circle {
+    @extend .AVATAR_CIRCLE_BASE;
+    background-color: $white;
+
+    label {
+      color: $black;
+    }
+  }
+
+  .activity-goals {
+    @extend .ACTIVITY_GOALS_BASE;
+
+    label {
+      color: $white;
+    }
+    StackLayout {
+      border-color: $grey;
+    }
+  }
+}
