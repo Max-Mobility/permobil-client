@@ -96,8 +96,7 @@ export class SmartDrive extends DeviceBase {
       battery: this.battery,
       driveDistance: this.driveDistance,
       coastDistance: this.coastDistance,
-      address: this.address,
-      connected: this.connected
+      address: this.address
     };
   }
 
@@ -108,7 +107,6 @@ export class SmartDrive extends DeviceBase {
     this.driveDistance = (obj && obj.driveDistance) || 0;
     this.coastDistance = (obj && obj.coastDistance) || 0;
     this.address = (obj && obj.address) || '';
-    this.connected = (obj && obj.connected) || false;
   }
 
   // regular methods

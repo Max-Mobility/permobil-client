@@ -27,6 +27,7 @@ import {
 } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
+import * as LS from 'nativescript-localstorage';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import {
@@ -54,6 +55,17 @@ import {
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
+
+const dateLocales = {
+  de: require('date-fns/locale/de'),
+  en: require('date-fns/locale/en'),
+  es: require('date-fns/locale/es'),
+  fr: require('date-fns/locale/fr'),
+  ja: require('date-fns/locale/ja'),
+  ko: require('date-fns/locale/ko'),
+  nl: require('date-fns/locale/nl'),
+  zh: require('date-fns/locale/zh_cn')
+};
 
 export class MainViewModel extends Observable {
   // battery display
@@ -439,7 +451,7 @@ export class MainViewModel extends Observable {
 
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
-      this.saveUsageInfoToDatabase,
+      this.saveSmartDriveData,
       this.DATABASE_SAVE_INTERVAL_MS,
       { leading: true, trailing: false }
     );
@@ -538,6 +550,11 @@ export class MainViewModel extends Observable {
       this.updateSmartDrive(savedSDAddr);
     }
 
+    // load serialized smartdrive data
+    if (this.smartDrive) {
+      this.loadSmartDriveStateFromLS();
+    }
+
     // load settings from memory
     this.loadSettings();
     this.updateSettingsDisplay();
@@ -569,6 +586,23 @@ export class MainViewModel extends Observable {
     this.smartDrive = this._bluetoothService.getOrMakeSmartDrive({
       address: address
     });
+  }
+
+  loadSmartDriveStateFromLS() {
+    Log.D('Loading SD state from LS');
+    this.smartDrive.fromObject(
+      LS.getItemObject(
+        'com.permobil.smartdrive.wearos.smartdrive.data'
+      )
+    );
+  }
+
+  saveSmartDriveStateToLS() {
+    Log.D('Saving SD state to LS');
+    LS.setItemObject(
+      'com.permobil.smartdrive.wearos.smartdrive.data',
+      this.smartDrive.data()
+    );
   }
 
   /**
@@ -1302,7 +1336,9 @@ export class MainViewModel extends Observable {
         }, 0);
         const batteryData = sdData.map(e => {
           return {
-            day: format(new Date(e.date), 'dd'),
+            day: format(new Date(e.date), 'dd', {
+              locale: dateLocales[getDefaultLang()]
+            }),
             value: (e.battery * 100.0) / maxBattery
           };
         });
@@ -1329,7 +1365,9 @@ export class MainViewModel extends Observable {
             }
           }
           return {
-            day: format(new Date(e.date), 'dd'),
+            day: format(new Date(e.date), 'dd', {
+              locale: dateLocales[getDefaultLang()]
+            }),
             value: diff.toFixed(1)
           };
         });
@@ -2159,11 +2197,14 @@ export class MainViewModel extends Observable {
       });
   }
 
-  saveUsageInfoToDatabase(args: {
+  saveSmartDriveData(args: {
     driveDistance?: number;
     coastDistance?: number;
     battery?: number;
   }) {
+    // save state to LS
+    this.saveSmartDriveStateToLS();
+    // now save to database
     const driveDistance = args.driveDistance || 0;
     const coastDistance = args.coastDistance || 0;
     const battery = args.battery || 0;
