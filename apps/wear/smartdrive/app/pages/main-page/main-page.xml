@@ -318,10 +318,8 @@
               rows="15, auto, auto, *, auto, auto, 15"
               columns="30, *, 30"
               class="circleDetails">
-            <Label row="1" col="1" class="topValue" horizontalAlignment="center"
-                   visibility="hidden"/>
-            <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                   visibility="hidden"/>
+            <Label row="1" col="1" class="topValue" text=" "/>
+            <Label row="2" col="1" class="topValueDescription" text=" "/>
             <Label row="3" col="1" horizontalAlignment="center"
                    verticalAlignment="middle" textWrap="true"
                    text="{{ scanningProgressText }}"/>

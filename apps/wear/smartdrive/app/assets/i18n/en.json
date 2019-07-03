@@ -80,6 +80,7 @@
 			}
 		}
 	},
+  "permissions-reasons": "To read your E2 serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission. To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
 	"power-assist": {
 		"activate": "Activate Power Assist",
 		"deactivate": "Deactivate Power Assist",

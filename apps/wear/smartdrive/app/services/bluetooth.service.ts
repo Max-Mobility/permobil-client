@@ -35,8 +35,6 @@ export class BluetoothService {
     this._bluetooth = new Bluetooth();
     // enabling `debug` will output console.logs from the bluetooth source code
     this._bluetooth.debug = false;
-
-    this.initialize();
   }
 
   public setEventListeners() {

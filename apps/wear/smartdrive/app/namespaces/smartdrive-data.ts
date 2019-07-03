@@ -1,7 +1,12 @@
 import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
 import { getFile } from 'tns-core-modules/http';
+import { Downloader, ProgressEventData, DownloadEventData } from 'nativescript-downloader';
 import { device } from 'tns-core-modules/platform';
+
+const downloadManager = new Downloader();
+Downloader.init();
+//Downloader.setTimeout(120);
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -159,19 +164,27 @@ export namespace SmartDriveData {
         url = url.replace('http:', 'https:');
       }
       console.log('Downloading FW update', f['_filename']);
-      return getFile(url).then(data => {
-        console.log('Got FW', f['_filename']);
-        const fileData = data.readSync();
-        return {
-          version: SmartDriveData.Firmwares.versionStringToByte(
-            f['version']
-          ),
-          name: f['_filename'],
-          data: fileData,
-          changes:
-          f['change_notes'][device.language] || f['change_notes']['en']
-        };
-      });
+
+      const downloadId = downloadManager.createDownload({ url });
+      return downloadManager
+        .start(downloadId, (progressData: ProgressEventData) => {
+          console.log('url progress', progressData, url);
+        })
+        .then((completed: DownloadEventData) => {
+          const fileData = File.fromPath(completed.path).readSync();
+          return {
+            version: SmartDriveData.Firmwares.versionStringToByte(
+              f['version']
+            ),
+            name: f['_filename'],
+            data: fileData,
+            changes:
+            f['change_notes'][device.language] || f['change_notes']['en']
+          };
+        })
+        .catch(error => {
+          console.error('download error', url, error);
+        });
     }
 
     export function versionByteToString(version: number): string {

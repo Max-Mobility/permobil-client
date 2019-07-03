@@ -17,6 +17,7 @@ import throttle from 'lodash/throttle';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
 import { Pager } from 'nativescript-pager';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
@@ -241,41 +242,14 @@ export class MainViewModel extends Observable {
 
   private chargingWorkTimeoutId: any = null;
 
+  private permissionsNeeded = [
+    android.Manifest.permission.READ_PHONE_STATE,
+    android.Manifest.permission.ACCESS_COARSE_LOCATION
+  ];
+
   isActivityThis(activity: any) {
     // TODO: This is a hack to determine which activity is being updated!
     return `${activity}`.includes(application.android.packageName);
-  }
-
-  requestReadPhoneStatePermission(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      // grab the permission dialog result
-      application.android.on(
-        application.AndroidApplication.activityRequestPermissionsEvent,
-        (args: application.AndroidActivityRequestPermissionsEventData) => {
-          for (let i = 0; i < args.permissions.length; i++) {
-            if (
-              args.grantResults[i] ===
-              android.content.pm.PackageManager.PERMISSION_DENIED
-            ) {
-              reject('Permission denied');
-              return;
-            }
-          }
-          resolve();
-        }
-      );
-
-      const activity =
-        application.android.foregroundActivity ||
-        application.android.startActivity;
-
-      // invoke the permission dialog
-      (android.support.v4.app.ActivityCompat as any).requestPermissions(
-        activity,
-        [android.Manifest.permission.READ_PHONE_STATE],
-        227
-      );
-    });
   }
 
   constructor() {
@@ -429,24 +403,6 @@ export class MainViewModel extends Observable {
           child._onCssStateChange();
         }
       }
-
-      const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
-      if (!savedSerial) {
-        // update about page info
-        Log.D('Requesting permissions!');
-        this.requestReadPhoneStatePermission()
-          .then(p => {
-            this.watchSerialNumber = android.os.Build.getSerial();
-            appSettings.setString(
-              DataKeys.WATCH_SERIAL_NUMBER,
-              this.watchSerialNumber
-            );
-            this._kinveyService.watch_serial_number = this.watchSerialNumber;
-          })
-          .catch(e => {
-            Log.E('permission denied!', e);
-          });
-      }
     });
 
     // make throttled save function - not called more than once every 10 seconds
@@ -575,6 +531,38 @@ export class MainViewModel extends Observable {
     themes.applyThemeCss(defaultTheme, 'theme-default.scss');
   }
 
+  askForPermissions() {
+    const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
+    if (neededPermissions && neededPermissions.length > 0) {
+      Log.D('requesting permissions!', neededPermissions);
+      return alert({
+        title: 'Permissions Request',
+        message: L('permissions-reasons'),
+        okButtonText: 'Ok'
+      })
+        .then(() => {
+          return requestPermissions(neededPermissions, () => {})
+        })
+        .then(permissions => {
+          // now that we have permissions go ahead and save the serial number
+          this.watchSerialNumber = android.os.Build.getSerial();
+          appSettings.setString(
+            DataKeys.WATCH_SERIAL_NUMBER,
+            this.watchSerialNumber
+          );
+          this._kinveyService.watch_serial_number = this.watchSerialNumber;
+          // and return true letting the caller know we got the permissions
+          return true;
+        })
+        .catch(err => {
+          Log.D('we needed permissions', err);
+          return false;
+        });
+    } else {
+      return Promise.resolve(true);
+    }
+  }
+
   fullStop() {
     // this.disableAllSensors();
     this.disableTapSensor();
@@ -590,11 +578,12 @@ export class MainViewModel extends Observable {
 
   loadSmartDriveStateFromLS() {
     Log.D('Loading SD state from LS');
-    this.smartDrive.fromObject(
-      LS.getItemObject(
-        'com.permobil.smartdrive.wearos.smartdrive.data'
-      )
+    const savedSd = LS.getItem(
+      'com.permobil.smartdrive.wearos.smartdrive.data'
     );
+    if (savedSd) {
+      this.smartDrive.fromObject( savedSd );
+    }
   }
 
   saveSmartDriveStateToLS() {
@@ -1032,9 +1021,8 @@ export class MainViewModel extends Observable {
   }
 
   checkForUpdates() {
-    // TODO: if updates is swiped while we're doing this - cancel the
-    // operation, or don't allow swiping while we're checking for
-    // updates!
+    // don't allow swiping while we're checking for updates!
+    (this._updatesLayout as any).swipeable = false;
     this.updateProgressText = L('updates.checking-for-updates'); // 'Checking for Updates';
     this.isUpdatingSmartDrive = false;
     this.checkingForUpdates = true;
@@ -1076,16 +1064,6 @@ export class MainViewModel extends Observable {
         if (fileMetaDatas && fileMetaDatas.length) {
           // now download the files
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
-          /* - for if we want to download them sequentially
-          return fileMetaDatas.reduce((promiseChain, currentFile) => {
-            return promiseChain.then(chainResults =>
-                                     SmartDriveData.Firmwares.download(currentFile)
-                                     .then(currentResult =>
-                                           [ ...chainResults, currentResult ]
-                                          )
-                                    );
-          }, Promise.resolve([]));
-          */
         }
         return Promise.all(promises);
       })
@@ -1148,6 +1126,8 @@ export class MainViewModel extends Observable {
         return Promise.all(promises);
       })
       .then(() => {
+        // re-enable swipe close of the updates layout
+        (this._updatesLayout as any).swipeable = true;
         // now see what we need to do with the data
         Log.D('Finished downloading updates.');
         this.hasUpdateData = true;
@@ -1236,6 +1216,8 @@ export class MainViewModel extends Observable {
               });
           });
         } else {
+          // re-enable swipe close of the updates layout
+          (this._updatesLayout as any).swipeable = true;
           // smartdrive is already up to date
           showSuccess(L('updates.up-to-date'));
           setTimeout(() => {
@@ -1693,14 +1675,16 @@ export class MainViewModel extends Observable {
     if (!this.watchBeingWorn) {
       showFailure(L('failures.must-wear-watch'));
       return;
-    }
-    if (this.hasSavedSmartDrive()) {
+    } else if (this.hasSavedSmartDrive()) {
       this.wakeLock.acquire();
       keepAwake();
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.powerAssistActive = true;
       this.updatePowerAssistRing();
-      return this.connectToSavedSmartDrive()
+      return this.askForPermissions()
+        .then(() => {
+          return this.connectToSavedSmartDrive();
+        })
         .then(didConnect => {
           if (didConnect) {
             this.enableTapSensor();
@@ -1778,9 +1762,12 @@ export class MainViewModel extends Observable {
   saveNewSmartDrive(): Promise<any> {
     let scanDisplayId = null;
     this.showScanning();
-    // ensure bluetoothservice is functional
-    return this._bluetoothService
-      .initialize()
+    // ensure we have the permissions
+    return this.askForPermissions()
+      .then(() => {
+        // ensure bluetoothservice is functional
+        return this._bluetoothService.initialize();
+      })
       .then(() => {
         this.pairSmartDriveText = L('settings.scanning');
         scanDisplayId = setInterval(() => {
