@@ -541,7 +541,7 @@ export class MainViewModel extends Observable {
         okButtonText: 'Ok'
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => {})
+          return requestPermissions(neededPermissions, () => {});
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number

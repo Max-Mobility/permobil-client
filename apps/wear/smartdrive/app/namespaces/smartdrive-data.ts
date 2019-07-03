@@ -6,7 +6,7 @@ import { device } from 'tns-core-modules/platform';
 
 const downloadManager = new Downloader();
 Downloader.init();
-//Downloader.setTimeout(120);
+// Downloader.setTimeout(120);
 
 export namespace SmartDriveData {
   export namespace Info {
