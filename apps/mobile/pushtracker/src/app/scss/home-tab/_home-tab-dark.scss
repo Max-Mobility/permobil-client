@@ -19,10 +19,14 @@
     }
   }
 
-  .data-details {
-    @extend .DATA_DETAILS_BASE;
+  .detail-data {
+    @extend .DETAIL_DATA_BASE;
 
-    label {
+    .detail-value {
+      color: $white;
+    }
+
+    .detail-description {
       color: $white;
     }
   }

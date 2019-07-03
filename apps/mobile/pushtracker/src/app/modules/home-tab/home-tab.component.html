@@ -58,9 +58,10 @@
       </GridLayout>
     </GridLayout>
 
-    // Data Details
+    // Percentage Data Details
     <GridLayout
-      height="100"
+      class="percentage-data-layout"
+      height="120"
       rows="*, *"
       columns="*, auto, auto, 20, auto, auto, *"
     >
@@ -69,43 +70,19 @@
         <Label text="&#xe5cc;"></Label>
       </StackLayout>
 
-      <GridLayout
-        row="0"
-        rowSpan="2"
-        col="2"
-        class="coast-time-data"
-        verticalAlignment="center"
-        horizontalAlignment="center"
-        rows="*, *"
-        columns="auto, auto"
-      >
+      <GridLayout row="0" rowSpan="2" col="2" rows="*, *" columns="auto, auto">
         <Label
           row="0"
           col="0"
-          class="coast-time-value bold"
-          verticalAlignment="bottom"
-          horizontalAlignment="left"
+          class="value"
           [text]="coastTimeCirclePercentage"
-          textWrap="true"
         ></Label>
-        <Label
-          row="0"
-          col="1"
-          class="coast-time-max bold"
-          verticalAlignment="bottom"
-          horizontalAlignment="left"
-          text="/100"
-          textWrap="true"
-        ></Label>
-
+        <Label row="0" col="1" class="max-value" text="/100"></Label>
         <Label
           row="1"
           colSpan="2"
-          class="bold"
-          verticalAlignment="top"
-          horizontalAlignment="left"
+          class="description"
           [text]="'general.coast-time' | translate"
-          textWrap="true"
         ></Label>
       </GridLayout>
 
@@ -114,86 +91,70 @@
         <Label text="&#xe5cc;"></Label>
       </StackLayout>
 
-      <GridLayout
-        row="0"
-        rowSpan="2"
-        col="5"
-        class="distance-data"
-        verticalAlignment="center"
-        horizontalAlignment="center"
-        rows="*, *"
-        columns="auto, auto"
-      >
+      <GridLayout row="0" rowSpan="2" col="5" rows="*, *" columns="auto, auto">
         <Label
           row="0"
           col="0"
-          class="distance-value"
+          class="value"
           [text]="distanceCirclePercentage"
-          textWrap="true"
         ></Label>
-        <Label
-          row="0"
-          col="1"
-          class="distance-value-max bold"
-          verticalAlignment="bottom"
-          horizontalAlignment="left"
-          text="/5"
-          textWrap="true"
-        ></Label>
+        <Label row="0" col="1" class="max-value" text="/5"></Label>
         <Label
           row="1"
           col="0"
-          class="bold"
-          verticalAlignment="top"
-          horizontalAlignment="left"
+          class="description"
           [text]="'general.distance' | translate"
-          textWrap="true"
         ></Label>
       </GridLayout>
     </GridLayout>
 
-    <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="data-details">
+    // Detailed Data
+    <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="detail-data">
       // push count data
-      <Label row="0" col="0" [text]="pushCountData" textWrap="true"></Label>
+      <Label
+        row="0"
+        col="0"
+        class="detail-value"
+        [text]="pushCountData"
+      ></Label>
       <Label
         row="1"
         col="0"
+        class="detail-description"
         [text]="'general.pushes' | translate"
-        textWrap="true"
       ></Label>
       // coast time data
-      <Label row="0" col="2" [text]="coastTimeData" textWrap="true"></Label>
+      <Label
+        row="0"
+        col="2"
+        class="detail-value"
+        [text]="coastTimeData"
+      ></Label>
       <Label
         row="1"
         col="2"
+        class="detail-description"
         [text]="'general.coast-time' | translate"
-        textWrap="true"
       ></Label>
       // distance data
-      <Label row="0" col="4" [text]="distanceData" textWrap="true"></Label>
+      <Label row="0" col="4" class="detail-value" [text]="distanceData"></Label>
       <Label
         row="1"
         col="4"
+        class="detail-description"
         [text]="'general.miles' | translate"
-        textWrap="true"
       ></Label>
     </GridLayout>
 
     // distance per day chart
-    <GridLayout rows="*, *" columns="auto, *, auto">
+    <GridLayout class="chart-layout" rows="*, *" columns="auto, *, auto">
       <Label
         row="0"
         col="0"
         text="Travel 3.0 miles per day"
         textWrap="true"
       ></Label>
-      <Label
-        row="0"
-        col="2"
-        text="&#xf397;"
-        textWrap="true"
-        class="ionicon"
-      ></Label>
+      <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
 
       // repeater grid here for data
     </GridLayout>

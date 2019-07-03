@@ -29,6 +29,33 @@
     }
   }
 
+  .PERCENTAGE_DATA_LAYOUT_BASE {
+    padding: 10 5 20 5;
+
+    .value {
+      font-family: $os;
+      font-size: 28;
+      font-weight: bold;
+      vertical-align: bottom;
+      horizontal-align: center;
+    }
+
+    .max-value {
+      font-family: $os;
+      font-size: 18;
+      font-weight: bold;
+      vertical-align: bottom;
+      horizontal-align: left;
+    }
+
+    .description {
+      font-family: $os;
+      font-size: 16;
+      vertical-align: top;
+      horizontal-align: left;
+    }
+  }
+
   .cousteau-circle {
     background-color: $permobil-cousteau-light;
     color: $permobil-cousteau-dark;
@@ -71,39 +98,40 @@
     }
   }
 
-  .coast-time-data {
-    margin: 0 4 0 4;
-  }
-
-  .coast-time-value {
-    font-size: 28;
-  }
-
-  .coast-time-max {
-    font-size: 16;
-  }
-
-  .distance-data {
-    margin: 0 4 0 4;
-  }
-
-  .distance-value {
-    font-size: 28;
-  }
-
-  .distance-value-max {
-    font-size: 16;
-  }
-
-  .DATA_DETAILS_BASE {
+  .DETAIL_DATA_BASE {
+    padding: 10 4 30 4;
     horizontal-align: center;
     vertical-align: center;
 
     label {
-      @extend .bold;
+      font-family: $os;
+      font-weight: bold;
       text-align: center;
       horizontal-align: center;
       vertical-align: center;
+    }
+
+    .detail-value {
+      font-size: 14;
+    }
+
+    .detail-description {
+      font-size: 11;
+    }
+  }
+
+  .CHART_LAYOUT_BASE {
+    padding: 5;
+
+    .title {
+      font-family: $os-SemiBold;
+      font-size: 24;
+    }
+
+    .more-icon {
+      font-family: $material-icon;
+      font-size: 22;
+      horizontal-align: right;
     }
   }
 }

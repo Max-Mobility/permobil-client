@@ -1,15 +1,10 @@
 // action bar
 <ActionBar title=" " class="action-bar" flat="true">
-  <ActionItem class="action-item" (tap)="onHelpTap()" ios.position="right">
-    <Label text="&#xe8fd;"></Label>
+  <ActionItem class="action-item-btn" (tap)="onHelpTap()" ios.position="right">
+    <Button text="&#xe8fd;"></Button>
   </ActionItem>
-  <ActionItem
-    class="action-item"
-    (tap)="onSettingsTap()"
-    ios.position="right"
-    marginRight="5"
-  >
-    <Label text="&#xe8b8;"></Label>
+  <ActionItem class="action-item-btn" (tap)="onSettingsTap()" ios.position="right">
+    <Button text="&#xe8b8;"></Button>
   </ActionItem>
 </ActionBar>
 

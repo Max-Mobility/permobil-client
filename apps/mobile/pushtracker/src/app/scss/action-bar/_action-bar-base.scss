@@ -10,12 +10,13 @@ ActionBar[title] {
     font-family: $os;
   }
 
-  .ACTION_ITEM_BASE {
-    label {
-      padding: 5;
-      margin: 2 6;
-      font-family: $material-icon;
-      font-size: 30;
+  .ACTION_ITEM_BTN_BASE {
+    button {
+      @extend .btn-transparent;
     }
+    padding: 4;
+    margin: 2;
+    font-family: $material-icon;
+    font-size: 30;
   }
 }

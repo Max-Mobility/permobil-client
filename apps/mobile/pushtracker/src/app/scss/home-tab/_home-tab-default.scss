@@ -19,11 +19,32 @@
     }
   }
 
-  .data-details {
-    @extend .DATA_DETAILS_BASE;
+  .percentage-data-layout {
+    @extend .PERCENTAGE_DATA_LAYOUT_BASE;
+    .value {
+      color: $dark-grey;
+    }
+    .max-value {
+      color: $dark-grey;
+    }
+    .description {
+      color: $dark-grey;
+    }
+  }
 
-    label {
+  .detail-data {
+    @extend .DETAIL_DATA_BASE;
+
+    .detail-value {
       color: $black;
     }
+
+    .detail-description {
+      color: $black;
+    }
+  }
+  .chart-layout {
+    @extend .CHART_LAYOUT_BASE;
+    
   }
 }

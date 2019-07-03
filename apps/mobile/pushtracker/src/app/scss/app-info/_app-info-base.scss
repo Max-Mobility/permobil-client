@@ -4,25 +4,19 @@
   height: 100%;
   width: 100%;
 
-  GridLayout {
-    padding: 10;
-  }
-
   .CLOSE_BTN_BASE {
     @extend .btn-transparent;
     padding: 4;
-    font-size: 32;
+    font-size: 30;
     font-family: $material-icon;
-    text-align: left;
     horizontal-align: left;
   }
 
   .MORE_BTN_BASE {
     @extend .btn-transparent;
     padding: 4;
-    font-size: 32;
+    font-size: 30;
     font-family: $material-icon;
-    text-align: right;
     horizontal-align: right;
   }
 
