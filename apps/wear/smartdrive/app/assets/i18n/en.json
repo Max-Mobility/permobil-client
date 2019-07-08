@@ -29,6 +29,7 @@
 		"must-wear-watch": "You must wear the watch to activate power assist.",
 		"no-smartdrive-paired": "No SmartDrive paired to the app!",
 		"no-smartdrives-found": "No SmartDrives found nearby.",
+    "permissions": "Required permissions were not granted!",
 		"saving-error": "Failed saving SmartDrive error",
 		"saving-usage": "Failed saving usage",
 		"scan": "Could not scan",

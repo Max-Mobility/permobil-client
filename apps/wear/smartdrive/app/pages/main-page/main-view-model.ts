@@ -31,10 +31,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import * as LS from 'nativescript-localstorage';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
-import {
-  ObservableArray,
-  ChangedData
-} from 'tns-core-modules/data/observable-array';
+import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { device } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
@@ -44,14 +41,11 @@ import { DataKeys } from '../../enums';
 import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
-import { ScrollView, ScrollEventData } from 'tns-core-modules/ui/scroll-view';
+import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import {
-  currentSystemTime,
-  currentSystemTimeMeridiem,
   hideOffScreenLayout,
-  showOffScreenLayout,
-  promiseSerial
+  showOffScreenLayout
 } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -87,8 +81,11 @@ export class MainViewModel extends Observable {
   @Prop() currentSpeedDescription: string = L('power-assist.speed');
   @Prop() currentSignalStrength: string = '--';
   // time display
-  @Prop() currentTime;
-  @Prop() currentTimeMeridiem;
+  @Prop() displayTime: boolean = true;
+  @Prop() currentTime: string = '';
+  @Prop() currentTimeMeridiem: string = '';
+  @Prop() currentDay: string = '';
+  @Prop() currentYear: string = '';
   // state variables
   @Prop() powerAssistActive: boolean = false;
   @Prop() isTraining: boolean = false;
@@ -110,7 +107,7 @@ export class MainViewModel extends Observable {
   @Prop() scanningProgressText: string = L('settings.scanning');
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = '';
-  @Prop() changeSettingKeyValue;
+  @Prop() changeSettingKeyValue: any = null;
   @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
 
   /**
@@ -122,7 +119,7 @@ export class MainViewModel extends Observable {
   @Prop() checkingForUpdates: boolean = false;
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
-  @Prop() public smartDriveOtaActions = new ObservableArray();
+  @Prop() smartDriveOtaActions = new ObservableArray();
 
   /**
    *
@@ -154,17 +151,17 @@ export class MainViewModel extends Observable {
   /**
    * Boolean to track if the SmartDrive motor is on.
    */
-  @Prop() public motorOn = false;
+  @Prop() motorOn = false;
 
   /**
    * Boolean to track if the user has tapped (for indication).
    */
-  @Prop() public hasTapped = false;
+  @Prop() hasTapped = false;
 
   /**
    * Data to bind to the Battery Usage Chart repeater.
    */
-  @Prop() public batteryChartData;
+  @Prop() batteryChartData: any[];
   /**
    * Used to indicate the highest value in the battery chart.
    */
@@ -172,7 +169,7 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Distance Chart repeater.
    */
-  @Prop() public distanceChartData;
+  @Prop() distanceChartData: any[];
   /**
    * Used to indicate the highest value in the distance chart.
    */
@@ -185,14 +182,14 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Error History repeater
    */
-  @Prop() public errorHistoryData = new ObservableArray();
+  @Prop() errorHistoryData = new ObservableArray();
 
-  @Prop() public mcuVersion: string = '---';
-  @Prop() public bleVersion: string = '---';
-  @Prop() public sdSerialNumber: string = '---';
-  @Prop() public watchSerialNumber: string = '---';
-  @Prop() public appVersion: string = '---';
-  @Prop() public databaseId: string = KinveyService.api_app_key;
+  @Prop() mcuVersion: string = '---';
+  @Prop() bleVersion: string = '---';
+  @Prop() sdSerialNumber: string = '---';
+  @Prop() watchSerialNumber: string = '---';
+  @Prop() appVersion: string = '---';
+  @Prop() databaseId: string = KinveyService.api_app_key;
 
   /**
    * State Management for Sensor Monitoring / Data Collection
@@ -281,9 +278,12 @@ export class MainViewModel extends Observable {
 
     // handle ambient mode callbacks
     application.on('updateAmbient', args => {
-      Log.D('updateAmbient', args.data, currentSystemTime());
-      this.currentTime = currentSystemTime();
-      this.currentTimeMeridiem = currentSystemTimeMeridiem();
+      this.updateTimeDisplay();
+      Log.D('updateAmbient', args.data,
+            this.currentTime,
+            this.currentTimeMeridiem,
+            this.currentDay,
+            this.currentYear);
     });
 
     // Activity lifecycle event handlers
@@ -343,32 +343,30 @@ export class MainViewModel extends Observable {
 
     console.time('SQLite_Init');
     // create / load tables for smartdrive data
-    this._sqliteService
-      .makeTable(
+    const sqlitePromises = [
+      this._sqliteService.makeTable(
         SmartDriveData.Info.TableName,
         SmartDriveData.Info.IdName,
         SmartDriveData.Info.Fields
+      ),
+      this._sqliteService.makeTable(
+        SmartDriveData.Errors.TableName,
+        SmartDriveData.Errors.IdName,
+        SmartDriveData.Errors.Fields
+      ),
+      this._sqliteService.makeTable(
+        SmartDriveData.Firmwares.TableName,
+        SmartDriveData.Firmwares.IdName,
+        SmartDriveData.Firmwares.Fields
       )
-      .then(() => {
-        return this._sqliteService.makeTable(
-          SmartDriveData.Errors.TableName,
-          SmartDriveData.Errors.IdName,
-          SmartDriveData.Errors.Fields
-        );
-      })
-      .then(() => {
-        return this._sqliteService.makeTable(
-          SmartDriveData.Firmwares.TableName,
-          SmartDriveData.Firmwares.IdName,
-          SmartDriveData.Firmwares.Fields
-        );
-      })
+    ];
+    Promise.all(sqlitePromises)
       .then(() => {
         Log.D('Tables complete');
         console.timeEnd('SQLite_Init');
       })
       .catch(err => {
-        Log.E(`Couldn't make table:`, err);
+        Log.E('Could not make table:', err);
       });
 
     // load serial number from settings / memory
@@ -463,12 +461,10 @@ export class MainViewModel extends Observable {
     );
 
     // monitor the clock / system time for display and logging:
-    this.currentTime = currentSystemTime();
-    this.currentTimeMeridiem = currentSystemTimeMeridiem();
+    this.updateTimeDisplay();
     const timeReceiverCallback = (androidContext, intent) => {
-      Log.D('timeReceiverCallback', currentSystemTime());
-      this.currentTime = currentSystemTime();
-      this.currentTimeMeridiem = currentSystemTimeMeridiem();
+      this.updateTimeDisplay();
+      Log.D('timeReceiverCallback', this.currentTime);
       // update charts if date has changed
       if (!isSameDay(new Date(), this._lastChartDay)) {
         this.updateChartData();
@@ -542,6 +538,10 @@ export class MainViewModel extends Observable {
   }
 
   askForPermissions() {
+	  // will throw an error if permissions are denied, else will
+	  // return either true or a permissions object detailing all the
+	  // granted permissions. The error thrown details which
+	  // permissions were rejected
     const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
     if (neededPermissions && neededPermissions.length > 0) {
       Log.D('requesting permissions!', neededPermissions);
@@ -565,8 +565,7 @@ export class MainViewModel extends Observable {
           return true;
         })
         .catch(err => {
-          Log.D('we needed permissions', err);
-          return false;
+          throw L('failures.permissions');
         });
     } else {
       return Promise.resolve(true);
@@ -713,6 +712,24 @@ export class MainViewModel extends Observable {
   onAppUncaughtError(args?: any) {
     Log.D('App uncaught error');
     this.fullStop();
+  }
+
+  toggleTimeDisplay() {
+    this.displayTime = !this.displayTime;
+  }
+
+  _format(d: Date, fmt: string) {
+    return format(d, fmt, {
+      locale: dateLocales[getDefaultLang()] || dateLocales['en']
+    })
+  }
+
+  updateTimeDisplay() {
+    const now = new Date();
+    this.currentTime = this._format(now, 'h:mm');
+    this.currentTimeMeridiem = this._format(now, 'A');
+    this.currentDay = this._format(now, 'ddd MMM D');
+    this.currentYear = this._format(now, 'YYYY');
   }
 
   /**
@@ -1369,7 +1386,7 @@ export class MainViewModel extends Observable {
   updateChartData() {
     // Log.D('Updating Chart Data / Display');
     return this.getUsageInfoFromDatabase(7)
-      .then(sdData => {
+      .then((sdData: any[]) => {
         // we've asked for one more day than needed so that we can
         // compute distance differences
         const oldest = sdData[0];
@@ -1386,14 +1403,12 @@ export class MainViewModel extends Observable {
         }, 0);
         const batteryData = sdData.map(e => {
           return {
-            day: format(new Date(e.date), 'dd', {
-              locale: dateLocales[getDefaultLang()] || dateLocales['en']
-            }),
+            day: this._format(new Date(e.date), 'dd'),
             value: (e.battery * 100.0) / maxBattery
           };
         });
         // Log.D('Highest Battery Value:', maxBattery);
-        this.batteryChartMaxValue = maxBattery;
+        this.batteryChartMaxValue = maxBattery.toFixed(0);
         this.batteryChartData = batteryData;
 
         // update distance data
@@ -1415,20 +1430,18 @@ export class MainViewModel extends Observable {
             }
           }
           return {
-            day: format(new Date(e.date), 'dd', {
-              locale: dateLocales[getDefaultLang()]
-            }),
-            value: diff.toFixed(1)
+            day: this._format(new Date(e.date), 'dd'),
+            value: diff
           };
         });
         const maxDist = distanceData.reduce((max, obj) => {
           return obj.value > max ? obj.value : max;
-        }, 0);
+        }, 0.0);
         distanceData.map(data => {
-          data.value = (100.0 * data.value) / maxDist;
+          data.value = 100.0 * data.value / maxDist;
         });
         // Log.D('Highest Distance Value:', maxDist);
-        this.distanceChartMaxValue = maxDist;
+        this.distanceChartMaxValue = maxDist.toFixed(1);
         this.distanceChartData = distanceData;
 
         // update estimated range based on battery / distance
@@ -1775,7 +1788,7 @@ export class MainViewModel extends Observable {
           }
         })
         .catch(err => {
-          Log.E(`Couldn't save new smartdrive: ${err}`);
+          Log.E(`Could not save new smartdrive: ${err}`);
         });
     }
   }
@@ -2239,7 +2252,7 @@ export class MainViewModel extends Observable {
         if (rows && rows.length) {
           errors = rows.map(r => {
             return {
-              time: format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
+              time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
               code: r && r[2]
             };
           });
@@ -2247,7 +2260,7 @@ export class MainViewModel extends Observable {
         return errors;
       })
       .catch(err => {
-        Log.E(`couldn't get errors`, err);
+        Log.E('Could not get errors', err);
         return errors;
       });
   }

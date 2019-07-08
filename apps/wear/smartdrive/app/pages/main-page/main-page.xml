@@ -53,22 +53,24 @@
                               rimWidth="2" barWidth="8"
                               progress="{{ watchCurrentBatteryPercentage }}">
             <GridLayout rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
-              <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ estimatedDistanceDisplay }}"
+              <StackLayout row="1" col="1" rowSpan="2"
                      tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="{{ estimatedDistanceDescription }}"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ currentSignalStrength }}"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="Signal Strength (dB)"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
+                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}">
+                <Label class="topValue" horizontalAlignment="center" textWrap="true"
+                       text="{{ estimatedDistanceDisplay }}"
+                       tap="{{ toggleDisplay }}"
+                       visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
+                <Label class="topValueDescription" textWrap="true"
+                       text="{{ estimatedDistanceDescription }}"/>
+              </StackLayout>
+              <StackLayout row="1" col="1" rowSpan="2"
+                           tap="{{ toggleDisplay }}"
+                           visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}">
+                <Label class="topValue" horizontalAlignment="center" textWrap="true"
+                       text="{{ currentSignalStrength }}"/>
+                <Label row="2" col="1" class="topValueDescription" textWrap="true"
+                       text="Signal Strength (dB)"/>
+              </StackLayout>
               <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
                      text="{{ currentSpeedDisplay }}"
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
@@ -92,10 +94,18 @@
                       text="{{ L('power-assist.exit-training') }}"
                       tap="{{ onExitTrainingModeTap }}"
                       visibility="{{ isTraining ? 'visible':'collapsed' }}" />
-              <Label row="4" col="1" class="currentTime"
-                     text="{{ currentTime }}" textWrap="true" />
-              <Label row="5" col="1" class="currentTimeMeridiem"
-                     text="{{ currentTimeMeridiem }}" textWrap="true" />
+              <StackLayout row="4" col="1" rowSpan="2"
+                           tap="{{ toggleTimeDisplay }}"
+                           visibility="{{ displayTime ? 'visible':'collapsed' }}">
+                <Label class="currentTime" text="{{ currentTime }}" textWrap="true"/>
+                <Label class="currentTimeMeridiem" text="{{ currentTimeMeridiem }}" textWrap="true"/>
+              </StackLayout>
+              <StackLayout row="4" col="1" rowSpan="2"
+                           tap="{{ toggleTimeDisplay }}"
+                           visibility="{{ !displayTime ? 'visible':'collapsed' }}">
+                <Label class="currentTime" text="{{ currentDay }}" textWrap="true"/>
+                <Label class="currentTimeMeridiem" text="{{ currentYear }}" textWrap="true"/>
+              </StackLayout>
             </GridLayout>
           </nac:AnimatedCircle>
 

@@ -10,10 +10,8 @@ export const currentSystemTimeMeridiem = () => {
   const c = java.util.Calendar.getInstance();
   const AM_PM = c.get(java.util.Calendar.AM_PM);
   if (AM_PM === java.util.Calendar.PM) {
-    Log.D('Current time is after noon PM');
     return 'PM';
   } else if (AM_PM === java.util.Calendar.AM) {
-    Log.D('Current time is before noon AM');
     return 'AM';
   }
 };

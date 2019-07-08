@@ -160,15 +160,12 @@ export class BluetoothService {
     this.clearEventListeners();
     this.setEventListeners();
 
-    const x = await this._bluetooth
-      .requestCoarseLocationPermission()
-      .then(() => {
-        this.enabled = true;
-        this.initialized = true;
-      })
-      .catch(error => {
-        Log.D('requestCoarseLocationPermission error', error);
-      });
+      return this._bluetooth
+		  .requestCoarseLocationPermission()
+		  .then(() => {
+			  this.enabled = true;
+			  this.initialized = true;
+		  });
   }
 
   public async advertise(): Promise<any> {
