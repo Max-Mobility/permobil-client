@@ -13,13 +13,15 @@ import { AppInfoComponent } from '../app-info/app-info.component';
 })
 export class HomeTabComponent implements OnInit {
   distanceCirclePercentage: number;
+  distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
+  coastTimeCirclePercentageMaxValue;
   distanceRemainingText: string;
   pushCountData: string;
   coastTimeData: string;
   distanceData: string;
+  distanceChartData;
   infoItems;
-
 
   constructor(
     private _translateService: TranslateService,
@@ -27,14 +29,23 @@ export class HomeTabComponent implements OnInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
+    // determine users distance value and get user activity goal for distance
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
+    this.distanceCirclePercentageMaxValue = `/${this.distanceCirclePercentage *
+      100}`;
+    // determine users coast-time value and get user activity goal for distance
     this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
+    this.coastTimeCirclePercentageMaxValue = `/${this
+      .coastTimeCirclePercentage * 100}`;
+
     this.distanceRemainingText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
     )}`;
     this.pushCountData = `1514`;
     this.coastTimeData = `3.6`;
     this.distanceData = `2.75`;
+
+    this.distanceChartData = null;
   }
 
   ngOnInit(): void {

@@ -45,7 +45,8 @@
     "title": "Perfil",
     "activity-goals": "Objetivos de actividad",
     "about-you": "Acerca de ti",
-    "chair-info": "Información de la silla"
+    "chair-info": "Información de la silla",
+    "set-goal": "Establecer una meta"
   },
   "settings-component": {
     "title": "Ajustes"

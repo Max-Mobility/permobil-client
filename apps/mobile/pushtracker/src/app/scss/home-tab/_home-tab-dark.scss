@@ -19,6 +19,19 @@
     }
   }
 
+  .percentage-data-layout {
+    @extend .PERCENTAGE_DATA_LAYOUT_BASE;
+    .value {
+      color: $white;
+    }
+    .max-value {
+      color: darken($white, 0.1);
+    }
+    .description {
+      color: darken($white, 0.1);
+    }
+  }
+
   .detail-data {
     @extend .DETAIL_DATA_BASE;
 
@@ -29,5 +42,9 @@
     .detail-description {
       color: $white;
     }
+  }
+
+  .chart-layout {
+    @extend .CHART_LAYOUT_BASE;
   }
 }
