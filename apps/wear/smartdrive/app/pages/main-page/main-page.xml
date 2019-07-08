@@ -11,7 +11,7 @@
       actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">
 
-    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ (isChangeSettingsLayoutEnabled || isUpdatesLayoutEnabled || isAboutLayoutEnabled) ? 'collapsed':'visible' }}">
+    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ (isChangeSettingsLayoutEnabled || isUpdatesLayoutEnabled || isAboutLayoutEnabled || isScanningLayoutEnabled) ? 'collapsed':'visible' }}">
       // Activate Power Assist Screen
       <pager:PagerItem>
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">

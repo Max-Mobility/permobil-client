@@ -39,6 +39,7 @@ import { device } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { Repeater } from 'tns-core-modules/ui/repeater';
+import { getViewById } from 'tns-core-modules/ui/core/view';
 import { DataKeys } from '../../enums';
 import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
@@ -93,27 +94,28 @@ export class MainViewModel extends Observable {
   @Prop() isTraining: boolean = false;
 
   /**
-   * SmartDrive Settings UI:
+   * Layout Management
    */
-  @Prop() scanningProgressText: string = L('settings.scanning');
+  @Prop() isMainLayoutEnabled = true;
   @Prop() isScanningLayoutEnabled = false;
   @Prop() isSettingsLayoutEnabled = false;
   @Prop() isChangeSettingsLayoutEnabled = false;
+  @Prop() isErrorHistoryLayoutEnabled = false;
+  @Prop() isAboutLayoutEnabled = false;
+  @Prop() isUpdatesLayoutEnabled = false;
+
+  /**
+   * SmartDrive Settings UI:
+   */
+  @Prop() scanningProgressText: string = L('settings.scanning');
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = '';
   @Prop() changeSettingKeyValue;
   @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
 
   /**
-   * Boolean to track the error history swipe layout visibility.
-   */
-  @Prop() isErrorHistoryLayoutEnabled = false;
-  @Prop() isAboutLayoutEnabled = false;
-
-  /**
    * SmartDrive Wireless Updates:
    */
-  @Prop() isUpdatesLayoutEnabled = false;
   @Prop() updateProgressText: string = L('updates.checking-for-updates');
   @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() hasUpdateData: boolean = false;
@@ -225,12 +227,6 @@ export class MainViewModel extends Observable {
   private aboutScrollView: ScrollView;
   private updateProgressCircle: AnimatedCircle;
   private scanningProgressCircle: AnimatedCircle;
-  private _settingsLayout: SwipeDismissLayout;
-  public _changeSettingsLayout: SwipeDismissLayout;
-  private _errorHistoryLayout: SwipeDismissLayout;
-  private _aboutLayout: SwipeDismissLayout;
-  private _updatesLayout: SwipeDismissLayout;
-  private _scanningLayout: SwipeDismissLayout;
   private _vibrator: Vibrate = new Vibrate();
   private _sentryService: SentryService;
   private _bluetoothService: BluetoothService;
@@ -242,8 +238,20 @@ export class MainViewModel extends Observable {
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
+  /**
+   * Layouts
+   */
+  private _settingsLayout: SwipeDismissLayout;
+  private _changeSettingsLayout: SwipeDismissLayout;
+  private _errorHistoryLayout: SwipeDismissLayout;
+  private _aboutLayout: SwipeDismissLayout;
+  private _updatesLayout: SwipeDismissLayout;
+  private _scanningLayout: SwipeDismissLayout;
+
+  // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
 
+  // permissions for the app
   private permissionsNeeded = [
     android.Manifest.permission.READ_PHONE_STATE,
     android.Manifest.permission.ACCESS_COARSE_LOCATION
@@ -1379,7 +1387,7 @@ export class MainViewModel extends Observable {
         const batteryData = sdData.map(e => {
           return {
             day: format(new Date(e.date), 'dd', {
-              locale: dateLocales[getDefaultLang()]
+              locale: dateLocales[getDefaultLang()] || dateLocales['en']
             }),
             value: (e.battery * 100.0) / maxBattery
           };
