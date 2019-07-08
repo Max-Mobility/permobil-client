@@ -6,6 +6,7 @@
       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:RL="nativescript-ng-ripple/ripple-view"
+      xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
       actionBarHidden="true">
@@ -362,7 +363,7 @@
         </RL:Ripple>
         <StackLayout row="1" col="1" class="value-circle">
           <Label text="{{ changeSettingKeyString }}" class="changeSettingsTitle" textWrap="true" />
-          <TextView height="auto" width="auto" editable="false" text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="false" />
+          <ui:AutoFitText maxHeight="30%" width="70%" text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="false" />
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
