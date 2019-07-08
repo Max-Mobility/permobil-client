@@ -5,6 +5,20 @@
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $white;
 
+  .settings-btn {
+    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    color: $black;
+  }
+  .help-btn {
+    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    color: $black;
+  }
+
+  .page-title {
+    @extend .PAGE_TITLE_BASE;
+    color: $black;
+  }
+
   .profile-name {
     @extend .PROFILE_NAME_BASE;
     color: $black;
@@ -29,14 +43,54 @@
     }
   }
 
-  .activity-goals {
-    @extend .ACTIVITY_GOALS_BASE;
-
+  .data-box {
+    @extend .DATA_BOX_BASE;
     label {
       color: #767a7e;
     }
     StackLayout {
       border-color: #dadce0;
+
+      label {
+        color: $black;
+      }
+    }
+  }
+
+  .activity-goals-dialog {
+    @extend .ACTIVITY_GOALS_DIALOG_BASE;
+    background-color: $white;
+
+    .close-btn {
+      @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+      color: $black;
+    }
+
+    .set-goal-btn {
+      color: $permobil-primary;
+    }
+
+    .config-title {
+      color: $black;
+    }
+    .config-value-description {
+      color: $black;
+    }
+
+    .config-circle {
+      @extend .CONFIG_CIRCLE_BASE;
+      border-color: lighten($grey, 0.2);
+
+      button {
+        color: $permobil-primary;
+      }
+
+      .config-value {
+        color: $black;
+      }
+      .config-value-sub {
+        color: $grey;
+      }
     }
   }
 }

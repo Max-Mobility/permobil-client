@@ -14,3 +14,10 @@ TabView {
   tab-text-color: $inactive-grey;
   selected-tab-text-color: $permobil-primary;
 }
+
+.hr {
+  height: 1;
+  width: 100%;
+  color: $grey;
+  background-color: $grey;
+}

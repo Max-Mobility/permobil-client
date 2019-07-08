@@ -45,7 +45,8 @@
     "title": "Profile",
     "activity-goals": "Activity Goals",
     "about-you": "About You",
-    "chair-info": "Chair Info"
+    "chair-info": "Chair Info",
+    "set-goal": "Set goal"
   },
   "settings-component": {
     "title": "Settings"
