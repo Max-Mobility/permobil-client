@@ -160,12 +160,12 @@ export class BluetoothService {
     this.clearEventListeners();
     this.setEventListeners();
 
-      return this._bluetooth
-		  .requestCoarseLocationPermission()
-		  .then(() => {
-			  this.enabled = true;
-			  this.initialized = true;
-		  });
+    return this._bluetooth
+      .requestCoarseLocationPermission()
+      .then(() => {
+        this.enabled = true;
+        this.initialized = true;
+      });
   }
 
   public async advertise(): Promise<any> {
@@ -257,9 +257,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  public discoverServices(opts: any) {}
+  public discoverServices(opts: any) { }
 
-  public discoverCharacteristics(opts: any) {}
+  public discoverCharacteristics(opts: any) { }
 
   public startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -517,7 +517,7 @@ export class BluetoothService {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void {}
+  private onCharacteristicReadRequest(args: any): void { }
 
   // service controls
   private deleteServices() {

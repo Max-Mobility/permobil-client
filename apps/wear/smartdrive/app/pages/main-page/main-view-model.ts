@@ -538,10 +538,10 @@ export class MainViewModel extends Observable {
   }
 
   askForPermissions() {
-	  // will throw an error if permissions are denied, else will
-	  // return either true or a permissions object detailing all the
-	  // granted permissions. The error thrown details which
-	  // permissions were rejected
+    // will throw an error if permissions are denied, else will
+    // return either true or a permissions object detailing all the
+    // granted permissions. The error thrown details which
+    // permissions were rejected
     const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
     if (neededPermissions && neededPermissions.length > 0) {
       Log.D('requesting permissions!', neededPermissions);
@@ -721,7 +721,7 @@ export class MainViewModel extends Observable {
   _format(d: Date, fmt: string) {
     return format(d, fmt, {
       locale: dateLocales[getDefaultLang()] || dateLocales['en']
-    })
+    });
   }
 
   updateTimeDisplay() {
