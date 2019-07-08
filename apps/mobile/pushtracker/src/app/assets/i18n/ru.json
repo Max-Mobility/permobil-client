@@ -45,7 +45,8 @@
     "title": "Профиль",
     "activity-goals": "Цели деятельности",
     "about-you": "О вас",
-    "chair-info": "Информация о кресле"
+    "chair-info": "Информация о кресле",
+    "set-goal": "Поставьте цель"
   },
   "settings-component": {
     "title": "настройки"

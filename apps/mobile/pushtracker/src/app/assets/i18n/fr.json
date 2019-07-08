@@ -45,7 +45,8 @@
     "title": "Profil",
     "activity-goals": "Objectifs d'activité",
     "about-you": "Au propos de vous",
-    "chair-info": "Informations sur la chaise"
+    "chair-info": "Informations sur la chaise",
+    "set-goal": "Fixer un objectif"
   },
   "settings-component": {
     "title": "Réglages"
