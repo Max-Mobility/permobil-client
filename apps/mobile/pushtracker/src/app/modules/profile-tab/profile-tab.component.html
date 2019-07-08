@@ -1,109 +1,222 @@
 // action bar
-<ActionBar title=" " class="action-bar" flat="true">
+<!-- <ActionBar title=" " class="action-bar" flat="true">
   <ActionItem class="action-item-btn" (tap)="onHelpTap()" ios.position="right">
     <Button text="&#xe8fd;"></Button>
   </ActionItem>
-  <ActionItem class="action-item-btn" (tap)="onSettingsTap()" ios.position="right">
+  <ActionItem
+    class="action-item-btn"
+    (tap)="onSettingsTap()"
+    ios.position="right"
+  >
     <Button text="&#xe8b8;"></Button>
   </ActionItem>
-</ActionBar>
+</ActionBar> -->
 
 // profile tab layout
-<ScrollView class="profile-tab-layout" padding="10">
-  <StackLayout padding="10">
-    <Label
-      class="h1"
-      [text]="'profile-tab.title' | translate"
-      textWrap="true"
-    ></Label>
-    <GridLayout columns="auto,auto,*" rows="*, *, *, *, *">
-      <StackLayout
+<GridLayout rows="*" columns="*" class="profile-tab-layout">
+  // main profile-tab layout
+  <GridLayout row="0" col="0" rows="auto, *" columns="*">
+    // Mock ActionBar
+    <GridLayout row="0" rows="*" columns="50, *, 44, 44">
+      <Button
         row="0"
-        col="0"
-        colspan="2"
-        rowspan="2"
-        class="avatar-circle"
+        col="2"
+        text="&#xe8fd;"
+        (tap)="onHelpTap()"
+        class="help-btn"
+      ></Button>
+      <Button
+        row="0"
+        col="3"
+        text="&#xe8b8;"
+        (tap)="onSettingsTap()"
+        class="settings-btn"
+      ></Button>
+    </GridLayout>
+    <ScrollView row="1" col="0" padding="10">
+      <GridLayout
+        rows="*, *, *, *, *, *, *, *, *, *, *"
+        columns="auto, *, *, *"
       >
-        <Label text="B" textWrap="true"></Label>
-      </StackLayout>
-      <label row="0" col="2" class="profile-name" [text]="name"></label>
-      <label row="1" col="2" class="profile-email" [text]="email"></label>
-      <label
-        col="0"
-        row="2"
-        colspan="5"
-        class="section-label"
-        [text]="'profile-tab.activity-goals' | translate"
-      ></label>
+        // Page Title
+        <Label
+          row="0"
+          col="0"
+          colSpan="4"
+          class="page-title"
+          [text]="'profile-tab.title' | translate"
+          textWrap="true"
+        ></Label>
 
-      <StackLayout row="3" colspan="3" orientation="vertical">
-        <StackLayout class="hr-light"></StackLayout>
-        <GridLayout
-          class="activityGoals"
-          columns="auto, *, 40, *,auto"
-          rows="auto,*,auto"
-        >
-          <label
-            col="1"
-            class="label"
-            [text]="'general.coast-time' | translate"
-          ></label>
-          <StackLayout col="1" row="1"></StackLayout>
-          <label
-            col="3"
-            class="label"
-            [text]="'general.distance' | translate"
-          ></label>
-          <StackLayout col="3" row="1"></StackLayout>
+        // User Avatar
+        <GridLayout row="1" col="0" rowspan="2" class="avatar-circle">
+          <Label text="B" textWrap="true"></Label>
         </GridLayout>
+        // User Name
+        <label
+          row="1"
+          col="1"
+          colSpan="3"
+          class="profile-name"
+          [text]="name"
+          textWrap="true"
+        ></label>
+        // User Email
+        <label
+          row="2"
+          col="1"
+          colSpan="3"
+          class="profile-email"
+          [text]="email"
+          textWrap="true"
+        ></label>
+
+        // Activity Goals Label
         <label
           col="0"
           row="3"
-          colspan="5"
+          colSpan="4"
+          class="section-label"
+          [text]="'profile-tab.activity-goals' | translate"
+        ></label>
+        // Horizontal Line
+        <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
+
+        // Coast Time
+        <StackLayout row="5" col="0" colSpan="2" class="data-box">
+          <label [text]="'general.coast-time' | translate"></label>
+          <StackLayout (tap)="onActivityGoalTap('coast-time')">
+            <Label [text]="COAST_TIME_ACTIVITY_GOAL" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // Distance
+        <StackLayout row="5" col="2" colSpan="2" class="data-box">
+          <label [text]="'general.distance' | translate"></label>
+          <StackLayout (tap)="onActivityGoalTap('distance')">
+            <Label [text]="DISTANCE_ACTIVITY_GOAL" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // About You Label
+        <label
+          row="6"
+          col="0"
+          colspan="4"
           class="section-label"
           [text]="'profile-tab.about-you' | translate"
         ></label>
-        <StackLayout class="hr-light"></StackLayout>
-        <GridLayout
-          class="activity-goals"
-          columns="auto, *, 40, *,auto"
-          rows="auto, *, *, *, *, auto"
-        >
-          <label
-            col="1"
-            class="label"
-            [text]="'general.gender' | translate"
-          ></label>
-          <StackLayout col="1" row="1" class="dropdown"></StackLayout>
-          <label
-            col="3"
-            class="label"
-            [text]="'general.birthday' | translate"
-          ></label>
-          <StackLayout col="3" row="1" class="dropdown"></StackLayout>
-          <label
-            col="1"
-            row="2"
-            class="label"
-            [text]="'general.weight' | translate"
-          ></label>
-          <StackLayout col="1" row="3" class="dropdown"></StackLayout>
-          <label
-            col="3"
-            row="2"
-            class="label"
-            [text]="'general.height' | translate"
-          ></label>
-          <StackLayout col="3" row="3" class="dropdown"></StackLayout>
-          <label
-            col="1"
-            row="4"
-            class="label"
-            [text]="'profile-tab.chair-info' | translate"
-          ></label>
-          <StackLayout col="1" row="5" class="dropdown"></StackLayout>
-        </GridLayout>
-      </StackLayout>
+
+        // Horizontal Line
+        <StackLayout row="7" col="0" colspan="4" class="hr"></StackLayout>
+
+        // Gender Box
+        <StackLayout row="8" col="0" colSpan="2" class="data-box">
+          <label [text]="'general.gender' | translate"></label>
+          <StackLayout>
+            <Label [text]="USER_GENDER" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // Birthday Box
+        <StackLayout row="8" col="2" colSpan="2" class="data-box">
+          <label [text]="'general.birthday' | translate"></label>
+          <StackLayout>
+            <Label [text]="USER_BIRTHDAY" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // Weight Box
+        <StackLayout row="9" col="0" colSpan="2" class="data-box">
+          <label [text]="'general.weight' | translate"></label>
+          <StackLayout>
+            <Label [text]="USER_WEIGHT" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // Height Box
+        <StackLayout row="9" col="2" colSpan="2" class="data-box">
+          <label [text]="'general.height' | translate"></label>
+          <StackLayout>
+            <Label [text]="USER_HEIGHT" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+
+        // Chair Info Box
+        <StackLayout row="10" col="0" colSpan="2" class="data-box">
+          <label [text]="'profile-tab.chair-info' | translate"></label>
+          <StackLayout>
+            <Label [text]="USER_CHAIR_INFO" textWrap="true"></Label>
+          </StackLayout>
+        </StackLayout>
+      </GridLayout>
+    </ScrollView>
+  </GridLayout>
+
+  // custom full-screen modal for presenting user with config changes UI
+  <GridLayout
+    #activityGoalsDialog
+    row="0"
+    col="0"
+    rows="auto, *"
+    columns="*"
+    translateY="900"
+    opacity="0"
+    class="activity-goals-dialog"
+  >
+    // Mock ActionBar
+    <GridLayout row="0" rows="*" columns="50, *, auto">
+      <Button
+        row="0"
+        col="0"
+        text="&#xe5cd;"
+        class="close-btn"
+        (tap)="closeActivityGoalsDialog()"
+      ></Button>
+      <Button
+        row="0"
+        col="2"
+        [text]="'profile-tab.set-goal' | translate"
+        class="set-goal-btn"
+        (tap)="onSetGoalBtnTap()"
+      ></Button>
     </GridLayout>
-  </StackLayout>
-</ScrollView>
+    <GridLayout row="1" rows="auto, auto, *">
+      <Label
+        row="0"
+        [text]="configTitle"
+        class="config-title"
+        textWrap="true"
+      ></Label>
+      <Label
+        row="1"
+        text="You get coast time when the smartdrive is coasting dummy."
+        class="config-title-description"
+        textWrap="true"
+      ></Label>
+      <GridLayout
+        class="config-circle"
+        row="2"
+        rows="*, auto, *"
+        columns="auto, *, auto"
+      >
+        <Button
+          row="1"
+          col="0"
+          text="&#xe15b;"
+          (tap)="decrementConfigValue()"
+        ></Button>
+        <StackLayout horizontalAlignment="center" row="1" col="1">
+          <Label class="config-value" text="145"></Label>
+          <Label class="config-value-sub" text="minutes per day"></Label>
+        </StackLayout>
+        <Button
+          row="1"
+          col="2"
+          text="&#xe145;"
+          (tap)="incrementConfigValue()"
+        ></Button>
+      </GridLayout>
+    </GridLayout>
+  </GridLayout>
+</GridLayout>
