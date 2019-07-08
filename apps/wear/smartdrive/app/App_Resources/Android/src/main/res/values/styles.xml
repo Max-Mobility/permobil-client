@@ -25,9 +25,98 @@
         <item name="colorPrimaryDark">@color/ns_primaryDark</item>
         <item name="colorAccent">@color/ns_accent</item>
 
+        <item name="android:alertDialogTheme">@style/MyAlertDialogTheme</item>
+        <item name="android:alertDialogStyle">@style/MyAlertDialogStyle</item>
     </style>
 
     <style name="AppTheme" parent="AppThemeBase">
+    </style>
+
+    <!-- theme for alert dialog -->
+    <style name="MyBorderlessButton" parent="@style/Widget.AppCompat.Button.Borderless">
+      <!-- Set background drawable and text size of the buttons here -->
+      <item name="android:background">@color/black</item>
+      <!-- <item name="android:textSize">...</item> -->
+    </style>
+
+    <style name="MyButtonBar">
+      <!-- Define a background for the button bar and a divider between the buttons here -->
+      <!--
+      <item name="android:divider">....</item>
+      <item name="android:dividerPadding">...</item>
+      <item name="android:showDividers">...</item>
+      <item name="buttonBarButtonStyle">@style/AppTheme.Button</item>
+      -->
+      <item name="buttonBarButtonStyle">@style/MyButtonStyle</item>
+      <item name="buttonBarPositiveButtonStyle">@style/MyButtonStyle</item>
+      <item name="buttonBarNegativeButtonStyle">@style/MyButtonStyle</item>
+      <item name="buttonBarNeutralButtonStyle">@style/MyButtonStyle</item>
+    </style>
+
+    <style name="MyButtonStyle">
+      <item name="android:background">@android:color/black</item>
+      <item name="android:gravity">center_horizontal</item>
+      <item name="android:textAlignment">center</item>
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:textAppearance">@style/MyAlertTextAppearance</item>
+    </style>
+
+    <style name="MyAlertDialogTitle" parent="@android:style/TextAppearance.DialogWindowTitle">
+      <item name="android:maxLines">1</item>
+      <item name="android:scrollHorizontally">true</item>
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="MyAlertTextAppearance">
+      <!-- Set text size and color of title and message here -->
+      <!-- <item name="android:textSize"> ... </item> -->
+      <item name="android:textColor">@android:color/white</item>
+      <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+      <!-- Used for the buttons -->
+      <item name="colorAccent">@android:color/white</item>
+      <!-- Used for the title and text -->
+      <item name="android:textColorPrimary">@android:color/white</item>
+
+      <item name="android:windowBackground">@android:color/black</item>
+      <item name="android:windowTitleStyle">@style/MyAlertDialogTitle</item>
+
+      <!--
+      <item name="android:windowContentOverlay">@null</item>
+      <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+      <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+      <item name="android:windowIsFloating">true</item>
+      -->
+      <item name="android:textAppearance">@style/MyAlertTextAppearance</item>
+      <!-- If you don't want your own button bar style use
+           @android:style/Holo.Light.ButtonBar.AlertDialog
+           and
+           ?android:attr/borderlessButtonStyle
+           instead of @style/MyButtonBar and @style/MyBorderlessButton -->
+      <!--
+      <item name="android:buttonBarStyle">@android:style/Widget.Material.ButtonBar.AlertDialog</item>
+      -->
+      <item name="android:buttonBarStyle">@style/MyButtonBar</item>
+      <item name="android:buttonBarButtonStyle">@style/MyBorderlessButton</item>
+    </style>
+
+    <style name="MyAlertDialogStyle">
+      <!-- Define background colors of title, message, buttons, etc. here -->
+      <item name="android:fullDark">@android:color/black</item>
+      <item name="android:topDark">@android:color/black</item>
+      <item name="android:centerDark">@android:color/black</item>
+      <item name="android:bottomDark">@android:color/black</item>
+      <item name="android:fullBright">@android:color/white</item>
+      <item name="android:topBright">@android:color/white</item>
+      <item name="android:centerBright">@android:color/white</item>
+      <item name="android:bottomBright">@android:color/white</item>
+      <item name="android:bottomMedium">@android:color/white</item>
+      <item name="android:centerMedium">@android:color/white</item>
+      <!--
+      -->
     </style>
 
     <!-- theme for action-bar -->
@@ -40,4 +129,4 @@
 
     <style name="NativeScriptToolbarStyle" parent="NativeScriptToolbarStyleBase">
     </style>
-</resources> 
+</resources>
