@@ -5,7 +5,10 @@
       xmlns:pager="nativescript-pager"
       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
-      xmlns:RL="nativescript-ng-ripple/ripple-view" navigatingTo="navigatingTo" actionBarHidden="true">
+      xmlns:RL="nativescript-ng-ripple/ripple-view"
+      loaded="onMainPageLoaded"
+      navigatingTo="navigatingTo"
+      actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">
 
     <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" col="0" row="0" rowSpan="2" id="pager" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}" visibility="{{ (isChangeSettingsLayoutEnabled || isUpdatesLayoutEnabled || isAboutLayoutEnabled) ? 'collapsed':'visible' }}">

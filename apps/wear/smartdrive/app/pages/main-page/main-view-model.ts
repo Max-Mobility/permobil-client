@@ -216,6 +216,8 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
+  private page: Page = null;
+  // private showcaseView: NSMaterialShowcaseView = null;
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
@@ -561,6 +563,64 @@ export class MainViewModel extends Observable {
     } else {
       return Promise.resolve(true);
     }
+  }
+
+  onMainPageLoaded(args: any) {
+    this.page = args.object as Page;
+    // this.showcaseView = new NSMaterialShowcaseView();
+    setTimeout(() => this.firstRun(), 10000);
+  }
+
+  firstRun() {
+    // TODO: figure out why I can't get all views here - only direct
+    // children of the page
+    const sdCircle = getViewById(this.page, 'pager');
+    const e2Circle = getViewById(this.page, 'changeSettingsPage');
+
+    /*
+    let items : Array<IShowcaseItem> = new Array();
+
+    items.push(...[
+      {
+
+        target: sdCircle,
+        dismissText: "GOT IT",
+        contentText: "This is the layout",
+        withRectangleShape: false
+      },
+      {
+
+        target: e2Circle,
+        dismissText: "GOT IT",
+        contentText: "This is the reset button",
+        withRectangleShape: false
+      }]);
+
+    this.showcaseView.createSequence(items);
+    setTimeout(() => this.showcaseView.startSequence(), 1000);
+
+    // TODO: determine what parts we want to show and in what order
+    let marks = [
+      new TNSCoachMark({
+        view: sdCircle,
+        caption: '1. Smart Drive Battery.',
+        // shape: TNSCoachMark.SHAPES.CENTER,
+        // labelPosition: TNSCoachMark.LABEL_POSITIONS.BOTTOM,
+        // labelAlignment: TNSCoachMark.LABEL_ALIGNMENTS.LEFT,
+        showArrow: true
+      }),
+      new TNSCoachMark({
+        view: e2Circle,
+        caption: '2. PushTracker E2 Battery.',
+        // shape: TNSCoachMark.SHAPES.CENTER,
+        // labelPosition: TNSCoachMark.LABEL_POSITIONS.BOTTOM,
+        // labelAlignment: TNSCoachMark.LABEL_ALIGNMENTS.LEFT,
+        showArrow: true
+      })
+    ];
+    const cm = new TNSCoachMarks();
+    cm.start(marks);
+    */
   }
 
   fullStop() {
