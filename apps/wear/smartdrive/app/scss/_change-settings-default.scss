@@ -43,8 +43,12 @@
     }
 
     .changeSettingsValue {
-      color: $white;
-      font-size: 24;
+        color: $white;
+        border-color: $permobil-hero;
+        background-color: $permobil-hero;
+        border-width: 0;
+        margin: 0;
+        padding: 0;
       font-weight: bold;
       text-align: $center;
       horizontal-align: $center;

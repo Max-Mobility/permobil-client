@@ -644,10 +644,10 @@ export class MainViewModel extends Observable {
   }
 
   loadSmartDriveStateFromLS() {
-    Log.D('Loading SD state from LS');
     const savedSd = LS.getItem(
       'com.permobil.smartdrive.wearos.smartdrive.data'
     );
+    Log.D('Loading SD state from LS', savedSd);
     if (savedSd) {
       this.smartDrive.fromObject( savedSd );
     }
@@ -1224,8 +1224,6 @@ export class MainViewModel extends Observable {
         const bleVersion = currentVersions['SmartDriveBLE.ota'].version;
         const mcuVersion = currentVersions['SmartDriveMCU.ota'].version;
         if (
-          // TODO: this is to force the ota
-          true ||
           !this.smartDrive.isMcuUpToDate(mcuVersion) ||
           !this.smartDrive.isBleUpToDate(bleVersion)
         ) {
