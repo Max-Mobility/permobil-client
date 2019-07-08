@@ -22,7 +22,7 @@
   .percentage-data-layout {
     @extend .PERCENTAGE_DATA_LAYOUT_BASE;
     .value {
-      color: $dark-grey;
+      color: $black;
     }
     .max-value {
       color: $dark-grey;
@@ -43,8 +43,8 @@
       color: $black;
     }
   }
+
   .chart-layout {
     @extend .CHART_LAYOUT_BASE;
-    
   }
 }

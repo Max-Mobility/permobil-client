@@ -4,7 +4,7 @@
       <Button
         row="0"
         col="2"
-        text="&#xe88e;"
+        text="&#xe88f;"
         class="info-btn"
         (tap)="onInfoTap()"
       ></Button>
@@ -22,8 +22,8 @@
         animated="true"
         animateFrom="0"
         clockwise="true"
-        rimWidth="30"
-        barWidth="30"
+        rimWidth="10"
+        barWidth="28"
         [progress]="distanceCirclePercentage"
       >
       </AnimatedCircle>
@@ -37,8 +37,8 @@
         animated="true"
         animateFrom="0"
         clockwise="true"
-        rimWidth="30"
-        barWidth="30"
+        rimWidth="10"
+        barWidth="28"
         [progress]="coastTimeCirclePercentage"
       >
       </AnimatedCircle>
@@ -70,17 +70,18 @@
         <Label text="&#xe5cc;"></Label>
       </StackLayout>
 
-      <GridLayout row="0" rowSpan="2" col="2" rows="*, *" columns="auto, auto">
+      <GridLayout row="0" rowSpan="2" col="2" rows="auto, auto" columns="*, auto, *">
         <Label
           row="0"
           col="0"
           class="value"
           [text]="coastTimeCirclePercentage"
         ></Label>
-        <Label row="0" col="1" class="max-value" text="/100"></Label>
+        <Label row="0" col="1" class="max-value" [text]="coastTimeCirclePercentageMaxValue"></Label>
         <Label
           row="1"
-          colSpan="2"
+          col="0"
+          colSpan="3"
           class="description"
           [text]="'general.coast-time' | translate"
         ></Label>
@@ -91,17 +92,18 @@
         <Label text="&#xe5cc;"></Label>
       </StackLayout>
 
-      <GridLayout row="0" rowSpan="2" col="5" rows="*, *" columns="auto, auto">
+      <GridLayout row="0" rowSpan="2" col="5" rows="auto, auto" columns="*, auto, *">
         <Label
           row="0"
           col="0"
           class="value"
           [text]="distanceCirclePercentage"
         ></Label>
-        <Label row="0" col="1" class="max-value" text="/5"></Label>
+        <Label row="0" col="1" class="max-value" [text]="distanceCirclePercentageMaxValue"></Label>
         <Label
           row="1"
           col="0"
+          colSpan="3"
           class="description"
           [text]="'general.distance' | translate"
         ></Label>
@@ -151,12 +153,24 @@
       <Label
         row="0"
         col="0"
+        class="title"
         text="Travel 3.0 miles per day"
         textWrap="true"
       ></Label>
       <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
 
-      // repeater grid here for data
+      // repeater grid here for data // Distance Traveled Bar Chart
+      <!-- <Repeater row="2" colSpan="2" [items]="distanceChartData">
+        <Repeater.itemsLayout>
+          <FlexboxLayout justifyContent="space-between" flexDirection="row"></FlexboxLayout>
+        </Repeater.itemsLayout>
+        <Repeater.itemTemplate>
+          <StackLayout class="chart-stack">
+            <Label [height]="value" class="distance-line"></Label>
+            <Label [text]="day" class="line-label"></Label>
+          </StackLayout>
+        </Repeater.itemTemplate>
+      </Repeater> -->
     </GridLayout>
   </StackLayout>
 </ScrollView>
