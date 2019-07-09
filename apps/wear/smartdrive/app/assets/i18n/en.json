@@ -134,6 +134,7 @@
 		}
 	},
 	"updates": {
+    "changes": "Summary of changes:",
 		"canceled": "Update canceled",
 		"checking-for-updates": "Checking for Updates",
 		"error-getting": "Error getting updates",

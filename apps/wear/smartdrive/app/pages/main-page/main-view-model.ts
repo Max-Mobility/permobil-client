@@ -284,10 +284,10 @@ export class MainViewModel extends Observable {
     application.on('updateAmbient', args => {
       this.updateTimeDisplay();
       Log.D('updateAmbient', args.data,
-            this.currentTime,
-            this.currentTimeMeridiem,
-            this.currentDay,
-            this.currentYear);
+        this.currentTime,
+        this.currentTimeMeridiem,
+        this.currentDay,
+        this.currentYear);
     });
 
     // Activity lifecycle event handlers
@@ -555,7 +555,7 @@ export class MainViewModel extends Observable {
         okButtonText: 'Ok'
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => {});
+          return requestPermissions(neededPermissions, () => { });
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -583,8 +583,8 @@ export class MainViewModel extends Observable {
       Object.keys(this.layouts)
         .filter(k => k !== layoutName)
         .map(k => {
-        this.enabledLayout.set(k, false);
-      });
+          this.enabledLayout.set(k, false);
+        });
       this.enabledLayout.set(layoutName, true);
     } else {
       // if there is no previous - go back to the main screen
@@ -681,7 +681,7 @@ export class MainViewModel extends Observable {
     );
     Log.D('Loading SD state from LS', savedSd);
     if (savedSd) {
-      this.smartDrive.fromObject( savedSd );
+      this.smartDrive.fromObject(savedSd);
     }
   }
 
@@ -720,10 +720,10 @@ export class MainViewModel extends Observable {
     );
   }
 
-  onAppLaunch(args?: any) {}
+  onAppLaunch(args?: any) { }
 
   onAppResume(args?: any) {
-      this.enableBodySensor();
+    this.enableBodySensor();
   }
 
   onAppSuspend(args?: any) {
@@ -922,7 +922,7 @@ export class MainViewModel extends Observable {
     const threshold =
       this.maxTapSensitivity -
       (this.maxTapSensitivity - this.minTapSensitivity) *
-        (this.settings.tapSensitivity / 100.0);
+      (this.settings.tapSensitivity / 100.0);
     // must have a high enough abs(accel.z) and it must be a jerk
     // movement - high difference between previous accel and current
     // accel
@@ -1269,7 +1269,9 @@ export class MainViewModel extends Observable {
           const changes = Object.keys(currentVersions).map(
             k => currentVersions[k].changes
           );
-          const msg = flatten(changes).join('\n');
+          const msg = L('updates.changes') + '\n\n' +
+            flatten(changes)
+              .join('\n\n');
           Log.D('got changes', changes);
           alert({
             title: title,
@@ -1495,7 +1497,7 @@ export class MainViewModel extends Observable {
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
-      .catch(err => {});
+      .catch(err => { });
   }
 
   onBatteryChartRepeaterLoaded(args) {
@@ -1707,8 +1709,8 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
-      const defaultSettings = new SmartDrive.Settings();
-      const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
+    const defaultSettings = new SmartDrive.Settings();
+    const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
     this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
     this.settings.acceleration =
       appSettings.getNumber(DataKeys.SD_ACCELERATION) || defaultSettings.acceleration;
@@ -2086,10 +2088,10 @@ export class MainViewModel extends Observable {
         Log.E('send settings failed', err);
         showFailure(
           L('failures.send-settings') +
-            ' ' +
-            this._savedSmartDriveAddress +
-            ' ' +
-            err
+          ' ' +
+          this._savedSmartDriveAddress +
+          ' ' +
+          err
         );
       });
   }
@@ -2470,7 +2472,7 @@ export class MainViewModel extends Observable {
             this.hasSentSettings
           );
         })
-        .catch(err => {});
+        .catch(err => { });
     } else {
       return Promise.resolve();
     }
