@@ -30,7 +30,7 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import * as LS from 'nativescript-localstorage';
 import { Color } from 'tns-core-modules/color';
-import { Observable } from 'tns-core-modules/data/observable';
+import { Observable, fromObject } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { device } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
@@ -93,13 +93,17 @@ export class MainViewModel extends Observable {
   /**
    * Layout Management
    */
-  @Prop() isMainLayoutEnabled = true;
-  @Prop() isScanningLayoutEnabled = false;
-  @Prop() isSettingsLayoutEnabled = false;
-  @Prop() isChangeSettingsLayoutEnabled = false;
-  @Prop() isErrorHistoryLayoutEnabled = false;
-  @Prop() isAboutLayoutEnabled = false;
-  @Prop() isUpdatesLayoutEnabled = false;
+  private previousLayouts: string[] = [];
+  private layouts = {
+    about: false,
+    changeSettings: false,
+    errorHistory: false,
+    main: true,
+    scanning: false,
+    settings: false,
+    updates: false
+  };
+  @Prop() enabledLayout = fromObject(this.layouts);
 
   /**
    * SmartDrive Settings UI:
@@ -572,6 +576,36 @@ export class MainViewModel extends Observable {
     }
   }
 
+  previousLayout() {
+    // get the most recent layout and remove it from the list
+    console.log('previous layouts', this.previousLayouts);
+    const layoutName = this.previousLayouts.pop();
+    console.log('layoutName', layoutName);
+    if (layoutName) {
+      Object.keys(this.layouts)
+        .filter(k => k !== layoutName)
+        .map(k => {
+        this.enabledLayout.set(k, false);
+      });
+      this.enabledLayout.set(layoutName, true);
+    } else {
+      // if there is no previous - go back to the main screen
+      this.enabledLayout.set('main', true);
+    }
+  }
+
+  enableLayout(layoutName: string) {
+    Object.keys(this.layouts)
+      .filter(k => k !== layoutName)
+      .map(k => {
+        if (this.enabledLayout.get(k)) {
+          this.previousLayouts.push(k);
+        }
+        this.enabledLayout.set(k, false);
+      });
+    this.enabledLayout.set(layoutName, true);
+  }
+
   onMainPageLoaded(args: any) {
     this.page = args.object as Page;
     // this.showcaseView = new NSMaterialShowcaseView();
@@ -998,7 +1032,7 @@ export class MainViewModel extends Observable {
       this.aboutScrollView.scrollToVerticalOffset(0, true);
     }
     showOffScreenLayout(this._aboutLayout);
-    this.isAboutLayoutEnabled = true;
+    this.enableLayout('about');
   }
 
   onTrainingTap() {
@@ -1036,7 +1070,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-      this.isScanningLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1053,7 +1087,7 @@ export class MainViewModel extends Observable {
   onUpdatesTap() {
     if (this.smartDrive) {
       showOffScreenLayout(this._updatesLayout);
-      this.isUpdatesLayoutEnabled = true;
+      this.enableLayout('updates');
       this.checkForUpdates();
     } else {
       showFailure(L('failures.no-smartdrive-paired'));
@@ -1066,7 +1100,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-      this.isUpdatesLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1305,7 +1339,7 @@ export class MainViewModel extends Observable {
           showSuccess(L('updates.up-to-date'));
           setTimeout(() => {
             hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-            this.isUpdatesLayoutEnabled = false;
+            this.previousLayout();
           }, 2000);
         }
       })
@@ -1345,7 +1379,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
-      this.isErrorHistoryLayoutEnabled = false;
+      this.previousLayout();
       // clear the error history data when it's not being displayed to save on memory
       this.errorHistoryData.splice(0, this.errorHistoryData.length);
     });
@@ -1363,7 +1397,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
-      this.isSettingsLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1377,7 +1411,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
-      this.isAboutLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1506,7 +1540,7 @@ export class MainViewModel extends Observable {
       }
     });
     showOffScreenLayout(this._errorHistoryLayout);
-    this.isErrorHistoryLayoutEnabled = true;
+    this.enableLayout('errorHistory');
   }
 
   onSettingsTap() {
@@ -1515,7 +1549,7 @@ export class MainViewModel extends Observable {
       this.settingsScrollView.scrollToVerticalOffset(0, true);
     }
     showOffScreenLayout(this._settingsLayout);
-    this.isSettingsLayoutEnabled = true;
+    this.enableLayout('settings');
   }
 
   onChangeSettingsItemTap(args) {
@@ -1555,7 +1589,7 @@ export class MainViewModel extends Observable {
     }
 
     showOffScreenLayout(this._changeSettingsLayout);
-    this.isChangeSettingsLayoutEnabled = true;
+    this.enableLayout('changeSettings');
   }
 
   updateSettingsChangeDisplay() {
@@ -1589,7 +1623,7 @@ export class MainViewModel extends Observable {
 
   onCancelChangesTap() {
     hideOffScreenLayout(this._changeSettingsLayout, { x: 500, y: 0 });
-    this.isChangeSettingsLayoutEnabled = false;
+    this.previousLayout();
   }
 
   updateSettingsDisplay() {
@@ -1624,7 +1658,7 @@ export class MainViewModel extends Observable {
       x: 500,
       y: 0
     });
-    this.isChangeSettingsLayoutEnabled = false;
+    this.previousLayout();
     // SAVE THE VALUE to local data for the setting user has selected
     this.settings.copy(this.tempSettings);
     this.switchControlSettings.copy(this.tempSwitchControlSettings);
@@ -1824,7 +1858,7 @@ export class MainViewModel extends Observable {
     showOffScreenLayout(this._scanningLayout);
     // disable swipe close of the updates layout
     (this._scanningLayout as any).swipeable = false;
-    this.isScanningLayoutEnabled = true;
+    this.enableLayout('scanning');
     // @ts-ignore
     this.scanningProgressCircle.spin();
   }
@@ -1833,7 +1867,7 @@ export class MainViewModel extends Observable {
     // re-enable swipe close of the updates layout
     (this._scanningLayout as any).swipeable = true;
     hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-    this.isScanningLayoutEnabled = false;
+    this.previousLayout();
     // @ts-ignore
     this.scanningProgressCircle.stopSpinning();
   }

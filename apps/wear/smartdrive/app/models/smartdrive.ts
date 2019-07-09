@@ -1353,7 +1353,7 @@ export namespace SmartDrive {
     }
 
     increase(key: string, increment: number = 10): void {
-      let index;
+      let index = 0;
       switch (key) {
         case 'maxspeed':
         case 'Max Speed':
@@ -1391,7 +1391,7 @@ export namespace SmartDrive {
     }
 
     decrease(key: string, increment: number = 10): void {
-      let index;
+      let index = 0;
       switch (key) {
         case 'maxspeed':
         case 'Max Speed':
