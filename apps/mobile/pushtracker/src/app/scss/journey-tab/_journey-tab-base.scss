@@ -1,5 +1,22 @@
 @import '../variables';
 
 .JOURNEY_TAB_LAYOUT_BASE {
-  background-color: $white;
+  height: 100%;
+  width: 100%;
+
+  .MOCK_ACTION_BAR_BUTTON_BASE {
+    @extend .btn-transparent;
+    font-family: $material-icon;
+    font-size: 24;
+    margin: 0 2 0 2;
+    padding: 0 2 0 2;
+  }
+
+  .PAGE_TITLE_BASE {
+    font-size: 36;
+    font-family: $os;
+    color: $black;
+    padding-left: 10;
+    margin-left: 5;
+  }
 }

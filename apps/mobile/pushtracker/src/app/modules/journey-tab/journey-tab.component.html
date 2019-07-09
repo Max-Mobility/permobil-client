@@ -4,55 +4,44 @@
   </ActionItem>
 </ActionBar>
 
-// Journey Data ListView
-<StackLayout class="journey-tab-layout" padding="10">
-  <Label
-    class="h1"
-    [text]="'journey-tab.title' | translate"
-    textWrap="true"
-  ></Label>
-
-  <GridLayout rows="*, *, *, *" columns="auto, *, auto, auto, auto">
-    <Label row="0" col="0" text="Today" textWrap="true"></Label>
-    <Label row="0" col="2" text="> 60s" textWrap="true"></Label>
-    <Label row="0" col="3" text=">> 1.8 mi" textWrap="true"></Label>
-    <GridLayout rows="*, *" columns="*">
-      // Distance Circle (outer/purple)
-      <AnimatedCircle
-        row="0"
-        col="0"
-        width="98%"
-        height="98%"
-        class="distanceCircle"
-        animated="true"
-        animateFrom="0"
-        clockwise="true"
-        rimWidth="2"
-        barWidth="8"
-        [progress]="distancePercentage"
-      >
-      </AnimatedCircle>
-      <AnimatedCircle
-        row="0"
-        col="0"
-        width="90%"
-        height="90%"
-        class="coastCircle"
-        animated="true"
-        animateFrom="0"
-        clockwise="true"
-        rimWidth="2"
-        barWidth="8"
-        [progress]="coastPercentage"
-      >
-      </AnimatedCircle>
+// Journey Tab Layout
+<GridLayout rows="*" columns="*" class="journey-tab-layout">
+  // main journey-tab layout
+  <GridLayout row="0" col="0" rows="auto, *" columns="*">
+    // Mock ActionBar
+    <GridLayout row="0" rows="*" columns="50, *, 44">
+      <Button row="0" col="2" text="&#xe5d5;" (tap)="onRefreshTap()" class="refresh-btn"></Button>
     </GridLayout>
+
+      <ScrollView row="1" col="0" padding="10">
+        <GridLayout rows="*, *" columns="auto, *, *, *">
+          // Page Title
+          <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
+
+          <ListView [items]="journeyItems" (itemTap)="onJourneyItemTap(event)" class="list-group">
+              <ng-template let-item="item" let-odd="odd" let-even="even">
+                <StackLayout>
+                  <Label [text]="item.title" class="list-group-item"></Label>
+                  
+                </StackLayout>
+              </ng-template>
+          </ListView>
+
+        </GridLayout>
+      </ScrollView>
+
   </GridLayout>
 
-  <!-- <ListView [items]="items" class="list-group">
-        <ng-template let-item="item">
-            <Label [nsRouterLink]="['../team', item.id]" [text]="item.name"
-                class="list-group-item"></Label>
-        </ng-template>
-    </ListView> -->
-</StackLayout>
+  <!-- ******************************************************************************************* -->
+  <!-- Journey Details FullScreen Layout -->
+  <GridLayout #journeyDetailsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="journey-details-dialog">
+    // Mock ActionBar
+    <GridLayout row="0" rows="*" columns="50, *, auto">
+      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeJourneyDetailsLayout()"></Button>
+      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"></Button>
+    </GridLayout>
+
+  
+
+</GridLayout>
+
