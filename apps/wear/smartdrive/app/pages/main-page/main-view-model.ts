@@ -53,13 +53,17 @@ const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
 const dateLocales = {
+  da: require('date-fns/locale/da'),
   de: require('date-fns/locale/de'),
   en: require('date-fns/locale/en'),
   es: require('date-fns/locale/es'),
   fr: require('date-fns/locale/fr'),
+  it: require('date-fns/locale/it'),
   ja: require('date-fns/locale/ja'),
   ko: require('date-fns/locale/ko'),
+  nb: require('date-fns/locale/nb'),
   nl: require('date-fns/locale/nl'),
+  nn: require('date-fns/locale/nb'),
   zh: require('date-fns/locale/zh_cn')
 };
 
@@ -1022,6 +1026,19 @@ export class MainViewModel extends Observable {
   }
 
   /**
+   * Power management
+   */
+  maintainCPU() {
+    this.wakeLock.acquire();
+    keepAwake();
+  }
+
+  releaseCPU() {
+    if (this.wakeLock.isHeld()) this.wakeLock.release();
+    allowSleepAgain();
+  }
+
+  /**
    * Main Menu Tap Handlers
    */
   onAboutTap() {
@@ -1035,8 +1052,7 @@ export class MainViewModel extends Observable {
 
   onTrainingTap() {
     this.enableTapSensor();
-    this.wakeLock.acquire();
-    keepAwake();
+    this.maintainCPU();
     this.isTraining = true;
     this.powerAssistState = PowerAssist.State.Training;
     this.updatePowerAssistRing();
@@ -1045,8 +1061,7 @@ export class MainViewModel extends Observable {
 
   onExitTrainingModeTap() {
     this.disableTapSensor();
-    if (this.wakeLock.isHeld()) this.wakeLock.release();
-    allowSleepAgain();
+    this.releaseCPU();
     this.isTraining = false;
     this.powerAssistState = PowerAssist.State.Inactive;
     this.updatePowerAssistRing();
@@ -1290,6 +1305,8 @@ export class MainViewModel extends Observable {
               this.onSmartDriveOtaStatus,
               this
             );
+            // maintain CPU resources while updating
+            this.maintainCPU();
             // smartdrive needs to update
             this.smartDrive
               .performOTA(
@@ -1300,6 +1317,7 @@ export class MainViewModel extends Observable {
                 300 * 1000
               )
               .then(otaStatus => {
+                this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const status = otaStatus.replace('OTA', 'Update');
                 this.updateProgressText = status;
@@ -1317,6 +1335,7 @@ export class MainViewModel extends Observable {
                 );
               })
               .catch(err => {
+                this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const msg = L('updates.failed') + `: ${err}`;
                 Log.E(msg);
@@ -1796,8 +1815,7 @@ export class MainViewModel extends Observable {
       showFailure(L('failures.must-wear-watch'));
       return;
     } else if (this.hasSavedSmartDrive()) {
-      this.wakeLock.acquire();
-      keepAwake();
+      this.maintainCPU();
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.powerAssistActive = true;
       this.updatePowerAssistRing();
@@ -1834,8 +1852,7 @@ export class MainViewModel extends Observable {
 
   disablePowerAssist() {
     this.disableTapSensor();
-    if (this.wakeLock.isHeld()) this.wakeLock.release();
-    allowSleepAgain();
+    this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
     this.powerAssistActive = false;
     this.motorOn = false;

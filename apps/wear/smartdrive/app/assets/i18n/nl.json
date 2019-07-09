@@ -29,6 +29,7 @@
 		"must-wear-watch": "U moet het horloge dragen om de hulp te activeren.",
 		"no-smartdrive-paired": "Geen SmartDrive gekoppeld aan de app!",
 		"no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
+		"permissions": "Vereiste rechten werden niet verleend!",
 		"saving-error": "Mislukt het opslaan van de SmartDrive-fout",
 		"saving-usage": "Mislukt het gebruik te besparen",
 		"scan": "Kon niet scannen",
@@ -80,6 +81,7 @@
 			}
 		}
 	},
+	"permissions-reasons": "Om uw E2-serienummer te lezen (voor garantie / ondersteuningsdoelen) hebben we de toestemming READ_PHONE_STATE nodig. Om uw SmartDrive met bluetooth te kunnen bedienen, hebben we de toestemming ACCESS_COARSE_LOCATION nodig.",
 	"power-assist": {
 		"activate": "Activeer de Power Assist",
 		"deactivate": "Deactiveer Power Assist",
@@ -87,6 +89,20 @@
 		"exit-training": "Verlaat de trainingsmodus",
 		"speed": "Snelheid",
 		"stop": "Hou op"
+	},
+	"sd": {
+		"settings": {
+			"units": {
+				"english": "Engels",
+				"metric": "Metriek"
+			}
+		},
+		"switch-settings": {
+			"mode": {
+				"latching": "vergrendelend",
+				"momentary": "kortstondig"
+			}
+		}
 	},
 	"settings": {
 		"acceleration": "Versnelling",
@@ -119,6 +135,7 @@
 	},
 	"updates": {
 		"canceled": "Update geannuleerd",
+		"changes": "Samenvatting van de veranderingen:",
 		"checking-for-updates": "Controleren op updates",
 		"error-getting": "Fout bij ophalen van updates",
 		"failed": "Update mislukt",
