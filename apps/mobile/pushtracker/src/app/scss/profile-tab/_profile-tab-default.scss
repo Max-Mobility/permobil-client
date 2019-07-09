@@ -16,22 +16,22 @@
 
   .page-title {
     @extend .PAGE_TITLE_BASE;
-    color: $black;
+    color: #1f2024;
   }
 
   .profile-name {
     @extend .PROFILE_NAME_BASE;
-    color: $black;
+    color: #3c4043;
   }
 
   .profile-email {
     @extend .PROFILE_EMAIL_BASE;
-    color: $black;
+    color: #5f6267;
   }
 
   .section-label {
     @extend .SECTION_LABEL_BASE;
-    color: lighten($color: $black, $amount: 0.3);
+    color: #3c4043;
   }
 
   .avatar-circle {
@@ -54,11 +54,31 @@
       border-color: #e8e9eb;
 
       > .data-box-value {
-        color: #383d41;
+        color: #3d4144;
       }
 
       > .data-box-arrow {
         color: #5f6267;
+      }
+    }
+  }
+
+  .data-box-active {
+    @extend .DATA_BOX_BASE;
+    .data-box-label {
+      color: #1c72e6;
+      background-color: $white;
+    }
+
+    GridLayout {
+      border-color: #1c72e6;
+
+      > .data-box-value {
+        color: #1c72e6;
+      }
+
+      > .data-box-arrow {
+        color: #1c72e6;
       }
     }
   }
@@ -69,33 +89,34 @@
 
     .close-btn {
       @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-      color: $black;
+      color: #3b3f42;
     }
 
     .set-goal-btn {
-      color: $permobil-primary;
+      color: #1a73e9;
     }
 
     .config-title {
-      color: $black;
+      color: #202125;
     }
+
     .config-value-description {
-      color: $black;
+      color: #64676c;
     }
 
     .config-circle {
       @extend .CONFIG_CIRCLE_BASE;
-      border-color: lighten($grey, 0.2);
+      border-color: #e9eaee;
 
       button {
-        color: $permobil-primary;
+        color: #1a73e9;
       }
 
       .config-value {
-        color: $black;
+        color: #3c4043;
       }
       .config-value-sub {
-        color: $grey;
+        color: #5f6267;
       }
     }
   }

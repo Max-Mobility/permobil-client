@@ -64,6 +64,26 @@
     }
   }
 
+  .data-box-active {
+    @extend .DATA_BOX_BASE;
+    .data-box-label {
+      color: $permobil-cousteau;
+      background-color: $black;
+    }
+
+    GridLayout {
+      border-color: $permobil-cousteau;
+
+      > .data-box-value {
+        color: $permobil-cousteau;
+      }
+
+      > .data-box-arrow {
+        color: $permobil-cousteau;
+      }
+    }
+  }
+
   .activity-goals-dialog {
     @extend .ACTIVITY_GOALS_DIALOG_BASE;
     background-color: $black;

@@ -4,6 +4,7 @@ import { Log } from '@permobil/core';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
+import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
@@ -35,16 +36,37 @@ export class ProfileTabComponent implements OnInit {
   DISTANCE_ACTIVITY_GOAL; // user defined distance activity goal
 
   /**
-   * Title to display to user when they're changing their activity goals
-   * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
+   * Object to use for activityGoalsDialog
    */
-  configTitle: string;
+  activity_goals_dialog_data: {
+    /**
+     * The STORAGE_KEYS enum value for the ACTIVITY_GOALS config the user selected.
+     */
+    config_key: string;
+    /**
+     * Value to display to user when they're changing their activity goals
+     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
+     */
+    config_value: any;
+    /**
+     * Title to display to user when they're changing their activity goals
+     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
+     */
+    config_title: string;
+  };
+
+  /**
+   * The user selected activity goal layout. Used to keep track of which UI layout was selected to apply/remove CSS classes.
+   */
+  activeDataBox: StackLayout;
 
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page
   ) {
+    // appSettings.clear();
+
     this._page.actionBarHidden = true;
 
     this.coastTime = ['100', '200'];
@@ -72,7 +94,11 @@ export class ProfileTabComponent implements OnInit {
       100
     );
 
-    this.configTitle = this._translateService.instant('general.coast-time');
+    this.activity_goals_dialog_data = {
+      config_key: null,
+      config_value: null,
+      config_title: null
+    };
   }
 
   ngOnInit() {
@@ -87,11 +113,26 @@ export class ProfileTabComponent implements OnInit {
     Log.D('setting action item tap');
   }
 
-  async onActivityGoalTap(args, configValue: string) {
-    Log.D('user tapped config = ', configValue, args.object);
-    this.configTitle = this._translateService.instant(`general.${configValue}`);
+  async onActivityGoalTap(
+    args,
+    configTitle: string,
+    configKey: string,
+    configValue
+  ) {
+    Log.D('user tapped config = ', configTitle, args.object);
+    const stack = args.object as StackLayout;
+    stack.className = 'data-box-active';
+    this.activeDataBox = stack; // set the activeDataBox so that we can remove the applied css class when the selection is made by the user
+
+    // setting the dialog data so we know what we are changing
+    this.activity_goals_dialog_data.config_key = configKey;
+    this.activity_goals_dialog_data.config_value = configValue;
+    this.activity_goals_dialog_data.config_title = this._translateService.instant(
+      `general.${configTitle}`
+    );
+
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    await cfl.animate({
+    cfl.animate({
       duration: 300,
       opacity: 1,
       curve: AnimationCurve.easeOut,
@@ -103,8 +144,10 @@ export class ProfileTabComponent implements OnInit {
   }
 
   async closeActivityGoalsDialog() {
+    // remove the active data box class from the previously selected box
+    this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    await cfl
+    cfl
       .animate({
         duration: 300,
         opacity: 0,
@@ -120,14 +163,36 @@ export class ProfileTabComponent implements OnInit {
   }
 
   incrementConfigValue() {
-    Log.D('increment the config value');
+    Log.D('Increment the config value');
+    this.activity_goals_dialog_data.config_value =
+      this.activity_goals_dialog_data.config_value + 5;
   }
   decrementConfigValue() {
-    Log.D('decrement the config value');
+    Log.D('Decrement the config value');
+    this.activity_goals_dialog_data.config_value =
+      this.activity_goals_dialog_data.config_value - 5;
   }
 
   onSetGoalBtnTap() {
+    Log.D(
+      'Current activity_goals_dialog_data:',
+      this.activity_goals_dialog_data.config_key,
+      this.activity_goals_dialog_data.config_value
+    );
     // need to save the data value using application-settings and the STORAGE_KEYS enum
+    // using the activity_goals_dialog_data object we can use the `config_value` to save for the `config_key`
+    appSettings.setNumber(
+      this.activity_goals_dialog_data.config_key,
+      this.activity_goals_dialog_data.config_value
+    );
+
+    this.COAST_TIME_ACTIVITY_GOAL = appSettings.getNumber(
+      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
+    );
+    this.DISTANCE_ACTIVITY_GOAL = appSettings.getNumber(
+      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
+    );
+
     // and close the dialog which can re-use the function that the close btn uses
     this.closeActivityGoalsDialog();
   }
