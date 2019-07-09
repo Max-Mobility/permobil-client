@@ -10,5 +10,21 @@
     "maxmobility/apps/smart-eval-app/node_modules/**": true,
     "maxmobility/nativescript-bluetooth/node_modules/**": true,
     "maxmobility/nativescript-bluetooth/typings/**": true
-  }
+  },
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "scss.lint.validProperties": [
+    "horizontal-align",
+    "translate-y",
+    "translate-x",
+    "text-wrap"
+  ],
+  "css.lint.validProperties": [
+    "horizontal-align",
+    "translate-y",
+    "translate-x",
+    "text-wrap"
+  ],
+  "prettier.disableLanguages": ["html"]
 }
