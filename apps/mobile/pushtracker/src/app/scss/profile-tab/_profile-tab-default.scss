@@ -7,11 +7,11 @@
 
   .settings-btn {
     @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-    color: $black;
+    color: #3c4043;
   }
   .help-btn {
     @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-    color: $black;
+    color: #3c4043;
   }
 
   .page-title {
@@ -31,7 +31,7 @@
 
   .section-label {
     @extend .SECTION_LABEL_BASE;
-    color: $black;
+    color: lighten($color: $black, $amount: 0.3);
   }
 
   .avatar-circle {
@@ -45,14 +45,20 @@
 
   .data-box {
     @extend .DATA_BOX_BASE;
-    label {
-      color: #767a7e;
+    .data-box-label {
+      color: #4b4d51;
+      background-color: $white;
     }
-    StackLayout {
-      border-color: #dadce0;
 
-      label {
-        color: $black;
+    GridLayout {
+      border-color: #e8e9eb;
+
+      > .data-box-value {
+        color: #383d41;
+      }
+
+      > .data-box-arrow {
+        color: #5f6267;
       }
     }
   }

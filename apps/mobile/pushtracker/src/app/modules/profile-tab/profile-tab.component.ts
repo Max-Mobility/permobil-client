@@ -87,8 +87,8 @@ export class ProfileTabComponent implements OnInit {
     Log.D('setting action item tap');
   }
 
-  async onActivityGoalTap(configValue: string) {
-    Log.D('user tapped config = ', configValue);
+  async onActivityGoalTap(args, configValue: string) {
+    Log.D('user tapped config = ', configValue, args.object);
     this.configTitle = this._translateService.instant(`general.${configValue}`);
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
     await cfl.animate({

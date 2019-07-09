@@ -45,14 +45,21 @@
 
   .data-box {
     @extend .DATA_BOX_BASE;
-    label {
-      color: $grey;
-    }
-    StackLayout {
-      border-color: $dark-grey;
 
-      label {
+    .data-box-label {
+      color: $grey;
+      background-color: $black;
+    }
+
+    GridLayout {
+      border-color: #e8e9eb;
+
+      > .data-box-value {
         color: $white;
+      }
+
+      > .data-box-arrow {
+        color: $grey;
       }
     }
   }
