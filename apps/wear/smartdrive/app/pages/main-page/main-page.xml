@@ -6,6 +6,7 @@
       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:RL="nativescript-ng-ripple/ripple-view"
+      xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
       actionBarHidden="true">
@@ -53,22 +54,24 @@
                               rimWidth="2" barWidth="8"
                               progress="{{ watchCurrentBatteryPercentage }}">
             <GridLayout rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
-              <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ estimatedDistanceDisplay }}"
+              <StackLayout row="1" col="1" rowSpan="2"
                      tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="{{ estimatedDistanceDescription }}"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ currentSignalStrength }}"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="Signal Strength (dB)"
-                     tap="{{ toggleDisplay }}"
-                     visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}"/>
+                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}">
+                <Label class="topValue" horizontalAlignment="center" textWrap="true"
+                       text="{{ estimatedDistanceDisplay }}"
+                       tap="{{ toggleDisplay }}"
+                       visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
+                <Label class="topValueDescription" textWrap="true"
+                       text="{{ estimatedDistanceDescription }}"/>
+              </StackLayout>
+              <StackLayout row="1" col="1" rowSpan="2"
+                           tap="{{ toggleDisplay }}"
+                           visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}">
+                <Label class="topValue" horizontalAlignment="center" textWrap="true"
+                       text="{{ currentSignalStrength }}"/>
+                <Label row="2" col="1" class="topValueDescription" textWrap="true"
+                       text="Signal Strength (dB)"/>
+              </StackLayout>
               <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
                      text="{{ currentSpeedDisplay }}"
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
@@ -92,10 +95,18 @@
                       text="{{ L('power-assist.exit-training') }}"
                       tap="{{ onExitTrainingModeTap }}"
                       visibility="{{ isTraining ? 'visible':'collapsed' }}" />
-              <Label row="4" col="1" class="currentTime"
-                     text="{{ currentTime }}" textWrap="true" />
-              <Label row="5" col="1" class="currentTimeMeridiem"
-                     text="{{ currentTimeMeridiem }}" textWrap="true" />
+              <StackLayout row="4" col="1" rowSpan="2"
+                           tap="{{ toggleTimeDisplay }}"
+                           visibility="{{ displayTime ? 'visible':'collapsed' }}">
+                <Label class="currentTime" text="{{ currentTime }}" textWrap="true"/>
+                <Label class="currentTimeMeridiem" text="{{ currentTimeMeridiem }}" textWrap="true"/>
+              </StackLayout>
+              <StackLayout row="4" col="1" rowSpan="2"
+                           tap="{{ toggleTimeDisplay }}"
+                           visibility="{{ !displayTime ? 'visible':'collapsed' }}">
+                <Label class="currentTime" text="{{ currentDay }}" textWrap="true"/>
+                <Label class="currentTimeMeridiem" text="{{ currentYear }}" textWrap="true"/>
+              </StackLayout>
             </GridLayout>
           </nac:AnimatedCircle>
 
@@ -352,7 +363,7 @@
         </RL:Ripple>
         <StackLayout row="1" col="1" class="value-circle">
           <Label text="{{ changeSettingKeyString }}" class="changeSettingsTitle" textWrap="true" />
-          <Label text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="true" />
+          <ui:AutoFitText maxHeight="30%" width="70%" text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="false" />
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
