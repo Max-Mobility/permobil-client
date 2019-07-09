@@ -1,0 +1,15 @@
+# Add files here to ignore them from prettier formatting
+
+.DS_Store
+package-lock.json
+apps/*/src/assets/scripts/*.js
+src/assets/*.*
+**/apps/**/platforms/**/*
+**/App_Resources/**/*
+**/apps/nativescript-*/hooks/**/*
+**/apps/nativescript-*/tools/**/*
+**/apps/nativescript-*/app/assets/*.min.css
+**/apps/nativescript-*/app/assets/lottie/*.json
+**/package-lock.json
+**/apps/**/*.component.html
+**/apps/**/*.xml
