@@ -29,6 +29,7 @@
 		"must-wear-watch": "Vous devez porter la montre pour activer l'assistance électrique.",
 		"no-smartdrive-paired": "Pas de SmartDrive associé à l'application!",
 		"no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
+		"permissions": "Les autorisations requises n'ont pas été accordées!",
 		"saving-error": "Échec de l'enregistrement de l'erreur SmartDrive",
 		"saving-usage": "Échec de la sauvegarde de l'utilisation",
 		"scan": "Impossible de numériser",
@@ -80,6 +81,7 @@
 			}
 		}
 	},
+	"permissions-reasons": "Pour lire votre numéro de série E2 (à des fins de garantie / d'assistance), nous avons besoin de l'autorisation READ_PHONE_STATE. Pour contrôler votre SmartDrive à l'aide de Bluetooth, nous avons besoin de l'autorisation ACCESS_COARSE_LOCATION.",
 	"power-assist": {
 		"activate": "Activer Power Assist",
 		"deactivate": "Désactiver Power Assist",
@@ -87,6 +89,20 @@
 		"exit-training": "Quitter le mode de formation",
 		"speed": "La vitesse",
 		"stop": "Arrêtez"
+	},
+	"sd": {
+		"settings": {
+			"units": {
+				"english": "Anglais",
+				"metric": "métrique"
+			}
+		},
+		"switch-settings": {
+			"mode": {
+				"latching": "Verrouillage",
+				"momentary": "Momentané"
+			}
+		}
 	},
 	"settings": {
 		"acceleration": "Accélération",
@@ -119,6 +135,7 @@
 	},
 	"updates": {
 		"canceled": "Mise à jour annulée",
+		"changes": "Sommaire des changements:",
 		"checking-for-updates": "Vérification des mises à jour",
 		"error-getting": "Erreur lors de l'obtention des mises à jour",
 		"failed": "mise à jour a échoué",

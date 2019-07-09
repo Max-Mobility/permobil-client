@@ -30,7 +30,7 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import * as LS from 'nativescript-localstorage';
 import { Color } from 'tns-core-modules/color';
-import { Observable } from 'tns-core-modules/data/observable';
+import { Observable, fromObject } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { device } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
@@ -53,13 +53,17 @@ const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
 const dateLocales = {
+  da: require('date-fns/locale/da'),
   de: require('date-fns/locale/de'),
   en: require('date-fns/locale/en'),
   es: require('date-fns/locale/es'),
   fr: require('date-fns/locale/fr'),
+  it: require('date-fns/locale/it'),
   ja: require('date-fns/locale/ja'),
   ko: require('date-fns/locale/ko'),
+  nb: require('date-fns/locale/nb'),
   nl: require('date-fns/locale/nl'),
+  nn: require('date-fns/locale/nb'),
   zh: require('date-fns/locale/zh_cn')
 };
 
@@ -93,13 +97,17 @@ export class MainViewModel extends Observable {
   /**
    * Layout Management
    */
-  @Prop() isMainLayoutEnabled = true;
-  @Prop() isScanningLayoutEnabled = false;
-  @Prop() isSettingsLayoutEnabled = false;
-  @Prop() isChangeSettingsLayoutEnabled = false;
-  @Prop() isErrorHistoryLayoutEnabled = false;
-  @Prop() isAboutLayoutEnabled = false;
-  @Prop() isUpdatesLayoutEnabled = false;
+  private previousLayouts: string[] = [];
+  private layouts = {
+    about: false,
+    changeSettings: false,
+    errorHistory: false,
+    main: true,
+    scanning: false,
+    settings: false,
+    updates: false
+  };
+  @Prop() enabledLayout = fromObject(this.layouts);
 
   /**
    * SmartDrive Settings UI:
@@ -280,10 +288,10 @@ export class MainViewModel extends Observable {
     application.on('updateAmbient', args => {
       this.updateTimeDisplay();
       Log.D('updateAmbient', args.data,
-            this.currentTime,
-            this.currentTimeMeridiem,
-            this.currentDay,
-            this.currentYear);
+        this.currentTime,
+        this.currentTimeMeridiem,
+        this.currentDay,
+        this.currentYear);
     });
 
     // Activity lifecycle event handlers
@@ -551,7 +559,7 @@ export class MainViewModel extends Observable {
         okButtonText: 'Ok'
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => {});
+          return requestPermissions(neededPermissions, () => { });
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -570,6 +578,34 @@ export class MainViewModel extends Observable {
     } else {
       return Promise.resolve(true);
     }
+  }
+
+  previousLayout() {
+    // get the most recent layout and remove it from the list
+    const layoutName = this.previousLayouts.pop();
+    if (layoutName) {
+      Object.keys(this.layouts)
+        .filter(k => k !== layoutName)
+        .map(k => {
+          this.enabledLayout.set(k, false);
+        });
+      this.enabledLayout.set(layoutName, true);
+    } else {
+      // if there is no previous - go back to the main screen
+      this.enabledLayout.set('main', true);
+    }
+  }
+
+  enableLayout(layoutName: string) {
+    Object.keys(this.layouts)
+      .filter(k => k !== layoutName)
+      .map(k => {
+        if (this.enabledLayout.get(k)) {
+          this.previousLayouts.push(k);
+        }
+        this.enabledLayout.set(k, false);
+      });
+    this.enabledLayout.set(layoutName, true);
   }
 
   onMainPageLoaded(args: any) {
@@ -649,7 +685,7 @@ export class MainViewModel extends Observable {
     );
     Log.D('Loading SD state from LS', savedSd);
     if (savedSd) {
-      this.smartDrive.fromObject( savedSd );
+      this.smartDrive.fromObject(savedSd);
     }
   }
 
@@ -688,10 +724,10 @@ export class MainViewModel extends Observable {
     );
   }
 
-  onAppLaunch(args?: any) {}
+  onAppLaunch(args?: any) { }
 
   onAppResume(args?: any) {
-      this.enableBodySensor();
+    this.enableBodySensor();
   }
 
   onAppSuspend(args?: any) {
@@ -890,7 +926,7 @@ export class MainViewModel extends Observable {
     const threshold =
       this.maxTapSensitivity -
       (this.maxTapSensitivity - this.minTapSensitivity) *
-        (this.settings.tapSensitivity / 100.0);
+      (this.settings.tapSensitivity / 100.0);
     // must have a high enough abs(accel.z) and it must be a jerk
     // movement - high difference between previous accel and current
     // accel
@@ -990,6 +1026,19 @@ export class MainViewModel extends Observable {
   }
 
   /**
+   * Power management
+   */
+  maintainCPU() {
+    this.wakeLock.acquire();
+    keepAwake();
+  }
+
+  releaseCPU() {
+    if (this.wakeLock.isHeld()) this.wakeLock.release();
+    allowSleepAgain();
+  }
+
+  /**
    * Main Menu Tap Handlers
    */
   onAboutTap() {
@@ -998,13 +1047,12 @@ export class MainViewModel extends Observable {
       this.aboutScrollView.scrollToVerticalOffset(0, true);
     }
     showOffScreenLayout(this._aboutLayout);
-    this.isAboutLayoutEnabled = true;
+    this.enableLayout('about');
   }
 
   onTrainingTap() {
     this.enableTapSensor();
-    this.wakeLock.acquire();
-    keepAwake();
+    this.maintainCPU();
     this.isTraining = true;
     this.powerAssistState = PowerAssist.State.Training;
     this.updatePowerAssistRing();
@@ -1013,8 +1061,7 @@ export class MainViewModel extends Observable {
 
   onExitTrainingModeTap() {
     this.disableTapSensor();
-    if (this.wakeLock.isHeld()) this.wakeLock.release();
-    allowSleepAgain();
+    this.releaseCPU();
     this.isTraining = false;
     this.powerAssistState = PowerAssist.State.Inactive;
     this.updatePowerAssistRing();
@@ -1036,7 +1083,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-      this.isScanningLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1053,7 +1100,7 @@ export class MainViewModel extends Observable {
   onUpdatesTap() {
     if (this.smartDrive) {
       showOffScreenLayout(this._updatesLayout);
-      this.isUpdatesLayoutEnabled = true;
+      this.enableLayout('updates');
       this.checkForUpdates();
     } else {
       showFailure(L('failures.no-smartdrive-paired'));
@@ -1066,7 +1113,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-      this.isUpdatesLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1237,7 +1284,9 @@ export class MainViewModel extends Observable {
           const changes = Object.keys(currentVersions).map(
             k => currentVersions[k].changes
           );
-          const msg = flatten(changes).join('\n');
+          const msg = L('updates.changes') + '\n\n' +
+            flatten(changes)
+              .join('\n\n');
           Log.D('got changes', changes);
           alert({
             title: title,
@@ -1256,6 +1305,8 @@ export class MainViewModel extends Observable {
               this.onSmartDriveOtaStatus,
               this
             );
+            // maintain CPU resources while updating
+            this.maintainCPU();
             // smartdrive needs to update
             this.smartDrive
               .performOTA(
@@ -1266,6 +1317,7 @@ export class MainViewModel extends Observable {
                 300 * 1000
               )
               .then(otaStatus => {
+                this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const status = otaStatus.replace('OTA', 'Update');
                 this.updateProgressText = status;
@@ -1283,6 +1335,7 @@ export class MainViewModel extends Observable {
                 );
               })
               .catch(err => {
+                this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const msg = L('updates.failed') + `: ${err}`;
                 Log.E(msg);
@@ -1305,7 +1358,7 @@ export class MainViewModel extends Observable {
           showSuccess(L('updates.up-to-date'));
           setTimeout(() => {
             hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-            this.isUpdatesLayoutEnabled = false;
+            this.previousLayout();
           }, 2000);
         }
       })
@@ -1345,7 +1398,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
-      this.isErrorHistoryLayoutEnabled = false;
+      this.previousLayout();
       // clear the error history data when it's not being displayed to save on memory
       this.errorHistoryData.splice(0, this.errorHistoryData.length);
     });
@@ -1363,7 +1416,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
-      this.isSettingsLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1377,7 +1430,7 @@ export class MainViewModel extends Observable {
       // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
-      this.isAboutLayoutEnabled = false;
+      this.previousLayout();
     });
   }
 
@@ -1463,7 +1516,7 @@ export class MainViewModel extends Observable {
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
-      .catch(err => {});
+      .catch(err => { });
   }
 
   onBatteryChartRepeaterLoaded(args) {
@@ -1506,7 +1559,7 @@ export class MainViewModel extends Observable {
       }
     });
     showOffScreenLayout(this._errorHistoryLayout);
-    this.isErrorHistoryLayoutEnabled = true;
+    this.enableLayout('errorHistory');
   }
 
   onSettingsTap() {
@@ -1515,7 +1568,7 @@ export class MainViewModel extends Observable {
       this.settingsScrollView.scrollToVerticalOffset(0, true);
     }
     showOffScreenLayout(this._settingsLayout);
-    this.isSettingsLayoutEnabled = true;
+    this.enableLayout('settings');
   }
 
   onChangeSettingsItemTap(args) {
@@ -1551,15 +1604,20 @@ export class MainViewModel extends Observable {
         break;
     }
     this.updateSettingsChangeDisplay();
-    if (args.object.id) {
-    }
 
-    showOffScreenLayout(this._changeSettingsLayout);
-    this.isChangeSettingsLayoutEnabled = true;
+    showOffScreenLayout(this._changeSettingsLayout)
+      .then(() => {
+        // TODO: this is a hack to force the layout to update for
+        // showing the auto-size text view
+        const prevVal = this.changeSettingKeyValue;
+        this.changeSettingKeyValue = '  ';
+        this.changeSettingKeyValue = prevVal;
+      });
+    this.enableLayout('changeSettings');
   }
 
   updateSettingsChangeDisplay() {
-    // TODO: update these for translation
+    let translationKey = '';
     switch (this.activeSettingToChange) {
       case 'maxspeed':
         this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
@@ -1574,10 +1632,12 @@ export class MainViewModel extends Observable {
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
         return;
       case 'units':
-        this.changeSettingKeyValue = `${this.tempSettings.units}`;
+        translationKey = 'sd.settings.units.' + this.tempSettings.units.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolmode':
-        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.mode}`;
+        translationKey = 'sd.switch-settings.mode.' + this.tempSwitchControlSettings.mode.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolspeed':
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
@@ -1589,7 +1649,7 @@ export class MainViewModel extends Observable {
 
   onCancelChangesTap() {
     hideOffScreenLayout(this._changeSettingsLayout, { x: 500, y: 0 });
-    this.isChangeSettingsLayoutEnabled = false;
+    this.previousLayout();
   }
 
   updateSettingsDisplay() {
@@ -1624,7 +1684,7 @@ export class MainViewModel extends Observable {
       x: 500,
       y: 0
     });
-    this.isChangeSettingsLayoutEnabled = false;
+    this.previousLayout();
     // SAVE THE VALUE to local data for the setting user has selected
     this.settings.copy(this.tempSettings);
     this.switchControlSettings.copy(this.tempSwitchControlSettings);
@@ -1646,7 +1706,7 @@ export class MainViewModel extends Observable {
     this.updateSettingsChangeDisplay();
   }
 
-  onDecreaseSettingsTap(args) {
+  onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
     this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
     this.updateSettingsChangeDisplay();
@@ -1668,8 +1728,8 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
-      const defaultSettings = new SmartDrive.Settings();
-      const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
+    const defaultSettings = new SmartDrive.Settings();
+    const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
     this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
     this.settings.acceleration =
       appSettings.getNumber(DataKeys.SD_ACCELERATION) || defaultSettings.acceleration;
@@ -1755,8 +1815,7 @@ export class MainViewModel extends Observable {
       showFailure(L('failures.must-wear-watch'));
       return;
     } else if (this.hasSavedSmartDrive()) {
-      this.wakeLock.acquire();
-      keepAwake();
+      this.maintainCPU();
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.powerAssistActive = true;
       this.updatePowerAssistRing();
@@ -1793,8 +1852,7 @@ export class MainViewModel extends Observable {
 
   disablePowerAssist() {
     this.disableTapSensor();
-    if (this.wakeLock.isHeld()) this.wakeLock.release();
-    allowSleepAgain();
+    this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
     this.powerAssistActive = false;
     this.motorOn = false;
@@ -1824,7 +1882,7 @@ export class MainViewModel extends Observable {
     showOffScreenLayout(this._scanningLayout);
     // disable swipe close of the updates layout
     (this._scanningLayout as any).swipeable = false;
-    this.isScanningLayoutEnabled = true;
+    this.enableLayout('scanning');
     // @ts-ignore
     this.scanningProgressCircle.spin();
   }
@@ -1833,7 +1891,7 @@ export class MainViewModel extends Observable {
     // re-enable swipe close of the updates layout
     (this._scanningLayout as any).swipeable = true;
     hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-    this.isScanningLayoutEnabled = false;
+    this.previousLayout();
     // @ts-ignore
     this.scanningProgressCircle.stopSpinning();
   }
@@ -2047,10 +2105,10 @@ export class MainViewModel extends Observable {
         Log.E('send settings failed', err);
         showFailure(
           L('failures.send-settings') +
-            ' ' +
-            this._savedSmartDriveAddress +
-            ' ' +
-            err
+          ' ' +
+          this._savedSmartDriveAddress +
+          ' ' +
+          err
         );
       });
   }
@@ -2431,7 +2489,7 @@ export class MainViewModel extends Observable {
             this.hasSentSettings
           );
         })
-        .catch(err => {});
+        .catch(err => { });
     } else {
       return Promise.resolve();
     }

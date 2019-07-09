@@ -312,7 +312,7 @@ export class PushTracker extends DeviceBase {
                   }
                 })
                 .catch(err => {
-                  console.log(`couldn't notify: ${err}`);
+                  console.log(`could not notify: ${err}`);
                   console.log('retrying');
                   setTimeout(() => {
                     writeFirmwareSector(fw, characteristic, nextState);
@@ -395,7 +395,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(err => {});
+                ).catch(err => { });
               }
               break;
             case PushTracker.OTAState.updating:
@@ -433,7 +433,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(err => {});
+                ).catch(err => { });
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -478,7 +478,7 @@ export class PushTracker extends DeviceBase {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;

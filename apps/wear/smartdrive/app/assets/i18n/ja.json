@@ -29,6 +29,7 @@
 		"must-wear-watch": "パワーアシストを作動させるには時計を装着しなければなりません。",
 		"no-smartdrive-paired": "SmartDriveはアプリとペアになりません。",
 		"no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
+		"permissions": "必要な権限が付与されていません。",
 		"saving-error": "SmartDriveエラーの保存に失敗しました",
 		"saving-usage": "使用法の保存に失敗しました",
 		"scan": "スキャンできませんでした",
@@ -80,6 +81,7 @@
 			}
 		}
 	},
+	"permissions-reasons": "あなたのE2シリアル番号を読むために（保証/サポート目的のために）私たちはREAD_PHONE_STATEパーミッションを必要とします。 Bluetoothを使用してSmartDriveを制御するには、ACCESS_COARSE_LOCATION権限が必要です。",
 	"power-assist": {
 		"activate": "パワーアシストを有効にする",
 		"deactivate": "パワーアシストを無効にする",
@@ -87,6 +89,20 @@
 		"exit-training": "トレーニングモードを終了",
 		"speed": "速度",
 		"stop": "やめる"
+	},
+	"sd": {
+		"settings": {
+			"units": {
+				"english": "英語",
+				"metric": "メトリック"
+			}
+		},
+		"switch-settings": {
+			"mode": {
+				"latching": "ラッチング",
+				"momentary": "一瞬"
+			}
+		}
 	},
 	"settings": {
 		"acceleration": "加速度",
@@ -119,6 +135,7 @@
 	},
 	"updates": {
 		"canceled": "更新がキャンセルされました",
+		"changes": "変更の概要",
 		"checking-for-updates": "アップデートの確認",
 		"error-getting": "アップデート取得エラー",
 		"failed": "アップデートに失敗しました",

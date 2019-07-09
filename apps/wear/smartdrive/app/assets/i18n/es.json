@@ -29,6 +29,7 @@
 		"must-wear-watch": "Debe usar el reloj para activar la asistencia de potencia.",
 		"no-smartdrive-paired": "No SmartDrive emparejado a la aplicación!",
 		"no-smartdrives-found": "No se han encontrado SmartDrives cerca.",
+		"permissions": "Los permisos requeridos no fueron otorgados!",
 		"saving-error": "Error al guardar el error SmartDrive",
 		"saving-usage": "Error al guardar uso",
 		"scan": "No se pudo escanear",
@@ -80,6 +81,7 @@
 			}
 		}
 	},
+	"permissions-reasons": "Para leer su número de serie E2 (para fines de garantía / soporte) necesitamos el permiso READ_PHONE_STATE. Para controlar su SmartDrive usando bluetooth, necesitamos el permiso ACCESS_COARSE_LOCATION.",
 	"power-assist": {
 		"activate": "Activar Power Assist",
 		"deactivate": "Desactivar la asistencia de potencia",
@@ -87,6 +89,20 @@
 		"exit-training": "Salir del modo de entrenamiento",
 		"speed": "Velocidad",
 		"stop": "Detener"
+	},
+	"sd": {
+		"settings": {
+			"units": {
+				"english": "Inglés",
+				"metric": "Métrico"
+			}
+		},
+		"switch-settings": {
+			"mode": {
+				"latching": "Enclavado",
+				"momentary": "Momentáneo"
+			}
+		}
 	},
 	"settings": {
 		"acceleration": "Aceleración",
@@ -119,6 +135,7 @@
 	},
 	"updates": {
 		"canceled": "Actualización cancelada",
+		"changes": "Resumen de Cambios:",
 		"checking-for-updates": "Comprobando actualizaciones",
 		"error-getting": "Error al obtener las actualizaciones",
 		"failed": "Actualización fallida",

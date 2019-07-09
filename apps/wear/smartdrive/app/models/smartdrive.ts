@@ -247,8 +247,8 @@ export class SmartDrive extends DeviceBase {
     // check versions
     return new Promise((resolve, reject) => {
       if ((!bleFirmware && bleFWVersion) ||
-          (!mcuFirmware && mcuFWVersion) ||
-          (!mcuFWVersion && !bleFWVersion)) {
+        (!mcuFirmware && mcuFWVersion) ||
+        (!mcuFWVersion && !bleFWVersion)) {
         const msg = `Bad version (${bleFWVersion}, ${mcuFWVersion}), or firmware (${bleFirmware}, ${mcuFirmware})!`;
         reject(msg);
       } else {
@@ -518,7 +518,7 @@ export class SmartDrive extends DeviceBase {
                   }, 0);
                 })
                 .catch(err => {
-                  console.log(`Couldn't send fw to ${device}: ${err}`);
+                  console.log(`Could not send fw to ${device}: ${err}`);
                   writeFirmwareTimeoutID = timer.setTimeout(() => {
                     console.log('Retrying');
                     writeFirmwareSector(device, fw, characteristic, nextState);
@@ -630,7 +630,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => {});
+                ).catch(err => { });
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -647,8 +647,8 @@ export class SmartDrive extends DeviceBase {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                ? SmartDrive.OTAState.rebooting_mcu
-                : SmartDrive.OTAState.complete;
+                  ? SmartDrive.OTAState.rebooting_mcu
+                  : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -698,7 +698,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     this.ableToSend = true;
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -759,7 +759,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     this.ableToSend = true;
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -782,7 +782,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => {});
+                ).catch(() => { });
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -832,7 +832,7 @@ export class SmartDrive extends DeviceBase {
                     this.otaState = SmartDrive.OTAState.canceled;
                   })
                   .catch(err => {
-                    console.log(`Couldn't cancel ota, retrying: ${err}`);
+                    console.log(`Could not cancel ota, retrying: ${err}`);
                   });
               } else {
                 // now set state to cancelled
@@ -1126,7 +1126,7 @@ export class SmartDrive extends DeviceBase {
         }
         this.sendEvent(SmartDrive.smartdrive_connect_event);
       })
-      .catch(err => {});
+      .catch(err => { });
   }
 
   public handleDisconnect() {
@@ -1353,7 +1353,7 @@ export namespace SmartDrive {
     }
 
     increase(key: string, increment: number = 10): void {
-      let index;
+      let index = 0;
       switch (key) {
         case 'maxspeed':
         case 'Max Speed':
@@ -1369,7 +1369,7 @@ export namespace SmartDrive {
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.min(this.tapSensitivity + increment, 100);
           break;
-        case 'control-mode':
+        case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
           index = SmartDrive.Settings.ControlMode.Options.indexOf(
@@ -1391,7 +1391,7 @@ export namespace SmartDrive {
     }
 
     decrease(key: string, increment: number = 10): void {
-      let index;
+      let index = 0;
       switch (key) {
         case 'maxspeed':
         case 'Max Speed':
@@ -1407,7 +1407,7 @@ export namespace SmartDrive {
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.max(this.tapSensitivity - increment, 10);
           break;
-        case 'control-mode':
+        case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
           index = SmartDrive.Settings.ControlMode.Options.indexOf(

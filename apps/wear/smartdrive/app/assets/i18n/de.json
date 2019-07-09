@@ -29,6 +29,7 @@
 		"must-wear-watch": "Sie müssen die Uhr tragen, um die Servounterstützung zu aktivieren.",
 		"no-smartdrive-paired": "Kein SmartDrive mit der App gekoppelt!",
 		"no-smartdrives-found": "Keine SmartDrives in der Nähe gefunden.",
+		"permissions": "Erforderliche Berechtigungen wurden nicht erteilt!",
 		"saving-error": "Fehler beim Speichern von SmartDrive",
 		"saving-usage": "Speichern der Verwendung fehlgeschlagen",
 		"scan": "Konnte nicht scannen",
@@ -80,6 +81,7 @@
 			}
 		}
 	},
+	"permissions-reasons": "Zum Lesen Ihrer E2-Seriennummer (für Garantie- / Supportzwecke) benötigen wir die READ_PHONE_STATE-Berechtigung. Zur Steuerung Ihres SmartDrive über Bluetooth benötigen wir die Berechtigung ACCESS_COARSE_LOCATION.",
 	"power-assist": {
 		"activate": "Power Assist aktivieren",
 		"deactivate": "Power Assist deaktivieren",
@@ -87,6 +89,20 @@
 		"exit-training": "Beenden Sie den Trainingsmodus",
 		"speed": "Geschwindigkeit",
 		"stop": "Halt"
+	},
+	"sd": {
+		"settings": {
+			"units": {
+				"english": "Englisch",
+				"metric": "Metrisch"
+			}
+		},
+		"switch-settings": {
+			"mode": {
+				"latching": "Einrasten",
+				"momentary": "Momentan"
+			}
+		}
 	},
 	"settings": {
 		"acceleration": "Beschleunigung",
@@ -119,6 +135,7 @@
 	},
 	"updates": {
 		"canceled": "Update abgebrochen",
+		"changes": "Zusammenfassung der Änderungen:",
 		"checking-for-updates": "Nach Updates suchen",
 		"error-getting": "Fehler beim Abrufen der Updates",
 		"failed": "Update fehlgeschlagen",
