@@ -578,9 +578,7 @@ export class MainViewModel extends Observable {
 
   previousLayout() {
     // get the most recent layout and remove it from the list
-    console.log('previous layouts', this.previousLayouts);
     const layoutName = this.previousLayouts.pop();
-    console.log('layoutName', layoutName);
     if (layoutName) {
       Object.keys(this.layouts)
         .filter(k => k !== layoutName)
@@ -1585,15 +1583,20 @@ export class MainViewModel extends Observable {
         break;
     }
     this.updateSettingsChangeDisplay();
-    if (args.object.id) {
-    }
 
-    showOffScreenLayout(this._changeSettingsLayout);
+    showOffScreenLayout(this._changeSettingsLayout)
+      .then(() => {
+        // TODO: this is a hack to force the layout to update for
+        // showing the auto-size text view
+        const prevVal = this.changeSettingKeyValue;
+        this.changeSettingKeyValue = '  ';
+        this.changeSettingKeyValue = prevVal;
+      });
     this.enableLayout('changeSettings');
   }
 
   updateSettingsChangeDisplay() {
-    // TODO: update these for translation
+    let translationKey = '';
     switch (this.activeSettingToChange) {
       case 'maxspeed':
         this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
@@ -1608,10 +1611,12 @@ export class MainViewModel extends Observable {
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
         return;
       case 'units':
-        this.changeSettingKeyValue = `${this.tempSettings.units}`;
+        translationKey = 'sd.settings.units.' + this.tempSettings.units.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolmode':
-        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.mode}`;
+        translationKey = 'sd.switch-settings.mode.' + this.tempSwitchControlSettings.mode.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolspeed':
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
@@ -1680,7 +1685,7 @@ export class MainViewModel extends Observable {
     this.updateSettingsChangeDisplay();
   }
 
-  onDecreaseSettingsTap(args) {
+  onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
     this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
     this.updateSettingsChangeDisplay();

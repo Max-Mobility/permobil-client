@@ -90,6 +90,20 @@
 		"speed": "Speed",
 		"stop": "Stop"
 	},
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "English",
+        "metric": "Metric"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "momentary": "Momentary",
+        "latching": "Latching"
+      }
+    }
+  },
 	"settings": {
 		"acceleration": "Acceleration",
 		"control-mode": "Control Mode",
