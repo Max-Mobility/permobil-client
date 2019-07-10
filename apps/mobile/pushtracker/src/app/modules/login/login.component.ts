@@ -41,12 +41,30 @@ export class LoginComponent implements OnInit {
 
   async submit() {
     Log.D('submit tap, just going to open the tabs/default for now');
-    // Navigate to tabs home with clearHistory
-    this._routerExtensions
-      .navigate(['/tabs/default'], { clearHistory: true })
-      .catch(err => {
-        Log.E(err);
-      });
+    // this.lottieAnimation = 'trophy';
+    // this.showLottie = true;
+
+    // loading indicator plugin needs to be updated for androidX for NS6
+    // const li = new LoadingIndicator();
+    // li.show({
+    //   android: {
+    //     backgroundColor: '#222'
+    //   },
+    //   ios: {
+    //     dimBackground: true
+    //   }
+    // });
+
+    // simulation network call with timeout for now
+    setTimeout(() => {
+      // Navigate to tabs home with clearHistory
+      this._routerExtensions
+        .navigate(['/tabs/default'], { clearHistory: true })
+        .catch(err => {
+          this._logService.logException(err);
+        });
+    }, 1000);
+
     // try {
     //   // validate the email
     //   const isEmailValid = this._isEmailValid(this.user.email);
