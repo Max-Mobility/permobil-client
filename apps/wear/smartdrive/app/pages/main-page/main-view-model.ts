@@ -775,6 +775,8 @@ export class MainViewModel extends Observable {
     if (savedSd) {
       this.smartDrive.fromObject(savedSd);
     }
+    // update the displayed smartdrive data
+    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
   }
 
   saveSmartDriveStateToLS() {
