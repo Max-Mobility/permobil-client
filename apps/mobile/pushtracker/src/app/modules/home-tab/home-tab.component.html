@@ -1,90 +1,31 @@
 <ScrollView class="home-tab-layout">
   <StackLayout>
     <GridLayout rows="*" columns="auto, *, auto">
-      <Button
-        row="0"
-        col="2"
-        text="&#xe88f;"
-        class="info-btn"
-        (tap)="onInfoTap()"
-      ></Button>
+      <Button row="0" col="2" text="&#xe88f;" class="info-btn" (tap)="onInfoTap()"></Button>
     </GridLayout>
 
     // Activity Circles
     <GridLayout rows="*, auto, *" columns="*, auto, *" height="240" width="95%">
       // Distance Circle (outer/purple)
-      <AnimatedCircle
-        id="distanceCircle"
-        rowSpan="3"
-        colSpan="3"
-        width="98%"
-        height="98%"
-        animated="true"
-        animateFrom="0"
-        clockwise="true"
-        rimWidth="10"
-        barWidth="28"
-        [progress]="distanceCirclePercentage"
-      >
-      </AnimatedCircle>
+      <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"></AnimatedCircle>
       // Coast Time Circle (inner/teal)
-      <AnimatedCircle
-        id="coastTimeCircle"
-        rowSpan="3"
-        colSpan="3"
-        width="83%"
-        height="83%"
-        animated="true"
-        animateFrom="0"
-        clockwise="true"
-        rimWidth="10"
-        barWidth="28"
-        [progress]="coastTimeCirclePercentage"
-      >
-      </AnimatedCircle>
-      <GridLayout
-        row="1"
-        col="1"
-        rows="auto, *, auto"
-        columns="auto, *, auto"
-        class="distance-remaining-circle"
-      >
-        <Label
-          row="1"
-          col="1"
-          [text]="distanceRemainingText"
-          textWrap="true"
-        ></Label>
+      <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage"></AnimatedCircle>
+      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle">
+        <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
       </GridLayout>
     </GridLayout>
 
     // Percentage Data Details
-    <GridLayout
-      class="percentage-data-layout"
-      height="120"
-      rows="*, *"
-      columns="*, auto, auto, 20, auto, auto, *"
-    >
+    <GridLayout class="percentage-data-layout" height="120" rows="*, *" columns="*, auto, auto, 20, auto, auto, *">
       // cousteau circle for coast-time values
       <StackLayout row="0" rowSpan="2" col="1" class="cousteau-circle">
         <Label text="&#xe5cc;"></Label>
       </StackLayout>
 
       <GridLayout row="0" rowSpan="2" col="2" rows="auto, auto" columns="*, auto, *">
-        <Label
-          row="0"
-          col="0"
-          class="value"
-          [text]="coastTimeCirclePercentage"
-        ></Label>
+        <Label row="0" col="0" class="value" [text]="coastTimeCirclePercentage"></Label>
         <Label row="0" col="1" class="max-value" [text]="coastTimeCirclePercentageMaxValue"></Label>
-        <Label
-          row="1"
-          col="0"
-          colSpan="3"
-          class="description"
-          [text]="'general.coast-time' | translate"
-        ></Label>
+        <Label row="1" col="0" colSpan="3" class="description" [text]="'general.coast-time' | translate"></Label>
       </GridLayout>
 
       // violet-circle for distance values
@@ -93,72 +34,29 @@
       </StackLayout>
 
       <GridLayout row="0" rowSpan="2" col="5" rows="auto, auto" columns="*, auto, *">
-        <Label
-          row="0"
-          col="0"
-          class="value"
-          [text]="distanceCirclePercentage"
-        ></Label>
+        <Label row="0" col="0" class="value" [text]="distanceCirclePercentage"></Label>
         <Label row="0" col="1" class="max-value" [text]="distanceCirclePercentageMaxValue"></Label>
-        <Label
-          row="1"
-          col="0"
-          colSpan="3"
-          class="description"
-          [text]="'general.distance' | translate"
-        ></Label>
+        <Label row="1" col="0" colSpan="3" class="description" [text]="'general.distance' | translate"></Label>
       </GridLayout>
     </GridLayout>
 
     // Detailed Data
     <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="detail-data">
       // push count data
-      <Label
-        row="0"
-        col="0"
-        class="detail-value"
-        [text]="pushCountData"
-      ></Label>
-      <Label
-        row="1"
-        col="0"
-        class="detail-description"
-        [text]="'general.pushes' | translate"
-      ></Label>
+      <Label row="0" col="0" class="detail-value" [text]="pushCountData"></Label>
+      <Label row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
       // coast time data
-      <Label
-        row="0"
-        col="2"
-        class="detail-value"
-        [text]="coastTimeData"
-      ></Label>
-      <Label
-        row="1"
-        col="2"
-        class="detail-description"
-        [text]="'general.coast-time' | translate"
-      ></Label>
+      <Label row="0" col="2" class="detail-value" [text]="coastTimeData"></Label>
+      <Label row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
       // distance data
       <Label row="0" col="4" class="detail-value" [text]="distanceData"></Label>
-      <Label
-        row="1"
-        col="4"
-        class="detail-description"
-        [text]="'general.miles' | translate"
-      ></Label>
+      <Label row="1" col="4" class="detail-description" [text]="'general.miles' | translate"></Label>
     </GridLayout>
 
     // distance per day chart
     <GridLayout class="chart-layout" rows="*, *" columns="auto, *, auto">
-      <Label
-        row="0"
-        col="0"
-        class="title"
-        text="Travel 3.0 miles per day"
-        textWrap="true"
-      ></Label>
+      <Label row="0" col="0" class="title" text="Travel 3.0 miles per day" textWrap="true"></Label>
       <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
-
       // repeater grid here for data // Distance Traveled Bar Chart
       <!-- <Repeater row="2" colSpan="2" [items]="distanceChartData">
         <Repeater.itemsLayout>

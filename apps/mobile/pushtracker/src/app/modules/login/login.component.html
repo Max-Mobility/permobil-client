@@ -1,43 +1,14 @@
 <ScrollView class="full-screen-image">
   <GridLayout rows="auto, *, auto" columns="*" class="login-layout">
     <StackLayout row="1" class="login-form">
-      <Image
-        row="1"
-        class="align-center"
-        src="~/app/assets/images/permobil_logo_transparent.png"
-        stretch="none"
-      ></Image>
-      <TextField
-        row="2"
-        [hint]="'general.email' | translate"
-        [text]="user.email"
-      ></TextField>
-      <TextField
-        row="3"
-        [hint]="'general.password' | translate"
-        secure="true"
-        [text]="user.password"
-      ></TextField>
-      <Button
-        row="4"
-        [text]="'general.login' | translate"
-        (tap)="submit()"
-        class="submit-btn"
-      ></Button>
+      <Image row="1" class="align-center" src="~/app/assets/images/permobil_logo_transparent.png" stretch="none"></Image>
+      <TextField row="2" [hint]="'general.email' | translate" [text]="user.email"></TextField>
+      <TextField row="3" [hint]="'general.password' | translate" secure="true" [text]="user.password"></TextField>
+      <Button row="4" [text]="'general.login' | translate" (tap)="submit()" class="submit-btn"></Button>
     </StackLayout>
     <GridLayout row="2" rows="*" columns="auto, *, auto">
-      <Button
-        col="0"
-        [text]="'general.forgot-password' | translate"
-        (tap)="navToForgotPassword()"
-        class="btn-transparent text-white"
-      ></Button>
-      <Button
-        col="2"
-        [text]="'general.sign-up' | translate"
-        (tap)="navToSignUp()"
-        class="btn-transparent text-white"
-      ></Button>
+      <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="btn-transparent text-white"></Button>
+      <Button col="2" [text]="'general.sign-up' | translate" (tap)="navToSignUp()" class="btn-transparent text-white" ></Button>
     </GridLayout>
   </GridLayout>
 </ScrollView>

@@ -1,42 +1,17 @@
-<GridLayout
-  rows="auto, *"
-  class="app-info-layout"
-  (loaded)="onShownModally($event)"
->
+<GridLayout rows="auto, *" class="app-info-layout" (loaded)="onShownModally($event)">
   // Mock ActionBar
   <GridLayout row="0" rows="*" columns="50, *, 50">
-    <Button
-      row="0"
-      col="0"
-      text="&#xe5cd;"
-      class="close-btn"
-      (tap)="closeModal($event)"
-    ></Button>
+    <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeModal($event)"></Button>
     <!-- <Button row="0" col="2" text="&#xe5d4;" class="more-btn"></Button> -->
   </GridLayout>
   <ScrollView row="1" height="100%">
     <StackLayout paddingTop="20">
-      <Label
-        class="title"
-        [text]="'app-info-component.title' | translate"
-        textWrap="true"
-      ></Label>
-
+      <Label class="title" [text]="'app-info-component.title' | translate" textWrap="true"></Label>
       // text sections from the app-info-component translation sections
       <StackLayout padding="10" *ngFor="let item of infoItems">
-        <Label
-          class="section-title"
-          [text]="item.title"
-          textWrap="true"
-        ></Label>
+        <Label class="section-title" [text]="item.title" textWrap="true"></Label>
         <Label class="section-text" [text]="item.text" textWrap="true"></Label>
-        <LottieView
-          height="120"
-          [src]="item.lottie"
-          loop="true"
-          autoPlay="true"
-          [visibility]="item.lottie ? 'visible' : 'collapsed'"
-        ></LottieView>
+        <LottieView height="120" [src]="item.lottie" loop="true" autoPlay="true" [visibility]="item.lottie ? 'visible' : 'collapsed'"></LottieView>
       </StackLayout>
     </StackLayout>
   </ScrollView>
