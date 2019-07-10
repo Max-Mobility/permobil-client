@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "Database-ID",
-		"sd-ble-version": "SmartDrive BLE-versie",
-		"sd-mcu-version": "SmartDrive MCU-versie",
-		"sd-serial-number": "SmartDrive-serienummer",
-		"title": "Informatie",
-		"version": "App versie",
-		"watch-serial-number": "TicWatch-serienummer"
-	},
-	"buttons": {
-		"dismiss": "ontslaan",
-		"ok": "OK"
-	},
-	"charts": {
-		"battery": {
-			"title": "Dagelijks gebruik van de SmartDrive-batterij (%)"
-		},
-		"distance": {
-			"title": "Dagelijkse afstand SmartDrive-afstand"
-		}
-	},
-	"error-history": {
-		"title": "SmartDrive-foutgeschiedenis"
-	},
-	"failures": {
-		"connect": "Kon geen verbinding maken met",
-		"getting-error": "Mislukt het krijgen van SmartDrive-fout",
-		"must-wear-watch": "U moet het horloge dragen om de hulp te activeren.",
-		"no-smartdrive-paired": "Geen SmartDrive gekoppeld aan de app!",
-		"no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
-		"permissions": "Vereiste rechten werden niet verleend!",
-		"saving-error": "Mislukt het opslaan van de SmartDrive-fout",
-		"saving-usage": "Mislukt het gebruik te besparen",
-		"scan": "Kon niet scannen",
-		"send-settings": "Instellingen naar verzenden mislukt"
-	},
-	"languages": {
-		"de": "Duitse",
-		"en": "Engels",
-		"es": "Spaans",
-		"fr": "Frans",
-		"ja": "Japans",
-		"ko": "Koreaans",
-		"nl": "Nederlands",
-		"zh": "Chinese"
-	},
-	"menu": {
-		"about": "Wat betreft",
-		"settings": "instellingen",
-		"title": "Menu",
-		"training": "Opleiding",
-		"updates": "updates"
-	},
-	"ota": {
-		"action": {
-			"cancel": "annuleren",
-			"force": "Dwingen",
-			"pause": "pauze",
-			"resume": "Hervatten",
-			"retry": "Opnieuw proberen",
-			"start": "Begin"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "Wachten op BLE",
-				"awaiting-mcu-ready": "Wachten op MCU",
-				"awaiting-versions": "In afwachting van versies",
-				"canceled": "geannuleerd",
-				"canceling": "annuleren",
-				"comm-failure": "Communicatiefout, start uw SmartDrive opnieuw op",
-				"complete": "Compleet",
-				"failed": "mislukt",
-				"not-started": "Niet begonnen",
-				"rebooting-ble": "BLE opnieuw opstarten",
-				"rebooting-mcu": "MCU herstarten",
-				"timeout": "Time-out",
-				"updating-ble": "BLE updaten",
-				"updating-mcu": "MCU bijwerken",
-				"verifying-update": "Het verifiëren"
-			}
-		}
-	},
-	"permissions-reasons": "Om uw E2-serienummer te lezen (voor garantie / ondersteuningsdoelen) hebben we de toestemming READ_PHONE_STATE nodig. Om uw SmartDrive met bluetooth te kunnen bedienen, hebben we de toestemming ACCESS_COARSE_LOCATION nodig.",
-	"power-assist": {
-		"activate": "Activeer de Power Assist",
-		"deactivate": "Deactiveer Power Assist",
-		"estimated-range": "Geschat bereik",
-		"exit-training": "Verlaat de trainingsmodus",
-		"speed": "Snelheid",
-		"stop": "Hou op"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "Engels",
-				"metric": "Metriek"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "vergrendelend",
-				"momentary": "kortstondig"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "Versnelling",
-		"control-mode": "Besturingsmodus",
-		"error-history": "Foutgeschiedenis",
-		"max-speed": "Maximale snelheid",
-		"pair-smartdrive": "Koppel SmartDrive",
-		"paired-to-smartdrive": "Gekoppeld aan SmartDrive",
-		"scanning": "het scannen",
-		"select-smartdrive": "Selecteer SmartDrive",
-		"tap-sensitivity": "Tik op Gevoeligheid",
-		"title": "SmartDrive-instellingen",
-		"units": "eenheden"
-	},
-	"switch-control": {
-		"max-speed": "Schakelregeling Max. Snelheid",
-		"mode": "Schakel besturingsmodus"
-	},
-	"units": {
-		"distance": {
-			"english": "Mi",
-			"metric": "km"
-		},
-		"english": "Engels",
-		"metric": "Metriek",
-		"speed": {
-			"english": "mph",
-			"metric": "kph"
-		}
-	},
-	"updates": {
-		"canceled": "Update geannuleerd",
-		"changes": "Samenvatting van de veranderingen:",
-		"checking-for-updates": "Controleren op updates",
-		"error-getting": "Fout bij ophalen van updates",
-		"failed": "Update mislukt",
-		"status": "status bijwerken",
-		"success": "SmartDrive-update is succesvol afgerond!",
-		"up-to-date": "SmartDrive is up-to-date!",
-		"version": "Versie"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "VOORZICHTIG: U MOET de gebruikershandleiding van de SmartDrive raadplegen over hoe het wijzigen van de instellingen van invloed is op de werking en prestaties.",
-			"title": "Opgeslagen instellingen"
-		}
-	}
+  "about": {
+    "database": "Database-ID",
+    "sd-ble-version": "SmartDrive BLE-versie",
+    "sd-mcu-version": "SmartDrive MCU-versie",
+    "sd-serial-number": "SmartDrive-serienummer",
+    "title": "Informatie",
+    "version": "App versie",
+    "watch-serial-number": "TicWatch-serienummer"
+  },
+  "buttons": {
+    "dismiss": "ontslaan",
+    "ok": "OK"
+  },
+  "charts": {
+    "battery": {
+      "title": "Dagelijks gebruik van de SmartDrive-batterij (%)"
+    },
+    "distance": {
+      "title": "Dagelijkse afstand SmartDrive-afstand"
+    }
+  },
+  "error-history": {
+    "title": "SmartDrive-foutgeschiedenis"
+  },
+  "failures": {
+    "connect": "Kon geen verbinding maken met",
+    "getting-error": "Mislukt het krijgen van SmartDrive-fout",
+    "must-wear-watch": "U moet het horloge dragen om de hulp te activeren.",
+    "no-smartdrive-paired": "Geen SmartDrive gekoppeld aan de app!",
+    "no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
+    "permissions": "Vereiste rechten werden niet verleend!",
+    "saving-error": "Mislukt het opslaan van de SmartDrive-fout",
+    "saving-usage": "Mislukt het gebruik te besparen",
+    "scan": "Kon niet scannen",
+    "send-settings": "Instellingen naar verzenden mislukt"
+  },
+  "languages": {
+    "de": "Duitse",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "ja": "Japans",
+    "ko": "Koreaans",
+    "nl": "Nederlands",
+    "zh": "Chinese"
+  },
+  "menu": {
+    "about": "Wat betreft",
+    "settings": "instellingen",
+    "title": "Menu",
+    "training": "Opleiding",
+    "updates": "updates"
+  },
+  "ota": {
+    "action": {
+      "cancel": "annuleren",
+      "force": "Dwingen",
+      "pause": "pauze",
+      "resume": "Hervatten",
+      "retry": "Opnieuw proberen",
+      "start": "Begin"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "Wachten op BLE",
+        "awaiting-mcu-ready": "Wachten op MCU",
+        "awaiting-versions": "In afwachting van versies",
+        "canceled": "geannuleerd",
+        "canceling": "annuleren",
+        "comm-failure": "Communicatiefout, start uw SmartDrive opnieuw op",
+        "complete": "Compleet",
+        "failed": "mislukt",
+        "not-started": "Niet begonnen",
+        "rebooting-ble": "BLE opnieuw opstarten",
+        "rebooting-mcu": "MCU herstarten",
+        "timeout": "Time-out",
+        "updating-ble": "BLE updaten",
+        "updating-mcu": "MCU bijwerken",
+        "verifying-update": "Het verifiëren"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "Om uw SmartDrive met bluetooth te kunnen bedienen, hebben we de toestemming ACCESS_COARSE_LOCATION nodig.",
+    "phone-state": "Om uw E2-serienummer te lezen (voor garantie / ondersteuningsdoelen) hebben we de toestemming READ_PHONE_STATE nodig."
+  },
+  "permissions-request": {
+    "title": "Verzoek om toestemming"
+  },
+  "power-assist": {
+    "activate": "Activeer de Power Assist",
+    "deactivate": "Deactiveer Power Assist",
+    "estimated-range": "Geschat bereik",
+    "exit-training": "Verlaat de trainingsmodus",
+    "speed": "Snelheid",
+    "stop": "Hou op"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "Engels",
+        "metric": "Metriek"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "vergrendelend",
+        "momentary": "kortstondig"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Versnelling",
+    "control-mode": "Besturingsmodus",
+    "error-history": "Foutgeschiedenis",
+    "max-speed": "Maximale snelheid",
+    "pair-smartdrive": "Koppel SmartDrive",
+    "paired-to-smartdrive": "Gekoppeld aan SmartDrive",
+    "scanning": "het scannen",
+    "select-smartdrive": "Selecteer SmartDrive",
+    "tap-sensitivity": "Tik op Gevoeligheid",
+    "title": "SmartDrive-instellingen",
+    "units": "eenheden"
+  },
+  "switch-control": {
+    "max-speed": "Schakelregeling Max. Snelheid",
+    "mode": "Schakel besturingsmodus"
+  },
+  "units": {
+    "distance": {
+      "english": "Mi",
+      "metric": "km"
+    },
+    "english": "Engels",
+    "metric": "Metriek",
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  },
+  "updates": {
+    "canceled": "Update geannuleerd",
+    "changes": "Samenvatting van de veranderingen:",
+    "checking-for-updates": "Controleren op updates",
+    "connecting-to-smartdrive": "Verbinding maken met SmartDrive",
+    "errors": {
+      "connecting": "Fout bij verbinden met SmartDrive",
+      "downloading": "Fout bij het downloaden van updates",
+      "getting": "Fout bij zoeken naar updates",
+      "saving": "Fout bij het opslaan van updategegevens"
+    },
+    "failed": "Update mislukt",
+    "status": "status bijwerken",
+    "success": "SmartDrive-update is succesvol afgerond!",
+    "up-to-date": "SmartDrive is up-to-date!",
+    "version": "Versie"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "VOORZICHTIG: U MOET de gebruikershandleiding van de SmartDrive raadplegen over hoe het wijzigen van de instellingen van invloed is op de werking en prestaties.",
+      "title": "Opgeslagen instellingen"
+    }
+  }
 }

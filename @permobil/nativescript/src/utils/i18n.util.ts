@@ -65,7 +65,7 @@ const load = async function(language?: string) {
         })
         .catch(err => {
           delete translations[l.replace('.json', '')];
-          console.error(`Couldn't load translation file ${fname}: ${err}`);
+          console.error(`Could not load translation file ${fname}: ${err}`);
         });
     } catch (e) {
       delete translations[l.replace('.json', '')];
@@ -87,7 +87,7 @@ const update = function(language: string, translation: any) {
   const fname = languagePath(language);
   const file = File.fromPath(fname);
   file.writeSync(translation, (err) => {
-    console.error(`Couldn't write translation file ${fname}: ${err}`);
+    console.error(`Could not write translation file ${fname}: ${err}`);
   });
 };
 
@@ -95,11 +95,15 @@ const get = function(k, obj) {
   return k.split('.').reduce((o, i) => o[i], obj);
 };
 
-const L = function (...args: any[]) {
+const L = function(...args: any[]) {
   // console.log(lang, !!translations[lang], args.length);
-  if (lang && translations[lang] && args.length) {
-    return get(args[0], translations[lang]) || args[0];
-  } else if (args.length) {
+  try {
+    if (lang && translations[lang] && args.length) {
+      return get(args[0], translations[lang]) || args[0];
+    } else if (args.length) {
+      return args[0];
+    }
+  } catch (err) {
     return args[0];
   }
 };
@@ -112,5 +116,6 @@ global.L = L;
 
 // load inital files
 load();
+use(getDefaultLang());
 
 export { getDefaultLang, use, load, update, L };

@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "Database ID",
-		"sd-ble-version": "SmartDrive BLE Version",
-		"sd-mcu-version": "SmartDrive MCU Version",
-		"sd-serial-number": "SmartDrive Serial Number",
-		"title": "Information",
-		"version": "App Version",
-		"watch-serial-number": "TicWatch Serial Number"
-	},
-	"buttons": {
-		"dismiss": "Dismiss",
-		"ok": "OK"
-	},
-	"charts": {
-		"battery": {
-			"title": "Daily SmartDrive Battery Usage (%)"
-		},
-		"distance": {
-			"title": "Daily SmartDrive Distance Traveled"
-		}
-	},
-	"error-history": {
-		"title": "SmartDrive Error History"
-	},
-	"failures": {
-		"connect": "Could not connect to",
-		"getting-error": "Failed getting SmartDrive error",
-		"must-wear-watch": "You must wear the watch to activate power assist.",
-		"no-smartdrive-paired": "No SmartDrive paired to the app!",
-		"no-smartdrives-found": "No SmartDrives found nearby.",
-		"permissions": "Required permissions were not granted!",
-		"saving-error": "Failed saving SmartDrive error",
-		"saving-usage": "Failed saving usage",
-		"scan": "Could not scan",
-		"send-settings": "Failed to send settings to"
-	},
-	"languages": {
-		"de": "German",
-		"en": "English",
-		"es": "Spanish",
-		"fr": "French",
-		"ja": "Japanese",
-		"ko": "Korean",
-		"nl": "Dutch",
-		"zh": "Chinese"
-	},
-	"menu": {
-		"about": "About",
-		"settings": "Settings",
-		"title": "Menu",
-		"training": "Training",
-		"updates": "Updates"
-	},
-	"ota": {
-		"action": {
-			"cancel": "Cancel",
-			"force": "Force",
-			"pause": "Pause",
-			"resume": "Resume",
-			"retry": "Retry",
-			"start": "Start"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "Waiting on BLE",
-				"awaiting-mcu-ready": "Waiting on MCU",
-				"awaiting-versions": "Awaiting Versions",
-				"canceled": "Canceled",
-				"canceling": "Canceling",
-				"comm-failure": "Communications error, please reboot your SmartDrive",
-				"complete": "Complete",
-				"failed": "Failed",
-				"not-started": "Not Started",
-				"rebooting-ble": "Rebooting BLE",
-				"rebooting-mcu": "Rebooting MCU",
-				"timeout": "Timeout",
-				"updating-ble": "Updating BLE",
-				"updating-mcu": "Updating MCU",
-				"verifying-update": "Verifying"
-			}
-		}
-	},
-	"permissions-reasons": "To read your E2 serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission. To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
-	"power-assist": {
-		"activate": "Activate Power Assist",
-		"deactivate": "Deactivate Power Assist",
-		"estimated-range": "Estimated Range",
-		"exit-training": "Exit Training Mode",
-		"speed": "Speed",
-		"stop": "Stop"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "English",
-				"metric": "Metric"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "Latching",
-				"momentary": "Momentary"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "Acceleration",
-		"control-mode": "Control Mode",
-		"error-history": "Error History",
-		"max-speed": "Max Speed",
-		"pair-smartdrive": "Pair SmartDrive",
-		"paired-to-smartdrive": "Paired to SmartDrive",
-		"scanning": "Scanning",
-		"select-smartdrive": "Select SmartDrive",
-		"tap-sensitivity": "Tap Sensitivity",
-		"title": "SmartDrive Settings",
-		"units": "Units"
-	},
-	"switch-control": {
-		"max-speed": "Switch Control Max Speed",
-		"mode": "Switch Control Mode"
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "English",
-		"metric": "Metric",
-		"speed": {
-			"english": "mph",
-			"metric": "kph"
-		}
-	},
-	"updates": {
-		"canceled": "Update canceled",
-		"changes": "Summary of changes:",
-		"checking-for-updates": "Checking for Updates",
-		"error-getting": "Error getting updates",
-		"failed": "Update failed",
-		"status": "Update Status",
-		"success": "SmartDrive update completed successfully!",
-		"up-to-date": "SmartDrive is up to date!",
-		"version": "Version"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance.",
-			"title": "Saved Settings"
-		}
-	}
+  "about": {
+    "database": "Database ID",
+    "sd-ble-version": "SmartDrive BLE Version",
+    "sd-mcu-version": "SmartDrive MCU Version",
+    "sd-serial-number": "SmartDrive Serial Number",
+    "title": "Information",
+    "version": "App Version",
+    "watch-serial-number": "TicWatch Serial Number"
+  },
+  "buttons": {
+    "dismiss": "Dismiss",
+    "ok": "OK"
+  },
+  "charts": {
+    "battery": {
+      "title": "Daily SmartDrive Battery Usage (%)"
+    },
+    "distance": {
+      "title": "Daily SmartDrive Distance Traveled"
+    }
+  },
+  "error-history": {
+    "title": "SmartDrive Error History"
+  },
+  "failures": {
+    "connect": "Could not connect to",
+    "getting-error": "Failed getting SmartDrive error",
+    "must-wear-watch": "You must wear the watch to activate power assist.",
+    "no-smartdrive-paired": "No SmartDrive paired to the app!",
+    "no-smartdrives-found": "No SmartDrives found nearby.",
+    "permissions": "Required permissions were not granted!",
+    "saving-error": "Failed saving SmartDrive error",
+    "saving-usage": "Failed saving usage",
+    "scan": "Could not scan",
+    "send-settings": "Failed to send settings to"
+  },
+  "languages": {
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nl": "Dutch",
+    "zh": "Chinese"
+  },
+  "menu": {
+    "about": "About",
+    "settings": "Settings",
+    "title": "Menu",
+    "training": "Training",
+    "updates": "Updates"
+  },
+  "ota": {
+    "action": {
+      "cancel": "Cancel",
+      "force": "Force",
+      "pause": "Pause",
+      "resume": "Resume",
+      "retry": "Retry",
+      "start": "Start"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "Waiting on BLE",
+        "awaiting-mcu-ready": "Waiting on MCU",
+        "awaiting-versions": "Awaiting Versions",
+        "canceled": "Canceled",
+        "canceling": "Canceling",
+        "comm-failure": "Communications error, please reboot your SmartDrive",
+        "complete": "Complete",
+        "failed": "Failed",
+        "not-started": "Not Started",
+        "rebooting-ble": "Rebooting BLE",
+        "rebooting-mcu": "Rebooting MCU",
+        "timeout": "Timeout",
+        "updating-ble": "Updating BLE",
+        "updating-mcu": "Updating MCU",
+        "verifying-update": "Verifying"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
+    "phone-state": "To read your E2 serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
+  },
+  "permissions-request": {
+    "title": "Permissions Request"
+  },
+  "power-assist": {
+    "activate": "Activate Power Assist",
+    "deactivate": "Deactivate Power Assist",
+    "estimated-range": "Estimated Range",
+    "exit-training": "Exit Training Mode",
+    "speed": "Speed",
+    "stop": "Stop"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "English",
+        "metric": "Metric"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "Latching",
+        "momentary": "Momentary"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Acceleration",
+    "control-mode": "Control Mode",
+    "error-history": "Error History",
+    "max-speed": "Max Speed",
+    "pair-smartdrive": "Pair SmartDrive",
+    "paired-to-smartdrive": "Paired to SmartDrive",
+    "scanning": "Scanning",
+    "select-smartdrive": "Select SmartDrive",
+    "tap-sensitivity": "Tap Sensitivity",
+    "title": "SmartDrive Settings",
+    "units": "Units"
+  },
+  "switch-control": {
+    "max-speed": "Switch Control Max Speed",
+    "mode": "Switch Control Mode"
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "English",
+    "metric": "Metric",
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  },
+  "updates": {
+    "canceled": "Update canceled",
+    "changes": "Summary of changes:",
+    "checking-for-updates": "Checking for Updates",
+    "connecting-to-smartdrive": "Connecting to SmartDrive",
+    "errors": {
+      "connecting": "Error connecting to SmartDrive",
+      "downloading": "Error downloading updates",
+      "getting": "Error searching for updates",
+      "saving": "Error saving update data"
+    },
+    "failed": "Update failed",
+    "status": "Update Status",
+    "success": "SmartDrive update completed successfully!",
+    "up-to-date": "SmartDrive is up to date!",
+    "version": "Version"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance.",
+      "title": "Saved Settings"
+    }
+  }
 }
