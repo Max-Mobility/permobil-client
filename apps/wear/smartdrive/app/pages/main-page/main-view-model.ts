@@ -135,9 +135,6 @@ export class MainViewModel extends Observable {
    *
    */
   tapDetector: TapDetector = null;
-  lastTapTime: number;
-  lastAccelZ: number = null;
-  tapLockoutTimeMs: number = 200;
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 40 * 1000;
@@ -942,18 +939,8 @@ export class MainViewModel extends Observable {
     // set tap sensitivity threshold
     this.tapDetector.setSensitivity(this.settings.tapSensitivity);
     // now run the tap detector
-    const didTap = this.tapDetector.detectTap(acceleration);
-    // block high frequency tapping
-    if (this.lastTapTime !== null) {
-      const timeDiffNs = timestamp - this.lastTapTime;
-      const timeDiffThreshold = this.tapLockoutTimeMs * 1000 * 1000; // convert to ns
-      if (timeDiffNs < timeDiffThreshold) {
-        return;
-      }
-    }
+    const didTap = this.tapDetector.detectTap(acceleration, timestamp);
     if (didTap) {
-      // record that there has been a tap
-      this.lastTapTime = timestamp;
       // user has met threshold for tapping
       this.handleTap(timestamp);
     }
@@ -967,7 +954,7 @@ export class MainViewModel extends Observable {
     }
     this.tapTimeoutId = setTimeout(() => {
       this.hasTapped = false;
-    }, (this.tapLockoutTimeMs * 3) / 2);
+    }, (TapDetector.TapLockoutTimeMs * 3) / 2);
     // now send
     if (
       this.powerAssistActive &&
@@ -976,13 +963,13 @@ export class MainViewModel extends Observable {
     ) {
       if (this.motorOn) {
         this._vibrator.cancel();
-        this._vibrator.vibrate((this.tapLockoutTimeMs * 3) / 4);
+        this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
       }
       this.smartDrive.sendTap().catch(err => Log.E('could not send tap', err));
     } else if (this.isTraining) {
       // vibrate for tapping while training
       this._vibrator.cancel();
-      this._vibrator.vibrate((this.tapLockoutTimeMs * 3) / 4);
+      this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
     }
   }
 
