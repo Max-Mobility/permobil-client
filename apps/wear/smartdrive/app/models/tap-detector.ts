@@ -202,7 +202,7 @@ export class TapDetector {
     let minZ = null;
     let maxZ = null;
     this.inputHistory.map(accel => {
-      let z = accel.z;
+      const z = accel.z;
       if (minZ === null || z < minZ) {
         minZ = z;
       }
