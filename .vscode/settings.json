@@ -16,12 +16,16 @@
   },
   "scss.lint.validProperties": [
     "horizontal-align",
+    "android-elevation",
+    "android-dynamic-elevation-offset",
     "translate-y",
     "translate-x",
     "text-wrap"
   ],
   "css.lint.validProperties": [
     "horizontal-align",
+    "android-elevation",
+    "android-dynamic-elevation-offset",
     "translate-y",
     "translate-x",
     "text-wrap"
