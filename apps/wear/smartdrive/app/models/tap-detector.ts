@@ -125,7 +125,7 @@ export class TapDetector {
       const prediction = this.parsedPrediction[0][0];
       // Log.D('prediction', prediction);
       // get the ouput and check against threshold
-      return prediction > this.threshold;// && this.historyIsGood();
+      return prediction > this.threshold; // && this.historyIsGood();
     } catch (e) {
       Log.E('could not detect tap:', e);
       return false;

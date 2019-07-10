@@ -1233,7 +1233,7 @@ export class MainViewModel extends Observable {
             Log.E('Could not download files:', err);
             this.updateProgressText = L('updates.errors.downloading') + `: ${err}`;
             throw err;
-          })
+          });
       })
       .then(files => {
         let promises = [];
@@ -1348,7 +1348,7 @@ export class MainViewModel extends Observable {
             Log.E('Could not connect to smartdrive:', err);
             this.updateProgressText = L('updates.errors.connecting') + `: ${err}`;
             throw err;
-          })
+          });
       })
       .then(() => {
         // re-enable swipe close of the updates layout
