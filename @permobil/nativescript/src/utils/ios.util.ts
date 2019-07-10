@@ -1,7 +1,6 @@
 import * as app from 'tns-core-modules/application';
 import { isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
-import { ios as iosUtils } from 'tns-core-modules/utils/utils';
 
 /**
  * Sets margins for the safe area on iOS devices with safeAreaInsets
@@ -36,22 +35,20 @@ export function isIosSimulator() {
   if (isIOS) {
     let isSimulator;
 
-    const processInfo = iosUtils.getter(
-      NSProcessInfo,
-      NSProcessInfo.processInfo
+    const isMinIOS9 = NSProcessInfo.processInfo.isOperatingSystemAtLeastVersion(
+      {
+        majorVersion: 9,
+        minorVersion: 0,
+        patchVersion: 0
+      }
     );
-    const isMinIOS9 = processInfo.isOperatingSystemAtLeastVersion({
-      majorVersion: 9,
-      minorVersion: 0,
-      patchVersion: 0
-    });
     if (isMinIOS9) {
-      const simDeviceName = processInfo.environment.objectForKey(
+      const simDeviceName = NSProcessInfo.processInfo.environment.objectForKey(
         'SIMULATOR_DEVICE_NAME'
       );
       isSimulator = simDeviceName !== null;
     } else {
-      const currentDevice = iosUtils.getter(UIDevice, UIDevice.currentDevice);
+      const currentDevice = UIDevice.currentDevice;
       isSimulator = currentDevice.name.toLowerCase().indexOf('simulator') > -1;
     }
 
