@@ -132,34 +132,34 @@ export class ProfileTabComponent implements OnInit {
     );
 
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl.animate({
-      duration: 300,
-      opacity: 1,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 0
-      }
-    });
+    cfl
+      .animate({
+        duration: 300,
+        opacity: 1,
+        curve: AnimationCurve.easeOut,
+        translate: {
+          x: 0,
+          y: 0
+        }
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   async closeActivityGoalsDialog() {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 0,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 900
-        }
-      })
-      .catch(err => {
-        Log.E('shit something is wrong with the animation.');
-      });
+    cfl.animate({
+      duration: 300,
+      opacity: 0,
+      curve: AnimationCurve.easeOut,
+      translate: {
+        x: 0,
+        y: 900
+      }
+    });
   }
 
   incrementConfigValue() {
@@ -167,6 +167,7 @@ export class ProfileTabComponent implements OnInit {
     this.activity_goals_dialog_data.config_value =
       this.activity_goals_dialog_data.config_value + 5;
   }
+
   decrementConfigValue() {
     Log.D('Decrement the config value');
     this.activity_goals_dialog_data.config_value =
@@ -174,13 +175,13 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onSetGoalBtnTap() {
-    Log.D(
-      'Current activity_goals_dialog_data:',
-      this.activity_goals_dialog_data.config_key,
-      this.activity_goals_dialog_data.config_value
+    this._logService.logBreadCrumb(
+      'User set activity goals: ' +
+        this.activity_goals_dialog_data.config_key +
+        ' ' +
+        this.activity_goals_dialog_data.config_value
     );
-    // need to save the data value using application-settings and the STORAGE_KEYS enum
-    // using the activity_goals_dialog_data object we can use the `config_value` to save for the `config_key`
+    // Save the Activity Goals value
     appSettings.setNumber(
       this.activity_goals_dialog_data.config_key,
       this.activity_goals_dialog_data.config_value
@@ -193,7 +194,7 @@ export class ProfileTabComponent implements OnInit {
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
     );
 
-    // and close the dialog which can re-use the function that the close btn uses
+    // close the dialog which can re-use the function that the close btn uses
     this.closeActivityGoalsDialog();
   }
 }

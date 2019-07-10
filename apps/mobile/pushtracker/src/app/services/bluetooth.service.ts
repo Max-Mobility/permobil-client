@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Packet } from '@permobil/core';
-import { Bluetooth, BondState, Central, ConnectionState } from 'nativescript-bluetooth';
-import { Feedback } from 'nativescript-feedback';
+import {
+  Bluetooth,
+  BondState,
+  Central,
+  ConnectionState
+} from 'nativescript-bluetooth';
 import { SnackBar } from 'nativescript-snackbar';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
@@ -45,7 +49,6 @@ export class BluetoothService {
   private PushTrackerDataCharacteristic: any = null;
   private AppService: any = null;
   private snackbar = new SnackBar();
-  private feedback = new Feedback();
 
   constructor(
     private _translateService: TranslateService,
@@ -441,10 +444,10 @@ export class BluetoothService {
         const pt = this.getOrMakePushTracker(dev);
         pt.handlePaired();
         this.updatePushTrackerState();
-        this.feedback.success({
-          title: 'Successfully Paired',
-          message: `PushTracker ${pt.address} now paired`
-        });
+        // this.feedback.success({
+        //   title: 'Successfully Paired',
+        //   message: `PushTracker ${pt.address} now paired`
+        // });
         break;
       case BondState.none:
         break;

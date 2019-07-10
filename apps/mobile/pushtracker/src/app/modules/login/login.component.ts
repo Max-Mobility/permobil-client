@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this._logService.logBreadCrumb('LoginComponent ngOnInit');
     // if we get to the login page, no user should be logged in
     Kinvey.User.logout();
   }

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Subscription } from 'rxjs';
-import { Demo } from '../../models';
 
 @Component({
   selector: 'journey-detail',
@@ -10,9 +9,7 @@ import { Demo } from '../../models';
   templateUrl: './journey-detail.component.html'
 })
 export class JourneyDetailComponent implements OnInit {
-  item: Demo;
   subscription: Subscription;
-
   constructor(
     private _route: ActivatedRoute,
     private _routerExtension: RouterExtensions,

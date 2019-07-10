@@ -31,7 +31,7 @@ export class ForgotPasswordComponent implements OnInit {
     preventKeyboardFromShowing();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this._logService.logBreadCrumb(
       ForgotPasswordComponent.LOG_TAG + `ngOnInit`
     );

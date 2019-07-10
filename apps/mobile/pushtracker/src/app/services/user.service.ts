@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { Push } from 'kinvey-nativescript-sdk/push';
-import { Feedback } from 'nativescript-feedback';
+// import { Feedback } from 'nativescript-feedback';
 import * as fs from 'tns-core-modules/file-system';
 
 @Injectable()
 export class UserService {
   static hasRegistered = false;
-  private _feedback = new Feedback();
 
   constructor() {}
 
@@ -94,14 +93,14 @@ export class UserService {
             android: {
               senderID: '1053576736707',
               notificationCallbackAndroid: (data, notification) => {
-                this._feedback.info({
-                  title: 'New Message from Smart Evaluation',
-                  message: notification.getBody(),
-                  duration: 10000,
-                  onTap: () => {
-                    // do nothing now
-                  }
-                });
+                // this._feedback.info({
+                //   title: 'New Message from Smart Evaluation',
+                //   message: notification.getBody(),
+                //   duration: 10000,
+                //   onTap: () => {
+                //     // do nothing now
+                //   }
+                // });
               }
             },
             ios: {
@@ -110,15 +109,15 @@ export class UserService {
               sound: true,
               interactiveSettings: null,
               notificationCallbackIOS: message => {
-                this._feedback.info({
-                  title: 'New Message from Smart Evaluation',
-                  message: message.alert,
-                  duration: 60000, // show for one minute without interaction, touch will close it
-                  // type: FeedbackType.Success, // no need to specify when using 'success' instead of 'show'
-                  onTap: () => {
-                    // do nothing for now
-                  }
-                });
+                // this._feedback.info({
+                //   title: 'New Message from Smart Evaluation',
+                //   message: message.alert,
+                //   duration: 60000, // show for one minute without interaction, touch will close it
+                //   // type: FeedbackType.Success, // no need to specify when using 'success' instead of 'show'
+                //   onTap: () => {
+                //     // do nothing for now
+                //   }
+                // });
               }
             }
           });
