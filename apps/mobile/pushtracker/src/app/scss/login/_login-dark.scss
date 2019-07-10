@@ -6,11 +6,7 @@
 
   .login-form {
     @extend .LOGIN_FORM_BASE;
-    background: linear-gradient(
-      45deg,
-      rgba(101, 78, 163, 0.893),
-      rgba(234, 175, 200, 0.824)
-    );
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364);
 
     .submit-btn {
       @extend .SUBMIT_BTN_BASE;
