@@ -384,6 +384,19 @@ export class MainViewModel extends Observable {
     // handle ambient mode callbacks
     application.on('enterAmbient', args => {
       Log.D('*** enterAmbient ***');
+      // the user can enter ambient mode even when we hold wake lock
+      // and use the keepAlive() function by full-palming the screen
+      // or going underwater - so we have to handle the cases that
+      // power assist is active or training mode is active.
+      if (this.powerAssistActive) {
+        this.disablePowerAssist();
+        return;
+      }
+      if (this.isTraining) {
+        this.onExitTrainingModeTap();
+        return;
+      }
+
       themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
 
       if (this.pager) {
@@ -661,7 +674,7 @@ export class MainViewModel extends Observable {
 
   fullStop() {
     // this.disableAllSensors();
-    this.disableTapSensor();
+    // this.disableTapSensor();
     this.disablePowerAssist();
   }
 
