@@ -6,7 +6,10 @@ declare const org: any;
 
 export class TapDetector {
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
-  public threshold: number = 0.5;
+  public threshold: number = 0.9;
+
+  private minThreshold = 0.7;
+  private maxThreshold = 1.1;
 
   private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
@@ -18,13 +21,15 @@ export class TapDetector {
   private parsedPrediction = null;
 
   private static StateSize = 128;
-  private static Input_HistoryIndex = 0;
+  private static Input_StateIndex = 0;
   private static Input_InputIndex = 1;
-  private static Output_HistoryIndex = 0;
+  private static Output_StateIndex = 0;
   private static Output_PredictionIndex = 1;
-  private static HistorySize = 3;
 
-  private history: any[] = [];
+  private static InputHistorySize = 3;
+  private static PredictionHistorySize = 2;
+  private inputHistory: any[] = [];
+  private predictionHistory: number[] = [];
 
   constructor() {
     try {
@@ -45,7 +50,7 @@ export class TapDetector {
       // this.inputData = Array.create('float', 3);
       this.tapDetectorInput = Array.create(java.lang.Object, 2);
       this.tapDetectorInput[TapDetector.Input_InputIndex] = this.inputData;
-      this.tapDetectorInput[TapDetector.Input_HistoryIndex] = this.previousState;
+      this.tapDetectorInput[TapDetector.Input_StateIndex] = this.previousState;
       // initialize the memory for the prediction
       this.parsedPrediction = Array.create('[F', 1);
       const outputElements = Array.create('float', 1);
@@ -58,7 +63,7 @@ export class TapDetector {
         this.parsedPrediction
       );
       this.tapDetectorOutput.put(
-        new java.lang.Integer(TapDetector.Output_HistoryIndex),
+        new java.lang.Integer(TapDetector.Output_StateIndex),
         this.previousState
       );
       // load the model file
@@ -73,7 +78,7 @@ export class TapDetector {
       const inputCount = this.tflite.getInputTensorCount();
       // Log.D('TapDetector::TapDetector(): input tensor count = ', inputCount);
       const inputShapes = [0, 0];
-      inputShapes[TapDetector.Input_HistoryIndex] = TapDetector.StateSize;
+      inputShapes[TapDetector.Input_StateIndex] = TapDetector.StateSize;
       inputShapes[TapDetector.Input_InputIndex] = 3;
       for (let i = 0; i < inputCount; i++) {
         const inputShape = Array.from(this.tflite.getInputTensor(i).shape());
@@ -86,7 +91,7 @@ export class TapDetector {
       const outputCount = this.tflite.getOutputTensorCount();
       // Log.D('TapDetector::TapDetector(): output tensor count = ', outputCount);
       const outputShapes = [0, 0];
-      outputShapes[TapDetector.Output_HistoryIndex] = TapDetector.StateSize;
+      outputShapes[TapDetector.Output_StateIndex] = TapDetector.StateSize;
       outputShapes[TapDetector.Output_PredictionIndex] = 1;
       for (let i = 0; i < outputCount; i++) {
         const outputShape = Array.from(this.tflite.getOutputTensor(i).shape());
@@ -103,6 +108,17 @@ export class TapDetector {
   }
 
   /**
+   * Update tap detector prediction threshold
+   *
+   * @param sensitivity[number]: [0-100] percent sensitivity.
+   */
+  public setSensitivity(sensitivity: number) {
+    this.threshold = this.maxThreshold -
+      (this.maxThreshold - this.minThreshold) *
+      (sensitivity / 100.0);
+  }
+
+  /**
    * Main inference Function for detecting tap
    */
   public detectTap(acceleration: any) {
@@ -112,20 +128,20 @@ export class TapDetector {
         acceleration.y,
         acceleration.z
       ];
-      // Log.D('tap detector input', inputData);
+      // update the input history
       this.updateHistory(acceleration);
       // copy the data into the input array
       this.inputData[0][0] = inputData[0];
       this.inputData[0][1] = inputData[1];
       this.inputData[0][2] = inputData[2];
-      // Log.D('raw input data', this.tapDetectorInput);
       // run the inference
       this.tflite.runForMultipleInputsOutputs(this.tapDetectorInput, this.tapDetectorOutput);
-      // Log.D('tap detector output', this.tapDetectorOutput);
+      // get the prediction
       const prediction = this.parsedPrediction[0][0];
-      // Log.D('prediction', prediction);
-      // get the ouput and check against threshold
-      return prediction > this.threshold; // && this.historyIsGood();
+      // update the prediction history
+      this.updatePredictions(prediction);
+      // determine if there was a tap (based on histories)
+      return this.didTap();
     } catch (e) {
       Log.E('could not detect tap:', e);
       return false;
@@ -133,15 +149,20 @@ export class TapDetector {
   }
 
   /**
-   * Helper functions for checking the input history
+   * Determines (based on input and prediction histories) whether
+   * there was a tap.
    */
+  private didTap() {
+    const inputsWereGood = this.inputHistory.reduce((good, accel) => {
+      return good && this.tapAxisIsPrimary(accel);
+    }, true);
+    const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
+      return good && prediction > this.threshold;
+    }, true);
+    return predictionsWereGood; // && inputsWereGood;
+  }
+
   private tapAxisIsPrimary(accel: any) {
-    /**
-    const threshold =
-      this.maxTapSensitivity -
-      (this.maxTapSensitivity - this.minTapSensitivity) *
-      (this.settings.tapSensitivity / 100.0);
-     **/
     const a = {
       x: Math.abs(accel.x),
       y: Math.abs(accel.y),
@@ -162,16 +183,17 @@ export class TapDetector {
     );
   }
 
-  private historyIsGood() {
-    return this.history.reduce((good, accel) => {
-      return good && this.tapAxisIsPrimary(accel);
-    }, true);
+  private updateHistory(accel: any) {
+    this.inputHistory.push(accel);
+    if (this.inputHistory.length > TapDetector.InputHistorySize) {
+      this.inputHistory.shift(); // remove the oldest element
+    }
   }
 
-  private updateHistory(accel: any) {
-    this.history.push(accel);
-    if (this.history.length > TapDetector.HistorySize) {
-      this.history.shift(); // remove the oldest element
+  private updatePredictions(prediction: number) {
+    this.predictionHistory.push(prediction);
+    if (this.predictionHistory.length > TapDetector.PredictionHistorySize) {
+      this.predictionHistory.shift(); // remove the oldest element
     }
   }
 

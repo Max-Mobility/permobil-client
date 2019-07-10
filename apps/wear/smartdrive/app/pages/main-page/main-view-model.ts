@@ -139,11 +139,6 @@ export class MainViewModel extends Observable {
   lastAccelZ: number = null;
   tapLockoutTimeMs: number = 200;
   tapTimeoutId: any = null;
-  // Tap sensitivity thresholds:
-  maxTapSensitivity: number = 3.5;  // TODO: remove - old
-  minTapSensitivity: number = 1.5;  // TODO: remove - old
-  maxTapDetectorConfidence: number = 1.2;  // TODO: determine good value
-  minTapDetectorConfidence: number = 0.2;  // TODO: determine good value
   // Sensor listener config:
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
@@ -945,11 +940,7 @@ export class MainViewModel extends Observable {
       return;
     }
     // set tap sensitivity threshold
-    const tapDetectorThreshold =
-      this.maxTapDetectorConfidence -
-      (this.maxTapDetectorConfidence - this.minTapDetectorConfidence) *
-      (this.settings.tapSensitivity / 100.0);
-    this.tapDetector.threshold = tapDetectorThreshold;
+    this.tapDetector.setSensitivity(this.settings.tapSensitivity);
     // now run the tap detector
     const didTap = this.tapDetector.detectTap(acceleration);
     // block high frequency tapping
