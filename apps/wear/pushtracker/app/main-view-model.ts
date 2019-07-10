@@ -14,8 +14,8 @@ import { Page, View } from 'tns-core-modules/ui/page';
 import { BluetoothService, SensorService, SentryService, SERVICES, SqliteService } from './services';
 import { hideOffScreenLayout, showOffScreenLayout } from './utils';
 
-const ambientTheme = require('../../scss/theme-ambient.scss').toString();
-const defaultTheme = require('../../scss/theme-default.scss').toString();
+const ambientTheme = require('./scss/theme-ambient.scss').toString();
+const defaultTheme = require('./scss/theme-default.scss').toString();
 
 export class MainViewModel extends Observable {
   @Prop() minuteCirclePercentage: number = 88;
