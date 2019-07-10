@@ -5,8 +5,12 @@ import { knownFolders, path } from 'tns-core-modules/file-system';
 declare const org: any;
 
 export class TapDetector {
+  public static TapLockoutTimeMs: number = 200;
+
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
   public threshold: number = 0.9;
+
+  private lastTapTime: number; // timestamp of last detected tap
 
   private minThreshold = 0.7;
   private maxThreshold = 1.1;
@@ -121,7 +125,7 @@ export class TapDetector {
   /**
    * Main inference Function for detecting tap
    */
-  public detectTap(acceleration: any) {
+  public detectTap(acceleration: any, timestamp: number) {
     try {
       const inputData = [
         acceleration.x,
@@ -140,8 +144,8 @@ export class TapDetector {
       const prediction = this.parsedPrediction[0][0];
       // update the prediction history
       this.updatePredictions(prediction);
-      // determine if there was a tap (based on histories)
-      return this.didTap();
+      // determine if there was a tap
+      return this.didTap(timestamp);
     } catch (e) {
       Log.E('could not detect tap:', e);
       return false;
@@ -152,14 +156,31 @@ export class TapDetector {
    * Determines (based on input and prediction histories) whether
    * there was a tap.
    */
-  private didTap() {
+  private didTap(timestamp: number) {
+    // block high frequency tapping
+    if (this.lastTapTime !== null) {
+      const timeDiffNs = timestamp - this.lastTapTime;
+      const timeDiffThreshold = TapDetector.TapLockoutTimeMs * 1000 * 1000; // convert to ns
+      if (timeDiffNs < timeDiffThreshold) {
+        return false;
+      }
+    }
+    // time was good - now determine if the inputs / predictions were good
+    // check the input(s)
     const inputsWereGood = this.inputHistory.reduce((good, accel) => {
       return good && this.tapAxisIsPrimary(accel);
     }, true);
+    // check the prediction(s)
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.threshold;
     }, true);
-    return predictionsWereGood; // && inputsWereGood;
+    const predictTap = predictionsWereGood; // && inputsWereGood;
+    if (predictTap) {
+      // record that there has been a tap
+      this.lastTapTime = timestamp;
+    }
+    // return the prediction
+    return predictTap;
   }
 
   private tapAxisIsPrimary(accel: any) {
