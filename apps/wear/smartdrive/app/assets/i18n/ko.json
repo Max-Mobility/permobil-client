@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "데이터베이스 ID",
-		"sd-ble-version": "SmartDrive BLE 버전",
-		"sd-mcu-version": "SmartDrive MCU 버전",
-		"sd-serial-number": "SmartDrive 일련 번호",
-		"title": "정보",
-		"version": "앱 버전",
-		"watch-serial-number": "TicWatch 일련 번호"
-	},
-	"buttons": {
-		"dismiss": "버리다",
-		"ok": "승인"
-	},
-	"charts": {
-		"battery": {
-			"title": "일일 SmartDrive 배터리 사용량 (%)"
-		},
-		"distance": {
-			"title": "일일 SmartDrive 이동 거리"
-		}
-	},
-	"error-history": {
-		"title": "SmartDrive 오류 기록"
-	},
-	"failures": {
-		"connect": "에 연결할 수 없습니다.",
-		"getting-error": "SmartDrive 오류 가져 오는 데 실패했습니다.",
-		"must-wear-watch": "파워 어시스트를 활성화하려면 시계를 착용해야합니다.",
-		"no-smartdrive-paired": "앱에 페어링 된 SmartDrive가 없습니다!",
-		"no-smartdrives-found": "근처에 SmartDrive가 없습니다.",
-		"permissions": "필요한 권한이 부여되지 않았습니다!",
-		"saving-error": "SmartDrive 오류 저장 실패",
-		"saving-usage": "저장 실패",
-		"scan": "스캔 할 수 없습니다.",
-		"send-settings": "설정을 보내지 못했습니다."
-	},
-	"languages": {
-		"de": "독일 사람",
-		"en": "영어",
-		"es": "스페인 사람",
-		"fr": "프랑스 국민",
-		"ja": "일본어",
-		"ko": "한국어",
-		"nl": "네덜란드 사람",
-		"zh": "중국말"
-	},
-	"menu": {
-		"about": "약",
-		"settings": "설정",
-		"title": "메뉴",
-		"training": "훈련",
-		"updates": "업데이트"
-	},
-	"ota": {
-		"action": {
-			"cancel": "취소",
-			"force": "힘",
-			"pause": "중지",
-			"resume": "이력서",
-			"retry": "다시 해 보다",
-			"start": "스타트"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "대기중인 BLE",
-				"awaiting-mcu-ready": "MCU에서 대기 중",
-				"awaiting-versions": "버전 대기 중",
-				"canceled": "취소 된",
-				"canceling": "취소 중",
-				"comm-failure": "통신 오류입니다. SmartDrive를 재부팅하십시오.",
-				"complete": "완전한",
-				"failed": "실패한",
-				"not-started": "시작되지 않음",
-				"rebooting-ble": "BLE 재부팅",
-				"rebooting-mcu": "MCU 재부팅",
-				"timeout": "시간 초과",
-				"updating-ble": "BLE 업데이트 중",
-				"updating-mcu": "MCU 업데이트",
-				"verifying-update": "확인 중"
-			}
-		}
-	},
-	"permissions-reasons": "E2 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다. 블루투스를 사용하여 SmartDrive를 제어하려면 ACCESS_COARSE_LOCATION 권한이 필요합니다.",
-	"power-assist": {
-		"activate": "전원 보조 기능 활성화",
-		"deactivate": "전원 보조를 비활성화하십시오.",
-		"estimated-range": "예상 범위",
-		"exit-training": "교육 모드 종료",
-		"speed": "속도",
-		"stop": "중지"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "영어",
-				"metric": "미터법"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "래치",
-				"momentary": "순간"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "가속",
-		"control-mode": "제어 모드",
-		"error-history": "오류 기록",
-		"max-speed": "최대 속도",
-		"pair-smartdrive": "쌍 SmartDrive",
-		"paired-to-smartdrive": "SmartDrive와 페어링 됨",
-		"scanning": "스캐닝",
-		"select-smartdrive": "SmartDrive 선택",
-		"tap-sensitivity": "탭 감도",
-		"title": "SmartDrive 설정",
-		"units": "단위"
-	},
-	"switch-control": {
-		"max-speed": "스위치 제어 최대 속도",
-		"mode": "스위치 제어 모드"
-	},
-	"units": {
-		"distance": {
-			"english": "미",
-			"metric": "km"
-		},
-		"english": "영어",
-		"metric": "미터법",
-		"speed": {
-			"english": "MPH",
-			"metric": "kph"
-		}
-	},
-	"updates": {
-		"canceled": "업데이트 취소됨",
-		"changes": "변경 사항 요약 :",
-		"checking-for-updates": "업데이트 확인",
-		"error-getting": "업데이트를 가져 오는 중 오류 발생",
-		"failed": "업데이트가 실패",
-		"status": "업데이트 상태",
-		"success": "SmartDrive 업데이트가 성공적으로 완료되었습니다!",
-		"up-to-date": "SmartDrive가 최신 버전입니다.",
-		"version": "번역"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "주의 : 설정 변경이 작동 및 성능에 미치는 영향에 대해서는 반드시 SmartDrive 사용자 설명서를 참조하십시오.",
-			"title": "저장된 설정"
-		}
-	}
+  "about": {
+    "database": "데이터베이스 ID",
+    "sd-ble-version": "SmartDrive BLE 버전",
+    "sd-mcu-version": "SmartDrive MCU 버전",
+    "sd-serial-number": "SmartDrive 일련 번호",
+    "title": "정보",
+    "version": "앱 버전",
+    "watch-serial-number": "TicWatch 일련 번호"
+  },
+  "buttons": {
+    "dismiss": "버리다",
+    "ok": "승인"
+  },
+  "charts": {
+    "battery": {
+      "title": "일일 SmartDrive 배터리 사용량 (%)"
+    },
+    "distance": {
+      "title": "일일 SmartDrive 이동 거리"
+    }
+  },
+  "error-history": {
+    "title": "SmartDrive 오류 기록"
+  },
+  "failures": {
+    "connect": "에 연결할 수 없습니다.",
+    "getting-error": "SmartDrive 오류 가져 오는 데 실패했습니다.",
+    "must-wear-watch": "파워 어시스트를 활성화하려면 시계를 착용해야합니다.",
+    "no-smartdrive-paired": "앱에 페어링 된 SmartDrive가 없습니다!",
+    "no-smartdrives-found": "근처에 SmartDrive가 없습니다.",
+    "permissions": "필요한 권한이 부여되지 않았습니다!",
+    "saving-error": "SmartDrive 오류 저장 실패",
+    "saving-usage": "저장 실패",
+    "scan": "스캔 할 수 없습니다.",
+    "send-settings": "설정을 보내지 못했습니다."
+  },
+  "languages": {
+    "de": "독일 사람",
+    "en": "영어",
+    "es": "스페인 사람",
+    "fr": "프랑스 국민",
+    "ja": "일본어",
+    "ko": "한국어",
+    "nl": "네덜란드 사람",
+    "zh": "중국말"
+  },
+  "menu": {
+    "about": "약",
+    "settings": "설정",
+    "title": "메뉴",
+    "training": "훈련",
+    "updates": "업데이트"
+  },
+  "ota": {
+    "action": {
+      "cancel": "취소",
+      "force": "힘",
+      "pause": "중지",
+      "resume": "이력서",
+      "retry": "다시 해 보다",
+      "start": "스타트"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "대기중인 BLE",
+        "awaiting-mcu-ready": "MCU에서 대기 중",
+        "awaiting-versions": "버전 대기 중",
+        "canceled": "취소 된",
+        "canceling": "취소 중",
+        "comm-failure": "통신 오류입니다. SmartDrive를 재부팅하십시오.",
+        "complete": "완전한",
+        "failed": "실패한",
+        "not-started": "시작되지 않음",
+        "rebooting-ble": "BLE 재부팅",
+        "rebooting-mcu": "MCU 재부팅",
+        "timeout": "시간 초과",
+        "updating-ble": "BLE 업데이트 중",
+        "updating-mcu": "MCU 업데이트",
+        "verifying-update": "확인 중"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "블루투스를 사용하여 SmartDrive를 제어하려면 ACCESS_COARSE_LOCATION 권한이 필요합니다.",
+    "phone-state": "E2 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다."
+  },
+  "permissions-request": {
+    "title": "권한 요청"
+  },
+  "power-assist": {
+    "activate": "전원 보조 기능 활성화",
+    "deactivate": "전원 보조를 비활성화하십시오.",
+    "estimated-range": "예상 범위",
+    "exit-training": "교육 모드 종료",
+    "speed": "속도",
+    "stop": "중지"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "영어",
+        "metric": "미터법"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "래치",
+        "momentary": "순간"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "가속",
+    "control-mode": "제어 모드",
+    "error-history": "오류 기록",
+    "max-speed": "최대 속도",
+    "pair-smartdrive": "쌍 SmartDrive",
+    "paired-to-smartdrive": "SmartDrive와 페어링 됨",
+    "scanning": "스캐닝",
+    "select-smartdrive": "SmartDrive 선택",
+    "tap-sensitivity": "탭 감도",
+    "title": "SmartDrive 설정",
+    "units": "단위"
+  },
+  "switch-control": {
+    "max-speed": "스위치 제어 최대 속도",
+    "mode": "스위치 제어 모드"
+  },
+  "units": {
+    "distance": {
+      "english": "미",
+      "metric": "km"
+    },
+    "english": "영어",
+    "metric": "미터법",
+    "speed": {
+      "english": "MPH",
+      "metric": "kph"
+    }
+  },
+  "updates": {
+    "canceled": "업데이트 취소됨",
+    "changes": "변경 사항 요약 :",
+    "checking-for-updates": "업데이트 확인",
+    "connecting-to-smartdrive": "SmartDrive에 연결 중",
+    "errors": {
+      "connecting": "SmartDrive에 연결하는 중에 오류가 발생했습니다.",
+      "downloading": "업데이트 다운로드 오류",
+      "getting": "업데이트 검색 중 오류 발생",
+      "saving": "업데이트 데이터 저장 중 오류 발생"
+    },
+    "failed": "업데이트가 실패",
+    "status": "업데이트 상태",
+    "success": "SmartDrive 업데이트가 성공적으로 완료되었습니다!",
+    "up-to-date": "SmartDrive가 최신 버전입니다.",
+    "version": "번역"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "주의 : 설정 변경이 작동 및 성능에 미치는 영향에 대해서는 반드시 SmartDrive 사용자 설명서를 참조하십시오.",
+      "title": "저장된 설정"
+    }
+  }
 }

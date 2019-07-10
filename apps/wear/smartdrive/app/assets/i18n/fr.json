@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "ID de base de données",
-		"sd-ble-version": "Version SmartDrive BLE",
-		"sd-mcu-version": "Version du MCU SmartDrive",
-		"sd-serial-number": "Numéro de série SmartDrive",
-		"title": "Information",
-		"version": "Version de l'application",
-		"watch-serial-number": "Numéro de série de TicWatch"
-	},
-	"buttons": {
-		"dismiss": "Rejeter",
-		"ok": "D'accord"
-	},
-	"charts": {
-		"battery": {
-			"title": "Utilisation quotidienne de la batterie SmartDrive (%)"
-		},
-		"distance": {
-			"title": "Daily SmartDrive Distance parcourue"
-		}
-	},
-	"error-history": {
-		"title": "Historique des erreurs SmartDrive"
-	},
-	"failures": {
-		"connect": "N'a pas pu se connecter à",
-		"getting-error": "Échec d'obtention de l'erreur SmartDrive",
-		"must-wear-watch": "Vous devez porter la montre pour activer l'assistance électrique.",
-		"no-smartdrive-paired": "Pas de SmartDrive associé à l'application!",
-		"no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
-		"permissions": "Les autorisations requises n'ont pas été accordées!",
-		"saving-error": "Échec de l'enregistrement de l'erreur SmartDrive",
-		"saving-usage": "Échec de la sauvegarde de l'utilisation",
-		"scan": "Impossible de numériser",
-		"send-settings": "Échec d'envoi des paramètres à"
-	},
-	"languages": {
-		"de": "Allemand",
-		"en": "Anglais",
-		"es": "Espanol",
-		"fr": "français",
-		"ja": "japonais",
-		"ko": "coréen",
-		"nl": "Néerlandais",
-		"zh": "chinois"
-	},
-	"menu": {
-		"about": "sur",
-		"settings": "Réglages",
-		"title": "menu",
-		"training": "Entraînement",
-		"updates": "Mises à jour"
-	},
-	"ota": {
-		"action": {
-			"cancel": "annuler",
-			"force": "Obliger",
-			"pause": "Pause",
-			"resume": "CV",
-			"retry": "Réessayez",
-			"start": "Début"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "En attente sur BLE",
-				"awaiting-mcu-ready": "En attente sur MCU",
-				"awaiting-versions": "En attente de versions",
-				"canceled": "Annulé",
-				"canceling": "Annulation",
-				"comm-failure": "Erreur de communication. Veuillez redémarrer votre SmartDrive.",
-				"complete": "Achevée",
-				"failed": "Échoué",
-				"not-started": "Pas commencé",
-				"rebooting-ble": "Redémarrage de BLE",
-				"rebooting-mcu": "Redémarrage MCU",
-				"timeout": "Temps libre",
-				"updating-ble": "Mise à jour de BLE",
-				"updating-mcu": "Mise à jour du MCU",
-				"verifying-update": "Vérification"
-			}
-		}
-	},
-	"permissions-reasons": "Pour lire votre numéro de série E2 (à des fins de garantie / d'assistance), nous avons besoin de l'autorisation READ_PHONE_STATE. Pour contrôler votre SmartDrive à l'aide de Bluetooth, nous avons besoin de l'autorisation ACCESS_COARSE_LOCATION.",
-	"power-assist": {
-		"activate": "Activer Power Assist",
-		"deactivate": "Désactiver Power Assist",
-		"estimated-range": "Gamme estimée",
-		"exit-training": "Quitter le mode de formation",
-		"speed": "La vitesse",
-		"stop": "Arrêtez"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "Anglais",
-				"metric": "métrique"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "Verrouillage",
-				"momentary": "Momentané"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "Accélération",
-		"control-mode": "Mode de contrôle",
-		"error-history": "Histoire d'erreur",
-		"max-speed": "vitesse maximale",
-		"pair-smartdrive": "Pair SmartDrive",
-		"paired-to-smartdrive": "Jumelé à SmartDrive",
-		"scanning": "Balayage",
-		"select-smartdrive": "Sélectionnez SmartDrive",
-		"tap-sensitivity": "Touchez la sensibilité",
-		"title": "Paramètres SmartDrive",
-		"units": "des unités"
-	},
-	"switch-control": {
-		"max-speed": "Commutateur Vitesse Max",
-		"mode": "Changer de mode de contrôle"
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "Anglais",
-		"metric": "métrique",
-		"speed": {
-			"english": "mph",
-			"metric": "km / h"
-		}
-	},
-	"updates": {
-		"canceled": "Mise à jour annulée",
-		"changes": "Sommaire des changements:",
-		"checking-for-updates": "Vérification des mises à jour",
-		"error-getting": "Erreur lors de l'obtention des mises à jour",
-		"failed": "mise à jour a échoué",
-		"status": "État de mise à jour",
-		"success": "Mise à jour SmartDrive terminée avec succès!",
-		"up-to-date": "SmartDrive est à jour!",
-		"version": "Version"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "ATTENTION: vous DEVEZ consulter le manuel d’utilisation SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
-			"title": "Paramètres enregistrés"
-		}
-	}
+  "about": {
+    "database": "ID de base de données",
+    "sd-ble-version": "Version SmartDrive BLE",
+    "sd-mcu-version": "Version du MCU SmartDrive",
+    "sd-serial-number": "Numéro de série SmartDrive",
+    "title": "Information",
+    "version": "Version de l'application",
+    "watch-serial-number": "Numéro de série de TicWatch"
+  },
+  "buttons": {
+    "dismiss": "Rejeter",
+    "ok": "D'accord"
+  },
+  "charts": {
+    "battery": {
+      "title": "Utilisation quotidienne de la batterie SmartDrive (%)"
+    },
+    "distance": {
+      "title": "Daily SmartDrive Distance parcourue"
+    }
+  },
+  "error-history": {
+    "title": "Historique des erreurs SmartDrive"
+  },
+  "failures": {
+    "connect": "N'a pas pu se connecter à",
+    "getting-error": "Échec d'obtention de l'erreur SmartDrive",
+    "must-wear-watch": "Vous devez porter la montre pour activer l'assistance électrique.",
+    "no-smartdrive-paired": "Pas de SmartDrive associé à l'application!",
+    "no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
+    "permissions": "Les autorisations requises n'ont pas été accordées!",
+    "saving-error": "Échec de l'enregistrement de l'erreur SmartDrive",
+    "saving-usage": "Échec de la sauvegarde de l'utilisation",
+    "scan": "Impossible de numériser",
+    "send-settings": "Échec d'envoi des paramètres à"
+  },
+  "languages": {
+    "de": "Allemand",
+    "en": "Anglais",
+    "es": "Espanol",
+    "fr": "français",
+    "ja": "japonais",
+    "ko": "coréen",
+    "nl": "Néerlandais",
+    "zh": "chinois"
+  },
+  "menu": {
+    "about": "sur",
+    "settings": "Réglages",
+    "title": "menu",
+    "training": "Entraînement",
+    "updates": "Mises à jour"
+  },
+  "ota": {
+    "action": {
+      "cancel": "annuler",
+      "force": "Obliger",
+      "pause": "Pause",
+      "resume": "CV",
+      "retry": "Réessayez",
+      "start": "Début"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "En attente sur BLE",
+        "awaiting-mcu-ready": "En attente sur MCU",
+        "awaiting-versions": "En attente de versions",
+        "canceled": "Annulé",
+        "canceling": "Annulation",
+        "comm-failure": "Erreur de communication. Veuillez redémarrer votre SmartDrive.",
+        "complete": "Achevée",
+        "failed": "Échoué",
+        "not-started": "Pas commencé",
+        "rebooting-ble": "Redémarrage de BLE",
+        "rebooting-mcu": "Redémarrage MCU",
+        "timeout": "Temps libre",
+        "updating-ble": "Mise à jour de BLE",
+        "updating-mcu": "Mise à jour du MCU",
+        "verifying-update": "Vérification"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "Pour contrôler votre SmartDrive à l'aide de Bluetooth, nous avons besoin de l'autorisation ACCESS_COARSE_LOCATION.",
+    "phone-state": "Pour lire votre numéro de série E2 (à des fins de garantie / d'assistance), nous avons besoin de l'autorisation READ_PHONE_STATE."
+  },
+  "permissions-request": {
+    "title": "Demande d'autorisations"
+  },
+  "power-assist": {
+    "activate": "Activer Power Assist",
+    "deactivate": "Désactiver Power Assist",
+    "estimated-range": "Gamme estimée",
+    "exit-training": "Quitter le mode de formation",
+    "speed": "La vitesse",
+    "stop": "Arrêtez"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "Anglais",
+        "metric": "métrique"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "Verrouillage",
+        "momentary": "Momentané"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Accélération",
+    "control-mode": "Mode de contrôle",
+    "error-history": "Histoire d'erreur",
+    "max-speed": "vitesse maximale",
+    "pair-smartdrive": "Pair SmartDrive",
+    "paired-to-smartdrive": "Jumelé à SmartDrive",
+    "scanning": "Balayage",
+    "select-smartdrive": "Sélectionnez SmartDrive",
+    "tap-sensitivity": "Touchez la sensibilité",
+    "title": "Paramètres SmartDrive",
+    "units": "des unités"
+  },
+  "switch-control": {
+    "max-speed": "Commutateur Vitesse Max",
+    "mode": "Changer de mode de contrôle"
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "Anglais",
+    "metric": "métrique",
+    "speed": {
+      "english": "mph",
+      "metric": "km / h"
+    }
+  },
+  "updates": {
+    "canceled": "Mise à jour annulée",
+    "changes": "Sommaire des changements:",
+    "checking-for-updates": "Vérification des mises à jour",
+    "connecting-to-smartdrive": "Connexion à SmartDrive",
+    "errors": {
+      "connecting": "Erreur de connexion à SmartDrive",
+      "downloading": "Erreur de téléchargement des mises à jour",
+      "getting": "Erreur de recherche de mises à jour",
+      "saving": "Erreur lors de l'enregistrement des données de mise à jour"
+    },
+    "failed": "mise à jour a échoué",
+    "status": "État de mise à jour",
+    "success": "Mise à jour SmartDrive terminée avec succès!",
+    "up-to-date": "SmartDrive est à jour!",
+    "version": "Version"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "ATTENTION: vous DEVEZ consulter le manuel d’utilisation SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
+      "title": "Paramètres enregistrés"
+    }
+  }
 }

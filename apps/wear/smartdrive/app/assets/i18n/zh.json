@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "數據庫ID",
-		"sd-ble-version": "SmartDrive BLE版本",
-		"sd-mcu-version": "SmartDrive MCU版本",
-		"sd-serial-number": "SmartDrive序列號",
-		"title": "信息",
-		"version": "應用版本",
-		"watch-serial-number": "TicWatch序列號"
-	},
-	"buttons": {
-		"dismiss": "解僱",
-		"ok": "好"
-	},
-	"charts": {
-		"battery": {
-			"title": "每日SmartDrive電池使用率（%）"
-		},
-		"distance": {
-			"title": "每日SmartDrive行駛距離"
-		}
-	},
-	"error-history": {
-		"title": "SmartDrive錯誤歷史記錄"
-	},
-	"failures": {
-		"connect": "無法連接到",
-		"getting-error": "無法獲得SmartDrive錯誤",
-		"must-wear-watch": "您必須佩戴手錶才能啟動助力功能。",
-		"no-smartdrive-paired": "沒有SmartDrive與應用程序配對！",
-		"no-smartdrives-found": "附近找不到SmartDrives。",
-		"permissions": "未授予所需權限！",
-		"saving-error": "保存SmartDrive錯誤失敗",
-		"saving-usage": "保存使用失敗",
-		"scan": "無法掃描",
-		"send-settings": "無法發送設置"
-	},
-	"languages": {
-		"de": "德語",
-		"en": "英語",
-		"es": "西班牙語",
-		"fr": "法國",
-		"ja": "日本",
-		"ko": "朝鮮的",
-		"nl": "荷蘭人",
-		"zh": "中文"
-	},
-	"menu": {
-		"about": "關於",
-		"settings": "設置",
-		"title": "菜單",
-		"training": "訓練",
-		"updates": "更新"
-	},
-	"ota": {
-		"action": {
-			"cancel": "取消",
-			"force": "力",
-			"pause": "暫停",
-			"resume": "恢復",
-			"retry": "重試",
-			"start": "開始"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "等待BLE",
-				"awaiting-mcu-ready": "等待MCU",
-				"awaiting-versions": "等待版本",
-				"canceled": "取消",
-				"canceling": "取消",
-				"comm-failure": "通訊錯誤，請重啟SmartDrive",
-				"complete": "完成",
-				"failed": "失敗",
-				"not-started": "沒有開始",
-				"rebooting-ble": "重啟BLE",
-				"rebooting-mcu": "重啟MCU",
-				"timeout": "超時",
-				"updating-ble": "更新BLE",
-				"updating-mcu": "更新MCU",
-				"verifying-update": "驗證"
-			}
-		}
-	},
-	"permissions-reasons": "要讀取您的E2序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。要使用藍牙控制SmartDrive，我們需要ACCESS_COARSE_LOCATION權限。",
-	"power-assist": {
-		"activate": "激活動力輔助",
-		"deactivate": "停用動力輔助",
-		"estimated-range": "估計範圍",
-		"exit-training": "退出訓練模式",
-		"speed": "速度",
-		"stop": "停止"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "英語",
-				"metric": "公"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "閉鎖",
-				"momentary": "瞬間"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "促進",
-		"control-mode": "控制模式",
-		"error-history": "錯誤歷史記錄",
-		"max-speed": "最大速度",
-		"pair-smartdrive": "配對SmartDrive",
-		"paired-to-smartdrive": "與SmartDrive配對",
-		"scanning": "掃描",
-		"select-smartdrive": "選擇SmartDrive",
-		"tap-sensitivity": "點擊靈敏度",
-		"title": "SmartDrive設置",
-		"units": "單位"
-	},
-	"switch-control": {
-		"max-speed": "開關控制最大速度",
-		"mode": "開關控制模式"
-	},
-	"units": {
-		"distance": {
-			"english": "MI",
-			"metric": "千米"
-		},
-		"english": "英語",
-		"metric": "公",
-		"speed": {
-			"english": "英里",
-			"metric": "KPH"
-		}
-	},
-	"updates": {
-		"canceled": "更新已取消",
-		"changes": "變更摘要：",
-		"checking-for-updates": "查詢更新",
-		"error-getting": "獲取更新時出錯",
-		"failed": "更新失敗",
-		"status": "更新狀態",
-		"success": "SmartDrive更新成功完成！",
-		"up-to-date": "SmartDrive是最新的！",
-		"version": "版"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "注意：您必須參考SmartDrive用戶手冊，了解更改設置如何影響其操作和性能。",
-			"title": "保存的設置"
-		}
-	}
+  "about": {
+    "database": "數據庫ID",
+    "sd-ble-version": "SmartDrive BLE版本",
+    "sd-mcu-version": "SmartDrive MCU版本",
+    "sd-serial-number": "SmartDrive序列號",
+    "title": "信息",
+    "version": "應用版本",
+    "watch-serial-number": "TicWatch序列號"
+  },
+  "buttons": {
+    "dismiss": "解僱",
+    "ok": "好"
+  },
+  "charts": {
+    "battery": {
+      "title": "每日SmartDrive電池使用率（%）"
+    },
+    "distance": {
+      "title": "每日SmartDrive行駛距離"
+    }
+  },
+  "error-history": {
+    "title": "SmartDrive錯誤歷史記錄"
+  },
+  "failures": {
+    "connect": "無法連接到",
+    "getting-error": "無法獲得SmartDrive錯誤",
+    "must-wear-watch": "您必須佩戴手錶才能啟動助力功能。",
+    "no-smartdrive-paired": "沒有SmartDrive與應用程序配對！",
+    "no-smartdrives-found": "附近找不到SmartDrives。",
+    "permissions": "未授予所需權限！",
+    "saving-error": "保存SmartDrive錯誤失敗",
+    "saving-usage": "保存使用失敗",
+    "scan": "無法掃描",
+    "send-settings": "無法發送設置"
+  },
+  "languages": {
+    "de": "德語",
+    "en": "英語",
+    "es": "西班牙語",
+    "fr": "法國",
+    "ja": "日本",
+    "ko": "朝鮮的",
+    "nl": "荷蘭人",
+    "zh": "中文"
+  },
+  "menu": {
+    "about": "關於",
+    "settings": "設置",
+    "title": "菜單",
+    "training": "訓練",
+    "updates": "更新"
+  },
+  "ota": {
+    "action": {
+      "cancel": "取消",
+      "force": "力",
+      "pause": "暫停",
+      "resume": "恢復",
+      "retry": "重試",
+      "start": "開始"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "等待BLE",
+        "awaiting-mcu-ready": "等待MCU",
+        "awaiting-versions": "等待版本",
+        "canceled": "取消",
+        "canceling": "取消",
+        "comm-failure": "通訊錯誤，請重啟SmartDrive",
+        "complete": "完成",
+        "failed": "失敗",
+        "not-started": "沒有開始",
+        "rebooting-ble": "重啟BLE",
+        "rebooting-mcu": "重啟MCU",
+        "timeout": "超時",
+        "updating-ble": "更新BLE",
+        "updating-mcu": "更新MCU",
+        "verifying-update": "驗證"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "要使用藍牙控制SmartDrive，我們需要ACCESS_COARSE_LOCATION權限。",
+    "phone-state": "要讀取您的E2序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。"
+  },
+  "permissions-request": {
+    "title": "權限請求"
+  },
+  "power-assist": {
+    "activate": "激活動力輔助",
+    "deactivate": "停用動力輔助",
+    "estimated-range": "估計範圍",
+    "exit-training": "退出訓練模式",
+    "speed": "速度",
+    "stop": "停止"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "英語",
+        "metric": "公"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "閉鎖",
+        "momentary": "瞬間"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "促進",
+    "control-mode": "控制模式",
+    "error-history": "錯誤歷史記錄",
+    "max-speed": "最大速度",
+    "pair-smartdrive": "配對SmartDrive",
+    "paired-to-smartdrive": "與SmartDrive配對",
+    "scanning": "掃描",
+    "select-smartdrive": "選擇SmartDrive",
+    "tap-sensitivity": "點擊靈敏度",
+    "title": "SmartDrive設置",
+    "units": "單位"
+  },
+  "switch-control": {
+    "max-speed": "開關控制最大速度",
+    "mode": "開關控制模式"
+  },
+  "units": {
+    "distance": {
+      "english": "MI",
+      "metric": "千米"
+    },
+    "english": "英語",
+    "metric": "公",
+    "speed": {
+      "english": "英里",
+      "metric": "KPH"
+    }
+  },
+  "updates": {
+    "canceled": "更新已取消",
+    "changes": "變更摘要：",
+    "checking-for-updates": "查詢更新",
+    "connecting-to-smartdrive": "連接到SmartDrive",
+    "errors": {
+      "connecting": "連接到SmartDrive時出錯",
+      "downloading": "下載更新時出錯",
+      "getting": "搜索更新時出錯",
+      "saving": "保存更新數據時出錯"
+    },
+    "failed": "更新失敗",
+    "status": "更新狀態",
+    "success": "SmartDrive更新成功完成！",
+    "up-to-date": "SmartDrive是最新的！",
+    "version": "版"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "注意：您必須參考SmartDrive用戶手冊，了解更改設置如何影響其操作和性能。",
+      "title": "保存的設置"
+    }
+  }
 }

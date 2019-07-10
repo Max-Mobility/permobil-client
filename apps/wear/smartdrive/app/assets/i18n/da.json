@@ -1,153 +1,165 @@
 {
-	"about": {
-		"database": "Database ID",
-		"sd-ble-version": "SmartDrive BLE Version",
-		"sd-mcu-version": "SmartDrive MCU Version",
-		"sd-serial-number": "SmartDrive serienummer",
-		"title": "Information",
-		"version": "App Version",
-		"watch-serial-number": "TicWatch serienummer"
-	},
-	"buttons": {
-		"dismiss": "Afskedige",
-		"ok": "Okay"
-	},
-	"charts": {
-		"battery": {
-			"title": "Daglig SmartDrive Batteriforbrug (%)"
-		},
-		"distance": {
-			"title": "Daglig SmartDrive Afstand Rejst"
-		}
-	},
-	"error-history": {
-		"title": "SmartDrive Fejlhistorie"
-	},
-	"failures": {
-		"connect": "Kunne ikke oprette forbindelse til",
-		"getting-error": "Kunne ikke få SmartDrive-fejl",
-		"must-wear-watch": "Du skal bære uret for at aktivere strømassistance.",
-		"no-smartdrive-paired": "Ingen SmartDrive parret til appen!",
-		"no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
-		"permissions": "Nødvendige tilladelser blev ikke givet!",
-		"saving-error": "Kunne ikke gemme SmartDrive-fejl",
-		"saving-usage": "Kunne ikke gemme brugen",
-		"scan": "Kunne ikke scanne",
-		"send-settings": "Kunne ikke sende indstillinger til"
-	},
-	"languages": {
-		"de": "tysk",
-		"en": "engelsk",
-		"es": "spansk",
-		"fr": "fransk",
-		"ja": "japansk",
-		"ko": "Korean",
-		"nl": "hollandske",
-		"zh": "kinesisk"
-	},
-	"menu": {
-		"about": "Om",
-		"settings": "INDSTILLINGER",
-		"title": "Menu",
-		"training": "Uddannelse",
-		"updates": "opdateringer"
-	},
-	"ota": {
-		"action": {
-			"cancel": "afbestille",
-			"force": "Kraft",
-			"pause": "Pause",
-			"resume": "Genoptag",
-			"retry": "Prøve igen",
-			"start": "Start"
-		},
-		"sd": {
-			"state": {
-				"awaiting-ble-ready": "Venter på BLE",
-				"awaiting-mcu-ready": "Venter på MCU",
-				"awaiting-versions": "Afventer versioner",
-				"canceled": "Aflyst",
-				"canceling": "Annullering",
-				"comm-failure": "Kommunikationsfejl, genstart din SmartDrive",
-				"complete": "Komplet",
-				"failed": "mislykkedes",
-				"not-started": "Ikke startet",
-				"rebooting-ble": "Genopretter BLE",
-				"rebooting-mcu": "Genstart MCU",
-				"timeout": "Tiden er gået",
-				"updating-ble": "Opdatering af BLE",
-				"updating-mcu": "Opdatering af MCU",
-				"verifying-update": "Bekræftelse"
-			}
-		}
-	},
-	"permissions-reasons": "For at læse dit E2 serienummer (for garanti / support formål) har vi brug for READ_PHONE_STATE tilladelsen. For at styre din SmartDrive ved hjælp af bluetooth har vi brug for ACCESS_COARSE_LOCATION tilladelse.",
-	"power-assist": {
-		"activate": "Aktivér Strømassistent",
-		"deactivate": "Deaktiver Power Assist",
-		"estimated-range": "Beregnet rækkevidde",
-		"exit-training": "Afslut træningstilstand",
-		"speed": "Hastighed",
-		"stop": "Hold op"
-	},
-	"sd": {
-		"settings": {
-			"units": {
-				"english": "engelsk",
-				"metric": "metric"
-			}
-		},
-		"switch-settings": {
-			"mode": {
-				"latching": "Låsning",
-				"momentary": "Momentan"
-			}
-		}
-	},
-	"settings": {
-		"acceleration": "Acceleration",
-		"control-mode": "Kontroltilstand",
-		"error-history": "Fejlhistorik",
-		"max-speed": "Højeste hastighed",
-		"pair-smartdrive": "Par SmartDrive",
-		"paired-to-smartdrive": "Parret til SmartDrive",
-		"scanning": "Scanning",
-		"select-smartdrive": "Vælg SmartDrive",
-		"tap-sensitivity": "Tryk på følsomhed",
-		"title": "SmartDrive-indstillinger",
-		"units": "enheder"
-	},
-	"switch-control": {
-		"max-speed": "Omskifterstyring Maks. Hastighed",
-		"mode": "Skift kontroltilstand"
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "engelsk",
-		"metric": "metric",
-		"speed": {
-			"english": "mph",
-			"metric": "km i timen"
-		}
-	},
-	"updates": {
-		"canceled": "Opdatering annulleret",
-		"changes": "Oversigt over ændringer:",
-		"checking-for-updates": "Kontrol af opdateringer",
-		"error-getting": "Fejl ved at få opdateringer",
-		"failed": "Opdatering fejlede",
-		"status": "Opdater status",
-		"success": "SmartDrive-opdateringen blev gennemført med succes!",
-		"up-to-date": "SmartDrive er opdateret!",
-		"version": "Version"
-	},
-	"warnings": {
-		"saved-settings": {
-			"message": "FORSIGTIG: Du skal kontakte SmartDrive Brugermanualen for, hvordan indstillingerne ændrer indflydelse på dets drift og ydeevne.",
-			"title": "Gemte indstillinger"
-		}
-	}
+  "about": {
+    "database": "Database ID",
+    "sd-ble-version": "SmartDrive BLE Version",
+    "sd-mcu-version": "SmartDrive MCU Version",
+    "sd-serial-number": "SmartDrive serienummer",
+    "title": "Information",
+    "version": "App Version",
+    "watch-serial-number": "TicWatch serienummer"
+  },
+  "buttons": {
+    "dismiss": "Afskedige",
+    "ok": "Okay"
+  },
+  "charts": {
+    "battery": {
+      "title": "Daglig SmartDrive Batteriforbrug (%)"
+    },
+    "distance": {
+      "title": "Daglig SmartDrive Afstand Rejst"
+    }
+  },
+  "error-history": {
+    "title": "SmartDrive Fejlhistorie"
+  },
+  "failures": {
+    "connect": "Kunne ikke oprette forbindelse til",
+    "getting-error": "Kunne ikke få SmartDrive-fejl",
+    "must-wear-watch": "Du skal bære uret for at aktivere strømassistance.",
+    "no-smartdrive-paired": "Ingen SmartDrive parret til appen!",
+    "no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
+    "permissions": "Nødvendige tilladelser blev ikke givet!",
+    "saving-error": "Kunne ikke gemme SmartDrive-fejl",
+    "saving-usage": "Kunne ikke gemme brugen",
+    "scan": "Kunne ikke scanne",
+    "send-settings": "Kunne ikke sende indstillinger til"
+  },
+  "languages": {
+    "de": "tysk",
+    "en": "engelsk",
+    "es": "spansk",
+    "fr": "fransk",
+    "ja": "japansk",
+    "ko": "Korean",
+    "nl": "hollandske",
+    "zh": "kinesisk"
+  },
+  "menu": {
+    "about": "Om",
+    "settings": "INDSTILLINGER",
+    "title": "Menu",
+    "training": "Uddannelse",
+    "updates": "opdateringer"
+  },
+  "ota": {
+    "action": {
+      "cancel": "afbestille",
+      "force": "Kraft",
+      "pause": "Pause",
+      "resume": "Genoptag",
+      "retry": "Prøve igen",
+      "start": "Start"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "Venter på BLE",
+        "awaiting-mcu-ready": "Venter på MCU",
+        "awaiting-versions": "Afventer versioner",
+        "canceled": "Aflyst",
+        "canceling": "Annullering",
+        "comm-failure": "Kommunikationsfejl, genstart din SmartDrive",
+        "complete": "Komplet",
+        "failed": "mislykkedes",
+        "not-started": "Ikke startet",
+        "rebooting-ble": "Genopretter BLE",
+        "rebooting-mcu": "Genstart MCU",
+        "timeout": "Tiden er gået",
+        "updating-ble": "Opdatering af BLE",
+        "updating-mcu": "Opdatering af MCU",
+        "verifying-update": "Bekræftelse"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "For at styre din SmartDrive ved hjælp af bluetooth har vi brug for ACCESS_COARSE_LOCATION tilladelse.",
+    "phone-state": "For at læse dit E2 serienummer (for garanti / support formål) har vi brug for READ_PHONE_STATE tilladelsen."
+  },
+  "permissions-request": {
+    "title": "Tilladelsesanmodning"
+  },
+  "power-assist": {
+    "activate": "Aktivér Strømassistent",
+    "deactivate": "Deaktiver Power Assist",
+    "estimated-range": "Beregnet rækkevidde",
+    "exit-training": "Afslut træningstilstand",
+    "speed": "Hastighed",
+    "stop": "Hold op"
+  },
+  "sd": {
+    "settings": {
+      "units": {
+        "english": "engelsk",
+        "metric": "metric"
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "Låsning",
+        "momentary": "Momentan"
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "Acceleration",
+    "control-mode": "Kontroltilstand",
+    "error-history": "Fejlhistorik",
+    "max-speed": "Højeste hastighed",
+    "pair-smartdrive": "Par SmartDrive",
+    "paired-to-smartdrive": "Parret til SmartDrive",
+    "scanning": "Scanning",
+    "select-smartdrive": "Vælg SmartDrive",
+    "tap-sensitivity": "Tryk på følsomhed",
+    "title": "SmartDrive-indstillinger",
+    "units": "enheder"
+  },
+  "switch-control": {
+    "max-speed": "Omskifterstyring Maks. Hastighed",
+    "mode": "Skift kontroltilstand"
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "engelsk",
+    "metric": "metric",
+    "speed": {
+      "english": "mph",
+      "metric": "km i timen"
+    }
+  },
+  "updates": {
+    "canceled": "Opdatering annulleret",
+    "changes": "Oversigt over ændringer:",
+    "checking-for-updates": "Kontrol af opdateringer",
+    "connecting-to-smartdrive": "Tilslutning til SmartDrive",
+    "errors": {
+      "connecting": "Fejl ved forbindelse til SmartDrive",
+      "downloading": "Fejl ved download af opdateringer",
+      "getting": "Fejl med at søge efter opdateringer",
+      "saving": "Fejl ved at gemme opdateringsdata"
+    },
+    "failed": "Opdatering fejlede",
+    "status": "Opdater status",
+    "success": "SmartDrive-opdateringen blev gennemført med succes!",
+    "up-to-date": "SmartDrive er opdateret!",
+    "version": "Version"
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "FORSIGTIG: Du skal kontakte SmartDrive Brugermanualen for, hvordan indstillingerne ændrer indflydelse på dets drift og ydeevne.",
+      "title": "Gemte indstillinger"
+    }
+  }
 }

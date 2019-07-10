@@ -139,11 +139,6 @@ export class MainViewModel extends Observable {
   lastAccelZ: number = null;
   tapLockoutTimeMs: number = 200;
   tapTimeoutId: any = null;
-  // Tap sensitivity thresholds:
-  maxTapSensitivity: number = 3.5;  // TODO: remove - old
-  minTapSensitivity: number = 1.5;  // TODO: remove - old
-  maxTapDetectorConfidence: number = 1.2;  // TODO: determine good value
-  minTapDetectorConfidence: number = 0.2;  // TODO: determine good value
   // Sensor listener config:
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
@@ -240,6 +235,8 @@ export class MainViewModel extends Observable {
   private _networkService: NetworkService;
   private _kinveyService: KinveyService;
 
+  private _throttledOtaAction: any = null;
+
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
@@ -269,10 +266,6 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-
-    // load translation files
-    loadTranslation();
-    useLanguage(getDefaultLang());
 
     // initialize the wake lock here
     const context = android.content.Context;
@@ -370,7 +363,6 @@ export class MainViewModel extends Observable {
     ];
     Promise.all(sqlitePromises)
       .then(() => {
-        Log.D('Tables complete');
         console.timeEnd('SQLite_Init');
       })
       .catch(err => {
@@ -551,12 +543,16 @@ export class MainViewModel extends Observable {
     // granted permissions. The error thrown details which
     // permissions were rejected
     const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
+    const reasons = [
+      L('permissions-reasons.phone-state'),
+      L('permissions-reasons.coarse-location')
+    ].join('\n\n');
     if (neededPermissions && neededPermissions.length > 0) {
-      Log.D('requesting permissions!', neededPermissions);
+      // Log.D('requesting permissions!', neededPermissions);
       return alert({
-        title: 'Permissions Request',
-        message: L('permissions-reasons'),
-        okButtonText: 'Ok'
+        title: L('permissions-request.title'),
+        message: reasons,
+        okButtonText: L('buttons.ok')
       })
         .then(() => {
           return requestPermissions(neededPermissions, () => { });
@@ -672,11 +668,98 @@ export class MainViewModel extends Observable {
     this.disablePowerAssist();
   }
 
+  registerForSmartDriveEvents() {
+    this.unregisterForSmartDriveEvents();
+    // set up ota action handler
+    // throttled function to keep people from pressing it too frequently
+    this._throttledOtaAction = throttle(
+      this.smartDrive.onOTAActionTap,
+      500,
+      { leading: true, trailing: false }
+    );
+    // register for event handlers
+    // set the event listeners for mcu_version_event and smartdrive_distance_event
+    this.smartDrive.on(
+      SmartDrive.smartdrive_connect_event,
+      this.onSmartDriveConnect,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_disconnect_event,
+      this.onSmartDriveDisconnect,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_mcu_version_event,
+      this.onSmartDriveVersion,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_distance_event,
+      this.onDistance,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_motor_info_event,
+      this.onMotorInfo,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_error_event,
+      this.onSmartDriveError,
+      this
+    );
+    this.smartDrive.on(
+      SmartDrive.smartdrive_ota_status_event,
+      this.onSmartDriveOtaStatus,
+      this
+    );
+  }
+
+  unregisterForSmartDriveEvents() {
+    this.smartDrive.off(
+      SmartDrive.smartdrive_connect_event,
+      this.onSmartDriveConnect,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_disconnect_event,
+      this.onSmartDriveDisconnect,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_mcu_version_event,
+      this.onSmartDriveVersion,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_distance_event,
+      this.onDistance,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_motor_info_event,
+      this.onMotorInfo,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_error_event,
+      this.onSmartDriveError,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_ota_status_event,
+      this.onSmartDriveOtaStatus,
+      this
+    );
+  }
+
   updateSmartDrive(address: string) {
     this._savedSmartDriveAddress = address;
     this.smartDrive = this._bluetoothService.getOrMakeSmartDrive({
       address: address
     });
+    this.registerForSmartDriveEvents();
   }
 
   loadSmartDriveStateFromLS() {
@@ -687,6 +770,8 @@ export class MainViewModel extends Observable {
     if (savedSd) {
       this.smartDrive.fromObject(savedSd);
     }
+    // update the displayed smartdrive data
+    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
   }
 
   saveSmartDriveStateToLS() {
@@ -845,23 +930,6 @@ export class MainViewModel extends Observable {
     this.pager = page.getViewById('pager') as Pager;
   }
 
-  tapAxisIsPrimary(accel: any) {
-    const max = Math.max(
-      Math.abs(accel.z),
-      Math.max(Math.abs(accel.x), Math.abs(accel.y))
-    );
-    const xPercent = Math.abs(accel.x / max);
-    const yPercent = Math.abs(accel.y / max);
-    const zPercent = Math.abs(accel.z / max);
-    const outOfAxisThreshold = 0.5;
-    return (
-      max > this.minTapSensitivity &&
-      zPercent > 0.9 &&
-      xPercent < outOfAxisThreshold &&
-      yPercent < outOfAxisThreshold
-    );
-  }
-
   handleAccel(acceleration: any, timestamp: number) {
     // ignore tapping if we're not in the right mode
     if (!this.powerAssistActive && !this.isTraining) {
@@ -872,17 +940,9 @@ export class MainViewModel extends Observable {
       return;
     }
     // set tap sensitivity threshold
-    const tapDetectorThreshold =
-      this.maxTapDetectorConfidence -
-      (this.maxTapDetectorConfidence - this.minTapDetectorConfidence) *
-      (this.settings.tapSensitivity / 100.0);
-    this.tapDetector.threshold = tapDetectorThreshold;
-    // TODO: testing tap detector
-    const didTap = this.tapDetector.detectTap([
-      acceleration.x,
-      acceleration.y,
-      acceleration.z
-    ]);
+    this.tapDetector.setSensitivity(this.settings.tapSensitivity);
+    // now run the tap detector
+    const didTap = this.tapDetector.detectTap(acceleration);
     // block high frequency tapping
     if (this.lastTapTime !== null) {
       const timeDiffNs = timestamp - this.lastTapTime;
@@ -892,45 +952,6 @@ export class MainViewModel extends Observable {
       }
     }
     if (didTap) {
-      // record that there has been a tap
-      this.lastTapTime = timestamp;
-      // user has met threshold for tapping
-      this.handleTap(timestamp);
-    }
-    return;
-    // TODO: EVERYTHING BELOW HERE IS OLD CODE AND WILL NEED TO BE
-    // REFACTORED AFTER THE TFLITE UPDATE
-    // -----------------------------------------------------------
-    // now get the z-axis acceleration
-    let acc = acceleration.z;
-    let diff = acc - this.lastAccelZ;
-    this.lastAccelZ = acc;
-    // block motions where the primary axis of movement isn't the
-    // z-axis
-    if (!this.tapAxisIsPrimary(acceleration)) {
-      return;
-    }
-    // block high frequency tapping
-    if (this.lastTapTime !== null) {
-      const timeDiffNs = timestamp - this.lastTapTime;
-      const timeDiffThreshold = this.tapLockoutTimeMs * 1000 * 1000; // convert to ns
-      if (timeDiffNs < timeDiffThreshold) {
-        return;
-      }
-    }
-    // respond to both axes for tapping if the motor is on
-    if (this.motorOn) {
-      diff = Math.abs(diff);
-      acc = Math.abs(acc);
-    }
-    const threshold =
-      this.maxTapSensitivity -
-      (this.maxTapSensitivity - this.minTapSensitivity) *
-      (this.settings.tapSensitivity / 100.0);
-    // must have a high enough abs(accel.z) and it must be a jerk
-    // movement - high difference between previous accel and current
-    // accel
-    if (acc > threshold && diff > threshold) {
       // record that there has been a tap
       this.lastTapTime = timestamp;
       // user has met threshold for tapping
@@ -1123,12 +1144,6 @@ export class MainViewModel extends Observable {
     const progress = args.data.progress;
     // translate the state
     const state = L(args.data.state); // .replace('ota.sd.state.', '');
-    // throttled function to keep people from pressing it too frequently
-    const throttledOtaActionTap = throttle(
-      this.smartDrive.onOTAActionTap,
-      500,
-      { leading: true, trailing: false }
-    );
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
       if (a.includes('cancel')) {
@@ -1139,7 +1154,7 @@ export class MainViewModel extends Observable {
       const actionLabel = L(a); // .replace('ota.action.', '');
       return {
         'label': actionLabel,
-        'func': throttledOtaActionTap.bind(this.smartDrive, a),
+        'func': this._throttledOtaAction.bind(this.smartDrive, a),
         'action': a,
         'class': actionClass
       };
@@ -1155,7 +1170,10 @@ export class MainViewModel extends Observable {
   checkForUpdates() {
     // don't allow swiping while we're checking for updates!
     (this._updatesLayout as any).swipeable = false;
-    this.updateProgressText = L('updates.checking-for-updates'); // 'Checking for Updates';
+    // update display of update progress
+    this.smartDriveOtaProgress = 0;
+    this.updateProgressText = L('updates.checking-for-updates');
+    // some state variables for the update
     this.isUpdatingSmartDrive = false;
     this.checkingForUpdates = true;
     this.hasUpdateData = false;
@@ -1165,7 +1183,7 @@ export class MainViewModel extends Observable {
     return this.getFirmwareData()
       .then(md => {
         currentVersions = md;
-        Log.D('Current FW Versions:', currentVersions);
+        // Log.D('Current FW Versions:', currentVersions);
         const query = {
           $or: [
             { _filename: 'SmartDriveBLE.ota' },
@@ -1173,7 +1191,13 @@ export class MainViewModel extends Observable {
           ],
           firmware_file: true
         };
-        return this._kinveyService.getFile(undefined, query);
+        return this._kinveyService
+          .getFile(undefined, query)
+          .catch((err) => {
+            Log.E('Could not get metadata for files:', err);
+            this.updateProgressText = L('updates.errors.getting') + `: ${err}`;
+            throw err;
+          });
       })
       .then(response => {
         const mds = response.content.toJSON();
@@ -1197,7 +1221,12 @@ export class MainViewModel extends Observable {
           // now download the files
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
         }
-        return Promise.all(promises);
+        return Promise.all(promises)
+          .catch((err) => {
+            Log.E('Could not download files:', err);
+            this.updateProgressText = L('updates.errors.downloading') + `: ${err}`;
+            throw err;
+          });
       })
       .then(files => {
         let promises = [];
@@ -1255,7 +1284,64 @@ export class MainViewModel extends Observable {
             }
           });
         }
-        return Promise.all(promises);
+        return Promise.all(promises)
+          .catch((err) => {
+            Log.E('Could not write files:', err);
+            this.updateProgressText = L('updates.errors.saving') + `: ${err}`;
+            throw err;
+          });
+      })
+      .then(() => {
+        // Now that we've downloaded the firmware data let's connect
+        // to the SD to make sure that we get it's version information
+        return new Promise((resolve, reject) => {
+          if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
+            // if we've already talked to this SD and gotten its
+            // version info then we can just resolve
+            resolve();
+            return;
+          }
+          // we've not talked to this SD before, so we should connect
+          // and get its version info
+          this.updateProgressText = L('updates.connecting-to-smartdrive');
+          const connectTimeoutId = setTimeout(() => {
+            this.smartDrive.off(
+              SmartDrive.smartdrive_mcu_version_event,
+              onVersion
+            );
+            reject('Timeout');
+          }, 30 * 1000);
+          const onVersion = () => {
+            this.smartDrive.off(
+              SmartDrive.smartdrive_mcu_version_event,
+              onVersion
+            );
+            clearTimeout(connectTimeoutId);
+            resolve();
+          };
+          this.smartDrive.on(
+            SmartDrive.smartdrive_mcu_version_event,
+            onVersion
+          );
+          this.connectToSavedSmartDrive()
+            .then(didConnect => {
+              if (!didConnect) {
+                reject('Did not connect');
+              }
+            })
+            .catch(err => {
+              reject(err);
+            });
+        })
+          .then(() => {
+            this.smartDrive.disconnect();
+          })
+          .catch((err) => {
+            this.smartDrive.disconnect();
+            Log.E('Could not connect to smartdrive:', err);
+            this.updateProgressText = L('updates.errors.connecting') + `: ${err}`;
+            throw err;
+          });
       })
       .then(() => {
         // re-enable swipe close of the updates layout
@@ -1287,11 +1373,11 @@ export class MainViewModel extends Observable {
           const msg = L('updates.changes') + '\n\n' +
             flatten(changes)
               .join('\n\n');
-          Log.D('got changes', changes);
+          // Log.D('got changes', changes);
           alert({
             title: title,
             message: msg,
-            okButtonText: 'Ok'
+            okButtonText: L('buttons.ok')
           }).then(() => {
             this.isUpdatingSmartDrive = true;
             Log.D('Beginning SmartDrive update');
@@ -1299,12 +1385,6 @@ export class MainViewModel extends Observable {
             const mcuFw = new Uint8Array(currentVersions['SmartDriveMCU.ota'].data);
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
-            // register for smartdrive ota status events
-            this.smartDrive.on(
-              SmartDrive.smartdrive_ota_status_event,
-              this.onSmartDriveOtaStatus,
-              this
-            );
             // maintain CPU resources while updating
             this.maintainCPU();
             // smartdrive needs to update
@@ -1327,12 +1407,6 @@ export class MainViewModel extends Observable {
                 }
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
-                // un-register for smartdrive ota status events
-                this.smartDrive.off(
-                  SmartDrive.smartdrive_ota_status_event,
-                  this.onSmartDriveOtaStatus,
-                  this
-                );
               })
               .catch(err => {
                 this.releaseCPU();
@@ -1343,12 +1417,6 @@ export class MainViewModel extends Observable {
                 showFailure(msg);
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
-                // un-register for smartdrive ota status events
-                this.smartDrive.off(
-                  SmartDrive.smartdrive_ota_status_event,
-                  this.onSmartDriveOtaStatus,
-                  this
-                );
               });
           });
         } else {
@@ -1365,8 +1433,6 @@ export class MainViewModel extends Observable {
       .catch(err => {
         // re-enable swipe close of the updates layout
         (this._updatesLayout as any).swipeable = true;
-        Log.E('Could not get files:', err);
-        this.updateProgressText = L('updates.error-getting') + `: ${err}`;
         this.hasUpdateData = false;
         this.checkingForUpdates = false;
         this.isUpdatingSmartDrive = false;
@@ -1962,46 +2028,7 @@ export class MainViewModel extends Observable {
 
   connectToSmartDrive(smartDrive) {
     if (!smartDrive) return;
-    this.smartDrive = smartDrive;
-
-    // need to make sure we unregister disconnect event since it may have been registered
-    this.smartDrive.off(
-      SmartDrive.smartdrive_disconnect_event,
-      this.onSmartDriveDisconnect,
-      this
-    );
-    // set the event listeners for mcu_version_event and smartdrive_distance_event
-    this.smartDrive.on(
-      SmartDrive.smartdrive_connect_event,
-      this.onSmartDriveConnect,
-      this
-    );
-    this.smartDrive.on(
-      SmartDrive.smartdrive_disconnect_event,
-      this.onSmartDriveDisconnect,
-      this
-    );
-    this.smartDrive.on(
-      SmartDrive.smartdrive_mcu_version_event,
-      this.onSmartDriveVersion,
-      this
-    );
-    this.smartDrive.on(
-      SmartDrive.smartdrive_distance_event,
-      this.onDistance,
-      this
-    );
-    this.smartDrive.on(
-      SmartDrive.smartdrive_motor_info_event,
-      this.onMotorInfo,
-      this
-    );
-    this.smartDrive.on(
-      SmartDrive.smartdrive_error_event,
-      this.onSmartDriveError,
-      this
-    );
-
+    this.updateSmartDrive(smartDrive.address);
     // now connect to smart drive
     return this.smartDrive
       .connect()
@@ -2045,31 +2072,6 @@ export class MainViewModel extends Observable {
 
   async disconnectFromSmartDrive() {
     if (this.smartDrive && this.smartDrive.connected) {
-      this.smartDrive.off(
-        SmartDrive.smartdrive_connect_event,
-        this.onSmartDriveConnect,
-        this
-      );
-      this.smartDrive.off(
-        SmartDrive.smartdrive_mcu_version_event,
-        this.onSmartDriveVersion,
-        this
-      );
-      this.smartDrive.off(
-        SmartDrive.smartdrive_distance_event,
-        this.onDistance,
-        this
-      );
-      this.smartDrive.off(
-        SmartDrive.smartdrive_motor_info_event,
-        this.onMotorInfo,
-        this
-      );
-      this.smartDrive.off(
-        SmartDrive.smartdrive_error_event,
-        this.onSmartDriveError,
-        this
-      );
       this.smartDrive.disconnect().then(() => {
         this.motorOn = false;
         this.powerAssistActive = false;
@@ -2135,11 +2137,6 @@ export class MainViewModel extends Observable {
       this.updatePowerAssistRing();
       this.retrySmartDriveConnection();
     }
-    this.smartDrive.off(
-      SmartDrive.smartdrive_disconnect_event,
-      this.onSmartDriveDisconnect,
-      this
-    );
   }
 
   async onSmartDriveError(args: any) {

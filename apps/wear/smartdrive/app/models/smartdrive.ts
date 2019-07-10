@@ -111,6 +111,12 @@ export class SmartDrive extends DeviceBase {
 
   // regular methods
 
+  hasVersionInfo(): boolean {
+    return [this.ble_version, this.mcu_version].reduce((a, v) => {
+      return a && v < 0xff && v > 0x00;
+    }, true);
+  }
+
   get mcu_version_string(): string {
     return SmartDrive.versionByteToString(this.mcu_version);
   }
@@ -334,10 +340,10 @@ export class SmartDrive extends DeviceBase {
           startedOTA = false;
           hasRebooted = false;
 
-          mcuVersion = 0xff;
-          bleVersion = 0xff;
-          haveMCUVersion = false;
-          haveBLEVersion = false;
+          mcuVersion = this.mcu_version;
+          bleVersion = this.ble_version;
+          haveMCUVersion = mcuVersion > 0x00 && mcuVersion < 0xff;
+          haveBLEVersion = bleVersion > 0x00 && bleVersion < 0xff;
 
           this.doBLEUpdate = false;
           this.doMCUUpdate = false;
@@ -361,9 +367,10 @@ export class SmartDrive extends DeviceBase {
           this.bleOTAProgress = 0;
           this.mcuOTAProgress = 0;
           this.setOtaActions(['ota.action.cancel']);
-          // connect to the smartdrive
-          this.connect();
           this.otaStartTime = new Date();
+          // connect to the smartdrive
+          if (!this.connected)
+            this.connect();
           this.otaState = SmartDrive.OTAState.awaiting_versions;
           // start the timeout timer
           if (otaTimeoutID) {
@@ -1087,15 +1094,20 @@ export class SmartDrive extends DeviceBase {
   }
 
   public disconnect() {
-    // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
-    const data = Uint8Array.from([0x03]); // this is the OTA stop command
-    return this._bluetoothService
-      .write({
-        peripheralUUID: this.address,
-        serviceUUID: SmartDrive.ServiceUUID,
-        characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
-        value: data
-      })
+    const promises = [];
+    if (this.connected && this.ableToSend && this.notifying) {
+      // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
+      const data = Uint8Array.from([0x03]); // this is the OTA stop command
+      const writePromise = this._bluetoothService
+        .write({
+          peripheralUUID: this.address,
+          serviceUUID: SmartDrive.ServiceUUID,
+          characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
+          value: data
+        });
+      promises.push(writePromise);
+    }
+    return Promise.all(promises)
       .then(() => {
         return this._bluetoothService.disconnect({
           UUID: this.address
