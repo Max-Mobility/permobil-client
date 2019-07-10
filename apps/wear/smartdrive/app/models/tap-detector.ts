@@ -8,29 +8,48 @@ export class TapDetector {
   public static TapLockoutTimeMs: number = 200;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
-  public threshold: number = 0.9;
 
   private lastTapTime: number; // timestamp of last detected tap
 
-  private minThreshold = 0.7;
-  private maxThreshold = 1.1;
+  /**
+   * Higher-level tap detection configuration
+   */
+  private predictionThreshold: number = 0.9; // confidence
+  private minPredictionThreshold = 0.7;
+  private maxPredictionThreshold = 1.1;
 
+  private jerkThreshold: number = 8.0; // acceleration value
+  private minJerkThreshold = 5.0;
+  private maxJerkThreshold = 15.0;
+
+  /**
+   * TensorFlow Lite related data
+   */
   private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
   private tapDetectorInput = null;
   private tapDetectorOutput: java.util.Map<java.lang.Integer, java.lang.Object> = null;
 
+  /**
+   * Actual inputs / outputs for the TFLite model
+   */
   private inputData = null;
   private previousState = null;
   private parsedPrediction = null;
 
+  /**
+   * TFLite model input / output configuration
+   */
   private static StateSize = 128;
   private static Input_StateIndex = 0;
   private static Input_InputIndex = 1;
   private static Output_StateIndex = 0;
   private static Output_PredictionIndex = 1;
 
-  private static InputHistorySize = 3;
+  /**
+   * Higher-level tap detection - not TFLite related
+   */
+  private static InputHistorySize = 4;
   private static PredictionHistorySize = 2;
   private inputHistory: any[] = [];
   private predictionHistory: number[] = [];
@@ -117,8 +136,15 @@ export class TapDetector {
    * @param sensitivity[number]: [0-100] percent sensitivity.
    */
   public setSensitivity(sensitivity: number) {
-    this.threshold = this.maxThreshold -
-      (this.maxThreshold - this.minThreshold) *
+    /*
+    // update prediction threshold
+    this.predictionThreshold = this.maxPredictionThreshold -
+      (this.maxPredictionThreshold - this.minPredictionThreshold) *
+      (sensitivity / 100.0);
+    */
+    // update jerk threshold
+    this.jerkThreshold = this.maxJerkThreshold -
+      (this.maxJerkThreshold - this.minJerkThreshold) *
       (sensitivity / 100.0);
   }
 
@@ -166,17 +192,37 @@ export class TapDetector {
       }
     }
     // time was good - now determine if the inputs / predictions were good
-    // check the input(s)
+
+    // check that inputs were all primarily in z axis
     const inputsWereGood = this.inputHistory.reduce((good, accel) => {
       return good && this.tapAxisIsPrimary(accel);
     }, true);
-    // check the prediction(s)
+    // check that input history contains >= 1 difference (jerk) above
+    // the threshold
+    let minZ = null;
+    let maxZ = null;
+    this.inputHistory.map(accel => {
+      let z = accel.z;
+      if (minZ === null || z < minZ) {
+        minZ = z;
+      }
+      if (maxZ === null || z > maxZ) {
+        maxZ = z;
+      }
+    });
+    const jerk = maxZ - minZ;
+    const jerkAboveThreshold = jerk > this.jerkThreshold;
+    // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
-      return good && prediction > this.threshold;
+      return good && prediction > this.predictionThreshold;
     }, true);
-    const predictTap = predictionsWereGood; // && inputsWereGood;
+    // combine checks to predict tap
+    const predictTap =
+      jerkAboveThreshold &&
+      // inputsWereGood &&
+      predictionsWereGood;
+    // record that there has been a tap
     if (predictTap) {
-      // record that there has been a tap
       this.lastTapTime = timestamp;
     }
     // return the prediction
