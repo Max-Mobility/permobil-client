@@ -1073,6 +1073,7 @@ export class MainViewModel extends Observable {
 
   onTrainingTap() {
     this.enableTapSensor();
+    this.tapDetector.reset();
     this.maintainCPU();
     this.isTraining = true;
     this.powerAssistState = PowerAssist.State.Training;
@@ -1101,7 +1102,6 @@ export class MainViewModel extends Observable {
   onScanningLayoutLoaded(args) {
     this._scanningLayout = args.object as SwipeDismissLayout;
     this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1131,7 +1131,6 @@ export class MainViewModel extends Observable {
   onUpdatesLayoutLoaded(args) {
     this._updatesLayout = args.object as SwipeDismissLayout;
     this._updatesLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1461,7 +1460,6 @@ export class MainViewModel extends Observable {
       'errorsScrollView'
     ) as ScrollView;
     this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1479,7 +1477,6 @@ export class MainViewModel extends Observable {
       'settingsScrollView'
     ) as ScrollView;
     this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1493,7 +1490,6 @@ export class MainViewModel extends Observable {
       'aboutScrollView'
     ) as ScrollView;
     this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // Log.D('dismissedEvent', args.object);
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1881,6 +1877,7 @@ export class MainViewModel extends Observable {
       showFailure(L('failures.must-wear-watch'));
       return;
     } else if (this.hasSavedSmartDrive()) {
+      this.tapDetector.reset();
       this.maintainCPU();
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.powerAssistActive = true;

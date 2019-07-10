@@ -9,18 +9,18 @@ export class TapDetector {
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
-  private lastTapTime: number; // timestamp of last detected tap
-
   /**
    * Higher-level tap detection configuration
    */
-  private predictionThreshold: number = 0.9; // confidence
   private minPredictionThreshold = 0.7;
   private maxPredictionThreshold = 1.1;
+  private predictionThreshold: number = 0.8; // confidence
 
-  private jerkThreshold: number = 8.0; // acceleration value
   private minJerkThreshold = 5.0;
-  private maxJerkThreshold = 15.0;
+  private maxJerkThreshold = 25.0;
+  private jerkThreshold: number = 5.0; // acceleration value
+
+  private lastTapTime: number; // timestamp of last detected tap
 
   /**
    * TensorFlow Lite related data
@@ -131,6 +131,14 @@ export class TapDetector {
   }
 
   /**
+   * Reset the histories to clear out old data
+   */
+  public reset() {
+    this.inputHistory = [];
+    this.predictionHistory = [];
+  }
+
+  /**
    * Update tap detector prediction threshold
    *
    * @param sensitivity[number]: [0-100] percent sensitivity.
@@ -192,7 +200,11 @@ export class TapDetector {
       }
     }
     // time was good - now determine if the inputs / predictions were good
-
+    if (this.inputHistory.length < TapDetector.InputHistorySize ||
+      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
+      // we don't have enough historical data so detect no taps
+      return false;
+    }
     // check that inputs were all primarily in z axis
     const inputsWereGood = this.inputHistory.reduce((good, accel) => {
       return good && this.tapAxisIsPrimary(accel);
