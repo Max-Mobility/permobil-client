@@ -139,11 +139,13 @@ export class TapDetector {
   }
 
   /**
-   * Update tap detector prediction threshold
+   * Update tap detector tap sensitivity threshold
    *
-   * @param sensitivity[number]: [0-100] percent sensitivity.
+   * @param sensitivity [number]: [0-100] percent sensitivity.
    */
   public setSensitivity(sensitivity: number) {
+    // ensure sensitivity is in range [0, 100]
+    sensitivity = Math.min(100, Math.max(sensitivity, 0));
     /*
     // update prediction threshold
     this.predictionThreshold = this.maxPredictionThreshold -

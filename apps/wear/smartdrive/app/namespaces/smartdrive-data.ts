@@ -157,7 +157,13 @@ export namespace SmartDriveData {
       });
     }
 
-    export function download(f) {
+    let progressCallback: (file: any, eventData: ProgressEventData) => void = null;
+
+    export function setDownloadProgressCallback(cb: (file: any, eventData: ProgressEventData) => void) {
+      progressCallback = cb;
+    }
+
+    export function download(f: any) {
       let url = f['_downloadURL'];
       // make sure they're https!
       if (!url.startsWith('https:')) {
@@ -168,7 +174,11 @@ export namespace SmartDriveData {
       const downloadId = downloadManager.createDownload({ url });
       return downloadManager
         .start(downloadId, (progressData: ProgressEventData) => {
-          console.log('url progress', progressData, url);
+          if (progressCallback && typeof progressCallback === 'function') {
+            progressCallback(f, progressData);
+          } else {
+            console.log('url progress', progressData, url);
+          }
         })
         .then((completed: DownloadEventData) => {
           const fileData = File.fromPath(completed.path).readSync();
@@ -179,7 +189,7 @@ export namespace SmartDriveData {
             name: f['_filename'],
             data: fileData,
             changes:
-            f['change_notes'][device.language] || f['change_notes']['en']
+              f['change_notes'][device.language] || f['change_notes']['en']
           };
         })
         .catch(error => {

@@ -1001,7 +1001,7 @@ export class MainViewModel extends Observable {
   }
 
   /**
-   * Main Menu Tap Handlers
+   * Main Menu Button Tap Handlers
    */
   onAboutTap() {
     if (this.aboutScrollView) {
@@ -1140,6 +1140,9 @@ export class MainViewModel extends Observable {
           });
       })
       .then(response => {
+        // Now that we have the metadata, check to see if we already
+        // have the most up to date firmware files and download them
+        // if we don't
         const mds = response.content.toJSON();
         let promises = [];
         const maxes = mds.reduce((maxes, md) => {
@@ -1158,6 +1161,24 @@ export class MainViewModel extends Observable {
           return isMax && (!current || v > currentVersion);
         });
         if (fileMetaDatas && fileMetaDatas.length) {
+          // update progress circle
+          // @ts-ignore
+          this.updateProgressCircle.stopSpinning();
+          // reset ota progress to 0 to show downloading progress
+          this.smartDriveOtaProgress = 0;
+          // update progress text
+          this.updateProgressText = L('updates.downloading-new-firmwares');
+          const progresses = fileMetaDatas.reduce((p, fmd) => {
+            p[fmd['_filename']] = 0;
+            return p;
+          }, {});
+          const progressKeys = Object.keys(progresses);
+          SmartDriveData.Firmwares.setDownloadProgressCallback((file, eventData) => {
+            progresses[file['_filename']] = eventData.value;
+            this.smartDriveOtaProgress = progressKeys.reduce((total, k) => {
+              return total + progresses[k];
+            }, 0) / progressKeys.length;
+          });
           // now download the files
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
         }
@@ -1169,6 +1190,8 @@ export class MainViewModel extends Observable {
           });
       })
       .then(files => {
+        // Now that we have the files, write them to disk and update
+        // our local metadata
         let promises = [];
         if (files && files.length) {
           Log.D('Updating metadata and writing file data.');
@@ -1232,8 +1255,8 @@ export class MainViewModel extends Observable {
           });
       })
       .then(() => {
-        // Now that we've downloaded the firmware data let's connect
-        // to the SD to make sure that we get it's version information
+        // Now let's connect to the SD to make sure that we get it's
+        // version information
         return new Promise((resolve, reject) => {
           if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
             // if we've already talked to this SD and gotten its
@@ -1284,6 +1307,7 @@ export class MainViewModel extends Observable {
           });
       })
       .then(() => {
+        // Now perform the SmartDrive updates if we need to
         // re-enable swipe close of the updates layout
         (this._updatesLayout as any).swipeable = true;
         // now see what we need to do with the data
@@ -1300,6 +1324,9 @@ export class MainViewModel extends Observable {
           !this.smartDrive.isMcuUpToDate(mcuVersion) ||
           !this.smartDrive.isBleUpToDate(bleVersion)
         ) {
+          // reset the ota progress to 0 (since downloaing may have
+          // used it)
+          this.smartDriveOtaProgress = 0;
           // get info out to tell the user
           const version = SmartDriveData.Firmwares.versionByteToString(
             Math.max(mcuVersion, bleVersion)

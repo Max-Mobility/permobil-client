@@ -150,6 +150,7 @@
     "changes": "Summary of changes:",
     "checking-for-updates": "Checking for Updates",
     "connecting-to-smartdrive": "Connecting to SmartDrive",
+    "downloading-new-firmwares": "Downloading new firmware data",
     "errors": {
       "connecting": "Error connecting to SmartDrive",
       "downloading": "Error downloading updates",
