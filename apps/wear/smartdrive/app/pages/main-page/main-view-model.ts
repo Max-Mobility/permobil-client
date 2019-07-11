@@ -119,8 +119,8 @@ export class MainViewModel extends Observable {
    */
   @Prop() scanningProgressText: string = L('settings.scanning');
   @Prop() activeSettingToChange = '';
-  @Prop() changeSettingKeyString = '';
-  @Prop() changeSettingKeyValue: any = null;
+  @Prop() changeSettingKeyString = ' ';
+  @Prop() changeSettingKeyValue: any = ' ';
   @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
 
   /**
@@ -602,7 +602,6 @@ export class MainViewModel extends Observable {
   }
 
   isActivityThis(activity: any) {
-    // TODO: This is a hack to determine which activity is being updated!
     return `${activity}`.includes(application.android.packageName);
   }
 
@@ -1554,25 +1553,14 @@ export class MainViewModel extends Observable {
       .catch(err => { });
   }
 
-  onBatteryChartRepeaterLoaded(args) {
-    const rpter = args.object as Repeater;
-    // get distance data from db here then handle the data binding and
-    // calculating the Max Value for the chart and some sizing checks
-  }
-
-  onDistanceChartRepeaterLoaded(args) {
-    const rpter = args.object as Repeater;
-    // get distance data from db here then handle the data binding and
-    // calculating the Max Value for the chart and some sizing checks
-  }
-
-  onLoadMoreErrors(args: ItemEventData) {
-    // TODO: show loading indicator
+  onLoadMoreErrors(args?: ItemEventData) {
     this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
-      // TODO: hide loading indicator
-      this.errorHistoryData.push(...recents);
-      if (!this.errorHistoryData.length) {
-        // TODO: say that there were no errors
+      if (recents && recents.length) {
+        this.errorHistoryData.push(...recents);
+      } else if (this.errorHistoryData.length === 0) {
+        this.errorHistoryData.push({
+          code: L('error-history.no-errors')
+        });
       }
     });
   }
@@ -1584,15 +1572,9 @@ export class MainViewModel extends Observable {
       // reset to to the top when entering the page
       this.errorsScrollView.scrollToVerticalOffset(0, true);
     }
-    // TODO: say that we're loading
     // load the error data
-    this.getRecentErrors(10).then(recents => {
-      // TODO: hide loading indicator
-      this.errorHistoryData.push(...recents);
-      if (!this.errorHistoryData.length) {
-        // TODO: say that there were no errors
-      }
-    });
+    this.onLoadMoreErrors();
+    // show the layout
     showOffScreenLayout(this._errorHistoryLayout);
     this.enableLayout('errorHistory');
   }
@@ -1758,13 +1740,9 @@ export class MainViewModel extends Observable {
 
   onChangeSettingsLayoutLoaded(args) {
     this._changeSettingsLayout = args.object as SwipeDismissLayout;
-    // disabling swipeable to make it easier to tap the cancel button without starting the swipe behavior
+    // disabling swipeable to make it easier to tap the cancel button
+    // without starting the swipe behavior
     (this._changeSettingsLayout as any).swipeable = false;
-    // this._changeSettingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-    //   // hide the offscreen layout when dismissed
-    //   hideOffScreenLayout(this._changeSettingsLayout, { x: 500, y: 0 });
-    //   this.isChangeSettingsLayoutEnabled = false;
-    // });
   }
 
   /**
@@ -2267,9 +2245,10 @@ export class MainViewModel extends Observable {
       .then(rows => {
         if (rows && rows.length) {
           errors = rows.map(r => {
+            const translationKey = 'error-history.errors.' + (r && r[2]).toLowerCase();
             return {
               time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-              code: r && r[2]
+              code: L(translationKey)
             };
           });
         }

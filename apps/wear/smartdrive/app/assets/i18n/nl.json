@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD Batterij Voltage",
+      "bledisconnect": "Bluetooth Verbinding verbreken",
+      "gyrorange": "SD-Gyrobereik",
+      "motorphases": "SD-motorfasen",
+      "otaunavailable": "Updates niet beschikbaar",
+      "overcurrent": "SD Overstroom",
+      "overtemperature": "SD Overtemperatuur"
+    },
+    "loading": "Bezig met laden...",
+    "no-errors": "Er zijn geen SmartDrive-fouten ontvangen of vastgelegd.",
     "title": "SmartDrive-foutgeschiedenis"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "Samenvatting van de veranderingen:",
     "checking-for-updates": "Controleren op updates",
     "connecting-to-smartdrive": "Verbinding maken met SmartDrive",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "Fout bij verbinden met SmartDrive",
       "downloading": "Fout bij het downloaden van updates",

@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD-Batteriespannung",
+      "bledisconnect": "Bluetooth Verbindung trennen",
+      "gyrorange": "SD Gyro Range",
+      "motorphases": "SD-Motorphasen",
+      "otaunavailable": "Updates nicht verfügbar",
+      "overcurrent": "SD Überstrom",
+      "overtemperature": "SD-Übertemperatur"
+    },
+    "loading": "Wird geladen...",
+    "no-errors": "Es wurden keine SmartDrive-Fehler empfangen oder aufgezeichnet.",
     "title": "SmartDrive-Fehlerhistorie"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "Zusammenfassung der Änderungen:",
     "checking-for-updates": "Nach Updates suchen",
     "connecting-to-smartdrive": "Anschließen an SmartDrive",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "Fehler beim Verbinden mit SmartDrive",
       "downloading": "Fehler beim Herunterladen der Updates",

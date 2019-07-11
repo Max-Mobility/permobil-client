@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD 배터리 전압",
+      "bledisconnect": "블루투스 연결 끊기",
+      "gyrorange": "SD 자이로 범위",
+      "motorphases": "SD 모터 위상",
+      "otaunavailable": "업데이트를 사용할 수 없음",
+      "overcurrent": "SD 과전류",
+      "overtemperature": "온도에 따른 SD"
+    },
+    "loading": "로드 중 ...",
+    "no-errors": "SmartDrive 오류가 수신되거나 기록되지 않았습니다.",
     "title": "SmartDrive 오류 기록"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "변경 사항 요약 :",
     "checking-for-updates": "업데이트 확인",
     "connecting-to-smartdrive": "SmartDrive에 연결 중",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "SmartDrive에 연결하는 중에 오류가 발생했습니다.",
       "downloading": "업데이트 다운로드 오류",

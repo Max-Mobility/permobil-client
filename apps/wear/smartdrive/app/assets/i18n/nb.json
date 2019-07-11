@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD batterispenning",
+      "bledisconnect": "Bluetooth Koble fra",
+      "gyrorange": "SD Gyro Range",
+      "motorphases": "SD motorfaser",
+      "otaunavailable": "Oppdateringer Utilgjengelig",
+      "overcurrent": "SD Over Current",
+      "overtemperature": "SD Over Temperatur"
+    },
+    "loading": "Laster ...",
+    "no-errors": "Ingen SmartDrive-feil har blitt mottatt eller registrert.",
     "title": "SmartDrive-feilhistorikk"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "Sammendrag av endringer:",
     "checking-for-updates": "Ser etter oppdateringer",
     "connecting-to-smartdrive": "Koble til SmartDrive",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "Feil ved tilkobling til SmartDrive",
       "downloading": "Feil ved nedlasting av oppdateringer",

@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "Tension de la batterie SD",
+      "bledisconnect": "Déconnexion Bluetooth",
+      "gyrorange": "Gamme gyroscopique SD",
+      "motorphases": "Phases moteur SD",
+      "otaunavailable": "Mises à jour non disponibles",
+      "overcurrent": "SD sur courant",
+      "overtemperature": "SD surchauffe"
+    },
+    "loading": "Chargement...",
+    "no-errors": "Aucune erreur SmartDrive n'a été reçue ou enregistrée.",
     "title": "Historique des erreurs SmartDrive"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "Sommaire des changements:",
     "checking-for-updates": "Vérification des mises à jour",
     "connecting-to-smartdrive": "Connexion à SmartDrive",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "Erreur de connexion à SmartDrive",
       "downloading": "Erreur de téléchargement des mises à jour",

@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD電池電壓",
+      "bledisconnect": "藍牙斷開連接",
+      "gyrorange": "SD陀螺儀系列",
+      "motorphases": "SD電機階段",
+      "otaunavailable": "更新不可用",
+      "overcurrent": "SD過流",
+      "overtemperature": "SD過溫"
+    },
+    "loading": "載入中...",
+    "no-errors": "未收到或記錄任何SmartDrive錯誤。",
     "title": "SmartDrive錯誤歷史記錄"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "變更摘要：",
     "checking-for-updates": "查詢更新",
     "connecting-to-smartdrive": "連接到SmartDrive",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "連接到SmartDrive時出錯",
       "downloading": "下載更新時出錯",

@@ -390,16 +390,16 @@
       <wol:WearOsLayout height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
-          <Label text="" row="1" col="0" class="hr-blue" />
-          // TODO: might want to switch to listview here depending how many items are going to be in this list
+          <Label text="" class="hr-blue" />
           <ScrollView height="100%" id="errorsScrollView">
-            <ListView row="2" colSpan="1" items="{{ errorHistoryData }}" loadMoreItems="{{ onLoadMoreErrors }}">
+            <ListView row="2" colSpan="1" items="{{ errorHistoryData }}"
+                      loadMoreItems="{{ onLoadMoreErrors }}">
               <ListView.itemTemplate>
                 <RL:Ripple rippleColor="#ddd">
                   <GridLayout rows="auto, auto" columns="15, *">
                     <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
-                    <Label row="1" col="1" text="{{ time }}" class="settings-label" textWrap="true" />
+                    <Label row="0" col="1" text="{{ code || L('error-history.loading') }}" class="settings-label" textWrap="true" />
+                    <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
                   </GridLayout>
                 </RL:Ripple>
               </ListView.itemTemplate>

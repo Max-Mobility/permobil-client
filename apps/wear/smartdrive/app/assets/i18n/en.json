@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SD Battery Voltage",
+      "bledisconnect": "Bluetooth Disconnect",
+      "gyrorange": "SD Gyro Range",
+      "motorphases": "SD Motor Phases",
+      "otaunavailable": "Updates Unavailable",
+      "overcurrent": "SD Over Current",
+      "overtemperature": "SD Over Temperature"
+    },
+    "loading": "Loading...",
+    "no-errors": "No SmartDrive errors have been received or recorded.",
     "title": "SmartDrive Error History"
   },
   "failures": {

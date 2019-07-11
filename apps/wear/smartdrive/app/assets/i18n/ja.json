@@ -21,6 +21,17 @@
     }
   },
   "error-history": {
+    "errors": {
+      "batteryvoltage": "SDバッテリー電圧",
+      "bledisconnect": "Bluetooth切断",
+      "gyrorange": "SDジャイロレンジ",
+      "motorphases": "SDモーター位相",
+      "otaunavailable": "利用できないアップデート",
+      "overcurrent": "SDオーバーカレント",
+      "overtemperature": "温度に対するSD"
+    },
+    "loading": "読み込み中...",
+    "no-errors": "SmartDriveエラーは受信または記録されていません。",
     "title": "SmartDriveエラー履歴"
   },
   "failures": {
@@ -150,6 +161,7 @@
     "changes": "変更の概要",
     "checking-for-updates": "アップデートの確認",
     "connecting-to-smartdrive": "SmartDriveに接続する",
+    "downloading-new-firmwares": "",
     "errors": {
       "connecting": "SmartDriveへの接続エラー",
       "downloading": "アップデートのダウンロードエラー",
