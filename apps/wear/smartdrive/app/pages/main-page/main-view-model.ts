@@ -1072,6 +1072,8 @@ export class MainViewModel extends Observable {
   onUpdatesLayoutLoaded(args) {
     this._updatesLayout = args.object as SwipeDismissLayout;
     this._updatesLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+      // make sure to release the CPU
+      this.releaseCPU();
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1387,6 +1389,7 @@ export class MainViewModel extends Observable {
               });
           });
         } else {
+          this.releaseCPU();
           // re-enable swipe close of the updates layout
           (this._updatesLayout as any).swipeable = true;
           // smartdrive is already up to date
@@ -1398,6 +1401,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
+        this.releaseCPU();
         // re-enable swipe close of the updates layout
         (this._updatesLayout as any).swipeable = true;
         this.hasUpdateData = false;
@@ -1409,6 +1413,7 @@ export class MainViewModel extends Observable {
   }
 
   cancelUpdates() {
+    this.releaseCPU();
     this.updateProgressText = L('updates.canceled');
     // re-enable swipe close of the updates layout
     (this._updatesLayout as any).swipeable = true;
