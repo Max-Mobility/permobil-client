@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "대기중인 BLE",
+        "awaiting-connection": "연결 대기 중",
         "awaiting-mcu-ready": "MCU에서 대기 중",
         "awaiting-versions": "버전 대기 중",
         "canceled": "취소 된",
@@ -77,7 +78,7 @@
         "timeout": "시간 초과",
         "updating-ble": "BLE 업데이트 중",
         "updating-mcu": "MCU 업데이트",
-        "verifying-update": "확인 중"
+        "verifying": "확인 중"
       }
     }
   },

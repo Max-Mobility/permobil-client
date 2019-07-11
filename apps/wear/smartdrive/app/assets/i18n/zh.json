@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "等待BLE",
+        "awaiting-connection": "等待連接",
         "awaiting-mcu-ready": "等待MCU",
         "awaiting-versions": "等待版本",
         "canceled": "取消",
@@ -77,7 +78,7 @@
         "timeout": "超時",
         "updating-ble": "更新BLE",
         "updating-mcu": "更新MCU",
-        "verifying-update": "驗證"
+        "verifying": "驗證"
       }
     }
   },

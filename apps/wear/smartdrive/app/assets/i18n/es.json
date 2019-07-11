@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Esperando en BLE",
+        "awaiting-connection": "Esperando la conexión",
         "awaiting-mcu-ready": "Esperando en MCU",
         "awaiting-versions": "Esperando versiones",
         "canceled": "cancelado",
@@ -77,7 +78,7 @@
         "timeout": "Se acabó el tiempo",
         "updating-ble": "Actualizando BLE",
         "updating-mcu": "Actualizando MCU",
-        "verifying-update": "Verificando"
+        "verifying": "Verificando"
       }
     }
   },

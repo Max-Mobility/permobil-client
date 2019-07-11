@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Venter på BLE",
+        "awaiting-connection": "Venter på tilkobling",
         "awaiting-mcu-ready": "Venter på MCU",
         "awaiting-versions": "Venter på versjoner",
         "canceled": "avbrutt",
@@ -77,7 +78,7 @@
         "timeout": "Pause",
         "updating-ble": "Oppdaterer BLE",
         "updating-mcu": "Oppdaterer MCU",
-        "verifying-update": "Bekrefter"
+        "verifying": "Bekrefter"
       }
     }
   },
