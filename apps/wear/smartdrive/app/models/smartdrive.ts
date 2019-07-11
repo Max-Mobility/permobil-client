@@ -1355,16 +1355,24 @@ export namespace SmartDrive {
       }
     };
 
-    // public members
-    controlMode: string = SmartDrive.Settings.ControlMode.MX2plus;
-    ezOn = false;
-    disablePowerAssistBeep = false;
-    units: string = SmartDrive.Settings.Units.English;
-    acceleration = 30;
-    maxSpeed = 70;
-    tapSensitivity = 100;
+    public static Defaults = {
+      controlMode: Settings.ControlMode.MX2plus,
+      ezOn: false,
+      disablePowerAssistBeep: false,
+      units: Settings.Units.English,
+      acceleration: 30,
+      maxSpeed: 70,
+      tapSensitivity: 100,
+    };
 
-    ledColor: Color = new Color('#3c8aba');
+    // public members
+    controlMode: string = SmartDrive.Settings.Defaults.controlMode;
+    ezOn = SmartDrive.Settings.Defaults.ezOn;
+    disablePowerAssistBeep = SmartDrive.Settings.Defaults.disablePowerAssistBeep;
+    units: string = SmartDrive.Settings.Defaults.units;
+    acceleration = SmartDrive.Settings.Defaults.acceleration;
+    maxSpeed = SmartDrive.Settings.Defaults.maxSpeed;
+    tapSensitivity = SmartDrive.Settings.Defaults.tapSensitivity;
 
     constructor() {
       super();
@@ -1461,15 +1469,11 @@ export namespace SmartDrive {
     }
 
     toObj(): any {
-      return {
-        controlMode: this.controlMode,
-        units: this.units,
-        ezOn: this.ezOn,
-        disablePowerAssistBeep: this.disablePowerAssistBeep,
-        acceleration: this.acceleration,
-        maxSpeed: this.maxSpeed,
-        tapSensitivity: this.tapSensitivity
-      };
+      return Object.keys(SmartDrive.Settings.Defaults)
+        .reduce((obj, key) => {
+          obj[key] = this[key];
+          return obj;
+        }, {});
     }
 
     fromSettings(s: any): void {
@@ -1484,27 +1488,25 @@ export namespace SmartDrive {
       this.tapSensitivity = Math.round(s.TapSensitivity * 100.0);
     }
 
+    copyKey(key: string, other: any) {
+      if (other && key in other) {
+        this[key] = other[key];
+      } else if (key in SmartDrive.Settings.Defaults) {
+        this[key] = SmartDrive.Settings.Defaults[key];
+      }
+    }
+
     copy(s: any) {
       // from a settings class exactly like this
-      this.controlMode = s.controlMode;
-      this.units = s.units;
-      this.ezOn = s.ezOn;
-      this.disablePowerAssistBeep = s.disablePowerAssistBeep;
-      this.acceleration = s.acceleration;
-      this.maxSpeed = s.maxSpeed;
-      this.tapSensitivity = s.tapSensitivity;
+      Object.keys(SmartDrive.Settings.Defaults)
+        .map(k => this.copyKey(k, s));
     }
 
     diff(s: any): boolean {
-      return (
-        this.controlMode !== s.controlMode ||
-        this.units !== s.units ||
-        this.ezOn !== s.ezOn ||
-        this.disablePowerAssistBeep !== s.disablePowerAssistBeep ||
-        this.acceleration !== s.acceleration ||
-        this.maxSpeed !== s.maxSpeed ||
-        this.tapSensitivity !== s.tapSensitivity
-      );
+      return Object.keys(SmartDrive.Settings.Defaults)
+        .reduce((equal, key) => {
+          return equal && this[key] === s[key];
+        }, true);
     }
   }
 
@@ -1523,9 +1525,14 @@ export namespace SmartDrive {
       }
     };
 
+    public static Defaults = {
+      mode: SwitchControlSettings.Mode.Momentary,
+      maxSpeed: 30
+    };
+
     // public members
-    mode: string = SmartDrive.SwitchControlSettings.Mode.Momentary;
-    maxSpeed = 30;
+    mode: string = SmartDrive.SwitchControlSettings.Defaults.mode;
+    maxSpeed = SmartDrive.SwitchControlSettings.Defaults.maxSpeed;
 
     constructor() {
       super();
@@ -1580,10 +1587,11 @@ export namespace SmartDrive {
     }
 
     toObj(): any {
-      return {
-        mode: this.mode,
-        maxSpeed: this.maxSpeed
-      };
+      return Object.keys(SmartDrive.SwitchControlSettings.Defaults)
+        .reduce((obj, key) => {
+          obj[key] = this[key];
+          return obj;
+        }, {});
     }
 
     fromSettings(s: any): void {
@@ -1595,16 +1603,25 @@ export namespace SmartDrive {
       this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
     }
 
+    copyKey(key: string, other: any) {
+      if (other && key in other) {
+        this[key] = other[key];
+      } else if (key in SmartDrive.SwitchControlSettings.Defaults) {
+        this[key] = SmartDrive.SwitchControlSettings.Defaults[key];
+      }
+    }
+
     copy(s: any) {
       // from a SwitchControlSettings class exactly like this
-      this.mode = s.mode;
-      this.maxSpeed = s.maxSpeed;
+      Object.keys(SmartDrive.SwitchControlSettings.Defaults)
+        .map(k => this.copyKey(k, s));
     }
 
     diff(s: any): boolean {
-      return (
-        this.mode !== s.mode || this.maxSpeed !== s.maxSpeed
-      );
+      return Object.keys(SmartDrive.SwitchControlSettings.Defaults)
+        .reduce((equal, key) => {
+          return equal && this[key] === s[key];
+        }, true);
     }
   }
 }

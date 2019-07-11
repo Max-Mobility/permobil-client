@@ -1744,47 +1744,29 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
-    // TODO: change to LS.getItem(...);
-    const defaultSettings = new SmartDrive.Settings();
-    const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
-    this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
-    this.settings.acceleration =
-      appSettings.getNumber(DataKeys.SD_ACCELERATION) || defaultSettings.acceleration;
-    this.settings.tapSensitivity =
-      appSettings.getNumber(DataKeys.SD_TAP_SENSITIVITY) || defaultSettings.tapSensitivity;
-    this.settings.controlMode =
-      appSettings.getString(DataKeys.SD_CONTROL_MODE) || defaultSettings.controlMode;
-    this.settings.units = appSettings.getString(DataKeys.SD_UNITS) || defaultSettings.units;
-    this.switchControlSettings.mode =
-      appSettings.getString(DataKeys.SD_SWITCHCONTROL_MODE) || defaultSwitchControlSettings.mode;
-    this.switchControlSettings.maxSpeed =
-      appSettings.getNumber(DataKeys.SD_SWITCHCONTROL_SPEED) || defaultSwitchControlSettings.maxSpeed;
+    this.settings.copy(
+      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
+    );
+    this.switchControlSettings.copy(
+      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.switch-control-settings')
+    );
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
   }
 
   saveSettings() {
-    // TODO: change to LS.setItemObject(...);
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings
     );
-    appSettings.setNumber(DataKeys.SD_MAX_SPEED, this.settings.maxSpeed);
-    appSettings.setNumber(DataKeys.SD_ACCELERATION, this.settings.acceleration);
-    appSettings.setNumber(
-      DataKeys.SD_TAP_SENSITIVITY,
-      this.settings.tapSensitivity
+    LS.setItemObject(
+      'com.permobil.smartdrive.wearos.smartdrive.settings',
+      this.settings.toObj()
     );
-    appSettings.setString(DataKeys.SD_CONTROL_MODE, this.settings.controlMode);
-    appSettings.setString(DataKeys.SD_UNITS, this.settings.units);
-    appSettings.setString(
-      DataKeys.SD_SWITCHCONTROL_MODE,
-      this.switchControlSettings.mode
-    );
-    appSettings.setNumber(
-      DataKeys.SD_SWITCHCONTROL_SPEED,
-      this.switchControlSettings.maxSpeed
+    LS.setItemObject(
+      'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
+      this.switchControlSettings.toObj()
     );
   }
 
