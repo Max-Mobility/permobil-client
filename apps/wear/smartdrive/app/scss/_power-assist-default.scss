@@ -62,6 +62,15 @@ $tap-color: #db4537;
   vertical-align: top;
 }
 
+.centerMessage {
+  color: $white;
+  font-size: 16;
+  horizontal-align: $center;
+  vertical-align: $center;
+  text-align: $center;
+  text-wrap: true;
+}
+
 .powerAssist-active {
     @extend .power-assist-btn;
   color: $white;

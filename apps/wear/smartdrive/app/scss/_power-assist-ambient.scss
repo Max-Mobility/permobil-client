@@ -64,6 +64,14 @@ $tap-color: #B9B9B9;
   vertical-align: top;
 }
 
+.centerMessage {
+  color: $ambient-white;
+  font-size: 16;
+  horizontal-align: $center;
+  vertical-align: $center;
+  text-align: $center;
+  text-wrap: true;
+}
 
 .powerAssist-active,
 .powerAssist-deactive,
