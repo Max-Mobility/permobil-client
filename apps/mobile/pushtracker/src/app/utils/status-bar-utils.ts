@@ -1,3 +1,5 @@
+/// <reference path="../../../node_modules/tns-platform-declarations/android/android-platform-23.d.ts" />
+
 import { Log } from '@permobil/core';
 import * as TNSApplication from 'tns-core-modules/application';
 import { Color } from 'tns-core-modules/color';
@@ -9,7 +11,7 @@ export function setLightStatusBar() {
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
       TNSApplication.android.foregroundActivity;
-    const window = androidActivity.getWindow();
+    const window = androidActivity.getWindow() as android.view.Window;
 
     if (window) window.setStatusBarColor(whiteColor.android);
 

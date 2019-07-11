@@ -51,7 +51,7 @@ function setDarkNavigationBar() {
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
       TNSApplication.android.foregroundActivity;
-    const window = androidActivity.getWindow();
+    const window = androidActivity.getWindow() as android.view.Window;
 
     if (window) window.setNavigationBarColor(darkColor.android);
   }
