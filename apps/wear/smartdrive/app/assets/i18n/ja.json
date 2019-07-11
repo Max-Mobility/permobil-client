@@ -26,7 +26,7 @@
   "failures": {
     "connect": "に接続できませんでした",
     "getting-error": "SmartDriveエラーの取得に失敗しました",
-    "must-wear-watch": "パワーアシストを作動させるには時計を装着しなければなりません。",
+    "must-wear-watch": "SmartDriveを制御するにはPushTracker E2を着用する必要があります。",
     "no-smartdrive-paired": "SmartDriveはアプリとペアになりません。",
     "no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
     "permissions": "必要な権限が付与されていません。",

@@ -26,7 +26,7 @@
   "failures": {
     "connect": "No pudo conectarse a",
     "getting-error": "Error al obtener el error SmartDrive",
-    "must-wear-watch": "Debe usar el reloj para activar la asistencia de potencia.",
+    "must-wear-watch": "Debe usar el PushTracker E2 para controlar su SmartDrive.",
     "no-smartdrive-paired": "No SmartDrive emparejado a la aplicación!",
     "no-smartdrives-found": "No se han encontrado SmartDrives cerca.",
     "permissions": "Los permisos requeridos no fueron otorgados!",

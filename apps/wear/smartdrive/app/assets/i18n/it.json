@@ -26,7 +26,7 @@
   "failures": {
     "connect": "Impossibile connettersi a",
     "getting-error": "Impossibile ottenere l'errore SmartDrive",
-    "must-wear-watch": "È necessario indossare l'orologio per attivare il servosterzo.",
+    "must-wear-watch": "È necessario indossare PushTracker E2 per controllare il tuo SmartDrive.",
     "no-smartdrive-paired": "Nessun SmartDrive abbinato all'app!",
     "no-smartdrives-found": "Nessun SmartDrive trovato nelle vicinanze.",
     "permissions": "Le autorizzazioni richieste non sono state concesse!",

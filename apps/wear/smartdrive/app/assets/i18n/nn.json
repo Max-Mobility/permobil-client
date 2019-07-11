@@ -26,7 +26,7 @@
   "failures": {
     "connect": "Kunne ikke koble til",
     "getting-error": "Kunne ikke få SmartDrive-feil",
-    "must-wear-watch": "Du må bruke klokken for å aktivere strømassistanse.",
+    "must-wear-watch": "Du må bruke PushTracker E2 til å kontrollere SmartDrive.",
     "no-smartdrive-paired": "Ingen SmartDrive paret til appen!",
     "no-smartdrives-found": "Ingen SmartDrives funnet i nærheten.",
     "permissions": "Nødvendige tillatelser ble ikke gitt!",

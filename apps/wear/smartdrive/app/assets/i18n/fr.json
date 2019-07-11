@@ -26,7 +26,7 @@
   "failures": {
     "connect": "N'a pas pu se connecter à",
     "getting-error": "Échec d'obtention de l'erreur SmartDrive",
-    "must-wear-watch": "Vous devez porter la montre pour activer l'assistance électrique.",
+    "must-wear-watch": "Vous devez porter le PushTracker E2 pour contrôler votre SmartDrive.",
     "no-smartdrive-paired": "Pas de SmartDrive associé à l'application!",
     "no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
     "permissions": "Les autorisations requises n'ont pas été accordées!",

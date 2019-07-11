@@ -26,7 +26,7 @@
   "failures": {
     "connect": "Could not connect to",
     "getting-error": "Failed getting SmartDrive error",
-    "must-wear-watch": "You must wear the watch to activate power assist.",
+    "must-wear-watch": "You must wear the PushTracker E2 to control your SmartDrive.",
     "no-smartdrive-paired": "No SmartDrive paired to the app!",
     "no-smartdrives-found": "No SmartDrives found nearby.",
     "permissions": "Required permissions were not granted!",

@@ -26,7 +26,7 @@
   "failures": {
     "connect": "에 연결할 수 없습니다.",
     "getting-error": "SmartDrive 오류 가져 오는 데 실패했습니다.",
-    "must-wear-watch": "파워 어시스트를 활성화하려면 시계를 착용해야합니다.",
+    "must-wear-watch": "SmartDrive를 제어하려면 PushTracker E2를 착용해야합니다.",
     "no-smartdrive-paired": "앱에 페어링 된 SmartDrive가 없습니다!",
     "no-smartdrives-found": "근처에 SmartDrive가 없습니다.",
     "permissions": "필요한 권한이 부여되지 않았습니다!",

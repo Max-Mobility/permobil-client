@@ -26,7 +26,7 @@
   "failures": {
     "connect": "無法連接到",
     "getting-error": "無法獲得SmartDrive錯誤",
-    "must-wear-watch": "您必須佩戴手錶才能啟動助力功能。",
+    "must-wear-watch": "您必須佩戴PushTracker E2來控制SmartDrive。",
     "no-smartdrive-paired": "沒有SmartDrive與應用程序配對！",
     "no-smartdrives-found": "附近找不到SmartDrives。",
     "permissions": "未授予所需權限！",

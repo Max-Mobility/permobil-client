@@ -26,7 +26,7 @@
   "failures": {
     "connect": "Kon geen verbinding maken met",
     "getting-error": "Mislukt het krijgen van SmartDrive-fout",
-    "must-wear-watch": "U moet het horloge dragen om de hulp te activeren.",
+    "must-wear-watch": "U moet de PushTracker E2 dragen om uw SmartDrive te bedienen.",
     "no-smartdrive-paired": "Geen SmartDrive gekoppeld aan de app!",
     "no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
     "permissions": "Vereiste rechten werden niet verleend!",

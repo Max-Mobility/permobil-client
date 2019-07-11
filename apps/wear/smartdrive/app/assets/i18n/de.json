@@ -26,7 +26,7 @@
   "failures": {
     "connect": "Verbindung zu konnte nicht hergestellt werden",
     "getting-error": "Fehler beim Abrufen des SmartDrive-Fehlers",
-    "must-wear-watch": "Sie müssen die Uhr tragen, um die Servounterstützung zu aktivieren.",
+    "must-wear-watch": "Sie müssen den PushTracker E2 tragen, um Ihr SmartDrive steuern zu können.",
     "no-smartdrive-paired": "Kein SmartDrive mit der App gekoppelt!",
     "no-smartdrives-found": "Keine SmartDrives in der Nähe gefunden.",
     "permissions": "Erforderliche Berechtigungen wurden nicht erteilt!",
