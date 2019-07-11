@@ -942,10 +942,6 @@ export class MainViewModel extends Observable {
     }
   }
 
-  activatePowerAssistTap() {
-    this.togglePowerAssist();
-  }
-
   /**
    * Sensor Management
    */
