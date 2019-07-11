@@ -70,7 +70,8 @@ public:
   // settings flags values are the bit numbers
   enum class BoolSettingFlag : uint8_t
   {
-    EZMODE = 0
+    EZMODE = 0,
+    DISABLEPOWERASSISTBEEP = 1
   };
 
   struct Settings

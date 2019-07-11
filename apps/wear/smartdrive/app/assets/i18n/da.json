@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Venter på BLE",
+        "awaiting-connection": "Venter på forbindelse",
         "awaiting-mcu-ready": "Venter på MCU",
         "awaiting-versions": "Afventer versioner",
         "canceled": "Aflyst",
@@ -77,7 +78,7 @@
         "timeout": "Tiden er gået",
         "updating-ble": "Opdatering af BLE",
         "updating-mcu": "Opdatering af MCU",
-        "verifying-update": "Bekræftelse"
+        "verifying": "Bekræftelse"
       }
     }
   },
@@ -98,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "handicappet",
+        "enabled": "Aktiveret"
+      },
       "units": {
         "english": "engelsk",
         "metric": "metric"
@@ -117,6 +122,7 @@
     "max-speed": "Højeste hastighed",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Parret til SmartDrive",
+    "power-assist-buzzer": "Power Assist Buzzer",
     "scanning": "Scanning",
     "select-smartdrive": "Vælg SmartDrive",
     "tap-sensitivity": "Tryk på følsomhed",

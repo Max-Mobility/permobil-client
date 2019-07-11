@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "BLEを待っています",
+        "awaiting-connection": "接続待ち",
         "awaiting-mcu-ready": "MCUを待っています",
         "awaiting-versions": "バージョン待ち",
         "canceled": "キャンセル",
@@ -77,7 +78,7 @@
         "timeout": "タイムアウト",
         "updating-ble": "BLEを更新する",
         "updating-mcu": "MCUのアップデート",
-        "verifying-update": "確認中"
+        "verifying": "確認中"
       }
     }
   },
@@ -98,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "無効",
+        "enabled": "有効"
+      },
       "units": {
         "english": "英語",
         "metric": "メトリック"
@@ -117,6 +122,7 @@
     "max-speed": "マックス・スピード",
     "pair-smartdrive": "ペアSmartDrive",
     "paired-to-smartdrive": "SmartDriveとペアリング",
+    "power-assist-buzzer": "パワーアシストブザー",
     "scanning": "走査",
     "select-smartdrive": "SmartDriveを選択",
     "tap-sensitivity": "タップ感度",

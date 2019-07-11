@@ -91,8 +91,13 @@ export class MainViewModel extends Observable {
   @Prop() currentDay: string = '';
   @Prop() currentYear: string = '';
   // state variables
+  @Prop() isAmbient: boolean = false;
+  @Prop() watchBeingWorn: boolean = false;
   @Prop() powerAssistActive: boolean = false;
+  @Prop() hasTapped = false;
+  @Prop() motorOn = false;
   @Prop() isTraining: boolean = false;
+
 
   /**
    * Layout Management
@@ -149,34 +154,16 @@ export class MainViewModel extends Observable {
   @Prop() powerAssistState: PowerAssist.State = PowerAssist.State.Inactive;
 
   /**
-   * Boolean to track if the SmartDrive motor is on.
-   */
-  @Prop() motorOn = false;
-
-  /**
-   * Boolean to track if the user has tapped (for indication).
-   */
-  @Prop() hasTapped = false;
-
-  /**
    * Data to bind to the Battery Usage Chart repeater.
    */
   @Prop() batteryChartData: any[];
-  /**
-   * Used to indicate the highest value in the battery chart.
-   */
   @Prop() batteryChartMaxValue: string;
+
   /**
    * Data to bind to the Distance Chart repeater.
    */
   @Prop() distanceChartData: any[];
-  /**
-   * Used to indicate the highest value in the distance chart.
-   */
   @Prop() distanceChartMaxValue: string;
-  /**
-   * Units of distance for the distance chart.
-   */
   @Prop() distanceUnits: string = 'mi';
 
   /**
@@ -184,17 +171,16 @@ export class MainViewModel extends Observable {
    */
   @Prop() errorHistoryData = new ObservableArray();
 
+  /**
+   * SmartDrive data display so we don't directly bind to the
+   * SmartDrive itself (since it may be null)
+   */
   @Prop() mcuVersion: string = '---';
   @Prop() bleVersion: string = '---';
   @Prop() sdSerialNumber: string = '---';
   @Prop() watchSerialNumber: string = '---';
   @Prop() appVersion: string = '---';
   @Prop() databaseId: string = KinveyService.api_app_key;
-
-  /**
-   * State Management for Sensor Monitoring / Data Collection
-   */
-  private watchBeingWorn = false;
 
   /**
    * SmartDrive Data / state management
@@ -216,7 +202,6 @@ export class MainViewModel extends Observable {
    * User interaction objects
    */
   private page: Page = null;
-  // private showcaseView: NSMaterialShowcaseView = null;
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
@@ -256,11 +241,6 @@ export class MainViewModel extends Observable {
     android.Manifest.permission.ACCESS_COARSE_LOCATION
   ];
 
-  isActivityThis(activity: any) {
-    // TODO: This is a hack to determine which activity is being updated!
-    return `${activity}`.includes(application.android.packageName);
-  }
-
   constructor() {
     super();
 
@@ -272,50 +252,6 @@ export class MainViewModel extends Observable {
     this.wakeLock = powerManager.newWakeLock(
       android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
       'com.permobil.smartdrive.wearos::WakeLock'
-    );
-
-    // handle ambient mode callbacks
-    application.on('updateAmbient', args => {
-      this.updateTimeDisplay();
-      Log.D('updateAmbient', args.data,
-        this.currentTime,
-        this.currentTimeMeridiem,
-        this.currentDay,
-        this.currentYear);
-    });
-
-    // Activity lifecycle event handlers
-    application.android.on(
-      application.AndroidApplication.activityPausedEvent,
-      (args: application.AndroidActivityBundleEventData) => {
-        if (this.isActivityThis(args.activity)) {
-          // paused happens any time a new activity is shown
-          // in front, e.g. showSuccess / showFailure - so we
-          // probably don't want to fullstop on paused
-        }
-      }
-    );
-    application.android.on(
-      application.AndroidApplication.activityResumedEvent,
-      (args: application.AndroidActivityBundleEventData) => {
-        if (this.isActivityThis(args.activity)) {
-          // resumed happens after an app is re-opened out of
-          // suspend, even though the app level resume event
-          // doesn't seem to fire. Therefore we want to make
-          // sure to re-enable device sensors since the
-          // suspend event will have disabled them.
-          this.enableBodySensor();
-        }
-      }
-    );
-    application.android.on(
-      application.AndroidApplication.activityStoppedEvent,
-      (args: application.AndroidActivityBundleEventData) => {
-        if (this.isActivityThis(args.activity)) {
-          // similar to the app suspend / exit event.
-          this.fullStop();
-        }
-      }
     );
 
     // handle application lifecycle events
@@ -381,48 +317,6 @@ export class MainViewModel extends Observable {
     const versionCode = packageInfo.versionCode;
     this.appVersion = versionName;
 
-    // handle ambient mode callbacks
-    application.on('enterAmbient', args => {
-      Log.D('*** enterAmbient ***');
-      // the user can enter ambient mode even when we hold wake lock
-      // and use the keepAlive() function by full-palming the screen
-      // or going underwater - so we have to handle the cases that
-      // power assist is active or training mode is active.
-      if (this.powerAssistActive) {
-        this.disablePowerAssist();
-        return;
-      }
-      if (this.isTraining) {
-        this.onExitTrainingModeTap();
-        return;
-      }
-
-      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-
-      if (this.pager) {
-        const children = this.pager._childrenViews;
-        for (let i = 0; i < children.size; i++) {
-          const child = children.get(i);
-          child._onCssStateChange();
-        }
-      }
-    });
-
-    // handle ambient mode callbacks
-    application.on('exitAmbient', args => {
-      Log.D('*** exitAmbient ***');
-      this.enableBodySensor();
-      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-
-      if (this.pager) {
-        const children = this.pager._childrenViews;
-        for (let i = 0; i < children.size; i++) {
-          const child = children.get(i) as View;
-          child._onCssStateChange();
-        }
-      }
-    });
-
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
       this.saveSmartDriveData,
@@ -430,88 +324,14 @@ export class MainViewModel extends Observable {
       { leading: true, trailing: false }
     );
 
-    // register for watch battery updates
-    const batteryReceiverCallback = (
-      androidContext: android.content.Context,
-      intent: android.content.Intent
-    ) => {
-      // get the info from the event
-      const level = intent.getIntExtra(
-        android.os.BatteryManager.EXTRA_LEVEL,
-        -1
-      );
-      const scale = intent.getIntExtra(
-        android.os.BatteryManager.EXTRA_SCALE,
-        -1
-      );
-      const plugged = intent.getIntExtra(
-        android.os.BatteryManager.EXTRA_PLUGGED,
-        -1
-      );
-      const percent = (level / scale) * 100.0;
-      // update the battery display
-      this.watchCurrentBatteryPercentage = percent;
-      // are we charging
-      this.watchIsCharging =
-        plugged === android.os.BatteryManager.BATTERY_PLUGGED_AC ||
-        plugged === android.os.BatteryManager.BATTERY_PLUGGED_USB ||
-        plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
-      if (this.watchIsCharging && this.chargingWorkTimeoutId === null) {
-        // do work that we need while charging
-        this.chargingWorkTimeoutId = setTimeout(
-          this.doWhileCharged.bind(this),
-          this.CHARGING_WORK_PERIOD_MS
-        );
-      }
-    };
-
-    application.android.registerBroadcastReceiver(
-      android.content.Intent.ACTION_BATTERY_CHANGED,
-      batteryReceiverCallback
-    );
-
-    // monitor the clock / system time for display and logging:
-    this.updateTimeDisplay();
-    const timeReceiverCallback = (androidContext, intent) => {
-      this.updateTimeDisplay();
-      Log.D('timeReceiverCallback', this.currentTime);
-      // update charts if date has changed
-      if (!isSameDay(new Date(), this._lastChartDay)) {
-        this.updateChartData();
-      }
-    };
-    application.android.registerBroadcastReceiver(
-      android.content.Intent.ACTION_TIME_TICK,
-      timeReceiverCallback
-    );
-    application.android.registerBroadcastReceiver(
-      android.content.Intent.ACTION_TIMEZONE_CHANGED,
-      timeReceiverCallback
-    );
+    // regiter for system updates related to battery / time UI
+    this.registerForBatteryUpdates();
+    this.registerForTimeUpdates();
 
     // Tap / Gesture detection related code:
     this._sensorService.on(
       SensorService.SensorChanged,
-      (args: SensorChangedEventData) => {
-        // if we're using litedata for android sensor plugin option
-        // the data structure is simplified to reduce redundant data
-        const parsedData = args.data;
-
-        if (
-          parsedData.s ===
-          android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
-        ) {
-          this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-          if (!this.watchBeingWorn && this.powerAssistActive) {
-            // disable power assist if the watch is taken off!
-            this.disablePowerAssist();
-          }
-        }
-
-        if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
-          this.handleAccel(parsedData.d, parsedData.ts);
-        }
-      }
+      this.handleSensorData.bind(this)
     );
     this.tapDetector = new TapDetector();
     this.enableBodySensor();
@@ -543,8 +363,16 @@ export class MainViewModel extends Observable {
       'Device Language: ' + device.language,
       'UUID: ' + device.uuid
     );
+  }
 
-    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+  applyStyle() {
+    if (this.pager) {
+      const children = this.pager._childrenViews;
+      for (let i = 0; i < children.size; i++) {
+        const child = children.get(i) as View;
+        child._onCssStateChange();
+      }
+    }
   }
 
   askForPermissions() {
@@ -616,60 +444,6 @@ export class MainViewModel extends Observable {
 
   onMainPageLoaded(args: any) {
     this.page = args.object as Page;
-    // this.showcaseView = new NSMaterialShowcaseView();
-    setTimeout(() => this.firstRun(), 10000);
-  }
-
-  firstRun() {
-    // TODO: figure out why I can't get all views here - only direct
-    // children of the page
-    const sdCircle = getViewById(this.page, 'pager');
-    const e2Circle = getViewById(this.page, 'changeSettingsPage');
-
-    /*
-    let items : Array<IShowcaseItem> = new Array();
-
-    items.push(...[
-      {
-
-        target: sdCircle,
-        dismissText: "GOT IT",
-        contentText: "This is the layout",
-        withRectangleShape: false
-      },
-      {
-
-        target: e2Circle,
-        dismissText: "GOT IT",
-        contentText: "This is the reset button",
-        withRectangleShape: false
-      }]);
-
-    this.showcaseView.createSequence(items);
-    setTimeout(() => this.showcaseView.startSequence(), 1000);
-
-    // TODO: determine what parts we want to show and in what order
-    let marks = [
-      new TNSCoachMark({
-        view: sdCircle,
-        caption: '1. Smart Drive Battery.',
-        // shape: TNSCoachMark.SHAPES.CENTER,
-        // labelPosition: TNSCoachMark.LABEL_POSITIONS.BOTTOM,
-        // labelAlignment: TNSCoachMark.LABEL_ALIGNMENTS.LEFT,
-        showArrow: true
-      }),
-      new TNSCoachMark({
-        view: e2Circle,
-        caption: '2. PushTracker E2 Battery.',
-        // shape: TNSCoachMark.SHAPES.CENTER,
-        // labelPosition: TNSCoachMark.LABEL_POSITIONS.BOTTOM,
-        // labelAlignment: TNSCoachMark.LABEL_ALIGNMENTS.LEFT,
-        showArrow: true
-      })
-    ];
-    const cm = new TNSCoachMarks();
-    cm.start(marks);
-    */
   }
 
   fullStop() {
@@ -796,6 +570,26 @@ export class MainViewModel extends Observable {
    * Application lifecycle event handlers
    */
   registerAppEventHandlers() {
+    // handle ambient mode callbacks
+    application.on('enterAmbient', this.onEnterAmbient.bind(this));
+    application.on('updateAmbient', this.onUpdateAmbient.bind(this));
+    application.on('exitAmbient', this.onExitAmbient.bind(this));
+
+    // Activity lifecycle event handlers
+    application.android.on(
+      application.AndroidApplication.activityPausedEvent,
+      this.onActivityPaused.bind(this)
+    );
+    application.android.on(
+      application.AndroidApplication.activityResumedEvent,
+      this.onActivityResumed.bind(this)
+    );
+    application.android.on(
+      application.AndroidApplication.activityStoppedEvent,
+      this.onActivityStopped.bind(this)
+    );
+
+    // application lifecycle event handlers
     application.on(application.launchEvent, this.onAppLaunch.bind(this));
     application.on(application.resumeEvent, this.onAppResume.bind(this));
     application.on(application.suspendEvent, this.onAppSuspend.bind(this));
@@ -807,16 +601,73 @@ export class MainViewModel extends Observable {
     );
   }
 
-  unregisterAppEventHandlers() {
-    application.off(application.launchEvent, this.onAppLaunch.bind(this));
-    application.off(application.resumeEvent, this.onAppResume.bind(this));
-    application.off(application.suspendEvent, this.onAppSuspend.bind(this));
-    application.off(application.exitEvent, this.onAppExit.bind(this));
-    application.off(application.lowMemoryEvent, this.onAppLowMemory.bind(this));
-    application.off(
-      application.uncaughtErrorEvent,
-      this.onAppUncaughtError.bind(this)
-    );
+  isActivityThis(activity: any) {
+    // TODO: This is a hack to determine which activity is being updated!
+    return `${activity}`.includes(application.android.packageName);
+  }
+
+  onActivityPaused(args: application.AndroidActivityBundleEventData) {
+    if (this.isActivityThis(args.activity)) {
+      // paused happens any time a new activity is shown
+      // in front, e.g. showSuccess / showFailure - so we
+      // probably don't want to fullstop on paused
+    }
+  }
+
+  onActivityResumed(args: application.AndroidActivityBundleEventData) {
+    if (this.isActivityThis(args.activity)) {
+      // resumed happens after an app is re-opened out of
+      // suspend, even though the app level resume event
+      // doesn't seem to fire. Therefore we want to make
+      // sure to re-enable device sensors since the
+      // suspend event will have disabled them.
+      this.enableBodySensor();
+    }
+  }
+
+  onActivityStopped(args: application.AndroidActivityBundleEventData) {
+    if (this.isActivityThis(args.activity)) {
+      // similar to the app suspend / exit event.
+      this.fullStop();
+    }
+  }
+
+  onEnterAmbient() {
+    this.isAmbient = true;
+    Log.D('*** enterAmbient ***');
+    // the user can enter ambient mode even when we hold wake lock
+    // and use the keepAlive() function by full-palming the screen
+    // or going underwater - so we have to handle the cases that
+    // power assist is active or training mode is active.
+    if (this.powerAssistActive) {
+      this.disablePowerAssist();
+      return;
+    }
+    if (this.isTraining) {
+      this.onExitTrainingModeTap();
+      return;
+    }
+
+    themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+    this.applyStyle();
+  }
+
+  onUpdateAmbient() {
+    this.isAmbient = true;
+    this.updateTimeDisplay();
+    Log.D('updateAmbient',
+      this.currentTime,
+      this.currentTimeMeridiem,
+      this.currentDay,
+      this.currentYear);
+  }
+
+  onExitAmbient() {
+    this.isAmbient = false;
+    Log.D('*** exitAmbient ***');
+    this.enableBodySensor();
+    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+    this.applyStyle();
   }
 
   onAppLaunch(args?: any) { }
@@ -843,6 +694,69 @@ export class MainViewModel extends Observable {
   onAppUncaughtError(args?: any) {
     Log.D('App uncaught error');
     this.fullStop();
+  }
+
+  registerForBatteryUpdates() {
+    // register for watch battery updates
+    const batteryReceiverCallback = (
+      androidContext: android.content.Context,
+      intent: android.content.Intent
+    ) => {
+      // get the info from the event
+      const level = intent.getIntExtra(
+        android.os.BatteryManager.EXTRA_LEVEL,
+        -1
+      );
+      const scale = intent.getIntExtra(
+        android.os.BatteryManager.EXTRA_SCALE,
+        -1
+      );
+      const plugged = intent.getIntExtra(
+        android.os.BatteryManager.EXTRA_PLUGGED,
+        -1
+      );
+      const percent = (level / scale) * 100.0;
+      // update the battery display
+      this.watchCurrentBatteryPercentage = percent;
+      // are we charging
+      this.watchIsCharging =
+        plugged === android.os.BatteryManager.BATTERY_PLUGGED_AC ||
+        plugged === android.os.BatteryManager.BATTERY_PLUGGED_USB ||
+        plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
+      if (this.watchIsCharging && this.chargingWorkTimeoutId === null) {
+        // do work that we need while charging
+        this.chargingWorkTimeoutId = setTimeout(
+          this.doWhileCharged.bind(this),
+          this.CHARGING_WORK_PERIOD_MS
+        );
+      }
+    };
+
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_BATTERY_CHANGED,
+      batteryReceiverCallback
+    );
+  }
+
+  registerForTimeUpdates() {
+    // monitor the clock / system time for display and logging:
+    this.updateTimeDisplay();
+    const timeReceiverCallback = (androidContext, intent) => {
+      this.updateTimeDisplay();
+      Log.D('timeReceiverCallback', this.currentTime);
+      // update charts if date has changed
+      if (!isSameDay(new Date(), this._lastChartDay)) {
+        this.updateChartData();
+      }
+    };
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIME_TICK,
+      timeReceiverCallback
+    );
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIMEZONE_CHANGED,
+      timeReceiverCallback
+    );
   }
 
   toggleTimeDisplay() {
@@ -938,6 +852,37 @@ export class MainViewModel extends Observable {
   onPagerLoaded(args: any) {
     const page = args.object as Page;
     this.pager = page.getViewById('pager') as Pager;
+    // apply the style
+    if (this.isAmbient) {
+      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+    } else {
+      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+    }
+    this.applyStyle();
+  }
+
+  /**
+   * Sensor Data Handlers
+   */
+  handleSensorData(args: SensorChangedEventData) {
+    // if we're using litedata for android sensor plugin option
+    // the data structure is simplified to reduce redundant data
+    const parsedData = args.data;
+
+    if (
+      parsedData.s ===
+      android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
+    ) {
+      this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
+      if (!this.watchBeingWorn && this.powerAssistActive) {
+        // disable power assist if the watch is taken off!
+        this.disablePowerAssist();
+      }
+    }
+
+    if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
+      this.handleAccel(parsedData.d, parsedData.ts);
+    }
   }
 
   handleAccel(acceleration: any, timestamp: number) {
@@ -1639,7 +1584,6 @@ export class MainViewModel extends Observable {
     this.tempSwitchControlSettings.copy(this.switchControlSettings);
     const tappedId = args.object.id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
-    // TODO: update these for translation
     switch (this.activeSettingToChange) {
       case 'maxspeed':
         this.changeSettingKeyString = L('settings.max-speed');
@@ -1649,6 +1593,9 @@ export class MainViewModel extends Observable {
         break;
       case 'tapsensitivity':
         this.changeSettingKeyString = L('settings.tap-sensitivity');
+        break;
+      case 'powerassistbuzzer':
+        this.changeSettingKeyString = L('settings.power-assist-buzzer');
         break;
       case 'controlmode':
         this.changeSettingKeyString = L('settings.control-mode');
@@ -1689,6 +1636,13 @@ export class MainViewModel extends Observable {
         break;
       case 'tapsensitivity':
         this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
+        break;
+      case 'powerassistbuzzer':
+        if (this.tempSettings.disablePowerAssistBeep) {
+          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.disabled');
+        } else {
+          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.enabled');
+        }
         break;
       case 'controlmode':
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
@@ -1790,6 +1744,7 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
+    // TODO: change to LS.getItem(...);
     const defaultSettings = new SmartDrive.Settings();
     const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
     this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
@@ -1810,6 +1765,7 @@ export class MainViewModel extends Observable {
   }
 
   saveSettings() {
+    // TODO: change to LS.setItemObject(...);
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings

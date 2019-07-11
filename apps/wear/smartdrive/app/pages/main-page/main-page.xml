@@ -59,7 +59,6 @@
                      visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}">
                 <Label class="topValue" horizontalAlignment="center" textWrap="true"
                        text="{{ estimatedDistanceDisplay }}"
-                       tap="{{ toggleDisplay }}"
                        visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
                 <Label class="topValueDescription" textWrap="true"
                        text="{{ estimatedDistanceDescription }}"/>
@@ -78,10 +77,13 @@
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
                      text="{{ currentSpeedDescription }}"
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+              <Label row="3" col="1" class="centerMessage"
+                     text="{{ L('failures.must-wear-watch') }}"
+                     visibility="{{ watchBeingWorn ? 'collapsed':'visible' }}"/>
               <Button row="3" col="1" class="powerAssist-deactive"
                       text="{{ L('power-assist.activate') }}"
                       tap="{{ enablePowerAssist }}"
-                      visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
+                      visibility="{{ (watchBeingWorn && !powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-active"
                       text="{{ L('power-assist.deactivate') }}"
                       tap="{{ disablePowerAssist }}"
@@ -91,7 +93,6 @@
                       tap="{{ stopSmartDrive }}"
                       visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-training"
-                      width="100%" height="40%" borderRadius="50%"
                       text="{{ L('power-assist.exit-training') }}"
                       tap="{{ onExitTrainingModeTap }}"
                       visibility="{{ isTraining ? 'visible':'collapsed' }}" />
@@ -230,6 +231,12 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="powerAssistBuzzer" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.power-assist-buzzer') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.control-mode') }}" class="settings-label" textWrap="true" />
@@ -293,8 +300,7 @@
             <Label row="2" col="1" class="topValue" horizontalAlignment="center"
                    text="{{ smartDriveOtaState }}"
                    visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}"/>
-            <Label row="3" col="1" horizontalAlignment="center"
-                   verticalAlignment="middle" textWrap="true"
+            <Label row="3" col="1" class="centerMessage"
                    text="{{ updateProgressText }}"
                    visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
             <Repeater row="3" col="1" items="{{ smartDriveOtaActions }}"
@@ -334,8 +340,7 @@
               class="circleDetails">
             <Label row="1" col="1" class="topValue" text=" "/>
             <Label row="2" col="1" class="topValueDescription" text=" "/>
-            <Label row="3" col="1" horizontalAlignment="center"
-                   verticalAlignment="middle" textWrap="true"
+            <Label row="3" col="1" class="centerMessage"
                    text="{{ scanningProgressText }}"/>
             <Label row="4" col="1" class="currentTime"
                    text="{{ currentTime }}" textWrap="true" />

@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Wachten op BLE",
+        "awaiting-connection": "Wachten op verbinding",
         "awaiting-mcu-ready": "Wachten op MCU",
         "awaiting-versions": "In afwachting van versies",
         "canceled": "geannuleerd",
@@ -77,7 +78,7 @@
         "timeout": "Time-out",
         "updating-ble": "BLE updaten",
         "updating-mcu": "MCU bijwerken",
-        "verifying-update": "Het verifiëren"
+        "verifying": "Het verifiëren"
       }
     }
   },
@@ -98,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "invalide",
+        "enabled": "Ingeschakeld"
+      },
       "units": {
         "english": "Engels",
         "metric": "Metriek"
@@ -117,6 +122,7 @@
     "max-speed": "Maximale snelheid",
     "pair-smartdrive": "Koppel SmartDrive",
     "paired-to-smartdrive": "Gekoppeld aan SmartDrive",
+    "power-assist-buzzer": "Power Assist Buzzer",
     "scanning": "het scannen",
     "select-smartdrive": "Selecteer SmartDrive",
     "tap-sensitivity": "Tik op Gevoeligheid",

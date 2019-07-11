@@ -2469,6 +2469,63 @@
                                         </translations>
                                     </concept_node>
                                     <concept_node>
+                                        <name>awaiting-connection</name>
+                                        <definition_loaded>false</definition_loaded>
+                                        <description></description>
+                                        <comment></comment>
+                                        <default_text></default_text>
+                                        <translations>
+                                            <translation>
+                                                <language>da-DK</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>de-DE</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>en-US</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>es-ES</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>fr-FR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>it-IT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ja-JP</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ko-KR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nb-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nl-NL</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nn-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>zh-CHT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                        </translations>
+                                    </concept_node>
+                                    <concept_node>
                                         <name>awaiting-mcu-ready</name>
                                         <definition_loaded>false</definition_loaded>
                                         <description></description>
@@ -3210,7 +3267,7 @@
                                         </translations>
                                     </concept_node>
                                     <concept_node>
-                                        <name>verifying-update</name>
+                                        <name>verifying</name>
                                         <definition_loaded>false</definition_loaded>
                                         <description></description>
                                         <comment></comment>
@@ -3807,6 +3864,125 @@
                         <name>settings</name>
                         <children>
                             <folder_node>
+                                <name>power-assist-buzzer</name>
+                                <children>
+                                    <concept_node>
+                                        <name>disabled</name>
+                                        <definition_loaded>false</definition_loaded>
+                                        <description></description>
+                                        <comment></comment>
+                                        <default_text></default_text>
+                                        <translations>
+                                            <translation>
+                                                <language>da-DK</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>de-DE</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>en-US</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>es-ES</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>fr-FR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>it-IT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ja-JP</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ko-KR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nb-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nl-NL</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nn-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>zh-CHT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                        </translations>
+                                    </concept_node>
+                                    <concept_node>
+                                        <name>enabled</name>
+                                        <definition_loaded>false</definition_loaded>
+                                        <description></description>
+                                        <comment></comment>
+                                        <default_text></default_text>
+                                        <translations>
+                                            <translation>
+                                                <language>da-DK</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>de-DE</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>en-US</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>es-ES</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>fr-FR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>it-IT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ja-JP</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>ko-KR</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nb-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nl-NL</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>nn-NO</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                            <translation>
+                                                <language>zh-CHT</language>
+                                                <approved>false</approved>
+                                            </translation>
+                                        </translations>
+                                    </concept_node>
+                                </children>
+                            </folder_node>
+                            <folder_node>
                                 <name>units</name>
                                 <children>
                                     <concept_node>
@@ -4343,6 +4519,63 @@
                     </concept_node>
                     <concept_node>
                         <name>paired-to-smartdrive</name>
+                        <definition_loaded>false</definition_loaded>
+                        <description></description>
+                        <comment></comment>
+                        <default_text></default_text>
+                        <translations>
+                            <translation>
+                                <language>da-DK</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>de-DE</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>en-US</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>es-ES</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>fr-FR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>it-IT</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ja-JP</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>ko-KR</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nb-NO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nl-NL</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>nn-NO</language>
+                                <approved>false</approved>
+                            </translation>
+                            <translation>
+                                <language>zh-CHT</language>
+                                <approved>false</approved>
+                            </translation>
+                        </translations>
+                    </concept_node>
+                    <concept_node>
+                        <name>power-assist-buzzer</name>
                         <definition_loaded>false</definition_loaded>
                         <description></description>
                         <comment></comment>

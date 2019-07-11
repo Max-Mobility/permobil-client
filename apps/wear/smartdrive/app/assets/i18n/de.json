@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Warten auf BLE",
+        "awaiting-connection": "Auf Verbindung warten",
         "awaiting-mcu-ready": "Warten auf MCU",
         "awaiting-versions": "Warten auf Versionen",
         "canceled": "Abgebrochen",
@@ -77,7 +78,7 @@
         "timeout": "Auszeit",
         "updating-ble": "Aktualisieren von BLE",
         "updating-mcu": "Aktualisieren der MCU",
-        "verifying-update": "Überprüfung"
+        "verifying": "Überprüfung"
       }
     }
   },
@@ -98,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Deaktiviert",
+        "enabled": "aktiviert"
+      },
       "units": {
         "english": "Englisch",
         "metric": "Metrisch"
@@ -117,6 +122,7 @@
     "max-speed": "Höchstgeschwindigkeit",
     "pair-smartdrive": "Koppeln Sie SmartDrive",
     "paired-to-smartdrive": "Gepaart mit SmartDrive",
+    "power-assist-buzzer": "Power Assist Summer",
     "scanning": "Scannen",
     "select-smartdrive": "Wählen Sie SmartDrive",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",

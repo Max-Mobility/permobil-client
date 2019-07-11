@@ -892,10 +892,19 @@ export class SmartDrive extends DeviceBase {
   }
 
   public sendSettingsObject(settings: SmartDrive.Settings): Promise<any> {
+    const flags = [
+      settings.ezOn,
+      settings.disablePowerAssistBeep
+    ].reduce((f, s, i) => {
+      if (s) {
+        f |= (1 << i);
+      }
+      return f;
+    }, 0);
     const _settings = super.sendSettings(
       settings.controlMode,
       settings.units,
-      0,
+      flags,
       settings.tapSensitivity / 100.0,
       settings.acceleration / 100.0,
       settings.maxSpeed / 100.0
@@ -1349,6 +1358,7 @@ export namespace SmartDrive {
     // public members
     controlMode: string = SmartDrive.Settings.ControlMode.MX2plus;
     ezOn = false;
+    disablePowerAssistBeep = false;
     units: string = SmartDrive.Settings.Units.English;
     acceleration = 30;
     maxSpeed = 70;
@@ -1380,6 +1390,11 @@ export namespace SmartDrive {
         case 'tap-sensitivity':
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.min(this.tapSensitivity + increment, 100);
+          break;
+        case 'powerassistbuzzer':
+        case 'power-assist-buzzer':
+        case 'Power Assist Buzzer':
+          this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
           break;
         case 'controlmode':
         case 'control-mode':
@@ -1419,6 +1434,11 @@ export namespace SmartDrive {
         case 'Tap Sensitivity':
           this.tapSensitivity = Math.max(this.tapSensitivity - increment, 10);
           break;
+        case 'powerassistbuzzer':
+        case 'power-assist-buzzer':
+        case 'Power Assist Buzzer':
+          this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
+          break;
         case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
@@ -1445,6 +1465,7 @@ export namespace SmartDrive {
         controlMode: this.controlMode,
         units: this.units,
         ezOn: this.ezOn,
+        disablePowerAssistBeep: this.disablePowerAssistBeep,
         acceleration: this.acceleration,
         maxSpeed: this.maxSpeed,
         tapSensitivity: this.tapSensitivity
@@ -1456,6 +1477,7 @@ export namespace SmartDrive {
       this.controlMode = SmartDrive.Settings.ControlMode.fromSettings(s);
       this.units = SmartDrive.Settings.Units.fromSettings(s);
       this.ezOn = SmartDrive.Settings.getBoolSetting(s.Flags, 0);
+      this.disablePowerAssistBeep = SmartDrive.Settings.getBoolSetting(s.Flags, 1);
       // these floats are [0,1] on pushtracker
       this.acceleration = Math.round(s.Acceleration * 100.0);
       this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
@@ -1467,6 +1489,7 @@ export namespace SmartDrive {
       this.controlMode = s.controlMode;
       this.units = s.units;
       this.ezOn = s.ezOn;
+      this.disablePowerAssistBeep = s.disablePowerAssistBeep;
       this.acceleration = s.acceleration;
       this.maxSpeed = s.maxSpeed;
       this.tapSensitivity = s.tapSensitivity;
@@ -1477,6 +1500,7 @@ export namespace SmartDrive {
         this.controlMode !== s.controlMode ||
         this.units !== s.units ||
         this.ezOn !== s.ezOn ||
+        this.disablePowerAssistBeep !== s.disablePowerAssistBeep ||
         this.acceleration !== s.acceleration ||
         this.maxSpeed !== s.maxSpeed ||
         this.tapSensitivity !== s.tapSensitivity

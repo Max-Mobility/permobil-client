@@ -64,6 +64,7 @@
     "sd": {
       "state": {
         "awaiting-ble-ready": "Aspettando su BLE",
+        "awaiting-connection": "In attesa di connessione",
         "awaiting-mcu-ready": "In attesa su MCU",
         "awaiting-versions": "In attesa di versioni",
         "canceled": "Annullato",
@@ -77,7 +78,7 @@
         "timeout": "Tempo scaduto",
         "updating-ble": "Aggiornamento di BLE",
         "updating-mcu": "Aggiornamento di MCU",
-        "verifying-update": "Verifica"
+        "verifying": "Verifica"
       }
     }
   },
@@ -98,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Disabilitato",
+        "enabled": "Abilitato"
+      },
       "units": {
         "english": "Inglese",
         "metric": "metrico"
@@ -117,6 +122,7 @@
     "max-speed": "Massima velocità",
     "pair-smartdrive": "Accoppia SmartDrive",
     "paired-to-smartdrive": "Associato a SmartDrive",
+    "power-assist-buzzer": "Cicalino Power Assist",
     "scanning": "lettura",
     "select-smartdrive": "Seleziona SmartDrive",
     "tap-sensitivity": "Tocca Sensibilità",
