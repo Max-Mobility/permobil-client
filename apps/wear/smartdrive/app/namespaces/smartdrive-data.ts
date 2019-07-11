@@ -157,9 +157,10 @@ export namespace SmartDriveData {
       });
     }
 
-    let progressCallback: (file: any, eventData: ProgressEventData) => void = null;
+    export type ProgressCallback = (file: any, eventData: ProgressEventData) => void;
+    let progressCallback: ProgressCallback = null;
 
-    export function setDownloadProgressCallback(cb: (file: any, eventData: ProgressEventData) => void) {
+    export function setDownloadProgressCallback(cb: ProgressCallback) {
       progressCallback = cb;
     }
 
