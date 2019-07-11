@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingIndicator } from 'nativescript-loading-indicator';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
 /**
