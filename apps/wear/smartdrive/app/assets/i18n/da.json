@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "handicappet",
+        "enabled": "Aktiveret"
+      },
       "units": {
         "english": "engelsk",
         "metric": "metric"
@@ -118,6 +122,7 @@
     "max-speed": "Højeste hastighed",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Parret til SmartDrive",
+    "power-assist-buzzer": "Power Assist Buzzer",
     "scanning": "Scanning",
     "select-smartdrive": "Vælg SmartDrive",
     "tap-sensitivity": "Tryk på følsomhed",

@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "殘",
+        "enabled": "啟用"
+      },
       "units": {
         "english": "英語",
         "metric": "公"
@@ -118,6 +122,7 @@
     "max-speed": "最大速度",
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "與SmartDrive配對",
+    "power-assist-buzzer": "助力蜂鳴器",
     "scanning": "掃描",
     "select-smartdrive": "選擇SmartDrive",
     "tap-sensitivity": "點擊靈敏度",

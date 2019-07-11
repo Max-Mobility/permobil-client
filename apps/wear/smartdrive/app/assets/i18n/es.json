@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Discapacitado",
+        "enabled": "Habilitado"
+      },
       "units": {
         "english": "Inglés",
         "metric": "Métrico"
@@ -118,6 +122,7 @@
     "max-speed": "máxima velocidad",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Emparejado a SmartDrive",
+    "power-assist-buzzer": "Zumbador de asistencia eléctrica",
     "scanning": "Exploración",
     "select-smartdrive": "Seleccione SmartDrive",
     "tap-sensitivity": "Toque la sensibilidad",

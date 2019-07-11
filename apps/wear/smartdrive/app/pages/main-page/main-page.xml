@@ -231,6 +231,12 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="powerAssistBuzzer" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.power-assist-buzzer') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.control-mode') }}" class="settings-label" textWrap="true" />

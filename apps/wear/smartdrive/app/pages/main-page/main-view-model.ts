@@ -1584,7 +1584,6 @@ export class MainViewModel extends Observable {
     this.tempSwitchControlSettings.copy(this.switchControlSettings);
     const tappedId = args.object.id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
-    // TODO: update these for translation
     switch (this.activeSettingToChange) {
       case 'maxspeed':
         this.changeSettingKeyString = L('settings.max-speed');
@@ -1594,6 +1593,9 @@ export class MainViewModel extends Observable {
         break;
       case 'tapsensitivity':
         this.changeSettingKeyString = L('settings.tap-sensitivity');
+        break;
+      case 'powerassistbuzzer':
+        this.changeSettingKeyString = L('settings.power-assist-buzzer');
         break;
       case 'controlmode':
         this.changeSettingKeyString = L('settings.control-mode');
@@ -1634,6 +1636,13 @@ export class MainViewModel extends Observable {
         break;
       case 'tapsensitivity':
         this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
+        break;
+      case 'powerassistbuzzer':
+        if (this.tempSettings.disablePowerAssistBeep) {
+          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.disabled');
+        } else {
+          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.enabled');
+        }
         break;
       case 'controlmode':
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
@@ -1735,6 +1744,7 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
+    // TODO: change to LS.getItem(...);
     const defaultSettings = new SmartDrive.Settings();
     const defaultSwitchControlSettings = new SmartDrive.SwitchControlSettings();
     this.settings.maxSpeed = appSettings.getNumber(DataKeys.SD_MAX_SPEED) || defaultSettings.maxSpeed;
@@ -1755,6 +1765,7 @@ export class MainViewModel extends Observable {
   }
 
   saveSettings() {
+    // TODO: change to LS.setItemObject(...);
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings

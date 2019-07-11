@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Disabilitato",
+        "enabled": "Abilitato"
+      },
       "units": {
         "english": "Inglese",
         "metric": "metrico"
@@ -118,6 +122,7 @@
     "max-speed": "Massima velocità",
     "pair-smartdrive": "Accoppia SmartDrive",
     "paired-to-smartdrive": "Associato a SmartDrive",
+    "power-assist-buzzer": "Cicalino Power Assist",
     "scanning": "lettura",
     "select-smartdrive": "Seleziona SmartDrive",
     "tap-sensitivity": "Tocca Sensibilità",

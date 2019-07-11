@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "Deaktiviert",
+        "enabled": "aktiviert"
+      },
       "units": {
         "english": "Englisch",
         "metric": "Metrisch"
@@ -118,6 +122,7 @@
     "max-speed": "Höchstgeschwindigkeit",
     "pair-smartdrive": "Koppeln Sie SmartDrive",
     "paired-to-smartdrive": "Gepaart mit SmartDrive",
+    "power-assist-buzzer": "Power Assist Summer",
     "scanning": "Scannen",
     "select-smartdrive": "Wählen Sie SmartDrive",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",

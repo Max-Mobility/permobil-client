@@ -99,6 +99,10 @@
   },
   "sd": {
     "settings": {
+      "power-assist-buzzer": {
+        "disabled": "장애인",
+        "enabled": "사용"
+      },
       "units": {
         "english": "영어",
         "metric": "미터법"
@@ -118,6 +122,7 @@
     "max-speed": "최대 속도",
     "pair-smartdrive": "쌍 SmartDrive",
     "paired-to-smartdrive": "SmartDrive와 페어링 됨",
+    "power-assist-buzzer": "전원 보조 버저",
     "scanning": "스캐닝",
     "select-smartdrive": "SmartDrive 선택",
     "tap-sensitivity": "탭 감도",
