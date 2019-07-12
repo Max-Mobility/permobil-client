@@ -147,6 +147,8 @@ export class MainViewModel extends Observable {
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
+  // error related info
+  lastErrorId: number = null;
 
   /**
    * State tracking for power assist
@@ -297,6 +299,23 @@ export class MainViewModel extends Observable {
     Promise.all(sqlitePromises)
       .then(() => {
         console.timeEnd('SQLite_Init');
+        // get last error
+        return this._sqliteService
+          .getLast(SmartDriveData.Errors.TableName, SmartDriveData.Errors.IdName)
+          .then(obj => {
+            try {
+              const lastErrorId = parseInt(obj && obj[3] || -1);
+              this.lastErrorId = lastErrorId;
+            } catch (err) {
+            }
+          })
+          .catch(err => {
+            alert({
+              title: L('failures.title'),
+              message: `${L('failures.getting-error')}: ${err}`,
+              okButtonText: L('buttons.ok')
+            });
+          });
       })
       .catch(err => {
         Log.E('Could not make table:', err);
@@ -2273,37 +2292,23 @@ export class MainViewModel extends Observable {
       // we use this when saving a local error
       errorId = -1;
     }
-    // get the most recent error
-    return this._sqliteService
-      .getLast(SmartDriveData.Errors.TableName, SmartDriveData.Errors.IdName)
-      .then(obj => {
-        // Log.D('From DB: ', obj);
-        const lastId = obj && obj[0];
-        const lastTimestamp = obj && obj[1];
-        const lastErrorCode = obj && obj[2];
-        const lastErrorId = obj && obj[3];
-        // make sure this isn't an error we've seen before
-        if (errorId === -1 || errorId !== lastErrorId) {
-          const newError = SmartDriveData.Errors.newError(errorCode, errorId);
-          // now save the error into the table
-          return this._sqliteService
-            .insertIntoTable(SmartDriveData.Errors.TableName, newError)
-            .catch(err => {
-              alert({
-                title: L('failures.title'),
-                message: `${L('failures.saving-error')}: ${err}`,
-                okButtonText: L('buttons.ok')
-              });
-            });
-        }
-      })
-      .catch(err => {
-        alert({
-          title: L('failures.title'),
-          message: `${L('failures.getting-error')}: ${err}`,
-          okButtonText: L('buttons.ok')
+    if (errorId === -1 || errorId !== this.lastErrorId) {
+      // update the error id
+      if (errorId !== -1) {
+        this.lastErrorId = errorId;
+      }
+      const newError = SmartDriveData.Errors.newError(errorCode, errorId);
+      // now save the error into the table
+      return this._sqliteService
+        .insertIntoTable(SmartDriveData.Errors.TableName, newError)
+        .catch(err => {
+          alert({
+            title: L('failures.title'),
+            message: `${L('failures.saving-error')}: ${err}`,
+            okButtonText: L('buttons.ok')
+          });
         });
-      });
+    }
   }
 
   getRecentErrors(numErrors: number, offset: number = 0) {
@@ -2322,7 +2327,9 @@ export class MainViewModel extends Observable {
             const translationKey = 'error-history.errors.' + (r && r[2]).toLowerCase();
             return {
               time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-              code: L(translationKey)
+              code: L(translationKey),
+              id: r && r[3],
+              uuid: r && r[4]
             };
           });
         }
