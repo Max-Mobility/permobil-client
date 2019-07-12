@@ -79,7 +79,7 @@
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
               <Label row="3" col="1" class="centerMessage"
                      text="{{ L('failures.must-wear-watch') }}"
-                     visibility="{{ watchBeingWorn ? 'collapsed':'visible' }}"/>
+                     visibility="{{ (watchBeingWorn || isTraining) ? 'collapsed':'visible' }}"/>
               <Button row="3" col="1" class="powerAssist-deactive"
                       text="{{ L('power-assist.activate') }}"
                       tap="{{ enablePowerAssist }}"
