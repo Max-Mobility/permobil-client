@@ -444,6 +444,8 @@ export class MainViewModel extends Observable {
 
   onMainPageLoaded(args: any) {
     this.page = args.object as Page;
+    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+    this.applyStyle();
   }
 
   fullStop() {
@@ -934,7 +936,7 @@ export class MainViewModel extends Observable {
 
   stopSmartDrive() {
     // turn off the motor if SD is connected
-    if (this.smartDrive && this.smartDrive.ableToSend) {
+    if (this.smartDrive && this.smartDrive.ableToSend && this.motorOn) {
       return this.smartDrive
         .stopMotor()
         .catch(err => Log.E('Could not stop motor', err));
@@ -1304,10 +1306,10 @@ export class MainViewModel extends Observable {
             });
         })
           .then(() => {
-            this.smartDrive.disconnect();
+            return this.disconnectFromSmartDrive();
           })
           .catch((err) => {
-            this.smartDrive.disconnect();
+            this.disconnectFromSmartDrive();
             Log.E('Could not connect to smartdrive:', err);
             this.updateProgressText = L('updates.errors.connecting') + `: ${err}`;
             throw err;
@@ -1784,10 +1786,10 @@ export class MainViewModel extends Observable {
     );
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
-    );
+    ) || false;
     this.disableWearCheck = appSettings.getBoolean(
       DataKeys.REQUIRE_WATCH_BEING_WORN
-    );
+    ) || false;
   }
 
   saveSettings() {
@@ -2100,7 +2102,7 @@ export class MainViewModel extends Observable {
           this._savedSmartDriveAddress +
           '\n\n' +
           err
-        ;
+          ;
         alert({
           title: L('failures.title'),
           message: msg,
@@ -2189,25 +2191,36 @@ export class MainViewModel extends Observable {
   }
 
   async onDistance(args: any) {
+    const currentCoast = appSettings.getNumber(
+      DataKeys.SD_DISTANCE_CASE
+    );
+    const currentDrive = appSettings.getNumber(
+      DataKeys.SD_DISTANCE_DRIVE
+    );
+
     // Log.D('onDistance event');
     const coastDistance = args.data.coastDistance;
     const driveDistance = args.data.driveDistance;
 
-    // save to the database
-    this._throttledSmartDriveSaveFn({
-      driveDistance: this.smartDrive.driveDistance,
-      coastDistance: this.smartDrive.coastDistance
-    });
+    if (coastDistance !== currentCoast ||
+      driveDistance !== currentDrive) {
 
-    // save the updated distance
-    appSettings.setNumber(
-      DataKeys.SD_DISTANCE_CASE,
-      this.smartDrive.coastDistance
-    );
-    appSettings.setNumber(
-      DataKeys.SD_DISTANCE_DRIVE,
-      this.smartDrive.driveDistance
-    );
+      // save to the database
+      this._throttledSmartDriveSaveFn({
+        driveDistance: this.smartDrive.driveDistance,
+        coastDistance: this.smartDrive.coastDistance
+      });
+
+      // save the updated distance
+      appSettings.setNumber(
+        DataKeys.SD_DISTANCE_CASE,
+        this.smartDrive.coastDistance
+      );
+      appSettings.setNumber(
+        DataKeys.SD_DISTANCE_DRIVE,
+        this.smartDrive.driveDistance
+      );
+    }
   }
 
   async onSmartDriveVersion(args: any) {
