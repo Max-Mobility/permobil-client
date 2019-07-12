@@ -47,13 +47,17 @@
     "send-settings": "Impossibile inviare le impostazioni a"
   },
   "languages": {
+    "da": "danese",
     "de": "Tedesco",
     "en": "Inglese",
     "es": "Spagnolo",
     "fr": "Francese",
+    "it": "Italiano",
     "ja": "giapponese",
     "ko": "coreano",
+    "nb": "Norvegese (Bokmål)",
     "nl": "olandese",
+    "nn": "Norvegese (Nynorsk)",
     "zh": "cinese"
   },
   "menu": {

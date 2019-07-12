@@ -47,13 +47,17 @@
     "send-settings": "Kunne ikke sende indstillinger til"
   },
   "languages": {
+    "da": "dansk",
     "de": "tysk",
     "en": "engelsk",
     "es": "spansk",
     "fr": "fransk",
+    "it": "italiensk",
     "ja": "japansk",
     "ko": "Korean",
+    "nb": "Norsk (bokmål)",
     "nl": "hollandske",
+    "nn": "Norsk (nynorsk)",
     "zh": "kinesisk"
   },
   "menu": {

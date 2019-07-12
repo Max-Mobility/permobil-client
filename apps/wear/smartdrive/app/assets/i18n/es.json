@@ -47,13 +47,17 @@
     "send-settings": "Error al enviar la configuración a"
   },
   "languages": {
+    "da": "danés",
     "de": "alemán",
     "en": "Inglés",
     "es": "español",
     "fr": "francés",
+    "it": "italiano",
     "ja": "japonés",
     "ko": "coreano",
+    "nb": "Noruego (Bokmål)",
     "nl": "holandés",
+    "nn": "Noruego (nynorsk)",
     "zh": "chino"
   },
   "menu": {

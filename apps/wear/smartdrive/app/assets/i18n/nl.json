@@ -47,13 +47,17 @@
     "send-settings": "Instellingen naar verzenden mislukt"
   },
   "languages": {
+    "da": "Deens",
     "de": "Duitse",
     "en": "Engels",
     "es": "Spaans",
     "fr": "Frans",
+    "it": "Italiaans",
     "ja": "Japans",
     "ko": "Koreaans",
+    "nb": "Noors (Bokmål)",
     "nl": "Nederlands",
+    "nn": "Noors (Nynorsk)",
     "zh": "Chinese"
   },
   "menu": {

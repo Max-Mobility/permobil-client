@@ -44,17 +44,22 @@
     "saving-error": "Failed saving SmartDrive error",
     "saving-usage": "Failed saving usage",
     "scan": "Could not scan",
-    "send-settings": "Failed to send settings to"
+    "send-settings": "Failed to send settings to",
+    "title": "Failure"
   },
   "languages": {
+    "da": "Danish",
     "de": "German",
     "en": "English",
     "es": "Spanish",
     "fr": "French",
+    "it": "Italian",
     "ja": "Japanese",
     "ko": "Korean",
+    "nb": "Norwegian (Bokmål)",
     "nl": "Dutch",
-    "zh": "Chinese"
+    "nn": "Norwegian (Nynorsk)",
+    "zh": "Chinese (Traditional)"
   },
   "menu": {
     "about": "About",

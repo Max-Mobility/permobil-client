@@ -1066,7 +1066,11 @@ export class MainViewModel extends Observable {
       this.enableLayout('updates');
       this.checkForUpdates();
     } else {
-      showFailure(L('failures.no-smartdrive-paired'));
+      alert({
+        title: L('failures.title'),
+        message: L('failures.no-smartdrive-paired'),
+        okButtonText: L('buttons.ok')
+      });
     }
   }
 
@@ -1384,7 +1388,11 @@ export class MainViewModel extends Observable {
                 const msg = L('updates.failed') + `: ${err}`;
                 Log.E(msg);
                 this.updateProgressText = msg;
-                showFailure(msg);
+                alert({
+                  title: L('updates.failed'),
+                  message: `${err}`,
+                  okButtonText: L('buttons.ok')
+                });
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
               });
@@ -1843,7 +1851,11 @@ export class MainViewModel extends Observable {
   enablePowerAssist() {
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
-      showFailure(L('failures.must-wear-watch'));
+      alert({
+        title: L('failures.title'),
+        message: L('failures.must-wear-watch'),
+        okButtonText: L('buttons.ok')
+      });
       return;
     } else if (this.hasSavedSmartDrive()) {
       this.tapDetector.reset();
@@ -1953,7 +1965,11 @@ export class MainViewModel extends Observable {
 
         // make sure we have smartdrives
         if (BluetoothService.SmartDrives.length <= 0) {
-          showFailure(L('failures.no-smartdrives-found'));
+          alert({
+            title: L('failures.title'),
+            message: L('failures.no-smartdrives-found'),
+            okButtonText: L('buttons.ok')
+          });
           return false;
         }
 
@@ -1987,7 +2003,11 @@ export class MainViewModel extends Observable {
         clearInterval(scanDisplayId);
         this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.E('could not scan', error);
-        showFailure(`${L('failures.scan')}: ${error}`);
+        alert({
+          title: L('failures.title'),
+          message: `${L('failures.scan')}: ${error}`,
+          okButtonText: L('buttons.ok')
+        });
         return false;
       });
   }
@@ -2002,7 +2022,11 @@ export class MainViewModel extends Observable {
         return true;
       })
       .catch(err => {
-        showFailure(L('failures.connect') + ' ' + smartDrive.address);
+        alert({
+          title: L('failures.title'),
+          message: L('failures.connect') + ' ' + smartDrive.address,
+          okButtonText: L('buttons.ok')
+        });
         return false;
       });
   }
@@ -2071,13 +2095,17 @@ export class MainViewModel extends Observable {
         this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
         // indicate failure
         Log.E('send settings failed', err);
-        showFailure(
-          L('failures.send-settings') +
+        const msg = L('failures.send-settings') +
           ' ' +
           this._savedSmartDriveAddress +
-          ' ' +
+          '\n\n' +
           err
-        );
+        ;
+        alert({
+          title: L('failures.title'),
+          message: msg,
+          okButtonText: L('buttons.ok')
+        });
       });
   }
 
@@ -2248,12 +2276,20 @@ export class MainViewModel extends Observable {
           return this._sqliteService
             .insertIntoTable(SmartDriveData.Errors.TableName, newError)
             .catch(err => {
-              showFailure(`${L('failures.saving-error')}: ${err}`);
+              alert({
+                title: L('failures.title'),
+                message: `${L('failures.saving-error')}: ${err}`,
+                okButtonText: L('buttons.ok')
+              });
             });
         }
       })
       .catch(err => {
-        showFailure(`${L('failures.getting.error')}: ${err}`);
+        alert({
+          title: L('failures.title'),
+          message: `${L('failures.getting-error')}: ${err}`,
+          okButtonText: L('buttons.ok')
+        });
       });
   }
 
@@ -2366,7 +2402,11 @@ export class MainViewModel extends Observable {
       })
       .catch(err => {
         Log.E('Failed saving usage:', err);
-        showFailure(`${L('failures.saving-usage')}: ${err}`);
+        alert({
+          title: L('failures.title'),
+          message: `${L('failures.saving-usage')}: ${err}`,
+          okButtonText: L('buttons.ok')
+        });
       });
   }
 

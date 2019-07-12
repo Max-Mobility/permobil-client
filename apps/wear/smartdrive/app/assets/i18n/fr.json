@@ -47,13 +47,17 @@
     "send-settings": "Échec d'envoi des paramètres à"
   },
   "languages": {
+    "da": "danois",
     "de": "Allemand",
     "en": "Anglais",
     "es": "Espanol",
     "fr": "français",
+    "it": "Italien",
     "ja": "japonais",
     "ko": "coréen",
+    "nb": "Norvégien (Bokmål)",
     "nl": "Néerlandais",
+    "nn": "Norvégien (Nynorsk)",
     "zh": "chinois"
   },
   "menu": {
