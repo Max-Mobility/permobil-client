@@ -15,6 +15,7 @@ import { AppInfoComponent } from './modules/app-info/app-info.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
+import { ProfileSettingsComponent} from './modules/profile-settings/profile-settings.component';
 
 // factories
 export function createTranslateLoader() {
@@ -44,7 +45,7 @@ export function createTranslateLoader() {
     })
   ],
   declarations: [AppComponent, ...COMPONENTS],
-  entryComponents: [AppInfoComponent],
+  entryComponents: [AppInfoComponent, ProfileSettingsComponent],
   providers: [...PROVIDERS, ModalDialogService],
   schemas: [NO_ERRORS_SCHEMA]
 })
