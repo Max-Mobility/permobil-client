@@ -146,12 +146,6 @@ export class TapDetector {
   public setSensitivity(sensitivity: number) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
-    /*
-    // update prediction threshold
-    this.predictionThreshold = this.maxPredictionThreshold -
-      (this.maxPredictionThreshold - this.minPredictionThreshold) *
-      (sensitivity / 100.0);
-    */
     // update jerk threshold
     this.jerkThreshold = this.maxJerkThreshold -
       (this.maxJerkThreshold - this.minJerkThreshold) *
