@@ -75,6 +75,7 @@ $tap-color: #B9B9B9;
 
 .powerAssist-active,
 .powerAssist-deactive,
+.powerAssist-disabled,
 .powerAssist-training {
     @extend .power-assist-btn;
   color: $ambient-white;

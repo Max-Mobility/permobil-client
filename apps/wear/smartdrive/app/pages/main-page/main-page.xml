@@ -77,13 +77,11 @@
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
                      text="{{ currentSpeedDescription }}"
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
-              <Label row="3" col="1" class="centerMessage"
-                     text="{{ L('failures.must-wear-watch') }}"
-                     visibility="{{ (disableWearCheck || watchBeingWorn || isTraining) ? 'collapsed':'visible' }}"/>
-              <Button row="3" col="1" class="powerAssist-deactive"
+              <Button row="3" col="1"
+                      class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}"
                       text="{{ L('power-assist.activate') }}"
                       tap="{{ enablePowerAssist }}"
-                      visibility="{{ ((disableWearCheck || watchBeingWorn) && !powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
+                      visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-active"
                       text="{{ L('power-assist.deactivate') }}"
                       tap="{{ disablePowerAssist }}"

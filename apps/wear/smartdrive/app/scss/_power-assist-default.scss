@@ -1,12 +1,13 @@
 @import 'variables';
 
 $sd-battery-color: #89d4e3;
-$sd-battery-rim-color: #696969;
+$sd-battery-rim-color: $permobil-charcoal;
 $watch-battery-color: #009ac7;
-$watch-battery-rim-color: #696969;
+$watch-battery-rim-color: $permobil-charcoal;
 
 $activated-color: #db4537;
 $deactivated-color: #00a73c;
+$disabled-color: $permobil-charcoal;
 $training-color: #00a73c;
 $tap-color: #db4537;
 
@@ -75,6 +76,12 @@ $tap-color: #db4537;
     @extend .power-assist-btn;
   color: $white;
   background-color: $activated-color;
+}
+
+.powerAssist-disabled {
+    @extend .power-assist-btn;
+  color: $white;
+  background-color: $disabled-color;
 }
 
 .powerAssist-deactive {
