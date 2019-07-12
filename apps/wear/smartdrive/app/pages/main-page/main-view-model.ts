@@ -839,12 +839,12 @@ export class MainViewModel extends Observable {
       .then(ret => {
         // Log.D('Have sent data to server - unregistering from network');
         // unregister network since we're done sending that data now
-        //this._networkService.unregisterNetwork();
+        // this._networkService.unregisterNetwork();
       })
       .catch(e => {
         Log.E('Error sending data to server', e);
         // unregister network since we're done sending that data now
-        //this._networkService.unregisterNetwork();
+        // this._networkService.unregisterNetwork();
       });
   }
 
