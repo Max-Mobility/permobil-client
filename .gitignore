@@ -122,3 +122,4 @@ apps/**/report/
 !**/typings/**/*.d.ts
 !@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
+!**/android-release.js
