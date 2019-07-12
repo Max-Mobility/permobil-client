@@ -138,7 +138,14 @@
     "select-smartdrive": "Seleziona SmartDrive",
     "tap-sensitivity": "Tocca Sensibilità",
     "title": "Impostazioni SmartDrive",
-    "units": "Unità"
+    "units": "Unità",
+    "watch-required": {
+      "title": "Indossare il controllo",
+      "values": {
+        "disabled": "Disabilitato",
+        "enabled": "Abilitato"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Switch Control Max Speed",

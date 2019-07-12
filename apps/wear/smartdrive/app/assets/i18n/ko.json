@@ -138,7 +138,14 @@
     "select-smartdrive": "SmartDrive 선택",
     "tap-sensitivity": "탭 감도",
     "title": "SmartDrive 설정",
-    "units": "단위"
+    "units": "단위",
+    "watch-required": {
+      "title": "웨어 체크",
+      "values": {
+        "disabled": "장애인",
+        "enabled": "사용"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "스위치 제어 최대 속도",

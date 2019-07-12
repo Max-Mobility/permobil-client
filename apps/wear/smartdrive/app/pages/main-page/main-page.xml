@@ -79,11 +79,11 @@
                      visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
               <Label row="3" col="1" class="centerMessage"
                      text="{{ L('failures.must-wear-watch') }}"
-                     visibility="{{ (watchBeingWorn || isTraining) ? 'collapsed':'visible' }}"/>
+                     visibility="{{ (disableWearCheck || watchBeingWorn || isTraining) ? 'collapsed':'visible' }}"/>
               <Button row="3" col="1" class="powerAssist-deactive"
                       text="{{ L('power-assist.activate') }}"
                       tap="{{ enablePowerAssist }}"
-                      visibility="{{ (watchBeingWorn && !powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
+                      visibility="{{ ((disableWearCheck || watchBeingWorn) && !powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
               <Button row="3" col="1" class="powerAssist-active"
                       text="{{ L('power-assist.deactivate') }}"
                       tap="{{ disablePowerAssist }}"
@@ -258,6 +258,12 @@
                 <GridLayout rows="*" columns="15, *" id="switchControlSpeed" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('switch-control.max-speed') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="wearCheck" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">

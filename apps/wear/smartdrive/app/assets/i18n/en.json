@@ -138,7 +138,14 @@
     "select-smartdrive": "Select SmartDrive",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",
-    "units": "Units"
+    "units": "Units",
+    "watch-required": {
+      "title": "Wear Check",
+      "values": {
+        "disabled": "Disabled",
+        "enabled": "Enabled"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Switch Control Max Speed",

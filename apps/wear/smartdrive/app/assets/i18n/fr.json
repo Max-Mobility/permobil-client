@@ -138,7 +138,14 @@
     "select-smartdrive": "Sélectionnez SmartDrive",
     "tap-sensitivity": "Touchez la sensibilité",
     "title": "Paramètres SmartDrive",
-    "units": "des unités"
+    "units": "des unités",
+    "watch-required": {
+      "title": "Contrôle d'usure",
+      "values": {
+        "disabled": "Désactivé",
+        "enabled": "Activée"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Commutateur Vitesse Max",

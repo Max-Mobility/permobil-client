@@ -138,7 +138,14 @@
     "select-smartdrive": "SmartDriveを選択",
     "tap-sensitivity": "タップ感度",
     "title": "SmartDrive設定",
-    "units": "単位"
+    "units": "単位",
+    "watch-required": {
+      "title": "摩耗チェック",
+      "values": {
+        "disabled": "無効",
+        "enabled": "有効"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "スイッチ制御最大速度",

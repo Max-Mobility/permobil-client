@@ -138,7 +138,14 @@
     "select-smartdrive": "Selecteer SmartDrive",
     "tap-sensitivity": "Tik op Gevoeligheid",
     "title": "SmartDrive-instellingen",
-    "units": "eenheden"
+    "units": "eenheden",
+    "watch-required": {
+      "title": "Wear Check",
+      "values": {
+        "disabled": "invalide",
+        "enabled": "Ingeschakeld"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Schakelregeling Max. Snelheid",

@@ -138,7 +138,14 @@
     "select-smartdrive": "Velg SmartDrive",
     "tap-sensitivity": "Trykk på følsomhet",
     "title": "SmartDrive-innstillinger",
-    "units": "enheter"
+    "units": "enheter",
+    "watch-required": {
+      "title": "Bruk kontroll",
+      "values": {
+        "disabled": "Funksjonshemmet",
+        "enabled": "aktivert"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Bryterstyring Maks hastighet",

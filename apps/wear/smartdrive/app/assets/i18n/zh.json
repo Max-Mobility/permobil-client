@@ -138,7 +138,14 @@
     "select-smartdrive": "選擇SmartDrive",
     "tap-sensitivity": "點擊靈敏度",
     "title": "SmartDrive設置",
-    "units": "單位"
+    "units": "單位",
+    "watch-required": {
+      "title": "磨損檢查",
+      "values": {
+        "disabled": "殘",
+        "enabled": "啟用"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "開關控制最大速度",

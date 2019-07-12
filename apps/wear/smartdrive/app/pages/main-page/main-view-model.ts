@@ -97,7 +97,7 @@ export class MainViewModel extends Observable {
   @Prop() hasTapped = false;
   @Prop() motorOn = false;
   @Prop() isTraining: boolean = false;
-
+  @Prop() disableWearCheck: boolean = false;
 
   /**
    * Layout Management
@@ -873,9 +873,11 @@ export class MainViewModel extends Observable {
       android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
     ) {
       this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-      if (!this.watchBeingWorn && this.powerAssistActive) {
-        // disable power assist if the watch is taken off!
-        this.disablePowerAssist();
+      if (!this.disableWearCheck) {
+        if (!this.watchBeingWorn && this.powerAssistActive) {
+          // disable power assist if the watch is taken off!
+          this.disablePowerAssist();
+        }
       }
     }
 
@@ -890,7 +892,7 @@ export class MainViewModel extends Observable {
       return;
     }
     // ignore tapping if we're not on the users wrist
-    if (!this.watchBeingWorn) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       return;
     }
     // set tap sensitivity threshold
@@ -1619,6 +1621,9 @@ export class MainViewModel extends Observable {
       case 'switchcontrolspeed':
         this.changeSettingKeyString = L('switch-control.max-speed');
         break;
+      case 'wearcheck':
+        this.changeSettingKeyString = L('settings.watch-required.title');
+        break;
       default:
         break;
     }
@@ -1668,6 +1673,13 @@ export class MainViewModel extends Observable {
       case 'switchcontrolspeed':
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
         return;
+      case 'wearcheck':
+        if (this.disableWearCheck) {
+          this.changeSettingKeyValue = L('settings.watch-required.values.disabled');
+        } else {
+          this.changeSettingKeyValue = L('settings.watch-required.values.enabled');
+        }
+        break;
       default:
         break;
     }
@@ -1729,12 +1741,18 @@ export class MainViewModel extends Observable {
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);
     this.tempSwitchControlSettings.increase(this.activeSettingToChange);
+    if (this.activeSettingToChange === 'wearcheck') {
+      this.disableWearCheck = !this.disableWearCheck;
+    }
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
     this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
+    if (this.activeSettingToChange === 'wearcheck') {
+      this.disableWearCheck = !this.disableWearCheck;
+    }
     this.updateSettingsChangeDisplay();
   }
 
@@ -1759,12 +1777,19 @@ export class MainViewModel extends Observable {
     this.hasSentSettings = appSettings.getBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG
     );
+    this.disableWearCheck = appSettings.getBoolean(
+      DataKeys.REQUIRE_WATCH_BEING_WORN
+    );
   }
 
   saveSettings() {
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings
+    );
+    appSettings.setBoolean(
+      DataKeys.REQUIRE_WATCH_BEING_WORN,
+      this.disableWearCheck
     );
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.settings',
@@ -1817,7 +1842,7 @@ export class MainViewModel extends Observable {
 
   enablePowerAssist() {
     // only enable power assist if we're on the user's wrist
-    if (!this.watchBeingWorn) {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
       showFailure(L('failures.must-wear-watch'));
       return;
     } else if (this.hasSavedSmartDrive()) {

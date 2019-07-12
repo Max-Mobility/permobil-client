@@ -138,7 +138,14 @@
     "select-smartdrive": "Wählen Sie SmartDrive",
     "tap-sensitivity": "Tippen Sie auf Empfindlichkeit",
     "title": "SmartDrive-Einstellungen",
-    "units": "Einheiten"
+    "units": "Einheiten",
+    "watch-required": {
+      "title": "Tragecheck",
+      "values": {
+        "disabled": "Deaktiviert",
+        "enabled": "aktiviert"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Schaltersteuerung Max. Geschwindigkeit",

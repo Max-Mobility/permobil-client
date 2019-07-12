@@ -138,7 +138,14 @@
     "select-smartdrive": "Vælg SmartDrive",
     "tap-sensitivity": "Tryk på følsomhed",
     "title": "SmartDrive-indstillinger",
-    "units": "enheder"
+    "units": "enheder",
+    "watch-required": {
+      "title": "Wear Check",
+      "values": {
+        "disabled": "handicappet",
+        "enabled": "Aktiveret"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Omskifterstyring Maks. Hastighed",

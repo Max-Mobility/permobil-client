@@ -138,7 +138,14 @@
     "select-smartdrive": "Seleccione SmartDrive",
     "tap-sensitivity": "Toque la sensibilidad",
     "title": "Configuraciones SmartDrive",
-    "units": "Unidades"
+    "units": "Unidades",
+    "watch-required": {
+      "title": "Cheque de desgaste",
+      "values": {
+        "disabled": "Discapacitado",
+        "enabled": "Habilitado"
+      }
+    }
   },
   "switch-control": {
     "max-speed": "Control de interruptor de velocidad máxima",
