@@ -37,7 +37,7 @@
   "failures": {
     "connect": "に接続できませんでした",
     "getting-error": "SmartDriveエラーの取得に失敗しました",
-    "must-wear-watch": "SmartDriveを制御するにはPushTracker E2を着用する必要があります。",
+    "must-wear-watch": "あなたはあなたのSmartDriveを制御するために装置を身に着けていなければならない。",
     "no-smartdrive-paired": "SmartDriveはアプリとペアになりません。",
     "no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
     "permissions": "必要な権限が付与されていません。",
@@ -95,7 +95,7 @@
   },
   "permissions-reasons": {
     "coarse-location": "Bluetoothを使用してSmartDriveを制御するには、ACCESS_COARSE_LOCATION権限が必要です。",
-    "phone-state": "あなたのE2シリアル番号を読むために（保証/サポート目的のために）私たちはREAD_PHONE_STATEパーミッションを必要とします。"
+    "phone-state": "（保証/サポート目的で）お客様のデバイスのシリアル番号を読み取るには、READ_PHONE_STATE権限が必要です。"
   },
   "permissions-request": {
     "title": "権限リクエスト"

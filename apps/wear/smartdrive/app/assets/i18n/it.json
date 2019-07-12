@@ -37,7 +37,7 @@
   "failures": {
     "connect": "Impossibile connettersi a",
     "getting-error": "Impossibile ottenere l'errore SmartDrive",
-    "must-wear-watch": "È necessario indossare PushTracker E2 per controllare il tuo SmartDrive.",
+    "must-wear-watch": "Devi indossare il dispositivo per controllare il tuo SmartDrive.",
     "no-smartdrive-paired": "Nessun SmartDrive abbinato all'app!",
     "no-smartdrives-found": "Nessun SmartDrive trovato nelle vicinanze.",
     "permissions": "Le autorizzazioni richieste non sono state concesse!",
@@ -95,7 +95,7 @@
   },
   "permissions-reasons": {
     "coarse-location": "Per controllare il tuo SmartDrive usando bluetooth abbiamo bisogno del permesso ACCESS_COARSE_LOCATION.",
-    "phone-state": "Per leggere il tuo numero di serie E2 (a scopo di garanzia / supporto) abbiamo bisogno dell'autorizzazione READ_PHONE_STATE."
+    "phone-state": "Per leggere il numero di serie del dispositivo (a scopo di garanzia / supporto) abbiamo bisogno dell'autorizzazione READ_PHONE_STATE."
   },
   "permissions-request": {
     "title": "Richiesta di permessi"

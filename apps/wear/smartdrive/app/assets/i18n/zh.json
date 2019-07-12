@@ -37,7 +37,7 @@
   "failures": {
     "connect": "無法連接到",
     "getting-error": "無法獲得SmartDrive錯誤",
-    "must-wear-watch": "您必須佩戴PushTracker E2來控制SmartDrive。",
+    "must-wear-watch": "您必須佩戴設備才能控制SmartDrive。",
     "no-smartdrive-paired": "沒有SmartDrive與應用程序配對！",
     "no-smartdrives-found": "附近找不到SmartDrives。",
     "permissions": "未授予所需權限！",
@@ -95,7 +95,7 @@
   },
   "permissions-reasons": {
     "coarse-location": "要使用藍牙控制SmartDrive，我們需要ACCESS_COARSE_LOCATION權限。",
-    "phone-state": "要讀取您的E2序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。"
+    "phone-state": "要讀取設備序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。"
   },
   "permissions-request": {
     "title": "權限請求"

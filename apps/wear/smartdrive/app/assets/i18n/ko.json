@@ -37,7 +37,7 @@
   "failures": {
     "connect": "에 연결할 수 없습니다.",
     "getting-error": "SmartDrive 오류 가져 오는 데 실패했습니다.",
-    "must-wear-watch": "SmartDrive를 제어하려면 PushTracker E2를 착용해야합니다.",
+    "must-wear-watch": "SmartDrive를 제어하려면 장치를 착용해야합니다.",
     "no-smartdrive-paired": "앱에 페어링 된 SmartDrive가 없습니다!",
     "no-smartdrives-found": "근처에 SmartDrive가 없습니다.",
     "permissions": "필요한 권한이 부여되지 않았습니다!",
@@ -95,7 +95,7 @@
   },
   "permissions-reasons": {
     "coarse-location": "블루투스를 사용하여 SmartDrive를 제어하려면 ACCESS_COARSE_LOCATION 권한이 필요합니다.",
-    "phone-state": "E2 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다."
+    "phone-state": "기기 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다."
   },
   "permissions-request": {
     "title": "권한 요청"
