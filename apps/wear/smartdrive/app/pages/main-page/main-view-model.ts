@@ -256,9 +256,6 @@ export class MainViewModel extends Observable {
       'com.permobil.smartdrive.wearos::WakeLock'
     );
 
-    // handle application lifecycle events
-    this.registerAppEventHandlers();
-
     console.time('Sentry_Init');
     // init sentry - DNS key for permobil-wear Sentry project
     Sentry.init(
@@ -273,6 +270,9 @@ export class MainViewModel extends Observable {
     this._sqliteService = injector.get(SqliteService);
     this._networkService = injector.get(NetworkService);
     this._kinveyService = injector.get(KinveyService);
+
+    // handle application lifecycle events
+    this.registerAppEventHandlers();
 
     // register for network service events
     this.registerNetworkEventHandlers();
@@ -801,6 +801,7 @@ export class MainViewModel extends Observable {
    * Network manager event handlers
    */
   registerNetworkEventHandlers() {
+    /*
     this._networkService.on(
       NetworkService.network_available_event,
       this.onNetworkAvailable.bind(this)
@@ -809,9 +810,11 @@ export class MainViewModel extends Observable {
       NetworkService.network_lost_event,
       this.onNetworkLost.bind(this)
     );
+    */
   }
 
   unregisterNetworkEventHandlers() {
+    /*
     this._networkService.off(
       NetworkService.network_available_event,
       this.onNetworkAvailable.bind(this)
@@ -820,8 +823,9 @@ export class MainViewModel extends Observable {
       NetworkService.network_lost_event,
       this.onNetworkLost.bind(this)
     );
+    */
   }
-  onNetworkAvailable(args: any) {
+  onNetworkAvailable(args?: any) {
     // Log.D('Network available - sending errors');
     return this.sendErrorsToServer(10)
       .then(ret => {
@@ -835,12 +839,12 @@ export class MainViewModel extends Observable {
       .then(ret => {
         // Log.D('Have sent data to server - unregistering from network');
         // unregister network since we're done sending that data now
-        this._networkService.unregisterNetwork();
+        //this._networkService.unregisterNetwork();
       })
       .catch(e => {
         Log.E('Error sending data to server', e);
         // unregister network since we're done sending that data now
-        this._networkService.unregisterNetwork();
+        //this._networkService.unregisterNetwork();
       });
   }
 
@@ -850,11 +854,16 @@ export class MainViewModel extends Observable {
 
   doWhileCharged() {
     if (this.watchIsCharging) {
+      // Since we're not sending a lot of data, we'll not bother
+      // requesting network
+      /*
       // request network here
       // Log.D('Watch charging - requesting network');
       this._networkService.requestNetwork({
         timeoutMs: this.CHARGING_WORK_PERIOD_MS / 2
       });
+      */
+      this.onNetworkAvailable();
       // re-schedule any work that may still need to be done
       this.chargingWorkTimeoutId = setTimeout(
         this.doWhileCharged.bind(this),
