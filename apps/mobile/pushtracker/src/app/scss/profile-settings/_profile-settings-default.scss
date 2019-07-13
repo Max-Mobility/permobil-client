@@ -9,6 +9,10 @@
     @extend .CLOSE_BTN_BASE;
     color: $black;
   }
+  .open-btn {
+    @extend .OPEN_BTN_BASE;
+    color: $black;
+  }
 
   .more-btn {
     @extend .MORE_BTN_BASE;
@@ -20,6 +24,11 @@
     color: $black;
   }
 
+  .category {
+    @extend .CATEGORY_BASE;
+    color: #1070A7;
+  }
+
   .section-title {
     @extend .SECTION_TITLE_BASE;
     color: $black;
@@ -27,6 +36,6 @@
 
   .section-text {
     @extend .SECTION_TEXT_BASE;
-    color: lighten($black, 10%);
+    color: $black;
   }
 }
