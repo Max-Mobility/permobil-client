@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -8,6 +8,10 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layo
 import { Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
+import { ProfileSettingsComponent} from '../profile-settings/profile-settings.component';
+import { Toasty } from 'nativescript-toasty';
+import { Color } from 'tns-core-modules/color';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 
 @Component({
   selector: 'profile',
@@ -63,7 +67,9 @@ export class ProfileTabComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _page: Page
+    private _page: Page,
+    private _modalService: ModalDialogService,
+    private _vcRef: ViewContainerRef
   ) {
     // appSettings.clear();
 
@@ -111,6 +117,20 @@ export class ProfileTabComponent implements OnInit {
 
   async onSettingsTap() {
     Log.D('setting action item tap');
+    this._modalService
+    .showModal(ProfileSettingsComponent, {
+      context: {},
+      fullscreen: true,
+      viewContainerRef: this._vcRef
+    })
+    .catch(err => {
+     // this._logService.logException(err);
+      new Toasty({
+        text:
+          'An unexpectect error occurred. If this continues please let us know.',
+        textColor: new Color('#fff000')
+      });
+    });
   }
 
   async onActivityGoalTap(
