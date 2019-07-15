@@ -1,12 +1,5 @@
 import { Log } from '@permobil/core';
-import {
-  Prop,
-  L,
-  getDefaultLang,
-  use as useLanguage,
-  load as loadTranslation,
-  update as updateTranslation
-} from '@permobil/nativescript';
+import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
@@ -17,37 +10,29 @@ import once from 'lodash/once';
 import throttle from 'lodash/throttle';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
+import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { Sentry } from 'nativescript-sentry';
+import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
-import {
-  showFailure,
-  showSuccess
-} from 'nativescript-wear-os/packages/dialogs';
+import { showSuccess } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import * as LS from 'nativescript-localstorage';
 import { Color } from 'tns-core-modules/color';
-import { Observable, fromObject } from 'tns-core-modules/data/observable';
+import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { device } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
+import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
-import { Repeater } from 'tns-core-modules/ui/repeater';
-import { getViewById } from 'tns-core-modules/ui/core/view';
+import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { DataKeys } from '../../enums';
 import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SentryService, SERVICES, SqliteService } from '../../services';
-import { ScrollView } from 'tns-core-modules/ui/scroll-view';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
-import {
-  hideOffScreenLayout,
-  showOffScreenLayout
-} from '../../utils';
+import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
+import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -79,7 +64,9 @@ export class MainViewModel extends Observable {
   @Prop() estimatedDistance: number = 0.0;
   @Prop() estimatedDistanceDisplay: string = '0.0';
   // 'Estimated Range (mi)';
-  @Prop() estimatedDistanceDescription: string = L('power-assist.estimated-range');
+  @Prop() estimatedDistanceDescription: string = L(
+    'power-assist.estimated-range'
+  );
   @Prop() currentSpeed: number = 0.0;
   @Prop() currentSpeedDisplay: string = '0.0';
   // Speed (mph)';
@@ -213,7 +200,6 @@ export class MainViewModel extends Observable {
   private updateProgressCircle: AnimatedCircle;
   private scanningProgressCircle: AnimatedCircle;
   private _vibrator: Vibrate = new Vibrate();
-  private _sentryService: SentryService;
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
@@ -244,83 +230,113 @@ export class MainViewModel extends Observable {
     android.Manifest.permission.ACCESS_COARSE_LOCATION
   ];
 
+  private _isSqliteLoaded: boolean = false;
+
+  get SmartDriveWakeLock() {
+    if (this.wakeLock) {
+      return this.wakeLock;
+    } else {
+      // initialize the wake lock here
+      const context = android.content.Context;
+      const powerManager = application.android.context.getSystemService(
+        context.POWER_SERVICE
+      );
+      this.wakeLock = powerManager.newWakeLock(
+        android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+        'com.permobil.smartdrive.wearos::WakeLock'
+      );
+      return this.wakeLock;
+    }
+  }
+
   constructor() {
     super();
+    this._sentryBreadCrumb('Main-View-Model constructor.');
 
-    // initialize the wake lock here
-    const context = android.content.Context;
-    const powerManager = application.android.context.getSystemService(
-      context.POWER_SERVICE
-    );
-    this.wakeLock = powerManager.newWakeLock(
-      android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-      'com.permobil.smartdrive.wearos::WakeLock'
-    );
+    // using a timeout here for things that don't necessarily need to be active at startup
+    setTimeout(() => {
+      this._sentryBreadCrumb('Initializing WakeLock...');
+      console.time('Init_SmartDriveWakeLock');
+      this.wakeLock = this.SmartDriveWakeLock;
+      console.timeEnd('Init_SmartDriveWakeLock');
+      this._sentryBreadCrumb('WakeLock has been initialized.');
 
+      this._sentryBreadCrumb('Initializing SQLite...');
+      console.time('SQLite_Init');
+      // create / load tables for smartdrive data
+      const sqlitePromises = [
+        this._sqliteService.makeTable(
+          SmartDriveData.Info.TableName,
+          SmartDriveData.Info.IdName,
+          SmartDriveData.Info.Fields
+        ),
+        this._sqliteService.makeTable(
+          SmartDriveData.Errors.TableName,
+          SmartDriveData.Errors.IdName,
+          SmartDriveData.Errors.Fields
+        ),
+        this._sqliteService.makeTable(
+          SmartDriveData.Firmwares.TableName,
+          SmartDriveData.Firmwares.IdName,
+          SmartDriveData.Firmwares.Fields
+        )
+      ];
+      Promise.all(sqlitePromises)
+        .then(() => {
+          console.timeEnd('SQLite_Init');
+          this._isSqliteLoaded = true;
+          this._sentryBreadCrumb('SQLite has been initialized.');
+
+          // get last error
+          return this._sqliteService
+            .getLast(
+              SmartDriveData.Errors.TableName,
+              SmartDriveData.Errors.IdName
+            )
+            .then(obj => {
+              try {
+                const lastErrorId = parseInt((obj && obj[3]) || -1);
+                this.lastErrorId = lastErrorId;
+              } catch (err) {}
+            })
+            .catch(err => {
+              alert({
+                title: L('failures.title'),
+                message: `${L('failures.getting-error')}: ${err}`,
+                okButtonText: L('buttons.ok')
+              });
+            });
+        })
+        .catch(err => {
+          Log.E('Could not make table:', err);
+          this._isSqliteLoaded = false;
+          Sentry.captureException(err);
+        });
+    }, 8000);
+
+    this._sentryBreadCrumb('Initializing Sentry...');
     console.time('Sentry_Init');
     // init sentry - DNS key for permobil-wear Sentry project
     Sentry.init(
       'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
     );
     console.timeEnd('Sentry_Init');
+    this._sentryBreadCrumb('Sentry has been initialized.');
 
+    this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
-    this._sentryService = injector.get(SentryService);
     this._bluetoothService = injector.get(BluetoothService);
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
     this._networkService = injector.get(NetworkService);
     this._kinveyService = injector.get(KinveyService);
+    this._sentryBreadCrumb('All Services created.');
 
     // handle application lifecycle events
     this.registerAppEventHandlers();
 
     // register for network service events
     this.registerNetworkEventHandlers();
-
-    console.time('SQLite_Init');
-    // create / load tables for smartdrive data
-    const sqlitePromises = [
-      this._sqliteService.makeTable(
-        SmartDriveData.Info.TableName,
-        SmartDriveData.Info.IdName,
-        SmartDriveData.Info.Fields
-      ),
-      this._sqliteService.makeTable(
-        SmartDriveData.Errors.TableName,
-        SmartDriveData.Errors.IdName,
-        SmartDriveData.Errors.Fields
-      ),
-      this._sqliteService.makeTable(
-        SmartDriveData.Firmwares.TableName,
-        SmartDriveData.Firmwares.IdName,
-        SmartDriveData.Firmwares.Fields
-      )
-    ];
-    Promise.all(sqlitePromises)
-      .then(() => {
-        console.timeEnd('SQLite_Init');
-        // get last error
-        return this._sqliteService
-          .getLast(SmartDriveData.Errors.TableName, SmartDriveData.Errors.IdName)
-          .then(obj => {
-            try {
-              const lastErrorId = parseInt(obj && obj[3] || -1);
-              this.lastErrorId = lastErrorId;
-            } catch (err) {
-            }
-          })
-          .catch(err => {
-            alert({
-              title: L('failures.title'),
-              message: `${L('failures.getting-error')}: ${err}`,
-              okButtonText: L('buttons.ok')
-            });
-          });
-      })
-      .catch(err => {
-        Log.E('Could not make table:', err);
-      });
 
     // load serial number from settings / memory
     const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
@@ -400,7 +416,9 @@ export class MainViewModel extends Observable {
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
     // permissions were rejected
-    const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
+    const neededPermissions = this.permissionsNeeded.filter(
+      p => !hasPermission(p)
+    );
     const reasons = [
       L('permissions-reasons.phone-state'),
       L('permissions-reasons.coarse-location')
@@ -413,7 +431,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => { });
+          return requestPermissions(neededPermissions, () => {});
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -478,11 +496,10 @@ export class MainViewModel extends Observable {
     this.unregisterForSmartDriveEvents();
     // set up ota action handler
     // throttled function to keep people from pressing it too frequently
-    this._throttledOtaAction = throttle(
-      this.smartDrive.onOTAActionTap,
-      500,
-      { leading: true, trailing: false }
-    );
+    this._throttledOtaAction = throttle(this.smartDrive.onOTAActionTap, 500, {
+      leading: true,
+      trailing: false
+    });
     // register for event handlers
     // set the event listeners for mcu_version_event and smartdrive_distance_event
     this.smartDrive.on(
@@ -679,11 +696,13 @@ export class MainViewModel extends Observable {
   onUpdateAmbient() {
     this.isAmbient = true;
     this.updateTimeDisplay();
-    Log.D('updateAmbient',
+    Log.D(
+      'updateAmbient',
       this.currentTime,
       this.currentTimeMeridiem,
       this.currentDay,
-      this.currentYear);
+      this.currentYear
+    );
   }
 
   onExitAmbient() {
@@ -694,7 +713,7 @@ export class MainViewModel extends Observable {
     this.applyStyle();
   }
 
-  onAppLaunch(args?: any) { }
+  onAppLaunch(args?: any) {}
 
   onAppResume(args?: any) {
     this.enableBodySensor();
@@ -905,8 +924,7 @@ export class MainViewModel extends Observable {
     const parsedData = args.data;
 
     if (
-      parsedData.s ===
-      android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
+      parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
     ) {
       this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
       if (!this.disableWearCheck) {
@@ -1034,7 +1052,7 @@ export class MainViewModel extends Observable {
   }
 
   releaseCPU() {
-    if (this.wakeLock.isHeld()) this.wakeLock.release();
+    if (this.wakeLock && this.wakeLock.isHeld()) this.wakeLock.release();
     allowSleepAgain();
   }
 
@@ -1137,15 +1155,19 @@ export class MainViewModel extends Observable {
       // translate the label
       const actionLabel = L(a); // .replace('ota.action.', '');
       return {
-        'label': actionLabel,
-        'func': this._throttledOtaAction.bind(this.smartDrive, a),
-        'action': a,
-        'class': actionClass
+        label: actionLabel,
+        func: this._throttledOtaAction.bind(this.smartDrive, a),
+        action: a,
+        class: actionClass
       };
     });
     // now set the renderable bound data
     this.smartDriveOtaProgress = progress;
-    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, ...actions);
+    this.smartDriveOtaActions.splice(
+      0,
+      this.smartDriveOtaActions.length,
+      ...actions
+    );
     this.smartDriveOtaState = state;
     // disable swipe close of the updates layout
     (this._updatesLayout as any).swipeable = canSwipeDismiss;
@@ -1175,13 +1197,11 @@ export class MainViewModel extends Observable {
           ],
           firmware_file: true
         };
-        return this._kinveyService
-          .getFile(undefined, query)
-          .catch((err) => {
-            Log.E('Could not get metadata for files:', err);
-            this.updateProgressText = L('updates.errors.getting') + `: ${err}`;
-            throw err;
-          });
+        return this._kinveyService.getFile(undefined, query).catch(err => {
+          Log.E('Could not get metadata for files:', err);
+          this.updateProgressText = L('updates.errors.getting') + `: ${err}`;
+          throw err;
+        });
       })
       .then(response => {
         // Now that we have the metadata, check to see if we already
@@ -1201,7 +1221,7 @@ export class MainViewModel extends Observable {
           const fwName = f['_filename'];
           const current = currentVersions[fwName];
           const currentVersion = current && current.version;
-          const isMax = (v === maxes[fwName]);
+          const isMax = v === maxes[fwName];
           return isMax && (!current || v > currentVersion);
         });
         if (fileMetaDatas && fileMetaDatas.length) {
@@ -1217,21 +1237,24 @@ export class MainViewModel extends Observable {
             return p;
           }, {});
           const progressKeys = Object.keys(progresses);
-          SmartDriveData.Firmwares.setDownloadProgressCallback((file, eventData) => {
-            progresses[file['_filename']] = eventData.value;
-            this.smartDriveOtaProgress = progressKeys.reduce((total, k) => {
-              return total + progresses[k];
-            }, 0) / progressKeys.length;
-          });
+          SmartDriveData.Firmwares.setDownloadProgressCallback(
+            (file, eventData) => {
+              progresses[file['_filename']] = eventData.value;
+              this.smartDriveOtaProgress =
+                progressKeys.reduce((total, k) => {
+                  return total + progresses[k];
+                }, 0) / progressKeys.length;
+            }
+          );
           // now download the files
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
         }
-        return Promise.all(promises)
-          .catch((err) => {
-            Log.E('Could not download files:', err);
-            this.updateProgressText = L('updates.errors.downloading') + `: ${err}`;
-            throw err;
-          });
+        return Promise.all(promises).catch(err => {
+          Log.E('Could not download files:', err);
+          this.updateProgressText =
+            L('updates.errors.downloading') + `: ${err}`;
+          throw err;
+        });
       })
       .then(files => {
         // Now that we have the files, write them to disk and update
@@ -1291,12 +1314,11 @@ export class MainViewModel extends Observable {
             }
           });
         }
-        return Promise.all(promises)
-          .catch((err) => {
-            Log.E('Could not write files:', err);
-            this.updateProgressText = L('updates.errors.saving') + `: ${err}`;
-            throw err;
-          });
+        return Promise.all(promises).catch(err => {
+          Log.E('Could not write files:', err);
+          this.updateProgressText = L('updates.errors.saving') + `: ${err}`;
+          throw err;
+        });
       })
       .then(() => {
         // Now let's connect to the SD to make sure that we get it's
@@ -1343,10 +1365,11 @@ export class MainViewModel extends Observable {
           .then(() => {
             return this.disconnectFromSmartDrive();
           })
-          .catch((err) => {
+          .catch(err => {
             this.disconnectFromSmartDrive();
             Log.E('Could not connect to smartdrive:', err);
-            this.updateProgressText = L('updates.errors.connecting') + `: ${err}`;
+            this.updateProgressText =
+              L('updates.errors.connecting') + `: ${err}`;
             throw err;
           });
       })
@@ -1381,9 +1404,8 @@ export class MainViewModel extends Observable {
           const changes = Object.keys(currentVersions).map(
             k => currentVersions[k].changes
           );
-          const msg = L('updates.changes') + '\n\n' +
-            flatten(changes)
-              .join('\n\n');
+          const msg =
+            L('updates.changes') + '\n\n' + flatten(changes).join('\n\n');
           // Log.D('got changes', changes);
           alert({
             title: title,
@@ -1392,21 +1414,19 @@ export class MainViewModel extends Observable {
           }).then(() => {
             this.isUpdatingSmartDrive = true;
             Log.D('Beginning SmartDrive update');
-            const bleFw = new Uint8Array(currentVersions['SmartDriveBLE.ota'].data);
-            const mcuFw = new Uint8Array(currentVersions['SmartDriveMCU.ota'].data);
+            const bleFw = new Uint8Array(
+              currentVersions['SmartDriveBLE.ota'].data
+            );
+            const mcuFw = new Uint8Array(
+              currentVersions['SmartDriveMCU.ota'].data
+            );
             Log.D('mcu length:', typeof mcuFw, mcuFw.length);
             Log.D('ble length:', typeof bleFw, bleFw.length);
             // maintain CPU resources while updating
             this.maintainCPU();
             // smartdrive needs to update
             this.smartDrive
-              .performOTA(
-                bleFw,
-                mcuFw,
-                bleVersion,
-                mcuVersion,
-                300 * 1000
-              )
+              .performOTA(bleFw, mcuFw, bleVersion, mcuVersion, 300 * 1000)
               .then(otaStatus => {
                 this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
@@ -1570,7 +1590,7 @@ export class MainViewModel extends Observable {
           return obj.value > max ? obj.value : max;
         }, 0.0);
         distanceData.map(data => {
-          data.value = 100.0 * data.value / maxDist;
+          data.value = (100.0 * data.value) / maxDist;
         });
         // Log.D('Highest Distance Value:', maxDist);
         this.distanceChartMaxValue = maxDist.toFixed(1);
@@ -1597,7 +1617,7 @@ export class MainViewModel extends Observable {
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
-      .catch(err => { });
+      .catch(err => {});
   }
 
   onLoadMoreErrors(args?: ItemEventData) {
@@ -1685,14 +1705,13 @@ export class MainViewModel extends Observable {
     }
     this.updateSettingsChangeDisplay();
 
-    showOffScreenLayout(this._changeSettingsLayout)
-      .then(() => {
-        // TODO: this is a hack to force the layout to update for
-        // showing the auto-size text view
-        const prevVal = this.changeSettingKeyValue;
-        this.changeSettingKeyValue = '  ';
-        this.changeSettingKeyValue = prevVal;
-      });
+    showOffScreenLayout(this._changeSettingsLayout).then(() => {
+      // TODO: this is a hack to force the layout to update for
+      // showing the auto-size text view
+      const prevVal = this.changeSettingKeyValue;
+      this.changeSettingKeyValue = '  ';
+      this.changeSettingKeyValue = prevVal;
+    });
     this.enableLayout('changeSettings');
   }
 
@@ -1710,20 +1729,27 @@ export class MainViewModel extends Observable {
         break;
       case 'powerassistbuzzer':
         if (this.tempSettings.disablePowerAssistBeep) {
-          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.disabled');
+          this.changeSettingKeyValue = L(
+            'sd.settings.power-assist-buzzer.disabled'
+          );
         } else {
-          this.changeSettingKeyValue = L('sd.settings.power-assist-buzzer.enabled');
+          this.changeSettingKeyValue = L(
+            'sd.settings.power-assist-buzzer.enabled'
+          );
         }
         break;
       case 'controlmode':
         this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
         return;
       case 'units':
-        translationKey = 'sd.settings.units.' + this.tempSettings.units.toLowerCase();
+        translationKey =
+          'sd.settings.units.' + this.tempSettings.units.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolmode':
-        translationKey = 'sd.switch-settings.mode.' + this.tempSwitchControlSettings.mode.toLowerCase();
+        translationKey =
+          'sd.switch-settings.mode.' +
+          this.tempSwitchControlSettings.mode.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolspeed':
@@ -1731,9 +1757,13 @@ export class MainViewModel extends Observable {
         return;
       case 'wearcheck':
         if (this.disableWearCheck) {
-          this.changeSettingKeyValue = L('settings.watch-required.values.disabled');
+          this.changeSettingKeyValue = L(
+            'settings.watch-required.values.disabled'
+          );
         } else {
-          this.changeSettingKeyValue = L('settings.watch-required.values.enabled');
+          this.changeSettingKeyValue = L(
+            'settings.watch-required.values.enabled'
+          );
         }
         break;
       default:
@@ -1757,14 +1787,18 @@ export class MainViewModel extends Observable {
 
   updateSpeedDisplay() {
     // update distance units
-    this.distanceUnits = L('units.distance.' + this.settings.units.toLowerCase());
+    this.distanceUnits = L(
+      'units.distance.' + this.settings.units.toLowerCase()
+    );
     const speedUnits = L('units.speed.' + this.settings.units.toLowerCase());
     // update speed display
     this.currentSpeedDisplay = this.currentSpeed.toFixed(1);
     this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
     // update estimated range display
     this.estimatedDistanceDisplay = this.estimatedDistance.toFixed(1);
-    this.estimatedDistanceDescription = `${L('power-assist.estimated-range')} (${this.distanceUnits})`;
+    this.estimatedDistanceDescription = `${L(
+      'power-assist.estimated-range'
+    )} (${this.distanceUnits})`;
     if (this.settings.units === 'Metric') {
       // update estimated range display
       this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
@@ -1832,14 +1866,14 @@ export class MainViewModel extends Observable {
       LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
     );
     this.switchControlSettings.copy(
-      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.switch-control-settings')
+      LS.getItem(
+        'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
+      )
     );
-    this.hasSentSettings = appSettings.getBoolean(
-      DataKeys.SD_SETTINGS_DIRTY_FLAG
-    ) || false;
-    this.disableWearCheck = appSettings.getBoolean(
-      DataKeys.REQUIRE_WATCH_BEING_WORN
-    ) || false;
+    this.hasSentSettings =
+      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
+    this.disableWearCheck =
+      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
   }
 
   saveSettings() {
@@ -1995,7 +2029,9 @@ export class MainViewModel extends Observable {
     return this.saveNewSmartDrive()
       .then((didSave: boolean) => {
         if (didSave) {
-          showSuccess(`${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`);
+          showSuccess(
+            `${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`
+          );
         }
       })
       .catch((err: any) => {
@@ -2094,8 +2130,10 @@ export class MainViewModel extends Observable {
   }
 
   hasSavedSmartDrive(): boolean {
-    return this._savedSmartDriveAddress !== null &&
-      this._savedSmartDriveAddress.length > 0;
+    return (
+      this._savedSmartDriveAddress !== null &&
+      this._savedSmartDriveAddress.length > 0
+    );
   }
 
   connectToSavedSmartDrive(): Promise<any> {
@@ -2156,12 +2194,12 @@ export class MainViewModel extends Observable {
         this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
         // indicate failure
         Log.E('send settings failed', err);
-        const msg = L('failures.send-settings') +
+        const msg =
+          L('failures.send-settings') +
           ' ' +
           this._savedSmartDriveAddress +
           '\n\n' +
-          err
-          ;
+          err;
         alert({
           title: L('failures.title'),
           message: msg,
@@ -2219,9 +2257,10 @@ export class MainViewModel extends Observable {
   private RSSI_INTERVAL_MS = 200;
   readSmartDriveSignalStrength() {
     if (this.smartDrive && this.smartDrive.connected) {
-      this._bluetoothService.readRssi(this.smartDrive.address)
+      this._bluetoothService
+        .readRssi(this.smartDrive.address)
         .then((args: any) => {
-          this._rssi = (this._rssi * 9 / 10) + (args.value * 1 / 10);
+          this._rssi = (this._rssi * 9) / 10 + (args.value * 1) / 10;
           this.currentSignalStrength = `${this._rssi.toFixed(1)}`;
         });
     }
@@ -2268,20 +2307,14 @@ export class MainViewModel extends Observable {
   }
 
   async onDistance(args: any) {
-    const currentCoast = appSettings.getNumber(
-      DataKeys.SD_DISTANCE_CASE
-    );
-    const currentDrive = appSettings.getNumber(
-      DataKeys.SD_DISTANCE_DRIVE
-    );
+    const currentCoast = appSettings.getNumber(DataKeys.SD_DISTANCE_CASE);
+    const currentDrive = appSettings.getNumber(DataKeys.SD_DISTANCE_DRIVE);
 
     // Log.D('onDistance event');
     const coastDistance = args.data.coastDistance;
     const driveDistance = args.data.driveDistance;
 
-    if (coastDistance !== currentCoast ||
-      driveDistance !== currentDrive) {
-
+    if (coastDistance !== currentCoast || driveDistance !== currentDrive) {
       // save to the database
       this._throttledSmartDriveSaveFn({
         driveDistance: this.smartDrive.driveDistance,
@@ -2327,7 +2360,9 @@ export class MainViewModel extends Observable {
         // make the metadata
         return mds.reduce((data, md) => {
           const fname = md[SmartDriveData.Firmwares.FileName];
-          const blob = SmartDriveData.Firmwares.loadFromFileSystem({ filename: fname });
+          const blob = SmartDriveData.Firmwares.loadFromFileSystem({
+            filename: fname
+          });
           if (blob && blob.length) {
             data[md[SmartDriveData.Firmwares.FirmwareName]] = {
               version: md[SmartDriveData.Firmwares.VersionName],
@@ -2383,7 +2418,8 @@ export class MainViewModel extends Observable {
       .then(rows => {
         if (rows && rows.length) {
           errors = rows.map(r => {
-            const translationKey = 'error-history.errors.' + (r && r[2]).toLowerCase();
+            const translationKey =
+              'error-history.errors.' + (r && r[2]).toLowerCase();
             return {
               time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
               code: L(translationKey),
@@ -2573,7 +2609,7 @@ export class MainViewModel extends Observable {
             this.hasSentSettings
           );
         })
-        .catch(err => { });
+        .catch(err => {});
     } else {
       return Promise.resolve();
     }
@@ -2670,5 +2706,13 @@ export class MainViewModel extends Observable {
       .catch(e => {
         Log.E('Error sending infos to server:', e);
       });
+  }
+
+  private _sentryBreadCrumb(message: string) {
+    Sentry.captureBreadcrumb({
+      message,
+      category: 'info',
+      level: Level.Info
+    });
   }
 }
