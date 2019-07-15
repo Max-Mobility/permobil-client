@@ -276,6 +276,12 @@
                   <Label row="0" col="1" text="{{ pairSmartDriveText }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
             </StackLayout>
           </ScrollView>
         </StackLayout>
@@ -400,10 +406,11 @@
                       loadMoreItems="{{ onLoadMoreErrors }}">
               <ListView.itemTemplate>
                 <RL:Ripple rippleColor="#ddd">
-                  <GridLayout rows="auto, auto" columns="15, *">
+                  <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap && onTap }}">
                     <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label row="0" col="1" text="{{ code || L('error-history.loading') }}" class="settings-label" textWrap="true" />
-                    <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
+                    <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
+                    <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label"
+                           textWrap="true" visibility="{{ time ? 'visible':'collapsed'}}"/>
                   </GridLayout>
                 </RL:Ripple>
               </ListView.itemTemplate>
@@ -462,6 +469,12 @@
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
             </StackLayout>

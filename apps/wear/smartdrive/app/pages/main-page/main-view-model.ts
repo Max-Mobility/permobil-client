@@ -10,6 +10,7 @@ import {
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
+import differenceBy from 'lodash/differenceBy';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import once from 'lodash/once';
@@ -1601,9 +1602,20 @@ export class MainViewModel extends Observable {
 
   onLoadMoreErrors(args?: ItemEventData) {
     this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
+      // add the back button as the first element - should only load once
+      if (this.errorHistoryData.length === 0) {
+        this.errorHistoryData.push({
+          code: L('buttons.back'),
+          onTap: this.previousLayout.bind(this)
+        });
+      }
+      // determine the unique errors that we have
+      recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
       if (recents && recents.length) {
+        // now add the recent data
         this.errorHistoryData.push(...recents);
-      } else if (this.errorHistoryData.length === 0) {
+      } else if (this.errorHistoryData.length === 1) {
+        // or add the 'no errors' message
         this.errorHistoryData.push({
           code: L('error-history.no-errors')
         });
@@ -2165,9 +2177,21 @@ export class MainViewModel extends Observable {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
+    if (this.rssiIntervalId) {
+      clearInterval(this.rssiIntervalId);
+      this.rssiIntervalId = null;
+    }
+    this.rssiIntervalId = setInterval(
+      this.readSmartDriveSignalStrength.bind(this),
+      this.RSSI_INTERVAL_MS
+    );
   }
 
   async onSmartDriveDisconnect(args: any) {
+    if (this.rssiIntervalId) {
+      clearInterval(this.rssiIntervalId);
+      this.rssiIntervalId = null;
+    }
     if (this.motorOn) {
       // record disconnect error - the SD should never be on when
       // we disconnect!
@@ -2191,13 +2215,19 @@ export class MainViewModel extends Observable {
   }
 
   private _rssi = 0;
-  async onMotorInfo(args: any) {
-    this._bluetoothService.readRssi(this.smartDrive.address)
-      .then((args: any) => {
-        this._rssi = (this._rssi * 9 / 10) + (args.value * 1 / 10);
-        this.currentSignalStrength = `${this._rssi.toFixed(1)}`;
-      });
+  private rssiIntervalId = null;
+  private RSSI_INTERVAL_MS = 200;
+  readSmartDriveSignalStrength() {
+    if (this.smartDrive && this.smartDrive.connected) {
+      this._bluetoothService.readRssi(this.smartDrive.address)
+        .then((args: any) => {
+          this._rssi = (this._rssi * 9 / 10) + (args.value * 1 / 10);
+          this.currentSignalStrength = `${this._rssi.toFixed(1)}`;
+        });
+    }
+  }
 
+  async onMotorInfo(args: any) {
     // send current settings to SD
     this._onceSendSmartDriveSettings();
     // Log.D('onMotorInfo event');
@@ -2340,6 +2370,7 @@ export class MainViewModel extends Observable {
   }
 
   getRecentErrors(numErrors: number, offset: number = 0) {
+    // Log.D('getRecentErrors', numErrors, offset);
     let errors = [];
     return this._sqliteService
       .getAll({
@@ -2361,6 +2392,7 @@ export class MainViewModel extends Observable {
             };
           });
         }
+        // Log.D('errors', errors);
         return errors;
       })
       .catch(err => {

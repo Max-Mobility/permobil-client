@@ -9,6 +9,7 @@
     "watch-serial-number": "TicWatch 일련 번호"
   },
   "buttons": {
+    "back": "뒤로",
     "dismiss": "버리다",
     "ok": "승인"
   },
@@ -44,7 +45,8 @@
     "saving-error": "SmartDrive 오류 저장 실패",
     "saving-usage": "저장 실패",
     "scan": "스캔 할 수 없습니다.",
-    "send-settings": "설정을 보내지 못했습니다."
+    "send-settings": "설정을 보내지 못했습니다.",
+    "title": ""
   },
   "languages": {
     "da": "덴마크 말",

@@ -9,6 +9,7 @@
     "watch-serial-number": "Numéro de série de TicWatch"
   },
   "buttons": {
+    "back": "Retour",
     "dismiss": "Rejeter",
     "ok": "D'accord"
   },
@@ -44,7 +45,8 @@
     "saving-error": "Échec de l'enregistrement de l'erreur SmartDrive",
     "saving-usage": "Échec de la sauvegarde de l'utilisation",
     "scan": "Impossible de numériser",
-    "send-settings": "Échec d'envoi des paramètres à"
+    "send-settings": "Échec d'envoi des paramètres à",
+    "title": ""
   },
   "languages": {
     "da": "danois",

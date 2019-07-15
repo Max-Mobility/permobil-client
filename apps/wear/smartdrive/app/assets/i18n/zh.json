@@ -9,6 +9,7 @@
     "watch-serial-number": "TicWatch序列號"
   },
   "buttons": {
+    "back": "背部",
     "dismiss": "解僱",
     "ok": "好"
   },
@@ -44,7 +45,8 @@
     "saving-error": "保存SmartDrive錯誤失敗",
     "saving-usage": "保存使用失敗",
     "scan": "無法掃描",
-    "send-settings": "無法發送設置"
+    "send-settings": "無法發送設置",
+    "title": ""
   },
   "languages": {
     "da": "丹麥",

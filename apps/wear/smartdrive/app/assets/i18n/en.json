@@ -9,6 +9,7 @@
     "watch-serial-number": "TicWatch Serial Number"
   },
   "buttons": {
+    "back": "Back",
     "dismiss": "Dismiss",
     "ok": "OK"
   },

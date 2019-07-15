@@ -9,6 +9,7 @@
     "watch-serial-number": "TicWatch-serienummer"
   },
   "buttons": {
+    "back": "terug",
     "dismiss": "ontslaan",
     "ok": "OK"
   },
@@ -44,7 +45,8 @@
     "saving-error": "Mislukt het opslaan van de SmartDrive-fout",
     "saving-usage": "Mislukt het gebruik te besparen",
     "scan": "Kon niet scannen",
-    "send-settings": "Instellingen naar verzenden mislukt"
+    "send-settings": "Instellingen naar verzenden mislukt",
+    "title": ""
   },
   "languages": {
     "da": "Deens",

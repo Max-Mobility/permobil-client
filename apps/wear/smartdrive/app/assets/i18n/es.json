@@ -9,6 +9,7 @@
     "watch-serial-number": "Número de serie de TicWatch"
   },
   "buttons": {
+    "back": "atrás",
     "dismiss": "Despedir",
     "ok": "De acuerdo"
   },
@@ -44,7 +45,8 @@
     "saving-error": "Error al guardar el error SmartDrive",
     "saving-usage": "Error al guardar uso",
     "scan": "No se pudo escanear",
-    "send-settings": "Error al enviar la configuración a"
+    "send-settings": "Error al enviar la configuración a",
+    "title": ""
   },
   "languages": {
     "da": "danés",

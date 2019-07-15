@@ -9,6 +9,7 @@
     "watch-serial-number": "TicWatch serienummer"
   },
   "buttons": {
+    "back": "Tilbage",
     "dismiss": "Afskedige",
     "ok": "Okay"
   },
@@ -44,7 +45,8 @@
     "saving-error": "Kunne ikke gemme SmartDrive-fejl",
     "saving-usage": "Kunne ikke gemme brugen",
     "scan": "Kunne ikke scanne",
-    "send-settings": "Kunne ikke sende indstillinger til"
+    "send-settings": "Kunne ikke sende indstillinger til",
+    "title": ""
   },
   "languages": {
     "da": "dansk",
