@@ -807,27 +807,27 @@ export class MainViewModel extends Observable {
    */
   registerNetworkEventHandlers() {
     /*
-    this._networkService.on(
+      this._networkService.on(
       NetworkService.network_available_event,
       this.onNetworkAvailable.bind(this)
-    );
-    this._networkService.on(
+      );
+      this._networkService.on(
       NetworkService.network_lost_event,
       this.onNetworkLost.bind(this)
-    );
+      );
     */
   }
 
   unregisterNetworkEventHandlers() {
     /*
-    this._networkService.off(
+      this._networkService.off(
       NetworkService.network_available_event,
       this.onNetworkAvailable.bind(this)
-    );
-    this._networkService.off(
+      );
+      this._networkService.off(
       NetworkService.network_lost_event,
       this.onNetworkLost.bind(this)
-    );
+      );
     */
   }
   onNetworkAvailable(args?: any) {
@@ -865,7 +865,7 @@ export class MainViewModel extends Observable {
       // request network here
       // Log.D('Watch charging - requesting network');
       this._networkService.requestNetwork({
-        timeoutMs: this.CHARGING_WORK_PERIOD_MS / 2
+      timeoutMs: this.CHARGING_WORK_PERIOD_MS / 2
       });
       */
       this.onNetworkAvailable();
@@ -1979,6 +1979,18 @@ export class MainViewModel extends Observable {
     this.scanningProgressCircle.stopSpinning();
   }
 
+  onPairingTap() {
+    return this.saveNewSmartDrive()
+      .then((didSave: boolean) => {
+        if (didSave) {
+          showSuccess(`${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`);
+        }
+      })
+      .catch((err: any) => {
+        Log.E('Could not pair', err);
+      });
+  }
+
   saveNewSmartDrive(): Promise<any> {
     let scanDisplayId = null;
     this.showScanning();
@@ -2030,7 +2042,6 @@ export class MainViewModel extends Observable {
             // save the smartdrive here
             this.updateSmartDrive(result);
             appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-            // showSuccess(`${L('settings.paired-to-smartdrive')} ${result}`);
             return true;
           } else {
             return false;
