@@ -278,7 +278,7 @@
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
@@ -407,7 +407,10 @@
               <ListView.itemTemplate>
                 <RL:Ripple rippleColor="#ddd">
                   <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap && onTap }}">
-                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"
+                           visibility="{{ onTap ? 'collapsed':'visible' }}"/>
+                    <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true"
+                           visibility="{{ onTap ? 'visible':'collapsed' }}"/>
                     <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
                     <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label"
                            textWrap="true" visibility="{{ time ? 'visible':'collapsed'}}"/>
@@ -473,7 +476,7 @@
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
