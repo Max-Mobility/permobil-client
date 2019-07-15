@@ -628,6 +628,7 @@ export class MainViewModel extends Observable {
 
   onActivityPaused(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      Log.D('*** activityPaused ***');
       // paused happens any time a new activity is shown
       // in front, e.g. showSuccess / showFailure - so we
       // probably don't want to fullstop on paused
@@ -636,6 +637,7 @@ export class MainViewModel extends Observable {
 
   onActivityResumed(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      Log.D('*** activityResumed ***');
       // resumed happens after an app is re-opened out of
       // suspend, even though the app level resume event
       // doesn't seem to fire. Therefore we want to make
@@ -647,6 +649,7 @@ export class MainViewModel extends Observable {
 
   onActivityStopped(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      Log.D('*** activityStopped ***');
       // similar to the app suspend / exit event.
       this.fullStop();
     }
@@ -697,10 +700,12 @@ export class MainViewModel extends Observable {
   }
 
   onAppSuspend(args?: any) {
+    Log.D('*** appSuspend ***');
     this.fullStop();
   }
 
   onAppExit(args?: any) {
+    Log.D('*** appExit ***');
     this.fullStop();
   }
 
@@ -905,6 +910,7 @@ export class MainViewModel extends Observable {
       this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
       if (!this.disableWearCheck) {
         if (!this.watchBeingWorn && this.powerAssistActive) {
+          Log.D('Watch not being worn - disabling power assist!');
           // disable power assist if the watch is taken off!
           this.disablePowerAssist();
         }
@@ -1753,6 +1759,10 @@ export class MainViewModel extends Observable {
         1
       );
     }
+    // don't show 0.0 - show '--'
+    if (this.estimatedDistanceDisplay === '0.0') {
+      this.estimatedDistanceDisplay = '--';
+    }
   }
 
   onConfirmChangesTap() {
@@ -1879,6 +1889,7 @@ export class MainViewModel extends Observable {
   }
 
   enablePowerAssist() {
+    Log.D('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
@@ -1897,25 +1908,30 @@ export class MainViewModel extends Observable {
         .then(() => {
           return this.connectToSavedSmartDrive();
         })
-        .then(didConnect => {
+        .then((didConnect: boolean) => {
           if (didConnect) {
+            // enable the tap sensor
             this.enableTapSensor();
             this._ringTimerId = setInterval(
               this.blinkPowerAssistRing.bind(this),
               this.RING_TIMER_INTERVAL_MS
             );
           } else {
+            Log.D('Did not connect, disabling power assist');
             this.disablePowerAssist();
           }
         })
         .catch(err => {
+          Log.E(`Caught error, disabling power assist: ${err}`);
           this.disablePowerAssist();
         });
     } else {
       return this.saveNewSmartDrive()
-        .then(didSave => {
+        .then((didSave: boolean) => {
           if (didSave) {
             return this.enablePowerAssist();
+          } else {
+            Log.D('SmartDrive was not saved!');
           }
         })
         .catch(err => {
@@ -1925,6 +1941,7 @@ export class MainViewModel extends Observable {
   }
 
   disablePowerAssist() {
+    Log.D('Disabling power assist');
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
@@ -1942,14 +1959,6 @@ export class MainViewModel extends Observable {
       .catch(err => {
         return this.disconnectFromSmartDrive();
       });
-  }
-
-  togglePowerAssist() {
-    if (this.powerAssistActive) {
-      this.disablePowerAssist();
-    } else {
-      this.enablePowerAssist();
-    }
   }
 
   showScanning() {
@@ -2021,7 +2030,7 @@ export class MainViewModel extends Observable {
             // save the smartdrive here
             this.updateSmartDrive(result);
             appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-            showSuccess(`${L('settings.paired-to-smartdrive')} ${result}`);
+            // showSuccess(`${L('settings.paired-to-smartdrive')} ${result}`);
             return true;
           } else {
             return false;
@@ -2091,10 +2100,9 @@ export class MainViewModel extends Observable {
   }
 
   async disconnectFromSmartDrive() {
-    if (this.smartDrive && this.smartDrive.connected) {
+    if (this.smartDrive) {
       this.smartDrive.disconnect().then(() => {
         this.motorOn = false;
-        this.powerAssistActive = false;
       });
     }
   }

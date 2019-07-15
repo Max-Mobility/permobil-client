@@ -21,6 +21,14 @@ export class DeviceBase extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
+  public static milesToMotorTicks(miles: number): number {
+    return miles * (265.714 * 63360.0) / (2.0 * 3.14159265358 * 3.8);
+  }
+
+  public static milesToCaseTicks(miles: number): number {
+    return miles * (36.0 * 63360.0) / (2.0 * 3.14159265358 * 3.8);
+  }
+
   public static versionStringToByte(version: string): number {
     if (version.includes('.')) {
       const [major, minor] = version.split('.');
