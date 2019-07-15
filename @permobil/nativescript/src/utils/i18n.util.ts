@@ -115,7 +115,7 @@ setResources(applicationResources);
 global.L = L;
 
 // load inital files
-load();
+load(getDefaultLang());
 use(getDefaultLang());
 
 export { getDefaultLang, use, load, update, L };
