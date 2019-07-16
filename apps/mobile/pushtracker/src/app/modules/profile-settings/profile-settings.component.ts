@@ -4,6 +4,7 @@ import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
 import { EventData } from 'tns-core-modules/data/observable';
+import {dialog} from '../../utils/dialog-list.utils';
 
 @Component({
   selector: 'profile-settings',
@@ -48,14 +49,22 @@ export class ProfileSettingsComponent implements OnInit {
 
   onHeightTap(args: EventData) {
     Log.D('height action item tap');
+    dialog('Height', ['Centimeters', 'Feet & inches'])
+      .then(
+        (val) => console.log(val + 'Hello'),
+        (err) => console.error(err)
+      );
+
   }
 
   onWeightTap(args: EventData) {
     Log.D('Weight action item tap');
+    dialog('Weight', ['Kilograms', 'Pounds']);
   }
 
   onDistanceTap(args: EventData) {
     Log.D('Distance action item tap');
+    dialog('Distance', ['Kilometers', 'Miles']);
   }
 
   onMaxSpeedTap(args: EventData) {
