@@ -9,7 +9,6 @@ import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
 import { AnimatedCircle } from 'nativescript-animated-circle';
-import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -239,7 +238,9 @@ export class MainViewModel extends Observable {
         android.content.Context.POWER_SERVICE
       );
       this.wakeLock = powerManager.newWakeLock(
-        android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
+        // android.os.PowerManager.PARTIAL_WAKE_LOCK, // - best battery life, but allows ambient mode
+        android.os.PowerManager.SCREEN_DIM_WAKE_LOCK, // - moderate battery life, buttons still active
+        // android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK, // - worst battery life - easy to see
         'com.permobil.smartdrive.wearos::WakeLock'
       );
       return this.wakeLock;
@@ -248,6 +249,7 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
+    this._sentryBreadCrumb('Main-View-Model constructor.');
     // handle application lifecycle events
     this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
@@ -424,7 +426,7 @@ export class MainViewModel extends Observable {
             try {
               const lastErrorId = parseInt((obj && obj[3]) || -1);
               this.lastErrorId = lastErrorId;
-            } catch (err) {}
+            } catch (err) { }
           })
           .catch(err => {
             Sentry.captureException(err);
@@ -461,7 +463,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => {});
+          return requestPermissions(neededPermissions, () => { });
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -780,7 +782,7 @@ export class MainViewModel extends Observable {
     this.applyTheme();
   }
 
-  onAppLaunch(args?: any) {}
+  onAppLaunch(args?: any) { }
 
   onAppResume(args?: any) {
     this.enableBodySensor();
@@ -979,7 +981,7 @@ export class MainViewModel extends Observable {
   /**
    * View Loaded event handlers
    */
-  onPagerLoaded(args: any) {}
+  onPagerLoaded(args: any) { }
 
   /**
    * Sensor Data Handlers
@@ -1035,24 +1037,21 @@ export class MainViewModel extends Observable {
     this.tapTimeoutId = setTimeout(() => {
       this.hasTapped = false;
     }, (TapDetector.TapLockoutTimeMs * 3) / 2);
-    // now send
+    // vibrate for tap
+    if (this.powerAssistActive || this.isTraining) {
+      this._vibrator.cancel();
+      this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
+    }
+    // now send the tap
     if (
       this.powerAssistActive &&
       this.smartDrive &&
       this.smartDrive.ableToSend
     ) {
-      if (this.motorOn) {
-        this._vibrator.cancel();
-        this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
-      }
       this.smartDrive.sendTap().catch(err => {
         Sentry.captureException(err);
         Log.E('could not send tap', err);
       });
-    } else if (this.isTraining) {
-      // vibrate for tapping while training
-      this._vibrator.cancel();
-      this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
     }
   }
 
@@ -1122,12 +1121,10 @@ export class MainViewModel extends Observable {
    */
   maintainCPU() {
     this.wakeLock.acquire();
-    keepAwake();
   }
 
   releaseCPU() {
     if (this.wakeLock && this.wakeLock.isHeld()) this.wakeLock.release();
-    allowSleepAgain();
   }
 
   /**

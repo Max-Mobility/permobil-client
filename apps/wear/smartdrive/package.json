@@ -24,7 +24,6 @@
     "nativescript-auto-fit-text": "^1.0.0",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
     "nativescript-downloader": "^2.1.4",
-    "nativescript-insomnia": "~1.2.3",
     "nativescript-localstorage": "~2.0.0",
     "nativescript-ng-ripple": "~3.0.0-beta.1",
     "nativescript-pager": "~9.5.4",
