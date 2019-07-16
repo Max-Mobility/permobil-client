@@ -86,7 +86,7 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~5.4.2"
+    "tns-core-modules": "~5.4.3"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
