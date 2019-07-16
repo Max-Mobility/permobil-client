@@ -23,7 +23,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { device, screen } from 'tns-core-modules/platform';
+import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
@@ -253,7 +253,8 @@ export class MainViewModel extends Observable {
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
     // determine inset padding
-    const androidConfig = ad.getApplicationContext()
+    const androidConfig = ad
+      .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
@@ -373,18 +374,18 @@ export class MainViewModel extends Observable {
     this.updateSettingsDisplay();
     this._sentryBreadCrumb('Settings display updated.');
 
-    Log.D(
-      'Device Info: ---',
-      'Serial Number: ' + this.watchSerialNumber,
-      'Manufacturer: ' + device.manufacturer,
-      'Model: ' + device.model,
-      'OS: ' + device.os,
-      'OS Version: ' + device.osVersion,
-      'SDK Version: ' + device.sdkVersion,
-      'Region: ' + device.region,
-      'Device Language: ' + device.language,
-      'UUID: ' + device.uuid
-    );
+    // Log.D(
+    //   'Device Info: ---',
+    //   'Serial Number: ' + this.watchSerialNumber,
+    //   'Manufacturer: ' + device.manufacturer,
+    //   'Model: ' + device.model,
+    //   'OS: ' + device.os,
+    //   'OS Version: ' + device.osVersion,
+    //   'SDK Version: ' + device.sdkVersion,
+    //   'Region: ' + device.region,
+    //   'Device Language: ' + device.language,
+    //   'UUID: ' + device.uuid
+    // );
   }
 
   async initSqliteTables() {
@@ -423,7 +424,7 @@ export class MainViewModel extends Observable {
             try {
               const lastErrorId = parseInt((obj && obj[3]) || -1);
               this.lastErrorId = lastErrorId;
-            } catch (err) { }
+            } catch (err) {}
           })
           .catch(err => {
             Sentry.captureException(err);
@@ -460,7 +461,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => { });
+          return requestPermissions(neededPermissions, () => {});
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -779,7 +780,7 @@ export class MainViewModel extends Observable {
     this.applyTheme();
   }
 
-  onAppLaunch(args?: any) { }
+  onAppLaunch(args?: any) {}
 
   onAppResume(args?: any) {
     this.enableBodySensor();
@@ -978,8 +979,7 @@ export class MainViewModel extends Observable {
   /**
    * View Loaded event handlers
    */
-  onPagerLoaded(args: any) {
-  }
+  onPagerLoaded(args: any) {}
 
   /**
    * Sensor Data Handlers
