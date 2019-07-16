@@ -7,14 +7,22 @@ console.time('App_Start_Time');
 application.on(
   application.uncaughtErrorEvent,
   (args: application.UnhandledErrorEventData) => {
-    Sentry.captureException(args.error);
+    Sentry.captureException(args.error, {
+      tags: {
+        type: 'uncaughtErrorEvent'
+      }
+    });
   }
 );
 
 application.on(
   application.discardedErrorEvent,
   (args: application.DiscardedErrorEventData) => {
-    Sentry.captureException(args.error);
+    Sentry.captureException(args.error, {
+      tags: {
+        type: 'discardedErrorEvent'
+      }
+    });
   }
 );
 

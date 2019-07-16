@@ -191,7 +191,6 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
-  private page: Page = null;
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
@@ -205,9 +204,7 @@ export class MainViewModel extends Observable {
   private _sqliteService: SqliteService;
   private _networkService: NetworkService;
   private _kinveyService: KinveyService;
-
   private _throttledOtaAction: any = null;
-
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
@@ -230,16 +227,13 @@ export class MainViewModel extends Observable {
     android.Manifest.permission.ACCESS_COARSE_LOCATION
   ];
 
-  private _isSqliteLoaded: boolean = false;
-
   get SmartDriveWakeLock() {
     if (this.wakeLock) {
       return this.wakeLock;
     } else {
       // initialize the wake lock here
-      const context = android.content.Context;
       const powerManager = application.android.context.getSystemService(
-        context.POWER_SERVICE
+        android.content.Context.POWER_SERVICE
       );
       this.wakeLock = powerManager.newWakeLock(
         android.os.PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
@@ -284,7 +278,6 @@ export class MainViewModel extends Observable {
       Promise.all(sqlitePromises)
         .then(() => {
           console.timeEnd('SQLite_Init');
-          this._isSqliteLoaded = true;
           this._sentryBreadCrumb('SQLite has been initialized.');
 
           // get last error
@@ -300,6 +293,7 @@ export class MainViewModel extends Observable {
               } catch (err) {}
             })
             .catch(err => {
+              Sentry.captureException(err);
               alert({
                 title: L('failures.title'),
                 message: `${L('failures.getting-error')}: ${err}`,
@@ -308,9 +302,8 @@ export class MainViewModel extends Observable {
             });
         })
         .catch(err => {
-          Log.E('Could not make table:', err);
-          this._isSqliteLoaded = false;
           Sentry.captureException(err);
+          Log.E('Could not make table:', err);
         });
     }, 8000);
 
@@ -333,10 +326,14 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('All Services created.');
 
     // handle application lifecycle events
+    this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
 
     // register for network service events
+    this._sentryBreadCrumb('Registering network event handlers.');
     this.registerNetworkEventHandlers();
+    this._sentryBreadCrumb('Network event handlers registered.');
 
     // load serial number from settings / memory
     const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
@@ -361,16 +358,27 @@ export class MainViewModel extends Observable {
     );
 
     // regiter for system updates related to battery / time UI
+    this._sentryBreadCrumb('Registering for battery updates.');
     this.registerForBatteryUpdates();
+    this._sentryBreadCrumb('Battery updates registered.');
+    this._sentryBreadCrumb('Registering for time updates.');
     this.registerForTimeUpdates();
+    this._sentryBreadCrumb('Time updates registered.');
 
     // Tap / Gesture detection related code:
     this._sensorService.on(
       SensorService.SensorChanged,
       this.handleSensorData.bind(this)
     );
+    this._sentryBreadCrumb('Creating new TapDetector');
+    console.time('new_tap_detector');
     this.tapDetector = new TapDetector();
+    console.timeEnd('new_tap_detector');
+    this._sentryBreadCrumb('New TapDetector created.');
+
+    this._sentryBreadCrumb('Enabling body sensor.');
     this.enableBodySensor();
+    this._sentryBreadCrumb('Body sensor enabled.');
 
     // load savedSmartDriveAddress from settings / memory
     const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
@@ -384,8 +392,13 @@ export class MainViewModel extends Observable {
     }
 
     // load settings from memory
+    this._sentryBreadCrumb('Loading settings.');
     this.loadSettings();
+    this._sentryBreadCrumb('Settings loaded.');
+
+    this._sentryBreadCrumb('Updating settings display.');
     this.updateSettingsDisplay();
+    this._sentryBreadCrumb('Settings display updated.');
 
     Log.D(
       'Device Info: ---',
@@ -445,6 +458,7 @@ export class MainViewModel extends Observable {
           return true;
         })
         .catch(err => {
+          Sentry.captureException(err);
           throw L('failures.permissions');
         });
     } else {
@@ -481,7 +495,6 @@ export class MainViewModel extends Observable {
   }
 
   onMainPageLoaded(args: any) {
-    this.page = args.object as Page;
     themes.applyThemeCss(defaultTheme, 'theme-default.scss');
     this.applyStyle();
   }
@@ -646,6 +659,7 @@ export class MainViewModel extends Observable {
 
   onActivityPaused(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      this._sentryBreadCrumb('*** activityPaused ***');
       Log.D('*** activityPaused ***');
       // paused happens any time a new activity is shown
       // in front, e.g. showSuccess / showFailure - so we
@@ -655,6 +669,7 @@ export class MainViewModel extends Observable {
 
   onActivityResumed(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      this._sentryBreadCrumb('*** activityResumed ***');
       Log.D('*** activityResumed ***');
       // resumed happens after an app is re-opened out of
       // suspend, even though the app level resume event
@@ -667,6 +682,7 @@ export class MainViewModel extends Observable {
 
   onActivityStopped(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
+      this._sentryBreadCrumb('*** activityStopped ***');
       Log.D('*** activityStopped ***');
       // similar to the app suspend / exit event.
       this.fullStop();
@@ -674,6 +690,7 @@ export class MainViewModel extends Observable {
   }
 
   onEnterAmbient() {
+    this._sentryBreadCrumb('*** enterAmbient ***');
     this.isAmbient = true;
     Log.D('*** enterAmbient ***');
     // the user can enter ambient mode even when we hold wake lock
@@ -706,6 +723,7 @@ export class MainViewModel extends Observable {
   }
 
   onExitAmbient() {
+    this._sentryBreadCrumb('*** exitAmbient ***');
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.enableBodySensor();
@@ -730,13 +748,21 @@ export class MainViewModel extends Observable {
   }
 
   onAppLowMemory(args?: any) {
+    this._sentryBreadCrumb('*** appLowMemory ***');
     Log.D('App low memory', args.android);
     // TODO: determine if we need to stop for this - we see this
     // even even when the app is using very little memory
     // this.fullStop();
   }
 
-  onAppUncaughtError(args?: any) {
+  onAppUncaughtError(args?: application.UnhandledErrorEventData) {
+    if (args) {
+      Sentry.captureException(args.error, {
+        tags: {
+          type: 'uncaughtErrorEvent'
+        }
+      });
+    }
     Log.D('App uncaught error');
     this.fullStop();
   }
@@ -866,8 +892,9 @@ export class MainViewModel extends Observable {
         // unregister network since we're done sending that data now
         // this._networkService.unregisterNetwork();
       })
-      .catch(e => {
-        Log.E('Error sending data to server', e);
+      .catch(err => {
+        Sentry.captureException(err);
+        Log.E('Error sending data to server', err);
         // unregister network since we're done sending that data now
         // this._networkService.unregisterNetwork();
       });
@@ -979,7 +1006,10 @@ export class MainViewModel extends Observable {
         this._vibrator.cancel();
         this._vibrator.vibrate((TapDetector.TapLockoutTimeMs * 3) / 4);
       }
-      this.smartDrive.sendTap().catch(err => Log.E('could not send tap', err));
+      this.smartDrive.sendTap().catch(err => {
+        Sentry.captureException(err);
+        Log.E('could not send tap', err);
+      });
     } else if (this.isTraining) {
       // vibrate for tapping while training
       this._vibrator.cancel();
@@ -990,9 +1020,10 @@ export class MainViewModel extends Observable {
   stopSmartDrive() {
     // turn off the motor if SD is connected
     if (this.smartDrive && this.smartDrive.ableToSend && this.motorOn) {
-      return this.smartDrive
-        .stopMotor()
-        .catch(err => Log.E('Could not stop motor', err));
+      return this.smartDrive.stopMotor().catch(err => {
+        Log.E('Could not stop motor', err);
+        Sentry.captureException(err);
+      });
     } else {
       return Promise.resolve();
     }
@@ -1009,6 +1040,7 @@ export class MainViewModel extends Observable {
         this.MAX_REPORTING_INTERVAL_US
       );
     } catch (err) {
+      Sentry.captureException(err);
       // Log.E('Error starting the body sensor', err);
     }
   }
@@ -1021,6 +1053,7 @@ export class MainViewModel extends Observable {
         this.MAX_REPORTING_INTERVAL_US
       );
     } catch (err) {
+      Sentry.captureException(err);
       // Log.E('Error starting the tap sensor', err);
     }
   }
@@ -1029,6 +1062,7 @@ export class MainViewModel extends Observable {
     try {
       this._sensorService.stopAllDeviceSensors();
     } catch (err) {
+      Sentry.captureException(err);
       // Log.E('Error disabling the device sensors:', err);
     }
   }
@@ -1039,6 +1073,7 @@ export class MainViewModel extends Observable {
         android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
       );
     } catch (err) {
+      Sentry.captureException(err);
       // Log.E('Error disabling the device sensors:', err);
     }
   }
@@ -1198,6 +1233,7 @@ export class MainViewModel extends Observable {
           firmware_file: true
         };
         return this._kinveyService.getFile(undefined, query).catch(err => {
+          Sentry.captureException(err);
           Log.E('Could not get metadata for files:', err);
           this.updateProgressText = L('updates.errors.getting') + `: ${err}`;
           throw err;
@@ -1250,6 +1286,7 @@ export class MainViewModel extends Observable {
           promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
         }
         return Promise.all(promises).catch(err => {
+          Sentry.captureException(err);
           Log.E('Could not download files:', err);
           this.updateProgressText =
             L('updates.errors.downloading') + `: ${err}`;
@@ -1315,6 +1352,7 @@ export class MainViewModel extends Observable {
           });
         }
         return Promise.all(promises).catch(err => {
+          Sentry.captureException(err);
           Log.E('Could not write files:', err);
           this.updateProgressText = L('updates.errors.saving') + `: ${err}`;
           throw err;
@@ -1359,6 +1397,7 @@ export class MainViewModel extends Observable {
               }
             })
             .catch(err => {
+              Sentry.captureException(err);
               reject(err);
             });
         })
@@ -1366,6 +1405,7 @@ export class MainViewModel extends Observable {
             return this.disconnectFromSmartDrive();
           })
           .catch(err => {
+            Sentry.captureException(err);
             this.disconnectFromSmartDrive();
             Log.E('Could not connect to smartdrive:', err);
             this.updateProgressText =
@@ -1440,6 +1480,7 @@ export class MainViewModel extends Observable {
                 (this._updatesLayout as any).swipeable = true;
               })
               .catch(err => {
+                Sentry.captureException(err);
                 this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const msg = L('updates.failed') + `: ${err}`;
@@ -1467,6 +1508,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
+        Sentry.captureException(err);
         this.releaseCPU();
         // re-enable swipe close of the updates layout
         (this._updatesLayout as any).swipeable = true;
@@ -1617,7 +1659,9 @@ export class MainViewModel extends Observable {
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
-      .catch(err => {});
+      .catch(err => {
+        Sentry.captureException(err);
+      });
   }
 
   onLoadMoreErrors(args?: ItemEventData) {
@@ -1968,6 +2012,7 @@ export class MainViewModel extends Observable {
           }
         })
         .catch(err => {
+          Sentry.captureException(err);
           Log.E(`Caught error, disabling power assist: ${err}`);
           this.disablePowerAssist();
         });
@@ -1981,6 +2026,7 @@ export class MainViewModel extends Observable {
           }
         })
         .catch(err => {
+          Sentry.captureException(err);
           Log.E(`Could not save new smartdrive: ${err}`);
         });
     }
@@ -2003,6 +2049,7 @@ export class MainViewModel extends Observable {
         return this.disconnectFromSmartDrive();
       })
       .catch(err => {
+        Sentry.captureException(err);
         return this.disconnectFromSmartDrive();
       });
   }
@@ -2035,6 +2082,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch((err: any) => {
+        Sentry.captureException(err);
         Log.E('Could not pair', err);
       });
   }
@@ -2096,14 +2144,15 @@ export class MainViewModel extends Observable {
           }
         });
       })
-      .catch(error => {
+      .catch(err => {
+        Sentry.captureException(err);
         this.hideScanning();
         clearInterval(scanDisplayId);
         this.pairSmartDriveText = L('settings.pair-smartdrive');
-        Log.E('could not scan', error);
+        Log.E('could not scan', err);
         alert({
           title: L('failures.title'),
-          message: `${L('failures.scan')}: ${error}`,
+          message: `${L('failures.scan')}: ${err}`,
           okButtonText: L('buttons.ok')
         });
         return false;
@@ -2120,6 +2169,7 @@ export class MainViewModel extends Observable {
         return true;
       })
       .catch(err => {
+        Sentry.captureException(err);
         alert({
           title: L('failures.title'),
           message: L('failures.connect') + ' ' + smartDrive.address,
@@ -2190,6 +2240,7 @@ export class MainViewModel extends Observable {
         );
       })
       .catch(err => {
+        Sentry.captureException(err);
         // make sure we retry this while we're connected
         this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
         // indicate failure
@@ -2376,6 +2427,7 @@ export class MainViewModel extends Observable {
         }, {});
       })
       .catch(err => {
+        Sentry.captureException(err);
         Log.E('Could not get firmware metadata:', err);
       });
   }
@@ -2395,6 +2447,7 @@ export class MainViewModel extends Observable {
       return this._sqliteService
         .insertIntoTable(SmartDriveData.Errors.TableName, newError)
         .catch(err => {
+          Sentry.captureException(err);
           alert({
             title: L('failures.title'),
             message: `${L('failures.saving-error')}: ${err}`,
@@ -2432,6 +2485,7 @@ export class MainViewModel extends Observable {
         return errors;
       })
       .catch(err => {
+        Sentry.captureException(err);
         Log.E('Could not get errors', err);
         return errors;
       });
@@ -2517,6 +2571,7 @@ export class MainViewModel extends Observable {
         return this.updateChartData();
       })
       .catch(err => {
+        Sentry.captureException(err);
         Log.E('Failed saving usage:', err);
         alert({
           title: L('failures.title'),
@@ -2539,6 +2594,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(err => {
+        Sentry.captureException(err);
         // nothing was found
         return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
       });
@@ -2565,6 +2621,7 @@ export class MainViewModel extends Observable {
         return usageInfo;
       })
       .catch(err => {
+        Sentry.captureException(err);
         console.log('error getting recent info:', err);
         return usageInfo;
       });
@@ -2609,7 +2666,9 @@ export class MainViewModel extends Observable {
             this.hasSentSettings
           );
         })
-        .catch(err => {});
+        .catch(err => {
+          Sentry.captureException(err);
+        });
     } else {
       return Promise.resolve();
     }
@@ -2659,8 +2718,9 @@ export class MainViewModel extends Observable {
           return Promise.all(promises);
         }
       })
-      .catch(e => {
-        Log.E('Error sending errors to server:', e);
+      .catch(err => {
+        Sentry.captureException(err);
+        Log.E('Error sending errors to server:', err);
       });
   }
 
@@ -2704,6 +2764,7 @@ export class MainViewModel extends Observable {
         }
       })
       .catch(e => {
+        Sentry.captureException(e);
         Log.E('Error sending infos to server:', e);
       });
   }
