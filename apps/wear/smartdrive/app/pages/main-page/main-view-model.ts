@@ -2025,6 +2025,8 @@ export class MainViewModel extends Observable {
         })
         .then((didConnect: boolean) => {
           if (didConnect) {
+            // vibrate for enabling power assist
+            this._vibrator.vibrate(200); // vibrate for 250 ms
             // enable the tap sensor
             this.enableTapSensor();
             this._ringTimerId = setInterval(
