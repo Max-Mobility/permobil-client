@@ -53,7 +53,7 @@ askKeystorePassword().then(result => {
       }
 
       console.log(
-        'Android release finished. A new release APK should be located in the permobil-client/apps/wear/smartdrive/tools/ directory.'
+        'Android release finished. A new release AAB should be located in the permobil-client/apps/wear/smartdrive/tools/ directory.'
       );
     }
   );
