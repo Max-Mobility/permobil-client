@@ -533,10 +533,15 @@ export class MainViewModel extends Observable {
   applyTheme(theme?: string) {
     // apply theme
     this._sentryBreadCrumb('applying theme');
-    if (theme === 'ambient' || this.isAmbient) {
-      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-    } else {
-      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+    try {
+      if (theme === 'ambient' || this.isAmbient) {
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+      } else {
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply theme error:', err);
     }
     this._sentryBreadCrumb('theme applied');
     this.applyStyle();
@@ -545,10 +550,15 @@ export class MainViewModel extends Observable {
   applyStyle() {
     this._sentryBreadCrumb('applying style');
     if (this.pager) {
-      const children = this.pager._childrenViews;
-      for (let i = 0; i < children.size; i++) {
-        const child = children.get(i) as View;
-        child._onCssStateChange();
+      try {
+        const children = this.pager._childrenViews;
+        for (let i = 0; i < children.size; i++) {
+          const child = children.get(i) as View;
+          child._onCssStateChange();
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        Log.E('apply style error:', err);
       }
     }
     this._sentryBreadCrumb('style applied');
