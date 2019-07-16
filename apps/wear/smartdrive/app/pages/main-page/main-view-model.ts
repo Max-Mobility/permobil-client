@@ -392,10 +392,6 @@ export class MainViewModel extends Observable {
         console.timeEnd('SQLite_Init');
         this._sentryBreadCrumb('SQLite has been initialized.');
 
-        // apply theme
-        // TODO: this is a hack to force the theme after sqlite init
-        //this.applyTheme();
-
         // get last error
         return this._sqliteService
           .getLast(
@@ -494,7 +490,6 @@ export class MainViewModel extends Observable {
   }
 
   async onMainPageLoaded(args: any) {
-    Log.D("onMainPageLoaded");
     this._sentryBreadCrumb('onMainPageLoaded');
     // now init the ui
     await this.init();
