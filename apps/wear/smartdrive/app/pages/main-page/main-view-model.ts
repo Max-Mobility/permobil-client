@@ -21,13 +21,14 @@ import { showSuccess } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
-import { fromObject, Observable } from 'tns-core-modules/data/observable';
+import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { device } from 'tns-core-modules/platform';
+import { device, screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
+import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
@@ -54,6 +55,8 @@ const dateLocales = {
 };
 
 export class MainViewModel extends Observable {
+  // for managing the inset of the layouts ourselves
+  @Prop() insetPadding: number = 0;
   // battery display
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
   @Prop() watchCurrentBatteryPercentage: number = 0;
@@ -249,6 +252,24 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
+    // determine inset padding
+    const androidConfig = ad.getApplicationContext()
+      .getResources()
+      .getConfiguration();
+    const isCircleWatch = androidConfig.isScreenRound();
+    const widthPixels = screen.mainScreen.widthPixels;
+    if (isCircleWatch) {
+      this.insetPadding = Math.round(0.146467 * widthPixels);
+    }
+  }
+
+  customWOLInsetLoaded(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      this.insetPadding,
+      this.insetPadding,
+      0
+    );
   }
 
   async init() {

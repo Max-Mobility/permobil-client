@@ -170,7 +170,8 @@
       </pager:PagerItem>
 
       <pager:PagerItem>
-        <wol:WearOsLayout height="100%" width="100%">
+        <wol:WearOsLayout
+            height="100%" width="100%">
           <ScrollView height="100%">
             <GridLayout rows="*,*,*,*,*" columns="*">
               <GridLayout row="0" rows="*, *" columns="*">
@@ -209,12 +210,15 @@
 
     // Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout height="100%" width="100%">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
           <ScrollView height="100%" id="settingsScrollView">
-            <StackLayout>
+            <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
@@ -295,7 +299,8 @@
 
     // Updates "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onUpdatesLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.updates, enabledLayout.updates ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout height="100%" width="100%" disableInsetConstraint="true">
+      <wol:WearOsLayout
+          height="100%" width="100%" disableInsetConstraint="true">
         // SmartDrive Update Progress Circle
         <nac:AnimatedCircle id="updateProgressCircle"
                             loaded="{{ onUpdateProgressCircleLoaded }}"
@@ -341,7 +346,8 @@
 
     // Scanning "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onScanningLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.scanning, enabledLayout.scanning ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout height="100%" width="100%" disableInsetConstraint="true">
+      <wol:WearOsLayout
+          height="100%" width="100%" disableInsetConstraint="true">
         // SmartDrive Update Progress Circle
         <nac:AnimatedCircle id="scanningProgressCircle"
                             loaded="{{ onScanningProgressCircleLoaded }}"
@@ -402,12 +408,16 @@
 
     // Error History "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onErrorHistoryLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.errorHistory, enabledLayout.errorHistory ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout height="100%" width="100%">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
           <Label text="" class="hr-blue" />
           <ScrollView height="100%" id="errorsScrollView">
             <ListView row="2" colSpan="1" items="{{ errorHistoryData }}"
+                      paddingBottom="{{ insetPadding }}"
                       loadMoreItems="{{ onLoadMoreErrors }}">
               <ListView.itemTemplate>
                 <RL:Ripple rippleColor="#ddd">
@@ -430,13 +440,16 @@
 
     // About "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onAboutLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout height="100%" width="100%">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
           // TODO: might want to switch to listview here depending how many items are going to be in this list
           <ScrollView height="100%" id="aboutScrollView">
-            <StackLayout>
+            <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
