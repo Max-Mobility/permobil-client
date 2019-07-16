@@ -1,7 +1,7 @@
 require('globals');
-import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
-import { device } from 'tns-core-modules/platform';
 import { getResources, setResources } from 'tns-core-modules/application';
+import { File, Folder, knownFolders, path } from 'tns-core-modules/file-system';
+import { device } from 'tns-core-modules/platform';
 
 const getDefaultLang = function() {
   return device.language;
@@ -12,11 +12,7 @@ let lang = getDefaultLang();
 const translations = {};
 // The folder where we look for translation files, default is
 // "~/assets/i18n"
-const i18nPath = path.join(
-  knownFolders.currentApp().path,
-  'assets',
-  'i18n'
-);
+const i18nPath = path.join(knownFolders.currentApp().path, 'assets', 'i18n');
 
 const use = function(language?: string) {
   if (language) {
@@ -48,8 +44,7 @@ const load = async function(language?: string) {
     const langFiles = await Folder.fromPath(i18nPath)
       .getEntities()
       .then(entities => {
-        return entities.map(e => e.name)
-          .filter(n => !n.includes('babel'));
+        return entities.map(e => e.name).filter(n => !n.includes('babel'));
       });
     languagesToLoad.push(...langFiles);
   }
@@ -59,7 +54,8 @@ const load = async function(language?: string) {
       const fname = languagePath(l);
       const file = File.fromPath(fname);
       // console.log(`Loading translation file ${fname}`);
-      file.readText()
+      file
+        .readText()
         .then(text => {
           translations[l.replace('.json', '')] = JSON.parse(text);
         })
@@ -86,7 +82,7 @@ const update = function(language: string, translation: any) {
   // save translation file
   const fname = languagePath(language);
   const file = File.fromPath(fname);
-  file.writeSync(translation, (err) => {
+  file.writeSync(translation, err => {
     console.error(`Could not write translation file ${fname}: ${err}`);
   });
 };
