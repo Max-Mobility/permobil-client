@@ -245,67 +245,21 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
+    // handle application lifecycle events
+    this._sentryBreadCrumb('Registering app event handlers.');
+    this.registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
+  }
+
+  async init() {
+    this._sentryBreadCrumb('Main-View-Model init.');
+
     this._sentryBreadCrumb('Main-View-Model constructor.');
-
-    // using a timeout here for things that don't necessarily need to be active at startup
-    setTimeout(() => {
-      this._sentryBreadCrumb('Initializing WakeLock...');
-      console.time('Init_SmartDriveWakeLock');
-      this.wakeLock = this.SmartDriveWakeLock;
-      console.timeEnd('Init_SmartDriveWakeLock');
-      this._sentryBreadCrumb('WakeLock has been initialized.');
-
-      this._sentryBreadCrumb('Initializing SQLite...');
-      console.time('SQLite_Init');
-      // create / load tables for smartdrive data
-      const sqlitePromises = [
-        this._sqliteService.makeTable(
-          SmartDriveData.Info.TableName,
-          SmartDriveData.Info.IdName,
-          SmartDriveData.Info.Fields
-        ),
-        this._sqliteService.makeTable(
-          SmartDriveData.Errors.TableName,
-          SmartDriveData.Errors.IdName,
-          SmartDriveData.Errors.Fields
-        ),
-        this._sqliteService.makeTable(
-          SmartDriveData.Firmwares.TableName,
-          SmartDriveData.Firmwares.IdName,
-          SmartDriveData.Firmwares.Fields
-        )
-      ];
-      Promise.all(sqlitePromises)
-        .then(() => {
-          console.timeEnd('SQLite_Init');
-          this._sentryBreadCrumb('SQLite has been initialized.');
-
-          // get last error
-          return this._sqliteService
-            .getLast(
-              SmartDriveData.Errors.TableName,
-              SmartDriveData.Errors.IdName
-            )
-            .then(obj => {
-              try {
-                const lastErrorId = parseInt((obj && obj[3]) || -1);
-                this.lastErrorId = lastErrorId;
-              } catch (err) {}
-            })
-            .catch(err => {
-              Sentry.captureException(err);
-              alert({
-                title: L('failures.title'),
-                message: `${L('failures.getting-error')}: ${err}`,
-                okButtonText: L('buttons.ok')
-              });
-            });
-        })
-        .catch(err => {
-          Sentry.captureException(err);
-          Log.E('Could not make table:', err);
-        });
-    }, 8000);
+    this._sentryBreadCrumb('Initializing WakeLock...');
+    console.time('Init_SmartDriveWakeLock');
+    this.wakeLock = this.SmartDriveWakeLock;
+    console.timeEnd('Init_SmartDriveWakeLock');
+    this._sentryBreadCrumb('WakeLock has been initialized.');
 
     this._sentryBreadCrumb('Initializing Sentry...');
     console.time('Sentry_Init');
@@ -325,15 +279,8 @@ export class MainViewModel extends Observable {
     this._kinveyService = injector.get(KinveyService);
     this._sentryBreadCrumb('All Services created.');
 
-    // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
-    this.registerAppEventHandlers();
-    this._sentryBreadCrumb('App event handlers registered.');
-
-    // register for network service events
-    this._sentryBreadCrumb('Registering network event handlers.');
-    this.registerNetworkEventHandlers();
-    this._sentryBreadCrumb('Network event handlers registered.');
+    // initialize data storage for usage, errors, settings
+    this.initSqliteTables();
 
     // load serial number from settings / memory
     const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
@@ -364,6 +311,11 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('Registering for time updates.');
     this.registerForTimeUpdates();
     this._sentryBreadCrumb('Time updates registered.');
+
+    // register for network service events
+    this._sentryBreadCrumb('Registering network event handlers.');
+    this.registerNetworkEventHandlers();
+    this._sentryBreadCrumb('Network event handlers registered.');
 
     // Tap / Gesture detection related code:
     this._sensorService.on(
@@ -414,14 +366,61 @@ export class MainViewModel extends Observable {
     );
   }
 
-  applyStyle() {
-    if (this.pager) {
-      const children = this.pager._childrenViews;
-      for (let i = 0; i < children.size; i++) {
-        const child = children.get(i) as View;
-        child._onCssStateChange();
-      }
-    }
+  async initSqliteTables() {
+    this._sentryBreadCrumb('Initializing SQLite...');
+    console.time('SQLite_Init');
+    // create / load tables for smartdrive data
+    const sqlitePromises = [
+      this._sqliteService.makeTable(
+        SmartDriveData.Info.TableName,
+        SmartDriveData.Info.IdName,
+        SmartDriveData.Info.Fields
+      ),
+      this._sqliteService.makeTable(
+        SmartDriveData.Errors.TableName,
+        SmartDriveData.Errors.IdName,
+        SmartDriveData.Errors.Fields
+      ),
+      this._sqliteService.makeTable(
+        SmartDriveData.Firmwares.TableName,
+        SmartDriveData.Firmwares.IdName,
+        SmartDriveData.Firmwares.Fields
+      )
+    ];
+    return Promise.all(sqlitePromises)
+      .then(() => {
+        console.timeEnd('SQLite_Init');
+        this._sentryBreadCrumb('SQLite has been initialized.');
+
+        // apply theme
+        // TODO: this is a hack to force the theme after sqlite init
+        //this.applyTheme();
+
+        // get last error
+        return this._sqliteService
+          .getLast(
+            SmartDriveData.Errors.TableName,
+            SmartDriveData.Errors.IdName
+          )
+          .then(obj => {
+            try {
+              const lastErrorId = parseInt((obj && obj[3]) || -1);
+              this.lastErrorId = lastErrorId;
+            } catch (err) { }
+          })
+          .catch(err => {
+            Sentry.captureException(err);
+            alert({
+              title: L('failures.title'),
+              message: `${L('failures.getting-error')}: ${err}`,
+              okButtonText: L('buttons.ok')
+            });
+          });
+      })
+      .catch(err => {
+        Sentry.captureException(err);
+        Log.E('Could not make table:', err);
+      });
   }
 
   askForPermissions() {
@@ -444,7 +443,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       })
         .then(() => {
-          return requestPermissions(neededPermissions, () => {});
+          return requestPermissions(neededPermissions, () => { });
         })
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
@@ -494,9 +493,44 @@ export class MainViewModel extends Observable {
     this.enabledLayout.set(layoutName, true);
   }
 
-  onMainPageLoaded(args: any) {
-    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+  async onMainPageLoaded(args: any) {
+    Log.D("onMainPageLoaded");
+    this._sentryBreadCrumb('onMainPageLoaded');
+    // now init the ui
+    await this.init();
+    // get child references
+    const page = args.object as Page;
+    this.pager = page.getViewById('pager') as Pager;
+    this.scanningProgressCircle = page.getViewById(
+      'scanningProgressCircle'
+    ) as AnimatedCircle;
+    this.updateProgressCircle = page.getViewById(
+      'updateProgressCircle'
+    ) as AnimatedCircle;
+    // apply theme
+    this.applyTheme();
+  }
+
+  applyTheme(theme?: string) {
+    // apply theme
+    this._sentryBreadCrumb('applying theme');
+    if (theme === 'ambient' || this.isAmbient) {
+      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+    } else {
+      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+    }
     this.applyStyle();
+  }
+
+  applyStyle() {
+    this._sentryBreadCrumb('applying style');
+    if (this.pager) {
+      const children = this.pager._childrenViews;
+      for (let i = 0; i < children.size; i++) {
+        const child = children.get(i) as View;
+        child._onCssStateChange();
+      }
+    }
   }
 
   fullStop() {
@@ -706,8 +740,7 @@ export class MainViewModel extends Observable {
       return;
     }
 
-    themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-    this.applyStyle();
+    this.applyTheme();
   }
 
   onUpdateAmbient() {
@@ -727,11 +760,10 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.enableBodySensor();
-    themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-    this.applyStyle();
+    this.applyTheme();
   }
 
-  onAppLaunch(args?: any) {}
+  onAppLaunch(args?: any) { }
 
   onAppResume(args?: any) {
     this.enableBodySensor();
@@ -931,15 +963,6 @@ export class MainViewModel extends Observable {
    * View Loaded event handlers
    */
   onPagerLoaded(args: any) {
-    const page = args.object as Page;
-    this.pager = page.getViewById('pager') as Pager;
-    // apply the style
-    if (this.isAmbient) {
-      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-    } else {
-      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-    }
-    this.applyStyle();
   }
 
   /**
@@ -1124,13 +1147,6 @@ export class MainViewModel extends Observable {
   /**
    * Scanning Page Handlers
    */
-  onScanningProgressCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.scanningProgressCircle = page.getViewById(
-      'scanningProgressCircle'
-    ) as AnimatedCircle;
-  }
-
   onScanningLayoutLoaded(args) {
     this._scanningLayout = args.object as SwipeDismissLayout;
     this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, args => {
@@ -1143,13 +1159,6 @@ export class MainViewModel extends Observable {
   /**
    * Updates Page Handlers
    */
-  onUpdateProgressCircleLoaded(args: any) {
-    const page = args.object as Page;
-    this.updateProgressCircle = page.getViewById(
-      'updateProgressCircle'
-    ) as AnimatedCircle;
-  }
-
   onUpdatesTap() {
     if (this.smartDrive) {
       showOffScreenLayout(this._updatesLayout);
@@ -1549,6 +1558,43 @@ export class MainViewModel extends Observable {
     });
   }
 
+  onLoadMoreErrors(args?: ItemEventData) {
+    this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
+      // add the back button as the first element - should only load once
+      if (this.errorHistoryData.length === 0) {
+        this.errorHistoryData.push({
+          code: L('buttons.back'),
+          onTap: this.previousLayout.bind(this)
+        });
+      }
+      // determine the unique errors that we have
+      recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
+      if (recents && recents.length) {
+        // now add the recent data
+        this.errorHistoryData.push(...recents);
+      } else if (this.errorHistoryData.length === 1) {
+        // or add the 'no errors' message
+        this.errorHistoryData.push({
+          code: L('error-history.no-errors')
+        });
+      }
+    });
+  }
+
+  showErrorHistory() {
+    // clear out any pre-loaded data
+    this.errorHistoryData.splice(0, this.errorHistoryData.length);
+    if (this.errorsScrollView) {
+      // reset to to the top when entering the page
+      this.errorsScrollView.scrollToVerticalOffset(0, true);
+    }
+    // load the error data
+    this.onLoadMoreErrors();
+    // show the layout
+    showOffScreenLayout(this._errorHistoryLayout);
+    this.enableLayout('errorHistory');
+  }
+
   /**
    * Setings page handlers
    */
@@ -1662,43 +1708,6 @@ export class MainViewModel extends Observable {
       .catch(err => {
         Sentry.captureException(err);
       });
-  }
-
-  onLoadMoreErrors(args?: ItemEventData) {
-    this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
-      // add the back button as the first element - should only load once
-      if (this.errorHistoryData.length === 0) {
-        this.errorHistoryData.push({
-          code: L('buttons.back'),
-          onTap: this.previousLayout.bind(this)
-        });
-      }
-      // determine the unique errors that we have
-      recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
-      if (recents && recents.length) {
-        // now add the recent data
-        this.errorHistoryData.push(...recents);
-      } else if (this.errorHistoryData.length === 1) {
-        // or add the 'no errors' message
-        this.errorHistoryData.push({
-          code: L('error-history.no-errors')
-        });
-      }
-    });
-  }
-
-  showErrorHistory() {
-    // clear out any pre-loaded data
-    this.errorHistoryData.splice(0, this.errorHistoryData.length);
-    if (this.errorsScrollView) {
-      // reset to to the top when entering the page
-      this.errorsScrollView.scrollToVerticalOffset(0, true);
-    }
-    // load the error data
-    this.onLoadMoreErrors();
-    // show the layout
-    showOffScreenLayout(this._errorHistoryLayout);
-    this.enableLayout('errorHistory');
   }
 
   onSettingsTap() {

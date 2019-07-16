@@ -7,3 +7,9 @@ export function navigatingTo(args: EventData) {
   const page = args.object as Page;
   page.bindingContext = new MainViewModel();
 }
+
+export function onMainPageLoaded(args: EventData) {
+  // console.log('main-page.ts : onMainPageLoaded', args);
+  const page = args.object as Page;
+  page.bindingContext.onMainPageLoaded(args);
+}
