@@ -538,6 +538,7 @@ export class MainViewModel extends Observable {
     } else {
       themes.applyThemeCss(defaultTheme, 'theme-default.scss');
     }
+    this._sentryBreadCrumb('theme applied');
     this.applyStyle();
   }
 
@@ -550,6 +551,7 @@ export class MainViewModel extends Observable {
         child._onCssStateChange();
       }
     }
+    this._sentryBreadCrumb('style applied');
   }
 
   fullStop() {
