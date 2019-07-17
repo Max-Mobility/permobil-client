@@ -2,10 +2,10 @@
   "nativescript": {
     "id": "com.permobil.pushtracker",
     "tns-android": {
-      "version": "6.0.0-rc-2019-06-27-172817-03"
+      "version": "6.0.0"
     },
     "tns-ios": {
-      "version": "6.0.0-rc-2019-06-28-105002-01"
+      "version": "6.0.1"
     }
   },
   "dependencies": {
@@ -20,20 +20,21 @@
     "@angular/router": "~8.0.1",
     "@maxmobility/private-keys": "git+https://github.com/autochair/maxmobility-private-keys.git#master",
     "@ngx-translate/core": "~11.0.1",
+    "@nstudio/nativescript-floatingactionbutton": "~1.0.0",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
+    "@nstudio/nativescript-snackbar": "~1.0.0",
     "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "email-validator": "~2.0.4",
     "kinvey-nativescript-sdk": "~4.2.2",
     "nativescript-angular": "~8.0.1",
-    "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle",
+    "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle-1.3.0.tgz",
     "nativescript-appversion": "~1.4.2",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
     "nativescript-cfalert-dialog": "file:../../../forked-plugins/nativescript-cfalert-dialog-1.0.16.tgz",
     "nativescript-drop-down": "~5.0.2",
     "nativescript-email": "~1.5.4",
-    "nativescript-floatingactionbutton": "~5.1.0",
     "nativescript-geolocation": "~5.1.0",
     "nativescript-gif": "~4.0.2",
     "nativescript-iqkeyboardmanager": "~1.5.1",
@@ -42,23 +43,22 @@
     "nativescript-mapbox": "~4.4.1",
     "nativescript-markdown-view": "^1.2.1",
     "nativescript-permissions": "~1.3.6",
-    "nativescript-plugin-firebase": "~9.0.2",
+    "nativescript-plugin-firebase": "~9.0.3",
     "nativescript-sentry": "~1.9.1",
-    "nativescript-snackbar": "~6.0.1-androidx",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "~2.0.1",
     "nativescript-toasty": "~2.0.0",
-    "nativescript-ui-listview": "7.0.0-androidx-110619",
+    "nativescript-ui-listview": "7.0.0",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.2",
-    "tns-core-modules": "6.0.0-rc-2019-07-08-111131-01",
+    "tns-core-modules": "6.0.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular/compiler-cli": "~8.0.3",
     "@ngtools/webpack": "~8.0.3",
-    "nativescript-dev-webpack": "1.0.0-rc-2019-07-08-135456-03",
-    "tns-platform-declarations": "6.0.0-rc-2019-06-28-175837-02",
+    "nativescript-dev-webpack": "1.0.1",
+    "tns-platform-declarations": "6.0.1",
     "typescript": "~3.4.5"
   }
 }

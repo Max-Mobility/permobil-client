@@ -182,6 +182,7 @@ module.exports = env => {
     );
   }
 
+  nsWebpack.processAppComponents(appComponents, platform);
   const config = {
     mode: production ? 'production' : 'development',
     context: appFullPath,
@@ -293,7 +294,8 @@ module.exports = env => {
                 loadCss: !snapshot, // load the application css if in debug mode
                 unitTesting,
                 appFullPath,
-                projectRoot
+                projectRoot,
+                ignoredFiles: nsWebpack.getUserDefinedEntries(entries, platform)
               }
             }
           ].filter(loader => !!loader)
