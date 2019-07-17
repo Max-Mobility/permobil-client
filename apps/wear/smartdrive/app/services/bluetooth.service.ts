@@ -1,6 +1,6 @@
 import { Log, Packet } from '@permobil/core';
 import { Injectable } from 'injection-js';
-import { Bluetooth, BondState, Central, ConnectionState } from 'nativescript-bluetooth';
+import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import 'reflect-metadata';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
@@ -317,7 +317,7 @@ export class BluetoothService {
 
   private onBondStatusChange(args: any): void {
     const argdata = args.data;
-    const dev = argdata.device as Central;
+    const dev = argdata.device as Device;
     const bondState = argdata.bondState;
     Log.D(`${dev.address} - bond state - ${bondState}`);
     switch (bondState) {

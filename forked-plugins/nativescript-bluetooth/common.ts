@@ -252,7 +252,7 @@ export interface StartScanningOptions {
   /**
    * This callback is invoked when a peripheral is found.
    */
-  onDiscovered?: (data: Peripheral) => void;
+  onDiscovered?: (data: Device) => void;
 
   /**
    * *** ANDROID ONLY ***
@@ -322,83 +322,55 @@ export interface ConnectOptions {
   /**
    * Once the peripheral is connected this callback function is invoked.
    */
-  onConnected: (data: Peripheral) => void;
+  onConnected: (data: Device) => void;
 
   /**
    * Once the peripheral is disconnected this callback function is invoked.
    */
-  onDisconnected: (data: Peripheral) => void;
+  onDisconnected: (data: Device) => void;
 }
 
 /**
  * The returned object in several callback functions.
  */
-export interface Peripheral {
+export interface Device {
   /**
-   * Underlying object (CBPeripheral, BluetoothDevice
+   * Underlying object (CBPeripheral, BluetoothDevice)
    */
   device: any;
 
   /**
-   * The UUID of the peripheral.
+   * The UUIDs of the device.
    */
-  UUID: string;
+  UUIDs: string[];
 
   /**
    * A friendly description of the peripheral as provided by the manufacturer.
    */
   name: string;
 
-  // state: string; // TODO not sure we'll keep this, so not adding it here for now
-
-  /**
-   * The relative signal strength which more or less can be used to determine how far away the peripheral is.
-   */
-  RSSI: number;
-
-  /**
-   * Once connected to the peripheral a list of services will be set.
-   */
-  services?: Service[];
-
-  manufacturerId?: number;
-
-  manufacturerData?: ArrayBuffer;
-}
-
-/**
- * The returned object in several callback functions.
- */
-export interface Central {
-  /**
-   * Underlying object (CBCentral, BluetoothDevice)
-   */
-  device: any;
-
-  /**
-   * The UUIDs of the Central.
-   */
-  UUIDs: string[];
-
   /**
    * The MAC Address of the Central
    */
   address: string;
 
-  /**
-   * A friendly description of the Central as provided by the manufacturer.
-   */
-  name: string;
-
   // state: string; // TODO not sure we'll keep this, so not adding it here for now
 
   /**
-   * The relative signal strength which more or less can be used to determine how far away the central is.
+   * The relative signal strength which more or less can be used to
+   * determine how far away the peripheral is. Note: only valid for
+   * remote peripheral devices, not for remote central devices.
    */
   RSSI: number;
 
-  manufacturerId?: number;
+  /**
+   * Once connected to the peripheral a list of services will be
+   * set. Note: only valid for remote peripheral devices, not for
+   * remote central devices.
+   */
+  services?: Service[];
 
+  manufacturerId?: number;
   manufacturerData?: ArrayBuffer;
 }
 
@@ -468,14 +440,14 @@ export interface CRUDOptions {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface ReadOptions extends CRUDOptions {}
+export interface ReadOptions extends CRUDOptions { }
 
 export interface WriteOptions extends CRUDOptions {
   value: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface StopNotifyingOptions extends CRUDOptions {}
+export interface StopNotifyingOptions extends CRUDOptions { }
 
 export interface StartNotifyingOptions extends CRUDOptions {
   onNotify: (data: ReadResult) => void;

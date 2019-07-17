@@ -4,13 +4,12 @@ declare var NSMakeRange;
 
 import {
   BluetoothCommon,
-  Central,
   CLog,
   CLogTypes,
   ConnectOptions,
+  Device,
   MakeCharacteristicOptions,
   MakeServiceOptions,
-  Peripheral,
   StartAdvertisingOptions,
   StartNotifyingOptions,
   StartScanningOptions,
@@ -24,31 +23,25 @@ import { CBPeripheralManagerDelegateImpl } from './CBPeripheralManagerDelegateIm
 let singleton: WeakRef<Bluetooth> = null;
 const peripheralArray: any = NSMutableArray.new();
 
-export function deviceToCentral(dev: CBCentral): Central {
+export function getDevice(dev: CBCentral | CBPeripheral): Device {
+  const uuids = [];
+  const uuid = dev.identifier && dev.identifier.UUIDString;
+  if (uuid) {
+    uuids.push(uuid);
+  }
+  const name = ((dev as any).name) || 'PushTracker'; // TODO: fix
   return {
     device: dev,
-    UUIDs: [], // TODO: fix
-    address: dev.identifier.UUIDString,
-    name: (dev as any).name || 'PushTracker', // TODO: fix
+    UUIDs: uuids,
+    address: uuid,
+    name: name,
     RSSI: null,
     manufacturerId: null,
     manufacturerData: null
   };
 }
 
-export function deviceToPeripheral(dev: CBPeripheral): Peripheral {
-  return {
-    device: dev,
-    UUID: dev.identifier.UUIDString,
-    name: null, // TODO: fix
-    RSSI: null,
-    services: null, // TODO: fix
-    manufacturerId: null,
-    manufacturerData: null
-  };
-}
-
-export { BondState, Central, ConnectionState, Peripheral } from '../common';
+export { BondState, ConnectionState, Device } from '../common';
 
 export class Bluetooth extends BluetoothCommon {
   private readonly _centralDelegate: CBCentralManagerDelegate = null;
@@ -331,8 +324,8 @@ export class Bluetooth extends BluetoothCommon {
     const props =
       (opts && opts.properties) ||
       CBCharacteristicProperties.PropertyRead |
-        CBCharacteristicProperties.PropertyWrite |
-        CBCharacteristicProperties.PropertyNotify;
+      CBCharacteristicProperties.PropertyWrite |
+      CBCharacteristicProperties.PropertyNotify;
 
     const permissions =
       (opts && opts.permissions) ||
@@ -633,7 +626,7 @@ export class Bluetooth extends BluetoothCommon {
           CLog(
             CLogTypes.info,
             `Bluetooth.connect ---- Connecting to peripheral with UUID: ${
-              args.UUID
+            args.UUID
             }`
           );
           this._connectCallbacks[args.UUID] = args.onConnected;
@@ -666,7 +659,7 @@ export class Bluetooth extends BluetoothCommon {
           CLog(
             CLogTypes.info,
             `Bluetooth.disconnect ---- Disconnecting peripheral with UUID ${
-              arg.UUID
+            arg.UUID
             }`
           );
           // no need to send an error when already disconnected, but it's wise to check it
@@ -702,7 +695,7 @@ export class Bluetooth extends BluetoothCommon {
           CLog(
             CLogTypes.info,
             `Bluetooth.isConnected ---- checking connection with peripheral UUID: ${
-              arg.UUID
+            arg.UUID
             }`
           );
           resolve(peripheral.state === CBPeripheralState.Connected);
@@ -787,11 +780,11 @@ export class Bluetooth extends BluetoothCommon {
           .delegate as CBPeripheralDelegateImpl)._onWriteReject = reject;
         (wrapper.peripheral
           .delegate as CBPeripheralDelegateImpl)._onWriteTimeout = setTimeout(
-          () => {
-            reject('Write timed out!');
-          },
-          10000
-        );
+            () => {
+              reject('Write timed out!');
+            },
+            10000
+          );
 
         wrapper.peripheral.writeValueForCharacteristicType(
           valueEncoded,
@@ -830,7 +823,7 @@ export class Bluetooth extends BluetoothCommon {
         CLog(
           CLogTypes.info,
           'Bluetooth.writeWithoutResponse ---- Attempting to write (encoded): ' +
-            valueEncoded
+          valueEncoded
         );
 
         wrapper.peripheral.writeValueForCharacteristicType(
@@ -947,7 +940,7 @@ export class Bluetooth extends BluetoothCommon {
     CLog(
       CLogTypes.info,
       `Bluetooth._isEnabled ---- this._centralManager.state: ${
-        this._centralManager.state
+      this._centralManager.state
       }`
     );
     return state === CBManagerState.PoweredOn;
@@ -969,7 +962,7 @@ export class Bluetooth extends BluetoothCommon {
         CLog(
           CLogTypes.info,
           `Bluetooth._findService ---- found service with UUID:  ${
-            service.UUID
+          service.UUID
           }`
         );
         return service;
@@ -983,7 +976,7 @@ export class Bluetooth extends BluetoothCommon {
     CLog(
       CLogTypes.info,
       `Bluetooth._findCharacteristic ---- UUID: ${UUID}, service: ${service}, characteristics: ${
-        service.characteristics
+      service.characteristics
       }`
     );
     // CLog("--- _findCharacteristic characteristics.count: " + service.characteristics.count);
@@ -998,7 +991,7 @@ export class Bluetooth extends BluetoothCommon {
             CLog(
               CLogTypes.info,
               `Bluetooth._findCharacteristic ---- characteristic.found: ${
-                characteristic.UUID
+              characteristic.UUID
               }`
             );
             return characteristic;
@@ -1058,7 +1051,7 @@ export class Bluetooth extends BluetoothCommon {
     if (!service) {
       reject(
         `Could not find service with UUID ${
-          arg.serviceUUID
+        arg.serviceUUID
         } on peripheral with UUID ${arg.peripheralUUID}`
       );
       return null;
@@ -1097,9 +1090,9 @@ export class Bluetooth extends BluetoothCommon {
     if (!characteristic) {
       reject(
         `Could not find characteristic with UUID ${
-          arg.characteristicUUID
+        arg.characteristicUUID
         } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-          arg.peripheralUUID
+        arg.peripheralUUID
         }`
       );
       return null;

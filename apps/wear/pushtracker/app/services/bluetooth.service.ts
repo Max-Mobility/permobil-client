@@ -1,6 +1,6 @@
 import { Log, Packet } from '@permobil/core';
 import { Injectable } from 'injection-js';
-import { Bluetooth, BondState, Central, ConnectionState } from 'nativescript-bluetooth';
+import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import 'reflect-metadata';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
@@ -262,9 +262,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  public discoverServices(opts: any) {}
+  public discoverServices(opts: any) { }
 
-  public discoverCharacteristics(opts: any) {}
+  public discoverCharacteristics(opts: any) { }
 
   public startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -318,7 +318,7 @@ export class BluetoothService {
 
   private onBondStatusChange(args: any): void {
     const argdata = args.data;
-    const dev = argdata.device as Central;
+    const dev = argdata.device as Device;
     const bondState = argdata.bondState;
     Log.D(`${dev.address} - bond state - ${bondState}`);
     switch (bondState) {
@@ -518,7 +518,7 @@ export class BluetoothService {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void {}
+  private onCharacteristicReadRequest(args: any): void { }
 
   // service controls
   private deleteServices() {

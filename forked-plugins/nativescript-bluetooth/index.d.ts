@@ -147,16 +147,16 @@ export { BondState, ConnectionState } from './common';
 /**
  * The returned object in several callback functions.
  */
-export interface Peripheral {
+export interface Device {
   /**
    * Underlying object (CBCentral, BluetoothDevice)
    */
   device: any;
 
   /**
-   * The UUID of the peripheral.
+   * The UUIDs of the peripheral.
    */
-  UUID: string;
+  UUIDs: string[];
 
   /**
    * A friendly description of the peripheral as provided by the manufacturer.
@@ -164,6 +164,11 @@ export interface Peripheral {
   name: string;
 
   // state: string; // TODO not sure we'll keep this, so not adding it here for now
+
+  /**
+   * The MAC Address of the Central
+   */
+  address: string;
 
   /**
    * The relative signal strength which more or less can be used to determine how far away the peripheral is.
@@ -174,42 +179,6 @@ export interface Peripheral {
    * Once connected to the peripheral a list of services will be set.
    */
   services?: Service[];
-
-  manufacturerId?: number;
-
-  manufacturerData?: ArrayBuffer;
-}
-
-/**
- * The returned object in several callback functions.
- */
-export interface Central {
-  /**
-   * Underlying object (CBCentral, BluetoothDevice)
-   */
-  device: any;
-
-  /**
-   * The UUIDs of the Central.
-   */
-  UUIDs: Array<string>;
-
-  /**
-   * The MAC Address of the Central
-   */
-  address: string;
-
-  /**
-   * A friendly description of the Central as provided by the manufacturer.
-   */
-  name: string;
-
-  // state: string; // TODO not sure we'll keep this, so not adding it here for now
-
-  /**
-   * The relative signal strength which more or less can be used to determine how far away the central is.
-   */
-  RSSI: number;
 
   manufacturerId?: number;
 
@@ -282,14 +251,14 @@ export interface CRUDOptions {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface ReadOptions extends CRUDOptions {}
+export interface ReadOptions extends CRUDOptions { }
 
 export interface WriteOptions extends CRUDOptions {
   value: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface StopNotifyingOptions extends CRUDOptions {}
+export interface StopNotifyingOptions extends CRUDOptions { }
 
 export interface StartNotifyingOptions extends CRUDOptions {
   onNotify: (data: ReadResult) => void;

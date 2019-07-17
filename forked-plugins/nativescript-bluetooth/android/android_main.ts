@@ -2,14 +2,13 @@ import * as application from 'tns-core-modules/application';
 import * as utils from 'tns-core-modules/utils/utils';
 import {
   BluetoothCommon,
-  Central,
   CLog,
   CLogTypes,
   ConnectOptions,
+  Device,
   DisconnectOptions,
   MakeCharacteristicOptions,
   MakeServiceOptions,
-  Peripheral,
   ReadOptions,
   StartAdvertisingOptions,
   StartNotifyingOptions,
@@ -28,47 +27,45 @@ const ACCESS_COARSE_LOCATION_PERMISSION_REQUEST_CODE = 222;
 const ACTION_REQUEST_ENABLE_BLUETOOTH_REQUEST_CODE = 223;
 const ACTION_REQUEST_BLUETOOTH_DISCOVERABLE_REQUEST_CODE = 224;
 
-export function deviceToCentral(
+export function getDevice(
   dev: android.bluetooth.BluetoothDevice
-): Central {
+): Device {
   const uuids = [];
-  const us = dev.getUuids();
-  if (us) {
-    for (let i = 0; i < us.length; i++) {
-      uuids.push(us[i].toString());
+  let name = ''
+  let address = '';
+  try {
+    address = dev.getAddress();
+  } catch (err) {
+    console.error('bluetooth::getdevice getAddress error', err);
+  }
+  try {
+    name = dev.getName();
+  } catch (err) {
+    console.error('bluetooth::getdevice getName error', err);
+  }
+  try {
+    const us = dev.getUuids();
+    if (us) {
+      for (let i = 0; i < us.length; i++) {
+        uuids.push(us[i].toString());
+      }
     }
+  } catch (err) {
+    console.error('bluetooth::getdevice getUuids error', err);
   }
   return {
     device: dev,
     UUIDs: uuids,
-    address: dev.getAddress(),
-    name: dev.getName(),
+    address: address,
+    name: name,
     RSSI: null,
+    services: [],
     manufacturerId: null,
     manufacturerData: null
   };
 }
 
-export function deviceToPeripheral(
-  dev: android.bluetooth.BluetoothDevice
-): Peripheral {
-  const uuids = dev.getUuids();
-  let uuid = null;
-  if (uuids && uuids.length) {
-    uuid = uuids[0].toString();
-  }
-  return {
-    device: dev,
-    UUID: uuid,
-    name: dev.getName(),
-    RSSI: null,
-    services: null, // TODO: fix
-    manufacturerId: null,
-    manufacturerData: null
-  };
-}
-
-export { BondState, Central, ConnectionState, Peripheral } from '../common';
+export { BondState, Device, ConnectionState } from '../common';
 
 export class Bluetooth extends BluetoothCommon {
   // @link - https://developer.android.com/reference/android/content/Context.html#BLUETOOTH_SERVICE
@@ -492,7 +489,7 @@ export class Bluetooth extends BluetoothCommon {
           CLog(
             CLogTypes.info,
             `Bluetooth.connect ---- Connecting to peripheral with UUID: ${
-              arg.UUID
+            arg.UUID
             }`
           );
 
@@ -544,7 +541,7 @@ export class Bluetooth extends BluetoothCommon {
           `Bluetooth.disconnect ---- connection: ${connection}`
         );
         if (!connection) {
-          reject(`Peripheral wasn't connected`);
+          reject(`Peripheral was not connected`);
           return;
         }
 
@@ -617,9 +614,9 @@ export class Bluetooth extends BluetoothCommon {
         if (!bluetoothGattCharacteristic) {
           reject(
             `Could not find characteristic with UUID ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-              arg.peripheralUUID
+            arg.peripheralUUID
             }`
           );
           return;
@@ -667,9 +664,9 @@ export class Bluetooth extends BluetoothCommon {
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-              arg.peripheralUUID
+            arg.peripheralUUID
             }`
           );
           return;
@@ -724,9 +721,9 @@ export class Bluetooth extends BluetoothCommon {
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-              arg.peripheralUUID
+            arg.peripheralUUID
             }`
           );
           return;
@@ -786,9 +783,9 @@ export class Bluetooth extends BluetoothCommon {
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-              arg.peripheralUUID
+            arg.peripheralUUID
             }`
           );
           return;
@@ -797,7 +794,7 @@ export class Bluetooth extends BluetoothCommon {
         if (!gatt.setCharacteristicNotification(characteristic, true)) {
           reject(
             `Failed to register notification for characteristic ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             }`
           );
           return;
@@ -895,9 +892,9 @@ export class Bluetooth extends BluetoothCommon {
         if (!characteristic) {
           reject(
             `Could not find characteristic with UUID ${
-              arg.characteristicUUID
+            arg.characteristicUUID
             } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-              arg.peripheralUUID
+            arg.peripheralUUID
             }`
           );
           return;
@@ -911,7 +908,7 @@ export class Bluetooth extends BluetoothCommon {
         } else {
           reject(
             'Failed to remove client characteristic notification for ' +
-              characteristicUUID
+            characteristicUUID
           );
         }
       } catch (ex) {
@@ -1004,7 +1001,12 @@ export class Bluetooth extends BluetoothCommon {
             const argdata = args.data;
             const device = argdata.device;
             const status = argdata.status;
-            if (device.address === dev) {
+            const isSameDevice =
+              (device.address === dev) ||
+              (`${device.address}` === `${dev}`) ||
+              (dev.address && dev.address === device.address)
+              ;
+            if (isSameDevice) {
               clearTimeout(timeoutID);
               this.off(Bluetooth.notification_sent_event, notificationSent);
               if (status) {
@@ -1044,7 +1046,7 @@ export class Bluetooth extends BluetoothCommon {
         // start chain with promise of first item
       }, notify(devices.shift()));
     } else {
-      return Promise.reject(`Couldn't set value on ${characteristic}`);
+      return Promise.reject(`Could not set value on ${characteristic}`);
     }
   }
 
@@ -1095,12 +1097,12 @@ export class Bluetooth extends BluetoothCommon {
     const props =
       (opts && opts.properties) ||
       android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ |
-        android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE |
-        android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
+      android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE |
+      android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
     const permissions =
       (opts && opts.permissions) ||
       android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE |
-        android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
+      android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
     return new android.bluetooth.BluetoothGattCharacteristic(
       cuuid,
       props,
@@ -1113,7 +1115,7 @@ export class Bluetooth extends BluetoothCommon {
     const perms =
       (opts && opts.permissions) ||
       android.bluetooth.BluetoothGattDescriptor.PERMISSION_READ |
-        android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE;
+      android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE;
     return new android.bluetooth.BluetoothGattDescriptor(uuid, perms);
   }
 
@@ -1275,12 +1277,12 @@ export class Bluetooth extends BluetoothCommon {
           const _s = new android.bluetooth.le.AdvertiseSettings.Builder()
             .setAdvertiseMode(
               (settings && settings.advertiseMode) ||
-                android.bluetooth.le.AdvertiseSettings
-                  .ADVERTISE_MODE_LOW_LATENCY
+              android.bluetooth.le.AdvertiseSettings
+                .ADVERTISE_MODE_LOW_LATENCY
             )
             .setTxPowerLevel(
               (settings && settings.txPowerLevel) ||
-                android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH
+              android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH
             )
             .setConnectable((settings && settings.connectable) || false)
             .build();
@@ -1347,8 +1349,8 @@ export class Bluetooth extends BluetoothCommon {
     return new Promise((resolve, reject) => {
       resolve(
         this.adapter.isMultipleAdvertisementSupported() &&
-          this.adapter.isOffloadedFilteringSupported() &&
-          this.adapter.isOffloadedScanBatchingSupported()
+        this.adapter.isOffloadedFilteringSupported() &&
+        this.adapter.isOffloadedScanBatchingSupported()
       );
     });
   }
@@ -1464,7 +1466,7 @@ export class Bluetooth extends BluetoothCommon {
       if (
         (c.getProperties() &
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY) !==
-          0 &&
+        0 &&
         characteristicUUID.equals(c.getUuid())
       ) {
         return c;
@@ -1477,7 +1479,7 @@ export class Bluetooth extends BluetoothCommon {
       if (
         (ch.getProperties() &
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE) !==
-          0 &&
+        0 &&
         characteristicUUID.equals(ch.getUuid())
       ) {
         return ch;
@@ -1543,7 +1545,7 @@ export class Bluetooth extends BluetoothCommon {
     if (!bluetoothGattService) {
       reject(
         `Could not find service with UUID ${
-          arg.serviceUUID
+        arg.serviceUUID
         } on peripheral with UUID ${arg.peripheralUUID}`
       );
       return;

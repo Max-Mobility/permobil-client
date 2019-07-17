@@ -1,5 +1,5 @@
 import { CLog, CLogTypes, ConnectionState } from '../common';
-import { Bluetooth, deviceToCentral } from './ios_main';
+import { Bluetooth, getDevice } from './ios_main';
 
 /**
  * @link - https://developer.apple.com/documentation/corebluetooth/cbperipheralmanagerdelegate
@@ -224,7 +224,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     // get return data for cross-platform use
     const connection_state = ConnectionState.connected;
 
-    const dev = deviceToCentral(central);
+    const dev = getDevice(central);
     dev.UUIDs = ['1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0'.toUpperCase()]; // hard code pt uuid for now
 
     owner.sendEvent(Bluetooth.server_connection_state_changed_event, {
@@ -276,7 +276,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
 
     // get return data for cross-platform use
     const connection_state = ConnectionState.disconnected;
-    const dev = deviceToCentral(central);
+    const dev = getDevice(central);
     dev.UUIDs = ['1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0'.toUpperCase()]; // hard code pt uuid for now
 
     owner.sendEvent(Bluetooth.server_connection_state_changed_event, {
@@ -430,7 +430,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       // set low connection latency
       // peripheral.setDesiredConnectionLatencyForCentral(CBPeripheralManagerConnectionLatency.Low, r.central);
 
-      const dev = deviceToCentral(r.central);
+      const dev = getDevice(r.central);
       owner.sendEvent(Bluetooth.characteristic_write_request_event, {
         device: dev,
         manager: peripheral,

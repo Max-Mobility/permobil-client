@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Packet } from '@permobil/core';
-import { Bluetooth, BondState, Central, ConnectionState } from 'nativescript-bluetooth';
+import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import { Feedback } from 'nativescript-feedback';
 import { SnackBar } from 'nativescript-snackbar';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -82,9 +82,13 @@ export class BluetoothService {
       } else {
         // only Android can enable bluetooth, iOS requires the user to do on the device
         if (isAndroid) {
-          this._bluetooth.enable().catch(error => {
-            this._loggingService.logException(error);
-          });
+          this._bluetooth.enable()
+            .then(() => {
+              return this.advertise();
+            })
+            .catch(error => {
+              this._loggingService.logException(error);
+            });
         } else {
           alert({
             message: this._translateService.instant(
@@ -371,9 +375,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(opts: any) {}
+  discoverServices(opts: any) { }
 
-  discoverCharacteristics(opts: any) {}
+  discoverCharacteristics(opts: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -426,7 +430,7 @@ export class BluetoothService {
 
   private onBondStatusChange(args: any): void {
     const argdata = args.data;
-    const dev = argdata.device as Central;
+    const dev = argdata.device as Device;
     const bondState = argdata.bondState;
     switch (bondState) {
       case BondState.bonding:
@@ -613,7 +617,7 @@ export class BluetoothService {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void {}
+  private onCharacteristicReadRequest(args: any): void { }
 
   // service controls
   private deleteServices() {

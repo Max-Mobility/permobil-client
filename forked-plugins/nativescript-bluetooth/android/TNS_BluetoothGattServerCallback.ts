@@ -1,5 +1,5 @@
 import { CLog, CLogTypes, ConnectionState } from '../common';
-import { Bluetooth, deviceToCentral } from './android_main';
+import { Bluetooth, getDevice } from './android_main';
 
 @JavaProxy('com.nativescript.TNS_BluetoothGattServerCallback')
 export class TNS_BluetoothGattServerCallback extends android.bluetooth
@@ -15,7 +15,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     CLog(
       CLogTypes.info,
       `---- TNS_BluetoothGattServerCallback.onInit ---- this._owner: ${
-        this._owner
+      this._owner
       }`
     );
   }
@@ -39,7 +39,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     );
 
     this._owner.get().sendEvent(Bluetooth.characteristic_read_request_event, {
-      device: deviceToCentral(device),
+      device: getDevice(device),
       requestId,
       offset,
       characteristic
@@ -79,7 +79,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     );
 
     this._owner.get().sendEvent(Bluetooth.characteristic_write_request_event, {
-      device: deviceToCentral(device),
+      device: getDevice(device),
       requestId,
       characteristic,
       preparedWrite,
@@ -121,7 +121,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     this._owner
       .get()
       .sendEvent(Bluetooth.server_connection_state_changed_event, {
-        device: deviceToCentral(device),
+        device: getDevice(device),
         connection_state
       });
   }
@@ -146,7 +146,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     );
 
     this._owner.get().sendEvent(Bluetooth.descriptor_read_request_event, {
-      device: deviceToCentral(device),
+      device: getDevice(device),
       requestId,
       offset,
       descriptor
@@ -188,7 +188,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     );
 
     this._owner.get().sendEvent(Bluetooth.descriptor_write_request_event, {
-      device: deviceToCentral(device),
+      device: getDevice(device),
       requestId,
       descriptor,
       preparedWrite,
@@ -223,7 +223,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     );
 
     this._owner.get().sendEvent(Bluetooth.execute_write_event, {
-      device: deviceToCentral(device),
+      device: getDevice(device),
       requestId,
       execute
     });
@@ -253,8 +253,17 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       `---- TNS_BluetoothGattServerCallback.onNotificationSent ---- device: ${device}, status: ${status}`
     );
 
-    this._owner.get().sendEvent(Bluetooth.notification_sent_event, {
-      device: deviceToCentral(device),
+    const owner = this._owner.get();
+    if (owner === null || owner === undefined) {
+      CLog(
+        CLogTypes.error,
+        `---- TNS_BluetoothGattServerCallback.onNotificationSent ---- could not get owner!`
+      );
+      console.error('onNotificationSent error: could not get owner!');
+      return;
+    }
+    owner.sendEvent(Bluetooth.notification_sent_event, {
+      device: getDevice(device),
       status
     });
   }

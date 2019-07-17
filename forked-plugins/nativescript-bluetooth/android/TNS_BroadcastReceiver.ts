@@ -1,5 +1,5 @@
 import { BondState, CLog, CLogTypes } from '../common';
-import { Bluetooth, deviceToCentral } from './android_main';
+import { Bluetooth, getDevice } from './android_main';
 
 @JavaProxy('com.nativescript.TNS_BroadcastReceiver')
 export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
@@ -39,6 +39,12 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
       CLog(CLogTypes.warning, `No device found in the intent: ${intent}`);
     }
 
+    const owner = this._owner.get();
+    if (owner === null || owner === undefined) {
+      CLog(CLogTypes.error, 'TNS_BroadcastReceiver::onReceive error: could not get owner!');
+      return;
+    }
+
     if (
       action === android.bluetooth.BluetoothDevice.ACTION_BOND_STATE_CHANGED
     ) {
@@ -60,8 +66,8 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
         default:
           break;
       }
-      this._owner.get().sendEvent(Bluetooth.bond_status_change_event, {
-        device: deviceToCentral(device),
+      owner.sendEvent(Bluetooth.bond_status_change_event, {
+        device: getDevice(device),
         bondState
       });
     } else if (
@@ -70,8 +76,8 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
       const name = intent.getStringExtra(
         android.bluetooth.BluetoothDevice.EXTRA_NAME
       );
-      this._owner.get().sendEvent(Bluetooth.device_name_change_event, {
-        device: deviceToCentral(device),
+      owner.sendEvent(Bluetooth.device_name_change_event, {
+        device: getDevice(device),
         name
       });
     } else if (action === android.bluetooth.BluetoothDevice.ACTION_UUID) {
@@ -90,8 +96,8 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
         `${uuidExtra || 0} UUIDs found in the ACTION_UUID action.`
       );
 
-      this._owner.get().sendEvent(Bluetooth.device_uuid_change_event, {
-        device: deviceToCentral(device),
+      owner.sendEvent(Bluetooth.device_uuid_change_event, {
+        device: getDevice(device),
         uuids: uuids
       });
     } else if (
@@ -99,8 +105,8 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     ) {
       // TODO: device here might be peripheral or central - need to
       //       figure out which one it is!
-      this._owner.get().sendEvent(Bluetooth.device_acl_disconnected_event, {
-        device: deviceToCentral(device)
+      owner.sendEvent(Bluetooth.device_acl_disconnected_event, {
+        device: getDevice(device)
       });
     } else if (
       action === android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
