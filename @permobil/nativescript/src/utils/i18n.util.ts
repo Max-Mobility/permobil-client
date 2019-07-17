@@ -110,8 +110,4 @@ setResources(applicationResources);
 // @ts-ignore
 global.L = L;
 
-// load inital files
-load(getDefaultLang());
-use(getDefaultLang());
-
 export { getDefaultLang, use, load, update, L };
