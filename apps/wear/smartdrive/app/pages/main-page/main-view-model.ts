@@ -544,24 +544,32 @@ export class MainViewModel extends Observable {
 
   showAmbientTime() {
     if (this._powerAssistView) {
-      this._powerAssistView.opacity = 0;
+      this._powerAssistView.animate({
+        opacity: 0,
+        scale: { x: 0.5, y: 0.5 }
+      });
     }
     if (this._ambientTimeView) {
       this._ambientTimeView.animate({
         translate: { x: 0, y: 0 },
-        opacity: 1
+        opacity: 1,
+        scale: { x: 1, y: 1 }
       });
     }
   }
 
   showMainDisplay() {
     if (this._ambientTimeView) {
-      this._ambientTimeView.translateY = screen.mainScreen.heightPixels;
-      this._ambientTimeView.opacity = 0;
+      this._ambientTimeView.animate({
+        translate: { x: 0, y: screen.mainScreen.heightPixels },
+        opacity: 0,
+        scale: { x: 0.5, y: 0.5 }
+      });
     }
     if (this._powerAssistView) {
       this._powerAssistView.animate({
-        opacity: 1
+        opacity: 1,
+        scale: { x: 1, y: 1 }
       });
     }
   }
