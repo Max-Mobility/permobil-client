@@ -2138,7 +2138,6 @@ export class MainViewModel extends Observable {
 
   saveNewSmartDrive(): Promise<any> {
     this._sentryBreadCrumb('Saving new SmartDrive');
-    let scanDisplayId = null;
     this.showScanning();
     // ensure we have the permissions
     return this.askForPermissions()
@@ -2152,7 +2151,6 @@ export class MainViewModel extends Observable {
       })
       .then(() => {
         this.hideScanning();
-        clearInterval(scanDisplayId);
         Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
         // make sure we have smartdrives
@@ -2192,7 +2190,6 @@ export class MainViewModel extends Observable {
       .catch(err => {
         Sentry.captureException(err);
         this.hideScanning();
-        clearInterval(scanDisplayId);
         Log.E('could not scan', err);
         alert({
           title: L('failures.title'),
