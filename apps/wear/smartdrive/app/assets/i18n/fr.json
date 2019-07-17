@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Accélération",
     "control-mode": "Mode de contrôle",
+    "description": {
+      "acceleration": "L'accélération de votre SmartDrive.",
+      "controlmode": "MX2: mode de contrôle basé sur les gestes par défaut pour le SmartDrive.\n\nMX2: dans ce mode, le SmartDrive commencera à conduire dès qu’il détectera votre poussée et s’arrêtera lorsque vous appuierez sur le bracelet. Remarque: il s'agit d'un mode de support hérité.\n\nMX1: dans ce mode, le SmartDrive commencera à conduire lorsqu'il détectera votre poussée et cessera de conduire lorsque vous frappez le bracelet ou lorsque vous freinez sur la main courante. Remarque: il s'agit d'un mode de support hérité.",
+      "maxspeed": "La vitesse maximale à laquelle votre SmartDrive peut conduire lorsqu'elle est contrôlée depuis votre PushTracker.",
+      "powerassistbuzzer": "Lorsqu'il est activé, le SmartDrive émettra un bip chaque fois qu'une connexion à un périphérique distant est établie ou lorsque la commande de commutateur est sortie du mode veille.",
+      "switchcontrolmode": "Momentané: le mode de contrôle de commutateur par défaut dans lequel le SmartDrive conduira et accélérera jusqu'à la vitesse de contrôle de commutateur configurée uniquement lorsque l'un des boutons de contrôle de commutateur est maintenu enfoncé. Lorsque les deux boutons sont enfoncés ou que vous relâchez le bouton, le moteur s’éteint.\n\nVerrouillage: en mode de contrôle de commutation verrouillable, le SmartDrive conduira et augmentera jusqu'à la vitesse maximale configurée de contrôle de commutateur pendant que l'un des boutons de contrôle de commutateur est maintenu enfoncé. Lorsque le bouton est relâché, le SmartDrive reste en marche - à la vitesse actuelle au moment du relâchement du bouton. Lorsque les deux boutons sont enfoncés ou à nouveau, le moteur s’éteint.",
+      "switchcontrolspeed": "La vitesse maximale que peut atteindre votre SmartDrive lorsqu'elle est contrôlée à l'aide des boutons Switch Control.",
+      "tapsensitivity": "Détermine la sensibilité du geste de tapotement utilisé pour activer et désactiver le SmartDrive. 100% est le plus sensible et donc le plus facile à exploiter. 10% est le moins sensible et donc le plus difficile à exploiter.",
+      "units": "Sélectionnez l'unité système / les unités de mesure à utiliser pour l'affichage de la plage et de la vitesse dans l'interface utilisateur.",
+      "wearcheck": "Lorsque cette option est activée, la montre doit être au poignet de l'utilisateur pour activer l'assistance électrique. Si l'assistance électrique est activée et que la montre détecte qu'elle n'est plus au poignet de l'utilisateur, elle désactivera automatiquement l'assistance électrique."
+    },
     "error-history": "Histoire d'erreur",
+    "information": "Information",
     "max-speed": "vitesse maximale",
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Jumelé à SmartDrive",

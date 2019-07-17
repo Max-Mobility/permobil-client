@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Aceleración",
     "control-mode": "Modo de control",
+    "description": {
+      "acceleration": "La aceleración de tu SmartDrive.",
+      "controlmode": "MX2: el modo de control predeterminado, basado en gestos para el SmartDrive.\n\nMX2: en este modo, el SmartDrive comenzará a conducir cuando detecte su empuje y dejará de conducir cuando toque la pulsera. Nota: este es un modo de soporte de legado.\n\nMX1: en este modo, el SmartDrive comenzará a conducir cuando detecte su empuje, y dejará de conducir cuando toque la pulsera o cuando frene sobre las patillas. Nota: este es un modo de soporte de legado.",
+      "maxspeed": "La velocidad máxima en la que puede conducir su SmartDrive cuando se controla desde su PushTracker.",
+      "powerassistbuzzer": "Cuando está habilitado, el SmartDrive emitirá un pitido cada vez que se establezca una conexión a un dispositivo remoto o cuando el Control del interruptor salga del modo de espera.",
+      "switchcontrolmode": "Momentáneo: el modo predeterminado de Control de Interruptor en el que SmartDrive conducirá y aumentará hasta la Velocidad Máxima de Control de Interruptor configurada solo mientras se mantiene presionado uno de los botones de Control de Interruptor. Cuando se presionan ambos botones o cuando se suelta el botón, el motor se apagará.\n\nEnclavamiento: en el modo de control de interruptor enclavado, el SmartDrive conducirá y aumentará hasta la velocidad máxima configurada del control de interruptor mientras se mantiene presionado uno de los botones de control de interruptor. Cuando se suelta el botón, SmartDrive seguirá conduciendo, a la velocidad actual cuando se soltó el botón. Cuando se presionan ambos botones o cuando se vuelve a presionar el botón, el motor se apagará.",
+      "switchcontrolspeed": "La velocidad máxima a la que puede conducir SmartDrive cuando se controla desde los botones de control de interruptor.",
+      "tapsensitivity": "Determina la sensibilidad del gesto de toque utilizado para activar y desactivar el SmartDrive. El 100% es el más sensible y por lo tanto más fácil de tocar. El 10% es el menos sensible y por lo tanto más difícil de tocar.",
+      "units": "Seleccione qué sistema de unidades / unidades de medida usar para la visualización de rango y velocidad dentro de la interfaz de usuario.",
+      "wearcheck": "Cuando está habilitado, obliga a que el reloj esté en la muñeca del usuario para activar la asistencia eléctrica. Si la asistencia eléctrica está habilitada y el reloj detecta que ya no está en la muñeca del usuario, automáticamente desactivará la asistencia eléctrica."
+    },
     "error-history": "Historial de errores",
+    "information": "información",
     "max-speed": "máxima velocidad",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Emparejado a SmartDrive",
