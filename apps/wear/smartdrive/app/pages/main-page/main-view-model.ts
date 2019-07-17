@@ -103,6 +103,15 @@ export class MainViewModel extends Observable {
     updates: false
   };
   @Prop() enabledLayout = fromObject(this.layouts);
+  private _ambientTimeView: View;
+  private _powerAssistView: View;
+  private _settingsLayout: SwipeDismissLayout;
+  private _changeSettingsLayout: SwipeDismissLayout;
+  private _errorHistoryLayout: SwipeDismissLayout;
+  private _aboutLayout: SwipeDismissLayout;
+  private _updatesLayout: SwipeDismissLayout;
+  private _scanningLayout: SwipeDismissLayout;
+
 
   /**
    * SmartDrive Settings UI:
@@ -209,16 +218,6 @@ export class MainViewModel extends Observable {
   private _throttledOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
-
-  /**
-   * Layouts
-   */
-  private _settingsLayout: SwipeDismissLayout;
-  private _changeSettingsLayout: SwipeDismissLayout;
-  private _errorHistoryLayout: SwipeDismissLayout;
-  private _aboutLayout: SwipeDismissLayout;
-  private _updatesLayout: SwipeDismissLayout;
-  private _scanningLayout: SwipeDismissLayout;
 
   // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
@@ -513,21 +512,58 @@ export class MainViewModel extends Observable {
     this.enabledLayout.set(layoutName, true);
   }
 
+  async onAmbientTimeViewLoaded(args: any) {
+    this._ambientTimeView = args.object as View;
+  }
+
+  async onPowerAssistViewLoaded(args: any) {
+    this._powerAssistView = args.object as View;
+  }
+
   async onMainPageLoaded(args: any) {
     this._sentryBreadCrumb('onMainPageLoaded');
     // now init the ui
     await this.init();
     // get child references
-    const page = args.object as Page;
-    this.pager = page.getViewById('pager') as Pager;
-    this.scanningProgressCircle = page.getViewById(
-      'scanningProgressCircle'
-    ) as AnimatedCircle;
-    this.updateProgressCircle = page.getViewById(
-      'updateProgressCircle'
-    ) as AnimatedCircle;
+    try {
+      const page = args.object as Page;
+      this.pager = page.getViewById('pager') as Pager;
+      this.scanningProgressCircle = page.getViewById(
+        'scanningProgressCircle'
+      ) as AnimatedCircle;
+      this.updateProgressCircle = page.getViewById(
+        'updateProgressCircle'
+      ) as AnimatedCircle;
+    } catch (err) {
+      Log.E('onMainPageLoaded::error:', err);
+    }
+
     // apply theme
     this.applyTheme();
+  }
+
+  showAmbientTime() {
+    if (this._powerAssistView) {
+      this._powerAssistView.opacity = 0;
+    }
+    if (this._ambientTimeView) {
+      this._ambientTimeView.animate({
+        translate: { x: 0, y: 0 },
+        opacity: 1
+      });
+    }
+  }
+
+  showMainDisplay() {
+    if (this._ambientTimeView) {
+      this._ambientTimeView.translateY = screen.mainScreen.heightPixels;
+      this._ambientTimeView.opacity = 0;
+    }
+    if (this._powerAssistView) {
+      this._powerAssistView.animate({
+        opacity: 1
+      });
+    }
   }
 
   applyTheme(theme?: string) {
@@ -536,8 +572,10 @@ export class MainViewModel extends Observable {
     try {
       if (theme === 'ambient' || this.isAmbient) {
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+        this.showAmbientTime();
       } else {
         themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+        this.showMainDisplay();
       }
     } catch (err) {
       Sentry.captureException(err);
@@ -764,11 +802,9 @@ export class MainViewModel extends Observable {
     // power assist is active or training mode is active.
     if (this.powerAssistActive) {
       this.disablePowerAssist();
-      return;
     }
     if (this.isTraining) {
       this.onExitTrainingModeTap();
-      return;
     }
 
     this.applyTheme();

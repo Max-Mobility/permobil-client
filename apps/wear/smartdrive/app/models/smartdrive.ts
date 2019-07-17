@@ -657,7 +657,6 @@ export class SmartDrive extends DeviceBase {
                 // the interval for now? - shouldn't need
                 // to
                 if (index === -1) {
-                  this.requestHighPriorityConnection();
                   writeFirmwareTimeoutID = timer.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDrive',
@@ -715,7 +714,6 @@ export class SmartDrive extends DeviceBase {
                 haveBLEVersion = false;
                 // now send data to SD BLE
                 if (index === -1) {
-                  this.requestHighPriorityConnection();
                   writeFirmwareTimeoutID = timer.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDriveBluetooth',
@@ -1176,6 +1174,11 @@ export class SmartDrive extends DeviceBase {
   public handleNotify(args: any) {
     // Notify is called when the SmartDrive sends us data, args.value is the data
     // now that we're receiving data we can definitly send data
+    if (!this.notifying || !this.ableToSend) {
+      // request high priority connection on first data received
+      this.requestHighPriorityConnection();
+    }
+    // update state
     this.notifying = true;
     this.ableToSend = true;
     this.connected = true;
