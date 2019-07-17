@@ -63,9 +63,9 @@ export class TabsComponent {
     );
   }
 
-  onTabViewLoaded(args) {
-    Log.D('TabView Loaded', args.object);
-  }
+  // onTabViewLoaded(args) {
+  //   Log.D('TabView Loaded', args.object);
+  // }
 
   /**
    * Executes when the tabview item index is changed. Usually in response to user interaction changing which tab they are viewing.

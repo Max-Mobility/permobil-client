@@ -2,41 +2,25 @@
 androidTabsPosition="bottom" 
 tabTextFontSize="10" 
 iosIconRenderingMode="alwaysOriginal" 
-(selectedIndexChanged)="tabViewIndexChange($event)"
-(loaded)="onTabViewLoaded($event)">
+(selectedIndexChanged)="tabViewIndexChange($event)">
   // Home Tab
-  <page-router-outlet *tabItem="homeTabItem" name="homeTab" actionBarVisibility="never"></page-router-outlet>
+  <page-router-outlet 
+  *tabItem="homeTabItem" 
+  name="homeTab" 
+  actionBarVisibility="never">
+</page-router-outlet>
 
   // Journey Tab
-  <page-router-outlet   *tabItem="journeyTabItem"  name="journeyTab" actionBarVisibility="never"></page-router-outlet>
+  <page-router-outlet 
+  *tabItem="journeyTabItem"  
+  name="journeyTab" 
+  actionBarVisibility="never">
+</page-router-outlet>
 
   // Profile Tab
-  <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"></page-router-outlet>
+  <page-router-outlet 
+  *tabItem="profileTabItem" 
+  name="profileTab" 
+  actionBarVisibility="never">
+</page-router-outlet>
 </TabView>
-
-<!-- 
- <BottomNavigation backgroundColor="red" height="50">
-    <TabStrip backgroundColor="blue" height="80">
-        <TabStripItem title="Title" iconSource="res://icon"></TabStripItem>
-        <TabStripItem iconSource="res://icon"></TabStripItem>
-        <TabStripItem title="Title"></TabStripItem>
-    </TabStrip>
-
-    <TabContentItem>
-        <GridLayout backgroundColor="yellow">
-          <Label text="Title and icon" ></Label>
-        </GridLayout>
-    </TabContentItem>
-
-    <TabContentItem>
-        <GridLayout backgroundColor="green">
-          <Label text="Only icon" ></Label>
-        </GridLayout>
-    </TabContentItem>
-
-    <TabContentItem>
-        <GridLayout backgroundColor="purple" height="100">
-          <Label text="Only title" ></Label>
-        </GridLayout>
-    </TabContentItem>
-  </BottomNavigation> -->

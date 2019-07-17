@@ -23,36 +23,36 @@ export class JourneyTabComponent implements OnInit {
   ngOnInit(): void {
     this._logService.logBreadCrumb('journey-tab.component ngOnInit');
 
-    this.journeyItems = [
-      {
-        date: new Date(),
-        coast_time: 40,
-        distance: 1.3,
-        description: 'Morning roll',
-        duration: 48
-      },
-      {
-        date: '2019-07-09T17:48:55.391Z',
-        coast_time: 20,
-        distance: 0.3,
-        description: 'Afternoon roll',
-        duration: 10
-      },
-      {
-        date: '2019-07-05T17:48:55.391Z',
-        coast_time: 80,
-        distance: 2.5,
-        description: 'Evening roll',
-        duration: 80
-      },
-      {
-        date: '2019-07-04T17:48:55.391Z',
-        coast_time: 40,
-        distance: 4.5,
-        description: 'Morning roll',
-        duration: 120
-      }
-    ];
+    // this.journeyItems = [
+    //   {
+    //     date: new Date(),
+    //     coast_time: 40,
+    //     distance: 1.3,
+    //     description: 'Morning roll',
+    //     duration: 48
+    //   },
+    //   {
+    //     date: '2019-07-09T17:48:55.391Z',
+    //     coast_time: 20,
+    //     distance: 0.3,
+    //     description: 'Afternoon roll',
+    //     duration: 10
+    //   },
+    //   {
+    //     date: '2019-07-05T17:48:55.391Z',
+    //     coast_time: 80,
+    //     distance: 2.5,
+    //     description: 'Evening roll',
+    //     duration: 80
+    //   },
+    //   {
+    //     date: '2019-07-04T17:48:55.391Z',
+    //     coast_time: 40,
+    //     distance: 4.5,
+    //     description: 'Morning roll',
+    //     duration: 120
+    //   }
+    // ];
   }
 
   onJourneyItemTap(args: ItemEventData) {
