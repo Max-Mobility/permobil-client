@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Accelerazione",
     "control-mode": "Modalità di controllo",
+    "description": {
+      "acceleration": "L'accelerazione del tuo SmartDrive.",
+      "controlmode": "MX2: la modalità di controllo predefinita basata sui gesti per SmartDrive.\n\nMX2: in questa modalità, SmartDrive inizierà a guidare quando rileva la tua spinta e smetterà di guidare quando tocchi il braccialetto. Nota: questa è una modalità di supporto legacy.\n\nMX1: in questa modalità, SmartDrive inizierà a guidare quando rileva la tua spinta e smetterà di guidare quando tocchi il cinturino o quando freni sui corrimani. Nota: questa è una modalità di supporto legacy.",
+      "maxspeed": "La velocità massima a cui può guidare SmartDrive quando è controllata dal tuo PushTracker.",
+      "powerassistbuzzer": "Se abilitato, SmartDrive emetterà un segnale acustico ogni volta che viene stabilita una connessione a un dispositivo remoto o quando il Controllo interruttore viene portato fuori dalla modalità standby.",
+      "switchcontrolmode": "Momentary: la modalità di controllo dell'interruttore di default in cui SmartDrive funzionerà e salirà alla velocità massima impostata per il controllo degli interruttori solo mentre si tiene premuto uno dei pulsanti di controllo degli interruttori. Quando vengono premuti entrambi i pulsanti o quando si rilascia il pulsante, il motore si spegne.\n\nLatching: in modalità di controllo Switch latch, SmartDrive è in grado di guidare e accelerare fino alla velocità massima impostata per il controllo degli interruttori mentre è in funzione uno dei pulsanti di controllo degli interruttori. Quando viene rilasciato il pulsante, SmartDrive continuerà a guidare, alla velocità corrente quando il pulsante è stato rilasciato. Quando vengono premuti entrambi i pulsanti o quando si preme di nuovo il pulsante, il motore si spegne.",
+      "switchcontrolspeed": "La velocità massima a cui SmartDrive può guidare quando è controllata dai pulsanti di controllo degli interruttori.",
+      "tapsensitivity": "Determina la sensibilità del gesto di tocco utilizzato per l'attivazione e la disattivazione di SmartDrive. Il 100% è il più sensibile e quindi più facile da toccare. Il 10% è il meno sensibile e quindi più difficile da toccare.",
+      "units": "Selezionare quale sistema / unità di misura utilizzare per la visualizzazione della gamma e della velocità nell'interfaccia utente.",
+      "wearcheck": "Se abilitato, impone che l'orologio si trovi sul polso dell'utente per attivare il servosterzo. Se Power Assistant è abilitato e l'orologio rileva che non è più sul polso dell'utente, disattiverà automaticamente Power Assist."
+    },
     "error-history": "Cronologia degli errori",
+    "information": "Informazione",
     "max-speed": "Massima velocità",
     "pair-smartdrive": "Accoppia SmartDrive",
     "paired-to-smartdrive": "Associato a SmartDrive",

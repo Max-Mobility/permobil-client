@@ -305,7 +305,7 @@
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ pairSmartDriveText }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
@@ -385,7 +385,7 @@
             <Label row="1" col="1" class="topValue" text=" "/>
             <Label row="2" col="1" class="topValueDescription" text=" "/>
             <Label row="3" col="1" class="centerMessage"
-                   text="{{ scanningProgressText }}"/>
+                   text="{{ L('settings.scanning') }}"/>
             <Label row="4" col="1" class="currentTime"
                    text="{{ currentTime }}" textWrap="true" />
             <Label row="5" col="1" class="currentTimeMeridiem"
@@ -410,9 +410,14 @@
             <Label text="&#xf404;" fontSize="42" />
           </StackLayout>
         </RL:Ripple>
-        <StackLayout row="1" col="1" class="value-circle">
-          <Label text="{{ changeSettingKeyString }}" class="changeSettingsTitle" textWrap="true" />
-          <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="false" />
+        <StackLayout row="1" col="1" class="value-circle"
+                     tap="{{ onSettingsInfoItemTap }}">
+          <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
+          <Label text="{{ changeSettingKeyString }}"
+                 textWrap="true"
+                 class="changeSettingsTitle no-margin"/>
+          <Label text="&#xf149;"
+                 class="bullet-list-icon bold fs16 no-margin no-padding"/>
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">

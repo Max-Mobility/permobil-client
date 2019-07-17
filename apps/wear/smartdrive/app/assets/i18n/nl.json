@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Versnelling",
     "control-mode": "Besturingsmodus",
+    "description": {
+      "acceleration": "De versnelling van uw SmartDrive.",
+      "controlmode": "MX2: de standaard, op bewegingen gebaseerde besturingsmodus voor de SmartDrive.\n\nMX2: in deze modus zal de SmartDrive gaan rijden wanneer hij uw duw voelt, en zal stoppen met rijden wanneer u op de polsband tikt. Opmerking: dit is een oudere ondersteuningsmodus.\n\nMX1: in deze modus zal de SmartDrive beginnen rijden wanneer hij uw duw voelt, en zal stoppen met rijden wanneer u op de polsband tikt of wanneer u remt op de hoepels. Opmerking: dit is een oudere ondersteuningsmodus.",
+      "maxspeed": "De maximale snelheid waarmee uw SmartDrive kan rijden wanneer deze wordt bediend vanuit uw PushTracker.",
+      "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding met een extern apparaat tot stand wordt gebracht of wanneer de schakelbediening uit de standby-modus wordt gehaald.",
+      "switchcontrolmode": "Kortstondig: de standaard Switch Control-modus waarin de SmartDrive zal rijden en oploopt naar de geconfigureerde maximum snelheid van de schakelaarregeling zolang een van de Switch Control-knoppen wordt vastgehouden. Wanneer beide knoppen worden ingedrukt of wanneer de knop wordt losgelaten, wordt de motor uitgeschakeld.\n\nVergrendeling: in de Switch Control-modus zal de SmartDrive rijden en oplopen tot de geconfigureerde maximum snelheid van de schakelaarregeling terwijl een van de Switch Control-knoppen wordt vastgehouden. Wanneer de knop wordt losgelaten, blijft de SmartDrive rijden - op de huidige snelheid wanneer de knop werd losgelaten. Wanneer beide knoppen worden ingedrukt of wanneer de knop opnieuw wordt ingedrukt, wordt de motor uitgeschakeld.",
+      "switchcontrolspeed": "De maximale snelheid waarmee u SmartDrive kunt besturen wanneer deze wordt bediend via de bedieningsknoppen van de schakelaar.",
+      "tapsensitivity": "Bepaalt de gevoeligheid van het tikgebaar dat wordt gebruikt voor het activeren en deactiveren van de SmartDrive. 100% is het gevoeligst en daarom het gemakkelijkst te tikken. 10% is het minst gevoelig en daarom het moeilijkst te gebruiken.",
+      "units": "Selecteer welk eenheidssysteem / meeteenheden u wilt gebruiken om het bereik en de snelheid weer te geven in de gebruikersinterface.",
+      "wearcheck": "Wanneer ingeschakeld, wordt afgedwongen dat het horloge op de pols van de gebruiker moet zijn om de hulp te activeren. Als ondersteuning is ingeschakeld en het horloge voelt dat het niet langer om de pols van de gebruiker ligt, wordt de ondersteuning automatisch gedeactiveerd."
+    },
     "error-history": "Foutgeschiedenis",
+    "information": "Informatie",
     "max-speed": "Maximale snelheid",
     "pair-smartdrive": "Koppel SmartDrive",
     "paired-to-smartdrive": "Gekoppeld aan SmartDrive",

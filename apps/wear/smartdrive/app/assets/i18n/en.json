@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Acceleration",
     "control-mode": "Control Mode",
+    "description": {
+      "acceleration": "The acceleration of your SmartDrive.",
+      "controlmode": "MX2+: the default, gesture based control mode for the SmartDrive.\n\nMX2: in this mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap the wristband. Note: this is a legacy-support mode.\n\nMX1: in this mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap the wristband or when you brake on the handrims. Note: this is a legacy-support mode.",
+      "maxspeed": "The maximum speed your SmartDrive can drive at when controlled from your PushTracker.",
+      "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection to a remote device is established or when the Switch Control is taken out of standby mode.",
+      "switchcontrolmode": "Momentary: the default Switch Control mode in which the SmartDrive will drive and ramp up to the configured Switch Control Max Speed only while one of the Switch Control buttons is being held. When both buttons are pressed or when the button is released, the motor will turn off.\n\nLatching: in latching Switch Control mode the SmartDrive will drive and ramp up to the configured Switch Control Max Speed while one of the Switch Control buttons is being held. When the button is released the SmartDrive will remain driving - at the current speed when the button was released. When both buttons are pressed or when the button is pressed again, the motor will turn off.",
+      "switchcontrolspeed": "The maximum speed you SmartDrive can drive at when controlled from the Switch Control buttons.",
+      "tapsensitivity": "Determines the sensitivity of the tap gesture used for activating and deactiving the SmartDrive. 100% is the most sensitive and therefore easiest to tap. 10% is the least sensitive and therefore hardest to tap.",
+      "units": "Select which unit system / units of measure to use for range and speed display within the user interface.",
+      "wearcheck": "When enabled, enforces that the watch must be on the user's wrist to activate power assist. If power assist is enabled and the watch senses that it is no longer on the user's wrist, it will automatically deactivate power assist."
+    },
     "error-history": "Error History",
+    "information": "Information",
     "max-speed": "Max Speed",
     "pair-smartdrive": "Pair SmartDrive",
     "paired-to-smartdrive": "Paired to SmartDrive",

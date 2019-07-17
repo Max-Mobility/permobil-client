@@ -76,6 +76,14 @@ Page {
   color: $black;
 }
 
+.no-margin {
+    margin: 0, 0, 0, 0;
+}
+
+.no-padding {
+    padding: 0, 0, 0, 0;
+}
+
 /** Label Line Chart Styles **/
 .chart-title {
   horizontal-align: center;

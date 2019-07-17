@@ -1,7 +1,14 @@
-﻿import { Sentry } from 'nativescript-sentry';
+﻿import { getDefaultLang, L, load, Prop, use } from '@permobil/nativescript';
+import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 
 console.time('App_Start_Time');
+
+// load inital files
+console.time('load language files');
+load(getDefaultLang());
+use(getDefaultLang());
+console.timeEnd('load language files');
 
 // setup application level events
 application.on(

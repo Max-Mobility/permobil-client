@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Akselerasjon",
     "control-mode": "Kontrollmodus",
+    "description": {
+      "acceleration": "Accelerasjonen av SmartDrive.",
+      "controlmode": "MX2: Standard, gestusbasert kontrollmodus for SmartDrive.\n\nMX2: I denne modusen vil SmartDrive begynne å kjøre når den registrerer push, og vil slutte å kjøre når du trykker på armbåndet. Merk: Dette er en arv-støttemodus.\n\nMX1: I denne modusen vil SmartDrive begynne å kjøre når den registrerer trykket, og vil slutte å kjøre når du trykker på armbåndet eller når du bremser på håndtakene. Merk: Dette er en arv-støttemodus.",
+      "maxspeed": "Den maksimale hastigheten din SmartDrive kan kjøre på når den styres fra din PushTracker.",
+      "powerassistbuzzer": "Når aktivert, piper SmartDrive når en tilkobling til en ekstern enhet er opprettet eller når bryteren er tatt ut av ventemodus.",
+      "switchcontrolmode": "Momentary: Standard Switch Control-modus der SmartDrive vil kjøre og rampe opp til den konfigurerte høyhastighetsbryteren, bare mens en av bryterkontrollknappene holdes. Når begge knappene trykkes eller når knappen slippes, slås motoren av.\n\nLåsing: I låsekontroll-modus vil SmartDrive kjøre og rampe opp til den konfigurerte maksimalhastighetsbryteren, mens en av bryterkontrollknappene holdes. Når knappen slippes, fortsetter SmartDrive å kjøre - ved gjeldende hastighet når knappen ble sluppet. Når begge knappene trykkes eller når du trykker på knappen igjen, slår motoren av.",
+      "switchcontrolspeed": "Den maksimale hastigheten du SmartDrive kan kjøre på når den styres fra bryterkontrollknappene.",
+      "tapsensitivity": "Bestemmer følsomheten til trykkbevegelsen som brukes til å aktivere og deaktivere SmartDrive. 100% er den mest sensitive og derfor lettest å trykke. 10% er minst følsom og derfor vanskeligste å trykke.",
+      "units": "Velg hvilket enhetssystem / måleenheter som skal brukes til rekkevidde og hastighetsvisning i brukergrensesnittet.",
+      "wearcheck": "Når aktivert, håndhever at klokken må være på brukerens håndled for å aktivere strømassistanse. Hvis strømassistent er aktivert og klokken sanser at den ikke lenger er på brukerens håndledd, vil den automatisk deaktivere strømassistansen."
+    },
     "error-history": "Feilhistorikk",
+    "information": "informasjon",
     "max-speed": "Maksimal hastighet",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Paret til SmartDrive",

@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "Acceleration",
     "control-mode": "Kontroltilstand",
+    "description": {
+      "acceleration": "Accelerationen af din SmartDrive.",
+      "controlmode": "MX2: Standard, gestusbaseret kontroltilstand for SmartDrive.\n\nMX2: I denne tilstand begynder SmartDrive at køre, når det registrerer dit tryk og stopper kørslen, når du trykker på armbåndet. Bemærk: Dette er en arv-support-tilstand.\n\nMX1: I denne tilstand begynder SmartDrive at køre, når den registrerer dit tryk og stopper med at køre, når du trykker på armbåndet eller når du bremser håndrimmerne. Bemærk: Dette er en arv-support-tilstand.",
+      "maxspeed": "Den maksimale hastighed, din SmartDrive kan køre på, når den styres fra din PushTracker.",
+      "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når en forbindelse til en fjern enhed er etableret, eller når Switch Control er taget ud af standbytilstand.",
+      "switchcontrolmode": "Momentary: Standard Switch Control-tilstand, hvor SmartDrive vil køre og rampe op til den konfigurerede Switch Control Max Speed kun, mens en af switch Control-knapperne holdes. Når begge knapper trykkes eller når knappen slippes, slukkes motoren.\n\nLåsning: SmartDrive vil i låsekontaktstyringstilstand køre og rampe op til den konfigurerede maksimale hastighedsstyring, mens en af omskifterstyringsknapperne holdes. Når knappen slippes, forbliver SmartDrive kørende - ved den aktuelle hastighed, når knappen blev frigivet. Når begge knapper trykkes eller når knappen trykkes igen, slukker motoren.",
+      "switchcontrolspeed": "Den maksimale hastighed, som SmartDrive kan køre på, når den styres fra knappen Switch Control.",
+      "tapsensitivity": "Bestemmer følsomheden af tapens gestus, der bruges til at aktivere og deaktivere SmartDrive. 100% er den mest følsomme og derfor lettest at trykke. 10% er den mindst følsomme og derfor hårdest at trykke.",
+      "units": "Vælg hvilket enhedssystem / måleenheder, der skal bruges til interval- og hastighedsvisning i brugergrænsefladen.",
+      "wearcheck": "Når den er aktiveret, håndhæves det, at uret skal være på brugerens håndled for at aktivere strømassistance. Hvis strømassistent er aktiveret, og uret registrerer, at det ikke længere er på brugerens håndled, deaktiveres automatisk strømforsyningen."
+    },
     "error-history": "Fejlhistorik",
+    "information": "Information",
     "max-speed": "Højeste hastighed",
     "pair-smartdrive": "Par SmartDrive",
     "paired-to-smartdrive": "Parret til SmartDrive",

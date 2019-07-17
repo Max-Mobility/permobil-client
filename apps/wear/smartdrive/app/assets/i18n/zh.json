@@ -135,7 +135,19 @@
   "settings": {
     "acceleration": "促進",
     "control-mode": "控制模式",
+    "description": {
+      "acceleration": "SmartDrive的加速。",
+      "controlmode": "MX2：SmartDrive的默認基於手勢的控制模式。\n\nMX2：在此模式下，SmartDrive會在感應到推動時開始駕駛，並在您敲擊腕帶時停止駕駛。注意：這是遺留支持模式。\n\nMX1：在此模式下，SmartDrive會在感應到您的推動時開始駕駛，並在您敲擊腕帶或在手柄上製動時停止駕駛。注意：這是遺留支持模式。",
+      "maxspeed": "通過PushTracker控制SmartDrive可以達到的最高速度。",
+      "powerassistbuzzer": "啟用後，只要建立與遠程設備的連接或者Switch Control退出待機模式，SmartDrive就會發出蜂鳴聲。",
+      "switchcontrolmode": "瞬間：默認的開關控制模式，其中SmartDrive將僅在其中一個開關控制按鈕被保持時驅動並上升到配置的開關控制最大速度。按下兩個按鈕或鬆開按鈕時，電機將關閉。\n\n鎖定：在鎖定開關控制模式下，當其中一個開關控制按鈕被保持時，SmartDrive將驅動並上升到配置的開關控制最大速度。釋放按鈕後，SmartDrive將保持驅動狀態 - 按下釋放按鈕時的當前速度。按下兩個按鈕或再次按下按鈕時，電機將關閉。",
+      "switchcontrolspeed": "從Switch Control按鈕控制時，SmartDrive可以驅動的最大速度。",
+      "tapsensitivity": "確定用於激活和取消激活SmartDrive的輕擊手勢的靈敏度。 100%是最敏感的，因此最容易挖掘。 10%是最不敏感的，因此最難挖掘。",
+      "units": "在用戶界面中選擇用於範圍和速度顯示的單位系統/度量單位。",
+      "wearcheck": "啟用後，強製手表必須位於用戶手腕上以激活助力功能。如果啟用了助力功能並且手錶感覺到它不再位於用戶的手腕上，它將自動停用助力功能。"
+    },
     "error-history": "錯誤歷史記錄",
+    "information": "信息",
     "max-speed": "最大速度",
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "與SmartDrive配對",
