@@ -62,6 +62,20 @@ Page {
   }
 }
 
+.center-label-base {
+  horizontal-align: $center;
+  vertical-align: $center;
+  text-align: $center;
+  text-wrap: true;
+}
+
+.ambient-show {
+  color: $ambient-white;
+}
+.ambient-hide {
+  color: $black;
+}
+
 /** Label Line Chart Styles **/
 .chart-title {
   horizontal-align: center;
@@ -73,3 +87,45 @@ Page {
 .batteryIcon {
   background-color: $black;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.fs10 {
+    font-size: 10;
+}
+.fs12 {
+    font-size: 12;
+}
+.fs14 {
+    font-size: 14;
+}
+.fs16 {
+    font-size: 16;
+}
+.fs18 {
+    font-size: 18;
+}
+.fs20 {
+    font-size: 20;
+}
+.fs22 {
+    font-size: 22;
+}
+.fs24 {
+    font-size: 24;
+}
+.fs26 {
+    font-size: 26;
+}
+.fs28 {
+    font-size: 28;
+}
+.fs30 {
+    font-size: 30;
+}
+.fs32 {
+    font-size: 32;
+}
+

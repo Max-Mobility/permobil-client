@@ -68,10 +68,10 @@
                            visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
                 <StackLayout row="1" col="1"
                              verticalAlignment="center">
-                  <Label class="centerMessage" textWrap="true"
+                  <Label class="center-label-base ambient-show fs24 bold" textWrap="true"
                          textAlignment="center"
                          text="{{ currentTime + ' ' + currentTimeMeridiem }}"/>
-                  <Label class="centerMessage" textWrap="true"
+                  <Label class="center-label-base ambient-show fs16" textWrap="true"
                          textAlignment="center"
                          text="{{ currentDay + ' ' + currentYear }}"/>
                 </StackLayout>
