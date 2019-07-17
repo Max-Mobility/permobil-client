@@ -31,7 +31,7 @@ import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { SmartDrive, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, KinveyService, NetworkService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
+import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -66,13 +66,11 @@ export class MainViewModel extends Observable {
   @Prop() estimatedDistance: number = 0.0;
   @Prop() estimatedDistanceDisplay: string = '0.0';
   // 'Estimated Range (mi)';
-  @Prop() estimatedDistanceDescription: string = L(
-    'power-assist.estimated-range'
-  );
+  @Prop() estimatedDistanceDescription: string = '';
   @Prop() currentSpeed: number = 0.0;
   @Prop() currentSpeedDisplay: string = '0.0';
   // Speed (mph)';
-  @Prop() currentSpeedDescription: string = L('power-assist.speed');
+  @Prop() currentSpeedDescription: string = '';
   @Prop() currentSignalStrength: string = '--';
   // time display
   @Prop() displayTime: boolean = true;
@@ -116,16 +114,14 @@ export class MainViewModel extends Observable {
   /**
    * SmartDrive Settings UI:
    */
-  @Prop() scanningProgressText: string = L('settings.scanning');
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
-  @Prop() pairSmartDriveText: string = L('settings.pair-smartdrive');
 
   /**
    * SmartDrive Wireless Updates:
    */
-  @Prop() updateProgressText: string = L('updates.checking-for-updates');
+  @Prop() updateProgressText: string = '';
   @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() hasUpdateData: boolean = false;
   @Prop() checkingForUpdates: boolean = false;
@@ -213,7 +209,6 @@ export class MainViewModel extends Observable {
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
-  private _networkService: NetworkService;
   private _kinveyService: KinveyService;
   private _throttledOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
@@ -298,7 +293,6 @@ export class MainViewModel extends Observable {
     this._bluetoothService = injector.get(BluetoothService);
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
-    this._networkService = injector.get(NetworkService);
     this._kinveyService = injector.get(KinveyService);
     this._sentryBreadCrumb('All Services created.');
 
@@ -334,11 +328,6 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('Registering for time updates.');
     this.registerForTimeUpdates();
     this._sentryBreadCrumb('Time updates registered.');
-
-    // register for network service events
-    this._sentryBreadCrumb('Registering network event handlers.');
-    this.registerNetworkEventHandlers();
-    this._sentryBreadCrumb('Network event handlers registered.');
 
     // Tap / Gesture detection related code:
     this._sensorService.on(
@@ -523,7 +512,12 @@ export class MainViewModel extends Observable {
   async onMainPageLoaded(args: any) {
     this._sentryBreadCrumb('onMainPageLoaded');
     // now init the ui
-    await this.init();
+    try {
+      await this.init();
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('activity init error:', err);
+    }
     // get child references
     try {
       const page = args.object as Page;
@@ -535,6 +529,7 @@ export class MainViewModel extends Observable {
         'updateProgressCircle'
       ) as AnimatedCircle;
     } catch (err) {
+      Sentry.captureException(err);
       Log.E('onMainPageLoaded::error:', err);
     }
 
@@ -595,17 +590,22 @@ export class MainViewModel extends Observable {
 
   applyStyle() {
     this._sentryBreadCrumb('applying style');
-    if (this.pager) {
-      try {
-        const children = this.pager._childrenViews;
-        for (let i = 0; i < children.size; i++) {
-          const child = children.get(i) as View;
-          child._onCssStateChange();
+    try {
+      if (this.pager) {
+        try {
+          const children = this.pager._childrenViews;
+          for (let i = 0; i < children.size; i++) {
+            const child = children.get(i) as View;
+            child._onCssStateChange();
+          }
+        } catch (err) {
+          Sentry.captureException(err);
+          Log.E('apply style error:', err);
         }
-      } catch (err) {
-        Sentry.captureException(err);
-        Log.E('apply style error:', err);
       }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply style error:', err);
     }
     this._sentryBreadCrumb('style applied');
   }
@@ -955,34 +955,6 @@ export class MainViewModel extends Observable {
     this.currentYear = this._format(now, 'YYYY');
   }
 
-  /**
-   * Network manager event handlers
-   */
-  registerNetworkEventHandlers() {
-    /*
-      this._networkService.on(
-      NetworkService.network_available_event,
-      this.onNetworkAvailable.bind(this)
-      );
-      this._networkService.on(
-      NetworkService.network_lost_event,
-      this.onNetworkLost.bind(this)
-      );
-    */
-  }
-
-  unregisterNetworkEventHandlers() {
-    /*
-      this._networkService.off(
-      NetworkService.network_available_event,
-      this.onNetworkAvailable.bind(this)
-      );
-      this._networkService.off(
-      NetworkService.network_lost_event,
-      this.onNetworkLost.bind(this)
-      );
-    */
-  }
   onNetworkAvailable(args?: any) {
     // Log.D('Network available - sending errors');
     return this.sendErrorsToServer(10)
@@ -996,32 +968,17 @@ export class MainViewModel extends Observable {
       })
       .then(ret => {
         // Log.D('Have sent data to server - unregistering from network');
-        // unregister network since we're done sending that data now
-        // this._networkService.unregisterNetwork();
       })
       .catch(err => {
         Sentry.captureException(err);
         Log.E('Error sending data to server', err);
-        // unregister network since we're done sending that data now
-        // this._networkService.unregisterNetwork();
       });
-  }
-
-  onNetworkLost(args: any) {
-    Log.D('Network Lost!');
   }
 
   doWhileCharged() {
     if (this.watchIsCharging) {
       // Since we're not sending a lot of data, we'll not bother
       // requesting network
-      /*
-      // request network here
-      // Log.D('Watch charging - requesting network');
-      this._networkService.requestNetwork({
-      timeoutMs: this.CHARGING_WORK_PERIOD_MS / 2
-      });
-      */
       this.onNetworkAvailable();
       // re-schedule any work that may still need to be done
       this.chargingWorkTimeoutId = setTimeout(
@@ -1788,6 +1745,16 @@ export class MainViewModel extends Observable {
     this.enableLayout('settings');
   }
 
+  onSettingsInfoItemTap(args: EventData) {
+    const messageKey = 'settings.description.' + this.activeSettingToChange;
+    const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
+    alert({
+      title: L('settings.information'),
+      message: message,
+      okButtonText: L('buttons.ok')
+    });
+  }
+
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
     this.tempSettings.copy(this.settings);
@@ -2180,17 +2147,12 @@ export class MainViewModel extends Observable {
         return this._bluetoothService.initialize();
       })
       .then(() => {
-        this.pairSmartDriveText = L('settings.scanning');
-        scanDisplayId = setInterval(() => {
-          this.pairSmartDriveText += '.';
-        }, 1000);
         // scan for smartdrives
         return this._bluetoothService.scanForSmartDrives(3);
       })
       .then(() => {
         this.hideScanning();
         clearInterval(scanDisplayId);
-        this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
         // make sure we have smartdrives
@@ -2231,7 +2193,6 @@ export class MainViewModel extends Observable {
         Sentry.captureException(err);
         this.hideScanning();
         clearInterval(scanDisplayId);
-        this.pairSmartDriveText = L('settings.pair-smartdrive');
         Log.E('could not scan', err);
         alert({
           title: L('failures.title'),
