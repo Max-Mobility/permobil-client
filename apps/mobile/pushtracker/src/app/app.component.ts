@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
+import { Fab } from '@nstudio/nativescript-floatingactionbutton';
 import { Log } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { AnimatedCircle } from 'nativescript-animated-circle';
-import { Fab } from 'nativescript-floatingactionbutton';
 import { Gif } from 'nativescript-gif';
 import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
     application.on(
       application.uncaughtErrorEvent,
       (args: application.UnhandledErrorEventData) => {
-        Log.E(args);
+        Log.E(args.eventName, args.error);
         this._logService.logException(args.error);
       }
     );

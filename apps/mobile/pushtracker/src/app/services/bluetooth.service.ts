@@ -1,13 +1,10 @@
+/// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
+
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Packet } from '@permobil/core';
-import {
-  Bluetooth,
-  BondState,
-  ConnectionState,
-  Device
-} from 'nativescript-bluetooth';
-import { SnackBar } from 'nativescript-snackbar';
+import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
@@ -374,9 +371,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(opts: any) { }
+  discoverServices(opts: any) {}
 
-  discoverCharacteristics(opts: any) { }
+  discoverCharacteristics(opts: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -616,7 +613,7 @@ export class BluetoothService {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void { }
+  private onCharacteristicReadRequest(args: any): void {}
 
   // service controls
   private deleteServices() {
