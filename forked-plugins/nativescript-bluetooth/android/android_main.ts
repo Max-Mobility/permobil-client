@@ -1,21 +1,6 @@
 import * as application from 'tns-core-modules/application';
 import * as utils from 'tns-core-modules/utils/utils';
-import {
-  BluetoothCommon,
-  CLog,
-  CLogTypes,
-  ConnectOptions,
-  Device,
-  DisconnectOptions,
-  MakeCharacteristicOptions,
-  MakeServiceOptions,
-  ReadOptions,
-  StartAdvertisingOptions,
-  StartNotifyingOptions,
-  StartScanningOptions,
-  StopNotifyingOptions,
-  WriteOptions
-} from '../common';
+import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, DisconnectOptions, MakeCharacteristicOptions, MakeServiceOptions, ReadOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from '../common';
 import { TNS_AdvertiseCallback } from './TNS_AdvertiseCallback';
 import { TNS_BluetoothGattCallback } from './TNS_BluetoothGattCallback';
 import { TNS_BluetoothGattServerCallback } from './TNS_BluetoothGattServerCallback';
@@ -31,10 +16,10 @@ declare let global: any;
 
 const AppPackageName = useAndroidX()
   ? global.androidx.core.app
-  : android.support.v4.app;
+  : (android.support.v4 as any).app;
 const ContentPackageName = useAndroidX()
   ? global.androidx.core.content
-  : android.support.v4.content;
+  : (android.support.v4 as any).content;
 
 function useAndroidX() {
   return global.androidx && global.androidx.appcompat;
