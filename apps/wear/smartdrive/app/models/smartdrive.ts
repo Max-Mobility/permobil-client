@@ -184,16 +184,6 @@ export class SmartDrive extends DeviceBase {
   }
 
   public otaStateToString(): string {
-    /*
-          if (this.otaState == SmartDrive.OTAState.updating_mcu ||
-          this.otaState == SmartDrive.OTAState.updating_ble) {
-          const time = timeToString(this.otaCurrentTime.getTime() - this.otaStartTime.getTime());
-          return `${this.otaState} ${time}`;
-          } else if (this.otaState == SmartDrive.OTAState.complete) {
-          const time = timeToString(this.otaEndTime.getTime() - this.otaStartTime.getTime());
-          return `${this.otaState} ${time}`;
-          }
-        */
     return this.otaState;
   }
 
@@ -667,6 +657,7 @@ export class SmartDrive extends DeviceBase {
                 // the interval for now? - shouldn't need
                 // to
                 if (index === -1) {
+                  this.requestHighPriorityConnection();
                   writeFirmwareTimeoutID = timer.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDrive',
@@ -724,6 +715,7 @@ export class SmartDrive extends DeviceBase {
                 haveBLEVersion = false;
                 // now send data to SD BLE
                 if (index === -1) {
+                  this.requestHighPriorityConnection();
                   writeFirmwareTimeoutID = timer.setTimeout(() => {
                     writeFirmwareSector(
                       'SmartDriveBluetooth',
@@ -1127,6 +1119,36 @@ export class SmartDrive extends DeviceBase {
       });
   }
 
+  public requestHighPriorityConnection(): boolean {
+    let requestSucceeded = false;
+    if (this.device) {
+      try {
+        // register for HIGH_PRIORITY connection
+        requestSucceeded = this.device.requestConnectionPriority(
+          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH
+        );
+      } catch (err) {
+        console.error('could not request high priority connection', err);
+      }
+    }
+    return requestSucceeded;
+  }
+
+  public releaseHighPriorityConnection(): boolean {
+    let requestSucceeded = false;
+    if (this.device) {
+      try {
+        // register for HIGH_PRIORITY connection
+        requestSucceeded = this.device.requestConnectionPriority(
+          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED
+        );
+      } catch (err) {
+        console.error('could not request balanced connection', err);
+      }
+    }
+    return requestSucceeded;
+  }
+
   public handleConnect(data?: any) {
     // update state
     this.connected = true;
@@ -1135,16 +1157,6 @@ export class SmartDrive extends DeviceBase {
     // now that we're connected, subscribe to the characteristics
     this.startNotifyCharacteristics(SmartDrive.Characteristics)
       .then(() => {
-        // register for HIGH_PRIORITY connection
-        if (this.device) {
-          try {
-            this.device.requestConnectionPriority(
-              android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH
-            );
-          } catch (err) {
-            console.error('could not request high priority connection', err);
-          }
-        }
         this.sendEvent(SmartDrive.smartdrive_connect_event);
       })
       .catch(err => { });
