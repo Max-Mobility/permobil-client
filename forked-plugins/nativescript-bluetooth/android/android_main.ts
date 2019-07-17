@@ -31,7 +31,7 @@ export function getDevice(
   dev: android.bluetooth.BluetoothDevice
 ): Device {
   const uuids = [];
-  let name = ''
+  let name = '';
   let address = '';
   try {
     address = dev.getAddress();
