@@ -2013,6 +2013,7 @@ export class MainViewModel extends Observable {
   }
 
   enablePowerAssist() {
+    this._sentryBreadCrumb('Enabling power assist');
     Log.D('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
@@ -2069,6 +2070,7 @@ export class MainViewModel extends Observable {
   }
 
   disablePowerAssist() {
+    this._sentryBreadCrumb('Disabling power assist');
     Log.D('Disabling power assist');
     this.disableTapSensor();
     this.releaseCPU();
@@ -2124,6 +2126,7 @@ export class MainViewModel extends Observable {
   }
 
   saveNewSmartDrive(): Promise<any> {
+    this._sentryBreadCrumb('Saving new SmartDrive');
     let scanDisplayId = null;
     this.showScanning();
     // ensure we have the permissions
@@ -2196,6 +2199,7 @@ export class MainViewModel extends Observable {
   }
 
   connectToSmartDrive(smartDrive) {
+    this._sentryBreadCrumb('Connecting to SmartDrive');
     if (!smartDrive) return;
     this.updateSmartDrive(smartDrive.address);
     // now connect to smart drive
