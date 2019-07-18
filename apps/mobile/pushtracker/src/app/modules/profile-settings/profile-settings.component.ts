@@ -71,7 +71,7 @@ export class ProfileSettingsComponent implements OnInit {
   onDistanceTap(args: EventData) {
     Log.D('Distance action item tap');
     const data = ['Kilometers', 'Miles'];
-    dialog('Distance',data, data.indexOf(this.DISTANCE))
+    dialog('Distance', data, data.indexOf(this.DISTANCE))
       .then(
         (val) => this.DISTANCE = val,
         (err) => console.error(err)
