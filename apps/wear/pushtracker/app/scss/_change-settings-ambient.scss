@@ -38,6 +38,7 @@
     color: $white;
 
     .changeSettingsTitle {
+        width: 90%;
       color: $ambient-white;
       text-align: $center;
       horizontal-align: $center;
@@ -46,7 +47,7 @@
 
     .changeSettingsValue {
       color: $ambient-white;
-      font-size: 24;
+        width: 60%;
       font-weight: bold;
       text-align: $center;
       horizontal-align: $center;

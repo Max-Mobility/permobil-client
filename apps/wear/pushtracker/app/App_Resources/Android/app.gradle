@@ -3,6 +3,7 @@ dependencies {
   implementation 'org.slf4j:slf4j-nop:1.7.25'
   implementation 'com.android.support:wear:28.0.0'
   implementation 'com.google.android.support:wearable:2.4.0'
+	implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
   compileOnly 'com.google.android.wearable:wearable:2.4.0'
 }
 
@@ -14,8 +15,13 @@ android {
     targetSdkVersion 28
     versionCode 10000
     versionName "0.1.0"
+		ndk {
+			abiFilters 'armeabi-v7a', 'arm64-v8a'
+		}
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"
+    noCompress "tflite"
+    noCompress "lite"
   }
 }

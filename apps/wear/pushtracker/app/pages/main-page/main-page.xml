@@ -1,0 +1,261 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+      xmlns:nac="nativescript-animated-circle"
+      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+      xmlns:lv="nativescript-wear-os/packages/listview"
+      xmlns:pager="nativescript-pager"
+      xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
+      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
+      xmlns:RL="nativescript-ng-ripple/ripple-view"
+      xmlns:ui="nativescript-auto-fit-text"
+      loaded="onMainPageLoaded"
+      navigatingTo="navigatingTo"
+      actionBarHidden="true">
+  <GridLayout rows="*, *" columns="*">
+
+    <pager:Pager id="pager" loaded="{{ onPagerLoaded }}" orientation="vertical"
+                 height="100%" width="100%"
+                 col="0" row="0" rowSpan="2"
+                 transformer="none" pagesCount="4" showNativePageIndicator="false"
+                 visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
+      // Goal Overview
+      <pager:PagerItem>
+        <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
+          // Distance Goal Circle
+          <nac:AnimatedCircle rowSpan="3" colSpan="3"
+                              class="distanceCircle"
+                              width="100%" height="100%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ distanceGoalCurrentProgress }}">
+          </nac:AnimatedCircle>
+          // Coast Goal Circle
+          <nac:AnimatedCircle rowSpan="3" colSpan="3"
+                              class="coastCircle"
+                              width="90%" height="90%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ coastGoalCurrentProgress }}">
+            <StackLayout width="100%" height="100%">
+              <GridLayout rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30"
+                          class="circleDetails">
+                // TODO: add distance goal value display
+                // TODO: add coast goal value display
+                // TODO: add push count display
+                <Label row="1" col="0" text="&#xf3d3;" textWrap="true" />
+                <Label row="2" col="0" text="{{ distanceGoalCurrentValue }}" textWrap="true" />
+                <Label row="3" col="0" text="{{ L('distance.units') }}" textWrap="true" />
+                <Label row="1" col="2" text="&#xf3d3; &#xf3d3;" textWrap="true" />
+                <Label row="2" col="2" text="{{ coastGoalCurrentValue }}" textWrap="true" />
+                <Label row="3" col="2" text="{{ L('coast.units') }}" textWrap="true" />
+                <Label row="4" col="1" class="" text="{{ currentPushCount }}" textWrap="true" />
+                <Label row="5" col="1" class="" text="{{ L('pushes.units') }}" textWrap="true" />
+              </GridLayout>
+            </StackLayout>
+          </nac:AnimatedCircle>
+        </GridLayout>
+      </pager:PagerItem>
+
+      // Distance Chat
+      <pager:PagerItem>
+        <box:BoxInsetLayout>
+          <GridLayout rows="auto, auto, *" columns="*, auto">
+            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') }}"
+                   class="chart-title" textWrap="true" />
+            <Label text="" row="1" col="0" class="hr-blue" />
+            <Label text="{{ distanceChartMaxValue }}"
+                   row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
+            // Battery Usage Bar Chart
+            <Repeater row="2" colSpan="2" verticalAlignment="bottom"
+                      items="{{ distanceChartData }}">
+              <Repeater.itemsLayout>
+                <FlexboxLayout justifyContent="space-between" flexDirection="row" />
+              </Repeater.itemsLayout>
+              <Repeater.itemTemplate>
+                <StackLayout class="chart-stack">
+                  <Label height="{{ value }}" class="battery-line" />
+                  <Label text="{{ day }}" class="line-label" />
+                </StackLayout>
+              </Repeater.itemTemplate>
+            </Repeater>
+          </GridLayout>
+        </box:BoxInsetLayout>
+      </pager:PagerItem>
+
+      // Coast Chart
+      <pager:PagerItem>
+        <box:BoxInsetLayout>
+          <GridLayout rows="auto, auto, *" columns="*, auto">
+            // Chart Title
+            <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}"
+                   class="chart-title" textWrap="true" />
+            <Label text="" row="1" col="0" class="hr-blue" />
+            <Label text="{{ coastChartMaxValue }}" row="1" col="1"
+                   class="chart-max-value" padding="0 0 0 5"/>
+            // Distance Traveled Bar Chart
+            <Repeater row="2" colSpan="2"
+                      items="{{ coastChartData }}">
+              <Repeater.itemsLayout>
+                <FlexboxLayout justifyContent="space-between" flexDirection="row" />
+              </Repeater.itemsLayout>
+              <Repeater.itemTemplate>
+                <StackLayout class="chart-stack">
+                  <Label height="{{ value }}" class="distance-line" />
+                  <Label text="{{ day }}" class="line-label" />
+                </StackLayout>
+              </Repeater.itemTemplate>
+            </Repeater>
+          </GridLayout>
+        </box:BoxInsetLayout>
+      </pager:PagerItem>
+
+      <pager:PagerItem>
+        <wol:WearOsLayout
+            height="100%" width="100%">
+          <ScrollView height="100%">
+            <GridLayout rows="*,*,*,*,*" columns="*">
+              <GridLayout row="0" rows="*, *" columns="*">
+                <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+                <Label text="" row="1" col="0" class="hr-blue" />
+              </GridLayout>
+              <RL:Ripple row="1" rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
+                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label col="1" text="{{ L('menu.profile) }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple row="3" rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
+                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+            </GridLayout>
+          </ScrollView>
+        </wol:WearOsLayout>
+      </pager:PagerItem>
+    </pager:Pager>
+
+    // Settings Layout "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
+                            loaded="{{ onSettingsLayoutLoaded }}"
+                            class="page" translateX="500"
+                            visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
+        <StackLayout height="100%">
+          <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          <ScrollView height="100%" id="settingsScrollView">
+            <StackLayout paddingBottom="{{ insetPadding }}">
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="wearCheck" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+            </StackLayout>
+          </ScrollView>
+        </StackLayout>
+      </wol:WearOsLayout>
+    </sdl:SwipeDismissLayout>
+
+    // Change Settings Layout "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" height="100%" width="100%"
+                            loaded="{{ onChangeSettingsLayoutLoaded }}"
+                            class="page" translateX="500"
+                            visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
+      <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">
+        // Increase the config value
+        <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
+          <StackLayout tap="{{ onIncreaseSettingsTap }}">
+            <Label text="&#xf126;" fontSize="36" />
+          </StackLayout>
+        </RL:Ripple>
+        // Cancel Button - closes the layout
+        <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
+          <StackLayout tap="{{ onCancelChangesTap }}">
+            <Label text="&#xf404;" fontSize="42" />
+          </StackLayout>
+        </RL:Ripple>
+        <StackLayout row="1" col="1" class="value-circle"
+                     tap="{{ onSettingsInfoItemTap }}">
+          <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
+          <Label text="{{ changeSettingKeyString }}"
+                 textWrap="true"
+                 class="changeSettingsTitle no-margin"/>
+          <Label text="&#xf149;"
+                 class="bullet-list-icon bold fs16 no-margin no-padding"/>
+        </StackLayout>
+        // Confirm button - will save the changes
+        <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
+          <StackLayout tap="{{ onConfirmChangesTap }}">
+            <Label text="&#xf3fd;" fontSize="42" />
+          </StackLayout>
+        </RL:Ripple>
+        // Decrease the config value
+        <RL:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
+          <StackLayout tap="{{ onDecreaseSettingsTap }}">
+            <Label text="&#xf123;" fontSize="36" />
+          </StackLayout>
+        </RL:Ripple>
+      </GridLayout>
+    </sdl:SwipeDismissLayout>
+
+    // About "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
+                            loaded="{{ onAboutLayoutLoaded }}"
+                            class="page" translateX="500"
+                            visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
+        <StackLayout height="100%">
+          <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          <ScrollView height="100%" id="aboutScrollView">
+            <StackLayout paddingBottom="{{ insetPadding }}">
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+            </StackLayout>
+          </ScrollView>
+        </StackLayout>
+      </wol:WearOsLayout>
+    </sdl:SwipeDismissLayout>
+
+  </GridLayout>
+
+</Page>

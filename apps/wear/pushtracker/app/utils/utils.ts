@@ -1,5 +1,22 @@
 import { View } from 'tns-core-modules/ui/core/view';
 
+
+
+export function promiseSerial(tasks) {
+  return tasks.reduce((promiseChain, currentTask) => {
+    return promiseChain.then(chainResults =>
+                             currentTask.then(currentResult =>
+                                              [ ...chainResults, currentResult ]
+                                             )
+                            );
+  }, Promise.resolve([]));
+  /*
+  return funcs.reduce((promise, func) => {
+    promise.then(result => func().then(Array.prototype.concat.bind(result)))
+  }, Promise.resolve([]));
+  */
+}
+
 export function hideOffScreenLayout(
   view: View,
   position: { x: number; y: number }

@@ -1,0 +1,24 @@
+@import 'variables';
+
+$distance-color: #B9B9B9;
+$distance-rim-color: $black;
+$coast-color: #B9B9B9;
+$coast-rim-color: $black;
+
+.distanceCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 90%;
+  height: 90%;
+  bar-color: $distance-color;
+  rim-color: $distance-rim-color;
+}
+
+.coastCircle {
+  background-color: transparent;
+  fill-color: transparent;
+  width: 80%;
+  height: 80%;
+  bar-color: $coast-color;
+  rim-color: $coast-rim-color;
+}

@@ -1,24 +1,27 @@
 import { Injectable } from 'injection-js';
 import { device } from 'tns-core-modules/platform';
 import { request } from 'tns-core-modules/http';
+import { KinveyKeys } from '@maxmobility/private-keys';
 
 @Injectable()
 export class KinveyService {
-  public static api_base = 'https://baas.kinvey.com';
+  public static api_base = KinveyKeys.HOST_URL;
+  public static api_user_route = '/user/';
   public static api_file_route = '/blob/';
   public static api_data_route = '/appdata/';
-  public static api_app_key = 'kid_SyIIDJjdM';
+  public static api_app_key = KinveyKeys.PROD_KEY;
   public static api_error_db = '/SmartDriveErrors';
   public static api_info_db = '/SmartDriveUsage';
   public static api_settings_db = '/SmartDriveSettings';
   public static api_activity_db = '/PushTrackerActivity';
 
   private _auth: string = null;
+  public watch_serial_number: string = null;
 
   constructor() {
     // configure authorization here:
     const authorizationToEncode = new java.lang.String(
-      'bradwaynemartin@gmail.com:testtest'
+      KinveyKeys.TEST_USER_PREAUTH
     );
     const data = authorizationToEncode.getBytes(
       java.nio.charset.StandardCharsets.UTF_8
@@ -35,6 +38,7 @@ export class KinveyService {
     delete o.has_been_sent;
     // set watch_uuid for log
     o.watch_uuid = device.uuid;
+    o.watch_serial_number = this.watch_serial_number;
   }
 
   getFile(

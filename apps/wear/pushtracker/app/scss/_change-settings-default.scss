@@ -37,14 +37,15 @@
 
     .changeSettingsTitle {
       color: $white;
+        width: 90%;
       text-align: $center;
       horizontal-align: $center;
       vertical-align: $center;
     }
 
     .changeSettingsValue {
-      color: $white;
-      font-size: 24;
+        color: $white;
+        width: 60%;
       font-weight: bold;
       text-align: $center;
       horizontal-align: $center;
