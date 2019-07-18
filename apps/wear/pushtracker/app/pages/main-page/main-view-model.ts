@@ -635,9 +635,7 @@ export class MainViewModel extends Observable {
         this.coastChartData = coastData;
 
         // update distance data
-        let oldestDist = oldest[ActivityData.Info.DistanceName];
         const distanceData = activityData.map(e => {
-          let diff = 0;
           const dist = e[ActivityData.Info.DistanceName];
           return {
             day: this._format(new Date(e.date), 'dd'),
@@ -714,7 +712,7 @@ export class MainViewModel extends Observable {
       case 'units':
         // TODO: update settings storage
         translationKey =
-          'sd.settings.units.';// + this.tempSettings.units.toLowerCase();
+          'sd.settings.units.'; // + this.tempSettings.units.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       default:
