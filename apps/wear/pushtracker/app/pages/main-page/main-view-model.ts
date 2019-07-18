@@ -734,7 +734,7 @@ export class MainViewModel extends Observable {
     // update distance units
     // TODO: update once we have new settings
     this.distanceUnits = L(
-      'units.distance.' // + this.settings.units.toLowerCase()
+      'goals.distance.english' // + this.settings.units.toLowerCase()
     );
   }
 

@@ -36,19 +36,35 @@
                               rimWidth="2" barWidth="8"
                               progress="{{ coastGoalCurrentProgress }}">
             <StackLayout width="100%" height="100%">
-              <GridLayout rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30"
+              <GridLayout rows="15, *, *, *, *, *, 15" columns="30, *, *, *, 30"
                           class="circleDetails">
                 // TODO: add distance goal value display
                 // TODO: add coast goal value display
                 // TODO: add push count display
-                <Label row="1" col="0" text="&#xf3d3;" textWrap="true" />
-                <Label row="2" col="0" text="{{ distanceGoalCurrentValue }}" textWrap="true" />
-                <Label row="3" col="0" text="{{ L('distance.units') }}" textWrap="true" />
-                <Label row="1" col="2" text="&#xf3d3; &#xf3d3;" textWrap="true" />
-                <Label row="2" col="2" text="{{ coastGoalCurrentValue }}" textWrap="true" />
-                <Label row="3" col="2" text="{{ L('coast.units') }}" textWrap="true" />
-                <Label row="4" col="1" class="" text="{{ currentPushCount }}" textWrap="true" />
-                <Label row="5" col="1" class="" text="{{ L('pushes.units') }}" textWrap="true" />
+                <Label row="1" col="1"
+                       class="center-label-base ionicon distance-goal-color compact fs26"
+                       text="&#xf3d1;" />
+                <Label row="2" col="1" textWrap="true"
+                       class="center-label-base compact fs18 bold"
+                       text="{{ distanceGoalCurrentValue }}" />
+                <Label row="3" col="1" textWrap="true"
+                       class="center-label-base compact fs14"
+                       text="{{ distanceUnits }}" />
+                <Label row="1" col="3"
+                       class="center-label-base ionicon coast-goal-color compact fs26"
+                       text="&#xf3d1; &#xf3d1;" />
+                <Label row="2" col="3" textWrap="true"
+                       class="center-label-base compact fs18 bold"
+                       text="{{ coastGoalCurrentValue }}" />
+                <Label row="3" col="3" textWrap="true"
+                       class="center-label-base compact fs14"
+                       text="{{ L('goals.coast.units') }}" />
+                <Label row="4" col="2" textWrap="true"
+                       class="center-label-base compact fs16 bold"
+                       text="{{ currentPushCount }}" />
+                <Label row="5" col="2" textWrap="true"
+                       class="center-label-base compact fs12"
+                       text="{{ L('pushes.units') }}" />
               </GridLayout>
             </StackLayout>
           </nac:AnimatedCircle>
@@ -120,7 +136,7 @@
               <RL:Ripple row="1" rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
                   <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label col="1" text="{{ L('menu.profile) }}" class="settings-label" textWrap="true" />
+                  <Label col="1" text="{{ L('menu.profile') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple row="3" rippleColor="#ddd">
@@ -192,7 +208,7 @@
                  textWrap="true"
                  class="changeSettingsTitle no-margin"/>
           <Label text="&#xf149;"
-                 class="bullet-list-icon bold fs16 no-margin no-padding"/>
+                 class="bullet-list-icon bold fs16 compact"/>
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">

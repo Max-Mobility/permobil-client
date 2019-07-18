@@ -13,6 +13,10 @@ Page {
   background-color: $black;
 }
 
+.ionicon {
+  font-family: $ionicon;
+}
+
 .back-icon {
     font-size: 11;
     font-weight: bold;
@@ -68,12 +72,29 @@ Page {
   color: $black;
 }
 
+.center-h {
+    horizontal-align: $center;
+}
+
+.center-v {
+    vertical-align: $center;
+}
+
+.center-text {
+    text-align: $center;
+}
+
 .no-margin {
     margin: 0, 0, 0, 0;
 }
 
 .no-padding {
     padding: 0, 0, 0, 0;
+}
+
+.compact {
+    padding: 0, 0, 0, 0;
+    margin: 0, 0, 0, 0;
 }
 
 /** Label Line Chart Styles **/
@@ -87,6 +108,12 @@ Page {
     font-weight: bold;
 }
 
+.fs6 {
+    font-size: 6;
+}
+.fs8 {
+    font-size: 8;
+}
 .fs10 {
     font-size: 10;
 }
