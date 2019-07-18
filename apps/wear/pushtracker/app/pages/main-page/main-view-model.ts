@@ -52,6 +52,8 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
+const debug: boolean = true;
+
 export class MainViewModel extends Observable {
   /**
    * Goal progress data.
@@ -59,12 +61,19 @@ export class MainViewModel extends Observable {
    *   * CurrentValue: {R} actual daily number used for text display
    *   * Value: {R} actual goal number used for text display
    */
-  @Prop() distanceGoalCurrentProgress: number = 0;
-  @Prop() distanceGoalCurrentValue: number = 0;
-  @Prop() distanceGoalValue: number = 0;
-  @Prop() coastGoalCurrentProgress: number = 0;
-  @Prop() coastGoalCurrentValue: number = 0;
-  @Prop() coastGoalValue: number = 0;
+  @Prop() distanceGoalValue: number = debug ? ((Math.random() * 10.0) + 2.0) : 0;
+  @Prop() distanceGoalCurrentValue: number = debug ? Math.random() * this.distanceGoalValue : 0;
+  @Prop() distanceGoalCurrentProgress: number =
+    (this.distanceGoalCurrentValue / this.distanceGoalValue) * 100.0;
+  @Prop() distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
+  @Prop() distanceGoalValueDisplay = this.distanceGoalValue.toFixed(1);
+
+  @Prop() coastGoalValue: number = debug ? ((Math.random() * 10) + 2.0) : 0;
+  @Prop() coastGoalCurrentValue: number = debug ? Math.random() * this.coastGoalValue : 0;
+  @Prop() coastGoalCurrentProgress: number =
+    (this.coastGoalCurrentValue / this.coastGoalValue) * 100.0;
+  @Prop() coastGoalCurrentValueDisplay = this.coastGoalCurrentValue.toFixed(1);
+  @Prop() coastGoalValueDisplay = this.coastGoalValue.toFixed(1);
 
   @Prop() distanceUnits: string = '';
 
@@ -76,7 +85,8 @@ export class MainViewModel extends Observable {
   SENSOR_DELAY_US: number = 40 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
 
-  @Prop() currentPushCount: number = 0;
+  @Prop() currentPushCount: number = debug ? Math.random() * 10000 : 0;
+  @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
   @Prop() currentHighStressActivityCount: number = 0;
 
   // for managing the inset of the layouts ourselves

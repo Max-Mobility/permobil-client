@@ -46,7 +46,7 @@
                        text="&#xf3d1;" />
                 <Label row="2" col="1" textWrap="true"
                        class="center-label-base compact fs18 bold"
-                       text="{{ distanceGoalCurrentValue }}" />
+                       text="{{ distanceGoalCurrentValueDisplay }}" />
                 <Label row="3" col="1" textWrap="true"
                        class="center-label-base compact fs14"
                        text="{{ distanceUnits }}" />
@@ -55,13 +55,13 @@
                        text="&#xf3d1; &#xf3d1;" />
                 <Label row="2" col="3" textWrap="true"
                        class="center-label-base compact fs18 bold"
-                       text="{{ coastGoalCurrentValue }}" />
+                       text="{{ coastGoalCurrentValueDisplay }}" />
                 <Label row="3" col="3" textWrap="true"
                        class="center-label-base compact fs14"
                        text="{{ L('goals.coast.units') }}" />
                 <Label row="4" col="2" textWrap="true"
                        class="center-label-base compact fs16 bold"
-                       text="{{ currentPushCount }}" />
+                       text="{{ currentPushCountDisplay }}" />
                 <Label row="5" col="2" textWrap="true"
                        class="center-label-base compact fs12"
                        text="{{ L('pushes.units') }}" />

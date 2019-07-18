@@ -22,3 +22,8 @@ $coast-rim-color: $black;
   bar-color: $coast-color;
   rim-color: $coast-rim-color;
 }
+
+.coast-goal-color,
+.distance-goal-color {
+    color: $ambient-white;
+}

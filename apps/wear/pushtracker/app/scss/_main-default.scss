@@ -1,8 +1,8 @@
 @import 'variables';
 
-$distance-color: #89d4e3;
+$distance-color: $permobil-violet;
 $distance-rim-color: $permobil-charcoal;
-$coast-color: #009ac7;
+$coast-color: $permobil-cousteau;
 $coast-rim-color: $permobil-charcoal;
 
 .distanceCircle {
@@ -21,4 +21,12 @@ $coast-rim-color: $permobil-charcoal;
   height: 90%;
   bar-color: $coast-color;
   rim-color: $coast-rim-color;
+}
+
+.coast-goal-color {
+    color: $permobil-cousteau;
+}
+
+.distance-goal-color {
+    color: $permobil-violet;
 }
