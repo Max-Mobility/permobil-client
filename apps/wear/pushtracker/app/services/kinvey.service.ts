@@ -10,9 +10,6 @@ export class KinveyService {
   public static api_file_route = '/blob/';
   public static api_data_route = '/appdata/';
   public static api_app_key = KinveyKeys.PROD_KEY;
-  public static api_error_db = '/SmartDriveErrors';
-  public static api_info_db = '/SmartDriveUsage';
-  public static api_settings_db = '/SmartDriveSettings';
   public static api_activity_db = '/PushTrackerActivity';
 
   private _auth: string = null;
@@ -134,27 +131,9 @@ export class KinveyService {
     });
   }
 
-  sendError(error: any, id?: string) {
-    this.reformatForDb(error);
-    if (id) return this.put(KinveyService.api_error_db, error, id);
-    else return this.post(KinveyService.api_error_db, error);
-  }
-
-  sendInfo(info: any, id?: string) {
-    this.reformatForDb(info);
-    if (id) return this.put(KinveyService.api_info_db, info, id);
-    else return this.post(KinveyService.api_info_db, info);
-  }
-
   sendActivity(activity: any, id?: string) {
     this.reformatForDb(activity);
     if (id) return this.put(KinveyService.api_activity_db, activity, id);
     else return this.post(KinveyService.api_activity_db, activity);
-  }
-
-  sendSettings(settings: any, id?: string) {
-    this.reformatForDb(settings);
-    if (id) return this.put(KinveyService.api_settings_db, settings, id);
-    else return this.post(KinveyService.api_settings_db, settings);
   }
 }

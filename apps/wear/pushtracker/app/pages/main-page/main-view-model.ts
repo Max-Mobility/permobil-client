@@ -460,7 +460,7 @@ export class MainViewModel extends Observable {
 
   onNetworkAvailable(args?: any) {
     // Log.D('Network available - sending info');
-    return this.sendInfosToServer(10)
+    return this.sendActivityToServer(10)
       .then(ret => {
         // Log.D('Have sent data to server - unregistering from network');
       })
@@ -800,11 +800,11 @@ export class MainViewModel extends Observable {
   loadSettings() {
     /*
     this.settings.copy(
-      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
+      LS.getItem('com.permobil.pushtracker.wearos.smartdrive.settings')
     );
     this.switchControlSettings.copy(
       LS.getItem(
-        'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
+        'com.permobil.pushtracker.wearos.smartdrive.switch-control-settings'
       )
     );
     this.hasSentSettings =
@@ -825,11 +825,11 @@ export class MainViewModel extends Observable {
       this.disableWearCheck
     );
     LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.settings',
+      'com.permobil.pushtracker.wearos.smartdrive.settings',
       this.settings.toObj()
     );
     LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
+      'com.permobil.pushtracker.wearos.smartdrive.switch-control-settings',
       this.switchControlSettings.toObj()
     );
     */
@@ -996,7 +996,7 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
-  sendInfosToServer(numInfo: number) {
+  sendActivityToServer(numInfo: number) {
     return this.getUnsentInfoFromDatabase(numInfo)
       .then(infos => {
         if (infos && infos.length) {
@@ -1008,7 +1008,7 @@ export class MainViewModel extends Observable {
             i[ActivityData.Info.DateName] = new Date(
               i[ActivityData.Info.DateName]
             );
-            return this._kinveyService.sendInfo(
+            return this._kinveyService.sendActivity(
               i,
               i[ActivityData.Info.UuidName]
             );
