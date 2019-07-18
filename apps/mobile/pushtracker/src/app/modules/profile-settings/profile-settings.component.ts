@@ -49,9 +49,10 @@ export class ProfileSettingsComponent implements OnInit {
 
   onHeightTap(args: EventData) {
     Log.D('height action item tap');
-    dialog('Height', ['Centimeters', 'Feet & inches'])
+    const data = ['Centimeters', 'Feet & inches'];
+    dialog('Height', data, data.indexOf(this.HEIGHT) )
       .then(
-        (val) => console.log(val + 'Hello'),
+        (val) => this.HEIGHT = val,
         (err) => console.error(err)
       );
 
@@ -59,12 +60,22 @@ export class ProfileSettingsComponent implements OnInit {
 
   onWeightTap(args: EventData) {
     Log.D('Weight action item tap');
-    dialog('Weight', ['Kilograms', 'Pounds']);
+    const data = ['Kilograms', 'Pounds'];
+    dialog('Weight', data ,  data.indexOf(this.WEIGHT))
+      .then(
+        (val) => this.WEIGHT = val,
+        (err) => console.error(err)
+      );
   }
 
   onDistanceTap(args: EventData) {
     Log.D('Distance action item tap');
-    dialog('Distance', ['Kilometers', 'Miles']);
+    const data = ['Kilometers', 'Miles'];
+    dialog('Distance',data, data.indexOf(this.DISTANCE))
+      .then(
+        (val) => this.DISTANCE = val,
+        (err) => console.error(err)
+      );
   }
 
   onMaxSpeedTap(args: EventData) {

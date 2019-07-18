@@ -3,7 +3,7 @@ import { CFAlertDialog, DialogOptions, CFAlertActionAlignment, CFAlertActionStyl
 import * as dialogs from 'tns-core-modules/ui/dialogs';
 
 
-export function  dialog( title: string, list: any) {
+export function  dialog( title: string, list: any, selectedItem?: number): Promise<string> {
     return new Promise((resolve, reject) => {
         if (isIOS) {
             console.log('This is iOS dialog');
@@ -24,15 +24,30 @@ export function  dialog( title: string, list: any) {
             const options: DialogOptions = {
                 dialogStyle: CFAlertStyle.ALERT,
                 title: title,
+                onDismiss: () => {
+                    const index = options.singleChoiceList.selectedItem;
+                    const item = options.singleChoiceList.items[index];
+                    resolve(item);
+                },
                 singleChoiceList: {
                     items: list,
-                    selectedItem: 0,
+                    selectedItem: selectedItem,
                     onClick: (dialogInterface, index) => {
-                        const val = options.singleChoiceList.items[index];
-                        console.log(val);
-                        resolve(val);
+                        options.singleChoiceList.selectedItem = index;
                     }
-                }
+                },
+                buttons: [
+                    {
+                      text: 'Okay',
+                      buttonStyle: CFAlertActionStyle.DEFAULT,
+                      buttonAlignment: CFAlertActionAlignment.END,
+                      textColor: '#000000',
+                      backgroundColor: '#FFFFFF',
+                      onClick: function(response) {
+                        console.log(response);
+                      },
+                    },
+                  ]
             };
             alert.show(options);
         }
