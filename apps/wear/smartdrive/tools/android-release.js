@@ -39,7 +39,7 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    `npm i && cd apps/wear/smartdrive && rimraf platforms node_modules hooks && tns build android --release --bundle --env.uglify --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./tools/smartdrive-wearos.aab`,
+    `npm i && cd apps/wear/smartdrive && rimraf platforms node_modules hooks && tns build android --release --bundle --env.uglify --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --copy-to ./tools/smartdrive-wearos.apk`,
     // `tns build android --release --bundle --env.uglify --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./tools/smartdrive-wearos.aab`,
     (err, stdout, stderr) => {
       if (err) {
@@ -53,7 +53,7 @@ askKeystorePassword().then(result => {
       }
 
       console.log(
-        'Android release finished. A new release AAB should be located in the permobil-client/apps/wear/smartdrive/tools/ directory.'
+        'Android release finished. A new release APK should be located in the permobil-client/apps/wear/smartdrive/tools/ directory.'
       );
     }
   );
