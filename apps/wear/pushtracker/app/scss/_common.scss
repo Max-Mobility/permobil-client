@@ -18,8 +18,12 @@ Page {
 }
 
 .back-icon {
+    font-family: $ionicon;
     font-size: 11;
     font-weight: bold;
+    vertical-align: $center;
+    horizontal-align: $center;
+    margin: 5 5 5 0;
 }
 
 /** Buttons **/

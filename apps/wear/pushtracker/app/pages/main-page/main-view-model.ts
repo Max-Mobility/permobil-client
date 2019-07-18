@@ -108,7 +108,7 @@ export class MainViewModel extends Observable {
   /**
    * Settings UI:
    */
-  @Prop() activeSettingToChange = '';
+  @Prop() activeSettingToChange = ' ';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
 

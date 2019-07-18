@@ -173,7 +173,7 @@
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
@@ -185,6 +185,7 @@
 
     // Change Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" height="100%" width="100%"
+                            id="changeSettingsPage"
                             loaded="{{ onChangeSettingsLayoutLoaded }}"
                             class="page" translateX="500"
                             visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
@@ -208,7 +209,7 @@
                  textWrap="true"
                  class="changeSettingsTitle no-margin"/>
           <Label text="&#xf149;"
-                 class="bullet-list-icon bold fs16 compact"/>
+                 class="ionicon bold fs16 compact"/>
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
@@ -262,7 +263,7 @@
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
