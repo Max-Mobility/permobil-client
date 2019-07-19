@@ -263,9 +263,9 @@ export class MainViewModel extends Observable {
     this.loadSettings();
     this._sentryBreadCrumb('Settings loaded.');
 
-    this._sentryBreadCrumb('Updating settings display.');
-    this.updateSettingsDisplay();
-    this._sentryBreadCrumb('Settings display updated.');
+    this._sentryBreadCrumb('Updating display.');
+    this.updateDisplay();
+    this._sentryBreadCrumb('Display updated.');
   }
 
   async initSqliteTables() {
@@ -787,16 +787,29 @@ export class MainViewModel extends Observable {
     this.previousLayout();
   }
 
-  updateSettingsDisplay() {
+  updateDisplay() {
+    this.updateGoalDisplay();
     this.updateSpeedDisplay();
     this.updateChartData();
   }
 
+  updateGoalDisplay() {
+    // update goal values here
+    this.distanceGoalValue = this.settings.distanceGoal;
+    if (this.settings.units === 'metric') {
+      this.distanceGoalValue *= 1.609;
+    }
+    this.distanceGoalCurrentProgress =
+      (this.distanceGoalCurrentValue / this.distanceGoalValue) * 100.0;
+    this.coastGoalValue = this.settings.coastGoal;
+    this.coastGoalCurrentProgress =
+      (this.coastGoalCurrentValue / this.coastGoalValue) * 100.0;
+  }
+
   updateSpeedDisplay() {
     // update distance units
-    // TODO: update once we have new settings
     this.distanceUnits = L(
-      'goals.distance.english' // + this.settings.units.toLowerCase()
+      'goals.distance.' + this.settings.units.toLowerCase()
     );
   }
 
@@ -810,7 +823,7 @@ export class MainViewModel extends Observable {
     this.settings.copy(this.tempSettings);
     this.saveSettings();
     // now update any display that needs settings:
-    this.updateSettingsDisplay();
+    this.updateDisplay();
     /*
     // warning / indication to the user that they've updated their settings
     alert({

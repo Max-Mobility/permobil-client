@@ -25,13 +25,13 @@ export namespace Profile {
     ];
     static Translations: string[] = Chair.Options.map(o => 'settings.chairinfo.values.' + o);
     static Default: string = 'tilite';
-  };
+  }
 
   export class Units {
     static Options: string[] = ['english', 'metric'];
     static Translations: string[] = Units.Options.map(o => 'settings.units.values.' + o);
     static Default: string = 'english';
-  };
+  }
 
   export class Settings extends Observable {
 
@@ -42,7 +42,7 @@ export namespace Profile {
       height: 1.778,       // meters
       weight: 80,          // kg
       units: Profile.Units.Default
-    }
+    };
 
     chair: string = Profile.Settings.Defaults.chair;
     coastGoal: number = Profile.Settings.Defaults.coastGoal;
@@ -57,9 +57,9 @@ export namespace Profile {
 
     getHeightDisplay(): string {
       let str = '';
-      let feet = Math.floor(this.height * 3.28084);
-      let inches = Math.round(((this.height * 3.28084) % feet) * 12);
-      let centimeters = Math.round(this.height * 100.0);
+      const feet = Math.floor(this.height * 3.28084);
+      const inches = Math.round(((this.height * 3.28084) % feet) * 12);
+      const centimeters = Math.round(this.height * 100.0);
       switch (this.units) {
         case 'english':
           str = `${feet}\' ${inches}\"`;
@@ -168,6 +168,7 @@ export namespace Profile {
 
     copyKey(key: string, other: any) {
       if (other && key in other) {
+        this[key] = other[key];
       } else if (key in Profile.Settings.Defaults) {
         this[key] = Profile.Settings.Defaults[key];
       }
