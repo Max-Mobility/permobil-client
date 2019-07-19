@@ -48,7 +48,7 @@
     "nativescript-dev-webpack": "~0.24.1",
     "nativescript-hook": "~0.2.5",
     "nativescript-worker-loader": "~0.9.5",
-    "prompt": "~1.0.0",
+    "prompts": "^2.1.0",
     "rimraf": "~2.6.3",
     "tns-platform-declarations": "~5.4.2",
     "tslint": "~5.17.0",

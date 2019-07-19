@@ -1,36 +1,22 @@
-const prompt = require('prompt');
+const prompts = require('prompts');
 const { exec } = require('child_process');
 
 let keyPassword = Array.prototype.slice.call(process.argv, 2)[0];
 
 function askKeystorePassword() {
-  return new Promise((resolve, reject) => {
-    // if password entered with npm run then just resolve it
-    if (keyPassword) {
-      resolve(keyPassword);
-      return;
-    }
-    prompt.start();
-    prompt.get(
-      {
-        name: 'keystore_password',
-        description: 'What is the SmartDrive MX2 Wear OS App keystore password?'
-      },
-      (err, result) => {
-        if (err) {
-          reject(err);
-          return console.log(err);
-        }
-        if (!result.keystore_password) {
-          return console.log(
-            'The keystore password is required to produce a signed release AAB for Android.'
-          );
-        }
-        keyPassword = result.keystore_password;
-        resolve(keyPassword);
-      }
-    );
-  });
+  // if password entered with npm run then just resolve it
+  if (keyPassword) {
+    return Promise.resolve(keyPassword);
+  } else {
+    return prompts({
+      type: 'text',
+      name: 'value',
+      message: 'What is the SmartDrive MX2+ Wear OS App keystore password?',
+      style: 'password'
+    }).then(response => {
+      return response.value;
+    });
+  }
 }
 
 askKeystorePassword().then(result => {
@@ -40,7 +26,6 @@ askKeystorePassword().then(result => {
   // execute the android release build cmd with the result as password
   exec(
     `npm i && cd apps/wear/smartdrive && rimraf platforms node_modules hooks && tns build android --release --bundle --env.uglify --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --copy-to ./tools/smartdrive-wearos.apk`,
-    // `tns build android --release --bundle --env.uglify --key-store-path ./tools/smartdrive-wearos.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./tools/smartdrive-wearos.aab`,
     (err, stdout, stderr) => {
       if (err) {
         console.error(
