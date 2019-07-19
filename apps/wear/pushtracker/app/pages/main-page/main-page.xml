@@ -35,8 +35,8 @@
                               animated="true" animateFrom="0" clockwise="true"
                               rimWidth="2" barWidth="8"
                               progress="{{ coastGoalCurrentProgress }}">
-            <GridLayout rows="15, *, *, 15" columns="30, *, 30">
-              <GridLayout rows="*" columns="*, *" row="1" col="1">
+            <GridLayout rows="15, *, auto, 15" columns="30, *, 30">
+              <GridLayout rows="*" columns="*, *" row="1" col="1" marginTop="10">
                 <StackLayout col="0">
                   // distance
                   <Label class="center-label-base ionicon distance-goal-color compact fs34"
