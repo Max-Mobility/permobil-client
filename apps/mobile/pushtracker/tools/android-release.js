@@ -1,36 +1,22 @@
-const prompt = require('prompt');
+const prompts = require('prompts');
 const { exec } = require('child_process');
 
 let keyPassword = Array.prototype.slice.call(process.argv, 2)[0];
 
 function askKeystorePassword() {
-  return new Promise((resolve, reject) => {
-    // if password entered with npm run then just resolve it
-    if (keyPassword) {
-      resolve(keyPassword);
-      return;
-    }
-    prompt.start();
-    prompt.get(
-      {
-        name: 'keystore_password',
-        description: 'What is the Pushtracker Mobile App keystore password?'
-      },
-      (err, result) => {
-        if (err) {
-          reject(err);
-          return console.log(err);
-        }
-        if (!result.keystore_password) {
-          return console.log(
-            'The keystore password is required to produce a signed release AAB for Android.'
-          );
-        }
-        keyPassword = result.keystore_password;
-        resolve(keyPassword);
-      }
-    );
-  });
+  // if password entered with npm run then just resolve it
+  if (keyPassword) {
+    return Promise.resolve(keyPassword);
+  } else {
+    return prompts({
+      type: 'text',
+      name: 'value',
+      message: 'What is the PushTracker Mobile App keystore password?',
+      style: 'password'
+    }).then(response => {
+      return response.value;
+    });
+  }
 }
 
 askKeystorePassword().then(result => {
