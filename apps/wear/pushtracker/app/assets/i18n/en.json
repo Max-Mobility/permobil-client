@@ -35,6 +35,7 @@
       "metric": "kilometers"
     }
   },
+  "information": "Information",
   "languages": {
     "da": "Danish",
     "de": "German",
@@ -64,10 +65,60 @@
   "pushes": {
     "units": "pushes"
   },
+  "profile": "Profile",
   "settings": {
+    "chairinfo": {
+      "title": "Chair Info",
+      "description": "",
+      "values": {
+        "colours": "Colours",
+        "invacare": "Invacare / Küschall",
+        "karman": "Karman",
+        "ki": "Ki",
+        "motion-composites": "Motion Composites",
+        "panthera": "Panthera",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "Top End",
+        "other": "Other"
+      }
+    },
+    "coastgoal": {
+      "title": "Coast Goal",
+      "description": "",
+      "units": "s"
+    },
+    "distancegoal": {
+      "title": "Distance Goal",
+      "description": "",
+      "units": {
+        "english": "mi",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "Edit Profile",
+    "height": {
+      "title": "Height",
+      "description": ""
+    },
     "information": "Information",
-    "title": "Profile Settings",
-    "units": "Units"
+    "title": "Settings",
+    "units": {
+      "title": "Units",
+      "description": "",
+      "values": {
+        "english": "English",
+        "metric": "Metric"
+      }
+    },
+    "weight": {
+      "title": "Weight",
+      "description": "",
+      "units": {
+        "english": "lb",
+        "metric": "kg"
+      }
+    }
   },
   "units": {
     "distance": {

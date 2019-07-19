@@ -166,9 +166,71 @@
           <ScrollView height="100%" id="settingsScrollView">
             <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="wearCheck" tap="{{ onChangeSettingsItemTap }}">
+                <GridLayout rows="*" columns="15, *" id="editProfile" tap="{{ onEditProfileTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.edit-profile') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="distanceGoal" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.distancegoal.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="coastGoal" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.coastgoal.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.units.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+            </StackLayout>
+          </ScrollView>
+        </StackLayout>
+      </wol:WearOsLayout>
+    </sdl:SwipeDismissLayout>
+
+    // Edit Profile Layout "Page" -- need to wrap this in a component
+    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
+                            loaded="{{ onProfileLayoutLoaded }}"
+                            class="page" translateX="500"
+                            visibility="{{ enabledLayout.profile, enabledLayout.profile ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout
+          disableInsetConstraint="true"
+          loaded="{{ customWOLInsetLoaded }}"
+          height="100%" width="100%">
+        <StackLayout height="100%">
+          <Label text="{{ L('profile') }}" class="chart-title" textWrap="true" />
+          <Label text="" row="1" col="0" class="hr-blue" />
+          <ScrollView height="100%" id="profileScrollView">
+            <StackLayout paddingBottom="{{ insetPadding }}">
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="weight" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.weight.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="height" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.height.title') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="chairInfo" tap="{{ onChangeSettingsItemTap }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.chairinfo.title') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">

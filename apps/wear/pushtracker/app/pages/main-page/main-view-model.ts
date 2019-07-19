@@ -29,7 +29,7 @@ import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { ActivityDetector } from '../../models';
-import { ActivityData } from '../../namespaces';
+import { ActivityData, Profile } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
@@ -78,6 +78,13 @@ export class MainViewModel extends Observable {
   @Prop() distanceUnits: string = '';
 
   /**
+   * Settings
+   */
+  @Prop() settings: Profile.Settings = new Profile.Settings();
+  @Prop() tempSettings: Profile.Settings = new Profile.Settings();
+  @Prop() hasSentSettings: boolean = false;
+
+  /**
    * Activity Related Data
    */
   activityDetector: ActivityDetector = null;
@@ -108,12 +115,17 @@ export class MainViewModel extends Observable {
     about: false,
     changeSettings: false,
     main: true,
+    profile: false,
     settings: false
   };
   @Prop() enabledLayout = fromObject(this.layouts);
   private _settingsLayout: SwipeDismissLayout;
+  private _profileLayout: SwipeDismissLayout;
   private _changeSettingsLayout: SwipeDismissLayout;
   private _aboutLayout: SwipeDismissLayout;
+  private settingsScrollView: ScrollView;
+  private profileScrollView: ScrollView;
+  private aboutScrollView: ScrollView;
 
   /**
    * Settings UI:
@@ -153,8 +165,6 @@ export class MainViewModel extends Observable {
    * User interaction objects
    */
   private pager: Pager;
-  private settingsScrollView: ScrollView;
-  private aboutScrollView: ScrollView;
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
@@ -604,6 +614,18 @@ export class MainViewModel extends Observable {
     });
   }
 
+  onProfileLayoutLoaded(args) {
+    this._profileLayout = args.object as SwipeDismissLayout;
+    this.profileScrollView = this._profileLayout.getViewById(
+      'profileScrollView'
+    ) as ScrollView;
+    this._profileLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+      // hide the offscreen layout when dismissed
+      hideOffScreenLayout(this._profileLayout, { x: 500, y: 0 });
+      this.previousLayout();
+    });
+  }
+
   onAboutLayoutLoaded(args) {
     // show the chart
     this._aboutLayout = args.object as SwipeDismissLayout;
@@ -678,8 +700,17 @@ export class MainViewModel extends Observable {
     this.enableLayout('settings');
   }
 
+  onEditProfileTap() {
+    if (this.profileScrollView) {
+      // reset to to the top when entering the page
+      this.profileScrollView.scrollToVerticalOffset(0, true);
+    }
+    showOffScreenLayout(this._profileLayout);
+    this.enableLayout('profile');
+  }
+
   onSettingsInfoItemTap(args: EventData) {
-    const messageKey = 'settings.description.' + this.activeSettingToChange;
+    const messageKey = 'settings.' + this.activeSettingToChange + '.description';
     const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
     alert({
       title: L('settings.information'),
@@ -690,20 +721,11 @@ export class MainViewModel extends Observable {
 
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
-    // TODO: update settings storage
-    /*
     this.tempSettings.copy(this.settings);
-    this.tempSwitchControlSettings.copy(this.switchControlSettings);
-    */
     const tappedId = args.object.id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
-    switch (this.activeSettingToChange) {
-      case 'units':
-        this.changeSettingKeyString = L('settings.units');
-        break;
-      default:
-        break;
-    }
+    const translationKey = 'settings.' + this.activeSettingToChange + '.title';
+    this.changeSettingKeyString = L(translationKey);
     this.updateSettingsChangeDisplay();
 
     showOffScreenLayout(this._changeSettingsLayout).then(() => {
@@ -718,13 +740,43 @@ export class MainViewModel extends Observable {
 
   updateSettingsChangeDisplay() {
     let translationKey = '';
+    let value = null;
     switch (this.activeSettingToChange) {
-      case 'units':
-        // TODO: update settings storage
+      case 'chairinfo':
         translationKey =
-          'sd.settings.units.'; // + this.tempSettings.units.toLowerCase();
+          'settings.chairinfo.values.' + this.tempSettings.chair.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
+        break;
+      case 'coastgoal':
+        this.changeSettingKeyValue =
+          this.tempSettings.coastGoal.toFixed(1) + ' ' + L('settings.coastgoal.units');
+        break;
+      case 'distancegoal':
+        value = this.tempSettings.distanceGoal;
+        if (this.tempSettings.units === 'metric') {
+          value *= 1.609;
+        }
+        this.changeSettingKeyValue = value.toFixed(1) + ' ';
+        translationKey = 'settings.distancegoal.units.' + this.tempSettings.units;
+        this.changeSettingKeyValue += L(translationKey);
+        break;
+      case 'height':
+        this.changeSettingKeyValue = this.tempSettings.getHeightDisplay();
+        break;
+      case 'units':
+        translationKey =
+          'settings.units.values.' + this.tempSettings.units.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
+      case 'weight':
+        value = this.tempSettings.weight;
+        if (this.tempSettings.units === 'english') {
+          value *= 2.20462;
+        }
+        this.changeSettingKeyValue = Math.round(value) + ' ';
+        translationKey = 'settings.weight.units.' + this.tempSettings.units;
+        this.changeSettingKeyValue += L(translationKey);
+        break;
       default:
         break;
     }
@@ -755,43 +807,27 @@ export class MainViewModel extends Observable {
     });
     this.previousLayout();
     // SAVE THE VALUE to local data for the setting user has selected
-    // TODO: update once we have new settings
-    /*
     this.settings.copy(this.tempSettings);
-    this.switchControlSettings.copy(this.tempSwitchControlSettings);
-    */
     this.saveSettings();
     // now update any display that needs settings:
     this.updateSettingsDisplay();
+    /*
     // warning / indication to the user that they've updated their settings
     alert({
       title: L('warnings.saved-settings.title'),
       message: L('warnings.saved-settings.message'),
       okButtonText: L('buttons.ok')
     });
+    */
   }
 
   onIncreaseSettingsTap() {
-    // TODO: update once we have new settings
-    /*
     this.tempSettings.increase(this.activeSettingToChange);
-    this.tempSwitchControlSettings.increase(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    */
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap() {
-    // TODO: update once we have new settings
-    /*
     this.tempSettings.decrease(this.activeSettingToChange);
-    this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    */
     this.updateSettingsChangeDisplay();
   }
 
@@ -806,41 +842,22 @@ export class MainViewModel extends Observable {
    * user / Profile / Settings saving / loading
    */
   loadSettings() {
-    /*
     this.settings.copy(
-      LS.getItem('com.permobil.pushtracker.wearos.smartdrive.settings')
-    );
-    this.switchControlSettings.copy(
-      LS.getItem(
-        'com.permobil.pushtracker.wearos.smartdrive.switch-control-settings'
-      )
+      LS.getItem('com.permobil.pushtracker.wearos.profile.settings')
     );
     this.hasSentSettings =
-      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
-    this.disableWearCheck =
-      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
-    */
+      appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
   }
 
   saveSettings() {
-    /*
     appSettings.setBoolean(
-      DataKeys.SD_SETTINGS_DIRTY_FLAG,
+      DataKeys.PROFILE_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings
     );
-    appSettings.setBoolean(
-      DataKeys.REQUIRE_WATCH_BEING_WORN,
-      this.disableWearCheck
-    );
     LS.setItemObject(
-      'com.permobil.pushtracker.wearos.smartdrive.settings',
+      'com.permobil.pushtracker.wearos.profile.settings',
       this.settings.toObj()
     );
-    LS.setItemObject(
-      'com.permobil.pushtracker.wearos.smartdrive.switch-control-settings',
-      this.switchControlSettings.toObj()
-    );
-    */
   }
 
   /*
