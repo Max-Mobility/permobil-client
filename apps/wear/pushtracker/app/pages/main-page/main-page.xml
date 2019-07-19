@@ -40,7 +40,7 @@
                 <StackLayout col="0">
                   // distance
                   <Label class="center-label-base ionicon distance-goal-color compact fs34"
-                         text="&#xf3d1;" />
+                         text="&#xf125;" />
                   <Label textWrap="true"
                          class="center-label-base compact fs26 bold"
                          text="{{ distanceGoalCurrentValueDisplay }}" />
@@ -51,7 +51,7 @@
                 <StackLayout col="1">
                   // coast
                   <Label class="center-label-base ionicon coast-goal-color compact fs34"
-                         text="&#xf3d1; &#xf3d1;" />
+                         text="&#xf125; &#xf125;" />
                   <Label textWrap="true"
                          class="center-label-base compact fs26 bold"
                          text="{{ coastGoalCurrentValueDisplay }}" />
