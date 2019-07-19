@@ -83,7 +83,7 @@
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}"
                    row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
-            // Battery Usage Bar Chart
+            // Distance Usage Bar Chart
             <Repeater row="2" colSpan="2" verticalAlignment="bottom"
                       items="{{ distanceChartData }}">
               <Repeater.itemsLayout>
@@ -91,7 +91,7 @@
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <StackLayout class="chart-stack">
-                  <Label height="{{ value }}" class="battery-line" />
+                  <Label height="{{ value }}" class="distance-line" />
                   <Label text="{{ day }}" class="line-label" />
                 </StackLayout>
               </Repeater.itemTemplate>
