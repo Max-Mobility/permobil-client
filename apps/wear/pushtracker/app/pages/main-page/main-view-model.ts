@@ -212,7 +212,7 @@ export class MainViewModel extends Observable {
     console.time('Sentry_Init');
     // init sentry - DNS key for permobil-wear Sentry project
     Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1485857'
     );
     console.timeEnd('Sentry_Init');
     this._sentryBreadCrumb('Sentry has been initialized.');
