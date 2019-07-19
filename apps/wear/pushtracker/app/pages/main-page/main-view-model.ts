@@ -986,7 +986,14 @@ export class MainViewModel extends Observable {
   getActivityInfoFromDatabase(numDays: number) {
     const dates = ActivityData.Info.getPastDates(numDays);
     const activityInfo = dates.map(d => {
-      return ActivityData.Info.newInfo(null, d, 0, 0, 0);
+      if (debug) {
+        const pushes = Math.random() * 3000 + 1000;
+        const coast = Math.random() * 10.0 + 0.5;
+        const distance = Math.random() * 5.0 + 1.0;
+        return ActivityData.Info.newInfo(null, d, pushes, coast, distance);
+      } else {
+        return ActivityData.Info.newInfo(null, d, 0, 0, 0);
+      }
     });
     return this.getRecentInfoFromDatabase(6)
       .then(objs => {
