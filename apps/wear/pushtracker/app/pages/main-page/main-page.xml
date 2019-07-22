@@ -35,42 +35,45 @@
                               animated="true" animateFrom="0" clockwise="true"
                               rimWidth="2" barWidth="8"
                               progress="{{ coastGoalCurrentProgress }}">
-            <GridLayout rows="15, *, auto, 15" columns="30, *, 30">
-              <GridLayout rows="*" columns="*, *" row="1" col="1" marginTop="10">
-                <StackLayout col="0">
-                  // distance
-                  <Label class="center-label-base ionicon distance-goal-color compact fs34"
-                         text="&#xf125;" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs26 bold"
-                         text="{{ distanceGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs14"
-                         text="{{ distanceUnits }}" />
-                </StackLayout>
-                <StackLayout col="1">
-                  // coast
-                  <Label class="center-label-base ionicon coast-goal-color compact fs34"
-                         text="&#xf125; &#xf125;" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs26 bold"
-                         text="{{ coastGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs14"
-                         text="{{ L('goals.coast.units') }}" />
-                </StackLayout>
-              </GridLayout>
-              <StackLayout row="2" col="1" verticalAlignment="bottom">
-                // pushes
+          </nac:AnimatedCircle>
+          <GridLayout
+              rowSpan="3" colSpan="3"
+              width="90%" height="90%"
+              rows="15, *, auto, 15" columns="30, *, 30">
+            <GridLayout rows="*" columns="*, *" row="1" col="1" marginTop="10">
+              <StackLayout col="0">
+                // distance
+                <Label class="center-label-base ionicon distance-goal-color compact fs34"
+                       text="&#xf125;" />
                 <Label textWrap="true"
-                       class="center-label-base compact fs18 bold"
-                       text="{{ currentPushCountDisplay }}" />
+                       class="center-label-base compact fs26 bold"
+                       text="{{ distanceGoalCurrentValueDisplay }}" />
                 <Label textWrap="true"
                        class="center-label-base compact fs14"
-                       text="{{ L('pushes.units') }}" />
+                       text="{{ distanceUnits }}" />
+              </StackLayout>
+              <StackLayout col="1">
+                // coast
+                <Label class="center-label-base ionicon coast-goal-color compact fs34"
+                       text="&#xf125; &#xf125;" />
+                <Label textWrap="true"
+                       class="center-label-base compact fs26 bold"
+                       text="{{ coastGoalCurrentValueDisplay }}" />
+                <Label textWrap="true"
+                       class="center-label-base compact fs14"
+                       text="{{ L('goals.coast.units') }}" />
               </StackLayout>
             </GridLayout>
-          </nac:AnimatedCircle>
+            <StackLayout row="2" col="1" verticalAlignment="bottom">
+              // pushes
+              <Label textWrap="true"
+                     class="center-label-base compact fs18 bold"
+                     text="{{ currentPushCountDisplay }}" />
+              <Label textWrap="true"
+                     class="center-label-base compact fs14"
+                     text="{{ L('pushes.units') }}" />
+            </StackLayout>
+          </GridLayout>
         </GridLayout>
       </pager:PagerItem>
 
