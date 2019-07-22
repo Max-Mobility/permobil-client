@@ -323,15 +323,20 @@
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onUpdatesLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.updates, enabledLayout.updates ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
           height="100%" width="100%" disableInsetConstraint="true">
-        // SmartDrive Update Progress Circle
-        <nac:AnimatedCircle id="updateProgressCircle"
-                            loaded="{{ onUpdateProgressCircleLoaded }}"
-                            class="updateProgressCircle"
-                            width="100%" height="100%"
-                            animated="true" animateFrom="0" clockwise="true"
-                            rimWidth="2" barWidth="8"
-                            progress="{{ smartDriveOtaProgress }}">
+        <GridLayout rows="*" columns="*" height="100%" width="100%">
+          // SmartDrive Update Progress Circle
+          <nac:AnimatedCircle id="updateProgressCircle"
+                              row="1" col="1"
+                              loaded="{{ onUpdateProgressCircleLoaded }}"
+                              class="updateProgressCircle"
+                              width="100%" height="100%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8"
+                              progress="{{ smartDriveOtaProgress }}">
+          </nac:AnimatedCircle>
           <GridLayout
+              row="1" col="1"
+              width="95%" height="95%"
               rows="15, auto, auto, *, auto, auto, 15"
               columns="30, *, 30"
               class="circleDetails">
@@ -362,7 +367,7 @@
             <Label row="5" col="1" class="currentTimeMeridiem"
                    text="{{ currentTimeMeridiem }}" textWrap="true" />
           </GridLayout>
-        </nac:AnimatedCircle>
+        </GridLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
@@ -370,14 +375,19 @@
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onScanningLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.scanning, enabledLayout.scanning ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
           height="100%" width="100%" disableInsetConstraint="true">
-        // SmartDrive Update Progress Circle
-        <nac:AnimatedCircle id="scanningProgressCircle"
-                            loaded="{{ onScanningProgressCircleLoaded }}"
-                            class="updateProgressCircle"
-                            width="100%" height="100%"
-                            animated="true" animateFrom="0" clockwise="true"
-                            rimWidth="2" barWidth="8">
+        <GridLayout rows="*" columns="*" height="100%" width="100%">
+          // SmartDrive Update Progress Circle
+          <nac:AnimatedCircle id="scanningProgressCircle"
+                              row="1" col="1"
+                              loaded="{{ onScanningProgressCircleLoaded }}"
+                              class="updateProgressCircle"
+                              width="100%" height="100%"
+                              animated="true" animateFrom="0" clockwise="true"
+                              rimWidth="2" barWidth="8">
+          </nac:AnimatedCircle>
           <GridLayout
+              row="1" col="1"
+              width="95%" height="95%"
               rows="15, auto, auto, *, auto, auto, 15"
               columns="30, *, 30"
               class="circleDetails">
@@ -390,7 +400,7 @@
             <Label row="5" col="1" class="currentTimeMeridiem"
                    text="{{ currentTimeMeridiem }}" textWrap="true" />
           </GridLayout>
-        </nac:AnimatedCircle>
+        </GridLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
