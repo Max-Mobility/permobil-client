@@ -21,6 +21,9 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <!-- https://developer.android.com/training/wearables/apps/always-on#ambient-mode-class -->
   <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.BODY_SENSORS" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
   <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
 
@@ -40,6 +43,20 @@
         app to run.
     -->
     <meta-data android:name="com.google.android.wearable.standalone" android:value="true"/>
+
+    <service
+        android:name="com.permobil.pushtracker.wearos.ActivityService"
+        android:enabled="true"
+        android:exported="false"
+        android:permission="android.permission.BIND_JOB_SERVICE" />
+
+    <receiver
+        android:name="com.permobil.pushtracker.wearos.BootReceiver"
+        android:enabled="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
 
     <!-- for main activity -->
     <activity
