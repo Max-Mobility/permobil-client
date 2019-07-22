@@ -9,38 +9,64 @@ function _exists(o, k): boolean {
 export class SqliteService {
   static DatabaseName: string = 'com.permobil.smartdrive.wearos';
 
+  private _db: any = null;
+
   public getDatabase() {
     return new Sqlite(SqliteService.DatabaseName, {
       multithreading: true
     });
   }
 
+  get db() {
+    try {
+      if (this._db) {
+        return Promise.resolve(this._db);
+      } else {
+        return new Sqlite(SqliteService.DatabaseName, {
+          multithreading: true
+        }).then((db: any) => {
+          this._db = db;
+          return this._db;
+        });
+      }
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   public closeDatabase() {
-    return new Sqlite(SqliteService.DatabaseName, {
-      multithreading: true
-    }).then(db => {
-      db.close();
-    });
+    this.db
+      .then((db: any) => {
+        db.close();
+      })
+      .catch((err) => {
+        console.error('could not close db:', err);
+      });
   }
 
   public makeTable(tableName: string, idName: string, keys: any[]) {
     const keyString = keys.map(k => {
       return `${k.name} ${k.type}`;
     });
-    return this.getDatabase().then(db => {
-      const dbCreationString =
-        `CREATE TABLE IF NOT EXISTS ${tableName} ` +
-        `(${idName} INTEGER PRIMARY KEY AUTOINCREMENT, ` +
-        `${keyString.join(', ')})`;
-      return db.execSQL(dbCreationString).then(ret => {
-        db.close();
-        return ret;
+    return this.db
+      .then(db => {
+        const dbCreationString =
+          `CREATE TABLE IF NOT EXISTS ${tableName} ` +
+          `(${idName} INTEGER PRIMARY KEY AUTOINCREMENT, ` +
+          `${keyString.join(', ')})`;
+        return db.execSQL(dbCreationString);
+      })
+      .catch((err) => {
+        const msg =
+          'Could not make table: ' +
+          tableName + ': error - ' + err;
+        console.error(msg);
+        return Promise.reject(msg);
       });
-    });
   }
 
   public insertIntoTable(tableName: string, obj: any) {
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       const objKeyNames = Object.keys(obj);
       const values = objKeyNames.map(key => obj[key]);
       const objValues = new Array(objKeyNames.length).fill('?');
@@ -48,10 +74,7 @@ export class SqliteService {
         `insert into ${tableName} ` +
         `(${objKeyNames.join(',')}) values ` +
         `(${objValues.join(',')})`;
-      return db.execSQL(dbInsertString, values).then(ret => {
-        db.close();
-        return ret;
-      });
+      return db.execSQL(dbInsertString, values);
     });
   }
 
@@ -69,7 +92,7 @@ export class SqliteService {
      *     ...
      *   }
      */
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       const parameters = [];
       const setsStrings = Object.keys(sets);
       const setValues = setsStrings.map(s => {
@@ -88,10 +111,7 @@ export class SqliteService {
         `UPDATE ${tableName} ` +
         `SET ${setValues.join(', ')} ` +
         `WHERE ${queryStrings.join(' and ')}`;
-      return db.execSQL(dbUpdateString, parameters).then(ret => {
-        db.close();
-        return ret;
-      });
+      return db.execSQL(dbUpdateString, parameters);
     });
   }
 
@@ -103,7 +123,7 @@ export class SqliteService {
      *     ...
      *   }
      */
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       const parameters = [];
       const queryStrings = Object.keys(queries).map(q => {
         if (_exists(queries, q)) {
@@ -113,21 +133,14 @@ export class SqliteService {
       });
       const dbDeleteString =
         `DELETE FROM ${tableName} ` + `WHERE ${queryStrings.join(' and ')}`;
-      return db.execSQL(dbDeleteString, parameters).then(ret => {
-        db.close();
-        return ret;
-      });
+      return db.execSQL(dbDeleteString, parameters);
     });
   }
 
   public getLast(tableName: string, idName: string) {
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       return db
-        .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`)
-        .then(ret => {
-          db.close();
-          return ret;
-        });
+        .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`);
     });
   }
 
@@ -144,7 +157,7 @@ export class SqliteService {
      *     ...
      *   }
      */
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       const tableName = args.tableName;
       const queries = args.queries;
       const orderBy = args.orderBy;
@@ -169,10 +182,7 @@ export class SqliteService {
           dbGetString += ' DESC';
         }
       }
-      return db.get(dbGetString, parameters).then(ret => {
-        db.close();
-        return ret;
-      });
+      return db.get(dbGetString, parameters);
     });
   }
 
@@ -191,7 +201,7 @@ export class SqliteService {
      *     ...
      *   }
      */
-    return this.getDatabase().then(db => {
+    return this.db.then(db => {
       const tableName = args.tableName;
       const queries = args.queries;
       const orderBy = args.orderBy;
@@ -224,21 +234,15 @@ export class SqliteService {
       if (orderBy && offset) {
         dbGetString += ` OFFSET ${offset}`;
       }
-      return db.all(dbGetString, parameters).then(ret => {
-        db.close();
-        return ret;
-      });
+      return db.all(dbGetString, parameters);
     });
   }
 
   public getSum(tableName: string, columnName: string) {
-    return this.getDatabase()
+    return this.db
       .then(db => {
         const dbString = `SELECT SUM(${columnName}) as Total FROM ${tableName}`;
-        return db.execSQL(dbString).then(ret => {
-          db.close();
-          return ret;
-        });
+        return db.execSQL(dbString);
       })
       .then(row => {
         return row && row[0];
