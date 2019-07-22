@@ -312,7 +312,7 @@ export class MainViewModel extends Observable {
                         console.error('could not start activity service:', err);
                         reject();
                     }
-                })
+                });
             })
             .catch((err) => {
                 setTimeout(this.startActivityService.bind(this), 5000);
