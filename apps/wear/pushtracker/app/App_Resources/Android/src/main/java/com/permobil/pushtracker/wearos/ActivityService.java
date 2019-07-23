@@ -304,17 +304,12 @@ public class ActivityService extends Service {
     if (isServiceRunning) return;
     isServiceRunning = true;
 
-    Intent notificationIntent = new Intent(
-                                           getApplicationContext(),
-                                           MainActivity.class
-                                           );
-    /*
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
                                     getApplicationContext(),
                                     "com.permobil.pushtracker.MainActivity"
                                     );
-    */
+
     // A string containing the action name
     notificationIntent.setAction(Constants.ACTION_START_SERVICE);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
