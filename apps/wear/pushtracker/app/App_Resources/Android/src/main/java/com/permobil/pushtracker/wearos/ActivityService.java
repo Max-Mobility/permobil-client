@@ -65,6 +65,7 @@ public class ActivityService extends Service {
   private SensorEventListener mListener;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
+  private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
 
   // activity detection
@@ -257,6 +258,8 @@ public class ActivityService extends Service {
     if (mSensorManager != null && mListener != null) {
       if (mLinearAcceleration != null)
         mSensorManager.unregisterListener(mListener, mLinearAcceleration);
+      if (mHeartRate != null)
+        mSensorManager.unregisterListener(mListener, mHeartRate);
       if (mOffBodyDetect != null)
         mSensorManager.unregisterListener(mListener, mOffBodyDetect);
     } else {
@@ -275,6 +278,10 @@ public class ActivityService extends Service {
       mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
       if (mLinearAcceleration != null)
         mSensorManager.registerListener(mListener, mLinearAcceleration, delay, reportingLatency);
+
+      mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+      if (mHeartRate != null)
+        mSensorManager.registerListener(mListener, mHeartRate, delay, reportingLatency);
 
       mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
       if (mOffBodyDetect != null)
@@ -297,12 +304,17 @@ public class ActivityService extends Service {
     if (isServiceRunning) return;
     isServiceRunning = true;
 
-    //Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+    Intent notificationIntent = new Intent(
+                                           getApplicationContext(),
+                                           MainActivity.class
+                                           );
+    /*
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
                                     getApplicationContext(),
                                     "com.permobil.pushtracker.MainActivity"
                                     );
+    */
     // A string containing the action name
     notificationIntent.setAction(Constants.ACTION_START_SERVICE);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
