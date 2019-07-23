@@ -7,7 +7,7 @@ function _exists(o, k): boolean {
 
 @Injectable()
 export class SqliteService {
-  static DatabaseName: string = 'com.permobil.smartdrive.wearos';
+  static DatabaseName: string = 'PushTrackerDatabase';
 
   private _db: any = null;
 

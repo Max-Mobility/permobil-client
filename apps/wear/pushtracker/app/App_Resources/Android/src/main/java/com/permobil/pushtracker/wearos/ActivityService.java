@@ -32,8 +32,6 @@ import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
 
-import org.tensorflow.lite.Interpreter;
-
 import android.app.Notification.Builder;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -73,11 +71,8 @@ public class ActivityService extends Service {
   public boolean watchBeingWorn = false;
   public boolean isServiceRunning = false;
 
-  // tflite related data
-  private Interpreter tflite;
-  private MappedByteBuffer tfliteModel;
-  private static final String ACTIVITY_DETECTOR_MODEL_FILENAME = "activityDetectorLSTM.tflite";
-  private static final int ACTIVITY_LOCKOUT_TIME_MS = 200;
+  private ActivityDetector activityDetector;
+  private DatabaseHandler databaseHandler;
 
   public boolean isDebuggable = false;
 
