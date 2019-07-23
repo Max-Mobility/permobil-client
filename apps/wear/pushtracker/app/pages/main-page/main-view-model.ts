@@ -28,9 +28,8 @@ import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
-import { ActivityDetector } from '../../models';
 import { ActivityData, Profile } from '../../namespaces';
-import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
+import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -87,11 +86,6 @@ export class MainViewModel extends Observable {
     /**
      * Activity Related Data
      */
-    activityDetector: ActivityDetector = null;
-    // Sensor listener config:
-    SENSOR_DELAY_US: number = 40 * 1000;
-    MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
-
     @Prop() currentPushCount: number = debug ? Math.random() * 10000 : 0;
     @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
     @Prop() currentHighStressActivityCount: number = 0;
@@ -104,7 +98,6 @@ export class MainViewModel extends Observable {
 
     // state variables
     @Prop() isAmbient: boolean = false;
-    @Prop() watchBeingWorn: boolean = false;
     @Prop() disableWearCheck: boolean = false;
 
     /**
@@ -119,10 +112,10 @@ export class MainViewModel extends Observable {
         settings: false
     };
     @Prop() enabledLayout = fromObject(this.layouts);
-    private _settingsLayout: SwipeDismissLayout;
-    private _profileLayout: SwipeDismissLayout;
-    private _changeSettingsLayout: SwipeDismissLayout;
-    private _aboutLayout: SwipeDismissLayout;
+    private settingsLayout: SwipeDismissLayout;
+    private profileLayout: SwipeDismissLayout;
+    private changeSettingsLayout: SwipeDismissLayout;
+    private aboutLayout: SwipeDismissLayout;
     private settingsScrollView: ScrollView;
     private profileScrollView: ScrollView;
     private aboutScrollView: ScrollView;
@@ -147,7 +140,7 @@ export class MainViewModel extends Observable {
     @Prop() coastChartMaxValue: string;
 
     // used to update the chart display when the date changes
-    private _lastChartDay = null;
+    private lastChartDay = null;
 
     /**
      * Information for About page
@@ -165,10 +158,9 @@ export class MainViewModel extends Observable {
      * User interaction objects
      */
     private pager: Pager;
-    private _bluetoothService: BluetoothService;
-    private _sensorService: SensorService;
-    private _sqliteService: SqliteService;
-    private _kinveyService: KinveyService;
+    private bluetoothService: BluetoothService;
+    private sqliteService: SqliteService;
+    private kinveyService: KinveyService;
 
 
     // permissions for the app
@@ -179,11 +171,11 @@ export class MainViewModel extends Observable {
 
     constructor() {
         super();
-        this._sentryBreadCrumb('Main-View-Model constructor.');
+        this.sentryBreadCrumb('Main-View-Model constructor.');
         // handle application lifecycle events
-        this._sentryBreadCrumb('Registering app event handlers.');
+        this.sentryBreadCrumb('Registering app event handlers.');
         this.registerAppEventHandlers();
-        this._sentryBreadCrumb('App event handlers registered.');
+        this.sentryBreadCrumb('App event handlers registered.');
         // determine inset padding
         const androidConfig = ad
             .getApplicationContext()
@@ -206,24 +198,23 @@ export class MainViewModel extends Observable {
     }
 
     async init() {
-        this._sentryBreadCrumb('Main-View-Model init.');
+        this.sentryBreadCrumb('Main-View-Model init.');
 
-        this._sentryBreadCrumb('Initializing Sentry...');
+        this.sentryBreadCrumb('Initializing Sentry...');
         console.time('Sentry_Init');
         // init sentry - DNS key for permobil-wear Sentry project
         Sentry.init(
             'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1485857'
         );
         console.timeEnd('Sentry_Init');
-        this._sentryBreadCrumb('Sentry has been initialized.');
+        this.sentryBreadCrumb('Sentry has been initialized.');
 
-        this._sentryBreadCrumb('Creating services...');
+        this.sentryBreadCrumb('Creating services...');
         const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
-        this._bluetoothService = injector.get(BluetoothService);
-        this._sensorService = injector.get(SensorService);
-        this._sqliteService = injector.get(SqliteService);
-        this._kinveyService = injector.get(KinveyService);
-        this._sentryBreadCrumb('All Services created.');
+        this.bluetoothService = injector.get(BluetoothService);
+        this.sqliteService = injector.get(SqliteService);
+        this.kinveyService = injector.get(KinveyService);
+        this.sentryBreadCrumb('All Services created.');
 
         // initialize data storage for usage, errors, settings
         this.initSqliteTables();
@@ -232,7 +223,7 @@ export class MainViewModel extends Observable {
         const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
         if (savedSerial && savedSerial.length) {
             this.watchSerialNumber = savedSerial;
-            this._kinveyService.watch_serial_number = this.watchSerialNumber;
+            this.kinveyService.watch_serial_number = this.watchSerialNumber;
         }
         const packageManager = application.android.context.getPackageManager();
         const packageInfo = packageManager.getPackageInfo(
@@ -243,39 +234,24 @@ export class MainViewModel extends Observable {
         const versionCode = packageInfo.versionCode;
         this.appVersion = versionName;
 
-        // Activity detection related code:
-        this._sensorService.on(
-            SensorService.SensorChanged,
-            this.handleSensorData.bind(this)
-        );
-        this._sentryBreadCrumb('Creating new ActivityDetector');
-        console.time('new_activity_detector');
-        this.activityDetector = new ActivityDetector();
-        console.timeEnd('new_activity_detector');
-        this._sentryBreadCrumb('New ActivityDetector created.');
-
-        this._sentryBreadCrumb('Enabling body sensor.');
-        this.enableBodySensor();
-        this._sentryBreadCrumb('Body sensor enabled.');
-
         // load settings from memory
-        this._sentryBreadCrumb('Loading settings.');
+        this.sentryBreadCrumb('Loading settings.');
         this.loadSettings();
-        this._sentryBreadCrumb('Settings loaded.');
+        this.sentryBreadCrumb('Settings loaded.');
 
-        this._sentryBreadCrumb('Updating display.');
+        this.sentryBreadCrumb('Updating display.');
         this.updateDisplay();
-        this._sentryBreadCrumb('Display updated.');
+        this.sentryBreadCrumb('Display updated.');
 
         setTimeout(this.startActivityService.bind(this), 5000);
     }
 
     async initSqliteTables() {
-        this._sentryBreadCrumb('Initializing SQLite...');
+        this.sentryBreadCrumb('Initializing SQLite...');
         console.time('SQLite_Init');
         // create / load tables for activity data
         const sqlitePromises = [
-            this._sqliteService.makeTable(
+            this.sqliteService.makeTable(
                 ActivityData.Info.TableName,
                 ActivityData.Info.IdName,
                 ActivityData.Info.Fields
@@ -284,7 +260,7 @@ export class MainViewModel extends Observable {
         return Promise.all(sqlitePromises)
             .then(() => {
                 console.timeEnd('SQLite_Init');
-                this._sentryBreadCrumb('SQLite has been initialized.');
+                this.sentryBreadCrumb('SQLite has been initialized.');
             })
             .catch(err => {
                 Sentry.captureException(err);
@@ -297,7 +273,7 @@ export class MainViewModel extends Observable {
             .askForPermissions()
             .then(() => {
                 return new Promise((resolve, reject) => {
-                    this._sentryBreadCrumb('Starting Activity Service.');
+                    this.sentryBreadCrumb('Starting Activity Service.');
                     console.log('Starting activity service!');
                     try {
                         const i = new android.content.Intent();
@@ -306,7 +282,7 @@ export class MainViewModel extends Observable {
                         i.setAction('ACTION_START_SERVICE');
                         context.startService(i);
                         console.log('Started activity service!');
-                        this._sentryBreadCrumb('Activity Service started.');
+                        this.sentryBreadCrumb('Activity Service started.');
                         resolve();
                     } catch (err) {
                         console.error('could not start activity service:', err);
@@ -348,7 +324,7 @@ export class MainViewModel extends Observable {
                         DataKeys.WATCH_SERIAL_NUMBER,
                         this.watchSerialNumber
                     );
-                    this._kinveyService.watch_serial_number = this.watchSerialNumber;
+                    this.kinveyService.watch_serial_number = this.watchSerialNumber;
                     // and return true letting the caller know we got the permissions
                     return true;
                 })
@@ -390,7 +366,7 @@ export class MainViewModel extends Observable {
     }
 
     async onMainPageLoaded(args: any) {
-        this._sentryBreadCrumb('onMainPageLoaded');
+        this.sentryBreadCrumb('onMainPageLoaded');
         // now init the ui
         try {
             await this.init();
@@ -413,7 +389,7 @@ export class MainViewModel extends Observable {
 
     applyTheme(theme?: string) {
         // apply theme
-        this._sentryBreadCrumb('applying theme');
+        this.sentryBreadCrumb('applying theme');
         try {
             if (theme === 'ambient' || this.isAmbient) {
                 themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
@@ -424,12 +400,12 @@ export class MainViewModel extends Observable {
             Sentry.captureException(err);
             Log.E('apply theme error:', err);
         }
-        this._sentryBreadCrumb('theme applied');
+        this.sentryBreadCrumb('theme applied');
         this.applyStyle();
     }
 
     applyStyle() {
-        this._sentryBreadCrumb('applying style');
+        this.sentryBreadCrumb('applying style');
         try {
             if (this.pager) {
                 try {
@@ -447,7 +423,7 @@ export class MainViewModel extends Observable {
             Sentry.captureException(err);
             Log.E('apply style error:', err);
         }
-        this._sentryBreadCrumb('style applied');
+        this.sentryBreadCrumb('style applied');
     }
 
     /**
@@ -468,7 +444,7 @@ export class MainViewModel extends Observable {
     }
 
     onEnterAmbient() {
-        this._sentryBreadCrumb('*** enterAmbient ***');
+        this.sentryBreadCrumb('*** enterAmbient ***');
         this.isAmbient = true;
         Log.D('*** enterAmbient ***');
         this.applyTheme();
@@ -479,14 +455,14 @@ export class MainViewModel extends Observable {
     }
 
     onExitAmbient() {
-        this._sentryBreadCrumb('*** exitAmbient ***');
+        this.sentryBreadCrumb('*** exitAmbient ***');
         this.isAmbient = false;
         Log.D('*** exitAmbient ***');
         this.applyTheme();
     }
 
     onAppLowMemory(args?: any) {
-        this._sentryBreadCrumb('*** appLowMemory ***');
+        this.sentryBreadCrumb('*** appLowMemory ***');
         Log.D('App low memory', args.android);
     }
 
@@ -501,7 +477,7 @@ export class MainViewModel extends Observable {
         Log.D('App uncaught error');
     }
 
-    _format(d: Date, fmt: string) {
+    format(d: Date, fmt: string) {
         return format(d, fmt, {
             locale: dateLocales[getDefaultLang()] || dateLocales['en']
         });
@@ -541,82 +517,6 @@ export class MainViewModel extends Observable {
     onPagerLoaded(args: any) { }
 
     /**
-     * Sensor Data Handlers
-     */
-    handleSensorData(args: SensorChangedEventData) {
-        // if we're using litedata for android sensor plugin option
-        // the data structure is simplified to reduce redundant data
-        const parsedData = args.data;
-
-        if (
-            parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
-        ) {
-            this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-        }
-
-        if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
-            this.handleAccel(parsedData.d, parsedData.ts);
-        }
-    }
-
-    handleAccel(acceleration: any, timestamp: number) {
-        // now run the activity detector
-        const detectedActivity = this.activityDetector.detectActivity(
-            acceleration,
-            timestamp
-        );
-    }
-
-    /**
-     * Sensor Management
-     */
-    enableBodySensor() {
-        try {
-            this._sensorService.startDeviceSensor(
-                android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
-                this.SENSOR_DELAY_US,
-                this.MAX_REPORTING_INTERVAL_US
-            );
-        } catch (err) {
-            Sentry.captureException(err);
-            // Log.E('Error starting the body sensor', err);
-        }
-    }
-
-    enableTapSensor() {
-        try {
-            this._sensorService.startDeviceSensor(
-                android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
-                this.SENSOR_DELAY_US,
-                this.MAX_REPORTING_INTERVAL_US
-            );
-        } catch (err) {
-            Sentry.captureException(err);
-            // Log.E('Error starting the tap sensor', err);
-        }
-    }
-
-    disableAllSensors() {
-        try {
-            this._sensorService.stopAllDeviceSensors();
-        } catch (err) {
-            Sentry.captureException(err);
-            // Log.E('Error disabling the device sensors:', err);
-        }
-    }
-
-    disableTapSensor() {
-        try {
-            this._sensorService.stopDeviceSensor(
-                android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
-            );
-        } catch (err) {
-            Sentry.captureException(err);
-            // Log.E('Error disabling the device sensors:', err);
-        }
-    }
-
-    /**
      * Main Menu Button Tap Handlers
      */
     onAboutTap() {
@@ -624,7 +524,7 @@ export class MainViewModel extends Observable {
             // reset to to the top when entering the page
             this.aboutScrollView.scrollToVerticalOffset(0, true);
         }
-        showOffScreenLayout(this._aboutLayout);
+        showOffScreenLayout(this.aboutLayout);
         this.enableLayout('about');
     }
 
@@ -632,38 +532,38 @@ export class MainViewModel extends Observable {
      * Setings page handlers
      */
     onSettingsLayoutLoaded(args) {
-        this._settingsLayout = args.object as SwipeDismissLayout;
-        this.settingsScrollView = this._settingsLayout.getViewById(
+        this.settingsLayout = args.object as SwipeDismissLayout;
+        this.settingsScrollView = this.settingsLayout.getViewById(
             'settingsScrollView'
         ) as ScrollView;
-        this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+        this.settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
             // hide the offscreen layout when dismissed
-            hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
+            hideOffScreenLayout(this.settingsLayout, { x: 500, y: 0 });
             this.previousLayout();
         });
     }
 
     onProfileLayoutLoaded(args) {
-        this._profileLayout = args.object as SwipeDismissLayout;
-        this.profileScrollView = this._profileLayout.getViewById(
+        this.profileLayout = args.object as SwipeDismissLayout;
+        this.profileScrollView = this.profileLayout.getViewById(
             'profileScrollView'
         ) as ScrollView;
-        this._profileLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+        this.profileLayout.on(SwipeDismissLayout.dimissedEvent, args => {
             // hide the offscreen layout when dismissed
-            hideOffScreenLayout(this._profileLayout, { x: 500, y: 0 });
+            hideOffScreenLayout(this.profileLayout, { x: 500, y: 0 });
             this.previousLayout();
         });
     }
 
     onAboutLayoutLoaded(args) {
         // show the chart
-        this._aboutLayout = args.object as SwipeDismissLayout;
-        this.aboutScrollView = this._aboutLayout.getViewById(
+        this.aboutLayout = args.object as SwipeDismissLayout;
+        this.aboutScrollView = this.aboutLayout.getViewById(
             'aboutScrollView'
         ) as ScrollView;
-        this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+        this.aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
             // hide the offscreen layout when dismissed
-            hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
+            hideOffScreenLayout(this.aboutLayout, { x: 500, y: 0 });
             this.previousLayout();
         });
     }
@@ -677,7 +577,7 @@ export class MainViewModel extends Observable {
                 const oldest = activityData[0];
                 const newest = last(activityData);
                 // keep track of the most recent day so we know when to update
-                this._lastChartDay = new Date(newest.date);
+                this.lastChartDay = new Date(newest.date);
                 // remove the oldest so it's not displayed - we only use it
                 // to track distance differences
                 activityData = activityData.slice(1);
@@ -687,7 +587,7 @@ export class MainViewModel extends Observable {
                 }, 0);
                 const coastData = activityData.map(e => {
                     return {
-                        day: this._format(new Date(e.date), 'dd'),
+                        day: this.format(new Date(e.date), 'dd'),
                         value: (e.coast * 100.0) / maxCoast
                     };
                 });
@@ -699,7 +599,7 @@ export class MainViewModel extends Observable {
                 const distanceData = activityData.map(e => {
                     const dist = e[ActivityData.Info.DistanceName];
                     return {
-                        day: this._format(new Date(e.date), 'dd'),
+                        day: this.format(new Date(e.date), 'dd'),
                         value: dist
                     };
                 });
@@ -725,7 +625,7 @@ export class MainViewModel extends Observable {
             // reset to to the top when entering the page
             this.settingsScrollView.scrollToVerticalOffset(0, true);
         }
-        showOffScreenLayout(this._settingsLayout);
+        showOffScreenLayout(this.settingsLayout);
         this.enableLayout('settings');
     }
 
@@ -734,7 +634,7 @@ export class MainViewModel extends Observable {
             // reset to to the top when entering the page
             this.profileScrollView.scrollToVerticalOffset(0, true);
         }
-        showOffScreenLayout(this._profileLayout);
+        showOffScreenLayout(this.profileLayout);
         this.enableLayout('profile');
     }
 
@@ -757,7 +657,7 @@ export class MainViewModel extends Observable {
         this.changeSettingKeyString = L(translationKey);
         this.updateSettingsChangeDisplay();
 
-        showOffScreenLayout(this._changeSettingsLayout).then(() => {
+        showOffScreenLayout(this.changeSettingsLayout).then(() => {
             // TODO: this is a hack to force the layout to update for
             // showing the auto-size text view
             const prevVal = this.changeSettingKeyValue;
@@ -812,7 +712,7 @@ export class MainViewModel extends Observable {
     }
 
     onCancelChangesTap() {
-        hideOffScreenLayout(this._changeSettingsLayout, { x: 500, y: 0 });
+        hideOffScreenLayout(this.changeSettingsLayout, { x: 500, y: 0 });
         this.previousLayout();
     }
 
@@ -843,7 +743,7 @@ export class MainViewModel extends Observable {
     }
 
     onConfirmChangesTap() {
-        hideOffScreenLayout(this._changeSettingsLayout, {
+        hideOffScreenLayout(this.changeSettingsLayout, {
             x: 500,
             y: 0
         });
@@ -874,10 +774,10 @@ export class MainViewModel extends Observable {
     }
 
     onChangeSettingsLayoutLoaded(args) {
-        this._changeSettingsLayout = args.object as SwipeDismissLayout;
+        this.changeSettingsLayout = args.object as SwipeDismissLayout;
         // disabling swipeable to make it easier to tap the cancel button
         // without starting the swipe behavior
-        (this._changeSettingsLayout as any).swipeable = false;
+        (this.changeSettingsLayout as any).swipeable = false;
     }
 
     /**
@@ -933,7 +833,7 @@ export class MainViewModel extends Observable {
                             pushes,
                             coast
                         );
-                        return this._sqliteService.insertIntoTable(
+                        return this.sqliteService.insertIntoTable(
                             ActivityData.Info.TableName,
                             firstEntry
                         );
@@ -953,7 +853,7 @@ export class MainViewModel extends Observable {
                         pushes || u[ActivityData.Info.PushName];
                     const updatedCoast =
                         coast || u[ActivityData.Info.CoastName];
-                    return this._sqliteService.updateInTable(
+                    return this.sqliteService.updateInTable(
                         ActivityData.Info.TableName,
                         {
                             [ActivityData.Info.PushName]: updatedPushes,
@@ -967,7 +867,7 @@ export class MainViewModel extends Observable {
                     );
                 } else {
                     // this is the first record, so we create it
-                    return this._sqliteService.insertIntoTable(
+                    return this.sqliteService.insertIntoTable(
                         ActivityData.Info.TableName,
                         ActivityData.Info.newInfo(
                             undefined,
@@ -994,7 +894,7 @@ export class MainViewModel extends Observable {
     }
 
     getTodaysActivityInfoFromDatabase() {
-        return this._sqliteService
+        return this.sqliteService
             .getLast(ActivityData.Info.TableName, ActivityData.Info.IdName)
             .then(e => {
                 const date = new Date((e && e[1]) || null);
@@ -1047,7 +947,7 @@ export class MainViewModel extends Observable {
     }
 
     getRecentInfoFromDatabase(numRecentEntries: number) {
-        return this._sqliteService.getAll({
+        return this.sqliteService.getAll({
             tableName: ActivityData.Info.TableName,
             orderBy: ActivityData.Info.DateName,
             ascending: false,
@@ -1056,7 +956,7 @@ export class MainViewModel extends Observable {
     }
 
     getUnsentInfoFromDatabase(numEntries: number) {
-        return this._sqliteService.getAll({
+        return this.sqliteService.getAll({
             tableName: ActivityData.Info.TableName,
             queries: {
                 [ActivityData.Info.HasBeenSentName]: 0
@@ -1082,7 +982,7 @@ export class MainViewModel extends Observable {
                         i[ActivityData.Info.DateName] = new Date(
                             i[ActivityData.Info.DateName]
                         );
-                        return this._kinveyService.sendActivity(
+                        return this.kinveyService.sendActivity(
                             i,
                             i[ActivityData.Info.UuidName]
                         );
@@ -1096,7 +996,7 @@ export class MainViewModel extends Observable {
                         .map(r => r.content.toJSON())
                         .map(r => {
                             const id = r['_id'];
-                            return this._sqliteService.updateInTable(
+                            return this.sqliteService.updateInTable(
                                 ActivityData.Info.TableName,
                                 {
                                     [ActivityData.Info.HasBeenSentName]: 1
@@ -1115,7 +1015,7 @@ export class MainViewModel extends Observable {
             });
     }
 
-    private _sentryBreadCrumb(message: string) {
+    private sentryBreadCrumb(message: string) {
         Sentry.captureBreadcrumb({
             message,
             category: 'info',

@@ -10,11 +10,10 @@
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
       actionBarHidden="true">
-  <GridLayout rows="*, *" columns="*">
+  <GridLayout rows="*" columns="*">
 
     <pager:Pager id="pager" loaded="{{ onPagerLoaded }}" orientation="vertical"
                  height="100%" width="100%"
-                 col="0" row="0" rowSpan="2"
                  transformer="none" pagesCount="4" showNativePageIndicator="false"
                  visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
       // Goal Overview
@@ -158,8 +157,7 @@
     </pager:Pager>
 
     // Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
-                            loaded="{{ onSettingsLayoutLoaded }}"
+    <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}"
                             class="page" translateX="500"
                             visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
@@ -208,8 +206,7 @@
     </sdl:SwipeDismissLayout>
 
     // Edit Profile Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
-                            loaded="{{ onProfileLayoutLoaded }}"
+    <sdl:SwipeDismissLayout loaded="{{ onProfileLayoutLoaded }}"
                             class="page" translateX="500"
                             visibility="{{ enabledLayout.profile, enabledLayout.profile ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
@@ -252,7 +249,7 @@
     </sdl:SwipeDismissLayout>
 
     // Change Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" height="100%" width="100%"
+    <sdl:SwipeDismissLayout height="100%" width="100%"
                             id="changeSettingsPage"
                             loaded="{{ onChangeSettingsLayoutLoaded }}"
                             class="page" translateX="500"
@@ -296,8 +293,7 @@
     </sdl:SwipeDismissLayout>
 
     // About "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0"
-                            loaded="{{ onAboutLayoutLoaded }}"
+    <sdl:SwipeDismissLayout loaded="{{ onAboutLayoutLoaded }}"
                             class="page" translateX="500"
                             visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
