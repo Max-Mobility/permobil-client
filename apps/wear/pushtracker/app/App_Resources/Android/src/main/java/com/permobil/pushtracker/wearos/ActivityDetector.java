@@ -1,7 +1,8 @@
 package com.permobil.pushtracker.wearos;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -50,8 +51,8 @@ public class ActivityDetector {
    */
   private Interpreter tflite;
   private MappedByteBuffer tfliteModel;
-  private float[][] inputs;
-  private float[][] outputs;
+  private float[][] inputs = new float[2][];
+  private float[][] outputs = new float[2][];
 
   /**
    * Actual inputs / outputs for the TFLite model
@@ -82,11 +83,11 @@ public class ActivityDetector {
    *
    * @param activity The current Activity.
    */
-  public static ActivityDetector create(Activity activity) throws IOException {
-    return new ActivityDetector(activity);
+  public static ActivityDetector create(Context context) {
+    return new ActivityDetector(context);
   }
 
-  public ActivityDetector(Activity activity) throws IOException {
+  public ActivityDetector(Context context) {
     // initialize the memory for the states
     for (int i=0; i<StateSize; i++) {
       previousState[i] = 0.0f;
@@ -97,18 +98,22 @@ public class ActivityDetector {
     outputs[Output_StateIndex] = previousState;
     outputs[Output_PredictionIndex] = parsedPrediction;
     // load the model file
-    tfliteModel = loadModelFile(activity);
-    // create the tflite interpreter
-    Interpreter.Options tfliteOptions = new Interpreter.Options();
-    tfliteOptions.setNumThreads(1);
-    tflite = new Interpreter(tfliteModel, tfliteOptions);
+    try {
+      tfliteModel = loadModelFile(context);
+      // create the tflite interpreter
+      Interpreter.Options tfliteOptions = new Interpreter.Options();
+      tfliteOptions.setNumThreads(1);
+      tflite = new Interpreter(tfliteModel, tfliteOptions);
+    } catch (Exception e) {
+      Log.e("ActivityDetector", "Initialization exception: " + e);
+    }
   }
 
   /**
    * TFLite model loading function
    */
-  private MappedByteBuffer loadModelFile(Activity activity) throws IOException {
-    AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(MODEL_FILE_NAME);
+  private MappedByteBuffer loadModelFile(Context context) throws IOException {
+    AssetFileDescriptor fileDescriptor = context.getAssets().openFd(MODEL_FILE_NAME);
     FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
     FileChannel fileChannel = inputStream.getChannel();
     long startOffset = fileDescriptor.getStartOffset();

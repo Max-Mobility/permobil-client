@@ -44,6 +44,12 @@ import java.util.Map;
 
 import io.sentry.Sentry;
 
+// TODO: save current daily activity in shared preferences / application settings
+// TODO: save current activity into sqlite tables?
+// TODO: communicate with the main app regarding when to start / stop tracking:
+//        * heart rate
+//        * GPS
+
 public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
@@ -73,6 +79,7 @@ public class ActivityService extends Service {
 
   private ActivityDetector activityDetector;
   private DatabaseHandler databaseHandler;
+  private Datastore datastore;
 
   public boolean isDebuggable = false;
 
@@ -93,6 +100,11 @@ public class ActivityService extends Service {
 
     // set the debuggable flag
     isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+
+    // create objects
+    activityDetector = new ActivityDetector(this);
+    databaseHandler = new DatabaseHandler(this);
+    datastore = new Datastore(this);
 
     // start up for service
     this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
@@ -184,15 +196,11 @@ public class ActivityService extends Service {
     @Override
     public void onLocationChanged(Location location) {
       Log.d(TAG, "Got location: " + location);
+      double lat = location.getLatitude();
+      double lon = location.getLongitude();
+      long time = location.getTime();
       mLastKnownLocation = location;
-      // TODO: do we need to check if the user has been active here?
-      /*
-      PSDSLocation loc = new PSDSLocation(
-                                          location.getLatitude(),
-                                          location.getLongitude(),
-                                          location.getTime()
-                                          );
-      */
+      // TODO: save location data somewhere
     }
 
     @Override
@@ -220,16 +228,13 @@ public class ActivityService extends Service {
           dataList.add(f);
         }
         updateActivity(event);
-        if (watchBeingWorn) {
-          // create new ActivityServiceData
-          /*
-          PSDSData.SensorData data = new PSDSData.SensorData(
-                                                             event.sensor.getType(),
-                                                             event.timestamp,
-                                                             dataList
-                                                             );
-          */
-          // TODO: use the data to detect activities here!
+        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+          if (watchBeingWorn) {
+            // TODO: use the data to detect activities here!
+            ActivityDetector.Detection detection =
+              activityDetector.detectActivity(event.values, event.timestamp);
+            // TODO: record the activities somewhere
+          }
         }
       }
     }
