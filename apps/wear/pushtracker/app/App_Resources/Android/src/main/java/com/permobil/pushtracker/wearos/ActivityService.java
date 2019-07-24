@@ -35,6 +35,8 @@ import android.util.Log;
 import android.app.Notification.Builder;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.permobil.pushtracker.MainActivity;
+
 import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -304,11 +306,10 @@ public class ActivityService extends Service {
     if (isServiceRunning) return;
     isServiceRunning = true;
 
-    Intent notificationIntent = new Intent();
-    notificationIntent.setClassName(
-                                    getApplicationContext(),
-                                    "com.permobil.pushtracker.MainActivity"
-                                    );
+    Intent notificationIntent = new Intent(
+                                           getApplicationContext(),
+                                           MainActivity.class
+                                           );
 
     // A string containing the action name
     notificationIntent.setAction(Constants.ACTION_START_SERVICE);
@@ -336,7 +337,7 @@ public class ActivityService extends Service {
     Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
       .setTicker("Permobil")
       .setContentText("Permobil PushTracker is analyzing your activity.")
-      // .setSmallIcon(R.mipmap.ic_launcher_round)
+      .setSmallIcon(R.mipmap.ic_launcher_round)
       // .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
       .setContentIntent(contentPendingIntent)
       .setOngoing(true)
