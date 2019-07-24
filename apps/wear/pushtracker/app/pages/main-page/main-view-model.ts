@@ -55,7 +55,7 @@ declare const com: any;
 
 const debug: boolean = true;
 
-@JavaProxy("com.permobil.pushtracker.wearos.MyCustoMBroadCastReceiver")
+@JavaProxy('com.permobil.pushtracker.wearos.MyCustoMBroadCastReceiver')
 class DataBroadcastReceiver extends android.content.BroadcastReceiver {
     public onReceiveFunction: any = null;
     constructor() {
@@ -290,7 +290,7 @@ export class MainViewModel extends Observable {
 
 
     onServiceData(context, intent) {
-        Log.D("Got service data");
+        Log.D('Got service data');
         // get the info from the event
         const pushes = intent.getIntExtra(
             com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_PUSHES,
