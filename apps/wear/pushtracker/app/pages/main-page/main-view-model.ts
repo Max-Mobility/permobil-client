@@ -51,7 +51,24 @@ const dateLocales = {
     zh: require('date-fns/locale/zh_cn')
 };
 
+declare const com: any;
+
 const debug: boolean = true;
+
+@JavaProxy("com.permobil.pushtracker.wearos.MyCustoMBroadCastReceiver")
+class DataBroadcastReceiver extends android.content.BroadcastReceiver {
+    public onReceiveFunction: any = null;
+    constructor() {
+        super();
+        return global.__native(this);
+    }
+    onReceive(androidContext: android.content.Context,
+        intent: android.content.Intent) {
+        if (this.onReceiveFunction)
+            this.onReceiveFunction(androidContext, intent);
+    }
+}
+
 
 export class MainViewModel extends Observable {
     /**
@@ -176,6 +193,9 @@ export class MainViewModel extends Observable {
         this.sentryBreadCrumb('Registering app event handlers.');
         this.registerAppEventHandlers();
         this.sentryBreadCrumb('App event handlers registered.');
+
+        this.registerForServiceDataUpdates();
+
         // determine inset padding
         const androidConfig = ad
             .getApplicationContext()
@@ -266,6 +286,50 @@ export class MainViewModel extends Observable {
                 Sentry.captureException(err);
                 Log.E('Could not make table:', err);
             });
+    }
+
+
+    onServiceData(context, intent) {
+        Log.D("Got service data");
+        // get the info from the event
+        const pushes = intent.getIntExtra(
+            com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_PUSHES,
+            0
+        );
+        const coast = intent.getFloatExtra(
+            com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
+            0
+        );
+        const distance = intent.getFloatExtra(
+            com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DISTANCE,
+            0
+        );
+        const heartRate = intent.getFloatExtra(
+            com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
+            0
+        );
+        Log.D(pushes, coast, distance, heartRate);
+        this.currentPushCount = pushes;
+        this.distanceGoalCurrentValue = distance;
+        this.coastGoalCurrentValue = coast;
+        this.updateDisplay();
+    }
+    private serviceDataReceiver = new DataBroadcastReceiver();
+
+    registerForServiceDataUpdates() {
+        this.sentryBreadCrumb('Registering for service data updates.');
+        this.serviceDataReceiver.onReceiveFunction = this.onServiceData.bind(this);
+        const context = ad
+            .getApplicationContext();
+        android.support.v4.content.LocalBroadcastManager
+            .getInstance(context)
+            .registerReceiver(
+                this.serviceDataReceiver,
+                new android.content.IntentFilter(
+                    com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
+                )
+            );
+        this.sentryBreadCrumb('Service Data Update registered.');
     }
 
     startActivityService() {
@@ -717,6 +781,10 @@ export class MainViewModel extends Observable {
     }
 
     updateDisplay() {
+        // update the displays if they need to be
+        this.distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
+        this.coastGoalCurrentValueDisplay = this.coastGoalCurrentValue.toFixed(1);
+        this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
         this.updateGoalDisplay();
         this.updateSpeedDisplay();
         this.updateChartData();
@@ -753,14 +821,6 @@ export class MainViewModel extends Observable {
         this.saveSettings();
         // now update any display that needs settings:
         this.updateDisplay();
-        /*
-        // warning / indication to the user that they've updated their settings
-        alert({
-        title: L('warnings.saved-settings.title'),
-        message: L('warnings.saved-settings.message'),
-        okButtonText: L('buttons.ok')
-        });
-        */
     }
 
     onIncreaseSettingsTap() {

@@ -56,7 +56,7 @@ public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final long SENSOR_TASK_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
+  private static final long PROCESSING_TASK_PERIOD_MS = 1 * 60 * 1000; // 10 minutes
   private static final int SENSOR_DELAY_DEBUG = 40 * 1000; // microseconds between sensor data
   private static final int SENSOR_DELAY_RELEASE = SensorManager.SENSOR_DELAY_NORMAL; // approx 200 ms between sensor data
   private static final int maxReportingLatency = 3 * 60 * 1000 * 1000; // 3 minutes between sensor updates in microseconds
@@ -65,7 +65,7 @@ public class ActivityService extends Service {
 
   private HandlerThread mHandlerThread;
   private Handler mHandler;
-  private Runnable mSensorTask;
+  private Runnable mProcessingTask;
   private Location mLastKnownLocation;
   private LocationManager mLocationManager;
   private SensorEventListener mListener;
@@ -113,7 +113,7 @@ public class ActivityService extends Service {
     this.mHandlerThread.start();
     this.mHandler = new Handler(this.mHandlerThread.getLooper());
 
-    this.mSensorTask = new SensorRunnable();
+    this.mProcessingTask = new ProcessingRunnable();
 
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -148,7 +148,7 @@ public class ActivityService extends Service {
         Log.d(TAG, "Did register Sensors: " + didRegisterSensors);
 
         mHandler.removeCallbacksAndMessages(null);
-        mHandler.post(mSensorTask);
+        mHandler.post(mProcessingTask);
       } else {
         stopMyService();
       }
@@ -159,22 +159,25 @@ public class ActivityService extends Service {
     return START_STICKY;
   }
 
-  private class SensorRunnable implements Runnable {
+  private class ProcessingRunnable implements Runnable {
     @Override
     public void run() {
       try {
-        _ProcessSensorData();
+        PeriodicProcessing();
       } catch (Exception e) {
         Sentry.capture(e);
-        Log.e(TAG, "Exception in SensorRunnable: " + e.getMessage());
+        Log.e(TAG, "Exception in ProcessingRunnable: " + e.getMessage());
       }
-      mHandler.postDelayed(mSensorTask, SENSOR_TASK_PERIOD_MS);
+      mHandler.postDelayed(mProcessingTask, PROCESSING_TASK_PERIOD_MS);
     }
   }
 
-  private void _ProcessSensorData() {
-    Log.d(TAG, "_ProcessSensorData()...");
-    // update the stored activity data
+  private void PeriodicProcessing() {
+    Log.d(TAG, "PeriodicProcessing()...");
+    // TODO: update data in SQLite tables
+    // TODO: update data in datastore / shared preferences
+    // TODO: send intent to main activity with updated data
+    sendDataToActivity(10, 2.5f, 7.7f, 65.0f);
   }
 
   @Override
@@ -291,6 +294,16 @@ public class ActivityService extends Service {
     }
 
     return true;
+  }
+
+  private void sendDataToActivity(int pushes, float coast, float distance, float heartRate) {
+    Intent intent = new Intent(Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY);
+    // You can also include some extra data.
+    intent.putExtra(Constants.ACTIVITY_SERVICE_PUSHES, pushes);
+    intent.putExtra(Constants.ACTIVITY_SERVICE_COAST, coast);
+    intent.putExtra(Constants.ACTIVITY_SERVICE_DISTANCE, distance);
+    intent.putExtra(Constants.ACTIVITY_SERVICE_HEART_RATE, heartRate);
+    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
   }
 
   private void sendMessageToActivity(String msg, String extraKey) {
