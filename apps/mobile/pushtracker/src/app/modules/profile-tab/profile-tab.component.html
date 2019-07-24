@@ -71,7 +71,7 @@
         </StackLayout>
 
         // Weight Box
-        <StackLayout row="9" col="0" colSpan="2" class="data-box">
+        <StackLayout row="9" col="0" colSpan="2" class="data-box" (tap)="onListWeightTap()">
           <Label class="data-box-label" [text]="'general.weight' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="USER_WEIGHT" textWrap="true"></Label>
@@ -80,7 +80,7 @@
         </StackLayout>
 
         // Height Box
-        <StackLayout row="9" col="2" colSpan="2" class="data-box">
+        <StackLayout row="9" col="2" colSpan="2" class="data-box" (tap)="onListHeightTap()">
           <Label class="data-box-label" [text]="'general.height' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="USER_HEIGHT" textWrap="true"></Label>
@@ -128,6 +128,7 @@
  <!-- Settings FullScreen Layout -->
  // custom full-screen modal for presenting user with config changes UI
   <GridLayout #settingsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="activity-goals-dialog">
+
     // profile settings layout
     <GridLayout rows="*" columns="*" class="profile-settings-layout"  >
     // main profile-settings layout
@@ -209,4 +210,18 @@
           </ScrollView>
       </GridLayout>
     </GridLayout>
-</GridLayout>
+</GridLayout> <!-- ******************************************************************************************* -->
+ <!-- List Picker FullScreen Layout -->
+  // custom full-screen modal for presenting user with config changes UI
+  <GridLayout #listPickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
+      // Mock ActionBar
+      <GridLayout row="0" rows="*" columns="50, *, auto">
+        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
+      </GridLayout>
+      <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 20, 50, *">
+          <ListPicker col="1" [items]="primary" selectedIndex="0"  class="p-15"></ListPicker>
+          <Label col="2" text=""></Label>
+          <ListPicker col="3" [items]="secondary" selectedIndex="0" class="p-15"></ListPicker>
+      </GridLayout>
+ </GridLayout>
+

@@ -14,6 +14,7 @@ import { Toasty } from 'nativescript-toasty';
 import { Color } from 'tns-core-modules/color';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { dialog } from '../../utils/dialog-list.utils';
+import { ListPicker } from 'tns-core-modules/ui/list-picker';
 
 @Component({
   selector: 'profile',
@@ -25,6 +26,8 @@ export class ProfileTabComponent implements OnInit {
   activityGoalsDialog: ElementRef;
   @ViewChild('settingsDialog', { static: false })
   settingsDialog: ElementRef;
+  @ViewChild('listPickerDialog', { static: false })
+  listPickerDialog: ElementRef;
   coastTime: Array<string>;
   distance: Array<string>;
   gender: Array<string>;
@@ -34,6 +37,10 @@ export class ProfileTabComponent implements OnInit {
   chairInfo: Array<string>;
   name: string;
   email: string;
+
+  primary: Array<string>;
+  secondary: Array<string>;
+
   USER_GENDER: string;
   USER_BIRTHDAY: string;
   USER_WEIGHT: string;
@@ -97,6 +104,8 @@ export class ProfileTabComponent implements OnInit {
     this.chairInfo = ['Rigid', 'Folding', 'Pediatric'];
     this.name = 'Bran Stark';
     this.email = 'email@permobil.com';
+    this. primary = ['100', '200', '300'];
+    this. secondary = ['100', '200', '300'];
     // user data
     this.USER_GENDER = 'Male';
     this.USER_BIRTHDAY = '04/01/1980';
@@ -315,4 +324,48 @@ export class ProfileTabComponent implements OnInit {
   onModeTap(args) {
     Log.D('Mode action item tap');
   }
+
+  onListWeightTap() {
+    const a  = Array.from({length: 300}, (v , k) => k + 1);
+    console.dir(a);
+    this.listPicker();
+  }
+
+  onListHeightTap() {
+    this.primary = ['1 ft', '2 ft', '3 ft', '4 ft', '5 ft', '6 ft', '7 ft', '8 ft'];
+    this.secondary = ['0 in', '1 in', '2 in', '3 in', '4 in', '5 in', '6 in', '7 in', '8 in', '9 in', '10 in', '11 in'];
+    this.listPicker();
+  }
+
+  listPicker() {
+    Log.D('user tapped settings');
+     const cfl = this.listPickerDialog.nativeElement as GridLayout;
+    cfl
+      .animate({
+        duration: 300,
+        opacity: 1,
+        curve: AnimationCurve.easeOut,
+        translate: {
+          x: 0,
+          y: 0
+        }
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
+  async closeListPickerDialog() {
+    const cfl = this.listPickerDialog.nativeElement as GridLayout;
+    cfl.animate({
+      duration: 300,
+      opacity: 0,
+      curve: AnimationCurve.easeOut,
+      translate: {
+        x: 0,
+        y: 900
+      }
+    });
+  }
+
 }
