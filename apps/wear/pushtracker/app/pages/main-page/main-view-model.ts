@@ -55,7 +55,7 @@ declare const com: any;
 
 const debug: boolean = true;
 
-@JavaProxy('com.permobil.pushtracker.wearos.MyCustoMBroadCastReceiver')
+@JavaProxy('com.permobil.pushtracker.wearos.DataBroadcastReceiver')
 class DataBroadcastReceiver extends android.content.BroadcastReceiver {
     public onReceiveFunction: any = null;
     constructor() {
@@ -989,6 +989,7 @@ export class MainViewModel extends Observable {
                 objs.map(o => {
                     // @ts-ignore
                     const obj = ActivityData.Info.loadInfo(...o);
+                    // @ts-ignore
                     const objDate = new Date(obj.date);
                     const index = closestIndexTo(objDate, dates);
                     const activityDate = dates[index];
