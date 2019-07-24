@@ -5,7 +5,7 @@ declare const com: any;
 export namespace ActivityData {
     export namespace Info {
         export const TableName =
-            com.permobil.pushtracker.wearos.DatabaseHandler.DATABASE_NAME; // 'ActivityInfo';
+            com.permobil.pushtracker.wearos.DatabaseHandler.TABLE_NAME; // 'ActivityInfo';
         export const IdName =
             com.permobil.pushtracker.wearos.DatabaseHandler.KEY_ID; // 'id';
         export const DateName =
