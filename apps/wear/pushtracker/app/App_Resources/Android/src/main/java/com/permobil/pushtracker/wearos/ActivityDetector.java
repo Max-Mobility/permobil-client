@@ -11,10 +11,6 @@ import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import org.tensorflow.lite.Interpreter;
@@ -22,21 +18,27 @@ import org.tensorflow.lite.Interpreter;
 public class ActivityDetector {
 
   public static class Detection {
+    public static enum Activity {
+      INACTIVE, PUSH, TRANSFER, REACH
+    }
+
     public float confidence;
-    public int classId;
+    public Activity activity;
     public String name;
     public long time;
 
     public Detection() {
       this.confidence = 0;
-      this.time = System.currentTimeMillis() / 1000;
+      this.activity = Activity.INACTIVE;
+      this.name = Activity.INACTIVE.name();
+      this.time = System.currentTimeMillis();
     }
 
-    public Detection(float con, int cla, String n) {
-      this.confidence = con;
-      this.classId = cla;
-      this.name = n;
-      this.time = System.currentTimeMillis() / 1000;
+    public Detection(float conf, Activity activity, long ts) {
+      this.confidence = conf;
+      this.activity = activity;
+      this.name = activity.name();
+      this.time = ts;
     }
   }
 
@@ -204,25 +206,45 @@ public class ActivityDetector {
    * there was a activity.
    */
   private Detection getActivity(long timestamp) {
-    Detection detection = new Detection();
     // block high-frequency motion
     if (lastActivityTime > 0) {
       long timeDiffNs = timestamp - lastActivityTime;
       long timeDiffThreshold = LOCKOUT_TIME_MS * 1000 * 1000; // convert to ns
       if (timeDiffNs < timeDiffThreshold) {
-        return detection;
+        return new Detection(); // no valid detection
       }
     }
+    // make sure the confidences are above the threshold
+    boolean predictionsWereGood = true;
+    for (int i=0; i<predictionHistory.length; i++) {
+      float prediction = predictionHistory[i];
+      predictionsWereGood = predictionsWereGood && prediction > predictionThreshold;
+    }
+    if (!predictionsWereGood) {
+      return new Detection();
+    }
+    // TODO: determine the activity based on the prediction output
+    // everything was good - now retrun a valid detection based
+    Detection detection = new Detection(predictionHistory[0],
+                                        Detection.Activity.PUSH,
+                                        timestamp
+                                        );
+    // update the timestamp of the last activity
+    lastActivityTime = detection.time;
     return detection;
   }
 
   private void updateHistory(float[] data) {
-    Collections.rotate(Arrays.asList(inputHistory), 1);
+    for (int i=inputHistory.length - 1; i>0; i--) {
+      inputHistory[i] = inputHistory[i-1];
+    }
     inputHistory[0] = data;
   }
 
   private void updatePredictions(float prediction) {
-    Collections.rotate(Arrays.asList(predictionHistory), 1);
+    for (int i=predictionHistory.length - 1; i>0; i--) {
+      predictionHistory[i] = predictionHistory[i-1];
+    }
     predictionHistory[0] = prediction;
   }
 }

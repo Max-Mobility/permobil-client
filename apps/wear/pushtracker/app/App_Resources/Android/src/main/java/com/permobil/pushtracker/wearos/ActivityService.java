@@ -58,15 +58,24 @@ public class ActivityService extends Service {
   private static final int NOTIFICATION_ID = 765;
   private static final long PROCESSING_TASK_PERIOD_MS = 1 * 60 * 1000; // 10 minutes
   private static final int SENSOR_DELAY_DEBUG = 40 * 1000; // microseconds between sensor data
-  private static final int SENSOR_DELAY_RELEASE = SensorManager.SENSOR_DELAY_NORMAL; // approx 200 ms between sensor data
-  private static final int maxReportingLatency = 3 * 60 * 1000 * 1000; // 3 minutes between sensor updates in microseconds
+
+  // approx 200 ms between sensor data
+  private static final int SENSOR_DELAY_RELEASE = SensorManager.SENSOR_DELAY_NORMAL;
+
+  // 3 minutes between sensor updates in microseconds
+  private static final int maxReportingLatency = 3 * 60 * 1000 * 1000;
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 1 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 25;
+
+  // speed in m/s over which we don't compute distance travelled
+  private static final float LOCATION_SPEED_THRESHOLD_MPS = 4.0f; // ~= 9 miles per hour
+
+  public boolean isDebuggable = false;
 
   private HandlerThread mHandlerThread;
   private Handler mHandler;
   private Runnable mProcessingTask;
-  private Location mLastKnownLocation;
+  private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private SensorEventListener mListener;
   private SensorManager mSensorManager;
@@ -79,11 +88,21 @@ public class ActivityService extends Service {
   public boolean watchBeingWorn = false;
   public boolean isServiceRunning = false;
 
+  // activity data
+  public int currentPushCount = 0;
+  public float currentCoastTime = 0f;
+  public float currentDistance = 0f;
+  public float currentHeartRate = 0f;
+
+  // activity data helpers
+  private ActivityDetector.Detection lastActivity = null;
+  private ActivityDetector.Detection lastPush = null;
+  private static final long MAX_ALLOWED_COAST_TIME_MS = 10 * 60 * 1000;
+
+  // helper objects
   private ActivityDetector activityDetector;
   private DatabaseHandler databaseHandler;
   private Datastore datastore;
-
-  public boolean isDebuggable = false;
 
   public ActivityService() {
   }
@@ -176,8 +195,11 @@ public class ActivityService extends Service {
     Log.d(TAG, "PeriodicProcessing()...");
     // TODO: update data in SQLite tables
     // TODO: update data in datastore / shared preferences
-    // TODO: send intent to main activity with updated data
-    sendDataToActivity(10, 2.5f, 7.7f, 65.0f);
+    // send intent to main activity with updated data
+    sendDataToActivity(currentPushCount,
+                       currentCoastTime,
+                       currentDistance,
+                       currentHeartRate);
   }
 
   @Override
@@ -202,8 +224,32 @@ public class ActivityService extends Service {
       double lat = location.getLatitude();
       double lon = location.getLongitude();
       long time = location.getTime();
+      long elapsedRealTimeNs = location.getElapsedRealtimeNanos();
+      // update the distance
+      if (mLastKnownLocation != null && mLastKnownLocation != location) {
+        float currentSpeed = location.getSpeed();
+        float previousSpeed = mLastKnownLocation.getSpeed();
+        // compute our own speed
+        long timeDiffNs = elapsedRealTimeNs - mLastKnownLocation.getElapsedRealtimeNanos();
+        float timeDiffSeconds = timeDiffNs / 1000000000.0f;
+        float distance = mLastKnownLocation.distanceTo(location);
+        float computedSpeed = distance / timeDiffSeconds;
+        // determine validity of speeds
+        boolean newSpeedValid = (currentSpeed <= LOCATION_SPEED_THRESHOLD_MPS) &&
+          location.hasSpeed();
+        boolean oldSpeedValid = (previousSpeed <= LOCATION_SPEED_THRESHOLD_MPS) &&
+          mLastKnownLocation.hasSpeed();
+        boolean computedSpeedValid = (computedSpeed <= LOCATION_SPEED_THRESHOLD_MPS);
+        // if we have valid speed, accumulate more distance
+        if (computedSpeedValid || newSpeedValid) {
+          currentDistance += distance;
+        }
+      }
+      // update the stored location for distance computation
       mLastKnownLocation = location;
-      // TODO: save location data somewhere
+      // TODO: save location data as a series of data if the user has
+      // asked us to track their location through the app (for some
+      // period of time)
     }
 
     @Override
@@ -226,18 +272,23 @@ public class ActivityService extends Service {
     @Override
     public void onSensorChanged(SensorEvent event) {
       if (mListener != null) {
-        ArrayList<Float> dataList = new ArrayList<>();
-        for (float f : event.values) {
-          dataList.add(f);
-        }
+        // Log.d(TAG, "SensorChanged: " + event);
         updateActivity(event);
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+        int sensorType = event.sensor.getType();
+        if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
           if (isDebuggable || watchBeingWorn) {
-            // TODO: use the data to detect activities here!
+            // use the data to detect activities
             ActivityDetector.Detection detection =
               activityDetector.detectActivity(event.values, event.timestamp);
-            // TODO: record the activities somewhere
+            handleDetection(detection);
           }
+        } else if (sensorType == Sensor.TYPE_HEART_RATE) {
+          // update the heart rate
+          currentHeartRate = event.values[0];
+          Log.d(TAG, "current heart rate: " + currentHeartRate);
+          // TODO: save heart rate data as a series of data if the
+          // user has asked us to track their heart rate through the
+          // app (for some period of time)
         }
       }
     }
@@ -245,6 +296,32 @@ public class ActivityService extends Service {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
       // TODO Auto-generated method stub
+    }
+
+    void handleDetection(ActivityDetector.Detection detection) {
+      // Log.d(TAG, "detection: " + detection);
+      if (detection.confidence != 0) {
+        // update push detection
+        if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
+          currentPushCount += 1;
+          // calculate coast time here
+          if (lastPush != null) {
+            long timeDiffNs = detection.time - lastPush.time;
+            // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
+            long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
+            if (timeDiffNs < timeDiffThreshold) {
+              // TODO: update how we calculate coast time - need to
+              // average it!
+              currentCoastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
+            }
+          }
+          // update the last push
+          lastPush = detection;
+        }
+        // update the last activity
+        lastActivity = detection;
+      }
+      // TODO: record the activities somewhere
     }
 
     void updateActivity(SensorEvent event) {

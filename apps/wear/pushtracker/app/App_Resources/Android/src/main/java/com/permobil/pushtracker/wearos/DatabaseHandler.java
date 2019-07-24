@@ -107,7 +107,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public List<ActivityData> getRecords(int numRecords) {
-        List recordList = new ArrayList();
+        List<ActivityData> recordList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + KEY_ID + " ASC";
         if (numRecords > 0) {
             selectQuery += " LIMIT " + numRecords;
