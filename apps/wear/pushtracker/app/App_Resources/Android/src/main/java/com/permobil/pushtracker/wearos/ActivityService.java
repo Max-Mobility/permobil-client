@@ -174,9 +174,7 @@ public class ActivityService extends Service {
 
   private void _ProcessSensorData() {
     Log.d(TAG, "_ProcessSensorData()...");
-    // adding an empty check to avoid pushing the initial service
-    // starting records with no sensor_data since the intervals
-    // haven't clocked at that time
+    // update the stored activity data
   }
 
   @Override
@@ -231,7 +229,7 @@ public class ActivityService extends Service {
         }
         updateActivity(event);
         if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-          if (watchBeingWorn) {
+          if (isDebuggable || watchBeingWorn) {
             // TODO: use the data to detect activities here!
             ActivityDetector.Detection detection =
               activityDetector.detectActivity(event.values, event.timestamp);

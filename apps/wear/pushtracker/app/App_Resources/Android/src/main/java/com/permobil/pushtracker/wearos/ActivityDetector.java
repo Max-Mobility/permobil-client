@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import org.tensorflow.lite.Interpreter;
 
@@ -39,6 +40,8 @@ public class ActivityDetector {
     }
   }
 
+  private static final String TAG = "ActivityDetector";
+
   private static final int LOCKOUT_TIME_MS = 200;
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
@@ -51,15 +54,16 @@ public class ActivityDetector {
    */
   private Interpreter tflite;
   private MappedByteBuffer tfliteModel;
-  private float[][] inputs = new float[2][];
-  private float[][] outputs = new float[2][];
+  private boolean properlyConfigured = true;
+  private Object[] inputs = new Object[2];
+  private Map<Integer, Object> outputs = new HashMap<Integer, Object>();
 
   /**
    * Actual inputs / outputs for the TFLite model
    */
-  private float[] inputData = new float[3];
-  private float[] previousState = new float[StateSize];
-  private float[] parsedPrediction = new float[1];
+  private float[][] inputData = new float[1][3];
+  private float[][] previousState = new float[1][StateSize];
+  private float[][] parsedPrediction = new float[1][1];
 
   /**
    * TFLite model input / output configuration
@@ -90,13 +94,13 @@ public class ActivityDetector {
   public ActivityDetector(Context context) {
     // initialize the memory for the states
     for (int i=0; i<StateSize; i++) {
-      previousState[i] = 0.0f;
+      previousState[0][i] = 0.0f;
     }
     // set up the inputs and outputs
     inputs[Input_StateIndex] = previousState;
     inputs[Input_DataIndex] = inputData;
-    outputs[Output_StateIndex] = previousState;
-    outputs[Output_PredictionIndex] = parsedPrediction;
+    outputs.put(Output_StateIndex, previousState);
+    outputs.put(Output_PredictionIndex, parsedPrediction);
     // load the model file
     try {
       tfliteModel = loadModelFile(context);
@@ -104,8 +108,39 @@ public class ActivityDetector {
       Interpreter.Options tfliteOptions = new Interpreter.Options();
       tfliteOptions.setNumThreads(1);
       tflite = new Interpreter(tfliteModel, tfliteOptions);
+      // now check the input shapes
+      int[] inputShapes = { 0, 0 };
+      inputShapes[Input_StateIndex] = StateSize;
+      inputShapes[Input_DataIndex] = 3;
+      int inputCount = tflite.getInputTensorCount();
+      for (int i=0; i<inputCount; i++) {
+        int[] inputShape = tflite.getInputTensor(i).shape();
+        Log.d(TAG, "Checking input tensor at " + i + " :\n" +
+              "\tshape of " + inputShapes[i] + " == " + inputShape[1] + " ?");
+        if (inputShapes[i] != inputShape[1]) {
+          Log.e(TAG, "input tensor at " + i + " misconfigured\n" +
+                "\texpected shape of " + inputShapes[i] + " but got " + inputShape[1]);
+          properlyConfigured = false;
+        }
+      }
+      // now check the input shapes
+      int[] outputShapes = { 0, 0 };
+      outputShapes[Output_StateIndex] = StateSize;
+      outputShapes[Output_PredictionIndex] = 1;
+      int outputCount = tflite.getOutputTensorCount();
+      for (int i=0; i<outputCount; i++) {
+        int[] outputShape = tflite.getOutputTensor(i).shape();
+        Log.d(TAG, "Checking output tensor at " + i + " :\n" +
+              "\tshape of " + outputShapes[i] + " == " + outputShape[1] + " ?");
+        if (outputShapes[i] != outputShape[1]) {
+          Log.e(TAG, "output tensor at " + i + " misconfigured\n" +
+                "\texpected shape of " + outputShapes[i] + " but got " + outputShape[1]);
+          properlyConfigured = false;
+        }
+      }
     } catch (Exception e) {
-      Log.e("ActivityDetector", "Initialization exception: " + e);
+      Log.e(TAG, "Initialization exception: " + e);
+      properlyConfigured = false;
     }
   }
 
@@ -141,16 +176,23 @@ public class ActivityDetector {
    * Main inference Function for detecting activity
    */
   public Detection detectActivity(float[] data, long timestamp) {
+    if (!properlyConfigured) {
+      return new Detection();
+    }
     // copy the data into our input buffer
     for (int i=0; i<3; i++) {
-      inputs[Input_DataIndex][i] = data[i];
+      inputData[0][i] = data[i];
     }
     // update the input history
     updateHistory(data);
     // run the inference
-    tflite.run(inputs, outputs);
+    long startTime = System.nanoTime();
+    tflite.runForMultipleInputsOutputs(inputs, outputs);
+    long endTime = System.nanoTime();
+    long duration = (endTime - startTime);
+    // Log.d(TAG, "Inference duration: " + duration);
     // get the prediction
-    float prediction = parsedPrediction[0];
+    float prediction = parsedPrediction[0][0];
     // update the prediction history
     updatePredictions(prediction);
     // determine the activity
