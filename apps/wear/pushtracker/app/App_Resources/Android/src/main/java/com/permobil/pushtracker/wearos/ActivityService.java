@@ -214,14 +214,17 @@ public class ActivityService extends Service {
         if (currentDate == "") {
           datastore.setDate(nowString);
         } else {
+          boolean sameDate = currentDate.equals(nowString);
+          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
           // determine if it's a new day
-          if (nowString != currentDate) {
+          if (!sameDate) {
             // reset values to zero
             currentPushCount = 0;
             currentCoastTime = 0;
             currentDistance = 0;
             currentHeartRate = 0;
             // update the datastore
+            datastore.setDate(nowString);
             datastore.setPushes(currentPushCount);
             datastore.setCoast(currentCoastTime);
             datastore.setDistance(currentDistance);
