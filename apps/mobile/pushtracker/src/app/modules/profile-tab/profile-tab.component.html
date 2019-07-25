@@ -62,7 +62,7 @@
         </StackLayout>
 
         // Birthday Box
-        <StackLayout row="8" col="2" colSpan="2" class="data-box">
+        <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="datePicker()">
           <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="USER_BIRTHDAY" textWrap="true"></Label>
@@ -225,3 +225,14 @@
       </GridLayout>
  </GridLayout>
 
+  <!-- Date Picker FullScreen Layout -->
+  // custom full-screen modal for presenting user with config changes UI
+  <GridLayout #datePickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
+      // Mock ActionBar
+      <GridLayout row="0" rows="*" columns="50, *, auto">
+        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeDatePickerDialog()"></Button>
+      </GridLayout>
+      <GridLayout row="1" rows="*" columns="*">
+        <DatePicker (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>
+      </GridLayout>
+ </GridLayout>

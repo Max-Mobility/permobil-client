@@ -15,6 +15,7 @@ import { Color } from 'tns-core-modules/color';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { dialog } from '../../utils/dialog-list.utils';
 import { ListPicker } from 'tns-core-modules/ui/list-picker';
+import { DatePicker } from 'tns-core-modules/ui/date-picker';
 
 @Component({
   selector: 'profile',
@@ -28,6 +29,8 @@ export class ProfileTabComponent implements OnInit {
   settingsDialog: ElementRef;
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
+  @ViewChild('datePickerDialog', { static: false})
+  datePickerDialog: ElementRef;
   coastTime: Array<string>;
   distance: Array<string>;
   gender: Array<string>;
@@ -367,5 +370,51 @@ export class ProfileTabComponent implements OnInit {
       }
     });
   }
+
+  datePicker() {
+    Log.D('user tapped settings');
+    const cfl = this.datePickerDialog.nativeElement as GridLayout;
+    cfl
+      .animate({
+        duration: 300,
+        opacity: 1,
+        curve: AnimationCurve.easeOut,
+        translate: {
+          x: 0,
+          y: 0
+        }
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
+  async closeDatePickerDialog() {
+    const cfl = this.datePickerDialog.nativeElement as GridLayout;
+    cfl.animate({
+      duration: 300,
+      opacity: 0,
+      curve: AnimationCurve.easeOut,
+      translate: {
+        x: 0,
+        y: 900
+      }
+    });
+  }
+
+  onDateChanged(args) {
+    Log.D('on date change');
+  }
+
+  onPickerLoaded(args) {
+    Log.D('date picker loaded');
+    const datePicker = <DatePicker>args.object;
+
+    datePicker.year = 1980;
+    datePicker.month = 2;
+    datePicker.day = 9;
+    datePicker.minDate = new Date(1950, 0, 29);
+    datePicker.maxDate = new Date(2050, 12, 12);
+}
 
 }
