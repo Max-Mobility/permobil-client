@@ -1,4 +1,6 @@
-@JavaProxy('com.permobil.ComplicationProviderService')
+import { ComplicationTapBroadcastReceiver } from './complication_tap_broadcast_receiver';
+
+@JavaProxy('com.permobil.smartdrive.ComplicationProviderService')
 export class ComplicationProviderService extends android.support.wearable
   .complications.ComplicationProviderService {
   constructor() {
@@ -52,11 +54,11 @@ export class ComplicationProviderService extends android.support.wearable
     // Used to create a unique key to use with SharedPreferences for this complication.
     const thisProvider = new android.content.ComponentName(
       this as any,
-      java.lang.Class.forName('com.permobil.ComplicationProviderService')
+      java.lang.Class.forName('com.permobil.smartdrive.ComplicationProviderService')
     );
 
     // We pass the complication id, so we can only update the specific complication tapped.
-    const complicationPendingIntent = this.getToggleIntent(
+    const complicationPendingIntent = ComplicationTapBroadcastReceiver.getToggleIntent(
       this as any,
       thisProvider,
       complicationId
@@ -94,6 +96,22 @@ export class ComplicationProviderService extends android.support.wearable
 
     switch (dataType) {
       case android.support.wearable.complications.ComplicationData
+        .TYPE_RANGED_VALUE:
+        complicationData = new android.support.wearable.complications.ComplicationData.Builder(
+          android.support.wearable.complications.ComplicationData.TYPE_RANGED_VALUE
+        )
+          .setMinValue(0)
+          .setMaxValue(100)
+          .setValue(keyNumber)
+          .setShortText(
+            android.support.wearable.complications.ComplicationText.plainText(
+              numberText
+            )
+          )
+          .setTapAction(complicationPendingIntent)
+          .build();
+        break;
+      case android.support.wearable.complications.ComplicationData
         .TYPE_SHORT_TEXT:
         complicationData = new android.support.wearable.complications.ComplicationData.Builder(
           android.support.wearable.complications.ComplicationData.TYPE_SHORT_TEXT
@@ -109,17 +127,6 @@ export class ComplicationProviderService extends android.support.wearable
       case android.support.wearable.complications.ComplicationData
         .TYPE_SMALL_IMAGE:
         console.log('TYPE_SMALL_IMAGE data type');
-        // builder.setLongText(
-        //   android.support.wearable.complications.ComplicationText.plainText(
-        //     'World'
-        //   )
-        // );
-        // builder.setLongTitle(
-        //   android.support.wearable.complications.ComplicationText.plainText(
-        //     'Hello'
-        //   )
-        // );
-        // complicationData = builder.build();
         break;
       default:
         console.log(
@@ -192,6 +199,5 @@ function getPreferenceKey(
 enum KEYS {
   COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY = 'com.example.android.wearable.watchface.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY',
   EXTRA_COMPLICATION_ID = 'com.example.android.wearable.watchface.provider.action.COMPLICATION_ID',
-  EXTRA_PROVIDER_COMPONENT = 'com.example.android.wearable.watchface.provider.action.PROVIDER_COMPONENT',
-  MAX_NUMBER = 20
+  EXTRA_PROVIDER_COMPONENT = 'com.example.android.wearable.watchface.provider.action.PROVIDER_COMPONENT'
 }

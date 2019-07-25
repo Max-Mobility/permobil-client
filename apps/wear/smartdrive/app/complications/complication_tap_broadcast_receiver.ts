@@ -7,7 +7,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
  * complication id triggered via TapAction on complication. Also, provides static method to create
  * a {@link PendingIntent} that triggers this receiver.
  */
-@JavaProxy('com.permobil.ComplicationTapBroadcastReceiver')
+@JavaProxy('com.permobil.smartdrive.ComplicationTapBroadcastReceiver')
 export class ComplicationTapBroadcastReceiver extends android.content
   .BroadcastReceiver {
   // public static EXTRA_PROVIDER_COMPONENT =
@@ -15,7 +15,6 @@ export class ComplicationTapBroadcastReceiver extends android.content
   // public static EXTRA_COMPLICATION_ID =
   //   'com.example.android.wearable.watchface.provider.action.COMPLICATION_ID';
 
-  // static MAX_NUMBER = 20;
   // public COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY =
   //   'com.example.android.wearable.watchface.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY';
 
@@ -28,6 +27,7 @@ export class ComplicationTapBroadcastReceiver extends android.content
     context: android.content.Context,
     intent: android.content.Intent
   ): void {
+    console.log('tapBroadcastReceiver', 'onReceive');
     const extras = intent.getExtras();
     const provider = extras.getParcelable(
       KEYS.EXTRA_PROVIDER_COMPONENT
@@ -42,6 +42,7 @@ export class ComplicationTapBroadcastReceiver extends android.content
     );
 
     const sdBattery = appSettings.getNumber('sd.battery');
+    console.log('tapBroadcastReceiver', 'onReceive', sdBattery);
 
     const editor = sharedPreferences.edit() as android.content.SharedPreferences.Editor;
     editor.putInt(preferenceKey, sdBattery);
@@ -57,37 +58,37 @@ export class ComplicationTapBroadcastReceiver extends android.content
     requester.requestUpdate([complicationId]);
   }
 
-  // /**
-  //  * Returns a pending intent, suitable for use as a tap intent, that causes a complication to be
-  //  * toggled and updated.
-  //  */
-  // static getToggleIntent(
-  //   context: android.content.Context,
-  //   provider: android.content.ComponentName,
-  //   complicationId: number
-  // ): android.app.PendingIntent {
-  //   const intent = new android.content.Intent(
-  //     context,
-  //     ComplicationTapBroadcastReceiver.class
-  //   );
-  //   intent.putExtra(
-  //     ComplicationTapBroadcastReceiver.EXTRA_PROVIDER_COMPONENT,
-  //     provider
-  //   );
-  //   intent.putExtra(
-  //     ComplicationTapBroadcastReceiver.EXTRA_COMPLICATION_ID,
-  //     complicationId
-  //   );
+  /**
+   * Returns a pending intent, suitable for use as a tap intent, that causes a complication to be
+   * toggled and updated.
+   */
+  static getToggleIntent(
+    context: android.content.Context,
+    provider: android.content.ComponentName,
+    complicationId: number
+  ): android.app.PendingIntent {
+    const intent = new android.content.Intent(
+      context,
+      ComplicationTapBroadcastReceiver.class
+    );
+    intent.putExtra(
+      KEYS.EXTRA_PROVIDER_COMPONENT,
+      provider
+    );
+    intent.putExtra(
+      KEYS.EXTRA_COMPLICATION_ID,
+      complicationId
+    );
 
-  //   // Pass complicationId as the requestCode to ensure that different complications get
-  //   // different intents.
-  //   return android.app.PendingIntent.getBroadcast(
-  //     context,
-  //     complicationId,
-  //     intent,
-  //     android.app.PendingIntent.FLAG_UPDATE_CURRENT
-  //   );
-  // }
+    // Pass complicationId as the requestCode to ensure that different complications get
+    // different intents.
+    return android.app.PendingIntent.getBroadcast(
+      context,
+      complicationId,
+      intent,
+      android.app.PendingIntent.FLAG_UPDATE_CURRENT
+    );
+  }
 }
 
 /**
@@ -102,8 +103,7 @@ function getPreferenceKey(
 }
 
 enum KEYS {
-  COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY = 'com.example.android.wearable.watchface.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY',
-  EXTRA_COMPLICATION_ID = 'com.example.android.wearable.watchface.provider.action.COMPLICATION_ID',
-  EXTRA_PROVIDER_COMPONENT = 'com.example.android.wearable.watchface.provider.action.PROVIDER_COMPONENT',
-  MAX_NUMBER = 20
+  COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY = 'com.permobil.smartdrive.watchface.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY',
+  EXTRA_COMPLICATION_ID = 'com.permobil.smartdrive.watchface.provider.action.COMPLICATION_ID',
+  EXTRA_PROVIDER_COMPONENT = 'com.permobil.smartdrive.watchface.provider.action.PROVIDER_COMPONENT'
 }
