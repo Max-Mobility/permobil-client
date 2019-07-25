@@ -805,9 +805,14 @@ export class MainViewModel extends Observable {
   }
 
   updateDisplay() {
-    this.updateGoalDisplay();
-    this.updateSpeedDisplay();
-    this.updateChartData();
+    try {
+      this.updateGoalDisplay();
+      this.updateSpeedDisplay();
+      this.updateChartData();
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Could not update display', err);
+    }
   }
 
   updateGoalDisplay() {
@@ -1032,30 +1037,38 @@ export class MainViewModel extends Observable {
       })
       .catch(err => {
         Sentry.captureException(err);
-        console.log('error getting recent info:', err);
+        Log.E('error getting recent info:', err);
         return activityInfo;
       });
   }
 
   getRecentInfoFromDatabase(numRecentEntries: number) {
-    return this.sqliteService.getAll({
-      tableName: ActivityData.Info.TableName,
-      orderBy: ActivityData.Info.DateName,
-      ascending: false,
-      limit: numRecentEntries
-    });
+    try {
+      return this.sqliteService.getAll({
+        tableName: ActivityData.Info.TableName,
+        orderBy: ActivityData.Info.DateName,
+        ascending: false,
+        limit: numRecentEntries
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   getUnsentInfoFromDatabase(numEntries: number) {
-    return this.sqliteService.getAll({
-      tableName: ActivityData.Info.TableName,
-      queries: {
-        [ActivityData.Info.HasBeenSentName]: 0
-      },
-      orderBy: ActivityData.Info.IdName,
-      ascending: true,
-      limit: numEntries
-    });
+    try {
+      return this.sqliteService.getAll({
+        tableName: ActivityData.Info.TableName,
+        queries: {
+          [ActivityData.Info.HasBeenSentName]: 0
+        },
+        orderBy: ActivityData.Info.IdName,
+        ascending: true,
+        limit: numEntries
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   /**

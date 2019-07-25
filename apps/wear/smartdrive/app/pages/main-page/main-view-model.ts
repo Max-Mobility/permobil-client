@@ -2670,26 +2670,34 @@ export class MainViewModel extends Observable {
   }
 
   getRecentInfoFromDatabase(numRecentEntries: number) {
-    return this._sqliteService
-      .getAll({
-        tableName: SmartDriveData.Info.TableName,
-        orderBy: SmartDriveData.Info.DateName,
-        ascending: false,
-        limit: numRecentEntries
-      });
+    try {
+      return this._sqliteService
+        .getAll({
+          tableName: SmartDriveData.Info.TableName,
+          orderBy: SmartDriveData.Info.DateName,
+          ascending: false,
+          limit: numRecentEntries
+        });
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   getUnsentInfoFromDatabase(numEntries: number) {
-    return this._sqliteService
-      .getAll({
-        tableName: SmartDriveData.Info.TableName,
-        queries: {
-          [SmartDriveData.Info.HasBeenSentName]: 0
-        },
-        orderBy: SmartDriveData.Info.IdName,
-        ascending: true,
-        limit: numEntries
-      });
+    try {
+      return this._sqliteService
+        .getAll({
+          tableName: SmartDriveData.Info.TableName,
+          queries: {
+            [SmartDriveData.Info.HasBeenSentName]: 0
+          },
+          orderBy: SmartDriveData.Info.IdName,
+          ascending: true,
+          limit: numEntries
+        });
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   /**
