@@ -7,6 +7,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -40,9 +41,13 @@ import com.permobil.pushtracker.MainActivity;
 import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Map;
+
+import java.text.SimpleDateFormat;
 
 import io.sentry.Sentry;
 
@@ -56,14 +61,14 @@ public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final long PROCESSING_TASK_PERIOD_MS = 1 * 60 * 1000; // 10 minutes
-  private static final int SENSOR_DELAY_DEBUG = 40 * 1000; // microseconds between sensor data
+  private static final long PROCESSING_TASK_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
+  private static final int SENSOR_DELAY_DEBUG = 60 * 1000; // microseconds between sensor data
 
   // approx 200 ms between sensor data
   private static final int SENSOR_DELAY_RELEASE = SensorManager.SENSOR_DELAY_NORMAL;
 
-  // 3 minutes between sensor updates in microseconds
-  private static final int maxReportingLatency = 3 * 60 * 1000 * 1000;
+  // 20 minutes between sensor updates in microseconds
+  private static final int maxReportingLatency = 20 * 60 * 1000 * 1000;
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 1 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 25;
 
@@ -127,6 +132,9 @@ public class ActivityService extends Service {
     databaseHandler = new DatabaseHandler(this);
     datastore = new Datastore(this);
 
+    // initialize data
+    loadFromDatastore();
+
     // start up for service
     this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
     this.mHandlerThread.start();
@@ -160,11 +168,18 @@ public class ActivityService extends Service {
           Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
         startServiceWithNotification();
 
+        // register time receiver
+        Log.d(TAG, "registering time receiver");
+        IntentFilter timeFilter = new IntentFilter();
+        timeFilter.addAction(Intent.ACTION_TIME_TICK);
+        timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        this.registerReceiver(this.timeReceiver, timeFilter);
+
         Log.d(TAG, "starting service!");
 
+        this.initSensors();
         int sensorDelay = isDebuggable ? SENSOR_DELAY_DEBUG : SENSOR_DELAY_RELEASE;
-        boolean didRegisterSensors = this._registerDeviceSensors(sensorDelay, maxReportingLatency);
-        Log.d(TAG, "Did register Sensors: " + didRegisterSensors);
+        this.registerDeviceSensors(sensorDelay, maxReportingLatency);
 
         mHandler.removeCallbacksAndMessages(null);
         mHandler.post(mProcessingTask);
@@ -177,6 +192,45 @@ public class ActivityService extends Service {
     // and stopped as needed
     return START_STICKY;
   }
+
+  private void loadFromDatastore() {
+    currentPushCount = datastore.getPushes();
+    currentCoastTime = datastore.getCoast();
+    currentDistance = datastore.getDistance();
+    currentHeartRate = datastore.getHeartRate();
+  }
+
+  private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
+      @Override
+      public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "TimeReceiver::onReceive()");
+        // get the date from the datastore
+        String currentDate = datastore.getDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // get current date
+        Date now = Calendar.getInstance().getTime();
+        String nowString = simpleDateFormat.format(now);
+        // if we don't have a date, then save the current date
+        if (currentDate == "") {
+          datastore.setDate(nowString);
+        } else {
+          // determine if it's a new day
+          if (nowString != currentDate) {
+            // reset values to zero
+            currentPushCount = 0;
+            currentCoastTime = 0;
+            currentDistance = 0;
+            currentHeartRate = 0;
+            // update the datastore
+            datastore.setPushes(currentPushCount);
+            datastore.setCoast(currentCoastTime);
+            datastore.setDistance(currentDistance);
+            datastore.setHeartRate(currentHeartRate);
+            // TODO: update the sqlite tables
+          }
+        }
+      }
+    };
 
   private class ProcessingRunnable implements Runnable {
     @Override
@@ -207,8 +261,11 @@ public class ActivityService extends Service {
     Log.d(TAG, "onDestroy()...");
     super.onDestroy();
 
+    // unregister time receivers
+    this.unregisterReceiver(this.timeReceiver);
+
     // remove sensor listeners
-    _unregisterDeviceSensors();
+    unregisterDeviceSensors();
 
     // remove handler tasks
     mHandler.removeCallbacksAndMessages(null);
@@ -243,6 +300,8 @@ public class ActivityService extends Service {
         // if we have valid speed, accumulate more distance
         if (computedSpeedValid || newSpeedValid) {
           currentDistance += distance;
+          // update the saved distance
+          datastore.setDistance(currentDistance);
         }
       }
       // update the stored location for distance computation
@@ -286,6 +345,8 @@ public class ActivityService extends Service {
           // update the heart rate
           currentHeartRate = event.values[0];
           Log.d(TAG, "current heart rate: " + currentHeartRate);
+          // save the heart rate to the datastore
+          datastore.setHeartRate(currentHeartRate);
           // TODO: save heart rate data as a series of data if the
           // user has asked us to track their heart rate through the
           // app (for some period of time)
@@ -317,6 +378,9 @@ public class ActivityService extends Service {
           }
           // update the last push
           lastPush = detection;
+          // save the pushes and coast to the datastore
+          datastore.setPushes(currentPushCount);
+          datastore.setCoast(currentCoastTime);
         }
         // update the last activity
         lastActivity = detection;
@@ -333,44 +397,54 @@ public class ActivityService extends Service {
     }
   }
 
-  private void _unregisterDeviceSensors() {
-    // make sure we have the sensor manager for the device
-    if (mSensorManager != null && mListener != null) {
-      if (mLinearAcceleration != null)
-        mSensorManager.unregisterListener(mListener, mLinearAcceleration);
-      if (mHeartRate != null)
-        mSensorManager.unregisterListener(mListener, mHeartRate);
-      if (mOffBodyDetect != null)
-        mSensorManager.unregisterListener(mListener, mOffBodyDetect);
-    } else {
-      Log.e(TAG, "Sensor Manager was not found, so sensor service is unable to unregister sensor listener events.");
-    }
-  }
-
-  private boolean _registerDeviceSensors(int delay, int reportingLatency) {
+  private void initSensors() {
     mSensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
     // make sure we have the sensor manager for the device
     if (mSensorManager != null) {
       Log.d(TAG, "Creating sensor listener...");
       mListener = new SensorListener();
+    } else {
+      Log.e(TAG, "Sensor Manager was not found - unable to create sensor listener.");
+    }
+  }
 
-      // register all the sensors we want to track data for
+  private void registerHeartRate(int delay, int reportingLatency) {
+    if (mSensorManager != null && mListener != null) {
+      mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+      if (mHeartRate != null)
+        mSensorManager.registerListener(mListener, mHeartRate, delay, reportingLatency);
+    }
+  }
+
+  private void unregisterHeartRate() {
+    if (mSensorManager != null && mListener != null) {
+      if (mHeartRate != null)
+        mSensorManager.unregisterListener(mListener, mHeartRate);
+    }
+  }
+
+  private void registerDeviceSensors(int delay, int reportingLatency) {
+    if (mSensorManager != null && mListener != null) {
       mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
       if (mLinearAcceleration != null)
         mSensorManager.registerListener(mListener, mLinearAcceleration, delay, reportingLatency);
 
-      mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-      if (mHeartRate != null)
-        mSensorManager.registerListener(mListener, mHeartRate, delay, reportingLatency);
-
       mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
       if (mOffBodyDetect != null)
         mSensorManager.registerListener(mListener, mOffBodyDetect, delay, reportingLatency);
-    } else {
-      Log.e(TAG, "Sensor Manager was not found, so sensor service is unable to register sensor listener events.");
     }
+  }
 
-    return true;
+  private void unregisterDeviceSensors() {
+    // make sure we have the sensor manager for the device
+    if (mSensorManager != null && mListener != null) {
+      if (mLinearAcceleration != null)
+        mSensorManager.unregisterListener(mListener, mLinearAcceleration);
+      if (mOffBodyDetect != null)
+        mSensorManager.unregisterListener(mListener, mOffBodyDetect);
+      if (mHeartRate != null)
+        mSensorManager.unregisterListener(mListener, mHeartRate);
+    }
   }
 
   private void sendDataToActivity(int pushes, float coast, float distance, float heartRate) {

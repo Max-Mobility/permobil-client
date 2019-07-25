@@ -69,7 +69,6 @@ class DataBroadcastReceiver extends android.content.BroadcastReceiver {
   }
 }
 
-
 export class MainViewModel extends Observable {
   /**
    * Goal progress data.
@@ -259,6 +258,9 @@ export class MainViewModel extends Observable {
     this.loadSettings();
     this.sentryBreadCrumb('Settings loaded.');
 
+    // load activity data
+    this.loadCurrentActivityData();
+
     this.sentryBreadCrumb('Updating display.');
     this.updateDisplay();
     this.sentryBreadCrumb('Display updated.');
@@ -288,6 +290,18 @@ export class MainViewModel extends Observable {
       });
   }
 
+  loadCurrentActivityData() {
+    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    this.currentPushCount = appSettings.getNumber(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY
+    ) || 0;
+    this.distanceGoalCurrentValue = appSettings.getNumber(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY
+    ) || 0.0;
+    this.coastGoalCurrentValue = appSettings.getNumber(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY
+    ) || 0.0;
+  }
 
   onServiceData(context, intent) {
     Log.D('Got service data');
@@ -524,6 +538,9 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
+    // now load the activity data
+    this.loadCurrentActivityData();
+    this.updateDisplay();
   }
 
   onAppLowMemory(args?: any) {
