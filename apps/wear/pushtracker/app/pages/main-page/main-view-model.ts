@@ -292,15 +292,21 @@ export class MainViewModel extends Observable {
 
   loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
-    this.currentPushCount = appSettings.getNumber(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY
-    ) || 0;
-    this.distanceGoalCurrentValue = appSettings.getNumber(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY
-    ) || 0.0;
-    this.coastGoalCurrentValue = appSettings.getNumber(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY
-    ) || 0.0;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences("prefs.db", 0);
+    this.currentPushCount = sharedPreferences.getInt(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
+      0
+    );
+    this.distanceGoalCurrentValue = sharedPreferences.getFloat(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
+      0.0
+    );
+    this.coastGoalCurrentValue = sharedPreferences.getFloat(
+      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
+      0.0
+    );
   }
 
   onServiceData(context, intent) {
