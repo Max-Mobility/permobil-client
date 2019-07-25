@@ -294,7 +294,7 @@ export class MainViewModel extends Observable {
     const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
-      .getSharedPreferences("prefs.db", 0);
+      .getSharedPreferences('prefs.db', 0);
     this.currentPushCount = sharedPreferences.getInt(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
       0
