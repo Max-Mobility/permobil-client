@@ -62,10 +62,10 @@
         </StackLayout>
 
         // Birthday Box
-        <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="datePicker()">
+        <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="onDatePicker()">
           <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_BIRTHDAY" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="USER_BIRTHDAY | date" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -215,10 +215,11 @@
   // custom full-screen modal for presenting user with config changes UI
   <GridLayout #listPickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
       // Mock ActionBar
-      <GridLayout row="0" rows="*" columns="50, *, auto">
+      <GridLayout row="0" rows="*" columns="50, auto, auto">
         <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
+        <Label row="0" col="1" class="title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
       </GridLayout>
-      <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 20, 50, *">
+      <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 2, 50, *">
           <ListPicker col="1" [items]="primary" selectedIndex="0"  class="p-15"></ListPicker>
           <Label col="2" text=""></Label>
           <ListPicker col="3" [items]="secondary" selectedIndex="0" class="p-15"></ListPicker>
@@ -229,8 +230,9 @@
   // custom full-screen modal for presenting user with config changes UI
   <GridLayout #datePickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
       // Mock ActionBar
-      <GridLayout row="0" rows="*" columns="50, *, auto">
+      <GridLayout row="0" rows="*" columns="50, auto, auto">
         <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeDatePickerDialog()"></Button>
+        <Label row="0" col="1" class="title" [text]="'general.birthday' | translate" textWrap="true"></Label>
       </GridLayout>
       <GridLayout row="1" rows="*" columns="*">
         <DatePicker (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>

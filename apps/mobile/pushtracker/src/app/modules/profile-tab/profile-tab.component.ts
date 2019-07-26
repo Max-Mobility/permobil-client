@@ -34,18 +34,18 @@ export class ProfileTabComponent implements OnInit {
   coastTime: Array<string>;
   distance: Array<string>;
   gender: Array<string>;
-  birthday: Array<string>;
   weight: Array<String>;
   height: Array<string>;
   chairInfo: Array<string>;
   name: string;
   email: string;
+  isWeight: boolean;
 
   primary: Array<string>;
   secondary: Array<string>;
 
   USER_GENDER: string;
-  USER_BIRTHDAY: string;
+  USER_BIRTHDAY: Date;
   USER_WEIGHT: string;
   USER_HEIGHT: string;
   USER_CHAIR_INFO: string;
@@ -101,17 +101,17 @@ export class ProfileTabComponent implements OnInit {
     this.coastTime = ['100', '200'];
     this.distance = ['3.0', '4.0'];
     this.gender = ['Male', 'Female'];
-    this.birthday = ['290 AC', '291 AC'];
     this.weight = ['115 lb', '130 lb'];
     this.height = ['5\'1"', '5\'5"'];
     this.chairInfo = ['Rigid', 'Folding', 'Pediatric'];
     this.name = 'Bran Stark';
     this.email = 'email@permobil.com';
-    this. primary = ['100', '200', '300'];
-    this. secondary = ['100', '200', '300'];
+    this.primary = ['100', '200', '300'];
+    this.secondary = ['100', '200', '300'];
+    this.isWeight = false;
     // user data
     this.USER_GENDER = 'Male';
-    this.USER_BIRTHDAY = '04/01/1980';
+    this.USER_BIRTHDAY = new Date('04/01/1980');
     this.USER_WEIGHT = '190 lbs';
     this.USER_HEIGHT = '5 ft 10 in';
     this.USER_CHAIR_INFO = 'Rigid';
@@ -331,12 +331,14 @@ export class ProfileTabComponent implements OnInit {
   onListWeightTap() {
     const a  = Array.from({length: 300}, (v , k) => k + 1);
     console.dir(a);
+    this.isWeight = true;
     this.listPicker();
   }
 
   onListHeightTap() {
     this.primary = ['1 ft', '2 ft', '3 ft', '4 ft', '5 ft', '6 ft', '7 ft', '8 ft'];
     this.secondary = ['0 in', '1 in', '2 in', '3 in', '4 in', '5 in', '6 in', '7 in', '8 in', '9 in', '10 in', '11 in'];
+    this.isWeight = false;
     this.listPicker();
   }
 
@@ -371,7 +373,7 @@ export class ProfileTabComponent implements OnInit {
     });
   }
 
-  datePicker() {
+  onDatePicker() {
     Log.D('user tapped settings');
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
     cfl
@@ -404,15 +406,18 @@ export class ProfileTabComponent implements OnInit {
 
   onDateChanged(args) {
     Log.D('on date change');
+    const datePicker = <DatePicker>args.object;
+
+    this.USER_BIRTHDAY = (datePicker.date as Date);
+    console.log(this.USER_BIRTHDAY);
+
   }
 
   onPickerLoaded(args) {
     Log.D('date picker loaded');
     const datePicker = <DatePicker>args.object;
 
-    datePicker.year = 1980;
-    datePicker.month = 2;
-    datePicker.day = 9;
+    datePicker.date = this.USER_BIRTHDAY;
     datePicker.minDate = new Date(1950, 0, 29);
     datePicker.maxDate = new Date(2050, 12, 12);
 }
