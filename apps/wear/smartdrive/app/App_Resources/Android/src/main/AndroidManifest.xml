@@ -59,9 +59,9 @@
 
     <!-- for providing complications -->
     <service
-        android:name="com.permobil.smartdrive.wearos.SmartDriveComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
-        android:label="@string/complications_provider_service_label"
+        android:name="com.permobil.smartdrive.wearos.BatteryComplicationProviderService"
+        android:icon="@drawable/ic_battery_white"
+        android:label="@string/complications_provider_service_label_battery"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
         <action
@@ -71,6 +71,63 @@
       <meta-data
           android:name="android.support.wearable.complications.SUPPORTED_TYPES"
           android:value="RANGED_VALUE,SHORT_TEXT"/>
+
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+
+    </service>
+    <service
+        android:name="com.permobil.smartdrive.wearos.RangeComplicationProviderService"
+        android:icon="@drawable/ic_watch_white"
+        android:label="@string/complications_provider_service_label_range"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+
+    </service>
+    <service
+        android:name="com.permobil.smartdrive.wearos.DriveComplicationProviderService"
+        android:icon="@drawable/ic_watch_white"
+        android:label="@string/complications_provider_service_label_drive"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+
+    </service>
+    <service
+        android:name="com.permobil.smartdrive.wearos.CoastComplicationProviderService"
+        android:icon="@drawable/ic_watch_white"
+        android:label="@string/complications_provider_service_label_coast"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
 
       <meta-data
           android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"

@@ -1243,6 +1243,8 @@ export class MainViewModel extends Observable {
     (this._updatesLayout as any).swipeable = canSwipeDismiss;
   }
 
+  // TODO: don't show errors as progress text - use dialogs instead.
+  // TODO: don't use ':' with the errors - use [...] instead.
   checkForUpdates() {
     // don't allow swiping while we're checking for updates!
     (this._updatesLayout as any).swipeable = false;
@@ -1569,6 +1571,7 @@ export class MainViewModel extends Observable {
    * Error History Page Handlers
    */
 
+  // TODO: add tap listener for each error showing what to do
   onErrorHistoryLayoutLoaded(args) {
     // show the chart
     this._errorHistoryLayout = args.object as SwipeDismissLayout;
@@ -1728,6 +1731,8 @@ export class MainViewModel extends Observable {
         // estimated distance is always in miles
         this.estimatedDistance =
           this.smartDriveCurrentBatteryPercentage * rangeFactor;
+        // save the updated estimated range for complication use
+        appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
@@ -2108,8 +2113,6 @@ export class MainViewModel extends Observable {
     // disable swipe close of the updates layout
     (this._scanningLayout as any).swipeable = false;
     this.enableLayout('scanning');
-    // @ts-ignore
-    this.scanningProgressCircle.spin();
   }
 
   hideScanning() {
@@ -2147,6 +2150,8 @@ export class MainViewModel extends Observable {
       })
       .then(() => {
         // scan for smartdrives
+        // @ts-ignore
+        this.scanningProgressCircle.spin();
         return this._bluetoothService.scanForSmartDrives(3);
       })
       .then(() => {
@@ -2174,7 +2179,7 @@ export class MainViewModel extends Observable {
           title: L('settings.select-smartdrive'),
           message: L('settings.select-smartdrive'),
           actions: addresses,
-          cancelButtonText: L('buttons.dismiss')
+          cancelButtonText: L('buttons.cancel')
         }).then(result => {
           // if user selected one of the smartdrives in the action dialog, attempt to connect to it
           if (addresses.indexOf(result) > -1) {

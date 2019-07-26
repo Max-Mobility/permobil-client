@@ -37,30 +37,40 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     PREFIX + "provider.action.PROVIDER_COMPONENT";
   private static final String EXTRA_COMPLICATION_ID =
     PREFIX + "provider.action.COMPLICATION_ID";
+  private static final String EXTRA_DATA_ID =
+    PREFIX + "provider.action.DATA_ID";
 
   static final String COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY =
     PREFIX + "COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY";
+
+  static final String APP_PREFERENCES_FILE_KEY =
+    "prefs.db";
 
   @Override
   public void onReceive(Context context, Intent intent) {
     Bundle extras = intent.getExtras();
     ComponentName provider = extras.getParcelable(EXTRA_PROVIDER_COMPONENT);
     int complicationId = extras.getInt(EXTRA_COMPLICATION_ID);
+    String dataId = extras.getString(EXTRA_DATA_ID);
 
-    String preferenceKey = getPreferenceKey(provider, complicationId);
+    String preferenceKey = getPreferenceKey(provider, complicationId, dataId);
     SharedPreferences sharedPreferences =
       context.getSharedPreferences(COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
 
-    int value = sharedPreferences.getInt(preferenceKey, 0);
-
-    // Updates data for complication.
-    value = (value + 1) % 100;
-
+    // now save the value to the shared preferences so the provider
+    // service can read it
     SharedPreferences.Editor editor = sharedPreferences.edit();
-    editor.putInt(preferenceKey, value);
+
+    // preferences file for loading data from the app
+    SharedPreferences appSharedPreferences =
+      context.getSharedPreferences(APP_PREFERENCES_FILE_KEY, 0);
+
+    // Now actually get the data to be shown and request an update for
+    // the complication that has just been toggled.
+    editor.putFloat(preferenceKey, appSharedPreferences.getFloat(dataId, 0.0f));
+    // now actually tell the editor to apply the changes
     editor.apply();
 
-    // Request an update for the complication that has just been toggled.
     ProviderUpdateRequester requester = new ProviderUpdateRequester(context, provider);
     requester.requestUpdate(complicationId);
   }
@@ -70,10 +80,14 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
    * toggled and updated.
    */
   static PendingIntent getToggleIntent(
-                                       Context context, ComponentName provider, int complicationId) {
+                                       Context context,
+                                       ComponentName provider,
+                                       int complicationId,
+                                       String dataId) {
     Intent intent = new Intent(context, ComplicationToggleReceiver.class);
     intent.putExtra(EXTRA_PROVIDER_COMPONENT, provider);
     intent.putExtra(EXTRA_COMPLICATION_ID, complicationId);
+    intent.putExtra(EXTRA_DATA_ID, dataId);
 
     // Pass complicationId as the requestCode to ensure that different complications get
     // different intents.
@@ -85,7 +99,7 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
    * Returns the key for the shared preference used to hold the current state of a given
    * complication.
    */
-  static String getPreferenceKey(ComponentName provider, int complicationId) {
-    return provider.getClassName() + complicationId;
+  static String getPreferenceKey(ComponentName provider, int complicationId, String dataId) {
+    return provider.getClassName() + complicationId + "." + dataId;
   }
 }
