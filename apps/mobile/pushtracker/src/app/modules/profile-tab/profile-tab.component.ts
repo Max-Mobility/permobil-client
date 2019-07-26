@@ -336,9 +336,14 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListHeightTap() {
-    this.primary = ['1 ft', '2 ft', '3 ft', '4 ft', '5 ft', '6 ft', '7 ft', '8 ft'];
-    this.secondary = ['0 in', '1 in', '2 in', '3 in', '4 in', '5 in', '6 in', '7 in', '8 in', '9 in', '10 in', '11 in'];
+    if (this.SETTING_HEIGHT === 'Centimeters') {
+      this.primary = Array.from({length: 300}, (v , k) => k + 1 + ' cm');
+    } else {
+      this.primary = Array.from({length: 8}, (v , k) => k + 1 + ' ft');
+      this.secondary = Array.from({length: 11}, (v , k) => k + 1 + ' in');
+    }
     this.isWeight = false;
+
     this.listPicker();
   }
 
