@@ -125,7 +125,7 @@ public class ActivityService extends Service {
     startServiceWithNotification();
 
     // set the debuggable flag
-    isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -264,15 +264,20 @@ public class ActivityService extends Service {
     Log.d(TAG, "onDestroy()...");
     super.onDestroy();
 
-    // unregister time receivers
-    this.unregisterReceiver(this.timeReceiver);
+    try {
+      // unregister time receivers
+      this.unregisterReceiver(this.timeReceiver);
 
-    // remove sensor listeners
-    unregisterDeviceSensors();
+      // remove sensor listeners
+      unregisterDeviceSensors();
 
-    // remove handler tasks
-    mHandler.removeCallbacksAndMessages(null);
-    mHandlerThread.quitSafely();
+      // remove handler tasks
+      mHandler.removeCallbacksAndMessages(null);
+      mHandlerThread.quitSafely();
+    } catch (Exception e) {
+      Sentry.capture(e);
+      Log.e(TAG, "onDestroy() Exception: " + e);
+    }
 
     isServiceRunning = false;
   }
