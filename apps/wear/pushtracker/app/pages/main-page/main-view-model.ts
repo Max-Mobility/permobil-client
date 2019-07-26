@@ -208,7 +208,7 @@ export class MainViewModel extends Observable {
     this.screenHeight = screen.mainScreen.heightPixels;
     this.screenWidth90 = Math.round(this.screenWidth * 0.9);
     this.screenHeight90 = Math.round(this.screenHeight * 0.9);
-    this.circleOffset = Math.round((this.screenHeight - this.screenHeight90)/2);
+    this.circleOffset = Math.round((this.screenHeight - this.screenHeight90) / 2);
     Log.D(this.screenWidth, this.screenHeight, this.screenWidth90, this.screenHeight90);
     const widthPixels = screen.mainScreen.widthPixels;
     if (isCircleWatch) {
