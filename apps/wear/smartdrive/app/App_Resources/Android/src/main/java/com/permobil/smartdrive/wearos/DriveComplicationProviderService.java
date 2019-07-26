@@ -19,6 +19,7 @@ package com.permobil.smartdrive.wearos;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Icon;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationManager;
 import android.support.wearable.complications.ComplicationProviderService;
@@ -94,6 +95,7 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_SHORT_TEXT)
         .setShortText(ComplicationText.plainText(numberText))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_omniwheel_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;
@@ -101,6 +103,7 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
         .setLongText(ComplicationText.plainText("Number: " + numberText))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_omniwheel_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;

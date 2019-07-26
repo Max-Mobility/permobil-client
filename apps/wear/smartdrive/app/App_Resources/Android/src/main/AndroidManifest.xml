@@ -79,7 +79,7 @@
     </service>
     <service
         android:name="com.permobil.smartdrive.wearos.RangeComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
+        android:icon="@drawable/ic_range_white"
         android:label="@string/complications_provider_service_label_range"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
@@ -98,7 +98,7 @@
     </service>
     <service
         android:name="com.permobil.smartdrive.wearos.DriveComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
+        android:icon="@drawable/ic_omniwheel_white"
         android:label="@string/complications_provider_service_label_drive"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
@@ -117,7 +117,7 @@
     </service>
     <service
         android:name="com.permobil.smartdrive.wearos.CoastComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
+        android:icon="@drawable/ic_omniwheel_white"
         android:label="@string/complications_provider_service_label_coast"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
