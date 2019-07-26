@@ -31,11 +31,8 @@ export class ProfileTabComponent implements OnInit {
   listPickerDialog: ElementRef;
   @ViewChild('datePickerDialog', { static: false})
   datePickerDialog: ElementRef;
-  coastTime: Array<string>;
-  distance: Array<string>;
+
   gender: Array<string>;
-  weight: Array<String>;
-  height: Array<string>;
   chairInfo: Array<string>;
   name: string;
   email: string;
@@ -43,6 +40,8 @@ export class ProfileTabComponent implements OnInit {
 
   primary: Array<string>;
   secondary: Array<string>;
+  primaryIndex: number;
+  secondaryIndex: number;
 
   USER_GENDER: string;
   USER_BIRTHDAY: Date;
@@ -97,17 +96,15 @@ export class ProfileTabComponent implements OnInit {
     // appSettings.clear();
 
     this._page.actionBarHidden = true;
-
-    this.coastTime = ['100', '200'];
-    this.distance = ['3.0', '4.0'];
     this.gender = ['Male', 'Female'];
-    this.weight = ['115 lb', '130 lb'];
-    this.height = ['5\'1"', '5\'5"'];
     this.chairInfo = ['Rigid', 'Folding', 'Pediatric'];
     this.name = 'Bran Stark';
     this.email = 'email@permobil.com';
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
+
     this.isWeight = false;
     // user data
     this.USER_GENDER = 'Male';
@@ -168,34 +165,14 @@ export class ProfileTabComponent implements OnInit {
     );
 
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 0
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+    this.openDialog(cfl);
   }
 
   async closeActivityGoalsDialog() {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl.animate({
-      duration: 300,
-      opacity: 0,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 900
-      }
-    });
+    this.closeDialog(cfl);
   }
 
   incrementConfigValue() {
@@ -254,32 +231,12 @@ export class ProfileTabComponent implements OnInit {
     Log.D('user tapped settings');
 
     const cfl = this.settingsDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 0
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+    this.openDialog(cfl);
   }
 
   async closeSettingsDialog() {
     const cfl = this.settingsDialog.nativeElement as GridLayout;
-    cfl.animate({
-      duration: 300,
-      opacity: 0,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 900
-      }
-    });
+    this.closeDialog(cfl);
   }
 
   onHeightTap(args) {
@@ -329,6 +286,14 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListWeightTap() {
+    Log.D('on list weight');
+    if (this.SETTING_WEIGHT === 'Kilograms') {
+      this.primary = Array.from({length: 280}, (v , k) => k + 1 + '');
+      this.secondary = Array.from({length: 9}, (v , k) => '.' + (k + 1));
+    } else {
+      this.primary = Array.from({length: 600}, (v , k) => k + 1 + '');
+      this.secondary = Array.from({length: 9}, (v , k) => '.' + (k + 1));
+    }
     const a  = Array.from({length: 300}, (v , k) => k + 1);
     console.dir(a);
     this.isWeight = true;
@@ -336,6 +301,8 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListHeightTap() {
+    Log.D('on list Height');
+    console.log(this.SETTING_HEIGHT);
     if (this.SETTING_HEIGHT === 'Centimeters') {
       this.primary = Array.from({length: 300}, (v , k) => k + 1 + ' cm');
     } else {

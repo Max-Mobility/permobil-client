@@ -221,9 +221,9 @@
         <Label row="0" col="1" class="title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
       </GridLayout>
       <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 2, 50, *">
-          <ListPicker col="1" [items]="primary" selectedIndex="0"  class="p-15"></ListPicker>
+          <ListPicker col="1" [items]="primary" [selectedIndex]="primaryIndex"  class="p-15"></ListPicker>
           <Label col="2" text=""></Label>
-          <ListPicker col="3" [items]="secondary" selectedIndex="0" class="p-15"></ListPicker>
+          <ListPicker col="3" [items]="secondary" [selectedIndex]="secondaryIndex" class="p-15"></ListPicker>
           <Button row="1" col="5" text="Done"  class="close-dialog" (tap)="closeListPickerDialog()"></Button>
       </GridLayout>
  </GridLayout>
