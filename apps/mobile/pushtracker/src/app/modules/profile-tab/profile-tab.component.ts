@@ -345,54 +345,44 @@ export class ProfileTabComponent implements OnInit {
   listPicker() {
     Log.D('user tapped settings');
      const cfl = this.listPickerDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 0
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+     this.openDialog(cfl);
   }
 
   async closeListPickerDialog() {
     const cfl = this.listPickerDialog.nativeElement as GridLayout;
-    cfl.animate({
-      duration: 300,
-      opacity: 0,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 900
-      }
-    });
+    this.closeDialog(cfl);
   }
 
   onDatePicker() {
     Log.D('user tapped settings');
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 0
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+    this.openDialog(cfl);
   }
 
   async closeDatePickerDialog() {
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
+    this.closeDialog(cfl);
+  }
+
+  openDialog(args) {
+    const cfl = <GridLayout> args;
+    cfl
+    .animate({
+      duration: 300,
+      opacity: 1,
+      curve: AnimationCurve.easeOut,
+      translate: {
+        x: 0,
+        y: 0
+      }
+    })
+    .catch(err => {
+      this._logService.logException(err);
+    });
+  }
+
+  closeDialog(args) {
+    const cfl = <GridLayout> args;
     cfl.animate({
       duration: 300,
       opacity: 0,

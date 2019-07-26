@@ -224,6 +224,7 @@
           <ListPicker col="1" [items]="primary" selectedIndex="0"  class="p-15"></ListPicker>
           <Label col="2" text=""></Label>
           <ListPicker col="3" [items]="secondary" selectedIndex="0" class="p-15"></ListPicker>
+          <Button row="1" col="5" text="Done"  class="close-dialog" (tap)="closeListPickerDialog()"></Button>
       </GridLayout>
  </GridLayout>
 
@@ -231,11 +232,12 @@
   // custom full-screen modal for presenting user with config changes UI
   <GridLayout #datePickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
       // Mock ActionBar
-      <GridLayout row="0" rows="*" columns="50, auto, auto">
+      <GridLayout row="0" rows="*" columns="50, auto, auto,*">
         <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeDatePickerDialog()"></Button>
         <Label row="0" col="1" class="title" [text]="'general.birthday' | translate" textWrap="true"></Label>
       </GridLayout>
-      <GridLayout row="1" rows="*" columns="*">
-        <DatePicker (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>
+      <GridLayout row="1" rows="*,*,*" columns="*,*,*">
+        <DatePicker row="0" col="1" (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>
+        <Button row="1" col="2" text="Done"  class="close-dialog" (tap)="closeDatePickerDialog()"></Button>
       </GridLayout>
  </GridLayout>

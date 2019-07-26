@@ -66,4 +66,11 @@
     horizontal-align: right;
     vertical-align: center;
   }
+  .CLOSE_DIALOG_BASE {
+    @extend .btn-transparent;
+    padding: 4;
+    font-size: 12;
+    font-family: $material-icon;
+    horizontal-align: left;
+  }
 }
