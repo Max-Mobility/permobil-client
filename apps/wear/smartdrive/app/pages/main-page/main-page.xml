@@ -296,12 +296,6 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.error-history') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
@@ -488,6 +482,19 @@
           <ScrollView height="100%" id="aboutScrollView">
             <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.error-history') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('about.sd-mcu-version') }}" class="settings-label" textWrap="true" />
@@ -504,13 +511,6 @@
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.sd-serial-number') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
                 </GridLayout>
@@ -518,8 +518,8 @@
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.sd-serial-number') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
