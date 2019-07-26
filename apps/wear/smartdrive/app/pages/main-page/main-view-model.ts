@@ -16,7 +16,6 @@ import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
-import { showSuccess } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
@@ -1508,10 +1507,11 @@ export class MainViewModel extends Observable {
                 this.releaseCPU();
                 this.isUpdatingSmartDrive = false;
                 const status = otaStatus.replace('OTA', 'Update');
-                this.updateProgressText = status;
                 Log.D('update status:', otaStatus);
                 if (status === 'Update Complete') {
-                  showSuccess(L('updates.success'));
+                  this.updateProgressText = L('updates.success');
+                } else {
+                  this.updateProgressText = L('updates.failed');
                 }
                 // re-enable swipe close of the updates layout
                 (this._updatesLayout as any).swipeable = true;
@@ -1537,7 +1537,7 @@ export class MainViewModel extends Observable {
           // re-enable swipe close of the updates layout
           (this._updatesLayout as any).swipeable = true;
           // smartdrive is already up to date
-          showSuccess(L('updates.up-to-date'));
+          this.updateProgressText = L('updates.up-to-date');
           setTimeout(() => {
             hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
             this.previousLayout();
@@ -2128,9 +2128,7 @@ export class MainViewModel extends Observable {
     return this.saveNewSmartDrive()
       .then((didSave: boolean) => {
         if (didSave) {
-          showSuccess(
-            `${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`
-          );
+          alert(`${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`);
         }
       })
       .catch((err: any) => {
