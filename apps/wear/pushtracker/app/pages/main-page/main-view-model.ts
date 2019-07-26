@@ -10,7 +10,6 @@ import once from 'lodash/once';
 import throttle from 'lodash/throttle';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
-import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -107,6 +106,11 @@ export class MainViewModel extends Observable {
   @Prop() currentHighStressActivityCount: number = 0;
 
   // for managing the inset of the layouts ourselves
+  @Prop() screenWidth: number = 200;
+  @Prop() screenHeight: number = 200;
+  @Prop() screenWidth90: number = 180;
+  @Prop() screenHeight90: number = 180;
+  @Prop() circleOffset: number = 10;
   @Prop() insetPadding: number = 0;
 
   // for managing when we send data to server
@@ -173,7 +177,6 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
-  private pager: Pager;
   private bluetoothService: BluetoothService;
   private sqliteService: SqliteService;
   private kinveyService: KinveyService;
@@ -201,6 +204,12 @@ export class MainViewModel extends Observable {
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
+    this.screenWidth = screen.mainScreen.widthPixels;
+    this.screenHeight = screen.mainScreen.heightPixels;
+    this.screenWidth90 = Math.round(this.screenWidth * 0.9);
+    this.screenHeight90 = Math.round(this.screenHeight * 0.9);
+    this.circleOffset = Math.round((this.screenHeight - this.screenHeight90)/2);
+    Log.D(this.screenWidth, this.screenHeight, this.screenWidth90, this.screenHeight90);
     const widthPixels = screen.mainScreen.widthPixels;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
@@ -307,6 +316,14 @@ export class MainViewModel extends Observable {
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0
     );
+  }
+
+  debugTap() {
+    this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
+    this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
+    this.coastGoalValue = ((Math.random() * 10) + 2.0);
+    this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    this.updateDisplay();
   }
 
   onServiceData(context, intent) {
@@ -459,15 +476,6 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // get child references
-    try {
-      const page = args.object as Page;
-      this.pager = page.getViewById('pager') as Pager;
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('onMainPageLoaded::error:', err);
-    }
-
     // apply theme
     this.applyTheme();
   }
@@ -490,25 +498,6 @@ export class MainViewModel extends Observable {
   }
 
   applyStyle() {
-    this.sentryBreadCrumb('applying style');
-    try {
-      if (this.pager) {
-        try {
-          const children = this.pager._childrenViews;
-          for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as View;
-            child._onCssStateChange();
-          }
-        } catch (err) {
-          Sentry.captureException(err);
-          Log.E('apply style error:', err);
-        }
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('apply style error:', err);
-    }
-    this.sentryBreadCrumb('style applied');
   }
 
   /**
@@ -598,11 +587,6 @@ export class MainViewModel extends Observable {
       this.chargingWorkTimeoutId = null;
     }
   }
-
-  /**
-   * View Loaded event handlers
-   */
-  onPagerLoaded(args: any) { }
 
   /**
    * Main Menu Button Tap Handlers

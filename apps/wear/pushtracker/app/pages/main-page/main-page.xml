@@ -1,84 +1,82 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd"
       xmlns:nac="nativescript-animated-circle"
       xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-      xmlns:lv="nativescript-wear-os/packages/listview"
-      xmlns:pager="nativescript-pager"
       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
-      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:RL="nativescript-ng-ripple/ripple-view"
       xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
       actionBarHidden="true">
-  <GridLayout rows="*" columns="*">
-
-    <pager:Pager id="pager" loaded="{{ onPagerLoaded }}" orientation="vertical"
-                 height="100%" width="100%"
-                 transformer="none" pagesCount="4" showNativePageIndicator="false"
-                 visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
-      // Goal Overview
-      <pager:PagerItem>
-        <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
-          // Distance Goal Circle
-          <nac:AnimatedCircle rowSpan="3" colSpan="3"
-                              class="distanceCircle"
-                              width="95%" height="95%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8"
-                              progress="{{ distanceGoalCurrentProgress }}">
-          </nac:AnimatedCircle>
-          // Coast Goal Circle
-          <nac:AnimatedCircle rowSpan="3" colSpan="3"
-                              class="coastCircle"
-                              width="90%" height="90%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8"
-                              progress="{{ coastGoalCurrentProgress }}">
-          </nac:AnimatedCircle>
-          <GridLayout
-              rowSpan="3" colSpan="3"
-              width="90%" height="90%"
-              rows="15, *, auto, 15" columns="30, *, 30">
-            <GridLayout rows="*" columns="*, *" row="1" col="1" marginTop="10">
-              <StackLayout col="0">
-                // distance
-                <Label class="center-label-base ionicon distance-goal-color compact fs34"
-                       text="&#xf125;" />
+  <GridLayout rows="*" columns="*" width="100%" height="100%">
+    <ScrollView visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
+      <StackLayout>
+        // Goal Overview
+        <wol:WearOsLayout
+            disableInsetConstraint="true">
+          <GridLayout rows="*" columns="*" width="100%" height="100%">
+            // Distance Goal Circle
+            <nac:AnimatedCircle
+                class="distanceCircle"
+                row="0" col="0"
+                width="{{ screenWidth }}" height="{{ screenHeight }}"
+                animated="true" animateFrom="0" clockwise="true"
+                rimWidth="2" barWidth="8"
+                progress="{{ distanceGoalCurrentProgress }}">
+            </nac:AnimatedCircle>
+            // Coast Goal Circle
+            <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+            <nac:AnimatedCircle
+                class="coastCircle"
+                row="0" col="0"
+                width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}"
+                animated="true" animateFrom="0" clockwise="true"
+                rimWidth="2" barWidth="8"
+                progress="{{ coastGoalCurrentProgress }}">
+            </nac:AnimatedCircle>
+            <GridLayout
+                row="0" col="0"
+                width="90%" height="90%"
+                tap="{{ debugTap }}"
+                rows="*, auto" columns="*">
+              <GridLayout rows="*" columns="*, *" row="0" marginTop="10">
+                <StackLayout col="0">
+                  // distance
+                  <Label class="center-label-base ionicon distance-goal-color compact fs34"
+                         text="&#xf125;" />
+                  <Label textWrap="true"
+                         class="center-label-base compact fs26 bold"
+                         text="{{ distanceGoalCurrentValueDisplay }}" />
+                  <Label textWrap="true"
+                         class="center-label-base compact fs14"
+                         text="{{ distanceUnits }}" />
+                </StackLayout>
+                <StackLayout col="1">
+                  // coast
+                  <Label class="center-label-base ionicon coast-goal-color compact fs34"
+                         text="&#xf125; &#xf125;" />
+                  <Label textWrap="true"
+                         class="center-label-base compact fs26 bold"
+                         text="{{ coastGoalCurrentValueDisplay }}" />
+                  <Label textWrap="true"
+                         class="center-label-base compact fs14"
+                         text="{{ L('goals.coast.units') }}" />
+                </StackLayout>
+              </GridLayout>
+              <StackLayout row="1" verticalAlignment="bottom">
+                // pushes
                 <Label textWrap="true"
-                       class="center-label-base compact fs26 bold"
-                       text="{{ distanceGoalCurrentValueDisplay }}" />
+                       class="center-label-base compact fs18 bold"
+                       text="{{ currentPushCountDisplay }}" />
                 <Label textWrap="true"
                        class="center-label-base compact fs14"
-                       text="{{ distanceUnits }}" />
-              </StackLayout>
-              <StackLayout col="1">
-                // coast
-                <Label class="center-label-base ionicon coast-goal-color compact fs34"
-                       text="&#xf125; &#xf125;" />
-                <Label textWrap="true"
-                       class="center-label-base compact fs26 bold"
-                       text="{{ coastGoalCurrentValueDisplay }}" />
-                <Label textWrap="true"
-                       class="center-label-base compact fs14"
-                       text="{{ L('goals.coast.units') }}" />
+                       text="{{ L('pushes.units') }}" />
               </StackLayout>
             </GridLayout>
-            <StackLayout row="2" col="1" verticalAlignment="bottom">
-              // pushes
-              <Label textWrap="true"
-                     class="center-label-base compact fs18 bold"
-                     text="{{ currentPushCountDisplay }}" />
-              <Label textWrap="true"
-                     class="center-label-base compact fs14"
-                     text="{{ L('pushes.units') }}" />
-            </StackLayout>
           </GridLayout>
-        </GridLayout>
-      </pager:PagerItem>
+        </wol:WearOsLayout>
 
-      // Distance Chat
-      <pager:PagerItem>
-        <box:BoxInsetLayout>
+        // Distance Chat
+        <wol:WearOsLayout>
           <GridLayout rows="auto, auto, *" columns="*, auto">
             <Label row="0" colSpan="2" text="{{ L('charts.distance.title') }}"
                    class="chart-title" textWrap="true" />
@@ -99,12 +97,10 @@
               </Repeater.itemTemplate>
             </Repeater>
           </GridLayout>
-        </box:BoxInsetLayout>
-      </pager:PagerItem>
+        </wol:WearOsLayout>
 
-      // Coast Chart
-      <pager:PagerItem>
-        <box:BoxInsetLayout>
+        // Coast Chart
+        <wol:WearOsLayout>
           <GridLayout rows="auto, auto, *" columns="*, auto">
             // Chart Title
             <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}"
@@ -126,35 +122,31 @@
               </Repeater.itemTemplate>
             </Repeater>
           </GridLayout>
-        </box:BoxInsetLayout>
-      </pager:PagerItem>
-
-      <pager:PagerItem>
-        <wol:WearOsLayout
-            height="100%" width="100%">
-          <ScrollView height="100%">
-            <GridLayout rows="*,*,*,*,*" columns="*">
-              <GridLayout row="0" rows="*, *" columns="*">
-                <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
-                <Label text="" row="1" col="0" class="hr-blue" />
-              </GridLayout>
-              <RL:Ripple row="1" rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
-                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label col="1" text="{{ L('menu.profile') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple row="3" rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
-                  <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-            </GridLayout>
-          </ScrollView>
         </wol:WearOsLayout>
-      </pager:PagerItem>
-    </pager:Pager>
+
+        // Menu Page
+        <wol:WearOsLayout marginBottom="{{ insetPadding }}">
+          <GridLayout rows="*,*,*,*,*" columns="*" height="100%">
+            <GridLayout row="0" rows="*, *" columns="*">
+              <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+              <Label text="" row="1" col="0" class="hr-blue" />
+            </GridLayout>
+            <RL:Ripple row="1" rippleColor="#ddd">
+              <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
+                <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label col="1" text="{{ L('menu.profile') }}" class="settings-label" textWrap="true" />
+              </GridLayout>
+            </RL:Ripple>
+            <RL:Ripple row="3" rippleColor="#ddd">
+              <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
+                <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
+              </GridLayout>
+            </RL:Ripple>
+          </GridLayout>
+        </wol:WearOsLayout>
+      </StackLayout>
+    </ScrollView>
 
     // Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}"
