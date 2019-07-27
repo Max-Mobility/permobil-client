@@ -165,14 +165,14 @@ export class ProfileTabComponent implements OnInit {
     );
 
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    this.openDialog(cfl);
+    this.animateDialog(cfl, 0, 0);
   }
 
   async closeActivityGoalsDialog() {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    this.closeDialog(cfl);
+    this.animateDialog(cfl, 0, 900);
   }
 
   incrementConfigValue() {
@@ -231,12 +231,12 @@ export class ProfileTabComponent implements OnInit {
     Log.D('user tapped settings');
 
     const cfl = this.settingsDialog.nativeElement as GridLayout;
-    this.openDialog(cfl);
+    this.animateDialog(cfl, 0, 0);
   }
 
   async closeSettingsDialog() {
     const cfl = this.settingsDialog.nativeElement as GridLayout;
-    this.closeDialog(cfl);
+    this.animateDialog(cfl, 0, 900);
   }
 
   onHeightTap(args) {
@@ -317,26 +317,26 @@ export class ProfileTabComponent implements OnInit {
   listPicker() {
     Log.D('user tapped settings');
      const cfl = this.listPickerDialog.nativeElement as GridLayout;
-     this.openDialog(cfl);
+     this.animateDialog(cfl, 0, 0);
   }
 
   async closeListPickerDialog() {
     const cfl = this.listPickerDialog.nativeElement as GridLayout;
-    this.closeDialog(cfl);
+    this.animateDialog(cfl, 0, 900);
   }
 
   onDatePicker() {
     Log.D('user tapped settings');
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
-    this.openDialog(cfl);
+    this.animateDialog(cfl, 0, 0);
   }
 
   async closeDatePickerDialog() {
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
-    this.closeDialog(cfl);
+    this.animateDialog(cfl, 0, 900);
   }
 
-  openDialog(args) {
+  animateDialog(args, x: number, y: number) {
     const cfl = <GridLayout> args;
     cfl
     .animate({
@@ -344,25 +344,12 @@ export class ProfileTabComponent implements OnInit {
       opacity: 1,
       curve: AnimationCurve.easeOut,
       translate: {
-        x: 0,
-        y: 0
+        x: x,
+        y: y
       }
     })
     .catch(err => {
       this._logService.logException(err);
-    });
-  }
-
-  closeDialog(args) {
-    const cfl = <GridLayout> args;
-    cfl.animate({
-      duration: 300,
-      opacity: 0,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 900
-      }
     });
   }
 
