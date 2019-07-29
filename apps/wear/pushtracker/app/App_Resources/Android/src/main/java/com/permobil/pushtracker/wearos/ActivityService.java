@@ -61,7 +61,8 @@ public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final long PROCESSING_TASK_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
+  private static final long PROCESSING_TASK_PERIOD_MS =  15 * 1000; // 15 seconds
+  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 25 * 60;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -70,11 +71,11 @@ public class ActivityService extends Service {
    * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
    */
   // microseconds between sensor data
-  private static final int SENSOR_DELAY_DEBUG = 60 * 1000;
-  private static final int SENSOR_DELAY_RELEASE = 60 * 1000;
+  private static final int SENSOR_DELAY_US_DEBUG = 40 * 1000;
+  private static final int SENSOR_DELAY_US_RELEASE = 40 * 1000;
 
   // 20 minutes between sensor updates in microseconds
-  private static final int maxReportingLatency = 20 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
@@ -103,6 +104,8 @@ public class ActivityService extends Service {
   public boolean personIsActive = false;
   public boolean watchBeingWorn = false;
   public boolean isServiceRunning = false;
+
+  public List<SensorEvent> sensorDataList = new ArrayList<>();
 
   // activity data
   public int currentPushCount = 0;
@@ -192,8 +195,8 @@ public class ActivityService extends Service {
         Log.d(TAG, "starting service!");
 
         this.initSensors();
-        int sensorDelay = isDebuggable ? SENSOR_DELAY_DEBUG : SENSOR_DELAY_RELEASE;
-        this.registerDeviceSensors(sensorDelay, maxReportingLatency);
+        int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+        this.registerDeviceSensors(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
 
         mHandler.removeCallbacksAndMessages(null);
         mHandler.post(mProcessingTask);
@@ -253,7 +256,7 @@ public class ActivityService extends Service {
     @Override
     public void run() {
       try {
-        PeriodicProcessing();
+        periodicProcessing();
       } catch (Exception e) {
         Sentry.capture(e);
         Log.e(TAG, "Exception in ProcessingRunnable: " + e.getMessage());
@@ -262,15 +265,66 @@ public class ActivityService extends Service {
     }
   }
 
-  private void PeriodicProcessing() {
-    Log.d(TAG, "PeriodicProcessing()...");
-    // TODO: update data in SQLite tables
-    // TODO: update data in datastore / shared preferences
-    // send intent to main activity with updated data
-    sendDataToActivity(currentPushCount,
-                       currentCoastTime,
-                       currentDistance,
-                       currentHeartRate);
+  private void periodicProcessing() {
+    Log.d(TAG, "periodicProcessing()...");
+    // process the stored sensor data
+    boolean newDataProcessed = processSensorData();
+    if (newDataProcessed) {
+      // TODO: update data in SQLite tables
+      // TODO: update data in datastore / shared preferences
+      // send intent to main activity with updated data
+      sendDataToActivity(currentPushCount,
+                         currentCoastTime,
+                         currentDistance,
+                         currentHeartRate);
+    }
+  }
+
+  private boolean processSensorData() {
+    // TODO: actually run through the processing here
+    int numProcessed = 0;
+    boolean didProcess = false;
+    synchronized (sensorDataList) {
+      while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
+        SensorEvent event = sensorDataList.remove(0);
+        // use the data to detect activities
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(event.values, event.timestamp);
+        handleDetection(detection);
+        numProcessed++;
+        didProcess = true;
+      }
+    }
+    return didProcess;
+  }
+
+  void handleDetection(ActivityDetector.Detection detection) {
+    // Log.d(TAG, "detection: " + detection);
+    if (detection.confidence != 0) {
+      // update push detection
+      if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
+        currentPushCount += 1;
+        // calculate coast time here
+        if (lastPush != null) {
+          long timeDiffNs = detection.time - lastPush.time;
+          // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
+          long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
+          if (timeDiffNs < timeDiffThreshold) {
+            // TODO: update how we calculate coast time - need to
+            // average it!
+            currentCoastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
+          }
+        }
+        // update the last push
+        lastPush = detection;
+        // save the pushes and coast to the datastore
+        datastore.setPushes(currentPushCount);
+        datastore.setCoast(currentCoastTime);
+      }
+      // update the last activity
+      lastActivity = detection;
+    }
+    // TODO: record the activities somewhere
   }
 
   @Override
@@ -394,10 +448,10 @@ public class ActivityService extends Service {
         int sensorType = event.sensor.getType();
         if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
           if (isDebuggable || watchBeingWorn) {
-            // use the data to detect activities
-            ActivityDetector.Detection detection =
-              activityDetector.detectActivity(event.values, event.timestamp);
-            handleDetection(detection);
+            synchronized (sensorDataList) {
+              // add the event to the data list for processing later
+              sensorDataList.add(event);
+            }
           }
         } else if (sensorType == Sensor.TYPE_HEART_RATE) {
           // update the heart rate
@@ -415,35 +469,6 @@ public class ActivityService extends Service {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
       // TODO Auto-generated method stub
-    }
-
-    void handleDetection(ActivityDetector.Detection detection) {
-      // Log.d(TAG, "detection: " + detection);
-      if (detection.confidence != 0) {
-        // update push detection
-        if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
-          currentPushCount += 1;
-          // calculate coast time here
-          if (lastPush != null) {
-            long timeDiffNs = detection.time - lastPush.time;
-            // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
-            long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
-            if (timeDiffNs < timeDiffThreshold) {
-              // TODO: update how we calculate coast time - need to
-              // average it!
-              currentCoastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
-            }
-          }
-          // update the last push
-          lastPush = detection;
-          // save the pushes and coast to the datastore
-          datastore.setPushes(currentPushCount);
-          datastore.setCoast(currentCoastTime);
-        }
-        // update the last activity
-        lastActivity = detection;
-      }
-      // TODO: record the activities somewhere
     }
 
     void updateActivity(SensorEvent event) {
