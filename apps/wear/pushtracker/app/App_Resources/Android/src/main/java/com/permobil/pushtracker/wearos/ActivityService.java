@@ -69,11 +69,16 @@ public class ActivityService extends Service {
 
   // 20 minutes between sensor updates in microseconds
   private static final int maxReportingLatency = 20 * 60 * 1000 * 1000;
-  private static final long LOCATION_LISTENER_MIN_TIME_MS = 1 * 60 * 1000;
-  private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 25;
+  // 25 meters / minute = 1.5 km / hr (~1 mph)
+  private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
+  private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
 
+  // distance in m under which we don't consider the device to have moved
+  private static final float LOCATION_DISTANCE_THRESHOLD_M = LOCATION_LISTENER_MIN_DISTANCE_M;
+  // speed in m/s under which we don't compute distance travelled
+  private static final float LOCATION_SPEED_THRESHOLD_MIN_MPS = 0.4f; // ~= 0.9 miles per hour
   // speed in m/s over which we don't compute distance travelled
-  private static final float LOCATION_SPEED_THRESHOLD_MPS = 4.0f; // ~= 9 miles per hour
+  private static final float LOCATION_SPEED_THRESHOLD_MAX_MPS = 4.0f; // ~= 9.0 miles per hour
 
   public boolean isDebuggable = false;
 
@@ -147,10 +152,13 @@ public class ActivityService extends Service {
     mLocationManager = (LocationManager) getApplicationContext()
       .getSystemService(Context.LOCATION_SERVICE);
     LocationListener mLocationListener = new LocationListener();
+    // according to the docs: "it is more difficult for location
+    // providers to save power using the minDistance parameter, so
+    // minTime should be the primary tool to conserving battery life."
     mLocationManager.requestLocationUpdates(
                                             LocationManager.GPS_PROVIDER,
                                             LOCATION_LISTENER_MIN_TIME_MS,
-                                            LOCATION_LISTENER_MIN_DISTANCE_M,
+                                            0, // LOCATION_LISTENER_MIN_DISTANCE_M,
                                             mLocationListener
                                             );
     isServiceRunning = false;
@@ -285,6 +293,11 @@ public class ActivityService extends Service {
   private class LocationListener implements android.location.LocationListener {
     @Override
     public void onLocationChanged(Location location) {
+      if (!watchBeingWorn) {
+        // don't do any range computation if the watch isn't being
+        // worn
+        return;
+      }
       Log.d(TAG, "Got location: " + location);
       double lat = location.getLatitude();
       double lon = location.getLongitude();
@@ -292,21 +305,52 @@ public class ActivityService extends Service {
       long elapsedRealTimeNs = location.getElapsedRealtimeNanos();
       // update the distance
       if (mLastKnownLocation != null && mLastKnownLocation != location) {
+        /*
+         * speed: m/s
+         *
+         * location accuracy: 68% confidence radius (m)
+         *
+         * speed accuracy: 68% confidence 1-side range above & below
+         * the estimated speed
+         */
+        // location data
         float currentSpeed = location.getSpeed();
+        float currentLocationAccuracy = location.getAccuracy();
+        float currentSpeedAccuracy = location.getSpeedAccuracyMetersPerSecond();
         float previousSpeed = mLastKnownLocation.getSpeed();
-        // compute our own speed
+        float previousLocationAccuracy = mLastKnownLocation.getAccuracy();
+        float previousSpeedAccuracy = mLastKnownLocation.getSpeedAccuracyMetersPerSecond();
+        // compute our own speed using the locations and time (not as
+        // accurate as the provided speeds)
         long timeDiffNs = elapsedRealTimeNs - mLastKnownLocation.getElapsedRealtimeNanos();
         float timeDiffSeconds = timeDiffNs / 1000000000.0f;
         float distance = mLastKnownLocation.distanceTo(location);
         float computedSpeed = distance / timeDiffSeconds;
+        // compute minimum / maximum speeds based on confidences
+        float currentMinSpeed = currentSpeed - currentSpeedAccuracy;
+        float currentMaxSpeed = currentSpeed + currentSpeedAccuracy;
+        float previousMinSpeed = previousSpeed - previousSpeedAccuracy;
+        float previousMaxSpeed = previousSpeed + previousSpeedAccuracy;
         // determine validity of speeds
-        boolean newSpeedValid = (currentSpeed <= LOCATION_SPEED_THRESHOLD_MPS) &&
+        boolean newSpeedValid =
+          (currentSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+          (currentSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
           location.hasSpeed();
-        boolean oldSpeedValid = (previousSpeed <= LOCATION_SPEED_THRESHOLD_MPS) &&
+        boolean oldSpeedValid =
+          (previousSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+          (previousSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
           mLastKnownLocation.hasSpeed();
-        boolean computedSpeedValid = (computedSpeed <= LOCATION_SPEED_THRESHOLD_MPS);
+        boolean computedSpeedValid =
+          (computedSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+          (computedSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS);
+        // determine validity of location based on difference - must
+        // be actually moving, not just an update within the same
+        // confidence threshold
+        boolean newLocationIsFromMovement =
+          distance >= LOCATION_DISTANCE_THRESHOLD_M &&
+          (computedSpeedValid || newSpeedValid);
         // if we have valid speed, accumulate more distance
-        if (computedSpeedValid || newSpeedValid) {
+        if (newLocationIsFromMovement) {
           currentDistance += distance;
           // update the saved distance
           datastore.setDistance(currentDistance);
