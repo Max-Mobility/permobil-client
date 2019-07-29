@@ -5,17 +5,10 @@ import {
   barColorProperty
 } from './animated-circle.common';
 import { Color } from 'tns-core-modules/color';
-import { View } from 'tns-core-modules/ui/core/view';
 
 declare const at;
 
 export class AnimatedCircle extends Common {
-  private _android: any;
-  // private _layout: android.widget.LinearLayout;
-
-  private _layout: android.widget.RelativeLayout; // android.support.constraint.ConstraintLayout;
-  private _androidViewId: number;
-  private _childViews: Map<number, View>;
   private _progress: number;
   private _animateFrom: number;
   private _animationDuration = 1000;
@@ -39,41 +32,27 @@ export class AnimatedCircle extends Common {
   }
 
   createNativeView() {
-    this._android = new at.grabner.circleprogress.CircleProgressView(
+    return new at.grabner.circleprogress.CircleProgressView(
       this._context,
       null
     );
-    // Using a LinearLayout to add child items
-    this._layout = new android.widget.RelativeLayout(this._context);
-    if (!this._androidViewId) {
-      this._androidViewId = android.view.View.generateViewId();
-    }
-    this._layout.setId(this._androidViewId);
-    this._layout.setVerticalGravity(
-      android.widget.RelativeLayout.CENTER_IN_PARENT
-    );
-    // this._layout.setOrientation(android.widget.LinearLayout.VERTICAL);
-    this._layout.setGravity(android.view.Gravity.CENTER);
-    this._layout.setLayoutParams(
-      new android.view.ViewGroup.LayoutParams(
-        android.view.ViewGroup.LayoutParams.FILL_PARENT,
-        android.view.ViewGroup.LayoutParams.FILL_PARENT
-      )
-    );
-    this._layout.addView(this._android);
-
-    return this._layout;
   }
 
   initNativeView() {
-    this._android.setAutoTextSize(false);
-    this._android.setBarStrokeCap(android.graphics.Paint.Cap.ROUND);
-    this._android.setTextMode(at.grabner.circleprogress.TextMode.TEXT);
-    this._android.setShowTextWhileSpinning(true);
-    this._android.setTextScale(1.1);
-    this._android.setTextSize(300);
-    this._android.setUnitVisible(false);
+    this.android.setAutoTextSize(false);
+    this.android.setBarStrokeCap(android.graphics.Paint.Cap.ROUND);
+    this.android.setTextMode(at.grabner.circleprogress.TextMode.TEXT);
+    this.android.setShowTextWhileSpinning(true);
+    this.android.setTextScale(1.1);
+    this.android.setTextSize(300);
+    this.android.setUnitVisible(false);
+    this.android.setOuterContourSize(0);
+    this.android.setInnerContourSize(0);
     this._updateAnimatedCircle();
+  }
+
+  get android() {
+    return this.nativeView;
   }
 
   public spin() {
@@ -86,42 +65,6 @@ export class AnimatedCircle extends Common {
 
   public disposeNativeView() {
     super.disposeNativeView();
-  }
-
-  get _childrenCount(): number {
-    return this.content ? 1 : 0;
-  }
-  _onContentChanged(oldView: View, newView: View) {
-    //
-  }
-  _addChildFromBuilder(name: string, value: any) {
-    if (value instanceof View) {
-      this.content = value;
-    }
-  }
-  public eachChildView(callback: (child: View) => boolean) {
-    const content = this.content;
-    if (content) {
-      callback(content);
-    }
-  }
-
-  onLoaded(): void {
-    super.onLoaded();
-    if (this._childViews && this._childViews.size) {
-      this._childViews.forEach(value => {
-        if (!value.parent) {
-          this._addView(value);
-          this._layout.addView(value.nativeView);
-        }
-      });
-    }
-    this._android.setOuterContourSize(0);
-    this._android.setInnerContourSize(0);
-  }
-
-  get android() {
-    return this._android;
   }
 
   set progress(value: number) {
