@@ -62,10 +62,16 @@ public class ActivityService extends Service {
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
   private static final long PROCESSING_TASK_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
-  private static final int SENSOR_DELAY_DEBUG = 60 * 1000; // microseconds between sensor data
 
-  // approx 200 ms between sensor data
-  private static final int SENSOR_DELAY_RELEASE = SensorManager.SENSOR_DELAY_NORMAL;
+  /**
+   * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
+   * SensorManager.SENSOR_DELAY_UI:      ~ 60ms
+   * SensorManager.SENSOR_DELAY_GAME:    ~ 40ms
+   * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
+   */
+  // microseconds between sensor data
+  private static final int SENSOR_DELAY_DEBUG = 60 * 1000;
+  private static final int SENSOR_DELAY_RELEASE = 60 * 1000;
 
   // 20 minutes between sensor updates in microseconds
   private static final int maxReportingLatency = 20 * 60 * 1000 * 1000;
