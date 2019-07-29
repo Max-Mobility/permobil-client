@@ -197,6 +197,7 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
+  private initialized: boolean = false;
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
@@ -270,6 +271,10 @@ export class MainViewModel extends Observable {
 
   async init() {
     this._sentryBreadCrumb('Main-View-Model init.');
+    if (this.initialized) {
+      this._sentryBreadCrumb('Already initialized.');
+      return;
+    }
 
     this._sentryBreadCrumb('Main-View-Model constructor.');
     this._sentryBreadCrumb('Initializing WakeLock...');
@@ -363,18 +368,8 @@ export class MainViewModel extends Observable {
     this.updateSettingsDisplay();
     this._sentryBreadCrumb('Settings display updated.');
 
-    // Log.D(
-    //   'Device Info: ---',
-    //   'Serial Number: ' + this.watchSerialNumber,
-    //   'Manufacturer: ' + device.manufacturer,
-    //   'Model: ' + device.model,
-    //   'OS: ' + device.os,
-    //   'OS Version: ' + device.osVersion,
-    //   'SDK Version: ' + device.sdkVersion,
-    //   'Region: ' + device.region,
-    //   'Device Language: ' + device.language,
-    //   'UUID: ' + device.uuid
-    // );
+    // remember that we're already initialized
+    this.initialized = true;
   }
 
   async initSqliteTables() {
@@ -1090,6 +1085,12 @@ export class MainViewModel extends Observable {
       this.smartDrive.sendTap().catch(err => {
         Sentry.captureException(err);
         Log.E('could not send tap', err);
+        this.disablePowerAssist();
+        alert({
+          title: L('failures.title'),
+          message: err,
+          okButtonText: L('buttons.ok')
+        });
       });
     }
   }
@@ -2395,7 +2396,7 @@ export class MainViewModel extends Observable {
 
   private _rssi = 0;
   private rssiIntervalId = null;
-  private RSSI_INTERVAL_MS = 200;
+  private RSSI_INTERVAL_MS = 500;
   readSmartDriveSignalStrength() {
     if (this.smartDrive && this.smartDrive.connected) {
       this._bluetoothService
