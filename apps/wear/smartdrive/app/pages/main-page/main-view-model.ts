@@ -2670,7 +2670,7 @@ export class MainViewModel extends Observable {
     });
     // will get one more than we need since getPastDates() returns
     // (numDays + 1) elements in the array
-    return this.getRecentInfoFromDatabase(numDays+1)
+    return this.getRecentInfoFromDatabase(numDays + 1)
       .then(objs => {
         objs.map(o => {
           // @ts-ignore
