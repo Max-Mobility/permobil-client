@@ -1657,10 +1657,10 @@ export class MainViewModel extends Observable {
     return this.getUsageInfoFromDatabase(7)
       .then((sdData: any[]) => {
         // we've asked for one more day than needed so that we can
-        // compute distance differences
+        // compute distance differences, keep a reference to the first
+        // before we remove it below with the call to slice()
         const oldest = sdData[0];
         const newest = last(sdData);
-        let sumDistance = 0;
         // keep track of the most recent day so we know when to update
         this._lastChartDay = new Date(newest.date);
         // remove the oldest so it's not displayed - we only use it
@@ -1689,8 +1689,6 @@ export class MainViewModel extends Observable {
             // make sure we only compute diffs between valid distances
             if (oldestDist > 0) {
               diff = dist - oldestDist;
-              // used for range computation
-              sumDistance += diff;
             }
             oldestDist = Math.max(dist, oldestDist);
             diff = SmartDrive.motorTicksToMiles(diff);
@@ -1713,17 +1711,35 @@ export class MainViewModel extends Observable {
         this.distanceChartMaxValue = maxDist.toFixed(1);
         this.distanceChartData = distanceData;
 
+        // now get the past data (regardless of when it was collected)
+        // for computing the estimated range:
+        return this.getRecentInfoFromDatabase(7);
+      })
+      .then((sdData: any[]) => {
         // update estimated range based on battery / distance
+        let sumDistance = 0;
+        let sumBattery = 0;
         let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
-        const totalBatteryUsage = sdData.reduce((usage, obj) => {
-          return usage + obj[SmartDriveData.Info.BatteryName];
-        }, 0);
-        if (sumDistance && totalBatteryUsage) {
+        let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
+        sdData.map(e => {
+          const dist = e[SmartDriveData.Info.DriveDistanceName];
+          if (dist > 0) {
+            // make sure we only compute diffs between valid distances
+            if (oldestDist > 0) {
+              const diff = dist - oldestDist;
+              // used for range computation
+              sumDistance += diff;
+              sumBattery += e[SmartDriveData.Info.BatteryName];
+            }
+            oldestDist = Math.max(dist, oldestDist);
+          }
+        });
+        if (sumDistance && sumBattery) {
           // convert from ticks to miles
           sumDistance = SmartDrive.motorTicksToMiles(sumDistance);
           // now compute the range factor
           rangeFactor = clamp(
-            sumDistance / totalBatteryUsage,
+            sumDistance / sumBattery,
             this.minRangeFactor,
             this.maxRangeFactor
           );
@@ -1733,6 +1749,8 @@ export class MainViewModel extends Observable {
           this.smartDriveCurrentBatteryPercentage * rangeFactor;
         // save the updated estimated range for complication use
         appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
+      })
+      .then(() => {
         // now actually update the display of the distance
         this.updateSpeedDisplay();
       })
@@ -2650,7 +2668,9 @@ export class MainViewModel extends Observable {
     const usageInfo = dates.map(d => {
       return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
     });
-    return this.getRecentInfoFromDatabase(6)
+    // will get one more than we need since getPastDates() returns
+    // (numDays + 1) elements in the array
+    return this.getRecentInfoFromDatabase(numDays+1)
       .then(objs => {
         objs.map(o => {
           // @ts-ignore
@@ -2659,7 +2679,7 @@ export class MainViewModel extends Observable {
           const index = closestIndexTo(objDate, dates);
           const usageDate = dates[index];
           // Log.D('recent info:', o);
-          if (index > -1 && isSameDay(objDate, usageDate)) {
+          if (index > -1) {
             usageInfo[index] = obj;
           }
         });
