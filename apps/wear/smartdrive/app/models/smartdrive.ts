@@ -1114,6 +1114,7 @@ export class SmartDrive extends DeviceBase {
       })
       .catch(err => {
         console.log('DISCONNECT ERR:', err);
+        this.handleDisconnect();
       });
   }
 
