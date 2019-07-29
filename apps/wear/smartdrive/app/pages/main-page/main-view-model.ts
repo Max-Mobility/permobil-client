@@ -136,7 +136,7 @@ export class MainViewModel extends Observable {
   tapDetector: TapDetector = null;
   tapTimeoutId: any = null;
   // Sensor listener config:
-  SENSOR_DELAY_US: number = 40 * 1000;
+  SENSOR_DELAY_US: number = 10 * 1000;
   MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
@@ -1021,6 +1021,8 @@ export class MainViewModel extends Observable {
     }
   }
 
+  private _previousData: any[] = [];
+  private _previousDataLength: number = 4;
   handleAccel(acceleration: any, timestamp: number) {
     // ignore tapping if we're not in the right mode
     if (!this.powerAssistActive && !this.isTraining) {
@@ -1030,13 +1032,38 @@ export class MainViewModel extends Observable {
     if (!this.watchBeingWorn && !this.disableWearCheck) {
       return;
     }
-    // set tap sensitivity threshold
-    this.tapDetector.setSensitivity(this.settings.tapSensitivity);
-    // now run the tap detector
-    const didTap = this.tapDetector.detectTap(acceleration, timestamp);
-    if (didTap) {
-      // user has met threshold for tapping
-      this.handleTap(timestamp);
+    // add the data to our accel history
+    this._previousData.push({
+      accel: acceleration,
+      timestamp
+    });
+    // since we're now running at a higher frequency, we want to
+    // average every 4 points to get a reading
+    if (this._previousData.length === this._previousDataLength) {
+      // determine the average acceleration and timestamp
+      const total = this._previousData.reduce((total, e) => {
+        total.accel.x += e.accel.x;
+        total.accel.y += e.accel.y;
+        total.accel.z += e.accel.z;
+        total.timestamp += e.timestamp;
+        return total;
+      });
+      const averageAccel = {
+        x: total.accel.x / this._previousDataLength,
+        y: total.accel.y / this._previousDataLength,
+        z: total.accel.z / this._previousDataLength,
+      };
+      const averageTimestamp = total.timestamp / this._previousDataLength;
+      // reset the length of the data
+      this._previousData = [];
+      // set tap sensitivity threshold
+      this.tapDetector.setSensitivity(this.settings.tapSensitivity);
+      // now run the tap detector
+      const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
+      if (didTap) {
+        // user has met threshold for tapping
+        this.handleTap(averageTimestamp);
+      }
     }
   }
 
