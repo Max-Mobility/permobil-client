@@ -1,5 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { Log } from '@permobil/core';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
@@ -15,6 +16,7 @@ import { LoggingService, ProgressService, UserService } from '../../services';
 })
 export class LoginComponent implements OnInit {
   private static LOG_TAG = 'login.component ';
+  private _loadingIndicator = new LoadingIndicator();
 
   user = { email: '', password: '' };
   passwordError = '';
@@ -41,29 +43,25 @@ export class LoginComponent implements OnInit {
 
   async submit() {
     Log.D('submit tap, just going to open the tabs/default for now');
-    // this.lottieAnimation = 'trophy';
-    // this.showLottie = true;
 
-    // loading indicator plugin needs to be updated for androidX for NS6
-    // const li = new LoadingIndicator();
-    // li.show({
-    //   android: {
-    //     backgroundColor: '#222'
-    //   },
-    //   ios: {
-    //     dimBackground: true
-    //   }
-    // });
+    this._loadingIndicator.show({
+      message: 'Signing in...',
+      dimBackground: true
+    });
 
     // simulation network call with timeout for now
     setTimeout(() => {
       // Navigate to tabs home with clearHistory
       this._routerExtensions
         .navigate(['/tabs/default'], { clearHistory: true })
+        .then(() => {
+          this._loadingIndicator.hide();
+        })
         .catch(err => {
           this._logService.logException(err);
+          this._loadingIndicator.hide();
         });
-    }, 1000);
+    }, 1800);
 
     // try {
     //   // validate the email

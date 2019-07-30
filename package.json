@@ -107,12 +107,10 @@
     }
   },
   "lint-staged": {
-    "linters": {
-      "**/*.{js, css, ts, json, scss, html, xml, md}": [
-        "prettier --write",
-        "git add"
-      ]
-    }
+    "**/*.{js, css, ts, json, scss, html, xml, md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "prettier": {
     "semi": true,

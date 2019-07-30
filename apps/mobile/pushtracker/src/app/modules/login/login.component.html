@@ -5,7 +5,6 @@
       <TextField row="1" [hint]="'general.email' | translate" [text]="user.email"></TextField>
       <TextField row="2" [hint]="'general.password' | translate" secure="true" [text]="user.password"></TextField>
       <Button row="3" [text]="'general.login' | translate" (tap)="submit()" class="submit-btn"></Button>
-      <!-- <LottieView rowSpan="4" height="120" [src]="lottieAnimation" loop="false" autoPlay="true" [visibility]="showLottie ? 'visible' : 'collapsed'"></LottieView> -->
     </GridLayout>
     <GridLayout row="2" rows="*" columns="auto, *, auto">
       <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="btn-transparent text-white"></Button>
