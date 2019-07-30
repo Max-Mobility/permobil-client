@@ -32,7 +32,7 @@
       "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
       "gyrorange": "[ERR: 005] SD Angle",
       "motorphases": "[ERR: 002] SD Motor",
-      "otaunavailable": "[ERR: 006] Update Unavailable",
+      "otaunavailable": "[ERR: 006] Updates Unavailable",
       "overcurrent": "[ERR: 003] SD Current Spike",
       "overtemperature": "[ERR: 004] SD Overheating"
     },
@@ -70,7 +70,7 @@
   },
   "menu": {
     "about": "About",
-    "settings": "SmartDrive Settings",
+    "settings": "Settings",
     "title": "SmartDrive MX2+ Menu ",
     "training": "Tap Training",
     "updates": "Wireless Updates"
@@ -106,15 +106,15 @@
     }
   },
   "permissions-reasons": {
-    "coarse-location": "To control your SmartDrive using Bluetooth we require the Location [ACCESS_COARSE_LOCATION] permission allowed on the following screen. We will not access your location data.",
-    "phone-state": "OPTIONAL: To access your smartwatch serial number, which can be useful for support and warranty purposes, we need the Phone permission [READ_PHONE_STATE] allowed on one the following screens. We will not access your phone number, cellular network information, or any data except the smartwatch serial number."
+    "coarse-location": "To control your SmartDrive using Bluetooth we require the Location permission [ACCESS_COARSE_LOCATION] to be allowed on the following screen. We will not access your location data.",
+    "phone-state": "OPTIONAL: To access your smartwatch serial number, which can be useful for support and warranty purposes, we need the Phone permission [READ_PHONE_STATE] to be allowed on one the following screens. We will not access your phone number, cellular network information, or any data except the smartwatch serial number."
   },
   "permissions-request": {
     "title": "Permissions Notice"
   },
   "power-assist": {
-    "activate": "Turn Power Assist On",
-    "deactivate": "Turn Power Assist Off",
+    "activate": "Turn\nPower Assist\nOn",
+    "deactivate": "Turn\nPower Assist\nOff",
     "estimated-range": "Estimated Range",
     "exit-training": "Exit Training",
     "speed": "Current Speed",
@@ -148,7 +148,7 @@
       "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when Switch Control is taken out of the standby state.",
       "switchcontrolmode": "Momentary: The default Switch Control Mode in which the SmartDrive will start driving the motor by ramping up its speed to the configured Switch Control Max Speed only while one of the Switch Control Buttons is being held. When the held Button is released, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.\n\nLatching: In Latching Switch Control Mode, the SmartDrive will start driving the motor by ramping up its speed to the configured Switch Control Max Speed while one of the Switch Control buttons is being held. When the held button is released, the SmartDrive will remain driving / coast at the current speed when the button was released. When one of the Buttons is pressed and released again, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.",
       "switchcontrolspeed": "The maximum speed the SmartDrive can drive at when controlled from the Switch Control Buttons.",
-      "tapsensitivity": "Determines the sensitivity of the tap gesture used for activating and deactivating the driving. The lower the percentage is the harder you need to tap - 100% is the most sensitive and therefore easiest to tap, and 10% is the least sensitive and therefore hardest to tap.",
+      "tapsensitivity": "The sensitivity of the tap gesture used for activating and deactivating the driving. The lower the percentage is the harder you need to tap - 100% is the most sensitive and therefore easiest to tap, and 10% is the least sensitive and therefore hardest to tap.",
       "units": "The unit system or units of measure to display the speed and distances within the user interfaces. Select either Imperial [mi and mph] or Metric [km and km/h].",
       "wearcheck": "When enabled, the smartwatch must be on the wrist to turn power assist ON. If power assist is ON and the smartwatch senses that it is no longer on the wrist, it will automatically turn power assist OFF."
     },
@@ -188,7 +188,7 @@
     }
   },
   "updates": {
-    "canceled": "SmartDrive update canceled.",
+    "canceled": "SmartDrive updates canceled.",
     "changes": "Summary of Changes",
     "checking-for-updates": "Checking for updates...",
     "communications-failed": "Communications with the SmartDrive have failed, please reboot your SmartDrive.",
@@ -200,10 +200,10 @@
       "getting": "Error searching for updates.",
       "saving": "Error saving updates data."
     },
-    "failed": "SmartDrive update failed.",
-    "status": "Update Status",
-    "success": "SmartDrive update completed successfully!",
-    "timeout": "SmartDrive update timed out!",
+    "failed": "SmartDrive updates failed.",
+    "status": "Updates Status",
+    "success": "SmartDrive updates completed successfully!",
+    "timeout": "SmartDrive updates timed out.",
     "up-to-date": "SmartDrive is up-to-date!",
     "version": "Version"
   },
