@@ -192,7 +192,9 @@
       "connecting": "Error connecting to SmartDrive",
       "downloading": "Error downloading updates",
       "getting": "Error searching for updates",
-      "saving": "Error saving update data"
+      "loading": "Error loading current update data.",
+      "saving": "Error saving update data",
+      "timeout": "Timeout connecting to SmartDrive to check versions."
     },
     "failed": "Update failed",
     "status": "Update Status",

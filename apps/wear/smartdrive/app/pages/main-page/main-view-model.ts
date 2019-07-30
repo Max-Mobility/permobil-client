@@ -122,8 +122,6 @@ export class MainViewModel extends Observable {
    */
   @Prop() updateProgressText: string = '';
   @Prop() isUpdatingSmartDrive: boolean = false;
-  @Prop() hasUpdateData: boolean = false;
-  @Prop() checkingForUpdates: boolean = false;
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
   @Prop() smartDriveOtaActions = new ObservableArray();
@@ -495,15 +493,15 @@ export class MainViewModel extends Observable {
     this.enabledLayout.set(layoutName, true);
   }
 
-  async onAmbientTimeViewLoaded(args: any) {
+  async onAmbientTimeViewLoaded(args: EventData) {
     this._ambientTimeView = args.object as View;
   }
 
-  async onPowerAssistViewLoaded(args: any) {
+  async onPowerAssistViewLoaded(args: EventData) {
     this._powerAssistView = args.object as View;
   }
 
-  async onMainPageLoaded(args: any) {
+  async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
     // now init the ui
     try {
@@ -832,25 +830,24 @@ export class MainViewModel extends Observable {
     this.applyTheme();
   }
 
-  onAppLaunch(args?: any) { }
+  onAppLaunch() { }
 
-  onAppResume(args?: any) {
+  onAppResume() {
     this.enableBodySensor();
   }
 
-  onAppSuspend(args?: any) {
+  onAppSuspend() {
     Log.D('*** appSuspend ***');
     this.fullStop();
   }
 
-  onAppExit(args?: any) {
+  onAppExit() {
     Log.D('*** appExit ***');
     this.fullStop();
   }
 
-  onAppLowMemory(args?: any) {
+  onAppLowMemory() {
     this._sentryBreadCrumb('*** appLowMemory ***');
-    Log.D('App low memory', args.android);
     // TODO: determine if we need to stop for this - we see this
     // even even when the app is using very little memory
     // this.fullStop();
@@ -949,7 +946,7 @@ export class MainViewModel extends Observable {
     this.currentYear = this._format(now, 'YYYY');
   }
 
-  onNetworkAvailable(args?: any) {
+  onNetworkAvailable() {
     // Log.D('Network available - sending errors');
     return this.sendErrorsToServer(10)
       .then(ret => {
@@ -988,31 +985,36 @@ export class MainViewModel extends Observable {
   /**
    * View Loaded event handlers
    */
-  onPagerLoaded(args: any) { }
+  onPagerLoaded() { }
 
   /**
    * Sensor Data Handlers
    */
   handleSensorData(args: SensorChangedEventData) {
-    // if we're using litedata for android sensor plugin option
-    // the data structure is simplified to reduce redundant data
-    const parsedData = args.data;
+    try {
+      // if we're using litedata for android sensor plugin option
+      // the data structure is simplified to reduce redundant data
+      const parsedData = args.data;
 
-    if (
-      parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
-    ) {
-      this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-      if (!this.disableWearCheck) {
-        if (!this.watchBeingWorn && this.powerAssistActive) {
-          Log.D('Watch not being worn - disabling power assist!');
-          // disable power assist if the watch is taken off!
-          this.disablePowerAssist();
+      if (
+        parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
+      ) {
+        this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
+        if (!this.disableWearCheck) {
+          if (!this.watchBeingWorn && this.powerAssistActive) {
+            Log.D('Watch not being worn - disabling power assist!');
+            // disable power assist if the watch is taken off!
+            this.disablePowerAssist();
+          }
         }
       }
-    }
 
-    if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
-      this.handleAccel(parsedData.d, parsedData.ts);
+      if (parsedData.s === android.hardware.Sensor.TYPE_LINEAR_ACCELERATION) {
+        this.handleAccel(parsedData.d, parsedData.ts);
+      }
+    } catch (err) {
+      Log.E('handleSensorData::err -', err);
+      Sentry.captureException(err);
     }
   }
 
@@ -1200,9 +1202,9 @@ export class MainViewModel extends Observable {
   /**
    * Scanning Page Handlers
    */
-  onScanningLayoutLoaded(args) {
+  onScanningLayoutLoaded(args: EventData) {
     this._scanningLayout = args.object as SwipeDismissLayout;
-    this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1226,15 +1228,69 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onUpdatesLayoutLoaded(args) {
+  onUpdatesLayoutLoaded(args: EventData) {
     this._updatesLayout = args.object as SwipeDismissLayout;
-    this._updatesLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._updatesLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // make sure to release the CPU
       this.releaseCPU();
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
       this.previousLayout();
     });
+  }
+
+  async getSmartDriveVersion() {
+    return new Promise((resolve, reject) => {
+      if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
+        // if we've already talked to this SD and gotten its
+        // version info then we can just resolve
+        resolve(true);
+        return;
+      } else {
+        // we've not talked to this SD before, so we should connect
+        // and get its version info
+        const remove = () => {
+          this.smartDrive.off(
+            SmartDrive.smartdrive_mcu_version_event,
+            onVersion
+          );
+        }
+        const connectTimeoutId = setTimeout(() => {
+          remove();
+          reject(L('updates.errors.timeout'));
+        }, 30 * 1000);
+        const onVersion = () => {
+          remove();
+          clearTimeout(connectTimeoutId);
+          resolve();
+        };
+        this.smartDrive.on(
+          SmartDrive.smartdrive_mcu_version_event,
+          onVersion
+        );
+        this.connectToSavedSmartDrive()
+          .then((didConnect) => {
+            if (!didConnect) {
+              remove();
+              reject();
+            }
+          })
+          .catch((err) => {
+            remove();
+            Sentry.captureException(err);
+            reject(err);
+          });
+      }
+    })
+      .then(() => {
+        // now that we've gotten the version, disconnect
+        return this.disconnectFromSmartDrive();
+      })
+      .catch(err => {
+        // make sure to disconnect if we had an error / rejection
+        this.disconnectFromSmartDrive();
+        throw err;
+      });
   }
 
   onSmartDriveOtaStatus(args: any) {
@@ -1248,7 +1304,8 @@ export class MainViewModel extends Observable {
       if (a.includes('cancel')) {
         canSwipeDismiss = false;
       }
-      const actionClass = 'action-' + last(a.split('.'));
+      const actionClass = 'action-' + last(a.split('.')) +
+        ' compact';
       // translate the label
       const actionLabel = L(a); // .replace('ota.action.', '');
       return {
@@ -1270,9 +1327,9 @@ export class MainViewModel extends Observable {
     (this._updatesLayout as any).swipeable = canSwipeDismiss;
   }
 
-  // TODO: don't show errors as progress text - use dialogs instead.
   // TODO: don't use ':' with the errors - use [...] instead.
-  checkForUpdates() {
+  private currentVersions = {};
+  async checkForUpdates() {
     // don't allow swiping while we're checking for updates!
     (this._updatesLayout as any).swipeable = false;
     // update display of update progress
@@ -1280,317 +1337,241 @@ export class MainViewModel extends Observable {
     this.updateProgressText = L('updates.checking-for-updates');
     // some state variables for the update
     this.isUpdatingSmartDrive = false;
-    this.checkingForUpdates = true;
-    this.hasUpdateData = false;
-    let currentVersions = {};
     // @ts-ignore
     this.updateProgressCircle.spin();
-    return this.getFirmwareData()
-      .then(md => {
-        currentVersions = md;
-        // Log.D('Current FW Versions:', currentVersions);
-        const query = {
-          $or: [
-            { _filename: 'SmartDriveBLE.ota' },
-            { _filename: 'SmartDriveMCU.ota' }
-          ],
-          firmware_file: true
-        };
-        return this._kinveyService.getFile(undefined, query).catch(err => {
-          Sentry.captureException(err);
-          Log.E('Could not get metadata for files:', err);
-          this.updateProgressText = L('updates.errors.getting') + `: ${err}`;
-          throw err;
-        });
-      })
-      .then(response => {
-        // Now that we have the metadata, check to see if we already
-        // have the most up to date firmware files and download them
-        // if we don't
-        const mds = response.content.toJSON();
-        let promises = [];
-        const maxes = mds.reduce((maxes, md) => {
-          const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
-          const fwName = md['_filename'];
-          if (!maxes[fwName]) maxes[fwName] = 0;
-          maxes[fwName] = Math.max(v, maxes[fwName]);
-          return maxes;
-        }, {});
-        const fileMetaDatas = mds.filter(f => {
-          const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
-          const fwName = f['_filename'];
-          const current = currentVersions[fwName];
-          const currentVersion = current && current.version;
-          const isMax = v === maxes[fwName];
-          return isMax && (!current || v > currentVersion);
-        });
-        if (fileMetaDatas && fileMetaDatas.length) {
-          // update progress circle
-          // @ts-ignore
-          this.updateProgressCircle.stopSpinning();
-          // reset ota progress to 0 to show downloading progress
-          this.smartDriveOtaProgress = 0;
-          // update progress text
-          this.updateProgressText = L('updates.downloading-new-firmwares');
-          const progresses = fileMetaDatas.reduce((p, fmd) => {
-            p[fmd['_filename']] = 0;
-            return p;
-          }, {});
-          const progressKeys = Object.keys(progresses);
-          SmartDriveData.Firmwares.setDownloadProgressCallback(
-            (file, eventData) => {
-              progresses[file['_filename']] = eventData.value;
-              this.smartDriveOtaProgress =
-                progressKeys.reduce((total, k) => {
-                  return total + progresses[k];
-                }, 0) / progressKeys.length;
-            }
-          );
-          // now download the files
-          promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
+    try {
+      this.currentVersions = await this.getFirmwareData();
+    } catch (err) {
+      return this.updateError(err, L('updates.errors.loading'), `${err}`);
+    }
+    // Log.D('Current FW Versions:', this.currentVersions);
+    let response = null;
+    const query = {
+      $or: [
+        { _filename: 'SmartDriveBLE.ota' },
+        { _filename: 'SmartDriveMCU.ota' }
+      ],
+      firmware_file: true
+    };
+    try {
+      response = await this._kinveyService.getFile(undefined, query);
+    } catch (err) {
+      return this.updateError(err, L('updates.errors.getting'), `${err}`);
+    }
+    // Now that we have the metadata, check to see if we already
+    // have the most up to date firmware files and download them
+    // if we don't
+    const mds = response.content.toJSON();
+    let promises = [];
+    // get the max firmware version for each firmware
+    const maxes = mds.reduce((maxes, md) => {
+      const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
+      const fwName = md['_filename'];
+      if (!maxes[fwName]) maxes[fwName] = 0;
+      maxes[fwName] = Math.max(v, maxes[fwName]);
+      return maxes;
+    }, {});
+    // filter only the firmwares that we don't have or that are newer
+    // than the ones we have (and are the max)
+    const fileMetaDatas = mds.filter(f => {
+      const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
+      const fwName = f['_filename'];
+      const current = this.currentVersions[fwName];
+      const currentVersion = current && current.version;
+      const isMax = v === maxes[fwName];
+      return isMax && (!current || v > currentVersion);
+    });
+    // @ts-ignore
+    this.updateProgressCircle.stopSpinning();
+    // do we need to download any firmware files?
+    if (fileMetaDatas && fileMetaDatas.length) {
+      // update progress text
+      this.updateProgressText = L('updates.downloading-new-firmwares');
+      // reset ota progress to 0 to show downloading progress
+      this.smartDriveOtaProgress = 0;
+      // update progress circle
+      const progresses = fileMetaDatas.reduce((p, fmd) => {
+        p[fmd['_filename']] = 0;
+        return p;
+      }, {});
+      const progressKeys = Object.keys(progresses);
+      SmartDriveData.Firmwares.setDownloadProgressCallback(
+        (file, eventData) => {
+          progresses[file['_filename']] = eventData.value;
+          this.smartDriveOtaProgress =
+            progressKeys.reduce((total, k) => {
+              return total + progresses[k];
+            }, 0) / progressKeys.length;
         }
-        return Promise.all(promises).catch(err => {
-          Sentry.captureException(err);
-          Log.E('Could not download files:', err);
-          this.updateProgressText =
-            L('updates.errors.downloading') + `: ${err}`;
-          throw err;
-        });
-      })
-      .then(files => {
-        // Now that we have the files, write them to disk and update
-        // our local metadata
-        let promises = [];
-        if (files && files.length) {
-          Log.D('Updating metadata and writing file data.');
-          promises = files.map(f => {
-            // update the data in the db
-            if (currentVersions[f.name]) {
-              // this is a file we have - update the table
-              const id = currentVersions[f.name].id;
-              // update current versions
-              currentVersions[f.name].version = f.version;
-              currentVersions[f.name].changes = f.changes;
-              currentVersions[f.name].data = f.data;
-              // save binary file to fs
-              Log.D('saving file', currentVersions[f.name].filename);
-              SmartDriveData.Firmwares.saveToFileSystem({
-                filename: currentVersions[f.name].filename,
-                data: f.data
-              });
-              return this._sqliteService.updateInTable(
-                SmartDriveData.Firmwares.TableName,
-                {
-                  [SmartDriveData.Firmwares.VersionName]: f.version
-                },
-                {
-                  [SmartDriveData.Firmwares.IdName]: id
-                }
-              );
-            } else {
-              // this is a file we don't have in the table
-              const newFirmware = SmartDriveData.Firmwares.newFirmware(
-                f.version,
-                f.name,
-                undefined,
-                f.changes
-              );
-              // update current versions
-              currentVersions[f.name] = {
-                version: f.version,
-                changes: f.changes,
-                filename: newFirmware[SmartDriveData.Firmwares.FileName],
-                data: f.data
-              };
-              // save binary file to fs
-              Log.D('saving file', currentVersions[f.name].filename);
-              SmartDriveData.Firmwares.saveToFileSystem({
-                filename: currentVersions[f.name].filename,
-                data: f.data
-              });
-              return this._sqliteService.insertIntoTable(
-                SmartDriveData.Firmwares.TableName,
-                newFirmware
-              );
-            }
-          });
-        }
-        return Promise.all(promises).catch(err => {
-          Sentry.captureException(err);
-          Log.E('Could not write files:', err);
-          this.updateProgressText = L('updates.errors.saving') + `: ${err}`;
-          throw err;
-        });
-      })
-      .then(() => {
-        // Now let's connect to the SD to make sure that we get it's
-        // version information
-        return new Promise((resolve, reject) => {
-          if (this.smartDrive && this.smartDrive.hasVersionInfo()) {
-            // if we've already talked to this SD and gotten its
-            // version info then we can just resolve
-            resolve();
-            return;
-          }
-          // we've not talked to this SD before, so we should connect
-          // and get its version info
-          this.updateProgressText = L('updates.connecting-to-smartdrive');
-          const connectTimeoutId = setTimeout(() => {
-            this.smartDrive.off(
-              SmartDrive.smartdrive_mcu_version_event,
-              onVersion
-            );
-            reject('Timeout');
-          }, 30 * 1000);
-          const onVersion = () => {
-            this.smartDrive.off(
-              SmartDrive.smartdrive_mcu_version_event,
-              onVersion
-            );
-            clearTimeout(connectTimeoutId);
-            resolve();
-          };
-          this.smartDrive.on(
-            SmartDrive.smartdrive_mcu_version_event,
-            onVersion
-          );
-          this.connectToSavedSmartDrive()
-            .then(didConnect => {
-              if (!didConnect) {
-                reject('Did not connect');
-              }
-            })
-            .catch(err => {
-              Sentry.captureException(err);
-              reject(err);
-            });
-        })
-          .then(() => {
-            return this.disconnectFromSmartDrive();
-          })
-          .catch(err => {
-            Sentry.captureException(err);
-            this.disconnectFromSmartDrive();
-            Log.E('Could not connect to smartdrive:', err);
-            this.updateProgressText =
-              L('updates.errors.connecting') + `: ${err}`;
-            throw err;
-          });
-      })
-      .then(() => {
-        // Now perform the SmartDrive updates if we need to
-        // re-enable swipe close of the updates layout
-        (this._updatesLayout as any).swipeable = true;
-        // now see what we need to do with the data
-        Log.D('Finished downloading updates.');
-        this.hasUpdateData = true;
-        this.updateProgressText = '';
-        this.checkingForUpdates = false;
-        // @ts-ignore
-        this.updateProgressCircle.stopSpinning();
-        // do we need to update? - check against smartdrive version
-        const bleVersion = currentVersions['SmartDriveBLE.ota'].version;
-        const mcuVersion = currentVersions['SmartDriveMCU.ota'].version;
-        if (
-          !this.smartDrive.isMcuUpToDate(mcuVersion) ||
-          !this.smartDrive.isBleUpToDate(bleVersion)
-        ) {
-          // reset the ota progress to 0 (since downloaing may have
-          // used it)
-          this.smartDriveOtaProgress = 0;
-          // get info out to tell the user
-          const version = SmartDriveData.Firmwares.versionByteToString(
-            Math.max(mcuVersion, bleVersion)
-          );
-          Log.D('got version', version);
-          // show dialog to user informing them of the version number and changes
-          const title = L('updates.version') + ' ' + version;
-          const changes = Object.keys(currentVersions).map(
-            k => currentVersions[k].changes
-          );
-          const msg =
-            L('updates.changes') + '\n\n' + flatten(changes).join('\n\n');
-          // Log.D('got changes', changes);
-          alert({
-            title: title,
-            message: msg,
-            okButtonText: L('buttons.ok')
-          }).then(() => {
-            this.isUpdatingSmartDrive = true;
-            Log.D('Beginning SmartDrive update');
-            const bleFw = new Uint8Array(
-              currentVersions['SmartDriveBLE.ota'].data
-            );
-            const mcuFw = new Uint8Array(
-              currentVersions['SmartDriveMCU.ota'].data
-            );
-            Log.D('mcu length:', typeof mcuFw, mcuFw.length);
-            Log.D('ble length:', typeof bleFw, bleFw.length);
-            // maintain CPU resources while updating
-            this.maintainCPU();
-            // smartdrive needs to update
-            this.smartDrive
-              .performOTA(bleFw, mcuFw, bleVersion, mcuVersion, 300 * 1000)
-              .then(otaStatus => {
-                this.releaseCPU();
-                this.isUpdatingSmartDrive = false;
-                const status = otaStatus.replace('OTA', 'Update');
-                Log.D('update status:', otaStatus);
-                if (status === 'Update Complete') {
-                  this.updateProgressText = L('updates.success');
-                } else {
-                  this.updateProgressText = L('updates.failed');
-                }
-                // re-enable swipe close of the updates layout
-                (this._updatesLayout as any).swipeable = true;
-              })
-              .catch(err => {
-                Sentry.captureException(err);
-                this.releaseCPU();
-                this.isUpdatingSmartDrive = false;
-                const msg = L('updates.failed') + `: ${err}`;
-                Log.E(msg);
-                this.updateProgressText = msg;
-                alert({
-                  title: L('updates.failed'),
-                  message: `${err}`,
-                  okButtonText: L('buttons.ok')
-                });
-                // re-enable swipe close of the updates layout
-                (this._updatesLayout as any).swipeable = true;
-              });
-          });
-        } else {
-          this.releaseCPU();
-          // re-enable swipe close of the updates layout
-          (this._updatesLayout as any).swipeable = true;
-          // smartdrive is already up to date
-          this.updateProgressText = L('updates.up-to-date');
-          setTimeout(() => {
-            hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
-            this.previousLayout();
-          }, 2000);
-        }
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        this.releaseCPU();
-        // re-enable swipe close of the updates layout
-        (this._updatesLayout as any).swipeable = true;
-        this.hasUpdateData = false;
-        this.checkingForUpdates = false;
-        this.isUpdatingSmartDrive = false;
-        // @ts-ignore
-        this.updateProgressCircle.stopSpinning();
-      });
-  }
-
-  cancelUpdates() {
-    this.releaseCPU();
-    this.updateProgressText = L('updates.canceled');
+      );
+      // now download the files
+      promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
+    }
+    let files = null;
+    try {
+      files = await Promise.all(promises);
+    } catch (err) {
+      return this.updateError(err, L('updates.errors.downloading'), `${err}`);
+    }
+    // Now that we have the files, write them to disk and update
+    // our local metadata
+    promises = [];
+    if (files && files.length) {
+      promises = files.map(this.updateFirmwareData.bind(this));
+    }
+    try {
+      await Promise.all(promises);
+    } catch (err) {
+      return this.updateError(err, L('updates.errors.saving'), `${err}`);
+    }
+    // Now let's connect to the SD to make sure that we get it's
+    // version information
+    try {
+      this.updateProgressText = L('updates.connecting-to-smartdrive');
+      await this.getSmartDriveVersion();
+    } catch (err) {
+      return this.updateError(err, L('updates.errors.connecting'), err);
+    }
+    // Now perform the SmartDrive updates if we need to
     // re-enable swipe close of the updates layout
     (this._updatesLayout as any).swipeable = true;
-    if (this.smartDrive) {
+    // now see what we need to do with the data
+    Log.D('Finished downloading updates.');
+    this.performSmartDriveWirelessUpdate();
+  }
+
+  async performSmartDriveWirelessUpdate() {
+    this.updateProgressText = '';
+    // @ts-ignore
+    this.updateProgressCircle.stopSpinning();
+    // do we need to update? - check against smartdrive version
+    const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
+    const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
+    if (false && this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
+      // smartdrive is already up to date
+      this.stopUpdates(L('updates.up-to-date'));
+      setTimeout(() => {
+        hideOffScreenLayout(this._updatesLayout, { x: 500, y: 0 });
+        this.previousLayout();
+      }, 5000);
+      return;
+    }
+    // the smartdrive is not up to date, so we need to update it.
+    // reset the ota progress to 0 (since downloaing may have used it)
+    this.smartDriveOtaProgress = 0;
+    // get info out to tell the user
+    const version = SmartDriveData.Firmwares.versionByteToString(
+      Math.max(mcuVersion, bleVersion)
+    );
+    Log.D('got version', version);
+    // show dialog to user informing them of the version number and changes
+    const changes = Object.keys(this.currentVersions).map(
+      k => this.currentVersions[k].changes
+    );
+    // Log.D('got changes', changes);
+    await alert({
+      title: L('updates.version') + ' ' + version,
+      message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
+      okButtonText: L('buttons.ok')
+    });
+    this.isUpdatingSmartDrive = true;
+    Log.D('Beginning SmartDrive update');
+    const bleFw = new Uint8Array(
+      this.currentVersions['SmartDriveBLE.ota'].data
+    );
+    const mcuFw = new Uint8Array(
+      this.currentVersions['SmartDriveMCU.ota'].data
+    );
+    Log.D('mcu length:', typeof mcuFw, mcuFw.length);
+    Log.D('ble length:', typeof bleFw, bleFw.length);
+    // maintain CPU resources while updating
+    this.maintainCPU();
+    // smartdrive needs to update
+    let otaStatus = '';
+    try {
+      otaStatus = await this.smartDrive
+        .performOTA(bleFw, mcuFw, bleVersion, mcuVersion, 300 * 1000);
+    } catch (err) {
+      return this.updateError(err, L('updates.failed'), `${err}`);
+    }
+    const status = otaStatus.replace('OTA', 'updates').replace(' ', '.').toLowerCase();
+    let updateMsg = L(status);
+    this.stopUpdates(updateMsg, false);
+  }
+
+  async updateFirmwareData(f: any) {
+    // update the data in the db
+    if (this.currentVersions[f.name]) {
+      // this is a file we have - update the table
+      const id = this.currentVersions[f.name].id;
+      // update current versions
+      this.currentVersions[f.name].version = f.version;
+      this.currentVersions[f.name].changes = f.changes;
+      this.currentVersions[f.name].data = f.data;
+      // save binary file to fs
+      Log.D('saving file', this.currentVersions[f.name].filename);
+      SmartDriveData.Firmwares.saveToFileSystem({
+        filename: this.currentVersions[f.name].filename,
+        data: f.data
+      });
+      return this._sqliteService.updateInTable(
+        SmartDriveData.Firmwares.TableName,
+        {
+          [SmartDriveData.Firmwares.VersionName]: f.version
+        },
+        {
+          [SmartDriveData.Firmwares.IdName]: id
+        }
+      );
+    } else {
+      // this is a file we don't have in the table
+      const newFirmware = SmartDriveData.Firmwares.newFirmware(
+        f.version,
+        f.name,
+        undefined,
+        f.changes
+      );
+      // update current versions
+      this.currentVersions[f.name] = {
+        version: f.version,
+        changes: f.changes,
+        filename: newFirmware[SmartDriveData.Firmwares.FileName],
+        data: f.data
+      };
+      // save binary file to fs
+      Log.D('saving file', this.currentVersions[f.name].filename);
+      SmartDriveData.Firmwares.saveToFileSystem({
+        filename: this.currentVersions[f.name].filename,
+        data: f.data
+      });
+      return this._sqliteService.insertIntoTable(
+        SmartDriveData.Firmwares.TableName,
+        newFirmware
+      );
+    }
+  }
+
+  updateError(err: any, msg: string, alertMsg?: string) {
+    Sentry.captureException(err);
+    Log.E(msg)
+    if (alertMsg !== undefined) {
+      alert({
+        title: L('updates.failed'),
+        message: alertMsg,
+        okButtonText: L('buttons.ok')
+      });
+    }
+    this.stopUpdates(msg, true);
+  }
+
+  stopUpdates(msg: string, doCancelOta: boolean = true) {
+    this.releaseCPU();
+    this.updateProgressText = msg;
+    // make sure we update the state variable
+    this.isUpdatingSmartDrive = false;
+    // re-enable swipe close of the updates layout
+    (this._updatesLayout as any).swipeable = true;
+    if (doCancelOta && this.smartDrive) {
       this.smartDrive.cancelOTA();
     }
   }
@@ -1600,13 +1581,13 @@ export class MainViewModel extends Observable {
    */
 
   // TODO: add tap listener for each error showing what to do
-  onErrorHistoryLayoutLoaded(args) {
+  onErrorHistoryLayoutLoaded(args: EventData) {
     // show the chart
     this._errorHistoryLayout = args.object as SwipeDismissLayout;
     this.errorsScrollView = this._errorHistoryLayout.getViewById(
       'errorsScrollView'
     ) as ScrollView;
-    this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1615,7 +1596,7 @@ export class MainViewModel extends Observable {
     });
   }
 
-  onLoadMoreErrors(args?: ItemEventData) {
+  onLoadMoreErrors() {
     this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
       // add the back button as the first element - should only load once
       if (this.errorHistoryData.length === 0) {
@@ -1655,25 +1636,25 @@ export class MainViewModel extends Observable {
   /**
    * Setings page handlers
    */
-  onSettingsLayoutLoaded(args) {
+  onSettingsLayoutLoaded(args: EventData) {
     this._settingsLayout = args.object as SwipeDismissLayout;
     this.settingsScrollView = this._settingsLayout.getViewById(
       'settingsScrollView'
     ) as ScrollView;
-    this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
       this.previousLayout();
     });
   }
 
-  onAboutLayoutLoaded(args) {
+  onAboutLayoutLoaded(args: EventData) {
     // show the chart
     this._aboutLayout = args.object as SwipeDismissLayout;
     this.aboutScrollView = this._aboutLayout.getViewById(
       'aboutScrollView'
     ) as ScrollView;
-    this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
+    this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
       this.previousLayout();
@@ -1796,7 +1777,7 @@ export class MainViewModel extends Observable {
     this.enableLayout('settings');
   }
 
-  onSettingsInfoItemTap(args: EventData) {
+  onSettingsInfoItemTap() {
     const messageKey = 'settings.description.' + this.activeSettingToChange;
     const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
     alert({
@@ -1806,11 +1787,11 @@ export class MainViewModel extends Observable {
     });
   }
 
-  onChangeSettingsItemTap(args) {
+  onChangeSettingsItemTap(args: EventData) {
     // copy the current settings into temporary store
     this.tempSettings.copy(this.settings);
     this.tempSwitchControlSettings.copy(this.switchControlSettings);
-    const tappedId = args.object.id as string;
+    const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
       case 'maxspeed':
@@ -1990,7 +1971,7 @@ export class MainViewModel extends Observable {
     this.updateSettingsChangeDisplay();
   }
 
-  onChangeSettingsLayoutLoaded(args) {
+  onChangeSettingsLayoutLoaded(args: EventData) {
     this._changeSettingsLayout = args.object as SwipeDismissLayout;
     // disabling swipeable to make it easier to tap the cancel button
     // without starting the swipe behavior
@@ -2321,39 +2302,36 @@ export class MainViewModel extends Observable {
     }
   }
 
-  sendSmartDriveSettings() {
+  async sendSmartDriveSettings() {
     // send the current settings to the SD
-    return this.smartDrive
-      .sendSettingsObject(this.settings)
-      .then(() => {
-        return this.smartDrive.sendSwitchControlSettingsObject(
-          this.switchControlSettings
-        );
-      })
-      .catch(err => {
-        Sentry.captureException(err);
+    try {
+      await this.smartDrive.sendSettingsObject(this.settings);
+      await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+    } catch (err) {
+      Sentry.captureException(err);
+      // indicate failure
+      const msg =
+        L('failures.send-settings') +
+        ' ' +
+        this._savedSmartDriveAddress +
+        '\n\n' +
+        err;
+      alert({
+        title: L('failures.title'),
+        message: msg,
+        okButtonText: L('buttons.ok')
+      });
+      setTimeout(() => {
         // make sure we retry this while we're connected
         this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
-        // indicate failure
-        Log.E('send settings failed', err);
-        const msg =
-          L('failures.send-settings') +
-          ' ' +
-          this._savedSmartDriveAddress +
-          '\n\n' +
-          err;
-        alert({
-          title: L('failures.title'),
-          message: msg,
-          okButtonText: L('buttons.ok')
-        });
-      });
+      }, 500);
+    }
   }
 
   /*
    * SMART DRIVE EVENT HANDLERS
    */
-  async onSmartDriveConnect(args: any) {
+  async onSmartDriveConnect() {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
@@ -2367,7 +2345,7 @@ export class MainViewModel extends Observable {
     );
   }
 
-  async onSmartDriveDisconnect(args: any) {
+  async onSmartDriveDisconnect() {
     if (this.rssiIntervalId) {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
@@ -2475,9 +2453,9 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async onSmartDriveVersion(args: any) {
+  async onSmartDriveVersion() {
     // Log.D('onSmartDriveVersion event');
-    const mcuVersion = args.data.mcu;
+    // const mcuVersion = args.data.mcu;
 
     // update version displays
     this.mcuVersion = this.smartDrive.mcu_version_string;
@@ -2491,36 +2469,34 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  getFirmwareData() {
-    return this._sqliteService
-      .getAll({ tableName: SmartDriveData.Firmwares.TableName })
-      .then(objs => {
-        // @ts-ignore
-        return objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      })
-      .then(mds => {
-        // make the metadata
-        return mds.reduce((data, md) => {
-          const fname = md[SmartDriveData.Firmwares.FileName];
-          const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-            filename: fname
-          });
-          if (blob && blob.length) {
-            data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-              version: md[SmartDriveData.Firmwares.VersionName],
-              filename: fname,
-              id: md[SmartDriveData.Firmwares.IdName],
-              changes: md[SmartDriveData.Firmwares.ChangesName],
-              data: blob
-            };
-          }
-          return data;
-        }, {});
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Could not get firmware metadata:', err);
-      });
+  async getFirmwareData() {
+    const objs = await this._sqliteService
+      .getAll({ tableName: SmartDriveData.Firmwares.TableName });
+    // @ts-ignore
+    const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
+    try {
+      // make the metadata
+      return mds.reduce((data, md) => {
+        const fname = md[SmartDriveData.Firmwares.FileName];
+        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
+          filename: fname
+        });
+        if (blob && blob.length) {
+          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
+            version: md[SmartDriveData.Firmwares.VersionName],
+            filename: fname,
+            id: md[SmartDriveData.Firmwares.IdName],
+            changes: md[SmartDriveData.Firmwares.ChangesName],
+            data: blob
+          };
+        }
+        return data;
+      }, {});
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Could not get firmware metadata:', err);
+      return {};
+    }
   }
 
   saveErrorToDatabase(errorCode: string, errorId: number) {

@@ -344,18 +344,13 @@
             <Label row="3" col="1" class="centerMessage"
                    text="{{ updateProgressText }}"
                    visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}"/>
-            <Repeater row="3" col="1" items="{{ smartDriveOtaActions }}"
+            <ListView row="3" col="1" items="{{ smartDriveOtaActions }}"
+                      verticalAlignment="center" class="compact"
                       visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-              <Repeater.itemsLayout>
-                <FlexboxLayout justifyContent="center"
-                               alignContent="center"
-                               alignItems="center"
-                               flexDirection="column" />
-              </Repeater.itemsLayout>
-              <Repeater.itemTemplate>
+              <ListView.itemTemplate>
                 <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}"/>
-              </Repeater.itemTemplate>
-            </Repeater>
+              </ListView.itemTemplate>
+            </ListView>
             <Label row="4" col="1" class="currentTime"
                    text="{{ currentTime }}" textWrap="true" />
             <Label row="5" col="1" class="currentTimeMeridiem"
