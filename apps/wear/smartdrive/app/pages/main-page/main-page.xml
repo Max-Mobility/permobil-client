@@ -242,6 +242,12 @@
           <ScrollView height="100%" id="settingsScrollView">
             <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>              
+              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.max-speed') }}" class="settings-label" textWrap="true" />
@@ -299,12 +305,6 @@
                 <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
             </StackLayout>
@@ -477,6 +477,12 @@
           <ScrollView height="100%" id="aboutScrollView">
             <StackLayout paddingBottom="{{ insetPadding }}">
               <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
+                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="errorHistory" tap="{{ showErrorHistory }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('settings.error-history') }}" class="settings-label" textWrap="true" />
@@ -522,12 +528,6 @@
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
                   <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
             </StackLayout>
