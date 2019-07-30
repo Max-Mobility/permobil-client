@@ -1254,7 +1254,7 @@ export class MainViewModel extends Observable {
             SmartDrive.smartdrive_mcu_version_event,
             onVersion
           );
-        }
+        };
         const connectTimeoutId = setTimeout(() => {
           remove();
           reject(L('updates.errors.timeout'));
@@ -1495,7 +1495,7 @@ export class MainViewModel extends Observable {
       return this.updateError(err, L('updates.failed'), `${err}`);
     }
     const status = otaStatus.replace('OTA', 'updates').replace(' ', '.').toLowerCase();
-    let updateMsg = L(status);
+    const updateMsg = L(status);
     this.stopUpdates(updateMsg, false);
   }
 
@@ -1553,7 +1553,7 @@ export class MainViewModel extends Observable {
 
   updateError(err: any, msg: string, alertMsg?: string) {
     Sentry.captureException(err);
-    Log.E(msg)
+    Log.E(msg);
     if (alertMsg !== undefined) {
       alert({
         title: L('updates.failed'),
