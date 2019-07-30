@@ -1791,7 +1791,7 @@ export class MainViewModel extends Observable {
 
   onSettingsInfoItemTap() {
     const messageKey = 'settings.description.' + this.activeSettingToChange;
-    const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
+    const message = this.changeSettingKeyString + '\n\n' + L(messageKey);
     alert({
       title: L('settings.information'),
       message: message,
@@ -2169,7 +2169,7 @@ export class MainViewModel extends Observable {
         if (didSave) {
           alert({
             title: L('warnings.title.notice'),
-            message: `${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`,
+            message: `${L('settings.paired-to-smartdrive')}\n\n${this.smartDrive.address}`,
             okButtonText: L('buttons.ok')
           });
         }
@@ -2338,7 +2338,7 @@ export class MainViewModel extends Observable {
       // indicate failure
       const msg =
         L('failures.send-settings') +
-        ' ' +
+        '\n\n' +
         this._savedSmartDriveAddress +
         '\n\n' +
         err;
