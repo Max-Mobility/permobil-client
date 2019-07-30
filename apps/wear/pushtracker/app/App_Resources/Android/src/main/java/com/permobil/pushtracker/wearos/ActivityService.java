@@ -15,6 +15,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -139,7 +140,7 @@ public class ActivityService extends Service {
 
     Log.d(TAG, "Initializing Sentry");
     Sentry.init(
-                'https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857'
+                "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
                 // 'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1485857'
                 );
 
@@ -590,7 +591,7 @@ public class ActivityService extends Service {
       .setTicker("Permobil")
       .setContentText("Permobil PushTracker is analyzing your activity.")
       .setSmallIcon(R.mipmap.ic_launcher_round)
-      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_launcher_round))
+      .setLargeIcon(Icon.createWithResource(this, R.mipmap.ic_launcher_round))
       .setContentIntent(contentPendingIntent)
       .setOngoing(true)
       .setChannelId(channelId);
