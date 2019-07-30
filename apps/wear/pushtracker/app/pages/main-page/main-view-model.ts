@@ -170,9 +170,7 @@ export class MainViewModel extends Observable {
     @Prop() databaseId: string = KinveyService.api_app_key;
 
     // Used for doing work while charing
-    private chargingWorkTimeoutId: any = null;
     private CHARGING_WORK_PERIOD_MS = 30 * 1000;
-    private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
 
     /**
      * User interaction objects
@@ -579,13 +577,10 @@ export class MainViewModel extends Observable {
             // requesting network
             this.onNetworkAvailable();
             // re-schedule any work that may still need to be done
-            this.chargingWorkTimeoutId = setTimeout(
+            setTimeout(
                 this.doWhileCharged.bind(this),
                 this.CHARGING_WORK_PERIOD_MS
             );
-        } else {
-            // clear the timeout id since we're not re-spawning it
-            this.chargingWorkTimeoutId = null;
         }
     }
 
