@@ -1247,6 +1247,7 @@ export class MainViewModel extends Observable {
         resolve(true);
         return;
       } else {
+        this.updateProgressText = L('updates.connecting-to-smartdrive');
         // we've not talked to this SD before, so we should connect
         // and get its version info
         const remove = () => {
@@ -1427,7 +1428,6 @@ export class MainViewModel extends Observable {
     // Now let's connect to the SD to make sure that we get it's
     // version information
     try {
-      this.updateProgressText = L('updates.connecting-to-smartdrive');
       await this.getSmartDriveVersion();
     } catch (err) {
       return this.updateError(err, L('updates.errors.connecting'), err);
@@ -1500,51 +1500,43 @@ export class MainViewModel extends Observable {
   }
 
   async updateFirmwareData(f: any) {
+    const id = this.currentVersions[f.name] && this.currentVersions[f.name].id;
     // update the data in the db
-    if (this.currentVersions[f.name]) {
-      // this is a file we have - update the table
-      const id = this.currentVersions[f.name].id;
-      // update current versions
-      this.currentVersions[f.name].version = f.version;
-      this.currentVersions[f.name].changes = f.changes;
-      this.currentVersions[f.name].data = f.data;
-      // save binary file to fs
-      Log.D('saving file', this.currentVersions[f.name].filename);
-      SmartDriveData.Firmwares.saveToFileSystem({
-        filename: this.currentVersions[f.name].filename,
-        data: f.data
-      });
-      return this._sqliteService.updateInTable(
+    const newFirmware = SmartDriveData.Firmwares.newFirmware(
+      f.version,
+      f.name,
+      undefined,
+      f.changes
+    );
+    // update current versions
+    this.currentVersions[f.name] = {
+      version: f.version,
+      changes: f.changes,
+      filename: newFirmware[SmartDriveData.Firmwares.FileName],
+      data: f.data
+    };
+    // save binary file to fs
+    Log.D('saving file', this.currentVersions[f.name].filename);
+    SmartDriveData.Firmwares.saveToFileSystem({
+      filename: this.currentVersions[f.name].filename,
+      data: f.data
+    });
+    if (id !== undefined) {
+      this.currentVersions[f.name].id = id;
+      newFirmware[SmartDriveData.Firmwares.IdName] = id;
+      await this._sqliteService.updateInTable(
         SmartDriveData.Firmwares.TableName,
         {
-          [SmartDriveData.Firmwares.VersionName]: f.version
+          [SmartDriveData.Firmwares.VersionName]: newFirmware[SmartDriveData.Firmwares.VersionName],
+          [SmartDriveData.Firmwares.ChangesName]: newFirmware[SmartDriveData.Firmwares.ChangesName],
+          [SmartDriveData.Firmwares.FileName]: newFirmware[SmartDriveData.Firmwares.FileName]
         },
         {
           [SmartDriveData.Firmwares.IdName]: id
         }
       );
     } else {
-      // this is a file we don't have in the table
-      const newFirmware = SmartDriveData.Firmwares.newFirmware(
-        f.version,
-        f.name,
-        undefined,
-        f.changes
-      );
-      // update current versions
-      this.currentVersions[f.name] = {
-        version: f.version,
-        changes: f.changes,
-        filename: newFirmware[SmartDriveData.Firmwares.FileName],
-        data: f.data
-      };
-      // save binary file to fs
-      Log.D('saving file', this.currentVersions[f.name].filename);
-      SmartDriveData.Firmwares.saveToFileSystem({
-        filename: this.currentVersions[f.name].filename,
-        data: f.data
-      });
-      return this._sqliteService.insertIntoTable(
+      await this._sqliteService.insertIntoTable(
         SmartDriveData.Firmwares.TableName,
         newFirmware
       );
