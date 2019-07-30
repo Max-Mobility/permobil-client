@@ -217,8 +217,8 @@ export class MainViewModel extends Observable {
 
   // permissions for the app
   private permissionsNeeded = [
-    android.Manifest.permission.READ_PHONE_STATE,
-    android.Manifest.permission.ACCESS_COARSE_LOCATION
+    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+    android.Manifest.permission.READ_PHONE_STATE
   ];
 
   get SmartDriveWakeLock() {
@@ -412,7 +412,7 @@ export class MainViewModel extends Observable {
             Sentry.captureException(err);
             alert({
               title: L('failures.title'),
-              message: `${L('failures.getting-error')}: ${err}`,
+              message: `${L('failures.getting-error')}\n\n${err}`,
               okButtonText: L('buttons.ok')
             });
           });
@@ -423,45 +423,66 @@ export class MainViewModel extends Observable {
       });
   }
 
-  askForPermissions() {
+  async askForPermissions() {
+    // determine if we have shown the permissions request
+    const hasShownRequest = appSettings.getBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
+    ) || false;
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
     // permissions were rejected
+    const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
+    const reasons = [];
     const neededPermissions = this.permissionsNeeded.filter(
-      p => !hasPermission(p)
+      p => !hasPermission(p) &&
+        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(p) ||
+          !hasShownRequest)
     );
-    const reasons = [
-      L('permissions-reasons.phone-state'),
-      L('permissions-reasons.coarse-location')
-    ].join('\n\n');
+    // update the has-shown-request
+    appSettings.setBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST,
+      true
+    );
+    const reasoning = {
+      [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L('permissions-reasons.coarse-location'),
+      [android.Manifest.permission.READ_PHONE_STATE]: L('permissions-reasons.phone-state')
+    };
+    neededPermissions.map((r) => {
+      reasons.push(reasoning[r]);
+    });
     if (neededPermissions && neededPermissions.length > 0) {
       // Log.D('requesting permissions!', neededPermissions);
-      return alert({
+      await alert({
         title: L('permissions-request.title'),
-        message: reasons,
+        message: reasons.join('\n\n'),
         okButtonText: L('buttons.ok')
-      })
-        .then(() => {
-          return requestPermissions(neededPermissions, () => { });
-        })
-        .then(permissions => {
-          // now that we have permissions go ahead and save the serial number
-          this.watchSerialNumber = android.os.Build.getSerial();
-          appSettings.setString(
-            DataKeys.WATCH_SERIAL_NUMBER,
-            this.watchSerialNumber
-          );
-          this._kinveyService.watch_serial_number = this.watchSerialNumber;
-          // and return true letting the caller know we got the permissions
+      });
+      try {
+        const permissions = await requestPermissions(neededPermissions, () => { });
+        // now that we have permissions go ahead and save the serial number
+        this.watchSerialNumber = android.os.Build.getSerial();
+        appSettings.setString(
+          DataKeys.WATCH_SERIAL_NUMBER,
+          this.watchSerialNumber
+        );
+        this._kinveyService.watch_serial_number = this.watchSerialNumber;
+        // and return true letting the caller know we got the permissions
+        return true;
+      } catch (permissionsObj) {
+        const hasBlePermission =
+          permissionsObj[blePermission] ||
+          hasPermission(blePermission);
+        if (hasBlePermission) {
           return true;
-        })
-        .catch(err => {
-          Sentry.captureException(err);
+        } else {
           throw L('failures.permissions');
-        });
-    } else {
+        }
+      }
+    } else if (hasPermission(blePermission)) {
       return Promise.resolve(true);
+    } else {
+      throw L('failures.permissions');
     }
   }
 
@@ -1494,8 +1515,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       return this.updateError(err, L('updates.failed'), `${err}`);
     }
-    const status = otaStatus.replace('OTA', 'updates').replace(' ', '.').toLowerCase();
-    const updateMsg = L(status);
+    const updateMsg = L(otaStatus);
     this.stopUpdates(updateMsg, false);
   }
 
@@ -2085,7 +2105,7 @@ export class MainViewModel extends Observable {
         })
         .catch(err => {
           Sentry.captureException(err);
-          Log.E(`Caught error, disabling power assist: ${err}`);
+          // Log.E(`Caught error, disabling power assist: ${err}`);
           this.disablePowerAssist();
         });
     } else {
@@ -2099,7 +2119,7 @@ export class MainViewModel extends Observable {
         })
         .catch(err => {
           Sentry.captureException(err);
-          Log.E(`Could not save new smartdrive: ${err}`);
+          // Log.E(`Could not save new smartdrive: ${err}`);
         });
     }
   }
@@ -2147,7 +2167,11 @@ export class MainViewModel extends Observable {
     return this.saveNewSmartDrive()
       .then((didSave: boolean) => {
         if (didSave) {
-          alert(`${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`);
+          alert({
+            title: L('warnings.title.notice'),
+            message: `${L('settings.paired-to-smartdrive')} ${this.smartDrive.address}`,
+            okButtonText: L('buttons.ok')
+          });
         }
       })
       .catch((err: any) => {
@@ -2185,6 +2209,16 @@ export class MainViewModel extends Observable {
           return false;
         }
 
+        // make sure we have only one smartdrive
+        if (BluetoothService.SmartDrives.length > 1) {
+          alert({
+            title: L('failures.title'),
+            message: L('failures.too-many-smartdrives-found'),
+            okButtonText: L('buttons.ok')
+          });
+          return false;
+        }
+
         // these are the smartdrives that are pushed into an array on the bluetooth service
         const sds = BluetoothService.SmartDrives;
 
@@ -2215,7 +2249,7 @@ export class MainViewModel extends Observable {
         Log.E('could not scan', err);
         alert({
           title: L('failures.title'),
-          message: `${L('failures.scan')}: ${err}`,
+          message: `${L('failures.scan')}\n\n${err}`,
           okButtonText: L('buttons.ok')
         });
         return false;
@@ -2236,7 +2270,7 @@ export class MainViewModel extends Observable {
         Sentry.captureException(err);
         alert({
           title: L('failures.title'),
-          message: L('failures.connect') + ' ' + smartDrive.address,
+          message: L('failures.connect') + '\n\n' + smartDrive.address,
           okButtonText: L('buttons.ok')
         });
         return false;
@@ -2509,7 +2543,7 @@ export class MainViewModel extends Observable {
           Sentry.captureException(err);
           alert({
             title: L('failures.title'),
-            message: `${L('failures.saving-error')}: ${err}`,
+            message: `${L('failures.saving-error')}\n\n${err}`,
             okButtonText: L('buttons.ok')
           });
         });
@@ -2634,7 +2668,7 @@ export class MainViewModel extends Observable {
         Log.E('Failed saving usage:', err);
         alert({
           title: L('failures.title'),
-          message: `${L('failures.saving-usage')}: ${err}`,
+          message: `${L('failures.saving-usage')}\n\n${err}`,
           okButtonText: L('buttons.ok')
         });
       });

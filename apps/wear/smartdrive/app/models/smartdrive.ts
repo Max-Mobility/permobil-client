@@ -390,7 +390,7 @@ export class SmartDrive extends DeviceBase {
         };
         const otaTimeoutHandler = () => {
           startedOTA = false;
-          stopOTA('OTA Timeout', false, true);
+          stopOTA('updates.timeout', false, true);
           this.otaState = SmartDrive.OTAState.timeout;
         };
         const otaRetryHandler = () => {
@@ -607,7 +607,7 @@ export class SmartDrive extends DeviceBase {
               } else if (haveMCUVersion && !haveBLEVersion) {
                 this.otaState = SmartDrive.OTAState.comm_failure;
                 timer.setTimeout(() => {
-                  stopOTA('Communications Failed', false, false);
+                  stopOTA('updates.communications-failed', false, false);
                 }, 2500);
               }
               break;
@@ -802,11 +802,11 @@ export class SmartDrive extends DeviceBase {
                 )}, ${bleVersion.toString(16)}`;
                 console.log(msg);
                 this.otaState = SmartDrive.OTAState.failed;
-                stopOTA('OTA Failed', false, true);
+                stopOTA('updates.failed', false, true);
               }
               break;
             case SmartDrive.OTAState.complete:
-              stopOTA('OTA Complete', true);
+              stopOTA('updates.success', true);
               break;
             case SmartDrive.OTAState.canceling:
               cancelOTA = true;
@@ -837,7 +837,7 @@ export class SmartDrive extends DeviceBase {
               }
               break;
             case SmartDrive.OTAState.canceled:
-              stopOTA('OTA Canceled', false);
+              stopOTA('updates.canceled', false);
               break;
             case SmartDrive.OTAState.failed:
               break;

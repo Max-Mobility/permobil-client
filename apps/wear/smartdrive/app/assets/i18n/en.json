@@ -1,53 +1,58 @@
 {
   "about": {
     "database": "Database ID",
-    "sd-ble-version": "SmartDrive BLE Version",
-    "sd-mcu-version": "SmartDrive MCU Version",
+    "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
+    "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive Serial Number",
-    "title": "Information",
-    "version": "App Version",
-    "watch-serial-number": "TicWatch Serial Number"
+    "title": "About Information",
+    "version": "SmartDrive MX2+ Wear OS App (SW) Version",
+    "watch-serial-number": "Smartwatch Serial Number"
   },
   "buttons": {
+    "allow": "Allow",
     "back": "Back",
     "cancel": "Cancel",
+    "deny": "Deny",
+    "disable": "Disable",
     "dismiss": "Dismiss",
+    "enable": "Enable",
     "ok": "OK"
   },
   "charts": {
     "battery": {
-      "title": "Daily SmartDrive Battery Usage (%)"
+      "title": "SmartDrive Battery Usage Daily (%)"
     },
     "distance": {
-      "title": "Daily SmartDrive Distance Traveled"
+      "title": "SmartDrive Distance Traveled Daily"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "SD Battery Voltage",
-      "bledisconnect": "Bluetooth Disconnect",
-      "gyrorange": "SD Gyro Range",
-      "motorphases": "SD Motor Phases",
-      "otaunavailable": "Updates Unavailable",
-      "overcurrent": "SD Over Current",
-      "overtemperature": "SD Over Temperature"
+      "batteryvoltage": "[ERR: 001] SD Battery Voltage",
+      "bledisconnect": "[ERR: 007] Bluetooth Disconnect",
+      "gyrorange": "[ERR: 005] SD Angle",
+      "motorphases": "[ERR: 002] SD Motor",
+      "otaunavailable": "[ERR: 006] Update Unavailable",
+      "overcurrent": "[ERR: 003] SD Current Spike",
+      "overtemperature": "[ERR: 004] SD Overheating"
     },
     "loading": "Loading...",
-    "no-errors": "No SmartDrive errors have been received or recorded.",
+    "no-errors": "No SmartDrive errors have been recorded or received.",
     "title": "SmartDrive Error History"
   },
   "failures": {
-    "connect": "Could not connect to",
-    "getting-error": "Failed getting SmartDrive error",
-    "must-wear-watch": "You must wear the device to control your SmartDrive.",
-    "no-smartdrive-paired": "No SmartDrive paired to the app!",
+    "connect": "Could not connect to SmartDrive.",
+    "getting-error": "Failed getting SmartDrive error.",
+    "must-wear-watch": "[Check for Wrist] Setting is enabled, therefore the smartwatch must be worn to control your SmartDrive.",
+    "no-smartdrive-paired": "No SmartDrive paired.",
     "no-smartdrives-found": "No SmartDrives found nearby.",
-    "permissions": "Required permissions were not granted!",
-    "saving-error": "Failed saving SmartDrive error",
-    "saving-usage": "Failed saving usage",
-    "scan": "Could not scan",
-    "send-settings": "Failed to send settings to",
-    "title": "Failure"
+    "permissions": "Unable to perform the requested action. Required permissions were not granted.",
+    "saving-error": "Failed saving SmartDrive error.",
+    "saving-usage": "Failed saving usage.",
+    "scan": "Could not scan.",
+    "send-settings": "Failed to send settings to SmartDrive.",
+    "title": "Notice",
+    "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
   },
   "languages": {
     "da": "Danish",
@@ -58,17 +63,17 @@
     "it": "Italian",
     "ja": "Japanese",
     "ko": "Korean",
-    "nb": "Norwegian (Bokmål)",
+    "nb": "Norwegian [Bokmål]",
     "nl": "Dutch",
-    "nn": "Norwegian (Nynorsk)",
-    "zh": "Chinese (Traditional)"
+    "nn": "Norwegian [Nynorsk]",
+    "zh": "Chinese [Traditional]"
   },
   "menu": {
     "about": "About",
-    "settings": "Settings",
-    "title": "Menu",
-    "training": "Training",
-    "updates": "Updates"
+    "settings": "SmartDrive Settings",
+    "title": "SmartDrive MX2+ Menu ",
+    "training": "Tap Training",
+    "updates": "Wireless Updates"
   },
   "ota": {
     "action": {
@@ -81,39 +86,39 @@
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "Waiting on BLE",
+        "awaiting-ble-ready": "Waiting on BT",
         "awaiting-connection": "Waiting for Connection",
-        "awaiting-mcu-ready": "Waiting on MCU",
-        "awaiting-versions": "Awaiting Versions",
+        "awaiting-mcu-ready": "Waiting on SD",
+        "awaiting-versions": "Waiting for Versions",
         "canceled": "Canceled",
         "canceling": "Canceling",
-        "comm-failure": "Communications error, please reboot your SmartDrive",
+        "comm-failure": "Communications Error - SmartDrive reboot required",
         "complete": "Complete",
         "failed": "Failed",
         "not-started": "Not Started",
-        "rebooting-ble": "Rebooting BLE",
-        "rebooting-mcu": "Rebooting MCU",
+        "rebooting-ble": "Rebooting BT",
+        "rebooting-mcu": "Rebooting SD",
         "timeout": "Timeout",
-        "updating-ble": "Updating BLE",
-        "updating-mcu": "Updating MCU",
+        "updating-ble": "Updating BT",
+        "updating-mcu": "Updating SD",
         "verifying": "Verifying"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
-    "phone-state": "To read your device serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
+    "coarse-location": "To control your SmartDrive using Bluetooth we require the Location [ACCESS_COARSE_LOCATION] permission allowed on the following screen. We will not access your location data.",
+    "phone-state": "OPTIONAL: To access your smartwatch serial number, which can be useful for support and warranty purposes, we need the Phone permission [READ_PHONE_STATE] allowed on one the following screens. We will not access your phone number, cellular network information, or any data except the smartwatch serial number."
   },
   "permissions-request": {
-    "title": "Permissions Request"
+    "title": "Permissions Notice"
   },
   "power-assist": {
-    "activate": "Activate Power Assist",
-    "deactivate": "Deactivate Power Assist",
+    "activate": "Turn Power Assist On",
+    "deactivate": "Turn Power Assist Off",
     "estimated-range": "Estimated Range",
-    "exit-training": "Exit Training Mode",
-    "speed": "Speed",
-    "stop": "Stop"
+    "exit-training": "Exit Training",
+    "speed": "Current Speed",
+    "stop": "Deactivate Driving"
   },
   "sd": {
     "settings": {
@@ -122,13 +127,13 @@
         "enabled": "Enabled"
       },
       "units": {
-        "english": "English",
+        "english": "Imperial",
         "metric": "Metric"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "Latching",
+        "latching": "Latched",
         "momentary": "Momentary"
       }
     }
@@ -137,29 +142,29 @@
     "acceleration": "Acceleration",
     "control-mode": "Control Mode",
     "description": {
-      "acceleration": "The acceleration of your SmartDrive.",
-      "controlmode": "MX2+: the default, gesture based control mode for the SmartDrive.\n\nMX2: in this mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap the wristband. Note: this is a legacy-support mode.\n\nMX1: in this mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap the wristband or when you brake on the handrims. Note: this is a legacy-support mode.",
-      "maxspeed": "The maximum speed your SmartDrive can drive at when controlled from your PushTracker.",
-      "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection to a remote device is established or when the Switch Control is taken out of standby mode.",
-      "switchcontrolmode": "Momentary: the default Switch Control mode in which the SmartDrive will drive and ramp up to the configured Switch Control Max Speed only while one of the Switch Control buttons is being held. When both buttons are pressed or when the button is released, the motor will turn off.\n\nLatching: in latching Switch Control mode the SmartDrive will drive and ramp up to the configured Switch Control Max Speed while one of the Switch Control buttons is being held. When the button is released the SmartDrive will remain driving - at the current speed when the button was released. When both buttons are pressed or when the button is pressed again, the motor will turn off.",
-      "switchcontrolspeed": "The maximum speed you SmartDrive can drive at when controlled from the Switch Control buttons.",
-      "tapsensitivity": "Determines the sensitivity of the tap gesture used for activating and deactiving the SmartDrive. 100% is the most sensitive and therefore easiest to tap. 10% is the least sensitive and therefore hardest to tap.",
-      "units": "Select which unit system / units of measure to use for range and speed display within the user interface.",
-      "wearcheck": "When enabled, enforces that the watch must be on the user's wrist to activate power assist. If power assist is enabled and the watch senses that it is no longer on the user's wrist, it will automatically deactivate power assist."
+      "acceleration": "The acceleration or speed ramp rate of the SmartDrive.",
+      "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
+      "maxspeed": "The maximum speed the SmartDrive can drive at when controlled from your smartwatch.",
+      "powerassistbuzzer": "When enabled, the SmartDrive will beep any time a connection from a remote device is established, or when Switch Control is taken out of the standby state.",
+      "switchcontrolmode": "Momentary: The default Switch Control Mode in which the SmartDrive will start driving the motor by ramping up its speed to the configured Switch Control Max Speed only while one of the Switch Control Buttons is being held. When the held Button is released, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.\n\nLatching: In Latching Switch Control Mode, the SmartDrive will start driving the motor by ramping up its speed to the configured Switch Control Max Speed while one of the Switch Control buttons is being held. When the held button is released, the SmartDrive will remain driving / coast at the current speed when the button was released. When one of the Buttons is pressed and released again, or both of the Buttons [if present] are pressed, the driving will deactivate. Please note that upon deactivation it does not put the device in the standby state.",
+      "switchcontrolspeed": "The maximum speed the SmartDrive can drive at when controlled from the Switch Control Buttons.",
+      "tapsensitivity": "Determines the sensitivity of the tap gesture used for activating and deactivating the driving. The lower the percentage is the harder you need to tap - 100% is the most sensitive and therefore easiest to tap, and 10% is the least sensitive and therefore hardest to tap.",
+      "units": "The unit system or units of measure to display the speed and distances within the user interfaces. Select either Imperial [mi and mph] or Metric [km and km/h].",
+      "wearcheck": "When enabled, the smartwatch must be on the wrist to turn power assist ON. If power assist is ON and the smartwatch senses that it is no longer on the wrist, it will automatically turn power assist OFF."
     },
     "error-history": "Error History",
     "information": "Information",
     "max-speed": "Max Speed",
     "pair-smartdrive": "Pair SmartDrive",
-    "paired-to-smartdrive": "Paired to SmartDrive",
-    "power-assist-buzzer": "Power Assist Buzzer",
-    "scanning": "Scanning",
+    "paired-to-smartdrive": "Successfully paired to SmartDrive.",
+    "power-assist-buzzer": "Power Assist Beep Indication",
+    "scanning": "Scanning for SmartDrive to pair with...",
     "select-smartdrive": "Select SmartDrive",
     "tap-sensitivity": "Tap Sensitivity",
     "title": "SmartDrive Settings",
     "units": "Units",
     "watch-required": {
-      "title": "Wear Check",
+      "title": "Check for Wrist",
       "values": {
         "disabled": "Disabled",
         "enabled": "Enabled"
@@ -175,37 +180,40 @@
       "english": "mi",
       "metric": "km"
     },
-    "english": "English",
+    "english": "Imperial",
     "metric": "Metric",
     "speed": {
       "english": "mph",
-      "metric": "kph"
+      "metric": "km/h"
     }
   },
   "updates": {
-    "canceled": "Update canceled",
-    "changes": "Summary of changes:",
-    "checking-for-updates": "Checking for Updates",
-    "connecting-to-smartdrive": "Connecting to SmartDrive",
-    "downloading-new-firmwares": "Downloading new firmware data",
+    "canceled": "SmartDrive update canceled.",
+    "changes": "Summary of Changes",
+    "checking-for-updates": "Checking for updates...",
+    "communications-failed": "Communications with the SmartDrive have failed, please reboot your SmartDrive.",
+    "connecting-to-smartdrive": "Connecting to SmartDrive...",
+    "downloading-new-firmwares": "Downloading new updates data...",
     "errors": {
-      "connecting": "Error connecting to SmartDrive",
-      "downloading": "Error downloading updates",
-      "getting": "Error searching for updates",
-      "loading": "Error loading current update data.",
-      "saving": "Error saving update data",
-      "timeout": "Timeout connecting to SmartDrive to check versions."
+      "connecting": "Error connecting to SmartDrive.",
+      "downloading": "Error downloading updates.",
+      "getting": "Error searching for updates.",
+      "saving": "Error saving updates data."
     },
-    "failed": "Update failed",
+    "failed": "SmartDrive update failed.",
     "status": "Update Status",
     "success": "SmartDrive update completed successfully!",
-    "up-to-date": "SmartDrive is up to date!",
+    "timeout": "SmartDrive update timed out!",
+    "up-to-date": "SmartDrive is up-to-date!",
     "version": "Version"
   },
   "warnings": {
     "saved-settings": {
-      "message": "CAUTION: You MUST consult the SmartDrive Users Manual on how changing the settings affects its operation and performance.",
-      "title": "Saved Settings"
+      "message": "CAUTION: You MUST consult the SmartDrive User's Manual on how changing the settings affects its operation and performance.",
+      "title": "Changed Settings"
+    },
+    "title": {
+      "notice": "Notice"
     }
   }
 }

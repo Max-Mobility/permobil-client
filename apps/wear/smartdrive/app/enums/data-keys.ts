@@ -1,5 +1,6 @@
 export enum DataKeys {
   'USER_IDENTIFIER' = 'user_identifier',
+  'SHOULD_SHOW_PERMISSIONS_REQUEST' = 'should_show_permissions_request',
   'HEART_RATE' = 'heart_rate',
   'WATCH_SERIAL_NUMBER' = 'watch.serial-number',
   'REQUIRE_WATCH_BEING_WORN' = 'watch.require-being-worn',
