@@ -360,7 +360,7 @@ export class MainViewModel extends Observable {
     this.serviceDataReceiver.onReceiveFunction = this.onServiceData.bind(this);
     const context = ad
       .getApplicationContext();
-    android.support.v4.content.LocalBroadcastManager
+    androidx.localbroadcastmanager.content.LocalBroadcastManager
       .getInstance(context)
       .registerReceiver(
         this.serviceDataReceiver,
