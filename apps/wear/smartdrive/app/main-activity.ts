@@ -6,11 +6,11 @@ import {
 
 @JavaProxy('com.permobil.smartdrive.MainActivity')
 @Interfaces([
-  android.support.wear.ambient.AmbientModeSupport.AmbientCallbackProvider
+  androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider
 ])
-class MainActivity extends android.support.v7.app.AppCompatActivity
+class MainActivity extends androidx.appcompat.app.AppCompatActivity
   implements
-    android.support.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
+  androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
   constructor() {
     super();
   }
@@ -19,13 +19,13 @@ class MainActivity extends android.support.v7.app.AppCompatActivity
    * Ambient mode controller attached to this display. Used by Activity to see if it is in ambient
    * mode.
    */
-  public ambientController: android.support.wear.ambient.AmbientModeSupport.AmbientController;
+  public ambientController: androidx.wear.ambient.AmbientModeSupport.AmbientController;
 
   public isNativeScriptActivity;
 
   private _callbacks: AndroidActivityCallbacks;
 
-  public getAmbientCallback(): android.support.wear.ambient.AmbientModeSupport.AmbientCallback {
+  public getAmbientCallback(): androidx.wear.ambient.AmbientModeSupport.AmbientCallback {
     return new MyAmbientCallback();
   }
 
@@ -37,9 +37,9 @@ class MainActivity extends android.support.v7.app.AppCompatActivity
       setActivityCallbacks(this);
     }
 
-    this._callbacks.onCreate(this, savedInstanceState, super.onCreate);
+    this._callbacks.onCreate(this, savedInstanceState, this.getIntent(), super.onCreate);
 
-    this.ambientController = android.support.wear.ambient.AmbientModeSupport.attach(
+    this.ambientController = androidx.wear.ambient.AmbientModeSupport.attach(
       this
     );
   }
@@ -97,7 +97,7 @@ class MainActivity extends android.support.v7.app.AppCompatActivity
   }
 }
 
-class MyAmbientCallback extends android.support.wear.ambient.AmbientModeSupport
+class MyAmbientCallback extends androidx.wear.ambient.AmbientModeSupport
   .AmbientCallback {
   /** If the display is low-bit in ambient mode. i.e. it requires anti-aliased fonts. */
   public mIsLowBitAmbient: boolean;
@@ -110,11 +110,11 @@ class MyAmbientCallback extends android.support.wear.ambient.AmbientModeSupport
 
   public onEnterAmbient(ambientDetails: android.os.Bundle): void {
     this.mIsLowBitAmbient = ambientDetails.getBoolean(
-      android.support.wear.ambient.AmbientModeSupport.EXTRA_LOWBIT_AMBIENT,
+      androidx.wear.ambient.AmbientModeSupport.EXTRA_LOWBIT_AMBIENT,
       false
     );
     this.mDoBurnInProtection = ambientDetails.getBoolean(
-      android.support.wear.ambient.AmbientModeSupport.EXTRA_BURN_IN_PROTECTION,
+      androidx.wear.ambient.AmbientModeSupport.EXTRA_BURN_IN_PROTECTION,
       false
     );
 
