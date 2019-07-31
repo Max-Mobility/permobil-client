@@ -1486,7 +1486,7 @@ export class MainViewModel extends Observable {
     // do we need to update? - check against smartdrive version
     const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
-    if (false && this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
+    if (this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
       // smartdrive is already up to date
       this.stopUpdates(L('updates.up-to-date'));
       setTimeout(() => {
