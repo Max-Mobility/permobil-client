@@ -23,6 +23,7 @@ import { EventData, fromObject, Observable } from 'tns-core-modules/data/observa
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
+import { topmost } from 'tns-core-modules/ui/frame';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -55,6 +56,7 @@ const dateLocales = {
 export class MainViewModel extends Observable {
   // for managing the inset of the layouts ourselves
   @Prop() insetPadding: number = 0;
+  @Prop() chinSize: number = 0;
   // battery display
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
   @Prop() watchCurrentBatteryPercentage: number = 0;
@@ -263,7 +265,7 @@ export class MainViewModel extends Observable {
       this.insetPadding,
       this.insetPadding,
       this.insetPadding,
-      0
+      this.chinSize
     );
   }
 
@@ -522,6 +524,15 @@ export class MainViewModel extends Observable {
     this._powerAssistView = args.object as View;
   }
 
+  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener({
+    onApplyWindowInsets: function(view, insets) {
+      this.chinSize = insets.getSystemWindowInsetBottom();
+      Log.D('chinSize', this.chinSize);
+      view.onApplyWindowInsets(insets);
+      return insets;
+    }
+  });
+
   async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
     // now init the ui
@@ -533,8 +544,15 @@ export class MainViewModel extends Observable {
     }
     // get child references
     try {
+      // set up the chin inset listener and attach it to the top most frame
+      const frame = topmost();
+      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
+      // store reference to pageer so that we can control what page
+      // it's on programatically
       const page = args.object as Page;
       this.pager = page.getViewById('pager') as Pager;
+      // get references to scanning and update circles to control
+      // their spin state
       this.scanningProgressCircle = page.getViewById(
         'scanningProgressCircle'
       ) as AnimatedCircle;
