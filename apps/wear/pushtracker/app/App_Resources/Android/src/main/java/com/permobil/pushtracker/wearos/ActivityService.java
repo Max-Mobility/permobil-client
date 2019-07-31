@@ -35,9 +35,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import android.app.Notification.Builder;
-import android.support.v4.content.LocalBroadcastManager;
-
-import com.permobil.pushtracker.MainActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -559,10 +557,16 @@ public class ActivityService extends Service {
     if (isServiceRunning) return;
     isServiceRunning = true;
 
+    /*
     Intent notificationIntent = new Intent(
                                            getApplicationContext(),
                                            MainActivity.class
                                            );
+    */
+    Intent notificationIntent = new Intent();
+    notificationIntent.setClassName(
+                                    getApplicationContext(),
+                                    "com.permobil.pushtracker.MainActivity");
 
     // A string containing the action name
     notificationIntent.setAction(Constants.ACTION_START_SERVICE);
