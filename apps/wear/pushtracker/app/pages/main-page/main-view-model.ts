@@ -507,10 +507,6 @@ export class MainViewModel extends Observable {
       Log.E('apply theme error:', err);
     }
     this.sentryBreadCrumb('theme applied');
-    this.applyStyle();
-  }
-
-  applyStyle() {
   }
 
   /**
@@ -546,9 +542,6 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
-    // now load the activity data
-    this.loadCurrentActivityData();
-    this.updateDisplay();
   }
 
   onAppLowMemory(args?: any) {
