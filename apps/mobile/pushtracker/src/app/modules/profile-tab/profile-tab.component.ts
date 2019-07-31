@@ -229,7 +229,6 @@ export class ProfileTabComponent implements OnInit {
 
   async onSettingsTap(args) {
     Log.D('user tapped settings');
-
     const cfl = this.settingsDialog.nativeElement as GridLayout;
     this.animateDialog(cfl, 0, 0);
   }
@@ -294,8 +293,6 @@ export class ProfileTabComponent implements OnInit {
       this.primary = Array.from({length: 600}, (v , k) => k + 1 + '');
       this.secondary = Array.from({length: 9}, (v , k) => '.' + (k + 1));
     }
-    const a  = Array.from({length: 300}, (v , k) => k + 1);
-    console.dir(a);
     this.isWeight = true;
     this.listPicker();
   }
@@ -367,8 +364,8 @@ export class ProfileTabComponent implements OnInit {
     const datePicker = <DatePicker>args.object;
 
     datePicker.date = this.USER_BIRTHDAY;
-    datePicker.minDate = new Date(1950, 0, 29);
-    datePicker.maxDate = new Date(2050, 12, 12);
+    datePicker.minDate = new Date(1950, 0, 1);
+    datePicker.maxDate = new Date(2050, 0, 1);
 }
 
 }

@@ -128,7 +128,6 @@
  <!-- Settings FullScreen Layout -->
  // custom full-screen modal for presenting user with config changes UI
   <GridLayout #settingsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="activity-goals-dialog">
-
     // profile settings layout
     <GridLayout rows="*" columns="*" class="profile-settings-layout"  >
     // main profile-settings layout
@@ -236,8 +235,8 @@
         <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeDatePickerDialog()"></Button>
         <Label row="0" col="1" class="title" [text]="'general.birthday' | translate" textWrap="true"></Label>
       </GridLayout>
-      <GridLayout row="1" rows="*,*,*" columns="*,*,*">
+      <GridLayout row="1" rows="*, *, *" columns="*, auto, *, *">
         <DatePicker row="0" col="1" (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>
-        <Button row="1" col="2" text="Done"  class="close-dialog" (tap)="closeDatePickerDialog()"></Button>
+        <Button row="1" col="3" text="Done"  class="close-dialog" (tap)="closeDatePickerDialog()"></Button>
       </GridLayout>
  </GridLayout>
