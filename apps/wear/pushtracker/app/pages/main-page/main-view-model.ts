@@ -658,31 +658,29 @@ export class MainViewModel extends Observable {
         activityData = activityData.slice(1);
         // update coast data
         const maxCoast = activityData.reduce((max, obj) => {
-          return obj.coast > max ? obj.coast : max;
+          return obj[ActivityData.Info.CoastName] > max ?
+            obj[ActivityData.Info.CoastName] : max;
         }, 0);
         const coastData = activityData.map(e => {
           return {
             day: this.format(new Date(e.date), 'dd'),
-            value: (e.coast * 100.0) / maxCoast
+            value: (e[ActivityData.Info.CoastName] * 100.0) / maxCoast
           };
         });
         // Log.D('Highest Coast Value:', maxCoast);
-        this.coastChartMaxValue = maxCoast.toFixed(0);
+        this.coastChartMaxValue = maxCoast.toFixed(1);
         this.coastChartData = coastData;
 
         // update distance data
+        const maxDist = activityData.reduce((max, obj) => {
+          return obj[ActivityData.Info.DistanceName] > max ?
+            obj[ActivityData.Info.DistanceName] : max;
+        }, 0.0);
         const distanceData = activityData.map(e => {
-          const dist = e[ActivityData.Info.DistanceName];
           return {
             day: this.format(new Date(e.date), 'dd'),
-            value: dist
+            value: (e[ActivityData.Info.DistanceName] * 100.0) / maxDist
           };
-        });
-        const maxDist = distanceData.reduce((max, obj) => {
-          return obj.value > max ? obj.value : max;
-        }, 0.0);
-        distanceData.map(data => {
-          data.value = (100.0 * data.value) / maxDist;
         });
         // Log.D('Highest Distance Value:', maxDist);
         this.distanceChartMaxValue = maxDist.toFixed(1);
@@ -1006,11 +1004,12 @@ export class MainViewModel extends Observable {
         return ActivityData.Info.newInfo(null, d, 0, 0, 0);
       }
     });
-    return this.getRecentInfoFromDatabase(6)
+    return this.getRecentInfoFromDatabase(numDays + 1)
       .then(objs => {
         objs.map(o => {
           // @ts-ignore
           const obj = ActivityData.Info.loadInfo(...o);
+          // have to ts-ignore since we're using the java defs.
           // @ts-ignore
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
