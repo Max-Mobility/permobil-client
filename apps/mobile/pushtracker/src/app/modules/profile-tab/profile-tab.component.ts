@@ -352,6 +352,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListWeightTap(args: EventData) {
     Log.D('on list weight');
+    this._setActiveDataBox(args);
+
     if (this.SETTING_WEIGHT === 'Kilograms') {
       this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
       this.secondary = Array.from({ length: 9 }, (v, k) => '.' + (k + 1));
@@ -365,6 +367,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListHeightTap(args: EventData) {
     Log.D('on list Height');
+    this._setActiveDataBox(args);
+
     console.log(this.SETTING_HEIGHT);
     if (this.SETTING_HEIGHT === 'Centimeters') {
       this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
@@ -390,6 +394,7 @@ export class ProfileTabComponent implements OnInit {
 
   onBirthDateTap(args: EventData) {
     Log.D('user tapped birth date');
+    this._setActiveDataBox(args);
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
     this.animateDialog(cfl, 0, 0);
   }
