@@ -1758,21 +1758,24 @@ export class MainViewModel extends Observable {
         // update estimated range based on battery / distance
         let sumDistance = 0;
         let sumBattery = 0;
+        // set the range factor to be default (half way between the min/max)
         let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
-        let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
-        sdData.map(e => {
-          const dist = e[SmartDriveData.Info.DriveDistanceName];
-          if (dist > 0) {
-            // make sure we only compute diffs between valid distances
-            if (oldestDist > 0) {
-              const diff = dist - oldestDist;
-              // used for range computation
-              sumDistance += diff;
-              sumBattery += e[SmartDriveData.Info.BatteryName];
+        if (sdData && sdData.length) {
+          let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
+          sdData.map(e => {
+            const dist = e[SmartDriveData.Info.DriveDistanceName];
+            if (dist > 0) {
+              // make sure we only compute diffs between valid distances
+              if (oldestDist > 0) {
+                const diff = dist - oldestDist;
+                // used for range computation
+                sumDistance += diff;
+                sumBattery += e[SmartDriveData.Info.BatteryName];
+              }
+              oldestDist = Math.max(dist, oldestDist);
             }
-            oldestDist = Math.max(dist, oldestDist);
-          }
-        });
+          });
+        }
         if (sumDistance && sumBattery) {
           // convert from ticks to miles
           sumDistance = SmartDrive.motorTicksToMiles(sumDistance);
