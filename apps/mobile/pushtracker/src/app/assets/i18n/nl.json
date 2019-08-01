@@ -31,7 +31,10 @@
     "email": "E-mail",
     "password": "Wachtwoord",
     "forgot-password": "Wachtwoord vergeten",
-    "sign-up": "Inschrijven"
+    "sign-up": "Inschrijven",
+    "ok": "OK",
+    "cancel": "annuleren",
+    "chair-info": "Stoel Info"
   },
   "home-tab": {
     "title": "Huis",

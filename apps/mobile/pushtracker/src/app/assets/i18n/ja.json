@@ -31,7 +31,10 @@
     "email": "Eメール",
     "password": "パスワード",
     "forgot-password": "パスワードをお忘れですか",
-    "sign-up": "Sign Up"
+    "sign-up": "サインアップ",
+    "ok": "オーケー",
+    "cancel": "キャンセル",
+    "chair-info": "チェア情報"
   },
   "home-tab": {
     "title": "ホーム",

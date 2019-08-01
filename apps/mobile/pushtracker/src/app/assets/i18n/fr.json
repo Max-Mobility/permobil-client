@@ -31,7 +31,10 @@
     "email": "Email",
     "password": "Mot de passe",
     "forgot-password": "Mot de passe oublié",
-    "sign-up": "S'inscrire"
+    "sign-up": "S'inscrire",
+    "ok": "D'accord",
+    "cancel": "Annuler",
+    "chair-info": "Informations sur la chaise"
   },
   "home-tab": {
     "title": "Accueil",

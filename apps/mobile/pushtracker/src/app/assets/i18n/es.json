@@ -31,7 +31,10 @@
     "email": "Email",
     "password": "Contraseña",
     "forgot-password": "Se te olvidó tu contraseña",
-    "sign-up": "Regístrate"
+    "sign-up": "Regístrate",
+    "ok": "Okay",
+    "cancel": "Cancelar",
+    "chair-info": "Información de la silla"
   },
   "home-tab": {
     "title": "Casa",

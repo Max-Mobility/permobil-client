@@ -31,7 +31,10 @@
     "email": "E-post",
     "password": "Lösenord",
     "forgot-password": "Glömt ditt lösenord",
-    "sign-up": "Bli Medlem"
+    "sign-up": "Bli Medlem",
+    "ok": "ok",
+    "cancel": "Annullera",
+    "chair-info": "Ordförande"
   },
   "home-tab": {
     "title": "Hem",

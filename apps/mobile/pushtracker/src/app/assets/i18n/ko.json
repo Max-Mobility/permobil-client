@@ -31,7 +31,10 @@
     "email": "이메일",
     "password": "암호",
     "forgot-password": "비밀번호를 잊으 셨나요",
-    "sign-up": "가입"
+    "sign-up": "가입",
+    "ok": "승인",
+    "cancel": "취소",
+    "chair-info": "의자 정보"
   },
   "home-tab": {
     "title": "집",

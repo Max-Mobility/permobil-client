@@ -31,7 +31,10 @@
     "email": "电子邮件",
     "password": "密码",
     "forgot-password": "忘记密码",
-    "sign-up": "注册"
+    "sign-up": "注册",
+    "ok": "好",
+    "cancel": "取消",
+    "chair-info": "主席信息"
   },
   "home-tab": {
     "title": "Home",

@@ -31,7 +31,10 @@
     "email": "Email",
     "password": "Passwort",
     "forgot-password": "Passwort vergessen",
-    "sign-up": "Anmelden"
+    "sign-up": "Anmelden",
+    "ok": "OK",
+    "cancel": "Stornieren",
+    "chair-info": "Lehrstuhlinfo"
   },
   "home-tab": {
     "title": "Zuhause",
