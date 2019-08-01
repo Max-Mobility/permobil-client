@@ -9,7 +9,7 @@ import { AppResourceIcons } from '../../enums';
 
 @Component({
   moduleId: module.id,
-  selector: 'tabs',
+  selector: 'tabs-page',
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {

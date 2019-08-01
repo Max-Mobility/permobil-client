@@ -29,4 +29,9 @@
     @extend .SECTION_TEXT_BASE;
     color: darken($white, 10%);
   }
+
+  .close-dialog {
+    @extend .CLOSE_DIALOG_BASE;
+    color: darken($white, 10%);
+  }
 }

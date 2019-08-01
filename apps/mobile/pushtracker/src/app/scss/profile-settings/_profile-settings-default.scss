@@ -38,4 +38,9 @@
     @extend .SECTION_TEXT_BASE;
     color: $black;
   }
+
+  .close-dialog {
+    @extend .CLOSE_DIALOG_BASE;
+    color: $black;
+  }
 }
