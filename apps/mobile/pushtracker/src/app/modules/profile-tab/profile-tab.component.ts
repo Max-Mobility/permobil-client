@@ -5,6 +5,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
+import { Button } from 'tns-core-modules/ui/button/button';
 import { Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
@@ -12,6 +13,9 @@ import { ProfileSettingsComponent} from '../profile-settings/profile-settings.co
 import { Toasty } from 'nativescript-toasty';
 import { Color } from 'tns-core-modules/color';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import { dialog } from '../../utils/dialog-list.utils';
+import { ListPicker } from 'tns-core-modules/ui/list-picker';
+import { DatePicker } from 'tns-core-modules/ui/date-picker';
 
 @Component({
   selector: 'profile',
@@ -21,20 +25,37 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 export class ProfileTabComponent implements OnInit {
   @ViewChild('activityGoalsDialog', { static: false })
   activityGoalsDialog: ElementRef;
-  coastTime: Array<string>;
-  distance: Array<string>;
+  @ViewChild('settingsDialog', { static: false })
+  settingsDialog: ElementRef;
+  @ViewChild('listPickerDialog', { static: false })
+  listPickerDialog: ElementRef;
+  @ViewChild('datePickerDialog', { static: false})
+  datePickerDialog: ElementRef;
+
   gender: Array<string>;
-  birthday: Array<string>;
-  weight: Array<String>;
-  height: Array<string>;
   chairInfo: Array<string>;
   name: string;
   email: string;
+  isWeight: boolean;
+
+  primary: Array<string>;
+  secondary: Array<string>;
+  primaryIndex: number;
+  secondaryIndex: number;
+
   USER_GENDER: string;
-  USER_BIRTHDAY: string;
+  USER_BIRTHDAY: Date;
   USER_WEIGHT: string;
   USER_HEIGHT: string;
   USER_CHAIR_INFO: string;
+
+  SETTING_WEIGHT: string;
+  SETTING_HEIGHT: string;
+  SETTING_DISTANCE: string;
+  SETTING_MAX_SPEED: string;
+  SETTING_ACCELERATION: string;
+  SETTING_TAP_SENSITIVITY: string;
+  SETTING_MODE: string;
 
   COAST_TIME_ACTIVITY_GOAL; // user defined coast-time activity goal
   DISTANCE_ACTIVITY_GOAL; // user defined distance activity goal
@@ -64,6 +85,7 @@ export class ProfileTabComponent implements OnInit {
    */
   activeDataBox: StackLayout;
 
+
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
@@ -74,22 +96,30 @@ export class ProfileTabComponent implements OnInit {
     // appSettings.clear();
 
     this._page.actionBarHidden = true;
-
-    this.coastTime = ['100', '200'];
-    this.distance = ['3.0', '4.0'];
     this.gender = ['Male', 'Female'];
-    this.birthday = ['290 AC', '291 AC'];
-    this.weight = ['115 lb', '130 lb'];
-    this.height = ['5\'1"', '5\'5"'];
-    this.chairInfo = ['1', '2'];
+    this.chairInfo = ['Rigid', 'Folding', 'Pediatric'];
     this.name = 'Bran Stark';
     this.email = 'email@permobil.com';
+    this.primary = ['100', '200', '300'];
+    this.secondary = ['100', '200', '300'];
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
 
+    this.isWeight = false;
+    // user data
     this.USER_GENDER = 'Male';
-    this.USER_BIRTHDAY = '04/01/1980';
+    this.USER_BIRTHDAY = new Date('04/01/1980');
     this.USER_WEIGHT = '190 lbs';
     this.USER_HEIGHT = '5 ft 10 in';
-    this.USER_CHAIR_INFO = 'TiLite';
+    this.USER_CHAIR_INFO = 'Rigid';
+    // Setting
+    this.SETTING_HEIGHT = 'Feet & inches';
+    this.SETTING_WEIGHT = 'Pounds';
+    this.SETTING_DISTANCE = 'Miles';
+    this.SETTING_MAX_SPEED = '70%';
+    this.SETTING_ACCELERATION = '70%';
+    this.SETTING_TAP_SENSITIVITY = '100%';
+    this.SETTING_MODE = 'MX2+';
 
     this.COAST_TIME_ACTIVITY_GOAL = appSettings.getNumber(
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL,
@@ -115,23 +145,6 @@ export class ProfileTabComponent implements OnInit {
     Log.D('help action item tap');
   }
 
-  async onSettingsTap() {
-    Log.D('setting action item tap');
-    this._modalService
-    .showModal(ProfileSettingsComponent, {
-      context: {},
-      fullscreen: true,
-      viewContainerRef: this._vcRef
-    })
-    .catch(err => {
-     // this._logService.logException(err);
-      new Toasty({
-        text:
-          'An unexpectect error occurred. If this continues please let us know.',
-        textColor: new Color('#fff000')
-      });
-    });
-  }
 
   async onActivityGoalTap(
     args,
@@ -152,34 +165,14 @@ export class ProfileTabComponent implements OnInit {
     );
 
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeOut,
-        translate: {
-          x: 0,
-          y: 0
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+    this.animateDialog(cfl, 0, 0);
   }
 
   async closeActivityGoalsDialog() {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    cfl.animate({
-      duration: 300,
-      opacity: 0,
-      curve: AnimationCurve.easeOut,
-      translate: {
-        x: 0,
-        y: 900
-      }
-    });
+    this.animateDialog(cfl, 0, 900);
   }
 
   incrementConfigValue() {
@@ -217,4 +210,162 @@ export class ProfileTabComponent implements OnInit {
     // close the dialog which can re-use the function that the close btn uses
     this.closeActivityGoalsDialog();
   }
+
+  onGenderTap() {
+    Log.D('gender');
+    dialog('Gender', this.gender, this.gender.indexOf(this.USER_GENDER))
+      .then(
+        (val) => this.USER_GENDER = val
+      );
+  }
+
+  onChairInfoTap() {
+    Log.D('chair info tapped');
+    dialog('Chair Info', this.chairInfo, this.chairInfo.indexOf(this.USER_CHAIR_INFO))
+      .then(
+        (val) => this.USER_CHAIR_INFO = val
+      );
+  }
+
+  async onSettingsTap(args) {
+    Log.D('user tapped settings');
+    const cfl = this.settingsDialog.nativeElement as GridLayout;
+    this.animateDialog(cfl, 0, 0);
+  }
+
+  async closeSettingsDialog() {
+    const cfl = this.settingsDialog.nativeElement as GridLayout;
+    this.animateDialog(cfl, 0, 900);
+  }
+
+  onHeightTap(args) {
+    Log.D('height action item tap');
+    const data = ['Centimeters', 'Feet & inches'];
+    dialog('Height', data, data.indexOf(this.SETTING_HEIGHT) )
+      .then(
+        (val) => this.SETTING_HEIGHT = val,
+        (err) => console.error(err)
+      );
+  }
+
+  onWeightTap(args) {
+    Log.D('Weight action item tap');
+    const data = ['Kilograms', 'Pounds'];
+    dialog('Weight', data ,  data.indexOf(this.SETTING_WEIGHT))
+      .then(
+        (val) => this.SETTING_WEIGHT = val,
+        (err) => console.error(err)
+      );
+  }
+
+  onDistanceTap(args) {
+    Log.D('Distance action item tap');
+    const data = ['Kilometers', 'Miles'];
+    dialog('Distance', data, data.indexOf(this.SETTING_DISTANCE))
+      .then(
+        (val) => this.SETTING_DISTANCE = val,
+        (err) => console.error(err)
+      );
+  }
+
+  onMaxSpeedTap(args) {
+    Log.D('Max Speed action item tap');
+  }
+
+  onAccelerationTap(args) {
+    Log.D('Acceleration action item tap');
+  }
+
+  onTapSensitivityTap(args) {
+    Log.D('Tap Sensitivity action item tap');
+  }
+
+  onModeTap(args) {
+    Log.D('Mode action item tap');
+  }
+
+  onListWeightTap() {
+    Log.D('on list weight');
+    if (this.SETTING_WEIGHT === 'Kilograms') {
+      this.primary = Array.from({length: 280}, (v , k) => k + 1 + '');
+      this.secondary = Array.from({length: 9}, (v , k) => '.' + (k + 1));
+    } else {
+      this.primary = Array.from({length: 600}, (v , k) => k + 1 + '');
+      this.secondary = Array.from({length: 9}, (v , k) => '.' + (k + 1));
+    }
+    this.isWeight = true;
+    this.listPicker();
+  }
+
+  onListHeightTap() {
+    Log.D('on list Height');
+    console.log(this.SETTING_HEIGHT);
+    if (this.SETTING_HEIGHT === 'Centimeters') {
+      this.primary = Array.from({length: 300}, (v , k) => k + 1 + ' cm');
+    } else {
+      this.primary = Array.from({length: 8}, (v , k) => k + 1 + ' ft');
+      this.secondary = Array.from({length: 11}, (v , k) => k + 1 + ' in');
+    }
+    this.isWeight = false;
+
+    this.listPicker();
+  }
+
+  listPicker() {
+    Log.D('user tapped settings');
+     const cfl = this.listPickerDialog.nativeElement as GridLayout;
+     this.animateDialog(cfl, 0, 0);
+  }
+
+  async closeListPickerDialog() {
+    const cfl = this.listPickerDialog.nativeElement as GridLayout;
+    this.animateDialog(cfl, 0, 900);
+  }
+
+  onDatePicker() {
+    Log.D('user tapped settings');
+    const cfl = this.datePickerDialog.nativeElement as GridLayout;
+    this.animateDialog(cfl, 0, 0);
+  }
+
+  async closeDatePickerDialog() {
+    const cfl = this.datePickerDialog.nativeElement as GridLayout;
+    this.animateDialog(cfl, 0, 900);
+  }
+
+  animateDialog(args, x: number, y: number) {
+    const cfl = <GridLayout> args;
+    cfl
+    .animate({
+      duration: 300,
+      opacity: 1,
+      curve: AnimationCurve.easeOut,
+      translate: {
+        x: x,
+        y: y
+      }
+    })
+    .catch(err => {
+      this._logService.logException(err);
+    });
+  }
+
+  onDateChanged(args) {
+    Log.D('on date change');
+    const datePicker = <DatePicker>args.object;
+
+    this.USER_BIRTHDAY = (datePicker.date as Date);
+    console.log(this.USER_BIRTHDAY);
+
+  }
+
+  onPickerLoaded(args) {
+    Log.D('date picker loaded');
+    const datePicker = <DatePicker>args.object;
+
+    datePicker.date = this.USER_BIRTHDAY;
+    datePicker.minDate = new Date(1950, 0, 1);
+    datePicker.maxDate = new Date(2050, 0, 1);
+}
+
 }
