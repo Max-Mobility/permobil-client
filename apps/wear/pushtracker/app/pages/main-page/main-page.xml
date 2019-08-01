@@ -78,7 +78,7 @@
         // Distance Chat
         <wol:WearOsLayout>
           <GridLayout rows="auto, auto, *" columns="*, auto">
-            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') }}"
+            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}"
                    class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}"
