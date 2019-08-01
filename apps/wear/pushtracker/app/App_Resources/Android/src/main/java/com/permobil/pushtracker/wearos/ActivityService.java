@@ -2,6 +2,7 @@ package com.permobil.pushtracker.wearos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -58,7 +59,9 @@ public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 25 * 60;
+  private static final int SENSOR_RATE_HZ = 25;
+  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 5 * 60 * SENSOR_RATE_HZ;
+  private static final int PROCESSING_PERIOD_MS = 1 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -67,11 +70,11 @@ public class ActivityService extends Service {
    * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
    */
   // microseconds between sensor data
-  private static final int SENSOR_DELAY_US_DEBUG = 40 * 1000;
-  private static final int SENSOR_DELAY_US_RELEASE = 40 * 1000;
+  private static final int SENSOR_DELAY_US_DEBUG = 1000 / SENSOR_RATE_HZ;
+  private static final int SENSOR_DELAY_US_RELEASE = 1000 / SENSOR_RATE_HZ;
+  // 1 minute between sensor updates in microseconds
+  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
 
-  // 20 minutes between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 10 * 1000 * 1000;
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
@@ -623,6 +626,19 @@ public class ActivityService extends Service {
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
+
+    // now set the alarm for periodically calling our service
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
+                                                             0,
+                                                             i,
+                                                             PendingIntent.FLAG_UPDATE_CURRENT);
+    scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                                  System.currentTimeMillis(),
+                                  PROCESSING_PERIOD_MS,
+                                  scheduledIntent);
   }
 
   private void stopMyService() {

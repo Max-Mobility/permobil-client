@@ -70,8 +70,6 @@ class DataBroadcastReceiver extends android.content.BroadcastReceiver {
 }
 
 export class MainViewModel extends Observable {
-  private ACTIVITY_SERVICE_PERIOD_MS: number = 15 * 1000;
-
   /**
    * Goal progress data.
    *   * CurrentProgress: [0,100] used for ring display
@@ -385,25 +383,7 @@ export class MainViewModel extends Observable {
             const context = application.android.context;
             intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
             intent.setAction('ACTION_START_SERVICE');
-            // moving from old start service
-            // context.startForegroundService(intent);
-            // to alarm service
-            const scheduler = context.getSystemService(
-              android.content.Context.ALARM_SERVICE
-            ); // android.app.AlarmManager
-            const scheduledIntent = android.app.PendingIntent.getService(
-              context,
-              0,
-              intent,
-              android.app.PendingIntent.FLAG_UPDATE_CURRENT
-            );
-            // now start the service
-            scheduler.setInexactRepeating(
-              android.app.AlarmManager.RTC_WAKEUP,
-              java.lang.System.currentTimeMillis(),
-              this.ACTIVITY_SERVICE_PERIOD_MS,
-              scheduledIntent
-            );
+            context.startService(intent);
             console.log('Started activity service!');
             this.sentryBreadCrumb('Activity Service started.');
             resolve();
