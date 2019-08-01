@@ -1,8 +1,4 @@
-import {
-  NgModule,
-  NgModuleFactoryLoader,
-  NO_ERRORS_SCHEMA
-} from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PermobilCoreModule } from '@permobil/angular';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
@@ -10,10 +6,6 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
-import {
-  NativeScriptRouterModule,
-  NSModuleFactoryLoader
-} from 'nativescript-angular/router';
 import { DropDownModule } from 'nativescript-drop-down/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { AppRoutingModule, COMPONENTS } from './app-routing.module';
@@ -38,7 +30,6 @@ export function createTranslateLoader() {
     NativeScriptUIListViewModule,
     NativeScriptCommonModule,
     NativeScriptFormsModule,
-    NativeScriptRouterModule,
     NativeScriptUIListViewModule,
     SharedModule,
     PermobilCoreModule,
@@ -53,11 +44,7 @@ export function createTranslateLoader() {
   ],
   declarations: [AppComponent, ...COMPONENTS],
   entryComponents: [AppInfoComponent, ProfileSettingsComponent],
-  providers: [
-    ...PROVIDERS,
-    ModalDialogService,
-    { provide: NgModuleFactoryLoader, useClass: NSModuleFactoryLoader }
-  ],
+  providers: [...PROVIDERS, ModalDialogService],
   schemas: [NO_ERRORS_SCHEMA]
 })
 /*
