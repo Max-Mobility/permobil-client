@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { LoggingService } from '../../services';
 import { EventData } from 'tns-core-modules/data/observable';
-import {dialog} from '../../utils/dialog-list.utils';
+import { DialogService, LoggingService } from '../../services';
 
 @Component({
   selector: 'profile-settings',
@@ -25,6 +24,7 @@ export class ProfileSettingsComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
+    private _dialogService: DialogService,
     private _params: ModalDialogParams
   ) {
     this.HEIGHT = 'Feet & inches';
@@ -37,7 +37,9 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb(ProfileSettingsComponent.LOG_TAG + `ngOnInit`);
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.LOG_TAG + `ngOnInit`
+    );
     this.infoItems = this._translateService.instant(
       'profile-settings-component.sections'
     );
@@ -50,32 +52,25 @@ export class ProfileSettingsComponent implements OnInit {
   onHeightTap(args: EventData) {
     Log.D('height action item tap');
     const data = ['Centimeters', 'Feet & inches'];
-    dialog('Height', data, data.indexOf(this.HEIGHT) )
-      .then(
-        (val) => this.HEIGHT = val,
-        (err) => console.error(err)
-      );
-
+    this._dialogService
+      .action('Height', data, data.indexOf(this.HEIGHT))
+      .then(val => (this.HEIGHT = val), err => console.error(err));
   }
 
   onWeightTap(args: EventData) {
     Log.D('Weight action item tap');
     const data = ['Kilograms', 'Pounds'];
-    dialog('Weight', data ,  data.indexOf(this.WEIGHT))
-      .then(
-        (val) => this.WEIGHT = val,
-        (err) => console.error(err)
-      );
+    this._dialogService
+      .action('Weight', data, data.indexOf(this.WEIGHT))
+      .then(val => (this.WEIGHT = val), err => console.error(err));
   }
 
   onDistanceTap(args: EventData) {
     Log.D('Distance action item tap');
     const data = ['Kilometers', 'Miles'];
-    dialog('Distance', data, data.indexOf(this.DISTANCE))
-      .then(
-        (val) => this.DISTANCE = val,
-        (err) => console.error(err)
-      );
+    this._dialogService
+      .action('Distance', data, data.indexOf(this.DISTANCE))
+      .then(val => (this.DISTANCE = val), err => console.error(err));
   }
 
   onMaxSpeedTap(args: EventData) {
