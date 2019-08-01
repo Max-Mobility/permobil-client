@@ -74,7 +74,7 @@ public class ActivityService extends Service {
   private static final int SENSOR_DELAY_US_RELEASE = 40 * 1000;
 
   // 20 minutes between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = 10 * 1000 * 1000;
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
@@ -93,6 +93,7 @@ public class ActivityService extends Service {
   private Runnable mProcessingTask;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
+  private LocationListener mLocationListener;
   private SensorEventListener mListener;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
@@ -166,7 +167,7 @@ public class ActivityService extends Service {
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
       .getSystemService(Context.LOCATION_SERVICE);
-    LocationListener mLocationListener = new LocationListener();
+    mLocationListener = new LocationListener();
     // according to the docs: "it is more difficult for location
     // providers to save power using the minDistance parameter, so
     // minTime should be the primary tool to conserving battery life."
@@ -202,7 +203,9 @@ public class ActivityService extends Service {
 
         this.initSensors();
         int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-        this.registerDeviceSensors(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+        // register the body sensor so we get events when the user
+        // wears the watch and takes it off
+        this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
 
         mHandler.removeCallbacksAndMessages(null);
         mHandler.post(mProcessingTask);
@@ -356,6 +359,26 @@ public class ActivityService extends Service {
     isServiceRunning = false;
   }
 
+  private void onWristCallback() {
+    // turn on location sensing
+    mLocationManager.requestLocationUpdates(
+                                            LocationManager.GPS_PROVIDER,
+                                            LOCATION_LISTENER_MIN_TIME_MS,
+                                            0, // LOCATION_LISTENER_MIN_DISTANCE_M,
+                                            mLocationListener
+                                            );
+    // turn on accelerometer sensing
+    int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+    registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+  }
+
+  private void offWristCallback() {
+    // turn off location sensing
+    mLocationManager.removeUpdates(mLocationListener);
+    // turn off accelerometer sensing
+    unregisterAccelerometer();
+  }
+
   private class LocationListener implements android.location.LocationListener {
     @Override
     public void onLocationChanged(Location location) {
@@ -482,6 +505,11 @@ public class ActivityService extends Service {
       if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
         // 1.0 => device is on body, 0.0 => device is off body
         watchBeingWorn = (event.values[0] != 0.0);
+        if (watchBeingWorn) {
+          onWristCallback();
+        } else {
+          offWristCallback();
+        }
       }
     }
   }
@@ -512,28 +540,41 @@ public class ActivityService extends Service {
     }
   }
 
-  private void registerDeviceSensors(int delay, int reportingLatency) {
+  private void registerAccelerometer(int delay, int reportingLatency) {
     if (mSensorManager != null && mListener != null) {
-      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
       if (mLinearAcceleration != null)
         mSensorManager.registerListener(mListener, mLinearAcceleration, delay, reportingLatency);
+    }
+  }
 
-      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
+  private void unregisterAccelerometer() {
+    if (mSensorManager != null && mListener != null) {
+      if (mLinearAcceleration != null)
+        mSensorManager.unregisterListener(mListener, mLinearAcceleration);
+    }
+  }
+
+  private void registerBodySensor(int delay, int reportingLatency) {
+    if (mSensorManager != null && mListener != null) {
+      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
       if (mOffBodyDetect != null)
         mSensorManager.registerListener(mListener, mOffBodyDetect, delay, reportingLatency);
     }
   }
 
-  private void unregisterDeviceSensors() {
-    // make sure we have the sensor manager for the device
+  private void unregisterBodySensor() {
     if (mSensorManager != null && mListener != null) {
-      if (mLinearAcceleration != null)
-        mSensorManager.unregisterListener(mListener, mLinearAcceleration);
       if (mOffBodyDetect != null)
         mSensorManager.unregisterListener(mListener, mOffBodyDetect);
-      if (mHeartRate != null)
-        mSensorManager.unregisterListener(mListener, mHeartRate);
     }
+  }
+
+  private void unregisterDeviceSensors() {
+    // make sure we have the sensor manager for the device
+    unregisterAccelerometer();
+    unregisterBodySensor();
+    unregisterHeartRate();
   }
 
   private void sendDataToActivity(int pushes, float coast, float distance, float heartRate) {
