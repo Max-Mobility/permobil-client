@@ -34,27 +34,27 @@ module.exports = env => {
     'tns-core-modules/ui/frame/activity',
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback.js'
+      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback.js'
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback.js'
+      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver.js'
+      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback.js'
+      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback.js'
+      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
     )
   ];
 
