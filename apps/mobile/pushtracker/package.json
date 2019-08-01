@@ -29,7 +29,6 @@
     "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle-1.3.0.tgz",
     "nativescript-appversion": "~1.4.2",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth-1.3.0.tgz",
-    "nativescript-cfalert-dialog": "file:../../../forked-plugins/nativescript-cfalert-dialog-1.0.16.tgz",
     "nativescript-drop-down": "~5.0.2",
     "nativescript-email": "~1.5.4",
     "nativescript-geolocation": "~5.1.0",
