@@ -142,7 +142,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     startServiceWithNotification();
 
     // set the debuggable flag
-    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -221,7 +221,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "TimeReceiver::onReceive()");
+        // Log.d(TAG, "TimeReceiver::onReceive()");
         // get the date from the datastore
         String currentDate = datastore.getDate();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -258,6 +258,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // process the stored sensor data
     boolean newDataProcessed = processSensorData();
     if (newDataProcessed) {
+      Log.d(TAG, "has processed data, sending to activity");
       // TODO: update data in SQLite tables
       // TODO: update data in datastore / shared preferences
       // send intent to main activity with updated data
@@ -273,6 +274,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     boolean didProcess = false;
     synchronized (sensorDataList) {
       while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
+        // Log.d(TAG, "Processing sensor data index " + numProcessed);
         SensorEvent event = sensorDataList.remove(0);
         // use the data to detect activities
         ActivityDetector.Detection detection =
@@ -291,6 +293,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
         currentPushCount += 1;
+        // Log.d(TAG, "Got a push, count = " + currentPushCount);
         // calculate coast time here
         if (lastPush != null) {
           long timeDiffNs = detection.time - lastPush.time;
@@ -359,7 +362,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   @Override
   public void onLocationChanged(Location location) {
-    if (!watchBeingWorn) {
+    if (!watchBeingWorn && !isDebuggable) {
       // don't do any range computation if the watch isn't being
       // worn
       return;
@@ -478,7 +481,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
       // 1.0 => device is on body, 0.0 => device is off body
       watchBeingWorn = (event.values[0] != 0.0);
-      if (watchBeingWorn) {
+      if (watchBeingWorn || isDebuggable) {
         onWristCallback();
       } else {
         offWristCallback();
@@ -507,7 +510,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private void registerAccelerometer(int delay, int reportingLatency) {
     if (mSensorManager != null) {
-      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
       if (mLinearAcceleration != null)
         mSensorManager.registerListener(this, mLinearAcceleration, delay, reportingLatency);
     }
@@ -522,7 +525,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private void registerBodySensor(int delay, int reportingLatency) {
     if (mSensorManager != null) {
-      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
       if (mOffBodyDetect != null)
         mSensorManager.registerListener(this, mOffBodyDetect, delay, reportingLatency);
     }
