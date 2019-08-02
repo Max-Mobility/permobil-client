@@ -379,11 +379,11 @@ export class MainViewModel extends Observable {
           this.sentryBreadCrumb('Starting Activity Service.');
           console.log('Starting activity service!');
           try {
-            const i = new android.content.Intent();
+            const intent = new android.content.Intent();
             const context = application.android.context;
-            i.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
-            i.setAction('ACTION_START_SERVICE');
-            context.startService(i);
+            intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
+            intent.setAction('ACTION_START_SERVICE');
+            context.startService(intent);
             console.log('Started activity service!');
             this.sentryBreadCrumb('Activity Service started.');
             resolve();

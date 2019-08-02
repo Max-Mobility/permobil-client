@@ -2,6 +2,7 @@ package com.permobil.pushtracker.wearos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -28,8 +29,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -60,8 +59,9 @@ public class ActivityService extends Service {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final long PROCESSING_TASK_PERIOD_MS =  15 * 1000; // 15 seconds
-  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 25 * 60;
+  private static final int SENSOR_RATE_HZ = 25;
+  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 5 * 60 * SENSOR_RATE_HZ;
+  private static final int PROCESSING_PERIOD_MS = 1 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -70,11 +70,11 @@ public class ActivityService extends Service {
    * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
    */
   // microseconds between sensor data
-  private static final int SENSOR_DELAY_US_DEBUG = 40 * 1000;
-  private static final int SENSOR_DELAY_US_RELEASE = 40 * 1000;
+  private static final int SENSOR_DELAY_US_DEBUG = 1000 / SENSOR_RATE_HZ;
+  private static final int SENSOR_DELAY_US_RELEASE = 1000 / SENSOR_RATE_HZ;
+  // 1 minute between sensor updates in microseconds
+  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
 
-  // 20 minutes between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 10 * 1000 * 1000;
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
@@ -88,9 +88,6 @@ public class ActivityService extends Service {
 
   public boolean isDebuggable = false;
 
-  private HandlerThread mHandlerThread;
-  private Handler mHandler;
-  private Runnable mProcessingTask;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private LocationListener mLocationListener;
@@ -156,13 +153,6 @@ public class ActivityService extends Service {
     // initialize data
     loadFromDatastore();
 
-    // start up for service
-    this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
-    this.mHandlerThread.start();
-    this.mHandler = new Handler(this.mHandlerThread.getLooper());
-
-    this.mProcessingTask = new ProcessingRunnable();
-
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
@@ -182,36 +172,40 @@ public class ActivityService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(TAG, "onStartCommand()..." + intent + " - " + flags + " - " + startId);
+    Log.d(TAG, "onStartCommand()");
     Log.d(TAG, "isServiceRunning: " + isServiceRunning);
-    if (!isServiceRunning) {
-      // Set the user in the current context.
-      // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
+    if (intent != null) {
+      Log.d(TAG, "[intent - flags - startId]: " + intent + " - " + flags + " - " + startId);
+      if (!isServiceRunning) {
+        // Set the user in the current context.
+        // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
 
-      if (intent != null &&
-          Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
-        startServiceWithNotification();
+        if (intent != null &&
+            Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
+          startServiceWithNotification();
 
-        // register time receiver
-        Log.d(TAG, "registering time receiver");
-        IntentFilter timeFilter = new IntentFilter();
-        timeFilter.addAction(Intent.ACTION_TIME_TICK);
-        timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        this.registerReceiver(this.timeReceiver, timeFilter);
+          // register time receiver
+          Log.d(TAG, "registering time receiver");
+          IntentFilter timeFilter = new IntentFilter();
+          timeFilter.addAction(Intent.ACTION_TIME_TICK);
+          timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+          this.registerReceiver(this.timeReceiver, timeFilter);
 
-        Log.d(TAG, "starting service!");
+          Log.d(TAG, "starting service!");
 
-        this.initSensors();
-        int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-        // register the body sensor so we get events when the user
-        // wears the watch and takes it off
-        this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.post(mProcessingTask);
-      } else {
-        stopMyService();
+          this.initSensors();
+          int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+          // register the body sensor so we get events when the user
+          // wears the watch and takes it off
+          this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+        } else {
+          stopMyService();
+        }
       }
+
+      // do the processing here - this function will have been called by
+      // the alarm manager
+      periodicProcessing();
     }
 
     // START_STICKY is used for services that are explicitly started
@@ -260,19 +254,6 @@ public class ActivityService extends Service {
         }
       }
     };
-
-  private class ProcessingRunnable implements Runnable {
-    @Override
-    public void run() {
-      try {
-        periodicProcessing();
-      } catch (Exception e) {
-        Sentry.capture(e);
-        Log.e(TAG, "Exception in ProcessingRunnable: " + e.getMessage());
-      }
-      mHandler.postDelayed(mProcessingTask, PROCESSING_TASK_PERIOD_MS);
-    }
-  }
 
   private void periodicProcessing() {
     Log.d(TAG, "periodicProcessing()...");
@@ -344,13 +325,8 @@ public class ActivityService extends Service {
     try {
       // unregister time receivers
       this.unregisterReceiver(this.timeReceiver);
-
       // remove sensor listeners
       unregisterDeviceSensors();
-
-      // remove handler tasks
-      mHandler.removeCallbacksAndMessages(null);
-      mHandlerThread.quitSafely();
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -650,6 +626,19 @@ public class ActivityService extends Service {
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
+
+    // now set the alarm for periodically calling our service
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
+                                                             0,
+                                                             i,
+                                                             PendingIntent.FLAG_UPDATE_CURRENT);
+    scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                                  System.currentTimeMillis(),
+                                  PROCESSING_PERIOD_MS,
+                                  scheduledIntent);
   }
 
   private void stopMyService() {
