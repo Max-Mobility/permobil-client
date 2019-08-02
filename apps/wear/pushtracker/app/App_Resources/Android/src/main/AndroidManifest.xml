@@ -74,22 +74,41 @@
 
     <!-- for providing complications -->
     <service
-        android:name="com.permobil.ComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
-        android:label="@string/complications_provider_service_label"
+        android:name="com.permobil.pushtracker.wearos.PushesComplicationProviderService"
+        android:icon="@drawable/ic_pushes_white"
+        android:label="@string/complications_provider_service_label_pushes"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
-        <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
       </intent-filter>
-
-      <meta-data android:name="android.support.wearable.complications.SUPPORTED_TYPES" android:value="SHORT_TEXT"/>
-
-      <meta-data android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS" android:value="0"/>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    <service
+        android:name="com.permobil.pushtracker.wearos.CoastTimeComplicationProviderService"
+        android:icon="@drawable/ic_coast_time_white"
+        android:label="@string/complications_provider_service_label_coast_time"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
     </service>
     <!-- end for providing complications -->
 
     <!-- for receiving complications -->
-    <receiver android:name="com.permobil.ComplicationTapBroadcastReceiver" />
+    <receiver android:name="com.permobil.pushtracker.wearos.ComplicationToggleReceiver" />
     <!-- end for receiving complications -->
 
   </application>
