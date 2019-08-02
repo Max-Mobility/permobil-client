@@ -312,7 +312,7 @@ export class MainViewModel extends Observable {
     this.distanceGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
       0.0
-    );
+    ) / 1609.0; // what's stored is meters, convert to miles
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0

@@ -60,7 +60,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final int SENSOR_RATE_HZ = 15;
+  private static final int SENSOR_RATE_HZ = 25;
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 

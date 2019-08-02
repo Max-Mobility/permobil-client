@@ -34,10 +34,10 @@ import java.util.Locale;
 /**
  * Example Watch Face Complication data provider provides a number that can be incremented on tap.
  */
-public class CoastTimeComplicationProviderService extends ComplicationProviderService {
+public class DistanceComplicationProviderService extends ComplicationProviderService {
 
-  private static final String TAG = "CoastTimeComplicationProvider";
-  private static final String DATA_ID = Datastore.PREFIX + Datastore.CURRENT_COAST_KEY;
+  private static final String TAG = "DistanceComplicationProvider";
+  private static final String DATA_ID = Datastore.PREFIX + Datastore.CURRENT_DISTANCE_KEY;
 
   /*
    * Called when a complication has been activated. The method is for any one-time
@@ -77,14 +77,14 @@ public class CoastTimeComplicationProviderService extends ComplicationProviderSe
     SharedPreferences preferences =
       getSharedPreferences(
                            ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
-    float coastTime =
+    float meters =
       preferences.getFloat(
                            ComplicationToggleReceiver.getPreferenceKey(
                                                                        thisProvider,
                                                                        complicationId,
                                                                        DATA_ID),
                            0.0f);
-    String numberText = String.format(Locale.getDefault(), "%.1fs", coastTime);
+    String numberText = String.format(Locale.getDefault(), "%.1f km", meters / 1000.0f);
 
     ComplicationData complicationData = null;
 
@@ -93,7 +93,7 @@ public class CoastTimeComplicationProviderService extends ComplicationProviderSe
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_SHORT_TEXT)
         .setShortText(ComplicationText.plainText(numberText))
-        .setIcon(Icon.createWithResource(this, R.drawable.ic_coast_time_white))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_distance_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;
@@ -101,7 +101,7 @@ public class CoastTimeComplicationProviderService extends ComplicationProviderSe
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
         .setLongText(ComplicationText.plainText("Number: " + numberText))
-        .setIcon(Icon.createWithResource(this, R.drawable.ic_coast_time_white))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_distance_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;
