@@ -78,6 +78,11 @@ export class ProfileTabComponent implements OnInit {
      * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
      */
     config_title: string;
+    /**
+     * Long-form description text to display to user when they're changing their activity goals
+     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
+     */
+    config_description: string;
   };
 
   /**
@@ -122,18 +127,17 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_MODE = 'MX2+';
 
     this.COAST_TIME_ACTIVITY_GOAL = appSettings.getNumber(
-      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL,
-      60
-    );
+      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
+    ) || STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
     this.DISTANCE_ACTIVITY_GOAL = appSettings.getNumber(
-      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL,
-      100
-    );
+      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
+    ) || STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
 
     this.activity_goals_dialog_data = {
       config_key: null,
       config_value: null,
-      config_title: null
+      config_title: null,
+      config_description: null
     };
   }
 
@@ -148,8 +152,9 @@ export class ProfileTabComponent implements OnInit {
   async onActivityGoalTap(
     args,
     configTitle: string,
+    configDescription: string,
     configKey: string,
-    configValue
+    configValue: number
   ) {
     Log.D('user tapped config = ', configTitle, args.object);
     const stack = args.object as StackLayout;
@@ -161,6 +166,9 @@ export class ProfileTabComponent implements OnInit {
     this.activity_goals_dialog_data.config_value = configValue;
     this.activity_goals_dialog_data.config_title = this._translateService.instant(
       `general.${configTitle}`
+    );
+    this.activity_goals_dialog_data.config_description = this._translateService.instant(
+      `general.${configDescription}`
     );
 
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
@@ -189,9 +197,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
+      this.activity_goals_dialog_data.config_key +
+      ' ' +
+      this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -201,10 +209,10 @@ export class ProfileTabComponent implements OnInit {
 
     this.COAST_TIME_ACTIVITY_GOAL = appSettings.getNumber(
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
-    );
+    ) || STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
     this.DISTANCE_ACTIVITY_GOAL = appSettings.getNumber(
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
-    );
+    ) || STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
 
     // close the dialog which can re-use the function that the close btn uses
     this.closeActivityGoalsDialog();
