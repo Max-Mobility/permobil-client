@@ -60,7 +60,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final int SENSOR_RATE_HZ = 25;
+  private static final int SENSOR_RATE_HZ = 10;
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 
@@ -89,6 +89,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   public boolean isDebuggable = false;
 
+  private BroadcastReceiver timeReceiver = null;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private SensorManager mSensorManager;
@@ -142,7 +143,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     startServiceWithNotification();
 
     // set the debuggable flag
-    isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -200,10 +201,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           stopMyService();
         }
       }
-
-      // do the processing here - this function will have been called by
-      // the alarm manager
-      periodicProcessing();
     }
 
     // START_STICKY is used for services that are explicitly started
@@ -218,73 +215,45 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     currentHeartRate = datastore.getHeartRate();
   }
 
-  private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
-      @Override
-      public void onReceive(Context context, Intent intent) {
-        // Log.d(TAG, "TimeReceiver::onReceive()");
-        // get the date from the datastore
-        String currentDate = datastore.getDate();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // get current date
-        Date now = Calendar.getInstance().getTime();
-        String nowString = simpleDateFormat.format(now);
-        // if we don't have a date, then save the current date
-        if (currentDate == "") {
-          datastore.setDate(nowString);
-        } else {
-          boolean sameDate = currentDate.equals(nowString);
-          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
-          // determine if it's a new day
-          if (!sameDate) {
-            // reset values to zero
-            currentPushCount = 0;
-            currentCoastTime = 0;
-            currentDistance = 0;
-            currentHeartRate = 0;
-            // update the datastore
+  void setupTimeReceiver() {
+    if (this.timeReceiver != null) {
+      this.unregisterReceiver(this.timeReceiver);
+      this.timeReceiver = null;
+    }
+    timeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          // Log.d(TAG, "TimeReceiver::onReceive()");
+          // get the date from the datastore
+          String currentDate = datastore.getDate();
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+          // get current date
+          Date now = Calendar.getInstance().getTime();
+          String nowString = simpleDateFormat.format(now);
+          // if we don't have a date, then save the current date
+          if (currentDate == "") {
             datastore.setDate(nowString);
-            datastore.setPushes(currentPushCount);
-            datastore.setCoast(currentCoastTime);
-            datastore.setDistance(currentDistance);
-            datastore.setHeartRate(currentHeartRate);
-            // TODO: update the sqlite tables
+          } else {
+            boolean sameDate = currentDate.equals(nowString);
+            // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
+            // determine if it's a new day
+            if (!sameDate) {
+              // reset values to zero
+              currentPushCount = 0;
+              currentCoastTime = 0;
+              currentDistance = 0;
+              currentHeartRate = 0;
+              // update the datastore
+              datastore.setDate(nowString);
+              datastore.setPushes(currentPushCount);
+              datastore.setCoast(currentCoastTime);
+              datastore.setDistance(currentDistance);
+              datastore.setHeartRate(currentHeartRate);
+              // TODO: update the sqlite tables
+            }
           }
         }
-      }
-    };
-
-  private void periodicProcessing() {
-    Log.d(TAG, "periodicProcessing()...");
-    // process the stored sensor data
-    boolean newDataProcessed = processSensorData();
-    if (newDataProcessed) {
-      Log.d(TAG, "has processed data, sending to activity");
-      // TODO: update data in SQLite tables
-      // TODO: update data in datastore / shared preferences
-      // send intent to main activity with updated data
-      sendDataToActivity(currentPushCount,
-                         currentCoastTime,
-                         currentDistance,
-                         currentHeartRate);
-    }
-  }
-
-  private boolean processSensorData() {
-    int numProcessed = 0;
-    boolean didProcess = false;
-    synchronized (sensorDataList) {
-      while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
-        // Log.d(TAG, "Processing sensor data index " + numProcessed);
-        SensorEvent event = sensorDataList.remove(0);
-        // use the data to detect activities
-        ActivityDetector.Detection detection =
-          activityDetector.detectActivity(event.values, event.timestamp);
-        handleDetection(detection);
-        numProcessed++;
-        didProcess = true;
-      }
-    }
-    return didProcess;
+      };
   }
 
   void handleDetection(ActivityDetector.Detection detection) {
@@ -324,14 +293,19 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
     try {
       // unregister time receivers
-      this.unregisterReceiver(this.timeReceiver);
+      if (this.timeReceiver != null) {
+        this.unregisterReceiver(this.timeReceiver);
+        this.timeReceiver = null;
+      }
       // remove sensor listeners
       unregisterDeviceSensors();
+      /*
       // cancel the alarm
       AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
       PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
       scheduler.cancel(scheduledIntent);
       scheduledIntent.cancel();
+      */
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -454,10 +428,17 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     int sensorType = event.sensor.getType();
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       if (isDebuggable || watchBeingWorn) {
-        synchronized (sensorDataList) {
-          // add the event to the data list for processing later
-          sensorDataList.add(event);
-        }
+        // use the data to detect activities
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(event.values, event.timestamp);
+        handleDetection(detection);
+        // TODO: update data in SQLite tables
+        // TODO: update data in datastore / shared preferences
+        // send intent to main activity with updated data
+        sendDataToActivity(currentPushCount,
+                           currentCoastTime,
+                           currentDistance,
+                           currentHeartRate);
       }
     } else if (sensorType == Sensor.TYPE_HEART_RATE) {
       // update the heart rate
@@ -622,14 +603,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
-
-    // now set the alarm for periodically calling our service
-    AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-    PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
-    scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                                  System.currentTimeMillis(),
-                                  PROCESSING_PERIOD_MS,
-                                  scheduledIntent);
   }
 
   private void stopMyService() {
