@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="__PACKAGE__">
 
-  <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true"/>
+  <supports-screens
+      android:smallScreens="true"
+      android:normalScreens="true"
+      android:largeScreens="true"
+      android:xlargeScreens="true"/>
 
   <uses-sdk android:targetSdkVersion="__APILEVEL__"/>
 
@@ -9,24 +13,18 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.INTERNET"/>
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
   <uses-permission android:name="android.permission.BLUETOOTH"/>
   <uses-permission android:name="android.permission.BODY_SENSORS"/>
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-  <!-- Required for Android 6+ when scanning for peripherals in the background  -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-  <!-- https://developer.android.com/training/wearables/apps/always-on#ambient-mode-class -->
+  <!-- 
   <uses-permission android:name="android.permission.WAKE_LOCK" />
-  <uses-permission android:name="android.permission.BODY_SENSORS" />
+  -->
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
   <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
-
   <uses-feature android:name="android.hardware.type.watch" android:required="true" />
 
   <application
@@ -76,22 +74,57 @@
 
     <!-- for providing complications -->
     <service
-        android:name="com.permobil.ComplicationProviderService"
-        android:icon="@drawable/ic_watch_white"
-        android:label="@string/complications_provider_service_label"
+        android:name="com.permobil.pushtracker.wearos.PushesComplicationProviderService"
+        android:icon="@drawable/ic_pushes_white"
+        android:label="@string/complications_provider_service_label_pushes"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
       <intent-filter>
-        <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
       </intent-filter>
-
-      <meta-data android:name="android.support.wearable.complications.SUPPORTED_TYPES" android:value="SHORT_TEXT"/>
-
-      <meta-data android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS" android:value="0"/>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    <service
+        android:name="com.permobil.pushtracker.wearos.CoastTimeComplicationProviderService"
+        android:icon="@drawable/ic_coast_time_white"
+        android:label="@string/complications_provider_service_label_coast_time"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
+    </service>
+    <service
+        android:name="com.permobil.pushtracker.wearos.DistanceComplicationProviderService"
+        android:icon="@drawable/ic_distance_white"
+        android:label="@string/complications_provider_service_label_distance"
+        android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+      <intent-filter>
+        <action
+            android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST"/>
+      </intent-filter>
+      <meta-data
+          android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+          android:value="SHORT_TEXT"/>
+      <meta-data
+          android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+          android:value="600"/>
     </service>
     <!-- end for providing complications -->
 
     <!-- for receiving complications -->
-    <receiver android:name="com.permobil.ComplicationTapBroadcastReceiver" />
+    <receiver android:name="com.permobil.pushtracker.wearos.ComplicationToggleReceiver" />
     <!-- end for receiving complications -->
 
   </application>

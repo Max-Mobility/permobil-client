@@ -2,6 +2,7 @@ package com.permobil.pushtracker.wearos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -22,14 +23,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationListener;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -56,12 +56,13 @@ import io.sentry.Sentry;
 //        * heart rate
 //        * GPS
 
-public class ActivityService extends Service {
+public class ActivityService extends Service implements SensorEventListener, LocationListener {
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final long PROCESSING_TASK_PERIOD_MS =  15 * 1000; // 15 seconds
-  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 25 * 60;
+  private static final int SENSOR_RATE_HZ = 10;
+  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
+  private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -70,11 +71,11 @@ public class ActivityService extends Service {
    * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
    */
   // microseconds between sensor data
-  private static final int SENSOR_DELAY_US_DEBUG = 40 * 1000;
-  private static final int SENSOR_DELAY_US_RELEASE = 40 * 1000;
+  private static final int SENSOR_DELAY_US_DEBUG = 1000 * 1000 / SENSOR_RATE_HZ;
+  private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
+  // 1 minute between sensor updates in microseconds
+  private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
 
-  // 20 minutes between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 10 * 1000 * 1000;
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
@@ -88,13 +89,9 @@ public class ActivityService extends Service {
 
   public boolean isDebuggable = false;
 
-  private HandlerThread mHandlerThread;
-  private Handler mHandler;
-  private Runnable mProcessingTask;
+  private BroadcastReceiver timeReceiver = null;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
-  private LocationListener mLocationListener;
-  private SensorEventListener mListener;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mHeartRate;
@@ -156,18 +153,10 @@ public class ActivityService extends Service {
     // initialize data
     loadFromDatastore();
 
-    // start up for service
-    this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
-    this.mHandlerThread.start();
-    this.mHandler = new Handler(this.mHandlerThread.getLooper());
-
-    this.mProcessingTask = new ProcessingRunnable();
-
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
       .getSystemService(Context.LOCATION_SERVICE);
-    mLocationListener = new LocationListener();
     // according to the docs: "it is more difficult for location
     // providers to save power using the minDistance parameter, so
     // minTime should be the primary tool to conserving battery life."
@@ -175,42 +164,42 @@ public class ActivityService extends Service {
                                             LocationManager.GPS_PROVIDER,
                                             LOCATION_LISTENER_MIN_TIME_MS,
                                             0, // LOCATION_LISTENER_MIN_DISTANCE_M,
-                                            mLocationListener
+                                            this
                                             );
     isServiceRunning = false;
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(TAG, "onStartCommand()..." + intent + " - " + flags + " - " + startId);
+    Log.d(TAG, "onStartCommand()");
     Log.d(TAG, "isServiceRunning: " + isServiceRunning);
-    if (!isServiceRunning) {
-      // Set the user in the current context.
-      // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
+    if (intent != null) {
+      Log.d(TAG, "[intent - flags - startId]: " + intent + " - " + flags + " - " + startId);
+      if (!isServiceRunning) {
+        // Set the user in the current context.
+        // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
 
-      if (intent != null &&
-          Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
-        startServiceWithNotification();
+        if (intent != null &&
+            Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
+          startServiceWithNotification();
 
-        // register time receiver
-        Log.d(TAG, "registering time receiver");
-        IntentFilter timeFilter = new IntentFilter();
-        timeFilter.addAction(Intent.ACTION_TIME_TICK);
-        timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        this.registerReceiver(this.timeReceiver, timeFilter);
+          // register time receiver
+          Log.d(TAG, "registering time receiver");
+          IntentFilter timeFilter = new IntentFilter();
+          timeFilter.addAction(Intent.ACTION_TIME_TICK);
+          timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+          this.registerReceiver(this.timeReceiver, timeFilter);
 
-        Log.d(TAG, "starting service!");
+          Log.d(TAG, "starting service!");
 
-        this.initSensors();
-        int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-        // register the body sensor so we get events when the user
-        // wears the watch and takes it off
-        this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.post(mProcessingTask);
-      } else {
-        stopMyService();
+          this.initSensors();
+          int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+          // register the body sensor so we get events when the user
+          // wears the watch and takes it off
+          this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+        } else {
+          stopMyService();
+        }
       }
     }
 
@@ -226,85 +215,45 @@ public class ActivityService extends Service {
     currentHeartRate = datastore.getHeartRate();
   }
 
-  private BroadcastReceiver timeReceiver = new BroadcastReceiver() {
-      @Override
-      public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "TimeReceiver::onReceive()");
-        // get the date from the datastore
-        String currentDate = datastore.getDate();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // get current date
-        Date now = Calendar.getInstance().getTime();
-        String nowString = simpleDateFormat.format(now);
-        // if we don't have a date, then save the current date
-        if (currentDate == "") {
-          datastore.setDate(nowString);
-        } else {
-          boolean sameDate = currentDate.equals(nowString);
-          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
-          // determine if it's a new day
-          if (!sameDate) {
-            // reset values to zero
-            currentPushCount = 0;
-            currentCoastTime = 0;
-            currentDistance = 0;
-            currentHeartRate = 0;
-            // update the datastore
+  void setupTimeReceiver() {
+    if (this.timeReceiver != null) {
+      this.unregisterReceiver(this.timeReceiver);
+      this.timeReceiver = null;
+    }
+    timeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          // Log.d(TAG, "TimeReceiver::onReceive()");
+          // get the date from the datastore
+          String currentDate = datastore.getDate();
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+          // get current date
+          Date now = Calendar.getInstance().getTime();
+          String nowString = simpleDateFormat.format(now);
+          // if we don't have a date, then save the current date
+          if (currentDate == "") {
             datastore.setDate(nowString);
-            datastore.setPushes(currentPushCount);
-            datastore.setCoast(currentCoastTime);
-            datastore.setDistance(currentDistance);
-            datastore.setHeartRate(currentHeartRate);
-            // TODO: update the sqlite tables
+          } else {
+            boolean sameDate = currentDate.equals(nowString);
+            // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
+            // determine if it's a new day
+            if (!sameDate) {
+              // reset values to zero
+              currentPushCount = 0;
+              currentCoastTime = 0;
+              currentDistance = 0;
+              currentHeartRate = 0;
+              // update the datastore
+              datastore.setDate(nowString);
+              datastore.setPushes(currentPushCount);
+              datastore.setCoast(currentCoastTime);
+              datastore.setDistance(currentDistance);
+              datastore.setHeartRate(currentHeartRate);
+              // TODO: update the sqlite tables
+            }
           }
         }
-      }
-    };
-
-  private class ProcessingRunnable implements Runnable {
-    @Override
-    public void run() {
-      try {
-        periodicProcessing();
-      } catch (Exception e) {
-        Sentry.capture(e);
-        Log.e(TAG, "Exception in ProcessingRunnable: " + e.getMessage());
-      }
-      mHandler.postDelayed(mProcessingTask, PROCESSING_TASK_PERIOD_MS);
-    }
-  }
-
-  private void periodicProcessing() {
-    Log.d(TAG, "periodicProcessing()...");
-    // process the stored sensor data
-    boolean newDataProcessed = processSensorData();
-    if (newDataProcessed) {
-      // TODO: update data in SQLite tables
-      // TODO: update data in datastore / shared preferences
-      // send intent to main activity with updated data
-      sendDataToActivity(currentPushCount,
-                         currentCoastTime,
-                         currentDistance,
-                         currentHeartRate);
-    }
-  }
-
-  private boolean processSensorData() {
-    // TODO: actually run through the processing here
-    int numProcessed = 0;
-    boolean didProcess = false;
-    synchronized (sensorDataList) {
-      while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
-        SensorEvent event = sensorDataList.remove(0);
-        // use the data to detect activities
-        ActivityDetector.Detection detection =
-          activityDetector.detectActivity(event.values, event.timestamp);
-        handleDetection(detection);
-        numProcessed++;
-        didProcess = true;
-      }
-    }
-    return didProcess;
+      };
   }
 
   void handleDetection(ActivityDetector.Detection detection) {
@@ -313,6 +262,7 @@ public class ActivityService extends Service {
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
         currentPushCount += 1;
+        // Log.d(TAG, "Got a push, count = " + currentPushCount);
         // calculate coast time here
         if (lastPush != null) {
           long timeDiffNs = detection.time - lastPush.time;
@@ -343,14 +293,19 @@ public class ActivityService extends Service {
 
     try {
       // unregister time receivers
-      this.unregisterReceiver(this.timeReceiver);
-
+      if (this.timeReceiver != null) {
+        this.unregisterReceiver(this.timeReceiver);
+        this.timeReceiver = null;
+      }
       // remove sensor listeners
       unregisterDeviceSensors();
-
-      // remove handler tasks
-      mHandler.removeCallbacksAndMessages(null);
-      mHandlerThread.quitSafely();
+      /*
+      // cancel the alarm
+      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
+      scheduler.cancel(scheduledIntent);
+      scheduledIntent.cancel();
+      */
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -365,7 +320,7 @@ public class ActivityService extends Service {
                                             LocationManager.GPS_PROVIDER,
                                             LOCATION_LISTENER_MIN_TIME_MS,
                                             0, // LOCATION_LISTENER_MIN_DISTANCE_M,
-                                            mLocationListener
+                                            this
                                             );
     // turn on accelerometer sensing
     int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
@@ -374,199 +329,193 @@ public class ActivityService extends Service {
 
   private void offWristCallback() {
     // turn off location sensing
-    mLocationManager.removeUpdates(mLocationListener);
+    mLocationManager.removeUpdates(this);
     // turn off accelerometer sensing
     unregisterAccelerometer();
   }
 
-  private class LocationListener implements android.location.LocationListener {
-    @Override
-    public void onLocationChanged(Location location) {
-      if (!watchBeingWorn) {
-        // don't do any range computation if the watch isn't being
-        // worn
-        return;
+  @Override
+  public void onLocationChanged(Location location) {
+    if (!watchBeingWorn && !isDebuggable) {
+      // don't do any range computation if the watch isn't being
+      // worn
+      return;
+    }
+    Log.d(TAG, "Got location: " + location);
+    double lat = location.getLatitude();
+    double lon = location.getLongitude();
+    long time = location.getTime();
+    long elapsedRealTimeNs = location.getElapsedRealtimeNanos();
+    // update the distance
+    if (mLastKnownLocation != null && mLastKnownLocation != location) {
+      /*
+       * speed: m/s
+       *
+       * location accuracy: 68% confidence radius (m)
+       *
+       * speed accuracy: 68% confidence 1-side range above & below
+       * the estimated speed
+       */
+      // location data
+      float currentSpeed = location.getSpeed();
+      float currentLocationAccuracy = location.getAccuracy();
+      float currentSpeedAccuracy = location.getSpeedAccuracyMetersPerSecond();
+      float previousSpeed = mLastKnownLocation.getSpeed();
+      float previousLocationAccuracy = mLastKnownLocation.getAccuracy();
+      float previousSpeedAccuracy = mLastKnownLocation.getSpeedAccuracyMetersPerSecond();
+      // compute our own speed using the locations and time (not as
+      // accurate as the provided speeds)
+      long timeDiffNs = elapsedRealTimeNs - mLastKnownLocation.getElapsedRealtimeNanos();
+      float timeDiffSeconds = timeDiffNs / 1000000000.0f;
+      float distance = mLastKnownLocation.distanceTo(location);
+      float computedSpeed = distance / timeDiffSeconds;
+      // compute minimum / maximum speeds based on confidences
+      float currentMinSpeed = currentSpeed - currentSpeedAccuracy;
+      float currentMaxSpeed = currentSpeed + currentSpeedAccuracy;
+      float previousMinSpeed = previousSpeed - previousSpeedAccuracy;
+      float previousMaxSpeed = previousSpeed + previousSpeedAccuracy;
+      // determine validity of speeds
+      boolean newSpeedValid =
+        (currentSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+        (currentSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
+        location.hasSpeed();
+      boolean oldSpeedValid =
+        (previousSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+        (previousSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
+        mLastKnownLocation.hasSpeed();
+      boolean computedSpeedValid =
+        (computedSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
+        (computedSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS);
+      // determine validity of location based on difference - must
+      // be actually moving, not just an update within the same
+      // confidence threshold
+      boolean newLocationIsFromMovement =
+        distance >= LOCATION_DISTANCE_THRESHOLD_M &&
+        (computedSpeedValid || newSpeedValid);
+      // if we have valid speed, accumulate more distance
+      if (newLocationIsFromMovement) {
+        currentDistance += distance;
+        // update the saved distance
+        datastore.setDistance(currentDistance);
       }
-      Log.d(TAG, "Got location: " + location);
-      double lat = location.getLatitude();
-      double lon = location.getLongitude();
-      long time = location.getTime();
-      long elapsedRealTimeNs = location.getElapsedRealtimeNanos();
-      // update the distance
-      if (mLastKnownLocation != null && mLastKnownLocation != location) {
-        /*
-         * speed: m/s
-         *
-         * location accuracy: 68% confidence radius (m)
-         *
-         * speed accuracy: 68% confidence 1-side range above & below
-         * the estimated speed
-         */
-        // location data
-        float currentSpeed = location.getSpeed();
-        float currentLocationAccuracy = location.getAccuracy();
-        float currentSpeedAccuracy = location.getSpeedAccuracyMetersPerSecond();
-        float previousSpeed = mLastKnownLocation.getSpeed();
-        float previousLocationAccuracy = mLastKnownLocation.getAccuracy();
-        float previousSpeedAccuracy = mLastKnownLocation.getSpeedAccuracyMetersPerSecond();
-        // compute our own speed using the locations and time (not as
-        // accurate as the provided speeds)
-        long timeDiffNs = elapsedRealTimeNs - mLastKnownLocation.getElapsedRealtimeNanos();
-        float timeDiffSeconds = timeDiffNs / 1000000000.0f;
-        float distance = mLastKnownLocation.distanceTo(location);
-        float computedSpeed = distance / timeDiffSeconds;
-        // compute minimum / maximum speeds based on confidences
-        float currentMinSpeed = currentSpeed - currentSpeedAccuracy;
-        float currentMaxSpeed = currentSpeed + currentSpeedAccuracy;
-        float previousMinSpeed = previousSpeed - previousSpeedAccuracy;
-        float previousMaxSpeed = previousSpeed + previousSpeedAccuracy;
-        // determine validity of speeds
-        boolean newSpeedValid =
-          (currentSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
-          (currentSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
-          location.hasSpeed();
-        boolean oldSpeedValid =
-          (previousSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
-          (previousSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS) &&
-          mLastKnownLocation.hasSpeed();
-        boolean computedSpeedValid =
-          (computedSpeed <= LOCATION_SPEED_THRESHOLD_MAX_MPS) &&
-          (computedSpeed >= LOCATION_SPEED_THRESHOLD_MIN_MPS);
-        // determine validity of location based on difference - must
-        // be actually moving, not just an update within the same
-        // confidence threshold
-        boolean newLocationIsFromMovement =
-          distance >= LOCATION_DISTANCE_THRESHOLD_M &&
-          (computedSpeedValid || newSpeedValid);
-        // if we have valid speed, accumulate more distance
-        if (newLocationIsFromMovement) {
-          currentDistance += distance;
-          // update the saved distance
-          datastore.setDistance(currentDistance);
-        }
+    }
+    // update the stored location for distance computation
+    mLastKnownLocation = location;
+    // TODO: save location data as a series of data if the user has
+    // asked us to track their location through the app (for some
+    // period of time)
+  }
+
+  @Override
+  public void onProviderDisabled(String provider) {
+    Log.d(TAG, "Provider disabled: " + provider);
+  }
+
+  @Override
+  public void onProviderEnabled(String provider) {
+    Log.d(TAG, "Provider enabled: " + provider);
+  }
+
+  @Override
+  public void onStatusChanged(String provider, int status, Bundle extras) {
+    Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
+  }
+
+  @Override
+  public void onSensorChanged(SensorEvent event) {
+    // Log.d(TAG, "SensorChanged: " + event);
+    updateActivity(event);
+    int sensorType = event.sensor.getType();
+    if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
+      if (isDebuggable || watchBeingWorn) {
+        // use the data to detect activities
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(event.values, event.timestamp);
+        handleDetection(detection);
+        // TODO: update data in SQLite tables
+        // TODO: update data in datastore / shared preferences
+        // send intent to main activity with updated data
+        sendDataToActivity(currentPushCount,
+                           currentCoastTime,
+                           currentDistance,
+                           currentHeartRate);
       }
-      // update the stored location for distance computation
-      mLastKnownLocation = location;
-      // TODO: save location data as a series of data if the user has
-      // asked us to track their location through the app (for some
-      // period of time)
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-      Log.d(TAG, "Provider disabled: " + provider);
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-      Log.d(TAG, "Provider enabled: " + provider);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-      Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
+    } else if (sensorType == Sensor.TYPE_HEART_RATE) {
+      // update the heart rate
+      currentHeartRate = event.values[0];
+      Log.d(TAG, "current heart rate: " + currentHeartRate);
+      // save the heart rate to the datastore
+      datastore.setHeartRate(currentHeartRate);
+      // TODO: save heart rate data as a series of data if the
+      // user has asked us to track their heart rate through the
+      // app (for some period of time)
     }
   }
 
-  public class SensorListener implements SensorEventListener {
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-      if (mListener != null) {
-        // Log.d(TAG, "SensorChanged: " + event);
-        updateActivity(event);
-        int sensorType = event.sensor.getType();
-        if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
-          if (isDebuggable || watchBeingWorn) {
-            synchronized (sensorDataList) {
-              // add the event to the data list for processing later
-              sensorDataList.add(event);
-            }
-          }
-        } else if (sensorType == Sensor.TYPE_HEART_RATE) {
-          // update the heart rate
-          currentHeartRate = event.values[0];
-          Log.d(TAG, "current heart rate: " + currentHeartRate);
-          // save the heart rate to the datastore
-          datastore.setHeartRate(currentHeartRate);
-          // TODO: save heart rate data as a series of data if the
-          // user has asked us to track their heart rate through the
-          // app (for some period of time)
-        }
-      }
-    }
+  @Override
+  public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    // TODO Auto-generated method stub
+  }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-      // TODO Auto-generated method stub
-    }
-
-    void updateActivity(SensorEvent event) {
-      // check if the user is wearing the watch
-      if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
-        // 1.0 => device is on body, 0.0 => device is off body
-        watchBeingWorn = (event.values[0] != 0.0);
-        if (watchBeingWorn) {
-          onWristCallback();
-        } else {
-          offWristCallback();
-        }
+  void updateActivity(SensorEvent event) {
+    // check if the user is wearing the watch
+    if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
+      // 1.0 => device is on body, 0.0 => device is off body
+      watchBeingWorn = (event.values[0] != 0.0);
+      if (watchBeingWorn || isDebuggable) {
+        onWristCallback();
+      } else {
+        offWristCallback();
       }
     }
   }
 
   private void initSensors() {
     mSensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
-    // make sure we have the sensor manager for the device
-    if (mSensorManager != null) {
-      Log.d(TAG, "Creating sensor listener...");
-      mListener = new SensorListener();
-    } else {
-      Log.e(TAG, "Sensor Manager was not found - unable to create sensor listener.");
-    }
   }
 
   private void registerHeartRate(int delay, int reportingLatency) {
-    if (mSensorManager != null && mListener != null) {
+    if (mSensorManager != null) {
       mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
       if (mHeartRate != null)
-        mSensorManager.registerListener(mListener, mHeartRate, delay, reportingLatency);
+        mSensorManager.registerListener(this, mHeartRate, delay, reportingLatency);
     }
   }
 
   private void unregisterHeartRate() {
-    if (mSensorManager != null && mListener != null) {
+    if (mSensorManager != null) {
       if (mHeartRate != null)
-        mSensorManager.unregisterListener(mListener, mHeartRate);
+        mSensorManager.unregisterListener(this, mHeartRate);
     }
   }
 
   private void registerAccelerometer(int delay, int reportingLatency) {
-    if (mSensorManager != null && mListener != null) {
-      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+    if (mSensorManager != null) {
+      mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
       if (mLinearAcceleration != null)
-        mSensorManager.registerListener(mListener, mLinearAcceleration, delay, reportingLatency);
+        mSensorManager.registerListener(this, mLinearAcceleration, delay, reportingLatency);
     }
   }
 
   private void unregisterAccelerometer() {
-    if (mSensorManager != null && mListener != null) {
+    if (mSensorManager != null) {
       if (mLinearAcceleration != null)
-        mSensorManager.unregisterListener(mListener, mLinearAcceleration);
+        mSensorManager.unregisterListener(this, mLinearAcceleration);
     }
   }
 
   private void registerBodySensor(int delay, int reportingLatency) {
-    if (mSensorManager != null && mListener != null) {
-      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+    if (mSensorManager != null) {
+      mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
       if (mOffBodyDetect != null)
-        mSensorManager.registerListener(mListener, mOffBodyDetect, delay, reportingLatency);
+        mSensorManager.registerListener(this, mOffBodyDetect, delay, reportingLatency);
     }
   }
 
   private void unregisterBodySensor() {
-    if (mSensorManager != null && mListener != null) {
+    if (mSensorManager != null) {
       if (mOffBodyDetect != null)
-        mSensorManager.unregisterListener(mListener, mOffBodyDetect);
+        mSensorManager.unregisterListener(this, mOffBodyDetect);
     }
   }
 
@@ -594,16 +543,20 @@ public class ActivityService extends Service {
     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
   }
 
+  private PendingIntent getAlarmIntent(int intentFlag) {
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
+                                                             0,
+                                                             i,
+                                                             intentFlag);
+    return scheduledIntent;
+  }
+
   private void startServiceWithNotification() {
     if (isServiceRunning) return;
     isServiceRunning = true;
 
-    /*
-    Intent notificationIntent = new Intent(
-                                           getApplicationContext(),
-                                           MainActivity.class
-                                           );
-    */
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
                                     getApplicationContext(),

@@ -312,7 +312,7 @@ export class MainViewModel extends Observable {
     this.distanceGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
       0.0
-    );
+    ) / 1609.0; // what's stored is meters, convert to miles
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0
@@ -328,7 +328,7 @@ export class MainViewModel extends Observable {
   }
 
   onServiceData(context, intent) {
-    Log.D('Got service data');
+    // Log.D('Got service data');
     // get the info from the event
     const pushes = intent.getIntExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_PUSHES,
@@ -346,7 +346,7 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
       0
     );
-    Log.D(pushes, coast, distance, heartRate);
+    // Log.D(pushes, coast, distance, heartRate);
     this.currentPushCount = pushes;
     // received distance is in meters - need to convert to miles
     this.distanceGoalCurrentValue = distance / 1609.0;
@@ -379,11 +379,11 @@ export class MainViewModel extends Observable {
           this.sentryBreadCrumb('Starting Activity Service.');
           console.log('Starting activity service!');
           try {
-            const i = new android.content.Intent();
+            const intent = new android.content.Intent();
             const context = application.android.context;
-            i.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
-            i.setAction('ACTION_START_SERVICE');
-            context.startService(i);
+            intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
+            intent.setAction('ACTION_START_SERVICE');
+            context.startService(intent);
             console.log('Started activity service!');
             this.sentryBreadCrumb('Activity Service started.');
             resolve();

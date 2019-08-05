@@ -5,6 +5,8 @@ function _exists(o, k): boolean {
   return o[k] !== undefined && o[k] !== null && o[k] !== NaN;
 }
 
+const enableMultithreading: boolean = false;
+
 @Injectable()
 export class SqliteService {
   static DatabaseName: string = 'PushTrackerDatabase';
@@ -13,7 +15,7 @@ export class SqliteService {
 
   public getDatabase() {
     return new Sqlite(SqliteService.DatabaseName, {
-      multithreading: true
+      multithreading: enableMultithreading
     });
   }
 
@@ -23,7 +25,7 @@ export class SqliteService {
         return Promise.resolve(this._db);
       } else {
         return new Sqlite(SqliteService.DatabaseName, {
-          multithreading: true
+          multithreading: enableMultithreading
         }).then((db: any) => {
           this._db = db;
           return this._db;

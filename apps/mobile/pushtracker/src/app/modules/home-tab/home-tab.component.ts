@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewContainerRef } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
@@ -7,13 +8,14 @@ import { Color } from 'tns-core-modules/color';
 import { STORAGE_KEYS } from '~/app/enums';
 import { LoggingService } from '../../services';
 import { AppInfoComponent } from '../app-info/app-info.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'home-tab',
   moduleId: module.id,
   templateUrl: './home-tab.component.html'
 })
-export class HomeTabComponent implements OnInit {
+export class HomeTabComponent implements OnInit, AfterViewInit {
   distanceCirclePercentage: number;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
@@ -25,29 +27,51 @@ export class HomeTabComponent implements OnInit {
   distanceChartData;
   infoItems;
 
+  private routeSub: Subscription; // subscription to route observer
+
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
+    private _router: Router,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
+    this.refreshGoalData();
+  }
+
+  ngOnInit(): void {
+    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+    this.infoItems = this._translateService.instant(
+      'app-info-component.sections'
+    );
+  }
+
+  ngAfterViewInit() {
+    // now listen for router events to refresh the page data
+    this.routeSub = this._router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this._logService.logBreadCrumb(`Home-tab router subscribe ${event}`);
+        this.refreshGoalData();
+      }
+    });
+  }
+
+  refreshGoalData() {
     // determine users distance value and get user activity goal for distance
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.distanceCirclePercentageMaxValue =
       '/' +
       appSettings.getNumber(
-        STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL,
-        STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE
-      );
+        STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
+      ) || STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
 
     // determine users coast-time value and get user activity goal for distance
     this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.coastTimeCirclePercentageMaxValue =
       '/' +
       appSettings.getNumber(
-        STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL,
-        STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE
-      );
+        STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
+      ) || STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
 
     this.distanceRemainingText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
@@ -57,13 +81,6 @@ export class HomeTabComponent implements OnInit {
     this.distanceData = `2.75`;
 
     this.distanceChartData = null;
-  }
-
-  ngOnInit(): void {
-    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
-    this.infoItems = this._translateService.instant(
-      'app-info-component.sections'
-    );
   }
 
   onInfoTap() {
