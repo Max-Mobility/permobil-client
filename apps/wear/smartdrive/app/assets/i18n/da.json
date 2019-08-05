@@ -1,52 +1,58 @@
 {
   "about": {
     "database": "Database ID",
-    "sd-ble-version": "SmartDrive BLE Version",
-    "sd-mcu-version": "SmartDrive MCU Version",
+    "sd-ble-version": "SmartDrive Bluetooth (BT) version",
+    "sd-mcu-version": "SmartDrive MCU (SD) version",
     "sd-serial-number": "SmartDrive serienummer",
-    "title": "Information",
-    "version": "App Version",
-    "watch-serial-number": "TicWatch serienummer"
+    "title": "Om information",
+    "version": "SmartDrive MX2 Wear OS App (SW) version",
+    "watch-serial-number": "Smartwatch serienummer"
   },
   "buttons": {
+    "allow": "Give lov til",
     "back": "Tilbage",
+    "cancel": "afbestille",
+    "deny": "Nægte",
+    "disable": "Deaktiver",
     "dismiss": "Afskedige",
+    "enable": "Aktiver",
     "ok": "Okay"
   },
   "charts": {
     "battery": {
-      "title": "Daglig SmartDrive Batteriforbrug (%)"
+      "title": "Brug af SmartDrive-batteri dagligt (%)"
     },
     "distance": {
-      "title": "Daglig SmartDrive Afstand Rejst"
+      "title": "SmartDrive-afstand rejset dagligt"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "SD batterispænding",
-      "bledisconnect": "Bluetooth Afbryd",
-      "gyrorange": "SD Gyro Range",
-      "motorphases": "SD motorfaser",
-      "otaunavailable": "Opdateringer Ikke tilgængelige",
-      "overcurrent": "SD Over Current",
-      "overtemperature": "SD over temperatur"
+      "batteryvoltage": "[ERR: 001] SD-batterispænding",
+      "bledisconnect": "[ERR: 007] Bluetooth-afbrydelse",
+      "gyrorange": "[ERR: 005] SD Angle",
+      "motorphases": "[ERR: 002] SD-motor",
+      "otaunavailable": "[ERR: 006] Opdateringer ikke tilgængelige",
+      "overcurrent": "[ERR: 003] SD Current Spike",
+      "overtemperature": "[ERR: 004] SD-overophedning"
     },
     "loading": "Indlæser...",
-    "no-errors": "Ingen SmartDrive fejl er blevet modtaget eller registreret.",
+    "no-errors": "Der er ikke registreret eller modtaget nogen SmartDrive-fejl.",
     "title": "SmartDrive Fejlhistorie"
   },
   "failures": {
-    "connect": "Kunne ikke oprette forbindelse til",
-    "getting-error": "Kunne ikke få SmartDrive-fejl",
-    "must-wear-watch": "Du skal bære enheden for at styre din SmartDrive.",
-    "no-smartdrive-paired": "Ingen SmartDrive parret til appen!",
+    "connect": "Kunne ikke oprette forbindelse til SmartDrive.",
+    "getting-error": "Kunne ikke få SmartDrive-fejl.",
+    "must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
+    "no-smartdrive-paired": "Intet SmartDrive parret.",
     "no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
-    "permissions": "Nødvendige tilladelser blev ikke givet!",
-    "saving-error": "Kunne ikke gemme SmartDrive-fejl",
-    "saving-usage": "Kunne ikke gemme brugen",
-    "scan": "Kunne ikke scanne",
-    "send-settings": "Kunne ikke sende indstillinger til",
-    "title": ""
+    "permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
+    "saving-error": "Gemt SmartDrive-fejl.",
+    "saving-usage": "Gemningen af gemningen mislykkedes.",
+    "scan": "Kunne ikke scanne.",
+    "send-settings": "Kunne ikke sende indstillinger til SmartDrive.",
+    "title": "Varsel",
+    "too-many-smartdrives-found": "Flere SmartDrives fundet. Sørg for, at der kun er en SmartDrive på i nærheden, når du parrer."
   },
   "languages": {
     "da": "dansk",
@@ -57,17 +63,17 @@
     "it": "italiensk",
     "ja": "japansk",
     "ko": "Korean",
-    "nb": "Norsk (bokmål)",
+    "nb": "Norsk [bokmål]",
     "nl": "hollandske",
-    "nn": "Norsk (nynorsk)",
-    "zh": "kinesisk"
+    "nn": "Norsk [nynorsk]",
+    "zh": "Kinesisk [traditionelt]"
   },
   "menu": {
     "about": "Om",
     "settings": "INDSTILLINGER",
-    "title": "Menu",
-    "training": "Uddannelse",
-    "updates": "opdateringer"
+    "title": "SmartDrive MX2 Menu",
+    "training": "Tryk på Træning",
+    "updates": "Trådløse opdateringer"
   },
   "ota": {
     "action": {
@@ -80,39 +86,39 @@
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "Venter på BLE",
+        "awaiting-ble-ready": "Venter på BT",
         "awaiting-connection": "Venter på forbindelse",
-        "awaiting-mcu-ready": "Venter på MCU",
-        "awaiting-versions": "Afventer versioner",
+        "awaiting-mcu-ready": "Venter på SD",
+        "awaiting-versions": "Venter på versioner",
         "canceled": "Aflyst",
         "canceling": "Annullering",
-        "comm-failure": "Kommunikationsfejl, genstart din SmartDrive",
+        "comm-failure": "Kommunikationsfejl - SmartDrive-genstart kræves",
         "complete": "Komplet",
         "failed": "mislykkedes",
         "not-started": "Ikke startet",
-        "rebooting-ble": "Genopretter BLE",
-        "rebooting-mcu": "Genstart MCU",
+        "rebooting-ble": "Genstart af BT",
+        "rebooting-mcu": "Genstart af SD",
         "timeout": "Tiden er gået",
-        "updating-ble": "Opdatering af BLE",
-        "updating-mcu": "Opdatering af MCU",
+        "updating-ble": "Opdaterer BT",
+        "updating-mcu": "Opdaterer SD",
         "verifying": "Bekræftelse"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "For at styre din SmartDrive ved hjælp af bluetooth har vi brug for ACCESS_COARSE_LOCATION tilladelse.",
-    "phone-state": "For at læse serienummeret til din enhed (for garanti / support) har vi brug for READ_PHONE_STATE tilladelsen."
+    "coarse-location": "For at kontrollere din SmartDrive ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
+    "phone-state": "VALGFRITT: For at få adgang til dit smartwatch-serienummer, som kan være nyttigt til support og garantiformål, har vi brug for, at du tillader telefontilladelse [READ_PHONE_STATE] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dit telefonnummer, mobilnetværksoplysninger eller andre data undtagen smartwatch-serienummeret."
   },
   "permissions-request": {
-    "title": "Tilladelsesanmodning"
+    "title": "Tilladelsesmeddelelse"
   },
   "power-assist": {
-    "activate": "Aktivér Strømassistent",
-    "deactivate": "Deaktiver Power Assist",
+    "activate": "Tur\nPower Assist\nPå",
+    "deactivate": "Tur\nPower Assist\nAf",
     "estimated-range": "Beregnet rækkevidde",
-    "exit-training": "Afslut træningstilstand",
-    "speed": "Hastighed",
-    "stop": "Hold op"
+    "exit-training": "Afslut træning",
+    "speed": "Nuværende hastighed",
+    "stop": "Deaktiver kørsel"
   },
   "sd": {
     "settings": {
@@ -121,13 +127,13 @@
         "enabled": "Aktiveret"
       },
       "units": {
-        "english": "engelsk",
+        "english": "Kejserlig",
         "metric": "metric"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "Låsning",
+        "latching": "latched",
         "momentary": "Momentan"
       }
     }
@@ -136,29 +142,29 @@
     "acceleration": "Acceleration",
     "control-mode": "Kontroltilstand",
     "description": {
-      "acceleration": "Accelerationen af din SmartDrive.",
-      "controlmode": "MX2: Standard, gestusbaseret kontroltilstand for SmartDrive.\n\nMX2: I denne tilstand begynder SmartDrive at køre, når det registrerer dit tryk og stopper kørslen, når du trykker på armbåndet. Bemærk: Dette er en arv-support-tilstand.\n\nMX1: I denne tilstand begynder SmartDrive at køre, når den registrerer dit tryk og stopper med at køre, når du trykker på armbåndet eller når du bremser håndrimmerne. Bemærk: Dette er en arv-support-tilstand.",
-      "maxspeed": "Den maksimale hastighed, din SmartDrive kan køre på, når den styres fra din PushTracker.",
-      "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når en forbindelse til en fjern enhed er etableret, eller når Switch Control er taget ud af standbytilstand.",
-      "switchcontrolmode": "Momentary: Standard Switch Control-tilstand, hvor SmartDrive vil køre og rampe op til den konfigurerede Switch Control Max Speed kun, mens en af switch Control-knapperne holdes. Når begge knapper trykkes eller når knappen slippes, slukkes motoren.\n\nLåsning: SmartDrive vil i låsekontaktstyringstilstand køre og rampe op til den konfigurerede maksimale hastighedsstyring, mens en af omskifterstyringsknapperne holdes. Når knappen slippes, forbliver SmartDrive kørende - ved den aktuelle hastighed, når knappen blev frigivet. Når begge knapper trykkes eller når knappen trykkes igen, slukker motoren.",
-      "switchcontrolspeed": "Den maksimale hastighed, som SmartDrive kan køre på, når den styres fra knappen Switch Control.",
-      "tapsensitivity": "Bestemmer følsomheden af tapens gestus, der bruges til at aktivere og deaktivere SmartDrive. 100% er den mest følsomme og derfor lettest at trykke. 10% er den mindst følsomme og derfor hårdest at trykke.",
-      "units": "Vælg hvilket enhedssystem / måleenheder, der skal bruges til interval- og hastighedsvisning i brugergrænsefladen.",
-      "wearcheck": "Når den er aktiveret, håndhæves det, at uret skal være på brugerens håndled for at aktivere strømassistance. Hvis strømassistent er aktiveret, og uret registrerer, at det ikke længere er på brugerens håndled, deaktiveres automatisk strømforsyningen."
+      "acceleration": "SmartDrive's accelerations- eller hastighedsrampehastighed.",
+      "controlmode": "MX2: Standard, gestusbaseret operation af SmartDrive. I MX2-kontroltilstand starter et dobbelttryk ved at køre motoren ved at rampe op i dens hastighed, et enkelt tryk kystes ved den aktuelle hastighed, og et dobbelttryk deaktiverer kørslen.\n\nMX2: I MX2-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og deaktiverer kørslen, når du trykker på. Bemærk, at dette er en arv-understøttelsesindstilling.\n\nMX1: I MX1-kontroltilstand begynder SmartDrive at køre, når den registrerer dit skub, og vil stoppe med at køre, når du tapper, eller når du bremser på håndtagene. Bemærk, at dette er en arv-understøttelsesindstilling.",
+      "maxspeed": "Den maksimale hastighed, hvor SmartDrive kan køre, når den styres af din smartwatch.",
+      "powerassistbuzzer": "Når den er aktiveret, bipper SmartDrive, når der oprettes en forbindelse fra en fjernenhed, eller når switch Control tages ud af standbytilstand.",
+      "switchcontrolmode": "Øjeblikkelig: Standardkontakttilstand til switch, hvor SmartDrive vil begynde at køre motoren ved at hæve dens hastighed til den konfigurerede switch control max speed, mens en af switch control knapperne holdes nede. Når den holdte knap frigøres, eller begge knapper [hvis de findes] trykkes, deaktiveres kørslen. Bemærk, at den ikke deaktiverer enheden i standbytilstand.\n\nLåst fast: I låset switch-kontroltilstand vil SmartDrive begynde at køre motoren ved at rampe op dens hastighed til den konfigurerede switch Control Max Speed, mens en af switch Control-knapperne holdes nede. Når den holdte knap frigøres, forbliver SmartDrive kørsel / kyst med den aktuelle hastighed, da knappen blev frigivet. Når der trykkes på en af knapperne og frigøres igen, eller begge knapper [hvis til stede] trykkes, deaktiveres kørslen. Bemærk, at den ikke deaktiverer enheden i standbytilstand.",
+      "switchcontrolspeed": "Den maksimale hastighed, hvor SmartDrive kan køre, når den styres af switch Control.",
+      "tapsensitivity": "Følsomheden for hanebevægelsen, der bruges til at aktivere og deaktivere kørslen. Jo lavere procentdel er, desto sværere er du nødt til at trykke på - 100% er den mest følsomme og derfor lettest at trykke på, og 10% er den mindst følsomme og derfor sværeste at trykke på.",
+      "units": "Enhedssystemet eller måleenhederne til at vise hastighed og afstand inden for brugergrænsefladerne. Vælg enten Imperial [mi og mph] eller Metric [km og km / t].",
+      "wearcheck": "Når dette er aktiveret, skal smarturet være på håndleddet for at tænde strømforsyningen. Hvis strømhjælp er TIL, og smarturet opdager, at det ikke længere er på håndleddet, slukker det automatisk strømforsyningen."
     },
     "error-history": "Fejlhistorik",
     "information": "Information",
     "max-speed": "Højeste hastighed",
     "pair-smartdrive": "Par SmartDrive",
-    "paired-to-smartdrive": "Parret til SmartDrive",
-    "power-assist-buzzer": "Power Assist Buzzer",
-    "scanning": "Scanning",
+    "paired-to-smartdrive": "Parret med SmartDrive.",
+    "power-assist-buzzer": "Indikator for strømassistent bip",
+    "scanning": "Scanning efter SmartDrive til parring med ...",
     "select-smartdrive": "Vælg SmartDrive",
     "tap-sensitivity": "Tryk på følsomhed",
     "title": "SmartDrive-indstillinger",
     "units": "enheder",
     "watch-required": {
-      "title": "Wear Check",
+      "title": "Kontroller for håndleddet",
       "values": {
         "disabled": "handicappet",
         "enabled": "Aktiveret"
@@ -174,35 +180,40 @@
       "english": "mi",
       "metric": "km"
     },
-    "english": "engelsk",
+    "english": "Kejserlig",
     "metric": "metric",
     "speed": {
       "english": "mph",
-      "metric": "km i timen"
+      "metric": "km / t"
     }
   },
   "updates": {
-    "canceled": "Opdatering annulleret",
-    "changes": "Oversigt over ændringer:",
-    "checking-for-updates": "Kontrol af opdateringer",
-    "connecting-to-smartdrive": "Tilslutning til SmartDrive",
-    "downloading-new-firmwares": "",
+    "canceled": "SmartDrive-opdateringer annulleret.",
+    "changes": "Resumé af ændringer",
+    "checking-for-updates": "Kontrollerer for opdateringer ...",
+    "communications-failed": "Kommunikation med SmartDrive er mislykket. Genstart venligst din SmartDrive.",
+    "connecting-to-smartdrive": "Opretter forbindelse til SmartDrive ...",
+    "downloading-new-firmwares": "Downloader nye opdateringsdata ...",
     "errors": {
-      "connecting": "Fejl ved forbindelse til SmartDrive",
-      "downloading": "Fejl ved download af opdateringer",
-      "getting": "Fejl med at søge efter opdateringer",
-      "saving": "Fejl ved at gemme opdateringsdata"
+      "connecting": "Fejl ved forbindelse til SmartDrive.",
+      "downloading": "Fejl ved download af opdateringer.",
+      "getting": "Fejl ved søgning efter opdateringer.",
+      "saving": "Fejl ved lagring af opdateringsdata."
     },
-    "failed": "Opdatering fejlede",
-    "status": "Opdater status",
-    "success": "SmartDrive-opdateringen blev gennemført med succes!",
+    "failed": "SmartDrive-opdateringer mislykkedes.",
+    "status": "Opdateringsstatus",
+    "success": "SmartDrive-opdateringer afsluttet med succes!",
+    "timeout": "SmartDrive-opdateringer er udløbet.",
     "up-to-date": "SmartDrive er opdateret!",
     "version": "Version"
   },
   "warnings": {
     "saved-settings": {
-      "message": "FORSIGTIG: Du skal kontakte SmartDrive Brugermanualen for, hvordan indstillingerne ændrer indflydelse på dets drift og ydeevne.",
-      "title": "Gemte indstillinger"
+      "message": "FORSIGTIG: Du SKAL læse SmartDrive brugervejledning om, hvordan ændring af indstillinger påvirker dens funktion og ydeevne.",
+      "title": "Ændrede indstillinger"
+    },
+    "title": {
+      "notice": "Varsel"
     }
   }
 }

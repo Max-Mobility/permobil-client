@@ -1,52 +1,58 @@
 {
   "about": {
     "database": "數據庫ID",
-    "sd-ble-version": "SmartDrive BLE版本",
-    "sd-mcu-version": "SmartDrive MCU版本",
+    "sd-ble-version": "SmartDrive藍牙（BT）版本",
+    "sd-mcu-version": "SmartDrive MCU（SD）版本",
     "sd-serial-number": "SmartDrive序列號",
-    "title": "信息",
-    "version": "應用版本",
-    "watch-serial-number": "TicWatch序列號"
+    "title": "關於信息",
+    "version": "SmartDrive MX2 Wear OS App（SW）版本",
+    "watch-serial-number": "Smartwatch序列號"
   },
   "buttons": {
+    "allow": "允許",
     "back": "背部",
+    "cancel": "取消",
+    "deny": "拒絕",
+    "disable": "禁用",
     "dismiss": "解僱",
+    "enable": "啟用",
     "ok": "好"
   },
   "charts": {
     "battery": {
-      "title": "每日SmartDrive電池使用率（%）"
+      "title": "SmartDrive電池每日使用量（%）"
     },
     "distance": {
-      "title": "每日SmartDrive行駛距離"
+      "title": "SmartDrive每日行程距離"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "SD電池電壓",
-      "bledisconnect": "藍牙斷開連接",
-      "gyrorange": "SD陀螺儀系列",
-      "motorphases": "SD電機階段",
-      "otaunavailable": "更新不可用",
-      "overcurrent": "SD過流",
-      "overtemperature": "SD過溫"
+      "batteryvoltage": "[錯誤：001] SD電池電壓",
+      "bledisconnect": "[錯誤：007]藍牙斷開連接",
+      "gyrorange": "[錯誤號：005] SD角度",
+      "motorphases": "[錯誤號：002] SD馬達",
+      "otaunavailable": "[錯誤：006]更新不可用",
+      "overcurrent": "[ERR：003] SD電流尖峰",
+      "overtemperature": "[錯誤號：004] SD過熱"
     },
     "loading": "載入中...",
-    "no-errors": "未收到或記錄任何SmartDrive錯誤。",
+    "no-errors": "未記錄或接收到SmartDrive錯誤。",
     "title": "SmartDrive錯誤歷史記錄"
   },
   "failures": {
-    "connect": "無法連接到",
-    "getting-error": "無法獲得SmartDrive錯誤",
-    "must-wear-watch": "您必須佩戴設備才能控制SmartDrive。",
-    "no-smartdrive-paired": "沒有SmartDrive與應用程序配對！",
+    "connect": "無法連接到SmartDrive。",
+    "getting-error": "無法獲得SmartDrive錯誤。",
+    "must-wear-watch": "[檢查手腕]設置已啟用，因此必須佩戴智能手錶才能控制SmartDrive。",
+    "no-smartdrive-paired": "沒有SmartDrive配對。",
     "no-smartdrives-found": "附近找不到SmartDrives。",
-    "permissions": "未授予所需權限！",
-    "saving-error": "保存SmartDrive錯誤失敗",
-    "saving-usage": "保存使用失敗",
-    "scan": "無法掃描",
-    "send-settings": "無法發送設置",
-    "title": ""
+    "permissions": "無法執行請求的操作。未授予所需權限。",
+    "saving-error": "保存SmartDrive錯誤失敗。",
+    "saving-usage": "保存使用失敗。",
+    "scan": "無法掃描。",
+    "send-settings": "無法將設置發送到SmartDrive。",
+    "title": "注意",
+    "too-many-smartdrives-found": "找到了多個SmartDrives。配對時，確保附近只有一個SmartDrive。"
   },
   "languages": {
     "da": "丹麥",
@@ -57,17 +63,17 @@
     "it": "意大利",
     "ja": "日本",
     "ko": "朝鮮的",
-    "nb": "挪威語（Bokmål）",
+    "nb": "挪威語[Bokmål]",
     "nl": "荷蘭人",
-    "nn": "挪威人（尼諾斯克）",
-    "zh": "中文"
+    "nn": "挪威語[尼諾斯克]",
+    "zh": "中國傳統的]"
   },
   "menu": {
     "about": "關於",
     "settings": "設置",
-    "title": "菜單",
-    "training": "訓練",
-    "updates": "更新"
+    "title": "SmartDrive MX2菜單",
+    "training": "點擊培訓",
+    "updates": "無線更新"
   },
   "ota": {
     "action": {
@@ -80,39 +86,39 @@
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "等待BLE",
+        "awaiting-ble-ready": "等待BT",
         "awaiting-connection": "等待連接",
-        "awaiting-mcu-ready": "等待MCU",
+        "awaiting-mcu-ready": "等待SD",
         "awaiting-versions": "等待版本",
         "canceled": "取消",
         "canceling": "取消",
-        "comm-failure": "通訊錯誤，請重啟SmartDrive",
+        "comm-failure": "通信錯誤 - 需要重新啟動SmartDrive",
         "complete": "完成",
         "failed": "失敗",
         "not-started": "沒有開始",
-        "rebooting-ble": "重啟BLE",
-        "rebooting-mcu": "重啟MCU",
+        "rebooting-ble": "重啟BT",
+        "rebooting-mcu": "重啟SD",
         "timeout": "超時",
-        "updating-ble": "更新BLE",
-        "updating-mcu": "更新MCU",
+        "updating-ble": "更新BT",
+        "updating-mcu": "更新SD",
         "verifying": "驗證"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "要使用藍牙控制SmartDrive，我們需要ACCESS_COARSE_LOCATION權限。",
-    "phone-state": "要讀取設備序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。"
+    "coarse-location": "要使用藍牙控制SmartDrive，我們要求您在以下屏幕上允許位置權限[ACCESS_COARSE_LOCATION]。根據此權限，Permobil將不會訪問您的位置數據。",
+    "phone-state": "可選：要訪問智能手錶序列號（可用於支持和保修目的），我們需要您在以下某個屏幕上允許電話權限[READ_PHONE_STATE]。根據此權限，Permobil將不會訪問您的電話號碼，蜂窩網絡信息或除智能手錶序列號以外的任何其他數據。"
   },
   "permissions-request": {
-    "title": "權限請求"
+    "title": "權限通知"
   },
   "power-assist": {
-    "activate": "激活動力輔助",
-    "deactivate": "停用動力輔助",
+    "activate": "轉\n動力輔助\n上",
+    "deactivate": "轉\n動力輔助\n離",
     "estimated-range": "估計範圍",
-    "exit-training": "退出訓練模式",
-    "speed": "速度",
-    "stop": "停止"
+    "exit-training": "退出訓練",
+    "speed": "現在的速度",
+    "stop": "停用駕駛"
   },
   "sd": {
     "settings": {
@@ -121,13 +127,13 @@
         "enabled": "啟用"
       },
       "units": {
-        "english": "英語",
+        "english": "帝國",
         "metric": "公"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "閉鎖",
+        "latching": "鎖存",
         "momentary": "瞬間"
       }
     }
@@ -136,29 +142,29 @@
     "acceleration": "促進",
     "control-mode": "控制模式",
     "description": {
-      "acceleration": "SmartDrive的加速。",
-      "controlmode": "MX2：SmartDrive的默認基於手勢的控制模式。\n\nMX2：在此模式下，SmartDrive會在感應到推動時開始駕駛，並在您敲擊腕帶時停止駕駛。注意：這是遺留支持模式。\n\nMX1：在此模式下，SmartDrive會在感應到您的推動時開始駕駛，並在您敲擊腕帶或在手柄上製動時停止駕駛。注意：這是遺留支持模式。",
-      "maxspeed": "通過PushTracker控制SmartDrive可以達到的最高速度。",
-      "powerassistbuzzer": "啟用後，只要建立與遠程設備的連接或者Switch Control退出待機模式，SmartDrive就會發出蜂鳴聲。",
-      "switchcontrolmode": "瞬間：默認的開關控制模式，其中SmartDrive將僅在其中一個開關控制按鈕被保持時驅動並上升到配置的開關控制最大速度。按下兩個按鈕或鬆開按鈕時，電機將關閉。\n\n鎖定：在鎖定開關控制模式下，當其中一個開關控制按鈕被保持時，SmartDrive將驅動並上升到配置的開關控制最大速度。釋放按鈕後，SmartDrive將保持驅動狀態 - 按下釋放按鈕時的當前速度。按下兩個按鈕或再次按下按鈕時，電機將關閉。",
-      "switchcontrolspeed": "從Switch Control按鈕控制時，SmartDrive可以驅動的最大速度。",
-      "tapsensitivity": "確定用於激活和取消激活SmartDrive的輕擊手勢的靈敏度。 100%是最敏感的，因此最容易挖掘。 10%是最不敏感的，因此最難挖掘。",
-      "units": "在用戶界面中選擇用於範圍和速度顯示的單位系統/度量單位。",
-      "wearcheck": "啟用後，強製手表必須位於用戶手腕上以激活助力功能。如果啟用了助力功能並且手錶感覺到它不再位於用戶的手腕上，它將自動停用助力功能。"
+      "acceleration": "SmartDrive的加速或速度斜率。",
+      "controlmode": "MX2：SmartDrive的默認基於手勢的操作。在MX2控制模式下，雙擊將通過提高其速度開始驅動電機，單擊將以當前速度滑行，雙擊將停用驅動。\n\nMX2：在MX2控制模式下，SmartDrive會在感應到推動時開始駕駛，並在您點擊時停用駕駛。請注意，這是遺留支持選項。\n\nMX1：在MX1控制模式下，SmartDrive將在感應到您的推動時開始駕駛，並在您輕敲或在您的手柄上製動時停止駕駛。請注意，這是遺留支持選項。",
+      "maxspeed": "SmartDrive在智能手錶控制下可以達到的最高速度。",
+      "powerassistbuzzer": "啟用後，只要建立與遠程設備的連接，或者當Switch Control退出待機狀態，SmartDrive就會發出蜂鳴聲。",
+      "switchcontrolmode": "瞬間：默認的開關控制模式，只有在其中一個開關控制按鈕被保持時，SmartDrive才會通過將其速度提升到配置的開關控制最大速度來開始驅動電機。釋放保持按鈕或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。\n\n鎖存：在鎖存開關控制模式下，SmartDrive將通過在保持其中一個開關控制按鈕的同時將其速度提升至配置的開關控制最大速度來開始驅動電機。當釋放按鈕時，釋放按鈕時，SmartDrive將保持以當前速度行駛/滑行。當按下並再次釋放其中一個按鈕，或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。",
+      "switchcontrolspeed": "由Switch Control控制時SmartDrive可以驅動的最大速度。",
+      "tapsensitivity": "用於激活和停用駕駛的輕擊手勢的靈敏度。百分比越低，您需要點擊率越高 -  100%是最敏感的，因此最容易點擊，10%是最不敏感的，因此最難挖掘。",
+      "units": "單位系統或度量單位，用於顯示用戶界面內的速度和距離。選擇英制[mi和mph]或公制[km和km / h]。",
+      "wearcheck": "啟用後，智能手錶必須在手腕上才能打開電源輔助功能。如果電源輔助開啟並且智能手錶感覺到它不再在手腕上，它將自動關閉電源輔助。"
     },
     "error-history": "錯誤歷史記錄",
     "information": "信息",
     "max-speed": "最大速度",
     "pair-smartdrive": "配對SmartDrive",
-    "paired-to-smartdrive": "與SmartDrive配對",
-    "power-assist-buzzer": "助力蜂鳴器",
-    "scanning": "掃描",
+    "paired-to-smartdrive": "成功與SmartDrive配對。",
+    "power-assist-buzzer": "動力輔助嗶聲指示",
+    "scanning": "掃描SmartDrive與...配對",
     "select-smartdrive": "選擇SmartDrive",
     "tap-sensitivity": "點擊靈敏度",
     "title": "SmartDrive設置",
     "units": "單位",
     "watch-required": {
-      "title": "磨損檢查",
+      "title": "檢查手腕",
       "values": {
         "disabled": "殘",
         "enabled": "啟用"
@@ -174,35 +180,40 @@
       "english": "MI",
       "metric": "千米"
     },
-    "english": "英語",
+    "english": "帝國",
     "metric": "公",
     "speed": {
       "english": "英里",
-      "metric": "KPH"
+      "metric": "公里/小時"
     }
   },
   "updates": {
-    "canceled": "更新已取消",
-    "changes": "變更摘要：",
-    "checking-for-updates": "查詢更新",
-    "connecting-to-smartdrive": "連接到SmartDrive",
-    "downloading-new-firmwares": "",
+    "canceled": "SmartDrive更新已取消。",
+    "changes": "變更摘要",
+    "checking-for-updates": "查詢更新...",
+    "communications-failed": "與SmartDrive的通信失敗，請重新啟動SmartDrive。",
+    "connecting-to-smartdrive": "連接到SmartDrive ......",
+    "downloading-new-firmwares": "下載新的更新數據......",
     "errors": {
-      "connecting": "連接到SmartDrive時出錯",
-      "downloading": "下載更新時出錯",
-      "getting": "搜索更新時出錯",
-      "saving": "保存更新數據時出錯"
+      "connecting": "連接到SmartDrive時出錯。",
+      "downloading": "下載更新時出錯。",
+      "getting": "搜索更新時出錯。",
+      "saving": "保存更新數據時出錯。"
     },
-    "failed": "更新失敗",
+    "failed": "SmartDrive更新失敗。",
     "status": "更新狀態",
     "success": "SmartDrive更新成功完成！",
+    "timeout": "SmartDrive更新超時。",
     "up-to-date": "SmartDrive是最新的！",
     "version": "版"
   },
   "warnings": {
     "saved-settings": {
       "message": "注意：您必須參考SmartDrive用戶手冊，了解更改設置如何影響其操作和性能。",
-      "title": "保存的設置"
+      "title": "更改了設置"
+    },
+    "title": {
+      "notice": "注意"
     }
   }
 }
