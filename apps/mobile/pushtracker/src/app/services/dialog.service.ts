@@ -7,20 +7,19 @@ import { action } from 'tns-core-modules/ui/dialogs';
 export class DialogService {
   constructor(private _translateService: TranslateService) {}
 
-  public action(
-    title: string,
-    list: any,
-    selectedItem?: number
-  ): Promise<string> {
+  public action(title: string, actions: any): Promise<string> {
     return new Promise((resolve, reject) => {
       action({
         title,
         cancelButtonText: this._translateService.instant('general.cancel'),
-        actions: list
+        actions
       })
         .then(result => {
           Log.D(`action selected: ${result}`);
-          if (result !== this._translateService.instant('general.cancel')) {
+          if (
+            result &&
+            result !== this._translateService.instant('general.cancel')
+          ) {
             resolve(result);
           } else {
             resolve();

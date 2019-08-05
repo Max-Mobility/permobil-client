@@ -7,7 +7,7 @@ import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
-import { LoggingService, ProgressService, UserService } from '../../services';
+import { LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'login',
@@ -25,7 +25,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
-    private _userService: UserService,
     private _progressService: ProgressService,
     private _page: Page,
     private _translateService: TranslateService,
@@ -49,11 +48,18 @@ export class LoginComponent implements OnInit {
       dimBackground: true
     });
 
+    const user = await Kinvey.User.login(
+      'bradwaynemartin@gmail.com',
+      'testtest'
+    );
+
     // simulation network call with timeout for now
     setTimeout(() => {
       // Navigate to tabs home with clearHistory
       this._routerExtensions
-        .navigate(['/tabs/default'], { clearHistory: true })
+        .navigate(['/tabs/default'], {
+          clearHistory: true
+        })
         .then(() => {
           this._loadingIndicator.hide();
         })
@@ -95,7 +101,7 @@ export class LoginComponent implements OnInit {
     //   if (Kinvey.User.getActiveUser()) {
     //     // if on android or not on iOS Simulator register the device for push
     //     if (isAndroid || (isIOS && !isIosSimulator())) {
-    //       await this._userService._registerForPushNotifications();
+    //       await this._registerForPushNotifications();
     //     }
     //   }
 

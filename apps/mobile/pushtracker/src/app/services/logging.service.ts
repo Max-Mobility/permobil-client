@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { BreadCrumb, Level, MessageOptions, Sentry } from 'nativescript-sentry';
-import { UserService } from './user.service';
 
 export class LoggingUtil {
   static debug = true;
@@ -13,17 +13,18 @@ export enum LoggingCategory {
 
 @Injectable()
 export class LoggingService {
-  constructor(private _userService: UserService) {}
+  constructor() {}
   /**
    * Will log the error argument. If devmode is false then we capture
    * the exception with Sentry logging.
    * @param err
    */
   logException(exception: Error) {
-    if (this._userService && this._userService.user) {
+    const user = KinveyUser.getActiveUser();
+    if (user) {
       Sentry.setContextUser({
-        email: this._userService.user.email,
-        id: this._userService.user._id
+        email: user.email,
+        id: user._id
       });
     }
 
@@ -36,10 +37,11 @@ export class LoggingService {
   }
 
   logMessage(message: string, options: MessageOptions = {}) {
-    if (this._userService && this._userService.user) {
+    const user = KinveyUser.getActiveUser();
+    if (user) {
       Sentry.setContextUser({
-        email: this._userService.user.email,
-        id: this._userService.user._id
+        email: user.email,
+        id: user._id
       });
     }
     Sentry.captureMessage(message, options);

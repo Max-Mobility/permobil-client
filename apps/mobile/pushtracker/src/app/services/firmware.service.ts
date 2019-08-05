@@ -5,7 +5,6 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { knownFolders, path } from 'tns-core-modules/file-system';
 import * as httpModule from 'tns-core-modules/http';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { User } from '../models';
 import { LoggingService } from './logging.service';
 
 @Injectable()
@@ -223,7 +222,7 @@ export class FirmwareService {
         this.haveFirmwares = false;
         // determine whether or not to download the beta firmware files
         const currentUser = Kinvey.User.getActiveUser();
-        const downloadBetaFirmware = (currentUser.data as User)
+        const downloadBetaFirmware = (currentUser.data as any)
           .beta_firmware_tester;
 
         const tasks = Object.keys(this.firmwares).map(async fwKey => {

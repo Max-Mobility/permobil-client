@@ -1,5 +1,3 @@
-// import { bindingTypeToString, Packet } from '@maxmobility/core';
-// import { BluetoothService } from '@maxmobility/mobile';
 import { bindingTypeToString, Packet } from '@permobil/core';
 import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
@@ -20,12 +18,6 @@ enum OTAState {
   failed = 'ota.pt.state.failed',
   timeout = 'ota.pt.state.timeout'
 }
-
-const timeToString = (milliseconds: number): string => {
-  const t = new Date(null);
-  t.setSeconds(milliseconds / 1000.0);
-  return t.toISOString().substr(11, 8);
-};
 
 export class PushTracker extends Observable {
   // STATIC:

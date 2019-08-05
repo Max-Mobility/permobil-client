@@ -53,7 +53,7 @@ export class ProfileSettingsComponent implements OnInit {
     Log.D('height action item tap');
     const data = ['Centimeters', 'Feet & inches'];
     this._dialogService
-      .action('Height', data, data.indexOf(this.HEIGHT))
+      .action('Height', data)
       .then(val => (this.HEIGHT = val), err => console.error(err));
   }
 
@@ -61,7 +61,7 @@ export class ProfileSettingsComponent implements OnInit {
     Log.D('Weight action item tap');
     const data = ['Kilograms', 'Pounds'];
     this._dialogService
-      .action('Weight', data, data.indexOf(this.WEIGHT))
+      .action('Weight', data)
       .then(val => (this.WEIGHT = val), err => console.error(err));
   }
 
@@ -69,7 +69,7 @@ export class ProfileSettingsComponent implements OnInit {
     Log.D('Distance action item tap');
     const data = ['Kilometers', 'Miles'];
     this._dialogService
-      .action('Distance', data, data.indexOf(this.DISTANCE))
+      .action('Distance', data)
       .then(val => (this.DISTANCE = val), err => console.error(err));
   }
 

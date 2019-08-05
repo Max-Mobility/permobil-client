@@ -13,8 +13,8 @@ import {
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { User, UserTypes } from '../../models';
-import { LoggingService, ProgressService, UserService } from '../../services';
+import { User } from '../../models';
+import { LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'sign-up',
@@ -33,21 +33,6 @@ export class SignUpComponent implements OnInit {
   languages = new ValueList<string>();
   selectedLanguageIndex = 0;
 
-  usertypes = new ValueList([
-    {
-      value: UserTypes.Clinician,
-      display: this._translateService.instant('sign-up.user-type-clinician')
-    },
-    {
-      value: UserTypes.Representative,
-      display: this._translateService.instant('sign-up.user-type-rep')
-    },
-    {
-      value: UserTypes.EndUser,
-      display: this._translateService.instant('sign-up.user-type-end-user')
-    }
-  ]);
-
   selectedUserTypeIndex = 0;
 
   ok: string = this._translateService.instant('dialogs.ok');
@@ -55,7 +40,6 @@ export class SignUpComponent implements OnInit {
   _isPermobilEmailSigningUp = false;
 
   constructor(
-    private _userService: UserService,
     private _logService: LoggingService,
     private _progressService: ProgressService,
     private _page: Page,
@@ -82,19 +66,6 @@ export class SignUpComponent implements OnInit {
     this._logService.logBreadCrumb(
       SignUpComponent.LOG_TAG + `onLanguageChanged newLanguage: ${newLanguage}`
     );
-  }
-
-  /**
-   * User Type drodown changed
-   * @param args
-   */
-  onUserTypeChanged(args: SelectedIndexChangedEventData) {
-    const type = this.usertypes.getValue(args.newIndex) || 0;
-    this.user.type = type;
-
-    if (this.user.email) {
-      this._isEmailValid(this.user.email);
-    }
   }
 
   async onSubmitTap() {
@@ -126,7 +97,6 @@ export class SignUpComponent implements OnInit {
     this.user.email = this.user.email.trim();
     this.user.password = this.user.password.trim();
     this.user.phone_number = this.user.phone_number.trim();
-    this.user.username = this.user.email.toLowerCase().trim();
 
     // TODO: need to show privacy / user agreement forms here - the
     //       user cannot create the account without reading and
@@ -142,7 +112,7 @@ export class SignUpComponent implements OnInit {
     );
 
     // need to make sure the username is not already taken
-    KinveyUser.exists(this.user.username)
+    KinveyUser.exists(this.user.email)
       .then(async res => {
         this._logService.logBreadCrumb(
           SignUpComponent.LOG_TAG + `KinveyUser.exists() res: ${res}`
@@ -225,21 +195,6 @@ export class SignUpComponent implements OnInit {
         'user.email-error'
       )}`;
       return false;
-    }
-
-    // check if it's a permobil email and set the flag indicating so
-    const emailRegEx = /@permobil.com$/i;
-    const isPermobilEmail = emailRegEx.test(email);
-    if (isPermobilEmail) {
-      // if we have permobil email set true for checking during other events
-      this._isPermobilEmailSigningUp = true;
-    } else {
-      if (this.user.type === UserTypes.Representative) {
-        this.emailError = this._translateService.instant(
-          'sign-up.not-permobil-email-error'
-        );
-        return false;
-      }
     }
 
     this.emailError = '';

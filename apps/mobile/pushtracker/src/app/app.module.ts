@@ -6,6 +6,7 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
+import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
 import { DropDownModule } from 'nativescript-drop-down/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { AppRoutingModule, COMPONENTS } from './app-routing.module';
@@ -31,6 +32,9 @@ export function createTranslateLoader() {
     NativeScriptCommonModule,
     NativeScriptFormsModule,
     NativeScriptUIListViewModule,
+    NativeScriptDateTimePickerModule,
+    // // This will call the install method and inject a global service called BottomSheetService
+    // NativeScriptMaterialBottomSheetModule.forRoot(),
     SharedModule,
     PermobilCoreModule,
     AppRoutingModule,

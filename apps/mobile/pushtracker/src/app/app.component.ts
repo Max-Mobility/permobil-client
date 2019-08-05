@@ -13,7 +13,7 @@ import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
-import { LoggingService, UserService } from './services';
+import { LoggingService } from './services';
 import { enableDarkTheme, enableDefaultTheme } from './utils';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
 
@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
-    private _userService: UserService,
     private _router: RouterExtensions
   ) {
     console.time('AppComponent_Constructor');
@@ -87,7 +86,7 @@ export class AppComponent implements OnInit {
       });
 
     // if user is logged in, go to default tabs route, else go to login
-    if (this._userService.user) {
+    if (Kinvey.User.getActiveUser()) {
       this._router.navigate(['/tabs/default']);
     } else {
       this._router.navigate(['/login']);

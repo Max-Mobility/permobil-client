@@ -1,26 +1,27 @@
 // profile tab layout
-<GridLayout rows="*" columns="*" class="profile-tab-layout">
+<GridLayout rows="*, auto, *" columns="*" class="profile-tab-layout">
   // main profile-tab layout
-  <GridLayout row="0" col="0" rows="auto, *" columns="*">
+  <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, 46, 46">
       <Button row="0" col="2" text="&#xe8fd;" (tap)="onHelpTap()" class="help-btn"></Button>
       <Button row="0" col="3" text="&#xe8b8;" (tap)="onSettingsTap($event)" class="settings-btn"></Button>
     </GridLayout>
-    <ScrollView row="1" col="0" padding="10">
+    <ScrollView row="1" rowSpan="2" col="0" padding="10">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
         // User Avatar
+        // kinvey user.data.profile_picture - check if we have it and use that if not, nothing
         <GridLayout row="1" col="0" rowspan="2" class="avatar-circle">
           <Label text="B" textWrap="true"></Label>
         </GridLayout>
         
         // User Name
-        <Label row="1" col="1" colSpan="3" class="profile-name" [text]="name" textWrap="true"></Label>
+        <Label row="1" col="1" colSpan="3" class="profile-name" [text]="user.data.first_name + ' ' + user.data.last_name" textWrap="true"></Label>
         
         // User Email
-        <Label row="2" col="1" colSpan="3" class="profile-email" [text]="email" textWrap="true"></Label>
+        <Label row="2" col="1" colSpan="3" class="profile-email" [text]="user.email" textWrap="true"></Label>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
@@ -53,10 +54,10 @@
         <StackLayout row="7" col="0" colspan="4" class="hr"></StackLayout>
 
         // Gender Box
-        <StackLayout row="8" col="0" colSpan="2" class="data-box" (tap)="onGenderTap($event)">
+        <StackLayout row="8" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'gender')">
           <Label class="data-box-label" [text]="'general.gender' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_GENDER" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.gender" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -65,7 +66,7 @@
         <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="onBirthDateTap($event)">
           <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_BIRTHDAY | date" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.dob | date" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -74,7 +75,7 @@
         <StackLayout row="9" col="0" colSpan="2" class="data-box" (tap)="onListWeightTap($event)">
           <Label class="data-box-label" [text]="'general.weight' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_WEIGHT" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.weight" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
          </GridLayout>
         </StackLayout>
@@ -83,16 +84,16 @@
         <StackLayout row="9" col="2" colSpan="2" class="data-box" (tap)="onListHeightTap($event)">
           <Label class="data-box-label" [text]="'general.height' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_HEIGHT" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.height" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Chair Info Box
-        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onChairInfoTap($event)">
+        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'chair-info')">
           <Label class="data-box-label" [text]="'profile-tab.chair-info' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="USER_CHAIR_INFO" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.chair_info" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -103,7 +104,7 @@
  <!-- ******************************************************************************************* -->
  <!-- Activity Goals FullScreen Layout -->
   // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #activityGoalsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="activity-goals-dialog">
+  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, auto">
       <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeActivityGoalsDialog()"></Button>
@@ -122,14 +123,14 @@
       </GridLayout>
     </GridLayout>
   </GridLayout>
-</GridLayout>
 
-<!-- ******************************************************************************************* -->
+
+  <!-- ******************************************************************************************* -->
  <!-- Settings FullScreen Layout -->
- // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #settingsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="activity-goals-dialog">
+  // custom full-screen modal for presenting user with config changes UI
+  <GridLayout #settingsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
     // profile settings layout
-    <GridLayout rows="*" columns="*" class="profile-settings-layout"  >
+    <GridLayout rows="*" columns="*" class="profile-settings-layout">
     // main profile-settings layout
       <GridLayout row="0" col="0" rows="auto, *" columns="*">
       // Mock ActionBar
@@ -142,15 +143,15 @@
             <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
               // Units 
               <Label row="0" col="0" class="category" [text] = "'general.units'| translate"></Label>
-              // height
+              // Height
               <StackLayout row="1" col="0" colSpan="2"  (tap)="onHeightTap($event)" >
-            <Label class="section-title" [text] = "'general.height'| translate"></Label>
-            <GridLayout rows="*" columns="*, auto">
-                <Label col="0" class="section-text" [text]="SETTING_HEIGHT" textWrap="true"></Label>
-                <Label col="1" class="open-btn" text="&#xe315;"></Label>
-            </GridLayout>
+                <Label class="section-title" [text] = "'general.height'| translate"></Label>
+                <GridLayout rows="*" columns="*, auto">
+                  <Label col="0" class="section-text" [text]="SETTING_HEIGHT" textWrap="true"></Label>
+                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
+                </GridLayout>
               </StackLayout>
-              // weight
+              // Weight
               <StackLayout row="2" col="0" colSpan="2" (tap)="onWeightTap($event)" >
               <Label class="section-title" [text] = "'general.weight'| translate"></Label>
               <GridLayout rows="*" columns="*, auto">
@@ -210,22 +211,16 @@
           </ScrollView>
       </GridLayout>
     </GridLayout>
-</GridLayout> 
+  </GridLayout> 
+
   <!-- ******************************************************************************************* -->
-  <!-- List Picker FullScreen Layout -->
-  <GridLayout #listPickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
+  <!-- List Picker Layout -->
+  <GridLayout #listPickerDialog row="2" height="300" col="0" rows="auto, *" columns="*" translateY="600" opacity="0" class="profile-settings-layout">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, auto, auto">
       <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
       <Label row="0" col="1" class="title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
     </GridLayout>
-
-      // Mock ActionBar
-        <GridLayout row="0" rows="*" columns="50, *, *">
-        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeSettingsDialog()" ></Button>
-        <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
-        <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
-        </GridLayout>
         
     <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 2, 50, *">
         <ListPicker col="1" [items]="primary" [selectedIndex]="primaryIndex"  class="p-15"></ListPicker>
@@ -235,15 +230,5 @@
     </GridLayout>
  </GridLayout>
 
-  <!-- Date Picker FullScreen Layout -->
-  <GridLayout #datePickerDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="profile-settings-layout">
-    // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, auto, auto,*">
-      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeDatePickerDialog()"></Button>
-      <Label row="0" col="1" class="title" [text]="'general.birthday' | translate" textWrap="true"></Label>
-    </GridLayout>
-    <GridLayout row="1" rows="*, *, *" columns="*, auto, *, *">
-      <DatePicker row="0" col="1" (loaded)="onPickerLoaded($event)" (dateChange)="onDateChanged($event)" verticalAlignment="center"></DatePicker>
-      <Button row="1" col="3" text="Done"  class="close-dialog" (tap)="closeDatePickerDialog()"></Button>
-    </GridLayout>
- </GridLayout>
+</GridLayout>
+

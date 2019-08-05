@@ -7,7 +7,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { PropertyChangeData } from 'tns-core-modules/data/observable';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { LoggingService, ProgressService, UserService } from '../../services';
+import { LoggingService, ProgressService } from '../../services';
 
 @Component({
   selector: 'forgot-password',
@@ -23,7 +23,6 @@ export class ForgotPasswordComponent implements OnInit {
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
     private _progressService: ProgressService,
-    private _userService: UserService,
     private _page: Page,
     private _translateService: TranslateService
   ) {

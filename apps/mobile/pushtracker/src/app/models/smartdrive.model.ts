@@ -1,8 +1,6 @@
-// import { bindingTypeToString, Packet } from '@maxmobility/core';
 import { bindingTypeToString, Packet } from '@permobil/core';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
-// import { BluetoothService } from '@maxmobility/mobile';
 import { BluetoothService } from '../services';
 
 enum OTAState {
@@ -22,12 +20,6 @@ enum OTAState {
   comm_failure = 'ota.sd.state.comm-failure',
   timeout = 'ota.sd.state.timeout'
 }
-
-const timeToString = (milliseconds: number): string => {
-  const t = new Date(null);
-  t.setSeconds(milliseconds / 1000.0);
-  return t.toISOString().substr(11, 8);
-};
 
 export class SmartDrive extends Observable {
   // functions
@@ -684,7 +676,7 @@ export class SmartDrive extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => { });
+                ).catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -701,8 +693,8 @@ export class SmartDrive extends Observable {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                  ? SmartDrive.OTAState.rebooting_mcu
-                  : SmartDrive.OTAState.complete;
+                ? SmartDrive.OTAState.rebooting_mcu
+                : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -752,7 +744,7 @@ export class SmartDrive extends Observable {
                   .then(() => {
                     this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -813,7 +805,7 @@ export class SmartDrive extends Observable {
                   .then(() => {
                     this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -836,7 +828,7 @@ export class SmartDrive extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => { });
+                ).catch(() => {});
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -1067,13 +1059,12 @@ export class SmartDrive extends Observable {
     if (this.connected && this.ableToSend && this.notifying) {
       // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
       const data = Uint8Array.from([0x03]); // this is the OTA stop command
-      const writePromise = this._bluetoothService
-        .write({
-          peripheralUUID: this.address,
-          serviceUUID: SmartDrive.ServiceUUID,
-          characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
-          value: data
-        });
+      const writePromise = this._bluetoothService.write({
+        peripheralUUID: this.address,
+        serviceUUID: SmartDrive.ServiceUUID,
+        characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
+        value: data
+      });
       promises.push(writePromise);
     }
     return Promise.all(promises)
@@ -1098,7 +1089,7 @@ export class SmartDrive extends Observable {
       .then(() => {
         this.sendEvent(SmartDrive.smartdrive_connect_event);
       })
-      .catch(err => { });
+      .catch(err => {});
   }
 
   handleDisconnect() {

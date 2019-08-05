@@ -9,6 +9,7 @@
     @extend .MOCK_ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
   }
+
   .help-btn {
     @extend .MOCK_ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
@@ -72,14 +73,6 @@
 
     GridLayout {
       border-color: #1c72e6;
-
-      > .data-box-value {
-        color: #1c72e6;
-      }
-
-      > .data-box-arrow {
-        color: #1c72e6;
-      }
     }
   }
 
