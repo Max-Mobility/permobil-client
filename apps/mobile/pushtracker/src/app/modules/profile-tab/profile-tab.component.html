@@ -219,19 +219,11 @@
       <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
       <Label row="0" col="1" class="title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
     </GridLayout>
-
-      // Mock ActionBar
-        <GridLayout row="0" rows="*" columns="50, *, *">
-        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeSettingsDialog()" ></Button>
-        <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
-        <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
-        </GridLayout>
-        
     <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 2, 50, *">
-        <ListPicker col="1" [items]="primary" [selectedIndex]="primaryIndex"  class="p-15"></ListPicker>
-        <Label col="2" text=""></Label>
-        <ListPicker col="3" [items]="secondary" [selectedIndex]="secondaryIndex" class="p-15"></ListPicker>
-        <Button row="1" col="5" text="Done"  class="close-dialog" (tap)="closeListPickerDialog()"></Button>
+      <ListPicker col="1" [items]="primary" [selectedIndex]="primaryIndex"  class="p-15"></ListPicker>
+      <Label col="2" text=""></Label>
+      <ListPicker col="3" [items]="secondary" [selectedIndex]="secondaryIndex" class="p-15"></ListPicker>
+      <Button row="1" col="5" text="Done"  class="close-dialog" (tap)="closeListPickerDialog()"></Button>
     </GridLayout>
  </GridLayout>
 

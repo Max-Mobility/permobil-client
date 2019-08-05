@@ -398,6 +398,7 @@ export class ProfileTabComponent implements OnInit {
   async closeListPickerDialog() {
     const cfl = this.listPickerDialog.nativeElement as GridLayout;
     this.animateDialog(cfl, 0, 900);
+    this._removeActiveDataBox();
   }
 
   onBirthDateTap(args: EventData) {
@@ -410,6 +411,7 @@ export class ProfileTabComponent implements OnInit {
   async closeDatePickerDialog() {
     const cfl = this.datePickerDialog.nativeElement as GridLayout;
     this.animateDialog(cfl, 0, 900);
+    this._removeActiveDataBox();
   }
 
   animateDialog(args, x: number, y: number) {
