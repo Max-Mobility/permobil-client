@@ -8,6 +8,13 @@
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
     "watch-serial-number": "Smartwatch Serial Number"
   },
+  "app-connection": {
+    "completed": "Connected successfully to PushTracker account.",
+    "connecting": "Connecting to PushTracker Mobile App...",
+    "identifier": "Smartwatch Name",
+    "preface": "Connecting to PushTracker account...",
+    "receiving": "Receiving account information..."
+  },
   "buttons": {
     "allow": "Allow",
     "back": "Back",
@@ -42,9 +49,9 @@
   },
   "failures": {
     "app-connection": {
-      "credentials": "Not authorized to connect to PushTracker account.",
-      "logout": "User has been logged out, please re-connect to PushTracker Mobile app.",
-      "timeout": "App connection timeout."
+      "credentials": "Failed to connect PushTracker account.",
+      "logout": "Account has been logged out. Reconnection to PushTracker Mobile app required.",
+      "timeout": "App connection has timed out."
     },
     "connect": "Could not connect to SmartDrive.",
     "getting-error": "Failed getting SmartDrive error.",
@@ -143,17 +150,10 @@
       }
     }
   },
-  "app-connection": {
-    "preface": "Linking your SmartDrive MX2+ to your PushTracker account...",
-    "identifier": "Device Identifier",
-    "connecting": "Connecting to PushTracker Mobile App...",
-    "receiving": "Receiving account information...",
-    "completed": "Successfully linked to PushTracker account."
-  },
   "settings": {
     "acceleration": "Acceleration",
+    "connect-pushtracker": "Connect PushTracker Mobile App",
     "control-mode": "Control Mode",
-    "connect-pushtracker": "Connect to PushTracker Mobile App",
     "description": {
       "acceleration": "The acceleration or speed ramp rate of the SmartDrive.",
       "controlmode": "MX2+: The default, gesture based operation of the SmartDrive. In MX2+ Control Mode, a double tap will start driving the motor by ramping up its speed, a single tap will coast at the current speed, and a double tap will deactivate the driving.\n\nMX2: In MX2 Control Mode, the SmartDrive will start driving when it senses your push, and will deactivate driving when you tap. Please note this is a legacy-support option.\n\nMX1: In MX1 Control Mode, the SmartDrive will start driving when it senses your push, and will stop driving when you tap or when you brake on the handrims. Please note this is a legacy-support option.",
