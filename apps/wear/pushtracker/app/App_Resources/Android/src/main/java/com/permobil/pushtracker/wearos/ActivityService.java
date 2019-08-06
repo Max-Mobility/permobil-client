@@ -2,7 +2,6 @@ package com.permobil.pushtracker.wearos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -173,33 +172,30 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   public int onStartCommand(Intent intent, int flags, int startId) {
     Log.d(TAG, "onStartCommand()");
     Log.d(TAG, "isServiceRunning: " + isServiceRunning);
-    if (intent != null) {
+    if (!isServiceRunning) {
+      // Set the user in the current context.
+      // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
       Log.d(TAG, "[intent - flags - startId]: " + intent + " - " + flags + " - " + startId);
-      if (!isServiceRunning) {
-        // Set the user in the current context.
-        // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
+      if (intent != null &&
+          Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
+        startServiceWithNotification();
 
-        if (intent != null &&
-            Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
-          startServiceWithNotification();
+        // register time receiver
+        Log.d(TAG, "registering time receiver");
+        IntentFilter timeFilter = new IntentFilter();
+        timeFilter.addAction(Intent.ACTION_TIME_TICK);
+        timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        this.registerReceiver(this.timeReceiver, timeFilter);
 
-          // register time receiver
-          Log.d(TAG, "registering time receiver");
-          IntentFilter timeFilter = new IntentFilter();
-          timeFilter.addAction(Intent.ACTION_TIME_TICK);
-          timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-          this.registerReceiver(this.timeReceiver, timeFilter);
+        Log.d(TAG, "starting service!");
 
-          Log.d(TAG, "starting service!");
-
-          this.initSensors();
-          int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-          // register the body sensor so we get events when the user
-          // wears the watch and takes it off
-          this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-        } else {
-          stopMyService();
-        }
+        this.initSensors();
+        int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+        // register the body sensor so we get events when the user
+        // wears the watch and takes it off
+        this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+      } else {
+        stopMyService();
       }
     }
 
@@ -299,13 +295,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
       // remove sensor listeners
       unregisterDeviceSensors();
-      /*
-      // cancel the alarm
-      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
-      scheduler.cancel(scheduledIntent);
-      scheduledIntent.cancel();
-      */
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -541,16 +530,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // You can also include some extra data.
     intent.putExtra(extraKey, msg);
     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-  }
-
-  private PendingIntent getAlarmIntent(int intentFlag) {
-    Intent i = new Intent(getApplicationContext(), ActivityService.class);
-    i.setAction(Constants.ACTION_START_SERVICE);
-    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
-                                                             0,
-                                                             i,
-                                                             intentFlag);
-    return scheduledIntent;
   }
 
   private void startServiceWithNotification() {
