@@ -1936,7 +1936,7 @@ export class MainViewModel extends Observable {
   }
 
   toggleDisplay() {
-    this.displayRssi = !this.displayRssi;
+    //this.displayRssi = !this.displayRssi;
   }
 
   updateSpeedDisplay() {
