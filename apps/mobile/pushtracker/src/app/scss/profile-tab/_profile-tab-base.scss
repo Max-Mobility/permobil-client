@@ -164,4 +164,33 @@
       }
     }
   }
+
+  .LIST_PICKER_DIALOG_BASE {
+    height: 100%;
+
+    > StackLayout {
+      border-radius: 4;
+
+      .picker-title {
+        font-size: 20;
+      }
+
+      .close-btn {
+        @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+        color: #3b3f42;
+      }
+
+      .cancel-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+        text-align: right;
+      }
+
+      .ok-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+        text-align: right;
+      }
+    }
+  }
 }

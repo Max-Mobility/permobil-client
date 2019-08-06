@@ -11,5 +11,4 @@ src/assets/*.*
 **/apps/nativescript-*/app/assets/*.min.css
 **/apps/nativescript-*/app/assets/lottie/*.json
 **/package-lock.json
-**/apps/**/*.component.html
 **/apps/**/*.xml

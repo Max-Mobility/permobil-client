@@ -1,18 +1,19 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import { RouterExtensions } from 'nativescript-angular/router';
 import { DateTimePicker } from 'nativescript-datetimepicker';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { screen } from 'tns-core-modules/platform/platform';
+import { View } from 'tns-core-modules/ui/core/view';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
-import { PtMobileUserData } from '~/app/models';
 import { STORAGE_KEYS } from '../../enums';
+import { PtMobileUserData } from '../../models';
 // import { PtMobileUser } from '../../models';
 import { DialogService, LoggingService } from '../../services';
 
@@ -24,9 +25,6 @@ import { DialogService, LoggingService } from '../../services';
 export class ProfileTabComponent implements OnInit {
   @ViewChild('activityGoalsDialog', { static: false })
   activityGoalsDialog: ElementRef;
-
-  @ViewChild('settingsDialog', { static: false })
-  settingsDialog: ElementRef;
 
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
@@ -84,12 +82,11 @@ export class ProfileTabComponent implements OnInit {
   screenHeight: number;
 
   constructor(
+    private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _dialogService: DialogService,
-    private _page: Page,
-    private _modalService: ModalDialogService,
-    private _vcRef: ViewContainerRef
+    private _page: Page
   ) {
     // appSettings.clear();
     this._page.actionBarHidden = true;
@@ -157,14 +154,14 @@ export class ProfileTabComponent implements OnInit {
     );
 
     const x = this.activityGoalsDialog.nativeElement as GridLayout;
-    this.animateDialog(x, 0, 0);
+    this._animateDialog(x, 0, 0);
   }
 
   async closeActivityGoalsDialog() {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    this.animateDialog(cfl, 0, 900);
+    this._animateDialog(cfl, 0, 900);
   }
 
   incrementConfigValue() {
@@ -204,9 +201,9 @@ export class ProfileTabComponent implements OnInit {
   }
 
   async onSettingsTap(args) {
-    Log.D('user tapped settings');
-    // const cfl = this.settingsDialog.nativeElement as GridLayout;
-    // this.animateDialog(cfl, 0, 0);
+    Log.D('User tapped settings');
+
+    this._routerExtensions.navigate(['/profile-settings'], {});
 
     // this._modalService
     //   .showModal(ProfileSettingsComponent, {
@@ -217,11 +214,6 @@ export class ProfileTabComponent implements OnInit {
     //   .catch(err => {
     //     this._logService.logException(err);
     //   });
-  }
-
-  async closeSettingsDialog() {
-    const cfl = this.settingsDialog.nativeElement as GridLayout;
-    this.animateDialog(cfl, 0, 900);
   }
 
   onDataBoxTap(args: EventData, key: string) {
@@ -252,6 +244,33 @@ export class ProfileTabComponent implements OnInit {
             (this.user.data as PtMobileUserData).chair_info = val;
             this._logService.logBreadCrumb(`User set chair-info: ${val}`);
           }
+        }
+      })
+      .catch(err => {
+        this._removeActiveDataBox();
+        this._logService.logException(err);
+      });
+  }
+
+  onBirthDateTap(args: EventData) {
+    this._setActiveDataBox(args);
+
+    DateTimePicker.pickDate({
+      context: (args.object as StackLayout)._context,
+      date: subYears(new Date(), 18),
+      minDate: subYears(new Date(), 110),
+      maxDate: new Date(),
+      title: this._translateService.instant('general.birthday'),
+      okButtonText: this._translateService.instant('general.ok'),
+      cancelButtonText: this._translateService.instant('general.cancel')
+    })
+      .then(result => {
+        this._removeActiveDataBox();
+        if (result) {
+          this._logService.logBreadCrumb(
+            `User changed birthday: ${result.toDateString()}`
+          );
+          (this.user.data as any).dob = result;
         }
       })
       .catch(err => {
@@ -334,7 +353,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListWeightTap(args: EventData) {
-    Log.D('on list weight');
+    Log.D('User tapped Weight data box');
     this._setActiveDataBox(args);
 
     if (this.SETTING_WEIGHT === 'Kilograms') {
@@ -344,70 +363,63 @@ export class ProfileTabComponent implements OnInit {
       this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
       this.secondary = Array.from({ length: 9 }, (v, k) => '.' + (k + 1));
     }
+
     this.isWeight = true;
-    this.listPicker();
+    this._openListPickerDialog();
   }
 
   onListHeightTap(args: EventData) {
-    Log.D('on list Height');
+    Log.D('User tapped Height data box');
     this._setActiveDataBox(args);
 
-    console.log(this.SETTING_HEIGHT);
     if (this.SETTING_HEIGHT === 'Centimeters') {
       this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
     } else {
       this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
       this.secondary = Array.from({ length: 11 }, (v, k) => k + 1 + ' in');
     }
+
     this.isWeight = false;
-
-    this.listPicker();
-  }
-
-  listPicker() {
-    Log.D('user tapped settings');
-    const x = this.listPickerDialog.nativeElement as GridLayout;
-    this.animateDialog(x, 0, 0);
+    this._openListPickerDialog();
   }
 
   async closeListPickerDialog() {
-    const cfl = this.listPickerDialog.nativeElement as GridLayout;
-    this.animateDialog(cfl, 0, 900);
+    const x = this.listPickerDialog.nativeElement as GridLayout;
+    x.animate({
+      opacity: 0,
+      duration: 200
+    }).then(() => {
+      x.animate({
+        translate: {
+          x: 0,
+          y: this.screenHeight
+        }
+      });
+    });
     this._removeActiveDataBox();
   }
 
-  onBirthDateTap(args: EventData) {
-    this._setActiveDataBox(args);
-
-    DateTimePicker.pickDate({
-      context: (args.object as StackLayout)._context,
-      date: subYears(new Date(), 18),
-      minDate: subYears(new Date(), 110),
-      maxDate: new Date(),
-      title: this._translateService.instant('general.birthday'),
-      okButtonText: this._translateService.instant('general.ok'),
-      cancelButtonText: this._translateService.instant('general.cancel')
-    })
-      .then(result => {
-        this._removeActiveDataBox();
-        if (result) {
-          this._logService.logBreadCrumb(
-            `User changed birthday: ${result.toDateString()}`
-          );
-          (this.user.data as any).dob = result;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
+  private _openListPickerDialog() {
+    const x = this.listPickerDialog.nativeElement as GridLayout;
+    x.animate({
+      translate: {
+        x: 0,
+        y: 0
+      },
+      duration: 0
+    }).then(() => {
+      x.animate({
+        opacity: 1,
+        duration: 200
       });
+    });
   }
 
-  animateDialog(args, x: number, y: number) {
-    const cfl = <GridLayout>args;
-    cfl
+  private _animateDialog(args, x: number, y: number) {
+    const layout = args as View;
+    layout
       .animate({
-        duration: 400,
+        duration: 300,
         opacity: 1,
         curve: AnimationCurve.easeIn,
         translate: {

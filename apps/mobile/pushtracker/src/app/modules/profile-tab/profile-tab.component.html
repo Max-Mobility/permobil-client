@@ -124,109 +124,24 @@
     </GridLayout>
   </GridLayout>
 
-
-  <!-- ******************************************************************************************* -->
- <!-- Settings FullScreen Layout -->
-  // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #settingsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
-    // profile settings layout
-    <GridLayout rows="*" columns="*" class="profile-settings-layout">
-    // main profile-settings layout
-      <GridLayout row="0" col="0" rows="auto, *" columns="*">
-      // Mock ActionBar
-        <GridLayout row="0" rows="*" columns="50, *, *">
-        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeSettingsDialog()"></Button>
-        <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
-        <Label row="0" col="2" text="&#xe5d4;" class="more-icon"></Label>
-        </GridLayout>
-          <ScrollView row="1" height="100%">
-            <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
-              // Units 
-              <Label row="0" col="0" class="category" [text] = "'general.units'| translate"></Label>
-              // Height
-              <StackLayout row="1" col="0" colSpan="2"  (tap)="onHeightTap($event)" >
-                <Label class="section-title" [text] = "'general.height'| translate"></Label>
-                <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_HEIGHT" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-                </GridLayout>
-              </StackLayout>
-              // Weight
-              <StackLayout row="2" col="0" colSpan="2" (tap)="onWeightTap($event)" >
-              <Label class="section-title" [text] = "'general.weight'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_WEIGHT" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-              </GridLayout>
-              </StackLayout>
-          // Distance 
-          <StackLayout row="3" col="0" colSpan="2" (tap)="onDistanceTap($event)" >
-              <Label class="section-title" [text] = "'general.distance'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_DISTANCE" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-              </GridLayout>
-          </StackLayout>
-
-          <Label row="4" col="0" class="hr-light"></Label>
-          
-          // Smart Drive
-          <Label row="5" col="0" class="category" [text] = "'general.smartdrive'| translate"></Label>
-
-          // Max Speed
-          <StackLayout row="6" col="0" colSpan="2" (tap)="onMaxSpeedTap($event)" >
-              <Label class="section-title" [text] = "'general.max-speed'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_MAX_SPEED" textWrap="true"></Label>
-                  <Label col="1" class="open-btn"  text="&#xe315;"></Label>
-              </GridLayout>
-          </StackLayout>
-
-          // Acceleration
-          <StackLayout row="7" col="0" colSpan="2" (tap)="onAccelerationTap($event)" >
-              <Label class="section-title" [text] = "'general.acceleration'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_ACCELERATION" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-              </GridLayout>
-          </StackLayout>
-
-          // Tap sensitivity
-          <StackLayout row="8" col="0" colSpan="2" (tap)="onTapSensitivityTap($event)" >
-              <Label class="section-title" [text] = "'general.tap-sensitivity'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_TAP_SENSITIVITY" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-              </GridLayout>
-          </StackLayout>
-          // Mode
-          <StackLayout row="9" col="0" colSpan="2" (tap)="onModeTap($event)" >
-              <Label class="section-title" [text] = "'general.mode'| translate"></Label>
-              <GridLayout rows="*" columns="*, auto">
-                  <Label col="0" class="section-text" [text]="SETTING_MODE" textWrap="true"></Label>
-                  <Label col="1" class="open-btn" text="&#xe315;"></Label>
-              </GridLayout>
-          </StackLayout>
-            </GridLayout> 
-          </ScrollView>
-      </GridLayout>
-    </GridLayout>
-  </GridLayout> 
-
   <!-- ******************************************************************************************* -->
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="2" height="300" col="0" rows="auto, *" columns="*" translateY="600" opacity="0" class="profile-settings-layout">
-    // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, auto, auto">
-      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
-      <Label row="0" col="1" class="title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
-    </GridLayout>
-    <GridLayout row="1" rows="auto, auto, *" columns="*, 50, 2, 50, *">
-      <ListPicker col="1" [items]="primary" [selectedIndex]="primaryIndex"  class="p-15"></ListPicker>
-      <Label col="2" text=""></Label>
-      <ListPicker col="3" [items]="secondary" [selectedIndex]="secondaryIndex" class="p-15"></ListPicker>
-      <Button row="1" col="5" text="Done"  class="close-dialog" (tap)="closeListPickerDialog()"></Button>
-    </GridLayout>
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
+    <StackLayout row="1">
+        // Mock ActionBar
+        <GridLayout  rows="*" columns="50, auto, auto">
+          <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
+          <Label row="0" col="1" class="picker-title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
+        </GridLayout>
+        <GridLayout row="1" rows="auto, *, auto" columns="auto, *, auto">
+          <StackLayout row="1" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
+              <ListPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-5"></ListPicker>
+              <ListPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-5"></ListPicker>
+          </StackLayout>
+          <Button row="2" col="1" [text]="'general.cancel' | translate"  class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+          <Button row="2" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="closeListPickerDialog()"></Button>
+        </GridLayout>
+    </StackLayout>
  </GridLayout>
 
 </GridLayout>
