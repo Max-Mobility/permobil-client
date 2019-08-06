@@ -946,6 +946,15 @@ export class MainViewModel extends Observable {
     );
   }
 
+  onNewDay() {
+    // it's a new day, reset smartdrive battery to 0
+    this.smartDrive.battery = 0;
+    // update displayed battery percentage
+    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+    // and save it
+    this.saveSmartDriveStateToLS();
+  }
+
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
@@ -954,6 +963,7 @@ export class MainViewModel extends Observable {
       Log.D('timeReceiverCallback', this.currentTime);
       // update charts if date has changed
       if (!isSameDay(new Date(), this._lastChartDay)) {
+        this.onNewDay();
         this.updateChartData();
       }
     };
