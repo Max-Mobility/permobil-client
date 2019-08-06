@@ -123,3 +123,6 @@ apps/**/report/
 !@permobil/core/src/packet/packet_bindings.js
 !**/webpack.config.js
 !**/android-release.js
+
+# VS Code workspace
+.code-workspace
