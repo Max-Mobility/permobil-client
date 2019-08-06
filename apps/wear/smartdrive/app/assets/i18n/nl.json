@@ -1,52 +1,58 @@
 {
   "about": {
     "database": "Database-ID",
-    "sd-ble-version": "SmartDrive BLE-versie",
-    "sd-mcu-version": "SmartDrive MCU-versie",
+    "sd-ble-version": "SmartDrive Bluetooth (BT) -versie",
+    "sd-mcu-version": "SmartDrive MCU (SD) -versie",
     "sd-serial-number": "SmartDrive-serienummer",
-    "title": "Informatie",
-    "version": "App versie",
-    "watch-serial-number": "TicWatch-serienummer"
+    "title": "Over informatie",
+    "version": "SmartDrive MX2 Wear OS App (SW) -versie",
+    "watch-serial-number": "Serienummer van Smartwatch"
   },
   "buttons": {
+    "allow": "Toestaan",
     "back": "terug",
+    "cancel": "annuleren",
+    "deny": "Ontkennen",
+    "disable": "onbruikbaar maken",
     "dismiss": "ontslaan",
+    "enable": "in staat stellen",
     "ok": "OK"
   },
   "charts": {
     "battery": {
-      "title": "Dagelijks gebruik van de SmartDrive-batterij (%)"
+      "title": "SmartDrive Batterij dagelijks gebruik (%)"
     },
     "distance": {
-      "title": "Dagelijkse afstand SmartDrive-afstand"
+      "title": "SmartDrive Dagelijks afgelegde afstand"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "SD Batterij Voltage",
-      "bledisconnect": "Bluetooth Verbinding verbreken",
-      "gyrorange": "SD-Gyrobereik",
-      "motorphases": "SD-motorfasen",
-      "otaunavailable": "Updates niet beschikbaar",
-      "overcurrent": "SD Overstroom",
-      "overtemperature": "SD Overtemperatuur"
+      "batteryvoltage": "[ERR: 001] SD-batterijspanning",
+      "bledisconnect": "[ERR: 007] Bluetooth verbreken",
+      "gyrorange": "[ERR: 005] SD-hoek",
+      "motorphases": "[ERR: 002] SD-motor",
+      "otaunavailable": "[ERR: 006] Updates niet beschikbaar",
+      "overcurrent": "[ERR: 003] SD huidige piek",
+      "overtemperature": "[ERR: 004] SD-oververhitting"
     },
     "loading": "Bezig met laden...",
-    "no-errors": "Er zijn geen SmartDrive-fouten ontvangen of vastgelegd.",
+    "no-errors": "Er zijn geen SmartDrive-fouten geregistreerd of ontvangen.",
     "title": "SmartDrive-foutgeschiedenis"
   },
   "failures": {
-    "connect": "Kon geen verbinding maken met",
-    "getting-error": "Mislukt het krijgen van SmartDrive-fout",
-    "must-wear-watch": "U moet het apparaat dragen om uw SmartDrive te bedienen.",
-    "no-smartdrive-paired": "Geen SmartDrive gekoppeld aan de app!",
+    "connect": "Kan geen verbinding maken met SmartDrive.",
+    "getting-error": "Kan de SmartDrive-fout niet krijgen.",
+    "must-wear-watch": "[Check for Wrist] Instelling is ingeschakeld, daarom moet de smartwatch worden gedragen om uw SmartDrive te bedienen.",
+    "no-smartdrive-paired": "Geen SmartDrive gekoppeld.",
     "no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
-    "permissions": "Vereiste rechten werden niet verleend!",
-    "saving-error": "Mislukt het opslaan van de SmartDrive-fout",
-    "saving-usage": "Mislukt het gebruik te besparen",
-    "scan": "Kon niet scannen",
-    "send-settings": "Instellingen naar verzenden mislukt",
-    "title": ""
+    "permissions": "Kan de gevraagde actie niet uitvoeren. Vereiste rechten zijn niet verleend.",
+    "saving-error": "Opslaan van SmartDrive-fout mislukt.",
+    "saving-usage": "Opslaan van gebruik mislukt.",
+    "scan": "Kon niet scannen.",
+    "send-settings": "Verzenden van instellingen naar SmartDrive is mislukt.",
+    "title": "Merk op",
+    "too-many-smartdrives-found": "Meerdere SmartDrives gevonden. Zorg ervoor dat er slechts één SmartDrive in de buurt is tijdens het koppelen."
   },
   "languages": {
     "da": "Deens",
@@ -57,17 +63,17 @@
     "it": "Italiaans",
     "ja": "Japans",
     "ko": "Koreaans",
-    "nb": "Noors (Bokmål)",
+    "nb": "Noors [Bokmål]",
     "nl": "Nederlands",
-    "nn": "Noors (Nynorsk)",
-    "zh": "Chinese"
+    "nn": "Noors [Nynorsk]",
+    "zh": "Chinese traditionele]"
   },
   "menu": {
     "about": "Wat betreft",
     "settings": "instellingen",
-    "title": "Menu",
-    "training": "Opleiding",
-    "updates": "updates"
+    "title": "SmartDrive MX2-menu",
+    "training": "Tik op Training",
+    "updates": "Draadloze updates"
   },
   "ota": {
     "action": {
@@ -80,39 +86,39 @@
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "Wachten op BLE",
+        "awaiting-ble-ready": "Wachten op BT",
         "awaiting-connection": "Wachten op verbinding",
-        "awaiting-mcu-ready": "Wachten op MCU",
-        "awaiting-versions": "In afwachting van versies",
+        "awaiting-mcu-ready": "Wachten op SD",
+        "awaiting-versions": "Wachten op versies",
         "canceled": "geannuleerd",
         "canceling": "annuleren",
-        "comm-failure": "Communicatiefout, start uw SmartDrive opnieuw op",
+        "comm-failure": "Communicatiefout - SmartDrive opnieuw opstarten vereist",
         "complete": "Compleet",
         "failed": "mislukt",
         "not-started": "Niet begonnen",
-        "rebooting-ble": "BLE opnieuw opstarten",
-        "rebooting-mcu": "MCU herstarten",
+        "rebooting-ble": "BT opnieuw opstarten",
+        "rebooting-mcu": "SD opnieuw opstarten",
         "timeout": "Time-out",
-        "updating-ble": "BLE updaten",
-        "updating-mcu": "MCU bijwerken",
+        "updating-ble": "BT bijwerken",
+        "updating-mcu": "SD bijwerken",
         "verifying": "Het verifiëren"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "Om uw SmartDrive met bluetooth te kunnen bedienen, hebben we de toestemming ACCESS_COARSE_LOCATION nodig.",
-    "phone-state": "Om het serienummer van uw apparaat te lezen (voor garantie / ondersteuningsdoelen) hebben we de machtiging READ_PHONE_STATE nodig."
+    "coarse-location": "Om uw SmartDrive via Bluetooth te bedienen, moet u de locatietoestemming [ACCESS_COARSE_LOCATION] op het volgende scherm toestaan. Met deze toestemming heeft Permobil geen toegang tot uw locatiegegevens.",
+    "phone-state": "OPTIONEEL: om toegang te krijgen tot uw smartwatch-serienummer, wat handig kan zijn voor ondersteuning en garantiedoeleinden, hebben we u de telefoonmachtiging [READ_PHONE_STATE] op een van de volgende schermen nodig. Met deze toestemming krijgt Permobil geen toegang tot uw telefoonnummer, mobiele netwerkinformatie of andere gegevens behalve het serienummer van de smartwatch."
   },
   "permissions-request": {
-    "title": "Verzoek om toestemming"
+    "title": "Toestemmingen kennisgeving"
   },
   "power-assist": {
-    "activate": "Activeer de Power Assist",
-    "deactivate": "Deactiveer Power Assist",
+    "activate": "Beurt\nPower Assist\nOp",
+    "deactivate": "Beurt\nPower Assist\nUit",
     "estimated-range": "Geschat bereik",
-    "exit-training": "Verlaat de trainingsmodus",
-    "speed": "Snelheid",
-    "stop": "Hou op"
+    "exit-training": "Training verlaten",
+    "speed": "Huidige snelheid",
+    "stop": "Rijden deactiveren"
   },
   "sd": {
     "settings": {
@@ -121,13 +127,13 @@
         "enabled": "Ingeschakeld"
       },
       "units": {
-        "english": "Engels",
+        "english": "keizerlijk",
         "metric": "Metriek"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "vergrendelend",
+        "latching": "Vergrendeld",
         "momentary": "kortstondig"
       }
     }
@@ -136,29 +142,29 @@
     "acceleration": "Versnelling",
     "control-mode": "Besturingsmodus",
     "description": {
-      "acceleration": "De versnelling van uw SmartDrive.",
-      "controlmode": "MX2: de standaard, op bewegingen gebaseerde besturingsmodus voor de SmartDrive.\n\nMX2: in deze modus zal de SmartDrive gaan rijden wanneer hij uw duw voelt, en zal stoppen met rijden wanneer u op de polsband tikt. Opmerking: dit is een oudere ondersteuningsmodus.\n\nMX1: in deze modus zal de SmartDrive beginnen rijden wanneer hij uw duw voelt, en zal stoppen met rijden wanneer u op de polsband tikt of wanneer u remt op de hoepels. Opmerking: dit is een oudere ondersteuningsmodus.",
-      "maxspeed": "De maximale snelheid waarmee uw SmartDrive kan rijden wanneer deze wordt bediend vanuit uw PushTracker.",
-      "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding met een extern apparaat tot stand wordt gebracht of wanneer de schakelbediening uit de standby-modus wordt gehaald.",
-      "switchcontrolmode": "Kortstondig: de standaard Switch Control-modus waarin de SmartDrive zal rijden en oploopt naar de geconfigureerde maximum snelheid van de schakelaarregeling zolang een van de Switch Control-knoppen wordt vastgehouden. Wanneer beide knoppen worden ingedrukt of wanneer de knop wordt losgelaten, wordt de motor uitgeschakeld.\n\nVergrendeling: in de Switch Control-modus zal de SmartDrive rijden en oplopen tot de geconfigureerde maximum snelheid van de schakelaarregeling terwijl een van de Switch Control-knoppen wordt vastgehouden. Wanneer de knop wordt losgelaten, blijft de SmartDrive rijden - op de huidige snelheid wanneer de knop werd losgelaten. Wanneer beide knoppen worden ingedrukt of wanneer de knop opnieuw wordt ingedrukt, wordt de motor uitgeschakeld.",
-      "switchcontrolspeed": "De maximale snelheid waarmee u SmartDrive kunt besturen wanneer deze wordt bediend via de bedieningsknoppen van de schakelaar.",
-      "tapsensitivity": "Bepaalt de gevoeligheid van het tikgebaar dat wordt gebruikt voor het activeren en deactiveren van de SmartDrive. 100% is het gevoeligst en daarom het gemakkelijkst te tikken. 10% is het minst gevoelig en daarom het moeilijkst te gebruiken.",
-      "units": "Selecteer welk eenheidssysteem / meeteenheden u wilt gebruiken om het bereik en de snelheid weer te geven in de gebruikersinterface.",
-      "wearcheck": "Wanneer ingeschakeld, wordt afgedwongen dat het horloge op de pols van de gebruiker moet zijn om de hulp te activeren. Als ondersteuning is ingeschakeld en het horloge voelt dat het niet langer om de pols van de gebruiker ligt, wordt de ondersteuning automatisch gedeactiveerd."
+      "acceleration": "De versnelling of snelheid van de SmartDrive.",
+      "controlmode": "MX2: de standaard, op gebaren gebaseerde bewerking van de SmartDrive. In de MX2-besturingsmodus zal een dubbele tik de motor aansturen door de snelheid te verhogen, een enkele tik zal uitlopen op de huidige snelheid en een dubbele tik deactiveert het rijden.\n\nMX2: in de MX2-besturingsmodus begint de SmartDrive te rijden wanneer hij uw duw voelt en wordt het rijden gedeactiveerd wanneer u tikt. Let op: dit is een legacy-ondersteuningsoptie.\n\nMX1: In de MX1-bedieningsmodus begint de SmartDrive te rijden wanneer hij uw duw voelt en stopt hij met rijden wanneer u tikt of wanneer u op de hoepels remt. Let op: dit is een legacy-ondersteuningsoptie.",
+      "maxspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bestuurd door uw smartwatch.",
+      "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer Switch Control uit de stand-bystatus wordt gehaald.",
+      "switchcontrolmode": "Kortstondig: de standaard schakelaarbesturingsmodus waarin de SmartDrive de motor begint te besturen door de snelheid te verhogen naar de geconfigureerde schakelaarbesturingsmax. Snelheid alleen terwijl een van de schakelaarbesturingsknoppen wordt ingedrukt. Wanneer de vastgehouden knop wordt losgelaten of beide knoppen [indien aanwezig] worden ingedrukt, wordt het rijden gedeactiveerd. Houd er rekening mee dat het apparaat bij deactivering niet in de stand-bymodus wordt gezet.\n\nVergrendeld: In de vergrendelde schakelaarbesturingsmodus zal de SmartDrive de motor aansturen door de snelheid op te voeren naar de geconfigureerde schakelaarbesturingsmax. Snelheid terwijl een van de schakelaarbesturingsknoppen wordt ingedrukt. Wanneer de vastgehouden knop wordt losgelaten, blijft de SmartDrive rijden / uitrijden met de huidige snelheid toen de knop werd losgelaten. Wanneer een van de knoppen wordt ingedrukt en weer wordt losgelaten, of beide knoppen [indien aanwezig] worden ingedrukt, wordt het rijden gedeactiveerd. Houd er rekening mee dat het apparaat bij deactivering niet in de stand-bymodus wordt gezet.",
+      "switchcontrolspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bediend door schakelaarbesturing.",
+      "tapsensitivity": "De gevoeligheid van het tikgebaar dat wordt gebruikt voor het activeren en deactiveren van het rijden. Hoe lager het percentage, hoe moeilijker je moet tikken - 100% is het meest gevoelig en daarom het gemakkelijkst om te tikken, en 10% is het minst gevoelig en daarom het moeilijkst om te tikken.",
+      "units": "Het eenhedensysteem of maateenheden om de snelheid en afstanden binnen de gebruikersinterfaces weer te geven. Selecteer Imperiaal [mi en mph] of Metrisch [km en km / h].",
+      "wearcheck": "Indien ingeschakeld, moet de smartwatch om de pols zijn om de stuurbekrachtiging in te schakelen. Als de stuurbekrachtiging AAN staat en de smartwatch voelt dat hij niet meer om de pols zit, schakelt hij de bekrachtiging automatisch UIT."
     },
     "error-history": "Foutgeschiedenis",
     "information": "Informatie",
     "max-speed": "Maximale snelheid",
     "pair-smartdrive": "Koppel SmartDrive",
-    "paired-to-smartdrive": "Gekoppeld aan SmartDrive",
-    "power-assist-buzzer": "Power Assist Buzzer",
-    "scanning": "het scannen",
+    "paired-to-smartdrive": "Met succes gekoppeld aan SmartDrive.",
+    "power-assist-buzzer": "Indicatie pieptoon Power Assist",
+    "scanning": "Scannen naar SmartDrive om te koppelen met ...",
     "select-smartdrive": "Selecteer SmartDrive",
     "tap-sensitivity": "Tik op Gevoeligheid",
     "title": "SmartDrive-instellingen",
     "units": "eenheden",
     "watch-required": {
-      "title": "Wear Check",
+      "title": "Controleer op pols",
       "values": {
         "disabled": "invalide",
         "enabled": "Ingeschakeld"
@@ -174,35 +180,40 @@
       "english": "Mi",
       "metric": "km"
     },
-    "english": "Engels",
+    "english": "keizerlijk",
     "metric": "Metriek",
     "speed": {
       "english": "mph",
-      "metric": "kph"
+      "metric": "km / h"
     }
   },
   "updates": {
-    "canceled": "Update geannuleerd",
-    "changes": "Samenvatting van de veranderingen:",
-    "checking-for-updates": "Controleren op updates",
-    "connecting-to-smartdrive": "Verbinding maken met SmartDrive",
-    "downloading-new-firmwares": "",
+    "canceled": "SmartDrive-updates geannuleerd.",
+    "changes": "samenvatting van de veranderingen",
+    "checking-for-updates": "Controleren op updates ...",
+    "communications-failed": "Communicatie met de SmartDrive is mislukt. Start uw SmartDrive opnieuw op.",
+    "connecting-to-smartdrive": "Verbinding maken met SmartDrive ...",
+    "downloading-new-firmwares": "Nieuwe updategegevens downloaden ...",
     "errors": {
-      "connecting": "Fout bij verbinden met SmartDrive",
-      "downloading": "Fout bij het downloaden van updates",
-      "getting": "Fout bij zoeken naar updates",
-      "saving": "Fout bij het opslaan van updategegevens"
+      "connecting": "Fout bij verbinding maken met SmartDrive.",
+      "downloading": "Fout bij downloaden van updates.",
+      "getting": "Fout bij zoeken naar updates.",
+      "saving": "Fout bij het opslaan van updategegevens."
     },
-    "failed": "Update mislukt",
-    "status": "status bijwerken",
-    "success": "SmartDrive-update is succesvol afgerond!",
+    "failed": "SmartDrive-updates zijn mislukt.",
+    "status": "Updates Status",
+    "success": "SmartDrive-updates met succes voltooid!",
+    "timeout": "Er is een time-out opgetreden voor SmartDrive-updates.",
     "up-to-date": "SmartDrive is up-to-date!",
     "version": "Versie"
   },
   "warnings": {
     "saved-settings": {
-      "message": "VOORZICHTIG: U MOET de gebruikershandleiding van de SmartDrive raadplegen over hoe het wijzigen van de instellingen van invloed is op de werking en prestaties.",
-      "title": "Opgeslagen instellingen"
+      "message": "VOORZICHTIG: U MOET de SmartDrive-gebruikershandleiding raadplegen over hoe het wijzigen van de instellingen de werking en prestaties beïnvloedt.",
+      "title": "Gewijzigde instellingen"
+    },
+    "title": {
+      "notice": "Merk op"
     }
   }
 }
