@@ -17,7 +17,9 @@ import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
+import { PtMobileUserData } from '~/app/models';
 import { STORAGE_KEYS } from '../../enums';
+// import { PtMobileUser } from '../../models';
 import { DialogService, LoggingService } from '../../services';
 
 @Component({
@@ -37,8 +39,6 @@ export class ProfileTabComponent implements OnInit {
 
   user: KinveyUser;
 
-  gender: string[];
-  chairInfo: string[];
   isWeight: boolean;
   primary: string[];
   secondary: string[];
@@ -98,13 +98,10 @@ export class ProfileTabComponent implements OnInit {
     private _vcRef: ViewContainerRef
   ) {
     // appSettings.clear();
-
-    this.user = KinveyUser.getActiveUser();
-    console.log('active user', this.user);
-
     this._page.actionBarHidden = true;
-    this.gender = ['Male', 'Female'];
-    this.chairInfo = ['Rigid', 'Folding', 'Pediatric'];
+    this.user = KinveyUser.getActiveUser();
+    console.log('current pt mobile user', this.user);
+
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
     this.primaryIndex = 0;
@@ -214,8 +211,18 @@ export class ProfileTabComponent implements OnInit {
 
   async onSettingsTap(args) {
     Log.D('user tapped settings');
-    const cfl = this.settingsDialog.nativeElement as GridLayout;
-    this.animateDialog(cfl, 0, 0);
+    // const cfl = this.settingsDialog.nativeElement as GridLayout;
+    // this.animateDialog(cfl, 0, 0);
+
+    // this._modalService
+    //   .showModal(ProfileSettingsComponent, {
+    //     context: {},
+    //     fullscreen: true,
+    //     viewContainerRef: this._vcRef
+    //   })
+    //   .catch(err => {
+    //     this._logService.logException(err);
+    //   });
   }
 
   async closeSettingsDialog() {
@@ -231,9 +238,9 @@ export class ProfileTabComponent implements OnInit {
     // need to get the actions for the selected key data box
     let actions;
     if (key === 'gender') {
-      actions = this.gender;
+      actions = ['Male', 'Female'];
     } else if (key === 'chair-info') {
-      actions = this.chairInfo;
+      actions = ['Rigid', 'Folding', 'Pediatric'];
     }
 
     this._dialogService
@@ -244,11 +251,11 @@ export class ProfileTabComponent implements OnInit {
         if (val) {
           // map the selected value to the user profile key
           if (key === 'gender') {
-            (this.user.data as any).gender = val;
+            (this.user.data as PtMobileUserData).gender = val;
             KinveyUser.update({ gender: val });
             this._logService.logBreadCrumb(`User set gender: ${val}`);
           } else if (key === 'chair-info') {
-            (this.user.data as any).chair_info = val;
+            (this.user.data as PtMobileUserData).chair_info = val;
             this._logService.logBreadCrumb(`User set chair-info: ${val}`);
           }
         }

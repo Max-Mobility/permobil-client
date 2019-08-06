@@ -41,33 +41,30 @@ export class LoginComponent implements OnInit {
   }
 
   async submit() {
-    Log.D('submit tap, just going to open the tabs/default for now');
+    try {
+      Log.D('submit tap, just going to open the tabs/default for now');
 
-    this._loadingIndicator.show({
-      message: 'Signing in...',
-      dimBackground: true
-    });
+      this._loadingIndicator.show({
+        message: 'Signing in...',
+        dimBackground: true
+      });
 
-    const user = await Kinvey.User.login(
-      'bradwaynemartin@gmail.com',
-      'testtest'
-    );
+      const user = await Kinvey.User.login(
+        'bradwaynemartin@gmail.com',
+        'testtest'
+      );
 
-    // simulation network call with timeout for now
-    setTimeout(() => {
       // Navigate to tabs home with clearHistory
-      this._routerExtensions
-        .navigate(['/tabs/default'], {
-          clearHistory: true
-        })
-        .then(() => {
-          this._loadingIndicator.hide();
-        })
-        .catch(err => {
-          this._logService.logException(err);
-          this._loadingIndicator.hide();
-        });
-    }, 1800);
+      await this._routerExtensions.navigate(['/tabs/default'], {
+        clearHistory: true
+      });
+      this._loadingIndicator.hide();
+
+      Log.D(`Logged in with test account: ${user}`);
+    } catch (err) {
+      this._logService.logException(err);
+      this._loadingIndicator.hide();
+    }
 
     // try {
     //   // validate the email

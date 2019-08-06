@@ -1,19 +1,15 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogService } from 'nativescript-angular/directives/dialogs';
 import { RouterExtensions } from 'nativescript-angular/router';
 import {
   SelectedIndexChangedEventData,
   ValueList
 } from 'nativescript-drop-down';
-import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { User } from '../../models';
+// import { User } from '../../models';
 import { LoggingService, ProgressService } from '../../services';
 
 @Component({
@@ -23,7 +19,7 @@ import { LoggingService, ProgressService } from '../../services';
 })
 export class SignUpComponent implements OnInit {
   private static LOG_TAG = 'sign-up.component ';
-  user = new User();
+  // user = new User();
   passwordError = '';
   emailError = '';
   firstNameError = '';
@@ -61,7 +57,7 @@ export class SignUpComponent implements OnInit {
    */
   onLanguageChanged(args: SelectedIndexChangedEventData) {
     const newLanguage = this.languages.getValue(args.newIndex) || 'en';
-    this.user.language = newLanguage;
+    // this.user.language = newLanguage;
     this._translateService.use(newLanguage);
     this._logService.logBreadCrumb(
       SignUpComponent.LOG_TAG + `onLanguageChanged newLanguage: ${newLanguage}`
@@ -70,33 +66,33 @@ export class SignUpComponent implements OnInit {
 
   async onSubmitTap() {
     // validate user form
-    const isFirstNameValid = this._isFirstNameValid(this.user.first_name);
-    if (!isFirstNameValid) {
-      return;
-    }
+    // const isFirstNameValid = this._isFirstNameValid(this.user.first_name);
+    // if (!isFirstNameValid) {
+    //   return;
+    // }
 
-    const isLastNameValid = this._isLastNameValid(this.user.last_name);
-    if (!isLastNameValid) {
-      return;
-    }
+    // const isLastNameValid = this._isLastNameValid(this.user.last_name);
+    // if (!isLastNameValid) {
+    //   return;
+    // }
 
-    // validate the email
-    const isEmailValid = this._isEmailValid(this.user.email);
-    if (!isEmailValid) {
-      return;
-    }
+    // // validate the email
+    // const isEmailValid = this._isEmailValid(this.user.email);
+    // if (!isEmailValid) {
+    //   return;
+    // }
 
-    const isPasswordValid = this._isPasswordValid(this.user.password);
-    if (!isPasswordValid) {
-      return;
-    }
+    // const isPasswordValid = this._isPasswordValid(this.user.password);
+    // if (!isPasswordValid) {
+    //   return;
+    // }
 
-    // trim all the strings on user object
-    this.user.first_name = this.user.first_name.trim();
-    this.user.last_name = this.user.last_name.trim();
-    this.user.email = this.user.email.trim();
-    this.user.password = this.user.password.trim();
-    this.user.phone_number = this.user.phone_number.trim();
+    // // trim all the strings on user object
+    // this.user.first_name = this.user.first_name.trim();
+    // this.user.last_name = this.user.last_name.trim();
+    // this.user.email = this.user.email.trim();
+    // this.user.password = this.user.password.trim();
+    // this.user.phone_number = this.user.phone_number.trim();
 
     // TODO: need to show privacy / user agreement forms here - the
     //       user cannot create the account without reading and
@@ -106,62 +102,62 @@ export class SignUpComponent implements OnInit {
       this._translateService.instant('user.account-creating')
     );
 
-    this._logService.logBreadCrumb(
-      SignUpComponent.LOG_TAG +
-        `onSubmitTap() creating new account: ${JSON.stringify(this.user)}`
-    );
+    // this._logService.logBreadCrumb(
+    //   SignUpComponent.LOG_TAG +
+    //     `onSubmitTap() creating new account: ${JSON.stringify(this.user)}`
+    // );
 
-    // need to make sure the username is not already taken
-    KinveyUser.exists(this.user.email)
-      .then(async res => {
-        this._logService.logBreadCrumb(
-          SignUpComponent.LOG_TAG + `KinveyUser.exists() res: ${res}`
-        );
+    // // need to make sure the username is not already taken
+    // KinveyUser.exists(this.user.email)
+    //   .then(async res => {
+    //     this._logService.logBreadCrumb(
+    //       SignUpComponent.LOG_TAG + `KinveyUser.exists() res: ${res}`
+    //     );
 
-        // if username is taken tell user and exit so they can correct
-        if (res === true) {
-          new Toasty({
-            text: this._translateService.instant('sign-up.user-exists'),
-            duration: ToastDuration.SHORT,
-            position: ToastPosition.CENTER
-          }).show();
-          this._progressService.hide();
-          return;
-        }
+    // if username is taken tell user and exit so they can correct
+    // if (res === true) {
+    //   new Toasty({
+    //     text: this._translateService.instant('sign-up.user-exists'),
+    //     duration: ToastDuration.SHORT,
+    //     position: ToastPosition.CENTER
+    //   }).show();
+    //   this._progressService.hide();
+    //   return;
+    // }
 
-        // now create the account
-        try {
-          const user = await KinveyUser.signup(this.user);
-          this._progressService.hide();
-          alert({
-            title: this._translateService.instant('user.success'),
-            message:
-              this._translateService.instant('user.sign-up-success') +
-              ` ${user.email}`,
-            okButtonText: this.ok
-          }).then(() => {
-            this._router.navigate(['/home'], { clearHistory: true });
-          });
-        } catch (err) {
-          Log.E(err);
-          this._progressService.hide();
-          this._logService.logException(err);
-          alert({
-            title: this._translateService.instant('user.error'),
-            message: this._translateService.instant('user.sign-up-error') + err,
-            okButtonText: this.ok
-          });
-        }
-      })
-      .catch(err => {
-        this._progressService.hide();
-        this._logService.logException(err);
-        alert({
-          title: this._translateService.instant('user.error'),
-          message: this._translateService.instant('user.sign-up-error') + err,
-          okButtonText: this.ok
-        });
-      });
+    // // now create the account
+    // try {
+    //   const user = await KinveyUser.signup(this.user);
+    //   this._progressService.hide();
+    //   alert({
+    //     title: this._translateService.instant('user.success'),
+    //     message:
+    //       this._translateService.instant('user.sign-up-success') +
+    //       ` ${user.email}`,
+    //     okButtonText: this.ok
+    //   }).then(() => {
+    //     this._router.navigate(['/home'], { clearHistory: true });
+    //   });
+    // } catch (err) {
+    //   Log.E(err);
+    //   this._progressService.hide();
+    //   this._logService.logException(err);
+    //   alert({
+    //     title: this._translateService.instant('user.error'),
+    //     message: this._translateService.instant('user.sign-up-error') + err,
+    //     okButtonText: this.ok
+    //   });
+    //   // }
+    // })
+    // .catch(err => {
+    //   this._progressService.hide();
+    //   this._logService.logException(err);
+    //   alert({
+    //     title: this._translateService.instant('user.error'),
+    //     message: this._translateService.instant('user.sign-up-error') + err,
+    //     okButtonText: this.ok
+    //   });
+    // });
   }
 
   onReturnPress(args) {
@@ -169,8 +165,8 @@ export class SignUpComponent implements OnInit {
   }
 
   onEmailTextChange(args) {
-    this.user.email = args.value;
-    this._isEmailValid(this.user.email);
+    // this.user.email = args.value;
+    // this._isEmailValid(this.user.email);
   }
 
   navToLogin() {
