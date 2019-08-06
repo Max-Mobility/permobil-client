@@ -6,6 +6,10 @@
   horizontal-align: $center;
 }
 
+.chart-max-line {
+    background-color: $permobil-sky;
+}
+
 .chart-max-value {
   font-size: 8;
   color: $white;
@@ -15,14 +19,14 @@
 .battery-line {
   vertical-align: bottom;
   horizontal-align: $center;
-  background-color: #228b22;
+  background-color: $permobil-ocean;//#228b22;
   width: 5;
 }
 
 .distance-line {
   vertical-align: bottom;
   horizontal-align: $center;
-  background-color: #de5f10;
+  background-color: $permobil-ocean;//#de5f10;
   width: 5;
 }
 

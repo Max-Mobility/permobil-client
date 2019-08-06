@@ -2155,6 +2155,12 @@ export class MainViewModel extends Observable {
     }
   }
 
+  private _showDebugChartData = false;
+  debugChartTap() {
+    this._showDebugChartData = !this._showDebugChartData;
+    this.updateChartData();
+  }
+
   disablePowerAssist() {
     this._sentryBreadCrumb('Disabling power assist');
     Log.D('Disabling power assist');
@@ -2731,8 +2737,18 @@ export class MainViewModel extends Observable {
 
   getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
+    let coastDistance = 0;
+    let driveDistance = 0;
     const usageInfo = dates.map(d => {
-      return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
+      if (this._showDebugChartData) {
+        const battery = Math.random() * 50 + 30;
+        const mileDiff = (battery * (Math.random() * 2.0 + 6.0)) / 100.0;
+        driveDistance += SmartDrive.milesToMotorTicks(mileDiff);
+        coastDistance += SmartDrive.milesToCaseTicks(mileDiff);
+        return SmartDriveData.Info.newInfo(null, d, battery, driveDistance, coastDistance);
+      } else {
+        return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
+      }
     });
     // will get one more than we need since getPastDates() returns
     // (numDays + 1) elements in the array

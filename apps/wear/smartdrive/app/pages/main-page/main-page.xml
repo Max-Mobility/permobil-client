@@ -147,7 +147,7 @@
       // SmartDrive Battery Usage Chat
       <pager:PagerItem>
         <box:BoxInsetLayout>
-          <GridLayout rows="auto, auto, *" columns="*, auto">
+          <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
             <Label row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
@@ -170,7 +170,7 @@
       // SmartDrive Distance Traveled Chart
       <pager:PagerItem>
         <box:BoxInsetLayout>
-          <GridLayout rows="auto, auto, *" columns="*, auto">
+          <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
             // Chart Title
             <Label row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
