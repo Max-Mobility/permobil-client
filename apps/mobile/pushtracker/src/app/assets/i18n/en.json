@@ -18,7 +18,9 @@
     "gender": "Gender",
     "birthday": "Birthday",
     "weight": "Weight",
+    "weight-guess": "If you don't know your exact weight, enter your best guess.",
     "height": "Height",
+    "height-guess": "If you don't know your exact height, enter your best guess.",
     "units": "Units",
     "smartdrive": "SmartDrive",
     "max-speed": "Max Speed",
@@ -52,6 +54,9 @@
     "about-you": "About You",
     "chair-info": "Chair Info",
     "set-goal": "Set goal"
+  },
+  "profile-settings": {
+    "theme": "Theme"
   },
   "settings-component": {
     "title": "Settings"

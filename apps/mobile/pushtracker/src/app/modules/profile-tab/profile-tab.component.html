@@ -101,7 +101,6 @@
     </ScrollView>
   </GridLayout>
   
- <!-- ******************************************************************************************* -->
  <!-- Activity Goals FullScreen Layout -->
   // custom full-screen modal for presenting user with config changes UI
   <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
@@ -124,19 +123,16 @@
     </GridLayout>
   </GridLayout>
 
-  <!-- ******************************************************************************************* -->
   <!-- List Picker Layout -->
   <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
         // Mock ActionBar
-        <GridLayout rows="auto" columns="50, auto, auto">
-          <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
-          <Label row="0" col="1" class="picker-title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
-        </GridLayout>
-        <GridLayout row="1" rows="auto, *, auto" columns="auto, *, auto">
+        <Label class="picker-title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
+        <Label class="picker-description" [text]="(isWeight? 'general.weight-guess': 'general.height-guess') | translate" textWrap="true"></Label>
+        <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
           <StackLayout row="1" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
-              <ListPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-5"></ListPicker>
-              <ListPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-5"></ListPicker>
+              <ListPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4"></ListPicker>
+              <ListPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-l-4"></ListPicker>
           </StackLayout>
           <Button row="2" col="1" [text]="'general.cancel' | translate"  class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
           <Button row="2" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="saveListPickerValue()"></Button>

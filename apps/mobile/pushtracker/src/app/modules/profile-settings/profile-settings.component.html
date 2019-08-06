@@ -1,19 +1,19 @@
 // profile settings layout
-<GridLayout rows="*" columns="*" class="profile-settings-layout" (loaded)="onShownModally($event)">
+<GridLayout rows="*" columns="*" class="profile-settings-layout">
   // main profile-settings layout
   <GridLayout row="0" col="0" rows="auto, *" columns="*">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, *">
-        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="navBack()" ></Button>
+        <Button row="0" col="0" text="&#xe5c4;" class="close-btn" (tap)="navBack()"></Button>
         <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
     </GridLayout>
     <ScrollView row="1" height="100%">
-      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
+      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
           // Units 
           <Label row="0" col="0" class="category" [text] = "'general.units'| translate"></Label>
           // height
           <StackLayout row="1" col="0" colSpan="2"  (tap)="onHeightTap($event)">
-            <Label class="section-title" [text] = "'general.height'| translate"></Label>
+            <Label class="section-title" [text] = "'general.height' | translate"></Label>
             <GridLayout rows="*" columns="*, auto">
                 <Label col="0" class="section-text" [text]="HEIGHT" textWrap="true"></Label>
                 <Label col="1" class="open-btn" text="&#xe315;"></Label>
@@ -21,7 +21,7 @@
           </StackLayout>
           // weight
           <StackLayout row="2" col="0" colSpan="2"  (tap)="onWeightTap($event)">
-              <Label class="section-title" [text] = "'general.weight'| translate"></Label>
+              <Label class="section-title" [text] = "'general.weight' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="WEIGHT" textWrap="true"></Label>
                   <Label col="1" class="open-btn" text="&#xe315;"></Label>
@@ -29,7 +29,7 @@
           </StackLayout>
           // Distance 
           <StackLayout row="3" col="0" colSpan="2"  (tap)="onDistanceTap($event)">
-              <Label class="section-title" [text] = "'general.distance'| translate"></Label>
+              <Label class="section-title" [text] = "'general.distance' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="DISTANCE" textWrap="true"></Label>
                   <Label col="1" class="open-btn" text="&#xe315;"></Label>
@@ -43,7 +43,7 @@
 
           // Max Speed
           <StackLayout row="6" col="0" colSpan="2"  (tap)="onMaxSpeedTap($event)">
-              <Label class="section-title" [text] = "'general.max-speed'| translate"></Label>
+              <Label class="section-title" [text] = "'general.max-speed' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="MAX_SPEED" textWrap="true"></Label>
                   <Label col="1" class="open-btn"  text="&#xe315;"></Label>
@@ -52,7 +52,7 @@
 
           // Acceleration
           <StackLayout row="7" col="0" colSpan="2"  (tap)="onAccelerationTap($event)">
-              <Label class="section-title" [text] = "'general.acceleration'| translate"></Label>
+              <Label class="section-title" [text] = "'general.acceleration' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="ACCELERATION" textWrap="true"></Label>
                   <Label col="1" class="open-btn" text="&#xe315;"></Label>
@@ -61,7 +61,7 @@
 
           // Tap sensitivity
           <StackLayout row="8" col="0" colSpan="2"  (tap)="onTapSensitivityTap($event)">
-              <Label class="section-title" [text] = "'general.tap-sensitivity'| translate"></Label>
+              <Label class="section-title" [text] = "'general.tap-sensitivity' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="TAP_SENSITIVITY" textWrap="true"></Label>
                   <Label col="1" class="open-btn" text="&#xe315;"></Label>
@@ -69,12 +69,19 @@
           </StackLayout>
           // Mode
           <StackLayout row="9" col="0" colSpan="2"  (tap)="onModeTap($event)">
-              <Label class="section-title" [text] = "'general.mode'| translate"></Label>
+              <Label class="section-title" [text] = "'general.mode' | translate"></Label>
               <GridLayout rows="*" columns="*, auto">
                   <Label col="0" class="section-text" [text]="MODE" textWrap="true"></Label>
                   <Label col="1" class="open-btn" text="&#xe315;"></Label>
               </GridLayout>
           </StackLayout>
+
+          // Display
+          
+
+          // Theme 
+          <Label row="10" col="0" class="category" [text] = "'profile-settings.theme' | translate"></Label>
+
       </GridLayout> 
     </ScrollView>
   </GridLayout>

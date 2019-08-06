@@ -61,10 +61,6 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  onShownModally(args: EventData) {
-    Log.D('profile-settings.component modal shown');
-  }
-
   onHeightTap(args: EventData) {
     Log.D('height action item tap');
     const data = ['Centimeters', 'Feet & inches'];
