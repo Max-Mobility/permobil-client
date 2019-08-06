@@ -9,15 +9,6 @@
     @extend .CLOSE_BTN_BASE;
     color: $black;
   }
-  .open-btn {
-    @extend .OPEN_BTN_BASE;
-    color: $black;
-  }
-
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $black;
-  }
 
   .title {
     @extend .TITLE_BASE;
@@ -26,7 +17,7 @@
 
   .category {
     @extend .CATEGORY_BASE;
-    color: #1070A7;
+    color: $permobil-primary;
   }
 
   .section-title {

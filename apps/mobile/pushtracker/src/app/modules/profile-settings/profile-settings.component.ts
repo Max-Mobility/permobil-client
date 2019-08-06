@@ -61,43 +61,75 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  onHeightTap(args: EventData) {
-    Log.D('height action item tap');
-    const data = ['Centimeters', 'Feet & inches'];
-    this._dialogService
-      .action('Height', data)
-      .then(val => (this.HEIGHT = val), err => console.error(err));
-  }
+  onItemTap(args: EventData, item: string) {
+    Log.D(`User tapped: ${item}`);
 
-  onWeightTap(args: EventData) {
-    Log.D('Weight action item tap');
-    const data = ['Kilograms', 'Pounds'];
-    this._dialogService
-      .action('Weight', data)
-      .then(val => (this.WEIGHT = val), err => console.error(err));
-  }
-
-  onDistanceTap(args: EventData) {
-    Log.D('Distance action item tap');
-    const data = ['Kilometers', 'Miles'];
-    this._dialogService
-      .action('Distance', data)
-      .then(val => (this.DISTANCE = val), err => console.error(err));
-  }
-
-  onMaxSpeedTap(args: EventData) {
-    Log.D('Max Speed action item tap');
-  }
-
-  onAccelerationTap(args: EventData) {
-    Log.D('Acceleration action item tap');
-  }
-
-  onTapSensitivityTap(args: EventData) {
-    Log.D('Tap Sensitivity action item tap');
-  }
-
-  onModeTap(args: EventData) {
-    Log.D('Mode action item tap');
+    switch (item) {
+      case 'height':
+        this._dialogService
+          .action(this._translateService.instant('general.height'), [
+            'Centimeters',
+            'Feet & inches'
+          ])
+          .then(val => (this.HEIGHT = val), err => console.error(err));
+        break;
+      case 'weight':
+        this._dialogService
+          .action(this._translateService.instant('general.weight'), [
+            'Kilograms',
+            'Pounds'
+          ])
+          .then(val => (this.WEIGHT = val), err => console.error(err));
+        break;
+      case 'distance':
+        this._dialogService
+          .action(this._translateService.instant('general.distance'), [
+            'Kilometers',
+            'Miles'
+          ])
+          .then(val => (this.DISTANCE = val), err => console.error(err));
+        break;
+      case 'max-speed':
+        this._dialogService
+          .action(this._translateService.instant('general.max-speed'), [
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7'
+          ])
+          .then(val => (this.MAX_SPEED = val), err => console.error(err));
+        break;
+      case 'acceleration':
+        this._dialogService
+          .action(this._translateService.instant('general.acceleration'), [
+            'slow',
+            'fast',
+            'turbo'
+          ])
+          .then(val => (this.DISTANCE = val), err => console.error(err));
+        break;
+      case 'tap-sensitivity':
+        this._dialogService
+          .action(this._translateService.instant('general.tap-sensitivity'), [
+            'slow',
+            'fast',
+            'turbo'
+          ])
+          .then(val => (this.DISTANCE = val), err => console.error(err));
+        break;
+      case 'mode':
+        this._dialogService
+          .action(this._translateService.instant('general.mode'), [
+            'bad',
+            'good',
+            'best'
+          ])
+          .then(val => (this.DISTANCE = val), err => console.error(err));
+        break;
+    }
   }
 }

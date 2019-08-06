@@ -10,11 +10,6 @@
     color: $white;
   }
 
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $white;
-  }
-
   .title {
     @extend .TITLE_BASE;
     color: $white;
