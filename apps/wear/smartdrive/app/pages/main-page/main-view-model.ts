@@ -2194,6 +2194,11 @@ export class MainViewModel extends Observable {
     this.scanningProgressCircle.stopSpinning();
   }
 
+  onConnectPushTrackerTap() {
+    // TODO: flesh this out to show UI and connect to PushTracker
+    // Mobile App to receive credentials.
+  }
+
   onPairingTap() {
     return this.saveNewSmartDrive()
       .then((didSave: boolean) => {
