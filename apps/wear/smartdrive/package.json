@@ -11,7 +11,7 @@
     "scss": "node-sass ./app/scss -o ./app/scss"
   },
   "dependencies": {
-    "@maxmobility/private-keys": "git+https://github.com/autochair/maxmobility-private-keys.git#master",
+    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "@types/lodash": "^4.14.136",

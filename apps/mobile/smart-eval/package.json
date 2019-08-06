@@ -15,7 +15,7 @@
     "@angular/platform-browser": "~8.0.1",
     "@angular/platform-browser-dynamic": "~8.0.1",
     "@angular/router": "~8.0.1",
-    "@maxmobility/private-keys": "git+https://github.com/autochair/maxmobility-private-keys.git#master",
+    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@ngx-translate/core": "~11.0.1",
     "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",

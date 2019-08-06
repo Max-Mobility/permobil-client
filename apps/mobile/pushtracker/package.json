@@ -15,7 +15,7 @@
     "@angular/platform-browser": "~8.1.0",
     "@angular/platform-browser-dynamic": "~8.1.0",
     "@angular/router": "~8.1.0",
-    "@maxmobility/private-keys": "git+https://github.com/autochair/maxmobility-private-keys.git#master",
+    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@ngx-translate/core": "~11.0.1",
     "@nstudio/nativescript-floatingactionbutton": "~1.0.0",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
