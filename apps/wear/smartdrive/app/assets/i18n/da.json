@@ -8,6 +8,13 @@
     "version": "SmartDrive MX2 Wear OS App (SW) version",
     "watch-serial-number": "Smartwatch serienummer"
   },
+  "app-connection": {
+    "completed": "Tilsluttet med succes til PushTracker-konto.",
+    "connecting": "Opretter forbindelse til PushTracker mobilapp ...",
+    "identifier": "Smartwatch-navn",
+    "preface": "Opretter forbindelse til PushTracker-konto ...",
+    "receiving": "Modtager kontooplysninger ..."
+  },
   "buttons": {
     "allow": "Give lov til",
     "back": "Tilbage",
@@ -41,6 +48,11 @@
     "title": "SmartDrive Fejlhistorie"
   },
   "failures": {
+    "app-connection": {
+      "credentials": "Kunne ikke tilslutte PushTracker-konto.",
+      "logout": "Kontoen er logget ud. Genforbindelse til PushTracker mobilapp kræves.",
+      "timeout": "Appforbindelsen er udløbet."
+    },
     "connect": "Kunne ikke oprette forbindelse til SmartDrive.",
     "getting-error": "Kunne ikke få SmartDrive-fejl.",
     "must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
@@ -140,6 +152,7 @@
   },
   "settings": {
     "acceleration": "Acceleration",
+    "connect-pushtracker": "Tilslut PushTracker mobilapp",
     "control-mode": "Kontroltilstand",
     "description": {
       "acceleration": "SmartDrive's accelerations- eller hastighedsrampehastighed.",

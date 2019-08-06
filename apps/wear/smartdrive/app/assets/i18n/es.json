@@ -8,6 +8,13 @@
     "version": "Versión de la aplicación SmartDrive MX2 Wear OS (SW)",
     "watch-serial-number": "Número de serie del reloj inteligente"
   },
+  "app-connection": {
+    "completed": "Conectado con éxito a la cuenta de PushTracker.",
+    "connecting": "Conexión a la aplicación móvil PushTracker ...",
+    "identifier": "Nombre del reloj inteligente",
+    "preface": "Conectando a la cuenta de PushTracker ...",
+    "receiving": "Recibiendo información de la cuenta ..."
+  },
   "buttons": {
     "allow": "permitir",
     "back": "atrás",
@@ -41,6 +48,11 @@
     "title": "Historial de errores de SmartDrive"
   },
   "failures": {
+    "app-connection": {
+      "credentials": "Error al conectar la cuenta de PushTracker.",
+      "logout": "La cuenta ha sido cerrada. Se requiere la reconexión a la aplicación PushTracker Mobile.",
+      "timeout": "La conexión de la aplicación ha excedido el tiempo de espera."
+    },
     "connect": "No se pudo conectar a SmartDrive.",
     "getting-error": "Error al obtener el error SmartDrive.",
     "must-wear-watch": "El ajuste [Verificar muñeca] está habilitado, por lo tanto, el reloj inteligente debe usarse para controlar su SmartDrive.",
@@ -140,6 +152,7 @@
   },
   "settings": {
     "acceleration": "Aceleración",
+    "connect-pushtracker": "Connect PushTracker Mobile App",
     "control-mode": "Modo de control",
     "description": {
       "acceleration": "La tasa de aceleración o rampa de velocidad del SmartDrive.",

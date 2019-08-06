@@ -8,6 +8,13 @@
     "version": "Version der SmartDrive MX2 Wear OS App (SW)",
     "watch-serial-number": "Smartwatch-Seriennummer"
   },
+  "app-connection": {
+    "completed": "Verbindung zum PushTracker-Konto erfolgreich hergestellt.",
+    "connecting": "Verbindung zur PushTracker Mobile App wird hergestellt ...",
+    "identifier": "Name der Smartwatch",
+    "preface": "Verbindung zum PushTracker-Konto wird hergestellt ...",
+    "receiving": "Kontoinformationen werden empfangen ..."
+  },
   "buttons": {
     "allow": "ermöglichen",
     "back": "Zurück",
@@ -41,6 +48,11 @@
     "title": "SmartDrive-Fehlerhistorie"
   },
   "failures": {
+    "app-connection": {
+      "credentials": "Verbindung zum PushTracker-Konto fehlgeschlagen.",
+      "logout": "Konto wurde abgemeldet. Erneute Verbindung zur PushTracker Mobile-App erforderlich.",
+      "timeout": "Die Verbindung zur App ist abgelaufen."
+    },
     "connect": "Verbindung zu SmartDrive konnte nicht hergestellt werden.",
     "getting-error": "Fehler beim Abrufen des SmartDrive-Fehlers.",
     "must-wear-watch": "Die Einstellung [Auf Handgelenk prüfen] ist aktiviert, daher muss die Smartwatch zur Steuerung Ihres SmartDrive getragen werden.",
@@ -140,6 +152,7 @@
   },
   "settings": {
     "acceleration": "Beschleunigung",
+    "connect-pushtracker": "Verbinden Sie die PushTracker Mobile App",
     "control-mode": "Steuermodus",
     "description": {
       "acceleration": "Die Beschleunigungs- oder Geschwindigkeitsrampenrate des SmartDrive.",

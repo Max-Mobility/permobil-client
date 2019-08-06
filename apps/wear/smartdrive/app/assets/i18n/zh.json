@@ -8,6 +8,13 @@
     "version": "SmartDrive MX2 Wear OS App（SW）版本",
     "watch-serial-number": "Smartwatch序列號"
   },
+  "app-connection": {
+    "completed": "已成功連接到PushTracker帳戶。",
+    "connecting": "連接到PushTracker移動應用程序...",
+    "identifier": "智能手錶名稱",
+    "preface": "連接到PushTracker帳戶......",
+    "receiving": "收到帳戶信息......"
+  },
   "buttons": {
     "allow": "允許",
     "back": "背部",
@@ -41,6 +48,11 @@
     "title": "SmartDrive錯誤歷史記錄"
   },
   "failures": {
+    "app-connection": {
+      "credentials": "無法連接PushTracker帳戶。",
+      "logout": "帳戶已被註銷。需要重新連接到PushTracker Mobile應用程序。",
+      "timeout": "App連接已超時。"
+    },
     "connect": "無法連接到SmartDrive。",
     "getting-error": "無法獲得SmartDrive錯誤。",
     "must-wear-watch": "[檢查手腕]設置已啟用，因此必須佩戴智能手錶才能控制SmartDrive。",
@@ -140,6 +152,7 @@
   },
   "settings": {
     "acceleration": "促進",
+    "connect-pushtracker": "連接PushTracker移動應用程序",
     "control-mode": "控制模式",
     "description": {
       "acceleration": "SmartDrive的加速或速度斜率。",

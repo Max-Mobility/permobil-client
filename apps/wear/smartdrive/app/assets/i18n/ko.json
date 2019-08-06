@@ -8,6 +8,13 @@
     "version": "SmartDrive MX2 Wear OS 응용 프로그램 (SW) 버전",
     "watch-serial-number": "Smartwatch 일련 번호"
   },
+  "app-connection": {
+    "completed": "PushTracker 계정에 성공적으로 연결되었습니다.",
+    "connecting": "PushTracker 모바일 앱에 연결하는 중 ...",
+    "identifier": "스마트 워치 이름",
+    "preface": "PushTracker 계정에 연결하는 중 ...",
+    "receiving": "계정 정보를받는 중 ..."
+  },
   "buttons": {
     "allow": "허용하다",
     "back": "뒤로",
@@ -41,6 +48,11 @@
     "title": "SmartDrive 오류 기록"
   },
   "failures": {
+    "app-connection": {
+      "credentials": "PushTracker 계정을 연결하지 못했습니다.",
+      "logout": "계정이 로그 아웃되었습니다. PushTracker Mobile 앱에 다시 연결해야합니다.",
+      "timeout": "앱 연결 시간이 초과되었습니다."
+    },
     "connect": "SmartDrive에 연결할 수 없습니다.",
     "getting-error": "SmartDrive 오류를 가져 오는 데 실패했습니다.",
     "must-wear-watch": "[Check for Wrist] 설정이 활성화되어 있으므로 SmartWatch를 착용하여 SmartDrive를 제어해야합니다.",
@@ -140,6 +152,7 @@
   },
   "settings": {
     "acceleration": "가속",
+    "connect-pushtracker": "PushTracker 모바일 앱 연결",
     "control-mode": "제어 모드",
     "description": {
       "acceleration": "SmartDrive의 가속 또는 속도 램프 속도.",
