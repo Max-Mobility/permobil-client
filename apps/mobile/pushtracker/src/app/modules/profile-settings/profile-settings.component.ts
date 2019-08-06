@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { EventData } from 'tns-core-modules/data/observable';
+import { Page } from 'tns-core-modules/ui/page/page';
 import { DialogService, LoggingService } from '../../services';
 
 @Component({
@@ -25,8 +26,11 @@ export class ProfileSettingsComponent implements OnInit {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _routerExtensions: RouterExtensions,
-    private _dialogService: DialogService
+    private _dialogService: DialogService,
+    private _page: Page
   ) {
+    this._page.actionBarHidden = true;
+
     this.HEIGHT = 'Feet & inches';
     this.WEIGHT = 'Pounds';
     this.DISTANCE = 'Miles';
