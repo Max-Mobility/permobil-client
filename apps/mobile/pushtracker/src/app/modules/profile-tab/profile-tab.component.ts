@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -37,7 +31,7 @@ export class ProfileTabComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
-  user: KinveyUser;
+  user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isWeight: boolean;
   primary: string[];
