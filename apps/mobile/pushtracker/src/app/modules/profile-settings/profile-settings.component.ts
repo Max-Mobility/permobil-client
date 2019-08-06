@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
+import { RouterExtensions } from 'nativescript-angular/router';
 import { EventData } from 'tns-core-modules/data/observable';
 import { DialogService, LoggingService } from '../../services';
 
@@ -24,8 +24,8 @@ export class ProfileSettingsComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _dialogService: DialogService,
-    private _params: ModalDialogParams
+    private _routerExtensions: RouterExtensions,
+    private _dialogService: DialogService
   ) {
     this.HEIGHT = 'Feet & inches';
     this.WEIGHT = 'Pounds';
@@ -43,6 +43,18 @@ export class ProfileSettingsComponent implements OnInit {
     this.infoItems = this._translateService.instant(
       'profile-settings-component.sections'
     );
+  }
+
+  navBack() {
+    if (this._routerExtensions.canGoBack()) {
+      this._routerExtensions.back();
+    } else {
+      this._routerExtensions.navigate(['/login'], {
+        transition: {
+          name: 'slideRight'
+        }
+      });
+    }
   }
 
   onShownModally(args: EventData) {
@@ -87,10 +99,5 @@ export class ProfileSettingsComponent implements OnInit {
 
   onModeTap(args: EventData) {
     Log.D('Mode action item tap');
-  }
-
-  closeModal(event) {
-    Log.D('profile-settings.component modal closed');
-    this._params.closeCallback('some value');
   }
 }

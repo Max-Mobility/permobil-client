@@ -115,14 +115,18 @@
 
   .list-picker-dialog {
     @extend .LIST_PICKER_DIALOG_BASE;
-    background-color:$white;
+    background-color: $white;
+
+    .picker-title {
+      color: $white;
+    }
 
     .cancel-button {
-      color: #1a73e9;
+      color: $permobil-primary;
     }
 
     .ok-button {
-      color: #1a73e9;
+      color: $permobil-primary;
     }
   }
 }

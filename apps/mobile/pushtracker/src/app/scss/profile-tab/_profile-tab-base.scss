@@ -169,10 +169,14 @@
     height: 100%;
 
     > StackLayout {
-      border-radius: 4;
+      margin: 20;
+      border-radius: 2;
 
       .picker-title {
-        font-size: 20;
+        font-family: $os;
+        font-size: 18;
+        font-weight: bold;
+        vertical-align: center;
       }
 
       .close-btn {
@@ -189,7 +193,6 @@
       .ok-btn {
         @extend .btn-transparent;
         horizontal-align: right;
-        text-align: right;
       }
     }
   }

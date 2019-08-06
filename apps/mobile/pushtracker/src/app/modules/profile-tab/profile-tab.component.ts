@@ -158,8 +158,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   async closeActivityGoalsDialog() {
-    // remove the active data box class from the previously selected box
-    this.activeDataBox.className = 'data-box';
+    this._removeActiveDataBox();
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
     this._animateDialog(cfl, 0, 900);
   }
@@ -393,10 +392,18 @@ export class ProfileTabComponent implements OnInit {
         translate: {
           x: 0,
           y: this.screenHeight
-        }
+        },
+        duration: 0
       });
     });
     this._removeActiveDataBox();
+  }
+
+  async saveListPickerValue() {
+    this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
+    if (this.isWeight) {
+      this.user.weight = this.primaryIndex + this.secondaryIndex;
+    }
   }
 
   private _openListPickerDialog() {

@@ -129,7 +129,7 @@
   <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
         // Mock ActionBar
-        <GridLayout  rows="*" columns="50, auto, auto">
+        <GridLayout rows="auto" columns="50, auto, auto">
           <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeListPickerDialog()"></Button>
           <Label row="0" col="1" class="picker-title" [text]="(isWeight? 'general.weight': 'general.height') | translate" textWrap="true"></Label>
         </GridLayout>
@@ -139,7 +139,7 @@
               <ListPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-5"></ListPicker>
           </StackLayout>
           <Button row="2" col="1" [text]="'general.cancel' | translate"  class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
-          <Button row="2" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="closeListPickerDialog()"></Button>
+          <Button row="2" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="saveListPickerValue()"></Button>
         </GridLayout>
     </StackLayout>
  </GridLayout>

@@ -29,6 +29,10 @@ const routes: Routes = [
     path: 'forgot-password',
     component: ForgotPasswordComponent
   },
+  {
+    path: 'profile-settings',
+    component: ProfileSettingsComponent
+  },
   { path: 'tabs', loadChildren: './modules/tabs/tabs.module#TabsModule' }
 ];
 
