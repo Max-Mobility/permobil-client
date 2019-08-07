@@ -37,8 +37,8 @@ export class ProfileSettingsComponent implements OnInit {
   screenHeight: number;
 
   activeSetting: string = null;
-  activeSettingTitle: string = "Setting";
-  activeSettingDescription: string = "Description";
+  activeSettingTitle: string = 'Setting';
+  activeSettingDescription: string = 'Description';
   SLIDER_VALUE: number = 50;
   listPickerItems: string[];
   listPickerIndex: number = 0;
