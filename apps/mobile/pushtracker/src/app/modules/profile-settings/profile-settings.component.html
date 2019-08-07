@@ -19,37 +19,37 @@
               <Label class="setting-title" [text]="'general.weight' | translate"></Label>
               <Label  class="setting-value" [text]="WEIGHT" textWrap="true"></Label>
           </StackLayout>
-          
-          // Distance 
+
+          // Distance
           <StackLayout row="3"  (tap)="onItemTap($event, 'distance')">
             <Label class="setting-title" [text]="'general.distance' | translate"></Label>
             <Label  class="setting-value" [text]="DISTANCE" textWrap="true"></Label>
           </StackLayout>
-          
+
           // Smart Drive Section
           <Label row="4"  class="category" [text]="'general.smartdrive'| translate"></Label>
 
           // Max Speed
           <StackLayout row="5"  (tap)="onItemTap($event, 'max-speed')">
             <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
-            <Label  class="setting-value" [text]="MAX_SPEED" textWrap="true"></Label>
+            <Label  class="setting-value" [text]="settings.maxSpeed + ' %'" textWrap="true"></Label>
           </StackLayout>
 
           // Acceleration
           <StackLayout row="6"  (tap)="onItemTap($event, 'acceleration')">
             <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
-            <Label  class="setting-value" [text]="ACCELERATION" textWrap="true"></Label>
+            <Label  class="setting-value" [text]="settings.acceleration + ' %'" textWrap="true"></Label>
           </StackLayout>
 
           // Tap sensitivity
           <StackLayout row="7"  (tap)="onItemTap($event, 'tap-sensitivity')">
             <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
-            <Label  class="setting-value" [text]="TAP_SENSITIVITY" textWrap="true"></Label>
+            <Label  class="setting-value" [text]="settings.tapSensitivity + ' %'" textWrap="true"></Label>
           </StackLayout>
           // Mode
           <StackLayout row="8"  (tap)="onItemTap($event, 'mode')">
             <Label class="setting-title" [text]="'general.mode' | translate"></Label>
-            <Label  class="setting-value" [text]="MODE" textWrap="true"></Label>
+            <Label  class="setting-value" [text]="settings.controlMode" textWrap="true"></Label>
           </StackLayout>
 
           // Display Section
@@ -60,6 +60,44 @@
             <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
             <Label  class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
           </StackLayout>
-      </GridLayout> 
+      </GridLayout>
     </ScrollView>
+
+  <!-- Slider Layout -->
+  <GridLayout #sliderSettingDialog rowSpan="2" rows="*, auto, *" columns="*"
+              [translateY]="screenHeight" opacity="0" class="slider-dialog">
+    <StackLayout row="1">
+        // Mock ActionBar
+        <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
+        <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
+        <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
+          <Slider row="0" col="0" colSpan="2"
+                  class="slider"
+                  [(ngModel)]="SLIDER_VALUE"
+                  minValue="1" maxValue="10"></Slider>
+          <Label class="slider-value" row="0" col="2" [text]="(SLIDER_VALUE * 10) + ' %'"></Label>
+          <Button row="1" col="1" [text]="'general.cancel' | translate"  class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
+          <Button row="1" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
+        </GridLayout>
+    </StackLayout>
+ </GridLayout>
+
+  <!-- List Picker Layout -->
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="slider-dialog">
+    <StackLayout row="1">
+        // Mock ActionBar
+        <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
+        <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
+        <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
+          <ListPicker row="0" col="1" colSpan="2"
+                      [items]="listPickerItems"
+                      (selectedIndexChange)="listPickerIndexChange($event)"
+                      [selectedIndex]="listPickerIndex"
+                      class="m-r-10"></ListPicker>
+          <Button row="1" col="1" [text]="'general.cancel' | translate"  class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+          <Button row="1" col="2" [text]="'general.ok' | translate"  class="ok-btn" (tap)="saveListPickerValue()"></Button>
+        </GridLayout>
+    </StackLayout>
+ </GridLayout>
+
 </GridLayout>

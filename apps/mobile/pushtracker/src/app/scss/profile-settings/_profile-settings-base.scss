@@ -55,4 +55,48 @@
     font-family: $material-icon;
     horizontal-align: left;
   }
+
+  .SLIDER_DIALOG_BASE {
+    height: 100%;
+
+    > StackLayout {
+      margin: 24;
+      border-radius: 2;
+
+      .setting-title {
+        font-family: $os;
+        font-size: 18;
+        font-weight: bold;
+        horizontal-align: left;
+        vertical-align: center;
+        margin: 12;
+      }
+
+      .setting-description {
+        font-family: $os;
+        font-size: 10;
+        margin-left: 12;
+      }
+
+      .slider-value {
+        font-family: $os;
+        font-size: 18;
+        font-weight: bold;
+        horizontal-align: center;
+        vertical-align: center;
+        margin: 12;
+      }
+
+      .cancel-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+        text-align: right;
+      }
+
+      .ok-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+      }
+    }
+  }
 }

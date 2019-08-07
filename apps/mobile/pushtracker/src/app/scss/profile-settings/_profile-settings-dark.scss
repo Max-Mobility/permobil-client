@@ -29,4 +29,33 @@
     @extend .SETTING_VALUE_BASE;
     color: darken($white, 10%);
   }
+
+  .slider-dialog {
+    @extend .SLIDER_DIALOG_BASE;
+    background-color: $black;
+
+    > StackLayout {
+      background-color: $dark-grey;
+
+      .setting-title {
+        color: $white;
+      }
+
+      .setting-description {
+        color: lighten($color: $white, $amount: 0.2);
+      }
+
+      .slider-value {
+          color: $white;
+      }
+
+      .cancel-btn {
+        color: $permobil-cousteau;
+      }
+
+      .ok-btn {
+        color: $permobil-cousteau;
+      }
+    }
+  }
 }

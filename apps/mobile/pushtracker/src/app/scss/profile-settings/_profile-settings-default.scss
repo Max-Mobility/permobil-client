@@ -29,4 +29,33 @@
     @extend .SETTING_VALUE_BASE;
     color: $black;
   }
+
+  .slider-dialog {
+    @extend .SLIDER_DIALOG_BASE;
+    background-color: rgba(85, 86, 88, 0.808);
+
+    > StackLayout {
+      background-color: $white;
+
+      .setting-title {
+        color: #202125;
+      }
+
+      .setting-description {
+        color: #393a3f;
+      }
+
+      .slider-value {
+        color: #202125;
+      }
+
+      .cancel-btn {
+        color: #1a73e9;
+      }
+
+      .ok-btn {
+        color: #1a73e9;
+      }
+    }
+  }
 }
