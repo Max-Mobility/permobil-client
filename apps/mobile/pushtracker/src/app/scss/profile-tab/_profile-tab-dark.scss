@@ -134,11 +134,11 @@
 
     GridLayout,
     StackLayout {
-      background-color: $black;
+      background-color: $dark-grey;
     }
 
     > StackLayout {
-      background-color: $black;
+      background-color: $dark-grey;
       color: $white;
 
       .picker-title {
