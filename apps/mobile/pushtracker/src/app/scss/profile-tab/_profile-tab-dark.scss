@@ -115,10 +115,10 @@
 
   .list-picker-dialog {
     @extend .LIST_PICKER_DIALOG_BASE;
-    background-color: $white;
+    background-color: $black;
 
     > StackLayout {
-      background-color: $white;
+      background-color: $dark-grey;
 
       .picker-title {
         color: $white;
@@ -128,12 +128,12 @@
         color: lighten($color: $white, $amount: 0.2);
       }
 
-      .cancel-button {
-        color: $permobil-primary;
+      .cancel-btn {
+        color: $permobil-cousteau;
       }
 
-      .ok-button {
-        color: $permobil-primary;
+      .ok-btn {
+        color: $permobil-cousteau;
       }
     }
   }

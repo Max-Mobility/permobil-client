@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData } from 'tns-core-modules/data/observable';
 import { Page } from 'tns-core-modules/ui/page/page';
+import { APP_THEMES, STORAGE_KEYS } from '~/app/enums';
+import { enableDarkTheme, enableDefaultTheme } from '~/app/utils/themes-utils';
 import { DialogService, LoggingService } from '../../services';
 
 @Component({
@@ -21,6 +24,7 @@ export class ProfileSettingsComponent implements OnInit {
   ACCELERATION: string;
   TAP_SENSITIVITY: string;
   MODE: string;
+  CURRENT_THEME: string;
 
   constructor(
     private _logService: LoggingService,
@@ -38,6 +42,12 @@ export class ProfileSettingsComponent implements OnInit {
     this.ACCELERATION = '70%';
     this.TAP_SENSITIVITY = '100%';
     this.MODE = 'MX2+';
+
+    // get current app style theme from app-settings on device
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
   }
 
   ngOnInit() {
@@ -71,7 +81,12 @@ export class ProfileSettingsComponent implements OnInit {
             'Centimeters',
             'Feet & inches'
           ])
-          .then(val => (this.HEIGHT = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.HEIGHT = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'weight':
         this._dialogService
@@ -79,7 +94,12 @@ export class ProfileSettingsComponent implements OnInit {
             'Kilograms',
             'Pounds'
           ])
-          .then(val => (this.WEIGHT = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.WEIGHT = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'distance':
         this._dialogService
@@ -87,7 +107,12 @@ export class ProfileSettingsComponent implements OnInit {
             'Kilometers',
             'Miles'
           ])
-          .then(val => (this.DISTANCE = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.DISTANCE = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'max-speed':
         this._dialogService
@@ -101,7 +126,12 @@ export class ProfileSettingsComponent implements OnInit {
             '6',
             '7'
           ])
-          .then(val => (this.MAX_SPEED = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.MAX_SPEED = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'acceleration':
         this._dialogService
@@ -110,7 +140,12 @@ export class ProfileSettingsComponent implements OnInit {
             'fast',
             'turbo'
           ])
-          .then(val => (this.DISTANCE = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.ACCELERATION = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'tap-sensitivity':
         this._dialogService
@@ -119,7 +154,12 @@ export class ProfileSettingsComponent implements OnInit {
             'fast',
             'turbo'
           ])
-          .then(val => (this.DISTANCE = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.TAP_SENSITIVITY = val;
+            },
+            err => console.error(err)
+          );
         break;
       case 'mode':
         this._dialogService
@@ -128,7 +168,29 @@ export class ProfileSettingsComponent implements OnInit {
             'good',
             'best'
           ])
-          .then(val => (this.DISTANCE = val), err => console.error(err));
+          .then(
+            val => {
+              if (val) this.MODE = val;
+            },
+            err => console.error(err)
+          );
+        break;
+      case 'theme':
+        this._dialogService
+          .action(this._translateService.instant('profile-settings.theme'), [
+            'Light',
+            'Dark'
+          ])
+          .then(
+            val => {
+              if (val === 'Light') {
+                enableDefaultTheme();
+              } else if (val === 'Dark') {
+                enableDarkTheme();
+              }
+            },
+            err => console.error(err)
+          );
         break;
     }
   }

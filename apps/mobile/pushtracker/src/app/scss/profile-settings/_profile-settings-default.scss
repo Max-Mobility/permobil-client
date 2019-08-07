@@ -5,13 +5,13 @@
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
   background-color: $white;
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
+  .back-btn {
+    @extend .BACK_BTN_BASE;
     color: $black;
   }
 
-  .title {
-    @extend .TITLE_BASE;
+  .action-bar-title {
+    @extend .ACTION_BAR_TITLE_BASE;
     color: $black;
   }
 
@@ -20,18 +20,13 @@
     color: $permobil-primary;
   }
 
-  .section-title {
-    @extend .SECTION_TITLE_BASE;
+  .setting-title {
+    @extend .SETTING_TITLE_BASE;
     color: $black;
   }
 
-  .section-text {
-    @extend .SECTION_TEXT_BASE;
-    color: $black;
-  }
-
-  .close-dialog {
-    @extend .CLOSE_DIALOG_BASE;
+  .setting-value {
+    @extend .SETTING_VALUE_BASE;
     color: $black;
   }
 }

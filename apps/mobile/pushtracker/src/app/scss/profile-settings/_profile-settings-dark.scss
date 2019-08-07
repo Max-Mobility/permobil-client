@@ -5,28 +5,28 @@
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
   background-color: $black;
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
+  .back-btn {
+    @extend .BACK_BTN_BASE;
     color: $white;
   }
 
-  .title {
-    @extend .TITLE_BASE;
+  .action-bar-title {
+    @extend .ACTION_BAR_TITLE_BASE;
     color: $white;
   }
 
-  .section-title {
-    @extend .SECTION_TITLE_BASE;
+  .category {
+    @extend .CATEGORY_BASE;
+    color: $permobil-cousteau;
+  }
+
+  .setting-title {
+    @extend .SETTING_TITLE_BASE;
     color: $white;
   }
 
-  .section-text {
-    @extend .SECTION_TEXT_BASE;
-    color: darken($white, 10%);
-  }
-
-  .close-dialog {
-    @extend .CLOSE_DIALOG_BASE;
+  .setting-value {
+    @extend .SETTING_VALUE_BASE;
     color: darken($white, 10%);
   }
 }
