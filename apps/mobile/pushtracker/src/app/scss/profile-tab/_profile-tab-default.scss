@@ -1,6 +1,21 @@
 @import '../variables';
 @import 'profile-tab-base';
 
+/* these have to be outside the component class to work */
+.date-time-picker {
+    @extend .DATE_TIME_PICKER_BASE;
+    background-color: $white;
+    color: $black;
+}
+.date-time-picker-spinners {
+    background-color: $white;
+    color: #202125;
+}
+.date-time-picker-buttons {
+    background-color: $white;
+    color: #1a73e9;
+}
+
 .profile-tab-layout {
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $white;

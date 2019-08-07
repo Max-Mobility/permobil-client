@@ -4,7 +4,7 @@ import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { DateTimePicker } from 'nativescript-datetimepicker';
+import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
@@ -179,9 +179,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
+      this.activity_goals_dialog_data.config_key +
+      ' ' +
+      this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -255,6 +255,8 @@ export class ProfileTabComponent implements OnInit {
   onBirthDateTap(args: EventData) {
     this._setActiveDataBox(args);
 
+    const dateTimePickerStyle = DateTimePickerStyle.create((args.object as StackLayout));
+
     DateTimePicker.pickDate({
       context: (args.object as StackLayout)._context,
       date: subYears(new Date(), 18),
@@ -262,8 +264,9 @@ export class ProfileTabComponent implements OnInit {
       maxDate: new Date(),
       title: this._translateService.instant('general.birthday'),
       okButtonText: this._translateService.instant('general.ok'),
-      cancelButtonText: this._translateService.instant('general.cancel')
-    })
+      cancelButtonText: this._translateService.instant('general.cancel'),
+      locale: this._translateService.getDefaultLang()
+    }, dateTimePickerStyle)
       .then(result => {
         this._removeActiveDataBox();
         if (result) {
