@@ -4,6 +4,18 @@ export enum STORAGE_KEYS {
   'HAS_PAIRED_TO_PUSHTRACKER' = 'HAS_PAIRED_TO_PUSHTRACKER',
 
   /**
+   * This key is used to store the Device.Settings (SmartDrive
+   * Settings) object.
+   */
+  'DEVICE_SETTINGS' = 'DEVICE_SETTINGS',
+
+  /**
+   * This key is used to store the Device.SwitchControlSettings
+   * (SmartDrive Switch Control Settings) object.
+   */
+  'DEVICE_SWITCH_CONTROL_SETTINGS' = 'DEVICE_SWITCH_CONTROL_SETTINGS',
+
+  /**
    * This key is used to store the user selected style theme.
    */
   'APP_THEME' = 'APP_THEME',
