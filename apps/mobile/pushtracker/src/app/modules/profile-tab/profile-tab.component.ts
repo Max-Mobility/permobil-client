@@ -95,7 +95,7 @@ export class ProfileTabComponent implements OnInit {
     console.log('current pt mobile user', this.user);
 
     if (!this.user.data.dob || this.user.data.dob === '')
-      this.user.data.dob = 'Jan 01, 2001';
+      this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
 
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
@@ -262,7 +262,7 @@ export class ProfileTabComponent implements OnInit {
 
     DateTimePicker.pickDate({
       context: (args.object as StackLayout)._context,
-      date: subYears(new Date(), 18),
+      date: this.user.data.dob,
       minDate: subYears(new Date(), 110),
       maxDate: new Date(),
       title: this._translateService.instant('general.birthday'),
