@@ -27,6 +27,8 @@
     "acceleration": "Acceleration",
     "tap-sensitivity": "Tap Sensitivity",
     "mode": "Mode",
+    "switch-control-mode": "Switch Control Mode",
+    "switch-control-max-speed": "Switch Control Max Speed",
     "day": "Day",
     "week": "Week",
     "month": "Month",
@@ -40,6 +42,14 @@
     "cancel": "Cancel",
     "chair-info": "Chair Info",
     "display": "Display"
+  },
+  "sd": {
+    "switch-settings": {
+      "mode": {
+        "momentary": "Momentary",
+        "latching": "Latched"
+      }
+    }
   },
   "home-tab": {
     "title": "Home",
