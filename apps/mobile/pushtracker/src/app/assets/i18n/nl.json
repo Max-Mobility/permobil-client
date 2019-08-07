@@ -34,7 +34,7 @@
     "sign-up": "Inschrijven",
     "ok": "OK",
     "cancel": "annuleren",
-    "chair-info": "Stoel Info"
+    "chair-type": "Stoel Info"
   },
   "home-tab": {
     "title": "Huis",
@@ -48,7 +48,7 @@
     "title": "Profiel",
     "activity-goals": "Activiteitsdoelen",
     "about-you": "Over jou",
-    "chair-info": "Voorzitter Info",
+    "chair-type": "Voorzitter Info",
     "set-goal": "Doel stellen"
   },
   "settings-component": {

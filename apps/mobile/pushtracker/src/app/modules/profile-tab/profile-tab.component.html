@@ -89,11 +89,11 @@
           </GridLayout>
         </StackLayout>
 
-        // Chair Info Box
-        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'chair-info')">
-          <Label class="data-box-label" [text]="'profile-tab.chair-info' | translate"></Label>
+        // Chair Type Box
+        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'chair-type')">
+          <Label class="data-box-label" [text]="'profile-tab.chair-type' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.chair_info" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.chair_type" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>

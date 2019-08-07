@@ -34,7 +34,7 @@
     "sign-up": "サインアップ",
     "ok": "オーケー",
     "cancel": "キャンセル",
-    "chair-info": "チェア情報"
+    "chair-type": "チェア情報"
   },
   "home-tab": {
     "title": "ホーム",
@@ -48,7 +48,7 @@
     "title": "プロフィール",
     "activity-goals": "活動目標",
     "about-you": "あなたについて",
-    "chair-info": "チェア情報",
+    "chair-type": "チェア情報",
     "set-goal": "目標を設定"
   },
   "settings-component": {

@@ -3,7 +3,7 @@ export interface PtMobileUserData {
   dob: string;
   weight: number;
   height: number;
-  chair_info: string;
+  chair_type: string;
   language: string;
   phone_number: string;
   region: string;

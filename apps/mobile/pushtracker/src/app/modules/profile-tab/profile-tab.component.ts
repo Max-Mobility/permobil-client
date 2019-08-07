@@ -228,7 +228,7 @@ export class ProfileTabComponent implements OnInit {
     let actions;
     if (key === 'gender') {
       actions = ['Male', 'Female'];
-    } else if (key === 'chair-info') {
+    } else if (key === 'chair-type') {
       actions = ['Rigid', 'Folding', 'Pediatric'];
     }
 
@@ -243,9 +243,10 @@ export class ProfileTabComponent implements OnInit {
             (this.user.data as PtMobileUserData).gender = val;
             KinveyUser.update({ gender: val });
             this._logService.logBreadCrumb(`User set gender: ${val}`);
-          } else if (key === 'chair-info') {
-            (this.user.data as PtMobileUserData).chair_info = val;
-            this._logService.logBreadCrumb(`User set chair-info: ${val}`);
+          } else if (key === 'chair-type') {
+            (this.user.data as PtMobileUserData).chair_type = val;
+            KinveyUser.update({ chair_type: val });
+            this._logService.logBreadCrumb(`User set chair-type: ${val}`);
           }
         }
       })

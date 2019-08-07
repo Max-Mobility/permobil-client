@@ -34,7 +34,7 @@
     "sign-up": "Anmelden",
     "ok": "OK",
     "cancel": "Stornieren",
-    "chair-info": "Lehrstuhlinfo"
+    "chair-type": "Lehrstuhlinfo"
   },
   "home-tab": {
     "title": "Zuhause",
@@ -48,7 +48,7 @@
     "title": "Profil",
     "activity-goals": "Aktivitätsziele",
     "about-you": "Über dich",
-    "chair-info": "Lehrstuhlinfo",
+    "chair-type": "Lehrstuhlinfo",
     "set-goal": "Ziel setzen"
   },
   "settings-component": {
