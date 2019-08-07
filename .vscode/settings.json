@@ -30,5 +30,5 @@
     "translate-x",
     "text-wrap"
   ],
-  "prettier.disableLanguages": ["html"]
+  "prettier.disableLanguages": []
 }
