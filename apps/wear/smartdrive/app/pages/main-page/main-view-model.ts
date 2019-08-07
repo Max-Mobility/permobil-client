@@ -1,4 +1,4 @@
-import { Log } from '@permobil/core';
+import { Log, Device } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
@@ -182,10 +182,10 @@ export class MainViewModel extends Observable {
    * SmartDrive Data / state management
    */
   public smartDrive: SmartDrive;
-  private settings = new SmartDrive.Settings();
-  private tempSettings = new SmartDrive.Settings();
-  private switchControlSettings = new SmartDrive.SwitchControlSettings();
-  private tempSwitchControlSettings = new SmartDrive.SwitchControlSettings();
+  private settings = new Device.Settings();
+  private tempSettings = new Device.Settings();
+  private switchControlSettings = new Device.SwitchControlSettings();
+  private tempSwitchControlSettings = new Device.SwitchControlSettings();
   private hasSentSettings: boolean = false;
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;

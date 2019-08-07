@@ -1,6 +1,11 @@
-import { bindingTypeToString, ISmartDriveEvents, mod, Packet, SD_OTA_State } from '@permobil/core';
+import {
+  bindingTypeToString,
+  ISmartDriveEvents,
+  Device,
+  Packet,
+  SD_OTA_State
+} from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
-import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
@@ -61,8 +66,8 @@ export class SmartDrive extends DeviceBase {
   // public members
   public driveDistance: number = 0; // cumulative total distance the smartDrive has driven
   public coastDistance: number = 0; // cumulative total distance the smartDrive has gone
-  public settings = new SmartDrive.Settings();
-  public switchControlSettings = new SmartDrive.SwitchControlSettings();
+  public settings = new Device.Settings();
+  public switchControlSettings = new Device.SwitchControlSettings();
 
   // not serialized
   @Prop() device: any = null; // the actual bluetooth device associated with this smartdrive
@@ -881,7 +886,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public sendSettingsObject(settings: SmartDrive.Settings): Promise<any> {
+  public sendSettingsObject(settings: Device.Settings): Promise<any> {
     const flags = [
       settings.ezOn,
       settings.disablePowerAssistBeep
@@ -920,7 +925,7 @@ export class SmartDrive extends DeviceBase {
   }
 
   public sendSwitchControlSettingsObject(
-    settings: SmartDrive.SwitchControlSettings
+    settings: Device.SwitchControlSettings
   ): Promise<any> {
     const _switchControlSettings = super.sendSwitchControlSettings(
       settings.mode,
@@ -1328,316 +1333,6 @@ export class SmartDrive extends DeviceBase {
       default:
         this.sendEvent(SmartDrive.smartdrive_ota_ready_event);
         break;
-    }
-  }
-}
-
-export namespace SmartDrive {
-  // Standard SmartDrive Settings:
-  export class Settings extends Observable {
-    // settings classes
-    static ControlMode = class {
-      static Options: string[] = ['MX1', 'MX2', 'MX2+'];
-
-      static Off = 'Off';
-
-      static Beginner = 'MX1';
-      static Intermediate = 'MX2';
-      static Advanced = 'MX2+';
-
-      static MX1 = 'MX1';
-      static MX2 = 'MX2';
-      static MX2plus = 'MX2+';
-
-      static fromSettings(s: any): string {
-        const o = bindingTypeToString('SmartDriveControlMode', s.ControlMode);
-        return SmartDrive.Settings.ControlMode[o];
-      }
-    };
-
-    static Units = class {
-      static Options: string[] = ['English', 'Metric'];
-      static Translations: string[] = [
-        'smartdrive.settings.units.english',
-        'smartdrive.settings.units.metric'
-      ];
-
-      static English = 'English';
-      static Metric = 'Metric';
-
-      static fromSettings(s: any): string {
-        const o = bindingTypeToString('Units', s.Units);
-        return SmartDrive.Settings.Units[o];
-      }
-    };
-
-    public static Defaults = {
-      controlMode: Settings.ControlMode.MX2plus,
-      ezOn: false,
-      disablePowerAssistBeep: false,
-      units: Settings.Units.English,
-      acceleration: 30,
-      maxSpeed: 70,
-      tapSensitivity: 100,
-    };
-
-    // public members
-    controlMode: string = SmartDrive.Settings.Defaults.controlMode;
-    ezOn = SmartDrive.Settings.Defaults.ezOn;
-    disablePowerAssistBeep = SmartDrive.Settings.Defaults.disablePowerAssistBeep;
-    units: string = SmartDrive.Settings.Defaults.units;
-    acceleration = SmartDrive.Settings.Defaults.acceleration;
-    maxSpeed = SmartDrive.Settings.Defaults.maxSpeed;
-    tapSensitivity = SmartDrive.Settings.Defaults.tapSensitivity;
-
-    constructor() {
-      super();
-    }
-
-    static getBoolSetting(flags: number, settingBit: number): boolean {
-      return ((flags >> settingBit) & 0x01) > 0;
-    }
-
-    increase(key: string, increment: number = 10): void {
-      let index = 0;
-      switch (key) {
-        case 'maxspeed':
-        case 'Max Speed':
-        case 'max-speed':
-          this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
-          break;
-        case 'acceleration':
-        case 'Acceleration':
-          this.acceleration = Math.min(this.acceleration + increment, 100);
-          break;
-        case 'tapsensitivity':
-        case 'tap-sensitivity':
-        case 'Tap Sensitivity':
-          this.tapSensitivity = Math.min(this.tapSensitivity + increment, 100);
-          break;
-        case 'powerassistbuzzer':
-        case 'power-assist-buzzer':
-        case 'Power Assist Buzzer':
-          this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
-          break;
-        case 'controlmode':
-        case 'control-mode':
-        case 'Control Mode':
-          index = SmartDrive.Settings.ControlMode.Options.indexOf(
-            this.controlMode
-          );
-          index = mod(
-            index + 1,
-            SmartDrive.Settings.ControlMode.Options.length
-          );
-          this.controlMode = SmartDrive.Settings.ControlMode.Options[index];
-          break;
-        case 'units':
-        case 'Units':
-          index = SmartDrive.Settings.Units.Options.indexOf(this.units);
-          index = mod(index + 1, SmartDrive.Settings.Units.Options.length);
-          this.units = SmartDrive.Settings.Units.Options[index];
-          break;
-      }
-    }
-
-    decrease(key: string, increment: number = 10): void {
-      let index = 0;
-      switch (key) {
-        case 'maxspeed':
-        case 'Max Speed':
-        case 'max-speed':
-          this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
-          break;
-        case 'acceleration':
-        case 'Acceleration':
-          this.acceleration = Math.max(this.acceleration - increment, 10);
-          break;
-        case 'tapsensitivity':
-        case 'tap-sensitivity':
-        case 'Tap Sensitivity':
-          this.tapSensitivity = Math.max(this.tapSensitivity - increment, 10);
-          break;
-        case 'powerassistbuzzer':
-        case 'power-assist-buzzer':
-        case 'Power Assist Buzzer':
-          this.disablePowerAssistBeep = !this.disablePowerAssistBeep;
-          break;
-        case 'controlmode':
-        case 'control-mode':
-        case 'Control Mode':
-          index = SmartDrive.Settings.ControlMode.Options.indexOf(
-            this.controlMode
-          );
-          index = mod(
-            index - 1,
-            SmartDrive.Settings.ControlMode.Options.length
-          );
-          this.controlMode = SmartDrive.Settings.ControlMode.Options[index];
-          break;
-        case 'units':
-        case 'Units':
-          index = SmartDrive.Settings.Units.Options.indexOf(this.units);
-          index = mod(index - 1, SmartDrive.Settings.Units.Options.length);
-          this.units = SmartDrive.Settings.Units.Options[index];
-          break;
-      }
-    }
-
-    toObj(): any {
-      return Object.keys(SmartDrive.Settings.Defaults)
-        .reduce((obj, key) => {
-          obj[key] = this[key];
-          return obj;
-        }, {});
-    }
-
-    fromSettings(s: any): void {
-      // from c++ settings bound array to c++ class
-      this.controlMode = SmartDrive.Settings.ControlMode.fromSettings(s);
-      this.units = SmartDrive.Settings.Units.fromSettings(s);
-      this.ezOn = SmartDrive.Settings.getBoolSetting(s.Flags, 0);
-      this.disablePowerAssistBeep = SmartDrive.Settings.getBoolSetting(s.Flags, 1);
-      // these floats are [0,1] on pushtracker
-      this.acceleration = Math.round(s.Acceleration * 100.0);
-      this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
-      this.tapSensitivity = Math.round(s.TapSensitivity * 100.0);
-    }
-
-    copyKey(key: string, other: any) {
-      if (other && key in other) {
-        this[key] = other[key];
-      } else if (key in SmartDrive.Settings.Defaults) {
-        this[key] = SmartDrive.Settings.Defaults[key];
-      }
-    }
-
-    copy(s: any) {
-      // from a settings class exactly like this
-      Object.keys(SmartDrive.Settings.Defaults)
-        .map(k => this.copyKey(k, s));
-    }
-
-    diff(s: any): boolean {
-      return Object.keys(SmartDrive.Settings.Defaults)
-        .reduce((equal, key) => {
-          return equal && this[key] === s[key];
-        }, true);
-    }
-  }
-
-  // SmartDrive Switch Control Settings:
-  export class SwitchControlSettings extends Observable {
-    // settings classes
-    static Mode = class {
-      static Options: string[] = ['Momentary', 'Latching'];
-
-      static Momentary = 'Momentary';
-      static Latching = 'Latching';
-
-      static fromSettings(s: any): string {
-        const o = bindingTypeToString('SwitchControlMode', s.mode);
-        return SmartDrive.SwitchControlSettings.Mode[o];
-      }
-    };
-
-    public static Defaults = {
-      mode: SwitchControlSettings.Mode.Momentary,
-      maxSpeed: 30
-    };
-
-    // public members
-    mode: string = SmartDrive.SwitchControlSettings.Defaults.mode;
-    maxSpeed = SmartDrive.SwitchControlSettings.Defaults.maxSpeed;
-
-    constructor() {
-      super();
-    }
-
-    increase(key: string, increment: number = 10): void {
-      let index;
-      switch (key) {
-        case 'switchcontrolspeed':
-        case 'switch-control-speed':
-        case 'Switch Control Speed':
-          this.maxSpeed = Math.min(this.maxSpeed + increment, 100);
-          break;
-        case 'switchcontrolmode':
-        case 'switch-control-mode':
-        case 'Switch Control Mode':
-          index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
-            this.mode
-          );
-          index = mod(
-            index + 1,
-            SmartDrive.SwitchControlSettings.Mode.Options.length
-          );
-          this.mode =
-            SmartDrive.SwitchControlSettings.Mode.Options[index];
-          break;
-      }
-    }
-
-    decrease(key: string, increment: number = 10): void {
-      let index;
-      switch (key) {
-        case 'switchcontrolspeed':
-        case 'switch-control-speed':
-        case 'Switch Control Speed':
-          this.maxSpeed = Math.max(this.maxSpeed - increment, 10);
-          break;
-        case 'switchcontrolmode':
-        case 'switch-control-mode':
-        case 'Switch Control Mode':
-          index = SmartDrive.SwitchControlSettings.Mode.Options.indexOf(
-            this.mode
-          );
-          index = mod(
-            index - 1,
-            SmartDrive.SwitchControlSettings.Mode.Options.length
-          );
-          this.mode =
-            SmartDrive.SwitchControlSettings.Mode.Options[index];
-          break;
-      }
-    }
-
-    toObj(): any {
-      return Object.keys(SmartDrive.SwitchControlSettings.Defaults)
-        .reduce((obj, key) => {
-          obj[key] = this[key];
-          return obj;
-        }, {});
-    }
-
-    fromSettings(s: any): void {
-      // from c++ settings bound array to c++ class
-      this.mode = SmartDrive.SwitchControlSettings.Mode.fromSettings(
-        s
-      );
-      // these floats are [0,1] on smartdrive
-      this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
-    }
-
-    copyKey(key: string, other: any) {
-      if (other && key in other) {
-        this[key] = other[key];
-      } else if (key in SmartDrive.SwitchControlSettings.Defaults) {
-        this[key] = SmartDrive.SwitchControlSettings.Defaults[key];
-      }
-    }
-
-    copy(s: any) {
-      // from a SwitchControlSettings class exactly like this
-      Object.keys(SmartDrive.SwitchControlSettings.Defaults)
-        .map(k => this.copyKey(k, s));
-    }
-
-    diff(s: any): boolean {
-      return Object.keys(SmartDrive.SwitchControlSettings.Defaults)
-        .reduce((equal, key) => {
-          return equal && this[key] === s[key];
-        }, true);
     }
   }
 }
