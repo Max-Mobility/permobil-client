@@ -160,15 +160,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
       .getSystemService(Context.LOCATION_SERVICE);
-    // according to the docs: "it is more difficult for location
-    // providers to save power using the minDistance parameter, so
-    // minTime should be the primary tool to conserving battery life."
-    mLocationManager.requestLocationUpdates(
-                                            LocationManager.GPS_PROVIDER,
-                                            LOCATION_LISTENER_MIN_TIME_MS,
-                                            0, // LOCATION_LISTENER_MIN_DISTANCE_M,
-                                            this
-                                            );
     isServiceRunning = false;
   }
 
@@ -308,13 +299,18 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   private void onWristCallback() {
+    /*
     // turn on location sensing
+    // according to the docs: "it is more difficult for location
+    // providers to save power using the minDistance parameter, so
+    // minTime should be the primary tool to conserving battery life."
     mLocationManager.requestLocationUpdates(
                                             LocationManager.GPS_PROVIDER,
                                             LOCATION_LISTENER_MIN_TIME_MS,
                                             0, // LOCATION_LISTENER_MIN_DISTANCE_M,
                                             this
                                             );
+    */
     // turn on accelerometer sensing
     int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
     registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
