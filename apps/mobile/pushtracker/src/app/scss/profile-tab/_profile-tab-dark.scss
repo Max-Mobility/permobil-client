@@ -51,7 +51,8 @@
       background-color: $black;
     }
 
-    GridLayout {
+    > GridLayout {
+      background-color: $black;
       border-color: #e8e9eb;
 
       > .data-box-value {
@@ -98,7 +99,7 @@
 
     .config-circle {
       @extend .CONFIG_CIRCLE_BASE;
-      border-color: $dark-grey;
+      border-color: $black;
 
       button {
         color: $permobil-primary;
@@ -108,7 +109,7 @@
         color: $white;
       }
       .config-value-sub {
-        color: $dark-grey;
+        color: $black;
       }
     }
   }
@@ -117,8 +118,14 @@
     @extend .LIST_PICKER_DIALOG_BASE;
     background-color: $black;
 
+    GridLayout,
+    StackLayout {
+      background-color: $black;
+    }
+
     > StackLayout {
-      background-color: $dark-grey;
+      background-color: $black;
+      color: $white;
 
       .picker-title {
         color: $white;
@@ -126,6 +133,10 @@
 
       .picker-description {
         color: lighten($color: $white, $amount: 0.2);
+      }
+
+      ListPicker {
+        color: $white;
       }
 
       .cancel-btn {
@@ -137,4 +148,5 @@
       }
     }
   }
+
 }
