@@ -3,7 +3,11 @@
 
 .app-info-layout {
   @extend .APP_INFO_LAYOUT_BASE;
-  background-color: $black;
+
+  GridLayout,
+  ScrollView {
+    background-color: $black;
+  }
 
   .close-btn {
     @extend .CLOSE_BTN_BASE;
