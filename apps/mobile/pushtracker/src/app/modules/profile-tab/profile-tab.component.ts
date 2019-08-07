@@ -9,6 +9,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
+import { topmost } from 'tns-core-modules/ui/frame/frame';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
@@ -365,6 +366,9 @@ export class ProfileTabComponent implements OnInit {
 
     this.isWeight = true;
     this._openListPickerDialog();
+
+    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
+    console.log('rootTabView', rootTabView);
   }
 
   onListHeightTap(args: EventData) {

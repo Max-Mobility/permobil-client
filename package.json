@@ -111,9 +111,5 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true
   }
 }

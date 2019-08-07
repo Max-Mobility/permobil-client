@@ -115,18 +115,26 @@
 
   .list-picker-dialog {
     @extend .LIST_PICKER_DIALOG_BASE;
-    background-color: $white;
+    background-color: $black;
 
-    .picker-title {
-      color: $white;
-    }
+    > StackLayout {
+      background-color: $dark-grey;
 
-    .cancel-button {
-      color: $permobil-primary;
-    }
+      .picker-title {
+        color: $white;
+      }
 
-    .ok-button {
-      color: $permobil-primary;
+      .picker-description {
+        color: lighten($color: $white, $amount: 0.2);
+      }
+
+      .cancel-btn {
+        color: $permobil-cousteau;
+      }
+
+      .ok-btn {
+        color: $permobil-cousteau;
+      }
     }
   }
 }

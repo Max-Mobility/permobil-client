@@ -169,19 +169,22 @@
     height: 100%;
 
     > StackLayout {
-      margin: 20;
+      margin: 24;
       border-radius: 2;
 
       .picker-title {
         font-family: $os;
         font-size: 18;
         font-weight: bold;
+        horizontal-align: left;
         vertical-align: center;
+        margin: 12;
       }
 
-      .close-btn {
-        @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-        color: #3b3f42;
+      .picker-description {
+        font-family: $os;
+        font-size: 10;
+        margin-left: 12;
       }
 
       .cancel-btn {

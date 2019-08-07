@@ -1,60 +1,42 @@
 @import '../variables';
 @import '../global';
 
-
 .PROFILE_SETTINGS_LAYOUT_BASE {
   height: 100%;
   width: 100%;
 
-  .CLOSE_BTN_BASE {
+  .BACK_BTN_BASE {
     @extend .btn-transparent;
     padding: 4;
     font-size: 30;
     font-family: $material-icon;
     horizontal-align: left;
   }
-  .OPEN_BTN_BASE {
-    font-size: 30;
-    font-family: $material-icon;
-    text-align: right;
-    vertical-align: center;
-    margin-right: 2;
-  }
 
-  .MORE_BTN_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 30;
-    font-family: $material-icon;
-    horizontal-align: right;
-  }
-
-  .TITLE_BASE {
+  .ACTION_BAR_TITLE_BASE {
     font-size: 26;
     font-family: $os;
     margin-left: 5;
     padding: 4;
-    text-align: center;
-    horizontal-align: right;
   }
-  
+
   .CATEGORY_BASE {
-    font-size: 18;
+    font-size: 14;
     font-family: $os;
     font-weight: bold;
     margin: 20 0 20 5;
-    padding-left : 20;
+    padding-left: 20;
   }
-  .SECTION_TITLE_BASE {
-    font-size: 18;
+
+  .SETTING_TITLE_BASE {
+    font-size: 14;
     font-family: $os;
-    font-weight: bold;
     margin: 5 5 0 5;
     padding-left: 20;
   }
 
-  .SECTION_TEXT_BASE {
-    font-size: 14;
+  .SETTING_VALUE_BASE {
+    font-size: 12;
     font-family: $os-Light;
     margin: 0 5 5 5;
     padding-left: 20;
