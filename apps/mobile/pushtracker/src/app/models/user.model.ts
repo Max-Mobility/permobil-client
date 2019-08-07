@@ -12,6 +12,9 @@ export interface PtMobileUserData {
   // data protection
   has_agreed_to_user_agreement: boolean;
   has_read_privacy_policy: boolean;
+  // activity goals
+  activity_goal_coast_time: number;
+  activity_goal_distance: number;
 }
 
 export enum UserTypes {

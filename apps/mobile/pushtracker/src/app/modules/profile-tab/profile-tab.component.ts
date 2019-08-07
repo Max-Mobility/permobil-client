@@ -192,6 +192,18 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_value
     );
 
+    // Persist this goal in Kinvey
+    if (this.activity_goals_dialog_data.config_key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
+      (this.user.data as PtMobileUserData).activity_goal_coast_time =
+        this.activity_goals_dialog_data.config_value;
+      KinveyUser.update({ 'activity_goal_coast_time' : this.activity_goals_dialog_data.config_value });
+    }
+    else if (this.activity_goals_dialog_data.config_key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
+      (this.user.data as PtMobileUserData).activity_goal_distance =
+        this.activity_goals_dialog_data.config_value;
+      KinveyUser.update({ 'activity_goal_distance' : this.activity_goals_dialog_data.config_value });
+    }
+
     this.COAST_TIME_ACTIVITY_GOAL =
       appSettings.getNumber(STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) ||
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
