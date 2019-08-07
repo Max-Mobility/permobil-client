@@ -96,6 +96,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
 
+  // for sending to the main app via intent
+  private long _lastSendDataTimeMs = 0;
+  public static final long SEND_DATA_INTERVAL_MS = 5000;
+
   // activity detection
   public boolean personIsActive = false;
   public boolean watchBeingWorn = false;
@@ -142,7 +146,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     startServiceWithNotification();
 
     // set the debuggable flag
-    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -424,10 +428,15 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         // TODO: update data in SQLite tables
         // TODO: update data in datastore / shared preferences
         // send intent to main activity with updated data
-        sendDataToActivity(currentPushCount,
-                           currentCoastTime,
-                           currentDistance,
-                           currentHeartRate);
+        long now = System.currentTimeMillis();
+        long timeDiffMs = now - _lastSendDataTimeMs;
+        if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+          sendDataToActivity(currentPushCount,
+                             currentCoastTime,
+                             currentDistance,
+                             currentHeartRate);
+          _lastSendDataTimeMs = now;
+        }
       }
     } else if (sensorType == Sensor.TYPE_HEART_RATE) {
       // update the heart rate

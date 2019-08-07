@@ -328,7 +328,6 @@ export class MainViewModel extends Observable {
   }
 
   onServiceData(context, intent) {
-    // Log.D('Got service data');
     // get the info from the event
     const pushes = intent.getIntExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_PUSHES,
@@ -346,7 +345,7 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
       0
     );
-    // Log.D(pushes, coast, distance, heartRate);
+    Log.D('Got service data', pushes, coast, distance, heartRate);
     this.currentPushCount = pushes;
     // received distance is in meters - need to convert to miles
     this.distanceGoalCurrentValue = distance / 1609.0;
