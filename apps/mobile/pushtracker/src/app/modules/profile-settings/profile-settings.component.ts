@@ -22,10 +22,6 @@ export class ProfileSettingsComponent implements OnInit {
   HEIGHT: string;
   WEIGHT: string;
   DISTANCE: string;
-  MAX_SPEED: string;
-  ACCELERATION: string;
-  TAP_SENSITIVITY: string;
-  MODE: string;
   CURRENT_THEME: string;
 
   @ViewChild('sliderSettingDialog', { static: false })
@@ -57,10 +53,6 @@ export class ProfileSettingsComponent implements OnInit {
     this.HEIGHT = 'Feet & inches';
     this.WEIGHT = 'Pounds';
     this.DISTANCE = 'Miles';
-    this.MAX_SPEED = '70%';
-    this.ACCELERATION = '70%';
-    this.TAP_SENSITIVITY = '100%';
-    this.MODE = 'MX2+';
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
