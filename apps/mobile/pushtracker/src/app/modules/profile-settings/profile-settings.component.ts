@@ -147,7 +147,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   saveSettings() {
-    Log.D('saving settings', this.activeSetting, this.listPickerItems, this.listPickerIndex);
     // save settings
     switch (this.activeSetting) {
       case 'height':
@@ -170,6 +169,12 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'mode':
         this.settings.controlMode = this.listPickerItems[this.listPickerIndex];
+        break;
+      case 'switch-control-max-speed':
+        this.switchControlSettings.maxSpeed = this.SLIDER_VALUE * 10;
+        break;
+      case 'switch-control-mode':
+        this.switchControlSettings.mode = Device.SwitchControlSettings.Mode.Options[this.listPickerIndex];
         break;
       case 'theme':
         this.CURRENT_THEME = this.listPickerItems[this.listPickerIndex];
@@ -246,6 +251,24 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant('general.mode');
         this.listPickerItems = Device.Settings.ControlMode.Options;
         this.listPickerIndex = this.listPickerItems.indexOf(this.settings.controlMode);
+        this._openListPickerDialog();
+        break;
+      case 'switch-control-max-speed':
+        this.SLIDER_VALUE = this.switchControlSettings.maxSpeed / 10;
+        this.activeSettingTitle = this._translateService.instant('general.switch-control-max-speed');
+        this.activeSettingDescription = this._translateService.instant('general.switch-control-max-speed');
+        this._openSliderSettingDialog();
+        break;
+      case 'switch-control-mode':
+        this.activeSettingTitle = this._translateService.instant('general.switch-control-mode');
+        this.activeSettingDescription = this._translateService.instant('general.switch-control-mode');
+        this.listPickerItems = Device.SwitchControlSettings.Mode.Options
+          .map(o => {
+            const translationKey =
+              'sd.switch-settings.mode.' + o.toLowerCase();
+            return this._translateService.instant(translationKey);
+          });
+        this.listPickerIndex = Device.SwitchControlSettings.Mode.Options.indexOf(this.switchControlSettings.mode);
         this._openListPickerDialog();
         break;
       case 'theme':

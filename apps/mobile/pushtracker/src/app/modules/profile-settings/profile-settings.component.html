@@ -52,11 +52,23 @@
             <Label  class="setting-value" [text]="settings.controlMode" textWrap="true"></Label>
           </StackLayout>
 
+          // Switch Control Max Speed
+          <StackLayout row="9"  (tap)="onItemTap($event, 'switch-control-max-speed')">
+            <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
+            <Label  class="setting-value" [text]="switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
+          </StackLayout>
+
+          // Switch Control Mode
+          <StackLayout row="10"  (tap)="onItemTap($event, 'switch-control-mode')">
+            <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
+            <Label  class="setting-value" [text]="'sd.switch-settings.mode.' + switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
+          </StackLayout>
+
           // Display Section
-          <Label row="9"  class="category" [text]="'general.display' | translate"></Label>
+          <Label row="11"  class="category" [text]="'general.display' | translate"></Label>
 
           // Theme
-          <StackLayout row="10" (tap)="onItemTap($event, 'theme')">
+          <StackLayout row="12" (tap)="onItemTap($event, 'theme')">
             <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
             <Label  class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
           </StackLayout>
