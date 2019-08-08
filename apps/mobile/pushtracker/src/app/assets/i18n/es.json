@@ -34,7 +34,7 @@
     "sign-up": "Regístrate",
     "ok": "Okay",
     "cancel": "Cancelar",
-    "chair-type": "Información de la silla"
+    "chair-type": "Tipo de silla"
   },
   "home-tab": {
     "title": "Casa",
@@ -48,7 +48,7 @@
     "title": "Perfil",
     "activity-goals": "Objetivos de actividad",
     "about-you": "Acerca de ti",
-    "chair-type": "Información de la silla",
+    "chair-make": "Silla hacer",
     "set-goal": "Establecer una meta"
   },
   "settings-component": {

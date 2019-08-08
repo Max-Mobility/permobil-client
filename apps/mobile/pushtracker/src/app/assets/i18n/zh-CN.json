@@ -34,7 +34,7 @@
     "sign-up": "注册",
     "ok": "好",
     "cancel": "取消",
-    "chair-type": "主席信息"
+    "chair-type": "椅子类型"
   },
   "home-tab": {
     "title": "Home",
@@ -48,7 +48,7 @@
     "title": "轮廓",
     "activity-goals": "活动目标",
     "about-you": "关于你",
-    "chair-type": "主席信息",
+    "chair-make": "椅子制作",
     "set-goal": "设定目标"
   },
   "settings-component": {

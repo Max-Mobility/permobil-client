@@ -34,7 +34,7 @@
     "sign-up": "가입",
     "ok": "승인",
     "cancel": "취소",
-    "chair-type": "의자 정보"
+    "chair-type": "의자 종류"
   },
   "home-tab": {
     "title": "집",
@@ -48,7 +48,7 @@
     "title": "윤곽",
     "activity-goals": "활동 목표",
     "about-you": "너에 대해서",
-    "chair-type": "의자 정보",
+    "chair-make": "의자 만들기",
     "set-goal": "목표를 설정하다"
   },
   "settings-component": {

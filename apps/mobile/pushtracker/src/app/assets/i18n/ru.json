@@ -34,7 +34,7 @@
     "sign-up": "Подписаться",
     "ok": "Хорошо",
     "cancel": "отменить",
-    "chair-type": "Информация о кресле"
+    "chair-type": "Тип стула"
   },
   "home-tab": {
     "title": "Главная",
@@ -48,7 +48,7 @@
     "title": "Профиль",
     "activity-goals": "Цели деятельности",
     "about-you": "О вас",
-    "chair-type": "Информация о кресле",
+    "chair-make": "Стул Марка",
     "set-goal": "Поставьте цель"
   },
   "settings-component": {
