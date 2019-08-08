@@ -210,9 +210,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-      this.activity_goals_dialog_data.config_key +
-      ' ' +
-      this.activity_goals_dialog_data.config_value
+        this.activity_goals_dialog_data.config_key +
+        ' ' +
+        this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -457,7 +457,7 @@ export class ProfileTabComponent implements OnInit {
     // Initialize primaryIndex and secondaryIndex from user.data.height
     const indices = this._getHeightIndices();
     this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = (indices[1]);
+    this.secondaryIndex = indices[1];
     if (this.secondaryIndex === 12) {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
@@ -501,8 +501,7 @@ export class ProfileTabComponent implements OnInit {
 
     if (this.isWeight) {
       this._saveWeightOnChange(primaryValue, secondaryValue);
-    }
-    else {
+    } else {
       this._saveHeightOnChange(primaryValue, secondaryValue);
     }
     this.primaryIndex = 0;
@@ -511,10 +510,14 @@ export class ProfileTabComponent implements OnInit {
 
   private _initDisplayWeight() {
     if (!this.displayWeight) {
-      this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
+      this.displayWeight = this._displayWeightInKilograms(
+        this.user.data.weight
+      );
       // convert from metric weight (as stored in Kinvey) to user preferred unit
       if (this.SETTING_WEIGHT === 'Pounds') {
-        this.displayWeight = this._displayWeightInPounds(this._kilogramsToPounds(this.user.data.weight));
+        this.displayWeight = this._displayWeightInPounds(
+          this._kilogramsToPounds(this.user.data.weight)
+        );
       }
       if (!this.displayWeight) this.displayWeight = '';
     }
@@ -522,10 +525,14 @@ export class ProfileTabComponent implements OnInit {
 
   private _initDisplayHeight() {
     if (!this.displayHeight) {
-      this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
+      this.displayHeight = this._displayHeightInCentimeters(
+        this.user.data.height
+      );
       // convert from metric height (as stored in Kinvey) to user preferred unit
       if (this.SETTING_HEIGHT === 'Feet & inches') {
-        const heightString = this._centimetersToFeetInches(this.user.data.height);
+        const heightString = this._centimetersToFeetInches(
+          this.user.data.height
+        );
         const feet = parseFloat(heightString.split('.')[0]);
         const inches = parseFloat(heightString.split('.')[1]);
         this.displayHeight = this._displayHeightInFeetInches(feet, inches);
@@ -537,31 +544,44 @@ export class ProfileTabComponent implements OnInit {
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
     (this.user.data as PtMobileUserData).weight = primaryValue + secondaryValue;
     if (this.SETTING_WEIGHT === 'Pounds') {
-      this.user.data.weight = this._poundsToKilograms(primaryValue + secondaryValue);
-      this.displayWeight = this._displayWeightInPounds(primaryValue + secondaryValue);
-    }
-    else {
-      this.user.data.weight = (primaryValue + secondaryValue);
-      this.displayWeight = this._displayWeightInPounds(primaryValue + secondaryValue);
+      this.user.data.weight = this._poundsToKilograms(
+        primaryValue + secondaryValue
+      );
+      this.displayWeight = this._displayWeightInPounds(
+        primaryValue + secondaryValue
+      );
+    } else {
+      this.user.data.weight = primaryValue + secondaryValue;
+      this.displayWeight = this._displayWeightInPounds(
+        primaryValue + secondaryValue
+      );
     }
     KinveyUser.update({ weight: this.user.data.weight });
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    (this.user.data as PtMobileUserData).height = primaryValue + (0.01 * secondaryValue);
+    (this.user.data as PtMobileUserData).height =
+      primaryValue + 0.01 * secondaryValue;
     if (this.SETTING_HEIGHT === 'Feet & inches') {
-      this.user.data.height = this._feetInchesToCentimeters(primaryValue, secondaryValue);
-      this.displayHeight = this._displayHeightInFeetInches(primaryValue, secondaryValue);
-    }
-    else {
-      this.user.data.height = (primaryValue + 0.01 * secondaryValue);
-      this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
+      this.user.data.height = this._feetInchesToCentimeters(
+        primaryValue,
+        secondaryValue
+      );
+      this.displayHeight = this._displayHeightInFeetInches(
+        primaryValue,
+        secondaryValue
+      );
+    } else {
+      this.user.data.height = primaryValue + 0.01 * secondaryValue;
+      this.displayHeight = this._displayHeightInCentimeters(
+        this.user.data.height
+      );
     }
     KinveyUser.update({ height: this.user.data.height });
   }
 
   private _poundsToKilograms(val: number) {
-    return (val * 0.453592);
+    return val * 0.453592;
   }
 
   private _kilogramsToPounds(val: number) {
@@ -574,10 +594,8 @@ export class ProfileTabComponent implements OnInit {
 
   private _centimetersToFeetInches(val: number) {
     const inch = val * 0.3937;
-    if (Math.round(inch % 12) === 0)
-      return (Math.floor(inch / 12) + 1) + '.0';
-    else
-      return Math.floor(inch / 12) + '.' + Math.round(inch % 12);
+    if (Math.round(inch % 12) === 0) return Math.floor(inch / 12) + 1 + '.0';
+    else return Math.floor(inch / 12) + '.' + Math.round(inch % 12);
   }
 
   private _displayWeightInPounds(val: number) {
@@ -589,7 +607,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
-    return (Math.floor(feet)).toFixed() + '\' ' + (inches).toFixed() + '"';
+    return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}`;
   }
 
   private _displayHeightInCentimeters(val: number) {
