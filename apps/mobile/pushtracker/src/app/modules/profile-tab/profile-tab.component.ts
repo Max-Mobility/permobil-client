@@ -398,6 +398,8 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListWeightTap(args: EventData) {
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
     Log.D('User tapped Weight data box');
     this._setActiveDataBox(args);
 
@@ -406,8 +408,13 @@ export class ProfileTabComponent implements OnInit {
       this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
     } else {
       this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
+      this.secondary = Array.from({ length: 10 }, (v, k) => '.' + k);
     }
+
+    // Initialize primaryIndex and secondaryIndex from user.data.weight
+    const indices = this._getWeightIndices();
+    this.primaryIndex = parseFloat(this.primary[indices[0]]);
+    this.secondaryIndex = 10 * indices[1];
 
     this.isWeight = true;
     this._openListPickerDialog();
@@ -416,7 +423,19 @@ export class ProfileTabComponent implements OnInit {
     console.log('rootTabView', rootTabView);
   }
 
+  private _getWeightIndices() {
+    let weight = this.user.data.weight;
+    if (this.SETTING_WEIGHT === 'Pounds') {
+      weight = this._kilogramsToPounds(weight);
+    }
+    const primaryIndex = Math.floor(weight);
+    const secondaryIndex = parseFloat((weight % 1).toFixed(1));
+    return [primaryIndex - 2, secondaryIndex];
+  }
+
   onListHeightTap(args: EventData) {
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
     Log.D('User tapped Height data box');
     this._setActiveDataBox(args);
 
@@ -427,8 +446,23 @@ export class ProfileTabComponent implements OnInit {
       this.secondary = Array.from({ length: 12 }, (v, k) => k + ' in');
     }
 
+    // Initialize primaryIndex and secondaryIndex from user.data.height
+    const indices = this._getHeightIndices();
+    this.primaryIndex = parseFloat(this.primary[indices[0]]);
+    this.secondaryIndex = 100 * indices[1];
+
     this.isWeight = false;
     this._openListPickerDialog();
+  }
+
+  private _getHeightIndices() {
+    let height = this.user.data.height;
+    if (this.SETTING_HEIGHT === 'Feet & inches') {
+      height = this._centimetersToFeetInches(height);
+    }
+    const primaryIndex = Math.floor(height);
+    const secondaryIndex = parseFloat((height % 1).toFixed(2));
+    return [primaryIndex - 2, secondaryIndex];
   }
 
   async closeListPickerDialog() {
@@ -460,6 +494,8 @@ export class ProfileTabComponent implements OnInit {
     else {
       this._saveHeightOnChange(primaryValue, secondaryValue);
     }
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
   }
 
   private _initDisplayWeight() {
