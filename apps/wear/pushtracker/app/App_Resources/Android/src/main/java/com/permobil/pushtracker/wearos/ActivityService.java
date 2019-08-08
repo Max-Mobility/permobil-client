@@ -2,6 +2,7 @@ package com.permobil.pushtracker.wearos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -59,8 +60,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
-  private static final int SENSOR_RATE_HZ = 10;
+  private static final int SENSOR_RATE_HZ = 25;
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
+  private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 
   /**
@@ -194,6 +196,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
     }
 
+    // do the processing here - this function will have been called by
+    // the alarm manager
+    periodicProcessing();
+
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
     return START_STICKY;
@@ -247,6 +253,40 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       };
   }
 
+  private void periodicProcessing() {
+    Log.d(TAG, "periodicProcessing()...");
+    // process the stored sensor data
+    boolean newDataProcessed = processSensorData();
+    if (newDataProcessed) {
+      Log.d(TAG, "has processed data, sending to activity");
+      // TODO: update data in SQLite tables
+      // TODO: update data in datastore / shared preferences
+      // send intent to main activity with updated data
+      sendDataToActivity(currentPushCount,
+                         currentCoastTime,
+                         currentDistance,
+                         currentHeartRate);
+    }
+  }
+
+  private boolean processSensorData() {
+    int numProcessed = 0;
+    boolean didProcess = false;
+    synchronized (sensorDataList) {
+      while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
+        // Log.d(TAG, "Processing sensor data index " + numProcessed);
+        SensorEvent event = sensorDataList.remove(0);
+        // use the data to detect activities
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(event.values, event.timestamp);
+        handleDetection(detection);
+        numProcessed++;
+        didProcess = true;
+      }
+    }
+    return didProcess;
+  }
+
   void handleDetection(ActivityDetector.Detection detection) {
     // Log.d(TAG, "detection: " + detection);
     if (detection.confidence != 0) {
@@ -277,6 +317,16 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // TODO: record the activities somewhere
   }
 
+  private PendingIntent getAlarmIntent(int intentFlag) {
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
+                                                             0,
+                                                             i,
+                                                             intentFlag);
+    return scheduledIntent;
+  }
+
   @Override
   public void onDestroy() {
     Log.d(TAG, "onDestroy()...");
@@ -290,6 +340,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
       // remove sensor listeners
       unregisterDeviceSensors();
+      // cancel the alarm
+      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
+      scheduler.cancel(scheduledIntent);
+      scheduledIntent.cancel();
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -417,6 +472,16 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     int sensorType = event.sensor.getType();
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       if (isDebuggable || watchBeingWorn) {
+        synchronized (sensorDataList) {
+          // add the event to the data list for processing later
+          sensorDataList.add(event);
+          if (sensorDataList.size() > MAX_DATA_LIST_LENGTH) {
+            // so that we don't waste memory, go ahead and process the
+            // data
+            periodicProcessing();
+          }
+        }
+        /*
         // use the data to detect activities
         ActivityDetector.Detection detection =
           activityDetector.detectActivity(event.values, event.timestamp);
@@ -433,6 +498,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                              currentHeartRate);
           _lastSendDataTimeMs = now;
         }
+        */
       }
     } else if (sensorType == Sensor.TYPE_HEART_RATE) {
       // update the heart rate
@@ -587,6 +653,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
+
+    // alarm management
+    AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+    PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
+    scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                                  System.currentTimeMillis(),
+                                  PROCESSING_PERIOD_MS,
+                                  scheduledIntent);
   }
 
   private void stopMyService() {
