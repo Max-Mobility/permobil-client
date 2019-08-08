@@ -135,31 +135,8 @@ export class ProfileTabComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb('profile-tab.component ngOnInit');
-
-    if (!this.displayWeight) {
-      this.displayWeight = this.user.data.weight;
-      // convert from metric weight (as stored in Kinvey) to user preferred unit
-      if (this.SETTING_WEIGHT === 'Pounds') {
-        this.displayWeight = this._kilogramsToPounds(this.user.data.weight) + ' lbs';
-      }
-      else {
-        this.displayWeight = this.user.data.weight + ' kg';
-      }
-      if (!this.displayWeight) this.displayWeight = '';
-    }
-
-    if (!this.displayHeight) {
-      this.displayHeight = this.user.data.height + ' cm';
-      // convert from metric height (as stored in Kinvey) to user preferred unit
-      if (this.SETTING_HEIGHT === 'Feet & inches') {
-        const feetInches = this._centimetersToFeetInches(this.user.data.height);
-        this.displayHeight = (Math.floor(feetInches)).toFixed() + '\' '  + ((feetInches % 1) * 100).toFixed() + '"';
-      }
-      else {
-        this.displayHeight = this.user.data.height + ' cm';
-      }
-      if (!this.displayHeight) this.displayHeight = '';
-    }
+    this._initDisplayWeight();
+    this._initDisplayHeight();
   }
 
   onHelpTap() {
@@ -476,31 +453,60 @@ export class ProfileTabComponent implements OnInit {
     const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
 
     if (this.isWeight) {
-      (this.user.data as PtMobileUserData).weight = primaryValue + secondaryValue;
-      if (this.SETTING_WEIGHT === 'Pounds') {
-        this.user.data.weight = this._poundsToKilograms(primaryValue + secondaryValue);
-        this.displayWeight = (primaryValue + secondaryValue) + ' lbs';
-      }
-      else {
-        this.user.data.weight = (primaryValue + secondaryValue);
-        this.displayWeight = (primaryValue + secondaryValue) + ' kg';
-      }
-      KinveyUser.update({ weight: this.user.data.weight });
+      this._saveWeightOnChange(primaryValue, secondaryValue);
     }
     else {
-      (this.user.data as PtMobileUserData).height = primaryValue + (0.01 * secondaryValue);
-      if (this.SETTING_HEIGHT === 'Feet & inches') {
-        this.user.data.height = this._feetInchesToCentimeters(primaryValue, secondaryValue);
-        this.displayHeight = (Math.floor(primaryValue)).toFixed() + '\' '  + (secondaryValue).toFixed() + '"';
-      }
-      else {
-        this.user.data.height = (primaryValue + 0.01 * secondaryValue);
-        this.displayHeight = this.user.data.height + ' cm';
-      }
-      KinveyUser.update({ height: this.user.data.height });
+      this._saveHeightOnChange(primaryValue, secondaryValue);
     }
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
+  }
+
+  private _initDisplayWeight() {
+    if (!this.displayWeight) {
+      this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
+      // convert from metric weight (as stored in Kinvey) to user preferred unit
+      if (this.SETTING_WEIGHT === 'Pounds') {
+        this.displayWeight = this._displayWeightInPounds(this._kilogramsToPounds(this.user.data.weight));
+      }
+      if (!this.displayWeight) this.displayWeight = '';
+    }
+  }
+
+  private _initDisplayHeight() {
+    if (!this.displayHeight) {
+      this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
+      // convert from metric height (as stored in Kinvey) to user preferred unit
+      if (this.SETTING_HEIGHT === 'Feet & inches') {
+        const feetInches = this._centimetersToFeetInches(this.user.data.height);
+        this.displayHeight = this._displayHeightInFeetInches(feetInches, ((feetInches % 1) * 100));
+      }
+      if (!this.displayHeight) this.displayHeight = '';
+    }
+  }
+
+  private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
+    (this.user.data as PtMobileUserData).weight = primaryValue + secondaryValue;
+    if (this.SETTING_WEIGHT === 'Pounds') {
+      this.user.data.weight = this._poundsToKilograms(primaryValue + secondaryValue);
+      this.displayWeight = this._displayWeightInPounds(primaryValue + secondaryValue);
+    }
+    else {
+      this.user.data.weight = (primaryValue + secondaryValue);
+      this.displayWeight = this._displayWeightInPounds(primaryValue + secondaryValue);
+    }
+    KinveyUser.update({ weight: this.user.data.weight });
+  }
+
+  private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
+    (this.user.data as PtMobileUserData).height = primaryValue + (0.01 * secondaryValue);
+    if (this.SETTING_HEIGHT === 'Feet & inches') {
+      this.user.data.height = this._feetInchesToCentimeters(primaryValue, secondaryValue);
+      this.displayHeight = this._displayHeightInFeetInches(primaryValue, secondaryValue);
+    }
+    else {
+      this.user.data.height = (primaryValue + 0.01 * secondaryValue);
+      this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
+    }
+    KinveyUser.update({ height: this.user.data.height });    
   }
 
   private _poundsToKilograms(val: number) {
@@ -518,6 +524,22 @@ export class ProfileTabComponent implements OnInit {
   private _centimetersToFeetInches(val: number) {
     const inch = val * 0.3937;
     return parseFloat(Math.floor(inch / 12) + '.' + Math.round(inch % 12));
+  }
+
+  private _displayWeightInPounds(val: number) {
+    return val + ' lbs';
+  }
+
+  private _displayWeightInKilograms(val: number) {
+    return val + ' kg';
+  }
+
+  private _displayHeightInFeetInches(feet: number, inches: number) {
+    return (Math.floor(feet)).toFixed() + '\' '  + (inches).toFixed() + '"';
+  }
+
+  private _displayHeightInCentimeters(val: number) {
+    return val + ' cm';
   }
 
   private _openListPickerDialog() {
