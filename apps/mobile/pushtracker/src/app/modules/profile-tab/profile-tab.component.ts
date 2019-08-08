@@ -310,6 +310,8 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onBirthDateTap(args: EventData) {
+    Log.D(`Birthday tapped`);
+
     this._setActiveDataBox(args);
 
     const dateTimePickerStyle = DateTimePickerStyle.create(
@@ -460,8 +462,6 @@ export class ProfileTabComponent implements OnInit {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
     }
-    console.log(indices[1], this.secondaryIndex, this.secondary);
-
     this.isWeight = false;
     this._openListPickerDialog();
   }
@@ -473,7 +473,6 @@ export class ProfileTabComponent implements OnInit {
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
     const secondaryIndex = parseFloat(heightString.split('.')[1]);
-    console.log(heightString, secondaryIndex);
     return [primaryIndex - 2, secondaryIndex];
   }
 
