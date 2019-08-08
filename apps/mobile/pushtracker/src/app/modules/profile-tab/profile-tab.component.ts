@@ -506,7 +506,7 @@ export class ProfileTabComponent implements OnInit {
       this.user.data.height = (primaryValue + 0.01 * secondaryValue);
       this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
     }
-    KinveyUser.update({ height: this.user.data.height });    
+    KinveyUser.update({ height: this.user.data.height });
   }
 
   private _poundsToKilograms(val: number) {
