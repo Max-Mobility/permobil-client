@@ -34,7 +34,7 @@
     "sign-up": "Bli Medlem",
     "ok": "ok",
     "cancel": "Annullera",
-    "chair-type": "Ordförande"
+    "chair-type": "Stolstol"
   },
   "home-tab": {
     "title": "Hem",
@@ -48,7 +48,7 @@
     "title": "Profil",
     "activity-goals": "Aktivitetsmål",
     "about-you": "Om dig",
-    "chair-type": "Stolinfo",
+    "chair-make": "Ordförande",
     "set-goal": "Sätta mål"
   },
   "settings-component": {

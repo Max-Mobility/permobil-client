@@ -5,6 +5,7 @@ export interface PtMobileUserData {
   weight: number; // kg
   height: number; // cm
   chair_type: string;
+  chair_make: string;
   language: string;
   phone_number: string;
   region: string;

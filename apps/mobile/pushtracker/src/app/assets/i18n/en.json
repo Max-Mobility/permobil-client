@@ -40,8 +40,8 @@
     "sign-up": "Sign Up",
     "ok": "OK",
     "cancel": "Cancel",
-    "chair-type": "Chair Type",
-    "display": "Display"
+    "display": "Display",
+    "chair-type": "Chair Type"
   },
   "sd": {
     "switch-settings": {
@@ -63,11 +63,13 @@
     "title": "Profile",
     "activity-goals": "Activity Goals",
     "about-you": "About You",
-    "chair-type": "Chair Type",
-    "set-goal": "Set goal"
+    "chair-make": "Chair Make",
+    "set-goal": "Set goal",
+    "chair-types": ["Rigid", "Folding", "Pediatric"]
   },
   "profile-settings": {
-    "theme": "Theme"
+    "theme": "Theme",
+    "language": "Language"
   },
   "settings-component": {
     "title": "Settings"

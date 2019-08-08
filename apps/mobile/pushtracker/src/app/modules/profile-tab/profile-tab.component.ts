@@ -237,7 +237,23 @@ export class ProfileTabComponent implements OnInit {
     if (key === 'gender') {
       actions = ['Male', 'Female'];
     } else if (key === 'chair-type') {
-      actions = ['Rigid', 'Folding', 'Pediatric'];
+      actions = []; // init the array
+      this._translateService.instant('profile-tab.chair-types').forEach(i => {
+        actions.push(i);
+      });
+    } else if (key === 'chair-make') {
+      actions = [
+        'Colours',
+        'Invacare / Küschall',
+        'Karman',
+        'Ki',
+        'Motion Composites',
+        'Panthera',
+        'Quickie / Sopur / RGK',
+        'TiLite',
+        'Top End',
+        'Other'
+      ];
     }
 
     this._dialogService
@@ -255,6 +271,10 @@ export class ProfileTabComponent implements OnInit {
             (this.user.data as PtMobileUserData).chair_type = val;
             KinveyUser.update({ chair_type: val });
             this._logService.logBreadCrumb(`User set chair-type: ${val}`);
+          } else if (key === 'chair-make') {
+            (this.user.data as PtMobileUserData).chair_make = val;
+            KinveyUser.update({ chair_make: val });
+            this._logService.logBreadCrumb(`User set chair-make: ${val}`);
           }
         }
       })
@@ -430,29 +450,33 @@ export class ProfileTabComponent implements OnInit {
     let metricHeight = 0;
 
     if (this.isWeight) {
-      metricWeight = parseFloat(this.primary[this.primaryIndex]) + parseFloat(this.secondary[this.secondaryIndex]);
+      metricWeight =
+        parseFloat(this.primary[this.primaryIndex]) +
+        parseFloat(this.secondary[this.secondaryIndex]);
       // Convert to metric units if SETTING_WEIGHT is Pounds
       if (this.SETTING_WEIGHT === 'POUNDS') {
         metricWeight = this._poundsToKilograms(this.user.data.weight);
       }
-    }
-    else {
+    } else {
       const primaryValue = parseFloat(this.primary[this.primaryIndex]);
       const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
       metricHeight = primaryValue + secondaryValue;
       // Convert height to metric units if SETTING_HEIGHT is Feet & inches
       if (this.SETTING_HEIGHT === 'Feet & inches') {
-        metricHeight = this._feetInchesToCentimeters(primaryValue, secondaryValue);
+        metricHeight = this._feetInchesToCentimeters(
+          primaryValue,
+          secondaryValue
+        );
       }
     }
 
-    KinveyUser.update({ weight : metricWeight, height: metricHeight });
+    KinveyUser.update({ weight: metricWeight, height: metricHeight });
 
     console.log(this.user.data.weight, this.user.data.height);
   }
 
   private _poundsToKilograms(val: number) {
-    return val /= 2.2046;
+    return (val /= 2.2046);
   }
 
   private _feetInchesToCentimeters(feet: number, inches: number) {
