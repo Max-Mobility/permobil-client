@@ -49,10 +49,7 @@ export class LoginComponent implements OnInit {
         dimBackground: true
       });
 
-      const user = await Kinvey.User.login(
-        'bradwaynemartin@gmail.com',
-        'testtest'
-      );
+      const user = await Kinvey.User.login('test@ptmax.com', 'testtest');
 
       // Navigate to tabs home with clearHistory
       await this._routerExtensions.navigate(['/tabs/default'], {

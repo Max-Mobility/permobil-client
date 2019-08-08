@@ -1,15 +1,15 @@
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { Injectable } from 'injection-js';
-import { device } from 'tns-core-modules/platform';
 import { request } from 'tns-core-modules/http';
-import { KinveyKeys } from '@maxmobility/private-keys';
+import { device } from 'tns-core-modules/platform';
 
 @Injectable()
 export class KinveyService {
-  public static api_base = KinveyKeys.HOST_URL;
+  public static api_base = PushTrackerKinveyKeys.HOST_URL;
   public static api_user_route = '/user/';
   public static api_file_route = '/blob/';
   public static api_data_route = '/appdata/';
-  public static api_app_key = KinveyKeys.PROD_KEY;
+  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
   public static api_activity_db = '/PushTrackerActivity';
 
   private _auth: string = null;
@@ -18,7 +18,7 @@ export class KinveyService {
   constructor() {
     // configure authorization here:
     const authorizationToEncode = new java.lang.String(
-      KinveyKeys.TEST_USER_PREAUTH
+      PushTrackerKinveyKeys.TEST_USER_PREAUTH
     );
     const data = authorizationToEncode.getBytes(
       java.nio.charset.StandardCharsets.UTF_8
