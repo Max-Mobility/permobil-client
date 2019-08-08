@@ -1,8 +1,9 @@
 export interface PtMobileUserData {
   gender: string;
   dob: string;
-  weight: number;
-  height: number;
+  // weight and height in metric
+  weight: number; // kg
+  height: number; // cm
   chair_type: string;
   language: string;
   phone_number: string;

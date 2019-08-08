@@ -4,35 +4,14 @@
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, 46, 46">
-      <Button
-        row="0"
-        col="2"
-        text="&#xe8fd;"
-        (tap)="onHelpTap()"
-        class="help-btn"
-      ></Button>
-      <Button
-        row="0"
-        col="3"
-        text="&#xe8b8;"
-        [nsRouterLink]="['../profile-settings']"
-        class="settings-btn"
-      ></Button>
+      <Button row="0" col="2" text="&#xe8fd;" (tap)="onHelpTap()" class="help-btn"></Button>
+      <Button row="0" col="3" text="&#xe8b8;" [nsRouterLink]="['../profile-settings']" class="settings-btn"></Button>
     </GridLayout>
     <ScrollView row="1" rowSpan="2" col="0" padding="10">
-      <GridLayout
-        rows="*, *, *, *, *, *, *, *, *, *, *"
-        columns="auto, *, *, *"
-      >
+      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
         // Page Title
-        <Label
-          row="0"
-          col="0"
-          colSpan="4"
-          class="page-title"
-          [text]="'profile-tab.title' | translate"
-          textWrap="true"
-        ></Label>
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate"
+          textWrap="true"></Label>
         // User Avatar // kinvey user.data.profile_picture - check if we have it
         and use that if not, nothing
         <GridLayout row="1" col="0" rowspan="2" class="avatar-circle">
@@ -40,44 +19,21 @@
         </GridLayout>
 
         // User Name
-        <Label
-          row="1"
-          col="1"
-          colSpan="3"
-          class="profile-name"
-          [text]="user.data.first_name + ' ' + user.data.last_name"
-          textWrap="true"
-        ></Label>
+        <Label row="1" col="1" colSpan="3" class="profile-name"
+          [text]="user.data.first_name + ' ' + user.data.last_name" textWrap="true"></Label>
 
         // User Email
-        <Label
-          row="2"
-          col="1"
-          colSpan="3"
-          class="profile-email"
-          [text]="user.email"
-          textWrap="true"
-        ></Label>
+        <Label row="2" col="1" colSpan="3" class="profile-email" [text]="user.email" textWrap="true"></Label>
 
         // Activity Goals Label
-        <label
-          col="0"
-          row="3"
-          colSpan="4"
-          class="section-label"
-          [text]="'profile-tab.activity-goals' | translate"
-        ></label>
+        <label col="0" row="3" colSpan="4" class="section-label"
+          [text]="'profile-tab.activity-goals' | translate"></label>
 
         // Horizontal Line
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
-        <StackLayout
-          row="5"
-          col="0"
-          colSpan="2"
-          class="data-box"
-          (tap)="
+        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="
             onActivityGoalTap(
               $event,
               'coast-time',
@@ -85,30 +41,16 @@
               'COAST_TIME_ACTIVITY_GOAL',
               COAST_TIME_ACTIVITY_GOAL
             )
-          "
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.coast-time' | translate"
-          ></Label>
+          ">
+          <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.activity_goal_coast_time"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.activity_goal_coast_time" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Distance
-        <StackLayout
-          row="5"
-          col="2"
-          colSpan="2"
-          class="data-box"
-          (tap)="
+        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="
             onActivityGoalTap(
               $event,
               'distance',
@@ -116,146 +58,61 @@
               'DISTANCE_ACTIVITY_GOAL',
               DISTANCE_ACTIVITY_GOAL
             )
-          "
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.distance' | translate"
-          ></Label>
+          ">
+          <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.activity_goal_distance"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.activity_goal_distance" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // About You Label
-        <Label
-          row="6"
-          col="0"
-          colSpan="4"
-          class="section-label"
-          [text]="'profile-tab.about-you' | translate"
-        ></Label>
+        <Label row="6" col="0" colSpan="4" class="section-label" [text]="'profile-tab.about-you' | translate"></Label>
 
         // Horizontal Line
         <StackLayout row="7" col="0" colspan="4" class="hr"></StackLayout>
 
         // Gender Box
-        <StackLayout
-          row="8"
-          col="0"
-          colSpan="2"
-          class="data-box"
-          (tap)="onDataBoxTap($event, 'gender')"
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.gender' | translate"
-          ></Label>
+        <StackLayout row="8" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'gender')">
+          <Label class="data-box-label" [text]="'general.gender' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.gender"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.gender" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Birthday Box
-        <StackLayout
-          row="8"
-          col="2"
-          colSpan="2"
-          class="data-box"
-          (tap)="onBirthDateTap($event)"
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.birthday' | translate"
-          ></Label>
+        <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="onBirthDateTap($event)">
+          <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.dob | date"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.dob | date" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Weight Box
-        <StackLayout
-          row="9"
-          col="0"
-          colSpan="2"
-          class="data-box"
-          (tap)="onListWeightTap($event)"
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.weight' | translate"
-          ></Label>
+        <StackLayout row="9" col="0" colSpan="2" class="data-box" (tap)="onListWeightTap($event)">
+          <Label class="data-box-label" [text]="'general.weight' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.weight"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.weight" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Height Box
-        <StackLayout
-          row="9"
-          col="2"
-          colSpan="2"
-          class="data-box"
-          (tap)="onListHeightTap($event)"
-        >
-          <Label
-            class="data-box-label"
-            [text]="'general.height' | translate"
-          ></Label>
+        <StackLayout row="9" col="2" colSpan="2" class="data-box" (tap)="onListHeightTap($event)">
+          <Label class="data-box-label" [text]="'general.height' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.height"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.height" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 
         // Chair Type Box
-        <StackLayout
-          row="10"
-          col="0"
-          colSpan="2"
-          class="data-box"
-          (tap)="onDataBoxTap($event, 'chair-type')"
-        >
-          <Label
-            class="data-box-label"
-            [text]="'profile-tab.chair-type' | translate"
-          ></Label>
+        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onDataBoxTap($event, 'chair-type')">
+          <Label class="data-box-label" [text]="'profile-tab.chair-type' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label
-              col="0"
-              class="data-box-value"
-              [text]="user.data.chair_type"
-              textWrap="true"
-            ></Label>
+            <Label col="0" class="data-box-value" [text]="user.data.chair_type" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -265,136 +122,48 @@
 
   <!-- Activity Goals FullScreen Layout -->
   // custom full-screen modal for presenting user with config changes UI
-  <GridLayout
-    #activityGoalsDialog
-    row="0"
-    rowSpan="3"
-    col="0"
-    rows="auto, *"
-    columns="*"
-    [translateY]="screenHeight"
-    opacity="0"
-    class="activity-goals-dialog"
-  >
+  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight"
+    opacity="0" class="activity-goals-dialog">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, auto">
-      <Button
-        row="0"
-        col="0"
-        text="&#xe5cd;"
-        class="close-btn"
-        (tap)="closeActivityGoalsDialog()"
-      ></Button>
-      <Button
-        row="0"
-        col="2"
-        [text]="'profile-tab.set-goal' | translate"
-        class="set-goal-btn"
-        (tap)="onSetGoalBtnTap()"
-      ></Button>
+      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeActivityGoalsDialog()"></Button>
+      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"
+        (tap)="onSetGoalBtnTap()"></Button>
     </GridLayout>
     <GridLayout row="1" rows="auto, auto, *">
-      <Label
-        row="0"
-        [text]="activity_goals_dialog_data.config_title"
-        class="config-title"
-        textWrap="true"
-      ></Label>
-      <Label
-        row="1"
-        [text]="activity_goals_dialog_data.config_description"
-        class="config-title-description"
-        textWrap="true"
-      ></Label>
-      <GridLayout
-        class="config-circle"
-        row="2"
-        rows="*, auto, *"
-        columns="auto, *, auto"
-      >
-        <Button
-          row="1"
-          col="0"
-          text="&#xe15b;"
-          (tap)="decrementConfigValue()"
-        ></Button>
+      <Label row="0" [text]="activity_goals_dialog_data.config_title" class="config-title" textWrap="true"></Label>
+      <Label row="1" [text]="activity_goals_dialog_data.config_description" class="config-title-description"
+        textWrap="true"></Label>
+      <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="auto, *, auto">
+        <Button row="1" col="0" text="&#xe15b;" (tap)="decrementConfigValue()"></Button>
         <StackLayout horizontalAlignment="center" row="1" col="1">
-          <Label
-            class="config-value"
-            [text]="activity_goals_dialog_data.config_value"
-          ></Label>
+          <Label class="config-value" [text]="activity_goals_dialog_data.config_value"></Label>
           <Label class="config-value-sub" text="minutes per day"></Label>
         </StackLayout>
-        <Button
-          row="1"
-          col="2"
-          text="&#xe145;"
-          (tap)="incrementConfigValue()"
-        ></Button>
+        <Button row="1" col="2" text="&#xe145;" (tap)="incrementConfigValue()"></Button>
       </GridLayout>
     </GridLayout>
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout
-    #listPickerDialog
-    row="0"
-    rowSpan="3"
-    col="0"
-    rows="*, auto, *"
-    columns="*"
-    [translateY]="screenHeight"
-    opacity="0"
-    class="list-picker-dialog"
-  >
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight"
+    opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
       // Mock ActionBar
-      <Label
-        class="picker-title"
-        [text]="(isWeight ? 'general.weight' : 'general.height') | translate"
-        textWrap="true"
-      ></Label>
-      <Label
-        class="picker-description"
-        [text]="
+      <Label class="picker-title" [text]="(isWeight ? 'general.weight' : 'general.height') | translate"
+        textWrap="true"></Label>
+      <Label class="picker-description" [text]="
           (isWeight ? 'general.weight-guess' : 'general.height-guess')
             | translate
-        "
-        textWrap="true"
-      ></Label>
+        " textWrap="true"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
-        <StackLayout
-          row="0"
-          col="1"
-          colSpan="2"
-          orientation="horizontal"
-          horizontalAlignment="center"
-        >
-          <ListPicker
-            [items]="primary"
-            [selectedIndex]="primaryIndex"
-            class="m-r-4"
-          ></ListPicker>
-          <ListPicker
-            [items]="secondary"
-            [selectedIndex]="secondaryIndex"
-            class="m-l-4"
-          ></ListPicker>
+        <StackLayout row="0" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
+          <ListPicker #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
+          <ListPicker #secondaryPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-l-4" (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"></ListPicker>
         </StackLayout>
-        <Button
-          row="1"
-          col="1"
-          [text]="'general.cancel' | translate"
-          class="cancel-btn"
-          (tap)="closeListPickerDialog()"
-        ></Button>
-        <Button
-          row="1"
-          col="2"
-          [text]="'general.ok' | translate"
-          class="ok-btn"
-          (tap)="saveListPickerValue()"
-        ></Button>
+        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn"
+          (tap)="closeListPickerDialog()"></Button>
+        <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
       </GridLayout>
     </StackLayout>
   </GridLayout>

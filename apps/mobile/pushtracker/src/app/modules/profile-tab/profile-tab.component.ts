@@ -420,14 +420,43 @@ export class ProfileTabComponent implements OnInit {
         duration: 0
       });
     });
+
     this._removeActiveDataBox();
   }
 
   async saveListPickerValue() {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
+    let metricWeight = 0;
+    let metricHeight = 0;
+
     if (this.isWeight) {
-      this.user.weight = this.primaryIndex + this.secondaryIndex;
+      metricWeight = parseFloat(this.primary[this.primaryIndex]) + parseFloat(this.secondary[this.secondaryIndex]);
+      // Convert to metric units if SETTING_WEIGHT is Pounds
+      if (this.SETTING_WEIGHT === 'POUNDS') {
+        metricWeight = this._poundsToKilograms(this.user.data.weight);
+      }
     }
+    else {
+      const primaryValue = parseFloat(this.primary[this.primaryIndex]);
+      const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
+      metricHeight = primaryValue + secondaryValue;
+      // Convert height to metric units if SETTING_HEIGHT is Feet & inches
+      if (this.SETTING_HEIGHT === 'Feet & inches') {
+        metricHeight = this._feetInchesToCentimeters(primaryValue, secondaryValue);
+      }
+    }
+
+    KinveyUser.update({ weight : metricWeight, height: metricHeight });
+
+    console.log(this.user.data.weight, this.user.data.height);
+  }
+
+  private _poundsToKilograms(val: number) {
+    return val /= 2.2046;
+  }
+
+  private _feetInchesToCentimeters(feet: number, inches: number) {
+    return (feet * 12 + inches) * 2.54;
   }
 
   private _openListPickerDialog() {
@@ -444,6 +473,14 @@ export class ProfileTabComponent implements OnInit {
         duration: 200
       });
     });
+  }
+
+  public primaryIndexChanged(picker) {
+    this.primaryIndex = picker.selectedIndex;
+  }
+
+  public secondaryIndexChanged(picker) {
+    this.secondaryIndex = picker.selectedIndex;
   }
 
   private _animateDialog(args, x: number, y: number) {
