@@ -98,6 +98,10 @@ export class ProfileSettingsComponent implements OnInit {
     );
   }
 
+  onSliderChanged(args: any) {
+    this.SLIDER_VALUE = args.object.value;
+  }
+
   async closeSliderSettingDialog() {
     const x = this.sliderSettingDialog.nativeElement as GridLayout;
     x.animate({

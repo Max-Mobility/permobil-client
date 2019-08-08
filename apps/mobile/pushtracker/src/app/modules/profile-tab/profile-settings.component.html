@@ -89,6 +89,7 @@
         <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
           <Slider row="0" col="0" colSpan="2"
                   class="slider"
+                  (valueChange)="onSliderChanged($event)"
                   [value]="SLIDER_VALUE"
                   minValue="1" maxValue="10"></Slider>
           <Label class="slider-value" row="0" col="2" [text]="(SLIDER_VALUE * 10) + ' %'"></Label>
