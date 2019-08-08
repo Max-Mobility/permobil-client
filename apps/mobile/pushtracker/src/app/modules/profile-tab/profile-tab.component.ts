@@ -366,7 +366,7 @@ export class ProfileTabComponent implements OnInit {
 
   onWeightTap(args) {
     Log.D('Weight action item tap');
-    this._setActiveDataBox(args);ceil
+    this._setActiveDataBox(args);
 
     const data = ['Kilograms', 'Pounds'];
     this._dialogService
