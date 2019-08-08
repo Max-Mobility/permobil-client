@@ -308,12 +308,14 @@ export class ProfileTabComponent implements OnInit {
       dateTimePickerStyle
     )
       .then(result => {
+        console.log('Date saved', result);
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
           (this.user.data as any).dob = result;
+          KinveyUser.update({ dob : result });
         }
       })
       .catch(err => {
