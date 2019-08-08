@@ -310,6 +310,8 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onBirthDateTap(args: EventData) {
+    Log.D(`Birthday tapped`);
+
     this._setActiveDataBox(args);
 
     const dateTimePickerStyle = DateTimePickerStyle.create(
@@ -455,19 +457,22 @@ export class ProfileTabComponent implements OnInit {
     // Initialize primaryIndex and secondaryIndex from user.data.height
     const indices = this._getHeightIndices();
     this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = 100 * indices[1];
-
+    this.secondaryIndex = (indices[1]);
+    if (this.secondaryIndex === 12) {
+      this.primaryIndex += 1;
+      this.secondaryIndex = 0;
+    }
     this.isWeight = false;
     this._openListPickerDialog();
   }
 
   private _getHeightIndices() {
-    let height = this.user.data.height;
+    let heightString = this.user.data.height + '';
     if (this.SETTING_HEIGHT === 'Feet & inches') {
-      height = this._centimetersToFeetInches(height);
+      heightString = this._centimetersToFeetInches(this.user.data.height);
     }
-    const primaryIndex = Math.floor(height);
-    const secondaryIndex = parseFloat((height % 1).toFixed(2));
+    const primaryIndex = Math.floor(parseFloat(heightString));
+    const secondaryIndex = parseFloat(heightString.split('.')[1]);
     return [primaryIndex - 2, secondaryIndex];
   }
 
@@ -520,8 +525,10 @@ export class ProfileTabComponent implements OnInit {
       this.displayHeight = this._displayHeightInCentimeters(this.user.data.height);
       // convert from metric height (as stored in Kinvey) to user preferred unit
       if (this.SETTING_HEIGHT === 'Feet & inches') {
-        const feetInches = this._centimetersToFeetInches(this.user.data.height);
-        this.displayHeight = this._displayHeightInFeetInches(feetInches, ((feetInches % 1) * 100));
+        const heightString = this._centimetersToFeetInches(this.user.data.height);
+        const feet = parseFloat(heightString.split('.')[0]);
+        const inches = parseFloat(heightString.split('.')[1]);
+        this.displayHeight = this._displayHeightInFeetInches(feet, inches);
       }
       if (!this.displayHeight) this.displayHeight = '';
     }
@@ -567,7 +574,10 @@ export class ProfileTabComponent implements OnInit {
 
   private _centimetersToFeetInches(val: number) {
     const inch = val * 0.3937;
-    return parseFloat(Math.floor(inch / 12) + '.' + Math.round(inch % 12));
+    if (Math.round(inch % 12) === 0)
+      return (Math.floor(inch / 12) + 1) + '.0';
+    else
+      return Math.floor(inch / 12) + '.' + Math.round(inch % 12);
   }
 
   private _displayWeightInPounds(val: number) {
