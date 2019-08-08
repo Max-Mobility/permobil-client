@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -89,6 +90,7 @@ export class ProfileTabComponent implements OnInit {
 
   constructor(
     private _routerExtensions: RouterExtensions,
+    private activeRoute: ActivatedRoute,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _dialogService: DialogService,
@@ -143,6 +145,26 @@ export class ProfileTabComponent implements OnInit {
     Log.D('help action item tap');
   }
 
+  onSettingsTap() {
+    Log.D('settings action item tap');
+    this._routerExtensions.navigate(['../profile-settings'], {
+      relativeTo: this.activeRoute,
+      animated: true,
+      transition: {
+        name: 'slide'
+      }
+    });
+    /*
+    this._routerExtensions.navigate(
+      [{
+        outlets: {
+          profileTab: ['../profile-settings']
+        }
+      }]
+    );
+    */
+  }
+
   async onActivityGoalTap(
     args,
     configTitle: string,
@@ -188,9 +210,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
+      this.activity_goals_dialog_data.config_key +
+      ' ' +
+      this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -315,7 +337,7 @@ export class ProfileTabComponent implements OnInit {
             `User changed birthday: ${result.toDateString()}`
           );
           (this.user.data as any).dob = result;
-          KinveyUser.update({ dob : result });
+          KinveyUser.update({ dob: result });
         }
       })
       .catch(err => {
@@ -573,7 +595,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
-    return (Math.floor(feet)).toFixed() + '\' '  + (inches).toFixed() + '"';
+    return (Math.floor(feet)).toFixed() + '\' ' + (inches).toFixed() + '"';
   }
 
   private _displayHeightInCentimeters(val: number) {
