@@ -4,8 +4,21 @@
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, 46, 46">
-      <Button row="0" col="2" text="&#xe8fd;" (tap)="onHelpTap()" class="help-btn"></Button>
-      <Button row="0" col="3" text="&#xe8b8;" [nsRouterLink]="['../profile-settings']" class="settings-btn"></Button>
+      <Button
+        row="0"
+        col="2"
+        text="&#xe8fd;"
+        (tap)="onHelpTap()"
+        class="help-btn"
+      ></Button>
+      <Button
+        row="0"
+        col="3"
+        text="&#xe8b8;"
+        pageTransition="slide"
+        [nsRouterLink]="['../profile-settings']"
+        class="settings-btn"
+      ></Button>
     </GridLayout>
     <ScrollView row="1" rowSpan="2" col="0" padding="10">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
