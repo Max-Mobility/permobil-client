@@ -36,6 +36,8 @@ export class ProfileTabComponent implements OnInit {
   user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isWeight: boolean;
+  displayWeight: string;
+  displayHeight: string;
   primary: string[];
   secondary: string[];
   primaryIndex: number;
@@ -95,7 +97,6 @@ export class ProfileTabComponent implements OnInit {
     // appSettings.clear();
     this._page.actionBarHidden = true;
     this.user = KinveyUser.getActiveUser();
-    console.log('current pt mobile user', this.user);
 
     if (!this.user.data.dob || this.user.data.dob === '')
       this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
@@ -134,6 +135,31 @@ export class ProfileTabComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb('profile-tab.component ngOnInit');
+
+    if (!this.displayWeight) {
+      this.displayWeight = this.user.data.weight;
+      // convert from metric weight (as stored in Kinvey) to user preferred unit
+      if (this.SETTING_WEIGHT === 'Pounds') {
+        this.displayWeight = this._kilogramsToPounds(this.user.data.weight) + ' lbs';
+      }
+      else {
+        this.displayWeight = this.user.data.weight + ' kg';
+      }
+      if (!this.displayWeight) this.displayWeight = '';
+    }
+
+    if (!this.displayHeight) {
+      this.displayHeight = this.user.data.height + ' cm';
+      // convert from metric height (as stored in Kinvey) to user preferred unit
+      if (this.SETTING_HEIGHT === 'Feet & inches') {
+        const feetInches = this._centimetersToFeetInches(this.user.data.height);
+        this.displayHeight = (Math.floor(feetInches)).toFixed() + '\' '  + ((feetInches % 1) * 100).toFixed() + '"';
+      }
+      else {
+        this.displayHeight = this.user.data.height + ' cm';
+      }
+      if (!this.displayHeight) this.displayHeight = '';
+    }
   }
 
   onHelpTap() {
@@ -340,7 +366,7 @@ export class ProfileTabComponent implements OnInit {
 
   onWeightTap(args) {
     Log.D('Weight action item tap');
-    this._setActiveDataBox(args);
+    this._setActiveDataBox(args);ceil
 
     const data = ['Kilograms', 'Pounds'];
     this._dialogService
@@ -398,10 +424,10 @@ export class ProfileTabComponent implements OnInit {
 
     if (this.SETTING_WEIGHT === 'Kilograms') {
       this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + (k + 1));
+      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
     } else {
       this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + (k + 1));
+      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
     }
 
     this.isWeight = true;
@@ -419,7 +445,7 @@ export class ProfileTabComponent implements OnInit {
       this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
     } else {
       this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
-      this.secondary = Array.from({ length: 11 }, (v, k) => k + 1 + ' in');
+      this.secondary = Array.from({ length: 12 }, (v, k) => k + ' in');
     }
 
     this.isWeight = false;
@@ -446,41 +472,52 @@ export class ProfileTabComponent implements OnInit {
 
   async saveListPickerValue() {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
-    let metricWeight = 0;
-    let metricHeight = 0;
+    const primaryValue = parseFloat(this.primary[this.primaryIndex]);
+    const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
 
     if (this.isWeight) {
-      metricWeight =
-        parseFloat(this.primary[this.primaryIndex]) +
-        parseFloat(this.secondary[this.secondaryIndex]);
-      // Convert to metric units if SETTING_WEIGHT is Pounds
-      if (this.SETTING_WEIGHT === 'POUNDS') {
-        metricWeight = this._poundsToKilograms(this.user.data.weight);
+      (this.user.data as PtMobileUserData).weight = primaryValue + secondaryValue;
+      if (this.SETTING_WEIGHT === 'Pounds') {
+        this.user.data.weight = this._poundsToKilograms(primaryValue + secondaryValue);
+        this.displayWeight = (primaryValue + secondaryValue) + ' lbs';
       }
-    } else {
-      const primaryValue = parseFloat(this.primary[this.primaryIndex]);
-      const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
-      metricHeight = primaryValue + secondaryValue;
-      // Convert height to metric units if SETTING_HEIGHT is Feet & inches
-      if (this.SETTING_HEIGHT === 'Feet & inches') {
-        metricHeight = this._feetInchesToCentimeters(
-          primaryValue,
-          secondaryValue
-        );
+      else {
+        this.user.data.weight = (primaryValue + secondaryValue);
+        this.displayWeight = (primaryValue + secondaryValue) + ' kg';
       }
+      KinveyUser.update({ weight: this.user.data.weight });
     }
-
-    KinveyUser.update({ weight: metricWeight, height: metricHeight });
-
-    console.log(this.user.data.weight, this.user.data.height);
+    else {
+      (this.user.data as PtMobileUserData).height = primaryValue + (0.01 * secondaryValue);
+      if (this.SETTING_HEIGHT === 'Feet & inches') {
+        this.user.data.height = this._feetInchesToCentimeters(primaryValue, secondaryValue);
+        this.displayHeight = (Math.floor(primaryValue)).toFixed() + '\' '  + (secondaryValue).toFixed() + '"';
+      }
+      else {
+        this.user.data.height = (primaryValue + 0.01 * secondaryValue);
+        this.displayHeight = this.user.data.height + ' cm';
+      }
+      KinveyUser.update({ height: this.user.data.height });
+    }
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
   }
 
   private _poundsToKilograms(val: number) {
-    return (val /= 2.2046);
+    return (val * 0.453592);
+  }
+
+  private _kilogramsToPounds(val: number) {
+    return parseFloat((val * 2.20462).toFixed(1));
   }
 
   private _feetInchesToCentimeters(feet: number, inches: number) {
     return (feet * 12 + inches) * 2.54;
+  }
+
+  private _centimetersToFeetInches(val: number) {
+    const inch = val * 0.3937;
+    return parseFloat(Math.floor(inch / 12) + '.' + Math.round(inch % 12));
   }
 
   private _openListPickerDialog() {
