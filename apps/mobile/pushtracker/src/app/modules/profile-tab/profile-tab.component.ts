@@ -403,22 +403,6 @@ export class ProfileTabComponent implements OnInit {
       });
   }
 
-  onMaxSpeedTap(args) {
-    Log.D('Max Speed action item tap');
-  }
-
-  onAccelerationTap(args) {
-    Log.D('Acceleration action item tap');
-  }
-
-  onTapSensitivityTap(args) {
-    Log.D('Tap Sensitivity action item tap');
-  }
-
-  onModeTap(args) {
-    Log.D('Mode action item tap');
-  }
-
   onListWeightTap(args: EventData) {
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
