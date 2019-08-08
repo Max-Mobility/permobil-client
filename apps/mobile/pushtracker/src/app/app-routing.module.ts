@@ -4,15 +4,13 @@ import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { AppInfoComponent } from './modules/app-info/app-info.component';
 import { ForgotPasswordComponent } from './modules/forgot-password/forgot-password.component';
 import { LoginComponent } from './modules/login/login.component';
-import { ProfileSettingsComponent } from './modules/profile-settings/profile-settings.component';
 import { SignUpComponent } from './modules/sign-up/sign-up.component';
 
 export const COMPONENTS = [
   LoginComponent,
   SignUpComponent,
   ForgotPasswordComponent,
-  AppInfoComponent,
-  ProfileSettingsComponent
+  AppInfoComponent
 ];
 
 const routes: Routes = [
@@ -28,10 +26,6 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent
-  },
-  {
-    path: 'profile-settings',
-    component: ProfileSettingsComponent
   },
   { path: 'tabs', loadChildren: './modules/tabs/tabs.module#TabsModule' }
 ];

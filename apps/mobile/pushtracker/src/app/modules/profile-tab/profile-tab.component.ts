@@ -4,7 +4,10 @@ import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
+import {
+  DateTimePicker,
+  DateTimePickerStyle
+} from 'nativescript-datetimepicker';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
@@ -182,9 +185,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-      this.activity_goals_dialog_data.config_key +
-      ' ' +
-      this.activity_goals_dialog_data.config_value
+        this.activity_goals_dialog_data.config_key +
+        ' ' +
+        this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -193,15 +196,24 @@ export class ProfileTabComponent implements OnInit {
     );
 
     // Persist this goal in Kinvey
-    if (this.activity_goals_dialog_data.config_key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
-      (this.user.data as PtMobileUserData).activity_goal_coast_time =
-        this.activity_goals_dialog_data.config_value;
-      KinveyUser.update({ 'activity_goal_coast_time' : this.activity_goals_dialog_data.config_value });
-    }
-    else if (this.activity_goals_dialog_data.config_key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
-      (this.user.data as PtMobileUserData).activity_goal_distance =
-        this.activity_goals_dialog_data.config_value;
-      KinveyUser.update({ 'activity_goal_distance' : this.activity_goals_dialog_data.config_value });
+    if (
+      this.activity_goals_dialog_data.config_key ===
+      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
+    ) {
+      (this.user
+        .data as PtMobileUserData).activity_goal_coast_time = this.activity_goals_dialog_data.config_value;
+      KinveyUser.update({
+        activity_goal_coast_time: this.activity_goals_dialog_data.config_value
+      });
+    } else if (
+      this.activity_goals_dialog_data.config_key ===
+      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
+    ) {
+      (this.user
+        .data as PtMobileUserData).activity_goal_distance = this.activity_goals_dialog_data.config_value;
+      KinveyUser.update({
+        activity_goal_distance: this.activity_goals_dialog_data.config_value
+      });
     }
 
     this.COAST_TIME_ACTIVITY_GOAL =
@@ -213,22 +225,6 @@ export class ProfileTabComponent implements OnInit {
 
     // close the dialog which can re-use the function that the close btn uses
     this.closeActivityGoalsDialog();
-  }
-
-  async onSettingsTap(args) {
-    Log.D('User tapped settings');
-
-    this._routerExtensions.navigate(['/profile-settings'], {});
-
-    // this._modalService
-    //   .showModal(ProfileSettingsComponent, {
-    //     context: {},
-    //     fullscreen: true,
-    //     viewContainerRef: this._vcRef
-    //   })
-    //   .catch(err => {
-    //     this._logService.logException(err);
-    //   });
   }
 
   onDataBoxTap(args: EventData, key: string) {
@@ -271,18 +267,23 @@ export class ProfileTabComponent implements OnInit {
   onBirthDateTap(args: EventData) {
     this._setActiveDataBox(args);
 
-    const dateTimePickerStyle = DateTimePickerStyle.create((args.object as StackLayout));
+    const dateTimePickerStyle = DateTimePickerStyle.create(
+      args.object as StackLayout
+    );
 
-    DateTimePicker.pickDate({
-      context: (args.object as StackLayout)._context,
-      date: this.user.data.dob,
-      minDate: subYears(new Date(), 110),
-      maxDate: new Date(),
-      title: this._translateService.instant('general.birthday'),
-      okButtonText: this._translateService.instant('general.ok'),
-      cancelButtonText: this._translateService.instant('general.cancel'),
-      locale: this._translateService.getDefaultLang()
-    }, dateTimePickerStyle)
+    DateTimePicker.pickDate(
+      {
+        context: (args.object as StackLayout)._context,
+        date: this.user.data.dob,
+        minDate: subYears(new Date(), 110),
+        maxDate: new Date(),
+        title: this._translateService.instant('general.birthday'),
+        okButtonText: this._translateService.instant('general.ok'),
+        cancelButtonText: this._translateService.instant('general.cancel'),
+        locale: this._translateService.getDefaultLang()
+      },
+      dateTimePickerStyle
+    )
       .then(result => {
         this._removeActiveDataBox();
         if (result) {
