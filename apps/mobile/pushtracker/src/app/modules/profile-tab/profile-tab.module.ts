@@ -20,4 +20,4 @@ import { ProfileTabComponent } from './profile-tab.component';
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })
-export class ProfileTabModule {}
+export class ProfileTabModule { }
