@@ -376,44 +376,6 @@ export class ProfileTabComponent implements OnInit {
       });
   }
 
-  onHeightTap(args) {
-    Log.D('height action item tap');
-    this._setActiveDataBox(args);
-
-    const data = ['Centimeters', 'Feet & inches'];
-    this._dialogService
-      .action(this._translateService.instant('general.height'), data)
-      .then(val => {
-        this._removeActiveDataBox();
-        if (val) {
-          this.SETTING_HEIGHT = val;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
-  onWeightTap(args) {
-    Log.D('Weight action item tap');
-    this._setActiveDataBox(args);
-
-    const data = ['Kilograms', 'Pounds'];
-    this._dialogService
-      .action(this._translateService.instant('general.weight'), data)
-      .then(val => {
-        this._removeActiveDataBox();
-        if (val) {
-          this.SETTING_WEIGHT = val;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
   onDistanceTap(args) {
     Log.D('Distance action item tap');
     this._setActiveDataBox(args);
