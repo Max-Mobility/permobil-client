@@ -182,14 +182,17 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
+        this.user.data.height_unit_preference = this.listPickerIndex;
         KinveyUser.update({ height_unit_preference: this.listPickerIndex });
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
+        this.user.data.weight_unit_preference = this.listPickerIndex;
         KinveyUser.update({ weight_unit_preference: this.listPickerIndex });
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
+        this.user.data.distance_unit_preference = this.listPickerIndex;
         KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':

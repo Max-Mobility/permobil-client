@@ -43,8 +43,11 @@ export class ProfileTabComponent implements OnInit {
   secondary: string[];
   primaryIndex: number;
   secondaryIndex: number;
+  SETTING_WEIGHT_UNITS: string[];
   SETTING_WEIGHT: string;
+  SETTING_HEIGHT_UNITS: string[];
   SETTING_HEIGHT: string;
+  SETTING_DISTANCE_UNITS: string[];
   SETTING_DISTANCE: string;
   SETTING_MAX_SPEED: string;
   SETTING_ACCELERATION: string;
@@ -109,10 +112,16 @@ export class ProfileTabComponent implements OnInit {
     this.secondaryIndex = 0;
 
     this.isWeight = false;
+
+    // Units for settings
+    this.SETTING_HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
+    this.SETTING_WEIGHT_UNITS = ['Kilograms', 'Pounds'];
+    this.SETTING_DISTANCE_UNITS = ['Kilometers', 'Miles'];
+
     // Setting
-    this.SETTING_HEIGHT = 'Feet & inches';
-    this.SETTING_WEIGHT = 'Pounds';
-    this.SETTING_DISTANCE = 'Miles';
+    this.SETTING_HEIGHT = this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] || 'Feet & inches';
+    this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
+    this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
     this.SETTING_MAX_SPEED = '70%';
     this.SETTING_ACCELERATION = '70%';
     this.SETTING_TAP_SENSITIVITY = '100%';
@@ -133,6 +142,17 @@ export class ProfileTabComponent implements OnInit {
     };
 
     this.screenHeight = screen.mainScreen.heightDIPs;
+
+    this._page.on(Page.navigatedToEvent, (args) => {
+      this.user = KinveyUser.getActiveUser();
+      console.log('Navigating to Profile page');
+      this.SETTING_HEIGHT = this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] || 'Feet & inches';
+      this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
+      this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
+      this._initDisplayWeight();
+      this._initDisplayHeight();
+      console.log(this.displayHeight, this.displayWeight);
+    });
   }
 
   ngOnInit() {
@@ -525,36 +545,32 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _initDisplayWeight() {
-    if (!this.displayWeight) {
-      this.displayWeight = this._displayWeightInKilograms(
-        this.user.data.weight
+    this.displayWeight = this._displayWeightInKilograms(
+      this.user.data.weight
+    );
+    // convert from metric weight (as stored in Kinvey) to user preferred unit
+    if (this.SETTING_WEIGHT === 'Pounds') {
+      this.displayWeight = this._displayWeightInPounds(
+        this._kilogramsToPounds(this.user.data.weight)
       );
-      // convert from metric weight (as stored in Kinvey) to user preferred unit
-      if (this.SETTING_WEIGHT === 'Pounds') {
-        this.displayWeight = this._displayWeightInPounds(
-          this._kilogramsToPounds(this.user.data.weight)
-        );
-      }
-      if (!this.displayWeight) this.displayWeight = '';
     }
+    if (!this.displayWeight) this.displayWeight = '';
   }
 
   private _initDisplayHeight() {
-    if (!this.displayHeight) {
-      this.displayHeight = this._displayHeightInCentimeters(
+    this.displayHeight = this._displayHeightInCentimeters(
+      this.user.data.height
+    );
+    // convert from metric height (as stored in Kinvey) to user preferred unit
+    if (this.SETTING_HEIGHT === 'Feet & inches') {
+      const heightString = this._centimetersToFeetInches(
         this.user.data.height
       );
-      // convert from metric height (as stored in Kinvey) to user preferred unit
-      if (this.SETTING_HEIGHT === 'Feet & inches') {
-        const heightString = this._centimetersToFeetInches(
-          this.user.data.height
-        );
-        const feet = parseFloat(heightString.split('.')[0]);
-        const inches = parseFloat(heightString.split('.')[1]);
-        this.displayHeight = this._displayHeightInFeetInches(feet, inches);
-      }
-      if (!this.displayHeight) this.displayHeight = '';
+      const feet = parseFloat(heightString.split('.')[0]);
+      const inches = parseFloat(heightString.split('.')[1]);
+      this.displayHeight = this._displayHeightInFeetInches(feet, inches);
     }
+    if (!this.displayHeight) this.displayHeight = '';
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
@@ -615,11 +631,11 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayWeightInPounds(val: number) {
-    return val + ' lbs';
+    return val.toFixed(1) + ' lbs';
   }
 
   private _displayWeightInKilograms(val: number) {
-    return val + ' kg';
+    return (val).toFixed(1) + ' kg';
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
@@ -627,7 +643,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayHeightInCentimeters(val: number) {
-    return val + ' cm';
+    return (val).toFixed(1) + ' cm';
   }
 
   private _openListPickerDialog() {
