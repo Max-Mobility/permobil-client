@@ -415,7 +415,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListGenderTap(args: EventData) {
     this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
+    this.secondaryIndex = 0;
+    Log.D('User tapped gender data box');
     this._setActiveDataBox(args);
 
     this.primary = ['Male', 'Female'];
@@ -667,7 +668,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListChairTypeTap(args: EventData) {
     this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
+    this.secondaryIndex = 0;
+    Log.D('User tapped Chair Type data box');
     this._setActiveDataBox(args);
 
     this.primary = [];
@@ -688,7 +690,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListChairMakeTap(args: EventData) {
     this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
+    this.secondaryIndex = 0;
+    Log.D('User tapped Chair Make data box');
     this._setActiveDataBox(args);
 
     this.primary = [
@@ -703,7 +706,7 @@ export class ProfileTabComponent implements OnInit {
       'Top End',
       'Other'
     ];
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
 
     this.listPickerTitle = this._translateService.instant('profile-tab.chair-make');
     this.listPickerDescriptionNecessary = false;
