@@ -65,6 +65,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 
+  private static final boolean USE_ALARM = false;
+
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
    * SensorManager.SENSOR_DELAY_UI:      ~ 60ms
@@ -148,7 +150,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     startServiceWithNotification();
 
     // set the debuggable flag
-    isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -196,9 +198,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
     }
 
-    // do the processing here - this function will have been called by
-    // the alarm manager
-    periodicProcessing();
+    if (USE_ALARM) {
+      // do the processing here - this function will have been called by
+      // the alarm manager
+      periodicProcessing();
+    }
 
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
@@ -340,11 +344,13 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
       // remove sensor listeners
       unregisterDeviceSensors();
-      // cancel the alarm
-      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
-      scheduler.cancel(scheduledIntent);
-      scheduledIntent.cancel();
+      if (USE_ALARM) {
+        // cancel the alarm
+        AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
+        scheduler.cancel(scheduledIntent);
+        scheduledIntent.cancel();
+      }
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -472,33 +478,34 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     int sensorType = event.sensor.getType();
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       if (isDebuggable || watchBeingWorn) {
-        synchronized (sensorDataList) {
-          // add the event to the data list for processing later
-          sensorDataList.add(event);
-          if (sensorDataList.size() > MAX_DATA_LIST_LENGTH) {
-            // so that we don't waste memory, go ahead and process the
-            // data
-            periodicProcessing();
+        if (USE_ALARM) {
+          synchronized (sensorDataList) {
+            // add the event to the data list for processing later
+            sensorDataList.add(event);
+            if (sensorDataList.size() > MAX_DATA_LIST_LENGTH) {
+              // so that we don't waste memory, go ahead and process the
+              // data
+              periodicProcessing();
+            }
+          }
+        } else {
+          // use the data to detect activities
+          ActivityDetector.Detection detection =
+            activityDetector.detectActivity(event.values, event.timestamp);
+          handleDetection(detection);
+          // TODO: update data in SQLite tables
+          // TODO: update data in datastore / shared preferences
+          // send intent to main activity with updated data
+          long now = System.currentTimeMillis();
+          long timeDiffMs = now - _lastSendDataTimeMs;
+          if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+            sendDataToActivity(currentPushCount,
+                               currentCoastTime,
+                               currentDistance,
+                               currentHeartRate);
+            _lastSendDataTimeMs = now;
           }
         }
-        /*
-        // use the data to detect activities
-        ActivityDetector.Detection detection =
-          activityDetector.detectActivity(event.values, event.timestamp);
-        handleDetection(detection);
-        // TODO: update data in SQLite tables
-        // TODO: update data in datastore / shared preferences
-        // send intent to main activity with updated data
-        long now = System.currentTimeMillis();
-        long timeDiffMs = now - _lastSendDataTimeMs;
-        if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
-          sendDataToActivity(currentPushCount,
-                             currentCoastTime,
-                             currentDistance,
-                             currentHeartRate);
-          _lastSendDataTimeMs = now;
-        }
-        */
       }
     } else if (sensorType == Sensor.TYPE_HEART_RATE) {
       // update the heart rate
@@ -654,13 +661,15 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
 
-    // alarm management
-    AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-    PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
-    scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                                  System.currentTimeMillis(),
-                                  PROCESSING_PERIOD_MS,
-                                  scheduledIntent);
+    if (USE_ALARM) {
+      // alarm management
+      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
+      scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                                    System.currentTimeMillis(),
+                                    PROCESSING_PERIOD_MS,
+                                    scheduledIntent);
+    }
   }
 
   private void stopMyService() {
