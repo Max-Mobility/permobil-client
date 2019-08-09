@@ -1,5 +1,4 @@
-import { bindingTypeToString, Packet } from '@permobil/core';
-import { Color } from 'tns-core-modules/color';
+import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { Observable } from 'tns-core-modules/data/observable';
 import { isIOS } from 'tns-core-modules/platform';
 import * as timer from 'tns-core-modules/timer';
@@ -22,129 +21,6 @@ enum OTAState {
 export class PushTracker extends Observable {
   // STATIC:
   static readonly OTAState = OTAState;
-
-  static Settings = class extends Observable {
-    // settings classes
-    static ControlMode = class {
-      static Options: string[] = ['MX1', 'MX2', 'MX2+'];
-
-      static Off = 'Off';
-
-      static Beginner = 'MX1';
-      static Intermediate = 'MX2';
-      static Advanced = 'MX2+';
-
-      static MX1 = 'MX1';
-      static MX2 = 'MX2';
-      static MX2plus = 'MX2+';
-
-      static fromSettings(s: any): string {
-        const o = bindingTypeToString('SmartDriveControlMode', s.ControlMode);
-        return PushTracker.Settings.ControlMode[o];
-      }
-    };
-
-    static Units = class {
-      static Options: string[] = ['English', 'Metric'];
-      static Translations: string[] = [
-        'pushtracker.settings.units.english',
-        'pushtracker.settings.units.metric'
-      ];
-
-      static English = 'English';
-      static Metric = 'Metric';
-
-      static fromSettings(s: any): string {
-        const o = bindingTypeToString('Units', s.Units);
-        return PushTracker.Settings.Units[o];
-      }
-    };
-
-    // public members
-    controlMode: string = PushTracker.Settings.ControlMode.MX2plus;
-    ezOn = false;
-    units: string = PushTracker.Settings.Units.English;
-    acceleration = 30;
-    maxSpeed = 70;
-    tapSensitivity = 100;
-
-    ledColor: Color = new Color('#3c8aba');
-
-    constructor() {
-      super();
-    }
-
-    static getBoolSetting(flags: number, settingBit: number): boolean {
-      return ((flags >> settingBit) & 0x01) > 0;
-    }
-
-    fromSettings(s: any): void {
-      // from c++ settings bound array to c++ class
-      this.controlMode = PushTracker.Settings.ControlMode.fromSettings(s);
-      this.units = PushTracker.Settings.Units.fromSettings(s);
-      this.ezOn = PushTracker.Settings.getBoolSetting(s.Flags, 0);
-      // these floats are [0,1] on pushtracker
-      this.acceleration = Math.round(s.Acceleration * 100.0);
-      this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
-      this.tapSensitivity = Math.round(s.TapSensitivity * 100.0);
-    }
-
-    copy(s: any) {
-      // from a settings class exactly like this
-      this.controlMode = s.controlMode;
-      this.units = s.units;
-      this.ezOn = s.ezOn;
-      this.acceleration = s.acceleration;
-      this.maxSpeed = s.maxSpeed;
-      this.tapSensitivity = s.tapSensitivity;
-    }
-
-    diff(s: any): boolean {
-      return (
-        this.controlMode !== s.controlMode ||
-        this.units !== s.units ||
-        this.ezOn !== s.ezOn ||
-        this.acceleration !== s.acceleration ||
-        this.maxSpeed !== s.maxSpeed ||
-        this.tapSensitivity !== s.tapSensitivity
-      );
-    }
-  };
-
-  static PushSettings = class extends Observable {
-    // settings classes
-
-    // public members
-    threshold = 3;
-    timeWindow = 15;
-    clearCounter = false;
-
-    constructor() {
-      super();
-    }
-
-    fromPushSettings(ps: any): void {
-      // from c++ push settings bound array to c++ class
-      this.threshold = ps.threshold;
-      this.timeWindow = ps.timeWindow;
-      this.clearCounter = ps.clearCounter > 0;
-    }
-
-    copy(ps: any) {
-      // from a push settings class exactly like this
-      this.threshold = ps.threshold;
-      this.timeWindow = ps.timeWindow;
-      this.clearCounter = ps.clearCounter;
-    }
-
-    diff(ps: any): boolean {
-      return (
-        this.threshold !== ps.threshold ||
-        this.timeWindow !== ps.timeWindow ||
-        this.clearCounter !== ps.clearCounter
-      );
-    }
-  };
 
   // bluetooth info
   static ServiceUUID = '1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0';
@@ -198,8 +74,8 @@ export class PushTracker extends Observable {
   paired = false; // Is this PushTracker paired?
   connected = false; // Is this PushTracker connected?
 
-  settings = new PushTracker.Settings();
-  pushSettings = new PushTracker.PushSettings();
+  settings = new Device.Settings();
+  pushSettings = new Device.PushSettings();
 
   // not serialized
   device: any = null; // the actual device (ios:CBCentral, android:BluetoothDevice)
@@ -606,7 +482,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(err => {});
+                ).catch(err => { });
               }
               break;
             case PushTracker.OTAState.updating:
@@ -644,7 +520,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(err => {});
+                ).catch(err => { });
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -688,7 +564,7 @@ export class PushTracker extends Observable {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(err => {});
+                  .catch(err => { });
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;
@@ -986,7 +862,7 @@ export class PushTracker extends Observable {
 		   uint8_t     clearCounter;    /** Clear the counter for data below threshold? [0, 1]
 		   }  pushSettings;
 		*/
-    this.pushSettings.fromPushSettings(pushSettings);
+    this.pushSettings.fromSettings(pushSettings);
     this.sendEvent(PushTracker.pushtracker_push_settings_event, {
       pushSettings: this.pushSettings
     });

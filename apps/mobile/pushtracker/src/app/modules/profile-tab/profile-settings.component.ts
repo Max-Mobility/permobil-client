@@ -9,7 +9,7 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
+import { LoggingService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
@@ -44,10 +44,9 @@ export class ProfileSettingsComponent implements OnInit {
   SLIDER_VALUE: number;
   listPickerItems: string[];
   listPickerIndex: number = 0;
-  settings: Device.Settings = new Device.Settings();
-  switchControlSettings: Device.SwitchControlSettings = new Device.SwitchControlSettings();
 
   constructor(
+    public settingsService: SettingsService,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _routerExtensions: RouterExtensions,
@@ -95,18 +94,21 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  loadSettings() {
-    this.settings.copy(LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS));
-    this.switchControlSettings.copy(
-      LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
-    );
+  async loadSettings() {
+    const didLoad = await this.settingsService.loadSettings();
+    if (!didLoad) {
+      this.settingsService.settings.copy(LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS));
+      this.settingsService.switchControlSettings.copy(
+        LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
+      );
+    }
   }
 
   saveSettingsToFileSystem() {
-    LS.setItemObject(STORAGE_KEYS.DEVICE_SETTINGS, this.settings.toObj());
+    LS.setItemObject(STORAGE_KEYS.DEVICE_SETTINGS, this.settingsService.settings.toObj());
     LS.setItemObject(
       STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS,
-      this.switchControlSettings.toObj()
+      this.settingsService.switchControlSettings.toObj()
     );
   }
 
@@ -177,7 +179,8 @@ export class ProfileSettingsComponent implements OnInit {
     this.listPickerIndex = args.object.selectedIndex;
   }
 
-  saveSettings() {
+  async saveSettings() {
+    let pushToServer = false;
     // save settings
     switch (this.activeSetting) {
       case 'height':
@@ -196,22 +199,28 @@ export class ProfileSettingsComponent implements OnInit {
         KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':
-        this.settings.maxSpeed = this.SLIDER_VALUE * 10;
+        pushToServer = true;
+        this.settingsService.settings.maxSpeed = this.SLIDER_VALUE * 10;
         break;
       case 'acceleration':
-        this.settings.acceleration = this.SLIDER_VALUE * 10;
+        pushToServer = true;
+        this.settingsService.settings.acceleration = this.SLIDER_VALUE * 10;
         break;
       case 'tap-sensitivity':
-        this.settings.tapSensitivity = this.SLIDER_VALUE * 10;
+        pushToServer = true;
+        this.settingsService.settings.tapSensitivity = this.SLIDER_VALUE * 10;
         break;
       case 'mode':
-        this.settings.controlMode = this.listPickerItems[this.listPickerIndex];
+        pushToServer = true;
+        this.settingsService.settings.controlMode = this.listPickerItems[this.listPickerIndex];
         break;
       case 'switch-control-max-speed':
-        this.switchControlSettings.maxSpeed = this.SLIDER_VALUE * 10;
+        pushToServer = true;
+        this.settingsService.switchControlSettings.maxSpeed = this.SLIDER_VALUE * 10;
         break;
       case 'switch-control-mode':
-        this.switchControlSettings.mode =
+        pushToServer = true;
+        this.settingsService.switchControlSettings.mode =
           Device.SwitchControlSettings.Mode.Options[this.listPickerIndex];
         break;
       case 'theme':
@@ -223,7 +232,14 @@ export class ProfileSettingsComponent implements OnInit {
         }
         break;
     }
-    this.saveSettingsToFileSystem();
+    if (pushToServer) {
+      this.saveSettingsToFileSystem();
+      try {
+        await this.settingsService.save();
+      } catch (error) {
+        Log.E('error pushing to server', error);
+      }
+    }
   }
 
   private _openListPickerDialog() {
@@ -280,7 +296,7 @@ export class ProfileSettingsComponent implements OnInit {
         this._openListPickerDialog();
         break;
       case 'max-speed':
-        this.SLIDER_VALUE = this.settings.maxSpeed / 10;
+        this.SLIDER_VALUE = this.settingsService.settings.maxSpeed / 10;
         this.activeSettingTitle = this._translateService.instant(
           'general.max-speed'
         );
@@ -290,7 +306,7 @@ export class ProfileSettingsComponent implements OnInit {
         this._openSliderSettingDialog();
         break;
       case 'acceleration':
-        this.SLIDER_VALUE = this.settings.acceleration / 10;
+        this.SLIDER_VALUE = this.settingsService.settings.acceleration / 10;
         this.activeSettingTitle = this._translateService.instant(
           'general.acceleration'
         );
@@ -300,7 +316,7 @@ export class ProfileSettingsComponent implements OnInit {
         this._openSliderSettingDialog();
         break;
       case 'tap-sensitivity':
-        this.SLIDER_VALUE = this.settings.tapSensitivity / 10;
+        this.SLIDER_VALUE = this.settingsService.settings.tapSensitivity / 10;
         this.activeSettingTitle = this._translateService.instant(
           'general.tap-sensitivity'
         );
@@ -318,12 +334,12 @@ export class ProfileSettingsComponent implements OnInit {
         );
         this.listPickerItems = Device.Settings.ControlMode.Options;
         this.listPickerIndex = this.listPickerItems.indexOf(
-          this.settings.controlMode
+          this.settingsService.settings.controlMode
         );
         this._openListPickerDialog();
         break;
       case 'switch-control-max-speed':
-        this.SLIDER_VALUE = this.switchControlSettings.maxSpeed / 10;
+        this.SLIDER_VALUE = this.settingsService.switchControlSettings.maxSpeed / 10;
         this.activeSettingTitle = this._translateService.instant(
           'general.switch-control-max-speed'
         );
@@ -346,7 +362,7 @@ export class ProfileSettingsComponent implements OnInit {
           }
         );
         this.listPickerIndex = Device.SwitchControlSettings.Mode.Options.indexOf(
-          this.switchControlSettings.mode
+          this.settingsService.switchControlSettings.mode
         );
         this._openListPickerDialog();
         break;

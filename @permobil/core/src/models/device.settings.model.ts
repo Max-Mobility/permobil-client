@@ -196,6 +196,64 @@ export namespace Device {
     }
   }
 
+  // Device Push Settings:
+  export class PushSettings extends Observable {
+    // This class is for controling push sensitivity on the original
+    // PushTracker wristband.
+
+    public static Defaults = {
+      threshold: 3,
+      timeWindow: 15,
+      clearCounter: false
+    };
+
+    // public members
+    threshold = Device.PushSettings.Defaults.threshold;
+    timeWindow = Device.PushSettings.Defaults.timeWindow;
+    clearCounter = Device.PushSettings.Defaults.clearCounter;
+
+    constructor() {
+      super();
+    }
+
+    toObj(): any {
+      return Object.keys(Device.PushSettings.Defaults)
+        .reduce((obj, key) => {
+          obj[key] = this[key];
+          return obj;
+        }, {});
+    }
+
+    fromSettings(ps: any): void {
+      // from c++ push settings bound array to c++ class
+      this.threshold = ps.threshold;
+      this.timeWindow = ps.timeWindow;
+      this.clearCounter = ps.clearCounter > 0;
+    }
+
+    copyKey(key: string, other: any) {
+      if (other && key in other) {
+        this[key] = other[key];
+      } else if (key in Device.PushSettings.Defaults) {
+        this[key] = Device.PushSettings.Defaults[key];
+      }
+    }
+
+    copy(s: any) {
+      // from a push-settings class exactly like this
+      Object.keys(Device.PushSettings.Defaults)
+        .map(k => this.copyKey(k, s));
+    }
+
+    diff(ps: any): boolean {
+      return (
+        this.threshold !== ps.threshold ||
+          this.timeWindow !== ps.timeWindow ||
+          this.clearCounter !== ps.clearCounter
+      );
+    }
+  }
+
   // Device Switch Control Settings:
   export class SwitchControlSettings extends Observable {
     // settings classes
