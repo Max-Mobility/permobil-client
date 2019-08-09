@@ -187,7 +187,6 @@ export class ProfileTabComponent implements OnInit {
     );
 
     // Setting the dialog data to the actual user value
-    console.log(configKey, configValue);
     if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
