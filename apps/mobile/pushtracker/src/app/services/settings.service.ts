@@ -79,8 +79,8 @@ export class SettingsService {
 
 namespace SettingsService {
   export interface Data {
-    pushSettings?: any,
-    settings?: any,
-    switchControlSettings?: any
+    pushSettings?: any;
+    settings?: any;
+    switchControlSettings?: any;
   }
 }
