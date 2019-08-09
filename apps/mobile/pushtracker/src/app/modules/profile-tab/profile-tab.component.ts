@@ -19,7 +19,6 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
-import { topmost } from 'tns-core-modules/ui/frame';
 
 @Component({
   selector: 'profile',
@@ -295,9 +294,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-      this.activity_goals_dialog_data.config_key +
-      ' ' +
-      this.activity_goals_dialog_data.config_value
+        this.activity_goals_dialog_data.config_key +
+        ' ' +
+        this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -545,7 +544,6 @@ export class ProfileTabComponent implements OnInit {
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
     const indices = this._getHeightIndices();
-    console.log('fuck me', this.primary[indices[0]]);
 
     this.primaryIndex = parseFloat(this.primary[indices[0]]);
     this.secondaryIndex = indices[1];
@@ -730,9 +728,6 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerNeedsSecondary = false;
 
     this._openListPickerDialog();
-
-    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
-    console.log('rootTabView', rootTabView);
   }
 
   onListChairMakeTap(args: EventData) {
@@ -755,14 +750,13 @@ export class ProfileTabComponent implements OnInit {
     ];
     this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
 
-    this.listPickerTitle = this._translateService.instant('profile-tab.chair-make');
+    this.listPickerTitle = this._translateService.instant(
+      'profile-tab.chair-make'
+    );
     this.listPickerDescriptionNecessary = false;
     this.listPickerNeedsSecondary = false;
 
     this._openListPickerDialog();
-
-    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
-    console.log('rootTabView', rootTabView);
   }
 
   private _openListPickerDialog() {
