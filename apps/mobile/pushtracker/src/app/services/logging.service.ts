@@ -20,6 +20,10 @@ export class LoggingService {
    * @param err
    */
   logException(exception: Error) {
+    console.log(`****************** ERROR ****************** \n
+    Message: ${exception.message} \n
+    Stack: ${exception.stack}`);
+
     const user = KinveyUser.getActiveUser();
     if (user) {
       Sentry.setContextUser({
