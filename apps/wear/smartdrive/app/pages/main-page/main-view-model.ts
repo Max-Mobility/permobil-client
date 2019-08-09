@@ -137,6 +137,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -1164,7 +1165,8 @@ export class MainViewModel extends Observable {
     try {
       return this._sensorService.startDeviceSensor(
         android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
-        this.SENSOR_DELAY_US
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
       );
     } catch (err) {
       Sentry.captureException(err);
@@ -1177,7 +1179,8 @@ export class MainViewModel extends Observable {
     try {
       return this._sensorService.startDeviceSensor(
         android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
-        this.SENSOR_DELAY_US
+        this.SENSOR_DELAY_US,
+        this.MAX_REPORTING_INTERVAL_US
       );
     } catch (err) {
       Sentry.captureException(err);
