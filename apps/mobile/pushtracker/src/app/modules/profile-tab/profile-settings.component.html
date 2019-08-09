@@ -86,8 +86,11 @@
       <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
       <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
-        <Slider row="0" col="0" colSpan="2" class="slider" [(ngModel)]="SLIDER_VALUE" minValue="1" maxValue="10"></Slider>
-        <Label class="slider-value" row="0" col="2" [text]="SLIDER_VALUE * 10 + ' %'"></Label>
+        <Slider row="0" col="0" colSpan="2" class="slider"
+                [value]="SLIDER_VALUE"
+                (valueChange)="onSliderValueChange($event)"
+                minValue="1" maxValue="10"></Slider>
+        <Label class="slider-value" row="0" col="2" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
         <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
         <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
       </GridLayout>

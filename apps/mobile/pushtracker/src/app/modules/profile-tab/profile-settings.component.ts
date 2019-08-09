@@ -41,7 +41,7 @@ export class ProfileSettingsComponent implements OnInit {
   activeSetting: string = null;
   activeSettingTitle: string = 'Setting';
   activeSettingDescription: string = 'Description';
-  SLIDER_VALUE: number;
+  SLIDER_VALUE: number = 0;
   listPickerItems: string[];
   listPickerIndex: number = 0;
 
@@ -112,8 +112,8 @@ export class ProfileSettingsComponent implements OnInit {
     );
   }
 
-  onSliderChanged(args: any) {
-    // this.SLIDER_VALUE = args.object.value;
+  onSliderValueChange(args: any) {
+    this.SLIDER_VALUE = Math.floor(args.object.value);
   }
 
   async closeSliderSettingDialog() {
