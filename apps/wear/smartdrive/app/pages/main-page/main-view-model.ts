@@ -1161,9 +1161,9 @@ export class MainViewModel extends Observable {
   /**
    * Sensor Management
    */
-  enableBodySensor() {
+  enableBodySensor(): boolean {
     try {
-      this._sensorService.startDeviceSensor(
+      return this._sensorService.startDeviceSensor(
         android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
         this.SENSOR_DELAY_US,
         this.MAX_REPORTING_INTERVAL_US
@@ -1171,12 +1171,13 @@ export class MainViewModel extends Observable {
     } catch (err) {
       Sentry.captureException(err);
       // Log.E('Error starting the body sensor', err);
+      return false;
     }
   }
 
-  enableTapSensor() {
+  enableTapSensor(): boolean {
     try {
-      this._sensorService.startDeviceSensor(
+      return this._sensorService.startDeviceSensor(
         android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
         this.SENSOR_DELAY_US,
         this.MAX_REPORTING_INTERVAL_US
@@ -1184,6 +1185,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       Sentry.captureException(err);
       // Log.E('Error starting the tap sensor', err);
+      return false;
     }
   }
 
@@ -1231,7 +1233,16 @@ export class MainViewModel extends Observable {
   }
 
   onTrainingTap() {
-    this.enableTapSensor();
+    const didEnableTapSensor = this.enableTapSensor();
+    if (!didEnableTapSensor) {
+      // TODO: translate this alert!
+      alert({
+        title: L('failures.title'),
+        message: L('failures.could-not-enable-tap-sensor'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
     this.tapDetector.reset();
     this.maintainCPU();
     this.isTraining = true;
@@ -2124,11 +2135,21 @@ export class MainViewModel extends Observable {
             // vibrate for enabling power assist
             this._vibrator.vibrate(200); // vibrate for 250 ms
             // enable the tap sensor
-            this.enableTapSensor();
-            this._ringTimerId = setInterval(
-              this.blinkPowerAssistRing.bind(this),
-              this.RING_TIMER_INTERVAL_MS
-            );
+            const didEnableTapSensor = this.enableTapSensor();
+            if (!didEnableTapSensor) {
+              // TODO: translate this alert!
+              alert({
+                title: L('failures.title'),
+                message: L('failures.could-not-enable-tap-sensor'),
+                okButtonText: L('buttons.ok')
+              });
+              throw 'Could not enable tap sensor for power assist!';
+            } else {
+              this._ringTimerId = setInterval(
+                this.blinkPowerAssistRing.bind(this),
+                this.RING_TIMER_INTERVAL_MS
+              );
+            }
           } else {
             Log.D('Did not connect, disabling power assist');
             this.disablePowerAssist();
