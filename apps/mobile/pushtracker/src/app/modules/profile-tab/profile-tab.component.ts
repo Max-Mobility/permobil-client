@@ -36,7 +36,6 @@ export class ProfileTabComponent implements OnInit {
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
-  isWeight: boolean;
   isHeightInCentimeters: boolean;
   displayWeight: string;
   displayHeight: string;
@@ -124,8 +123,6 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerDescription = '';
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
-
-    this.isWeight = false;
 
     this.LIST_PICKER_OPTIONS = ['Gender', 'Weight', 'Height',
       'Chair Type', 'Chair Make'];
@@ -456,7 +453,6 @@ export class ProfileTabComponent implements OnInit {
     this.primaryIndex = parseFloat(this.primary[indices[0]]);
     this.secondaryIndex = 10 * indices[1];
 
-    this.isWeight = true;
     this.listPickerTitle = this._translateService.instant('general.weight');
     this.listPickerDescriptionNecessary = true;
     this.listPickerDescription = this._translateService.instant('general.weight-guess');
@@ -500,7 +496,6 @@ export class ProfileTabComponent implements OnInit {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
     }
-    this.isWeight = false;
     this.listPickerTitle = this._translateService.instant('general.height');
     this.listPickerDescriptionNecessary = true;
     this.listPickerDescription = this._translateService.instant('general.height-guess');
