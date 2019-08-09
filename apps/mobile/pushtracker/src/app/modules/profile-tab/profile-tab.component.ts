@@ -435,7 +435,7 @@ export class ProfileTabComponent implements OnInit {
 
   onListPickerTap(args: EventData, index) {
     this.listPickerIndex = index;
-    switch(this.listPickerIndex) {
+    switch (this.listPickerIndex) {
       case 0:
         this.onListGenderTap(args);
         break;
