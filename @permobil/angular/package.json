@@ -7,8 +7,10 @@
     "@angular/common": "~8.1.0",
     "@angular/compiler": "~8.1.0",
     "@angular/core": "~8.1.0",
-    "@angular/router": "~8.1.0",
+    "@angular/router": "~8.1.0"
+  },
+  "peerDependencies": {
     "nativescript-angular": "~8.1.0",
-    "tns-core-modules": "~6.0.4"
+    "tns-core-modules": "~6.0.6"
   }
 }

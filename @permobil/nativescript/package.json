@@ -6,10 +6,12 @@
   "typings": "./src/index.d.ts",
   "author": "Max-Mobility",
   "dependencies": {
-    "globals": "^11.12.0",
-    "tns-core-modules": "~6.0.4"
+    "globals": "^11.12.0"
+  },
+  "peerDependencies": {
+    "tns-core-modules": "~6.0.6"
   },
   "devDependencies": {
-    "tns-platform-declarations": "~6.0.4"
+    "tns-platform-declarations": "~6.0.6"
   }
 }

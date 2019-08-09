@@ -3,6 +3,9 @@
     "id": "com.permobil.pushtracker",
     "tns-android": {
       "version": "6.0.1"
+    },
+    "tns-ios": {
+      "version": "6.0.2"
     }
   },
   "dependencies": {
@@ -48,7 +51,7 @@
     "nativescript-ui-listview": "7.0.2",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.2",
-    "tns-core-modules": "6.0.5",
+    "tns-core-modules": "6.0.6",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
@@ -56,7 +59,7 @@
     "@ngtools/webpack": "~8.1.0",
     "nativescript-dev-webpack": "1.0.3",
     "prompts": "^2.1.0",
-    "tns-platform-declarations": "6.0.5",
+    "tns-platform-declarations": "6.0.6",
     "typescript": "~3.4.5"
   }
 }
