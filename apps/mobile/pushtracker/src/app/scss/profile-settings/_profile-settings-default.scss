@@ -58,4 +58,29 @@
       }
     }
   }
+
+  .list-picker-dialog {
+    @extend .LIST_PICKER_DIALOG_BASE;
+    background-color: rgba(85, 86, 88, 0.808);
+
+    > StackLayout {
+      background-color: $white;
+
+      .picker-title {
+        color: #202125;
+      }
+
+      .picker-description {
+        color: #393a3f;
+      }
+
+      .cancel-btn {
+        color: #1a73e9;
+      }
+
+      .ok-btn {
+        color: #1a73e9;
+      }
+    }
+  }
 }
