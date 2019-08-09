@@ -1,7 +1,5 @@
 <ActionBar class="action-bar" flat="true" [title]="title">
-  <NavigationButton
-    [visibility]="allowNav ? 'visible' : 'collapse'"
-  ></NavigationButton>
+  <NavigationButton [visibility]="allowNav ? 'visible' : 'collapse'"></NavigationButton>
   <ng-content></ng-content>
   <ActionItem ios.position="right" (tap)="onPTConnTap()">
     <StackLayout android:paddingRight="10">

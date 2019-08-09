@@ -1,27 +1,10 @@
-<TabView 
-#rootTabView
-androidTabsPosition="bottom" 
-tabTextFontSize="10" 
-iosIconRenderingMode="alwaysOriginal" 
-(selectedIndexChanged)="tabViewIndexChange($event)">
+<TabView #rootTabView androidTabsPosition="bottom" tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" (selectedIndexChanged)="tabViewIndexChange($event)">
   // Home Tab
-  <page-router-outlet 
-  *tabItem="homeTabItem" 
-  name="homeTab" 
-  actionBarVisibility="never">
-</page-router-outlet>
+  <page-router-outlet *tabItem="homeTabItem" name="homeTab" actionBarVisibility="never"> </page-router-outlet>
 
   // Journey Tab
-  <page-router-outlet 
-  *tabItem="journeyTabItem"  
-  name="journeyTab" 
-  actionBarVisibility="never">
-</page-router-outlet>
+  <page-router-outlet *tabItem="journeyTabItem" name="journeyTab" actionBarVisibility="never"> </page-router-outlet>
 
   // Profile Tab
-  <page-router-outlet 
-  *tabItem="profileTabItem" 
-  name="profileTab" 
-  actionBarVisibility="never">
-</page-router-outlet>
+  <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
 </TabView>
