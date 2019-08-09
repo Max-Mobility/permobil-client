@@ -145,13 +145,11 @@ export class ProfileTabComponent implements OnInit {
 
     this._page.on(Page.navigatedToEvent, (args) => {
       this.user = KinveyUser.getActiveUser();
-      console.log('Navigating to Profile page');
       this.SETTING_HEIGHT = this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] || 'Feet & inches';
       this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
       this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
       this._initDisplayWeight();
       this._initDisplayHeight();
-      console.log(this.displayHeight, this.displayWeight);
     });
   }
 
@@ -639,7 +637,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
-    return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}`;
+    return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}"`;
   }
 
   private _displayHeightInCentimeters(val: number) {
