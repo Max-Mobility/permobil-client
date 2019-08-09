@@ -17,6 +17,10 @@ export interface PtMobileUserData {
   // activity goals
   activity_goal_coast_time: number;
   activity_goal_distance: number;
+  // unit preference
+  weight_unit_preference: number;
+  height_unit_preference: number;
+  distance_unit_preference: number;
 }
 
 export enum UserTypes {

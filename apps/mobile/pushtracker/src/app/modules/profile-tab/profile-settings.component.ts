@@ -21,8 +21,11 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 export class ProfileSettingsComponent implements OnInit {
   private static LOG_TAG = 'profile-settings.component ';
   infoItems;
+  HEIGHT_UNITS: string[];
   HEIGHT: string;
+  WEIGHT_UNITS: string[];
   WEIGHT: string;
+  DISTANCE_UNITS: string[];
   DISTANCE: string;
   CURRENT_THEME: string;
 
@@ -52,11 +55,15 @@ export class ProfileSettingsComponent implements OnInit {
   ) {
     this._page.actionBarHidden = true;
     this.user = KinveyUser.getActiveUser();
-    console.log(this.user.data);
 
-    this.HEIGHT = 'Feet & inches';
-    this.WEIGHT = 'Pounds';
-    this.DISTANCE = 'Miles';
+    this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
+    this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
+
+    this.WEIGHT_UNITS = ['Kilograms', 'Pounds'];
+    this.WEIGHT = this.WEIGHT_UNITS[this.user.data.weight_unit_preference];
+
+    this.DISTANCE_UNITS = ['Kilometers', 'Miles'];
+    this.DISTANCE = this.DISTANCE_UNITS[this.user.data.distance_unit_preference];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
@@ -175,15 +182,15 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
-        KinveyUser.update({ height_unit_preference: this.HEIGHT });
+        KinveyUser.update({ height_unit_preference: this.listPickerIndex });
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
-        KinveyUser.update({ weight_unit_preference: this.WEIGHT });
+        KinveyUser.update({ weight_unit_preference: this.listPickerIndex });
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
-        KinveyUser.update({ distance_unit_preference: this.DISTANCE });
+        KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':
         this.settings.maxSpeed = this.SLIDER_VALUE * 10;
@@ -243,7 +250,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.height'
         );
-        this.listPickerItems = ['Centimeters', 'Feet & inches'];
+        this.listPickerItems = this.HEIGHT_UNITS;
         this.listPickerIndex = this.listPickerItems.indexOf(this.HEIGHT);
         this._openListPickerDialog();
         break;
@@ -254,7 +261,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.weight'
         );
-        this.listPickerItems = ['Kilograms', 'Pounds'];
+        this.listPickerItems = this.WEIGHT_UNITS;
         this.listPickerIndex = this.listPickerItems.indexOf(this.WEIGHT);
         this._openListPickerDialog();
         break;
@@ -265,7 +272,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.distance'
         );
-        this.listPickerItems = ['Kilometers', 'Miles'];
+        this.listPickerItems = this.DISTANCE_UNITS;
         this.listPickerIndex = this.listPickerItems.indexOf(this.DISTANCE);
         this._openListPickerDialog();
         break;
