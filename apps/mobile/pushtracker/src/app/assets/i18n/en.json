@@ -65,7 +65,11 @@
     "about-you": "About You",
     "chair-make": "Chair Make",
     "set-goal": "Set goal",
-    "chair-types": ["Rigid", "Folding", "Pediatric"]
+    "chair-types": ["Rigid", "Folding", "Pediatric"],
+    "first-name": "first name",
+    "last-name": "last name",
+    "edit-first-name": "Edit first name",
+    "edit-last-name": "Edit last name"
   },
   "profile-settings": {
     "theme": "Theme",

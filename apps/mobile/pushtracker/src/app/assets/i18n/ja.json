@@ -49,7 +49,12 @@
     "activity-goals": "活動目標",
     "about-you": "あなたについて",
     "chair-make": "チェアメイク",
-    "set-goal": "目標を設定"
+    "set-goal": "目標を設定",
+    "chair-types": ["リジッド", "折り畳み", "小児科"],
+    "first-name": "ファーストネーム",
+    "last-name": "苗字",
+    "edit-first-name": "名を編集",
+    "edit-last-name": "姓を編集"
   },
   "settings-component": {
     "title": "設定"

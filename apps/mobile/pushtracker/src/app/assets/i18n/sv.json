@@ -49,7 +49,12 @@
     "activity-goals": "Aktivitetsmål",
     "about-you": "Om dig",
     "chair-make": "Ordförande",
-    "set-goal": "Sätta mål"
+    "set-goal": "Sätta mål",
+    "chair-types": ["Stel", "Hopfällbar", "Pediatrisk"],
+    "first-name": "förnamn",
+    "last-name": "efternamn",
+    "edit-first-name": "Redigera förnamn",
+    "edit-last-name": "Redigera efternamn"
   },
   "settings-component": {
     "title": "inställningar"

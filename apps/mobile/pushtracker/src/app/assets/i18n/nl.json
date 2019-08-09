@@ -49,7 +49,12 @@
     "activity-goals": "Activiteitsdoelen",
     "about-you": "Over jou",
     "chair-make": "Stoel maken",
-    "set-goal": "Doel stellen"
+    "set-goal": "Doel stellen",
+    "chair-types": ["Stijf", "Folding", "Pediatric"],
+    "first-name": "Voornaam",
+    "last-name": "achternaam",
+    "edit-first-name": "Voornaam bewerken",
+    "edit-last-name": "Achternaam bewerken"
   },
   "settings-component": {
     "title": "instellingen"

@@ -49,7 +49,12 @@
     "activity-goals": "Цели деятельности",
     "about-you": "О вас",
     "chair-make": "Стул Марка",
-    "set-goal": "Поставьте цель"
+    "set-goal": "Поставьте цель",
+    "chair-types": ["жесткий", "складчатость", "педиатрический"],
+    "first-name": "имя",
+    "last-name": "Фамилия",
+    "edit-first-name": "Изменить имя",
+    "edit-last-name": "Изменить фамилию"
   },
   "settings-component": {
     "title": "настройки"

@@ -49,7 +49,12 @@
     "activity-goals": "活动目标",
     "about-you": "关于你",
     "chair-make": "椅子制作",
-    "set-goal": "设定目标"
+    "set-goal": "设定目标",
+    "chair-types": ["死板", "折页", "小儿科的"],
+    "first-name": "名字",
+    "last-name": "姓",
+    "edit-first-name": "编辑名字",
+    "edit-last-name": "修改姓氏"
   },
   "settings-component": {
     "title": "设置"

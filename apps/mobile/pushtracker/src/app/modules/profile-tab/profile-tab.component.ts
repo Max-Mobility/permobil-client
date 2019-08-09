@@ -12,6 +12,7 @@ import {
 import * as appSettings from 'tns-core-modules/application-settings';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
+import { prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { topmost } from 'tns-core-modules/ui/frame/frame';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
@@ -119,9 +120,15 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_DISTANCE_UNITS = ['Kilometers', 'Miles'];
 
     // Setting
-    this.SETTING_HEIGHT = this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] || 'Feet & inches';
-    this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
-    this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
+    this.SETTING_HEIGHT =
+      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+      'Feet & inches';
+    this.SETTING_WEIGHT =
+      this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
+      'Pounds';
+    this.SETTING_DISTANCE =
+      this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
+      'Miles';
     this.SETTING_MAX_SPEED = '70%';
     this.SETTING_ACCELERATION = '70%';
     this.SETTING_TAP_SENSITIVITY = '100%';
@@ -143,11 +150,17 @@ export class ProfileTabComponent implements OnInit {
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
-    this._page.on(Page.navigatedToEvent, (args) => {
+    this._page.on(Page.navigatedToEvent, args => {
       this.user = KinveyUser.getActiveUser();
-      this.SETTING_HEIGHT = this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] || 'Feet & inches';
-      this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
-      this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
+      this.SETTING_HEIGHT =
+        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+        'Feet & inches';
+      this.SETTING_WEIGHT =
+        this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
+        'Pounds';
+      this.SETTING_DISTANCE =
+        this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
+        'Miles';
       this._initDisplayWeight();
       this._initDisplayHeight();
     });
@@ -173,15 +186,35 @@ export class ProfileTabComponent implements OnInit {
         curve: AnimationCurve.easeInOut
       }
     });
-    /*
-    this._routerExtensions.navigate(
-      [{
-        outlets: {
-          profileTab: ['../profile-settings']
+  }
+
+  onNameLongPress(args, nameField: string) {
+    Log.D('First name long press');
+
+    const opts = {
+      title: this._translateService.instant(`profile-tab.edit-${nameField}`),
+      defaultText:
+        nameField === 'first-name'
+          ? this.user.data.first_name
+          : this.user.data.last_name,
+      cancelable: true,
+      cancelButtonText: this._translateService.instant('general.cancel'),
+      okButtonText: this._translateService.instant('general.ok')
+    } as PromptOptions;
+
+    prompt(opts).then(r => {
+      if (r.result === true) {
+        if (nameField === 'first-name') {
+          KinveyUser.update({ first_name: r.text });
+          this.user.data.first_name = r.text;
+          this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
+        } else if (nameField === 'last-name') {
+          KinveyUser.update({ last_name: r.text });
+          this.user.data.last_name = r.text;
+          this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
-      }]
-    );
-    */
+      }
+    });
   }
 
   async onActivityGoalTap(
@@ -208,8 +241,7 @@ export class ProfileTabComponent implements OnInit {
     if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
-    }
-    else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
+    } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
       if (this.user.data.activity_goal_distance)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_distance;
     }
@@ -543,9 +575,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _initDisplayWeight() {
-    this.displayWeight = this._displayWeightInKilograms(
-      this.user.data.weight
-    );
+    this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
     if (this.SETTING_WEIGHT === 'Pounds') {
       this.displayWeight = this._displayWeightInPounds(
@@ -561,9 +591,7 @@ export class ProfileTabComponent implements OnInit {
     );
     // convert from metric height (as stored in Kinvey) to user preferred unit
     if (this.SETTING_HEIGHT === 'Feet & inches') {
-      const heightString = this._centimetersToFeetInches(
-        this.user.data.height
-      );
+      const heightString = this._centimetersToFeetInches(this.user.data.height);
       const feet = parseFloat(heightString.split('.')[0]);
       const inches = parseFloat(heightString.split('.')[1]);
       this.displayHeight = this._displayHeightInFeetInches(feet, inches);
@@ -633,7 +661,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayWeightInKilograms(val: number) {
-    return (val).toFixed(1) + ' kg';
+    return val.toFixed(1) + ' kg';
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
@@ -641,7 +669,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayHeightInCentimeters(val: number) {
-    return (val).toFixed(1) + ' cm';
+    return val.toFixed(1) + ' cm';
   }
 
   private _openListPickerDialog() {

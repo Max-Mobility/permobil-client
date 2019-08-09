@@ -49,7 +49,12 @@
     "activity-goals": "Aktivitätsziele",
     "about-you": "Über dich",
     "chair-make": "Stuhl machen",
-    "set-goal": "Ziel setzen"
+    "set-goal": "Ziel setzen",
+    "chair-types": ["Starr", "Falten", "Pädiatrisch"],
+    "first-name": "Vorname",
+    "last-name": "Nachname",
+    "edit-first-name": "Vorname bearbeiten",
+    "edit-last-name": "Nachname bearbeiten"
   },
   "settings-component": {
     "title": "die Einstellungen"

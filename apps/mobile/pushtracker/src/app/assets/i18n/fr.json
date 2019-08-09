@@ -49,7 +49,12 @@
     "activity-goals": "Objectifs d'activité",
     "about-you": "Au propos de vous",
     "chair-make": "Chaise faire",
-    "set-goal": "Fixer un objectif"
+    "set-goal": "Fixer un objectif",
+    "chair-types": ["Rigide", "Pliant", "Pédiatrique"],
+    "first-name": "Prénom",
+    "last-name": "nom de famille",
+    "edit-first-name": "Editer le prénom",
+    "edit-last-name": "Modifier le nom de famille"
   },
   "settings-component": {
     "title": "Réglages"

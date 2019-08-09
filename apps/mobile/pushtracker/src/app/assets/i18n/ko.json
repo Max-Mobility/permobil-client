@@ -49,7 +49,12 @@
     "activity-goals": "활동 목표",
     "about-you": "너에 대해서",
     "chair-make": "의자 만들기",
-    "set-goal": "목표를 설정하다"
+    "set-goal": "목표를 설정하다",
+    "chair-types": ["엄격한", "접는", "소아과"],
+    "first-name": "이름",
+    "last-name": "성",
+    "edit-first-name": "이름 수정",
+    "edit-last-name": "성 수정"
   },
   "settings-component": {
     "title": "설정"

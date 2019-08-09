@@ -58,6 +58,14 @@
       horizontal-align: center;
       vertical-align: center;
     }
+
+    image {
+      height: 60;
+      width: 60;
+      border-radius: 30;
+      horizontal-align: center;
+      vertical-align: center;
+    }
   }
 
   .DATA_BOX_BASE {
@@ -108,8 +116,8 @@
       @extend .btn-transparent;
       horizontal-align: right;
       text-align: right;
-      font-family: $material-icon;
       font-size: 12;
+      margin-right: 5;
     }
 
     .config-title {
@@ -166,7 +174,7 @@
   }
 
   .DATE_TIME_PICKER_BASE {
-      height: 100%;
+    height: 100%;
   }
 
   .LIST_PICKER_DIALOG_BASE {
@@ -195,11 +203,13 @@
         @extend .btn-transparent;
         horizontal-align: right;
         text-align: right;
+        margin: 6 4 4 4;
       }
 
       .ok-btn {
         @extend .btn-transparent;
         horizontal-align: right;
+        margin: 6 6 4 0;
       }
     }
   }

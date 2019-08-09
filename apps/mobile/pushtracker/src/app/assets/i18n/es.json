@@ -49,7 +49,16 @@
     "activity-goals": "Objetivos de actividad",
     "about-you": "Acerca de ti",
     "chair-make": "Silla hacer",
-    "set-goal": "Establecer una meta"
+    "set-goal": "Establecer una meta",
+    "chair-types": ["Rígido", "Plegable", "Pediátrico"],
+    "first-name": "primer nombre",
+    "last-name": "apellido",
+    "edit-first-name": "Editar nombre",
+    "edit-last-name": "Editar apellido"
+  },
+  "profile-settings": {
+    "theme": "Theme",
+    "language": "Language"
   },
   "settings-component": {
     "title": "Ajustes"
