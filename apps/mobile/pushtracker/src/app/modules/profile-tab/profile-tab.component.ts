@@ -339,7 +339,13 @@ export class ProfileTabComponent implements OnInit {
             `User changed birthday: ${result.toDateString()}`
           );
           (this.user.data as any).dob = result;
-          KinveyUser.update({ dob: result });
+          const date = new Date(result);
+          const month = date.getUTCMonth() + 1;
+          const day = date.getUTCDate();
+          const year = date.getUTCFullYear();
+          const dateFormatted = month + '/' + day + '/' + year;
+          Log.D('Birthday formatted', dateFormatted);
+          KinveyUser.update({ dob: dateFormatted });
         }
       })
       .catch(err => {
