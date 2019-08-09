@@ -149,9 +149,10 @@ export class ProfileTabComponent implements OnInit {
     Log.D('settings action item tap');
     this._routerExtensions.navigate(['../profile-settings'], {
       relativeTo: this.activeRoute,
-      animated: true,
       transition: {
-        name: 'slide'
+        name: 'slideLeft',
+        duration: 250,
+        curve: AnimationCurve.easeInOut
       }
     });
     /*
@@ -321,7 +322,7 @@ export class ProfileTabComponent implements OnInit {
     DateTimePicker.pickDate(
       {
         context: (args.object as StackLayout)._context,
-        date: this.user.data.dob,
+        date: new Date(this.user.data.dob),
         minDate: subYears(new Date(), 110),
         maxDate: new Date(),
         title: this._translateService.instant('general.birthday'),
@@ -332,7 +333,6 @@ export class ProfileTabComponent implements OnInit {
       dateTimePickerStyle
     )
       .then(result => {
-        console.log('Date saved', result);
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
