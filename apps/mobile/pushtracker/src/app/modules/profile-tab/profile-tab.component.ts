@@ -37,7 +37,6 @@ export class ProfileTabComponent implements OnInit {
   user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isWeight: boolean;
-  isHeightInFeetInches: boolean;
   isHeightInCentimeters: boolean;
   displayWeight: string;
   displayHeight: string;
@@ -125,7 +124,6 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_WEIGHT = this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] || 'Pounds';
     this.SETTING_DISTANCE = this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] || 'Miles';
     this.isHeightInCentimeters = (this.SETTING_HEIGHT === 'Centimeters');
-    this.isHeightInFeetInches = !this.isHeightInCentimeters;
 
     // SmartDrive settings
     this.SETTING_MAX_SPEED = '70%';
@@ -157,7 +155,6 @@ export class ProfileTabComponent implements OnInit {
       this._initDisplayWeight();
       this._initDisplayHeight();
       this.isHeightInCentimeters = (this.SETTING_HEIGHT === 'Centimeters');
-      this.isHeightInFeetInches = !this.isHeightInCentimeters;
     });
   }
 
