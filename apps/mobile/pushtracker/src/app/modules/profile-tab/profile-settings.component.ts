@@ -11,6 +11,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 @Component({
   selector: 'profile-settings',
@@ -24,6 +25,8 @@ export class ProfileSettingsComponent implements OnInit {
   WEIGHT: string;
   DISTANCE: string;
   CURRENT_THEME: string;
+
+  user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   @ViewChild('sliderSettingDialog', { static: false })
   sliderSettingDialog: ElementRef;
@@ -48,6 +51,8 @@ export class ProfileSettingsComponent implements OnInit {
     private _page: Page
   ) {
     this._page.actionBarHidden = true;
+    this.user = KinveyUser.getActiveUser();
+    console.log(this.user.data);
 
     this.HEIGHT = 'Feet & inches';
     this.WEIGHT = 'Pounds';
@@ -170,12 +175,15 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
+        KinveyUser.update({ height_unit_preference: this.HEIGHT });
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
+        KinveyUser.update({ weight_unit_preference: this.WEIGHT });
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
+        KinveyUser.update({ distance_unit_preference: this.DISTANCE });
         break;
       case 'max-speed':
         this.settings.maxSpeed = this.SLIDER_VALUE * 10;
