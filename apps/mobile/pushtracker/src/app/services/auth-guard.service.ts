@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanLoad, Route } from '@angular/router';
+import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 
@@ -9,7 +10,7 @@ export class AuthGuardService implements CanActivate, CanLoad {
 
   canActivate(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      const user = KinveyUser.getActiveUser();
+      const user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
       if (user) {
         resolve(true);
       } else {

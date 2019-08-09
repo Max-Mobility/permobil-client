@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -19,7 +19,6 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
-import { PtMobileUserData } from '../../models';
 // import { PtMobileUser } from '../../models';
 import { DialogService, LoggingService } from '../../services';
 
@@ -35,7 +34,7 @@ export class ProfileTabComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
-  user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
+  user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isWeight: boolean;
   isHeightInCentimeters: boolean;
@@ -103,9 +102,9 @@ export class ProfileTabComponent implements OnInit {
   ) {
     // appSettings.clear();
     this._page.actionBarHidden = true;
-    this.user = KinveyUser.getActiveUser();
+    this.user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
 
-    if (!this.user.data.dob || this.user.data.dob === '')
+    if (!this.user.data.dob || this.user.data.dob === null)
       this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
 
     this.primary = ['100', '200', '300'];
@@ -155,7 +154,7 @@ export class ProfileTabComponent implements OnInit {
     this.screenHeight = screen.mainScreen.heightDIPs;
 
     this._page.on(Page.navigatedToEvent, args => {
-      this.user = KinveyUser.getActiveUser();
+      this.user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
       this.SETTING_HEIGHT =
         this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
         'Feet & inches';
@@ -291,8 +290,7 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
     ) {
-      (this.user
-        .data as PtMobileUserData).activity_goal_coast_time = this.activity_goals_dialog_data.config_value;
+      this.user.data.activity_goal_coast_time = this.activity_goals_dialog_data.config_value;
       KinveyUser.update({
         activity_goal_coast_time: this.activity_goals_dialog_data.config_value
       });
@@ -300,8 +298,7 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
     ) {
-      (this.user
-        .data as PtMobileUserData).activity_goal_distance = this.activity_goals_dialog_data.config_value;
+      this.user.data.activity_goal_distance = this.activity_goals_dialog_data.config_value;
       KinveyUser.update({
         activity_goal_distance: this.activity_goals_dialog_data.config_value
       });
@@ -355,15 +352,15 @@ export class ProfileTabComponent implements OnInit {
         if (val) {
           // map the selected value to the user profile key
           if (key === 'gender') {
-            (this.user.data as PtMobileUserData).gender = val;
+            this.user.data.gender = val;
             KinveyUser.update({ gender: val });
             this._logService.logBreadCrumb(`User set gender: ${val}`);
           } else if (key === 'chair-type') {
-            (this.user.data as PtMobileUserData).chair_type = val;
+            this.user.data.chair_type = val;
             KinveyUser.update({ chair_type: val });
             this._logService.logBreadCrumb(`User set chair-type: ${val}`);
           } else if (key === 'chair-make') {
-            (this.user.data as PtMobileUserData).chair_make = val;
+            this.user.data.chair_make = val;
             KinveyUser.update({ chair_make: val });
             this._logService.logBreadCrumb(`User set chair-make: ${val}`);
           }
@@ -605,7 +602,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    (this.user.data as PtMobileUserData).weight = primaryValue + secondaryValue;
+    this.user.data.weight = primaryValue + secondaryValue;
     if (this.SETTING_WEIGHT === 'Pounds') {
       this.user.data.weight = this._poundsToKilograms(
         primaryValue + secondaryValue
@@ -623,8 +620,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    (this.user.data as PtMobileUserData).height =
-      primaryValue + 0.01 * (secondaryValue || 0);
+    this.user.data.height = primaryValue + 0.01 * (secondaryValue || 0);
     if (this.SETTING_HEIGHT === 'Feet & inches') {
       this.user.data.height = this._feetInchesToCentimeters(
         primaryValue,
