@@ -99,4 +99,39 @@
       }
     }
   }
+
+  .LIST_PICKER_DIALOG_BASE {
+    height: 100%;
+
+    > StackLayout {
+      margin: 24;
+      border-radius: 2;
+
+      .picker-title {
+        font-family: $os;
+        font-size: 18;
+        font-weight: bold;
+        horizontal-align: left;
+        vertical-align: center;
+        margin: 12;
+      }
+
+      .picker-description {
+        font-family: $os;
+        font-size: 10;
+        margin-left: 12;
+      }
+
+      .cancel-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+        text-align: right;
+      }
+
+      .ok-btn {
+        @extend .btn-transparent;
+        horizontal-align: right;
+      }
+    }
+  }
 }
