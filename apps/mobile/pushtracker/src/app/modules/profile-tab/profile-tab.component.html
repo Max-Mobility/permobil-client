@@ -140,7 +140,9 @@
       // Mock ActionBar
       <Label class="picker-title" [text]="(isWeight ? 'general.weight' : 'general.height') | translate" textWrap="true"></Label>
       <Label class="picker-description" [text]="(isWeight ? 'general.weight-guess' : 'general.height-guess') | translate" textWrap="true"></Label>
-      <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
+
+      <!-- If height is measured in feet and inches, show two list pickers -->
+      <GridLayout row="1" rows="*, auto" columns="auto, *, auto" *ngIf="isHeightInFeetInches">
         <StackLayout row="0" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
           <ListPicker #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
           <ListPicker #secondaryPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-l-4" (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"></ListPicker>
@@ -148,6 +150,16 @@
         <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
         <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
       </GridLayout>
+
+      <!-- Else If height is measured in centimeters, show just one list pickers -->
+      <GridLayout row="1" rows="*, auto" columns="auto, *, auto" *ngIf="isHeightInCentimeters">
+        <StackLayout row="0" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
+          <ListPicker #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
+        </StackLayout>
+        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+        <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+      </GridLayout>
+
     </StackLayout>
   </GridLayout>
 </GridLayout>
