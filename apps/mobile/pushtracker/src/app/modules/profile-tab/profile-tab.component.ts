@@ -19,6 +19,7 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
+import { topmost } from 'tns-core-modules/ui/frame';
 
 @Component({
   selector: 'profile',
@@ -294,9 +295,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
+      this.activity_goals_dialog_data.config_key +
+      ' ' +
+      this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -704,7 +705,7 @@ export class ProfileTabComponent implements OnInit {
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
     if (!feet || !inches) return '0\' 0"';
-    else return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}"`;
+    else return `${Math.floor(feet).toFixed()}\' ${inches.toFixed()}\"`;
   }
 
   private _displayHeightInCentimeters(val: number) {
