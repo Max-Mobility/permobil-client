@@ -36,14 +36,21 @@ export class ProfileTabComponent implements OnInit {
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
-  isWeight: boolean;
   isHeightInCentimeters: boolean;
   displayWeight: string;
   displayHeight: string;
+  // List picker related fields
+  LIST_PICKER_OPTIONS: string[];
   primary: string[];
   secondary: string[];
   primaryIndex: number;
   secondaryIndex: number;
+  listPickerIndex: number;
+  listPickerTitle: string;
+  listPickerDescription: string;
+  listPickerDescriptionNecessary: boolean;
+  listPickerNeedsSecondary: boolean;
+  // Settings
   SETTING_WEIGHT_UNITS: string[];
   SETTING_WEIGHT: string;
   SETTING_HEIGHT_UNITS: string[];
@@ -111,8 +118,15 @@ export class ProfileTabComponent implements OnInit {
     this.secondary = ['100', '200', '300'];
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
+    this.listPickerIndex = 0;
+    this.listPickerTitle = '';
+    this.listPickerDescription = '';
+    this.listPickerDescriptionNecessary = true;
+    this.listPickerNeedsSecondary = false;
 
-    this.isWeight = false;
+    this.LIST_PICKER_OPTIONS = ['Gender', 'Weight', 'Height',
+      'Chair Type', 'Chair Make'];
+    this.listPickerIndex = 0;
 
     // Units for settings
     this.SETTING_HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
@@ -315,63 +329,6 @@ export class ProfileTabComponent implements OnInit {
     this.closeActivityGoalsDialog();
   }
 
-  onDataBoxTap(args: EventData, key: string) {
-    Log.D(`data box ${key} tapped`);
-
-    this._setActiveDataBox(args);
-
-    // need to get the actions for the selected key data box
-    let actions;
-    if (key === 'gender') {
-      actions = ['Male', 'Female'];
-    } else if (key === 'chair-type') {
-      actions = []; // init the array
-      this._translateService.instant('profile-tab.chair-types').forEach(i => {
-        actions.push(i);
-      });
-    } else if (key === 'chair-make') {
-      actions = [
-        'Colours',
-        'Invacare / Küschall',
-        'Karman',
-        'Ki',
-        'Motion Composites',
-        'Panthera',
-        'Quickie / Sopur / RGK',
-        'TiLite',
-        'Top End',
-        'Other'
-      ];
-    }
-
-    this._dialogService
-      .action(this._translateService.instant(`general.${key}`), actions)
-      .then(val => {
-        this._removeActiveDataBox();
-
-        if (val) {
-          // map the selected value to the user profile key
-          if (key === 'gender') {
-            this.user.data.gender = val;
-            KinveyUser.update({ gender: val });
-            this._logService.logBreadCrumb(`User set gender: ${val}`);
-          } else if (key === 'chair-type') {
-            this.user.data.chair_type = val;
-            KinveyUser.update({ chair_type: val });
-            this._logService.logBreadCrumb(`User set chair-type: ${val}`);
-          } else if (key === 'chair-make') {
-            this.user.data.chair_make = val;
-            KinveyUser.update({ chair_make: val });
-            this._logService.logBreadCrumb(`User set chair-make: ${val}`);
-          }
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
   onBirthDateTap(args: EventData) {
     Log.D(`Birthday tapped`);
 
@@ -416,44 +373,6 @@ export class ProfileTabComponent implements OnInit {
       });
   }
 
-  onHeightTap(args) {
-    Log.D('height action item tap');
-    this._setActiveDataBox(args);
-
-    const data = ['Centimeters', 'Feet & inches'];
-    this._dialogService
-      .action(this._translateService.instant('general.height'), data)
-      .then(val => {
-        this._removeActiveDataBox();
-        if (val) {
-          this.SETTING_HEIGHT = val;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
-  onWeightTap(args) {
-    Log.D('Weight action item tap');
-    this._setActiveDataBox(args);
-
-    const data = ['Kilograms', 'Pounds'];
-    this._dialogService
-      .action(this._translateService.instant('general.weight'), data)
-      .then(val => {
-        this._removeActiveDataBox();
-        if (val) {
-          this.SETTING_WEIGHT = val;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
   onDistanceTap(args) {
     Log.D('Distance action item tap');
     this._setActiveDataBox(args);
@@ -471,6 +390,48 @@ export class ProfileTabComponent implements OnInit {
         this._removeActiveDataBox();
         this._logService.logException(err);
       });
+  }
+
+  onListPickerTap(args: EventData, index) {
+    this.listPickerIndex = index;
+    switch (this.listPickerIndex) {
+      case 0:
+        this.onListGenderTap(args);
+        break;
+      case 1:
+        this.onListWeightTap(args);
+        break;
+      case 2:
+        this.onListHeightTap(args);
+        break;
+      case 3:
+        this.onListChairTypeTap(args);
+        break;
+      case 4:
+        this.onListChairMakeTap(args);
+        break;
+    }
+  }
+
+  onListGenderTap(args: EventData) {
+    this.primaryIndex = 0;
+    Log.D('User tapped Weight data box');
+    this._setActiveDataBox(args);
+
+    this.primary = ['Male', 'Female'];
+    if (this.user.data.gender === 'Male')
+      this.primaryIndex = 0;
+    else
+      this.primaryIndex = 1;
+
+    this.listPickerTitle = this._translateService.instant('general.gender');
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+
+    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
+    console.log('rootTabView', rootTabView);
   }
 
   onListWeightTap(args: EventData) {
@@ -492,7 +453,11 @@ export class ProfileTabComponent implements OnInit {
     this.primaryIndex = parseFloat(this.primary[indices[0]]);
     this.secondaryIndex = 10 * indices[1];
 
-    this.isWeight = true;
+    this.listPickerTitle = this._translateService.instant('general.weight');
+    this.listPickerDescriptionNecessary = true;
+    this.listPickerDescription = this._translateService.instant('general.weight-guess');
+    this.listPickerNeedsSecondary = true;
+
     this._openListPickerDialog();
 
     const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
@@ -512,6 +477,7 @@ export class ProfileTabComponent implements OnInit {
   onListHeightTap(args: EventData) {
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
+    this.listPickerIndex = 2;
     Log.D('User tapped Height data box');
     this._setActiveDataBox(args);
 
@@ -530,8 +496,15 @@ export class ProfileTabComponent implements OnInit {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
     }
-    this.isWeight = false;
+    this.listPickerTitle = this._translateService.instant('general.height');
+    this.listPickerDescriptionNecessary = true;
+    this.listPickerDescription = this._translateService.instant('general.height-guess');
+    this.listPickerNeedsSecondary = !this.isHeightInCentimeters;
+
     this._openListPickerDialog();
+
+    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
+    console.log('rootTabView', rootTabView);
   }
 
   private _getHeightIndices() {
@@ -564,14 +537,29 @@ export class ProfileTabComponent implements OnInit {
 
   async saveListPickerValue() {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
-    const primaryValue = parseFloat(this.primary[this.primaryIndex]);
-    const secondaryValue = parseFloat(this.secondary[this.secondaryIndex]);
-
-    if (this.isWeight) {
-      this._saveWeightOnChange(primaryValue, secondaryValue);
-    } else {
-      this._saveHeightOnChange(primaryValue, secondaryValue);
+    switch (this.listPickerIndex) {
+      case 0:
+        this.user.data.gender = this.primary[this.primaryIndex];
+        KinveyUser.update({ gender: this.user.data.gender });
+        break;
+      case 1:
+        this._saveWeightOnChange(parseFloat(this.primary[this.primaryIndex]),
+                                 parseFloat(this.secondary[this.secondaryIndex]));
+        break;
+      case 2:
+        this._saveHeightOnChange(parseFloat(this.primary[this.primaryIndex]),
+                                 parseFloat(this.secondary[this.secondaryIndex]));
+        break;
+      case 3:
+        this.user.data.chair_type = this.primary[this.primaryIndex];
+        KinveyUser.update({ chair_type: this.user.data.chair_type });
+        break;
+      case 4:
+        this.user.data.chair_make = this.primary[this.primaryIndex];
+        KinveyUser.update({ chair_make: this.user.data.chair_make });
+        break;
     }
+
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
   }
@@ -675,6 +663,56 @@ export class ProfileTabComponent implements OnInit {
   private _displayHeightInCentimeters(val: number) {
     if (!val) return 0 + ' cm';
     return val.toFixed() + ' cm';
+  }
+
+  onListChairTypeTap(args: EventData) {
+    this.primaryIndex = 0;
+    Log.D('User tapped Weight data box');
+    this._setActiveDataBox(args);
+
+    this.primary = [];
+    this._translateService.instant('profile-tab.chair-types').forEach(i => {
+      this.primary.push(i);
+    });
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+
+    this.listPickerTitle = this._translateService.instant('general.chair-type');
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+
+    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
+    console.log('rootTabView', rootTabView);
+  }
+
+  onListChairMakeTap(args: EventData) {
+    this.primaryIndex = 0;
+    Log.D('User tapped Weight data box');
+    this._setActiveDataBox(args);
+
+    this.primary = [
+      'Colours',
+      'Invacare / Küschall',
+      'Karman',
+      'Ki',
+      'Motion Composites',
+      'Panthera',
+      'Quickie / Sopur / RGK',
+      'TiLite',
+      'Top End',
+      'Other'
+    ];
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+
+    this.listPickerTitle = this._translateService.instant('profile-tab.chair-make');
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+
+    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
+    console.log('rootTabView', rootTabView);
   }
 
   private _openListPickerDialog() {

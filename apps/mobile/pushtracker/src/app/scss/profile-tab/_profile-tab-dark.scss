@@ -95,6 +95,10 @@
     @extend .ACTIVITY_GOALS_DIALOG_BASE;
     background-color: $black;
 
+    GridLayout {
+      color: $white;
+    }
+
     .close-btn {
       @extend .MOCK_ACTION_BAR_BUTTON_BASE;
       color: $white;
