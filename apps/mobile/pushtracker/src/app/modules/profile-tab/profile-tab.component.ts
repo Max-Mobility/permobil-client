@@ -14,13 +14,11 @@ import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
 import { prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
-import { topmost } from 'tns-core-modules/ui/frame/frame';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
-// import { PtMobileUser } from '../../models';
-import { DialogService, LoggingService } from '../../services';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'profile',
@@ -104,7 +102,6 @@ export class ProfileTabComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _dialogService: DialogService,
     private _page: Page
   ) {
     // appSettings.clear();
@@ -124,8 +121,13 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this.LIST_PICKER_OPTIONS = ['Gender', 'Weight', 'Height',
-      'Chair Type', 'Chair Make'];
+    this.LIST_PICKER_OPTIONS = [
+      'Gender',
+      'Weight',
+      'Height',
+      'Chair Type',
+      'Chair Make'
+    ];
     this.listPickerIndex = 0;
 
     // Units for settings
@@ -178,14 +180,17 @@ export class ProfileTabComponent implements OnInit {
       this.SETTING_DISTANCE =
         this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
         'Miles';
+
       this._initDisplayWeight();
       this._initDisplayHeight();
+
       this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb('profile-tab.component ngOnInit');
+
     this._initDisplayWeight();
     this._initDisplayHeight();
   }
@@ -373,148 +378,33 @@ export class ProfileTabComponent implements OnInit {
       });
   }
 
-  onDistanceTap(args) {
-    Log.D('Distance action item tap');
-    this._setActiveDataBox(args);
-
-    const data = ['Kilometers', 'Miles'];
-    this._dialogService
-      .action(this._translateService.instant('general.distance'), data)
-      .then(val => {
-        this._removeActiveDataBox();
-        if (val) {
-          this.SETTING_DISTANCE = val;
-        }
-      })
-      .catch(err => {
-        this._removeActiveDataBox();
-        this._logService.logException(err);
-      });
-  }
-
   onListPickerTap(args: EventData, index) {
     this.listPickerIndex = index;
     switch (this.listPickerIndex) {
       case 0:
-        this.onListGenderTap(args);
+        this._onListGenderTap(args);
         break;
       case 1:
-        this.onListWeightTap(args);
+        this._onListWeightTap(args);
         break;
       case 2:
-        this.onListHeightTap(args);
+        this._onListHeightTap(args);
         break;
       case 3:
-        this.onListChairTypeTap(args);
+        this._onListChairTypeTap(args);
         break;
       case 4:
-        this.onListChairMakeTap(args);
+        this._onListChairMakeTap(args);
         break;
     }
   }
 
-  onListGenderTap(args: EventData) {
-    this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
-    this._setActiveDataBox(args);
-
-    this.primary = ['Male', 'Female'];
-    if (this.user.data.gender === 'Male')
-      this.primaryIndex = 0;
-    else
-      this.primaryIndex = 1;
-
-    this.listPickerTitle = this._translateService.instant('general.gender');
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-
-    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
-    console.log('rootTabView', rootTabView);
+  primaryIndexChanged(picker) {
+    this.primaryIndex = picker.selectedIndex;
   }
 
-  onListWeightTap(args: EventData) {
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    Log.D('User tapped Weight data box');
-    this._setActiveDataBox(args);
-
-    if (this.SETTING_WEIGHT === 'Kilograms') {
-      this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
-    } else {
-      this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 10 }, (v, k) => '.' + k);
-    }
-
-    // Initialize primaryIndex and secondaryIndex from user.data.weight
-    const indices = this._getWeightIndices();
-    this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = 10 * indices[1];
-
-    this.listPickerTitle = this._translateService.instant('general.weight');
-    this.listPickerDescriptionNecessary = true;
-    this.listPickerDescription = this._translateService.instant('general.weight-guess');
-    this.listPickerNeedsSecondary = true;
-
-    this._openListPickerDialog();
-
-    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
-    console.log('rootTabView', rootTabView);
-  }
-
-  private _getWeightIndices() {
-    let weight = this.user.data.weight;
-    if (this.SETTING_WEIGHT === 'Pounds') {
-      weight = this._kilogramsToPounds(weight);
-    }
-    const primaryIndex = Math.floor(weight);
-    const secondaryIndex = parseFloat((weight % 1).toFixed(1));
-    return [primaryIndex - 2, secondaryIndex];
-  }
-
-  onListHeightTap(args: EventData) {
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    this.listPickerIndex = 2;
-    Log.D('User tapped Height data box');
-    this._setActiveDataBox(args);
-
-    if (this.SETTING_HEIGHT === 'Centimeters') {
-      this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
-    } else {
-      this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
-      this.secondary = Array.from({ length: 12 }, (v, k) => k + ' in');
-    }
-
-    // Initialize primaryIndex and secondaryIndex from user.data.height
-    const indices = this._getHeightIndices();
-    this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = indices[1];
-    if (this.secondaryIndex === 12) {
-      this.primaryIndex += 1;
-      this.secondaryIndex = 0;
-    }
-    this.listPickerTitle = this._translateService.instant('general.height');
-    this.listPickerDescriptionNecessary = true;
-    this.listPickerDescription = this._translateService.instant('general.height-guess');
-    this.listPickerNeedsSecondary = !this.isHeightInCentimeters;
-
-    this._openListPickerDialog();
-
-    const rootTabView = topmost().currentPage.frame.getViewById('rootTabView');
-    console.log('rootTabView', rootTabView);
-  }
-
-  private _getHeightIndices() {
-    let heightString = this.user.data.height + '';
-    if (this.SETTING_HEIGHT === 'Feet & inches') {
-      heightString = this._centimetersToFeetInches(this.user.data.height);
-    }
-    const primaryIndex = Math.floor(parseFloat(heightString));
-    const secondaryIndex = parseFloat(heightString.split('.')[1]);
-    return [primaryIndex - 2, secondaryIndex];
+  secondaryIndexChanged(picker) {
+    this.secondaryIndex = picker.selectedIndex;
   }
 
   async closeListPickerDialog() {
@@ -543,12 +433,16 @@ export class ProfileTabComponent implements OnInit {
         KinveyUser.update({ gender: this.user.data.gender });
         break;
       case 1:
-        this._saveWeightOnChange(parseFloat(this.primary[this.primaryIndex]),
-                                 parseFloat(this.secondary[this.secondaryIndex]));
+        this._saveWeightOnChange(
+          parseFloat(this.primary[this.primaryIndex]),
+          parseFloat(this.secondary[this.secondaryIndex])
+        );
         break;
       case 2:
-        this._saveHeightOnChange(parseFloat(this.primary[this.primaryIndex]),
-                                 parseFloat(this.secondary[this.secondaryIndex]));
+        this._saveHeightOnChange(
+          parseFloat(this.primary[this.primaryIndex]),
+          parseFloat(this.secondary[this.secondaryIndex])
+        );
         break;
       case 3:
         this.user.data.chair_type = this.primary[this.primaryIndex];
@@ -562,6 +456,159 @@ export class ProfileTabComponent implements OnInit {
 
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
+  }
+
+  private _getWeightIndices() {
+    let weight = this.user.data.weight;
+    if (this.SETTING_WEIGHT === 'Pounds') {
+      weight = this._kilogramsToPounds(weight);
+    }
+    const primaryIndex = Math.floor(weight);
+    const secondaryIndex = parseFloat((weight % 1).toFixed(1));
+    return [primaryIndex - 2, secondaryIndex];
+  }
+
+  private _getHeightIndices() {
+    let heightString = this.user.data.height + '';
+    if (this.SETTING_HEIGHT === 'Feet & inches') {
+      heightString = this._centimetersToFeetInches(this.user.data.height);
+    }
+    const primaryIndex = Math.floor(parseFloat(heightString));
+    const secondaryIndex = parseFloat(heightString.split('.')[1]);
+    return [primaryIndex - 2, secondaryIndex];
+  }
+
+  private _onListGenderTap(args: EventData) {
+    Log.D('User tapped Gender data box');
+
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
+    Log.D('User tapped gender data box');
+    this._setActiveDataBox(args);
+
+    this.primary = ['Male', 'Female'];
+    if (this.user.data.gender === 'Male') this.primaryIndex = 0;
+    else this.primaryIndex = 1;
+
+    this.listPickerTitle = this._translateService.instant('general.gender');
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+  }
+
+  private _onListWeightTap(args: EventData) {
+    Log.D('User tapped Weight data box');
+
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
+    this._setActiveDataBox(args);
+
+    if (this.SETTING_WEIGHT === 'Kilograms') {
+      this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
+      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
+    } else {
+      this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
+      this.secondary = Array.from({ length: 10 }, (v, k) => '.' + k);
+    }
+
+    // Initialize primaryIndex and secondaryIndex from user.data.weight
+    const indices = this._getWeightIndices();
+    this.primaryIndex = parseFloat(this.primary[indices[0]]);
+    this.secondaryIndex = 10 * indices[1];
+
+    this.listPickerTitle = this._translateService.instant('general.weight');
+    this.listPickerDescriptionNecessary = true;
+    this.listPickerDescription = this._translateService.instant(
+      'general.weight-guess'
+    );
+    this.listPickerNeedsSecondary = true;
+
+    this._openListPickerDialog();
+  }
+
+  private _onListHeightTap(args: EventData) {
+    Log.D('User tapped Height data box');
+
+    this.primaryIndex = 0;
+    this.secondaryIndex = 0;
+    this.listPickerIndex = 2;
+    this._setActiveDataBox(args);
+
+    if (this.SETTING_HEIGHT === 'Centimeters') {
+      this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
+    } else {
+      this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
+      this.secondary = Array.from({ length: 12 }, (v, k) => k + ' in');
+    }
+
+    // Initialize primaryIndex and secondaryIndex from user.data.height
+    const indices = this._getHeightIndices();
+    console.log('fuck me', this.primary[indices[0]]);
+
+    this.primaryIndex = parseFloat(this.primary[indices[0]]);
+    this.secondaryIndex = indices[1];
+    if (this.secondaryIndex === 12) {
+      this.primaryIndex += 1;
+      this.secondaryIndex = 0;
+    }
+    this.listPickerTitle = this._translateService.instant('general.height');
+    this.listPickerDescriptionNecessary = true;
+    this.listPickerDescription = this._translateService.instant(
+      'general.height-guess'
+    );
+    this.listPickerNeedsSecondary = !this.isHeightInCentimeters;
+
+    this._openListPickerDialog();
+  }
+
+  private _onListChairTypeTap(args: EventData) {
+    Log.D('User tapped Chair Type data box');
+
+    this.primaryIndex = 0;
+    this._setActiveDataBox(args);
+
+    this.primary = [];
+    this._translateService.instant('profile-tab.chair-types').forEach(i => {
+      this.primary.push(i);
+    });
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+
+    this.listPickerTitle = this._translateService.instant('general.chair-type');
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+  }
+
+  private _onListChairMakeTap(args: EventData) {
+    Log.D('User tapped Chair Make data box');
+
+    this.primaryIndex = 0;
+    this._setActiveDataBox(args);
+
+    this.primary = [
+      'Colours',
+      'Invacare / Küschall',
+      'Karman',
+      'Ki',
+      'Motion Composites',
+      'Panthera',
+      'Quickie / Sopur / RGK',
+      'TiLite',
+      'Top End',
+      'Other'
+    ];
+
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
+
+    this.listPickerTitle = this._translateService.instant(
+      'profile-tab.chair-make'
+    );
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
   }
 
   private _initDisplayWeight() {
@@ -667,7 +714,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListChairTypeTap(args: EventData) {
     this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
+    this.secondaryIndex = 0;
+    Log.D('User tapped Chair Type data box');
     this._setActiveDataBox(args);
 
     this.primary = [];
@@ -688,7 +736,8 @@ export class ProfileTabComponent implements OnInit {
 
   onListChairMakeTap(args: EventData) {
     this.primaryIndex = 0;
-    Log.D('User tapped Weight data box');
+    this.secondaryIndex = 0;
+    Log.D('User tapped Chair Make data box');
     this._setActiveDataBox(args);
 
     this.primary = [
@@ -703,7 +752,7 @@ export class ProfileTabComponent implements OnInit {
       'Top End',
       'Other'
     ];
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+    this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
 
     this.listPickerTitle = this._translateService.instant('profile-tab.chair-make');
     this.listPickerDescriptionNecessary = false;
@@ -729,14 +778,6 @@ export class ProfileTabComponent implements OnInit {
         duration: 200
       });
     });
-  }
-
-  public primaryIndexChanged(picker) {
-    this.primaryIndex = picker.selectedIndex;
-  }
-
-  public secondaryIndexChanged(picker) {
-    this.secondaryIndex = picker.selectedIndex;
   }
 
   private _animateDialog(args, x: number, y: number) {
