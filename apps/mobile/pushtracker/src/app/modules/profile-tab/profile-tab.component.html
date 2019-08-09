@@ -13,38 +13,26 @@
     <ScrollView row="1" rowSpan="2" col="0" padding="10">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *">
         // Page Title
-        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate"
-          textWrap="true"></Label>
-        // User Avatar // kinvey user.data.profile_picture - check if we have it
-        and use that if not, nothing
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
+        // User Avatar // kinvey user.data.profile_picture - check if we have it and use that if not, nothing
         <GridLayout row="1" col="0" rowspan="2" class="avatar-circle">
           <Label text="B" textWrap="true"></Label>
         </GridLayout>
 
         // User Name
-        <Label row="1" col="1" colSpan="3" class="profile-name"
-          [text]="user.data.first_name + ' ' + user.data.last_name" textWrap="true"></Label>
+        <Label row="1" col="1" colSpan="3" class="profile-name" [text]="user.data.first_name + ' ' + user.data.last_name" textWrap="true"></Label>
 
         // User Email
         <Label row="2" col="1" colSpan="3" class="profile-email" [text]="user.email" textWrap="true"></Label>
 
         // Activity Goals Label
-        <label col="0" row="3" colSpan="4" class="section-label"
-          [text]="'profile-tab.activity-goals' | translate"></label>
+        <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
 
         // Horizontal Line
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
-        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="
-            onActivityGoalTap(
-              $event,
-              'coast-time',
-              'coast-time-description',
-              'COAST_TIME_ACTIVITY_GOAL',
-              COAST_TIME_ACTIVITY_GOAL
-            )
-          ">
+        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.activity_goal_coast_time" textWrap="true"></Label>
@@ -53,15 +41,7 @@
         </StackLayout>
 
         // Distance
-        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="
-            onActivityGoalTap(
-              $event,
-              'distance',
-              'distance-description',
-              'DISTANCE_ACTIVITY_GOAL',
-              DISTANCE_ACTIVITY_GOAL
-            )
-          ">
+        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL', DISTANCE_ACTIVITY_GOAL)">
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.activity_goal_distance" textWrap="true"></Label>
@@ -134,18 +114,15 @@
 
   <!-- Activity Goals FullScreen Layout -->
   // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight"
-    opacity="0" class="activity-goals-dialog">
+  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, auto">
       <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeActivityGoalsDialog()"></Button>
-      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"
-        (tap)="onSetGoalBtnTap()"></Button>
+      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn" (tap)="onSetGoalBtnTap()"></Button>
     </GridLayout>
     <GridLayout row="1" rows="auto, auto, *">
       <Label row="0" [text]="activity_goals_dialog_data.config_title" class="config-title" textWrap="true"></Label>
-      <Label row="1" [text]="activity_goals_dialog_data.config_description" class="config-title-description"
-        textWrap="true"></Label>
+      <Label row="1" [text]="activity_goals_dialog_data.config_description" class="config-title-description" textWrap="true"></Label>
       <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="auto, *, auto">
         <Button row="1" col="0" text="&#xe15b;" (tap)="decrementConfigValue()"></Button>
         <StackLayout horizontalAlignment="center" row="1" col="1">
@@ -158,25 +135,17 @@
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight"
-    opacity="0" class="list-picker-dialog">
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
       // Mock ActionBar
-      <Label class="picker-title" [text]="(isWeight ? 'general.weight' : 'general.height') | translate"
-        textWrap="true"></Label>
-      <Label class="picker-description" [text]="
-          (isWeight ? 'general.weight-guess' : 'general.height-guess')
-            | translate
-        " textWrap="true"></Label>
+      <Label class="picker-title" [text]="(isWeight ? 'general.weight' : 'general.height') | translate" textWrap="true"></Label>
+      <Label class="picker-description" [text]="(isWeight ? 'general.weight-guess' : 'general.height-guess') | translate" textWrap="true"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
         <StackLayout row="0" col="1" colSpan="2" orientation="horizontal" horizontalAlignment="center">
-          <ListPicker #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4"
-            (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
-          <ListPicker #secondaryPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-l-4"
-            (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"></ListPicker>
+          <ListPicker #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
+          <ListPicker #secondaryPicker [items]="secondary" [selectedIndex]="secondaryIndex" class="m-l-4" (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"></ListPicker>
         </StackLayout>
-        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn"
-          (tap)="closeListPickerDialog()"></Button>
+        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
         <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
       </GridLayout>
     </StackLayout>

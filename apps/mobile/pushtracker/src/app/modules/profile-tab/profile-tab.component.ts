@@ -149,9 +149,10 @@ export class ProfileTabComponent implements OnInit {
     Log.D('settings action item tap');
     this._routerExtensions.navigate(['../profile-settings'], {
       relativeTo: this.activeRoute,
-      animated: true,
       transition: {
-        name: 'slide'
+        name: 'slideLeft',
+        duration: 250,
+        curve: AnimationCurve.easeInOut
       }
     });
     /*
@@ -184,6 +185,16 @@ export class ProfileTabComponent implements OnInit {
     this.activity_goals_dialog_data.config_description = this._translateService.instant(
       `general.${configDescription}`
     );
+
+    // Setting the dialog data to the actual user value
+    if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
+      if (this.user.data.activity_goal_coast_time)
+        this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
+    }
+    else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
+      if (this.user.data.activity_goal_distance)
+        this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_distance;
+    }
 
     const x = this.activityGoalsDialog.nativeElement as GridLayout;
     this._animateDialog(x, 0, 0);
@@ -321,7 +332,7 @@ export class ProfileTabComponent implements OnInit {
     DateTimePicker.pickDate(
       {
         context: (args.object as StackLayout)._context,
-        date: this.user.data.dob,
+        date: new Date(this.user.data.dob),
         minDate: subYears(new Date(), 110),
         maxDate: new Date(),
         title: this._translateService.instant('general.birthday'),
@@ -332,14 +343,19 @@ export class ProfileTabComponent implements OnInit {
       dateTimePickerStyle
     )
       .then(result => {
-        console.log('Date saved', result);
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
           (this.user.data as any).dob = result;
-          KinveyUser.update({ dob: result });
+          const date = new Date(result);
+          const month = date.getUTCMonth() + 1;
+          const day = date.getUTCDate();
+          const year = date.getUTCFullYear();
+          const dateFormatted = month + '/' + day + '/' + year;
+          Log.D('Birthday formatted', dateFormatted);
+          KinveyUser.update({ dob: dateFormatted });
         }
       })
       .catch(err => {
