@@ -38,6 +38,7 @@ export class ProfileTabComponent implements OnInit {
   user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isWeight: boolean;
+  isHeightInCentimeters: boolean;
   displayWeight: string;
   displayHeight: string;
   primary: string[];
@@ -119,7 +120,7 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_WEIGHT_UNITS = ['Kilograms', 'Pounds'];
     this.SETTING_DISTANCE_UNITS = ['Kilometers', 'Miles'];
 
-    // Setting
+    // Unit settings
     this.SETTING_HEIGHT =
       this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
       'Feet & inches';
@@ -129,6 +130,9 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_DISTANCE =
       this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
       'Miles';
+    this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
+
+    // SmartDrive settings
     this.SETTING_MAX_SPEED = '70%';
     this.SETTING_ACCELERATION = '70%';
     this.SETTING_TAP_SENSITIVITY = '100%';
@@ -163,6 +167,7 @@ export class ProfileTabComponent implements OnInit {
         'Miles';
       this._initDisplayWeight();
       this._initDisplayHeight();
+      this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
   }
 
@@ -619,7 +624,7 @@ export class ProfileTabComponent implements OnInit {
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
     (this.user.data as PtMobileUserData).height =
-      primaryValue + 0.01 * secondaryValue;
+      primaryValue + 0.01 * (secondaryValue || 0);
     if (this.SETTING_HEIGHT === 'Feet & inches') {
       this.user.data.height = this._feetInchesToCentimeters(
         primaryValue,
@@ -630,7 +635,7 @@ export class ProfileTabComponent implements OnInit {
         secondaryValue
       );
     } else {
-      this.user.data.height = primaryValue + 0.01 * secondaryValue;
+      this.user.data.height = primaryValue + 0.01 * (secondaryValue || 0);
       this.displayHeight = this._displayHeightInCentimeters(
         this.user.data.height
       );
@@ -657,19 +662,23 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _displayWeightInPounds(val: number) {
-    return val.toFixed(1) + ' lbs';
+    if (!val) return 0 + ' lbs';
+    else return val.toFixed(1) + ' lbs';
   }
 
   private _displayWeightInKilograms(val: number) {
-    return val.toFixed(1) + ' kg';
+    if (!val) return 0 + ' kg';
+    else return val.toFixed(1) + ' kg';
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
-    return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}"`;
+    if (!feet || !inches) return '0\' 0"';
+    else return `${Math.floor(feet).toFixed()}' ${inches.toFixed()}"`;
   }
 
   private _displayHeightInCentimeters(val: number) {
-    return val.toFixed(1) + ' cm';
+    if (!val) return 0 + ' cm';
+    return val.toFixed() + ' cm';
   }
 
   private _openListPickerDialog() {
