@@ -32,6 +32,7 @@ export interface PushTrackerUser {
     height_unit_preference: number;
     distance_unit_preference: number;
     // serial number
-    serial_number: string;
+    smart_serial_number: string;
+    pushtracker_serial_number: string;
   };
 }
