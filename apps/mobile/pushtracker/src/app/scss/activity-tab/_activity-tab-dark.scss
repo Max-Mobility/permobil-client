@@ -38,4 +38,17 @@
     @extend .PAGE_TITLE_BASE;
     color: $white;
   }
+
+  TabViewItem {
+    font-size: 16;
+  }
+
+  TabView {
+    tab-text-font-size: 11;
+    tab-text-color: $white;
+    selected-tab-text-color: $permobil-cousteau;
+    tab-background-color: $black;
+    android-selected-tab-highlight-color: $permobil-cousteau;
+  }
+
 }
