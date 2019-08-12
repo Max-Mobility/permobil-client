@@ -115,7 +115,7 @@
 
         // Serial Number
         <StackLayout row="11" col="0" colSpan="2" class="data-box" (tap)="onScan('smartdrive')">
-          <Label class="data-box-label" [text]="'profile-tab.smartdrive-serial-number' | translate"></Label>
+          <Label class="data-box-label" width="60%" textWrap="true" [text]="'profile-tab.smartdrive-serial-number' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.smartdrive_serial_number" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
@@ -124,7 +124,7 @@
 
         // Pushtracker Serial Number
         <StackLayout row="11" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
-          <Label class="data-box-label" [text]="'profile-tab.pushtracker-serial-number' | translate"></Label>
+          <Label class="data-box-label" width="60%" textWrap="true" [text]="'profile-tab.pushtracker-serial-number' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.pushtracker_serial_number" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
