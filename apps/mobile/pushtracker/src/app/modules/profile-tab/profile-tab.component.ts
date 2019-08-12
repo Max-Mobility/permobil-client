@@ -37,6 +37,8 @@ export class ProfileTabComponent implements OnInit {
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isHeightInCentimeters: boolean;
+  displayActivityGoalCoastTime: string;
+  displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
   // List picker related fields
@@ -187,6 +189,8 @@ export class ProfileTabComponent implements OnInit {
         this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
         'Miles';
 
+      this._initDisplayActivityGoalCoastTime();
+      this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
 
@@ -197,6 +201,8 @@ export class ProfileTabComponent implements OnInit {
   ngOnInit() {
     this.getUser();
     this._logService.logBreadCrumb('profile-tab.component ngOnInit');
+    this._initDisplayActivityGoalCoastTime();
+    this._initDisplayActivityGoalDistance();
     this._initDisplayWeight();
     this._initDisplayHeight();
   }
@@ -614,6 +620,18 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerNeedsSecondary = false;
 
     this._openListPickerDialog();
+  }
+
+  private _initDisplayActivityGoalCoastTime() {
+    this.displayActivityGoalCoastTime = this.user.data.activity_goal_coast_time + ' s';
+  }
+
+  private _initDisplayActivityGoalDistance() {
+    this.displayActivityGoalDistance = this.user.data.activity_goal_distance + '';
+    if (this.user.data.distance_unit_preference === 0)
+      this.displayActivityGoalDistance += ' km';
+    else
+      this.displayActivityGoalDistance += ' mi';
   }
 
   private _initDisplayWeight() {
