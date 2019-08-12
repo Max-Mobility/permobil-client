@@ -179,12 +179,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
         startServiceWithNotification();
 
-        // register time receiver
-        Log.d(TAG, "registering time receiver");
-        IntentFilter timeFilter = new IntentFilter();
-        timeFilter.addAction(Intent.ACTION_TIME_TICK);
-        timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-        this.registerReceiver(this.timeReceiver, timeFilter);
+        // for keeping track of the days
+        this.setupTimeReceiver();
 
         Log.d(TAG, "starting service!");
 
@@ -221,7 +217,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       this.unregisterReceiver(this.timeReceiver);
       this.timeReceiver = null;
     }
-    timeReceiver = new BroadcastReceiver() {
+    this.timeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
           // Log.d(TAG, "TimeReceiver::onReceive()");
@@ -255,6 +251,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           }
         }
       };
+    // register time receiver
+    Log.d(TAG, "registering time receiver");
+    IntentFilter timeFilter = new IntentFilter();
+    timeFilter.addAction(Intent.ACTION_TIME_TICK);
+    timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+    this.registerReceiver(this.timeReceiver, timeFilter);
   }
 
   private void periodicProcessing() {
@@ -264,7 +266,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     if (newDataProcessed) {
       Log.d(TAG, "has processed data, sending to activity");
       // TODO: update data in SQLite tables
-      // TODO: update data in datastore / shared preferences
+      // update data in datastore / shared preferences
+      datastore.setPushes(currentPushCount);
+      datastore.setCoast(currentCoastTime);
+      datastore.setDistance(currentDistance);
+      datastore.setHeartRate(currentHeartRate);
       // send intent to main activity with updated data
       sendDataToActivity(currentPushCount,
                          currentCoastTime,
@@ -311,9 +317,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         }
         // update the last push
         lastPush = detection;
-        // save the pushes and coast to the datastore
-        datastore.setPushes(currentPushCount);
-        datastore.setCoast(currentCoastTime);
       }
       // update the last activity
       lastActivity = detection;
@@ -445,8 +448,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // if we have valid speed, accumulate more distance
       if (newLocationIsFromMovement) {
         currentDistance += distance;
-        // update the saved distance
-        datastore.setDistance(currentDistance);
       }
     }
     // update the stored location for distance computation
@@ -493,12 +494,16 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           ActivityDetector.Detection detection =
             activityDetector.detectActivity(event.values, event.timestamp);
           handleDetection(detection);
-          // TODO: update data in SQLite tables
-          // TODO: update data in datastore / shared preferences
-          // send intent to main activity with updated data
           long now = System.currentTimeMillis();
           long timeDiffMs = now - _lastSendDataTimeMs;
           if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+            // TODO: update data in SQLite tables
+            // update data in datastore / shared preferences
+            datastore.setPushes(currentPushCount);
+            datastore.setCoast(currentCoastTime);
+            datastore.setDistance(currentDistance);
+            datastore.setHeartRate(currentHeartRate);
+            // send intent to main activity with updated data
             sendDataToActivity(currentPushCount,
                                currentCoastTime,
                                currentDistance,
@@ -511,8 +516,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // update the heart rate
       currentHeartRate = event.values[0];
       Log.d(TAG, "current heart rate: " + currentHeartRate);
-      // save the heart rate to the datastore
-      datastore.setHeartRate(currentHeartRate);
       // TODO: save heart rate data as a series of data if the
       // user has asked us to track their heart rate through the
       // app (for some period of time)
