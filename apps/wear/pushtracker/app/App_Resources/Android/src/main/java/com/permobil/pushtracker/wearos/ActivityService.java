@@ -48,11 +48,18 @@ import java.util.Map;
 
 import java.text.SimpleDateFormat;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import io.sentry.Sentry;
 
 import com.permobil.pushtracker.wearos.ActivityData;
 
-// TODO: save current activity into sqlite tables?
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
 //        * GPS
@@ -65,6 +72,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
   private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
+  private static final int SEND_TASK_PERIOD_MS = 1 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -92,12 +100,17 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   public boolean isDebuggable = false;
 
   private BroadcastReceiver timeReceiver = null;
+  private BroadcastReceiver batteryReceiver = null;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
+
+  private HandlerThread mHandlerThread;
+  private Handler mHandler;
+  private Runnable mSendTask;
 
   // for sending to the main app via intent
   private long _lastSendDataTimeMs = 0;
@@ -148,6 +161,29 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // initialize data
     loadFromDatabase();
 
+    // start up for service
+    this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
+    this.mHandlerThread.start();
+    this.mHandler = new Handler(this.mHandlerThread.getLooper());
+
+    this.mSendTask = new SendRunnable();
+
+    // create the retrofit instance
+    Retrofit retrofit = new Retrofit.Builder()
+      .baseUrl(Constants.API_BASE)
+      .addConverterFactory(GsonConverterFactory.create())
+      .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+      .build();
+
+    // create an instance of the KinveyApiService
+    mKinveyApiService = retrofit.create(KinveyApiService.class);
+
+    // save the authorization string needed for kinvey
+    String authorizationToEncode = "bradwaynemartin@gmail.com:testtest";
+    byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
+    mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
+    mKinveyAuthorization = "Basic " + mKinveyAuthorization;
+
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
@@ -169,6 +205,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
         // for keeping track of the days
         this.setupTimeReceiver();
+
+        // for getting notified when we're on the charger (to send data)
+        this.setupBatteryReceiver();
 
         Log.d(TAG, "starting service!");
 
@@ -214,6 +253,66 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     }
   }
 
+  private class SendRunnable implements Runnable {
+    @Override
+    public void run() {
+      try {
+        PushDataToKinvey();
+      } catch (Exception e) {
+        Sentry.capture(e);
+        Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
+      }
+      if (isPlugged) {
+        // only continue sending if we're still plugged in
+        mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
+      }
+    }
+  }
+
+  private void PushDataToKinvey() {
+    // TODO: get X number of unsent data from sqlite storage
+    // TODO:
+    Log.d(TAG, "PushDataToKinvey()...");
+    // Check if the SQLite table has any records pending to be pushed
+    long numUnsent = db.countUnsentEntries();
+    // Log.d(TAG, "Database size: " + db.getTableSizeBytes() + " bytes");
+    if (numUnsent == 0) {
+      Log.d(TAG, "No unsent data.");
+    } else {
+      try {
+        // get the oldest unsent record
+        DatabaseHandler.Record r = db.getRecord(true);
+        Observable.just(RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data))
+          .flatMap(x -> mKinveyApiService.sendData(mKinveyAuthorization, x, r.id))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .unsubscribeOn(Schedulers.io())
+          .subscribe(
+                     item -> {
+                       Log.d(TAG, "item sent: " + item._id);
+                       numRecordsPushed++;
+                       // TODO: currently we don't delete any entries,
+                       // do we want to change that?
+                       // db.deleteRecord(item._id);
+
+                       //update the has_been_sent field for that
+                       // activity
+                       db.markRecordAsSent(item._id);
+                     },
+                     error -> {
+                       Log.e(TAG, "send data onError(): " + error);
+                       Sentry.capture(error);
+                     },
+                     () -> {
+                       Log.d(TAG, "onCompleted()");
+                     });
+      } catch (Exception e) {
+        Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
+        Sentry.capture(e);
+      }
+    }
+  }
+
   public boolean isPlugged() {
     Context context = getApplicationContext();
     boolean isPlugged;
@@ -225,6 +324,35 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
     isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
     return isPlugged;
+  }
+
+  void setupBatteryReceiver() {
+    if (this.batteryReceiver != null) {
+      this.unregisterReceiver(this.batteryReceiver);
+      this.batteryReceiver = null;
+    }
+    this.batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          // Log.d(TAG, "BatteryReceiver::onReceive()");
+          int plugged = 0;
+          if (intent != null) {
+            plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+          }
+          boolean isPlugged =
+            plugged == BatteryManager.BATTERY_PLUGGED_AC ||
+            plugged == BatteryManager.BATTERY_PLUGGED_USB ||
+            plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+          // send message to handler / runnable to send data
+          mHandler.removeCallbacksAndMessages(null);
+          mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
+        }
+      };
+    // register battery receiver
+    Log.d(TAG, "registering battery receiver");
+    IntentFilter batteryFilter = new IntentFilter();
+    batteryFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+    this.registerReceiver(this.batteryReceiver, batteryFilter);
   }
 
   void setupTimeReceiver() {
@@ -293,13 +421,21 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     super.onDestroy();
 
     try {
-      // unregister time receivers
+      // unregister time receiver
       if (this.timeReceiver != null) {
         this.unregisterReceiver(this.timeReceiver);
         this.timeReceiver = null;
       }
+      // unregister battery receiver
+      if (this.batteryReceiver != null) {
+        this.unregisterReceiver(this.batteryReceiver);
+        this.batteryReceiver = null;
+      }
       // remove sensor listeners
       unregisterDeviceSensors();
+      // remove handler tasks
+      mHandler.removeCallbacksAndMessages(null);
+      mHandlerThread.quitSafely();
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);

@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public class Record {
     String id;
     String data;
+    boolean has_been_sent;
   }
 
   public DatabaseHandler(Context context) {
@@ -84,6 +85,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.close();
   }
 
+  synchronized public void markRecordAsSent(String id) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+
+    try {
+      values.put(KEY_HAS_BEEN_SENT, 1);
+      String whereString = "WHERE " + KEY_ID + "=" + id;
+      String[] whereArgs = {};
+      db.update(TABLE_NAME, values, whereString, whereArgs);
+      Log.d(TAG, "Updating RECORD in SQL Table: " + id);
+    } catch (Exception e) {
+      Log.e(TAG, "Exception updating data in table: " + e.getMessage());
+      Sentry.capture(e);
+    }
+
+    db.close();
+  }
+
   synchronized public void updateRecord(DailyActivity data) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
@@ -98,7 +117,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       db.update(TABLE_NAME, values, whereString, whereArgs);
       Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
     } catch (Exception e) {
-      Log.e(TAG, "Exception updating data to table: " + e.getMessage());
+      Log.e(TAG, "Exception updating data in table: " + e.getMessage());
       Sentry.capture(e);
     }
 
@@ -223,6 +242,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int index = cursor.getInt(0);
         record.data = cursor.getString(1);
         record.id = cursor.getString(2);
+        record.has_been_sent = cursor.getBoolean(3);
         Log.d(TAG, "record id: " + index + " - " + record.id);
       } catch (Exception e) {
         Log.e(TAG, "Exception getting record from db:" + e.getMessage());
@@ -240,6 +260,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     SQLiteDatabase db = this.getReadableDatabase();
     long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
     Log.d(TAG, "Current SQLite Table Row Count: " + count);
+    db.close();
+    return count;
+  }
+
+  synchronized public long countUnsentEntries() {
+    SQLiteDatabase db = this.getReadableDatabase();
+    String selection = KEY_HAS_BEEN_SENT + "=0";
+    long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME, selection);
+    Log.d(TAG, "Current SQLite Table Unsent Row Count: " + count);
     db.close();
     return count;
   }
