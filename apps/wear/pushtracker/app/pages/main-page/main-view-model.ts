@@ -743,9 +743,14 @@ export class MainViewModel extends Observable {
     let translationKey = '';
     let value = null;
     switch (this.activeSettingToChange) {
-      case 'chairinfo':
+      case 'chairmake':
         translationKey =
-          'settings.chairinfo.values.' + this.tempSettings.chair.toLowerCase();
+          'settings.chairmake.values.' + this.tempSettings.chairMake.toLowerCase();
+        this.changeSettingKeyValue = L(translationKey);
+        break;
+      case 'chairtype':
+        translationKey =
+          'settings.chairtype.values.' + this.tempSettings.chairType.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         break;
       case 'coastgoal':

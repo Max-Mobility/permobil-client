@@ -11,6 +11,7 @@ public class Datastore {
   public static final String CURRENT_PUSH_COUNT_KEY = "current_push_count";
   public static final String CURRENT_HEART_RATE_KEY = "current_heart_rate";
   public static final String CURRENT_COAST_KEY = "current_coast";
+  public static final String CURRENT_TOTAL_COAST_KEY = "current_total_coast";
   public static final String CURRENT_DISTANCE_KEY = "current_distance";
 
   private SharedPreferences preferences;
@@ -56,6 +57,16 @@ public class Datastore {
   public void setCoast(float coastTime) {
     SharedPreferences.Editor editor = preferences.edit();
     editor.putFloat(PREFIX + CURRENT_COAST_KEY, coastTime);
+    editor.commit();
+  }
+
+  public float getTotalCoast() {
+    return preferences.getFloat(PREFIX + CURRENT_TOTAL_COAST_KEY, 0.0f);
+  }
+
+  public void setTotalCoast(float totalCoastTime) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putFloat(PREFIX + CURRENT_TOTAL_COAST_KEY, totalCoastTime);
     editor.commit();
   }
 
