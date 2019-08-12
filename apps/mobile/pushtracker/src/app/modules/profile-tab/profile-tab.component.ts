@@ -829,10 +829,10 @@ export class ProfileTabComponent implements OnInit {
             deviceName === 'pushtracker' ? ['pushtracker', 'wristband'] : ['smartdrive'];
           this._handleSerial(result.text, validDevices);
         },
-        function(errorMessage) {
-          console.log(errorMessage);
-        }
-      );
+      )
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   private _handleSerial(text: string, forDevices?: string[]) {
