@@ -118,7 +118,10 @@
     ]
   },
   "activity-tab-component": {
-    "title": "My activity"
+    "title": "My activity",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
   },
   "days": {
     "sunday": "Sunday",

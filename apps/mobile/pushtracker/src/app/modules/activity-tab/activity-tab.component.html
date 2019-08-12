@@ -7,21 +7,15 @@
 <ScrollView row="1" height="100%">
     <StackLayout>
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'activity-tab-component.title' | translate" textWrap="true"></Label>
-        <TabView id="tabViewContainer">
-            <StackLayout *tabItem="{title: 'Day'}">
-                <StackLayout>
-                    <Label text="Day" textWrap="true"></Label>
-                </StackLayout>
+        <TabView [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer">
+            <StackLayout *tabItem="{title: displayDay}">
+                <Label text="This is Label in Tab 1x"></Label>
             </StackLayout>
-            <StackLayout *tabItem="{title: 'Week'}">
-                <StackLayout>
-                    <Label text="Week" textWrap="true"></Label>
-                </StackLayout>
+            <StackLayout *tabItem="{title: displayWeek}">
+
             </StackLayout>
-            <StackLayout *tabItem="{title: 'Month'}">
-                <StackLayout>
-                    <Label text="Month" textWrap="true"></Label>
-                </StackLayout>
+            <StackLayout *tabItem="{title: displayMonth}">
+                
             </StackLayout>
         </TabView>            
     </StackLayout>
