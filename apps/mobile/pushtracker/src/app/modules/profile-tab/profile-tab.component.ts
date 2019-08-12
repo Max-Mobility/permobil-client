@@ -808,11 +808,11 @@ export class ProfileTabComponent implements OnInit {
     this._barcodeScanner
       .scan({
         formats: 'QR_CODE, EAN_13',
-        cancelLabel: this._translateService.instant('demo-detail.cancel-scan'), // iOS only
+        cancelLabel: this._translateService.instant('profile-tab.cancel-scan'), // iOS only
         cancelLabelBackgroundColor: '#333333', // iOS only
         message: `${this._translateService.instant(
-          'demo-detail.scan-msg'
-        )} ${this._translateService.instant('demo-detail.sd-or-pt')}`, // Android only
+          'profile-tab.scan-msg'
+        )} ${this._translateService.instant('profile-tab.sd-or-pt')}`, // Android only
         showFlipCameraButton: true,
         preferFrontCamera: false,
         showTorchButton: true,

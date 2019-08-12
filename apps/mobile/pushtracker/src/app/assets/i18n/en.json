@@ -74,7 +74,10 @@
     "smartdrive": "SmartDrive",
     "pushtracker": "PushTracker",
     "smartdrive-serial-number": "SmartDrive Serial Number",
-    "pushtracker-serial-number": "PushTracker Serial Number"
+    "pushtracker-serial-number": "PushTracker Serial Number",
+    "cancel-scan": "Cancel Scan",
+    "scan-msg": "Scan a",
+    "sd-or-pt": "SmartDrive or PushTracker"
   },
   "profile-settings": {
     "theme": "Theme",
