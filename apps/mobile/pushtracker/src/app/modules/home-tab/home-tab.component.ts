@@ -39,7 +39,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _router: Router,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
-    private pushtrackerUserService: PushTrackerUserService
+    private userService: PushTrackerUserService
   ) {
     this.getUser();
     this.refreshGoalData();
@@ -54,7 +54,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   }
 
   getUser(): void {
-    this.pushtrackerUserService.user.subscribe(user => { this.user = user; this.refreshGoalData(); });
+    this.userService.user.subscribe(user => { this.user = user; this.refreshGoalData(); });
   }
 
   ngAfterViewInit() {

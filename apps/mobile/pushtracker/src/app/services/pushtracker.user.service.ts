@@ -12,7 +12,7 @@ export class PushTrackerUserService {
 
   constructor() {}
 
-  setDataField(field: string, value: any): void {
+  updateDataProperty(field: string, value: any): void {
     const updatedUser = this._user.value;
     updatedUser.data[field] = value;
     this._user.next(updatedUser);
