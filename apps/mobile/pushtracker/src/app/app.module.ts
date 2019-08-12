@@ -16,6 +16,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { ActivityTabComponent } from './modules/activity-tab/activity-tab.component';
 
 export function createBarcodeScanner() {
   return new BarcodeScanner();
@@ -36,7 +37,7 @@ export function createTranslateLoader() {
     NativeScriptCommonModule,
     NativeScriptFormsModule,
     NativeScriptUIListViewModule,
-    NativeScriptDateTimePickerModule,
+    NativeScriptDateTimePickerModule, 
     // // This will call the install method and inject a global service called BottomSheetService
     // NativeScriptMaterialBottomSheetModule.forRoot(),
     SharedModule,
@@ -51,7 +52,7 @@ export function createTranslateLoader() {
     })
   ],
   declarations: [AppComponent, ...COMPONENTS],
-  entryComponents: [AppInfoComponent],
+  entryComponents: [AppInfoComponent, ActivityTabComponent],
   providers: [...PROVIDERS, ModalDialogService,
     { provide: BarcodeScanner, useFactory: createBarcodeScanner }],
   schemas: [NO_ERRORS_SCHEMA]
