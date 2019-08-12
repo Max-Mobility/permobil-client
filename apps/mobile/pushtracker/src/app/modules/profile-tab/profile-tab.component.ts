@@ -824,16 +824,16 @@ export class ProfileTabComponent implements OnInit {
         resultDisplayDuration: 500, // Android only
         openSettingsIfPermissionWasPreviouslyDenied: true
       })
-      .then(result => {
-        const validDevices =
-          deviceName === 'pushtracker'
-            ? ['pushtracker', 'wristband']
-            : ['smartdrive'];
-        this._handleSerial(result.text, validDevices);
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      .then(
+        function(result) {
+          const validDevices =
+            deviceName === 'pushtracker' ? ['pushtracker', 'wristband'] : ['smartdrive'];
+          this._handleSerial(result.text, validDevices);
+        },
+        function(errorMessage) {
+          console.log(errorMessage);
+        }
+      );
   }
 
   private _handleSerial(text: string, forDevices?: string[]) {
