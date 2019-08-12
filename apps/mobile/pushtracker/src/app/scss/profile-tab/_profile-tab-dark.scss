@@ -111,13 +111,13 @@
     .config-title {
       color: $white;
     }
-    .config-value-description {
+    .config-title-description {
       color: $white;
     }
 
     .config-circle {
       @extend .CONFIG_CIRCLE_BASE;
-      border-color: $black;
+      border-color: lighten($color: $white, $amount: 0.2);
 
       button {
         color: $permobil-primary;
