@@ -110,17 +110,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   // activity data
   ActivityData currentActivity = new ActivityData();
-  // for calculating coast time
-  private float totalCoastTime = 0;
-
-  // activity data helpers
-  private ActivityDetector.Detection lastActivity = null;
-  private ActivityDetector.Detection lastPush = null;
-  private static final long MAX_ALLOWED_COAST_TIME_MS = 60 * 1000;
 
   // helper objects
   private ActivityDetector activityDetector;
-  private DatabaseHandler databaseHandler;
+  private DatabaseHandler db;
   private Datastore datastore;
 
   public ActivityService() {
@@ -149,11 +142,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
     // create objects
     activityDetector = new ActivityDetector(this);
-    databaseHandler = new DatabaseHandler(this);
+    db = new DatabaseHandler(this);
     datastore = new Datastore(this);
 
     // initialize data
-    loadFromDatastore();
+    loadFromDatabase();
 
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -194,12 +187,31 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     return START_STICKY;
   }
 
-  private void loadFromDatastore() {
-    currentActivity.push_count = datastore.getPushes();
-    currentActivity.coast_time_avg = datastore.getCoast();
-    totalCoastTime = datastore.getTotalCoast();
-    currentActivity.watch_distance = datastore.getDistance();
-    currentActivity.heart_rate = datastore.getHeartRate();
+  private void loadFromDatabase() {
+    // TODO: load from sqlite here
+    long tableRowCount = db.getTableRowCount();
+    if (tableRowCount == 0) {
+      // make new DailyActivity
+      currentActivity = new DailyActivity();
+      // go ahead and write it to db
+      db.addRecord(currentActivity);
+    } else {
+      // get latest record
+      DailyActivity dailyActivity = db.getMostRecent(false);
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      // get current date
+      Date now = Calendar.getInstance().getTime();
+      String nowString = simpleDateFormat.format(now);
+      if (dailyActivity.date.equals(nowString)) {
+        // use the one we found
+        currentActivity = dailyActivity;
+      } else {
+        // make new DailyActivity
+        currentActivity = new DailyActivity();
+        // go ahead and write it to db
+        db.addRecord(currentActivity);
+      }
+    }
   }
 
   void setupTimeReceiver() {
@@ -227,11 +239,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
             if (!sameDate) {
               // reset values to zero
               this.currentActivity = new DailyActivity();
-              // update the datastore
+              // update the datastore - these are for the complication
+              // providers and the pushtracker wear app
               datastore.setDate(nowString);
               datastore.setPushes(currentActivity.push_count);
               datastore.setCoast(currentActivity.coast_time_avg);
-              datastore.setTotalCoast(totalCoastTime);
               datastore.setDistance(currentActivity.watch_distance);
               datastore.setHeartRate(currentActivity.heart_rate);
               // TODO: update the sqlite tables
@@ -252,27 +264,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     if (detection.confidence != 0) {
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
-        currentActivity.push_count += 1;
-        // Log.d(TAG, "Got a push, count = " + currentActivity.push_count);
-        // calculate coast time here
-        if (lastPush != null) {
-          long timeDiffNs = detection.time - lastPush.time;
-          // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
-          long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
-          if (timeDiffNs < timeDiffThreshold) {
-            // update the total coast time
-            totalCoastTime += timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
-            // now compute the average coast time
-            currentActivity.coast_time_avg = totalCoastTime / currentActivity.push_count;
-          }
-        }
-        // update the last push
-        lastPush = detection;
+        this.currentActivity.onPush(detection);
       }
-      // update the last activity
-      lastActivity = detection;
     }
-    // TODO: record the activities somewhere
   }
 
   private PendingIntent getAlarmIntent(int intentFlag) {
@@ -430,13 +424,13 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         long now = System.currentTimeMillis();
         long timeDiffMs = now - _lastSendDataTimeMs;
         if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
-          // TODO: update data in SQLite tables
-          // update data in datastore / shared preferences
+          // update data in datastore / shared preferences for use
+          // with the complication providers and mobile app
           datastore.setPushes(currentActivity.push_count);
           datastore.setCoast(currentActivity.coast_time_avg);
-          datastore.setTotalCoast(totalCoastTime);
           datastore.setDistance(currentActivity.watch_distance);
           datastore.setHeartRate(currentActivity.heart_rate);
+          // TODO: update data in SQLite tables
           // send intent to main activity with updated data
           sendDataToActivity(currentActivity.push_count,
                              currentActivity.coast_time_avg,
