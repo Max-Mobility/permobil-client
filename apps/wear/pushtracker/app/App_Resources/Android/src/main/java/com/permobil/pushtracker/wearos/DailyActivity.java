@@ -37,6 +37,11 @@ public class DailyActivity {
   @Key("has_been_sent")
   public boolean has_been_sent;
 
+  // since we will have multiple types in the DB (e.g. DailyActivity,
+  // WeeklySummary, MonthlySummary, TrackedSession, etc.)
+  @Key("data_type")
+  public string data_type;
+
   // YYYY-MM-DD representation of date for which the activity was
   // recorded
   @Key("date")
@@ -94,6 +99,7 @@ public class DailyActivity {
     this.records = new ArrayList<>();
     this._id = UUID.randomUUID().toString();
     this.has_been_sent = false;
+    this.data_type = "DailyActivity";
   }
 
   public ActivityData(String date,
@@ -119,6 +125,7 @@ public class DailyActivity {
     this.records = records;
     this._id = uuid;
     this.has_been_sent = hasBeenSent;
+    this.data_type = "DailyActivity";
   }
 
   /**
