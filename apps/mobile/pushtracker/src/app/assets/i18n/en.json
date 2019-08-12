@@ -77,7 +77,11 @@
     "pushtracker-serial-number": "PushTracker Serial Number",
     "cancel-scan": "Cancel Scan",
     "scan-msg": "Scan a",
-    "sd-or-pt": "SmartDrive or PushTracker"
+    "sd-or-pt": "SmartDrive or PushTracker",
+    "coast-time-units": "seconds",
+    "distance-units-km": "kilometers",
+    "distance-units-mi": "miles",
+    "per-day": "per day"
   },
   "profile-settings": {
     "theme": "Theme",

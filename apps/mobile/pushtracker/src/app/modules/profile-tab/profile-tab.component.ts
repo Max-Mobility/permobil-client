@@ -41,6 +41,7 @@ export class ProfileTabComponent implements OnInit {
   displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
+  displayActivityGoalUnitLabel: string;
   // List picker related fields
   LIST_PICKER_OPTIONS: string[];
   primary: string[];
@@ -193,7 +194,7 @@ export class ProfileTabComponent implements OnInit {
       this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
-
+      this.displayActivityGoalUnitLabel = '';
       this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
   }
@@ -278,9 +279,19 @@ export class ProfileTabComponent implements OnInit {
 
     // Setting the dialog data to the actual user value
     if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
+      this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.coast-time-units') + ' ' +
+        this._translateService.instant('profile-tab.per-day');
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
     } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
+      if (this.user.data.distance_unit_preference === 0) {
+        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-km') + ' ' +
+          this._translateService.instant('profile-tab.per-day');
+      }
+      else {
+        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-mi') + ' ' +
+          this._translateService.instant('profile-tab.per-day');
+      }
       if (this.user.data.activity_goal_distance)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_distance;
     }
@@ -628,10 +639,12 @@ export class ProfileTabComponent implements OnInit {
 
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance = this.user.data.activity_goal_distance + '';
-    if (this.user.data.distance_unit_preference === 0)
+    if (this.user.data.distance_unit_preference === 0) {
       this.displayActivityGoalDistance += ' km';
-    else
+    }
+    else {
       this.displayActivityGoalDistance += ' mi';
+    }
   }
 
   private _initDisplayWeight() {
