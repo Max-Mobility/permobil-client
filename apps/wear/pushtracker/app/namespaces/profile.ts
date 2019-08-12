@@ -10,7 +10,7 @@ export class Profile extends Observable {
 }
 
 export namespace Profile {
-  export class Chair {
+  export class ChairMake {
     static Options: string[] = [
       'colours',
       'invacare',
@@ -23,8 +23,19 @@ export namespace Profile {
       'top-end',
       'other'
     ];
-    static Translations: string[] = Chair.Options.map(o => 'settings.chairinfo.values.' + o);
+    static Translations: string[] = ChairMake.Options.map(o => 'settings.chairmake.values.' + o);
     static Default: string = 'tilite';
+  }
+
+  export class ChairType {
+    static Options: string[] = [
+      'rigid',
+      'folding',
+      'pediatric',
+      'other'
+    ];
+    static Translations: string[] = ChairType.Options.map(o => 'settings.chairtype.values.' + o);
+    static Default: string = 'rigid';
   }
 
   export class Units {
@@ -36,7 +47,8 @@ export namespace Profile {
   export class Settings extends Observable {
 
     public static Defaults = {
-      chair: Profile.Chair.Default,
+      chairMake: Profile.ChairMake.Default,
+      chairType: Profile.ChairType.Default,
       coastGoal: 10.0,     // seconds
       distanceGoal: 5.0,   // miles
       height: 1.778,       // meters
@@ -44,7 +56,8 @@ export namespace Profile {
       units: Profile.Units.Default
     };
 
-    chair: string = Profile.Settings.Defaults.chair;
+    chairMake: string = Profile.Settings.Defaults.chairMake;
+    chairType: string = Profile.Settings.Defaults.chairType;
     coastGoal: number = Profile.Settings.Defaults.coastGoal;
     distanceGoal: number = Profile.Settings.Defaults.distanceGoal;
     height: number = Profile.Settings.Defaults.height;
@@ -103,11 +116,15 @@ export namespace Profile {
     increase(key: string, increment: number = 0.5): void {
       let index = 0;
       switch (key) {
-        case 'chair':
-        case 'chairinfo':
-          index = Profile.Chair.Options.indexOf(this.chair);
-          index = mod(index + 1, Profile.Chair.Options.length);
-          this.chair = Profile.Chair.Options[index];
+        case 'chairmake':
+          index = Profile.ChairMake.Options.indexOf(this.chairMake);
+          index = mod(index + 1, Profile.ChairMake.Options.length);
+          this.chairMake = Profile.ChairMake.Options[index];
+          break;
+        case 'chairtype':
+          index = Profile.ChairType.Options.indexOf(this.chairType);
+          index = mod(index + 1, Profile.ChairType.Options.length);
+          this.chairType = Profile.ChairType.Options[index];
           break;
         case 'coastgoal':
           this.coastGoal = Math.min(this.coastGoal + increment, 500);
@@ -132,11 +149,15 @@ export namespace Profile {
     decrease(key: string, increment: number = 0.5): void {
       let index = 0;
       switch (key) {
-        case 'chair':
-        case 'chairinfo':
-          index = Profile.Chair.Options.indexOf(this.chair);
-          index = mod(index - 1, Profile.Chair.Options.length);
-          this.chair = Profile.Chair.Options[index];
+        case 'chairmake':
+          index = Profile.ChairMake.Options.indexOf(this.chairMake);
+          index = mod(index - 1, Profile.ChairMake.Options.length);
+          this.chairMake = Profile.ChairMake.Options[index];
+          break;
+        case 'chairtype':
+          index = Profile.ChairType.Options.indexOf(this.chairType);
+          index = mod(index - 1, Profile.ChairType.Options.length);
+          this.chairType = Profile.ChairType.Options[index];
           break;
         case 'coastgoal':
           this.coastGoal = Math.max(this.coastGoal - increment, 0);

@@ -67,8 +67,8 @@
   },
   "profile": "Profile",
   "settings": {
-    "chairinfo": {
-      "title": "Chair Info",
+    "chairmake": {
+      "title": "Chair Make",
       "description": "",
       "values": {
         "colours": "Colours",
@@ -80,6 +80,16 @@
         "quickie": "Quickie / Sopur / RGK",
         "tilite": "TiLite",
         "top-end": "Top End",
+        "other": "Other"
+      }
+    },
+    "chairtype": {
+      "title": "Chair Type",
+      "description": "",
+      "values": {
+        "rigid": "Rigid Frame",
+        "folding": "Folding Frame",
+        "pediatric": "Pedatric",
         "other": "Other"
       }
     },
