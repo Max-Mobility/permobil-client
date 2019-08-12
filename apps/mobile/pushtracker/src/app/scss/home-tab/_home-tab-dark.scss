@@ -5,6 +5,10 @@
   @extend .HOME_TAB_LAYOUT_BASE;
   background-color: $black;
 
+  GridLayout {
+    color: $white;
+  }
+
   .info-btn {
     @extend .INFO_BTN_BASE;
     color: $white;
