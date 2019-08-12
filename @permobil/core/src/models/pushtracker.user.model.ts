@@ -31,5 +31,7 @@ export interface PushTrackerUser {
     weight_unit_preference: number;
     height_unit_preference: number;
     distance_unit_preference: number;
+    // serial number
+    serial_number: string;
   };
 }
