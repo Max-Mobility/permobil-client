@@ -248,16 +248,8 @@ public class DailyActivity {
     }
     // update the last push
     lastPush = detection;
-  }
-
-  public update(
-                int pushes,
-                float coast,
-                float heartRate,
-                float phoneDistance,
-                float watchDistance,
-                float coastDistance,
-                float driveDistance
-                ) {
+    // since we've updated the record, mark its has_been_sent field to
+    // false
+    this.has_been_sent = false;
   }
 }

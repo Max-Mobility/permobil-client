@@ -65,7 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   // Insert values to the table
   synchronized public void addRecord(DailyActivity data) {
-    SQLiteDatabase db = this.getReadableDatabase();
+    SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
 
     try {
@@ -84,7 +84,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.close();
   }
 
-  public DailyActivity getMostRecent(boolean onlyUnsent) {
+  synchronized public void updateRecord(DailyActivity data) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+
+    try {
+      Gson gson = new Gson();
+      String dataAsJSON = gson.toJson(data);
+      values.put(KEY_HAS_BEEN_SENT, data.has_been_sent);
+      values.put(KEY_DATA, dataAsJSON);
+      String whereString = "WHERE " + KEY_ID + "=" + data._id;
+      String[] whereArgs = {};
+      db.update(TABLE_NAME, values, whereString, whereArgs);
+      Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
+    } catch (Exception e) {
+      Log.e(TAG, "Exception updating data to table: " + e.getMessage());
+      Sentry.capture(e);
+    }
+
+    db.close();
+  }
+
+  synchronized public DailyActivity getMostRecent(boolean onlyUnsent) {
     List<DailyActivity> recordList = new ArrayList<>();
     String selectQuery = "SELECT * FROM " + TABLE_NAME;
     if (onlyUnsent) {
@@ -129,7 +150,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     return recordList;
   }
 
-  public List<DailyActivity> getRecords(int numRecords, boolean onlyUnsent) {
+  synchronized public List<DailyActivity> getRecords(int numRecords, boolean onlyUnsent) {
     List<DailyActivity> recordList = new ArrayList<>();
     String selectQuery = "SELECT * FROM " + TABLE_NAME;
     if (onlyUnsent) {
@@ -176,7 +197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     return recordList;
   }
 
-  public Record getRecord(boolean onlyUnsent) {
+  synchronized public Record getRecord(boolean onlyUnsent) {
     Record record = new Record();
     String selectQuery = "SELECT * FROM " + TABLE_NAME;
     if (onlyUnsent) {
@@ -215,15 +236,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     return record;
   }
 
-  public long getTableRowCount() {
-    SQLiteDatabase db = this.getWritableDatabase();
+  synchronized public long getTableRowCount() {
+    SQLiteDatabase db = this.getReadableDatabase();
     long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
     Log.d(TAG, "Current SQLite Table Row Count: " + count);
     db.close();
     return count;
   }
 
-  public long getTableSizeBytes() {
+  synchronized public long getTableSizeBytes() {
     File f = mContext.getDatabasePath(DATABASE_NAME);
     return f.length();
   }
@@ -235,7 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.close();
   }
 
-  public void deleteDatabase_DO_YOU_KNOW_WHAT_YOU_ARE_DOING() {
+  synchronized public void deleteDatabase_DO_YOU_KNOW_WHAT_YOU_ARE_DOING() {
     SQLiteDatabase db = this.getWritableDatabase();
     db.delete(DATABASE_NAME, null, null);
     Log.d(TAG, "Deleting entire database.");

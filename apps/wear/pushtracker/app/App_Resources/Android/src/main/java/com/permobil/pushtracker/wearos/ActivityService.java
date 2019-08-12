@@ -214,6 +214,19 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     }
   }
 
+  public boolean isPlugged() {
+    Context context = getApplicationContext();
+    boolean isPlugged;
+    Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    int plugged = 0;
+    if (intent != null) {
+      plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+    }
+    isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+    isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+    return isPlugged;
+  }
+
   void setupTimeReceiver() {
     if (this.timeReceiver != null) {
       this.unregisterReceiver(this.timeReceiver);
@@ -224,30 +237,25 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         public void onReceive(Context context, Intent intent) {
           // Log.d(TAG, "TimeReceiver::onReceive()");
           // get the date from the datastore
-          String currentDate = datastore.getDate();
+          String currentDate = currentActivity.date;
           SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
           // get current date
           Date now = Calendar.getInstance().getTime();
           String nowString = simpleDateFormat.format(now);
-          // if we don't have a date, then save the current date
-          if (currentDate == "") {
-            datastore.setDate(nowString);
-          } else {
-            boolean sameDate = currentDate.equals(nowString);
-            // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
-            // determine if it's a new day
-            if (!sameDate) {
-              // reset values to zero
-              this.currentActivity = new DailyActivity();
-              // update the datastore - these are for the complication
-              // providers and the pushtracker wear app
-              datastore.setDate(nowString);
-              datastore.setPushes(currentActivity.push_count);
-              datastore.setCoast(currentActivity.coast_time_avg);
-              datastore.setDistance(currentActivity.watch_distance);
-              datastore.setHeartRate(currentActivity.heart_rate);
-              // TODO: update the sqlite tables
-            }
+          boolean sameDate = currentDate.equals(nowString);
+          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
+          // determine if it's a new day
+          if (!sameDate) {
+            // reset values to zero
+            this.currentActivity = new DailyActivity();
+            // update the datastore - these are for the complication
+            // providers and the pushtracker wear app
+            datastore.setPushes(currentActivity.push_count);
+            datastore.setCoast(currentActivity.coast_time_avg);
+            datastore.setDistance(currentActivity.watch_distance);
+            datastore.setHeartRate(currentActivity.heart_rate);
+            // go ahead and write it to db
+            db.addRecord(currentActivity);
           }
         }
       };
@@ -430,7 +438,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           datastore.setCoast(currentActivity.coast_time_avg);
           datastore.setDistance(currentActivity.watch_distance);
           datastore.setHeartRate(currentActivity.heart_rate);
-          // TODO: update data in SQLite tables
+          // update data in SQLite tables
+          db.updateRecord(currentActivity);
           // send intent to main activity with updated data
           sendDataToActivity(currentActivity.push_count,
                              currentActivity.coast_time_avg,
