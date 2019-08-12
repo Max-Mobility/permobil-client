@@ -52,7 +52,7 @@ export function createTranslateLoader() {
   ],
   declarations: [AppComponent, ...COMPONENTS],
   entryComponents: [AppInfoComponent],
-  providers: [...PROVIDERS, ModalDialogService, 
+  providers: [...PROVIDERS, ModalDialogService,
     { provide: BarcodeScanner, useFactory: createBarcodeScanner }],
   schemas: [NO_ERRORS_SCHEMA]
 })

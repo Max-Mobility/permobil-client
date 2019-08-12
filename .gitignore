@@ -126,3 +126,4 @@ apps/**/report/
 
 # VS Code workspace
 *.code-workspace
+.vscode
