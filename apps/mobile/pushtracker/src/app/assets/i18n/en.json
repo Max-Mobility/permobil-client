@@ -69,7 +69,9 @@
     "first-name": "first name",
     "last-name": "last name",
     "edit-first-name": "Edit first name",
-    "edit-last-name": "Edit last name"
+    "edit-last-name": "Edit last name",
+    "smartdrive-serial-number": "SmartDrive Serial Number",
+    "pushtracker-serial-number": "PushTracker Serial Number"
   },
   "profile-settings": {
     "theme": "Theme",

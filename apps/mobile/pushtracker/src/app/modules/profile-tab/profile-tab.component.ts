@@ -19,6 +19,7 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 
 @Component({
   selector: 'profile',
@@ -61,6 +62,7 @@ export class ProfileTabComponent implements OnInit {
   SETTING_MODE: string;
   COAST_TIME_ACTIVITY_GOAL; // user defined coast-time activity goal
   DISTANCE_ACTIVITY_GOAL; // user defined distance activity goal
+  _barcodeScanner: BarcodeScanner;
 
   /**
    * Object to use for activityGoalsDialog
@@ -107,6 +109,8 @@ export class ProfileTabComponent implements OnInit {
     // appSettings.clear();
     this._page.actionBarHidden = true;
     this.user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
+    this._barcodeScanner = new BarcodeScanner();
+    console.log(this._barcodeScanner);
 
     if (!this.user.data.dob || this.user.data.dob === null)
       this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
@@ -802,4 +806,85 @@ export class ProfileTabComponent implements OnInit {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
   }
+
+  onScan(deviceName) {
+    this._barcodeScanner
+      .scan({
+        formats: 'QR_CODE, EAN_13',
+        cancelLabel: this._translateService.instant('demo-detail.cancel-scan'), // iOS only
+        cancelLabelBackgroundColor: '#333333', // iOS only
+        message: `${this._translateService.instant(
+          'demo-detail.scan-msg'
+        )} ${this._translateService.instant('demo-detail.sd-or-pt')}`, // Android only
+        showFlipCameraButton: true,
+        preferFrontCamera: false,
+        showTorchButton: true,
+        beepOnScan: true,
+        torchOn: false,
+        closeCallback: () => {
+          // scanner closed, not doing anything for now
+        },
+        resultDisplayDuration: 500, // Android only
+        openSettingsIfPermissionWasPreviouslyDenied: true
+      })
+      .then(result => {
+        const validDevices =
+          deviceName === 'pushtracker'
+            ? ['pushtracker', 'wristband']
+            : ['smartdrive'];
+        this._handleSerial(result.text, validDevices);
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
+  private _handleSerial(text: string, forDevices?: string[]) {
+    try {
+      text = text || '';
+      text = text.trim().toUpperCase();
+      let deviceType = null;
+      const isPushTracker = text[0] === 'B';
+      const isWristband = text[0] === 'A';
+      let isSmartDrive = false;
+      const serialNumber = text;
+
+      const value = parseInt(text, 10);
+      const valid = isFinite(value);
+      isSmartDrive = !isPushTracker && !isWristband && valid && value > 0;
+
+      if (isPushTracker) {
+        deviceType = 'pushtracker';
+      } else if (isWristband) {
+        deviceType = 'wristband';
+      } else if (isSmartDrive) {
+        deviceType = 'smartdrive';
+      } else {
+        return;
+      }
+      // check the type
+      if (
+        forDevices &&
+        forDevices.length &&
+        forDevices.indexOf(deviceType) === -1
+      ) {
+        this._logService.logMessage(
+          `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
+        );
+        return;
+      }
+
+      // now set the serial number
+      if (deviceType === 'pushtracker' || deviceType === 'wristband') {
+        this.user.data.pushtracker_serial_number = serialNumber;
+        KinveyUser.update({pushtracker_serial_number: this.user.data.pushtracker_serial_number});
+      } else if (deviceType === 'smartdrive') {
+        this.user.data.smartdrive_serial_number = serialNumber;
+        KinveyUser.update({smartdrive_serial_number: this.user.data.smartdrive_serial_number});
+      }
+    } catch (error) {
+      this._logService.logException(error);
+    }
+  }
+
 }

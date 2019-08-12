@@ -5,6 +5,7 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { ProfileSettingsComponent } from './profile-settings.component';
 import { ProfileTabComponent } from './profile-tab.component';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 
 @NgModule({
   imports: [
@@ -19,7 +20,7 @@ import { ProfileTabComponent } from './profile-tab.component';
     TranslateModule
   ],
   declarations: [ProfileTabComponent, ProfileSettingsComponent],
-  providers: [],
+  providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class ProfileTabModule {}

@@ -15,6 +15,11 @@ import { AppInfoComponent } from './modules/app-info/app-info.component';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
+
+export function createBarcodeScanner() {
+  return new BarcodeScanner();
+}
 
 // factories
 export function createTranslateLoader() {
@@ -47,7 +52,8 @@ export function createTranslateLoader() {
   ],
   declarations: [AppComponent, ...COMPONENTS],
   entryComponents: [AppInfoComponent],
-  providers: [...PROVIDERS, ModalDialogService],
+  providers: [...PROVIDERS, ModalDialogService, 
+    { provide: BarcodeScanner, useFactory: createBarcodeScanner }],
   schemas: [NO_ERRORS_SCHEMA]
 })
 /*
