@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser} from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons } from '../../enums';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   moduleId: module.id,

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewContainerRef } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
+import { NavigationStart, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
@@ -11,6 +11,7 @@ import { AppInfoComponent } from '../app-info/app-info.component';
 import { Subscription } from 'rxjs';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Log, PushTrackerUser } from '@permobil/core';
+import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 
 @Component({
   selector: 'home-tab',
@@ -28,7 +29,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   distanceData: string;
   distanceChartData;
   infoItems;
-  user: PushTrackerUser; // this is a Kinvey.User
+  user: PushTrackerUser;
 
   private routeSub: Subscription; // subscription to route observer
 
@@ -37,17 +38,23 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _logService: LoggingService,
     private _router: Router,
     private _modalService: ModalDialogService,
-    private _vcRef: ViewContainerRef
+    private _vcRef: ViewContainerRef,
+    private pushtrackerUserService: PushTrackerUserService
   ) {
-    this.user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
+    this.getUser();
     this.refreshGoalData();
   }
 
   ngOnInit(): void {
+    this.getUser();
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.infoItems = this._translateService.instant(
       'app-info-component.sections'
     );
+  }
+
+  getUser(): void {
+    this.pushtrackerUserService.user.subscribe(user => { this.user = user; this.refreshGoalData(); });
   }
 
   ngAfterViewInit() {
