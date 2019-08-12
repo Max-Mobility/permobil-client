@@ -37,7 +37,7 @@ export function createTranslateLoader() {
     NativeScriptCommonModule,
     NativeScriptFormsModule,
     NativeScriptUIListViewModule,
-    NativeScriptDateTimePickerModule, 
+    NativeScriptDateTimePickerModule,
     // // This will call the install method and inject a global service called BottomSheetService
     // NativeScriptMaterialBottomSheetModule.forRoot(),
     SharedModule,
