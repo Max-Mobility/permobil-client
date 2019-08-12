@@ -320,17 +320,13 @@ export class ProfileTabComponent implements OnInit {
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
     ) {
       this.userService.updateDataProperty('activity_goal_coast_time', this.activity_goals_dialog_data.config_value);
-      KinveyUser.update({
-        activity_goal_coast_time: this.activity_goals_dialog_data.config_value
-      });
+      KinveyUser.update({ activity_goal_coast_time: this.activity_goals_dialog_data.config_value });
     } else if (
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
     ) {
       this.userService.updateDataProperty('activity_goal_distance', this.activity_goals_dialog_data.config_value);
-      KinveyUser.update({
-        activity_goal_distance: this.activity_goals_dialog_data.config_value
-      });
+      KinveyUser.update({ activity_goal_distance: this.activity_goals_dialog_data.config_value });
     }
 
     this.COAST_TIME_ACTIVITY_GOAL =

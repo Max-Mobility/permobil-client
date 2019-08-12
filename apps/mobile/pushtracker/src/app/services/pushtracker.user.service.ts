@@ -3,9 +3,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { PushTrackerUser } from '@permobil/core';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class PushTrackerUserService {
   private _user = new BehaviorSubject<PushTrackerUser>(<PushTrackerUser>(<any>KinveyUser.getActiveUser()));
   user = this._user.asObservable();
