@@ -9,6 +9,8 @@ import { STORAGE_KEYS } from '~/app/enums';
 import { LoggingService } from '../../services';
 import { AppInfoComponent } from '../app-info/app-info.component';
 import { Subscription } from 'rxjs';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { Log, PushTrackerUser } from '@permobil/core';
 
 @Component({
   selector: 'home-tab',
@@ -26,6 +28,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   distanceData: string;
   distanceChartData;
   infoItems;
+  user: PushTrackerUser; // this is a Kinvey.User
 
   private routeSub: Subscription; // subscription to route observer
 
@@ -36,6 +39,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
+    this.user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
     this.refreshGoalData();
   }
 
@@ -59,19 +63,11 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   refreshGoalData() {
     // determine users distance value and get user activity goal for distance
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.distanceCirclePercentageMaxValue =
-      '/' +
-      appSettings.getNumber(
-        STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
-      ) || STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
+    this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
 
     // determine users coast-time value and get user activity goal for distance
     this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.coastTimeCirclePercentageMaxValue =
-      '/' +
-      appSettings.getNumber(
-        STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
-      ) || STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
+    this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
 
     this.distanceRemainingText = `0.4 ${this._translateService.instant(
       'home-tab.miles-to-go'
