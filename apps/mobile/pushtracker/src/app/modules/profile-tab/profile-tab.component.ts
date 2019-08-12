@@ -239,11 +239,11 @@ export class ProfileTabComponent implements OnInit {
       if (r.result === true) {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
-          this.user.data.first_name = r.text;
+          this.userService.updateDataProperty('first_name', r.text);
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
-          this.user.data.last_name = r.text;
+          this.userService.updateDataProperty('last_name', r.text);
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
