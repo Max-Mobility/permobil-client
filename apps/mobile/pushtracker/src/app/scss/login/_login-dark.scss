@@ -1,17 +1,63 @@
 @import '../variables';
 @import 'login-base';
 
-.full-screen-image {
-  @extend .FULL_SCREEN_IMAGE_BASE;
+.login-layout {
+  @extend .LOGIN_LAYOUT_BASE;
 
   .login-form {
     @extend .LOGIN_FORM_BASE;
-    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364);
+  }
 
-    .submit-btn {
-      @extend .SUBMIT_BTN_BASE;
-      color: $white;
-      background-color: $permobil-cousteau-dark;
+  .submit-btn {
+    @extend .SUBMIT_BTN_BASE;
+
+    background-color: $permobil-cousteau;
+    color: $white;
+  }
+
+  .textbox {
+    @extend .TEXTBOX_BASE;
+
+    .textbox-label {
+      color: $grey;
+      background-color: $black;
     }
+
+    GridLayout {
+      background-color: $black;
+      border-color: #e8e9eb;
+
+      > .textbox-value {
+        color: $white;
+      }
+    }
+  }
+
+  .textbox-active {
+    @extend .DATA_BOX_BASE;
+    .textbox-label {
+      color: $permobil-cousteau;
+      background-color: $black;
+    }
+
+    GridLayout {
+      border-color: $permobil-cousteau;
+    }
+  }
+
+  .error-label {
+    @extend .ERROR_LABEL_BASE;
+
+    color: $error-red;
+  }
+
+  .forgot-pw-btn {
+    @extend .FORGOT_PW_BTN_BASE;
+    color: #3d4144;
+  }
+
+  .register-btn {
+    @extend .REGISTER_BTN_BASE;
+    color: #3d4144;
   }
 }

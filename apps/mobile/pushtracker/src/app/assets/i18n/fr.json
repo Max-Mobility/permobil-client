@@ -34,7 +34,18 @@
     "sign-up": "S'inscrire",
     "ok": "D'accord",
     "cancel": "Annuler",
-    "chair-type": "Type de chaise"
+    "chair-type": "Type de chaise",
+    "sign-out": "Déconnexion",
+    "email-required": "メールが必要です。",
+    "email-error": "は有効なメールアドレスではありません。",
+    "email-invalid": "メールが無効です",
+    "email-sent": "メール送信",
+    "check-email": "パスワードをリセットする手順については、メールを確認してください。",
+    "password-error": "パスワードが必要です。",
+    "password-change": "パスワードを変更しますか？",
+    "password-change-confirm": "パスワードを変更してもよろしいですか？",
+    "sign-in-error-1": "サインイン中にエラーが発生しました。メールとパスワードを確認してください。",
+    "sign-in-error-2": "無効な電子メールおよび/またはパスワード。もう一度試してください。"
   },
   "home-tab": {
     "title": "Accueil",

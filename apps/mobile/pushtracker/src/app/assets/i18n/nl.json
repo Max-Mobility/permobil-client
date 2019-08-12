@@ -34,7 +34,18 @@
     "sign-up": "Inschrijven",
     "ok": "OK",
     "cancel": "annuleren",
-    "chair-type": "Type stoel"
+    "chair-type": "Type stoel",
+    "sign-out": "Afmelden",
+    "email-required": "Email is verplicht.",
+    "email-error": "is geen geldig e-mailadres.",
+    "email-invalid": "Email is ongeldig",
+    "email-sent": "Email verzonden",
+    "check-email": "Controleer uw e-mail voor instructies over het opnieuw instellen van uw wachtwoord.",
+    "password-error": "Een wachtwoord is verplicht.",
+    "password-change": "Wachtwoord wijzigen?",
+    "password-change-confirm": "Weet u zeker dat u uw wachtwoord wilt wijzigen?",
+    "sign-in-error-1": "Er is een fout opgetreden tijdens het inloggen. Controleer uw e-mailadres en wachtwoord.",
+    "sign-in-error-2": "Ongeldige e-mail en / of wachtwoord. Probeer het opnieuw."
   },
   "home-tab": {
     "title": "Huis",

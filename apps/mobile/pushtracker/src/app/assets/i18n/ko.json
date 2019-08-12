@@ -34,7 +34,18 @@
     "sign-up": "가입",
     "ok": "승인",
     "cancel": "취소",
-    "chair-type": "의자 종류"
+    "chair-type": "의자 종류",
+    "sign-out": "로그 아웃",
+    "email-required": "이메일이 필요합니다.",
+    "email-error": "유효한 이메일 주소가 아닙니다.",
+    "email-invalid": "이메일이 유효하지 않습니다",
+    "email-sent": "보낸 이메일",
+    "check-email": "비밀번호 재설정에 대한 지시 사항은 이메일을 확인하십시오.",
+    "password-error": "비밀번호가 필요합니다.",
+    "password-change": "비밀번호를 변경 하시겠습니까?",
+    "password-change-confirm": "비밀번호를 변경 하시겠습니까?",
+    "sign-in-error-1": "로그인하는 동안 오류가 발생했습니다. 이메일과 비밀번호를 확인하십시오.",
+    "sign-in-error-2": "이메일 및 / 또는 비밀번호가 잘못되었습니다. 다시 시도하십시오."
   },
   "home-tab": {
     "title": "집",
