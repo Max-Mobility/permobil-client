@@ -17,6 +17,7 @@ import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { ActivityTabComponent } from './modules/activity-tab/activity-tab.component';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 export function createBarcodeScanner() {
   return new BarcodeScanner();
@@ -38,6 +39,7 @@ export function createTranslateLoader() {
     NativeScriptFormsModule,
     NativeScriptUIListViewModule,
     NativeScriptDateTimePickerModule,
+    NativeScriptUIChartModule,
     // // This will call the install method and inject a global service called BottomSheetService
     // NativeScriptMaterialBottomSheetModule.forRoot(),
     SharedModule,

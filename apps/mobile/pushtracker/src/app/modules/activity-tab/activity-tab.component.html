@@ -8,11 +8,17 @@
     <StackLayout row="1" rows="*" columns="50, *, 50">
         <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer">
             <StackLayout *tabItem="{title: displayDay}">
-                <Label marginTop="20" text="This is Label in Tab 1x"></Label>
+                <RadCartesianChart marginTop="20" height="150" width="96%">
+                    <CategoricalAxis tkCartesianHorizontalAxis></CategoricalAxis>
+                    <LinearAxis tkCartesianVerticalAxis></LinearAxis>
+                    <BarSeries tkCartesianSeries [items]="categoricalSource" categoryProperty="Country" valueProperty="Amount"></BarSeries>
+                </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
+                <Label text="Week view" marginTop="20"></Label>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
+                <Label text="Month view" marginTop="20"></Label>
             </StackLayout>
         </TabView>
     </StackLayout>
