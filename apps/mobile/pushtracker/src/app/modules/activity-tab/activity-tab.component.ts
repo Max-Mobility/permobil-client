@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
-import { SelectedIndexChangedEventData } from "tns-core-modules/ui/tab-view";
+import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 
 @Component({
     selector: 'activity-tab',
