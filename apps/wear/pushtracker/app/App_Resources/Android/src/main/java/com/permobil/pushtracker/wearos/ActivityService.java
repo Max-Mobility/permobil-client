@@ -114,13 +114,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   // activity data
   public int currentPushCount = 0;
   public float currentCoastTime = 0f;
+  public float currentTotalCoastTime = 0f;
   public float currentDistance = 0f;
   public float currentHeartRate = 0f;
 
   // activity data helpers
   private ActivityDetector.Detection lastActivity = null;
   private ActivityDetector.Detection lastPush = null;
-  private static final long MAX_ALLOWED_COAST_TIME_MS = 10 * 60 * 1000;
+  private static final long MAX_ALLOWED_COAST_TIME_MS = 60 * 1000;
 
   // helper objects
   private ActivityDetector activityDetector;
@@ -208,6 +209,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private void loadFromDatastore() {
     currentPushCount = datastore.getPushes();
     currentCoastTime = datastore.getCoast();
+    currentTotalCoastTime = datastore.getTotalCoast();
     currentDistance = datastore.getDistance();
     currentHeartRate = datastore.getHeartRate();
   }
@@ -238,12 +240,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
               // reset values to zero
               currentPushCount = 0;
               currentCoastTime = 0;
+              currentTotalCoastTime = 0;
               currentDistance = 0;
               currentHeartRate = 0;
               // update the datastore
               datastore.setDate(nowString);
               datastore.setPushes(currentPushCount);
               datastore.setCoast(currentCoastTime);
+              datastore.setTotalCoast(currentTotalCoastTime);
               datastore.setDistance(currentDistance);
               datastore.setHeartRate(currentHeartRate);
               // TODO: update the sqlite tables
@@ -269,6 +273,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // update data in datastore / shared preferences
       datastore.setPushes(currentPushCount);
       datastore.setCoast(currentCoastTime);
+      datastore.setTotalCoast(currentTotalCoastTime);
       datastore.setDistance(currentDistance);
       datastore.setHeartRate(currentHeartRate);
       // send intent to main activity with updated data
@@ -310,9 +315,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
           long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
           if (timeDiffNs < timeDiffThreshold) {
-            // TODO: update how we calculate coast time - need to
-            // average it!
-            currentCoastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
+            // update the total coast time
+            currentTotalCoastTime += timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
+            // now compute the average coast time
+            currentCoastTime = currentTotalCoastTime / currentPushCount;
           }
         }
         // update the last push
@@ -501,6 +507,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
             // update data in datastore / shared preferences
             datastore.setPushes(currentPushCount);
             datastore.setCoast(currentCoastTime);
+            datastore.setTotalCoast(currentTotalCoastTime);
             datastore.setDistance(currentDistance);
             datastore.setHeartRate(currentHeartRate);
             // send intent to main activity with updated data
