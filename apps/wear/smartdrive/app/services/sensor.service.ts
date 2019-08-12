@@ -4,6 +4,7 @@ import { AndroidSensorListener, AndroidSensors, SensorDelay } from 'nativescript
 import * as app from 'tns-core-modules/application';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { device } from 'tns-core-modules/platform';
+import { Level, Sentry } from 'nativescript-sentry';
 
 @Injectable()
 export class SensorService extends Observable {
@@ -37,10 +38,22 @@ export class SensorService extends Observable {
         this.notify(event);
       },
       onSensorChanged: (result: string) => {
+        let parsedData = null;
+        try {
+          parsedData = JSON.parse(result);
+        } catch (error) {
+          parsedData = null;
+          Sentry.captureBreadcrumb({
+            message: 'SensorService::onSensorChanged: Could not parse result: "'
+              + result + '" - ' + error,
+            category: 'error',
+            level: Level.Error
+          });
+        }
         const event: SensorChangedEventData = {
           eventName: SensorService.SensorChanged,
           object: this,
-          data: JSON.parse(result) // parsing it here so it's JSON when observing the event
+          data: parsedData
         };
         this.notify(event);
       }

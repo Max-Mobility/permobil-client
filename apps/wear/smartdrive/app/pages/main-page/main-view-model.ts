@@ -754,10 +754,12 @@ export class MainViewModel extends Observable {
 
   saveSmartDriveStateToLS() {
     Log.D('Saving SD state to LS');
-    LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.data',
-      this.smartDrive.data()
-    );
+    if (this.smartDrive) {
+      LS.setItemObject(
+        'com.permobil.smartdrive.wearos.smartdrive.data',
+        this.smartDrive.data()
+      );
+    }
   }
 
   /**
@@ -947,24 +949,30 @@ export class MainViewModel extends Observable {
   }
 
   onNewDay() {
-    // it's a new day, reset smartdrive battery to 0
-    this.smartDrive.battery = 0;
-    // update displayed battery percentage
-    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
-    // and save it
-    this.saveSmartDriveStateToLS();
+    if (this.smartDrive) {
+      // it's a new day, reset smartdrive battery to 0
+      this.smartDrive.battery = 0;
+      // update displayed battery percentage
+      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+      // and save it
+      this.saveSmartDriveStateToLS();
+    }
   }
 
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
     const timeReceiverCallback = (androidContext, intent) => {
-      this.updateTimeDisplay();
-      Log.D('timeReceiverCallback', this.currentTime);
-      // update charts if date has changed
-      if (!isSameDay(new Date(), this._lastChartDay)) {
-        this.onNewDay();
-        this.updateChartData();
+      try {
+        this.updateTimeDisplay();
+        Log.D('timeReceiverCallback', this.currentTime);
+        // update charts if date has changed
+        if (!isSameDay(new Date(), this._lastChartDay)) {
+          this.onNewDay();
+          this.updateChartData();
+        }
+      } catch (error) {
+        Sentry.captureException(error);
       }
     };
     application.android.registerBroadcastReceiver(
@@ -1044,6 +1052,11 @@ export class MainViewModel extends Observable {
       // if we're using litedata for android sensor plugin option
       // the data structure is simplified to reduce redundant data
       const parsedData = args.data;
+      if (parsedData === null || parsedData === undefined) {
+        this._sentryBreadCrumb('Received bad sensor data, turning off power assist!');
+        this.disablePowerAssist();
+        return;
+      }
 
       if (
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
@@ -2182,7 +2195,7 @@ export class MainViewModel extends Observable {
     this.updateChartData();
   }
 
-  disablePowerAssist() {
+  async disablePowerAssist() {
     this._sentryBreadCrumb('Disabling power assist');
     Log.D('Disabling power assist');
     this.disableTapSensor();
@@ -2226,7 +2239,7 @@ export class MainViewModel extends Observable {
     // Mobile App to receive credentials.
   }
 
-  onPairingTap() {
+  async onPairingTap() {
     return this.saveNewSmartDrive()
       .then((didSave: boolean) => {
         if (didSave) {
@@ -2243,7 +2256,7 @@ export class MainViewModel extends Observable {
       });
   }
 
-  saveNewSmartDrive(): Promise<any> {
+  async saveNewSmartDrive(): Promise<any> {
     this._sentryBreadCrumb('Saving new SmartDrive');
     this.showScanning();
     // ensure we have the permissions
@@ -2319,7 +2332,7 @@ export class MainViewModel extends Observable {
       });
   }
 
-  connectToSmartDrive(smartDrive) {
+  async connectToSmartDrive(smartDrive) {
     this._sentryBreadCrumb('Connecting to SmartDrive');
     if (!smartDrive) return;
     this.updateSmartDrive(smartDrive.address);
@@ -2347,7 +2360,7 @@ export class MainViewModel extends Observable {
     );
   }
 
-  connectToSavedSmartDrive(): Promise<any> {
+  async connectToSavedSmartDrive(): Promise<any> {
     if (!this.hasSavedSmartDrive()) {
       return this.saveNewSmartDrive().then(didSave => {
         if (didSave) {
@@ -2829,7 +2842,7 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
-  sendSettingsToServer() {
+  async sendSettingsToServer() {
     if (!this.hasSentSettings) {
       const settingsObj = {
         settings: this.settings.toObj(),
