@@ -14,9 +14,9 @@ export class ActivityTabComponent implements OnInit {
     private static LOG_TAG = 'activity-tab.component ';
     infoItems;
     public tabSelectedIndex: number;
-    public displayDay: string;
-    public displayWeek: string;
-    public displayMonth: string;
+    public displayDay: string = this._translateService.instant('day');
+    public displayWeek: string = this._translateService.instant('week');
+    public displayMonth: string = this._translateService.instant('month');
 
     constructor(
         private _logService: LoggingService,
@@ -24,9 +24,6 @@ export class ActivityTabComponent implements OnInit {
         private _params: ModalDialogParams
     ) {
         this.tabSelectedIndex = 0;
-        this.displayDay = this._translateService.instant('day');
-        this.displayWeek = this._translateService.instant('week');
-        this.displayMonth = this._translateService.instant('month');
     }
 
     ngOnInit() {
