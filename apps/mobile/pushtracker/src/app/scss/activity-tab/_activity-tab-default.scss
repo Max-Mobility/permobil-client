@@ -10,6 +10,16 @@
     color: $black;
   }
 
+  .back-btn {
+    @extend .BACK_BTN_BASE;
+    color: $black;
+  }
+
+  .forward-btn {
+    @extend .FORWARD_BTN_BASE;
+    color: $black;
+  }
+
   .more-btn {
     @extend .MORE_BTN_BASE;
     color: $black;

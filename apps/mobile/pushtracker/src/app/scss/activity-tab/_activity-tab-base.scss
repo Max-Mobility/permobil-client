@@ -26,6 +26,22 @@
     horizontal-align: left;
   }
 
+  .BACK_BTN_BASE {
+    @extend .btn-transparent;
+    padding: 4;
+    font-size: 24;
+    font-family: $material-icon;
+    horizontal-align: left;
+  }
+
+  .FORWARD_BTN_BASE {
+    @extend .btn-transparent;
+    padding: 4;
+    font-size: 24;
+    font-family: $material-icon;
+    horizontal-align: right;    
+  }
+
   .MORE_BTN_BASE {
     @extend .btn-transparent;
     padding: 4;
