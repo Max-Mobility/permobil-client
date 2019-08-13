@@ -14,41 +14,54 @@ export class Activity {
 
 @Injectable()
 export class DataService {
-    getSource() {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        const range = function(start, end) {
-            return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
-        };
-        const result = [];
-        const  min = 0;
-        const max = 50;
-        const random = function() { return Math.random() * (+max - +min) + +min; };
-        const dateFormat = function(hour: number) {
-            switch (hour) {
-                case 0:
-                    return '12 AM';
-                case 4:
-                    return '4 AM';
-                case 8:
-                    return '8 AM';
-                case 12:
-                    return '12 PM';
-                case 16:
-                    return '4 PM';
-                case 20:
-                    return '8 PM';
-                case 24:
-                    return '12 AM ';
+    getSource(view: string) {
+        if (view === 'Day') {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            const range = function(start, end) {
+                return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+            };
+            const result = [];
+            const  min = 0;
+            const max = 50;
+            const random = function() { return Math.random() * (+max - +min) + +min; };
+            for (const i in range(0, 24)) {
+                result.push({ xAxis: parseInt(i), yAxis: random(), Hour: parseInt(i), Date: date });
             }
-            return '' + hour;
-        };
-        for (const i in range(0, 24)) {
-            result.push({ HourFormatted: dateFormat(parseInt(i)), Amount: random(), Hour: parseInt(i), Date: date });
+            result.unshift({ xAxis: ' ', yAxis: 0 });
+            result.unshift({ xAxis: '  ', yAxis: 0 });
+            result.unshift({ xAxis: '   ', yAxis: 0 });
+            result.unshift({ xAxis: '    ', yAxis: 0 });
+            result.push({ xAxis: '     ', yAxis: 0 });
+            result.push({ xAxis: '      ', yAxis: 0 });
+            result.push({ xAxis: '       ', yAxis: 0 });
+            result.push({ xAxis: '        ', yAxis: 0 });
+            return result;
         }
-        return result;
+        else if (view === 'Week') {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            const range = function(start, end) {
+                return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+            };
+            const result = [];
+            const  min = 0;
+            const max = 50;
+            const random = function() { return Math.random() * (+max - +min) + +min; };
+            const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            for (const i in range(0, 6)) {
+                result.push({ xAxis: dayNames[parseInt(i)], yAxis: random(), Hour: parseInt(i), Date: date });
+            }
+            result.unshift({ xAxis: ' ', yAxis: 0 });
+            result.unshift({ xAxis: '  ', yAxis: 0 });
+            result.push({ xAxis: '       ', yAxis: 0 });
+            result.push({ xAxis: '        ', yAxis: 0 });
+            return result;
+        }
     }
 }
 
@@ -93,8 +106,8 @@ export class ActivityTabComponent implements OnInit {
         this.infoItems = this._translateService.instant(
             'activity-tab-component.sections'
         );
-        this.activity = new ObservableArray(this._dataService.getSource());
-        this._initChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource('Day'));
+        this._initDayChartTitle();
     }
 
     onShownModally(args) {
@@ -109,33 +122,66 @@ export class ActivityTabComponent implements OnInit {
     // displaying the old and new TabView selectedIndex
     onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
         const date = this.currentDayInView;
+        const getSunday = function(date) {
+            date = new Date(date);
+            const day = date.getDay(),
+            diff = date.getDate() - day + (day === 0 ? -7 : 0); // adjust when day is sunday
+            return new Date(date.setDate(diff));
+        };
+        const sunday = getSunday(date);
         if (args.oldIndex !== -1) {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
+                this.activity = new ObservableArray(this._dataService.getSource('Day'));
             } else if (newIndex === 1) {
-                // Week
+                this.chartTitle = this.monthNames[date.getMonth()] + ' ' + sunday.getDate() + ' — ' + (sunday.getDate() + 6);
+                this.activity = new ObservableArray(this._dataService.getSource('Week'));
             } else if (newIndex === 2) {
                 // Month
             }
         }
     }
 
-    _initChartTitle() {
+    _initDayChartTitle() {
         const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
 
+    _initWeekChartTitle() {
+        const getSunday = function(date) {
+            date = new Date(date);
+            const day = date.getDay(),
+            diff = date.getDate() - day + (day === 0 ? -7 : 0); // adjust when day is sunday
+            return new Date(date.setDate(diff));
+        };
+        const date = this.currentDayInView;
+        const sunday = getSunday(date);
+        this.chartTitle = this.monthNames[date.getMonth()] + ' ' + sunday.getDate() + ' — ' + (sunday.getDate() + 6);
+    }
+
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
-        this._initChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource());
+        this._initDayChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource('Day'));
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
-        this._initChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource());
+        this._initDayChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource('Day'));
+    }
+
+    onPreviousWeekTap(event) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
+        this._initWeekChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource('Week'));
+    }
+
+    onNextWeekTap(event) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
+        this._initWeekChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
 
     onDayPointSelected(event) {

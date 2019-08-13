@@ -9,12 +9,13 @@
         <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer"
             androidSwipeEnabled="false">
             <StackLayout *tabItem="{title: displayDay}">
+                <!-- Day View -->
                 <GridLayout row="0" rows="auto" cols="auto">
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
                 </GridLayout>
-                <RadCartesianChart allowAnimations="true" row="1" height="150" width="96%">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
                     <RadCartesianChartGrid 
                         tkCartesianGrid
                         horizontalLinesVisible="true"
@@ -23,19 +24,53 @@
                         verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>     
                     <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
-                        tickHidden="false" majorTickInterval="4" 
-                        labelSize="12" labelMargin="20" tickLength="7" labelFitMode="Multiline" plotMode="OnTicks">
+                        tickHidden="false" majorTickInterval="4"
+                        labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
                     </CategoricalAxis>
                     <LinearAxis tkCartesianVerticalAxis
                         horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
                     <BarSeries tkCartesianSeries [items]="activity"
-                        categoryProperty="HourFormatted" valueProperty="Amount">
+                        categoryProperty="xAxis" valueProperty="yAxis">
                     </BarSeries>
+                    <!-- >> chart-trackball-property-xml -->
+                    <RadCartesianChart.trackball>
+                        <chart:Trackball/>
+                    </RadCartesianChart.trackball>
+                    <!-- << chart-trackball-property-xml -->
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
-                <Label text="Week view" marginTop="20"></Label>
+                <!-- Week View -->
+                <GridLayout row="0" rows="auto" cols="auto">
+                    <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousWeekTap($event)"></Button>
+                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
+                    <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextWeekTap($event)"></Button>
+                </GridLayout>
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+                    <RadCartesianChartGrid 
+                        tkCartesianGrid
+                        horizontalLinesVisible="true"
+                        verticalLinesVisible="false"
+                        horizontalStripLinesVisible="false"
+                        verticalStripLinesVisible="false">
+                    </RadCartesianChartGrid>     
+                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
+                        tickHidden="false" majorTickInterval="1" 
+                        labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks">
+                    </CategoricalAxis>
+                    <LinearAxis tkCartesianVerticalAxis
+                        horizontalLocation="Right" labelMargin="10" lineHidden="true"
+                        maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
+                    <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10"
+                        categoryProperty="xAxis" valueProperty="yAxis">
+                    </BarSeries>
+                    <!-- >> chart-trackball-property-xml -->
+                    <RadCartesianChart.trackball>
+                        <chart:Trackball/>
+                    </RadCartesianChart.trackball>
+                    <!-- << chart-trackball-property-xml -->
+                </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
                 <Label text="Month view" marginTop="20"></Label>
