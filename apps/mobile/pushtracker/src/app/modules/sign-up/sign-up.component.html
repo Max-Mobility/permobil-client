@@ -10,7 +10,7 @@
       <GridLayout rows="*" columns="*">
         <TextField
           class="textbox-value"
-          [text]="user.email"
+          [text]="user.username"
           (loaded)="textfieldLoaded($event)"
           (textChange)="onEmailTextChange($event)"
           (focus)="onFocusTF($event, 0)"
