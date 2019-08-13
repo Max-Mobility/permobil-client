@@ -34,7 +34,18 @@
     "sign-up": "サインアップ",
     "ok": "オーケー",
     "cancel": "キャンセル",
-    "chair-type": "椅子の種類"
+    "chair-type": "椅子の種類",
+    "sign-out": "サインアウト",
+    "email-required": "メールが必要です。",
+    "email-error": "は有効なメールアドレスではありません。",
+    "email-invalid": "メールが無効です",
+    "email-sent": "メール送信",
+    "check-email": "パスワードをリセットする手順については、メールを確認してください。",
+    "password-error": "パスワードが必要です。",
+    "password-change": "パスワードを変更する？",
+    "password-change-confirm": "パスワードを変更してもよろしいですか？",
+    "sign-in-error-1": "ログイン中にエラーが発生しました。メールとパスワードを確認してください。",
+    "sign-in-error-2": "無効なメールまたはパスワード。もう一度試してください。"
   },
   "home-tab": {
     "title": "ホーム",

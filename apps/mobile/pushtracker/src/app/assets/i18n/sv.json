@@ -34,7 +34,18 @@
     "sign-up": "Bli Medlem",
     "ok": "ok",
     "cancel": "Annullera",
-    "chair-type": "Stolstol"
+    "chair-type": "Stolstol",
+    "sign-out": "Logga ut",
+    "email-required": "E-post krävs.",
+    "email-error": "är inte en giltig e-postadress.",
+    "email-invalid": "e-postadressen är felaktig",
+    "email-sent": "Email skickat",
+    "check-email": "Kontrollera din e-post för instruktioner om återställning av ditt lösenord.",
+    "password-error": "Lösenord krävs.",
+    "password-change": "Ändra lösenord?",
+    "password-change-confirm": "Är du säker på att du vill ändra ditt lösenord?",
+    "sign-in-error-1": "Ett fel inträffade vid inloggningen. Kontrollera din e-postadress och lösenord.",
+    "sign-in-error-2": "Ogiltig e-post och / eller lösenord. Var god försök igen."
   },
   "home-tab": {
     "title": "Hem",

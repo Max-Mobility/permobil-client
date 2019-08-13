@@ -34,7 +34,18 @@
     "sign-up": "Regístrate",
     "ok": "Okay",
     "cancel": "Cancelar",
-    "chair-type": "Tipo de silla"
+    "chair-type": "Tipo de silla",
+    "sign-out": "Desconectar",
+    "email-required": "Se requiere correo electrónico.",
+    "email-error": "No es una dirección de correo electrónico válida.",
+    "email-invalid": "El correo electrónico no es válido.",
+    "email-sent": "Correo electrónico enviado",
+    "check-email": "Consulte su correo electrónico para obtener instrucciones sobre cómo restablecer su contraseña.",
+    "password-error": "Password is required.",
+    "password-change": "¿Cambiar contraseña?",
+    "password-change-confirm": "¿Seguro que quieres cambiar tu contraseña?",
+    "sign-in-error-1": "Se produjo un error durante el inicio de sesión. Revisa tu correo electrónico y contraseña.",
+    "sign-in-error-2": "Correo electrónico y / o contraseña inválidos. Por favor intente nuevamente."
   },
   "home-tab": {
     "title": "Casa",

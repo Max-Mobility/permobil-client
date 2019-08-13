@@ -1,31 +1,31 @@
 @import '../variables';
 
-.FULL_SCREEN_IMAGE_BASE {
+.LOGIN_LAYOUT_BASE {
   height: 100%;
   width: 100%;
-
-  .login-layout {
-    height: 100%;
-    width: 100%;
-    padding: 10;
-  }
+  padding: 10;
 
   .LOGIN_FORM_BASE {
     color: $white;
     border-radius: 4;
     vertical-align: center;
-
-    image {
-      margin: 5;
-    }
-
-    TextField {
-      margin: 5;
-    }
   }
 
   .SUBMIT_BTN_BASE {
-    color: $white;
-    margin: 8;
+    margin: 8 25 8 25;
+  }
+
+  .FORGOT_PW_BTN_BASE {
+    @extend .btn-transparent;
+
+    margin: 12 20 12 20;
+    horizontal-align: left;
+  }
+
+  .REGISTER_BTN_BASE {
+    @extend .btn-transparent;
+
+    margin: 12 20 12 20;
+    horizontal-align: left;
   }
 }
