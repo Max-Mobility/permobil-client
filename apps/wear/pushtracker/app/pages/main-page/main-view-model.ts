@@ -53,7 +53,7 @@ const dateLocales = {
 
 declare const com: any;
 
-const debug: boolean = true;
+let debug: boolean = false;
 
 @JavaProxy('com.permobil.pushtracker.wearos.DataBroadcastReceiver')
 class DataBroadcastReceiver extends android.content.BroadcastReceiver {
@@ -320,10 +320,16 @@ export class MainViewModel extends Observable {
   }
 
   debugTap() {
-    this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
-    this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
-    this.coastGoalValue = ((Math.random() * 10) + 2.0);
-    this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    debug = !debug;
+    if (debug) {
+      this.currentPushCount = ((Math.random() * 2000) + 1000);
+      this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
+      this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
+      this.coastGoalValue = ((Math.random() * 10) + 2.0);
+      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    } else {
+      this.loadCurrentActivityData();
+    }
     this.updateDisplay();
   }
 
