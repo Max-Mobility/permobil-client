@@ -1,123 +1,108 @@
 {
+  "app-info-component": {
+    "sections": [
+      {
+        "text": "Permobil está entregando una mejor experiencia a los usuarios de SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": ""
+      },
+      {
+        "lottie": "trophy.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Trabajando por una mejor salud"
+      },
+      {
+        "lottie": "trophy.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "¿Por qué son importantes los objetivos?"
+      },
+      {
+        "lottie": "bullseye.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Golpea tus metas y termina fuerte"
+      }
+    ],
+    "title": "Sigue con SmartDrive desde Permobil & MaxMobility"
+  },
+  "days": {
+    "friday": "viernes",
+    "monday": "lunes",
+    "saturday": "sábado",
+    "sunday": "domingo",
+    "thursday": "jueves",
+    "tuesday": "martes",
+    "wednesday": "miércoles"
+  },
+  "days-abbreviated": {
+    "friday": "vie",
+    "monday": "lun",
+    "saturday": "sáb",
+    "sunday": "dom",
+    "thursday": "jue",
+    "tuesday": "mar",
+    "wednesday": "mié"
+  },
   "general": {
-    "home": "Casa",
-    "journey": "Viaje",
-    "profile": "Perfil",
-    "distance": "Distancia",
-    "coast-time": "Hora de la costa",
-    "pushes": "Empuja",
-    "travel": "Viajar",
-    "miles": "Millas",
-    "meters": "Metros",
-    "kilometers": "Kilómetros",
-    "today": "Hoy",
-    "afternoon": "tarde",
-    "roll": "rodar",
-    "gender": "Género",
-    "birthday": "Cumpleaños",
-    "weight": "Peso",
-    "height": "Altura",
-    "units": "Unidades",
-    "smartdrive": "SmartDrive",
-    "max-speed": "Máxima velocidad",
     "acceleration": "Aceleración",
-    "tap-sensitivity": "Toque la sensibilidad",
-    "mode": "Modo",
-    "day": "Día",
-    "week": "Semana",
-    "month": "Mes",
-    "login": "Iniciar sesión",
-    "submit": "Enviar",
-    "email": "Email",
-    "password": "Contraseña",
-    "forgot-password": "Se te olvidó tu contraseña",
-    "sign-up": "Regístrate",
-    "ok": "Okay",
+    "afternoon": "tarde",
+    "birthday": "Cumpleaños",
     "cancel": "Cancelar",
     "chair-type": "Tipo de silla",
-    "sign-out": "Desconectar",
-    "email-required": "Se requiere correo electrónico.",
+    "change-pass": "Cambia la contraseña",
+    "check-email": "Consulte su correo electrónico para obtener instrucciones sobre cómo restablecer su contraseña.",
+    "coast-time": "Hora de la costa",
+    "day": "Día",
+    "distance": "Distancia",
+    "email": "Email",
     "email-error": "No es una dirección de correo electrónico válida.",
     "email-invalid": "El correo electrónico no es válido.",
+    "email-required": "Se requiere correo electrónico.",
     "email-sent": "Correo electrónico enviado",
-    "check-email": "Consulte su correo electrónico para obtener instrucciones sobre cómo restablecer su contraseña.",
-    "password-error": "Password is required.",
+    "error": "Error",
+    "forgot-password": "Se te olvidó tu contraseña",
+    "gender": "Género",
+    "height": "Altura",
+    "home": "Casa",
+    "journey": "Viaje",
+    "kilometers": "Kilómetros",
+    "login": "Iniciar sesión",
+    "max-speed": "Máxima velocidad",
+    "meters": "Metros",
+    "miles": "Millas",
+    "mode": "Modo",
+    "month": "Mes",
+    "ok": "Okay",
+    "password": "Contraseña",
     "password-change": "¿Cambiar contraseña?",
     "password-change-confirm": "¿Seguro que quieres cambiar tu contraseña?",
+    "password-error": "Password is required.",
+    "profile": "Perfil",
+    "pushes": "Empuja",
+    "reset-acct": "Restablecer cuenta",
+    "reset-pass-desc": "Para restablecer su contraseña, ingrese el correo electrónico de su cuenta. Recibirá un correo electrónico con instrucciones para restablecer su contraseña.",
+    "roll": "rodar",
     "sign-in-error-1": "Se produjo un error durante el inicio de sesión. Revisa tu correo electrónico y contraseña.",
-    "sign-in-error-2": "Correo electrónico y / o contraseña inválidos. Por favor intente nuevamente."
+    "sign-in-error-2": "Correo electrónico y / o contraseña inválidos. Por favor intente nuevamente.",
+    "sign-out": "Desconectar",
+    "sign-out-confirm": "¿Seguro que quieres cerrar sesión?",
+    "signing-in": "Iniciando sesión...",
+    "smartdrive": "SmartDrive",
+    "submit": "Enviar",
+    "submitting": "Sumisión...",
+    "success": "Éxito",
+    "tap-sensitivity": "Toque la sensibilidad",
+    "today": "Hoy",
+    "travel": "Viajar",
+    "units": "Unidades",
+    "week": "Semana",
+    "weight": "Peso"
   },
   "home-tab": {
-    "title": "Casa",
+    "kilometers-to-go": "kilómetros por recorrer",
     "miles-to-go": "millas que recorrer",
-    "kilometers-to-go": "kilómetros por recorrer"
+    "title": "Casa"
   },
   "journey-tab": {
     "title": "Viaje"
-  },
-  "profile-tab": {
-    "title": "Perfil",
-    "activity-goals": "Objetivos de actividad",
-    "about-you": "Acerca de ti",
-    "chair-make": "Silla hacer",
-    "set-goal": "Establecer una meta",
-    "chair-types": ["Rígido", "Plegable", "Pediátrico"],
-    "first-name": "primer nombre",
-    "last-name": "apellido",
-    "edit-first-name": "Editar nombre",
-    "edit-last-name": "Editar apellido"
-  },
-  "profile-settings": {
-    "theme": "Theme",
-    "language": "Language"
-  },
-  "settings-component": {
-    "title": "Ajustes"
-  },
-  "my-activity-component": {
-    "title": "Mi actividad"
-  },
-  "app-info-component": {
-    "title": "Sigue con SmartDrive desde Permobil & MaxMobility",
-    "sections": [
-      {
-        "title": "",
-        "text": "Permobil está entregando una mejor experiencia a los usuarios de SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla."
-      },
-      {
-        "title": "Trabajando por una mejor salud",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "trophy.json"
-      },
-      {
-        "title": "¿Por qué son importantes los objetivos?",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "trophy.json"
-      },
-      {
-        "title": "Golpea tus metas y termina fuerte",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "bullseye.json"
-      }
-    ]
-  },
-  "days": {
-    "sunday": "domingo",
-    "monday": "lunes",
-    "tuesday": "martes",
-    "wednesday": "miércoles",
-    "thursday": "jueves",
-    "friday": "viernes",
-    "saturday": "sábado"
-  },
-  "days-abbreviated": {
-    "sunday": "dom",
-    "monday": "lun",
-    "tuesday": "mar",
-    "wednesday": "mié",
-    "thursday": "jue",
-    "friday": "vie",
-    "saturday": "sáb"
   },
   "languages": {
     "de": "Alemán",
@@ -131,5 +116,36 @@
     "ru": "Ruso",
     "sv": "Sueco",
     "zh-CN": "Chino simplificado"
+  },
+  "my-activity-component": {
+    "title": "Mi actividad"
+  },
+  "profile-settings": {
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "profile-tab": {
+    "about-you": "Acerca de ti",
+    "activity-goals": "Objetivos de actividad",
+    "chair-make": "Silla hacer",
+    "chair-types": ["Rígido", "Plegable", "Pediátrico"],
+    "edit-first-name": "Editar nombre",
+    "edit-last-name": "Editar apellido",
+    "first-name": "primer nombre",
+    "last-name": "apellido",
+    "set-goal": "Establecer una meta",
+    "title": "Perfil"
+  },
+  "settings-component": {
+    "title": "Ajustes"
+  },
+  "sign-up": {
+    "birthdate-required": "Se requiere fecha de nacimiento.",
+    "first-name-required": "Se requiere el primer nombre.",
+    "last-name-required": "Se requiere apellido.",
+    "sign-up-error": "No se pudo registrar:",
+    "sign-up-success": "Tu nombre de usuario es:",
+    "title": "Regístrate",
+    "user-exists": "Ya existe una cuenta para este correo electrónico."
   }
 }
