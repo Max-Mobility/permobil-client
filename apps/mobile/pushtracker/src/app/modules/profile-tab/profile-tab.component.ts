@@ -5,6 +5,7 @@ import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 import {
   DateTimePicker,
   DateTimePickerStyle
@@ -19,7 +20,6 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
-import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 
 @Component({
@@ -915,5 +915,4 @@ export class ProfileTabComponent implements OnInit {
       this._logService.logException(error);
     }
   }
-
 }

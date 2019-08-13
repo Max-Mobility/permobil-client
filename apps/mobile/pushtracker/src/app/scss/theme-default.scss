@@ -9,6 +9,7 @@
 @import './login/login-default';
 @import './profile-tab/profile-tab-default';
 @import './profile-settings/profile-settings-default';
+@import './sign-up/sign-up-default';
 
 TabView {
   tab-background-color: $white;
@@ -22,4 +23,45 @@ TabView {
   width: 100%;
   color: #e9eaee;
   background-color: #e9eaee;
+}
+
+// TextBox
+
+.textbox {
+  @extend .TEXTBOX_BASE;
+
+  .textbox-label {
+    color: #4b4d51;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #e8e9eb;
+
+    > .textbox-value {
+      color: #3d4144;
+    }
+  }
+}
+
+.textbox-active {
+  @extend .TEXTBOX_BASE;
+  .textbox-label {
+    color: #1c72e6;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #1c72e6;
+
+    > .textbox-value {
+      color: #3d4144;
+    }
+  }
+}
+
+.textbox-error-label {
+  @extend .ERROR_LABEL_BASE;
+
+  color: $error-red;
 }

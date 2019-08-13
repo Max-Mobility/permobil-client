@@ -34,7 +34,18 @@
     "sign-up": "注册",
     "ok": "好",
     "cancel": "取消",
-    "chair-type": "椅子类型"
+    "chair-type": "椅子类型",
+    "sign-out": "登出",
+    "email-required": "需要电子邮件。",
+    "email-error": "不是有效的电子邮件地址。",
+    "email-invalid": "电子邮件无效",
+    "email-sent": "邮件已发送",
+    "check-email": "查看您的电子邮件，了解有关重置密码的说明。",
+    "password-error": "密码是必需的。",
+    "password-change": "更改密码？",
+    "password-change-confirm": "您确定要更改密码吗？",
+    "sign-in-error-1": "登录时出错。请检查您的电子邮件和密码。",
+    "sign-in-error-2": "无效的电子邮件和/或密码。请再试一次。"
   },
   "home-tab": {
     "title": "Home",

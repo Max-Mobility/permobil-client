@@ -1,14 +1,42 @@
-<ScrollView class="full-screen-image">
-  <GridLayout rows="auto, *, auto" columns="*" class="login-layout">
-    <GridLayout row="1" rows="auto, *, *, *" columns="*" class="login-form">
-      <Image row="0" class="align-center" src="~/app/assets/images/permobil_logo_transparent.png" stretch="none"></Image>
-      <TextField row="1" [hint]="'general.email' | translate" [text]="user.email"></TextField>
-      <TextField row="2" [hint]="'general.password' | translate" secure="true" [text]="user.password"></TextField>
-      <Button row="3" [text]="'general.login' | translate" (tap)="submit()" class="submit-btn"></Button>
+<ScrollView class="login-layout">
+  <GridLayout rows="auto, *, auto" columns="*">
+    <GridLayout row="1" rows="auto, *, *, *, *, *" columns="*" class="login-form">
+      <Image row="0" class="align-center m-20" src="~/app/assets/images/permobil_logo_transparent.png" stretch="aspectFit"></Image>
+
+      // Email
+      <StackLayout #emailTextBox row="1" class="textbox">
+        <Label class="textbox-label" [text]="'general.email' | translate"></Label>
+        <GridLayout rows="*" columns="*">
+          <TextField
+            class="textbox-value"
+            [text]="user.email"
+            (loaded)="textfieldLoaded($event)"
+            (textChange)="onEmailTextChange($event)"
+            (focus)="onFocusTF(0)"
+            (blur)="onBlurTF(0)"
+            keyboardType="email"
+            autocorrect="false"
+            autocapitalizationType="none"
+            textWrap="true"
+          ></TextField>
+        </GridLayout>
+      </StackLayout>
+      <Label row="2" [text]="emailError" class="textbox-error-label" [visibility]="emailError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+      // Password
+      <StackLayout #passwordTextBox row="3" class="textbox">
+        <Label class="textbox-label" [text]="'general.password' | translate"></Label>
+        <GridLayout rows="*" columns="*">
+          <TextField class="textbox-value" secure="true" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF(1)" (blur)="onBlurTF(1)" [(ngModel)]="user.password" textWrap="true"></TextField>
+        </GridLayout>
+      </StackLayout>
+      <Label row="4" [text]="passwordError" class="textbox-error-label" [visibility]="passwordError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+      <Button row="5" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
     </GridLayout>
     <GridLayout row="2" rows="*" columns="auto, *, auto">
-      <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="btn-transparent text-white"></Button>
-      <Button col="2" [text]="'general.sign-up' | translate" (tap)="navToSignUp()" class="btn-transparent text-white"></Button>
+      <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="forgot-pw-btn"></Button>
+      <Button col="2" [text]="'general.sign-up' | translate" (tap)="navToSignUp()" class="register-btn"></Button>
     </GridLayout>
   </GridLayout>
 </ScrollView>

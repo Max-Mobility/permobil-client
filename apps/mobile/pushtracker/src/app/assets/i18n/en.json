@@ -33,6 +33,7 @@
     "week": "Week",
     "month": "Month",
     "login": "Login",
+    "logout": "Logout",
     "submit": "Submit",
     "email": "Email",
     "password": "Password",
@@ -41,7 +42,18 @@
     "ok": "OK",
     "cancel": "Cancel",
     "display": "Display",
-    "chair-type": "Chair Type"
+    "chair-type": "Chair Type",
+    "sign-out": "Sign Out",
+    "email-required": "Email is required.",
+    "email-error": "is not a valid email address.",
+    "email-invalid": "Email is invalid",
+    "email-sent": "Email Sent",
+    "check-email": "Check your email for instructions on resetting your password.",
+    "password-error": "Password is required.",
+    "password-change": "Change Password?",
+    "password-change-confirm": "Are you sure you want to change your password?",
+    "sign-in-error-1": "An error occurred during sign in. Check your email and password.",
+    "sign-in-error-2": "Invalid email and/or password. Please try again."
   },
   "sd": {
     "switch-settings": {

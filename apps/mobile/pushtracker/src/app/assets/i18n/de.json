@@ -34,7 +34,18 @@
     "sign-up": "Anmelden",
     "ok": "OK",
     "cancel": "Stornieren",
-    "chair-type": "Stuhltyp"
+    "chair-type": "Stuhltyp",
+    "sign-out": "Ausloggen",
+    "email-required": "Email ist erforderlich.",
+    "email-error": "ist keine gültige E-Mail-Adresse.",
+    "email-invalid": "E-Mail ist ungültig",
+    "email-sent": "E-Mail gesendet",
+    "check-email": "In Ihrer E-Mail finden Sie Anweisungen zum Zurücksetzen Ihres Passworts.",
+    "password-error": "Passwort ist erforderlich.",
+    "password-change": "Passwort ändern?",
+    "password-change-confirm": "Möchten Sie Ihr Passwort wirklich ändern?",
+    "sign-in-error-1": "Beim Anmelden ist ein Fehler aufgetreten. Überprüfen Sie Ihre E-Mail und Ihr Passwort.",
+    "sign-in-error-2": "Ungültige E-Mail und / oder Passwort. Bitte versuchen Sie es erneut."
   },
   "home-tab": {
     "title": "Zuhause",
