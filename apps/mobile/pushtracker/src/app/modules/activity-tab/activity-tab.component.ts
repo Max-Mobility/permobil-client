@@ -46,7 +46,7 @@ export class DataService {
             return '' + hour;
         };
         for (const i in range(0, 24)) {
-            result.push({ Date: dateFormat(parseInt(i)), Amount: random() });
+            result.push({ HourFormatted: dateFormat(parseInt(i)), Amount: random(), Hour: parseInt(i), Date: date });
         }
         return result;
     }
