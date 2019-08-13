@@ -8,6 +8,7 @@
 @import './login/login-dark';
 @import './profile-tab/profile-tab-dark';
 @import './profile-settings/profile-settings-dark';
+@import './sign-up/sign-up-dark';
 
 TabView {
   tab-background-color: $black;
@@ -57,4 +58,10 @@ TabView {
       color: $white;
     }
   }
+}
+
+.textbox-error-label {
+  @extend .ERROR_LABEL_BASE;
+
+  color: $error-red;
 }

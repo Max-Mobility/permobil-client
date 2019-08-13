@@ -1,16 +1,31 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  NgZone,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { preventKeyboardFromShowing } from '@permobil/nativescript';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
+import { Log } from '@permobil/core';
+import {
+  hideKeyboard,
+  preventKeyboardFromShowing
+} from '@permobil/nativescript';
+import { subYears } from 'date-fns';
 import { validate } from 'email-validator';
-import { ModalDialogService } from 'nativescript-angular/directives/dialogs';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import {
-  SelectedIndexChangedEventData,
-  ValueList
-} from 'nativescript-drop-down';
-import { Page } from 'tns-core-modules/ui/page';
-// import { User } from '../../models';
-import { LoggingService, ProgressService } from '../../services';
+  DateTimePicker,
+  DateTimePickerStyle
+} from 'nativescript-datetimepicker';
+import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import { isAndroid } from 'tns-core-modules/platform';
+import { alert } from 'tns-core-modules/ui/dialogs';
+import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
+import { TextField } from 'tns-core-modules/ui/text-field';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'sign-up',
@@ -18,169 +33,222 @@ import { LoggingService, ProgressService } from '../../services';
   templateUrl: 'sign-up.component.html'
 })
 export class SignUpComponent implements OnInit {
-  private static LOG_TAG = 'sign-up.component ';
-  // user = new User();
+  @ViewChild('emailTextBox', { static: true })
+  emailTextBox: ElementRef;
+
+  @ViewChild('passwordTextBox', { static: true })
+  passwordTextBox: ElementRef;
+
+  @ViewChild('firstNameTextBox', { static: true })
+  firstNameTextBox: ElementRef;
+
+  @ViewChild('lastNameTextBox', { static: true })
+  lastNameTextBox: ElementRef;
+
+  @ViewChild('birthdayTextBox', { static: true })
+  birthdayTextBox: ElementRef;
+
+  user = { email: '', password: '', first_name: '', last_name: '', dob: '' };
+
   passwordError = '';
   emailError = '';
   firstNameError = '';
   lastNameError = '';
+  birthdayError = '';
 
-  // dropdown list of languages
-  languages = new ValueList<string>();
-  selectedLanguageIndex = 0;
-
-  selectedUserTypeIndex = 0;
-
-  ok: string = this._translateService.instant('dialogs.ok');
-
-  _isPermobilEmailSigningUp = false;
+  private _loadingIndicator = new LoadingIndicator();
 
   constructor(
     private _logService: LoggingService,
-    private _progressService: ProgressService,
-    private _page: Page,
     private _router: RouterExtensions,
     private _translateService: TranslateService,
-    private modal: ModalDialogService,
-    private vcRef: ViewContainerRef
+    private _zone: NgZone
   ) {
-    this._page.actionBarHidden = true;
     preventKeyboardFromShowing();
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb(SignUpComponent.LOG_TAG + `ngOnInit`);
+    this._logService.logBreadCrumb('sign-up.component ngOnInit');
   }
 
-  /**
-   * User Language dropdown changed
-   */
-  onLanguageChanged(args: SelectedIndexChangedEventData) {
-    const newLanguage = this.languages.getValue(args.newIndex) || 'en';
-    // this.user.language = newLanguage;
-    this._translateService.use(newLanguage);
-    this._logService.logBreadCrumb(
-      SignUpComponent.LOG_TAG + `onLanguageChanged newLanguage: ${newLanguage}`
+  goBack() {
+    this._router.back();
+  }
+
+  textfieldLoaded(args) {
+    if (isAndroid) {
+      const tf = args.object as TextField;
+      tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+    }
+  }
+
+  onBirthdayTap(args) {
+    // ugly hack for now to just force clear the active styles
+    this.onBlurTF(0);
+    this.onBlurTF(1);
+    this.onBlurTF(2);
+    this.onBlurTF(3);
+    (args.object as StackLayout).className = 'textbox-active';
+
+    const dateTimePickerStyle = DateTimePickerStyle.create(
+      args.object as StackLayout
     );
+
+    DateTimePicker.pickDate(
+      {
+        context: (args.object as StackLayout)._context,
+        date: subYears(new Date(), 18),
+        minDate: subYears(new Date(), 110),
+        maxDate: new Date(),
+        title: this._translateService.instant('general.birthday'),
+        okButtonText: this._translateService.instant('general.ok'),
+        cancelButtonText: this._translateService.instant('general.cancel'),
+        locale: this._translateService.getDefaultLang()
+      },
+      dateTimePickerStyle
+    )
+      .then(result => {
+        (args.object as StackLayout).className = 'textbox';
+
+        if (result) {
+          const date = new Date(result);
+          const month = date.getUTCMonth() + 1;
+          const day = date.getUTCDate();
+          const year = date.getUTCFullYear();
+          const dateFormatted = month + '/' + day + '/' + year;
+          Log.D('Birthday formatted', dateFormatted);
+          this.user.dob = dateFormatted;
+        }
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        (args.object as StackLayout).className = 'textbox';
+      });
   }
 
-  async onSubmitTap() {
+  onFocusTF(args, index: number) {
+    if (index === 0) {
+      (this.emailTextBox.nativeElement as StackLayout).className =
+        'textbox-active';
+    } else if (index === 1) {
+      (this.passwordTextBox.nativeElement as StackLayout).className =
+        'textbox-active';
+    } else if (index === 2) {
+      (this.firstNameTextBox.nativeElement as StackLayout).className =
+        'textbox-active';
+    } else if (index === 3) {
+      (this.lastNameTextBox.nativeElement as StackLayout).className =
+        'textbox-active';
+    }
+  }
+
+  onBlurTF(index: number) {
+    hideKeyboard();
+
+    if (index === 0) {
+      (this.emailTextBox.nativeElement as StackLayout).className = 'textbox';
+    } else if (index === 1) {
+      (this.passwordTextBox.nativeElement as StackLayout).className = 'textbox';
+    } else if (index === 2) {
+      (this.firstNameTextBox.nativeElement as StackLayout).className =
+        'textbox';
+    } else if (index === 3) {
+      (this.lastNameTextBox.nativeElement as StackLayout).className = 'textbox';
+    }
+  }
+
+  async onSubmitSignUp() {
+    console.dir(this.user);
+    // validate the email
+    const isEmailValid = this._isEmailValid(this.user.email);
+    if (!isEmailValid) {
+      return;
+    }
+    const isPasswordValid = this._isPasswordValid(this.user.password);
+    if (!isPasswordValid) {
+      return;
+    }
     // validate user form
-    // const isFirstNameValid = this._isFirstNameValid(this.user.first_name);
-    // if (!isFirstNameValid) {
-    //   return;
-    // }
+    const isFirstNameValid = this._isFirstNameValid(this.user.first_name);
+    if (!isFirstNameValid) {
+      return;
+    }
+    const isLastNameValid = this._isLastNameValid(this.user.last_name);
+    if (!isLastNameValid) {
+      return;
+    }
+    const isBirthdayValid = this._isBirthdayValid(this.user.dob);
+    if (!isBirthdayValid) {
+      return;
+    }
 
-    // const isLastNameValid = this._isLastNameValid(this.user.last_name);
-    // if (!isLastNameValid) {
-    //   return;
-    // }
-
-    // // validate the email
-    // const isEmailValid = this._isEmailValid(this.user.email);
-    // if (!isEmailValid) {
-    //   return;
-    // }
-
-    // const isPasswordValid = this._isPasswordValid(this.user.password);
-    // if (!isPasswordValid) {
-    //   return;
-    // }
-
-    // // trim all the strings on user object
-    // this.user.first_name = this.user.first_name.trim();
-    // this.user.last_name = this.user.last_name.trim();
-    // this.user.email = this.user.email.trim();
-    // this.user.password = this.user.password.trim();
-    // this.user.phone_number = this.user.phone_number.trim();
+    // trim all the strings on user object
+    this.user.first_name = this.user.first_name.trim();
+    this.user.last_name = this.user.last_name.trim();
+    this.user.email = this.user.email.trim();
+    this.user.password = this.user.password.trim();
+    this.user.dob = this.user.dob.trim();
 
     // TODO: need to show privacy / user agreement forms here - the
     //       user cannot create the account without reading and
     //       agreeing to both!
-
-    this._progressService.show(
-      this._translateService.instant('user.account-creating')
-    );
-
     // this._logService.logBreadCrumb(
     //   SignUpComponent.LOG_TAG +
     //     `onSubmitTap() creating new account: ${JSON.stringify(this.user)}`
     // );
-
     // // need to make sure the username is not already taken
-    // KinveyUser.exists(this.user.email)
-    //   .then(async res => {
-    //     this._logService.logBreadCrumb(
-    //       SignUpComponent.LOG_TAG + `KinveyUser.exists() res: ${res}`
-    //     );
+    const userExists = await KinveyUser.exists(this.user.email);
 
+    this._logService.logBreadCrumb(`KinveyUser.exists() result: ${userExists}`);
     // if username is taken tell user and exit so they can correct
-    // if (res === true) {
-    //   new Toasty({
-    //     text: this._translateService.instant('sign-up.user-exists'),
-    //     duration: ToastDuration.SHORT,
-    //     position: ToastPosition.CENTER
-    //   }).show();
-    //   this._progressService.hide();
-    //   return;
-    // }
+    if (userExists === true) {
+      new Toasty({
+        text: this._translateService.instant('sign-up.user-exists'),
+        duration: ToastDuration.SHORT,
+        position: ToastPosition.CENTER
+      }).show();
+      return;
+    }
 
-    // // now create the account
-    // try {
-    //   const user = await KinveyUser.signup(this.user);
-    //   this._progressService.hide();
-    //   alert({
-    //     title: this._translateService.instant('user.success'),
-    //     message:
-    //       this._translateService.instant('user.sign-up-success') +
-    //       ` ${user.email}`,
-    //     okButtonText: this.ok
-    //   }).then(() => {
-    //     this._router.navigate(['/home'], { clearHistory: true });
-    //   });
-    // } catch (err) {
-    //   Log.E(err);
-    //   this._progressService.hide();
-    //   this._logService.logException(err);
-    //   alert({
-    //     title: this._translateService.instant('user.error'),
-    //     message: this._translateService.instant('user.sign-up-error') + err,
-    //     okButtonText: this.ok
-    //   });
-    //   // }
-    // })
-    // .catch(err => {
-    //   this._progressService.hide();
-    //   this._logService.logException(err);
-    //   alert({
-    //     title: this._translateService.instant('user.error'),
-    //     message: this._translateService.instant('user.sign-up-error') + err,
-    //     okButtonText: this.ok
-    //   });
-    // });
-  }
-
-  onReturnPress(args) {
-    // nothing
+    // now create the account
+    try {
+      const user = await KinveyUser.signup(this.user);
+      alert({
+        title: this._translateService.instant('general.success'),
+        message:
+          this._translateService.instant('general.sign-up-success') +
+          ` ${user.email}`,
+        okButtonText: this._translateService.instant('general.ok')
+      }).then(() => {
+        // Navigate to tabs home with clearHistory
+        this._zone.run(() => {
+          this._router.navigate(['/tabs/default'], {
+            clearHistory: true
+          });
+        });
+      });
+    } catch (err) {
+      this._logService.logException(err);
+      alert({
+        title: this._translateService.instant('general.error'),
+        message: this._translateService.instant('general.sign-up-error') + err,
+        okButtonText: this._translateService.instant('general.ok')
+      });
+      // }
+    }
   }
 
   onEmailTextChange(args) {
-    // this.user.email = args.value;
-    // this._isEmailValid(this.user.email);
-  }
-
-  navToLogin() {
-    this._router.navigate(['/login'], {
-      transition: {
-        name: 'slideRight'
-      }
-    });
+    this.user.email = args.value;
+    this._isEmailValid(this.user.email);
   }
 
   private _isEmailValid(text: string): boolean {
     // validate the email
     if (!text) {
-      this.emailError = this._translateService.instant('user.email-required');
+      this.emailError = this._translateService.instant(
+        'general.email-required'
+      );
       return false;
     }
 
@@ -188,7 +256,7 @@ export class SignUpComponent implements OnInit {
     const email = text.trim();
     if (!validate(email)) {
       this.emailError = `"${email}" ${this._translateService.instant(
-        'user.email-error'
+        'general.email-error'
       )}`;
       return false;
     }
@@ -201,7 +269,7 @@ export class SignUpComponent implements OnInit {
     // validate the password
     if (!text) {
       this.passwordError = this._translateService.instant(
-        'user.password-error'
+        'general.password-error'
       );
       return false;
     }
@@ -210,7 +278,7 @@ export class SignUpComponent implements OnInit {
   }
 
   private _isFirstNameValid(text: string): boolean {
-    // validate the password
+    // validate the firstname
     if (!text) {
       this.firstNameError = this._translateService.instant(
         'user.first-name-error'
@@ -222,7 +290,19 @@ export class SignUpComponent implements OnInit {
   }
 
   private _isLastNameValid(text: string): boolean {
-    // validate the password
+    // validate the lastname
+    if (!text) {
+      this.lastNameError = this._translateService.instant(
+        'user.last-name-error'
+      );
+      return false;
+    }
+    this.lastNameError = '';
+    return true;
+  }
+
+  private _isBirthdayValid(text: string): boolean {
+    // validate the birthday
     if (!text) {
       this.lastNameError = this._translateService.instant(
         'user.last-name-error'

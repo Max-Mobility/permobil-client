@@ -15,12 +15,6 @@
     color: $white;
   }
 
-  .error-label {
-    @extend .ERROR_LABEL_BASE;
-
-    color: $error-red;
-  }
-
   .forgot-pw-btn {
     @extend .FORGOT_PW_BTN_BASE;
     color: #3d4144;

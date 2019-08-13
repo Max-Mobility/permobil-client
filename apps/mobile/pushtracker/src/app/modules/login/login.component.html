@@ -21,7 +21,7 @@
           ></TextField>
         </GridLayout>
       </StackLayout>
-      <Label row="2" [text]="emailError" class="error-label" [visibility]="emailError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+      <Label row="2" [text]="emailError" class="textbox-error-label" [visibility]="emailError ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
       // Password
       <StackLayout #passwordTextBox row="3" class="textbox">
@@ -30,7 +30,7 @@
           <TextField class="textbox-value" secure="true" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF(1)" (blur)="onBlurTF(1)" [(ngModel)]="user.password" textWrap="true"></TextField>
         </GridLayout>
       </StackLayout>
-      <Label row="4" [text]="passwordError" class="error-label" [visibility]="passwordError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+      <Label row="4" [text]="passwordError" class="textbox-error-label" [visibility]="passwordError ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
       <Button row="5" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
     </GridLayout>

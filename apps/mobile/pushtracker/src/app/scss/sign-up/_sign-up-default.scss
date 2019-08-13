@@ -1,0 +1,13 @@
+@import '../variables';
+@import 'sign-up-base';
+
+.sign-up-layout {
+  @extend .SIGN_UP_LAYOUT_BASE;
+
+  .submit-btn {
+    @extend .SUBMIT_BTN_BASE;
+
+    color: $white;
+    background-color: #1c72e6;
+  }
+}

@@ -1,5 +1,65 @@
-<ScrollView height="100%" width="100%">
-  <StackLayout>
-    <Label text="SIGN UP" textWrap="true"></Label>
-  </StackLayout>
+<ActionBar [title]="'general.sign-up' | translate" flat="true" class="action-bar">
+  <NavigationButton text="Back" icon="" (tap)="goBack()"></NavigationButton>
+</ActionBar>
+
+<ScrollView class="sign-up-layout">
+  <GridLayout rows="*, *, *, *, *, *, *, * , *, *, *" columns="*">
+    // Email
+    <StackLayout #emailTextBox row="0" class="textbox">
+      <Label class="textbox-label" [text]="'general.email' | translate"></Label>
+      <GridLayout rows="*" columns="*">
+        <TextField
+          class="textbox-value"
+          [text]="user.email"
+          (loaded)="textfieldLoaded($event)"
+          (textChange)="onEmailTextChange($event)"
+          (focus)="onFocusTF($event, 0)"
+          (blur)="onBlurTF(0)"
+          keyboardType="email"
+          autocorrect="false"
+          autocapitalizationType="none"
+          textWrap="true"
+        ></TextField>
+      </GridLayout>
+    </StackLayout>
+    <Label row="1" [text]="emailError" class="textbox-error-label" [visibility]="emailError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+    // Password
+    <StackLayout #passwordTextBox row="2" class="textbox">
+      <Label class="textbox-label" [text]="'general.password' | translate"></Label>
+      <GridLayout rows="*" columns="*">
+        <TextField class="textbox-value" secure="true" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF($event, 1)" (blur)="onBlurTF(1)" [(ngModel)]="user.password" textWrap="true"></TextField>
+      </GridLayout>
+    </StackLayout>
+    <Label row="3" [text]="passwordError" class="textbox-error-label" [visibility]="passwordError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+    // FirstName
+    <StackLayout #firstNameTextBox row="4" class="textbox">
+      <Label class="textbox-label" [text]="'profile-tab.first-name' | translate"></Label>
+      <GridLayout rows="*" columns="*">
+        <TextField class="textbox-value" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF($event, 2)" (blur)="onBlurTF(2)" [(ngModel)]="user.first_name" textWrap="true"></TextField>
+      </GridLayout>
+    </StackLayout>
+    <Label row="5" [text]="firstNameError" class="textbox-error-label" [visibility]="firstNameError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+    // LastName
+    <StackLayout #lastNameTextBox row="6" class="textbox">
+      <Label class="textbox-label" [text]="'profile-tab.last-name' | translate"></Label>
+      <GridLayout rows="*" columns="*">
+        <TextField class="textbox-value" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF($event, 3)" (blur)="onBlurTF(3)" [(ngModel)]="user.last_name" textWrap="true"></TextField>
+      </GridLayout>
+    </StackLayout>
+    <Label row="7" [text]="lastNameError" class="textbox-error-label" [visibility]="lastNameError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+    // DOB
+    <StackLayout #dobTextBox row="8" class="textbox" (tap)="onBirthdayTap($event)">
+      <Label class="textbox-label" [text]="'general.birthday' | translate"></Label>
+      <GridLayout rows="*" columns="*">
+        <Label class="textbox-value" [text]="user.dob | date" textWrap="true"></Label>
+      </GridLayout>
+    </StackLayout>
+    <Label row="9" [text]="birthdayError" class="textbox-error-label" [visibility]="birthdayError ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+    <Button row="10" [text]="'general.sign-up' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
+  </GridLayout>
 </ScrollView>
