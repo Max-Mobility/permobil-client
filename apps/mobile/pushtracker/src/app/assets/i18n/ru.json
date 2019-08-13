@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "Дата рождения обязательна.",
+    "creating-account": "Создание вашей учетной записи ...",
     "first-name-required": "Имя обязательно.",
     "last-name-required": "Фамилия обязательна.",
     "sign-up-error": "Не удалось зарегистрироваться:",

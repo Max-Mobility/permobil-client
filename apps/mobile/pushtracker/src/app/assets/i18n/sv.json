@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "Födelsedatum krävs.",
+    "creating-account": "Skapar ditt konto ...",
     "first-name-required": "Förnamn krävs.",
     "last-name-required": "Efternamn krävs.",
     "sign-up-error": "Det gick inte att registrera sig: ",

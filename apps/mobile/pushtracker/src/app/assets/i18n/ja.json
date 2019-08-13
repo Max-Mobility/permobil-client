@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "生年月日が必要です。",
+    "creating-account": "アカウントを作成しています...",
     "first-name-required": "名が必要です。",
     "last-name-required": "姓が必要です。",
     "sign-up-error": "サインアップできませんでした： ",

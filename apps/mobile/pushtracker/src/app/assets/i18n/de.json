@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "Geburtsdatum ist erforderlich.",
+    "creating-account": "Erstellen von Ihrem Konto...",
     "first-name-required": "Vorname ist erforderlich.",
     "last-name-required": "Nachname ist erforderlich.",
     "sign-up-error": "Konnte mich nicht anmelden:",

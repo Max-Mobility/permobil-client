@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "出生日期是必需的。",
+    "creating-account": "创建您的帐户...",
     "first-name-required": "名字是必需的。",
     "last-name-required": "姓氏是必需的。",
     "sign-up-error": "无法注册： ",

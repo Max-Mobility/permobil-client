@@ -113,6 +113,7 @@
   },
   "sign-up": {
     "birthdate-required": "생년월일이 필요합니다.",
+    "creating-account": "계정 생성 중 ...",
     "first-name-required": "이름이 필요합니다.",
     "last-name-required": "성은 필수입니다.",
     "sign-up-error": "가입하지 못했습니다 : ",

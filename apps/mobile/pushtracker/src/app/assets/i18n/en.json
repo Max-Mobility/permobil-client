@@ -175,6 +175,7 @@
   },
   "sign-up": {
     "birthdate-required": "Birth date is required.",
+    "creating-account": "Creating your account...",
     "first-name-required": "First name is required.",
     "last-name-required": "Last name is required.",
     "sign-up-error": "Could not sign up: ",

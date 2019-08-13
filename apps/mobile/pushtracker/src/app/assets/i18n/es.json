@@ -141,6 +141,7 @@
   },
   "sign-up": {
     "birthdate-required": "Se requiere fecha de nacimiento.",
+    "creating-account": "Creando tu cuenta...",
     "first-name-required": "Se requiere el primer nombre.",
     "last-name-required": "Se requiere apellido.",
     "sign-up-error": "No se pudo registrar:",
