@@ -54,7 +54,7 @@ export class DataService {
             const random = function() { return Math.random() * (+max - +min) + +min; };
             const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             for (const i in range(0, 6)) {
-                result.push({ xAxis: dayNames[parseInt(i)], yAxis: random(), Hour: parseInt(i), Date: date });
+                result.push({ xAxis: dayNames[parseInt(i)], yAxis: random(), Date: date });
             }
             result.unshift({ xAxis: ' ', yAxis: 0 });
             result.unshift({ xAxis: '  ', yAxis: 0 });
@@ -122,13 +122,7 @@ export class ActivityTabComponent implements OnInit {
     // displaying the old and new TabView selectedIndex
     onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
         const date = this.currentDayInView;
-        const getSunday = function(date) {
-            date = new Date(date);
-            const day = date.getDay(),
-            diff = date.getDate() - day + (day === 0 ? -7 : 0); // adjust when day is sunday
-            return new Date(date.setDate(diff));
-        };
-        const sunday = getSunday(date);
+        const sunday = this._getSunday(date);
         if (args.oldIndex !== -1) {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
@@ -148,15 +142,17 @@ export class ActivityTabComponent implements OnInit {
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
 
+    _getSunday(date) {
+        date = new Date(date);
+        const day = date.getDay(),
+        diff = date.getDate() - day; // adjust when day is sunday
+        console.log(day, diff, new Date(date.setDate(diff)));
+        return new Date(date.setDate(diff));
+    }
+
     _initWeekChartTitle() {
-        const getSunday = function(date) {
-            date = new Date(date);
-            const day = date.getDay(),
-            diff = date.getDate() - day + (day === 0 ? -7 : 0); // adjust when day is sunday
-            return new Date(date.setDate(diff));
-        };
         const date = this.currentDayInView;
-        const sunday = getSunday(date);
+        const sunday = this._getSunday(date);
         this.chartTitle = this.monthNames[date.getMonth()] + ' ' + sunday.getDate() + ' — ' + (sunday.getDate() + 6);
     }
 
@@ -188,6 +184,16 @@ export class ActivityTabComponent implements OnInit {
         const pointIndex = event.pointIndex;
         const pointData = event.pointData;
         console.log('Day datapoint selected', this.activity.getItem(pointIndex));
+    }
+
+    onWeekPointSelected(event) {
+        const pointIndex = event.pointIndex;
+        const pointData = event.pointData;
+        const date = new Date(this.activity.getItem(pointIndex)['Date']);
+        const sunday = this._getSunday(date);
+        console.log(date, sunday, pointIndex);
+        this.currentDayInView = new Date(sunday.setDate(date.getDate() + pointIndex - 4));
+        this.tabSelectedIndex = 0;
     }
 
 }

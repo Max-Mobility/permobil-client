@@ -47,7 +47,8 @@
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextWeekTap($event)"></Button>
                 </GridLayout>
-                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" 
+                    pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
                     <RadCartesianChartGrid 
                         tkCartesianGrid
                         horizontalLinesVisible="true"
@@ -62,7 +63,7 @@
                     <LinearAxis tkCartesianVerticalAxis
                         horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10"
+                    <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10" selectionMode="DataPoint"
                         categoryProperty="xAxis" valueProperty="yAxis">
                     </BarSeries>
                     <!-- >> chart-trackball-property-xml -->
