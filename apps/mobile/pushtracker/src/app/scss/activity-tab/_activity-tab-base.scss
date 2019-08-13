@@ -28,16 +28,16 @@
 
   .BACK_BTN_BASE {
     @extend .btn-transparent;
-    padding: 2;
-    font-size: 14;
+    padding: 4;
+    font-size: 24;
     font-family: $material-icon;
     horizontal-align: left;
   }
 
   .FORWARD_BTN_BASE {
     @extend .btn-transparent;
-    padding: 2;
-    font-size: 14;
+    padding: 4;
+    font-size: 24;
     font-family: $material-icon;
     horizontal-align: right;    
   }
