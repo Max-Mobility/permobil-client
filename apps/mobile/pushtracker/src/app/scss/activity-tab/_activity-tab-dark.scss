@@ -14,6 +14,16 @@
     color: $white;
   }
 
+  .back-btn {
+    @extend .BACK_BTN_BASE;
+    color: $white;
+  }
+
+  .forward-btn {
+    @extend .FORWARD_BTN_BASE;
+    color: $white;
+  }
+
   .more-btn {
     @extend .MORE_BTN_BASE;
     color: $white;

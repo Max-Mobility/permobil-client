@@ -72,6 +72,7 @@ export class ActivityTabComponent implements OnInit {
     public dayNames: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
                                    'July', 'August', 'September', 'October', 'November', 'December'];
+    public currentDayInView: Date;
 
     constructor(
         private _logService: LoggingService,
@@ -79,10 +80,10 @@ export class ActivityTabComponent implements OnInit {
         private _params: ModalDialogParams,
         private _dataService: DataService
     ) {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
+        this.currentDayInView = new Date();
+        const year = this.currentDayInView.getFullYear();
+        const month = this.currentDayInView.getMonth();
+        const day = this.currentDayInView.getDate();
         this.minimumDateTimevalue = new Date(year, month, day, 0);
         this.maximumDateTimeValue = new Date(year, month, day, 23);
     }
@@ -107,7 +108,7 @@ export class ActivityTabComponent implements OnInit {
 
     // displaying the old and new TabView selectedIndex
     onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
-        const date = new Date();
+        const date = this.currentDayInView;
         if (args.oldIndex !== -1) {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
@@ -121,10 +122,20 @@ export class ActivityTabComponent implements OnInit {
     }
 
     _initChartTitle() {
-        const date = new Date();
+        const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
 
-    labelFormat(value) {}
+    onPreviousDayTap(event) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
+        this._initChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource());
+    }
+
+    onNextDayTap(event) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
+        this._initChartTitle();
+        this.activity = new ObservableArray(this._dataService.getSource());
+    }
 
 }
