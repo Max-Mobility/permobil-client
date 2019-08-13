@@ -29,14 +29,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Table Columns names
   public static final String KEY_ID = "id";
   public static final String KEY_DATA = "data";
+  public static final String KEY_DATE = "date";
   public static final String KEY_UUID = "uuid";
   public static final String KEY_HAS_BEEN_SENT = "has_been_sent";
+
+  public static final int ID_INDEX = 0;
+  public static final int DATA_INDEX = 1;
+  public static final int DATE_INDEX = 2;
+  public static final int UUID_INDEX = 3;
+  public static final int HAS_BEEN_SENT_INDEX = 4;
 
   private Context mContext;
 
   public class Record {
-    String id;
     String data;
+    String date;
+    String id;
     boolean has_been_sent;
   }
 
@@ -47,13 +55,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-    String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + TABLE_NAME + "(" +
-      KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-      KEY_DATA + " TEXT, " +
-      KEY_UUID + " TEXT," +
-      KEY_HAS_BEEN_SENT + " bit" +
-      ")";
-    db.execSQL(CREATE_TABLE_ACTIVITYDATA);
+    try {
+      String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + TABLE_NAME + "(" +
+        KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        KEY_DATA + " TEXT, " +
+        KEY_DATE + " TEXT, " +
+        KEY_UUID + " TEXT, " +
+        KEY_HAS_BEEN_SENT + " bit" +
+        ")";
+      db.execSQL(CREATE_TABLE_ACTIVITYDATA);
+    } catch (Exception e) {
+      Log.e(TAG, "exception creating table: " + e.getMessage());
+    }
   }
 
   @Override
@@ -74,6 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       String dataAsJSON = gson.toJson(data);
       values.put(KEY_UUID, data._id);
       values.put(KEY_HAS_BEEN_SENT, data.has_been_sent);
+      values.put(KEY_DATE, data.date);
       values.put(KEY_DATA, dataAsJSON);
       db.insert(TABLE_NAME, null, values);
       Log.d(TAG, "Saving new RECORD to SQL Table: " + data._id);
@@ -91,7 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     try {
       values.put(KEY_HAS_BEEN_SENT, 1);
-      String whereString = "WHERE " + KEY_ID + "=" + id;
+      String whereString = KEY_UUID + "=\"" + id + "\"";
       String[] whereArgs = {};
       db.update(TABLE_NAME, values, whereString, whereArgs);
       Log.d(TAG, "Updating RECORD in SQL Table: " + id);
@@ -112,10 +126,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       String dataAsJSON = gson.toJson(data);
       values.put(KEY_HAS_BEEN_SENT, data.has_been_sent);
       values.put(KEY_DATA, dataAsJSON);
-      String whereString = "WHERE " + KEY_ID + "=" + data._id;
+      String whereString = KEY_UUID + "=\"" + data._id + "\"";
       String[] whereArgs = {};
       db.update(TABLE_NAME, values, whereString, whereArgs);
-      Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
+      Log.d(TAG, "Updating RECORD in SQL Table: " + data._id + " - " + dataAsJSON);
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
       Sentry.capture(e);
@@ -125,7 +139,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   }
 
   synchronized public DailyActivity getMostRecent(boolean onlyUnsent) {
-    List<DailyActivity> recordList = new ArrayList<>();
+    DailyActivity record = null;
     String selectQuery = "SELECT * FROM " + TABLE_NAME;
     if (onlyUnsent) {
       selectQuery += " WHERE " + KEY_HAS_BEEN_SENT + "=0";
@@ -148,15 +162,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     if (cursor.moveToFirst()) {
       Gson gson = new Gson();
       try {
-        // Loop through the table rows
-        do {
-          int index = cursor.getInt(0);
-          DailyActivity record = gson.fromJson(cursor.getString(1), DailyActivity.class);
-          String uuid = cursor.getString(2);
-          Log.d(TAG, "record id: " + index + " - " + uuid);
-          // Add record to list
-          recordList.add(record);
-        } while (cursor.moveToNext());
+        int index = cursor.getInt(ID_INDEX);
+        // set the record
+        record = gson.fromJson(cursor.getString(DATA_INDEX), DailyActivity.class);
+        String uuid = cursor.getString(UUID_INDEX);
+        Log.d(TAG, "record id: " + index + " - " + uuid);
       } catch (Exception e) {
         Log.e(TAG, "Exception parsing json:" + e.getMessage());
         Sentry.capture(e);
@@ -165,8 +175,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     cursor.close();
     db.close();
-    Log.d(TAG, "Returning SQLite RecordList with record count: " + recordList.size());
-    return recordList;
+    Log.d(TAG, "Returning SQLite Record: " + record);
+    return record;
   }
 
   synchronized public List<DailyActivity> getRecords(int numRecords, boolean onlyUnsent) {
@@ -197,9 +207,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       try {
         // Loop through the table rows
         do {
-          int index = cursor.getInt(0);
-          DailyActivity record = gson.fromJson(cursor.getString(1), DailyActivity.class);
-          String uuid = cursor.getString(2);
+          int index = cursor.getInt(ID_INDEX);
+          DailyActivity record = gson.fromJson(cursor.getString(DATA_INDEX), DailyActivity.class);
+          String uuid = cursor.getString(UUID_INDEX);
           Log.d(TAG, "record id: " + index + " - " + uuid);
           // Add record to list
           recordList.add(record);
@@ -239,10 +249,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // if TABLE has rows
     if (cursor.moveToFirst()) {
       try {
-        int index = cursor.getInt(0);
-        record.data = cursor.getString(1);
-        record.id = cursor.getString(2);
-        record.has_been_sent = cursor.getBoolean(3);
+        int index = cursor.getInt(ID_INDEX);
+        record.data = cursor.getString(DATA_INDEX);
+        record.date = cursor.getString(DATE_INDEX);
+        record.id = cursor.getString(UUID_INDEX);
+        record.has_been_sent = (cursor.getInt(HAS_BEEN_SENT_INDEX) != 0);
         Log.d(TAG, "record id: " + index + " - " + record.id);
       } catch (Exception e) {
         Log.e(TAG, "Exception getting record from db:" + e.getMessage());

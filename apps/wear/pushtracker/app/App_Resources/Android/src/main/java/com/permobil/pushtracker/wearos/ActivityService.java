@@ -30,6 +30,8 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -58,7 +60,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import io.sentry.Sentry;
 
-import com.permobil.pushtracker.wearos.ActivityData;
+import com.permobil.pushtracker.wearos.DailyActivity;
 
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
@@ -108,6 +110,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
 
+  private KinveyApiService mKinveyApiService;
+  private String mKinveyAuthorization;
+
   private HandlerThread mHandlerThread;
   private Handler mHandler;
   private Runnable mSendTask;
@@ -122,7 +127,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   public boolean isServiceRunning = false;
 
   // activity data
-  ActivityData currentActivity = new ActivityData();
+  DailyActivity currentActivity = new DailyActivity();
 
   // helper objects
   private ActivityDetector activityDetector;
@@ -262,7 +267,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         Sentry.capture(e);
         Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
       }
-      if (isPlugged) {
+      if (isPlugged()) {
         // only continue sending if we're still plugged in
         mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
       }
@@ -290,12 +295,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           .subscribe(
                      item -> {
                        Log.d(TAG, "item sent: " + item._id);
-                       numRecordsPushed++;
                        // TODO: currently we don't delete any entries,
                        // do we want to change that?
                        // db.deleteRecord(item._id);
 
-                       //update the has_been_sent field for that
+                       // update the has_been_sent field for that
                        // activity
                        db.markRecordAsSent(item._id);
                      },
@@ -375,12 +379,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           // determine if it's a new day
           if (!sameDate) {
             // reset values to zero
-            this.currentActivity = new DailyActivity();
+            currentActivity = new DailyActivity();
             // update the datastore - these are for the complication
             // providers and the pushtracker wear app
             datastore.setPushes(currentActivity.push_count);
             datastore.setCoast(currentActivity.coast_time_avg);
-            datastore.setDistance(currentActivity.watch_distance);
+            datastore.setDistance(currentActivity.distance_watch);
             datastore.setHeartRate(currentActivity.heart_rate);
             // go ahead and write it to db
             db.addRecord(currentActivity);
@@ -529,7 +533,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         (computedSpeedValid || newSpeedValid);
       // if we have valid speed, accumulate more distance
       if (newLocationIsFromMovement) {
-        currentActivity.watch_distance += distance;
+        currentActivity.distance_watch += distance;
       }
     }
     // update the stored location for distance computation
@@ -572,14 +576,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           // with the complication providers and mobile app
           datastore.setPushes(currentActivity.push_count);
           datastore.setCoast(currentActivity.coast_time_avg);
-          datastore.setDistance(currentActivity.watch_distance);
+          datastore.setDistance(currentActivity.distance_watch);
           datastore.setHeartRate(currentActivity.heart_rate);
           // update data in SQLite tables
           db.updateRecord(currentActivity);
           // send intent to main activity with updated data
           sendDataToActivity(currentActivity.push_count,
                              currentActivity.coast_time_avg,
-                             currentActivity.watch_distance,
+                             currentActivity.distance_watch,
                              currentActivity.heart_rate);
           _lastSendDataTimeMs = now;
         }

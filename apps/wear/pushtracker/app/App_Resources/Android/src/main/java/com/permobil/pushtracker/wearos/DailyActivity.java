@@ -2,6 +2,7 @@ package com.permobil.pushtracker.wearos;
 
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.google.api.client.util.Key;
 
@@ -10,15 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.ChronoField;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 // Class defining how the activity data will be collected per day
 public class DailyActivity {
+  private static final String TAG = "DailyActivity";
   private static final long MAX_ALLOWED_COAST_TIME_MS = 60 * 1000;
   // convert to ns
   private static final long COAST_TIME_THRESHOLD = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000;
-
+  private static final long RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
 
   // individual record of activity with standard start time in 30
   // minute intervals
@@ -27,36 +34,33 @@ public class DailyActivity {
     public long start_time;
     @Key("push_count")
     public int push_count;
-    @Key("coast_time_total");
+    @Key("coast_time_total")
     public float coast_time_total;
     @Key("coast_time_avg")
     public float coast_time_avg;
-    @Key("phone_distance")
-    public float phone_distance;
-    @Key("watch_distance")
-    public float watch_distance;
-    @Key("smartdrive_coast_distance")
-    public float smartdrive_coast_distance;
-    @Key("smartdrive_drive_distance")
-    public float smartdrive_drive_distance;
+    @Key("distance_phone")
+    public float distance_phone;
+    @Key("distance_watch")
+    public float distance_watch;
+    @Key("distance_smartdrive_coast")
+    public float distance_smartdrive_coast;
+    @Key("distance_smartdrive_drive")
+    public float distance_smartdrive_drive;
     @Key("heart_rate")
     public float heart_rate;
 
     public Record() {
       // make the start time the time in milliseconds of the most
       // recent half-hour
-      Calendar calendar = Calendar.getInstance();
-      // zero out the seconds / milliseconds
-      calendar.set(Calendar.SECOND, 0);
-      calendar.set(Calendar.MILLISECOND, 0);
-      int modulo = calendar.get(Calendar.MINUTE) % 30;
+      Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+      int modulo = now.atZone(ZoneOffset.UTC).getMinute() % 30;
       if (modulo > 0) {
         // if we're not on the 30 minute mark already, subtract
         // however many minutes it's been since the last half-hour
-        calendar.add(Calendar.MINUTE, -modulo);
+        now = now.plus(-modulo, ChronoUnit.MINUTES);
       }
       // now set the time
-      this.start_time = calendar.getTime();
+      this.start_time = now.toEpochMilli();
     }
 
     public Record(
@@ -74,10 +78,10 @@ public class DailyActivity {
       this.push_count = pushes;
       this.coast_time_total = coastTimeTotal;
       this.coast_time_avg = coastTimeAvg;
-      this.phone_distance = phoneDist;
-      this.watch_distance = watchDist;
-      this.smartdrive_coast_distance = sdCoastDist;
-      this.smartdrive_drive_distance = sdDriveDist;
+      this.distance_phone = phoneDist;
+      this.distance_watch = watchDist;
+      this.distance_smartdrive_coast = sdCoastDist;
+      this.distance_smartdrive_drive = sdDriveDist;
       this.heart_rate = heartRate;
     }
   };
@@ -94,7 +98,7 @@ public class DailyActivity {
   // since we will have multiple types in the DB (e.g. DailyActivity,
   // WeeklySummary, MonthlySummary, TrackedSession, etc.)
   @Key("data_type")
-  public string data_type;
+  public String data_type;
 
   // YYYY-MM-DD representation of date for which the activity was
   // recorded
@@ -110,7 +114,7 @@ public class DailyActivity {
   @Key("push_count")
   public int push_count;
 
-  @Key("coast_time_total");
+  @Key("coast_time_total")
   public float coast_time_total;
 
   // average coast time for all pushes
@@ -122,20 +126,20 @@ public class DailyActivity {
   public float heart_rate;
 
   // distance calculated from phone (if any)
-  @Key("phone_distance")
-  public float phone_distance;
+  @Key("distance_phone")
+  public float distance_phone;
 
   // distance calculated from watch (if any)
-  @Key("watch_distance")
-  public float watch_distance;
+  @Key("distance_watch")
+  public float distance_watch;
 
   // coast distance from smartdrive (if any)
-  @Key("smartdrive_coast_distance")
-  public float smartdrive_coast_distance;
+  @Key("distance_smartdrive_coast")
+  public float distance_smartdrive_coast;
 
   // drive distance from smartdrive (if any)
-  @Key("smartdrive_drive_distance")
-  public float smartdrive_drive_distance;
+  @Key("distance_smartdrive_drive")
+  public float distance_smartdrive_drive;
 
   // list of records of activity for the day
   @Key("records")
@@ -144,50 +148,27 @@ public class DailyActivity {
   // private members for tracking data
   private ActivityDetector.Detection lastPush = null;
 
-  public ActivityData() {
+  public DailyActivity() {
+    // set up the date to be yyyy-mm-dd string
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date now = Calendar.getInstance().getTime();
     String nowString = simpleDateFormat.format(now);
     this.date = nowString;
+    // now set up the start_time to be midnight of that day in epoch
+    // time
+    this.start_time = Instant.now().truncatedTo(ChronoUnit.DAYS).toEpochMilli();
+    // now initialize the data
     this.push_count = 0;
     this.coast_time_total = 0;
     this.coast_time_avg = 0;
     this.heart_rate = 0;
-    this.phone_distance = 0;
-    this.watch_distance = 0;
-    this.smartdrive_coast_distance = 0;
-    this.smartdrive_drive_distance = 0;
+    this.distance_phone = 0;
+    this.distance_watch = 0;
+    this.distance_smartdrive_coast = 0;
+    this.distance_smartdrive_drive = 0;
     this.records = new ArrayList<>();
     this._id = UUID.randomUUID().toString();
     this.has_been_sent = false;
-    this.data_type = "DailyActivity";
-  }
-
-  public ActivityData(String date,
-                      int pushes,
-                      float coastTotal,
-                      float coastAvg,
-                      float heartRate,
-                      float phoneDistance,
-                      float watchDistance,
-                      float coastDistance,
-                      float driveDistance,
-                      List<Record> records,
-                      String uuid,
-                      boolean hasBeenSent
-                      ) {
-    this.date = date;
-    this.push_count = pushes;
-    this.coast_time_total = coastTotal;
-    this.coast_time_avg = coastAvg;
-    this.heart_rate = heartRate;
-    this.phone_distance = phoneDistance;
-    this.watch_distance = watchDistance;
-    this.smartdrive_coast_distance = coastDistance;
-    this.smartdrive_drive_distance = driveDistance;
-    this.records = records;
-    this._id = uuid;
-    this.has_been_sent = hasBeenSent;
     this.data_type = "DailyActivity";
   }
 
@@ -196,10 +177,11 @@ public class DailyActivity {
    * start is the most half-hour increment.
    */
   private Record getRecord(long timeMs) {
+    Record rec = null;
     int numRecords = records.size();
     if (numRecords > 0) {
       // determine if we need a new record
-      Record lastRec = records[numRecords - 1];
+      Record lastRec = records.get(numRecords - 1);
       long timeDiffMs = timeMs - lastRec.start_time;
       if (timeDiffMs > RECORD_LENGTH_MS) {
         // time for a new record
@@ -216,6 +198,7 @@ public class DailyActivity {
       // and append it
       records.add(rec);
     }
+    return rec;
   }
 
   /**
@@ -226,9 +209,11 @@ public class DailyActivity {
     if (detection.activity != ActivityDetector.Detection.Activity.PUSH) {
       return;
     }
-    Record rec = getRecord( detection.time / (1000 * 1000) );
+    long detectionTimeMs =
+      (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
+    Record rec = getRecord( detectionTimeMs );
     // increment record's pushes
-    rec.push_Count += 1;
+    rec.push_count += 1;
     // now increment the total pushes
     this.push_count += 1;
     // calculate coast time here

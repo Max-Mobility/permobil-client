@@ -1,4 +1,4 @@
-package com.permobil.psds.wearos;
+package com.permobil.pushtracker.wearos;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
