@@ -41,7 +41,7 @@ export class DataService {
                 case 20:
                     return '8 PM';
                 case 24:
-                    return '12 AM.';
+                    return '12 AM ';
             }
             return '' + hour;
         };
