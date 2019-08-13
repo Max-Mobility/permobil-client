@@ -86,6 +86,8 @@ export class ActivityTabComponent implements OnInit {
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
                                    'July', 'August', 'September', 'October', 'November', 'December'];
     public currentDayInView: Date;
+    public weekStart: Date;
+    public weekEnd: Date;
 
     constructor(
         private _logService: LoggingService,
@@ -108,6 +110,11 @@ export class ActivityTabComponent implements OnInit {
         );
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
         this._initDayChartTitle();
+        const date = this.currentDayInView;
+        const sunday = this._getFirstDayOfWeek(date);
+        this.weekStart = sunday;
+        this.weekEnd = this.weekStart;
+        this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     }
 
     onShownModally(args) {
@@ -122,14 +129,14 @@ export class ActivityTabComponent implements OnInit {
     // displaying the old and new TabView selectedIndex
     onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
         const date = this.currentDayInView;
-        const sunday = this._getSunday(date);
+        const sunday = this._getFirstDayOfWeek(date);
         if (args.oldIndex !== -1) {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
                 this.activity = new ObservableArray(this._dataService.getSource('Day'));
             } else if (newIndex === 1) {
-                this.chartTitle = this.monthNames[date.getMonth()] + ' ' + sunday.getDate() + ' — ' + (sunday.getDate() + 6);
+                this._initWeekChartTitle();
                 this.activity = new ObservableArray(this._dataService.getSource('Week'));
             } else if (newIndex === 2) {
                 // Month
@@ -142,28 +149,39 @@ export class ActivityTabComponent implements OnInit {
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
 
-    _getSunday(date) {
+    _getFirstDayOfWeek(date) {
         date = new Date(date);
-        const day = date.getDay(),
-        diff = date.getDate() - day; // adjust when day is sunday
-        console.log(day, diff, new Date(date.setDate(diff)));
+        const day = date.getDay();
+        if (day === 0) return date; // Sunday is the first day of the week
+        const diff = date.getDate() - day;
         return new Date(date.setDate(diff));
     }
 
     _initWeekChartTitle() {
         const date = this.currentDayInView;
-        const sunday = this._getSunday(date);
-        this.chartTitle = this.monthNames[date.getMonth()] + ' ' + sunday.getDate() + ' — ' + (sunday.getDate() + 6);
+        this.weekStart = this._getFirstDayOfWeek(date);
+        this.weekEnd = this._getFirstDayOfWeek(date);
+        this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+        this.chartTitle = this.monthNames[date.getMonth()] + ' ' + this.weekStart.getDate() + ' — ' + this.weekEnd.getDate();
+    }
+
+    _updateWeekStartAndEnd() {
+        const date = this.currentDayInView;
+        this.weekStart = this._getFirstDayOfWeek(date);
+        this.weekEnd = this._getFirstDayOfWeek(date);
+        this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     }
 
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
+        this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
+        this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
     }
@@ -180,19 +198,9 @@ export class ActivityTabComponent implements OnInit {
         this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
 
-    onDayPointSelected(event) {
-        const pointIndex = event.pointIndex;
-        const pointData = event.pointData;
-        console.log('Day datapoint selected', this.activity.getItem(pointIndex));
-    }
-
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
-        const pointData = event.pointData;
-        const date = new Date(this.activity.getItem(pointIndex)['Date']);
-        const sunday = this._getSunday(date);
-        console.log(date, sunday, pointIndex);
-        this.currentDayInView = new Date(sunday.setDate(date.getDate() + pointIndex - 4));
+        this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
         this.tabSelectedIndex = 0;
     }
 
