@@ -8,7 +8,8 @@
     <StackLayout row="1" rows="*" columns="50, *, 50">
         <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer">
             <StackLayout *tabItem="{title: displayDay}">
-                <RadCartesianChart marginTop="20" height="150" width="96%">
+                <Label class="chart-title" horizontalAlignment="center" justifyContent="center" row="0" marginTop="20" [text]="chartTitle"></Label>
+                <RadCartesianChart row="1" marginTop="20" height="150" width="96%">
                     <CategoricalAxis tkCartesianHorizontalAxis 
                         tickHidden="false" majorTickInterval="4" labelSize="12" tickLength="7">
                     </CategoricalAxis>

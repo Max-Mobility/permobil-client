@@ -39,6 +39,11 @@
     color: $white;
   }
 
+  .chart-title {
+    @extend .CHART_TITLE_BASE;
+    color: $white;
+  }
+
   TabViewItem {
     font-size: 16;
   }

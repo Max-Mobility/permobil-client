@@ -35,6 +35,11 @@
     color: $black;
   }
 
+  .chart-title {
+    @extend .CHART_TITLE_BASE;
+    color: $black;
+  }  
+
   TabView {
     tab-text-font-size: 11;
     tab-text-color: $black;

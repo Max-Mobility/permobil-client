@@ -27,7 +27,6 @@ export class DataService {
         const max = 50;
         const random = function() { return Math.random() * (+max - +min) + +min; };
         const dateFormat = function(hour: number) {
-            console.log(hour);
             switch (hour) {
                 case 0:
                     return '12 AM';
@@ -69,6 +68,10 @@ export class ActivityTabComponent implements OnInit {
     public activity: ObservableArray<Activity>;
     public maximumDateTimeValue: Date;
     public minimumDateTimevalue: Date;
+    public chartTitle: string;
+    public dayNames: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
+                                   'July', 'August', 'September', 'October', 'November', 'December'];
 
     constructor(
         private _logService: LoggingService,
@@ -90,6 +93,7 @@ export class ActivityTabComponent implements OnInit {
             'activity-tab-component.sections'
         );
         this.activity = new ObservableArray(this._dataService.getSource());
+        this._initChartTitle();
     }
 
     onShownModally(args) {
@@ -103,16 +107,22 @@ export class ActivityTabComponent implements OnInit {
 
     // displaying the old and new TabView selectedIndex
     onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
+        const date = new Date();
         if (args.oldIndex !== -1) {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
-                // Day
+                this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
             } else if (newIndex === 1) {
                 // Week
             } else if (newIndex === 2) {
                 // Month
             }
         }
+    }
+
+    _initChartTitle() {
+        const date = new Date();
+        this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
 
     labelFormat(value) {}
