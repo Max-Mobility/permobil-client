@@ -1,13 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { PropertyChangeData } from 'tns-core-modules/data/observable';
+import { isAndroid } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
-import { LoggingService, ProgressService } from '../../services';
+import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
+import { TextField } from 'tns-core-modules/ui/text-field';
+import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'forgot-password',
@@ -15,98 +20,111 @@ import { LoggingService, ProgressService } from '../../services';
   templateUrl: 'forgot-password.component.html'
 })
 export class ForgotPasswordComponent implements OnInit {
-  private static LOG_TAG = 'forgot-password.component ';
-  email = '';
+  @ViewChild('emailTextBox', { static: true })
+  emailTextBox: ElementRef;
+
+  androidBackIcon;
+  userEmail = '';
   emailError = '';
+
+  private _loadingIndicator = new LoadingIndicator();
 
   constructor(
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
-    private _progressService: ProgressService,
-    private _page: Page,
     private _translateService: TranslateService
   ) {
-    this._page.actionBarHidden = true;
     preventKeyboardFromShowing();
+
+    const currentTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
+    this.androidBackIcon =
+      currentTheme === APP_THEMES.DEFAULT
+        ? AppResourceIcons.BLACK_BACK_NAV
+        : AppResourceIcons.WHITE_BACK_NAV;
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb(
-      ForgotPasswordComponent.LOG_TAG + `ngOnInit`
-    );
+    this._logService.logBreadCrumb('forgot-password.component ngOnInit.');
   }
 
   goBack() {
     if (this._routerExtensions.canGoBack()) {
       this._routerExtensions.back();
     } else {
-      this._routerExtensions.navigate(['/login'], {
-        transition: {
-          name: 'slideRight'
-        }
-      });
+      this._routerExtensions.navigate(['/login'], {});
     }
   }
 
   onSubmitTap() {
     // validate the email
-    if (!this.email) {
-      this.emailError = this._translateService.instant('user.email-required');
+    if (!this.userEmail) {
+      this.emailError = this._translateService.instant(
+        'general.email-required'
+      );
       return;
     }
     // make sure it's a valid email
-    const em = this.email.trim();
+    const em = this.userEmail.trim();
     if (!validate(em)) {
       this.emailError =
-        `"${em} "` + this._translateService.instant('user.email-error');
+        `"${em} "` + this._translateService.instant('general.email-error');
       return;
     }
 
     this.emailError = '';
 
-    this._progressService.show(
-      this._translateService.instant('user.submitting')
+    this._loadingIndicator.show(
+      this._translateService.instant('general.submitting')
     );
 
-    KinveyUser.resetPassword(this.email)
+    KinveyUser.resetPassword(this.userEmail)
       .then(resp => {
-        this._progressService.hide();
+        this._loadingIndicator.hide();
         alert({
-          title: this._translateService.instant('user.email-sent'),
-          message: this._translateService.instant('user.check-email'),
-          okButtonText: this._translateService.instant('dialogs.ok')
+          title: this._translateService.instant('general.email-sent'),
+          message: this._translateService.instant('general.check-email'),
+          okButtonText: this._translateService.instant('general.ok')
         }).then(() => {
-          this._routerExtensions.navigate(['/login'], {
-            transition: {
-              name: 'slideRight'
-            }
-          });
+          this._routerExtensions.navigate(['/login'], {});
         });
       })
       .catch(err => {
         this._logService.logException(err);
-        this._progressService.hide();
+        this._loadingIndicator.hide();
         alert({
-          title: this._translateService.instant('user.error'),
-          message: this._translateService.instant('user.account-error'),
+          title: this._translateService.instant('general.error'),
+          message: this._translateService.instant('general.account-error'),
           okButtonText: this._translateService.instant('dialogs.ok')
         });
       });
   }
 
-  onEmailTextChange(args: PropertyChangeData) {
-    // make sure it's a valid email
-    const em = this.email.trim();
-    this.emailError = !validate(em)
-      ? `"${em}" ` + this._translateService.instant('user.email-error')
-      : '';
+  textfieldLoaded(args) {
+    if (isAndroid) {
+      const tf = args.object as TextField;
+      tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+    }
   }
 
-  navToLogin() {
-    this._routerExtensions.navigate(['/login'], {
-      transition: {
-        name: 'slideRight'
-      }
-    });
+  onFocusTF() {
+    (this.emailTextBox.nativeElement as StackLayout).className =
+      'textbox-active';
+  }
+
+  onBlurTF() {
+    (this.emailTextBox.nativeElement as StackLayout).className = 'textbox';
+  }
+
+  onEmailTextChange(args: PropertyChangeData) {
+    // make sure it's a valid email
+    this.userEmail = args.value.trim();
+    this.emailError = !validate(this.userEmail)
+      ? `"${this.userEmail}" ` +
+        this._translateService.instant('general.email-error')
+      : '';
   }
 }
