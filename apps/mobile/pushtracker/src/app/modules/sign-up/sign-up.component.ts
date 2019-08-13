@@ -48,7 +48,7 @@ export class SignUpComponent implements OnInit {
   @ViewChild('birthdayTextBox', { static: true })
   birthdayTextBox: ElementRef;
 
-  user = { email: '', password: '', first_name: '', last_name: '', dob: '' };
+  user = { username: '', password: '', first_name: '', last_name: '', dob: '' };
 
   passwordError = '';
   emailError = '';
@@ -160,7 +160,7 @@ export class SignUpComponent implements OnInit {
   async onSubmitSignUp() {
     console.dir(this.user);
     // validate the email
-    const isEmailValid = this._isEmailValid(this.user.email);
+    const isEmailValid = this._isEmailValid(this.user.username);
     if (!isEmailValid) {
       return;
     }
@@ -185,7 +185,7 @@ export class SignUpComponent implements OnInit {
     // trim all the strings on user object
     this.user.first_name = this.user.first_name.trim();
     this.user.last_name = this.user.last_name.trim();
-    this.user.email = this.user.email.trim();
+    this.user.username = this.user.username.trim();
     this.user.password = this.user.password.trim();
     this.user.dob = this.user.dob.trim();
 
@@ -197,7 +197,7 @@ export class SignUpComponent implements OnInit {
     //     `onSubmitTap() creating new account: ${JSON.stringify(this.user)}`
     // );
     // // need to make sure the username is not already taken
-    const userExists = await KinveyUser.exists(this.user.email);
+    const userExists = await KinveyUser.exists(this.user.username);
 
     this._logService.logBreadCrumb(`KinveyUser.exists() result: ${userExists}`);
     // if username is taken tell user and exit so they can correct
@@ -239,8 +239,8 @@ export class SignUpComponent implements OnInit {
   }
 
   onEmailTextChange(args) {
-    this.user.email = args.value;
-    this._isEmailValid(this.user.email);
+    this.user.username = args.value;
+    this._isEmailValid(this.user.username);
   }
 
   private _isEmailValid(text: string): boolean {
