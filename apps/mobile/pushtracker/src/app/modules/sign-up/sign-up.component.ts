@@ -21,10 +21,12 @@ import {
   DateTimePickerStyle
 } from 'nativescript-datetimepicker';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { isAndroid } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { TextField } from 'tns-core-modules/ui/text-field';
+import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -56,6 +58,8 @@ export class SignUpComponent implements OnInit {
   lastNameError = '';
   birthdayError = '';
 
+  androidBackIcon: string;
+
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
@@ -65,6 +69,16 @@ export class SignUpComponent implements OnInit {
     private _zone: NgZone
   ) {
     preventKeyboardFromShowing();
+
+    const currentTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
+    this.androidBackIcon =
+      currentTheme === APP_THEMES.DEFAULT
+        ? AppResourceIcons.BLACK_BACK_NAV
+        : AppResourceIcons.WHITE_BACK_NAV;
   }
 
   ngOnInit() {
