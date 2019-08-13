@@ -499,7 +499,11 @@ export class ProfileTabComponent implements OnInit {
       heightString = this._centimetersToFeetInches(this.user.data.height);
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
-    const secondaryIndex = parseFloat(heightString.split('.')[1]);
+    let secondaryIndex = 0;
+    if (this.SETTING_HEIGHT === 'Feet & inches')
+      secondaryIndex = parseFloat(heightString.split('.')[1]);
+
+    console.log('getHeightIndex', heightString, secondaryIndex);
     return [primaryIndex - 2, secondaryIndex];
   }
 
@@ -576,6 +580,7 @@ export class ProfileTabComponent implements OnInit {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
     }
+
     this.listPickerTitle = this._translateService.instant('general.height');
     this.listPickerDescriptionNecessary = true;
     this.listPickerDescription = this._translateService.instant(
