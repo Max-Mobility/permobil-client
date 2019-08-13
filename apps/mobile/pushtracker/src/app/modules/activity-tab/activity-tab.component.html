@@ -9,9 +9,13 @@
         <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer">
             <StackLayout *tabItem="{title: displayDay}">
                 <RadCartesianChart marginTop="20" height="150" width="96%">
-                    <CategoricalAxis tkCartesianHorizontalAxis></CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="categoricalSource" categoryProperty="Country" valueProperty="Amount"></BarSeries>
+                    <CategoricalAxis tkCartesianHorizontalAxis 
+                        tickHidden="false" majorTickInterval="4" labelSize="12" tickLength="7">
+                    </CategoricalAxis>
+                    <LinearAxis tkCartesianVerticalAxis maximum="100" minumum="0" majorStep="25" labelFormat="%.0f"></LinearAxis>
+                    <BarSeries tkCartesianSeries [items]="activity" 
+                        categoryProperty="Date" valueProperty="Amount" maxBarSize="4" minBarSize="4">
+                    </BarSeries>
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">

@@ -7,21 +7,49 @@ import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { Injectable } from '@angular/core';
 
-export class Country {
-    constructor(public Country?: string, public Amount?: number, public SecondVal?: number, public ThirdVal?: number, public Impact?: number, public Year?: number) {
+export class Activity {
+    constructor(public timeStamp?: number, public Amount?: number) {
     }
 }
 
 @Injectable()
 export class DataService {
-    getCategoricalSource(): Country[] {
-        return [
-            { Country: 'Germany', Amount: 15, SecondVal: 14, ThirdVal: 24, Impact: 0, Year: 0 },
-            { Country: 'France', Amount: 13, SecondVal: 23, ThirdVal: 25, Impact: 0, Year: 0 },
-            { Country: 'Bulgaria', Amount: 24, SecondVal: 17, ThirdVal: 23, Impact: 0, Year: 0 },
-            { Country: 'Spain', Amount: 11, SecondVal: 19, ThirdVal: 24, Impact: 0, Year: 0 },
-            { Country: 'USA', Amount: 18, SecondVal: 8, ThirdVal: 21, Impact: 0, Year: 0 }
-        ];
+    getSource() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        const range = function(start, end) {
+            return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+        };
+        const result = [];
+        const  min = 0;
+        const max = 50;
+        const random = function() { return Math.random() * (+max - +min) + +min; };
+        const dateFormat = function(hour: number) {
+            console.log(hour);
+            switch (hour) {
+                case 0:
+                    return '12 AM';
+                case 4:
+                    return '4 AM';
+                case 8:
+                    return '8 AM';
+                case 12:
+                    return '12 PM';
+                case 16:
+                    return '4 PM';
+                case 20:
+                    return '8 PM';
+                case 24:
+                    return '12 AM.';
+            }
+            return '' + hour;
+        };
+        for (const i in range(0, 24)) {
+            result.push({ Date: dateFormat(parseInt(i)), Amount: random() });
+        }
+        return result;
     }
 }
 
@@ -38,7 +66,9 @@ export class ActivityTabComponent implements OnInit {
     public displayDay: string = this._translateService.instant('day');
     public displayWeek: string = this._translateService.instant('week');
     public displayMonth: string = this._translateService.instant('month');
-    private _categoricalSource: ObservableArray<Country>;
+    public activity: ObservableArray<Activity>;
+    public maximumDateTimeValue: Date;
+    public minimumDateTimevalue: Date;
 
     constructor(
         private _logService: LoggingService,
@@ -46,11 +76,12 @@ export class ActivityTabComponent implements OnInit {
         private _params: ModalDialogParams,
         private _dataService: DataService
     ) {
-        this.tabSelectedIndex = 0;
-    }
-
-    get categoricalSource(): ObservableArray<Country> {
-        return this._categoricalSource;
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        this.minimumDateTimevalue = new Date(year, month, day, 0);
+        this.maximumDateTimeValue = new Date(year, month, day, 23);
     }
 
     ngOnInit() {
@@ -58,7 +89,7 @@ export class ActivityTabComponent implements OnInit {
         this.infoItems = this._translateService.instant(
             'activity-tab-component.sections'
         );
-        this._categoricalSource = new ObservableArray(this._dataService.getCategoricalSource());
+        this.activity = new ObservableArray(this._dataService.getSource());
     }
 
     onShownModally(args) {
@@ -83,5 +114,7 @@ export class ActivityTabComponent implements OnInit {
             }
         }
     }
+
+    labelFormat(value) {}
 
 }
