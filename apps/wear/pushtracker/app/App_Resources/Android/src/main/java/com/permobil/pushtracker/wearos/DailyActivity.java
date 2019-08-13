@@ -150,7 +150,7 @@ public class DailyActivity {
 
   public DailyActivity() {
     // set up the date to be yyyy-mm-dd string
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
     Date now = Calendar.getInstance().getTime();
     String nowString = simpleDateFormat.format(now);
     this.date = nowString;

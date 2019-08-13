@@ -242,7 +242,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     } else {
       // get latest record
       DailyActivity dailyActivity = db.getMostRecent(false);
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
       // get current date
       Date now = Calendar.getInstance().getTime();
       String nowString = simpleDateFormat.format(now);
@@ -370,7 +370,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           // Log.d(TAG, "TimeReceiver::onReceive()");
           // get the date from the datastore
           String currentDate = currentActivity.date;
-          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
           // get current date
           Date now = Calendar.getInstance().getTime();
           String nowString = simpleDateFormat.format(now);
