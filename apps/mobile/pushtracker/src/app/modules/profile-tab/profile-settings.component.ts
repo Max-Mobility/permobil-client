@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Device, Log } from '@permobil/core';
+import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as LS from 'nativescript-localstorage';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -12,6 +12,7 @@ import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 
 @Component({
   selector: 'profile-settings',
@@ -29,7 +30,7 @@ export class ProfileSettingsComponent implements OnInit {
   DISTANCE: string;
   CURRENT_THEME: string;
 
-  user: any; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
+  user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   @ViewChild('sliderSettingDialog', { static: false })
   sliderSettingDialog: ElementRef;
@@ -50,10 +51,11 @@ export class ProfileSettingsComponent implements OnInit {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _routerExtensions: RouterExtensions,
-    private _page: Page
+    private _page: Page,
+    private userService: PushTrackerUserService
   ) {
+    this.getUser();
     this._page.actionBarHidden = true;
-    this.user = KinveyUser.getActiveUser();
 
     this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
     this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
@@ -74,12 +76,17 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getUser();
     this._logService.logBreadCrumb(
       ProfileSettingsComponent.LOG_TAG + `ngOnInit`
     );
     this.infoItems = this._translateService.instant(
       'profile-settings-component.sections'
     );
+  }
+
+  getUser(): void {
+    this.userService.user.subscribe(user => this.user = user);
   }
 
   navBack() {
@@ -185,17 +192,17 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.user.data.height_unit_preference = this.listPickerIndex;
+        this.userService.updateDataProperty('height_unit_preference', this.listPickerIndex);
         KinveyUser.update({ height_unit_preference: this.listPickerIndex });
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.user.data.weight_unit_preference = this.listPickerIndex;
+        this.userService.updateDataProperty('weight_unit_preference', this.listPickerIndex);
         KinveyUser.update({ weight_unit_preference: this.listPickerIndex });
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
-        this.user.data.distance_unit_preference = this.listPickerIndex;
+        this.userService.updateDataProperty('distance_unit_preference', this.listPickerIndex);
         KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':

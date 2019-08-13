@@ -5,7 +5,7 @@
     </GridLayout>
 
     // Activity Circles
-    <GridLayout rows="*, auto, *" columns="*, auto, *" height="240" width="95%">
+    <GridLayout rows="*, auto, *" columns="*, auto, *" height="240" width="95%" (tap)="onActivityTap()">
       // Distance Circle (outer/purple)
       <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"></AnimatedCircle>
       // Coast Time Circle (inner/teal)
