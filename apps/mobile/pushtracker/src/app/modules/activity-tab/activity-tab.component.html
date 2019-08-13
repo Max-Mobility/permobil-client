@@ -13,21 +13,25 @@
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
                 </GridLayout>
-                <RadCartesianChart row="1" height="150" width="96%">
+                <RadCartesianChart animated="true" row="1" height="150" width="96%" pointSelectionMode="Single" (pointSelected)="onDayPointSelected($event)">
+                    <RadCartesianChart.trackball>
+                        <Trackball></Trackball>
+                    </RadCartesianChart.trackball>
                     <RadCartesianChartGrid 
                         tkCartesianGrid
                         horizontalLinesVisible="true"
                         verticalLinesVisible="false"
-                        horizontalStripLinesVisible="true"
+                        horizontalStripLinesVisible="false"
                         verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>     
-                    <CategoricalAxis tkCartesianHorizontalAxis 
+                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
                         tickHidden="false" majorTickInterval="4" 
                         labelSize="12" labelMargin="20" tickLength="7" labelFitMode="Multiline" plotMode="OnTicks">
                     </CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
+                    <LinearAxis tkCartesianVerticalAxis
+                        horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity"
+                    <BarSeries tkCartesianSeries [items]="activity" selectionMode="DataPoint" 
                         categoryProperty="Date" valueProperty="Amount">
                     </BarSeries>
                 </RadCartesianChart>

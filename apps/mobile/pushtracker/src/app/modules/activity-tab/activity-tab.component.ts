@@ -138,4 +138,10 @@ export class ActivityTabComponent implements OnInit {
         this.activity = new ObservableArray(this._dataService.getSource());
     }
 
+    onDayPointSelected(event) {
+        const pointIndex = event.pointIndex;
+        const pointData = event.pointData;
+        console.log('Day datapoint selected', this.activity.getItem(pointIndex));
+    }
+
 }
