@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as LS from 'nativescript-localstorage';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -8,11 +9,10 @@ import { EventData } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
-import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, SettingsService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
 @Component({
   selector: 'profile-settings',
@@ -20,7 +20,6 @@ import { PushTrackerUserService } from '../../services/pushtracker.user.service'
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
-  private static LOG_TAG = 'profile-settings.component ';
   infoItems;
   HEIGHT_UNITS: string[];
   HEIGHT: string;
@@ -29,6 +28,7 @@ export class ProfileSettingsComponent implements OnInit {
   DISTANCE_UNITS: string[];
   DISTANCE: string;
   CURRENT_THEME: string;
+  CURRENT_LANGUAGE: string;
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
@@ -64,7 +64,9 @@ export class ProfileSettingsComponent implements OnInit {
     this.WEIGHT = this.WEIGHT_UNITS[this.user.data.weight_unit_preference];
 
     this.DISTANCE_UNITS = ['Kilometers', 'Miles'];
-    this.DISTANCE = this.DISTANCE_UNITS[this.user.data.distance_unit_preference];
+    this.DISTANCE = this.DISTANCE_UNITS[
+      this.user.data.distance_unit_preference
+    ];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
@@ -77,16 +79,14 @@ export class ProfileSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.getUser();
-    this._logService.logBreadCrumb(
-      ProfileSettingsComponent.LOG_TAG + `ngOnInit`
-    );
+    this._logService.logBreadCrumb('profile-settings.component ngOnInit');
     this.infoItems = this._translateService.instant(
       'profile-settings-component.sections'
     );
   }
 
   getUser(): void {
-    this.userService.user.subscribe(user => this.user = user);
+    this.userService.user.subscribe(user => (this.user = user));
   }
 
   navBack() {
@@ -104,7 +104,9 @@ export class ProfileSettingsComponent implements OnInit {
   async loadSettings() {
     const didLoad = await this.settingsService.loadSettings();
     if (!didLoad) {
-      this.settingsService.settings.copy(LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS));
+      this.settingsService.settings.copy(
+        LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS)
+      );
       this.settingsService.switchControlSettings.copy(
         LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
       );
@@ -112,7 +114,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   saveSettingsToFileSystem() {
-    LS.setItemObject(STORAGE_KEYS.DEVICE_SETTINGS, this.settingsService.settings.toObj());
+    LS.setItemObject(
+      STORAGE_KEYS.DEVICE_SETTINGS,
+      this.settingsService.settings.toObj()
+    );
     LS.setItemObject(
       STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS,
       this.settingsService.switchControlSettings.toObj()
@@ -192,17 +197,26 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty('height_unit_preference', this.listPickerIndex);
+        this.userService.updateDataProperty(
+          'height_unit_preference',
+          this.listPickerIndex
+        );
         KinveyUser.update({ height_unit_preference: this.listPickerIndex });
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty('weight_unit_preference', this.listPickerIndex);
+        this.userService.updateDataProperty(
+          'weight_unit_preference',
+          this.listPickerIndex
+        );
         KinveyUser.update({ weight_unit_preference: this.listPickerIndex });
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty('distance_unit_preference', this.listPickerIndex);
+        this.userService.updateDataProperty(
+          'distance_unit_preference',
+          this.listPickerIndex
+        );
         KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':
@@ -219,11 +233,14 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'mode':
         pushToServer = true;
-        this.settingsService.settings.controlMode = this.listPickerItems[this.listPickerIndex];
+        this.settingsService.settings.controlMode = this.listPickerItems[
+          this.listPickerIndex
+        ];
         break;
       case 'switch-control-max-speed':
         pushToServer = true;
-        this.settingsService.switchControlSettings.maxSpeed = this.SLIDER_VALUE * 10;
+        this.settingsService.switchControlSettings.maxSpeed =
+          this.SLIDER_VALUE * 10;
         break;
       case 'switch-control-mode':
         pushToServer = true;
@@ -237,6 +254,13 @@ export class ProfileSettingsComponent implements OnInit {
         } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
           enableDarkTheme();
         }
+        break;
+      case 'language':
+        this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];
+        console.log(
+          'need to get the value of the enum to set the correct translation'
+        );
+        this._translateService.use(this.CURRENT_LANGUAGE);
         break;
     }
     if (pushToServer) {
@@ -346,7 +370,8 @@ export class ProfileSettingsComponent implements OnInit {
         this._openListPickerDialog();
         break;
       case 'switch-control-max-speed':
-        this.SLIDER_VALUE = this.settingsService.switchControlSettings.maxSpeed / 10;
+        this.SLIDER_VALUE =
+          this.settingsService.switchControlSettings.maxSpeed / 10;
         this.activeSettingTitle = this._translateService.instant(
           'general.switch-control-max-speed'
         );
@@ -383,6 +408,19 @@ export class ProfileSettingsComponent implements OnInit {
         this.listPickerItems = Object.keys(APP_THEMES);
         this.listPickerIndex = Object.keys(APP_THEMES).indexOf(
           this.CURRENT_THEME
+        );
+        this._openListPickerDialog();
+        break;
+      case 'language':
+        this.activeSettingTitle = this._translateService.instant(
+          'profile-settings.language'
+        );
+        this.activeSettingDescription = this._translateService.instant(
+          'profile-settings.language'
+        );
+        this.listPickerItems = Object.keys(APP_LANGUAGES);
+        this.listPickerIndex = Object.keys(APP_LANGUAGES).indexOf(
+          this.CURRENT_LANGUAGE
         );
         this._openListPickerDialog();
         break;
