@@ -86,7 +86,14 @@
     "smartdrive": "SmartDrive",
     "pushtracker": "PushTracker",
     "smartdrive-serial-number": "SmartDrive Serial Number",
-    "pushtracker-serial-number": "PushTracker Serial Number"
+    "pushtracker-serial-number": "PushTracker Serial Number",
+    "cancel-scan": "Cancel Scan",
+    "scan-msg": "Scan a",
+    "sd-or-pt": "SmartDrive or PushTracker",
+    "coast-time-units": "seconds",
+    "distance-units-km": "kilometers",
+    "distance-units-mi": "miles",
+    "per-day": "per day"
   },
   "profile-settings": {
     "theme": "Theme",
@@ -121,6 +128,12 @@
         "lottie": "bullseye.json"
       }
     ]
+  },
+  "activity-tab-component": {
+    "title": "My activity",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
   },
   "days": {
     "sunday": "Sunday",

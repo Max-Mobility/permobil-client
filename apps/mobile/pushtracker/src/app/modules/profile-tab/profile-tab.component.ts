@@ -37,8 +37,11 @@ export class ProfileTabComponent implements OnInit {
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
 
   isHeightInCentimeters: boolean;
+  displayActivityGoalCoastTime: string;
+  displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
+  displayActivityGoalUnitLabel: string;
   // List picker related fields
   LIST_PICKER_OPTIONS: string[];
   primary: string[];
@@ -107,7 +110,7 @@ export class ProfileTabComponent implements OnInit {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
-    private pushtrackerUserService: PushTrackerUserService
+    private userService: PushTrackerUserService
   ) {
     // appSettings.clear();
     this.getUser();
@@ -187,9 +190,11 @@ export class ProfileTabComponent implements OnInit {
         this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
         'Miles';
 
+      this._initDisplayActivityGoalCoastTime();
+      this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
-
+      this.displayActivityGoalUnitLabel = '';
       this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
   }
@@ -197,12 +202,14 @@ export class ProfileTabComponent implements OnInit {
   ngOnInit() {
     this.getUser();
     this._logService.logBreadCrumb('profile-tab.component ngOnInit');
+    this._initDisplayActivityGoalCoastTime();
+    this._initDisplayActivityGoalDistance();
     this._initDisplayWeight();
     this._initDisplayHeight();
   }
 
   getUser(): void {
-    this.pushtrackerUserService.user.subscribe(user => (this.user = user));
+    this.userService.user.subscribe(user => this.user = user);
   }
 
   onHelpTap() {
@@ -239,11 +246,11 @@ export class ProfileTabComponent implements OnInit {
       if (r.result === true) {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
-          this.user.data.first_name = r.text;
+          this.userService.updateDataProperty('first_name', r.text);
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
-          this.user.data.last_name = r.text;
+          this.userService.updateDataProperty('last_name', r.text);
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -272,9 +279,19 @@ export class ProfileTabComponent implements OnInit {
 
     // Setting the dialog data to the actual user value
     if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
+      this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.coast-time-units') + ' ' +
+        this._translateService.instant('profile-tab.per-day');
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
     } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
+      if (this.user.data.distance_unit_preference === 0) {
+        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-km') + ' ' +
+          this._translateService.instant('profile-tab.per-day');
+      }
+      else {
+        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-mi') + ' ' +
+          this._translateService.instant('profile-tab.per-day');
+      }
       if (this.user.data.activity_goal_distance)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_distance;
     }
@@ -319,24 +336,16 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
     ) {
-      this.pushtrackerUserService.setDataField(
-        'activity_goal_coast_time',
-        this.activity_goals_dialog_data.config_value
-      );
-      KinveyUser.update({
-        activity_goal_coast_time: this.activity_goals_dialog_data.config_value
-      });
+      this.userService.updateDataProperty('activity_goal_coast_time', this.activity_goals_dialog_data.config_value);
+      KinveyUser.update({ activity_goal_coast_time: this.activity_goals_dialog_data.config_value });
+      this._initDisplayActivityGoalCoastTime();
     } else if (
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
     ) {
-      this.pushtrackerUserService.setDataField(
-        'activity_goal_distance',
-        this.activity_goals_dialog_data.config_value
-      );
-      KinveyUser.update({
-        activity_goal_distance: this.activity_goals_dialog_data.config_value
-      });
+      this.userService.updateDataProperty('activity_goal_distance', this.activity_goals_dialog_data.config_value);
+      KinveyUser.update({ activity_goal_distance: this.activity_goals_dialog_data.config_value });
+      this._initDisplayActivityGoalDistance();
     }
 
     this.COAST_TIME_ACTIVITY_GOAL =
@@ -378,7 +387,7 @@ export class ProfileTabComponent implements OnInit {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
-          this.pushtrackerUserService.setDataField('dob', result);
+          this.userService.updateDataProperty('dob', result);
           const date = new Date(result);
           const month = date.getUTCMonth() + 1;
           const day = date.getUTCDate();
@@ -445,10 +454,7 @@ export class ProfileTabComponent implements OnInit {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
-        this.pushtrackerUserService.setDataField(
-          'gender',
-          this.primary[this.primaryIndex]
-        );
+        this.userService.updateDataProperty('gender', this.primary[this.primaryIndex]);
         KinveyUser.update({ gender: this.user.data.gender });
         break;
       case 1:
@@ -464,17 +470,11 @@ export class ProfileTabComponent implements OnInit {
         );
         break;
       case 3:
-        this.pushtrackerUserService.setDataField(
-          'chair_type',
-          this.primary[this.primaryIndex]
-        );
+        this.userService.updateDataProperty('chair_type', this.primary[this.primaryIndex]);
         KinveyUser.update({ chair_type: this.user.data.chair_type });
         break;
       case 4:
-        this.pushtrackerUserService.setDataField(
-          'chair_make',
-          this.primary[this.primaryIndex]
-        );
+        this.userService.updateDataProperty('chair_make', this.primary[this.primaryIndex]);
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
     }
@@ -635,6 +635,20 @@ export class ProfileTabComponent implements OnInit {
     this._openListPickerDialog();
   }
 
+  private _initDisplayActivityGoalCoastTime() {
+    this.displayActivityGoalCoastTime = this.user.data.activity_goal_coast_time + ' s';
+  }
+
+  private _initDisplayActivityGoalDistance() {
+    this.displayActivityGoalDistance = this.user.data.activity_goal_distance + '';
+    if (this.user.data.distance_unit_preference === 0) {
+      this.displayActivityGoalDistance += ' km';
+    }
+    else {
+      this.displayActivityGoalDistance += ' mi';
+    }
+  }
+
   private _initDisplayWeight() {
     this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
@@ -661,23 +675,14 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.pushtrackerUserService.setDataField(
-      'weight',
-      primaryValue + secondaryValue
-    );
+    this.userService.updateDataProperty('weight', primaryValue + secondaryValue);
     if (this.SETTING_WEIGHT === 'Pounds') {
-      this.pushtrackerUserService.setDataField(
-        'weight',
-        this._poundsToKilograms(primaryValue + secondaryValue)
-      );
+      this.userService.updateDataProperty('weight', this._poundsToKilograms(primaryValue + secondaryValue));
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
       );
     } else {
-      this.pushtrackerUserService.setDataField(
-        'weight',
-        primaryValue + secondaryValue
-      );
+      this.userService.updateDataProperty('weight', (primaryValue + secondaryValue));
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
       );
@@ -686,24 +691,15 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.pushtrackerUserService.setDataField(
-      'height',
-      primaryValue + 0.01 * (secondaryValue || 0)
-    );
+    this.userService.updateDataProperty('height', (primaryValue + 0.01 * (secondaryValue || 0)));
     if (this.SETTING_HEIGHT === 'Feet & inches') {
-      this.pushtrackerUserService.setDataField(
-        'height',
-        this._feetInchesToCentimeters(primaryValue, secondaryValue)
-      );
+      this.userService.updateDataProperty('height', this._feetInchesToCentimeters(primaryValue, secondaryValue));
       this.displayHeight = this._displayHeightInFeetInches(
         primaryValue,
         secondaryValue
       );
     } else {
-      this.pushtrackerUserService.setDataField(
-        'height',
-        primaryValue + 0.01 * (secondaryValue || 0)
-      );
+      this.userService.updateDataProperty('height', primaryValue + 0.01 * (secondaryValue || 0));
       this.displayHeight = this._displayHeightInCentimeters(
         this.user.data.height
       );
@@ -845,11 +841,11 @@ export class ProfileTabComponent implements OnInit {
     this._barcodeScanner
       .scan({
         formats: 'QR_CODE, EAN_13',
-        cancelLabel: this._translateService.instant('demo-detail.cancel-scan'), // iOS only
+        cancelLabel: this._translateService.instant('profile-tab.cancel-scan'), // iOS only
         cancelLabelBackgroundColor: '#333333', // iOS only
         message: `${this._translateService.instant(
-          'demo-detail.scan-msg'
-        )} ${this._translateService.instant('demo-detail.sd-or-pt')}`, // Android only
+          'profile-tab.scan-msg'
+        )} ${this._translateService.instant('profile-tab.sd-or-pt')}`, // Android only
         showFlipCameraButton: true,
         preferFrontCamera: false,
         showTorchButton: true,
@@ -862,12 +858,11 @@ export class ProfileTabComponent implements OnInit {
         openSettingsIfPermissionWasPreviouslyDenied: true
       })
       .then(result => {
-        const validDevices =
-          deviceName === 'pushtracker'
-            ? ['pushtracker', 'wristband']
-            : ['smartdrive'];
-        this._handleSerial(result.text, validDevices);
-      })
+          const validDevices =
+            deviceName === 'pushtracker' ? ['pushtracker', 'wristband'] : ['smartdrive'];
+          this._handleSerial(result.text, validDevices);
+        },
+      )
       .catch(err => {
         this._logService.logException(err);
       });
@@ -910,21 +905,11 @@ export class ProfileTabComponent implements OnInit {
 
       // now set the serial number
       if (deviceType === 'pushtracker' || deviceType === 'wristband') {
-        this.pushtrackerUserService.setDataField(
-          'pushtracker_serial_number',
-          serialNumber
-        );
-        KinveyUser.update({
-          pushtracker_serial_number: this.user.data.pushtracker_serial_number
-        });
+        this.userService.updateDataProperty('pushtracker_serial_number', serialNumber);
+        KinveyUser.update({pushtracker_serial_number: this.user.data.pushtracker_serial_number});
       } else if (deviceType === 'smartdrive') {
-        this.pushtrackerUserService.setDataField(
-          'smartdrive_serial_number',
-          serialNumber
-        );
-        KinveyUser.update({
-          smartdrive_serial_number: this.user.data.smartdrive_serial_number
-        });
+        this.userService.updateDataProperty('smartdrive_serial_number', serialNumber);
+        KinveyUser.update({smartdrive_serial_number: this.user.data.smartdrive_serial_number});
       }
     } catch (error) {
       this._logService.logException(error);

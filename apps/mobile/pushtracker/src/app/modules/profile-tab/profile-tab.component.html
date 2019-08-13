@@ -39,7 +39,7 @@
         <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.activity_goal_coast_time" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -48,7 +48,7 @@
         <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL', DISTANCE_ACTIVITY_GOAL)">
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.activity_goal_distance" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -156,7 +156,7 @@
         <Button row="1" col="0" text="&#xe15b;" textAlign="left" (tap)="decrementConfigValue()"></Button>
         <StackLayout horizontalAlignment="center" row="1" col="1">
           <Label class="config-value" [text]="activity_goals_dialog_data.config_value"></Label>
-          <Label class="config-value-sub" text="minutes per day"></Label>
+          <Label class="config-value-sub" [text]="displayActivityGoalUnitLabel"></Label>
         </StackLayout>
         <Button row="1" col="2" text="&#xe145;" textAlign="right" (tap)="incrementConfigValue()"></Button>
       </GridLayout>

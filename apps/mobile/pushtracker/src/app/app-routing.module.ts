@@ -5,13 +5,15 @@ import { AppInfoComponent } from './modules/app-info/app-info.component';
 import { ForgotPasswordComponent } from './modules/forgot-password/forgot-password.component';
 import { LoginComponent } from './modules/login/login.component';
 import { SignUpComponent } from './modules/sign-up/sign-up.component';
+import { ActivityTabComponent } from './modules/activity-tab/activity-tab.component';
 // import { TabsComponent } from './modules/tabs/tabs.component';
 
 export const COMPONENTS = [
   LoginComponent,
   SignUpComponent,
   ForgotPasswordComponent,
-  AppInfoComponent
+  AppInfoComponent,
+  ActivityTabComponent
 ];
 
 const routes: Routes = [

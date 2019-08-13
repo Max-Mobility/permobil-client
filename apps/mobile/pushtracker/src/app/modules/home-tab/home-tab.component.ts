@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 
 @Component({
   selector: 'home-tab',
@@ -39,7 +40,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _router: Router,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
-    private pushtrackerUserService: PushTrackerUserService
+    private userService: PushTrackerUserService
   ) {
     this.getUser();
     this.refreshGoalData();
@@ -54,7 +55,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   }
 
   getUser(): void {
-    this.pushtrackerUserService.user.subscribe(user => { this.user = user; this.refreshGoalData(); });
+    this.userService.user.subscribe(user => { this.user = user; this.refreshGoalData(); });
   }
 
   ngAfterViewInit() {
@@ -104,4 +105,23 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
         });
       });
   }
+
+  onActivityTap() {
+    console.log('activity button tapped');
+    this._modalService
+    .showModal(ActivityTabComponent, {
+      context: {},
+      fullscreen: true,
+      viewContainerRef: this._vcRef
+    })
+    .catch(err => {
+      this._logService.logException(err);
+      new Toasty({
+        text:
+          'An unexpected error occurred. If this continues please let us know.',
+        textColor: new Color('#fff000')
+      });
+    });
+  }
+
 }
