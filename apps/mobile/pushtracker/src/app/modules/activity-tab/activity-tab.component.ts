@@ -6,6 +6,8 @@ import { LoggingService } from '../../services';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { Injectable } from '@angular/core';
+import { CalendarMonthViewStyle, DayCellStyle, CalendarSelectionShape, CellStyle, RadCalendar } from 'nativescript-ui-calendar';
+import { Color } from 'tns-core-modules/color/color';
 
 export class Activity {
     constructor(public timeStamp?: number, public Amount?: number) {
@@ -88,6 +90,9 @@ export class ActivityTabComponent implements OnInit {
     public currentDayInView: Date;
     public weekStart: Date;
     public weekEnd: Date;
+    public monthStart: Date;
+    public monthEnd: Date;
+    public monthViewStyle: CalendarMonthViewStyle;
 
     constructor(
         private _logService: LoggingService,
@@ -101,6 +106,7 @@ export class ActivityTabComponent implements OnInit {
         const day = this.currentDayInView.getDate();
         this.minimumDateTimevalue = new Date(year, month, day, 0);
         this.maximumDateTimeValue = new Date(year, month, day, 23);
+        this._initMonthViewStyle();
     }
 
     ngOnInit() {
@@ -139,7 +145,7 @@ export class ActivityTabComponent implements OnInit {
                 this._initWeekChartTitle();
                 this.activity = new ObservableArray(this._dataService.getSource('Week'));
             } else if (newIndex === 2) {
-                // Month
+                this._initMonthChartTitle();
             }
         }
     }
@@ -163,6 +169,7 @@ export class ActivityTabComponent implements OnInit {
         this.weekEnd = this._getFirstDayOfWeek(date);
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
         this.chartTitle = this.monthNames[date.getMonth()] + ' ' + this.weekStart.getDate() + ' — ' + this.weekEnd.getDate();
+        this._updateMonthStartAndEnd();
     }
 
     _updateWeekStartAndEnd() {
@@ -170,6 +177,13 @@ export class ActivityTabComponent implements OnInit {
         this.weekStart = this._getFirstDayOfWeek(date);
         this.weekEnd = this._getFirstDayOfWeek(date);
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+        this._updateMonthStartAndEnd();
+    }
+
+    _updateMonthStartAndEnd() {
+        const date = this.currentDayInView;
+        this.monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        this.monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     }
 
     onPreviousDayTap(event) {
@@ -201,6 +215,54 @@ export class ActivityTabComponent implements OnInit {
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
         this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
+        this.tabSelectedIndex = 0;
+    }
+
+    _initMonthViewStyle() {
+        this.monthViewStyle = new CalendarMonthViewStyle();
+        this.monthViewStyle.showTitle = false;
+
+        // Today cell style
+        const todayCellStyle = new DayCellStyle();
+        todayCellStyle.cellBorderColor = new Color('#8dd5e3');
+        todayCellStyle.cellTextSize = 12;
+        todayCellStyle.cellTextColor = new Color('Black');
+        this.monthViewStyle.todayCellStyle = todayCellStyle;
+
+        // Day cell style
+        const dayCellStyle = new DayCellStyle();
+        dayCellStyle.cellBackgroundColor = new Color('White');
+        dayCellStyle.cellBorderColor = new Color('White');
+        this.monthViewStyle.dayCellStyle = dayCellStyle;
+
+        // Selected cell style
+        const selectedDayCellStyle = new DayCellStyle();
+        selectedDayCellStyle.cellBackgroundColor = new Color('#8dd5e3');
+        selectedDayCellStyle.cellTextColor = new Color('White');
+        this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
+    }
+
+    _initMonthChartTitle() {
+        const date = this.currentDayInView;
+        this.chartTitle = this.monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    }
+
+    onPreviousMonthTap(event) {
+        this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
+        this._updateMonthStartAndEnd();
+        this._initMonthChartTitle();
+    }
+
+    onNextMonthTap(event) {
+        this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+        this._updateMonthStartAndEnd();
+        this._initMonthChartTitle();
+    }
+
+    onCalendarDateSelected(args) {
+        const date: Date = args.date;
+        this.currentDayInView.setMonth(date.getMonth());
+        this.currentDayInView.setDate(date.getDate());
         this.tabSelectedIndex = 0;
     }
 

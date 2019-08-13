@@ -74,7 +74,17 @@
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
-                <Label text="Month view" marginTop="20"></Label>
+                <!-- Month View -->
+                <GridLayout row="0" rows="auto" cols="auto">
+                    <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousMonthTap($event)"></Button>
+                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
+                    <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextMonthTap($event)"></Button>
+                </GridLayout>
+                <RadCalendar row="1" selectionMode="Single" viewMode="Month" locale="en-US" 
+                    height="250" width="80%" marginTop="20" 
+                    transitionMode="Stack" [minDate]="monthStart" [maxDate]="monthEnd" [monthViewStyle]="monthViewStyle"
+                    (dateSelected)="onCalendarDateSelected($event)">
+                </RadCalendar>
             </StackLayout>
         </TabView>
     </StackLayout>
