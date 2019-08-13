@@ -15,35 +15,6 @@
     color: $white;
   }
 
-  .textbox {
-    @extend .TEXTBOX_BASE;
-
-    .textbox-label {
-      color: #4b4d51;
-      background-color: $white;
-    }
-
-    GridLayout {
-      border-color: #e8e9eb;
-
-      > .textbox-value {
-        color: #3d4144;
-      }
-    }
-  }
-
-  .textbox-active {
-    @extend .DATA_BOX_BASE;
-    .textbox-label {
-      color: #1c72e6;
-      background-color: $white;
-    }
-
-    GridLayout {
-      border-color: #1c72e6;
-    }
-  }
-
   .error-label {
     @extend .ERROR_LABEL_BASE;
 

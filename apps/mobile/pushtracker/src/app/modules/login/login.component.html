@@ -4,20 +4,30 @@
       <Image row="0" class="align-center m-20" src="~/app/assets/images/permobil_logo_transparent.png" stretch="aspectFit"></Image>
 
       // Email
-      <StackLayout row="1" class="textbox">
+      <StackLayout #emailTextBox row="1" class="textbox">
         <Label class="textbox-label" [text]="'general.email' | translate"></Label>
         <GridLayout rows="*" columns="*">
-          <TextField col="0" class="textbox-value" [text]="user.email" (textChange)="onEmailTextChange($event)" keyboardType="email" autocorrect="false" autocapitalizationType="none" textWrap="true"></TextField>
+          <TextField
+            class="textbox-value"
+            [text]="user.email"
+            (loaded)="textfieldLoaded($event)"
+            (textChange)="onEmailTextChange($event)"
+            (focus)="onFocusTF(0)"
+            (blur)="onBlurTF(0)"
+            keyboardType="email"
+            autocorrect="false"
+            autocapitalizationType="none"
+            textWrap="true"
+          ></TextField>
         </GridLayout>
       </StackLayout>
-
       <Label row="2" [text]="emailError" class="error-label" [visibility]="emailError ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
       // Password
-      <StackLayout row="3" class="textbox">
+      <StackLayout #passwordTextBox row="3" class="textbox">
         <Label class="textbox-label" [text]="'general.password' | translate"></Label>
         <GridLayout rows="*" columns="*">
-          <TextField col="0" class="textbox-value" secure="true" [(ngModel)]="user.password" textWrap="true"></TextField>
+          <TextField class="textbox-value" secure="true" (loaded)="textfieldLoaded($event)" (focus)="onFocusTF(1)" (blur)="onBlurTF(1)" [(ngModel)]="user.password" textWrap="true"></TextField>
         </GridLayout>
       </StackLayout>
       <Label row="4" [text]="passwordError" class="error-label" [visibility]="passwordError ? 'visible' : 'collapsed'" textWrap="true"></Label>

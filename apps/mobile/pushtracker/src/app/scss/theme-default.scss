@@ -22,3 +22,38 @@ TabView {
   color: #e9eaee;
   background-color: #e9eaee;
 }
+
+// TextBox
+
+.textbox {
+  @extend .TEXTBOX_BASE;
+
+  .textbox-label {
+    color: #4b4d51;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #e8e9eb;
+
+    > .textbox-value {
+      color: #3d4144;
+    }
+  }
+}
+
+.textbox-active {
+  @extend .TEXTBOX_BASE;
+  .textbox-label {
+    color: #1c72e6;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #1c72e6;
+
+    > .textbox-value {
+      color: #3d4144;
+    }
+  }
+}
