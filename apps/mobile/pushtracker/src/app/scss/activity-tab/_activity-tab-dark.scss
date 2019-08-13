@@ -59,6 +59,7 @@
   }
 
   TabView {
+    text-transform: capitalize;
     tab-text-font-size: 11;
     tab-text-color: $white;
     selected-tab-text-color: $permobil-cousteau;
