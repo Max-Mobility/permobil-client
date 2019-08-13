@@ -75,7 +75,7 @@
           </GridLayout>
         </wol:WearOsLayout>
 
-        // Distance Chat
+        // Distance Chart
         <wol:WearOsLayout>
           <GridLayout rows="auto, auto, *" columns="*, auto">
             <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}"
@@ -91,7 +91,10 @@
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <StackLayout class="chart-stack">
-                  <Label height="{{ value }}" class="distance-line" />
+                  <Label height="{{ value }}" class="distance-line"
+                         visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
+                  <Label height="100" class="distance-line" backgroundColor="black"
+                         visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
                   <Label text="{{ day }}" class="line-label" />
                 </StackLayout>
               </Repeater.itemTemplate>
@@ -116,7 +119,10 @@
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <StackLayout class="chart-stack">
-                  <Label height="{{ value }}" class="coast-line" />
+                  <Label height="{{ value }}" class="coast-line"
+                         visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
+                  <Label height="100" class="distance-line" backgroundColor="black"
+                         visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
                   <Label text="{{ day }}" class="line-label" />
                 </StackLayout>
               </Repeater.itemTemplate>
