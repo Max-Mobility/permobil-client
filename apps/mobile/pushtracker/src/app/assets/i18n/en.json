@@ -1,157 +1,122 @@
 {
+  "activity-tab-component": {
+    "day": "Day",
+    "month": "Month",
+    "title": "My activity",
+    "week": "Week"
+  },
+  "app-info-component": {
+    "sections": [
+      {
+        "text": "Permobil is delivering a better experience to users of the SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": ""
+      },
+      {
+        "lottie": "wheelchair.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Working towards better health"
+      },
+      {
+        "lottie": "trophy.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Why do the goals matter?"
+      },
+      {
+        "lottie": "bullseye.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Hit your goals and finish strong"
+      }
+    ],
+    "title": "Get going with SmartDrive from Permobil & MaxMobility"
+  },
+  "days": {
+    "friday": "Friday",
+    "monday": "Monday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "thursday": "Thursday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday"
+  },
+  "days-abbreviated": {
+    "friday": "Fri",
+    "monday": "Mon",
+    "saturday": "Sat",
+    "sunday": "Sun",
+    "thursday": "Thur",
+    "tuesday": "Tues",
+    "wednesday": "Wed"
+  },
   "general": {
-    "home": "Home",
-    "journey": "Journey",
-    "profile": "Profile",
-    "distance": "Distance",
-    "distance-description": "The daily goal you want to meet or exceed for distance traveled. Get out there and be active!",
+    "acceleration": "Acceleration",
+    "afternoon": "afternoon",
+    "birthday": "Birthday",
+    "cancel": "Cancel",
+    "chair-type": "Chair Type",
+    "change-pass": "Change Password",
+    "check-email": "Check your email for instructions on resetting your password.",
     "coast-time": "Coast Time",
     "coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the time between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
-    "pushes": "Pushes",
-    "travel": "Travel",
-    "miles": "Miles",
-    "meters": "Meters",
-    "kilometers": "Kilometers",
-    "today": "Today",
-    "afternoon": "afternoon",
-    "roll": "roll",
-    "gender": "Gender",
-    "birthday": "Birthday",
-    "weight": "Weight",
-    "weight-guess": "If you don't know your exact weight, enter your best guess.",
-    "height": "Height",
-    "height-guess": "If you don't know your exact height, enter your best guess.",
-    "units": "Units",
-    "smartdrive": "SmartDrive",
-    "max-speed": "Max Speed",
-    "acceleration": "Acceleration",
-    "tap-sensitivity": "Tap Sensitivity",
-    "mode": "Mode",
-    "switch-control-mode": "Switch Control Mode",
-    "switch-control-max-speed": "Switch Control Max Speed",
     "day": "Day",
-    "week": "Week",
-    "month": "Month",
-    "login": "Login",
-    "logout": "Logout",
-    "submit": "Submit",
-    "email": "Email",
-    "password": "Password",
-    "forgot-password": "Forgot Password",
-    "sign-up": "Sign Up",
-    "ok": "OK",
-    "cancel": "Cancel",
     "display": "Display",
-    "chair-type": "Chair Type",
-    "sign-out": "Sign Out",
-    "email-required": "Email is required.",
+    "distance": "Distance",
+    "distance-description": "The daily goal you want to meet or exceed for distance traveled. Get out there and be active!",
+    "email": "Email",
     "email-error": "is not a valid email address.",
     "email-invalid": "Email is invalid",
+    "email-required": "Email is required.",
     "email-sent": "Email Sent",
-    "check-email": "Check your email for instructions on resetting your password.",
-    "password-error": "Password is required.",
+    "error": "Error",
+    "forgot-password": "Forgot Password?",
+    "gender": "Gender",
+    "height": "Height",
+    "height-guess": "If you don't know your exact height, enter your best guess.",
+    "home": "Home",
+    "journey": "Journey",
+    "kilometers": "Kilometers",
+    "login": "Login",
+    "logout": "Logout",
+    "max-speed": "Max Speed",
+    "meters": "Meters",
+    "miles": "Miles",
+    "mode": "Mode",
+    "month": "Month",
+    "ok": "OK",
+    "password": "Password",
     "password-change": "Change Password?",
     "password-change-confirm": "Are you sure you want to change your password?",
+    "password-required": "Password is required.",
+    "profile": "Profile",
+    "pushes": "Pushes",
+    "reset-acct": "Reset Account",
+    "reset-pass-desc": "To reset your password, enter the email for your account. You will receive an email with instructions to reset your password.",
+    "roll": "roll",
     "sign-in-error-1": "An error occurred during sign in. Check your email and password.",
-    "sign-in-error-2": "Invalid email and/or password. Please try again."
-  },
-  "sd": {
-    "switch-settings": {
-      "mode": {
-        "momentary": "Momentary",
-        "latching": "Latched"
-      }
-    }
+    "sign-in-error-2": "Invalid email and/or password. Please try again.",
+    "sign-out": "Sign Out",
+    "sign-out-confirm": "Are you sure you want to sign out?",
+    "signing-in": "Signing in...",
+    "smartdrive": "SmartDrive",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success": "Success",
+    "switch-control-max-speed": "Switch Control Max Speed",
+    "switch-control-mode": "Switch Control Mode",
+    "tap-sensitivity": "Tap Sensitivity",
+    "today": "Today",
+    "travel": "Travel",
+    "units": "Units",
+    "week": "Week",
+    "weight": "Weight",
+    "weight-guess": "If you don't know your exact weight, enter your best guess."
   },
   "home-tab": {
-    "title": "Home",
+    "kilometers-to-go": "kilometers to go",
     "miles-to-go": "miles to go",
-    "kilometers-to-go": "kilometers to go"
+    "title": "Home"
   },
   "journey-tab": {
     "title": "Journey"
-  },
-  "profile-tab": {
-    "title": "Profile",
-    "activity-goals": "Activity Goals",
-    "about-you": "About You",
-    "chair-make": "Chair Make",
-    "device-serial-numbers": "Device Serial Numbers",
-    "set-goal": "Set goal",
-    "chair-types": ["Rigid", "Folding", "Pediatric"],
-    "first-name": "first name",
-    "last-name": "last name",
-    "edit-first-name": "Edit first name",
-    "edit-last-name": "Edit last name",
-    "smartdrive": "SmartDrive",
-    "pushtracker": "PushTracker",
-    "smartdrive-serial-number": "SmartDrive Serial Number",
-    "pushtracker-serial-number": "PushTracker Serial Number",
-    "cancel-scan": "Cancel Scan",
-    "scan-msg": "Scan a",
-    "sd-or-pt": "SmartDrive or PushTracker",
-    "coast-time-units": "seconds",
-    "distance-units-km": "kilometers",
-    "distance-units-mi": "miles",
-    "per-day": "per day"
-  },
-  "profile-settings": {
-    "theme": "Theme",
-    "language": "Language"
-  },
-  "settings-component": {
-    "title": "Settings"
-  },
-  "my-activity-component": {
-    "title": "My Activity"
-  },
-  "app-info-component": {
-    "title": "Get going with SmartDrive from Permobil & MaxMobility",
-    "sections": [
-      {
-        "title": "",
-        "text": "Permobil is delivering a better experience to users of the SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla."
-      },
-      {
-        "title": "Working towards better health",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "wheelchair.json"
-      },
-      {
-        "title": "Why do the goals matter?",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "trophy.json"
-      },
-      {
-        "title": "Hit your goals and finish strong",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "lottie": "bullseye.json"
-      }
-    ]
-  },
-  "activity-tab-component": {
-    "title": "My activity",
-    "day": "Day",
-    "week": "Week",
-    "month": "Month"
-  },
-  "days": {
-    "sunday": "Sunday",
-    "monday": "Monday",
-    "tuesday": "Tuesday",
-    "wednesday": "Wednesday",
-    "thursday": "Thursday",
-    "friday": "Friday",
-    "saturday": "Saturday"
-  },
-  "days-abbreviated": {
-    "sunday": "Sun",
-    "monday": "Mon",
-    "tuesday": "Tues",
-    "wednesday": "Wed",
-    "thursday": "Thur",
-    "friday": "Fri",
-    "saturday": "Sat"
   },
   "languages": {
     "de": "German",
@@ -165,5 +130,57 @@
     "ru": "Russian",
     "sv": "Swedish",
     "zh-CN": "Chinese (Simplified)"
+  },
+  "my-activity-component": {
+    "title": "My Activity"
+  },
+  "profile-settings": {
+    "language": "Language",
+    "theme": "Theme"
+  },
+  "profile-tab": {
+    "about-you": "About You",
+    "activity-goals": "Activity Goals",
+    "cancel-scan": "Cancel Scan",
+    "chair-make": "Chair Make",
+    "chair-types": ["Rigid", "Folding", "Pediatric"],
+    "coast-time-units": "seconds",
+    "device-serial-numbers": "Device Serial Numbers",
+    "distance-units-km": "kilometers",
+    "distance-units-mi": "miles",
+    "edit-first-name": "Edit first name",
+    "edit-last-name": "Edit last name",
+    "first-name": "first name",
+    "last-name": "last name",
+    "per-day": "per day",
+    "pushtracker": "PushTracker",
+    "pushtracker-serial-number": "PushTracker Serial Number",
+    "scan-msg": "Scan a",
+    "sd-or-pt": "SmartDrive or PushTracker",
+    "set-goal": "Set goal",
+    "smartdrive": "SmartDrive",
+    "smartdrive-serial-number": "SmartDrive Serial Number",
+    "title": "Profile"
+  },
+  "sd": {
+    "switch-settings": {
+      "mode": {
+        "latching": "Latched",
+        "momentary": "Momentary"
+      }
+    }
+  },
+  "settings-component": {
+    "title": "Settings"
+  },
+  "sign-up": {
+    "birthdate-required": "Birth date is required.",
+    "creating-account": "Creating your account...",
+    "first-name-required": "First name is required.",
+    "last-name-required": "Last name is required.",
+    "sign-up-error": "Could not sign up: ",
+    "sign-up-success": "Your user-name is:",
+    "title": "Sign Up",
+    "user-exists": "An account already exists for this email."
   }
 }

@@ -101,7 +101,7 @@ export class LoginComponent implements OnInit {
       }
 
       this._loadingIndicator.show({
-        message: 'Signing in...', // this._translateService.instant('general.signing-in'),
+        message: this._translateService.instant('general.signing-in'),
         dimBackground: true
       });
 

@@ -1,4 +1,4 @@
-<ActionBar [title]="'general.sign-up' | translate" flat="true" class="action-bar">
+<ActionBar [title]="'sign-up.title' | translate" flat="true" class="action-bar">
   <NavigationButton text="Back" icon="" (tap)="goBack()"></NavigationButton>
 </ActionBar>
 
@@ -60,6 +60,6 @@
     </StackLayout>
     <Label row="9" [text]="birthdayError" class="textbox-error-label" [visibility]="birthdayError ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
-    <Button row="10" [text]="'general.sign-up' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
+    <Button row="10" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
   </GridLayout>
 </ScrollView>

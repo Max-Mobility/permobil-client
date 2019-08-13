@@ -158,7 +158,6 @@ export class SignUpComponent implements OnInit {
   }
 
   async onSubmitSignUp() {
-    console.dir(this.user);
     // validate the email
     const isEmailValid = this._isEmailValid(this.user.username);
     if (!isEmailValid) {
@@ -182,6 +181,10 @@ export class SignUpComponent implements OnInit {
       return;
     }
 
+    this._loadingIndicator.show({
+      message: this._translateService.instant('sign-up.creating-account')
+    });
+
     // trim all the strings on user object
     this.user.first_name = this.user.first_name.trim();
     this.user.last_name = this.user.last_name.trim();
@@ -202,6 +205,7 @@ export class SignUpComponent implements OnInit {
     this._logService.logBreadCrumb(`KinveyUser.exists() result: ${userExists}`);
     // if username is taken tell user and exit so they can correct
     if (userExists === true) {
+      this._loadingIndicator.hide();
       new Toasty({
         text: this._translateService.instant('sign-up.user-exists'),
         duration: ToastDuration.SHORT,
@@ -213,11 +217,12 @@ export class SignUpComponent implements OnInit {
     // now create the account
     try {
       const user = await KinveyUser.signup(this.user);
+      this._loadingIndicator.hide();
       alert({
         title: this._translateService.instant('general.success'),
         message:
-          this._translateService.instant('general.sign-up-success') +
-          ` ${user.email}`,
+          this._translateService.instant('sign-up.sign-up-success') +
+          ` ${user.username}`,
         okButtonText: this._translateService.instant('general.ok')
       }).then(() => {
         // Navigate to tabs home with clearHistory
@@ -228,13 +233,13 @@ export class SignUpComponent implements OnInit {
         });
       });
     } catch (err) {
+      this._loadingIndicator.hide();
       this._logService.logException(err);
       alert({
         title: this._translateService.instant('general.error'),
-        message: this._translateService.instant('general.sign-up-error') + err,
+        message: this._translateService.instant('sign-up.sign-up-error') + err,
         okButtonText: this._translateService.instant('general.ok')
       });
-      // }
     }
   }
 
@@ -256,7 +261,7 @@ export class SignUpComponent implements OnInit {
     const email = text.trim();
     if (!validate(email)) {
       this.emailError = `"${email}" ${this._translateService.instant(
-        'general.email-error'
+        'general.email-invalid'
       )}`;
       return false;
     }
@@ -269,7 +274,7 @@ export class SignUpComponent implements OnInit {
     // validate the password
     if (!text) {
       this.passwordError = this._translateService.instant(
-        'general.password-error'
+        'general.password-required'
       );
       return false;
     }
@@ -281,7 +286,7 @@ export class SignUpComponent implements OnInit {
     // validate the firstname
     if (!text) {
       this.firstNameError = this._translateService.instant(
-        'user.first-name-error'
+        'sign-up.first-name-required'
       );
       return false;
     }
@@ -293,7 +298,7 @@ export class SignUpComponent implements OnInit {
     // validate the lastname
     if (!text) {
       this.lastNameError = this._translateService.instant(
-        'user.last-name-error'
+        'sign-up.last-name-required'
       );
       return false;
     }
@@ -304,12 +309,12 @@ export class SignUpComponent implements OnInit {
   private _isBirthdayValid(text: string): boolean {
     // validate the birthday
     if (!text) {
-      this.lastNameError = this._translateService.instant(
-        'user.last-name-error'
+      this.birthdayError = this._translateService.instant(
+        'sign-up.birthdate-required'
       );
       return false;
     }
-    this.lastNameError = '';
+    this.birthdayError = '';
     return true;
   }
 }
