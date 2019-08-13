@@ -46,7 +46,7 @@ export class DataService {
             return '' + hour;
         };
         for (const i in range(0, 24)) {
-            result.push({ Date: dateFormat(parseInt(i)), Amount: random() });
+            result.push({ HourFormatted: dateFormat(parseInt(i)), Amount: random(), Hour: parseInt(i), Date: date });
         }
         return result;
     }
@@ -136,6 +136,12 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._initChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource());
+    }
+
+    onDayPointSelected(event) {
+        const pointIndex = event.pointIndex;
+        const pointData = event.pointData;
+        console.log('Day datapoint selected', this.activity.getItem(pointIndex));
     }
 
 }
