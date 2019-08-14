@@ -66,6 +66,7 @@ export class ActivityTabComponent implements OnInit {
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'];
     public currentDayInView: Date;
+    public dayChartLabel: string;
     public weekStart: Date;
     public weekEnd: Date;
     public monthStart: Date;
@@ -157,6 +158,7 @@ export class ActivityTabComponent implements OnInit {
     formatActivityForView(viewMode) {
         if (viewMode === 'Day') {
             const activity = this._activityService.dailyActivity;
+            this.dayChartLabel = '› ' + (this._activityService.dailyActivity.push_count || 0) + ' pushes';
             if (activity) {
                 const result = [];
                 const date = new Date();

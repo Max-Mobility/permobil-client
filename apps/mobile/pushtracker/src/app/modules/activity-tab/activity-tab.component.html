@@ -14,7 +14,7 @@
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
-                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center" class="chart-title" text="&#x267F;"></Label>
+                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center" class="chart-label" [text]="dayChartLabel"></Label>
                 </GridLayout>
                 <RadCartesianChart row="1" height="200" width="90%">
                     <RadCartesianChartGrid 
