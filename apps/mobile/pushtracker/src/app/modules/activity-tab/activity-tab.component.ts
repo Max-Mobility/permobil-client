@@ -190,7 +190,6 @@ export class ActivityTabComponent implements OnInit {
                         result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
                     }
                 }
-                console.log(result.length);
                 result.unshift({ xAxis: ' ', yAxis: 0 });
                 result.unshift({ xAxis: '  ', yAxis: 0 });
                 result.unshift({ xAxis: '   ', yAxis: 0 });
