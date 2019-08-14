@@ -54,7 +54,7 @@
     "nativescript-ui-listview": "7.0.2",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.2",
-    "tns-core-modules": "6.0.6",
+    "tns-core-modules": "file:../../../forked-plugins/tns-core-modules-6.0.6-modal-fix.tgz",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
