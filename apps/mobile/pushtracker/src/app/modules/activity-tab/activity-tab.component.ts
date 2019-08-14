@@ -170,7 +170,7 @@ export class ActivityTabComponent implements OnInit {
                             if (parseInt(i) === recordHour) {
                                 // There's data in records for this hour
                                 // Use it
-                                result.push({ xAxis: date.getHours(), yAxis: record.push_count, Hour: date.getHours(), Date: date });
+                                result.push({ xAxis: date.getHours() + (date.getMinutes() === 0 ? 0.0 : 0.5), yAxis: record.push_count, Hour: date.getHours(), Date: date });
                                 j = j + 1;
                             }
                             else {
