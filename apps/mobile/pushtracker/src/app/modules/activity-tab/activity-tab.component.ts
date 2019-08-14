@@ -158,8 +158,18 @@ export class ActivityTabComponent implements OnInit {
                 };
                 const records = activity.records;
 
+                const rangeStart = 0;
+                const rangeEnd = 24;
+                const timeArray = [];
+                let rangeIterator = rangeStart;
+                while (rangeIterator <= rangeEnd) {
+                    timeArray.push(rangeIterator);
+                    rangeIterator += 0.5;
+                }
+
                 let j = 0;
-                for (const i in range(0, 24)) {
+                for (const i in timeArray) {
+                    const timePoint = timeArray[i];
                     if (records && j < records.length) {
                         while (j < records.length) {
                             const record = records[j];
@@ -167,20 +177,24 @@ export class ActivityTabComponent implements OnInit {
                             const date = new Date(0); // The 0 there is the key, which sets the date to the epoch
                             date.setUTCMilliseconds(start_time);
                             const recordHour = date.getHours();
-                            if (parseInt(i) === recordHour) {
-                                // There's data in records for this hour
-                                // Use it
-                                result.push({ xAxis: date.getHours() + (date.getMinutes() === 0 ? 0.0 : 0.5), yAxis: record.push_count, Hour: date.getHours(), Date: date });
-                                j = j + 1;
+                            const recordMinutes = date.getMinutes();
+                            let recordTimePoint = recordHour;
+                            if (recordMinutes !== 0) {
+                                recordTimePoint += 0.5;
+                            }
+                            if (timePoint === recordTimePoint) {
+                                result.push({ xAxis: timePoint, yAxis: record.push_count });
+                                j += 1;
+                                continue;
                             }
                             else {
-                                result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
+                                result.push({ xAxis: timePoint, yAxis: 0 });
                                 break;
                             }
                         }
                     }
                     else {
-                        result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
+                        result.push({ xAxis: timePoint, yAxis: 0 });
                     }
                 }
                 result.unshift({ xAxis: ' ', yAxis: 0 });
