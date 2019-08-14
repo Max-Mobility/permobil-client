@@ -136,7 +136,6 @@ export class ActivityTabComponent implements OnInit {
     async loadActivity() {
         const didLoad = await this._activityService.loadActivity(this.currentDayInView);
         if (didLoad) {
-            console.log('Activity Loaded!', this._activityService.activity);
             this.activity = new ObservableArray(this.formatActivityForView('Day'));
             this._initDayChartTitle();
             const date = this.currentDayInView;
@@ -146,6 +145,9 @@ export class ActivityTabComponent implements OnInit {
             this.weekEnd.setDate(this.weekEnd.getDate() + 6);
             this.minDate = new Date('01/01/1999');
             this.maxDate = new Date('01/01/2099');
+        }
+        else {
+            this.activity = new ObservableArray(this.formatActivityForView('Day'));
         }
     }
 
@@ -165,7 +167,7 @@ export class ActivityTabComponent implements OnInit {
 
                 let j = 0;
                 for (const i in range(0, 24)) {
-                    if (j < records.length) {
+                    if (records && j < records.length) {
                         while (j < records.length) {
                             const record = records[j];
                             const start_time = record.start_time;
@@ -176,10 +178,10 @@ export class ActivityTabComponent implements OnInit {
                                 // There's data in records for this hour
                                 // Use it
                                 result.push({ xAxis: date.getHours(), yAxis: record.push_count, Hour: date.getHours(), Date: date });
-                                console.log(date.getTime());
                                 j = j + 1;
                             }
                             else {
+                                result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
                                 break;
                             }
                         }
@@ -188,6 +190,7 @@ export class ActivityTabComponent implements OnInit {
                         result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
                     }
                 }
+                console.log(result.length);
                 result.unshift({ xAxis: ' ', yAxis: 0 });
                 result.unshift({ xAxis: '  ', yAxis: 0 });
                 result.unshift({ xAxis: '   ', yAxis: 0 });
@@ -277,14 +280,14 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.activity = new ObservableArray(this.formatActivityForView('Day'));
+        this.loadActivity();
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.activity = new ObservableArray(this.formatActivityForView('Day'));
+        this.loadActivity();
     }
 
     _updateForwardButtonClassName(event) {
@@ -313,6 +316,7 @@ export class ActivityTabComponent implements OnInit {
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
         this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
+        this.loadActivity();
         this.tabSelectedIndex = 0;
     }
 

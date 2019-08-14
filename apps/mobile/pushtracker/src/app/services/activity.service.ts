@@ -27,7 +27,7 @@ export class ActivityService {
       query.limit = 1;
       const month = date.getMonth() + 1;
       const day = date.getDate();
-      query.equalTo('date', date.getFullYear + '/' + (month < 10 ? '0' + month : month) + '/' + (day < 10 ? '0' + day : day));
+      query.equalTo('date', date.getFullYear() + '/' + (month < 10 ? '0' + month : month) + '/' + (day < 10 ? '0' + day : day));
 
       const stream = this.datastore.find(query);
       const data = await stream.toPromise();
@@ -36,6 +36,7 @@ export class ActivityService {
         // Do something with data
         return true;
       }
+      this.activity = {};
       return false;
     } catch (err) {
       this._logService.logException(err);
