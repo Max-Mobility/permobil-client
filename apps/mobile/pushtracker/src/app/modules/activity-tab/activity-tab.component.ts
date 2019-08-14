@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
+import { ActivityService } from '../../services/activity.service';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { Injectable } from '@angular/core';
@@ -24,13 +25,13 @@ export class DataService {
             const year = date.getFullYear();
             const month = date.getMonth();
             const day = date.getDate();
-            const range = function(start, end) {
+            const range = function (start, end) {
                 return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
             };
             const result = [];
-            const  min = 0;
+            const min = 0;
             const max = 50;
-            const random = function() { return Math.random() * (+max - +min) + +min; };
+            const random = function () { return Math.random() * (+max - +min) + +min; };
             for (const i in range(0, 24)) {
                 result.push({ xAxis: parseInt(i), yAxis: random(), Hour: parseInt(i), Date: date });
             }
@@ -49,13 +50,13 @@ export class DataService {
             const year = date.getFullYear();
             const month = date.getMonth();
             const day = date.getDate();
-            const range = function(start, end) {
+            const range = function (start, end) {
                 return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
             };
             const result = [];
-            const  min = 0;
+            const min = 0;
             const max = 50;
-            const random = function() { return Math.random() * (+max - +min) + +min; };
+            const random = function () { return Math.random() * (+max - +min) + +min; };
             const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             for (const i in range(0, 6)) {
                 result.push({ xAxis: dayNames[parseInt(i)], yAxis: random(), Date: date });
@@ -88,7 +89,7 @@ export class ActivityTabComponent implements OnInit {
     public chartTitle: string;
     public dayNames: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
-                                   'July', 'August', 'September', 'October', 'November', 'December'];
+        'July', 'August', 'September', 'October', 'November', 'December'];
     public currentDayInView: Date;
     public weekStart: Date;
     public weekEnd: Date;
@@ -110,6 +111,7 @@ export class ActivityTabComponent implements OnInit {
 
     constructor(
         private _logService: LoggingService,
+        private _activityService: ActivityService,
         private _translateService: TranslateService,
         private _params: ModalDialogParams,
         private _dataService: DataService
@@ -121,6 +123,7 @@ export class ActivityTabComponent implements OnInit {
         this.minimumDateTimevalue = new Date(year, month, day, 0);
         this.maximumDateTimeValue = new Date(year, month, day, 23);
         this._initMonthViewStyle();
+        this.loadActivity();
     }
 
     ngOnInit() {
@@ -137,6 +140,13 @@ export class ActivityTabComponent implements OnInit {
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
         this.minDate = new Date('01/01/1999');
         this.maxDate = new Date('01/01/2099');
+    }
+
+    async loadActivity() {
+        const didLoad = await this._activityService.loadActivity();
+        if (didLoad) {
+            console.log(this._activityService.activity);
+        }
     }
 
     onShownModally(args) {
@@ -164,6 +174,13 @@ export class ActivityTabComponent implements OnInit {
                 this._initMonthChartTitle();
             }
         }
+    }
+
+    _getHourAndMinuteFromEpochTime(epoch) {
+        const date = new Date(epoch);
+        const hour = date.getUTCHours();
+        const minute = date.getUTCMinutes();
+        return [hour, minute];
     }
 
     _isCurrentDayInViewToday() {

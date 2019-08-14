@@ -15,7 +15,7 @@
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
                 </GridLayout>
-                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+                <RadCartesianChart row="1" height="200" width="90%">
                     <RadCartesianChartGrid 
                         tkCartesianGrid
                         horizontalLinesVisible="true"
@@ -33,11 +33,7 @@
                     <BarSeries tkCartesianSeries [items]="activity"
                         categoryProperty="xAxis" valueProperty="yAxis">
                     </BarSeries>
-                    <!-- >> chart-trackball-property-xml -->
-                    <RadCartesianChart.trackball>
-                        <chart:Trackball/>
-                    </RadCartesianChart.trackball>
-                    <!-- << chart-trackball-property-xml -->
+                    <Trackball tkCartesianTrackball snapMode="AllClosestPointsfsdfsd" showIntersectionPoints="true"></Trackball>
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
@@ -66,11 +62,6 @@
                     <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10" selectionMode="DataPoint"
                         categoryProperty="xAxis" valueProperty="yAxis">
                     </BarSeries>
-                    <!-- >> chart-trackball-property-xml -->
-                    <RadCartesianChart.trackball>
-                        <chart:Trackball/>
-                    </RadCartesianChart.trackball>
-                    <!-- << chart-trackball-property-xml -->
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
