@@ -20,6 +20,11 @@
     color: $black;
   }
 
+  .forward-btn-disabled {
+    @extend .FORWARD_BTN_BASE;
+    color: $grey;
+  }
+
   .more-btn {
     @extend .MORE_BTN_BASE;
     color: $black;

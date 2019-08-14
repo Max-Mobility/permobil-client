@@ -7,6 +7,7 @@ import { LocationService } from './location.service';
 import { LoggingService } from './logging.service';
 import { ProgressService } from './progress.service';
 import { SettingsService } from './settings.service';
+import { ActivityService } from './activity.service';
 
 export const PROVIDERS: any[] = [
   LoggingService,
@@ -17,7 +18,8 @@ export const PROVIDERS: any[] = [
   ProgressService,
   BluetoothService,
   FirmwareService,
-  SettingsService
+  SettingsService,
+  ActivityService
 ];
 
 export * from './auth-guard.service';
