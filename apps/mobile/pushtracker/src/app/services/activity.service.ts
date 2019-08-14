@@ -14,7 +14,7 @@ export class ActivityService {
 
   constructor(private _logService: LoggingService) { }
 
-  async loadActivity(): Promise<boolean> {
+  async loadActivity(date: Date): Promise<boolean> {
     try {
       await this.login();
       await this.datastore.sync();
@@ -25,11 +25,14 @@ export class ActivityService {
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.descending('_kmd.ect');
       query.limit = 1;
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      query.equalTo('date', date.getFullYear + '/' + (month < 10 ? '0' + month : month) + '/' + (day < 10 ? '0' + day : day));
 
       const stream = this.datastore.find(query);
       const data = await stream.toPromise();
       if (data && data.length) {
-        this.activity = data;
+        this.activity = data[0];
         // Do something with data
         return true;
       }

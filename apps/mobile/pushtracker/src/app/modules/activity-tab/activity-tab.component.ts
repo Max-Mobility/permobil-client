@@ -83,7 +83,7 @@ export class ActivityTabComponent implements OnInit {
     public displayDay: string = this._translateService.instant('day');
     public displayWeek: string = this._translateService.instant('week');
     public displayMonth: string = this._translateService.instant('month');
-    public activity: ObservableArray<Activity>;
+    public activity: ObservableArray<any[]>;
     public maximumDateTimeValue: Date;
     public minimumDateTimevalue: Date;
     public chartTitle: string;
@@ -131,21 +131,73 @@ export class ActivityTabComponent implements OnInit {
         this.infoItems = this._translateService.instant(
             'activity-tab-component.sections'
         );
-        this.activity = new ObservableArray(this._dataService.getSource('Day'));
-        this._initDayChartTitle();
-        const date = this.currentDayInView;
-        const sunday = this._getFirstDayOfWeek(date);
-        this.weekStart = sunday;
-        this.weekEnd = this.weekStart;
-        this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-        this.minDate = new Date('01/01/1999');
-        this.maxDate = new Date('01/01/2099');
     }
 
     async loadActivity() {
-        const didLoad = await this._activityService.loadActivity();
+        const didLoad = await this._activityService.loadActivity(this.currentDayInView);
         if (didLoad) {
-            console.log(this._activityService.activity);
+            console.log('Activity Loaded!', this._activityService.activity);
+            this.activity = new ObservableArray(this.formatActivityForView('Day'));
+            this._initDayChartTitle();
+            const date = this.currentDayInView;
+            const sunday = this._getFirstDayOfWeek(date);
+            this.weekStart = sunday;
+            this.weekEnd = this.weekStart;
+            this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+            this.minDate = new Date('01/01/1999');
+            this.maxDate = new Date('01/01/2099');
+        }
+    }
+
+    formatActivityForView(viewMode) {
+        if (viewMode === 'Day') {
+            const activity = this._activityService.activity;
+            if (activity) {
+                const result = [];
+                const date = new Date();
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                const day = date.getDate();
+                const range = function (start, end) {
+                    return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+                };
+                const records = activity.records;
+
+                let j = 0;
+                for (const i in range(0, 24)) {
+                    if (j < records.length) {
+                        while (j < records.length) {
+                            const record = records[j];
+                            const start_time = record.start_time;
+                            const date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                            date.setUTCMilliseconds(start_time);
+                            const recordHour = date.getHours();
+                            if (parseInt(i) === recordHour) {
+                                // There's data in records for this hour
+                                // Use it
+                                result.push({ xAxis: date.getHours(), yAxis: record.push_count, Hour: date.getHours(), Date: date });
+                                console.log(date.getTime());
+                                j = j + 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        result.push({ xAxis: parseInt(i), yAxis: 0, Hour: parseInt(i), Date: date });
+                    }
+                }
+                result.unshift({ xAxis: ' ', yAxis: 0 });
+                result.unshift({ xAxis: '  ', yAxis: 0 });
+                result.unshift({ xAxis: '   ', yAxis: 0 });
+                result.unshift({ xAxis: '    ', yAxis: 0 });
+                result.push({ xAxis: '     ', yAxis: 0 });
+                result.push({ xAxis: '      ', yAxis: 0 });
+                result.push({ xAxis: '       ', yAxis: 0 });
+                result.push({ xAxis: '        ', yAxis: 0 });
+                return result;
+            }
         }
     }
 
@@ -166,7 +218,7 @@ export class ActivityTabComponent implements OnInit {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
-                this.activity = new ObservableArray(this._dataService.getSource('Day'));
+                this.activity = new ObservableArray(this.formatActivityForView('Day'));
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
                 this.activity = new ObservableArray(this._dataService.getSource('Week'));
@@ -174,13 +226,6 @@ export class ActivityTabComponent implements OnInit {
                 this._initMonthChartTitle();
             }
         }
-    }
-
-    _getHourAndMinuteFromEpochTime(epoch) {
-        const date = new Date(epoch);
-        const hour = date.getUTCHours();
-        const minute = date.getUTCMinutes();
-        return [hour, minute];
     }
 
     _isCurrentDayInViewToday() {
@@ -197,6 +242,12 @@ export class ActivityTabComponent implements OnInit {
     _initDayChartTitle() {
         const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
+    }
+
+    _areDaysSame(first: Date, second: Date) {
+        return first.getFullYear() === second.getFullYear() &&
+            first.getMonth() === second.getMonth() &&
+            first.getDate() === second.getDate();
     }
 
     _getFirstDayOfWeek(date) {
@@ -226,14 +277,14 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource('Day'));
+        this.activity = new ObservableArray(this.formatActivityForView('Day'));
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource('Day'));
+        this.activity = new ObservableArray(this.formatActivityForView('Day'));
     }
 
     _updateForwardButtonClassName(event) {
