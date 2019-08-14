@@ -1,7 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as LS from 'nativescript-localstorage';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -19,7 +26,7 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
   moduleId: module.id,
   templateUrl: 'profile-settings.component.html'
 })
-export class ProfileSettingsComponent implements OnInit {
+export class ProfileSettingsComponent implements OnInit, AfterViewInit {
   infoItems;
   HEIGHT_UNITS: string[];
   HEIGHT: string;
@@ -30,7 +37,7 @@ export class ProfileSettingsComponent implements OnInit {
   CURRENT_THEME: string;
   CURRENT_LANGUAGE: string;
 
-  user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
+  user: PushTrackerUser; // this is our Kinvey.User
 
   @ViewChild('sliderSettingDialog', { static: false })
   sliderSettingDialog: ElementRef;
@@ -52,10 +59,20 @@ export class ProfileSettingsComponent implements OnInit {
     private _translateService: TranslateService,
     private _routerExtensions: RouterExtensions,
     private _page: Page,
-    private userService: PushTrackerUserService
+    private userService: PushTrackerUserService,
+    private _params: ModalDialogParams
   ) {
-    this.getUser();
+    // this.getUser();
     this._page.actionBarHidden = true;
+  }
+
+  ngOnInit() {
+    this._logService.logBreadCrumb('profile-settings.component ngOnInit');
+
+    this.getUser();
+    this.infoItems = this._translateService.instant(
+      'profile-settings-component.sections'
+    );
 
     this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
     this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
@@ -73,32 +90,19 @@ export class ProfileSettingsComponent implements OnInit {
     // get current app style theme from app-settings on device
     this.CURRENT_THEME =
       appSettings.getString(STORAGE_KEYS.APP_THEME) || APP_THEMES.DEFAULT;
-
-    this.loadSettings();
   }
 
-  ngOnInit() {
-    this.getUser();
-    this._logService.logBreadCrumb('profile-settings.component ngOnInit');
-    this.infoItems = this._translateService.instant(
-      'profile-settings-component.sections'
-    );
+  ngAfterViewInit() {
+    this.loadSettings();
   }
 
   getUser(): void {
     this.userService.user.subscribe(user => (this.user = user));
   }
 
-  navBack() {
-    if (this._routerExtensions.canGoBack()) {
-      this._routerExtensions.back();
-    } else {
-      this._routerExtensions.navigate(['/login'], {
-        transition: {
-          name: 'slideRight'
-        }
-      });
-    }
+  closeModal(event) {
+    Log.D('profile-settings.component modal closed');
+    this._params.closeCallback('');
   }
 
   async loadSettings() {

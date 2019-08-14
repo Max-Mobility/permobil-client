@@ -26,10 +26,6 @@ export class AppInfoComponent implements OnInit {
     );
   }
 
-  onShownModally(args) {
-    Log.D('app-info.component modal shown');
-  }
-
   closeModal(event) {
     Log.D('app-info.component modal closed');
     this._params.closeCallback('some value');

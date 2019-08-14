@@ -16,7 +16,6 @@ import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { enableDarkTheme, enableDefaultTheme } from './utils';
 import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
-import { BarcodeScanner } from 'nativescript-barcodescanner';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
