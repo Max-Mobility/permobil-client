@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
@@ -8,6 +8,8 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { Injectable } from '@angular/core';
 import { CalendarMonthViewStyle, DayCellStyle, CalendarSelectionShape, CellStyle, RadCalendar } from 'nativescript-ui-calendar';
 import { Color } from 'tns-core-modules/color/color';
+import { Button } from 'tns-core-modules/ui/button';
+import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
 
 export class Activity {
     constructor(public timeStamp?: number, public Amount?: number) {
@@ -88,6 +90,7 @@ export class ActivityTabComponent implements OnInit {
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
                                    'July', 'August', 'September', 'October', 'November', 'December'];
     public currentDayInView: Date;
+    public isNextDayButtonEnabled: boolean;
     public weekStart: Date;
     public weekEnd: Date;
     public monthStart: Date;
@@ -95,7 +98,8 @@ export class ActivityTabComponent implements OnInit {
     public minDate: Date;
     public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
-    @ViewChild('calendar') _calendar: RadCalendar;
+    @ViewChild('nextDay', { read: true, static: false }) private _nextDayButton : ElementRef;
+    @ViewChild('calendar', { read: true, static: false }) private _calendar : ElementRef;
 
     constructor(
         private _logService: LoggingService,
@@ -104,6 +108,7 @@ export class ActivityTabComponent implements OnInit {
         private _dataService: DataService
     ) {
         this.currentDayInView = new Date();
+        this.isNextDayButtonEnabled = false;
         const year = this.currentDayInView.getFullYear();
         const month = this.currentDayInView.getMonth();
         const day = this.currentDayInView.getDate();
@@ -155,6 +160,17 @@ export class ActivityTabComponent implements OnInit {
         }
     }
 
+    _isCurrentDayInViewToday() {
+        const today = new Date();
+        return this.currentDayInView.getDate() === today.getDate() &&
+            this.currentDayInView.getMonth() === today.getMonth() &&
+            this.currentDayInView.getFullYear() === today.getFullYear();
+    }
+
+    _isNextDayButtonEnabled() {
+        return !(this._isCurrentDayInViewToday());
+    }
+
     _initDayChartTitle() {
         const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
@@ -185,6 +201,7 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
@@ -192,19 +209,34 @@ export class ActivityTabComponent implements OnInit {
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
+        this._nextDayButton.nativeElement.className = (this._isNextDayButtonEnabled ? 'forward-btn' : 'forward-btn-disabled');
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
     }
 
+    _updateForwardButtonClassName(event) {
+        // If the next day button is not enabled, change the class of the button to gray it out
+        const button = event.object as Button;
+        if (!this._isNextDayButtonEnabled()) {
+            button.className = 'forward-btn-disabled';
+        }
+        else {
+            button.className = 'forward-btn';
+        }
+    }
+
     onPreviousWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._initWeekChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
 
     onNextWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._initWeekChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
@@ -212,6 +244,7 @@ export class ActivityTabComponent implements OnInit {
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
         this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this.tabSelectedIndex = 0;
     }
 
@@ -246,6 +279,7 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousMonthTap(event) {
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._calendar.nativeElement.navigateBack();
         this._initMonthChartTitle();
     }
@@ -253,6 +287,7 @@ export class ActivityTabComponent implements OnInit {
     onNextMonthTap(event) {
         const now = this.currentDayInView;
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._calendar.nativeElement.navigateForward();
         this._initMonthChartTitle();
     }
@@ -273,6 +308,7 @@ export class ActivityTabComponent implements OnInit {
         const date: Date = args.date;
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
+        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this.tabSelectedIndex = 0;
     }
 }

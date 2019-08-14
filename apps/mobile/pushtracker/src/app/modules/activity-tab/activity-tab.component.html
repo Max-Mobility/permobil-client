@@ -13,7 +13,8 @@
                 <GridLayout row="0" rows="auto" cols="auto">
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
-                    <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
+                    <Button #nextDay row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)" 
+                        [isEnabled]="isNextDayButtonEnabled"></Button>
                 </GridLayout>
                 <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
                     <RadCartesianChartGrid 
@@ -82,7 +83,7 @@
                 </GridLayout>
                 <RadCalendar #calendar row="1" selectionMode="Single" viewMode="Month" locale="en-US" 
                     (loaded)="onCalendarLoaded($event)"
-                    height="400" width="90%" marginTop="20" 
+                    height="250" width="80%" marginTop="20" 
                     transitionMode="Flip" [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
                     (dateSelected)="onCalendarDateSelected($event)">
                 </RadCalendar>
