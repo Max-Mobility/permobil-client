@@ -6,12 +6,9 @@
     <GridLayout row="0" rows="*" columns="50, *, 46, 46">
       <Button row="0" col="2" text="&#xe8fd;" (tap)="onHelpTap()" class="help-btn"></Button>
       <Button row="0" col="3" text="&#xe8b8;" (tap)="onSettingsTap()" class="settings-btn"></Button>
-      <!--
-              pageTransition="slide" [nsRouterLink]="['../profile-settings']"
-        -->
     </GridLayout>
-    <ScrollView row="1" rowSpan="2" col="0" padding="10">
-      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" paddingBottom="15">
+    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%">
+      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" paddingBottom="15">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
         // User Avatar
@@ -113,13 +110,13 @@
           </GridLayout>
         </StackLayout>
 
-        // About You Label
+        // Device Serial Numbers
         <Label row="11" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
 
         // Horizontal Line
         <StackLayout row="12" col="0" colspan="4" class="hr"></StackLayout>
 
-        // Serial Number
+        // SmartDrive Serial Number
         <StackLayout row="13" col="0" colSpan="2" class="data-box" (tap)="onScan('smartdrive')">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
@@ -136,7 +133,6 @@
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
-
       </GridLayout>
     </ScrollView>
   </GridLayout>

@@ -6,19 +6,18 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
+import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
 import { DropDownModule } from 'nativescript-drop-down/angular';
+import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { AppRoutingModule, COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AppInfoComponent } from './modules/app-info/app-info.component';
+import { ENTRY_COMPONENTS } from './modules';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
-import { BarcodeScanner } from 'nativescript-barcodescanner';
-import { ActivityTabComponent } from './modules/activity-tab/activity-tab.component';
-import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
-import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 
 export function createBarcodeScanner() {
   return new BarcodeScanner();
@@ -42,8 +41,6 @@ export function createTranslateLoader() {
     NativeScriptDateTimePickerModule,
     NativeScriptUIChartModule,
     NativeScriptUICalendarModule,
-    // // This will call the install method and inject a global service called BottomSheetService
-    // NativeScriptMaterialBottomSheetModule.forRoot(),
     SharedModule,
     PermobilCoreModule,
     AppRoutingModule,
@@ -56,9 +53,12 @@ export function createTranslateLoader() {
     })
   ],
   declarations: [AppComponent, ...COMPONENTS],
-  entryComponents: [AppInfoComponent, ActivityTabComponent],
-  providers: [...PROVIDERS, ModalDialogService,
-    { provide: BarcodeScanner, useFactory: createBarcodeScanner }],
+  entryComponents: [...ENTRY_COMPONENTS],
+  providers: [
+    ...PROVIDERS,
+    ModalDialogService,
+    { provide: BarcodeScanner, useFactory: createBarcodeScanner }
+  ],
   schemas: [NO_ERRORS_SCHEMA]
 })
 /*

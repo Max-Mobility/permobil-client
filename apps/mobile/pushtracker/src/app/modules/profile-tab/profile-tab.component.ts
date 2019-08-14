@@ -1,16 +1,25 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import {
   DateTimePicker,
   DateTimePickerStyle
 } from 'nativescript-datetimepicker';
+import { Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { Color } from 'tns-core-modules/color';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
 import { prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
@@ -21,6 +30,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 
 @Component({
   selector: 'profile',
@@ -110,7 +120,9 @@ export class ProfileTabComponent implements OnInit {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
-    private userService: PushTrackerUserService
+    private userService: PushTrackerUserService,
+    private _modalService: ModalDialogService,
+    private _vcRef: ViewContainerRef
   ) {
     // appSettings.clear();
     this.getUser();
@@ -209,7 +221,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   getUser(): void {
-    this.userService.user.subscribe(user => this.user = user);
+    this.userService.user.subscribe(user => (this.user = user));
   }
 
   onHelpTap() {
@@ -218,14 +230,29 @@ export class ProfileTabComponent implements OnInit {
 
   onSettingsTap() {
     Log.D('settings action item tap');
-    this._routerExtensions.navigate(['../profile-settings'], {
-      relativeTo: this.activeRoute,
-      transition: {
-        name: 'slideLeft',
-        duration: 250,
-        curve: AnimationCurve.easeInOut
-      }
-    });
+
+    this._modalService
+      .showModal(ProfileSettingsComponent, {
+        context: {},
+        fullscreen: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
+    // this._routerExtensions.navigate(['../profile-settings'], {
+    //   relativeTo: this.activeRoute,
+    //   transition: {
+    //     name: 'slideLeft',
+    //     duration: 250,
+    //     curve: AnimationCurve.easeInOut
+    //   }
+    // });
   }
 
   onNameLongPress(args, nameField: string) {
@@ -279,17 +306,22 @@ export class ProfileTabComponent implements OnInit {
 
     // Setting the dialog data to the actual user value
     if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
-      this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.coast-time-units') + ' ' +
+      this.displayActivityGoalUnitLabel =
+        this._translateService.instant('profile-tab.coast-time-units') +
+        ' ' +
         this._translateService.instant('profile-tab.per-day');
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
     } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
       if (this.user.data.distance_unit_preference === 0) {
-        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-km') + ' ' +
+        this.displayActivityGoalUnitLabel =
+          this._translateService.instant('profile-tab.distance-units-km') +
+          ' ' +
           this._translateService.instant('profile-tab.per-day');
-      }
-      else {
-        this.displayActivityGoalUnitLabel = this._translateService.instant('profile-tab.distance-units-mi') + ' ' +
+      } else {
+        this.displayActivityGoalUnitLabel =
+          this._translateService.instant('profile-tab.distance-units-mi') +
+          ' ' +
           this._translateService.instant('profile-tab.per-day');
       }
       if (this.user.data.activity_goal_distance)
@@ -336,15 +368,25 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
     ) {
-      this.userService.updateDataProperty('activity_goal_coast_time', this.activity_goals_dialog_data.config_value);
-      KinveyUser.update({ activity_goal_coast_time: this.activity_goals_dialog_data.config_value });
+      this.userService.updateDataProperty(
+        'activity_goal_coast_time',
+        this.activity_goals_dialog_data.config_value
+      );
+      KinveyUser.update({
+        activity_goal_coast_time: this.activity_goals_dialog_data.config_value
+      });
       this._initDisplayActivityGoalCoastTime();
     } else if (
       this.activity_goals_dialog_data.config_key ===
       STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
     ) {
-      this.userService.updateDataProperty('activity_goal_distance', this.activity_goals_dialog_data.config_value);
-      KinveyUser.update({ activity_goal_distance: this.activity_goals_dialog_data.config_value });
+      this.userService.updateDataProperty(
+        'activity_goal_distance',
+        this.activity_goals_dialog_data.config_value
+      );
+      KinveyUser.update({
+        activity_goal_distance: this.activity_goals_dialog_data.config_value
+      });
       this._initDisplayActivityGoalDistance();
     }
 
@@ -454,7 +496,10 @@ export class ProfileTabComponent implements OnInit {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
-        this.userService.updateDataProperty('gender', this.primary[this.primaryIndex]);
+        this.userService.updateDataProperty(
+          'gender',
+          this.primary[this.primaryIndex]
+        );
         KinveyUser.update({ gender: this.user.data.gender });
         break;
       case 1:
@@ -470,11 +515,17 @@ export class ProfileTabComponent implements OnInit {
         );
         break;
       case 3:
-        this.userService.updateDataProperty('chair_type', this.primary[this.primaryIndex]);
+        this.userService.updateDataProperty(
+          'chair_type',
+          this.primary[this.primaryIndex]
+        );
         KinveyUser.update({ chair_type: this.user.data.chair_type });
         break;
       case 4:
-        this.userService.updateDataProperty('chair_make', this.primary[this.primaryIndex]);
+        this.userService.updateDataProperty(
+          'chair_make',
+          this.primary[this.primaryIndex]
+        );
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
     }
@@ -641,15 +692,16 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _initDisplayActivityGoalCoastTime() {
-    this.displayActivityGoalCoastTime = this.user.data.activity_goal_coast_time + ' s';
+    this.displayActivityGoalCoastTime =
+      this.user.data.activity_goal_coast_time + ' s';
   }
 
   private _initDisplayActivityGoalDistance() {
-    this.displayActivityGoalDistance = this.user.data.activity_goal_distance + '';
+    this.displayActivityGoalDistance =
+      this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === 0) {
       this.displayActivityGoalDistance += ' km';
-    }
-    else {
+    } else {
       this.displayActivityGoalDistance += ' mi';
     }
   }
@@ -680,14 +732,23 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty('weight', primaryValue + secondaryValue);
+    this.userService.updateDataProperty(
+      'weight',
+      primaryValue + secondaryValue
+    );
     if (this.SETTING_WEIGHT === 'Pounds') {
-      this.userService.updateDataProperty('weight', this._poundsToKilograms(primaryValue + secondaryValue));
+      this.userService.updateDataProperty(
+        'weight',
+        this._poundsToKilograms(primaryValue + secondaryValue)
+      );
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
       );
     } else {
-      this.userService.updateDataProperty('weight', (primaryValue + secondaryValue));
+      this.userService.updateDataProperty(
+        'weight',
+        primaryValue + secondaryValue
+      );
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
       );
@@ -696,15 +757,24 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty('height', (primaryValue + 0.01 * (secondaryValue || 0)));
+    this.userService.updateDataProperty(
+      'height',
+      primaryValue + 0.01 * (secondaryValue || 0)
+    );
     if (this.SETTING_HEIGHT === 'Feet & inches') {
-      this.userService.updateDataProperty('height', this._feetInchesToCentimeters(primaryValue, secondaryValue));
+      this.userService.updateDataProperty(
+        'height',
+        this._feetInchesToCentimeters(primaryValue, secondaryValue)
+      );
       this.displayHeight = this._displayHeightInFeetInches(
         primaryValue,
         secondaryValue
       );
     } else {
-      this.userService.updateDataProperty('height', primaryValue + 0.01 * (secondaryValue || 0));
+      this.userService.updateDataProperty(
+        'height',
+        primaryValue + 0.01 * (secondaryValue || 0)
+      );
       this.displayHeight = this._displayHeightInCentimeters(
         this.user.data.height
       );
@@ -863,11 +933,12 @@ export class ProfileTabComponent implements OnInit {
         openSettingsIfPermissionWasPreviouslyDenied: true
       })
       .then(result => {
-          const validDevices =
-            deviceName === 'pushtracker' ? ['pushtracker', 'wristband'] : ['smartdrive'];
-          this._handleSerial(result.text, validDevices);
-        },
-      )
+        const validDevices =
+          deviceName === 'pushtracker'
+            ? ['pushtracker', 'wristband']
+            : ['smartdrive'];
+        this._handleSerial(result.text, validDevices);
+      })
       .catch(err => {
         this._logService.logException(err);
       });
@@ -910,11 +981,21 @@ export class ProfileTabComponent implements OnInit {
 
       // now set the serial number
       if (deviceType === 'pushtracker' || deviceType === 'wristband') {
-        this.userService.updateDataProperty('pushtracker_serial_number', serialNumber);
-        KinveyUser.update({pushtracker_serial_number: this.user.data.pushtracker_serial_number});
+        this.userService.updateDataProperty(
+          'pushtracker_serial_number',
+          serialNumber
+        );
+        KinveyUser.update({
+          pushtracker_serial_number: this.user.data.pushtracker_serial_number
+        });
       } else if (deviceType === 'smartdrive') {
-        this.userService.updateDataProperty('smartdrive_serial_number', serialNumber);
-        KinveyUser.update({smartdrive_serial_number: this.user.data.smartdrive_serial_number});
+        this.userService.updateDataProperty(
+          'smartdrive_serial_number',
+          serialNumber
+        );
+        KinveyUser.update({
+          smartdrive_serial_number: this.user.data.smartdrive_serial_number
+        });
       }
     } catch (error) {
       this._logService.logException(error);

@@ -3,9 +3,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
-import { ProfileSettingsComponent } from './profile-settings.component';
-import { ProfileTabComponent } from './profile-tab.component';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
   imports: [
@@ -14,12 +13,11 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
     NativeScriptFormsModule,
     NativeScriptRouterModule.forChild([
       { path: '', redirectTo: 'profile' },
-      { path: 'profile', component: ProfileTabComponent },
-      { path: 'profile-settings', component: ProfileSettingsComponent }
+      { path: 'profile', component: ProfileTabComponent }
     ]),
     TranslateModule
   ],
-  declarations: [ProfileTabComponent, ProfileSettingsComponent],
+  declarations: [ProfileTabComponent],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })
