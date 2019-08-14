@@ -20,32 +20,7 @@ export class Activity {
 @Injectable()
 export class DataService {
     getSource(view: string) {
-        if (view === 'Day') {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const day = date.getDate();
-            const range = function (start, end) {
-                return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
-            };
-            const result = [];
-            const min = 0;
-            const max = 50;
-            const random = function () { return Math.random() * (+max - +min) + +min; };
-            for (const i in range(0, 24)) {
-                result.push({ xAxis: parseInt(i), yAxis: random(), Hour: parseInt(i), Date: date });
-            }
-            result.unshift({ xAxis: ' ', yAxis: 0 });
-            result.unshift({ xAxis: '  ', yAxis: 0 });
-            result.unshift({ xAxis: '   ', yAxis: 0 });
-            result.unshift({ xAxis: '    ', yAxis: 0 });
-            result.push({ xAxis: '     ', yAxis: 0 });
-            result.push({ xAxis: '      ', yAxis: 0 });
-            result.push({ xAxis: '       ', yAxis: 0 });
-            result.push({ xAxis: '        ', yAxis: 0 });
-            return result;
-        }
-        else if (view === 'Week') {
+        if (view === 'Week') {
             const date = new Date();
             const year = date.getFullYear();
             const month = date.getMonth();
