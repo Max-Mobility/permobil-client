@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
@@ -92,7 +92,10 @@ export class ActivityTabComponent implements OnInit {
     public weekEnd: Date;
     public monthStart: Date;
     public monthEnd: Date;
+    public minDate: Date;
+    public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
+    @ViewChild('calendar') _calendar: RadCalendar;
 
     constructor(
         private _logService: LoggingService,
@@ -121,6 +124,8 @@ export class ActivityTabComponent implements OnInit {
         this.weekStart = sunday;
         this.weekEnd = this.weekStart;
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+        this.minDate = new Date('01/01/1999');
+        this.maxDate = new Date('01/01/2099');
     }
 
     onShownModally(args) {
@@ -169,7 +174,6 @@ export class ActivityTabComponent implements OnInit {
         this.weekEnd = this._getFirstDayOfWeek(date);
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
         this.chartTitle = this.monthNames[date.getMonth()] + ' ' + this.weekStart.getDate() + ' — ' + this.weekEnd.getDate();
-        this._updateMonthStartAndEnd();
     }
 
     _updateWeekStartAndEnd() {
@@ -177,13 +181,6 @@ export class ActivityTabComponent implements OnInit {
         this.weekStart = this._getFirstDayOfWeek(date);
         this.weekEnd = this._getFirstDayOfWeek(date);
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-        this._updateMonthStartAndEnd();
-    }
-
-    _updateMonthStartAndEnd() {
-        const date = this.currentDayInView;
-        this.monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-        this.monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     }
 
     onPreviousDayTap(event) {
@@ -249,13 +246,14 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousMonthTap(event) {
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
-        this._updateMonthStartAndEnd();
+        this._calendar.nativeElement.navigateBack();
         this._initMonthChartTitle();
     }
 
     onNextMonthTap(event) {
+        const now = this.currentDayInView;
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-        this._updateMonthStartAndEnd();
+        this._calendar.nativeElement.navigateForward();
         this._initMonthChartTitle();
     }
 
@@ -263,6 +261,7 @@ export class ActivityTabComponent implements OnInit {
         const date: Date = args.date;
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
+        console.log('Date selected', this.currentDayInView);
         this.tabSelectedIndex = 0;
     }
 
