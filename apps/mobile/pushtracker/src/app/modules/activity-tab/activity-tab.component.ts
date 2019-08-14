@@ -90,7 +90,6 @@ export class ActivityTabComponent implements OnInit {
     public monthNames: string[] = ['January', 'February', 'March', 'April', 'May', 'June',
                                    'July', 'August', 'September', 'October', 'November', 'December'];
     public currentDayInView: Date;
-    public isNextDayButtonEnabled: boolean;
     public weekStart: Date;
     public weekEnd: Date;
     public monthStart: Date;
@@ -98,8 +97,7 @@ export class ActivityTabComponent implements OnInit {
     public minDate: Date;
     public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
-    @ViewChild('nextDay', { read: true, static: false }) private _nextDayButton: ElementRef;
-    @ViewChild('calendar', { read: true, static: false }) private _calendar: ElementRef;
+    private _calendar: RadCalendar;
 
     constructor(
         private _logService: LoggingService,
@@ -108,7 +106,6 @@ export class ActivityTabComponent implements OnInit {
         private _dataService: DataService
     ) {
         this.currentDayInView = new Date();
-        this.isNextDayButtonEnabled = false;
         const year = this.currentDayInView.getFullYear();
         const month = this.currentDayInView.getMonth();
         const day = this.currentDayInView.getDate();
@@ -201,7 +198,6 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
@@ -209,8 +205,6 @@ export class ActivityTabComponent implements OnInit {
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
-        this._nextDayButton.nativeElement.className = (this._isNextDayButtonEnabled ? 'forward-btn' : 'forward-btn-disabled');
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Day'));
@@ -229,14 +223,12 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._initWeekChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
 
     onNextWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this._initWeekChartTitle();
         this.activity = new ObservableArray(this._dataService.getSource('Week'));
     }
@@ -244,7 +236,6 @@ export class ActivityTabComponent implements OnInit {
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
         this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this.tabSelectedIndex = 0;
     }
 
@@ -279,21 +270,20 @@ export class ActivityTabComponent implements OnInit {
 
     onPreviousMonthTap(event) {
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
-        this._calendar.nativeElement.navigateBack();
+        this._calendar.navigateBack();
         this._initMonthChartTitle();
     }
 
     onNextMonthTap(event) {
         const now = this.currentDayInView;
         this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
-        this._calendar.nativeElement.navigateForward();
+        this._calendar.navigateForward();
         this._initMonthChartTitle();
     }
 
     onCalendarLoaded(args) {
         const calendar = <RadCalendar>args.object;
+        this._calendar = calendar;
         const telCalendar = calendar.nativeView; // com.telerik.widget.calendar.RadCalendarView
         const gestureManager = telCalendar.getGestureManager(); // com.telerik.widget.calendar.CalendarGestureManager
         gestureManager.setDoubleTapToChangeDisplayMode(false);
@@ -308,7 +298,6 @@ export class ActivityTabComponent implements OnInit {
         const date: Date = args.date;
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
-        this.isNextDayButtonEnabled = this._isNextDayButtonEnabled();
         this.tabSelectedIndex = 0;
     }
 }
