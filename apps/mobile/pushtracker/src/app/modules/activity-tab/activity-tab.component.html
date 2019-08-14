@@ -83,7 +83,7 @@
                 <RadCalendar #calendar row="1" selectionMode="Single" viewMode="Month" locale="en-US" 
                     (loaded)="onCalendarLoaded($event)"
                     height="250" width="80%" marginTop="20" 
-                    transitionMode="Flip" [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
+                    [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
                     (dateSelected)="onCalendarDateSelected($event)">
                 </RadCalendar>
             </StackLayout>

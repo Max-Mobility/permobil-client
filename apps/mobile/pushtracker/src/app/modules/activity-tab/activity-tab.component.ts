@@ -6,10 +6,10 @@ import { LoggingService } from '../../services';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { Injectable } from '@angular/core';
-import { CalendarMonthViewStyle, DayCellStyle, CalendarSelectionShape, CellStyle, RadCalendar } from 'nativescript-ui-calendar';
+import { CalendarMonthViewStyle, DayCellStyle, CalendarSelectionShape, CellStyle, RadCalendar, DateRange } from 'nativescript-ui-calendar';
 import { Color } from 'tns-core-modules/color/color';
 import { Button } from 'tns-core-modules/ui/button';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
+import { layout } from 'tns-core-modules/utils/utils';
 
 export class Activity {
     constructor(public timeStamp?: number, public Amount?: number) {
@@ -98,6 +98,15 @@ export class ActivityTabComponent implements OnInit {
     public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
     private _calendar: RadCalendar;
+
+    // Colors
+    private _colorWhite = new Color('White');
+    private _colorBlack = new Color('Black');
+    // Colors - Shades of Blue - Dark to Light
+    private _colorCoolBlack = new Color('#072F5F');
+    private _colorMediumPersianBlue = new Color('#1261a0');
+    private _colorTuftsBlue = new Color('#3895D3');
+    private _colorBlueJeans = new Color('#58CCED');
 
     constructor(
         private _logService: LoggingService,
@@ -245,21 +254,21 @@ export class ActivityTabComponent implements OnInit {
 
         // Today cell style
         const todayCellStyle = new DayCellStyle();
-        todayCellStyle.cellBorderColor = new Color('White');
+        todayCellStyle.cellBorderColor = this._colorWhite;
         todayCellStyle.cellTextSize = 12;
         todayCellStyle.cellTextColor = new Color('#0067a6');
         this.monthViewStyle.todayCellStyle = todayCellStyle;
 
         // Day cell style
         const dayCellStyle = new DayCellStyle();
-        dayCellStyle.cellBackgroundColor = new Color('White');
-        dayCellStyle.cellBorderColor = new Color('White');
+        dayCellStyle.cellBackgroundColor = this._colorWhite;
+        dayCellStyle.cellBorderColor = this._colorWhite;
         this.monthViewStyle.dayCellStyle = dayCellStyle;
 
         // Selected cell style
         const selectedDayCellStyle = new DayCellStyle();
         selectedDayCellStyle.cellBackgroundColor = new Color('#8dd5e3');
-        selectedDayCellStyle.cellTextColor = new Color('White');
+        selectedDayCellStyle.cellTextColor = this._colorWhite;
         this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
     }
 
@@ -283,6 +292,13 @@ export class ActivityTabComponent implements OnInit {
 
     onCalendarLoaded(args) {
         const calendar = <RadCalendar>args.object;
+        // Increasing the height of dayNameCells in RadCalendar
+        // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
+        if (calendar.android) {
+            calendar.android.setDayNamesHeight(layout.toDevicePixels(40));
+        } else {
+            calendar.ios.presenter.style.dayNameCellHeight = 40;
+        }
         this._calendar = calendar;
         const telCalendar = calendar.nativeView; // com.telerik.widget.calendar.RadCalendarView
         const gestureManager = telCalendar.getGestureManager(); // com.telerik.widget.calendar.CalendarGestureManager
