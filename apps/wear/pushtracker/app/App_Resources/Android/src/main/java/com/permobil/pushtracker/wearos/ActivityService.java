@@ -30,6 +30,8 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -48,10 +50,18 @@ import java.util.Map;
 
 import java.text.SimpleDateFormat;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import io.sentry.Sentry;
 
-// TODO: save current daily activity in shared preferences / application settings
-// TODO: save current activity into sqlite tables?
+import com.permobil.pushtracker.wearos.DailyActivity;
+
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
 //        * GPS
@@ -64,8 +74,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
   private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
-
-  private static final boolean USE_ALARM = false;
+  private static final int SEND_TASK_PERIOD_MS = 1 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -93,12 +102,20 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   public boolean isDebuggable = false;
 
   private BroadcastReceiver timeReceiver = null;
+  private BroadcastReceiver batteryReceiver = null;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
+
+  private KinveyApiService mKinveyApiService;
+  private String mKinveyAuthorization;
+
+  private HandlerThread mHandlerThread;
+  private Handler mHandler;
+  private Runnable mSendTask;
 
   // for sending to the main app via intent
   private long _lastSendDataTimeMs = 0;
@@ -109,23 +126,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   public boolean watchBeingWorn = false;
   public boolean isServiceRunning = false;
 
-  public List<SensorEvent> sensorDataList = new ArrayList<>();
-
   // activity data
-  public int currentPushCount = 0;
-  public float currentCoastTime = 0f;
-  public float currentTotalCoastTime = 0f;
-  public float currentDistance = 0f;
-  public float currentHeartRate = 0f;
-
-  // activity data helpers
-  private ActivityDetector.Detection lastActivity = null;
-  private ActivityDetector.Detection lastPush = null;
-  private static final long MAX_ALLOWED_COAST_TIME_MS = 60 * 1000;
+  DailyActivity currentActivity = new DailyActivity();
 
   // helper objects
   private ActivityDetector activityDetector;
-  private DatabaseHandler databaseHandler;
+  private DatabaseHandler db;
   private Datastore datastore;
 
   public ActivityService() {
@@ -145,7 +151,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     Log.d(TAG, "Initializing Sentry");
     Sentry.init(
                 "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
-                // 'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1485857'
                 );
 
     startServiceWithNotification();
@@ -155,11 +160,34 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
     // create objects
     activityDetector = new ActivityDetector(this);
-    databaseHandler = new DatabaseHandler(this);
+    db = new DatabaseHandler(this);
     datastore = new Datastore(this);
 
     // initialize data
-    loadFromDatastore();
+    loadFromDatabase();
+
+    // start up for service
+    this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
+    this.mHandlerThread.start();
+    this.mHandler = new Handler(this.mHandlerThread.getLooper());
+
+    this.mSendTask = new SendRunnable();
+
+    // create the retrofit instance
+    Retrofit retrofit = new Retrofit.Builder()
+      .baseUrl(Constants.API_BASE)
+      .addConverterFactory(GsonConverterFactory.create())
+      .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+      .build();
+
+    // create an instance of the KinveyApiService
+    mKinveyApiService = retrofit.create(KinveyApiService.class);
+
+    // save the authorization string needed for kinvey
+    String authorizationToEncode = "pranav.kumar@permobil.com:test";
+    byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
+    mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
+    mKinveyAuthorization = "Basic " + mKinveyAuthorization;
 
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -183,6 +211,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         // for keeping track of the days
         this.setupTimeReceiver();
 
+        // for getting notified when we're on the charger (to send data)
+        this.setupBatteryReceiver();
+
         Log.d(TAG, "starting service!");
 
         this.initSensors();
@@ -195,23 +226,137 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
     }
 
-    if (USE_ALARM) {
-      // do the processing here - this function will have been called by
-      // the alarm manager
-      periodicProcessing();
-    }
-
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
     return START_STICKY;
   }
 
-  private void loadFromDatastore() {
-    currentPushCount = datastore.getPushes();
-    currentCoastTime = datastore.getCoast();
-    currentTotalCoastTime = datastore.getTotalCoast();
-    currentDistance = datastore.getDistance();
-    currentHeartRate = datastore.getHeartRate();
+  private void loadFromDatabase() {
+    // TODO: load from sqlite here
+    long tableRowCount = db.getTableRowCount();
+    if (tableRowCount == 0) {
+      // make new DailyActivity
+      currentActivity = new DailyActivity();
+      // go ahead and write it to db
+      db.addRecord(currentActivity);
+    } else {
+      // get latest record
+      DailyActivity dailyActivity = db.getMostRecent(false);
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+      // get current date
+      Date now = Calendar.getInstance().getTime();
+      String nowString = simpleDateFormat.format(now);
+      if (dailyActivity.date.equals(nowString)) {
+        // use the one we found
+        currentActivity = dailyActivity;
+      } else {
+        // make new DailyActivity
+        currentActivity = new DailyActivity();
+        // go ahead and write it to db
+        db.addRecord(currentActivity);
+      }
+    }
+  }
+
+  private class SendRunnable implements Runnable {
+    @Override
+    public void run() {
+      try {
+        PushDataToKinvey();
+      } catch (Exception e) {
+        Sentry.capture(e);
+        Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
+      }
+      if (isPlugged()) {
+        // only continue sending if we're still plugged in
+        mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
+      }
+    }
+  }
+
+  private void PushDataToKinvey() {
+    // TODO: get X number of unsent data from sqlite storage
+    // TODO:
+    Log.d(TAG, "PushDataToKinvey()...");
+    // Check if the SQLite table has any records pending to be pushed
+    long numUnsent = db.countUnsentEntries();
+    // Log.d(TAG, "Database size: " + db.getTableSizeBytes() + " bytes");
+    if (numUnsent == 0) {
+      Log.d(TAG, "No unsent data.");
+    } else {
+      try {
+        // get the oldest unsent record
+        DatabaseHandler.Record r = db.getRecord(true);
+        Observable.just(RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data))
+          .flatMap(x -> mKinveyApiService.sendData(mKinveyAuthorization, x, r.id))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .unsubscribeOn(Schedulers.io())
+          .subscribe(
+                     item -> {
+                       Log.d(TAG, "item sent: " + item._id);
+                       // TODO: currently we don't delete any entries,
+                       // do we want to change that?
+                       // db.deleteRecord(item._id);
+
+                       // update the has_been_sent field for that
+                       // activity
+                       db.markRecordAsSent(item._id);
+                     },
+                     error -> {
+                       Log.e(TAG, "send data onError(): " + error);
+                       Sentry.capture(error);
+                     },
+                     () -> {
+                       Log.d(TAG, "onCompleted()");
+                     });
+      } catch (Exception e) {
+        Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
+        Sentry.capture(e);
+      }
+    }
+  }
+
+  public boolean isPlugged() {
+    Context context = getApplicationContext();
+    boolean isPlugged;
+    Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    int plugged = 0;
+    if (intent != null) {
+      plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+    }
+    isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
+    isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+    return isPlugged;
+  }
+
+  void setupBatteryReceiver() {
+    if (this.batteryReceiver != null) {
+      this.unregisterReceiver(this.batteryReceiver);
+      this.batteryReceiver = null;
+    }
+    this.batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+          // Log.d(TAG, "BatteryReceiver::onReceive()");
+          int plugged = 0;
+          if (intent != null) {
+            plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+          }
+          boolean isPlugged =
+            plugged == BatteryManager.BATTERY_PLUGGED_AC ||
+            plugged == BatteryManager.BATTERY_PLUGGED_USB ||
+            plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
+          // send message to handler / runnable to send data
+          mHandler.removeCallbacksAndMessages(null);
+          mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
+        }
+      };
+    // register battery receiver
+    Log.d(TAG, "registering battery receiver");
+    IntentFilter batteryFilter = new IntentFilter();
+    batteryFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+    this.registerReceiver(this.batteryReceiver, batteryFilter);
   }
 
   void setupTimeReceiver() {
@@ -224,34 +369,25 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         public void onReceive(Context context, Intent intent) {
           // Log.d(TAG, "TimeReceiver::onReceive()");
           // get the date from the datastore
-          String currentDate = datastore.getDate();
-          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+          String currentDate = currentActivity.date;
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
           // get current date
           Date now = Calendar.getInstance().getTime();
           String nowString = simpleDateFormat.format(now);
-          // if we don't have a date, then save the current date
-          if (currentDate == "") {
-            datastore.setDate(nowString);
-          } else {
-            boolean sameDate = currentDate.equals(nowString);
-            // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
-            // determine if it's a new day
-            if (!sameDate) {
-              // reset values to zero
-              currentPushCount = 0;
-              currentCoastTime = 0;
-              currentTotalCoastTime = 0;
-              currentDistance = 0;
-              currentHeartRate = 0;
-              // update the datastore
-              datastore.setDate(nowString);
-              datastore.setPushes(currentPushCount);
-              datastore.setCoast(currentCoastTime);
-              datastore.setTotalCoast(currentTotalCoastTime);
-              datastore.setDistance(currentDistance);
-              datastore.setHeartRate(currentHeartRate);
-              // TODO: update the sqlite tables
-            }
+          boolean sameDate = currentDate.equals(nowString);
+          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
+          // determine if it's a new day
+          if (!sameDate) {
+            // reset values to zero
+            currentActivity = new DailyActivity();
+            // update the datastore - these are for the complication
+            // providers and the pushtracker wear app
+            datastore.setPushes(currentActivity.push_count);
+            datastore.setCoast(currentActivity.coast_time_avg);
+            datastore.setDistance(currentActivity.distance_watch);
+            datastore.setHeartRate(currentActivity.heart_rate);
+            // go ahead and write it to db
+            db.addRecord(currentActivity);
           }
         }
       };
@@ -263,71 +399,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     this.registerReceiver(this.timeReceiver, timeFilter);
   }
 
-  private void periodicProcessing() {
-    Log.d(TAG, "periodicProcessing()...");
-    // process the stored sensor data
-    boolean newDataProcessed = processSensorData();
-    if (newDataProcessed) {
-      Log.d(TAG, "has processed data, sending to activity");
-      // TODO: update data in SQLite tables
-      // update data in datastore / shared preferences
-      datastore.setPushes(currentPushCount);
-      datastore.setCoast(currentCoastTime);
-      datastore.setTotalCoast(currentTotalCoastTime);
-      datastore.setDistance(currentDistance);
-      datastore.setHeartRate(currentHeartRate);
-      // send intent to main activity with updated data
-      sendDataToActivity(currentPushCount,
-                         currentCoastTime,
-                         currentDistance,
-                         currentHeartRate);
-    }
-  }
-
-  private boolean processSensorData() {
-    int numProcessed = 0;
-    boolean didProcess = false;
-    synchronized (sensorDataList) {
-      while (!sensorDataList.isEmpty() && numProcessed < MAX_DATA_TO_PROCESS_PER_PERIOD) {
-        // Log.d(TAG, "Processing sensor data index " + numProcessed);
-        SensorEvent event = sensorDataList.remove(0);
-        // use the data to detect activities
-        ActivityDetector.Detection detection =
-          activityDetector.detectActivity(event.values, event.timestamp);
-        handleDetection(detection);
-        numProcessed++;
-        didProcess = true;
-      }
-    }
-    return didProcess;
-  }
-
   void handleDetection(ActivityDetector.Detection detection) {
     // Log.d(TAG, "detection: " + detection);
     if (detection.confidence != 0) {
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
-        currentPushCount += 1;
-        // Log.d(TAG, "Got a push, count = " + currentPushCount);
-        // calculate coast time here
-        if (lastPush != null) {
-          long timeDiffNs = detection.time - lastPush.time;
-          // Log.d(TAG, "push timeDiffNs: " + timeDiffNs);
-          long timeDiffThreshold = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // convert to ns
-          if (timeDiffNs < timeDiffThreshold) {
-            // update the total coast time
-            currentTotalCoastTime += timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
-            // now compute the average coast time
-            currentCoastTime = currentTotalCoastTime / currentPushCount;
-          }
-        }
-        // update the last push
-        lastPush = detection;
+        this.currentActivity.onPush(detection);
       }
-      // update the last activity
-      lastActivity = detection;
     }
-    // TODO: record the activities somewhere
   }
 
   private PendingIntent getAlarmIntent(int intentFlag) {
@@ -346,20 +425,21 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     super.onDestroy();
 
     try {
-      // unregister time receivers
+      // unregister time receiver
       if (this.timeReceiver != null) {
         this.unregisterReceiver(this.timeReceiver);
         this.timeReceiver = null;
       }
+      // unregister battery receiver
+      if (this.batteryReceiver != null) {
+        this.unregisterReceiver(this.batteryReceiver);
+        this.batteryReceiver = null;
+      }
       // remove sensor listeners
       unregisterDeviceSensors();
-      if (USE_ALARM) {
-        // cancel the alarm
-        AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_CANCEL_CURRENT);
-        scheduler.cancel(scheduledIntent);
-        scheduledIntent.cancel();
-      }
+      // remove handler tasks
+      mHandler.removeCallbacksAndMessages(null);
+      mHandlerThread.quitSafely();
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
@@ -453,7 +533,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         (computedSpeedValid || newSpeedValid);
       // if we have valid speed, accumulate more distance
       if (newLocationIsFromMovement) {
-        currentDistance += distance;
+        currentActivity.distance_watch += distance;
       }
     }
     // update the stored location for distance computation
@@ -485,44 +565,33 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     int sensorType = event.sensor.getType();
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       if (isDebuggable || watchBeingWorn) {
-        if (USE_ALARM) {
-          synchronized (sensorDataList) {
-            // add the event to the data list for processing later
-            sensorDataList.add(event);
-            if (sensorDataList.size() > MAX_DATA_LIST_LENGTH) {
-              // so that we don't waste memory, go ahead and process the
-              // data
-              periodicProcessing();
-            }
-          }
-        } else {
-          // use the data to detect activities
-          ActivityDetector.Detection detection =
-            activityDetector.detectActivity(event.values, event.timestamp);
-          handleDetection(detection);
-          long now = System.currentTimeMillis();
-          long timeDiffMs = now - _lastSendDataTimeMs;
-          if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
-            // TODO: update data in SQLite tables
-            // update data in datastore / shared preferences
-            datastore.setPushes(currentPushCount);
-            datastore.setCoast(currentCoastTime);
-            datastore.setTotalCoast(currentTotalCoastTime);
-            datastore.setDistance(currentDistance);
-            datastore.setHeartRate(currentHeartRate);
-            // send intent to main activity with updated data
-            sendDataToActivity(currentPushCount,
-                               currentCoastTime,
-                               currentDistance,
-                               currentHeartRate);
-            _lastSendDataTimeMs = now;
-          }
+        // use the data to detect activities
+        ActivityDetector.Detection detection =
+          activityDetector.detectActivity(event.values, event.timestamp);
+        handleDetection(detection);
+        long now = System.currentTimeMillis();
+        long timeDiffMs = now - _lastSendDataTimeMs;
+        if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+          // update data in datastore / shared preferences for use
+          // with the complication providers and mobile app
+          datastore.setPushes(currentActivity.push_count);
+          datastore.setCoast(currentActivity.coast_time_avg);
+          datastore.setDistance(currentActivity.distance_watch);
+          datastore.setHeartRate(currentActivity.heart_rate);
+          // update data in SQLite tables
+          db.updateRecord(currentActivity);
+          // send intent to main activity with updated data
+          sendDataToActivity(currentActivity.push_count,
+                             currentActivity.coast_time_avg,
+                             currentActivity.distance_watch,
+                             currentActivity.heart_rate);
+          _lastSendDataTimeMs = now;
         }
       }
     } else if (sensorType == Sensor.TYPE_HEART_RATE) {
       // update the heart rate
-      currentHeartRate = event.values[0];
-      Log.d(TAG, "current heart rate: " + currentHeartRate);
+      currentActivity.heart_rate = event.values[0];
+      Log.d(TAG, "current heart rate: " + currentActivity.heart_rate);
       // TODO: save heart rate data as a series of data if the
       // user has asked us to track their heart rate through the
       // app (for some period of time)
@@ -670,16 +739,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
-
-    if (USE_ALARM) {
-      // alarm management
-      AlarmManager scheduler = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-      PendingIntent scheduledIntent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
-      scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                                    System.currentTimeMillis(),
-                                    PROCESSING_PERIOD_MS,
-                                    scheduledIntent);
-    }
   }
 
   private void stopMyService() {

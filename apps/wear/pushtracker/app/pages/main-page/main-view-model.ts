@@ -28,7 +28,7 @@ import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
-import { ActivityData, Profile } from '../../namespaces';
+import { DailyActivity, Profile } from '../../namespaces';
 import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
@@ -53,7 +53,7 @@ const dateLocales = {
 
 declare const com: any;
 
-const debug: boolean = true;
+let debug: boolean = false;
 
 @JavaProxy('com.permobil.pushtracker.wearos.DataBroadcastReceiver')
 class DataBroadcastReceiver extends android.content.BroadcastReceiver {
@@ -284,9 +284,9 @@ export class MainViewModel extends Observable {
     // create / load tables for activity data
     const sqlitePromises = [
       this.sqliteService.makeTable(
-        ActivityData.Info.TableName,
-        ActivityData.Info.IdName,
-        ActivityData.Info.Fields
+        DailyActivity.Info.TableName,
+        DailyActivity.Info.IdName,
+        DailyActivity.Info.Fields
       )
     ];
     return Promise.all(sqlitePromises)
@@ -320,10 +320,16 @@ export class MainViewModel extends Observable {
   }
 
   debugTap() {
-    this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
-    this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
-    this.coastGoalValue = ((Math.random() * 10) + 2.0);
-    this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    debug = !debug;
+    if (debug) {
+      this.currentPushCount = ((Math.random() * 2000) + 1000);
+      this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
+      this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
+      this.coastGoalValue = ((Math.random() * 10) + 2.0);
+      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    } else {
+      this.loadCurrentActivityData();
+    }
     this.updateDisplay();
   }
 
@@ -657,13 +663,13 @@ export class MainViewModel extends Observable {
         activityData = activityData.slice(1);
         // update coast data
         const maxCoast = activityData.reduce((max, obj) => {
-          return obj[ActivityData.Info.CoastName] > max ?
-            obj[ActivityData.Info.CoastName] : max;
+          return obj.coast_time_avg > max ?
+            obj.coast_time_avg : max;
         }, 0);
         const coastData = activityData.map(e => {
           return {
             day: this.format(new Date(e.date), 'dd'),
-            value: (e[ActivityData.Info.CoastName] * 100.0) / maxCoast
+            value: (e.coast_time_avg * 100.0) / maxCoast
           };
         });
         // Log.D('Highest Coast Value:', maxCoast);
@@ -672,13 +678,13 @@ export class MainViewModel extends Observable {
 
         // update distance data
         const maxDist = activityData.reduce((max, obj) => {
-          return obj[ActivityData.Info.DistanceName] > max ?
-            obj[ActivityData.Info.DistanceName] : max;
+          return obj.watch_distance > max ?
+            obj.watch_distance : max;
         }, 0.0);
         const distanceData = activityData.map(e => {
           return {
             day: this.format(new Date(e.date), 'dd'),
-            value: (e[ActivityData.Info.DistanceName] * 100.0) / maxDist
+            value: (e.watch_distance * 100.0) / maxDist
           };
         });
         // Log.D('Highest Distance Value:', maxDist);
@@ -889,130 +895,42 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  saveActivityData(args: {
-    pushes?: number;
-    coast?: number;
-    distance?: number;
-  }) {
-    // now save to database
-    const pushes = args.pushes || 0;
-    const coast = args.coast || 0;
-    const distance = args.distance || 0;
-    if (pushes === 0 && coast === 0 && distance === 0) {
-      return Promise.reject(
-        'Must provide at least one valid activity data point!'
-      );
-    }
-    return this.getRecentInfoFromDatabase(1)
-      .then(infos => {
-        // Log.D('recent infos', infos);
-        if (!infos || !infos.length) {
-          // record the data if we have it
-          if (pushes > 0 && coast > 0) {
-            // make the first entry for computing distance differences
-            const firstEntry = ActivityData.Info.newInfo(
-              undefined,
-              subDays(new Date(), 1),
-              0,
-              pushes,
-              coast
-            );
-            return this.sqliteService.insertIntoTable(
-              ActivityData.Info.TableName,
-              firstEntry
-            );
-          }
-        }
-      })
-      .then(() => {
-        return this.getTodaysActivityInfoFromDatabase();
-      })
-      .then(u => {
-        if (u[ActivityData.Info.IdName]) {
-          // there was a record, so we need to update it. we add the
-          // already used distance plus the amount of new distance
-          // that has been used
-          const updatedDistance = distance + u[ActivityData.Info.DistanceName];
-          const updatedPushes =
-            pushes || u[ActivityData.Info.PushName];
-          const updatedCoast =
-            coast || u[ActivityData.Info.CoastName];
-          return this.sqliteService.updateInTable(
-            ActivityData.Info.TableName,
-            {
-              [ActivityData.Info.PushName]: updatedPushes,
-              [ActivityData.Info.CoastName]: updatedCoast,
-              [ActivityData.Info.DistanceName]: updatedDistance,
-              [ActivityData.Info.HasBeenSentName]: 0
-            },
-            {
-              [ActivityData.Info.IdName]: u.id
-            }
-          );
-        } else {
-          // this is the first record, so we create it
-          return this.sqliteService.insertIntoTable(
-            ActivityData.Info.TableName,
-            ActivityData.Info.newInfo(
-              undefined,
-              new Date(),
-              pushes,
-              coast,
-              distance
-            )
-          );
-        }
-      })
-      .then(() => {
-        return this.updateChartData();
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Failed saving activity:', err);
-        alert({
-          title: L('failures.title'),
-          message: `${L('failures.saving-activity')}: ${err}`,
-          okButtonText: L('buttons.ok')
-        });
-      });
-  }
-
   getTodaysActivityInfoFromDatabase() {
     return this.sqliteService
-      .getLast(ActivityData.Info.TableName, ActivityData.Info.IdName)
+      .getLast(DailyActivity.Info.TableName, DailyActivity.Info.IdName)
       .then(e => {
         const date = new Date((e && e[1]) || null);
         if (e && e[1] && isToday(date)) {
           // @ts-ignore
-          return ActivityData.Info.loadInfo(...e);
+          return DailyActivity.Info.loadInfo(...e);
         } else {
-          return ActivityData.Info.newInfo(undefined, new Date(), 0, 0, 0);
+          return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
         }
       })
       .catch(err => {
         Sentry.captureException(err);
         // nothing was found
-        return ActivityData.Info.newInfo(undefined, new Date(), 0, 0, 0);
+        return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
       });
   }
 
   getActivityInfoFromDatabase(numDays: number) {
-    const dates = ActivityData.Info.getPastDates(numDays);
+    const dates = DailyActivity.Info.getPastDates(numDays);
     const activityInfo = dates.map(d => {
       if (debug) {
         const pushes = Math.random() * 3000 + 1000;
         const coast = Math.random() * 10.0 + 0.5;
         const distance = Math.random() * 5.0 + 1.0;
-        return ActivityData.Info.newInfo(null, d, pushes, coast, distance);
+        return DailyActivity.Info.newInfo(d, pushes, coast, distance);
       } else {
-        return ActivityData.Info.newInfo(null, d, 0, 0, 0);
+        return DailyActivity.Info.newInfo(d, 0, 0, 0);
       }
     });
     return this.getRecentInfoFromDatabase(numDays + 1)
       .then(objs => {
         objs.map(o => {
           // @ts-ignore
-          const obj = ActivityData.Info.loadInfo(...o);
+          const obj = DailyActivity.Info.loadInfo(...o);
           // have to ts-ignore since we're using the java defs.
           // @ts-ignore
           const objDate = new Date(obj.date);
@@ -1035,8 +953,8 @@ export class MainViewModel extends Observable {
   getRecentInfoFromDatabase(numRecentEntries: number) {
     try {
       return this.sqliteService.getAll({
-        tableName: ActivityData.Info.TableName,
-        orderBy: ActivityData.Info.DateName,
+        tableName: DailyActivity.Info.TableName,
+        orderBy: DailyActivity.Info.DateName,
         ascending: false,
         limit: numRecentEntries
       });
@@ -1048,11 +966,11 @@ export class MainViewModel extends Observable {
   getUnsentInfoFromDatabase(numEntries: number) {
     try {
       return this.sqliteService.getAll({
-        tableName: ActivityData.Info.TableName,
+        tableName: DailyActivity.Info.TableName,
         queries: {
-          [ActivityData.Info.HasBeenSentName]: 0
+          [DailyActivity.Info.HasBeenSentName]: 0
         },
-        orderBy: ActivityData.Info.IdName,
+        orderBy: DailyActivity.Info.IdName,
         ascending: true,
         limit: numEntries
       });
@@ -1071,14 +989,14 @@ export class MainViewModel extends Observable {
           // now send them one by one
           const promises = infos.map(i => {
             // @ts-ignore
-            i = ActivityData.Info.loadInfo(...i);
+            i = DailyActivity.Info.loadInfo(...i);
             // update info date here
-            i[ActivityData.Info.DateName] = new Date(
-              i[ActivityData.Info.DateName]
+            i[DailyActivity.Info.DateName] = new Date(
+              i[DailyActivity.Info.DateName]
             );
             return this.kinveyService.sendActivity(
               i,
-              i[ActivityData.Info.UuidName]
+              i[DailyActivity.Info.UuidName]
             );
           });
           return Promise.all(promises);
@@ -1091,12 +1009,12 @@ export class MainViewModel extends Observable {
             .map(r => {
               const id = r['_id'];
               return this.sqliteService.updateInTable(
-                ActivityData.Info.TableName,
+                DailyActivity.Info.TableName,
                 {
-                  [ActivityData.Info.HasBeenSentName]: 1
+                  [DailyActivity.Info.HasBeenSentName]: 1
                 },
                 {
-                  [ActivityData.Info.UuidName]: id
+                  [DailyActivity.Info.UuidName]: id
                 }
               );
             });

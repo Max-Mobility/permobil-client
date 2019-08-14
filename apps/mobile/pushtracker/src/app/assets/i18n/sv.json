@@ -96,6 +96,10 @@
   "my-activity-component": {
     "title": "Min aktivitet"
   },
+  "profile-settings": {
+    "language": "Språk",
+    "theme": "Tema"
+  },
   "profile-tab": {
     "about-you": "Om dig",
     "activity-goals": "Aktivitetsmål",

@@ -96,6 +96,10 @@
   "my-activity-component": {
     "title": "私の活動"
   },
+  "profile-settings": {
+    "language": "言語",
+    "theme": "テーマ"
+  },
   "profile-tab": {
     "about-you": "あなたについて",
     "activity-goals": "活動目標",

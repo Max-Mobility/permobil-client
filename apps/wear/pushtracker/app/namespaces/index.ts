@@ -1,2 +1,2 @@
 export * from './profile';
-export * from './activity-data';
+export * from './daily-activity';

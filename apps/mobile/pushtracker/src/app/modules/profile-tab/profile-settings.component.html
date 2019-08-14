@@ -6,75 +6,76 @@
     <Label row="0" col="1" class="action-bar-title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
   </GridLayout>
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
-      <StackLayout row="0">
-        // Units Section
-        <Label class="category" [text]="'general.units' | translate"></Label>
-        // Height
-        <StackLayout (tap)="onItemTap($event, 'height')">
-          <Label class="setting-title" [text]="'general.height' | translate"></Label>
-          <Label class="setting-value" [text]="HEIGHT" textWrap="true"></Label>
-        </StackLayout>
-        // Weight
-        <StackLayout (tap)="onItemTap($event, 'weight')">
-          <Label class="setting-title" [text]="'general.weight' | translate"></Label>
-          <Label class="setting-value" [text]="WEIGHT" textWrap="true"></Label>
-        </StackLayout>
-
-        // Distance
-        <StackLayout (tap)="onItemTap($event, 'distance')">
-          <Label class="setting-title" [text]="'general.distance' | translate"></Label>
-          <Label class="setting-value" [text]="DISTANCE" textWrap="true"></Label>
-        </StackLayout>
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
+      // Units Section
+      <Label row="0" class="category" [text]="'general.units' | translate"></Label>
+      // Height
+      <StackLayout row="1" (tap)="onItemTap($event, 'height')">
+        <Label class="setting-title" [text]="'general.height' | translate"></Label>
+        <Label class="setting-value" [text]="HEIGHT" textWrap="true"></Label>
       </StackLayout>
-      <StackLayout row="1">
-        // Smart Drive Section
-        <Label class="category" [text]="'general.smartdrive' | translate"></Label>
-
-        // Max Speed
-        <StackLayout (tap)="onItemTap($event, 'max-speed')">
-          <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
-          <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
-        </StackLayout>
-
-        // Acceleration
-        <StackLayout (tap)="onItemTap($event, 'acceleration')">
-          <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
-          <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
-        </StackLayout>
-
-        // Tap sensitivity
-        <StackLayout (tap)="onItemTap($event, 'tap-sensitivity')">
-          <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
-          <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
-        </StackLayout>
-        // Mode
-        <StackLayout (tap)="onItemTap($event, 'mode')">
-          <Label class="setting-title" [text]="'general.mode' | translate"></Label>
-          <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
-        </StackLayout>
-
-        // Switch Control Max Speed
-        <StackLayout (tap)="onItemTap($event, 'switch-control-max-speed')">
-          <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
-          <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
-        </StackLayout>
-
-        // Switch Control Mode
-        <StackLayout (tap)="onItemTap($event, 'switch-control-mode')">
-          <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
-          <Label class="setting-value" [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
-        </StackLayout>
+      // Weight
+      <StackLayout row="2" (tap)="onItemTap($event, 'weight')">
+        <Label class="setting-title" [text]="'general.weight' | translate"></Label>
+        <Label class="setting-value" [text]="WEIGHT" textWrap="true"></Label>
       </StackLayout>
-      <StackLayout row="2">
-        // Display Section
-        <Label class="category" [text]="'general.display' | translate"></Label>
 
-        // Theme
-        <StackLayout (tap)="onItemTap($event, 'theme')">
-          <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
-          <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
-        </StackLayout>
+      // Distance
+      <StackLayout row="3" (tap)="onItemTap($event, 'distance')">
+        <Label class="setting-title" [text]="'general.distance' | translate"></Label>
+        <Label class="setting-value" [text]="DISTANCE" textWrap="true"></Label>
+      </StackLayout>
+
+      // Smart Drive Section
+      <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
+
+      // Max Speed
+      <StackLayout row="5" (tap)="onItemTap($event, 'max-speed')">
+        <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
+        <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
+      </StackLayout>
+
+      // Acceleration
+      <StackLayout row="6" (tap)="onItemTap($event, 'acceleration')">
+        <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
+        <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
+      </StackLayout>
+
+      // Tap sensitivity
+      <StackLayout row="7" (tap)="onItemTap($event, 'tap-sensitivity')">
+        <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
+        <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
+      </StackLayout>
+      // Mode
+      <StackLayout row="8" (tap)="onItemTap($event, 'mode')">
+        <Label class="setting-title" [text]="'general.mode' | translate"></Label>
+        <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
+      </StackLayout>
+
+      // Switch Control Max Speed
+      <StackLayout row="9" (tap)="onItemTap($event, 'switch-control-max-speed')">
+        <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
+        <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
+      </StackLayout>
+
+      // Switch Control Mode
+      <StackLayout row="10" (tap)="onItemTap($event, 'switch-control-mode')">
+        <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
+        <Label class="setting-value" [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
+      </StackLayout>
+
+      // Display Section
+      <Label row="11" class="category" [text]="'general.display' | translate"></Label>
+
+      // Theme
+      <StackLayout row="12" (tap)="onItemTap($event, 'theme')">
+        <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
+        <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
+      </StackLayout>
+      // Language
+      <StackLayout row="13" (tap)="onItemTap($event, 'language')">
+        <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
+        <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>
     </GridLayout>
   </ScrollView>
@@ -86,10 +87,7 @@
       <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
       <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
-        <Slider row="0" col="0" colSpan="2" class="slider"
-                [value]="SLIDER_VALUE"
-                (valueChange)="onSliderValueChange($event)"
-                minValue="1" maxValue="10"></Slider>
+        <Slider row="0" col="0" colSpan="2" class="slider" [value]="SLIDER_VALUE" (valueChange)="onSliderValueChange($event)" minValue="1" maxValue="10"></Slider>
         <Label class="slider-value" row="0" col="2" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
         <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
         <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>

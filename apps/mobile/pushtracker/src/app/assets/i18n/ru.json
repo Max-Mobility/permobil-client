@@ -96,6 +96,10 @@
   "my-activity-component": {
     "title": "Моя активность"
   },
+  "profile-settings": {
+    "language": "язык",
+    "theme": "тема"
+  },
   "profile-tab": {
     "about-you": "О вас",
     "activity-goals": "Цели деятельности",

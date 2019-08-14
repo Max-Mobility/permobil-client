@@ -96,6 +96,10 @@
   "my-activity-component": {
     "title": "Mijn activiteit"
   },
+  "profile-settings": {
+    "language": "Taal",
+    "theme": "Thema"
+  },
   "profile-tab": {
     "about-you": "Over jou",
     "activity-goals": "Activiteitsdoelen",
