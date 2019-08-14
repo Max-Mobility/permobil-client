@@ -158,7 +158,8 @@ export class ActivityTabComponent implements OnInit {
     formatActivityForView(viewMode) {
         if (viewMode === 'Day') {
             const activity = this._activityService.dailyActivity;
-            this.dayChartLabel = '› ' + (this._activityService.dailyActivity.push_count || 0) + ' pushes';
+            this.dayChartLabel = '🕒 ' + (this._activityService.dailyActivity.coast_time_avg || 0).toFixed(1) +
+                ' s         › ' + (this._activityService.dailyActivity.push_count || 0) + ' pushes';
             if (activity) {
                 const result = [];
                 const date = new Date();
