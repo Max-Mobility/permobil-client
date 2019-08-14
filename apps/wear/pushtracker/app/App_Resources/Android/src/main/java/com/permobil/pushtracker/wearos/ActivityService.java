@@ -184,7 +184,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     mKinveyApiService = retrofit.create(KinveyApiService.class);
 
     // save the authorization string needed for kinvey
-    String authorizationToEncode = "bradwaynemartin@gmail.com:testtest";
+    String authorizationToEncode = "pranav.kumar@permobil.com:test";
     byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
     mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
     mKinveyAuthorization = "Basic " + mKinveyAuthorization;
