@@ -4,11 +4,11 @@ import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
 
 @Component({
-  selector: 'feedback',
+  selector: 'support',
   moduleId: module.id,
-  templateUrl: 'feedback.component.html'
+  templateUrl: 'support.component.html'
 })
-export class FeedbackComponent implements OnInit {
+export class SupportComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
