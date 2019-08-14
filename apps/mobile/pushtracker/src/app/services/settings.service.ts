@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Device } from '@permobil/core';
 import {
   DataStore as KinveyDataStore,
-  User as KinveyUser,
-  Query as KinveyQuery
+  Query as KinveyQuery,
+  User as KinveyUser
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 
@@ -15,7 +15,7 @@ export class SettingsService {
 
   private datastore = KinveyDataStore.collection('SmartDriveSettings');
 
-  constructor(private _logService: LoggingService) { }
+  constructor(private _logService: LoggingService) {}
 
   private toData(): SettingsService.Data {
     return {
