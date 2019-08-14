@@ -98,7 +98,7 @@ export class ActivityTabComponent implements OnInit {
         this.minimumDateTimevalue = new Date(year, month, day, 0);
         this.maximumDateTimeValue = new Date(year, month, day, 23);
         this._initMonthViewStyle();
-        this.loadActivity();
+        this.loadDailyActivity();
     }
 
     ngOnInit() {
@@ -108,8 +108,8 @@ export class ActivityTabComponent implements OnInit {
         );
     }
 
-    async loadActivity() {
-        const didLoad = await this._activityService.loadActivity(this.currentDayInView);
+    async loadDailyActivity() {
+        const didLoad = await this._activityService.loadDailyActivity(this.currentDayInView);
         if (didLoad) {
             this.activity = new ObservableArray(this.formatActivityForView('Day'));
             this._initDayChartTitle();
@@ -126,9 +126,27 @@ export class ActivityTabComponent implements OnInit {
         }
     }
 
+    async loadWeeklyActivity() {
+        const didLoad = await this._activityService.loadWeeklyActivity(this.weekStart, this.weekEnd);
+        if (didLoad) {
+            // this.activity = new ObservableArray(this.formatActivityForView('Day'));
+            // this._initDayChartTitle();
+            // const date = this.currentDayInView;
+            // const sunday = this._getFirstDayOfWeek(date);
+            // this.weekStart = sunday;
+            // this.weekEnd = this.weekStart;
+            // this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+            // this.minDate = new Date('01/01/1999');
+            // this.maxDate = new Date('01/01/2099');
+        }
+        else {
+            this.activity = new ObservableArray(this.formatActivityForView('Day'));
+        }
+    }
+
     formatActivityForView(viewMode) {
         if (viewMode === 'Day') {
-            const activity = this._activityService.activity;
+            const activity = this._activityService.dailyActivity;
             if (activity) {
                 const result = [];
                 const date = new Date();
@@ -198,6 +216,7 @@ export class ActivityTabComponent implements OnInit {
                 this.activity = new ObservableArray(this.formatActivityForView('Day'));
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
+                this.loadWeeklyActivity();
                 this.activity = new ObservableArray(this._dataService.getSource('Week'));
             } else if (newIndex === 2) {
                 this._initMonthChartTitle();
@@ -254,14 +273,14 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.loadActivity();
+        this.loadDailyActivity();
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this.loadActivity();
+        this.loadDailyActivity();
     }
 
     _updateForwardButtonClassName(event) {
@@ -290,7 +309,7 @@ export class ActivityTabComponent implements OnInit {
     onWeekPointSelected(event) {
         const pointIndex = event.pointIndex;
         this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
-        this.loadActivity();
+        this.loadDailyActivity();
         this.tabSelectedIndex = 0;
     }
 
