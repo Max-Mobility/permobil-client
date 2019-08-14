@@ -221,9 +221,9 @@ export class ActivityTabComponent implements OnInit {
 
         // Today cell style
         const todayCellStyle = new DayCellStyle();
-        todayCellStyle.cellBorderColor = new Color('#8dd5e3');
+        todayCellStyle.cellBorderColor = new Color('White');
         todayCellStyle.cellTextSize = 12;
-        todayCellStyle.cellTextColor = new Color('Black');
+        todayCellStyle.cellTextColor = new Color('#0067a6');
         this.monthViewStyle.todayCellStyle = todayCellStyle;
 
         // Day cell style
@@ -257,12 +257,22 @@ export class ActivityTabComponent implements OnInit {
         this._initMonthChartTitle();
     }
 
+    onCalendarLoaded(args) {
+        const calendar = <RadCalendar>args.object;
+        const telCalendar = calendar.nativeView; // com.telerik.widget.calendar.RadCalendarView
+        const gestureManager = telCalendar.getGestureManager(); // com.telerik.widget.calendar.CalendarGestureManager
+        gestureManager.setDoubleTapToChangeDisplayMode(false);
+        gestureManager.setPinchCloseToChangeDisplayMode(false);
+        gestureManager.setPinchOpenToChangeDisplayMode(false);
+        gestureManager.setSwipeDownToChangeDisplayMode(false);
+        gestureManager.setSwipeUpToChangeDisplayMode(false);
+        gestureManager.suspendScroll();
+    }
+
     onCalendarDateSelected(args) {
         const date: Date = args.date;
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
-        console.log('Date selected', this.currentDayInView);
         this.tabSelectedIndex = 0;
     }
-
 }

@@ -81,8 +81,9 @@
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextMonthTap($event)"></Button>
                 </GridLayout>
                 <RadCalendar #calendar row="1" selectionMode="Single" viewMode="Month" locale="en-US" 
-                    height="250" width="80%" marginTop="20" 
-                    transitionMode="Stack" [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
+                    (loaded)="onCalendarLoaded($event)"
+                    height="400" width="90%" marginTop="20" 
+                    transitionMode="Flip" [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
                     (dateSelected)="onCalendarDateSelected($event)">
                 </RadCalendar>
             </StackLayout>
