@@ -74,6 +74,7 @@ export class ActivityTabComponent implements OnInit {
     public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
     private _calendar: RadCalendar;
+    private _dayViewTimeArray: number[] = [];
 
     // Colors
     private _colorWhite = new Color('White');
@@ -99,6 +100,15 @@ export class ActivityTabComponent implements OnInit {
         this.maximumDateTimeValue = new Date(year, month, day, 23);
         this._initMonthViewStyle();
         this.loadDailyActivity();
+        { // Initialize time array for day view
+            const rangeStart = 0;
+            const rangeEnd = 24;
+            let rangeIterator = rangeStart;
+            while (rangeIterator <= rangeEnd) {
+                this._dayViewTimeArray.push(rangeIterator);
+                rangeIterator += 0.5;
+            }
+        }
     }
 
     ngOnInit() {
@@ -158,18 +168,9 @@ export class ActivityTabComponent implements OnInit {
                 };
                 const records = activity.records;
 
-                const rangeStart = 0;
-                const rangeEnd = 24;
-                const timeArray = [];
-                let rangeIterator = rangeStart;
-                while (rangeIterator <= rangeEnd) {
-                    timeArray.push(rangeIterator);
-                    rangeIterator += 0.5;
-                }
-
                 let j = 0;
-                for (const i in timeArray) {
-                    const timePoint = timeArray[i];
+                for (const i in this._dayViewTimeArray) {
+                    const timePoint = this._dayViewTimeArray[i];
                     if (records && j < records.length) {
                         while (j < records.length) {
                             const record = records[j];

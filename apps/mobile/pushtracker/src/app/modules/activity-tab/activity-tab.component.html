@@ -14,6 +14,7 @@
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
+                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center" class="chart-title" text="&#x267F;"></Label>
                 </GridLayout>
                 <RadCartesianChart row="1" height="200" width="90%">
                     <RadCartesianChartGrid 
@@ -29,11 +30,11 @@
                     </CategoricalAxis>
                     <LinearAxis tkCartesianVerticalAxis
                         horizontalLocation="Right" labelMargin="10" lineHidden="true"
-                        maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
+                        maximum="40" minumum="1" majorStep="15" labelFormat="%.0f"></LinearAxis>
                     <BarSeries tkCartesianSeries [items]="activity"
                         categoryProperty="xAxis" valueProperty="yAxis">
                     </BarSeries>
-                    <Trackball tkCartesianTrackball snapMode="AllClosestPointsfsdfsd" showIntersectionPoints="true"></Trackball>
+                    <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"></Trackball>
                 </RadCartesianChart>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
