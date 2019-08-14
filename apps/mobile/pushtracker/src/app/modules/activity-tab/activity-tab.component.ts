@@ -98,8 +98,8 @@ export class ActivityTabComponent implements OnInit {
     public minDate: Date;
     public maxDate: Date;
     public monthViewStyle: CalendarMonthViewStyle;
-    @ViewChild('nextDay', { read: true, static: false }) private _nextDayButton : ElementRef;
-    @ViewChild('calendar', { read: true, static: false }) private _calendar : ElementRef;
+    @ViewChild('nextDay', { read: true, static: false }) private _nextDayButton: ElementRef;
+    @ViewChild('calendar', { read: true, static: false }) private _calendar: ElementRef;
 
     constructor(
         private _logService: LoggingService,
