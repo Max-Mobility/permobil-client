@@ -24,18 +24,25 @@
                         horizontalStripLinesVisible="false"
                         verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>     
-                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
+                    <CategoricalAxis tkCartesianHorizontalAxis 
+                        [labelTextColor]="_savedTheme == 'DARK' ? 'White' : 'Black'"
+                        lineHidden="true"
                         tickHidden="false" majorTickInterval="4"
                         labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
                     </CategoricalAxis>
                     <LinearAxis tkCartesianVerticalAxis
+                        [labelTextColor]="_savedTheme == 'DARK' ? 'White' : 'Black'"
                         horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="40" minumum="1" majorStep="15" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity"
-                        categoryProperty="xAxis" valueProperty="yAxis">
+                    <BarSeries tkCartesianSeries [items]="activity" seriesName="DailyActivity"
+                        categoryProperty="xAxis" [valueProperty]="_dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
                     <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"></Trackball>
                 </RadCartesianChart>
+                <GridLayout width="50%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1" colSpan="3">
+                    <Button [class]="_dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0" col="2" horizontalAlignment="left" text="Coast Time" (tap)="onDailyActivityCoastTimeButtonTap($event)"></Button>
+                    <Button [class]="_dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3" horizontalAlignment="right" text="Push Count" (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
+                  </GridLayout>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
                 <!-- Week View -->
