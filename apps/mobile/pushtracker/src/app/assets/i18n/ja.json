@@ -124,5 +124,8 @@
     "sign-up-success": "あなたのユーザー名は：",
     "title": "サインアップ",
     "user-exists": "このメールのアカウントは既に存在します。"
+  },
+  "support-component": {
+    "title": "サポート"
   }
 }

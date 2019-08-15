@@ -16,7 +16,12 @@ export class SupportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb('feedback.component OnInit');
+    this._logService.logBreadCrumb('support.component OnInit');
+  }
+
+  onNavBtnTap() {
+    console.log('nav btn tap');
+    this._params.closeCallback('');
   }
 
   closeModal(event) {

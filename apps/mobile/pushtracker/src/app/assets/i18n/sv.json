@@ -124,5 +124,8 @@
     "sign-up-success": "Ditt användarnamn är:",
     "title": "Bli Medlem",
     "user-exists": "Det finns redan ett konto för den här e-postmeddelanden."
+  },
+  "support-component": {
+    "title": "Stöd"
   }
 }

@@ -124,5 +124,8 @@
     "sign-up-success": "Jouw gebruikersnaam is:",
     "title": "Inschrijven",
     "user-exists": "Er bestaat al een account voor deze e-mail."
+  },
+  "support-component": {
+    "title": "Ondersteuning"
   }
 }
