@@ -38,7 +38,7 @@ export class KinveyService {
     delete o.has_been_sent;
     // set watch_uuid for log
     o.watch_uuid = device.uuid;
-    o.watch_serial_number = this.watch_serial_number;
+    o.watch_serial_number = this.watch_serial_number || 'not_provided';
   }
 
   getFile(
@@ -136,24 +136,28 @@ export class KinveyService {
 
   sendError(error: any, id?: string) {
     this.reformatForDb(error);
+    error.data_type = 'SmartDriveError';
     if (id) return this.put(KinveyService.api_error_db, error, id);
     else return this.post(KinveyService.api_error_db, error);
   }
 
   sendInfo(info: any, id?: string) {
     this.reformatForDb(info);
+    info.data_type = 'SmartDriveInfo';
     if (id) return this.put(KinveyService.api_info_db, info, id);
     else return this.post(KinveyService.api_info_db, info);
   }
 
   sendActivity(activity: any, id?: string) {
     this.reformatForDb(activity);
+    activity.data_type = 'SmartDriveUsage';
     if (id) return this.put(KinveyService.api_activity_db, activity, id);
     else return this.post(KinveyService.api_activity_db, activity);
   }
 
   sendSettings(settings: any, id?: string) {
     this.reformatForDb(settings);
+    settings.data_type = 'SmartDriveSettings';
     if (id) return this.put(KinveyService.api_settings_db, settings, id);
     else return this.post(KinveyService.api_settings_db, settings);
   }
