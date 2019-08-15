@@ -19,7 +19,7 @@
                     <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center"
                         class="chart-label" [text]="dayChartLabel"></Label>
                 </GridLayout>
-                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" marginTop="50">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
                     <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
                         horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>
@@ -39,7 +39,7 @@
                             [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
                             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
                     </Palette>
-                    <Trackball tkCartesianTrackball snapMode="ClosestPoint" 
+                    <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"
                         (trackBallContentRequested)="onTrackBallContentRequested($event)">
                     </Trackball>
                     <ChartGridLineAnnotation #dailyActivityAnnotation tkCartesianAnnotations axisId="vAxis"
