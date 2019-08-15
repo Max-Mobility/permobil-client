@@ -1,9 +1,9 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
   // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="50, *, *">
-    <Button row="0" col="0" text="&#xe5c4;" ripple class="back-btn" (tap)="closeModal($event)"></Button>
-    <Label row="0" col="1" class="action-bar-title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
+  <GridLayout row="0" rows="*" columns="50, *, *" class="action-bar">
+    <Button row="0" col="0" text="&#xe5cd;" ripple class="nav-btn" (tap)="closeModal($event)"></Button>
+    <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
   </GridLayout>
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">

@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Log, PushTrackerUser} from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
+import { SettingsService } from '../../services';
 import { AppResourceIcons } from '../../enums';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ChangeDetectionStrategy } from '@angular/core';
@@ -29,6 +30,7 @@ export class TabsComponent {
 
   constructor(
     private _translateService: TranslateService,
+    private _settingsService: SettingsService,
     private _routerExtension: RouterExtensions,
     private _activeRoute: ActivatedRoute,
     private _page: Page
@@ -63,6 +65,7 @@ export class TabsComponent {
       ],
       { relativeTo: this._activeRoute }
     );
+    this._settingsService.loadSettings();
   }
 
   // onTabViewLoaded(args) {

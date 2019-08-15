@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Device } from '@permobil/core';
+import * as LS from 'nativescript-localstorage';
+import { STORAGE_KEYS } from '../enums';
 import {
   DataStore as KinveyDataStore,
   Query as KinveyQuery,
@@ -15,7 +17,7 @@ export class SettingsService {
 
   private datastore = KinveyDataStore.collection('SmartDriveSettings');
 
-  constructor(private _logService: LoggingService) {}
+  constructor(private _logService: LoggingService) { }
 
   private toData(): SettingsService.Data {
     return {
@@ -43,7 +45,27 @@ export class SettingsService {
     });
   }
 
-  async loadSettings(): Promise<boolean> {
+  saveToFileSystem() {
+    LS.setItemObject(
+      STORAGE_KEYS.DEVICE_SETTINGS,
+      this.settings.toObj()
+    );
+    LS.setItemObject(
+      STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS,
+      this.switchControlSettings.toObj()
+    );
+  }
+
+  loadFromFileSystem() {
+    this.settings.copy(
+      LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS)
+    );
+    this.switchControlSettings.copy(
+      LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
+    );
+  }
+
+  async loadSettings() {
     try {
       await this.login();
       await this.datastore.sync();
@@ -59,12 +81,11 @@ export class SettingsService {
       const data = await stream.toPromise();
       if (data && data.length) {
         this.fromData(data[0]);
-        return true;
+      } else {
+        this.loadFromFileSystem();
       }
-      return false;
     } catch (err) {
       this._logService.logException(err);
-      return false;
     }
   }
 

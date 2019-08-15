@@ -6,11 +6,7 @@ import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import { isAndroid } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
@@ -77,9 +73,10 @@ export class ForgotPasswordComponent implements OnInit {
 
     this.emailError = '';
 
-    this._loadingIndicator.show(
-      this._translateService.instant('general.submitting')
-    );
+    this._loadingIndicator.show({
+      message: this._translateService.instant('general.submitting'),
+      dimBackground: true
+    });
 
     KinveyUser.resetPassword(this.userEmail)
       .then(resp => {
@@ -103,25 +100,9 @@ export class ForgotPasswordComponent implements OnInit {
       });
   }
 
-  textfieldLoaded(args) {
-    if (isAndroid) {
-      const tf = args.object as TextField;
-      tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-    }
-  }
-
-  onFocusTF() {
-    (this.emailTextBox.nativeElement as StackLayout).className =
-      'textbox-active';
-  }
-
-  onBlurTF() {
-    (this.emailTextBox.nativeElement as StackLayout).className = 'textbox';
-  }
-
-  onEmailTextChange(args: PropertyChangeData) {
+  onEmailTextChange(value) {
     // make sure it's a valid email
-    this.userEmail = args.value.trim();
+    this.userEmail = value.trim();
     this.emailError = !validate(this.userEmail)
       ? `"${this.userEmail}" ` +
         this._translateService.instant('general.email-error')

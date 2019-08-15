@@ -7,25 +7,13 @@ import {
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { Log } from '@permobil/core';
-import {
-  hideKeyboard,
-  preventKeyboardFromShowing
-} from '@permobil/nativescript';
-import { subYears } from 'date-fns';
+import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
-import {
-  DateTimePicker,
-  DateTimePickerStyle
-} from 'nativescript-datetimepicker';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { isAndroid } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
@@ -50,7 +38,21 @@ export class SignUpComponent implements OnInit {
   @ViewChild('birthdayTextBox', { static: true })
   birthdayTextBox: ElementRef;
 
-  user = { username: '', password: '', first_name: '', last_name: '', dob: '' };
+  user = {
+    username: '',
+    password: '',
+    first_name: '',
+    last_name: '',
+    dob: '',
+    gender: 'Male',
+    height: 0,
+    height_unit_preference: 1,
+    weight: 0,
+    weight_unit_preference: 1,
+    distance_unit_preference: 1,
+    activity_goal_distance: 60,
+    activity_goal_coast_time: 45
+  };
 
   passwordError = '';
   emailError = '';
@@ -89,89 +91,12 @@ export class SignUpComponent implements OnInit {
     this._router.back();
   }
 
-  textfieldLoaded(args) {
-    if (isAndroid) {
-      const tf = args.object as TextField;
-      tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-    }
-  }
-
-  onBirthdayTap(args) {
-    // ugly hack for now to just force clear the active styles
-    this.onBlurTF(0);
-    this.onBlurTF(1);
-    this.onBlurTF(2);
-    this.onBlurTF(3);
-    (args.object as StackLayout).className = 'textbox-active';
-
-    const dateTimePickerStyle = DateTimePickerStyle.create(
-      args.object as StackLayout
-    );
-
-    DateTimePicker.pickDate(
-      {
-        context: (args.object as StackLayout)._context,
-        date: subYears(new Date(), 18),
-        minDate: subYears(new Date(), 110),
-        maxDate: new Date(),
-        title: this._translateService.instant('general.birthday'),
-        okButtonText: this._translateService.instant('general.ok'),
-        cancelButtonText: this._translateService.instant('general.cancel'),
-        locale: this._translateService.getDefaultLang()
-      },
-      dateTimePickerStyle
-    )
-      .then(result => {
-        (args.object as StackLayout).className = 'textbox';
-
-        if (result) {
-          const date = new Date(result);
-          const month = date.getUTCMonth() + 1;
-          const day = date.getUTCDate();
-          const year = date.getUTCFullYear();
-          const dateFormatted = month + '/' + day + '/' + year;
-          Log.D('Birthday formatted', dateFormatted);
-          this.user.dob = dateFormatted;
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-        (args.object as StackLayout).className = 'textbox';
-      });
-  }
-
-  onFocusTF(args, index: number) {
-    if (index === 0) {
-      (this.emailTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    } else if (index === 1) {
-      (this.passwordTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    } else if (index === 2) {
-      (this.firstNameTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    } else if (index === 3) {
-      (this.lastNameTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    }
-  }
-
-  onBlurTF(index: number) {
-    hideKeyboard();
-
-    if (index === 0) {
-      (this.emailTextBox.nativeElement as StackLayout).className = 'textbox';
-    } else if (index === 1) {
-      (this.passwordTextBox.nativeElement as StackLayout).className = 'textbox';
-    } else if (index === 2) {
-      (this.firstNameTextBox.nativeElement as StackLayout).className =
-        'textbox';
-    } else if (index === 3) {
-      (this.lastNameTextBox.nativeElement as StackLayout).className = 'textbox';
-    }
+  onFuckTap(args) {
+    console.log('on fuck tap');
   }
 
   async onSubmitSignUp() {
+    console.dir(this.user);
     // validate the email
     const isEmailValid = this._isEmailValid(this.user.username);
     if (!isEmailValid) {
@@ -196,7 +121,8 @@ export class SignUpComponent implements OnInit {
     }
 
     this._loadingIndicator.show({
-      message: this._translateService.instant('sign-up.creating-account')
+      message: this._translateService.instant('sign-up.creating-account'),
+      dimBackground: true
     });
 
     // trim all the strings on user object
@@ -257,8 +183,8 @@ export class SignUpComponent implements OnInit {
     }
   }
 
-  onEmailTextChange(args) {
-    this.user.username = args.value;
+  onEmailTextChange(value) {
+    this.user.username = value;
     this._isEmailValid(this.user.username);
   }
 

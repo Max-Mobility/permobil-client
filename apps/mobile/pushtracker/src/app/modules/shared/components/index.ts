@@ -1,3 +1,9 @@
-import { ActionbarComponent } from './actionbar/actionbar.component';
+import { DataBoxComponent } from './data-box';
+import { MaxTextBoxComponent } from './max-text-box';
+import { MockActionbarComponent } from './mock-actionbar';
 
-export const SHARED_COMPONENTS: any[] = [ActionbarComponent];
+export const SHARED_COMPONENTS: any[] = [
+  DataBoxComponent,
+  MaxTextBoxComponent,
+  MockActionbarComponent
+];
