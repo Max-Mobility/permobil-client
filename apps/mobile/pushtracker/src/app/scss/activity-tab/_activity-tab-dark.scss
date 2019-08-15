@@ -70,7 +70,7 @@
     tab-text-color: $white;
     selected-tab-text-color: $white;
     tab-background-color: $black;
-    android-selected-tab-highlight-color: $permobil-cousteau;
+    android-selected-tab-highlight-color: $white;
   }
 
   .coast-time-btn-disabled,
@@ -84,7 +84,7 @@
   .coast-time-btn-enabled,
   .distance-btn-enabled {
     @extend .CHART_VIEW_BTN_BASE;
-    background-color: $permobil-cousteau;
+    background-color: #502980;
     color: $white;
   }
 
