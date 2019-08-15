@@ -2720,7 +2720,7 @@ export class MainViewModel extends Observable {
             battery,
             driveDistance,
             coastDistance
-          )
+          );
           // this is the first record, so we create it
           return this._sqliteService.insertIntoTable(
             SmartDriveData.Info.TableName,
