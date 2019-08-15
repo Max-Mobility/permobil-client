@@ -101,6 +101,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   public boolean isDebuggable = false;
 
+  public String watchSerialNumber = null;
+
   private BroadcastReceiver timeReceiver = null;
   private BroadcastReceiver batteryReceiver = null;
   private Location mLastKnownLocation = null;
@@ -189,6 +191,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
     mKinveyAuthorization = "Basic " + mKinveyAuthorization;
 
+    // get the serial number from the data store
+    watchSerialNumber = datastore.getSerialNumber();
+    // make sure to set the serial number
+    currentActivity.watch_serial_number = this.watchSerialNumber;
+
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
@@ -256,6 +263,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         db.addRecord(currentActivity);
       }
     }
+    // make sure to set the serial number
+    currentActivity.watch_serial_number = this.watchSerialNumber;
   }
 
   private class SendRunnable implements Runnable {
@@ -380,6 +389,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           if (!sameDate) {
             // reset values to zero
             currentActivity = new DailyActivity();
+            // make sure to set the serial number
+            currentActivity.watch_serial_number = watchSerialNumber;
             // update the datastore - these are for the complication
             // providers and the pushtracker wear app
             datastore.setPushes(currentActivity.push_count);

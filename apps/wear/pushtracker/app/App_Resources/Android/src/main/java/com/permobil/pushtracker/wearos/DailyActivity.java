@@ -38,8 +38,6 @@ public class DailyActivity {
     public float coast_time_total;
     @Key("coast_time_avg")
     public float coast_time_avg;
-    @Key("distance_phone")
-    public float distance_phone;
     @Key("distance_watch")
     public float distance_watch;
     @Key("distance_smartdrive_coast")
@@ -68,7 +66,6 @@ public class DailyActivity {
                   int pushes,
                   float coastTimeTotal,
                   float coastTimeAvg,
-                  float phoneDist,
                   float watchDist,
                   float sdCoastDist,
                   float sdDriveDist,
@@ -78,7 +75,6 @@ public class DailyActivity {
       this.push_count = pushes;
       this.coast_time_total = coastTimeTotal;
       this.coast_time_avg = coastTimeAvg;
-      this.distance_phone = phoneDist;
       this.distance_watch = watchDist;
       this.distance_smartdrive_coast = sdCoastDist;
       this.distance_smartdrive_drive = sdDriveDist;
@@ -110,6 +106,10 @@ public class DailyActivity {
   @Key("start_time")
   public long start_time;
 
+  // serial number of watch from which this data came
+  @Key("watch_serial_number")
+  public String watch_serial_number;
+
   // total number of pushes
   @Key("push_count")
   public int push_count;
@@ -124,10 +124,6 @@ public class DailyActivity {
   // average coast time for all pushes
   @Key("heart_rate")
   public float heart_rate;
-
-  // distance calculated from phone (if any)
-  @Key("distance_phone")
-  public float distance_phone;
 
   // distance calculated from watch (if any)
   @Key("distance_watch")
@@ -158,11 +154,11 @@ public class DailyActivity {
     // time
     this.start_time = Instant.now().truncatedTo(ChronoUnit.DAYS).toEpochMilli();
     // now initialize the data
+    this.watch_serial_number = "";
     this.push_count = 0;
     this.coast_time_total = 0;
     this.coast_time_avg = 0;
     this.heart_rate = 0;
-    this.distance_phone = 0;
     this.distance_watch = 0;
     this.distance_smartdrive_coast = 0;
     this.distance_smartdrive_drive = 0;

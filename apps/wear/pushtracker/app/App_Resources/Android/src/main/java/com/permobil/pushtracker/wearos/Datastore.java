@@ -13,6 +13,7 @@ public class Datastore {
   public static final String CURRENT_COAST_KEY = "current_coast";
   public static final String CURRENT_TOTAL_COAST_KEY = "current_total_coast";
   public static final String CURRENT_DISTANCE_KEY = "current_distance";
+  public static final String WATCH_SERIAL_NUMBER_KEY = "watch_serial_number";
 
   private SharedPreferences preferences;
 
@@ -77,6 +78,16 @@ public class Datastore {
   public void setDistance(float distance) {
     SharedPreferences.Editor editor = preferences.edit();
     editor.putFloat(PREFIX + CURRENT_DISTANCE_KEY, distance);
+    editor.commit();
+  }
+
+  public String getSerialNumber() {
+    return preferences.getString(PREFIX + WATCH_SERIAL_NUMBER_KEY, "");
+  }
+
+  public void setSerialNumber(String serialNumber) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putString(PREFIX + WATCH_SERIAL_NUMBER_KEY, serialNumber);
     editor.commit();
   }
 }
