@@ -245,23 +245,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.settingsService.saveToFileSystem();
-      const pts = BluetoothService.PushTrackers.filter(p => p.connected);
-      if (pts && pts.length > 0) {
-        try {
-          await pts.map(async pt => {
-            await pt.sendSettingsObject(this.settingsService.settings);
-            await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
-          });
-        } catch (err) {
-          Log.E('error sending data to pushtracker', err);
-        }
-      }
-      try {
-        await this.settingsService.save();
-      } catch (error) {
-        Log.E('error pushing to server', error);
-      }
+      this.commitSettingsChange();
     }
   }
 
@@ -281,6 +265,29 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
     });
   }
 
+  async commitSettingsChange() {
+    this.settingsService.saveToFileSystem();
+    const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+    if (pts && pts.length > 0) {
+      Log.D('sending to pushtrackers:', pts);
+      await pts.map(async pt => {
+        try {
+          await pt.sendSettingsObject(this.settingsService.settings);
+          await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
+        } catch (err) {
+          Log.E('error sending data to pushtracker', err);
+        }
+      });
+    } else {
+      Log.D('no pushtrackers!');
+    }
+    try {
+      await this.settingsService.save();
+    } catch (error) {
+      Log.E('error pushing to server', error);
+    }
+  }
+
   async onSettingsChecked(args: EventData, setting: string) {
     let updatedSmartDriveSettings = false;
     // @ts-ignore
@@ -298,26 +305,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.settingsService.saveToFileSystem();
-      const pts = BluetoothService.PushTrackers.filter(p => p.connected);
-      if (pts && pts.length > 0) {
-        Log.D('sending to pushtrackers:', pts);
-        await pts.map(async pt => {
-          try {
-            await pt.sendSettingsObject(this.settingsService.settings);
-            await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
-          } catch (err) {
-            Log.E('error sending data to pushtracker', err);
-          }
-        });
-      } else {
-        Log.D('no pushtrackers!');
-      }
-      try {
-        await this.settingsService.save();
-      } catch (error) {
-        Log.E('error pushing to server', error);
-      }
+      this.commitSettingsChange();
     }
   }
 
