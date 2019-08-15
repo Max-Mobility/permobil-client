@@ -77,7 +77,7 @@ public class PushesComplicationProviderService extends ComplicationProviderServi
     SharedPreferences preferences =
       getSharedPreferences(
                            ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
-    int pushes = preferences.getInt(DATA_ID, 0.0f);
+    int pushes = preferences.getInt(DATA_ID, 0);
     String numberText = String.format(Locale.getDefault(), "%d", pushes);
 
     ComplicationData complicationData = null;
