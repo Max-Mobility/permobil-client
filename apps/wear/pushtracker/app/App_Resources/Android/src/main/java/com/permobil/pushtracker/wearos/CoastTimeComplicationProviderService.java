@@ -76,14 +76,9 @@ public class CoastTimeComplicationProviderService extends ComplicationProviderSe
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
       getSharedPreferences(
-                           ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
-    float coastTime =
-      preferences.getFloat(
-                           ComplicationToggleReceiver.getPreferenceKey(
-                                                                       thisProvider,
-                                                                       complicationId,
-                                                                       DATA_ID),
-                           0.0f);
+                           ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY,
+                           0);
+    float coastTime = preferences.getFloat(DATA_ID, 0.0f);
     String numberText = String.format(Locale.getDefault(), "%.1fs", coastTime);
 
     ComplicationData complicationData = null;

@@ -76,15 +76,9 @@ public class PushesComplicationProviderService extends ComplicationProviderServi
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
       getSharedPreferences(
-                           ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
-    float pushes =
-      preferences.getFloat(
-                           ComplicationToggleReceiver.getPreferenceKey(
-                                                                       thisProvider,
-                                                                       complicationId,
-                                                                       DATA_ID),
-                           0.0f);
-    String numberText = String.format(Locale.getDefault(), "%.0f", pushes);
+                           ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
+    int pushes = preferences.getInt(DATA_ID, 0.0f);
+    String numberText = String.format(Locale.getDefault(), "%d", pushes);
 
     ComplicationData complicationData = null;
 
