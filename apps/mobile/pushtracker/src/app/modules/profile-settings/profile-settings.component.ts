@@ -17,7 +17,7 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService, SettingsService } from '../../services';
+import { BluetoothService, LoggingService, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
@@ -55,6 +55,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
 
   constructor(
     public settingsService: SettingsService,
+    public bluetoothService: BluetoothService,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _routerExtensions: RouterExtensions,
@@ -172,7 +173,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
   }
 
   async saveSettings() {
-    let pushToServer = false;
+    let updatedSmartDriveSettings = false;
     // save settings
     switch (this.activeSetting) {
       case 'height':
@@ -200,30 +201,30 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
         break;
       case 'max-speed':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.settings.maxSpeed = this.SLIDER_VALUE * 10;
         break;
       case 'acceleration':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.settings.acceleration = this.SLIDER_VALUE * 10;
         break;
       case 'tap-sensitivity':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.settings.tapSensitivity = this.SLIDER_VALUE * 10;
         break;
       case 'mode':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.settings.controlMode = this.listPickerItems[
           this.listPickerIndex
         ];
         break;
       case 'switch-control-max-speed':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.switchControlSettings.maxSpeed =
           this.SLIDER_VALUE * 10;
         break;
       case 'switch-control-mode':
-        pushToServer = true;
+        updatedSmartDriveSettings = true;
         this.settingsService.switchControlSettings.mode =
           Device.SwitchControlSettings.Mode.Options[this.listPickerIndex];
         break;
@@ -243,8 +244,19 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         this._translateService.use(this.CURRENT_LANGUAGE);
         break;
     }
-    if (pushToServer) {
+    if (updatedSmartDriveSettings) {
       this.settingsService.saveToFileSystem();
+      const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+      if (pts && pts.length > 0) {
+        try {
+          await pts.map(async pt => {
+            await pt.sendSettingsObject(this.settingsService.settings);
+            await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
+          });
+        } catch (err) {
+          Log.E('error sending data to pushtracker', err);
+        }
+      }
       try {
         await this.settingsService.save();
       } catch (error) {
@@ -267,6 +279,46 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         duration: 200
       });
     });
+  }
+
+  async onSettingsChecked(args: EventData, setting: string) {
+    let updatedSmartDriveSettings = false;
+    // @ts-ignore
+    const isChecked = args.value;
+    switch (setting) {
+      case 'ez-on':
+        this.settingsService.settings.ezOn = isChecked;
+        updatedSmartDriveSettings = true;
+        break;
+      case 'disable-power-assist-beep':
+        this.settingsService.settings.disablePowerAssistBeep = isChecked;
+        updatedSmartDriveSettings = true;
+        break;
+      default:
+        break;
+    }
+    if (updatedSmartDriveSettings) {
+      this.settingsService.saveToFileSystem();
+      const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+      if (pts && pts.length > 0) {
+        Log.D('sending to pushtrackers:', pts);
+        await pts.map(async pt => {
+          try {
+            await pt.sendSettingsObject(this.settingsService.settings);
+            await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
+          } catch (err) {
+            Log.E('error sending data to pushtracker', err);
+          }
+        });
+      } else {
+        Log.D('no pushtrackers!');
+      }
+      try {
+        await this.settingsService.save();
+      } catch (error) {
+        Log.E('error pushing to server', error);
+      }
+    }
   }
 
   onItemTap(args: EventData, item: string) {

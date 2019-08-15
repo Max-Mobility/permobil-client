@@ -66,35 +66,7 @@ export class BluetoothService {
     // enabling `debug` will output console.logs from the bluetooth source code
     this._bluetooth.debug = false;
 
-    // check to make sure that bluetooth is enabled, or this will always fail and we don't need to show the error
-    this._bluetooth.isBluetoothEnabled().then(result => {
-      // Brad - adding isIOS check bc the CBManager may not return the `ON` state
-      // when this executes so we'll try to advertise anyway
-      if (isIOS || result === true) {
-        this.advertise().catch(err => {
-          const msg = `bluetooth.service::advertise error: ${err}`;
-          alert({
-            title: this._translateService.instant('bluetooth.service-failure'),
-            okButtonText: this._translateService.instant('dialogs.ok'),
-            message: msg
-          });
-        });
-      } else {
-        // only Android can enable bluetooth, iOS requires the user to do on the device
-        if (isAndroid) {
-          this._bluetooth.enable().catch(error => {
-            this._loggingService.logException(error);
-          });
-        } else {
-          alert({
-            message: this._translateService.instant(
-              'bluetooth.enable-bluetooth'
-            ),
-            okButtonText: this._translateService.instant('dialogs.ok')
-          });
-        }
-      }
-    });
+    this._loggingService.logBreadCrumb('bluetooth.service constructor');
 
     this.setEventListeners();
   }
@@ -263,24 +235,28 @@ export class BluetoothService {
     this.addServices();
 
     this.initialized = true;
-
-    // if (this.enabled === true) {
-    // }
-
-    // return this._bluetooth
-    //   .requestCoarseLocationPermission()
-    //   .then(() => {
-    //     // return this.restart();
-    //   })
-    //   .then(() => {
-    //     if (this.enabled === true) {
-    //       this.addServices();
-    //       this.initialized = true;
-    //     }
-    //   });
   }
 
   async advertise(): Promise<any> {
+    // check to make sure that bluetooth is enabled, or this will
+    // always fail and we don't need to show the error
+    const result = await this._bluetooth.isBluetoothEnabled();
+
+    if (isAndroid && result === false) {
+      try {
+        await this._bluetooth.enable();
+      } catch (err) {
+        const msg = `bluetooth.service::advertise error: ${err}`;
+        alert({
+          title: this._translateService.instant('bluetooth.service-failure'),
+          okButtonText: this._translateService.instant('dialogs.ok'),
+          message: msg
+        });
+        this._loggingService.logException(err);
+        return;
+      }
+    }
+
     await this.initialize();
 
     await this._bluetooth.startAdvertising({
@@ -296,22 +272,6 @@ export class BluetoothService {
     this._bluetooth.addService(this.AppService);
 
     return Promise.resolve();
-
-    // return this.initialize()
-    //   .then(() => {
-    //     return this._bluetooth.startAdvertising({
-    //       UUID: BluetoothService.AppServiceUUID,
-    //       settings: {
-    //         connectable: true
-    //       },
-    //       data: {
-    //         includeDeviceName: true
-    //       }
-    //     });
-    //   })
-    //   .then(() => {
-    //     this._bluetooth.addService(this.AppService);
-    //   });
   }
 
   scanForAny(timeout: number = 4): Promise<any> {
@@ -371,9 +331,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(opts: any) {}
+  discoverServices(opts: any) { }
 
-  discoverCharacteristics(opts: any) {}
+  discoverCharacteristics(opts: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -613,7 +573,7 @@ export class BluetoothService {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void {}
+  private onCharacteristicReadRequest(args: any): void { }
 
   // service controls
   private deleteServices() {

@@ -5,7 +5,7 @@ import { Log, PushTrackerUser } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { SettingsService } from '../../services';
+import { BluetoothService, SettingsService } from '../../services';
 import { AppResourceIcons } from '../../enums';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ChangeDetectionStrategy } from '@angular/core';
@@ -31,6 +31,7 @@ export class TabsComponent {
   constructor(
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
+    private _bluetoothService: BluetoothService,
     private _routerExtension: RouterExtensions,
     private _activeRoute: ActivatedRoute,
     private _page: Page
@@ -65,7 +66,10 @@ export class TabsComponent {
       ],
       { relativeTo: this._activeRoute }
     );
+    // load the device settings (sd / pt)
     this._settingsService.loadSettings();
+    // start the bluetooth service
+    this._bluetoothService.advertise();
   }
 
   // onTabViewLoaded(args) {

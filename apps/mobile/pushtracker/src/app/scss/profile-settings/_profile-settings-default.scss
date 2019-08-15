@@ -20,6 +20,12 @@
     color: $black;
   }
 
+  .setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $permobil-primary;
+    background: $permobil-sky;
+  }
+
   .slider-dialog {
     @extend .SLIDER_DIALOG_BASE;
     background-color: rgba(85, 86, 88, 0.808);

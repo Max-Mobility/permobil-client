@@ -20,6 +20,12 @@
     color: darken($white, 10%);
   }
 
+  .setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $white;
+    background: darken($white, 10%);
+  }
+
   .slider-dialog {
     @extend .SLIDER_DIALOG_BASE;
     background-color: $black;
