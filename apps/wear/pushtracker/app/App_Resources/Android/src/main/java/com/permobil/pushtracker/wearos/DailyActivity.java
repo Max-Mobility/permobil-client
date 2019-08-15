@@ -40,10 +40,6 @@ public class DailyActivity {
     public float coast_time_avg;
     @Key("distance_watch")
     public float distance_watch;
-    @Key("distance_smartdrive_coast")
-    public float distance_smartdrive_coast;
-    @Key("distance_smartdrive_drive")
-    public float distance_smartdrive_drive;
     @Key("heart_rate")
     public float heart_rate;
 
@@ -67,8 +63,6 @@ public class DailyActivity {
                   float coastTimeTotal,
                   float coastTimeAvg,
                   float watchDist,
-                  float sdCoastDist,
-                  float sdDriveDist,
                   float heartRate
                   ) {
       this.start_time = start;
@@ -76,8 +70,6 @@ public class DailyActivity {
       this.coast_time_total = coastTimeTotal;
       this.coast_time_avg = coastTimeAvg;
       this.distance_watch = watchDist;
-      this.distance_smartdrive_coast = sdCoastDist;
-      this.distance_smartdrive_drive = sdDriveDist;
       this.heart_rate = heartRate;
     }
   };
@@ -129,14 +121,6 @@ public class DailyActivity {
   @Key("distance_watch")
   public float distance_watch;
 
-  // coast distance from smartdrive (if any)
-  @Key("distance_smartdrive_coast")
-  public float distance_smartdrive_coast;
-
-  // drive distance from smartdrive (if any)
-  @Key("distance_smartdrive_drive")
-  public float distance_smartdrive_drive;
-
   // list of records of activity for the day
   @Key("records")
   public List<Record> records;
@@ -160,8 +144,6 @@ public class DailyActivity {
     this.coast_time_avg = 0;
     this.heart_rate = 0;
     this.distance_watch = 0;
-    this.distance_smartdrive_coast = 0;
-    this.distance_smartdrive_drive = 0;
     this.records = new ArrayList<>();
     this._id = UUID.randomUUID().toString();
     this.has_been_sent = false;
