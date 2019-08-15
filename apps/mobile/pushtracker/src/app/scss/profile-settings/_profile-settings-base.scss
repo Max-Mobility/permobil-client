@@ -7,10 +7,14 @@
 
   .BACK_BTN_BASE {
     @extend .btn-transparent;
-    padding: 4;
+    height: 50;
+    width: 50;
+    border-radius: 25;
     font-size: 30;
+    padding: 4;
     font-family: $material-icon;
     horizontal-align: left;
+    vertical-align: center;
   }
 
   .ACTION_BAR_TITLE_BASE {
@@ -18,6 +22,7 @@
     font-family: $os;
     margin-left: 5;
     padding: 4;
+    vertical-align: center;
   }
 
   .CATEGORY_BASE {
@@ -48,6 +53,7 @@
     horizontal-align: right;
     vertical-align: center;
   }
+
   .CLOSE_DIALOG_BASE {
     @extend .btn-transparent;
     padding: 4;

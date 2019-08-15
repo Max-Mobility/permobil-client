@@ -31,6 +31,7 @@ import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
+import { SupportComponent } from '../support/support.component';
 
 @Component({
   selector: 'profile',
@@ -225,16 +226,11 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onHelpTap() {
-    Log.D('help action item tap');
-  }
-
-  onSettingsTap() {
-    Log.D('settings action item tap');
-
     this._modalService
-      .showModal(ProfileSettingsComponent, {
+      .showModal(SupportComponent, {
         context: {},
         fullscreen: true,
+        animated: true,
         viewContainerRef: this._vcRef
       })
       .catch(err => {
@@ -245,14 +241,24 @@ export class ProfileTabComponent implements OnInit {
           textColor: new Color('#fff000')
         });
       });
-    // this._routerExtensions.navigate(['../profile-settings'], {
-    //   relativeTo: this.activeRoute,
-    //   transition: {
-    //     name: 'slideLeft',
-    //     duration: 250,
-    //     curve: AnimationCurve.easeInOut
-    //   }
-    // });
+  }
+
+  onSettingsTap() {
+    this._modalService
+      .showModal(ProfileSettingsComponent, {
+        context: {},
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
   }
 
   onNameLongPress(args, nameField: string) {

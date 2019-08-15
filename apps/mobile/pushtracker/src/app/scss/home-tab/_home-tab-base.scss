@@ -7,9 +7,12 @@
 
   .INFO_BTN_BASE {
     @extend .btn-transparent;
+    height: 50;
+    width: 50;
+    border-radius: 25;
     font-size: 30;
     font-family: $material-icon;
-    text-align: right;
+    text-align: center;
     horizontal-align: right;
     vertical-align: top;
     margin: 4;
