@@ -34,9 +34,14 @@
                     <BarSeries tkCartesianSeries [items]="activity" seriesName="DailyActivity" categoryProperty="xAxis"
                         [valueProperty]="_dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
+                    <Palette tkCartesianPalette seriesName="DailyActivity">
+                        <PaletteEntry tkCartesianPaletteEntry 
+                            [fillColor]="_savedTheme === 'DEFAULT' ? '#753bbd' : '#80FCE49D'" 
+                            [strokeColor]="_savedTheme === 'DEFAULT' ? '#753bbd' : '#80FCE49D'"></PaletteEntry>
+                    </Palette>
                     <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"></Trackball>
                 </RadCartesianChart>
-                <GridLayout width="50%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
+                <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
                     colSpan="3">
                     <Button [class]="_dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
                         col="2" horizontalAlignment="left" text="Coast Time"
