@@ -9,6 +9,7 @@ import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
 import { DropDownModule } from 'nativescript-drop-down/angular';
+import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
@@ -41,6 +42,7 @@ export function createTranslateLoader() {
     NativeScriptDateTimePickerModule,
     NativeScriptUIChartModule,
     NativeScriptUICalendarModule,
+    NgRippleModule,
     SharedModule,
     PermobilCoreModule,
     AppRoutingModule,
