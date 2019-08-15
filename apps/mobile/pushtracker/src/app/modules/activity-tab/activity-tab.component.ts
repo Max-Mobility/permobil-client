@@ -13,7 +13,7 @@ import { Button } from 'tns-core-modules/ui/button';
 import { layout } from 'tns-core-modules/utils/utils';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { ChartGridLineAnnotation } from 'nativescript-ui-chart';
+import { TrackballCustomContentData } from 'nativescript-ui-chart';
 
 export class Activity {
     constructor(public timeStamp?: number, public Amount?: number) {
@@ -524,5 +524,12 @@ export class ActivityTabComponent implements OnInit {
                 this.dailyActivityAnnotationValue = parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
             }
         }
+    }
+
+    onTrackBallContentRequested(args: TrackballCustomContentData) {
+        // Keys: [eventName, pointIndex, seriesIndex, series, pointData, object, content]
+        const pointData = args.pointData;
+        // console.log('Track ball content requested', pointData);
+        args.content = 'Foo';
     }
 }
