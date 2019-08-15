@@ -25,12 +25,34 @@ TabView {
   background-color: $white;
 }
 
+// ActionBar
+.action-bar {
+  @extend .ACTION_BAR_BASE;
+  color: $white;
+  background-color: $black;
+
+  .back-btn {
+    @extend .BACK_BTN_BASE;
+    color: $white;
+  }
+
+  .title {
+    @extend .ACTION_BAR_TITLE_BASE;
+    color: $white;
+  }
+
+  .action-item-btn {
+    @extend .ACTION_ITEM_BTN_BASE;
+    color: $white;
+  }
+}
+
 // TextBox
 
-.textbox {
-  @extend .TEXTBOX_BASE;
+.max-textbox {
+  @extend .MAX_TEXTBOX_BASE;
 
-  .textbox-label {
+  .max-textbox-label {
     color: $grey;
     background-color: $black;
   }
@@ -39,15 +61,15 @@ TabView {
     background-color: $black;
     border-color: #e8e9eb;
 
-    > .textbox-value {
+    > .max-textbox-value {
       color: $white;
     }
   }
 }
 
-.textbox-active {
-  @extend .TEXTBOX_BASE;
-  .textbox-label {
+.max-textbox-active {
+  @extend .MAX_TEXTBOX_BASE;
+  .max-textbox-label {
     color: $permobil-cousteau;
     background-color: $black;
   }
@@ -55,14 +77,53 @@ TabView {
   GridLayout {
     border-color: $permobil-cousteau;
 
-    > .textbox-value {
+    > .max-textbox-value {
       color: $white;
     }
   }
 }
 
-.textbox-error-label {
+.max-textbox-error-label {
   @extend .ERROR_LABEL_BASE;
+  color: $error-red;
+}
 
+// DataBox Dark
+.data-box {
+  @extend .DATA_BOX_BASE;
+
+  .data-box-label {
+    color: $grey;
+    background-color: $black;
+  }
+
+  > GridLayout {
+    background-color: $black;
+    border-color: #e8e9eb;
+
+    > .data-box-value {
+      color: $white;
+    }
+
+    > .data-box-arrow {
+      color: $grey;
+    }
+  }
+}
+
+.data-box-active {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: $permobil-cousteau;
+    background-color: $black;
+  }
+
+  GridLayout {
+    border-color: $permobil-cousteau;
+  }
+}
+
+.data-box-error-label {
+  @extend .ERROR_LABEL_BASE;
   color: $error-red;
 }

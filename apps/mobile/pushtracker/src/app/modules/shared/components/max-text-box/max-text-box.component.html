@@ -1,0 +1,19 @@
+<GridLayout rows="*, auto">
+  <StackLayout row="0" class="max-textbox">
+    <Label class="max-textbox-label" [text]="label"></Label>
+    <GridLayout rows="*" columns="*">
+      <TextField
+        class="max-textbox-value"
+        [text]="text"
+        [secure]="isSecure"
+        (textChange)="changeText($event)"
+        (returnPress)="onReturnPress($event)"
+        (loaded)="textfieldLoaded($event)"
+        (focus)="onFocusTF($event)"
+        (blur)="onBlurTF($event)"
+        textWrap="true"
+      ></TextField>
+    </GridLayout>
+  </StackLayout>
+  <Label row="1" [text]="error" class="max-textbox-error-label" [visibility]="error ? 'visible' : 'collapsed'" textWrap="true"></Label>
+</GridLayout>

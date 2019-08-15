@@ -5,26 +5,6 @@
   height: 100%;
   width: 100%;
 
-  .BACK_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    padding: 4;
-    font-family: $material-icon;
-    horizontal-align: left;
-    vertical-align: center;
-  }
-
-  .ACTION_BAR_TITLE_BASE {
-    font-size: 26;
-    font-family: $os;
-    margin-left: 5;
-    padding: 4;
-    vertical-align: center;
-  }
-
   .CATEGORY_BASE {
     font-size: 14;
     font-family: $os;

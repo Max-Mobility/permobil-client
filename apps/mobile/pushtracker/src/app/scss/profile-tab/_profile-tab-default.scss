@@ -3,17 +3,17 @@
 
 /* these have to be outside the component class to work */
 .date-time-picker {
-    @extend .DATE_TIME_PICKER_BASE;
-    background-color: $white;
-    color: $black;
+  @extend .DATE_TIME_PICKER_BASE;
+  background-color: $white;
+  color: $black;
 }
 .date-time-picker-spinners {
-    background-color: $white;
-    color: #202125;
+  background-color: $white;
+  color: #202125;
 }
 .date-time-picker-buttons {
-    background-color: $white;
-    color: #1a73e9;
+  background-color: $white;
+  color: #1a73e9;
 }
 
 .profile-tab-layout {
@@ -21,12 +21,12 @@
   background-color: $white;
 
   .settings-btn {
-    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
   }
 
   .help-btn {
-    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
   }
 
@@ -59,46 +59,9 @@
     }
   }
 
-  .data-box {
-    @extend .DATA_BOX_BASE;
-    .data-box-label {
-      color: #4b4d51;
-      background-color: $white;
-    }
-
-    GridLayout {
-      border-color: #e8e9eb;
-
-      > .data-box-value {
-        color: #3d4144;
-      }
-
-      > .data-box-arrow {
-        color: #5f6267;
-      }
-    }
-  }
-
-  .data-box-active {
-    @extend .DATA_BOX_BASE;
-    .data-box-label {
-      color: #1c72e6;
-      background-color: $white;
-    }
-
-    GridLayout {
-      border-color: #1c72e6;
-    }
-  }
-
   .activity-goals-dialog {
     @extend .ACTIVITY_GOALS_DIALOG_BASE;
     background-color: $white;
-
-    .close-btn {
-      @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-      color: #3b3f42;
-    }
 
     .set-goal-btn {
       color: #1a73e9;

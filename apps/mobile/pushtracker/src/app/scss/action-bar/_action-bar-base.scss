@@ -6,8 +6,12 @@ ActionBar[title] {
 }
 
 .ACTION_BAR_BASE {
-  .title {
+  .ACTION_BAR_TITLE_BASE {
+    font-size: 22;
     font-family: $os;
+    margin-left: 5;
+    padding: 4;
+    vertical-align: center;
   }
 
   .ACTION_ITEM_BTN_BASE {
@@ -18,5 +22,6 @@ ActionBar[title] {
     margin: 2;
     font-family: $material-icon;
     font-size: 30;
+    vertical-align: center;
   }
 }
