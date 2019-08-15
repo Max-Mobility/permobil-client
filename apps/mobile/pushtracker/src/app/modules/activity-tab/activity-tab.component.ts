@@ -13,6 +13,7 @@ import { Button } from 'tns-core-modules/ui/button';
 import { layout } from 'tns-core-modules/utils/utils';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { ChartGridLineAnnotation } from 'nativescript-ui-chart';
 
 export class Activity {
     constructor(public timeStamp?: number, public Amount?: number) {
@@ -79,8 +80,9 @@ export class ActivityTabComponent implements OnInit {
     private _calendar: RadCalendar;
     private _dayViewTimeArray: number[] = [];
     private _dailyActivityCache = {};
-    private _dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
-    private _savedTheme: string;
+    public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
+    public savedTheme: string;
+    public dailyActivityAnnotationValue: number = 0;
 
     // Colors
     private _colorWhite = new Color('White');
@@ -115,7 +117,7 @@ export class ActivityTabComponent implements OnInit {
                 rangeIterator += 0.5;
             }
         }
-        this._savedTheme = appSettings.getString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
+        this.savedTheme = appSettings.getString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
     }
 
     ngOnInit() {
@@ -146,14 +148,16 @@ export class ActivityTabComponent implements OnInit {
             }
             // Cache activity by day so we can easily pull it up next time
             this._dailyActivityCache[this.currentDayInView.toUTCString()] = {
-                chartData: this.activity, dailyActivity: this._activityService.dailyActivity };
+                chartData: this.activity, dailyActivity: this._activityService.dailyActivity
+            };
+            this._updateDailyActivityAnnotationValue();
         }
         else {
             // We have the data cached. Pull it up
             didLoad = true;
             const cache = this._dailyActivityCache[this.currentDayInView.toUTCString()];
             this.activity = cache.chartData;
-            if (this._dailyViewMode === 0) {
+            if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
             }
@@ -169,6 +173,7 @@ export class ActivityTabComponent implements OnInit {
             this.weekEnd.setDate(this.weekEnd.getDate() + 6);
             this.minDate = new Date('01/01/1999');
             this.maxDate = new Date('01/01/2099');
+            this._updateDailyActivityAnnotationValue();
         }
     }
 
@@ -193,7 +198,7 @@ export class ActivityTabComponent implements OnInit {
     formatActivityForView(viewMode) {
         if (viewMode === 'Day') {
             const activity = this._activityService.dailyActivity;
-            if (this._dailyViewMode === 0) {
+            if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
             }
@@ -272,7 +277,8 @@ export class ActivityTabComponent implements OnInit {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
-                this.activity = new ObservableArray(this.formatActivityForView('Day'));
+                this._initDayChartTitle();
+                this.loadDailyActivity();
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
                 this.loadWeeklyActivity();
@@ -445,7 +451,7 @@ export class ActivityTabComponent implements OnInit {
         if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
             // No cache
             const activity = this._activityService.dailyActivity;
-            if (this._dailyViewMode === 0) {
+            if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
             }
@@ -458,7 +464,7 @@ export class ActivityTabComponent implements OnInit {
             // We are showing cached data
             const cache = this._dailyActivityCache[this.currentDayInView.toUTCString()];
             this.activity = cache.chartData;
-            if (this._dailyViewMode === 0) {
+            if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
             }
@@ -470,12 +476,53 @@ export class ActivityTabComponent implements OnInit {
     }
 
     onDailyActivityCoastTimeButtonTap(event) {
-        this._dailyViewMode = 0;
+        this.dailyViewMode = 0;
         this._updateDayChartLabel();
+        this._updateDailyActivityAnnotationValue();
     }
 
     onDailyActivityDistanceButtonTap(event) {
-        this._dailyViewMode = 1;
+        this.dailyViewMode = 1;
         this._updateDayChartLabel();
+        this._updateDailyActivityAnnotationValue();
+    }
+
+    _updateDailyActivityAnnotationValue() {
+        if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
+            // No cache
+            const activity = this._activityService.dailyActivity;
+            if (this.dailyViewMode === 0) {
+                // coast time
+                this.dailyActivityAnnotationValue = (activity ? activity.coast_time_avg || 0 : 0);
+            }
+            else {
+                // push count
+                const records = activity.records;
+                let pushCountTotal = 0;
+                for (const i in records) {
+                    const record = records[i];
+                    pushCountTotal += record.push_count;
+                }
+                this.dailyActivityAnnotationValue = parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
+            }
+        }
+        else {
+            // We are showing cached data
+            const cache = this._dailyActivityCache[this.currentDayInView.toUTCString()];
+            if (this.dailyViewMode === 0) {
+                // coast time
+                this.dailyActivityAnnotationValue = (cache ? cache.dailyActivity.coast_time_avg || 0 : 0);
+            }
+            else {
+                // push count
+                const records = cache.dailyActivity.records;
+                let pushCountTotal = 0;
+                for (const i in records) {
+                    const record = records[i];
+                    pushCountTotal += record.push_count;
+                }
+                this.dailyActivityAnnotationValue = parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
+            }
+        }
     }
 }
