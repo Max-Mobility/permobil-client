@@ -10,30 +10,157 @@ Downloader.init();
 
 export namespace SmartDriveData {
   export namespace Info {
+    export const RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
+
     export const TableName = 'SmartDriveInfo';
     export const IdName = 'id';
     export const DateName = 'date';
+    export const StartTimeName = 'start_time';
     export const BatteryName = 'battery';
-    export const DriveDistanceName = 'drive_distance';
-    export const CoastDistanceName = 'coast_distance';
+    export const DriveDistanceName = 'distance_smartdrive_drive';
+    export const CoastDistanceName = 'distance_smartdrive_coast';
+    export const RecordsName = 'records';
     export const UuidName = 'uuid';
     export const HasBeenSentName = 'has_been_sent';
     export const Fields = [
       { name: DateName, type: 'TEXT' },
+      { name: StartTimeName, type: 'bigint' },
       { name: BatteryName, type: 'smallint' },
       { name: DriveDistanceName, type: 'bigint' },
       { name: CoastDistanceName, type: 'bigint' },
+      { name: RecordsName, type: 'TEXT' },
       { name: UuidName, type: 'TEXT' },
       { name: HasBeenSentName, type: 'bit' }
     ];
 
-    export function getDateValue(date: any) {
-      return format(date, 'YYYY/MM/DD');
+    export function getDateValue(date?: any) {
+      if (date !== undefined) {
+        return format(new Date(date), 'YYYY/MM/DD');
+      } else {
+        return format(new Date(), 'YYYY/MM/DD');
+      }
+    }
+
+    export function getHalfHourDate() {
+      const d = new Date();
+      const m = d.getMinutes() > 30 ? 30 : 0;
+      d.setMinutes(m);
+      d.setSeconds(0);
+      d.setMilliseconds(0);
+      return d;
+    }
+
+    export function getDateStartTime(date?: any) {
+      let d = new Date();
+      if (date !== undefined) {
+        d = new Date(date);
+      }
+      d.setHours(0);
+      d.setMinutes(0);
+      d.setSeconds(0);
+      d.setMilliseconds(0);
+      return d.getTime();
     }
 
     export function getPastDates(numDates: number) {
       const now = new Date();
       return eachDay(subDays(now, numDates), now);
+    }
+
+    export function makeRecord(battery: number = 0, coast: number = 0, drive: number = 0) {
+      const timestamp = SmartDriveData.Info.getHalfHourDate().getTime();
+      return {
+        [SmartDriveData.Info.BatteryName]: battery,
+        [SmartDriveData.Info.CoastDistanceName]: coast,
+        [SmartDriveData.Info.DriveDistanceName]: drive,
+        [SmartDriveData.Info.StartTimeName]: timestamp
+      };
+    }
+
+    // update the records, potentially creating a new record if none
+    // exist with an appropriate start time
+    export function updateRecords(updates: {
+      driveDistance?: number;
+      coastDistance?: number;
+      battery?: number
+    }, records: any[]) {
+      const driveDistance = updates.driveDistance || 0;
+      const coastDistance = updates.coastDistance || 0;
+      const battery = updates.battery || 0;
+      if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
+        return;
+      }
+      // get the current timestamp
+      const timeMs = new Date().getTime();
+      // get most recent record
+      if (records && records.length) {
+        // determine if we need a new record
+        const record = records[records.length - 1];
+        const timeDiffMs = timeMs - record[SmartDriveData.Info.StartTimeName];
+        if (timeDiffMs > SmartDriveData.Info.RECORD_LENGTH_MS) {
+          // we need a new record
+          const record = SmartDriveData.Info.makeRecord(battery, coastDistance, driveDistance);
+          // now append it
+          records.push(record);
+        } else {
+          // can just update this record
+          record[SmartDriveData.Info.BatteryName] += battery;
+          record[SmartDriveData.Info.CoastDistanceName] =
+            coastDistance || record[SmartDriveData.Info.CoastDistanceName];
+          record[SmartDriveData.Info.DriveDistanceName] =
+            driveDistance || record[SmartDriveData.Info.DriveDistanceName];
+        }
+      } else {
+        // we have no records, make a new one
+        const record = SmartDriveData.Info.makeRecord(battery, coastDistance, driveDistance);
+        // and append it
+        records.push(record);
+      }
+    }
+
+    // update the info object and return the diff (for inserting into
+    // db. return null if no updates were performed.
+    export function updateInfo(updates: {
+      driveDistance?: number;
+      coastDistance?: number;
+      battery?: number
+    }, info: any) {
+      const driveDistance = updates.driveDistance || 0;
+      const coastDistance = updates.coastDistance || 0;
+      const battery = updates.battery || 0;
+      if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
+        return null;
+      }
+      // compute updates
+      const updatedBattery = battery + info[SmartDriveData.Info.BatteryName];
+      const updatedDriveDistance =
+        driveDistance || info[SmartDriveData.Info.DriveDistanceName];
+      const updatedCoastDistance =
+        coastDistance || info[SmartDriveData.Info.CoastDistanceName];
+      let recordString = info[SmartDriveData.Info.RecordsName];
+      // convert into an array of objects
+      let updatedRecords = [];
+      try {
+        updatedRecords = JSON.parse(recordString);
+      } catch (err) {
+        console.error('parsing', err);
+      }
+      // now actually update the records
+      SmartDriveData.Info.updateRecords(updates, updatedRecords);
+      // now stringify the diff (what will be inserted into db)
+      try {
+        recordString = JSON.stringify(updatedRecords);
+      } catch (err) {
+        console.error('serializing', err);
+      }
+      // now return the updates
+      return {
+        [SmartDriveData.Info.BatteryName]: updatedBattery,
+        [SmartDriveData.Info.DriveDistanceName]: updatedDriveDistance,
+        [SmartDriveData.Info.CoastDistanceName]: updatedCoastDistance,
+        [SmartDriveData.Info.RecordsName]: recordString,
+        [SmartDriveData.Info.HasBeenSentName]: 0
+      };
     }
 
     export function newInfo(
@@ -46,9 +173,11 @@ export namespace SmartDriveData {
       return {
         [SmartDriveData.Info.IdName]: id,
         [SmartDriveData.Info.DateName]: SmartDriveData.Info.getDateValue(date),
+        [SmartDriveData.Info.StartTimeName]: SmartDriveData.Info.getDateStartTime(date),
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
+        [SmartDriveData.Info.RecordsName]: '[]',
         [SmartDriveData.Info.UuidName]: java.util.UUID.randomUUID().toString(),
         [SmartDriveData.Info.HasBeenSentName]: 0
       };
@@ -57,18 +186,22 @@ export namespace SmartDriveData {
     export function loadInfo(
       id: number,
       date: any,
+      startTime: number,
       battery: number,
       drive: number,
       coast: number,
+      recordsString: string,
       uuid: string,
       has_been_sent: number
     ) {
       return {
         [SmartDriveData.Info.IdName]: id,
         [SmartDriveData.Info.DateName]: SmartDriveData.Info.getDateValue(date),
+        [SmartDriveData.Info.StartTimeName]: startTime,
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
+        [SmartDriveData.Info.RecordsName]: recordsString,
         [SmartDriveData.Info.UuidName]: uuid,
         [SmartDriveData.Info.HasBeenSentName]: +has_been_sent
       };
