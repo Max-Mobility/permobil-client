@@ -93,7 +93,6 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadSettings();
   }
 
   getUser(): void {
@@ -103,29 +102,6 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
   closeModal(event) {
     Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
-  }
-
-  async loadSettings() {
-    const didLoad = await this.settingsService.loadSettings();
-    if (!didLoad) {
-      this.settingsService.settings.copy(
-        LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS)
-      );
-      this.settingsService.switchControlSettings.copy(
-        LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
-      );
-    }
-  }
-
-  saveSettingsToFileSystem() {
-    LS.setItemObject(
-      STORAGE_KEYS.DEVICE_SETTINGS,
-      this.settingsService.settings.toObj()
-    );
-    LS.setItemObject(
-      STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS,
-      this.settingsService.switchControlSettings.toObj()
-    );
   }
 
   onSliderValueChange(args: any) {
@@ -268,7 +244,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
         break;
     }
     if (pushToServer) {
-      this.saveSettingsToFileSystem();
+      this.settingsService.saveToFileSystem();
       try {
         await this.settingsService.save();
       } catch (error) {
