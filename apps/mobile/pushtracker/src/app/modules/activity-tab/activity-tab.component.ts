@@ -148,7 +148,8 @@ export class ActivityTabComponent implements OnInit {
             }
             // Cache activity by day so we can easily pull it up next time
             this._dailyActivityCache[this.currentDayInView.toUTCString()] = {
-                chartData: this.activity, dailyActivity: this._activityService.dailyActivity };
+                chartData: this.activity, dailyActivity: this._activityService.dailyActivity
+            };
             this._updateDailyActivityAnnotationValue();
         }
         else {
