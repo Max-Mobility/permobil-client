@@ -228,7 +228,7 @@ export class ActivityTabComponent implements OnInit {
                                 recordTimePoint += 0.5;
                             }
                             if (timePoint === recordTimePoint) {
-                                result.push({ xAxis: timePoint, coastTime: record.coast_time_avg, pushCount: record.push_count });
+                                result.push({ xAxis: timePoint, coastTime: record.coast_time_avg || 0, pushCount: record.push_count || 0 });
                                 j += 1;
                                 continue;
                             }
