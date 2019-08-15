@@ -56,15 +56,12 @@
   }  
 
   TabView {
+    text-transform: none;
     tab-text-font-size: 11;
     tab-text-color: $black;
     selected-tab-text-color: $black;
     tab-background-color: $white;
     android-selected-tab-highlight-color: $black;
-  }
-
-  CategoricalAxis {
-    color: $red;
   }
 
   .coast-time-btn-disabled,
@@ -73,6 +70,7 @@
     background-color: $white;
     color: $dark-grey;
     font-weight: bold;
+    text-transform: none;
   }
 
   .coast-time-btn-enabled,
@@ -81,6 +79,7 @@
     background-color: #d8e5f2;
     color: #4282c1;
     font-weight: bold;
+    text-transform: none;
   }
   
 }

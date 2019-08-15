@@ -24,29 +24,35 @@
                         horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>
                     <CategoricalAxis tkCartesianHorizontalAxis
-                        [labelTextColor]="_savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true"
+                        [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true"
                         tickHidden="false" majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7"
                         plotMode="OnTicks">
                     </CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis [labelTextColor]="_savedTheme == 'DARK' ? 'White' : 'Black'"
+                    <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
                         horizontalLocation="Right" labelMargin="10" lineHidden="true" maximum="40" minumum="1"
                         majorStep="15" labelFormat="%.0f"></LinearAxis>
                     <BarSeries tkCartesianSeries [items]="activity" seriesName="DailyActivity" categoryProperty="xAxis"
-                        [valueProperty]="_dailyViewMode ? 'pushCount' : 'coastTime'">
+                        [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
                     <Palette tkCartesianPalette seriesName="DailyActivity">
                         <PaletteEntry tkCartesianPaletteEntry 
-                            [fillColor]="_savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" 
-                            [strokeColor]="_savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+                            [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" 
+                            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
                     </Palette>
                     <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"></Trackball>
+                    <ChartGridLineAnnotation #dailyActivityAnnotation 
+                        tkCartesianAnnotations axisId="vAxis" hidden="false" [value] = "dailyActivityAnnotationValue" 
+                                        zPosition="AboveSeries" strokeWidth="1"
+                                        [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+                    </ChartGridLineAnnotation>
+
                 </RadCartesianChart>
                 <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
                     colSpan="3">
-                    <Button [class]="_dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
+                    <Button [class]="dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
                         col="2" horizontalAlignment="left" text="Coast Time"
                         (tap)="onDailyActivityCoastTimeButtonTap($event)"></Button>
-                    <Button [class]="_dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
+                    <Button [class]="dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
                         horizontalAlignment="right" text="Push Count"
                         (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
                 </GridLayout>
