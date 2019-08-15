@@ -19,7 +19,7 @@
                     <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center"
                         class="chart-label" [text]="dayChartLabel"></Label>
                 </GridLayout>
-                <RadCartesianChart row="1" height="200" width="90%">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
                     <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
                         horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
                     </RadCartesianChartGrid>
@@ -44,7 +44,6 @@
                         hidden="false" [value]="dailyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
                         [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
                     </ChartGridLineAnnotation>
-
                 </RadCartesianChart>
                 <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
                     colSpan="3">
@@ -56,6 +55,13 @@
                         (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
                 </GridLayout>
 
+                <StackLayout row="3">
+                    <Label textWrap="true" row="0" width="80%" marginTop="10" 
+                    text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..." 
+                    horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
+                </StackLayout>
+
+                <!-- Horizontal Line -->
                 <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
