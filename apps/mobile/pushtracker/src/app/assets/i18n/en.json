@@ -1,4 +1,7 @@
 {
+  "support-component": {
+    "title": "Support"
+  },
   "activity-tab-component": {
     "day": "Day",
     "month": "Month",

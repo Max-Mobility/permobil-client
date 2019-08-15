@@ -124,5 +124,8 @@
     "sign-up-success": "您的用户名是：",
     "title": "注册",
     "user-exists": "此电子邮件已存在帐户。"
+  },
+  "support-component": {
+    "title": "支持"
   }
 }

@@ -1,0 +1,14 @@
+<ActionBar [title]="'general.support' | translate" class="action-bar">
+  <NavigationButton text="Back" android:icon="round_arrow_back_black_24" (tap)="onNavBtnTap()"></NavigationButton>
+</ActionBar>
+<GridLayout rows="auto, *" class="support-layout">
+  // Mock ActionBar
+  <GridLayout row="0" rows="*" columns="50, *, 50">
+    <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeModal($event)"></Button>
+  </GridLayout>
+  <ScrollView row="1" height="100%">
+    <StackLayout paddingTop="20">
+      <Label text="Hello" textWrap="true"></Label>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

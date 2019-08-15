@@ -1,0 +1,6 @@
+@import '../variables';
+@import 'support-base';
+
+.support-layout {
+  @extend .SUPPORT_LAYOUT_BASE;
+}

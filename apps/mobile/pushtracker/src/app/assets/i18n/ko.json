@@ -124,5 +124,8 @@
     "sign-up-success": "사용자 이름은 다음과 같습니다.",
     "title": "가입",
     "user-exists": "이 이메일 계정이 이미 존재합니다."
+  },
+  "support-component": {
+    "title": "지원하다"
   }
 }

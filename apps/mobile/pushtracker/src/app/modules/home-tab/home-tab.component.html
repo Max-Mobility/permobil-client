@@ -1,7 +1,7 @@
 <ScrollView class="home-tab-layout">
   <StackLayout>
-    <GridLayout rows="*" columns="auto, *, auto">
-      <Button row="0" col="2" text="&#xe88f;" class="info-btn" (tap)="onInfoTap()"></Button>
+    <GridLayout rows="*" columns="auto, *, 60">
+      <Button row="0" col="2" text="&#xe88f;" ripple class="info-btn" (tap)="onInfoTap()"></Button>
     </GridLayout>
 
     // Activity Circles
@@ -10,7 +10,7 @@
       <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"></AnimatedCircle>
       // Coast Time Circle (inner/teal)
       <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage"></AnimatedCircle>
-      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle">
+      <GridLayout ripple rippleLayer="foreground" row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle">
         <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
       </GridLayout>
     </GridLayout>

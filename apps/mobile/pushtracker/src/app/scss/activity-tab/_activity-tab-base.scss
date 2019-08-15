@@ -10,6 +10,7 @@
     color: $black;
     padding-left: 10;
     margin-top: 5;
+    vertical-align: center;
   }
 
   .CHART_TITLE_BASE {
@@ -20,18 +21,26 @@
 
   .CLOSE_BTN_BASE {
     @extend .btn-transparent;
-    padding: 4;
+    height: 50;
+    width: 50;
+    border-radius: 25;
     font-size: 30;
+    padding: 4;
     font-family: $material-icon;
     horizontal-align: left;
+    vertical-align: center;
   }
 
   .BACK_BTN_BASE {
     @extend .btn-transparent;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    font-size: 30;
     padding: 4;
-    font-size: 24;
     font-family: $material-icon;
     horizontal-align: left;
+    vertical-align: center;
   }
 
   .FORWARD_BTN_BASE {
@@ -39,7 +48,7 @@
     padding: 4;
     font-size: 24;
     font-family: $material-icon;
-    horizontal-align: right;    
+    horizontal-align: right;
   }
 
   .MORE_BTN_BASE {
