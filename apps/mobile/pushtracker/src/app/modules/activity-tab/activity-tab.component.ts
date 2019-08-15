@@ -80,9 +80,9 @@ export class ActivityTabComponent implements OnInit {
     private _calendar: RadCalendar;
     private _dayViewTimeArray: number[] = [];
     private _dailyActivityCache = {};
-    private dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
-    private savedTheme: string;
-    private dailyActivityAnnotationValue: number = 0;
+    public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
+    public savedTheme: string;
+    public dailyActivityAnnotationValue: number = 0;
 
     // Colors
     private _colorWhite = new Color('White');
