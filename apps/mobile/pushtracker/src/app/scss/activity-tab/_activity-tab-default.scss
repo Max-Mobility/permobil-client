@@ -78,8 +78,9 @@
   .coast-time-btn-enabled,
   .distance-btn-enabled {
     @extend .CHART_VIEW_BTN_BASE;
-    background-color: $permobil-cousteau;
-    color: $white;
+    background-color: #d8e5f2;
+    color: #4282c1;
+    font-weight: bold;
   }
   
 }
