@@ -5,16 +5,6 @@
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
   background-color: $white;
 
-  .back-btn {
-    @extend .BACK_BTN_BASE;
-    color: $black;
-  }
-
-  .action-bar-title {
-    @extend .ACTION_BAR_TITLE_BASE;
-    color: $black;
-  }
-
   .category {
     @extend .CATEGORY_BASE;
     color: $permobil-primary;

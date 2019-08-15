@@ -3,16 +3,16 @@
 
 /* these have to be outside the component class to work */
 .date-time-picker {
-    @extend .DATE_TIME_PICKER_BASE;
-    background-color: $dark-grey;
-    color: $white;
+  @extend .DATE_TIME_PICKER_BASE;
+  background-color: $dark-grey;
+  color: $white;
 }
 .date-time-picker-spinners {
-    background-color: $dark-grey;
-    color: $white;
+  background-color: $dark-grey;
+  color: $white;
 }
 .date-time-picker-buttons {
-    color: $permobil-cousteau;
+  color: $permobil-cousteau;
 }
 
 .profile-tab-layout {
@@ -20,11 +20,11 @@
   background-color: $black;
 
   .settings-btn {
-    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    @extend .ACTION_BAR_BUTTON_BASE;
     color: $white;
   }
   .help-btn {
-    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+    @extend .ACTION_BAR_BUTTON_BASE;
     color: $white;
   }
 
@@ -57,40 +57,6 @@
     }
   }
 
-  .data-box {
-    @extend .DATA_BOX_BASE;
-
-    .data-box-label {
-      color: $grey;
-      background-color: $black;
-    }
-
-    > GridLayout {
-      background-color: $black;
-      border-color: #e8e9eb;
-
-      > .data-box-value {
-        color: $white;
-      }
-
-      > .data-box-arrow {
-        color: $grey;
-      }
-    }
-  }
-
-  .data-box-active {
-    @extend .DATA_BOX_BASE;
-    .data-box-label {
-      color: $permobil-cousteau;
-      background-color: $black;
-    }
-
-    GridLayout {
-      border-color: $permobil-cousteau;
-    }
-  }
-
   .activity-goals-dialog {
     @extend .ACTIVITY_GOALS_DIALOG_BASE;
     background-color: $black;
@@ -100,7 +66,7 @@
     }
 
     .close-btn {
-      @extend .MOCK_ACTION_BAR_BUTTON_BASE;
+      @extend .ACTION_BAR_BUTTON_BASE;
       color: $white;
     }
 
@@ -166,5 +132,4 @@
       }
     }
   }
-
 }

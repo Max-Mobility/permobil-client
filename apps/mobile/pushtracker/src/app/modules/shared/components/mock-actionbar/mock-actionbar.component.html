@@ -1,0 +1,7 @@
+// Mock ActionBar
+<GridLayout row="0" rows="*" columns="50, *, 46, 46" class="action-bar">
+  <Button row="0" col="0" text="&#xe5cd;" [visibility]="showBackNav ? 'visible' : 'collapse'" ripple (tap)="onNavBtnTap()" class="nav-btn"></Button>
+  <Label row="0" col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
+  <Button row="0" col="2" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" ripple (tap)="onSupportTap()" class="help-btn"></Button>
+  <Button row="0" col="3" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" ripple (tap)="onSettingsTap()" class="settings-btn"></Button>
+</GridLayout>

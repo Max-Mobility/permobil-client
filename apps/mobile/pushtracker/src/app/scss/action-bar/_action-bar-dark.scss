@@ -11,6 +11,11 @@ ActionBar[title] {
   color: $white;
   background-color: $black;
 
+  .title {
+    @extend .ACTION_BAR_TITLE_BASE;
+    color: $white;
+  }
+
   .action-item-btn {
     @extend .ACTION_ITEM_BTN_BASE;
     color: $white;

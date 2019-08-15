@@ -25,12 +25,34 @@ TabView {
   background-color: #e9eaee;
 }
 
+// ActionBar
+.action-bar {
+  @extend .ACTION_BAR_BASE;
+  color: $black;
+  background-color: $white;
+
+  .nav-btn {
+    @extend .BACK_BTN_BASE;
+    color: $black;
+  }
+
+  .title {
+    @extend .ACTION_BAR_TITLE_BASE;
+    color: $black;
+  }
+
+  .action-item-btn {
+    @extend .ACTION_ITEM_BTN_BASE;
+    color: $dark-grey;
+  }
+}
+
 // TextBox
 
-.textbox {
-  @extend .TEXTBOX_BASE;
+.max-textbox {
+  @extend .MAX_TEXTBOX_BASE;
 
-  .textbox-label {
+  .max-textbox-label {
     color: #4b4d51;
     background-color: $white;
   }
@@ -38,15 +60,15 @@ TabView {
   GridLayout {
     border-color: #e8e9eb;
 
-    > .textbox-value {
+    > .max-textbox-value {
       color: #3d4144;
     }
   }
 }
 
-.textbox-active {
-  @extend .TEXTBOX_BASE;
-  .textbox-label {
+.max-textbox-active {
+  @extend .MAX_TEXTBOX_BASE;
+  .max-textbox-label {
     color: #1c72e6;
     background-color: $white;
   }
@@ -54,14 +76,50 @@ TabView {
   GridLayout {
     border-color: #1c72e6;
 
-    > .textbox-value {
+    > .max-textbox-value {
       color: #3d4144;
     }
   }
 }
 
-.textbox-error-label {
+.max-textbox-error-label {
   @extend .ERROR_LABEL_BASE;
+  color: $error-red;
+}
 
+// DataBox default styles
+.data-box {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: #4b4d51;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #e8e9eb;
+
+    > .data-box-value {
+      color: #3d4144;
+    }
+
+    > .data-box-arrow {
+      color: #5f6267;
+    }
+  }
+}
+
+.data-box-active {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: #1c72e6;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #1c72e6;
+  }
+}
+.data-box-error-label {
+  @extend .ERROR_LABEL_BASE;
   color: $error-red;
 }

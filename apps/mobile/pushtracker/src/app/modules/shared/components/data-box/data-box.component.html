@@ -1,0 +1,10 @@
+<GridLayout rows="*, auto" columns="*">
+  <StackLayout row="0" class="data-box" (tap)="onDataBoxTap($event)">
+    <Label class="data-box-label" [text]="label"></Label>
+    <GridLayout rows="*" columns="*, auto">
+      <Label col="0" class="data-box-value" [text]="dataValue" textWrap="true"></Label>
+      <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+    </GridLayout>
+  </StackLayout>
+  <Label row="1" [text]="error" class="data-box-error-label" [visibility]="error ? 'visible' : 'collapsed'" textWrap="true"></Label>
+</GridLayout>

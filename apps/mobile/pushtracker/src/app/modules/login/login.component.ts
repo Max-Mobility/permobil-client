@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { Log } from '@permobil/core';
@@ -13,10 +7,7 @@ import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { isAndroid } from 'tns-core-modules/platform';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout/stack-layout';
 import { Page } from 'tns-core-modules/ui/page';
-import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -30,12 +21,6 @@ export class LoginComponent implements OnInit {
   emailError = '';
 
   private _loadingIndicator = new LoadingIndicator();
-
-  @ViewChild('emailTextBox', { static: true })
-  emailTextBox: ElementRef;
-
-  @ViewChild('passwordTextBox', { static: true })
-  passwordTextBox: ElementRef;
 
   constructor(
     private _routerExtensions: RouterExtensions,
@@ -62,32 +47,8 @@ export class LoginComponent implements OnInit {
     this._routerExtensions.navigate(['/sign-up'], {});
   }
 
-  onFocusTF(index: number) {
-    if (index === 0) {
-      (this.emailTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    } else if (index === 1) {
-      (this.passwordTextBox.nativeElement as StackLayout).className =
-        'textbox-active';
-    }
-  }
-
-  onBlurTF(index: number) {
-    if (index === 0) {
-      (this.emailTextBox.nativeElement as StackLayout).className = 'textbox';
-    } else if (index === 1) {
-      (this.passwordTextBox.nativeElement as StackLayout).className = 'textbox';
-    }
-  }
-
-  textfieldLoaded(args) {
-    if (isAndroid) {
-      const tf = args.object as TextField;
-      tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-    }
-  }
-
   async onSubmitLogin() {
+    console.dir(this.user);
     try {
       // validate the email
       const isEmailValid = this._isEmailValid(this.user.email);
@@ -196,8 +157,8 @@ export class LoginComponent implements OnInit {
     // }
   }
 
-  onEmailTextChange(args) {
-    this.user.email = args.value;
+  onEmailTextChange(value) {
+    this.user.email = value;
     this._isEmailValid(this.user.email);
   }
 
