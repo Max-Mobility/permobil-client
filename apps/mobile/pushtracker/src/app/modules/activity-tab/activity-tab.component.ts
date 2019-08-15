@@ -277,7 +277,8 @@ export class ActivityTabComponent implements OnInit {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
-                this.activity = new ObservableArray(this.formatActivityForView('Day'));
+                this._initDayChartTitle();
+                this.loadDailyActivity();
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
                 this.loadWeeklyActivity();
