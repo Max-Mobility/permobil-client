@@ -2915,10 +2915,11 @@ export class MainViewModel extends Observable {
           const promises = infos.map(i => {
             // @ts-ignore
             i = SmartDriveData.Info.loadInfo(...i);
-            // update info date here
-            i[SmartDriveData.Info.DateName] = new Date(
-              i[SmartDriveData.Info.DateName]
-            );
+            try {
+              i[SmartDriveData.Info.RecordsName] = JSON.parse(i[SmartDriveData.Info.RecordsName]);
+            } catch (err) {
+              Log.E('parse error', err);
+            }
             return this._kinveyService.sendInfo(
               i,
               i[SmartDriveData.Info.UuidName]

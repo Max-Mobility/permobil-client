@@ -217,7 +217,7 @@ export namespace SmartDriveData {
     export const UuidName = 'uuid';
     export const HasBeenSentName = 'has_been_sent';
     export const Fields = [
-      { name: TimestampName, type: 'TEXT' },
+      { name: TimestampName, type: 'bigint' },
       { name: ErrorCodeName, type: 'TEXT' },
       { name: ErrorIdName, type: 'int' },
       { name: UuidName, type: 'TEXT' },
@@ -226,7 +226,7 @@ export namespace SmartDriveData {
 
     export function getTimestamp() {
       // 'x' is Milliseconds timetsamp format
-      return format(new Date(), 'x');
+      return new Date().getTime();
     }
 
     export function loadError(
@@ -239,7 +239,7 @@ export namespace SmartDriveData {
     ) {
       return {
         [SmartDriveData.Errors.IdName]: id,
-        [SmartDriveData.Errors.TimestampName]: timestamp,
+        [SmartDriveData.Errors.TimestampName]: +timestamp,
         [SmartDriveData.Errors.ErrorCodeName]: errorType,
         [SmartDriveData.Errors.ErrorIdName]: errorId,
         [SmartDriveData.Errors.UuidName]: uuid,
