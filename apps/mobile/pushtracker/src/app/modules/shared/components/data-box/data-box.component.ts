@@ -65,12 +65,14 @@ export class DataBoxComponent extends TextField {
       args.object as StackLayout
     );
 
+    const newDate = new Date();
+
     DateTimePicker.pickDate(
       {
         context: (args.object as StackLayout)._context,
-        date: subYears(new Date(), 18),
-        minDate: subYears(new Date(), 110),
-        maxDate: new Date(),
+        date: subYears(newDate, 18),
+        minDate: subYears(newDate, 110),
+        maxDate: newDate,
         title: this._translateService.instant('general.birthday'),
         okButtonText: this._translateService.instant('general.ok'),
         cancelButtonText: this._translateService.instant('general.cancel'),
