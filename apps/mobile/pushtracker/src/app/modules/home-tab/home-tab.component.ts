@@ -42,23 +42,14 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService
-  ) {
-    this.getUser();
-    this.refreshGoalData();
-  }
+  ) {}
 
-  ngOnInit(): void {
-    this.getUser();
+  ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
-    this.infoItems = this._translateService.instant(
-      'app-info-component.sections'
-    );
-  }
 
-  getUser(): void {
     this.userService.user.subscribe(user => {
       this.user = user;
-      this.refreshGoalData();
+      this._refreshGoalData();
     });
   }
 
@@ -72,7 +63,29 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     });
   }
 
-  refreshGoalData() {
+  onActivityTap() {
+    this._modalService
+      .showModal(ActivityTabComponent, {
+        context: {},
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
+  }
+
+  onWatchTap() {
+    Log.D('watch item tapped');
+  }
+
+  private _refreshGoalData() {
     // determine users distance value and get user activity goal for distance
     this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
     this.distanceCirclePercentageMaxValue =
@@ -91,27 +104,5 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     this.distanceData = `2.75`;
 
     this.distanceChartData = null;
-  }
-
-  onActivityTap() {
-    console.log('activity button tapped');
-    this._modalService
-      .showModal(ActivityTabComponent, {
-        context: {},
-        fullscreen: true,
-        viewContainerRef: this._vcRef
-      })
-      .catch(err => {
-        this._logService.logException(err);
-        new Toasty({
-          text:
-            'An unexpected error occurred. If this continues please let us know.',
-          textColor: new Color('#fff000')
-        });
-      });
-  }
-
-  onWatchTap() {
-    Log.D('watch item tapped');
   }
 }
