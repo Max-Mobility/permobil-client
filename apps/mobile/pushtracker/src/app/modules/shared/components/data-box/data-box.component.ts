@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
@@ -17,8 +16,7 @@ import { LoggingService } from '../../../../services';
 @Component({
   selector: 'DataBox',
   moduleId: module.id,
-  templateUrl: 'data-box.component.html',
-  providers: [DatePipe]
+  templateUrl: 'data-box.component.html'
 })
 export class DataBoxComponent extends TextField {
   @Input() dataValue: string;
