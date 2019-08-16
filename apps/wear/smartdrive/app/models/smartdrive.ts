@@ -888,19 +888,10 @@ export class SmartDrive extends DeviceBase {
   }
 
   public sendSettingsObject(settings: Device.Settings): Promise<any> {
-    const flags = [
-      settings.ezOn,
-      settings.disablePowerAssistBeep
-    ].reduce((f, s, i) => {
-      if (s) {
-        f |= (1 << i);
-      }
-      return f;
-    }, 0);
     const _settings = super.sendSettings(
       settings.controlMode,
       settings.units,
-      flags,
+      settings.getFlags(),
       settings.tapSensitivity / 100.0,
       settings.acceleration / 100.0,
       settings.maxSpeed / 100.0

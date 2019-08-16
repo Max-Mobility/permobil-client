@@ -6,7 +6,7 @@
     <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
   </GridLayout>
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
@@ -29,51 +29,67 @@
       // Smart Drive Section
       <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
 
+      // EZ-ON
+      <StackLayout row="5">
+        <Label class="setting-title" [text]="'general.ez-on' | translate"></Label>
+        <Switch [checked]="settingsService.settings.ezOn"
+                class="setting-switch"
+                (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
+      </StackLayout>
+
+      // Power Assist Beep
+      <StackLayout row="6">
+        <Label class="setting-title" [text]="'general.disable-power-assist-beep' | translate"></Label>
+        <Switch [checked]="settingsService.settings.disablePowerAssistBeep"
+                class="setting-switch"
+                (checkedChange)="onSettingsChecked($event, 'disable-power-assist-beep')"></Switch>
+      </StackLayout>
+
       // Max Speed
-      <StackLayout row="5" (tap)="onItemTap($event, 'max-speed')">
+      <StackLayout row="7" (tap)="onItemTap($event, 'max-speed')">
         <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Acceleration
-      <StackLayout row="6" (tap)="onItemTap($event, 'acceleration')">
+      <StackLayout row="8" (tap)="onItemTap($event, 'acceleration')">
         <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Tap sensitivity
-      <StackLayout row="7" (tap)="onItemTap($event, 'tap-sensitivity')">
+      <StackLayout row="9" (tap)="onItemTap($event, 'tap-sensitivity')">
         <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
       </StackLayout>
       // Mode
-      <StackLayout row="8" (tap)="onItemTap($event, 'mode')">
+      <StackLayout row="10" (tap)="onItemTap($event, 'mode')">
         <Label class="setting-title" [text]="'general.mode' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Max Speed
-      <StackLayout row="9" (tap)="onItemTap($event, 'switch-control-max-speed')">
+      <StackLayout row="11" (tap)="onItemTap($event, 'switch-control-max-speed')">
         <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Mode
-      <StackLayout row="10" (tap)="onItemTap($event, 'switch-control-mode')">
+      <StackLayout row="12" (tap)="onItemTap($event, 'switch-control-mode')">
         <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
         <Label class="setting-value" [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
       </StackLayout>
 
       // Display Section
-      <Label row="11" class="category" [text]="'general.display' | translate"></Label>
+      <Label row="13" class="category" [text]="'general.display' | translate"></Label>
 
       // Theme
-      <StackLayout row="12" (tap)="onItemTap($event, 'theme')">
+      <StackLayout row="14" (tap)="onItemTap($event, 'theme')">
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout row="13" (tap)="onItemTap($event, 'language')">
+      <StackLayout row="15" (tap)="onItemTap($event, 'language')">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>
