@@ -28,16 +28,18 @@
       <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
 
       // EZ-ON
-      <StackLayout row="5">
-        <Label class="setting-title" [text]="'general.ez-on' | translate"></Label>
-        <Switch [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
-      </StackLayout>
+      <GridLayout row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
+        <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
+        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
+        <Label row="1" col="0" colSpan="2" class="setting-value" [text]="'general.ez-on' | translate" textWrap="true"></Label>
+      </GridLayout>
 
       // Power Assist Beep
-      <StackLayout row="6">
-        <Label class="setting-title" [text]="'general.disable-power-assist-beep' | translate"></Label>
-        <Switch [checked]="settingsService.settings.disablePowerAssistBeep" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'disable-power-assist-beep')"></Switch>
-      </StackLayout>
+      <GridLayout row="6" rows="auto, auto" columns="*, auto" class="setting-layout">
+        <Label row="0" col="0" class="setting-title" [text]="'general.disable-power-assist-beep' | translate"></Label>
+        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.disablePowerAssistBeep" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'disable-power-assist-beep')"></Switch>
+        <Label row="1" col="0" colSpan="2" class="setting-value" [text]="'general.disable-power-assist-beep' | translate" textWrap="true"></Label>
+      </GridLayout>
 
       // Max Speed
       <StackLayout ripple rippleColorAlpha="0.18" row="7" (tap)="onItemTap($event, 'max-speed')" class="setting-layout">
@@ -63,7 +65,7 @@
       </StackLayout>
 
       // Switch Control Max Speed
-      <StackLayout ripple row="11" (tap)="onItemTap($event, 'switch-control-max-speed')" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="11" (tap)="onItemTap($event, 'switch-control-max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>

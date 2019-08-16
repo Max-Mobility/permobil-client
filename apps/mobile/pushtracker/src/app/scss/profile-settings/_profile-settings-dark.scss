@@ -26,8 +26,9 @@
 
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
-    color: $white;
+    color: $permobil-cousteau;
     background: darken($white, 10%);
+    off-background-color: $dark-grey;
   }
 
   .custom-template-dialog {
