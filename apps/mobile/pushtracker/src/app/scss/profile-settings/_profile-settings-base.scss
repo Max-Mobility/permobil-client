@@ -38,45 +38,44 @@
   }
 }
 
-  .CUSTOM_TEMPLATE_DIALOG_BASE {
-    height: 100%;
+.CUSTOM_TEMPLATE_DIALOG_BASE {
+  height: 100%;
 
-    > StackLayout {
-      margin: 24;
+  > StackLayout {
+    margin: 24;
+    border-radius: 4;
+
+    .title {
+      font-family: $os;
+      font-size: 18;
+      font-weight: bold;
+      horizontal-align: left;
+      vertical-align: center;
+      margin: 10;
+      text-wrap: true;
+    }
+
+    .description {
+      font-family: $os;
+      font-size: 12;
+      margin: 2 2 15 10;
+      text-wrap: true;
+    }
+
+    .cancel-btn {
+      @extend .btn-transparent;
+      horizontal-align: right;
+      text-align: center;
+      margin: 15 0 0 0;
       border-radius: 4;
+    }
 
-      .title {
-        font-family: $os;
-        font-size: 18;
-        font-weight: bold;
-        horizontal-align: left;
-        vertical-align: center;
-        margin: 10;
-        text-wrap: true;
-      }
-
-      .description {
-        font-family: $os;
-        font-size: 12;
-        margin: 2 2 15 10;
-        text-wrap: true;
-      }
-
-      .cancel-btn {
-        @extend .btn-transparent;
-        horizontal-align: right;
-        text-align: center;
-        margin: 15 0 0 0;
-        border-radius: 4;
-      }
-
-      .ok-btn {
-        @extend .btn-transparent;
-        horizontal-align: right;
-        text-align: center;
-        margin: 15 0 0 0;
-        border-radius: 4;
-      }
+    .ok-btn {
+      @extend .btn-transparent;
+      horizontal-align: right;
+      text-align: center;
+      margin: 15 0 0 0;
+      border-radius: 4;
     }
   }
 }
