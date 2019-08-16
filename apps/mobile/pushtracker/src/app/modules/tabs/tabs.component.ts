@@ -6,9 +6,12 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { BluetoothService, SettingsService } from '../../services';
-import { AppResourceIcons } from '../../enums';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
+import { SnackBar } from '@nstudio/nativescript-snackbar';
+import * as application from 'tns-core-modules/application';
+import { alert } from 'tns-core-modules/ui/dialogs';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 @Component({
   moduleId: module.id,
@@ -28,6 +31,13 @@ export class TabsComponent {
     'profile-tab.title'
   );
 
+  // permissions for the bluetooth service
+  private permissionsNeeded = [
+    android.Manifest.permission.ACCESS_COARSE_LOCATION
+  ];
+
+  private snackbar = new SnackBar();
+
   constructor(
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
@@ -38,6 +48,14 @@ export class TabsComponent {
   ) {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
+
+    // register for bluetooth events here
+    this._bluetoothService.on(BluetoothService.advertise_error,
+      this.onBluetoothAdvertiseError.bind(this));
+    this._bluetoothService.on(BluetoothService.pushtracker_connected,
+      this.onPushTrackerConnected.bind(this));
+    this._bluetoothService.on(BluetoothService.pushtracker_disconnected,
+      this.onPushTrackerDisconnected.bind(this));
 
     this.homeTabItem = {
       title: this._homeTabTitle,
@@ -53,7 +71,96 @@ export class TabsComponent {
     };
   }
 
+  async askForPermissions() {
+    // determine if we have shown the permissions request
+    const hasShownRequest = appSettings.getBoolean(
+      STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
+    ) || false;
+    // will throw an error if permissions are denied, else will
+    // return either true or a permissions object detailing all the
+    // granted permissions. The error thrown details which
+    // permissions were rejected
+    const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
+    const reasons = [];
+    const neededPermissions = this.permissionsNeeded.filter(
+      p => !hasPermission(p) &&
+        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(p) ||
+          !hasShownRequest)
+    );
+    // update the has-shown-request
+    appSettings.setBoolean(
+      STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
+      true
+    );
+    const reasoning = {
+      [android.Manifest.permission.ACCESS_COARSE_LOCATION]: this._translateService.instant('permissions-reasons.coarse-location')
+    };
+    neededPermissions.map((r) => {
+      reasons.push(reasoning[r]);
+    });
+    if (neededPermissions && neededPermissions.length > 0) {
+      // Log.D('requesting permissions!', neededPermissions);
+      await alert({
+        title: this._translateService.instant('permissions-request.title'),
+        message: reasons.join('\n\n'),
+        okButtonText: this._translateService.instant('buttons.ok')
+      });
+      try {
+        const permissions = await requestPermissions(neededPermissions, () => { });
+        return true;
+      } catch (permissionsObj) {
+        const hasBlePermission =
+          permissionsObj[blePermission] ||
+          hasPermission(blePermission);
+        if (hasBlePermission) {
+          return true;
+        } else {
+          throw this._translateService.instant('failures.permissions');
+        }
+      }
+    } else if (hasPermission(blePermission)) {
+      return Promise.resolve(true);
+    } else {
+      throw this._translateService.instant('failures.permissions');
+    }
+  }
+
+  onBluetoothAdvertiseError(args: any) {
+    const error = args.data.error;
+    alert({
+      title: this._translateService.instant('bluetooth.service-failure'),
+      okButtonText: this._translateService.instant('dialogs.ok'),
+      message: `${error}`
+    });
+  }
+
+  onPushTrackerConnected(args: any) {
+    const pt = args.data.pushtracker;
+    const msg = this._translateService.instant('general.pushtracker-connected') + `: ${pt.address}`;
+    this.snackbar.simple(msg);
+  }
+
+  onPushTrackerDisconnected(args: any) {
+    const pt = args.data.pushtracker;
+    const msg = this._translateService.instant('general.pushtracker-disconnected') + `: ${pt.address}`;
+    this.snackbar.simple(msg);
+  }
+
   ngOnInit() {
+    // load the device settings (sd / pt)
+    this._settingsService.loadSettings();
+
+    Log.D('asking for permissions');
+    this.askForPermissions()
+      .then(() => {
+        Log.D('starting bluetoooth');
+        // start the bluetooth service
+        return this._bluetoothService.advertise();
+      })
+      .catch((err) => {
+        Log.E('permission or bluetooth error:', err);
+      });
+
     this._routerExtension.navigate(
       [
         {
@@ -66,10 +173,6 @@ export class TabsComponent {
       ],
       { relativeTo: this._activeRoute }
     );
-    // load the device settings (sd / pt)
-    this._settingsService.loadSettings();
-    // start the bluetooth service
-    this._bluetoothService.advertise();
   }
 
   // onTabViewLoaded(args) {

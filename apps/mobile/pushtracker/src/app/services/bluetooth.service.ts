@@ -2,14 +2,12 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { alert } from 'tns-core-modules/ui/dialogs';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -23,11 +21,17 @@ export enum PushTrackerState {
 }
 
 @Injectable()
-export class BluetoothService {
+export class BluetoothService extends Observable {
   // static members
   static AppServiceUUID = '9358ac8f-6343-4a31-b4e0-4b13a2b45d86';
   static PushTrackers = new ObservableArray<PushTracker>();
   static SmartDrives = new ObservableArray<SmartDrive>();
+
+  public static advertise_error = 'advertise_error';
+  public static pushtracker_connected = 'pushtracker_connected';
+  public static pushtracker_disconnected = 'pushtracker_disconnected';
+  public static smartdrive_connected = 'smartdrive_connected';
+  public static smartdrive_disconnected = 'smartdrive_disconnected';
 
   /**
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
@@ -45,12 +49,12 @@ export class BluetoothService {
   private _bluetooth = new Bluetooth();
   private PushTrackerDataCharacteristic: any = null;
   private AppService: any = null;
-  private snackbar = new SnackBar();
 
   constructor(
     private _translateService: TranslateService,
     private _loggingService: LoggingService
   ) {
+    super();
     // Checking app-settings to see if the user has paired a PT before
     const hasPairedToPT = appSettings.getBoolean(
       STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER,
@@ -67,8 +71,6 @@ export class BluetoothService {
     this._bluetooth.debug = false;
 
     this._loggingService.logBreadCrumb('bluetooth.service constructor');
-
-    this.setEventListeners();
   }
 
   static requestOtaBackgroundExecution() {
@@ -223,15 +225,13 @@ export class BluetoothService {
     this.clearEventListeners();
     this.setEventListeners();
 
-    const x = await this._bluetooth
-      .requestCoarseLocationPermission()
-      .catch(error => {
-        // nothing
-      });
     this.enabled = true;
 
     this._bluetooth.startGattServer();
 
+    // remove the services
+    this.deleteServices();
+    // now add them back
     this.addServices();
 
     this.initialized = true;
@@ -246,12 +246,7 @@ export class BluetoothService {
       try {
         await this._bluetooth.enable();
       } catch (err) {
-        const msg = `bluetooth.service::advertise error: ${err}`;
-        alert({
-          title: this._translateService.instant('bluetooth.service-failure'),
-          okButtonText: this._translateService.instant('dialogs.ok'),
-          message: msg
-        });
+        this.sendEvent(BluetoothService.advertise_error, { error: err });
         this._loggingService.logException(err);
         return;
       }
@@ -492,9 +487,9 @@ export class BluetoothService {
           const pt = this.getOrMakePushTracker(device);
           pt.handleConnect();
           this.updatePushTrackerState();
-          this.notify(
-            `${device.name || 'PushTracker'}::${device.address} connected`
-          );
+          this.sendEvent(BluetoothService.pushtracker_connected, {
+            pushtracker: pt
+          });
         } else if (this.isSmartDrive(device)) {
           const sd = this.getOrMakeSmartDrive(device);
           sd.handleConnect();
@@ -505,10 +500,9 @@ export class BluetoothService {
           const pt = this.getOrMakePushTracker(device);
           pt.handleDisconnect();
           this.updatePushTrackerState();
-          this.notify(
-            `${device.name || 'PushTracker'}::${device.address} disconnected`
-          );
-
+          this.sendEvent(BluetoothService.pushtracker_disconnected, {
+            pushtracker: pt
+          });
           BluetoothService.stopOtaBackgroundExecution();
         } else if (this.isSmartDrive(device)) {
           const sd = this.getOrMakeSmartDrive(device);
@@ -812,11 +806,15 @@ export class BluetoothService {
     return isPT;
   }
 
-  private notify(text: string): void {
-    try {
-      this.snackbar.simple(text);
-    } catch (ex) {
-      // nothing
-    }
+  /**
+   * Notify events by name and optionally pass data
+   */
+  sendEvent(eventName: string, data?: any, msg?: string) {
+    this.notify({
+      eventName,
+      object: this,
+      data,
+      message: msg
+    });
   }
 }

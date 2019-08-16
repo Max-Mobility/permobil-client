@@ -32,7 +32,7 @@ export class PushTracker extends Observable {
     '5177fda8-1003-4254-aeb9-7f9edb3cc9cf'
   ];
   static DataCharacteristicUUID = PushTracker.Characteristics[1];
-  static DataCharacteristic;
+  static DataCharacteristic: any;
 
   // Event names
   static paired_event = 'paired_event';
