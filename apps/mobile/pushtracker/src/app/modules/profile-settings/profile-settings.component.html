@@ -1,7 +1,7 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navBtnEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
@@ -30,17 +30,13 @@
       // EZ-ON
       <StackLayout row="5">
         <Label class="setting-title" [text]="'general.ez-on' | translate"></Label>
-        <Switch [checked]="settingsService.settings.ezOn"
-                class="setting-switch"
-                (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
+        <Switch [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
       </StackLayout>
 
       // Power Assist Beep
       <StackLayout row="6">
         <Label class="setting-title" [text]="'general.disable-power-assist-beep' | translate"></Label>
-        <Switch [checked]="settingsService.settings.disablePowerAssistBeep"
-                class="setting-switch"
-                (checkedChange)="onSettingsChecked($event, 'disable-power-assist-beep')"></Switch>
+        <Switch [checked]="settingsService.settings.disablePowerAssistBeep" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'disable-power-assist-beep')"></Switch>
       </StackLayout>
 
       // Max Speed

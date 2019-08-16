@@ -1,23 +1,19 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { RouterExtensions } from 'nativescript-angular/router';
-import * as LS from 'nativescript-localstorage';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { BluetoothService, LoggingService, SettingsService } from '../../services';
+import {
+  BluetoothService,
+  LoggingService,
+  SettingsService
+} from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
@@ -26,7 +22,7 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
   moduleId: module.id,
   templateUrl: 'profile-settings.component.html'
 })
-export class ProfileSettingsComponent implements OnInit, AfterViewInit {
+export class ProfileSettingsComponent implements OnInit {
   infoItems;
   HEIGHT_UNITS: string[];
   HEIGHT: string;
@@ -58,7 +54,6 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
     public bluetoothService: BluetoothService,
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _routerExtensions: RouterExtensions,
     private _page: Page,
     private userService: PushTrackerUserService,
     private _params: ModalDialogParams
@@ -91,9 +86,6 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
     // get current app style theme from app-settings on device
     this.CURRENT_THEME =
       appSettings.getString(STORAGE_KEYS.APP_THEME) || APP_THEMES.DEFAULT;
-  }
-
-  ngAfterViewInit() {
   }
 
   getUser(): void {
@@ -273,7 +265,9 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
       await pts.map(async pt => {
         try {
           await pt.sendSettingsObject(this.settingsService.settings);
-          await pt.sendSwitchControlSettingsObject(this.settingsService.switchControlSettings);
+          await pt.sendSwitchControlSettingsObject(
+            this.settingsService.switchControlSettings
+          );
         } catch (err) {
           Log.E('error sending data to pushtracker', err);
         }

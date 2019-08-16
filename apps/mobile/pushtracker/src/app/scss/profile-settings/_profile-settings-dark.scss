@@ -23,7 +23,7 @@
     @extend .SETTING_VALUE_BASE;
     color: darken($white, 10%);
   }
-  
+
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
     color: $white;
@@ -32,7 +32,7 @@
 
   .custom-template-dialog {
     @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
-    
+
     background-color: $black;
 
     > StackLayout {

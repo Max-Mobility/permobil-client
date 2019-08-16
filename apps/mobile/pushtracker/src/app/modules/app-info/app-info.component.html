@@ -1,8 +1,7 @@
 <GridLayout rows="auto, *" class="app-info-layout">
   // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="50, *, 50">
-    <Button row="0" col="0" text="&#xe5cd;" ripple class="close-btn" (tap)="closeModal($event)"></Button>
-  </GridLayout>
+  <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="closeModal()"></MockActionBar>
+
   <ScrollView row="1" height="100%">
     <StackLayout paddingTop="20">
       <Label class="title" [text]="'app-info-component.title' | translate" textWrap="true"></Label>

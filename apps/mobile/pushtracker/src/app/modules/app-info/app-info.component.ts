@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
@@ -38,8 +37,7 @@ export class AppInfoComponent implements OnInit {
     );
   }
 
-  closeModal(event) {
-    Log.D('app-info.component modal closed');
-    this._params.closeCallback('some value');
+  closeModal() {
+    this._params.closeCallback();
   }
 }
