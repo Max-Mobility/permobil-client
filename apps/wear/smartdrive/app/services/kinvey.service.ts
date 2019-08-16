@@ -33,6 +33,7 @@ export class KinveyService {
 
   private reformatForDb(o) {
     // remove fields we don't want in the db
+    o._id = o.uuid;
     delete o.id;
     delete o.uuid;
     delete o.has_been_sent;

@@ -2842,12 +2842,18 @@ export class MainViewModel extends Observable {
       };
       return this._kinveyService
         .sendSettings(settingsObj)
-        .then(() => {
-          this.hasSentSettings = true;
-          appSettings.setBoolean(
-            DataKeys.SD_SETTINGS_DIRTY_FLAG,
-            this.hasSentSettings
-          );
+        .then(r => r.content.toJSON())
+        .then(r => {
+          const id = r['_id'];
+          if (id) {
+            this.hasSentSettings = true;
+            appSettings.setBoolean(
+              DataKeys.SD_SETTINGS_DIRTY_FLAG,
+              this.hasSentSettings
+            );
+          } else {
+            Log.E('no id returned by kinvey!', r);
+          }
         })
         .catch(err => {
           Sentry.captureException(err);
@@ -2888,15 +2894,19 @@ export class MainViewModel extends Observable {
             .map(r => r.content.toJSON())
             .map(r => {
               const id = r['_id'];
-              return this._sqliteService.updateInTable(
-                SmartDriveData.Errors.TableName,
-                {
-                  [SmartDriveData.Errors.HasBeenSentName]: 1
-                },
-                {
-                  [SmartDriveData.Errors.UuidName]: id
-                }
-              );
+              if (id) {
+                return this._sqliteService.updateInTable(
+                  SmartDriveData.Errors.TableName,
+                  {
+                    [SmartDriveData.Errors.HasBeenSentName]: 1
+                  },
+                  {
+                    [SmartDriveData.Errors.UuidName]: id
+                  }
+                );
+              } else {
+                Log.E('no id returned by kinvey!', r);
+              }
             });
           return Promise.all(promises);
         }
@@ -2920,6 +2930,7 @@ export class MainViewModel extends Observable {
             } catch (err) {
               Log.E('parse error', err);
             }
+            Log.D('info:', i);
             return this._kinveyService.sendInfo(
               i,
               i[SmartDriveData.Info.UuidName]
@@ -2934,15 +2945,19 @@ export class MainViewModel extends Observable {
             .map(r => r.content.toJSON())
             .map(r => {
               const id = r['_id'];
-              return this._sqliteService.updateInTable(
-                SmartDriveData.Info.TableName,
-                {
-                  [SmartDriveData.Info.HasBeenSentName]: 1
-                },
-                {
-                  [SmartDriveData.Info.UuidName]: id
-                }
-              );
+              if (id) {
+                return this._sqliteService.updateInTable(
+                  SmartDriveData.Info.TableName,
+                  {
+                    [SmartDriveData.Info.HasBeenSentName]: 1
+                  },
+                  {
+                    [SmartDriveData.Info.UuidName]: id
+                  }
+                );
+              } else {
+                Log.E('no id returned by kinvey!', r);
+              }
             });
           return Promise.all(promises);
         }
