@@ -56,9 +56,9 @@
                 </GridLayout>
 
                 <StackLayout row="3">
-                    <Label textWrap="true" row="0" width="80%" marginTop="10" 
-                    text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..." 
-                    horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
+                    <Label textWrap="true" row="0" width="80%" marginTop="10"
+                        text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..."
+                        horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
                 </StackLayout>
 
                 <!-- Horizontal Line -->
@@ -83,10 +83,35 @@
                     </CategoricalAxis>
                     <LinearAxis tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10"
-                        selectionMode="DataPoint" categoryProperty="xAxis" valueProperty="yAxis">
+
+                    <BarSeries tkCartesianSeries [items]="activity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+                        [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
+                    <Palette tkCartesianPalette seriesName="WeeklyActivity">
+                        <PaletteEntry tkCartesianPaletteEntry
+                            [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+                            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+                    </Palette>
+
                 </RadCartesianChart>
+                <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
+                    colSpan="3">
+                    <Button [class]="dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
+                        col="2" horizontalAlignment="left" text="Coast Time"
+                        (tap)="onDailyActivityCoastTimeButtonTap($event)"></Button>
+                    <Button [class]="dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
+                        horizontalAlignment="right" text="Push Count"
+                        (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
+                </GridLayout>
+
+                <StackLayout row="3">
+                    <Label textWrap="true" row="0" width="80%" marginTop="10"
+                        text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..."
+                        horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
+                </StackLayout>
+
+                <!-- Horizontal Line -->
+                <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
                 <!-- Month View -->

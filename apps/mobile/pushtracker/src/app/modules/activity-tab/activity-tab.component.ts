@@ -83,6 +83,7 @@ export class ActivityTabComponent implements OnInit {
     public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
     public savedTheme: string;
     public dailyActivityAnnotationValue: number = 0;
+    private _weeklyActivityCache = {};
 
     // Colors
     private _colorWhite = new Color('White');
@@ -134,7 +135,7 @@ export class ActivityTabComponent implements OnInit {
             didLoad = await this._activityService.loadDailyActivity(this.currentDayInView);
             if (didLoad) {
                 this.activity = new ObservableArray(this.formatActivityForView('Day'));
-                this._initDayChartTitle();
+                this._initChartTitle();
                 const date = this.currentDayInView;
                 const sunday = this._getFirstDayOfWeek(date);
                 this.weekStart = sunday;
@@ -165,7 +166,7 @@ export class ActivityTabComponent implements OnInit {
                 // push count
                 this.dayChartLabel = '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
             }
-            this._initDayChartTitle();
+            this._initChartTitle();
             const date = this.currentDayInView;
             const sunday = this._getFirstDayOfWeek(date);
             this.weekStart = sunday;
@@ -178,20 +179,53 @@ export class ActivityTabComponent implements OnInit {
     }
 
     async loadWeeklyActivity() {
-        const didLoad = await this._activityService.loadWeeklyActivity(this.weekStart, this.weekEnd);
-        if (didLoad) {
-            // this.activity = new ObservableArray(this.formatActivityForView('Day'));
-            // this._initDayChartTitle();
-            // const date = this.currentDayInView;
-            // const sunday = this._getFirstDayOfWeek(date);
-            // this.weekStart = sunday;
-            // this.weekEnd = this.weekStart;
-            // this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-            // this.minDate = new Date('01/01/1999');
-            // this.maxDate = new Date('01/01/2099');
+        // TODO: Clean up all commented out code
+        let didLoad = false;
+        // Check if data is available in daily activity cache first
+        if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
+            didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
+            if (didLoad) {
+                this.activity = new ObservableArray(this.formatActivityForView('Week'));
+                this._initChartTitle();
+                const date = this.currentDayInView;
+                const sunday = this._getFirstDayOfWeek(date);
+                this.weekStart = sunday;
+                this.weekEnd = this.weekStart;
+                this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+                this.minDate = new Date('01/01/1999');
+                this.maxDate = new Date('01/01/2099');
+            }
+            else {
+                this.activity = new ObservableArray(this.formatActivityForView('Week'));
+            }
+            // Cache activity by day so we can easily pull it up next time
+            this._weeklyActivityCache[this.weekStart.toUTCString()] = {
+                chartData: this.activity, weeklyActivity: this._activityService.weeklyActivity
+            };
+            // this._updateDailyActivityAnnotationValue();
         }
         else {
-            this.activity = new ObservableArray(this.formatActivityForView('Day'));
+            // We have the data cached. Pull it up
+            didLoad = true;
+            const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+            this.activity = cache.chartData;
+            // if (this.dailyViewMode === 0) {
+            //     // coast time
+            //     this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+            // }
+            // else {
+            //     // push count
+            //     this.dayChartLabel = '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
+            // }
+            this._initChartTitle();
+            const date = this.currentDayInView;
+            const sunday = this._getFirstDayOfWeek(date);
+            this.weekStart = sunday;
+            this.weekEnd = this.weekStart;
+            this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+            this.minDate = new Date('01/01/1999');
+            this.maxDate = new Date('01/01/2099');
+            // this._updateDailyActivityAnnotationValue();
         }
     }
 
@@ -258,6 +292,54 @@ export class ActivityTabComponent implements OnInit {
                 return result;
             }
         }
+        else if (viewMode === 'Week') {
+            const activity = this._activityService.weeklyActivity;
+            if (activity) {
+                const result = [];
+                const date = new Date(activity.date);
+                const range = function (start, end) {
+                    return (new Array(end - start + 1)).fill(undefined).map((_, i) => i + start);
+                };
+                const weekViewDayArray = [];
+                const currentDay = date;
+                let i = 0;
+                while (i < 7) {
+                    weekViewDayArray.push(new Date(currentDay));
+                    currentDay.setDate(currentDay.getDate() + 1);
+                    i = i + 1;
+                }
+                console.log(weekViewDayArray);
+                const days = activity.days;
+                let j = 0;
+                const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                for (const i in weekViewDayArray) {
+                    const dayInWeek = weekViewDayArray[i];
+                    if (days && j < days.length) {
+                        while (j < days.length) {
+                            const dailyActivity = days[j];
+                            if (dayInWeek.toDateString() === new Date(dailyActivity.date).toDateString()) {
+                                // We have daily activity for this day
+                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: dailyActivity.coast_time_avg || 0, pushCount: dailyActivity.push_count || 0 });
+                                j += 1;
+                                continue;
+                            }
+                            else {
+                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0 });
+                                break;
+                            }
+                        }
+                    }
+                    else {
+                        result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0 });
+                    }
+                }
+                result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+                result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+                result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+                result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+                return result;
+            }
+        }
     }
 
     onShownModally(args) {
@@ -277,7 +359,7 @@ export class ActivityTabComponent implements OnInit {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
-                this._initDayChartTitle();
+                this._initChartTitle();
                 this.loadDailyActivity();
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
@@ -300,7 +382,7 @@ export class ActivityTabComponent implements OnInit {
         return !(this._isCurrentDayInViewToday());
     }
 
-    _initDayChartTitle() {
+    _initChartTitle() {
         const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
@@ -337,14 +419,14 @@ export class ActivityTabComponent implements OnInit {
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
         this._updateWeekStartAndEnd();
-        this._initDayChartTitle();
+        this._initChartTitle();
         this.loadDailyActivity();
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
-        this._initDayChartTitle();
+        this._initChartTitle();
         this.loadDailyActivity();
     }
 
