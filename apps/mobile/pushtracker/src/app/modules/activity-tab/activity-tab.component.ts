@@ -223,7 +223,6 @@ export class ActivityTabComponent implements OnInit {
             this.maxDate = new Date('01/01/2099');
             this._updateWeeklyActivityAnnotationValue();
         }
-        console.log('Loaded week activity', this.weekStart, this.weekEnd);
     }
 
     formatActivityForView(viewMode) {
@@ -685,7 +684,6 @@ export class ActivityTabComponent implements OnInit {
                 this.weeklyActivityAnnotationValue = parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
             }
         }
-        console.log(this.weeklyActivityAnnotationValue);
     }
 
     onWeeklyActivityCoastTimeButtonTap(event) {
