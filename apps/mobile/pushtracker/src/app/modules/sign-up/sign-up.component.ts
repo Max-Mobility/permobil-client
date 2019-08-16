@@ -128,7 +128,7 @@ export class SignUpComponent implements OnInit {
     // trim all the strings on user object
     this.user.first_name = this.user.first_name.trim();
     this.user.last_name = this.user.last_name.trim();
-    this.user.username = this.user.username.trim();
+    this.user.username = this.user.username.trim().toLowerCase();
     this.user.password = this.user.password.trim();
     this.user.dob = this.user.dob.trim();
 

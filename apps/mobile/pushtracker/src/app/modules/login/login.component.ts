@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
       );
 
       const user = await Kinvey.User.login(
-        this.user.email.trim(),
+        this.user.email.trim().toLowerCase(),
         this.user.password.trim()
       );
 
