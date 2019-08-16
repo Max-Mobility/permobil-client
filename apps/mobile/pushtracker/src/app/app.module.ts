@@ -8,7 +8,6 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
-import { DropDownModule } from 'nativescript-drop-down/angular';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
@@ -46,7 +45,6 @@ export function createTranslateLoader() {
     SharedModule,
     PermobilCoreModule,
     AppRoutingModule,
-    DropDownModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
