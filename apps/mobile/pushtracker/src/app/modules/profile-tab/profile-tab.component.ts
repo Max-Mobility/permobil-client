@@ -126,12 +126,8 @@ export class ProfileTabComponent implements OnInit {
     private _vcRef: ViewContainerRef
   ) {
     // appSettings.clear();
-    this.getUser();
     this._page.actionBarHidden = true;
     this._barcodeScanner = new BarcodeScanner();
-
-    if (!this.user.data.dob || this.user.data.dob === null)
-      this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
 
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
@@ -157,18 +153,6 @@ export class ProfileTabComponent implements OnInit {
     this.SETTING_WEIGHT_UNITS = ['Kilograms', 'Pounds'];
     this.SETTING_DISTANCE_UNITS = ['Kilometers', 'Miles'];
 
-    // Unit settings
-    this.SETTING_HEIGHT =
-      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
-      'Feet & inches';
-    this.SETTING_WEIGHT =
-      this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
-      'Pounds';
-    this.SETTING_DISTANCE =
-      this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
-      'Miles';
-    this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
-
     // SmartDrive settings
     this.SETTING_MAX_SPEED = '70%';
     this.SETTING_ACCELERATION = '70%';
@@ -191,10 +175,37 @@ export class ProfileTabComponent implements OnInit {
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
-    this._page.on(Page.navigatedToEvent, args => {
-      this.getUser();
+    this.getUser();
+    if (!this.user.data.dob || this.user.data.dob === null)
+      this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
+
+    // Unit settings
+    this.SETTING_HEIGHT =
+      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+      'Feet & inches';
+    this.SETTING_WEIGHT =
+      this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
+      'Pounds';
+    this.SETTING_DISTANCE =
+      this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
+      'Miles';
+    this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
+
+  }
+
+  ngOnInit() {
+    this._logService.logBreadCrumb('profile-tab.component ngOnInit');
+    this._initDisplayActivityGoalCoastTime();
+    this._initDisplayActivityGoalDistance();
+    this._initDisplayWeight();
+    this._initDisplayHeight();
+  }
+
+  getUser(): void {
+    this.userService.user.subscribe(user => {
+      this.user = user;
       this.SETTING_HEIGHT =
-        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
         'Feet & inches';
       this.SETTING_WEIGHT =
         this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
@@ -210,19 +221,6 @@ export class ProfileTabComponent implements OnInit {
       this.displayActivityGoalUnitLabel = '';
       this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
-  }
-
-  ngOnInit() {
-    this.getUser();
-    this._logService.logBreadCrumb('profile-tab.component ngOnInit');
-    this._initDisplayActivityGoalCoastTime();
-    this._initDisplayActivityGoalDistance();
-    this._initDisplayWeight();
-    this._initDisplayHeight();
-  }
-
-  getUser(): void {
-    this.userService.user.subscribe(user => (this.user = user));
   }
 
   onHelpTap() {
