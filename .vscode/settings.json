@@ -20,7 +20,8 @@
     "android-dynamic-elevation-offset",
     "translate-y",
     "translate-x",
-    "text-wrap"
+    "text-wrap",
+    "off-background-color"
   ],
   "css.lint.validProperties": [
     "horizontal-align",
@@ -28,7 +29,8 @@
     "android-dynamic-elevation-offset",
     "translate-y",
     "translate-x",
-    "text-wrap"
+    "text-wrap",
+    "off-background-color"
   ],
   "prettier.disableLanguages": []
 }
