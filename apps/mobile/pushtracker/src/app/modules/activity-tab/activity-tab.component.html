@@ -31,7 +31,7 @@
                         [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" horizontalLocation="Right"
                         labelMargin="10" lineHidden="true" maximum="40" minumum="1" majorStep="15" labelFormat="%.0f">
                     </LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity" seriesName="DailyActivity" categoryProperty="xAxis"
+                    <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis"
                         [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
                     <Palette tkCartesianPalette seriesName="DailyActivity">
@@ -71,6 +71,8 @@
                     <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center"
                         justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextWeekTap($event)"></Button>
+                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center"
+                        class="chart-label" [text]="weekChartLabel"></Label>
                 </GridLayout>
                 <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" pointSelectionMode="Single"
                     (pointSelected)="onWeekPointSelected($event)">
@@ -81,11 +83,11 @@
                         majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline"
                         plotMode="OnTicks">
                     </CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
+                    <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
 
-                    <BarSeries tkCartesianSeries [items]="activity" seriesName="WeeklyActivity" categoryProperty="xAxis"
-                        [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'">
+                    <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+                        [valueProperty]="weeklyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
                     <Palette tkCartesianPalette seriesName="WeeklyActivity">
                         <PaletteEntry tkCartesianPaletteEntry
@@ -93,15 +95,20 @@
                             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
                     </Palette>
 
+                    <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis"
+                        hidden="false" [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+                        [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+                    </ChartGridLineAnnotation>
+
                 </RadCartesianChart>
                 <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
                     colSpan="3">
-                    <Button [class]="dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
+                    <Button [class]="weeklyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
                         col="2" horizontalAlignment="left" text="Coast Time"
-                        (tap)="onDailyActivityCoastTimeButtonTap($event)"></Button>
-                    <Button [class]="dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
+                        (tap)="onWeeklyActivityCoastTimeButtonTap($event)"></Button>
+                    <Button [class]="weeklyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
                         horizontalAlignment="right" text="Push Count"
-                        (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
+                        (tap)="onWeeklyActivityDistanceButtonTap($event)"></Button>
                 </GridLayout>
 
                 <StackLayout row="3">

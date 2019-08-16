@@ -61,7 +61,7 @@ export class ActivityTabComponent implements OnInit {
     public displayDay: string = this._translateService.instant('day');
     public displayWeek: string = this._translateService.instant('week');
     public displayMonth: string = this._translateService.instant('month');
-    public activity: ObservableArray<any[]>;
+    public dailyActivity: ObservableArray<any[]>;
     public maximumDateTimeValue: Date;
     public minimumDateTimevalue: Date;
     public chartTitle: string;
@@ -83,7 +83,12 @@ export class ActivityTabComponent implements OnInit {
     public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
     public savedTheme: string;
     public dailyActivityAnnotationValue: number = 0;
+    // Member variabes for week view
+    public weeklyActivity: ObservableArray<any[]>;
     private _weeklyActivityCache = {};
+    public weeklyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
+    public weekChartLabel: string;
+    public weeklyActivityAnnotationValue: number = 0;
 
     // Colors
     private _colorWhite = new Color('White');
@@ -134,8 +139,8 @@ export class ActivityTabComponent implements OnInit {
         if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
             didLoad = await this._activityService.loadDailyActivity(this.currentDayInView);
             if (didLoad) {
-                this.activity = new ObservableArray(this.formatActivityForView('Day'));
-                this._initChartTitle();
+                this.dailyActivity = new ObservableArray(this.formatActivityForView('Day'));
+                this._initDayChartTitle();
                 const date = this.currentDayInView;
                 const sunday = this._getFirstDayOfWeek(date);
                 this.weekStart = sunday;
@@ -145,11 +150,11 @@ export class ActivityTabComponent implements OnInit {
                 this.maxDate = new Date('01/01/2099');
             }
             else {
-                this.activity = new ObservableArray(this.formatActivityForView('Day'));
+                this.dailyActivity = new ObservableArray(this.formatActivityForView('Day'));
             }
             // Cache activity by day so we can easily pull it up next time
             this._dailyActivityCache[this.currentDayInView.toUTCString()] = {
-                chartData: this.activity, dailyActivity: this._activityService.dailyActivity
+                chartData: this.dailyActivity, dailyActivity: this._activityService.dailyActivity
             };
             this._updateDailyActivityAnnotationValue();
         }
@@ -157,7 +162,7 @@ export class ActivityTabComponent implements OnInit {
             // We have the data cached. Pull it up
             didLoad = true;
             const cache = this._dailyActivityCache[this.currentDayInView.toUTCString()];
-            this.activity = cache.chartData;
+            this.dailyActivity = cache.chartData;
             if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
@@ -166,7 +171,7 @@ export class ActivityTabComponent implements OnInit {
                 // push count
                 this.dayChartLabel = '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
             }
-            this._initChartTitle();
+            this._initDayChartTitle();
             const date = this.currentDayInView;
             const sunday = this._getFirstDayOfWeek(date);
             this.weekStart = sunday;
@@ -179,54 +184,50 @@ export class ActivityTabComponent implements OnInit {
     }
 
     async loadWeeklyActivity() {
-        // TODO: Clean up all commented out code
         let didLoad = false;
         // Check if data is available in daily activity cache first
         if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
             didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
             if (didLoad) {
-                this.activity = new ObservableArray(this.formatActivityForView('Week'));
-                this._initChartTitle();
-                const date = this.currentDayInView;
-                const sunday = this._getFirstDayOfWeek(date);
-                this.weekStart = sunday;
-                this.weekEnd = this.weekStart;
+                this.weeklyActivity = new ObservableArray(this.formatActivityForView('Week'));
+                this._initWeekChartTitle();
+                this.weekStart = new Date(this._activityService.weeklyActivity.date);
+                this.weekEnd = new Date(this.weekStart);
                 this.weekEnd.setDate(this.weekEnd.getDate() + 6);
                 this.minDate = new Date('01/01/1999');
                 this.maxDate = new Date('01/01/2099');
             }
             else {
-                this.activity = new ObservableArray(this.formatActivityForView('Week'));
+                this.weeklyActivity = new ObservableArray(this.formatActivityForView('Week'));
             }
             // Cache activity by day so we can easily pull it up next time
             this._weeklyActivityCache[this.weekStart.toUTCString()] = {
-                chartData: this.activity, weeklyActivity: this._activityService.weeklyActivity
+                chartData: this.weeklyActivity, weeklyActivity: this._activityService.weeklyActivity
             };
-            // this._updateDailyActivityAnnotationValue();
+            this._updateWeeklyActivityAnnotationValue();
         }
         else {
             // We have the data cached. Pull it up
             didLoad = true;
             const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
-            this.activity = cache.chartData;
-            // if (this.dailyViewMode === 0) {
-            //     // coast time
-            //     this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-            // }
-            // else {
-            //     // push count
-            //     this.dayChartLabel = '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
-            // }
-            this._initChartTitle();
-            const date = this.currentDayInView;
-            const sunday = this._getFirstDayOfWeek(date);
-            this.weekStart = sunday;
-            this.weekEnd = this.weekStart;
+            this.weeklyActivity = cache.chartData;
+            if (this.dailyViewMode === 0) {
+                // coast time
+                this.weekChartLabel = '› ' + (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+            }
+            else {
+                // push count
+                this.weekChartLabel = '› ' + (cache.weeklyActivity.push_count || 0) + ' pushes';
+            }
+            this._initWeekChartTitle();
+            this.weekStart = new Date(cache.weeklyActivity.date);
+            this.weekEnd = new Date(this.weekStart);
             this.weekEnd.setDate(this.weekEnd.getDate() + 6);
             this.minDate = new Date('01/01/1999');
             this.maxDate = new Date('01/01/2099');
-            // this._updateDailyActivityAnnotationValue();
+            this._updateWeeklyActivityAnnotationValue();
         }
+        console.log('Loaded week activity', this.weekStart, this.weekEnd);
     }
 
     formatActivityForView(viewMode) {
@@ -294,6 +295,14 @@ export class ActivityTabComponent implements OnInit {
         }
         else if (viewMode === 'Week') {
             const activity = this._activityService.weeklyActivity;
+            if (this.dailyViewMode === 0) {
+                // coast time
+                this.weekChartLabel = '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+            }
+            else {
+                // push count
+                this.weekChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+            }
             if (activity) {
                 const result = [];
                 const date = new Date(activity.date);
@@ -308,7 +317,6 @@ export class ActivityTabComponent implements OnInit {
                     currentDay.setDate(currentDay.getDate() + 1);
                     i = i + 1;
                 }
-                console.log(weekViewDayArray);
                 const days = activity.days;
                 let j = 0;
                 const dayNames: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -319,18 +327,18 @@ export class ActivityTabComponent implements OnInit {
                             const dailyActivity = days[j];
                             if (dayInWeek.toDateString() === new Date(dailyActivity.date).toDateString()) {
                                 // We have daily activity for this day
-                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: dailyActivity.coast_time_avg || 0, pushCount: dailyActivity.push_count || 0 });
+                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: dailyActivity.coast_time_avg || 0, pushCount: dailyActivity.push_count || 0, date: dayInWeek });
                                 j += 1;
                                 continue;
                             }
                             else {
-                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0 });
+                                result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0, date: dayInWeek });
                                 break;
                             }
                         }
                     }
                     else {
-                        result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0 });
+                        result.push({ xAxis: dayNames[parseInt(i)], coastTime: 0, pushCount: 0, date: dayInWeek });
                     }
                 }
                 result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
@@ -359,12 +367,11 @@ export class ActivityTabComponent implements OnInit {
             const newIndex = args.newIndex;
             if (newIndex === 0) {
                 this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
-                this._initChartTitle();
+                this._initDayChartTitle();
                 this.loadDailyActivity();
             } else if (newIndex === 1) {
                 this._initWeekChartTitle();
                 this.loadWeeklyActivity();
-                this.activity = new ObservableArray(this._dataService.getSource('Week'));
             } else if (newIndex === 2) {
                 this._initMonthChartTitle();
             }
@@ -382,7 +389,7 @@ export class ActivityTabComponent implements OnInit {
         return !(this._isCurrentDayInViewToday());
     }
 
-    _initChartTitle() {
+    _initDayChartTitle() {
         const date = this.currentDayInView;
         this.chartTitle = this.dayNames[date.getDay()] + ', ' + this.monthNames[date.getMonth()] + ' ' + date.getDate();
     }
@@ -419,14 +426,14 @@ export class ActivityTabComponent implements OnInit {
     onPreviousDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
         this._updateWeekStartAndEnd();
-        this._initChartTitle();
+        this._initDayChartTitle();
         this.loadDailyActivity();
     }
 
     onNextDayTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
-        this._initChartTitle();
+        this._initDayChartTitle();
         this.loadDailyActivity();
     }
 
@@ -444,18 +451,18 @@ export class ActivityTabComponent implements OnInit {
     onPreviousWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
         this._initWeekChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource('Week'));
+        this.loadWeeklyActivity();
     }
 
     onNextWeekTap(event) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
         this._initWeekChartTitle();
-        this.activity = new ObservableArray(this._dataService.getSource('Week'));
+        this.loadWeeklyActivity();
     }
 
     onWeekPointSelected(event) {
-        const pointIndex = event.pointIndex;
-        this.currentDayInView.setDate(this.weekStart.getDate() + pointIndex - 2);
+        const selectedDate = new Date(this.weekStart);
+        this.currentDayInView.setDate(selectedDate.getDate() + event.pointIndex - 2);
         this.loadDailyActivity();
         this.tabSelectedIndex = 0;
     }
@@ -545,7 +552,7 @@ export class ActivityTabComponent implements OnInit {
         else {
             // We are showing cached data
             const cache = this._dailyActivityCache[this.currentDayInView.toUTCString()];
-            this.activity = cache.chartData;
+            this.dailyActivity = cache.chartData;
             if (this.dailyViewMode === 0) {
                 // coast time
                 this.dayChartLabel = '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
@@ -555,18 +562,6 @@ export class ActivityTabComponent implements OnInit {
                 this.dayChartLabel = '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
             }
         }
-    }
-
-    onDailyActivityCoastTimeButtonTap(event) {
-        this.dailyViewMode = 0;
-        this._updateDayChartLabel();
-        this._updateDailyActivityAnnotationValue();
-    }
-
-    onDailyActivityDistanceButtonTap(event) {
-        this.dailyViewMode = 1;
-        this._updateDayChartLabel();
-        this._updateDailyActivityAnnotationValue();
     }
 
     _updateDailyActivityAnnotationValue() {
@@ -608,10 +603,89 @@ export class ActivityTabComponent implements OnInit {
         }
     }
 
+    onDailyActivityCoastTimeButtonTap(event) {
+        this.dailyViewMode = 0;
+        this._updateDayChartLabel();
+        this._updateDailyActivityAnnotationValue();
+    }
+
+    onDailyActivityDistanceButtonTap(event) {
+        this.dailyViewMode = 1;
+        this._updateDayChartLabel();
+        this._updateDailyActivityAnnotationValue();
+    }
+
+    _updateWeekChartLabel() {
+        if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
+            // No cache
+            const activity = this._activityService.weeklyActivity;
+            if (this.weeklyViewMode === 0) {
+                // coast time
+                this.weekChartLabel = '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+            }
+            else {
+                // push count
+                this.weekChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+            }
+        }
+        else {
+            // We are showing cached data
+            const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+            this.weeklyActivity = cache.chartData;
+            if (this.weeklyViewMode === 0) {
+                // coast time
+                this.weekChartLabel = '› ' + (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+            }
+            else {
+                // push count
+                this.weekChartLabel = '› ' + (cache.weeklyActivity.push_count || 0) + ' pushes';
+            }
+        }
+    }
+
+    _updateWeeklyActivityAnnotationValue() {
+        if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
+            // No cache
+            const activity = this._activityService.weeklyActivity;
+            if (this.weeklyViewMode === 0) {
+                // coast time
+                this.weeklyActivityAnnotationValue = (activity ? activity.coast_time_avg || 0 : 0);
+            }
+            else {
+                // push count
+                this.weeklyActivityAnnotationValue = parseInt((activity.push_count / 7).toFixed(1)) || 0;
+            }
+        }
+        else {
+            // We are showing cached data
+            const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+            if (this.weeklyViewMode === 0) {
+                // coast time
+                this.weeklyActivityAnnotationValue = (cache ? cache.weeklyActivity.coast_time_avg || 0 : 0);
+            }
+            else {
+                // push count
+                this.weeklyActivityAnnotationValue = parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
+            }
+        }
+        console.log(this.weeklyActivityAnnotationValue);
+    }
+
+    onWeeklyActivityCoastTimeButtonTap(event) {
+        this.weeklyViewMode = 0;
+        this._updateWeekChartLabel();
+        this._updateWeeklyActivityAnnotationValue();
+    }
+
+    onWeeklyActivityDistanceButtonTap(event) {
+        this.weeklyViewMode = 1;
+        this._updateWeekChartLabel();
+        this._updateWeeklyActivityAnnotationValue();
+    }
+
     onTrackBallContentRequested(args: TrackballCustomContentData) {
         // Keys: [eventName, pointIndex, seriesIndex, series, pointData, object, content]
         const pointData = args.pointData;
-        // console.log('Track ball content requested', pointData);
         args.content = 'Foo';
     }
 }
