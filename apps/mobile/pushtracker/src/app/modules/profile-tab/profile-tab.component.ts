@@ -180,16 +180,23 @@ export class ProfileTabComponent implements OnInit {
       this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
 
     // Unit settings
-    this.SETTING_HEIGHT =
-      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
-      'Feet & inches';
-    this.SETTING_WEIGHT =
-      this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
-      'Pounds';
-    this.SETTING_DISTANCE =
-      this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
-      'Miles';
-    this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
+    if (this.user.data) {
+      this.SETTING_HEIGHT =
+        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+        'Feet & inches';
+      this.SETTING_WEIGHT =
+        this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
+        'Pounds';
+      this.SETTING_DISTANCE =
+        this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
+        'Miles';
+      this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
+    }
+    else {
+      this.SETTING_HEIGHT = 'Feet & inches';
+      this.SETTING_WEIGHT = 'Pounds';
+      this.SETTING_DISTANCE = 'Miles';
+    }
 
   }
 

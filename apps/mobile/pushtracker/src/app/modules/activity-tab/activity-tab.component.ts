@@ -574,7 +574,7 @@ export class ActivityTabComponent implements OnInit {
             }
             else {
                 // push count
-                const records = activity.records;
+                const records = activity.records || [];
                 let pushCountTotal = 0;
                 for (const i in records) {
                     const record = records[i];
@@ -592,7 +592,7 @@ export class ActivityTabComponent implements OnInit {
             }
             else {
                 // push count
-                const records = cache.dailyActivity.records;
+                const records = cache.dailyActivity.records || [];
                 let pushCountTotal = 0;
                 for (const i in records) {
                     const record = records[i];
