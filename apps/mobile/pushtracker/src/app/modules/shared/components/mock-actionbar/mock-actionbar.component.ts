@@ -22,22 +22,25 @@ export class MockActionbarComponent {
   @Input() title: string;
   @Input() backNavIcon = 0; // default is the back arrow
   @Input() showBackNav = false;
-  @Output() navBtnEvent = new EventEmitter();
+  @Output() navTapEvent = new EventEmitter();
 
   @Input() showSettingsBtn = false;
-  @Output() settingsBtnEvent = new EventEmitter();
+  @Output() settingsTapEvent = new EventEmitter();
 
   @Input() showSupportBtn = false;
   @Output() supportTapEvent = new EventEmitter();
 
   @Input() showRefreshBtn = false;
-  @Output() refreshBtnEvent = new EventEmitter();
+  @Output() refreshTapEvent = new EventEmitter();
 
   @Input() showInfoBtn = false;
-  @Output() infoBtnEvent = new EventEmitter();
+  @Output() infoTapEvent = new EventEmitter();
 
   @Input() showMoreBtn = false;
-  @Output() moreBtnEvent = new EventEmitter();
+  @Output() moreTapEvent = new EventEmitter();
+
+  @Input() showWatchBtn = false;
+  @Output() watchTapEvent = new EventEmitter();
 
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
 
@@ -46,17 +49,29 @@ export class MockActionbarComponent {
     private _vcRef: ViewContainerRef
   ) {
     if (this.backNavIcon === 0) {
-      this.navIcon = String.fromCharCode(0xe5cd); // arrow
+      this.navIcon = String.fromCharCode(0xe5c4); // arrow
     } else {
       this.navIcon = String.fromCharCode(0xe5cd); // close
     }
   }
 
   onNavBtnTap() {
-    this.navBtnEvent.emit();
+    this.navTapEvent.emit();
   }
 
-  onSupportTap(): void {
+  onWatchTap() {
+    this.watchTapEvent.emit();
+  }
+
+  onRefreshTap() {
+    this.refreshTapEvent.emit();
+  }
+
+  onMoreTap() {
+    this.moreTapEvent.emit();
+  }
+
+  onSupportTap() {
     this._modalService
       .showModal(SupportComponent, {
         context: {},
@@ -106,14 +121,6 @@ export class MockActionbarComponent {
           textColor: new Color('#fff000')
         });
       });
-  }
-
-  onRefreshTap() {
-    this.refreshBtnEvent.emit();
-  }
-
-  onMoreTap() {
-    this.moreBtnEvent.emit();
   }
 }
 
