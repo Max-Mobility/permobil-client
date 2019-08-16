@@ -20,7 +20,7 @@
     "@angular/router": "~8.1.0",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@ngx-translate/core": "~11.0.1",
-    "@nstudio/nativescript-floatingactionbutton": "~1.0.0",
+    "@nstudio/nativescript-floatingactionbutton": "~1.0.1",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
     "@nstudio/nativescript-snackbar": "~1.0.0",
     "@permobil/angular": "file:../../../@permobil/angular",
