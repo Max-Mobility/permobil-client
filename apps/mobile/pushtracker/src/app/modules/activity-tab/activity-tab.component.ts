@@ -93,11 +93,7 @@ export class ActivityTabComponent implements OnInit {
     // Colors
     private _colorWhite = new Color('White');
     private _colorBlack = new Color('Black');
-    // Colors - Shades of Blue - Dark to Light
-    private _colorCoolBlack = new Color('#072F5F');
-    private _colorMediumPersianBlue = new Color('#1261a0');
-    private _colorTuftsBlue = new Color('#3895D3');
-    private _colorBlueJeans = new Color('#58CCED');
+    private _colorDarkGrey = new Color('#727377');
 
     constructor(
         private _logService: LoggingService,
@@ -112,7 +108,6 @@ export class ActivityTabComponent implements OnInit {
         const day = this.currentDayInView.getDate();
         this.minimumDateTimevalue = new Date(year, month, day, 0);
         this.maximumDateTimeValue = new Date(year, month, day, 23);
-        this._initMonthViewStyle();
         this.loadDailyActivity();
         { // Initialize time array for day view
             const rangeStart = 0;
@@ -124,6 +119,7 @@ export class ActivityTabComponent implements OnInit {
             }
         }
         this.savedTheme = appSettings.getString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
+        this._initMonthViewStyle();
     }
 
     ngOnInit() {
@@ -470,25 +466,46 @@ export class ActivityTabComponent implements OnInit {
     _initMonthViewStyle() {
         this.monthViewStyle = new CalendarMonthViewStyle();
         this.monthViewStyle.showTitle = false;
+        this.monthViewStyle.showWeekNumbers = false;
+        this.monthViewStyle.showDayNames = true;
+        this.monthViewStyle.backgroundColor = (this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite);
 
         // Today cell style
         const todayCellStyle = new DayCellStyle();
-        todayCellStyle.cellBorderColor = this._colorWhite;
+        todayCellStyle.cellBorderColor = (this.savedTheme === 'DARK' ? new Color('#00c1d5') : this._colorWhite);
         todayCellStyle.cellTextSize = 12;
-        todayCellStyle.cellTextColor = new Color('#0067a6');
+        todayCellStyle.cellTextColor = new Color('#00c1d5');
         this.monthViewStyle.todayCellStyle = todayCellStyle;
 
         // Day cell style
         const dayCellStyle = new DayCellStyle();
-        dayCellStyle.cellBackgroundColor = this._colorWhite;
-        dayCellStyle.cellBorderColor = this._colorWhite;
+        dayCellStyle.cellBackgroundColor = (this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite);
+        dayCellStyle.cellBorderColor = (this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite);
         this.monthViewStyle.dayCellStyle = dayCellStyle;
+
+        // Weekend cell style
+        const weekendCellStyle = new DayCellStyle();
+        weekendCellStyle.cellBorderColor = (this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite);
+        this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
         // Selected cell style
         const selectedDayCellStyle = new DayCellStyle();
-        selectedDayCellStyle.cellBackgroundColor = new Color('#8dd5e3');
+        selectedDayCellStyle.cellBackgroundColor = new Color('#00c1d5');
         selectedDayCellStyle.cellTextColor = this._colorWhite;
         this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
+
+        // Week number cell style
+        const weekNumberCellStyle = new CellStyle();
+        weekNumberCellStyle.cellTextColor = (this.savedTheme === 'DARK' ? this._colorWhite : this._colorBlack);
+        weekNumberCellStyle.cellBorderColor = this._colorWhite;
+        this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
+
+        // Day name cell style
+        const dayNameCellStyle = new CellStyle();
+        dayNameCellStyle.cellBackgroundColor = (this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite);
+        dayNameCellStyle.cellTextColor = (this.savedTheme === 'DARK' ? this._colorWhite : this._colorBlack);
+        dayNameCellStyle.cellBorderColor = (this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite);
+        this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
     }
 
     _initMonthChartTitle() {
