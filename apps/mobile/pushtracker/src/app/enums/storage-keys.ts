@@ -2,6 +2,7 @@ export enum STORAGE_KEYS {
   'CURRENT_USER' = 'CURRENT_USER',
   'TOKEN' = 'TOKEN',
   'HAS_PAIRED_TO_PUSHTRACKER' = 'HAS_PAIRED_TO_PUSHTRACKER',
+  'SHOULD_SHOW_BLE_PERMISSION_REQUEST' = 'SHOULD_SHOW_BLE_PERMISSION_REQUEST',
 
   /**
    * This key is used to store the Device.Settings (SmartDrive

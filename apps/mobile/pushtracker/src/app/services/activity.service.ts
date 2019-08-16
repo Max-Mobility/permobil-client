@@ -35,6 +35,7 @@ export class ActivityService {
           '/' +
           (day < 10 ? '0' + day : day)
       );
+      query.equalTo('data_type', 'DailyActivity');
 
       const stream = this.datastore.find(query);
       const data = await stream.toPromise();
@@ -51,8 +52,7 @@ export class ActivityService {
     }
   }
 
-  async loadWeeklyActivity(from: Date, to: Date): Promise<boolean> {
-    console.log(from, to);
+  async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
     try {
       await this.login();
       await this.datastore.sync();
@@ -63,35 +63,19 @@ export class ActivityService {
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.descending('_kmd.ect');
       query.limit = 1;
+      query.equalTo('data_type', 'WeeklyActivity');
 
-      const daysInWeek = [];
-      while (!this._areDaysSame(from, to)) {
-        const month = from.getMonth() + 1;
-        const day = from.getDate();
-        daysInWeek.push(
-          from.getFullYear() +
-            '/' +
-            (month < 10 ? '0' + month : month) +
-            '/' +
-            (day < 10 ? '0' + day : day)
-        );
-        from.setDate(from.getDate() + 1);
-      }
-      const toMonth = to.getMonth() + 1;
-      const toDay = to.getDate();
-      daysInWeek.push(
-        to.getFullYear() +
-          '/' +
-          (toMonth < 10 ? '0' + toMonth : toMonth) +
-          '/' +
-          (toDay < 10 ? '0' + toDay : toDay)
-      );
-      query.contains('date', daysInWeek);
+      const month = weekStartDate.getMonth() + 1;
+      const day = weekStartDate.getDate();
+      query.equalTo('date',
+        weekStartDate.getFullYear() + '/' +
+        (month < 10 ? '0' + month : month) + '/' +
+        (day < 10 ? '0' + day : day));
 
       const stream = this.datastore.find(query);
       const data = await stream.toPromise();
       if (data && data.length) {
-        this.weeklyActivity = data;
+        this.weeklyActivity = data[0];
         // Do something with data
         return true;
       }

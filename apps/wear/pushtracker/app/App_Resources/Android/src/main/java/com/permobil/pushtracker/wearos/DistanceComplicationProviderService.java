@@ -76,14 +76,8 @@ public class DistanceComplicationProviderService extends ComplicationProviderSer
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
       getSharedPreferences(
-                           ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
-    float meters =
-      preferences.getFloat(
-                           ComplicationToggleReceiver.getPreferenceKey(
-                                                                       thisProvider,
-                                                                       complicationId,
-                                                                       DATA_ID),
-                           0.0f);
+                           ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
+    float meters = preferences.getFloat(DATA_ID, 0.0f);
     String numberText = String.format(Locale.getDefault(), "%.1f km", meters / 1000.0f);
 
     ComplicationData complicationData = null;

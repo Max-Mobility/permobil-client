@@ -68,6 +68,19 @@ export namespace Device {
       return ((flags >> settingBit) & 0x01) > 0;
     }
 
+    getFlags() {
+      const flags = [
+        this.ezOn,
+        this.disablePowerAssistBeep
+      ].reduce((f, s, i) => {
+        if (s) {
+          f |= (1 << i);
+        }
+        return f;
+      }, 0);
+      return flags;
+    }
+
     increase(key: string, increment: number = 10): void {
       let index = 0;
       switch (key) {
@@ -248,8 +261,8 @@ export namespace Device {
     diff(ps: any): boolean {
       return (
         this.threshold !== ps.threshold ||
-          this.timeWindow !== ps.timeWindow ||
-          this.clearCounter !== ps.clearCounter
+        this.timeWindow !== ps.timeWindow ||
+        this.clearCounter !== ps.clearCounter
       );
     }
   }

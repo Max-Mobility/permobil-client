@@ -32,30 +32,30 @@ export class PushTracker extends Observable {
     '5177fda8-1003-4254-aeb9-7f9edb3cc9cf'
   ];
   static DataCharacteristicUUID = PushTracker.Characteristics[1];
-  static DataCharacteristic;
+  static DataCharacteristic: any;
 
   // Event names
-  static pushtracker_paired_event = 'pushtracker_paired_event';
-  static pushtracker_connect_event = 'pushtracker_connect_event';
-  static pushtracker_disconnect_event = 'pushtracker_disconnect_event';
-  static pushtracker_version_event = 'pushtracker_version_event';
-  static pushtracker_error_event = 'pushtracker_error_event';
-  static pushtracker_distance_event = 'pushtracker_distance_event';
-  static pushtracker_settings_event = 'pushtracker_settings_event';
-  static pushtracker_push_settings_event = 'pushtracker_push_settings_event';
-  static pushtracker_daily_info_event = 'pushtracker_daily_info_event';
-  static pushtracker_awake_event = 'pushtracker_awake_event';
-  static pushtracker_ota_ready_event = 'pushtracker_ota_ready_event';
+  static paired_event = 'paired_event';
+  static connect_event = 'connect_event';
+  static disconnect_event = 'disconnect_event';
+  static version_event = 'version_event';
+  static error_event = 'error_event';
+  static distance_event = 'distance_event';
+  static settings_event = 'settings_event';
+  static push_settings_event = 'push_settings_event';
+  static daily_info_event = 'daily_info_event';
+  static awake_event = 'awake_event';
+  static ota_ready_event = 'ota_ready_event';
 
   // user interaction events
-  static pushtracker_ota_start_event = 'pushtracker_ota_start_event';
-  static pushtracker_ota_pause_event = 'pushtracker_ota_pause_event';
-  static pushtracker_ota_resume_event = 'pushtracker_ota_resume_event';
-  static pushtracker_ota_cancel_event = 'pushtracker_ota_cancel_event';
-  static pushtracker_ota_force_event = 'pushtracker_ota_force_event';
-  static pushtracker_ota_retry_event = 'pushtracker_ota_retry_event';
-  static pushtracker_ota_failed_event = 'pushtracker_ota_failed_event';
-  static pushtracker_ota_timeout_event = 'pushtracker_ota_timeout_event';
+  static ota_start_event = 'ota_start_event';
+  static ota_pause_event = 'ota_pause_event';
+  static ota_resume_event = 'ota_resume_event';
+  static ota_cancel_event = 'ota_cancel_event';
+  static ota_force_event = 'ota_force_event';
+  static ota_retry_event = 'ota_retry_event';
+  static ota_failed_event = 'ota_failed_event';
+  static ota_timeout_event = 'ota_timeout_event';
   readonly OTAState = PushTracker.OTAState;
 
   // private members
@@ -196,22 +196,22 @@ export class PushTracker extends Observable {
   onOTAActionTap(action: string) {
     switch (action) {
       case 'ota.action.start':
-        this.sendEvent(PushTracker.pushtracker_ota_start_event);
+        this.sendEvent(PushTracker.ota_start_event);
         break;
       case 'ota.action.pause':
-        this.sendEvent(PushTracker.pushtracker_ota_pause_event);
+        this.sendEvent(PushTracker.ota_pause_event);
         break;
       case 'ota.action.resume':
-        this.sendEvent(PushTracker.pushtracker_ota_resume_event);
+        this.sendEvent(PushTracker.ota_resume_event);
         break;
       case 'ota.action.cancel':
-        this.sendEvent(PushTracker.pushtracker_ota_cancel_event);
+        this.sendEvent(PushTracker.ota_cancel_event);
         break;
       case 'ota.action.force':
-        this.sendEvent(PushTracker.pushtracker_ota_force_event);
+        this.sendEvent(PushTracker.ota_force_event);
         break;
       case 'ota.action.retry':
-        this.sendEvent(PushTracker.pushtracker_ota_retry_event);
+        this.sendEvent(PushTracker.ota_retry_event);
         break;
       default:
         break;
@@ -219,7 +219,7 @@ export class PushTracker extends Observable {
   }
 
   cancelOTA() {
-    this.sendEvent(PushTracker.pushtracker_ota_cancel_event);
+    this.sendEvent(PushTracker.ota_cancel_event);
   }
 
   performOTA(fw: any, fwVersion: number, timeout: number): Promise<any> {
@@ -304,7 +304,7 @@ export class PushTracker extends Observable {
             timer.clearTimeout(otaTimeoutID);
           }
           otaTimeoutID = timer.setTimeout(() => {
-            this.sendEvent(PushTracker.pushtracker_ota_timeout_event);
+            this.sendEvent(PushTracker.ota_timeout_event);
           }, otaTimeout);
         };
         const otaReadyHandler = data => {
@@ -339,35 +339,35 @@ export class PushTracker extends Observable {
         // define our functions here
         const unregister = () => {
           // de-register for events
-          this.off(PushTracker.pushtracker_connect_event, connectHandler);
-          this.off(PushTracker.pushtracker_disconnect_event, disconnectHandler);
-          this.off(PushTracker.pushtracker_version_event, versionHandler);
-          this.off(PushTracker.pushtracker_ota_start_event, otaStartHandler);
-          this.off(PushTracker.pushtracker_ota_ready_event, otaReadyHandler);
-          this.off(PushTracker.pushtracker_ota_pause_event, otaPauseHandler);
-          this.off(PushTracker.pushtracker_ota_resume_event, otaResumeHandler);
-          this.off(PushTracker.pushtracker_ota_force_event, otaForceHandler);
-          this.off(PushTracker.pushtracker_ota_cancel_event, otaCancelHandler);
-          this.off(PushTracker.pushtracker_ota_retry_event, otaRetryHandler);
+          this.off(PushTracker.connect_event, connectHandler);
+          this.off(PushTracker.disconnect_event, disconnectHandler);
+          this.off(PushTracker.version_event, versionHandler);
+          this.off(PushTracker.ota_start_event, otaStartHandler);
+          this.off(PushTracker.ota_ready_event, otaReadyHandler);
+          this.off(PushTracker.ota_pause_event, otaPauseHandler);
+          this.off(PushTracker.ota_resume_event, otaResumeHandler);
+          this.off(PushTracker.ota_force_event, otaForceHandler);
+          this.off(PushTracker.ota_cancel_event, otaCancelHandler);
+          this.off(PushTracker.ota_retry_event, otaRetryHandler);
           this.off(
-            PushTracker.pushtracker_ota_timeout_event,
+            PushTracker.ota_timeout_event,
             otaTimeoutHandler
           );
         };
         const register = () => {
           unregister();
           // register for events
-          this.on(PushTracker.pushtracker_connect_event, connectHandler);
-          this.on(PushTracker.pushtracker_disconnect_event, disconnectHandler);
-          this.on(PushTracker.pushtracker_version_event, versionHandler);
-          this.on(PushTracker.pushtracker_ota_ready_event, otaReadyHandler);
-          this.on(PushTracker.pushtracker_ota_start_event, otaStartHandler);
-          this.on(PushTracker.pushtracker_ota_pause_event, otaPauseHandler);
-          this.on(PushTracker.pushtracker_ota_resume_event, otaResumeHandler);
-          this.on(PushTracker.pushtracker_ota_force_event, otaForceHandler);
-          this.on(PushTracker.pushtracker_ota_cancel_event, otaCancelHandler);
-          this.on(PushTracker.pushtracker_ota_retry_event, otaRetryHandler);
-          this.on(PushTracker.pushtracker_ota_timeout_event, otaTimeoutHandler);
+          this.on(PushTracker.connect_event, connectHandler);
+          this.on(PushTracker.disconnect_event, disconnectHandler);
+          this.on(PushTracker.version_event, versionHandler);
+          this.on(PushTracker.ota_ready_event, otaReadyHandler);
+          this.on(PushTracker.ota_start_event, otaStartHandler);
+          this.on(PushTracker.ota_pause_event, otaPauseHandler);
+          this.on(PushTracker.ota_resume_event, otaResumeHandler);
+          this.on(PushTracker.ota_force_event, otaForceHandler);
+          this.on(PushTracker.ota_cancel_event, otaCancelHandler);
+          this.on(PushTracker.ota_retry_event, otaRetryHandler);
+          this.on(PushTracker.ota_timeout_event, otaTimeoutHandler);
         };
 
         const writeFirmwareSector = (
@@ -442,8 +442,8 @@ export class PushTracker extends Observable {
           if (success) {
             resolve(reason);
           } else if (doRetry) {
-            this.on(PushTracker.pushtracker_ota_cancel_event, otaCancelHandler);
-            this.on(PushTracker.pushtracker_ota_retry_event, otaRetryHandler);
+            this.on(PushTracker.ota_cancel_event, otaCancelHandler);
+            this.on(PushTracker.ota_retry_event, otaRetryHandler);
             this.otaActions = ['ota.action.retry'];
             otaIntervalID = timer.setInterval(runOTA, 250);
           } else {
@@ -617,6 +617,17 @@ export class PushTracker extends Observable {
     ]);
   }
 
+  sendSettingsObject(settings: Device.Settings) {
+    return this.sendSettings(
+      settings.controlMode,
+      settings.units,
+      settings.getFlags(),
+      settings.tapSensitivity / 100.0,
+      settings.acceleration / 100.0,
+      settings.maxSpeed / 100.0
+    );
+  }
+
   sendSettings(
     mode: string,
     units: string,
@@ -686,6 +697,38 @@ export class PushTracker extends Observable {
     );
   }
 
+  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
+    const p = new Packet();
+    const settings = p.data('switchControlSettings');
+    // convert mode
+    // don't have to convert mode since we don't alias it in any way
+    // clamp numbers
+    const clamp = n => {
+      return Math.max(0, Math.min(n, 1.0));
+    };
+    max_speed = clamp(max_speed);
+    // now fill in the packet
+    settings.Mode = Packet.makeBoundData('SwitchControlMode', mode);
+    settings.MaxSpeed = max_speed;
+    p.destroy();
+    return this.sendPacket(
+      'Command',
+      'SetSwitchControlSettings',
+      'switchControlSettings',
+      null,
+      settings
+    );
+  }
+
+  public sendSwitchControlSettingsObject(
+    settings: Device.SwitchControlSettings
+  ): Promise<any> {
+    return this.sendSwitchControlSettings(
+      settings.mode,
+      settings.maxSpeed / 100.0
+    );
+  }
+
   /**
    * Notify events by name and optionally pass data
    */
@@ -701,17 +744,17 @@ export class PushTracker extends Observable {
   // handlers
   handlePaired() {
     this.paired = true;
-    this.sendEvent(PushTracker.pushtracker_paired_event);
+    this.sendEvent(PushTracker.paired_event);
   }
 
   handleConnect() {
     this.connected = true;
-    this.sendEvent(PushTracker.pushtracker_connect_event);
+    this.sendEvent(PushTracker.connect_event);
   }
 
   handleDisconnect() {
     this.connected = false;
-    this.sendEvent(PushTracker.pushtracker_disconnect_event);
+    this.sendEvent(PushTracker.disconnect_event);
   }
 
   handlePacket(p: Packet) {
@@ -774,7 +817,7 @@ export class PushTracker extends Observable {
     this.mcu_version = versionInfo.smartDrive;
     this.ble_version = versionInfo.smartDriveBluetooth;
     // TODO: send version event to subscribers so they get updated
-    this.sendEvent(PushTracker.pushtracker_version_event, {
+    this.sendEvent(PushTracker.version_event, {
       pt: this.version,
       mcu: this.mcu_version,
       ble: this.ble_version
@@ -802,7 +845,7 @@ export class PushTracker extends Observable {
            }                     errorInfo;
         */
     // TODO: send error event to subscribers so they get updated
-    this.sendEvent(PushTracker.pushtracker_error_event, {
+    this.sendEvent(PushTracker.error_event, {
       // what should we put here?
     });
     // TODO: update error record for this pushtracker (locally and
@@ -824,7 +867,7 @@ export class PushTracker extends Observable {
         */
     // console.log(`Got distance info: ${motorTicks}, ${caseTicks}`);
     // console.log(`                 : ${motorMiles}, ${caseMiles}`);
-    this.sendEvent(PushTracker.pushtracker_distance_event, {
+    this.sendEvent(PushTracker.distance_event, {
       driveDistance: motorTicks,
       coastDistance: caseTicks
     });
@@ -847,7 +890,7 @@ export class PushTracker extends Observable {
            } settings;
         */
     this.settings.fromSettings(settings);
-    this.sendEvent(PushTracker.pushtracker_settings_event, {
+    this.sendEvent(PushTracker.settings_event, {
       settings: this.settings
     });
   }
@@ -863,7 +906,7 @@ export class PushTracker extends Observable {
 		   }  pushSettings;
 		*/
     this.pushSettings.fromSettings(pushSettings);
-    this.sendEvent(PushTracker.pushtracker_push_settings_event, {
+    this.sendEvent(PushTracker.push_settings_event, {
       pushSettings: this.pushSettings
     });
   }
@@ -888,7 +931,7 @@ export class PushTracker extends Observable {
            uint8_t     sdBattery;       /** Percent, [0, 100].
            }            dailyInfo;
         */
-    this.sendEvent(PushTracker.pushtracker_daily_info_event, {
+    this.sendEvent(PushTracker.daily_info_event, {
       year: di.year,
       month: di.month,
       day: di.day,
@@ -908,7 +951,7 @@ export class PushTracker extends Observable {
   private handleReady(p: Packet) {
     // This is sent by the PushTracker after it has received a
     // Wake command
-    this.sendEvent(PushTracker.pushtracker_awake_event);
+    this.sendEvent(PushTracker.awake_event);
   }
 
   private handleOTAReady(p: Packet) {
@@ -917,10 +960,10 @@ export class PushTracker extends Observable {
     const otaDevice = bindingTypeToString('PacketOTAType', p.data('OTADevice'));
     switch (otaDevice) {
       case 'PushTracker':
-        this.sendEvent(PushTracker.pushtracker_ota_ready_event);
+        this.sendEvent(PushTracker.ota_ready_event);
         break;
       default:
-        this.sendEvent(PushTracker.pushtracker_ota_ready_event);
+        this.sendEvent(PushTracker.ota_ready_event);
         break;
     }
   }
@@ -931,20 +974,20 @@ export class PushTracker extends Observable {
  * to.
  */
 export interface IPushtrackerEvents {
-  pushtracker_disconnect_event: string;
-  pushtracker_connect_event: string;
+  disconnect_event: string;
+  connect_event: string;
 
-  pushtracker_version_event: string;
-  pushtracker_error_event: string;
-  pushtracker_distance_event: string;
-  pushtracker_settings_event: string;
+  version_event: string;
+  error_event: string;
+  distance_event: string;
+  settings_event: string;
 
-  pushtracker_daily_info_event: string;
-  pushtracker_awake_event: string;
+  daily_info_event: string;
+  awake_event: string;
 
-  pushtracker_ota_timeout_event: string;
-  pushtracker_ota_progress_event: string;
-  pushtracker_ota_version_event: string;
-  pushtracker_ota_complete_event: string;
-  pushtracker_ota_failure_event: string;
+  ota_timeout_event: string;
+  ota_progress_event: string;
+  ota_version_event: string;
+  ota_complete_event: string;
+  ota_failure_event: string;
 }

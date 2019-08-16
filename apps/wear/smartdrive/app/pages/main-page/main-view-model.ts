@@ -2677,7 +2677,7 @@ export class MainViewModel extends Observable {
       );
     }
     return this.getRecentInfoFromDatabase(1)
-      .then(infos => {
+      .then((infos: any[]) => {
         // Log.D('recent infos', infos);
         if (!infos || !infos.length) {
           // record the data if we have it
@@ -2705,34 +2705,26 @@ export class MainViewModel extends Observable {
           // there was a record, so we need to update it. we add the
           // already used battery plus the amount of new battery
           // that has been used
-          const updatedBattery = battery + u[SmartDriveData.Info.BatteryName];
-          const updatedDriveDistance =
-            driveDistance || u[SmartDriveData.Info.DriveDistanceName];
-          const updatedCoastDistance =
-            coastDistance || u[SmartDriveData.Info.CoastDistanceName];
+          const updates = SmartDriveData.Info.updateInfo(args, u);
           return this._sqliteService.updateInTable(
             SmartDriveData.Info.TableName,
-            {
-              [SmartDriveData.Info.BatteryName]: updatedBattery,
-              [SmartDriveData.Info.DriveDistanceName]: updatedDriveDistance,
-              [SmartDriveData.Info.CoastDistanceName]: updatedCoastDistance,
-              [SmartDriveData.Info.HasBeenSentName]: 0
-            },
+            updates,
             {
               [SmartDriveData.Info.IdName]: u.id
             }
           );
         } else {
+          const newEntry = SmartDriveData.Info.newInfo(
+            undefined,
+            new Date(),
+            battery,
+            driveDistance,
+            coastDistance
+          );
           // this is the first record, so we create it
           return this._sqliteService.insertIntoTable(
             SmartDriveData.Info.TableName,
-            SmartDriveData.Info.newInfo(
-              undefined,
-              new Date(),
-              battery,
-              driveDistance,
-              coastDistance
-            )
+            newEntry
           );
         }
       })
@@ -2787,8 +2779,8 @@ export class MainViewModel extends Observable {
     // will get one more than we need since getPastDates() returns
     // (numDays + 1) elements in the array
     return this.getRecentInfoFromDatabase(numDays + 1)
-      .then(objs => {
-        objs.map(o => {
+      .then((objs: any[]) => {
+        objs.map((o: any) => {
           // @ts-ignore
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
@@ -2923,10 +2915,11 @@ export class MainViewModel extends Observable {
           const promises = infos.map(i => {
             // @ts-ignore
             i = SmartDriveData.Info.loadInfo(...i);
-            // update info date here
-            i[SmartDriveData.Info.DateName] = new Date(
-              i[SmartDriveData.Info.DateName]
-            );
+            try {
+              i[SmartDriveData.Info.RecordsName] = JSON.parse(i[SmartDriveData.Info.RecordsName]);
+            } catch (err) {
+              Log.E('parse error', err);
+            }
             return this._kinveyService.sendInfo(
               i,
               i[SmartDriveData.Info.UuidName]

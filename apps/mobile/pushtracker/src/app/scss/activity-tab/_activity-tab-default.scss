@@ -56,11 +56,30 @@
   }  
 
   TabView {
+    text-transform: none;
     tab-text-font-size: 11;
     tab-text-color: $black;
-    selected-tab-text-color: $permobil-cousteau;
+    selected-tab-text-color: $black;
     tab-background-color: $white;
-    android-selected-tab-highlight-color: $permobil-cousteau;
+    android-selected-tab-highlight-color: $black;
+  }
+
+  .coast-time-btn-disabled,
+  .distance-btn-disabled {
+    @extend .CHART_VIEW_BTN_BASE;
+    background-color: $white;
+    color: $dark-grey;
+    font-weight: bold;
+    text-transform: none;
+  }
+
+  .coast-time-btn-enabled,
+  .distance-btn-enabled {
+    @extend .CHART_VIEW_BTN_BASE;
+    background-color: #d8e5f2;
+    color: #4282c1;
+    font-weight: bold;
+    text-transform: none;
   }
   
 }

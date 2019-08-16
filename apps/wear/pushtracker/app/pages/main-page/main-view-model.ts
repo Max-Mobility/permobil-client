@@ -428,10 +428,17 @@ export class MainViewModel extends Observable {
         .then(permissions => {
           // now that we have permissions go ahead and save the serial number
           this.watchSerialNumber = android.os.Build.getSerial();
-          appSettings.setString(
-            DataKeys.WATCH_SERIAL_NUMBER,
+          // save it to datastore for service to use
+          const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+          const sharedPreferences = ad
+            .getApplicationContext()
+            .getSharedPreferences('prefs.db', 0);
+          const editor = sharedPreferences.edit();
+          editor.putString(
+            prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
             this.watchSerialNumber
           );
+          editor.commit();
           this.kinveyService.watch_serial_number = this.watchSerialNumber;
           // and return true letting the caller know we got the permissions
           return true;
@@ -678,13 +685,13 @@ export class MainViewModel extends Observable {
 
         // update distance data
         const maxDist = activityData.reduce((max, obj) => {
-          return obj.watch_distance > max ?
-            obj.watch_distance : max;
+          return obj.distance_watch > max ?
+            obj.distance_watch : max;
         }, 0.0);
         const distanceData = activityData.map(e => {
           return {
             day: this.format(new Date(e.date), 'dd'),
-            value: (e.watch_distance * 100.0) / maxDist
+            value: (e.distance_watch * 100.0) / maxDist
           };
         });
         // Log.D('Highest Distance Value:', maxDist);

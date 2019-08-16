@@ -62,8 +62,8 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     // now listen for router events to refresh the page data
     this.routeSub = this._router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        this._logService.logBreadCrumb(`Home-tab router subscribe ${event}`);
-        this.refreshGoalData();
+        // this._logService.logBreadCrumb(`Home-tab router subscribe ${event}`);
+        // this.refreshGoalData();
       }
     });
   }
@@ -109,19 +109,19 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   onActivityTap() {
     console.log('activity button tapped');
     this._modalService
-    .showModal(ActivityTabComponent, {
-      context: {},
-      fullscreen: true,
-      viewContainerRef: this._vcRef
-    })
-    .catch(err => {
-      this._logService.logException(err);
-      new Toasty({
-        text:
-          'An unexpected error occurred. If this continues please let us know.',
-        textColor: new Color('#fff000')
+      .showModal(ActivityTabComponent, {
+        context: {},
+        fullscreen: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
       });
-    });
   }
 
 }

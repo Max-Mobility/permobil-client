@@ -2,80 +2,136 @@
     // Mock ActionBar
     <GridLayout row="0" rows="*" columns="50, *, *">
         <Button row="0" col="0" text="&#xe5c4;" class="close-btn" (tap)="closeModal($event)"></Button>
-        <Label row="0" col="1" class="page-title" [text]="'activity-tab-component.title' | translate" textWrap="true"></Label>
+        <Label row="0" col="1" class="page-title" [text]="'activity-tab-component.title' | translate"
+            textWrap="true"></Label>
     </GridLayout>
 
     <StackLayout row="1" rows="*" columns="50, *, 50">
-        <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer"
-            androidSwipeEnabled="false">
+        <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)"
+            id="tabViewContainer" androidSwipeEnabled="false">
             <StackLayout *tabItem="{title: displayDay}">
                 <!-- Day View -->
                 <GridLayout row="0" rows="auto" cols="auto">
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
-                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
+                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center"
+                        justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextDayTap($event)"></Button>
-                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center" class="chart-label" [text]="dayChartLabel"></Label>
+                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center"
+                        class="chart-label" [text]="dayChartLabel"></Label>
                 </GridLayout>
-                <RadCartesianChart row="1" height="200" width="90%">
-                    <RadCartesianChartGrid 
-                        tkCartesianGrid
-                        horizontalLinesVisible="true"
-                        verticalLinesVisible="false"
-                        horizontalStripLinesVisible="false"
-                        verticalStripLinesVisible="false">
-                    </RadCartesianChartGrid>     
-                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
-                        tickHidden="false" majorTickInterval="4"
-                        labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+                    <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
+                        horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
+                    </RadCartesianChartGrid>
+                    <CategoricalAxis tkCartesianHorizontalAxis
+                        [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true" tickHidden="false"
+                        majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
                     </CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis
-                        horizontalLocation="Right" labelMargin="10" lineHidden="true"
-                        maximum="40" minumum="1" majorStep="15" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity"
-                        categoryProperty="xAxis" valueProperty="yAxis">
+                    <LinearAxis id="vAxis" tkCartesianVerticalAxis
+                        [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" horizontalLocation="Right"
+                        labelMargin="10" lineHidden="true" maximum="40" minumum="1" majorStep="15" labelFormat="%.0f">
+                    </LinearAxis>
+                    <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis"
+                        [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
-                    <Trackball tkCartesianTrackball snapMode="ClosestPoint" showIntersectionPoints="true"></Trackball>
+                    <Palette tkCartesianPalette seriesName="DailyActivity">
+                        <PaletteEntry tkCartesianPaletteEntry
+                            [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+                            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+                    </Palette>
+
+                    <ChartGridLineAnnotation #dailyActivityAnnotation tkCartesianAnnotations axisId="vAxis"
+                        hidden="false" [value]="dailyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+                        [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+                    </ChartGridLineAnnotation>
                 </RadCartesianChart>
+                <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
+                    colSpan="3">
+                    <Button [class]="dailyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
+                        col="2" horizontalAlignment="left" text="Coast Time"
+                        (tap)="onDailyActivityCoastTimeButtonTap($event)"></Button>
+                    <Button [class]="dailyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
+                        horizontalAlignment="right" text="Push Count"
+                        (tap)="onDailyActivityDistanceButtonTap($event)"></Button>
+                </GridLayout>
+
+                <StackLayout row="3">
+                    <Label textWrap="true" row="0" width="80%" marginTop="10"
+                        text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..."
+                        horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
+                </StackLayout>
+
+                <!-- Horizontal Line -->
+                <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
             </StackLayout>
             <StackLayout *tabItem="{title: displayWeek}">
                 <!-- Week View -->
                 <GridLayout row="0" rows="auto" cols="auto">
                     <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousWeekTap($event)"></Button>
-                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
+                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center"
+                        justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextWeekTap($event)"></Button>
+                    <Label row="1" col="1" marginTop="40" horizontalAlignment="center" justifyContent="center"
+                        class="chart-label" [text]="weekChartLabel"></Label>
                 </GridLayout>
-                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" 
-                    pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
-                    <RadCartesianChartGrid 
-                        tkCartesianGrid
-                        horizontalLinesVisible="true"
-                        verticalLinesVisible="false"
-                        horizontalStripLinesVisible="false"
-                        verticalStripLinesVisible="false">
-                    </RadCartesianChartGrid>     
-                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true"
-                        tickHidden="false" majorTickInterval="1" 
-                        labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks">
+                <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" pointSelectionMode="Single"
+                    (pointSelected)="onWeekPointSelected($event)">
+                    <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
+                        horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
+                    </RadCartesianChartGrid>
+                    <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false"
+                        majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline"
+                        plotMode="OnTicks">
                     </CategoricalAxis>
-                    <LinearAxis tkCartesianVerticalAxis
-                        horizontalLocation="Right" labelMargin="10" lineHidden="true"
+                    <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
                         maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
-                    <BarSeries tkCartesianSeries [items]="activity" maxBarSize="10" minBarSize="10" selectionMode="DataPoint"
-                        categoryProperty="xAxis" valueProperty="yAxis">
+
+                    <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+                        [valueProperty]="weeklyViewMode ? 'pushCount' : 'coastTime'">
                     </BarSeries>
+                    <Palette tkCartesianPalette seriesName="WeeklyActivity">
+                        <PaletteEntry tkCartesianPaletteEntry
+                            [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+                            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+                    </Palette>
+
+                    <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis"
+                        hidden="false" [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+                        [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+                    </ChartGridLineAnnotation>
+
                 </RadCartesianChart>
+                <GridLayout width="60%" horizontalAlignment="center" row="2" rows="auto" columns="*" col="1"
+                    colSpan="3">
+                    <Button [class]="weeklyViewMode ? 'coast-time-btn-disabled' : 'coast-time-btn-enabled'" row="0"
+                        col="2" horizontalAlignment="left" text="Coast Time"
+                        (tap)="onWeeklyActivityCoastTimeButtonTap($event)"></Button>
+                    <Button [class]="weeklyViewMode ? 'distance-btn-enabled' : 'distance-btn-disabled'" row="0" col="3"
+                        horizontalAlignment="right" text="Push Count"
+                        (tap)="onWeeklyActivityDistanceButtonTap($event)"></Button>
+                </GridLayout>
+
+                <StackLayout row="3">
+                    <Label textWrap="true" row="0" width="80%" marginTop="10"
+                        text="Some Message, e.g., You get Move Minutes for all your physical activity, including short strolls, ..."
+                        horizontalAlignment="center" justifyContent="center" class="chart-label"></Label>
+                </StackLayout>
+
+                <!-- Horizontal Line -->
+                <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
             </StackLayout>
             <StackLayout *tabItem="{title: displayMonth}">
                 <!-- Month View -->
                 <GridLayout row="0" rows="auto" cols="auto">
-                    <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousMonthTap($event)"></Button>
-                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center" justifyContent="center" [text]="chartTitle"></Label>
+                    <Button row="0" col="0" text="&#x2039;" class="back-btn"
+                        (tap)="onPreviousMonthTap($event)"></Button>
+                    <Label row="0" col="1" marginTop="17" class="chart-title" horizontalAlignment="center"
+                        justifyContent="center" [text]="chartTitle"></Label>
                     <Button row="0" col="2" text="&#x203A;" class="forward-btn" (tap)="onNextMonthTap($event)"></Button>
                 </GridLayout>
-                <RadCalendar #calendar row="1" selectionMode="Single" viewMode="Month" locale="en-US" 
-                    (loaded)="onCalendarLoaded($event)"
-                    height="250" width="80%" marginTop="20" 
-                    [minDate]="minDate" [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
+                <RadCalendar #calendar row="1" selectionMode="Single" viewMode="Month" locale="en-US"
+                    (loaded)="onCalendarLoaded($event)" height="250" width="80%" marginTop="20" [minDate]="minDate"
+                    [maxDate]="maxDate" [monthViewStyle]="monthViewStyle"
                     (dateSelected)="onCalendarDateSelected($event)">
                 </RadCalendar>
             </StackLayout>
