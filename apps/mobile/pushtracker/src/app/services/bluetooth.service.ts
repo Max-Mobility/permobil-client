@@ -42,8 +42,8 @@ export class BluetoothService extends Observable {
   static _backgroundOtaTask: number = isIOS ? UIBackgroundTaskInvalid : null;
 
   // members
-  enabled = false;
   initialized = false;
+  advertising = false;
 
   // private members
   private _bluetooth = new Bluetooth();
@@ -55,6 +55,7 @@ export class BluetoothService extends Observable {
     private _loggingService: LoggingService
   ) {
     super();
+
     // Checking app-settings to see if the user has paired a PT before
     const hasPairedToPT = appSettings.getBoolean(
       STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER,
@@ -68,9 +69,11 @@ export class BluetoothService extends Observable {
     BluetoothService.pushTrackerStatus.set('state', state);
 
     // enabling `debug` will output console.logs from the bluetooth source code
-    this._bluetooth.debug = false;
+    this._bluetooth.debug = true;
 
     this._loggingService.logBreadCrumb('bluetooth.service constructor');
+
+    this.initialize();
   }
 
   static requestOtaBackgroundExecution() {
@@ -206,38 +209,20 @@ export class BluetoothService extends Observable {
     return this._bluetooth.isBluetoothEnabled();
   }
 
-  available(): Promise<boolean> {
-    return this.isActive();
-
-    // return this._bluetooth.isBluetoothEnabled().then(enabled => {
-    //   return enabled && this.isActive();
-    // });
-  }
-
-  isActive(): Promise<boolean> {
-    return Promise.resolve(this.enabled && this.initialized); // && this._bluetooth.offersService(BluetoothService.AppServiceUUID);
-  }
-
   async initialize(): Promise<any> {
-    this.enabled = false;
     this.initialized = false;
+    this.advertising = false;
 
     this.clearEventListeners();
     this.setEventListeners();
-
-    this.enabled = true;
-
-    this._bluetooth.startGattServer();
-
-    // remove the services
-    this.deleteServices();
-    // now add them back
-    this.addServices();
 
     this.initialized = true;
   }
 
   async advertise(): Promise<any> {
+    if (this.advertising) {
+      return Promise.resolve();
+    }
     // check to make sure that bluetooth is enabled, or this will
     // always fail and we don't need to show the error
     const result = await this._bluetooth.isBluetoothEnabled();
@@ -252,7 +237,12 @@ export class BluetoothService extends Observable {
       }
     }
 
-    await this.initialize();
+    this._bluetooth.startGattServer();
+
+    // remove the services
+    this.deleteServices();
+    // now add them back
+    this.addServices();
 
     await this._bluetooth.startAdvertising({
       UUID: BluetoothService.AppServiceUUID,
@@ -262,9 +252,14 @@ export class BluetoothService extends Observable {
       data: {
         includeDeviceName: true
       }
+    }).catch((err) => {
+      this.sendEvent(BluetoothService.advertise_error, { error: err });
+      this._loggingService.logException(err);
     });
 
     this._bluetooth.addService(this.AppService);
+
+    this.advertising = true;
 
     return Promise.resolve();
   }
@@ -343,8 +338,8 @@ export class BluetoothService extends Observable {
   }
 
   async stop(): Promise<any> {
-    this.enabled = false;
     this.initialized = false;
+    this.advertising = false;
     // remove the services
     this.deleteServices();
     // stop the gatt server
@@ -364,18 +359,20 @@ export class BluetoothService extends Observable {
         return this.advertise();
       })
       .catch(err => {
-        this.enabled = false;
         this.initialized = false;
+        this.advertising = false;
       });
   }
 
   // private functions
   // event listeners
   private onAdvertiseFailure(args: any): void {
+    this._loggingService.logBreadCrumb('failed to advertise', args);
     // nothing
   }
 
   private onAdvertiseSuccess(args: any): void {
+    this._loggingService.logBreadCrumb('succeeded in advertising!');
     // nothing
   }
 
@@ -603,25 +600,28 @@ export class BluetoothService extends Observable {
               UUID: duuid
             });
 
-            d.setValue(new Array(<any>[0x00, 0x00]));
+            const value = Array.create('byte', 2);
+            value[0] = 0x00;
+            value[1] = 0x00;
+            d.setValue(value);
             return d;
           });
 
           descriptors.map(d => {
-            (<any>c).addDescriptor(d);
+            c.addDescriptor(d);
           });
         } else {
           // TODO: don't need ios impl apparrently?
         }
 
         if (isAndroid) {
-          (<any>c).setValue(
+          c.setValue(
             0,
-            (android.bluetooth as any).BluetoothGattCharacteristic.FORMAT_UINT8,
+            android.bluetooth.BluetoothGattCharacteristic.FORMAT_UINT8,
             0
           );
-          (<any>c).setWriteType(
-            (android.bluetooth as any).BluetoothGattCharacteristic
+          c.setWriteType(
+            android.bluetooth.BluetoothGattCharacteristic
               .WRITE_TYPE_DEFAULT
           );
         } else {

@@ -33,6 +33,7 @@ export class KinveyService {
 
   private reformatForDb(o) {
     // remove fields we don't want in the db
+    o._id = o.uuid;
     delete o.id;
     delete o.uuid;
     delete o.has_been_sent;
@@ -143,14 +144,14 @@ export class KinveyService {
 
   sendInfo(info: any, id?: string) {
     this.reformatForDb(info);
-    info.data_type = 'SmartDriveInfo';
+    info.data_type = 'SmartDriveDailyInfo';
     if (id) return this.put(KinveyService.api_info_db, info, id);
     else return this.post(KinveyService.api_info_db, info);
   }
 
   sendActivity(activity: any, id?: string) {
     this.reformatForDb(activity);
-    activity.data_type = 'SmartDriveUsage';
+    activity.data_type = 'SmartDriveDailyUsage';
     if (id) return this.put(KinveyService.api_activity_db, activity, id);
     else return this.post(KinveyService.api_activity_db, activity);
   }

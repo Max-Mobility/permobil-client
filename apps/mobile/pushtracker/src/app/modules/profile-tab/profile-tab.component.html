@@ -128,14 +128,23 @@
           </GridLayout>
         </StackLayout>
 
+        // Control Configuration
+        <StackLayout row="11" col="0" colSpan="4" class="data-box" (tap)="onListPickerTap($event, 5)">
+          <Label class="data-box-label" [text]="'profile-tab.control-configuration' | translate"></Label>
+          <GridLayout rows="*" columns="*, auto">
+            <Label col="0" class="data-box-value" [text]="user.data.control_configuration" textWrap="true"></Label>
+            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+          </GridLayout>
+        </StackLayout>        
+
         // Device Serial Numbers
-        <Label row="11" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
+        <Label row="12" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
 
         // Horizontal Line
-        <StackLayout row="12" col="0" colspan="4" class="hr"></StackLayout>
+        <StackLayout row="13" col="0" colspan="4" class="hr"></StackLayout>
 
         // SmartDrive Serial Number
-        <StackLayout row="13" col="0" colSpan="2" class="data-box" (tap)="onScan('smartdrive')">
+        <StackLayout row="14" col="0" colSpan="2" class="data-box" (tap)="onScan('smartdrive')">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.smartdrive_serial_number" textWrap="true"></Label>
@@ -144,7 +153,7 @@
         </StackLayout>
 
         // Pushtracker Serial Number
-        <StackLayout row="13" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
+        <StackLayout row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user.data.pushtracker_serial_number" textWrap="true"></Label>

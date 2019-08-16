@@ -146,6 +146,7 @@
     "cancel-scan": "Cancel Scan",
     "chair-make": "Chair Make",
     "chair-types": ["Rigid", "Folding", "Pediatric"],
+    "control-configuration": "Control Configuration",
     "coast-time-units": "seconds",
     "device-serial-numbers": "Device Serial Numbers",
     "distance-units-km": "kilometers",

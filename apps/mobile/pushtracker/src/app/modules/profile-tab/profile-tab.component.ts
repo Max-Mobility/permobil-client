@@ -476,6 +476,8 @@ export class ProfileTabComponent implements OnInit {
       case 4:
         this._onListChairMakeTap(args);
         break;
+      case 5:
+        this._onListControlConfigurationTap(args);
     }
   }
 
@@ -540,6 +542,13 @@ export class ProfileTabComponent implements OnInit {
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_make: this.user.data.chair_make });
+        break;
+      case 5:
+        this.userService.updateDataProperty(
+          'control_configuration',
+          this.primary[this.primaryIndex]
+        );
+        KinveyUser.update({ control_configuration: this.user.data.control_configuration });
         break;
     }
 
@@ -697,6 +706,29 @@ export class ProfileTabComponent implements OnInit {
 
     this.listPickerTitle = this._translateService.instant(
       'profile-tab.chair-make'
+    );
+    this.listPickerDescriptionNecessary = false;
+    this.listPickerNeedsSecondary = false;
+
+    this._openListPickerDialog();
+  }
+
+  private _onListControlConfigurationTap(args: EventData) {
+    Log.D('User tapped Control Configuration data box');
+
+    this.primaryIndex = 0;
+    this._setActiveDataBox(args);
+
+    this.primary = [
+      'SmartDrive with PushTracker',
+      'SmartDrive with E2',
+      'SmartDrive witH Switch Control'
+    ];
+
+    this.primaryIndex = this.primary.indexOf(this.user.data.control_configuration);
+
+    this.listPickerTitle = this._translateService.instant(
+      'profile-tab.control-configuration'
     );
     this.listPickerDescriptionNecessary = false;
     this.listPickerNeedsSecondary = false;
