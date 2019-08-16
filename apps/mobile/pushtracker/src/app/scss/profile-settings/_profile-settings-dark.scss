@@ -10,6 +10,10 @@
     color: $permobil-cousteau;
   }
 
+  .setting-layout {
+    @extend .SETTING_LAYOUT_BASE;
+  }
+
   .setting-title {
     @extend .SETTING_TITLE_BASE;
     color: $white;
@@ -19,64 +23,34 @@
     @extend .SETTING_VALUE_BASE;
     color: darken($white, 10%);
   }
-
+  
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
     color: $white;
     background: darken($white, 10%);
   }
 
-  .slider-dialog {
-    @extend .SLIDER_DIALOG_BASE;
+  .custom-template-dialog {
+    @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
+    
     background-color: $black;
 
     > StackLayout {
       background-color: $dark-grey;
 
-      .setting-title {
+      .title {
         color: $white;
       }
 
-      .setting-description {
+      .description {
         color: lighten($color: $white, $amount: 0.2);
+      }
+
+      .listpicker {
+        color: $white;
       }
 
       .slider-value {
-        color: $white;
-      }
-
-      .cancel-btn {
-        color: $permobil-cousteau;
-      }
-
-      .ok-btn {
-        color: $permobil-cousteau;
-      }
-    }
-  }
-
-  .list-picker-dialog {
-    @extend .LIST_PICKER_DIALOG_BASE;
-    background-color: $black;
-
-    GridLayout,
-    StackLayout {
-      background-color: $dark-grey;
-    }
-
-    > StackLayout {
-      background-color: $dark-grey;
-      color: $white;
-
-      .picker-title {
-        color: $white;
-      }
-
-      .picker-description {
-        color: lighten($color: $white, $amount: 0.2);
-      }
-
-      ListPicker {
         color: $white;
       }
 

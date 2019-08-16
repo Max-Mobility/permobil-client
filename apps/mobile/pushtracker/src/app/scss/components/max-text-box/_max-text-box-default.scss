@@ -1,0 +1,41 @@
+@import '../../variables';
+@import 'max-text-box-base';
+
+// TextBox
+.max-textbox {
+  @extend .MAX_TEXTBOX_BASE;
+
+  .max-textbox-label {
+    color: #4b4d51;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #e8e9eb;
+
+    > .max-textbox-value {
+      color: #3d4144;
+    }
+  }
+}
+
+.max-textbox-active {
+  @extend .MAX_TEXTBOX_BASE;
+  .max-textbox-label {
+    color: #1c72e6;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #1c72e6;
+
+    > .max-textbox-value {
+      color: #3d4144;
+    }
+  }
+}
+
+.max-textbox-error-label {
+  @extend .ERROR_LABEL_BASE;
+  color: $error-red;
+}

@@ -1,14 +1,18 @@
-<ActionBar [title]="'general.support' | translate" class="action-bar">
-  <NavigationButton text="Back" android:icon="round_arrow_back_black_24" (tap)="onNavBtnTap()"></NavigationButton>
-</ActionBar>
-<GridLayout rows="auto, *" class="support-layout">
+<GridLayout rows="auto, auto, *, auto" class="support-layout">
   // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="50, *, 50">
-    <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeModal($event)"></Button>
-  </GridLayout>
-  <ScrollView row="1" height="100%">
-    <StackLayout paddingTop="20">
-      <Label text="Hello" textWrap="true"></Label>
-    </StackLayout>
-  </ScrollView>
+  <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navBtnEvent)="onNavBtnTap()"></MockActionBar>
+
+  <Label row="1" text="" class="hr" textWrap="true"></Label>
+
+  <StackLayout row="2">
+    <ListView [items]="supportItems" (itemTap)="onItemTap($event)" class="faq-list">
+      <ng-template let-item="item">
+        <GridLayout rows="auto, auto" columns="auto, *" padding="8">
+          <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
+          <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
+          <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
+        </GridLayout>
+      </ng-template>
+    </ListView>
+  </StackLayout>
 </GridLayout>

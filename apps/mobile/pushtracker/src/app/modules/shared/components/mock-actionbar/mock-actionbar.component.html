@@ -1,7 +1,7 @@
-// Mock ActionBar
-<GridLayout row="0" rows="*" columns="50, *, 46, 46" class="action-bar">
-  <Button row="0" col="0" text="&#xe5cd;" [visibility]="showBackNav ? 'visible' : 'collapse'" ripple (tap)="onNavBtnTap()" class="nav-btn"></Button>
-  <Label row="0" col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
-  <Button row="0" col="2" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" ripple (tap)="onSupportTap()" class="help-btn"></Button>
-  <Button row="0" col="3" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" ripple (tap)="onSettingsTap()" class="settings-btn"></Button>
+<GridLayout rows="*" columns="50, *, auto, auto, auto" class="action-bar">
+  <Button col="0" text="&#xe5cd;" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="nav-btn"></Button>
+  <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
+  <Button col="2" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" (tap)="onSupportTap()" ripple class="action-item-btn"></Button>
+  <Button col="3" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" (tap)="onSettingsTap()" ripple class="action-item-btn"></Button>
+  <Button col="4" text="&#xe5d5;" [visibility]="showRefreshBtn ? 'visible' : 'collapse'" (tap)="onRefreshTap()" ripple class="action-item-btn"></Button>
 </GridLayout>

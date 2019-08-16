@@ -7,7 +7,11 @@
 
   .category {
     @extend .CATEGORY_BASE;
-    color: $permobil-primary;
+    color: #1a73e9;
+  }
+
+  .setting-layout {
+    @extend .SETTING_LAYOUT_BASE;
   }
 
   .setting-title {
@@ -19,55 +23,35 @@
     @extend .SETTING_VALUE_BASE;
     color: $black;
   }
-
+  
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
     color: $permobil-primary;
     background: $permobil-sky;
   }
 
-  .slider-dialog {
-    @extend .SLIDER_DIALOG_BASE;
+  .custom-template-dialog {
+    @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
+
     background-color: rgba(85, 86, 88, 0.808);
 
     > StackLayout {
       background-color: $white;
 
-      .setting-title {
+      .title {
         color: #202125;
       }
 
-      .setting-description {
+      .description {
         color: #393a3f;
+      }
+
+      .listpicker {
+        color: $permobil-violet;
       }
 
       .slider-value {
         color: #202125;
-      }
-
-      .cancel-btn {
-        color: #1a73e9;
-      }
-
-      .ok-btn {
-        color: #1a73e9;
-      }
-    }
-  }
-
-  .list-picker-dialog {
-    @extend .LIST_PICKER_DIALOG_BASE;
-    background-color: rgba(85, 86, 88, 0.808);
-
-    > StackLayout {
-      background-color: $white;
-
-      .picker-title {
-        color: #202125;
-      }
-
-      .picker-description {
-        color: #393a3f;
       }
 
       .cancel-btn {

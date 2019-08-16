@@ -1,0 +1,24 @@
+@import '../../variables';
+@import 'mock-action-bar-base';
+
+// ActionBar
+.action-bar {
+  @extend .ACTION_BAR_BASE;
+  color: $black;
+  background-color: $white;
+
+  .nav-btn {
+    @extend .BACK_BTN_BASE;
+    color: $black;
+  }
+
+  .title {
+    @extend .ACTION_BAR_TITLE_BASE;
+    color: $black;
+  }
+
+  .action-item-btn {
+    @extend .ACTION_BAR_BUTTON_BASE;
+    color: $dark-grey;
+  }
+}

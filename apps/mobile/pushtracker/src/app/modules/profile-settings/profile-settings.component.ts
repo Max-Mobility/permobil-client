@@ -100,7 +100,7 @@ export class ProfileSettingsComponent implements OnInit, AfterViewInit {
     this.userService.user.subscribe(user => (this.user = user));
   }
 
-  closeModal(event) {
+  closeModal() {
     Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
   }

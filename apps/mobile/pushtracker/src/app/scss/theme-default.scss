@@ -1,15 +1,22 @@
 @import 'global';
 @import 'variables';
+
+// pages/modules
 @import './app-info/app-info-default';
 @import './activity-tab/activity-tab-default';
 @import './animated-circles/circles-default';
-@import './action-bar/action-bar-default';
 @import './home-tab/home-tab-default';
 @import './journey-tab/journey-tab-default';
 @import './login/login-default';
 @import './profile-tab/profile-tab-default';
 @import './profile-settings/profile-settings-default';
 @import './sign-up/sign-up-default';
+@import './support/support-default';
+
+// Components
+@import './components/data-box/data-box-default';
+@import './components/max-text-box/max-text-box-default';
+@import './components/mock-action-bar/mock-action-bar-default';
 
 TabView {
   tab-background-color: $white;
@@ -23,103 +30,4 @@ TabView {
   width: 100%;
   color: #e9eaee;
   background-color: #e9eaee;
-}
-
-// ActionBar
-.action-bar {
-  @extend .ACTION_BAR_BASE;
-  color: $black;
-  background-color: $white;
-
-  .nav-btn {
-    @extend .BACK_BTN_BASE;
-    color: $black;
-  }
-
-  .title {
-    @extend .ACTION_BAR_TITLE_BASE;
-    color: $black;
-  }
-
-  .action-item-btn {
-    @extend .ACTION_ITEM_BTN_BASE;
-    color: $dark-grey;
-  }
-}
-
-// TextBox
-
-.max-textbox {
-  @extend .MAX_TEXTBOX_BASE;
-
-  .max-textbox-label {
-    color: #4b4d51;
-    background-color: $white;
-  }
-
-  GridLayout {
-    border-color: #e8e9eb;
-
-    > .max-textbox-value {
-      color: #3d4144;
-    }
-  }
-}
-
-.max-textbox-active {
-  @extend .MAX_TEXTBOX_BASE;
-  .max-textbox-label {
-    color: #1c72e6;
-    background-color: $white;
-  }
-
-  GridLayout {
-    border-color: #1c72e6;
-
-    > .max-textbox-value {
-      color: #3d4144;
-    }
-  }
-}
-
-.max-textbox-error-label {
-  @extend .ERROR_LABEL_BASE;
-  color: $error-red;
-}
-
-// DataBox default styles
-.data-box {
-  @extend .DATA_BOX_BASE;
-  .data-box-label {
-    color: #4b4d51;
-    background-color: $white;
-  }
-
-  GridLayout {
-    border-color: #e8e9eb;
-
-    > .data-box-value {
-      color: #3d4144;
-    }
-
-    > .data-box-arrow {
-      color: #5f6267;
-    }
-  }
-}
-
-.data-box-active {
-  @extend .DATA_BOX_BASE;
-  .data-box-label {
-    color: #1c72e6;
-    background-color: $white;
-  }
-
-  GridLayout {
-    border-color: #1c72e6;
-  }
-}
-.data-box-error-label {
-  @extend .ERROR_LABEL_BASE;
-  color: $error-red;
 }

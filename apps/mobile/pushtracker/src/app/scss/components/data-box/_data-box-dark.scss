@@ -1,0 +1,42 @@
+@import '../../variables';
+@import 'data-box-base';
+
+// DataBox Dark
+.data-box {
+  @extend .DATA_BOX_BASE;
+
+  .data-box-label {
+    color: $grey;
+    background-color: $black;
+  }
+
+  > GridLayout {
+    background-color: $black;
+    border-color: #e8e9eb;
+
+    > .data-box-value {
+      color: $white;
+    }
+
+    > .data-box-arrow {
+      color: $grey;
+    }
+  }
+}
+
+.data-box-active {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: $permobil-cousteau;
+    background-color: $black;
+  }
+
+  GridLayout {
+    border-color: $permobil-cousteau;
+  }
+}
+
+.data-box-error-label {
+  @extend .ERROR_LABEL_BASE;
+  color: $error-red;
+}

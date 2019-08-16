@@ -52,6 +52,7 @@ export function createTranslateLoader() {
       }
     })
   ],
+  exports: [SharedModule],
   declarations: [AppComponent, ...COMPONENTS],
   entryComponents: [...ENTRY_COMPONENTS],
   providers: [

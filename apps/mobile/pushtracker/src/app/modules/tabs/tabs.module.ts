@@ -1,7 +1,12 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
-import { NativeScriptRouterModule, NSEmptyOutletComponent } from 'nativescript-angular/router';
+import {
+  NativeScriptRouterModule,
+  NSEmptyOutletComponent
+} from 'nativescript-angular/router';
+import { NgRippleModule } from 'nativescript-ng-ripple';
+import { SharedModule } from '../shared/shared.module';
 import { TabsComponent } from './tabs.component';
 
 @NgModule({
@@ -34,8 +39,11 @@ import { TabsComponent } from './tabs.component';
         ]
       }
     ]),
-    TranslateModule
+    SharedModule,
+    TranslateModule,
+    NgRippleModule
   ],
+  exports: [SharedModule],
   declarations: [TabsComponent],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]

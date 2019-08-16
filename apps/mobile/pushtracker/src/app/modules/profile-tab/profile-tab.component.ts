@@ -230,7 +230,9 @@ export class ProfileTabComponent implements OnInit {
     });
   }
 
-  onHelpTap() {
+  onSupportTap(args) {
+    console.log('support tap');
+
     this._modalService
       .showModal(SupportComponent, {
         context: {},

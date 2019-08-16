@@ -1,27 +1,25 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
   // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="50, *, *" class="action-bar">
-    <Button row="0" col="0" text="&#xe5cd;" ripple class="nav-btn" (tap)="closeModal($event)"></Button>
-    <Label row="0" col="1" class="title" [text]="'settings-component.title' | translate" textWrap="true"></Label>
-  </GridLayout>
+  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navBtnEvent)="closeModal()"></MockActionBar>
+
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
-      <StackLayout row="1" (tap)="onItemTap($event, 'height')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="1" (tap)="onItemTap($event, 'height')" class="setting-layout">
         <Label class="setting-title" [text]="'general.height' | translate"></Label>
         <Label class="setting-value" [text]="HEIGHT" textWrap="true"></Label>
       </StackLayout>
       // Weight
-      <StackLayout row="2" (tap)="onItemTap($event, 'weight')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="2" (tap)="onItemTap($event, 'weight')" class="setting-layout">
         <Label class="setting-title" [text]="'general.weight' | translate"></Label>
         <Label class="setting-value" [text]="WEIGHT" textWrap="true"></Label>
       </StackLayout>
 
       // Distance
-      <StackLayout row="3" (tap)="onItemTap($event, 'distance')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="3" (tap)="onItemTap($event, 'distance')" class="setting-layout">
         <Label class="setting-title" [text]="'general.distance' | translate"></Label>
         <Label class="setting-value" [text]="DISTANCE" textWrap="true"></Label>
       </StackLayout>
@@ -46,36 +44,36 @@
       </StackLayout>
 
       // Max Speed
-      <StackLayout row="7" (tap)="onItemTap($event, 'max-speed')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="7" (tap)="onItemTap($event, 'max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Acceleration
-      <StackLayout row="8" (tap)="onItemTap($event, 'acceleration')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="8" (tap)="onItemTap($event, 'acceleration')" class="setting-layout">
         <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Tap sensitivity
-      <StackLayout row="9" (tap)="onItemTap($event, 'tap-sensitivity')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="9" (tap)="onItemTap($event, 'tap-sensitivity')" class="setting-layout">
         <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
       </StackLayout>
       // Mode
-      <StackLayout row="10" (tap)="onItemTap($event, 'mode')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="10" (tap)="onItemTap($event, 'mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.mode' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Max Speed
-      <StackLayout row="11" (tap)="onItemTap($event, 'switch-control-max-speed')">
+      <StackLayout ripple row="11" (tap)="onItemTap($event, 'switch-control-max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Mode
-      <StackLayout row="12" (tap)="onItemTap($event, 'switch-control-mode')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="12" (tap)="onItemTap($event, 'switch-control-mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
         <Label class="setting-value" [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
       </StackLayout>
@@ -84,12 +82,12 @@
       <Label row="13" class="category" [text]="'general.display' | translate"></Label>
 
       // Theme
-      <StackLayout row="14" (tap)="onItemTap($event, 'theme')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="14" (tap)="onItemTap($event, 'theme')" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout row="15" (tap)="onItemTap($event, 'language')">
+      <StackLayout ripple rippleColorAlpha="0.18" row="15" (tap)="onItemTap($event, 'language')" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>
@@ -97,30 +95,28 @@
   </ScrollView>
 
   <!-- Slider Layout -->
-  <GridLayout #sliderSettingDialog rowSpan="2" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="slider-dialog">
+  <GridLayout #sliderSettingDialog rowSpan="2" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="custom-template-dialog">
     <StackLayout row="1">
-      // Mock ActionBar
-      <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
-      <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
+      <Label class="title" [text]="activeSettingTitle | translate"></Label>
+      <Label class="description" [text]="activeSettingDescription | translate"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
         <Slider row="0" col="0" colSpan="2" class="slider" [value]="SLIDER_VALUE" (valueChange)="onSliderValueChange($event)" minValue="1" maxValue="10"></Slider>
-        <Label class="slider-value" row="0" col="2" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
-        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
-        <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
+        <Label class="slider-value" textAlign="right" row="0" col="2" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
+        <Button ripple rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
+        <Button ripple rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
       </GridLayout>
     </StackLayout>
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
+  <GridLayout #listPickerDialog row="0" rowSpan="2" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="custom-template-dialog">
     <StackLayout row="1">
-      // Mock ActionBar
-      <Label class="setting-title" [text]="activeSettingTitle | translate" textWrap="true"></Label>
-      <Label class="setting-description" [text]="activeSettingDescription | translate" textWrap="true"></Label>
+      <Label class="title" [text]="activeSettingTitle | translate"></Label>
+      <Label class="description" [text]="activeSettingDescription | translate"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
-        <ListPicker row="0" col="1" colSpan="2" [items]="listPickerItems" (selectedIndexChange)="listPickerIndexChange($event)" [selectedIndex]="listPickerIndex" class="m-r-10"></ListPicker>
-        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
-        <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+        <ListPicker row="0" col="1" colSpan="3" class="listpicker" [items]="listPickerItems" (selectedIndexChange)="listPickerIndexChange($event)" [selectedIndex]="listPickerIndex"></ListPicker>
+        <Button ripple rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+        <Button ripple rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
       </GridLayout>
     </StackLayout>
   </GridLayout>

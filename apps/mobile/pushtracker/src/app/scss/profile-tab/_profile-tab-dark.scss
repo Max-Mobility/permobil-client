@@ -19,15 +19,6 @@
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $black;
 
-  .settings-btn {
-    @extend .ACTION_BAR_BUTTON_BASE;
-    color: $white;
-  }
-  .help-btn {
-    @extend .ACTION_BAR_BUTTON_BASE;
-    color: $white;
-  }
-
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: $white;
@@ -66,7 +57,7 @@
     }
 
     .close-btn {
-      @extend .ACTION_BAR_BUTTON_BASE;
+      @extend .btn-transparent;
       color: $white;
     }
 

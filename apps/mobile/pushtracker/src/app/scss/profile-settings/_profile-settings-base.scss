@@ -6,122 +6,76 @@
   width: 100%;
 
   .CATEGORY_BASE {
-    font-size: 14;
+    font-size: 17;
     font-family: $os;
     font-weight: bold;
-    margin: 20 0 20 5;
-    padding-left: 20;
+    margin: 20 0 12 10;
+    padding-left: 5;
+  }
+
+  .SETTING_LAYOUT_BASE {
+    width: 100%;
+    padding: 5;
   }
 
   .SETTING_TITLE_BASE {
-    font-size: 14;
+    font-size: 15;
     font-family: $os;
     margin: 5 5 0 5;
-    padding-left: 20;
+    padding-left: 15;
   }
 
   .SETTING_VALUE_BASE {
-    font-size: 12;
+    font-size: 13;
     font-family: $os-Light;
     margin: 0 5 5 5;
-    padding-left: 20;
+    padding-left: 15;
   }
 
   .SETTING_SWITCH_BASE {
     margin: 0 5 5 20;
     horizontal-align: left;
   }
+}
 
-  .more-icon {
-    font-family: $material-icon;
-    font-size: 24;
-    horizontal-align: right;
-    vertical-align: center;
-  }
-
-  .CLOSE_DIALOG_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 12;
-    font-family: $material-icon;
-    horizontal-align: left;
-  }
-
-  .SLIDER_DIALOG_BASE {
+  .CUSTOM_TEMPLATE_DIALOG_BASE {
     height: 100%;
 
     > StackLayout {
       margin: 24;
-      border-radius: 2;
+      border-radius: 4;
 
-      .setting-title {
+      .title {
         font-family: $os;
         font-size: 18;
         font-weight: bold;
         horizontal-align: left;
         vertical-align: center;
-        margin: 12;
+        margin: 10;
+        text-wrap: true;
       }
 
-      .setting-description {
+      .description {
         font-family: $os;
-        font-size: 10;
-        margin-left: 12;
-      }
-
-      .slider-value {
-        font-family: $os;
-        font-size: 18;
-        font-weight: bold;
-        horizontal-align: center;
-        vertical-align: center;
-        margin: 12;
+        font-size: 12;
+        margin: 2 2 15 10;
+        text-wrap: true;
       }
 
       .cancel-btn {
         @extend .btn-transparent;
         horizontal-align: right;
-        text-align: right;
+        text-align: center;
+        margin: 15 0 0 0;
+        border-radius: 4;
       }
 
       .ok-btn {
         @extend .btn-transparent;
         horizontal-align: right;
-      }
-    }
-  }
-
-  .LIST_PICKER_DIALOG_BASE {
-    height: 100%;
-
-    > StackLayout {
-      margin: 24;
-      border-radius: 2;
-
-      .picker-title {
-        font-family: $os;
-        font-size: 18;
-        font-weight: bold;
-        horizontal-align: left;
-        vertical-align: center;
-        margin: 12;
-      }
-
-      .picker-description {
-        font-family: $os;
-        font-size: 10;
-        margin-left: 12;
-      }
-
-      .cancel-btn {
-        @extend .btn-transparent;
-        horizontal-align: right;
-        text-align: right;
-      }
-
-      .ok-btn {
-        @extend .btn-transparent;
-        horizontal-align: right;
+        text-align: center;
+        margin: 15 0 0 0;
+        border-radius: 4;
       }
     }
   }

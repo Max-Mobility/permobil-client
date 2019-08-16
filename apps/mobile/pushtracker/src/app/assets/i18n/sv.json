@@ -126,6 +126,28 @@
     "user-exists": "Det finns redan ett konto för den här e-postmeddelanden."
   },
   "support-component": {
-    "title": "Stöd"
+    "title": "Stöd",
+    "faqs": [
+      {
+        "q": "Why isn't my SmartDrive engaging?",
+        "a": "Generally, you should check these things: 1) that your SmartDrive is powered on, 2) that your PushTracker is in 'SD On' mode - the blue light should be flashing, and 3) that you are in MX2+ mode - in which a double tap will engage the motor."
+      },
+      {
+        "q": "Can my SmartDrive slow me down?",
+        "a": "Unfortunately, no - the SmartDrive is incapable of providing any braking for your chair. This means that after you turn off the motor you will need to manually grab the hand-rims and bring your chair to a stop.  This also means that your SmartDrive cannot slow you down going down a ramp or a hill."
+      },
+      {
+        "q": "Why won't my PushTracker connect to my phone?",
+        "a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the Smart Evaluation app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!"
+      },
+      {
+        "q": "How can I make the SmartDrive safe for children?",
+        "a": "The SmartDrive is safe for children to use - but we do recommend the best way to ensure safety is to train them on proper tapping and braking techniques. Moreover, we have included the ability to limit the max speed of the SmartDrive (from 0.5 miles per hour all the way up to 5.5 miles per hour) as well as the acceleration of the SmartDrive. For someone who is just learning to push or to use a SmartDrive, we recommend setting both very low."
+      },
+      {
+        "q": "Why should I want a SmartDrive?",
+        "a": "You should be active and go out into the world! With pushing however, unlike the general advice with walking (where people really cannot walk too much) - people CAN push too much! If you push too much then you will be more likely to get pain and injury in your arms and shoulders - which may limit your mobility and independence.  With the SmartDrive you are still able to push around in your chair as you normally would - you can now go farther faster and with less effort! Use it when you need to get somewhere fast or up a big hill - don't kill your shoulders if you don't have to! Enjoy your journey with your SmartDrive!"
+      }
+    ]
   }
 }
