@@ -225,7 +225,9 @@ export class ProfileTabComponent implements OnInit {
     this.userService.user.subscribe(user => (this.user = user));
   }
 
-  onHelpTap() {
+  onSupportTap(args) {
+    console.log('support tap');
+
     this._modalService
       .showModal(SupportComponent, {
         context: {},

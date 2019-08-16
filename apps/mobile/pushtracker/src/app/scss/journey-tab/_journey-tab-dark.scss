@@ -5,11 +5,6 @@
   @extend .JOURNEY_TAB_LAYOUT_BASE;
   background-color: $black;
 
-  .refresh-btn {
-    @extend .MOCK_ACTION_BAR_BUTTON_BASE;
-    color: $white;
-  }
-
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: $white;

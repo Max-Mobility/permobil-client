@@ -1,0 +1,38 @@
+@import '../../variables';
+@import 'data-box-base';
+
+.data-box {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: #4b4d51;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #e8e9eb;
+
+    > .data-box-value {
+      color: #3d4144;
+    }
+
+    > .data-box-arrow {
+      color: #5f6267;
+    }
+  }
+}
+
+.data-box-active {
+  @extend .DATA_BOX_BASE;
+  .data-box-label {
+    color: #1c72e6;
+    background-color: $white;
+  }
+
+  GridLayout {
+    border-color: #1c72e6;
+  }
+}
+.data-box-error-label {
+  @extend .ERROR_LABEL_BASE;
+  color: $error-red;
+}

@@ -3,10 +3,8 @@
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, *, 46, 46">
-      <Button row="0" col="2" text="&#xe8fd;" (tap)="onHelpTap()" class="help-btn" ripple></Button>
-      <Button row="0" col="3" text="&#xe8b8;" (tap)="onSettingsTap()" class="settings-btn" ripple></Button>
-    </GridLayout>
+    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" (supportTapEvent)="onSupportTap($event)"></MockActionBar>
+
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" paddingBottom="15">
         // Page Title
@@ -33,6 +31,16 @@
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
+        <!-- <DataBox
+          row="5"
+          col="0"
+          colSpan="2"
+          [label]="'general.coast-time' | translate"
+          [(dataValue)]="displayActivityGoalCoastTime"
+          (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)"
+        ></DataBox> -->
+
+        // Coast Time
         <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
@@ -49,6 +57,16 @@
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
+
+        // Distance
+        <!-- <DataBox
+          row="5"
+          col="2"
+          colSpan="2"
+          [label]="'general.distance' | translate"
+          [(dataValue)]="displayActivityGoalDistance"
+          (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL', DISTANCE_ACTIVITY_GOAL)"
+        ></DataBox> -->
 
         // About You Label
         <Label row="6" col="0" colSpan="4" class="section-label" [text]="'profile-tab.about-you' | translate"></Label>
@@ -139,10 +157,10 @@
 
   <!-- Activity Goals FullScreen Layout -->
   // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="activity-goals-dialog">
+  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight + 100" opacity="0" class="activity-goals-dialog">
     // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, *, auto">
-      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeActivityGoalsDialog()"></Button>
+    <GridLayout row="0" rows="*" columns="50, *, auto" class="action-bar">
+      <Button row="0" col="0" text="&#xe5cd;" class="nav-btn" (tap)="closeActivityGoalsDialog()"></Button>
       <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn" (tap)="onSetGoalBtnTap()"></Button>
     </GridLayout>
     <GridLayout row="1" rows="auto, auto, *">
@@ -160,7 +178,7 @@
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight + 100" opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
       // Mock ActionBar
       <Label class="picker-title" [text]="listPickerTitle | translate" textWrap="true"></Label>

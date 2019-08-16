@@ -4,10 +4,13 @@ import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { NgRippleModule } from 'nativescript-ng-ripple';
+import { SharedModule } from '../shared/shared.module';
 import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
   imports: [
+    SharedModule,
     NativeScriptCommonModule,
     NativeScriptRouterModule,
     NativeScriptFormsModule,
@@ -15,7 +18,8 @@ import { ProfileTabComponent } from './profile-tab.component';
       { path: '', redirectTo: 'profile' },
       { path: 'profile', component: ProfileTabComponent }
     ]),
-    TranslateModule
+    TranslateModule,
+    NgRippleModule
   ],
   declarations: [ProfileTabComponent],
   providers: [BarcodeScanner],

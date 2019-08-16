@@ -3,4 +3,23 @@
 
 .support-layout {
   @extend .SUPPORT_LAYOUT_BASE;
+
+  .faq-list {
+    @extend .FAQ_LIST_BASE;
+
+    .item-icon {
+      @extend .ITEM_ICON_BASE;
+      color: #1a73e9;
+    }
+
+    .faq-question {
+      @extend .FAQ_QUESTION_BASE;
+      color: $black;
+    }
+
+    .faq-answer {
+      @extend .FAQ_ANSWER_BASE;
+      color: $black;
+    }
+  }
 }

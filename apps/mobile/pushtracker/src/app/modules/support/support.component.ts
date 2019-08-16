@@ -9,22 +9,26 @@ import { LoggingService } from '../../services';
   templateUrl: 'support.component.html'
 })
 export class SupportComponent implements OnInit {
+  supportItems;
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _params: ModalDialogParams
-  ) {}
+  ) {
+    this.supportItems = this._translateService.instant(
+      'support-component.faqs'
+    );
+  }
 
   ngOnInit() {
     this._logService.logBreadCrumb('support.component OnInit');
   }
 
-  onNavBtnTap() {
-    console.log('nav btn tap');
-    this._params.closeCallback('');
+  onItemTap(args) {
+    console.log('item tap', args.object);
   }
 
-  closeModal(event) {
+  onNavBtnTap() {
     this._params.closeCallback('');
   }
 }

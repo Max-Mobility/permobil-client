@@ -1,15 +1,16 @@
-@import '../variables';
-@import 'action-bar-base';
+@import '../../variables';
+@import 'mock-action-bar-base';
 
-//Action bar
-ActionBar[title] {
-  font-family: $os;
-}
-
+// ActionBar
 .action-bar {
   @extend .ACTION_BAR_BASE;
   color: $white;
   background-color: $black;
+
+  .back-btn {
+    @extend .BACK_BTN_BASE;
+    color: $white;
+  }
 
   .title {
     @extend .ACTION_BAR_TITLE_BASE;
@@ -17,7 +18,7 @@ ActionBar[title] {
   }
 
   .action-item-btn {
-    @extend .ACTION_ITEM_BTN_BASE;
+    @extend .ACTION_BAR_BUTTON_BASE;
     color: $white;
   }
 }

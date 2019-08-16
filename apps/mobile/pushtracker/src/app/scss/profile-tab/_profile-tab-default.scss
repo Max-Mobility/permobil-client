@@ -20,16 +20,6 @@
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $white;
 
-  .settings-btn {
-    @extend .ACTION_BAR_BUTTON_BASE;
-    color: #3c4043;
-  }
-
-  .help-btn {
-    @extend .ACTION_BAR_BUTTON_BASE;
-    color: #3c4043;
-  }
-
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;

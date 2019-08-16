@@ -1,0 +1,49 @@
+@import '../../variables';
+
+// ActionBar Base (works for built in actionbar component and our mock action bar gridlayout)
+.ACTION_BAR_BASE {
+  width: 100%;
+  // android-elevation: 4;
+
+  .BACK_BTN_BASE {
+    @extend .btn-transparent;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    font-size: 30;
+    padding: 4;
+    font-family: $material-icon;
+    horizontal-align: left;
+    vertical-align: center;
+  }
+
+  .ACTION_BAR_TITLE_BASE {
+    font-size: 22;
+    font-family: $os;
+    margin-left: 5;
+    padding: 4;
+    vertical-align: center;
+  }
+
+  .ACTION_BAR_BUTTON_BASE {
+    @extend .btn-transparent;
+    font-family: $material-icon;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    font-size: 30;
+    margin: 0 2 0 2;
+    padding: 0 2 0 2;
+  }
+
+  .ACTION_ITEM_BTN_BASE {
+    button {
+      @extend .btn-transparent;
+    }
+    padding: 4;
+    margin: 2;
+    font-family: $material-icon;
+    font-size: 30;
+    vertical-align: center;
+  }
+}
