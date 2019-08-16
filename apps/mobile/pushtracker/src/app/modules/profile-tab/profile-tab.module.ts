@@ -10,7 +10,6 @@ import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
   imports: [
-    SharedModule,
     NativeScriptCommonModule,
     NativeScriptRouterModule,
     NativeScriptFormsModule,
@@ -18,6 +17,7 @@ import { ProfileTabComponent } from './profile-tab.component';
       { path: '', redirectTo: 'profile' },
       { path: 'profile', component: ProfileTabComponent }
     ]),
+    SharedModule,
     TranslateModule,
     NgRippleModule
   ],
