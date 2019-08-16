@@ -344,7 +344,7 @@ export class Bluetooth extends BluetoothCommon {
 
             if (!didStart) {
               // TODO error msg, see https://github.com/randdusing/cordova-plugin-bluetoothle/blob/master/src/android/BluetoothLePlugin.java#L758
-              reject(`Scanning didn't start`);
+              reject(`Scanning did not start`);
               return;
             }
           } else {
@@ -878,7 +878,7 @@ export class Bluetooth extends BluetoothCommon {
         } else {
           reject(
             'Failed to remove client characteristic notification for ' +
-              characteristicUUID
+            characteristicUUID
           );
         }
       } catch (ex) {
@@ -1066,12 +1066,12 @@ export class Bluetooth extends BluetoothCommon {
     const props =
       (opts && opts.properties) ||
       android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ |
-        android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE |
-        android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
+      android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE |
+      android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY;
     const permissions =
       (opts && opts.permissions) ||
       android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE |
-        android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
+      android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
     return new android.bluetooth.BluetoothGattCharacteristic(
       cuuid,
       props,
@@ -1084,7 +1084,7 @@ export class Bluetooth extends BluetoothCommon {
     const perms =
       (opts && opts.permissions) ||
       android.bluetooth.BluetoothGattDescriptor.PERMISSION_READ |
-        android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE;
+      android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE;
     return new android.bluetooth.BluetoothGattDescriptor(uuid, perms);
   }
 
@@ -1246,12 +1246,12 @@ export class Bluetooth extends BluetoothCommon {
           const _s = new android.bluetooth.le.AdvertiseSettings.Builder()
             .setAdvertiseMode(
               (settings && settings.advertiseMode) ||
-                android.bluetooth.le.AdvertiseSettings
-                  .ADVERTISE_MODE_LOW_LATENCY
+              android.bluetooth.le.AdvertiseSettings
+                .ADVERTISE_MODE_LOW_LATENCY
             )
             .setTxPowerLevel(
               (settings && settings.txPowerLevel) ||
-                android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH
+              android.bluetooth.le.AdvertiseSettings.ADVERTISE_TX_POWER_HIGH
             )
             .setConnectable((settings && settings.connectable) || false)
             .build();
@@ -1318,8 +1318,8 @@ export class Bluetooth extends BluetoothCommon {
     return new Promise((resolve, reject) => {
       resolve(
         this.adapter.isMultipleAdvertisementSupported() &&
-          this.adapter.isOffloadedFilteringSupported() &&
-          this.adapter.isOffloadedScanBatchingSupported()
+        this.adapter.isOffloadedFilteringSupported() &&
+        this.adapter.isOffloadedScanBatchingSupported()
       );
     });
   }
@@ -1435,7 +1435,7 @@ export class Bluetooth extends BluetoothCommon {
       if (
         (c.getProperties() &
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY) !==
-          0 &&
+        0 &&
         characteristicUUID.equals(c.getUuid())
       ) {
         return c;
@@ -1448,7 +1448,7 @@ export class Bluetooth extends BluetoothCommon {
       if (
         (ch.getProperties() &
           android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE) !==
-          0 &&
+        0 &&
         characteristicUUID.equals(ch.getUuid())
       ) {
         return ch;
