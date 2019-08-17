@@ -4,10 +4,14 @@ import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData } from 'tns-core-modules/data/observable';
+import {
+  EventData,
+  PropertyChangeData
+} from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
+import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import {
   BluetoothService,
@@ -269,7 +273,7 @@ export class ProfileSettingsComponent implements OnInit {
             this.settingsService.switchControlSettings
           );
         } catch (err) {
-          Log.E('error sending data to pushtracker', err);
+          this._logService.logException(err);
         }
       });
     } else {
@@ -278,14 +282,19 @@ export class ProfileSettingsComponent implements OnInit {
     try {
       await this.settingsService.save();
     } catch (error) {
-      Log.E('error pushing to server', error);
+      this._logService.logException(error);
     }
   }
 
-  async onSettingsChecked(args: EventData, setting: string) {
+  async onSettingsChecked(args: PropertyChangeData, setting: string) {
     let updatedSmartDriveSettings = false;
-    // @ts-ignore
+
     const isChecked = args.value;
+    // apply the styles if the switch is false/off
+    const sw = args.object as Switch;
+    sw.className =
+      isChecked === true ? 'setting-switch' : 'inactive-setting-switch';
+
     switch (setting) {
       case 'ez-on':
         this.settingsService.settings.ezOn = isChecked;
