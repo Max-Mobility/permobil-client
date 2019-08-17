@@ -31,6 +31,13 @@
     off-background-color: $dark-grey;
   }
 
+  .inactive-setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $grey;
+    background: $dark-grey;
+    off-background-color: lighten($grey, 10%);
+  }
+
   .custom-template-dialog {
     @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
 

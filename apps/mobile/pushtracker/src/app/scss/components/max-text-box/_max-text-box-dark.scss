@@ -7,13 +7,13 @@
   @extend .MAX_TEXTBOX_BASE;
 
   .max-textbox-label {
-    color: $grey;
+    color: #898e94;
     background-color: $black;
   }
 
   GridLayout {
     background-color: $black;
-    border-color: #e8e9eb;
+    border-color: #4c4f54;
 
     > .max-textbox-value {
       color: $white;

@@ -7,7 +7,7 @@
 
   .category {
     @extend .CATEGORY_BASE;
-    color: #1a73e9;
+    color: #2075e8;
   }
 
   .setting-layout {
@@ -29,6 +29,13 @@
     color: $permobil-primary;
     background: $permobil-sky;
     off-background-color: $dark-grey;
+  }
+
+  .inactive-setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: red;
+    background: $dark-grey;
+    off-background-color: $grey;
   }
 
   .custom-template-dialog {
