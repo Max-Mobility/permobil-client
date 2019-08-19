@@ -20,7 +20,7 @@ export namespace Device {
       static MX2plus = 'MX2+';
 
       static fromSettings(s: any): string {
-        const o = bindingTypeToString('DeviceControlMode', s.ControlMode);
+        const o = bindingTypeToString('SmartDriveControlMode', s.ControlMode);
         return Device.Settings.ControlMode[o];
       }
     };
