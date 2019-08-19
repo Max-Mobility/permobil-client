@@ -557,11 +557,24 @@ export class BluetoothService extends Observable {
     const p = new Packet();
     p.initialize(data);
 
+    const pt = this.getOrMakePushTracker(device);
+    if (!pt.connected) {
+      pt.handleConnect();
+      this.sendEvent(BluetoothService.pushtracker_connected, {
+        pushtracker: pt
+      });
+    }
+    pt.handlePacket(p);
+    this.updatePushTrackerState();
+    /*
+      // TODO: we cannot get UUIDs or name, so we comment this out and
+      // assume that the data is from a pt
     if (this.isPushTracker(device)) {
       const pt = this.getOrMakePushTracker(device);
       pt.handlePacket(p);
       this.updatePushTrackerState();
     }
+    */
     p.destroy();
   }
 
