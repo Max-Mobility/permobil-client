@@ -36,6 +36,10 @@ export class ProfileSettingsComponent implements OnInit {
   DISTANCE: string;
   CURRENT_THEME: string;
   CURRENT_LANGUAGE: string;
+  watchIconPrefix: string;
+  watchIcon: string;
+  watchIconOpacity: number;
+  savedTheme: string;
 
   user: PushTrackerUser; // this is our Kinvey.User
 
@@ -64,6 +68,12 @@ export class ProfileSettingsComponent implements OnInit {
   ) {
     // this.getUser();
     this._page.actionBarHidden = true;
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+    this.watchIconPrefix = '~/app/assets/icons/';
+    this.setWatchIconVariables('Question');
   }
 
   ngOnInit() {
@@ -101,6 +111,17 @@ export class ProfileSettingsComponent implements OnInit {
     this._params.closeCallback('');
   }
 
+  setWatchIconVariables(status: string) {
+    if (this.savedTheme === 'DEFAULT') {
+      this.watchIcon = 'Watch-' + status + '_Black.png';
+      this.watchIconOpacity = 0.7;
+    }
+    else {
+      this.watchIcon = 'Watch-' + status + '_White.png';
+      this.watchIconOpacity = 1.0;
+    }
+  }
+
   onWatchTap(event) {
     /**
      * export enum PushTrackerState {
@@ -116,18 +137,23 @@ export class ProfileSettingsComponent implements OnInit {
     switch (state) {
       case 0:
         console.log('Unknown');
+        this.setWatchIconVariables('Question');
         break;
       case 1:
-        console.log('paired');
+        console.log('Paired');
+        this.setWatchIconVariables('Check');
         break;
       case 2:
-        console.log('disconnected');
+        console.log('Disconnected');
+        this.setWatchIconVariables('X');
         break;
       case 3:
-        console.log('connected');
+        console.log('Connected');
+        this.setWatchIconVariables('Check');
         break;
       case 4:
         console.log('ready');
+        this.setWatchIconVariables('Check');
         break;
     }
   }
@@ -297,13 +323,17 @@ export class ProfileSettingsComponent implements OnInit {
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
       Log.D('sending to pushtrackers:', pts);
+      this.setWatchIconVariables('Wait');
       await pts.map(async pt => {
         try {
           await pt.sendSettingsObject(this.settingsService.settings);
           await pt.sendSwitchControlSettingsObject(
             this.settingsService.switchControlSettings
           );
+          this.setWatchIconVariables('Check');
         } catch (err) {
+          // Show watch icon 'X'
+          this.setWatchIconVariables('X');
           this._logService.logException(err);
         }
       });

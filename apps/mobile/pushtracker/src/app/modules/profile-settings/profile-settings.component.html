@@ -3,7 +3,7 @@
   // Mock ActionBar
   <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
 
-  <Image row="0" horizontalAlignment="right" width="8%" src="~/app/assets/icons/Watch-X_Black.png" marginTop="5" marginRight="20" (tap)="onWatchTap($event)"></Image>
+  <Image color="red" row="0" horizontalAlignment="right" width="10%" [src]="watchIconPrefix + watchIcon" marginTop="5" marginRight="20" (tap)="onWatchTap($event)" [opacity]="watchIconOpacity"></Image>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
