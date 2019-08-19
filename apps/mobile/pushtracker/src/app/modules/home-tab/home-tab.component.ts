@@ -86,7 +86,6 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
 
   onWatchTap() {
     Log.D('watch item tapped');
-    this._router.navigate(['configuration-tab']);
   }
 
   private _refreshGoalData() {
