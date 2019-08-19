@@ -46,11 +46,14 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
-
     this.userService.user.subscribe(user => {
       this.user = user;
       this._refreshGoalData();
     });
+  }
+
+  getUser(): void {
+    this.userService.user.subscribe(user => { this.user = user; this._refreshGoalData(); });
   }
 
   ngAfterViewInit() {
@@ -83,6 +86,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
 
   onWatchTap() {
     Log.D('watch item tapped');
+    this._router.navigate(['configuration-tab']);
   }
 
   private _refreshGoalData() {
