@@ -16,7 +16,8 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import {
   BluetoothService,
   LoggingService,
-  SettingsService
+  SettingsService,
+  PushTrackerState
 } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
@@ -74,6 +75,10 @@ export class ProfileSettingsComponent implements OnInit {
     );
     this.watchIconPrefix = '~/app/assets/icons/';
     this.setWatchIconVariables('Question');
+    this.updateWatchIcon({});
+    this.bluetoothService.on('pushtracker_status_changed', (args) => {
+      this.updateWatchIcon({});
+    });
   }
 
   ngOnInit() {
@@ -111,18 +116,18 @@ export class ProfileSettingsComponent implements OnInit {
     this._params.closeCallback('');
   }
 
-  setWatchIconVariables(status: string) {
+  setWatchIconVariables(status: string, extension: string = '.png') {
     if (this.savedTheme === 'DEFAULT') {
-      this.watchIcon = 'Watch-' + status + '_Black.png';
+      this.watchIcon = 'Watch-' + status + '_Black' + extension;
       this.watchIconOpacity = 0.7;
     }
     else {
-      this.watchIcon = 'Watch-' + status + '_White.png';
+      this.watchIcon = 'Watch-' + status + '_White' + extension;
       this.watchIconOpacity = 1.0;
     }
   }
 
-  onWatchTap(event) {
+  updateWatchIcon(event) {
     /**
      * export enum PushTrackerState {
         unknown = 0,
@@ -132,7 +137,6 @@ export class ProfileSettingsComponent implements OnInit {
         ready
       }
     */
-    console.log('Watch tapped');
     const state = BluetoothService.pushTrackerStatus.get('state');
     switch (state) {
       case 0:

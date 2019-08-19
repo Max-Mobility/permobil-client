@@ -1,7 +1,7 @@
 <ScrollView class="home-tab-layout">
   <StackLayout>
     // Mock ActionBar
-    <MockActionBar [showBackNav]="false" [showInfoBtn]="true" [showWatchBtn]="true" (watchTapEvent)="onWatchTap()"></MockActionBar>
+    <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
     // Activity Circles
     <GridLayout ripple rippleColorAlpha="0.18" rows="*, auto, *" columns="*, auto, *" height="240" width="100%" (tap)="onActivityTap()">

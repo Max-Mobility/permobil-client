@@ -1,9 +1,9 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
+  
   // Mock ActionBar
   <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-
-  <Image color="red" row="0" horizontalAlignment="right" width="10%" [src]="watchIconPrefix + watchIcon" marginTop="5" marginRight="20" (tap)="onWatchTap($event)" [opacity]="watchIconOpacity"></Image>
+  <Image color="red" row="0" horizontalAlignment="right" width="10%" [src]="watchIconPrefix + watchIcon" marginTop="5" marginRight="20" [opacity]="watchIconOpacity"></Image>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">

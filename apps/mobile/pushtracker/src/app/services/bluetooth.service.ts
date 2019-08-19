@@ -32,6 +32,7 @@ export class BluetoothService extends Observable {
   public static pushtracker_disconnected = 'pushtracker_disconnected';
   public static smartdrive_connected = 'smartdrive_connected';
   public static smartdrive_disconnected = 'smartdrive_disconnected';
+  public static pushtracker_status_changed = 'pushtracker_status_changed';
 
   /**
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
@@ -717,6 +718,7 @@ export class BluetoothService extends Observable {
     );
 
     BluetoothService.pushTrackerStatus.set('state', state);
+    this.sendEvent(BluetoothService.pushtracker_status_changed, state);
   }
 
   private getOrMakePushTracker(device: any): PushTracker {
