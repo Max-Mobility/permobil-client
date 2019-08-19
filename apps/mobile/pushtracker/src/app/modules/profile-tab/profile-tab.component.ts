@@ -720,9 +720,9 @@ export class ProfileTabComponent implements OnInit {
     this._setActiveDataBox(args);
 
     this.primary = [
-      'SmartDrive with PushTracker',
-      'SmartDrive with E2',
-      'SmartDrive witH Switch Control'
+      'PushTracker E2 with SmartDrive',
+      'PushTracker with SmartDrive',
+      'Switch Control with SmartDrive'
     ];
 
     this.primaryIndex = this.primary.indexOf(this.user.data.control_configuration);

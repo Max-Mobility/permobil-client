@@ -4,6 +4,7 @@ import { PushTrackerUserService } from '../../services';
 import { Router } from '@angular/router';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { Page } from 'ui/page';
 
 @Component({
     selector: 'configuration-tab',
@@ -16,8 +17,11 @@ export class ConfigurationTabComponent implements OnInit {
     constructor(
         private _translateService: TranslateService,
         private _router: Router,
-        private userService: PushTrackerUserService
-    ) { }
+        private userService: PushTrackerUserService,
+        private page: Page
+    ) {
+        page.actionBarHidden = true;
+    }
 
     ngOnInit() {
         this.userService.user.subscribe(user => {
@@ -26,15 +30,7 @@ export class ConfigurationTabComponent implements OnInit {
     }
 
     onConfigurationSelection(event, selection) {
-        if (selection === 'SmartDrive + E2') {
-            this._user.data.control_configuration = 'SmartDrive + E2';
-        }
-        else if (selection === 'SmartDrive + PushTracker') {
-            this._user.data.control_configuration = 'SmartDrive + PushTracker';
-        }
-        else if (selection === 'SmartDrive + SwitchControl') {
-            this._user.data.control_configuration = 'SmartDrive + SwitchControl';
-        }
+        this._user.data.control_configuration = selection;
         this.userService.updateDataProperty('control_configuration', this._user.data.control_configuration);
         KinveyUser.update({ control_configuration: this._user.data.control_configuration });
         this._router.navigate(['/tabs/default']);

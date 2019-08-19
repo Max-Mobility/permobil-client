@@ -1,20 +1,22 @@
-<GridLayout rows="auto, *" class="configuration-tab-layout">
+<GridLayout rows="auto, *" marginTop="20" class="configuration-tab-layout">
     <Label row="0" col="1" text="Configuration" class="page-title" textWrap="true"></Label>
-    <StackLayout row="1">
-        <StackLayout row="0" width="80%" marginTop="20" class="configuration-choice">
-            <Image class="align-center" row="0" width="70%" src="~/app/assets/images/Configuration_SD+PT.png"
-                (tap)="onConfigurationSelection($event, 'SmartDrive + PushTracker')"></Image>
-            <Label class="align-center" marginBottom="10" text="SmartDrive with PushTracker"></Label>
+    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%">
+        <StackLayout row="1">
+            <StackLayout row="0" width="80%" marginTop="20" class="configuration-choice">
+                <Image class="align-center" row="1" width="70%" src="~/app/assets/images/Configuration_SD+E2.png"
+                    (tap)="onConfigurationSelection($event, 'PushTracker E2 with SmartDrive')"></Image>
+                <Label class="align-center" marginBottom="10" text="PushTracker E2 with SmartDrive"></Label>
+            </StackLayout>
+            <StackLayout row="1" width="80%" marginTop="20" class="configuration-choice">
+                <Image class="align-center" row="0" width="70%" src="~/app/assets/images/Configuration_SD+PT.png"
+                    (tap)="onConfigurationSelection($event, 'PushTracker with SmartDrive')"></Image>
+                <Label class="align-center" marginBottom="10" text="PushTracker with SmartDrive"></Label>
+            </StackLayout>
+            <StackLayout row="2" width="80%" marginTop="20" class="configuration-choice">
+                <Image class="align-center" row="2" width="70%" src="~/app/assets/images/Configuration_SD+SC.png"
+                    (tap)="onConfigurationSelection($event, 'Switch Control with SmartDrive')"></Image>
+                <Label class="align-center" marginBottom="10" text="Switch Control with SmartDrive"></Label>
+            </StackLayout>
         </StackLayout>
-        <StackLayout row="1" width="80%" marginTop="20" class="configuration-choice">
-            <Image class="align-center" row="1" width="70%" src="~/app/assets/images/Configuration_SD+E2.png"
-                (tap)="onConfigurationSelection($event, 'SmartDrive + E2')"></Image>
-            <Label class="align-center" marginBottom="10" text="SmartDrive with E2"></Label>
-        </StackLayout>
-        <StackLayout row="2" width="80%" marginTop="20" class="configuration-choice">
-            <Image class="align-center" row="2" width="70%" src="~/app/assets/images/Configuration_SD+SC.png"
-                (tap)="onConfigurationSelection($event, 'SmartDrive + SwitchControl')"></Image>
-            <Label class="align-center" marginBottom="10" text="SmartDrive with Switch Control"></Label>
-        </StackLayout>
-    </StackLayout>
+    </ScrollView>
 </GridLayout>

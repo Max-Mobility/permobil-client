@@ -167,7 +167,7 @@ export class SignUpComponent implements OnInit {
       }).then(() => {
         // Navigate to tabs home with clearHistory
         this._zone.run(() => {
-          this._router.navigate(['/tabs/default'], {
+          this._router.navigate(['configuration-tab'], {
             clearHistory: true
           });
         });
