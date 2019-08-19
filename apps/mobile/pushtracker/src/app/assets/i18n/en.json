@@ -210,5 +210,10 @@
       }
     ],
     "title": "Support"
+  },
+  "configuration-tab-component": {
+    "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
+    "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
+    "switch-control-with-smartdrive": "Switch Control with SmartDrive"
   }
 }

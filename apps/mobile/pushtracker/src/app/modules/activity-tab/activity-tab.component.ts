@@ -18,59 +18,10 @@ import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { ActivityService } from '../../services/activity.service';
 
-export class Activity {
-  constructor(public timeStamp?: number, public Amount?: number) {}
-}
-
-@Injectable()
-export class DataService {
-  getSource(view: string) {
-    if (view === 'Week') {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const day = date.getDate();
-      const range = function(start, end) {
-        return new Array(end - start + 1)
-          .fill(undefined)
-          .map((_, i) => i + start);
-      };
-      const result = [];
-      const min = 0;
-      const max = 50;
-      const random = function() {
-        return Math.random() * (+max - +min) + +min;
-      };
-      const dayNames: string[] = [
-        'Sun',
-        'Mon',
-        'Tue',
-        'Wed',
-        'Thu',
-        'Fri',
-        'Sat'
-      ];
-      for (const i in range(0, 6)) {
-        result.push({
-          xAxis: dayNames[parseInt(i)],
-          yAxis: random(),
-          Date: date
-        });
-      }
-      result.unshift({ xAxis: ' ', yAxis: 0 });
-      result.unshift({ xAxis: '  ', yAxis: 0 });
-      result.push({ xAxis: '       ', yAxis: 0 });
-      result.push({ xAxis: '        ', yAxis: 0 });
-      return result;
-    }
-  }
-}
-
 @Component({
   selector: 'activity-tab',
   moduleId: module.id,
-  templateUrl: 'activity-tab.component.html',
-  providers: [DataService]
+  templateUrl: 'activity-tab.component.html'
 })
 export class ActivityTabComponent implements OnInit {
   public tabSelectedIndex: number;
@@ -135,8 +86,7 @@ export class ActivityTabComponent implements OnInit {
     private _logService: LoggingService,
     private _activityService: ActivityService,
     private _translateService: TranslateService,
-    private _params: ModalDialogParams,
-    private _dataService: DataService
+    private _params: ModalDialogParams
   ) {
     this.currentDayInView = new Date();
     const year = this.currentDayInView.getFullYear();

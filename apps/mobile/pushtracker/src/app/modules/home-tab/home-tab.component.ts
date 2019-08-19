@@ -46,11 +46,14 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
-
     this.userService.user.subscribe(user => {
       this.user = user;
       this._refreshGoalData();
     });
+  }
+
+  getUser(): void {
+    this.userService.user.subscribe(user => { this.user = user; this._refreshGoalData(); });
   }
 
   ngAfterViewInit() {
