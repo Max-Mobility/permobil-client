@@ -1,7 +1,7 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()" [showWatchBtn]="true" (watchTapEvent)="onWatchTap()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">

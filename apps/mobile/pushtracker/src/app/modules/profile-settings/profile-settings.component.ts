@@ -101,6 +101,10 @@ export class ProfileSettingsComponent implements OnInit {
     this._params.closeCallback('');
   }
 
+  onWatchTap() {
+    console.log('Watch tapped');
+  }
+
   onSliderValueChange(args: any) {
     this.SLIDER_VALUE = Math.floor(args.object.value);
   }
