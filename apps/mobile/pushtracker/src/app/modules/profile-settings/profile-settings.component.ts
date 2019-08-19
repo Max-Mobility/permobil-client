@@ -101,8 +101,35 @@ export class ProfileSettingsComponent implements OnInit {
     this._params.closeCallback('');
   }
 
-  onWatchTap() {
+  onWatchTap(event) {
+    /**
+     * export enum PushTrackerState {
+        unknown = 0,
+        paired,
+        disconnected,
+        connected,
+        ready
+      }
+    */
     console.log('Watch tapped');
+    const state = BluetoothService.pushTrackerStatus.get('state');
+    switch (state) {
+      case 0:
+        console.log('Unknown');
+        break;
+      case 1:
+        console.log('paired');
+        break;
+      case 2:
+        console.log('disconnected');
+        break;
+      case 3:
+        console.log('connected');
+        break;
+      case 4:
+        console.log('ready');
+        break;
+    }
   }
 
   onSliderValueChange(args: any) {
