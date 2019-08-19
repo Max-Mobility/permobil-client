@@ -128,15 +128,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   updateWatchIcon(event) {
-    /**
-     * export enum PushTrackerState {
-        unknown = 0,
-        paired,
-        disconnected,
-        connected,
-        ready
-      }
-    */
     const state = BluetoothService.pushTrackerStatus.get('state');
     switch (state) {
       case 0:
@@ -145,7 +136,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 1:
         console.log('Paired');
-        this.setWatchIconVariables('Check');
+        this.setWatchIconVariables('Empty');
         break;
       case 2:
         console.log('Disconnected');
