@@ -4,6 +4,7 @@ import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { ForgotPasswordComponent } from './modules/forgot-password/forgot-password.component';
 import { LoginComponent } from './modules/login/login.component';
 import { SignUpComponent } from './modules/sign-up/sign-up.component';
+import { ConfigurationTabComponent } from './modules/configuration-tab/configuration-tab.component';
 import { AuthGuardService } from './services';
 
 const routes: Routes = [
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'sign-up',
     component: SignUpComponent
+  },
+  {
+    path: 'configuration-tab',
+    component: ConfigurationTabComponent
   },
   {
     path: 'forgot-password',
