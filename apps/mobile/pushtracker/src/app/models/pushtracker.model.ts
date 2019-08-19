@@ -729,6 +729,27 @@ export class PushTracker extends Observable {
     );
   }
 
+  public sendTime(d?: Date) {
+    const p = new Packet();
+    const timeSettings = p.data('timeInfo');
+    const date = (d !== undefined) ? new Date(d) : new Date();
+    // now fill in the packet
+    timeSettings.year = date.getFullYear();
+    timeSettings.month = date.getMonth();
+    timeSettings.day = date.getDate();
+    timeSettings.hours = date.getHours();
+    timeSettings.minutes = date.getMinutes();
+    timeSettings.seconds = date.getSeconds();
+    p.destroy();
+    return this.sendPacket(
+      'Command',
+      'SetTime',
+      'timeInfo',
+      null,
+      timeSettings
+    );
+  }
+
   /**
    * Notify events by name and optionally pass data
    */
@@ -750,6 +771,8 @@ export class PushTracker extends Observable {
   handleConnect() {
     this.connected = true;
     this.sendEvent(PushTracker.connect_event);
+    // send set time command on first connection
+    this.sendTime();
   }
 
   handleDisconnect() {
