@@ -21,6 +21,8 @@ import {
 } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { Image } from 'tns-core-modules/ui/image/image';
+const imageSourceModule = require(`tns-core-modules/image-source`);
 
 @Component({
   selector: 'profile-settings',
@@ -50,6 +52,9 @@ export class ProfileSettingsComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
+  @ViewChild('watchImage', { static: false })
+  watchImage: ElementRef;
+
   screenHeight: number;
   activeSetting: string = null;
   activeSettingTitle: string = 'Setting';
@@ -75,10 +80,6 @@ export class ProfileSettingsComponent implements OnInit {
     );
     this.watchIconPrefix = '~/app/assets/icons/';
     this.setWatchIconVariables('Question');
-    this.updateWatchIcon({});
-    this.bluetoothService.on('pushtracker_status_changed', (args) => {
-      this.updateWatchIcon({});
-    });
   }
 
   ngOnInit() {
@@ -107,6 +108,13 @@ export class ProfileSettingsComponent implements OnInit {
       appSettings.getString(STORAGE_KEYS.APP_THEME) || APP_THEMES.DEFAULT;
   }
 
+  ngAfterViewInit() {
+    // this.updateWatchIcon({});
+    this.bluetoothService.on('pushtracker_status_changed', (args) => {
+      this.updateWatchIcon({});
+    });
+  }
+
   getUser(): void {
     this.userService.user.subscribe(user => (this.user = user));
   }
@@ -118,11 +126,11 @@ export class ProfileSettingsComponent implements OnInit {
 
   setWatchIconVariables(status: string, extension: string = '.png') {
     if (this.savedTheme === 'DEFAULT') {
-      this.watchIcon = 'Watch-' + status + '_Black' + extension;
+      this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_Black' + extension;
       this.watchIconOpacity = 0.7;
     }
     else {
-      this.watchIcon = 'Watch-' + status + '_White' + extension;
+      this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_White' + extension;
       this.watchIconOpacity = 1.0;
     }
   }
@@ -151,6 +159,8 @@ export class ProfileSettingsComponent implements OnInit {
         this.setWatchIconVariables('Check');
         break;
     }
+    const img = imageSourceModule.fromFile(this.watchIcon);
+    (this.watchImage.nativeElement as Image).imageSource = img;
   }
 
   onSliderValueChange(args: any) {
