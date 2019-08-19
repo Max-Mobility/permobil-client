@@ -9,8 +9,9 @@ import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
-import { ProfileSettingsComponent } from '~/app/modules/profile-settings/profile-settings.component';
-import { SupportComponent } from '~/app/modules/support/support.component';
+import { AppInfoComponent } from '../../../../modules/app-info/app-info.component';
+import { ProfileSettingsComponent } from '../../../../modules/profile-settings/profile-settings.component';
+import { SupportComponent } from '../../../../modules/support/support.component';
 
 @Component({
   selector: 'MockActionBar',
@@ -19,25 +20,58 @@ import { SupportComponent } from '~/app/modules/support/support.component';
 })
 export class MockActionbarComponent {
   @Input() title: string;
+  @Input() backNavIcon = 0; // default is the back arrow
   @Input() showBackNav = false;
+  @Output() navTapEvent = new EventEmitter();
+
   @Input() showSettingsBtn = false;
+  @Output() settingsTapEvent = new EventEmitter();
+
   @Input() showSupportBtn = false;
-  @Input() showRefreshBtn = false;
   @Output() supportTapEvent = new EventEmitter();
-  @Output() navBtnEvent = new EventEmitter();
-  @Output() settingsBtnEvent = new EventEmitter();
-  @Output() refreshBtnEvent = new EventEmitter();
+
+  @Input() showRefreshBtn = false;
+  @Output() refreshTapEvent = new EventEmitter();
+
+  @Input() showInfoBtn = false;
+  @Output() infoTapEvent = new EventEmitter();
+
+  @Input() showMoreBtn = false;
+  @Output() moreTapEvent = new EventEmitter();
+
+  @Input() showWatchBtn = false;
+  @Output() watchTapEvent = new EventEmitter();
+
+  navIcon; // this sets the font icon in the UI based on the value of backNavIcon
 
   constructor(
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {}
-
-  onNavBtnTap() {
-    this.navBtnEvent.emit();
+  ) {
+    if (this.backNavIcon === 0) {
+      this.navIcon = String.fromCharCode(0xe5c4); // arrow
+    } else {
+      this.navIcon = String.fromCharCode(0xe5cd); // close
+    }
   }
 
-  onSupportTap(): void {
+  onNavBtnTap() {
+    this.navTapEvent.emit();
+  }
+
+  onWatchTap() {
+    this.watchTapEvent.emit();
+  }
+
+  onRefreshTap() {
+    this.refreshTapEvent.emit();
+  }
+
+  onMoreTap() {
+    this.moreTapEvent.emit();
+  }
+
+  onSupportTap() {
     this._modalService
       .showModal(SupportComponent, {
         context: {},
@@ -73,8 +107,20 @@ export class MockActionbarComponent {
       });
   }
 
-  onRefreshTap() {
-    this.refreshBtnEvent.emit();
+  onInfoTap() {
+    this._modalService
+      .showModal(AppInfoComponent, {
+        context: {},
+        fullscreen: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
   }
 }
 

@@ -1,12 +1,10 @@
 <ScrollView class="home-tab-layout">
   <StackLayout>
-    <GridLayout rows="*" columns="auto, *, 60, 60">
-      <Button row="0" col="2" text="&#xe334;" ripple class="info-btn"></Button>
-      <Button row="0" col="3" text="&#xe88f;" ripple class="info-btn" (tap)="onInfoTap()"></Button>
-    </GridLayout>
+    // Mock ActionBar
+    <MockActionBar [showBackNav]="false" [showInfoBtn]="true" [showWatchBtn]="true" (watchTapEvent)="onWatchTap()"></MockActionBar>
 
     // Activity Circles
-    <GridLayout ripple rows="*, auto, *" columns="*, auto, *" height="240" width="100%" (tap)="onActivityTap()">
+    <GridLayout ripple rippleColorAlpha="0.18" rows="*, auto, *" columns="*, auto, *" height="240" width="100%" (tap)="onActivityTap()">
       // Distance Circle (outer/purple)
       <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"></AnimatedCircle>
       // Coast Time Circle (inner/teal)

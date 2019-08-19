@@ -153,9 +153,11 @@ export class TabsComponent {
     Log.D('asking for permissions');
     this.askForPermissions()
       .then(() => {
-        Log.D('starting bluetoooth');
-        // start the bluetooth service
-        return this._bluetoothService.advertise();
+        if (!this._bluetoothService.advertising) {
+          Log.D('starting bluetoooth');
+          // start the bluetooth service
+          return this._bluetoothService.advertise();
+        }
       })
       .catch((err) => {
         Log.E('permission or bluetooth error:', err);

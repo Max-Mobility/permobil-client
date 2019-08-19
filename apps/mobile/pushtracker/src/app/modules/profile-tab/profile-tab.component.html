@@ -6,7 +6,7 @@
     <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" (supportTapEvent)="onSupportTap($event)"></MockActionBar>
 
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%">
-      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" paddingBottom="15">
+      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" paddingBottom="15">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
         // User Avatar
@@ -22,7 +22,7 @@
         </StackLayout>
 
         // User Email
-        <Label row="2" col="1" colSpan="3" class="profile-email" [text]="user.email" textWrap="true"></Label>
+        <Label row="2" col="1" colSpan="3" class="profile-email" [text]="user.username" textWrap="true"></Label>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
@@ -135,7 +135,7 @@
             <Label col="0" class="data-box-value" [text]="user.data.control_configuration" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
-        </StackLayout>        
+        </StackLayout>
 
         // Device Serial Numbers
         <Label row="12" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>

@@ -2,7 +2,7 @@
 <GridLayout rows="*" columns="*" class="journey-tab-layout">
   // main journey-tab layout
   <GridLayout row="0" col="0" rows="auto, *" columns="*">
-    <MockActionBar row="0" [showBackNav]="false" (refreshBtnEvent)="onRefreshTap()"></MockActionBar>
+    <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
     <ScrollView row="1" col="0" padding="10">
       <GridLayout height="100%" rows="auto, *" columns="auto, *, *, *">

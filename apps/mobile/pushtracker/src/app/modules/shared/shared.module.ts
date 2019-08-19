@@ -3,6 +3,7 @@ import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
+import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
 import { SHARED_COMPONENTS } from './components';
 
@@ -10,7 +11,8 @@ const SHARED_MODULES = [
   NativeScriptCommonModule,
   NativeScriptFormsModule,
   NativeScriptRouterModule,
-  NativeScriptUIListViewModule
+  NativeScriptUIListViewModule,
+  NgRippleModule
 ];
 
 @NgModule({

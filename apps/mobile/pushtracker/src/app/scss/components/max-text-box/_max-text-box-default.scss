@@ -6,15 +6,15 @@
   @extend .MAX_TEXTBOX_BASE;
 
   .max-textbox-label {
-    color: #4b4d51;
+    color: #696c71;
     background-color: $white;
   }
 
   GridLayout {
-    border-color: #e8e9eb;
+    border-color: #e7e7ea;
 
     > .max-textbox-value {
-      color: #3d4144;
+      color: #3c4043;
     }
   }
 }
@@ -30,7 +30,7 @@
     border-color: #1c72e6;
 
     > .max-textbox-value {
-      color: #3d4144;
+      color: #3c4043;
     }
   }
 }
