@@ -16,6 +16,8 @@ import { PushTrackerUserService } from '../../services/pushtracker.user.service'
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { ActivityService } from '../../services/activity.service';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
+import * as appSettings from 'tns-core-modules/application-settings';
+import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 
 @Component({
   selector: 'home-tab',
@@ -38,13 +40,17 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   private routeSub: Subscription; // subscription to route observer
 
   private _currentDayInView: Date;
-  private _weeklyActivity: ObservableArray<any[]>;
+  public weeklyActivity: ObservableArray<any[]>;
   private _weeklyActivityCache = {};
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
   public todayCoastTime: number;
   public todayPushCount: number;
+  public yAxisMax: number = 10;
+  public yAxisStep: number = 2.5;
+  public savedTheme: string;
+  public weeklyActivityAnnotationValue: number = 0;
 
   constructor(
     private _translateService: TranslateService,
@@ -54,7 +60,12 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
     private _activityService: ActivityService
-  ) {}
+  ) {
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+  }
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
@@ -65,7 +76,7 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   }
 
   getUser(): void {
-    this.userService.user.subscribe(user => { this.user = user; this._refreshGoalData(); });
+    this.userService.user.subscribe(user => { this.user = user; this._refreshGoalData(); this._loadWeeklyActivity(); });
   }
 
   ngAfterViewInit() {
@@ -136,32 +147,33 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   }
 
   async _loadWeeklyActivity() {
+    console.log('Loading weekly activity for', this._weekStart);
     let didLoad = false;
     // Check if data is available in daily activity cache first
     if (!(this._weekStart.toUTCString() in this._weeklyActivityCache)) {
       didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
       if (didLoad) {
-        this._weeklyActivity = new ObservableArray(
+        this.weeklyActivity = new ObservableArray(
           this._formatActivityForView('Week')
         );
         this._weekStart = new Date(this._activityService.weeklyActivity.date);
         this._weekEnd = new Date(this._weekStart);
         this._weekEnd.setDate(this._weekEnd.getDate() + 6);
       } else {
-        this._weeklyActivity = new ObservableArray(
+        this.weeklyActivity = new ObservableArray(
           this._formatActivityForView('Week')
         );
       }
       // Cache activity by day so we can easily pull it up next time
       this._weeklyActivityCache[this._weekStart.toUTCString()] = {
-        chartData: this._weeklyActivity,
+        chartData: this.weeklyActivity,
         weeklyActivity: this._activityService.weeklyActivity
       };
     } else {
       // We have the data cached. Pull it up
       didLoad = true;
       const cache = this._weeklyActivityCache[this._weekStart.toUTCString()];
-      this._weeklyActivity = cache.chartData;
+      this.weeklyActivity = cache.chartData;
       this._weekStart = new Date(cache.weeklyActivity.date);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
@@ -178,6 +190,11 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     }
     this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
     this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+    this.yAxisMax = parseInt(((this._todaysActivity.push_count || 0) + 0.1 * this._todaysActivity.push_count).toFixed());
+    if (this.yAxisMax === 0)
+      this.yAxisMax = 10;
+    this.yAxisStep = parseInt((this.yAxisMax / 4.0).toFixed());
+    console.log(this._formatActivityForView('Week'));
   }
 
   _formatActivityForView(viewMode) {
@@ -255,4 +272,5 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
 }

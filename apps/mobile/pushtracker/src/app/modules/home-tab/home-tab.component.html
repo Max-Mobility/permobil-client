@@ -4,11 +4,16 @@
     <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
     // Activity Circles
-    <GridLayout ripple rippleColorAlpha="0.18" rows="*, auto, *" columns="*, auto, *" height="240" width="100%" (tap)="onActivityTap()">
+    <GridLayout ripple rippleColorAlpha="0.18" rows="*, auto, *" columns="*, auto, *" height="240" width="100%"
+      (tap)="onActivityTap()">
       // Distance Circle (outer/purple)
-      <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"></AnimatedCircle>
+      <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true"
+        animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage">
+      </AnimatedCircle>
       // Coast Time Circle (inner/teal)
-      <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage"></AnimatedCircle>
+      <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true"
+        animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage">
+      </AnimatedCircle>
       <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle">
         <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
       </GridLayout>
@@ -69,5 +74,30 @@
         </Repeater.itemTemplate>
       </Repeater> -->
     </GridLayout>
+
+    <!-- Week View Coast Time -->
+    <StackLayout>
+      <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+        <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
+          horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
+        <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false" majorTickInterval="1"
+          labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
+        <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
+          [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+
+        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+          valueProperty="coastTime"> </BarSeries>
+        <Palette tkCartesianPalette seriesName="WeeklyActivity">
+          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+        </Palette>
+
+        <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
+          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+        </ChartGridLineAnnotation>
+      </RadCartesianChart>
+    </StackLayout>
+
   </StackLayout>
 </ScrollView>
