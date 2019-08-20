@@ -3,14 +3,14 @@
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
-    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" (supportTapEvent)="onSupportTap($event)"></MockActionBar>
+    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true"></MockActionBar>
 
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" iosOverflowSafeArea="false">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
         // User Avatar
-        <GridLayout row="1" col="0" rowspan="2" class="avatar-circle">
+        <GridLayout row="1" col="0" rowspan="2" class="avatar-circle" (tap)="onAvatarTap()">
           <Label [visibility]="!user.data.profile_picture ? 'visible' : 'collapsed'" [text]="user.data.first_name.charAt(0)" textWrap="true"></Label>
           <Image [visibility]="user.data.profile_picture ? 'visible' : 'collapsed'" [src]="user.data.profile_picture" stretch="aspectFit"></Image>
         </GridLayout>
