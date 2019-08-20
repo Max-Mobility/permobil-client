@@ -164,18 +164,25 @@ export class HomeTabComponent implements OnInit {
       return date.getFullYear() + '/' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
         + '/' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
     };
+    this.yAxisMax = 0;
     const days = this._activityService.weeklyActivity['days'];
     for (const i in days) {
       const day = days[i];
       if (day.date === dateFormatted(this._currentDayInView))
         this._todaysActivity = day;
+      if (day.coast_time_avg > this.yAxisMax)
+        this.yAxisMax = day.coast_time_avg + 0.2 * day.coast_time_avg;
     }
     this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
     this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
-    this.yAxisMax = parseInt(((this._todaysActivity.push_count || 0) + 0.1 * this._todaysActivity.push_count).toFixed());
+    this.weeklyActivityAnnotationValue = this.user.data.activity_goal_coast_time;
+
     if (this.yAxisMax === 0)
       this.yAxisMax = 10;
-    this.yAxisStep = parseInt((this.yAxisMax / 4.0).toFixed());
+
+    if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
+    this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
+    console.log(this.weeklyActivityAnnotationValue, this.yAxisMax, this.yAxisStep);
   }
 
   _formatActivityForView(viewMode) {

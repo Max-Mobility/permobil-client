@@ -55,6 +55,12 @@
   RadCartesianChart {
     background-color: $black;
     color: $white;
+    width: 90%;
+    height: 200;
   }
-  
+
+  Label {
+    color: $white;
+  }
+
 }
