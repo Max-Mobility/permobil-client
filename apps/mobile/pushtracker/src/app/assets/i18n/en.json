@@ -37,6 +37,15 @@
   "bluetooth": {
     "service-failure": "Unable to start the bluetooth service."
   },
+  "permissions-request": {
+    "title": "Permissions Request Notice"
+  },
+  "permissions-reasons": {
+    "coarse-location": "To control your SmartDrive using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data."
+  },
+  "failures": {
+    "permissions": "Could not perform the requested action - permissions were not granted."
+  },
   "days": {
     "friday": "Friday",
     "monday": "Monday",
