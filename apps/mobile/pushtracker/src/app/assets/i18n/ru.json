@@ -50,7 +50,7 @@
     "password": "пароль",
     "password-change": "Изменить пароль?",
     "password-change-confirm": "Вы уверены, что хотите изменить свой пароль?",
-    "password-error": "Необходим пароль.",
+    "password-required": "Необходим пароль.",
     "profile": "Профиль",
     "pushes": "Толчки",
     "reset-acct": "Сбросить аккаунт",

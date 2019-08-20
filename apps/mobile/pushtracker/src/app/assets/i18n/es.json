@@ -74,7 +74,7 @@
     "password": "Contraseña",
     "password-change": "¿Cambiar contraseña?",
     "password-change-confirm": "¿Seguro que quieres cambiar tu contraseña?",
-    "password-error": "Password is required.",
+    "password-required": "Password is required.",
     "profile": "Perfil",
     "pushes": "Empuja",
     "reset-acct": "Restablecer cuenta",

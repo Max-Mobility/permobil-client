@@ -50,7 +50,7 @@
     "password": "Lösenord",
     "password-change": "Ändra lösenord?",
     "password-change-confirm": "Är du säker på att du vill ändra ditt lösenord?",
-    "password-error": "Lösenord krävs.",
+    "password-required": "Lösenord krävs.",
     "profile": "Profil",
     "pushes": "skjuter",
     "reset-acct": "Återställ konto",

@@ -50,7 +50,7 @@
     "password": "Passwort",
     "password-change": "Passwort ändern?",
     "password-change-confirm": "Möchten Sie Ihr Passwort wirklich ändern?",
-    "password-error": "Passwort ist erforderlich.",
+    "password-required": "Passwort ist erforderlich.",
     "profile": "Profil",
     "pushes": "Drückt",
     "reset-acct": "Konto zurücksetzen",
