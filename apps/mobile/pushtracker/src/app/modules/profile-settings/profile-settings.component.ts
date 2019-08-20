@@ -1,18 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
-import { fromFile as imageFromFile } from 'tns-core-modules/image-source';
+import {
+  fromResource as imageFromResource
+} from 'tns-core-modules/image-source';
 import { screen } from 'tns-core-modules/platform';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { BluetoothService, LoggingService, SettingsService } from '../../services';
+import { BluetoothService, PushTrackerState, LoggingService, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
@@ -28,9 +30,6 @@ export class ProfileSettingsComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
-  @ViewChild('watchImage', { static: false })
-  watchImage: ElementRef;
-
   HEIGHT_UNITS: string[];
   HEIGHT: string;
   WEIGHT_UNITS: string[];
@@ -39,8 +38,9 @@ export class ProfileSettingsComponent implements OnInit {
   DISTANCE: string;
   CURRENT_THEME: string;
   CURRENT_LANGUAGE: string;
-  watchIcon: string;
-  watchIconOpacity: number = 1.0;
+  watchIconString: string = 'watch_question_black';
+  watchIconOpacity: number = 0.7;
+  watchIcon: any = imageFromResource(this.watchIconString);
   user: PushTrackerUser; // this is our Kinvey.User
   screenHeight: number;
   activeSettingTitle: string = 'Setting';
@@ -50,11 +50,11 @@ export class ProfileSettingsComponent implements OnInit {
   listPickerIndex: number = 0;
 
   private activeSetting: string = null;
-  private viewInitialized: boolean = false;
 
   constructor(
     public settingsService: SettingsService,
     public bluetoothService: BluetoothService,
+    private _zone: NgZone,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
@@ -62,6 +62,12 @@ export class ProfileSettingsComponent implements OnInit {
     private _params: ModalDialogParams
   ) {
     this._page.actionBarHidden = true;
+
+    this.bluetoothService.on(
+      BluetoothService.pushtracker_status_changed,
+      this.updateWatchIcon,
+      this
+    );
 
     // get current app style theme from app-settings on device
     this.CURRENT_THEME = appSettings.getString(
@@ -90,10 +96,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.bluetoothService.on('pushtracker_status_changed', args => {
-      if (this.viewInitialized) this.updateWatchIcon({});
-    });
-    this.viewInitialized = true;
+    this.updateWatchIcon({});
   }
 
   getUser() {
@@ -106,43 +109,48 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   setWatchIconVariables(status: string) {
-    if (this.viewInitialized) {
-      if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-        this.watchIcon = `res://watch_${status}_black`;
-        this.watchIconOpacity = 0.7;
-      } else {
-        this.watchIcon = `res://watch_${status}_white`;
-        this.watchIconOpacity = 1.0;
-      }
+    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+      this.watchIconString = `watch_${status}_black`;
+      this.watchIcon = imageFromResource(this.watchIconString);
+      this.watchIconOpacity = 0.7;
+    } else {
+      this.watchIconString = `watch_${status}_white`;
+      this.watchIcon = imageFromResource(this.watchIconString);
+      this.watchIconOpacity = 1.0;
     }
   }
 
-  updateWatchIcon(event) {
-    const state = BluetoothService.pushTrackerStatus.get('state');
-    switch (state) {
-      case 0:
-        console.log('Unknown');
-        this.setWatchIconVariables('question');
-        break;
-      case 1:
-        console.log('Paired');
-        this.setWatchIconVariables('empty');
-        break;
-      case 2:
-        console.log('Disconnected');
-        this.setWatchIconVariables('x');
-        break;
-      case 3:
-        console.log('Connected');
-        this.setWatchIconVariables('check');
-        break;
-      case 4:
-        console.log('ready');
-        this.setWatchIconVariables('check');
-        break;
-    }
-    const img = imageFromFile(this.watchIcon);
-    (this.watchImage.nativeElement as Image).imageSource = img;
+  updateWatchIcon(event: any) {
+    this._zone.run(() => {
+      Log.D('status changed', event.data);
+      const state =
+        (event && event.data && event.data.state)
+        ||
+        BluetoothService.pushTrackerStatus.get('state');
+      switch (state) {
+        default:
+        case PushTrackerState.unknown:
+          console.log('Unknown');
+          this.setWatchIconVariables('question');
+          break;
+        case PushTrackerState.paired:
+          console.log('Paired');
+          this.setWatchIconVariables('empty');
+          break;
+        case PushTrackerState.disconnected:
+          console.log('Disconnected');
+          this.setWatchIconVariables('x');
+          break;
+        case PushTrackerState.connected:
+          console.log('Connected');
+          this.setWatchIconVariables('check');
+          break;
+        case PushTrackerState.ready:
+          console.log('ready');
+          this.setWatchIconVariables('check');
+          break;
+      }
+    });
   }
 
   onSliderValueChange(args: any) {
@@ -346,12 +354,14 @@ export class ProfileSettingsComponent implements OnInit {
 
     switch (setting) {
       case 'ez-on':
+        if (isChecked !== this.settingsService.settings.ezOn)
+          updatedSmartDriveSettings = true;
         this.settingsService.settings.ezOn = isChecked;
-        updatedSmartDriveSettings = true;
         break;
       case 'disable-power-assist-beep':
+        if (isChecked !== this.settingsService.settings.disablePowerAssistBeep)
+          updatedSmartDriveSettings = true;
         this.settingsService.settings.disablePowerAssistBeep = isChecked;
-        updatedSmartDriveSettings = true;
         break;
       default:
         break;
