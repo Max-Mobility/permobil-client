@@ -5,11 +5,14 @@ import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { SharedModule } from '../shared/shared.module';
 import { HomeTabComponent } from './home-tab.component';
+import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 @NgModule({
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
+    NativeScriptUIChartModule,
     NativeScriptRouterModule.forChild([
       { path: '', redirectTo: 'home' },
       { path: 'home', component: HomeTabComponent }
@@ -18,7 +21,7 @@ import { HomeTabComponent } from './home-tab.component';
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [HomeTabComponent],
+  declarations: [HomeTabComponent, ActivityTabComponent],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })

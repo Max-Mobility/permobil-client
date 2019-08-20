@@ -77,21 +77,17 @@
 
     <!-- Week View Coast Time -->
     <StackLayout>
-      <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%">
+      <RadCartesianChart id="homeTabWeeklyCoastTimeChart">
         <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
           horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
-        <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false" majorTickInterval="1"
-          labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
-        <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true"
+        <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
+        <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true" 
           [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
-
-        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
-          valueProperty="coastTime"> </BarSeries>
+        <BarSeries tkCartesianSeries  [items]="weeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
         <Palette tkCartesianPalette seriesName="WeeklyActivity">
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
-        </Palette>
-
+        </Palette>  
         <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
           [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
           [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">

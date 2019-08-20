@@ -1,9 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewContainerRef
-} from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
@@ -18,13 +13,14 @@ import { ActivityService } from '../../services/activity.service';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'home-tab',
   moduleId: module.id,
   templateUrl: './home-tab.component.html'
 })
-export class HomeTabComponent implements OnInit, AfterViewInit {
+export class HomeTabComponent implements OnInit {
   distanceCirclePercentage: number;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
@@ -61,6 +57,12 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     private userService: PushTrackerUserService,
     private _activityService: ActivityService
   ) {
+    this._currentDayInView = new Date();
+    const sunday = this._getFirstDayOfWeek(this._currentDayInView);
+    this._weekStart = sunday;
+    this._weekEnd = new Date(this._weekStart);
+    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this._loadWeeklyActivity();
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -72,27 +74,8 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     this.userService.user.subscribe(user => {
       this.user = user;
       this._refreshGoalData();
+      this._loadWeeklyActivity();
     });
-  }
-
-  getUser(): void {
-    this.userService.user.subscribe(user => { this.user = user; this._refreshGoalData(); this._loadWeeklyActivity(); });
-  }
-
-  ngAfterViewInit() {
-    // now listen for router events to refresh the page data
-    this.routeSub = this._router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        // this._logService.logBreadCrumb(`Home-tab router subscribe ${event}`);
-        // this.refreshGoalData();
-      }
-    });
-    this._currentDayInView = new Date();
-    const sunday = this._getFirstDayOfWeek(this._currentDayInView);
-    this._weekStart = sunday;
-    this._weekEnd = new Date(this._weekStart);
-    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this._loadWeeklyActivity();
   }
 
   onActivityTap() {
@@ -147,7 +130,6 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
   }
 
   async _loadWeeklyActivity() {
-    console.log('Loading weekly activity for', this._weekStart);
     let didLoad = false;
     // Check if data is available in daily activity cache first
     if (!(this._weekStart.toUTCString() in this._weeklyActivityCache)) {
@@ -194,7 +176,6 @@ export class HomeTabComponent implements OnInit, AfterViewInit {
     if (this.yAxisMax === 0)
       this.yAxisMax = 10;
     this.yAxisStep = parseInt((this.yAxisMax / 4.0).toFixed());
-    console.log(this._formatActivityForView('Week'));
   }
 
   _formatActivityForView(viewMode) {

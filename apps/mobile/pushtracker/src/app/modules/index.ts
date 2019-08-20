@@ -1,4 +1,3 @@
-import { ActivityTabComponent } from './activity-tab/activity-tab.component';
 import { AppInfoComponent } from './app-info/app-info.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
@@ -10,7 +9,6 @@ import { ConfigurationTabComponent } from './configuration-tab/configuration-tab
 export const ENTRY_COMPONENTS = [
   ProfileSettingsComponent,
   AppInfoComponent,
-  ActivityTabComponent,
   SupportComponent
 ];
 
@@ -19,7 +17,6 @@ export const COMPONENTS = [
   SignUpComponent,
   ForgotPasswordComponent,
   AppInfoComponent,
-  ActivityTabComponent,
   ProfileSettingsComponent,
   SupportComponent,
   ConfigurationTabComponent

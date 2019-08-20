@@ -8,11 +8,13 @@ import {
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { SharedModule } from '../shared/shared.module';
 import { TabsComponent } from './tabs.component';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 @NgModule({
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
+    NativeScriptUIChartModule,
     NativeScriptRouterModule.forChild([
       {
         path: 'default',
