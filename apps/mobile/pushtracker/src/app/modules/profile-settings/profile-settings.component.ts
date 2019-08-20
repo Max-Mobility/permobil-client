@@ -346,7 +346,7 @@ export class ProfileSettingsComponent implements OnInit {
   async onSettingsChecked(args: PropertyChangeData, setting: string) {
     let updatedSmartDriveSettings = false;
 
-    const isChecked = args.value;
+    let isChecked = args.value;
     // apply the styles if the switch is false/off
     const sw = args.object as Switch;
     sw.className =
@@ -358,7 +358,10 @@ export class ProfileSettingsComponent implements OnInit {
           updatedSmartDriveSettings = true;
         this.settingsService.settings.ezOn = isChecked;
         break;
-      case 'disable-power-assist-beep':
+      case 'power-assist-beep':
+        // since the value we use is actually the OPPOSITE of the
+        // switch
+        isChecked = !isChecked;
         if (isChecked !== this.settingsService.settings.disablePowerAssistBeep)
           updatedSmartDriveSettings = true;
         this.settingsService.settings.disablePowerAssistBeep = isChecked;
