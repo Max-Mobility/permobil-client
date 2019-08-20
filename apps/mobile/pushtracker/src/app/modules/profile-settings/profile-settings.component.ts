@@ -4,24 +4,16 @@ import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
-import {
-  EventData,
-  PropertyChangeData
-} from 'tns-core-modules/data/observable';
+import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
+import { Image } from 'tns-core-modules/ui/image/image';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import {
-  BluetoothService,
-  LoggingService,
-  SettingsService,
-  PushTrackerState
-} from '../../services';
+import { BluetoothService, LoggingService, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
-import { Image } from 'tns-core-modules/ui/image/image';
 const imageSourceModule = require(`tns-core-modules/image-source`);
 
 @Component({
@@ -39,7 +31,6 @@ export class ProfileSettingsComponent implements OnInit {
   DISTANCE: string;
   CURRENT_THEME: string;
   CURRENT_LANGUAGE: string;
-  watchIconPrefix: string;
   watchIcon: string;
   watchIconOpacity: number = 1.0;
   savedTheme: string;
@@ -123,42 +114,40 @@ export class ProfileSettingsComponent implements OnInit {
     this._params.closeCallback('');
   }
 
-  setWatchIconVariables(status: string, extension: string = '.png') {
+  setWatchIconVariables(status: string) {
     if (this.viewInitialized) {
       if (this.savedTheme === 'DEFAULT') {
-        this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_Black' + extension;
+        this.watchIcon = `res://watch_${status}_black`;
         this.watchIconOpacity = 0.7;
-      }
-      else {
-        this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_White' + extension;
+      } else {
+        this.watchIcon = `res://watch_${status}_white`;
         this.watchIconOpacity = 1.0;
       }
     }
   }
 
   updateWatchIcon(event) {
-    this.watchIconPrefix = '~/app/assets/icons/';
     const state = BluetoothService.pushTrackerStatus.get('state');
     switch (state) {
       case 0:
         console.log('Unknown');
-        this.setWatchIconVariables('Question');
+        this.setWatchIconVariables('question');
         break;
       case 1:
         console.log('Paired');
-        this.setWatchIconVariables('Empty');
+        this.setWatchIconVariables('empty');
         break;
       case 2:
         console.log('Disconnected');
-        this.setWatchIconVariables('X');
+        this.setWatchIconVariables('x');
         break;
       case 3:
         console.log('Connected');
-        this.setWatchIconVariables('Check');
+        this.setWatchIconVariables('check');
         break;
       case 4:
         console.log('ready');
-        this.setWatchIconVariables('Check');
+        this.setWatchIconVariables('check');
         break;
     }
     const img = imageSourceModule.fromFile(this.watchIcon);
@@ -329,19 +318,20 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
+
       Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
       // this.setWatchIconVariables('Wait', '.gif');
-      this.setWatchIconVariables('Empty');
+      this.setWatchIconVariables('empty');
       await pts.map(async pt => {
         try {
           await pt.sendSettingsObject(this.settingsService.settings);
           await pt.sendSwitchControlSettingsObject(
             this.settingsService.switchControlSettings
           );
-          this.setWatchIconVariables('Check');
+          this.setWatchIconVariables('check');
         } catch (err) {
           // Show watch icon 'X'
-          this.setWatchIconVariables('X');
+          this.setWatchIconVariables('x');
           this._logService.logException(err);
         }
       });
