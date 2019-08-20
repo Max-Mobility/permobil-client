@@ -41,8 +41,9 @@ export class ProfileSettingsComponent implements OnInit {
   CURRENT_LANGUAGE: string;
   watchIconPrefix: string;
   watchIcon: string;
-  watchIconOpacity: number;
+  watchIconOpacity: number = 1.0;
   savedTheme: string;
+  viewInitialized: boolean = false;
 
   user: PushTrackerUser; // this is our Kinvey.User
 
@@ -78,8 +79,6 @@ export class ProfileSettingsComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    this.watchIconPrefix = '~/app/assets/icons/';
-    this.setWatchIconVariables('Question');
   }
 
   ngOnInit() {
@@ -109,10 +108,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    // this.updateWatchIcon({});
     this.bluetoothService.on('pushtracker_status_changed', (args) => {
-      this.updateWatchIcon({});
+      if (this.viewInitialized) this.updateWatchIcon({});
     });
+    this.viewInitialized = true;
   }
 
   getUser(): void {
@@ -125,17 +124,20 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   setWatchIconVariables(status: string, extension: string = '.png') {
-    if (this.savedTheme === 'DEFAULT') {
-      this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_Black' + extension;
-      this.watchIconOpacity = 0.7;
-    }
-    else {
-      this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_White' + extension;
-      this.watchIconOpacity = 1.0;
+    if (this.viewInitialized) {
+      if (this.savedTheme === 'DEFAULT') {
+        this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_Black' + extension;
+        this.watchIconOpacity = 0.7;
+      }
+      else {
+        this.watchIcon = this.watchIconPrefix + 'Watch-' + status + '_White' + extension;
+        this.watchIconOpacity = 1.0;
+      }
     }
   }
 
   updateWatchIcon(event) {
+    this.watchIconPrefix = '~/app/assets/icons/';
     const state = BluetoothService.pushTrackerStatus.get('state');
     switch (state) {
       case 0:
