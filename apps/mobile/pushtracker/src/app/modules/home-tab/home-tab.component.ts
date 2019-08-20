@@ -182,7 +182,6 @@ export class HomeTabComponent implements OnInit {
 
     if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
-    console.log(this.weeklyActivityAnnotationValue, this.yAxisMax, this.yAxisStep);
   }
 
   _formatActivityForView(viewMode) {
