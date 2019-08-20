@@ -42,10 +42,10 @@
     // Detailed Data
     <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="detail-data">
       // push count data
-      <Label row="0" col="0" class="detail-value" [text]="pushCountData"></Label>
+      <Label row="0" col="0" class="detail-value" [text]="todayPushCount"></Label>
       <Label row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
       // coast time data
-      <Label row="0" col="2" class="detail-value" [text]="coastTimeData"></Label>
+      <Label row="0" col="2" class="detail-value" [text]="todayCoastTime"></Label>
       <Label row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
       // distance data
       <Label row="0" col="4" class="detail-value" [text]="distanceData"></Label>
