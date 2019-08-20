@@ -1,9 +1,8 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*" class="profile-settings-layout">
-
   // Mock ActionBar
   <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <Image #watchImage row="0" horizontalAlignment="right" width="10%" [src]="watchIcon" marginTop="5" marginRight="20" [opacity]="watchIconOpacity"></Image>
+  <Image #watchImage row="0" stretch="aspectFit" [src]="watchIcon" [opacity]="watchIconOpacity" horizontalAlignment="right" width="28" height="28" marginRight="15"></Image>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
@@ -28,7 +27,7 @@
 
       // Smart Drive Section
       <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
- 
+
       // EZ-ON
       <GridLayout row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
