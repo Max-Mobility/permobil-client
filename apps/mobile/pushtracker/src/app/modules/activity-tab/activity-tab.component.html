@@ -16,7 +16,7 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true" tickHidden="false" majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
           </CategoricalAxis>
-          <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" horizontalLocation="Right" labelMargin="10" lineHidden="true" maximum="40" minumum="1" majorStep="15" labelFormat="%.0f">
+          <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f">
           </LinearAxis>
           <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'"> </BarSeries>
           <Palette tkCartesianPalette seriesName="DailyActivity">
@@ -68,7 +68,7 @@
         <RadCartesianChart allowAnimations="true" row="1" height="200" width="90%" pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
-          <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true" maximum="80" minumum="1" majorStep="30" labelFormat="%.0f"></LinearAxis>
+          <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" [valueProperty]="weeklyViewMode ? 'pushCount' : 'coastTime'"> </BarSeries>
           <Palette tkCartesianPalette seriesName="WeeklyActivity">

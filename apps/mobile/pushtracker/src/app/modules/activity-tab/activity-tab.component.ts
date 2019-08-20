@@ -70,6 +70,8 @@ export class ActivityTabComponent implements OnInit {
   public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
   public savedTheme: string;
   public dailyActivityAnnotationValue: number = 0;
+  public yAxisMax = 0;
+  public yAxisStep = 15;
   // Member variabes for week view
   public weeklyActivity: ObservableArray<any[]>;
   private _weeklyActivityCache = {};
@@ -179,6 +181,52 @@ export class ActivityTabComponent implements OnInit {
       this.maxDate = new Date('01/01/2099');
       this._updateDailyActivityAnnotationValue();
     }
+    this.calculateDailyActivityYAxisMax();
+  }
+
+  calculateDailyActivityYAxisMax() {
+    this.yAxisMax = 0;
+    this.yAxisStep = 15;
+    let i = 4;
+    while (i < 53) {
+        const activity = this.dailyActivity.getItem(i);
+        if (this.dailyViewMode === 0) {
+            if (activity['coastTime'] > this.yAxisMax)
+            this.yAxisMax = activity['coastTime'];
+        }
+        else {
+            if (activity['pushCount'] > this.yAxisMax)
+            this.yAxisMax = activity['pushCount'];
+        }
+        i++;
+    }
+    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
+    if (this.yAxisMax === 0)
+        this.yAxisMax = 30;
+    if (this.yAxisMax < this.yAxisStep)
+        this.yAxisStep = parseInt((this.yAxisMax / 2.0).toFixed());
+  }
+
+  calculateWeeklyActivityYAxisMax() {
+    this.yAxisMax = 0;
+    this.yAxisStep = 0;
+    let i = 2;
+    while (i < 9) {
+        const activity = this.weeklyActivity.getItem(i);
+        if (this.weeklyViewMode === 0) {
+            if (activity['coastTime'] > this.yAxisMax)
+            this.yAxisMax = activity['coastTime'];
+        }
+        else {
+            if (activity['pushCount'] > this.yAxisMax)
+            this.yAxisMax = activity['pushCount'];
+        }
+        i++;
+    }
+    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
+    if (this.yAxisMax === 0)
+        this.yAxisMax = 12;
+    this.yAxisStep = parseInt((this.yAxisMax / 4).toFixed());
   }
 
   async loadWeeklyActivity() {
@@ -229,6 +277,7 @@ export class ActivityTabComponent implements OnInit {
       this.maxDate = new Date('01/01/2099');
       this._updateWeeklyActivityAnnotationValue();
     }
+    this.calculateWeeklyActivityYAxisMax();
   }
 
   formatActivityForView(viewMode) {
@@ -686,12 +735,14 @@ export class ActivityTabComponent implements OnInit {
     this.dailyViewMode = 0;
     this._updateDayChartLabel();
     this._updateDailyActivityAnnotationValue();
+    this.calculateDailyActivityYAxisMax();
   }
 
   onDailyActivityDistanceButtonTap(event) {
     this.dailyViewMode = 1;
     this._updateDayChartLabel();
     this._updateDailyActivityAnnotationValue();
+    this.calculateDailyActivityYAxisMax();
   }
 
   _updateWeekChartLabel() {
@@ -756,12 +807,14 @@ export class ActivityTabComponent implements OnInit {
     this.weeklyViewMode = 0;
     this._updateWeekChartLabel();
     this._updateWeeklyActivityAnnotationValue();
+    this.calculateWeeklyActivityYAxisMax();
   }
 
   onWeeklyActivityDistanceButtonTap(event) {
     this.weeklyViewMode = 1;
     this._updateWeekChartLabel();
     this._updateWeeklyActivityAnnotationValue();
+    this.calculateWeeklyActivityYAxisMax();
   }
 
   onTrackBallContentRequested(args: TrackballCustomContentData) {
