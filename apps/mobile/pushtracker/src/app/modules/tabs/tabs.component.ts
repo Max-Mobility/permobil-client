@@ -102,8 +102,8 @@ export class TabsComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -116,7 +116,7 @@ export class TabsComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -255,24 +255,29 @@ export class TabsComponent {
 
   async onPushTrackerSettings(args: any) {
     const s = args.data.settings;
-    if (this._settingsService.settings.diff(s)) {
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.settings.equals(s)) {
       const selection = await action({
         cancelable: false,
         title: this._translateService.instant('settings-different.title'),
         message: this._translateService.instant('settings-different.message'),
         actions: [
-          this._translateService.instant('actions.overwrite-settings'),
-          this._translateService.instant('actions.keep-settings')
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
         ],
-        cancelButtonText: this._translateService.instant('buttons.cancel')
+        cancelButtonText: this._translateService.instant('general.cancel')
       });
       switch (selection) {
-        case this._translateService.instant('actions.overwrite-settings'):
+        case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.settings.copy(s);
           this._settingsService.saveToFileSystem();
           this._settingsService.save().catch(Log.E);
           break;
-        case this._translateService.instant('actions.keep-settings'):
+        case this._translateService.instant('actions.overwrite-remote-settings'):
+          pt.sendSettingsObject(this._settingsService.settings);
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
           break;
         default:
           break;
@@ -282,7 +287,8 @@ export class TabsComponent {
 
   async onPushTrackerPushSettings(args: any) {
     const s = args.data.pushSettings;
-    if (this._settingsService.pushSettings.diff(s)) {
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.pushSettings.equals(s)) {
       const selection = await action({
         cancelable: false,
         title: this._translateService.instant('push-settings-different.title'),
@@ -290,18 +296,22 @@ export class TabsComponent {
           'push-settings-different.message'
         ),
         actions: [
-          this._translateService.instant('actions.overwrite-settings'),
-          this._translateService.instant('actions.keep-settings')
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
         ],
-        cancelButtonText: this._translateService.instant('buttons.cancel')
+        cancelButtonText: this._translateService.instant('general.cancel')
       });
       switch (selection) {
-        case this._translateService.instant('actions.overwrite-settings'):
+        case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.pushSettings.copy(s);
           this._settingsService.saveToFileSystem();
           this._settingsService.save().catch(Log.E);
           break;
-        case this._translateService.instant('actions.keep-settings'):
+        case this._translateService.instant('actions.overwrite-remote-settings'):
+          pt.sendPushSettingsObject(this._settingsService.pushSettings);
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
           break;
         default:
           break;
@@ -311,7 +321,8 @@ export class TabsComponent {
 
   async onPushTrackerSwitchControlSettings(args: any) {
     const s = args.data.switchControlSettings;
-    if (this._settingsService.switchControlSettings.diff(s)) {
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.switchControlSettings.equals(s)) {
       const selection = await action({
         cancelable: false,
         title: this._translateService.instant(
@@ -321,18 +332,22 @@ export class TabsComponent {
           'switch-control-settings-different.message'
         ),
         actions: [
-          this._translateService.instant('actions.overwrite-settings'),
-          this._translateService.instant('actions.keep-settings')
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
         ],
-        cancelButtonText: this._translateService.instant('buttons.cancel')
+        cancelButtonText: this._translateService.instant('general.cancel')
       });
       switch (selection) {
-        case this._translateService.instant('actions.overwrite-settings'):
+        case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.switchControlSettings.copy(s);
           this._settingsService.saveToFileSystem();
           this._settingsService.save().catch(Log.E);
           break;
-        case this._translateService.instant('actions.keep-settings'):
+        case this._translateService.instant('actions.overwrite-remote-settings'):
+          pt.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
           break;
         default:
           break;
