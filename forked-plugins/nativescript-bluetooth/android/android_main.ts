@@ -134,6 +134,15 @@ export class Bluetooth extends BluetoothCommon {
       deviceChangeIntent.addAction(
         android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED
       );
+      deviceChangeIntent.addAction(
+        android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED
+      );
+      deviceChangeIntent.addAction(
+        android.bluetooth.BluetoothDevice.ACTION_FOUND
+      );
+      deviceChangeIntent.addAction(
+        android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+      );
       // register the broadcast receiver
       utils.ad
         .getApplicationContext()

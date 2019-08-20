@@ -327,8 +327,9 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
-      Log.D('sending to pushtrackers:', pts);
-      this.setWatchIconVariables('Wait');
+      Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
+      // this.setWatchIconVariables('Wait', '.gif');
+      this.setWatchIconVariables('Empty');
       await pts.map(async pt => {
         try {
           await pt.sendSettingsObject(this.settingsService.settings);

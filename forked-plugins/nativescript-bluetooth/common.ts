@@ -132,9 +132,19 @@ export class BluetoothCommon extends Observable {
   static device_rssi_change_event = 'device_rssi_change_event';
 
   /*
+   * String value for hooking into the device_found intent.
+   */
+  static device_found_event = 'device_found_event';
+
+  /*
    * String value for hooking into the device_acl_disconnected. This event fires when the device acl disconnects.
    */
   static device_acl_disconnected_event = 'device_acl_disconnected_event';
+
+  /*
+   * String value for hooking into the device_acl_connected. This event fires when the device acl connects.
+   */
+  static device_acl_connected_event = 'device_acl_connected_event';
 
   /*
    * String value for hooking into the characteristic_write_request. This event fires when a characteristic requests to write.
@@ -549,7 +559,9 @@ export enum IBluetoothEvents {
   device_name_change_event = 'device_name_change_event',
   device_uuid_change_event = 'device_uuid_change_event',
   device_rssi_change_event = 'device_rssi_change_event',
+  device_found_event = 'device_found_event',
   device_acl_disconnected_event = 'device_acl_disconnected_event',
+  device_acl_connected_event = 'device_acl_connected_event',
   characteristic_write_request_event = 'characteristic_write_request_event',
   characteristic_read_request_event = 'characteristic_read_request_event',
   descriptor_write_request_event = 'descriptor_write_request_event',

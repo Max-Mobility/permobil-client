@@ -32,7 +32,7 @@
       // EZ-ON
       <GridLayout row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
-        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ezOn')"></Switch>
+        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
         <Label row="1" col="0" colSpan="2" class="setting-value" [text]="'general.ez-on' | translate" textWrap="true"></Label>
       </GridLayout>
 
