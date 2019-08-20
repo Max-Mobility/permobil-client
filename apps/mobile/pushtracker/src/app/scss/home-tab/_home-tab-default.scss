@@ -44,6 +44,11 @@
     }
   }
 
+  RadCartesianChart {
+    width: 90%;
+    height: 200;
+  }
+
   .chart-layout {
     @extend .CHART_LAYOUT_BASE;
   }

@@ -51,4 +51,10 @@
   .chart-layout {
     @extend .CHART_LAYOUT_BASE;
   }
+
+  RadCartesianChart {
+    background-color: $black;
+    color: $white;
+  }
+  
 }
