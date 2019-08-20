@@ -27,7 +27,7 @@
       </StackLayout>
 
       <GridLayout row="0" rowSpan="2" col="2" rows="auto, auto" columns="*, auto, *">
-        <Label row="0" col="0" class="value" [text]="todayCoastTime"></Label>
+        <Label row="0" col="0" class="value" [text]="weeklyActivityLoaded ? todayCoastTime : 0"></Label>
         <Label row="0" col="1" class="max-value" [text]="coastTimeCirclePercentageMaxValue"></Label>
         <Label row="1" col="0" colSpan="3" class="description" [text]="'general.coast-time' | translate"></Label>
       </GridLayout>
@@ -47,18 +47,20 @@
     // Detailed Data
     <GridLayout rows="auto, auto" columns="*, *, *, *, *" class="detail-data">
       // push count data
-      <Label row="0" col="0" class="detail-value" [text]="todayPushCount"></Label>
+      <Label row="0" col="0" class="detail-value" [text]="weeklyActivityLoaded ? todayPushCount : 0"></Label>
       <Label row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
       // coast time data
-      <Label row="0" col="2" class="detail-value" [text]="todayCoastTime"></Label>
+      <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayCoastTime : 0"></Label>
       <Label row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
       // distance data
-      <Label row="0" col="4" class="detail-value" [text]="distanceData"></Label>
+      <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? distanceData : 0"></Label>
       <Label row="1" col="4" class="detail-description" [text]="'general.miles' | translate"></Label>
     </GridLayout>
 
     <!-- Week View Coast Time -->
-    <StackLayout>
+    <ActivityIndicator height="10%" width="10%" *ngIf="!weeklyActivityLoaded" 
+      [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
+    <StackLayout *ngIf="weeklyActivityLoaded">
       <GridLayout row="0" rows="auto" cols="auto">
         <Label row="0" col="1" marginTop="17" class="title" horizontalAlignment="center" justifyContent="center" [text]="coastTimeGoalMessage"></Label>
       </GridLayout>

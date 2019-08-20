@@ -13,7 +13,6 @@ import { ActivityService } from '../../services/activity.service';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'home-tab',
@@ -48,6 +47,7 @@ export class HomeTabComponent implements OnInit {
   public savedTheme: string;
   public weeklyActivityAnnotationValue: number = 0;
   public coastTimeGoalMessage: string;
+  public weeklyActivityLoaded: boolean = false;
 
   constructor(
     private _translateService: TranslateService,
@@ -63,7 +63,6 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this.weeklyActivityAnnotationValue = 0;
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -188,6 +187,7 @@ export class HomeTabComponent implements OnInit {
     if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
     this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
+    this.weeklyActivityLoaded = true;
   }
 
   _formatActivityForView(viewMode) {
