@@ -47,6 +47,7 @@ export class HomeTabComponent implements OnInit {
   public yAxisStep: number = 2.5;
   public savedTheme: string;
   public weeklyActivityAnnotationValue: number = 0;
+  public coastTimeGoalMessage: string;
 
   constructor(
     private _translateService: TranslateService,
@@ -62,7 +63,6 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this._loadWeeklyActivity();
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -182,6 +182,7 @@ export class HomeTabComponent implements OnInit {
 
     if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
+    this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
   }
 
   _formatActivityForView(viewMode) {
