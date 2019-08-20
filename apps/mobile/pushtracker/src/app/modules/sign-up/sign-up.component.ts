@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  NgZone,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
@@ -50,8 +44,8 @@ export class SignUpComponent implements OnInit {
     weight: 0,
     weight_unit_preference: 1,
     distance_unit_preference: 1,
-    activity_goal_distance: 60,
-    activity_goal_coast_time: 45
+    activity_goal_distance: 5,
+    activity_goal_coast_time: 5
   };
 
   passwordError = '';
