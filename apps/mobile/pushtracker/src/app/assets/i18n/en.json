@@ -250,5 +250,29 @@
   "switch-control-settings-different": {
     "title": "App and PushTracker Switch Control Settings Differ",
     "message": "Please select from the options below how to resolve differences between the settings."
+  },
+  "user": {
+    "consent-form-title": "Privacy Policy Consent Form",
+    "privacy-policy-site": "https://privacy.permobil.com",
+    "end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
+    "accept": {
+      "agreement-button": "View End User Agreement",
+      "privacy-button": "View Privacy Policy",
+      "user-agreement-title": "Accept End User Agreement",
+      "privacy-policy-title": "Accept Privacy Policy",
+      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use Smart Evaluation",
+      "user-agreement": "I have read, understood, and agree to the end user agreement",
+      "privacy-policy": "I have read and understood the privacy policy",
+      "accept-error": {
+        "title": "Agreement Error",
+        "message": "You must read and accept the agreement and privacy policy to register an account!"
+      }
+    },
+    "consent": {
+      "beta-test": "I opt into firmware beta testing and understand the associated risks.",
+      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Account' page of the application.",
+      "research": "I give my consent to the usage of my data for product development as described in the privacy policy",
+      "product-development": "I give my consent to the usage of my data for research as described in the privacy policy"
+    }
   }
 }
