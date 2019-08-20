@@ -5,6 +5,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
+import { fromFile as imageFromFile } from 'tns-core-modules/image-source';
 import { screen } from 'tns-core-modules/platform';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
@@ -14,7 +15,6 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
-const imageSourceModule = require(`tns-core-modules/image-source`);
 
 @Component({
   selector: 'profile-settings',
@@ -99,7 +99,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.bluetoothService.on('pushtracker_status_changed', (args) => {
+    this.bluetoothService.on('pushtracker_status_changed', args => {
       if (this.viewInitialized) this.updateWatchIcon({});
     });
     this.viewInitialized = true;
@@ -150,7 +150,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.setWatchIconVariables('check');
         break;
     }
-    const img = imageSourceModule.fromFile(this.watchIcon);
+    const img = imageFromFile(this.watchIcon);
     (this.watchImage.nativeElement as Image).imageSource = img;
   }
 
@@ -318,7 +318,6 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
-
       Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
       // this.setWatchIconVariables('Wait', '.gif');
       this.setWatchIconVariables('empty');
@@ -367,7 +366,11 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.commitSettingsChange();
+      // timeout to ensure the switch animation is smooth
+      // https://github.com/Max-Mobility/permobil-client/issues/179
+      setTimeout(() => {
+        this.commitSettingsChange();
+      }, 300);
     }
   }
 
