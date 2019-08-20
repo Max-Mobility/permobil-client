@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { SnackBar } from '@nstudio/nativescript-snackbar';
+import { Log } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import * as application from 'tns-core-modules/application';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
+import { isAndroid } from 'tns-core-modules/platform';
+import { action, alert } from 'tns-core-modules/ui/dialogs';
+import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { BluetoothService, SettingsService } from '../../services';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { SnackBar } from '@nstudio/nativescript-snackbar';
-import * as application from 'tns-core-modules/application';
-import { alert, action } from 'tns-core-modules/ui/dialogs';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import * as appSettings from 'tns-core-modules/application-settings';
+import { BluetoothService, SettingsService } from '../../services';
 
 @Component({
   moduleId: module.id,
@@ -34,9 +35,7 @@ export class TabsComponent {
   );
 
   // permissions for the bluetooth service
-  private permissionsNeeded = [
-    android.Manifest.permission.ACCESS_COARSE_LOCATION
-  ];
+  private permissionsNeeded = [];
 
   private snackbar = new SnackBar();
 
@@ -66,59 +65,73 @@ export class TabsComponent {
       title: this._profileTabTitle,
       iconSource: AppResourceIcons.PROFILE_INACTIVE
     };
+
+    if (isAndroid) {
+      this.permissionsNeeded.push(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION
+      );
+    }
   }
 
   async askForPermissions() {
-    // determine if we have shown the permissions request
-    const hasShownRequest = appSettings.getBoolean(
-      STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
-    ) || false;
-    // will throw an error if permissions are denied, else will
-    // return either true or a permissions object detailing all the
-    // granted permissions. The error thrown details which
-    // permissions were rejected
-    const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-    const reasons = [];
-    const neededPermissions = this.permissionsNeeded.filter(
-      p => !hasPermission(p) &&
-        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(p) ||
-          !hasShownRequest)
-    );
-    // update the has-shown-request
-    appSettings.setBoolean(
-      STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
-      true
-    );
-    const reasoning = {
-      [android.Manifest.permission.ACCESS_COARSE_LOCATION]: this._translateService.instant('permissions-reasons.coarse-location')
-    };
-    neededPermissions.map((r) => {
-      reasons.push(reasoning[r]);
-    });
-    if (neededPermissions && neededPermissions.length > 0) {
-      // Log.D('requesting permissions!', neededPermissions);
-      await alert({
-        title: this._translateService.instant('permissions-request.title'),
-        message: reasons.join('\n\n'),
-        okButtonText: this._translateService.instant('buttons.ok')
+    if (isAndroid) {
+      // determine if we have shown the permissions request
+      const hasShownRequest =
+        appSettings.getBoolean(
+          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
+        ) || false;
+      // will throw an error if permissions are denied, else will
+      // return either true or a permissions object detailing all the
+      // granted permissions. The error thrown details which
+      // permissions were rejected
+      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
+      const reasons = [];
+      const neededPermissions = this.permissionsNeeded.filter(
+        p =>
+          !hasPermission(p) &&
+          (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
+            p
+          ) ||
+            !hasShownRequest)
+      );
+      // update the has-shown-request
+      appSettings.setBoolean(
+        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
+        true
+      );
+      const reasoning = {
+        [android.Manifest.permission
+          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
+          'permissions-reasons.coarse-location'
+        )
+      };
+      neededPermissions.map(r => {
+        reasons.push(reasoning[r]);
       });
-      try {
-        await requestPermissions(neededPermissions, () => { });
-        return true;
-      } catch (permissionsObj) {
-        const hasBlePermission =
-          permissionsObj[blePermission] ||
-          hasPermission(blePermission);
-        if (hasBlePermission) {
+      if (neededPermissions && neededPermissions.length > 0) {
+        // Log.D('requesting permissions!', neededPermissions);
+        await alert({
+          title: this._translateService.instant('permissions-request.title'),
+          message: reasons.join('\n\n'),
+          okButtonText: this._translateService.instant('general.ok')
+        });
+        try {
+          await requestPermissions(neededPermissions, () => {});
           return true;
-        } else {
-          throw this._translateService.instant('failures.permissions');
+        } catch (permissionsObj) {
+          const hasBlePermission =
+            permissionsObj[blePermission] || hasPermission(blePermission);
+          if (hasBlePermission) {
+            return true;
+          } else {
+            throw this._translateService.instant('failures.permissions');
+          }
         }
+      } else if (hasPermission(blePermission)) {
+        return Promise.resolve(true);
+      } else {
+        throw this._translateService.instant('failures.permissions');
       }
-    } else if (hasPermission(blePermission)) {
-      return Promise.resolve(true);
-    } else {
-      throw this._translateService.instant('failures.permissions');
     }
   }
 
@@ -127,38 +140,50 @@ export class TabsComponent {
    */
   registerBluetoothEvents() {
     // register for bluetooth events here
-    this._bluetoothService.on(BluetoothService.advertise_error,
-      this.onBluetoothAdvertiseError.bind(this));
-    this._bluetoothService.on(BluetoothService.pushtracker_connected,
-      this.onPushTrackerConnected.bind(this));
-    this._bluetoothService.on(BluetoothService.pushtracker_disconnected,
-      this.onPushTrackerDisconnected.bind(this));
+    this._bluetoothService.on(
+      BluetoothService.advertise_error,
+      this.onBluetoothAdvertiseError.bind(this)
+    );
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_connected,
+      this.onPushTrackerConnected.bind(this)
+    );
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_disconnected,
+      this.onPushTrackerDisconnected.bind(this)
+    );
   }
 
   onBluetoothAdvertiseError(args: any) {
     const error = args.data.error;
     alert({
       title: this._translateService.instant('bluetooth.service-failure'),
-      okButtonText: this._translateService.instant('dialogs.ok'),
+      okButtonText: this._translateService.instant('general.ok'),
       message: `${error}`
     });
   }
 
   onPushTrackerPaired(args: any) {
     const pt = args.data.pushtracker;
-    const msg = this._translateService.instant('general.pushtracker-paired') + `: ${pt.address}`;
+    const msg =
+      this._translateService.instant('general.pushtracker-paired') +
+      `: ${pt.address}`;
     this.snackbar.simple(msg);
   }
 
   onPushTrackerConnected(args: any) {
     const pt = args.data.pushtracker;
-    const msg = this._translateService.instant('general.pushtracker-connected') + `: ${pt.address}`;
+    const msg =
+      this._translateService.instant('general.pushtracker-connected') +
+      `: ${pt.address}`;
     this.snackbar.simple(msg);
   }
 
   onPushTrackerDisconnected(args: any) {
     const pt = args.data.pushtracker;
-    const msg = this._translateService.instant('general.pushtracker-disconnected') + `: ${pt.address}`;
+    const msg =
+      this._translateService.instant('general.pushtracker-disconnected') +
+      `: ${pt.address}`;
     this.snackbar.simple(msg);
   }
 
@@ -193,8 +218,16 @@ export class TabsComponent {
     */
     // register for settings and push settings
     pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
-    pt.on(PushTracker.push_settings_event, this.onPushTrackerPushSettings, this);
-    pt.on(PushTracker.switch_control_settings_event, this.onPushTrackerSwitchControlSettings, this);
+    pt.on(
+      PushTracker.push_settings_event,
+      this.onPushTrackerPushSettings,
+      this
+    );
+    pt.on(
+      PushTracker.switch_control_settings_event,
+      this.onPushTrackerSwitchControlSettings,
+      this
+    );
   }
 
   registerPushTrackerEvents() {
@@ -253,7 +286,9 @@ export class TabsComponent {
       const selection = await action({
         cancelable: false,
         title: this._translateService.instant('push-settings-different.title'),
-        message: this._translateService.instant('push-settings-different.message'),
+        message: this._translateService.instant(
+          'push-settings-different.message'
+        ),
         actions: [
           this._translateService.instant('actions.overwrite-settings'),
           this._translateService.instant('actions.keep-settings')
@@ -279,8 +314,12 @@ export class TabsComponent {
     if (this._settingsService.switchControlSettings.diff(s)) {
       const selection = await action({
         cancelable: false,
-        title: this._translateService.instant('switch-control-settings-different.title'),
-        message: this._translateService.instant('switch-control-settings-different.message'),
+        title: this._translateService.instant(
+          'switch-control-settings-different.title'
+        ),
+        message: this._translateService.instant(
+          'switch-control-settings-different.message'
+        ),
         actions: [
           this._translateService.instant('actions.overwrite-settings'),
           this._translateService.instant('actions.keep-settings')
@@ -317,7 +356,7 @@ export class TabsComponent {
           return this._bluetoothService.advertise();
         }
       })
-      .catch((err) => {
+      .catch(err => {
         Log.E('permission or bluetooth error:', err);
       });
 
