@@ -38,7 +38,7 @@ export class PrivacyPolicyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('app-info.component OnInit');
+    this._logService.logBreadCrumb('privacy-policy.component OnInit');
   }
 
   close() {
