@@ -12,7 +12,10 @@ export class ActivityService {
   public dailyActivity: any;
   public weeklyActivity: any;
 
-  constructor(private _logService: LoggingService) {}
+  constructor(private _logService: LoggingService) {
+    this.login();
+    this.datastore.sync();
+  }
 
   async loadDailyActivity(date: Date): Promise<boolean> {
     try {
@@ -54,8 +57,8 @@ export class ActivityService {
 
   async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
     try {
-      await this.login();
-      await this.datastore.sync();
+      // await this.login();
+      // await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was

@@ -36,7 +36,6 @@ export class HomeTabComponent implements OnInit {
 
   private _currentDayInView: Date;
   public weeklyActivity: ObservableArray<any[]>;
-  private _weeklyActivityCache = {};
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
@@ -134,35 +133,18 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadWeeklyActivity() {
-    let didLoad = false;
-    // Check if data is available in daily activity cache first
-    if (!(this._weekStart.toUTCString() in this._weeklyActivityCache)) {
-      didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
-      if (didLoad) {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView('Week')
-        );
-        this._weekStart = new Date(this._activityService.weeklyActivity.date);
-        this._weekEnd = new Date(this._weekStart);
-        this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-      } else {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView('Week')
-        );
-      }
-      // Cache activity by day so we can easily pull it up next time
-      this._weeklyActivityCache[this._weekStart.toUTCString()] = {
-        chartData: this.weeklyActivity,
-        weeklyActivity: this._activityService.weeklyActivity
-      };
-    } else {
-      // We have the data cached. Pull it up
-      didLoad = true;
-      const cache = this._weeklyActivityCache[this._weekStart.toUTCString()];
-      this.weeklyActivity = cache.chartData;
-      this._weekStart = new Date(cache.weeklyActivity.date);
+    const didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
+    if (didLoad) {
+      this.weeklyActivity = new ObservableArray(
+        this._formatActivityForView('Week')
+      );
+      this._weekStart = new Date(this._activityService.weeklyActivity.date);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    } else {
+      this.weeklyActivity = new ObservableArray(
+        this._formatActivityForView('Week')
+      );
     }
     const dateFormatted = function(date: Date) {
       return date.getFullYear() + '/' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
