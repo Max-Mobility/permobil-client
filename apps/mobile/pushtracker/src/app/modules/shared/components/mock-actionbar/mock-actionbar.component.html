@@ -1,5 +1,5 @@
 <GridLayout rows="*" columns="50, *, auto" class="action-bar">
-  <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="nav-btn"></Button>
+  <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="action-item-btn"></Button>
   <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
   <FlexboxLayout col="2" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">
     <Button order="1" text="&#xe334;" [visibility]="showWatchBtn ? 'visible' : 'collapse'" (tap)="onWatchTap()" ripple class="action-item-btn"></Button>
