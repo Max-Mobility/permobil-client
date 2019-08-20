@@ -20,14 +20,14 @@ import { APP_THEMES, STORAGE_KEYS } from '../../enums';
   templateUrl: './home-tab.component.html'
 })
 export class HomeTabComponent implements OnInit {
-  distanceCirclePercentage: number;
+  distanceCirclePercentage: number = 0;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
   coastTimeCirclePercentageMaxValue;
-  distanceRemainingText: string;
+  distanceRemainingText: string = '<Insert value>';
   pushCountData: string;
   coastTimeData: string;
-  distanceData: string;
+  distanceData: string = '<0>';
   distanceChartData;
   infoItems;
   user: PushTrackerUser;
@@ -73,11 +73,6 @@ export class HomeTabComponent implements OnInit {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.userService.user.subscribe(user => {
       this.user = user;
-      this.savedTheme = appSettings.getString(
-        STORAGE_KEYS.APP_THEME,
-        APP_THEMES.DEFAULT
-      );
-      this._refreshGoalData();
     });
   }
 
@@ -103,27 +98,6 @@ export class HomeTabComponent implements OnInit {
     Log.D('watch item tapped');
   }
 
-  private _refreshGoalData() {
-    // determine users distance value and get user activity goal for distance
-    this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.distanceCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_distance;
-
-    // determine users coast-time value and get user activity goal for distance
-    this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
-
-    this.distanceRemainingText = `0.4 ${this._translateService.instant(
-      'home-tab.miles-to-go'
-    )}`;
-    this.pushCountData = `1514`;
-    this.coastTimeData = `3.6`;
-    this.distanceData = `2.75`;
-
-    this.distanceChartData = null;
-  }
-
   _getFirstDayOfWeek(date) {
     date = new Date(date);
     const day = date.getDay();
@@ -142,11 +116,9 @@ export class HomeTabComponent implements OnInit {
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     } else {
-      this.weeklyActivity = new ObservableArray(
-        this._formatActivityForView('Week')
-      );
+      this.weeklyActivity = new ObservableArray([]);
     }
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return date.getFullYear() + '/' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
         + '/' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
     };
@@ -169,6 +141,8 @@ export class HomeTabComponent implements OnInit {
     if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
     this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
+    this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
   }
 
@@ -178,7 +152,7 @@ export class HomeTabComponent implements OnInit {
       if (activity) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function(start, end) {
+        const range = function (start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);

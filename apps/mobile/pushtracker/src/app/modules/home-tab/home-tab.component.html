@@ -59,7 +59,7 @@
 
     <!-- Week View Coast Time -->
     <ActivityIndicator height="10%" width="10%" *ngIf="!weeklyActivityLoaded" 
-      [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
+        [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
     <StackLayout *ngIf="weeklyActivityLoaded">
       <GridLayout row="0" rows="auto" cols="auto">
         <Label row="0" col="1" marginTop="17" class="title" horizontalAlignment="center" justifyContent="center" [text]="coastTimeGoalMessage"></Label>
@@ -76,10 +76,10 @@
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
         </Palette>  
-        <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
+        <!-- <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
           [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
           [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
-        </ChartGridLineAnnotation>
+        </ChartGridLineAnnotation> -->
       </RadCartesianChart>
     </StackLayout>
 
