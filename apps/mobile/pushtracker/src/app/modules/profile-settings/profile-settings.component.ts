@@ -5,6 +5,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
+import throttle from 'lodash/throttle';
 import {
   fromResource as imageFromResource
 } from 'tns-core-modules/image-source';
@@ -51,6 +52,10 @@ export class ProfileSettingsComponent implements OnInit {
 
   private activeSetting: string = null;
 
+  private _throttledCommitSettingsFunction: any = null;
+
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
+
   constructor(
     public settingsService: SettingsService,
     public bluetoothService: BluetoothService,
@@ -63,6 +68,14 @@ export class ProfileSettingsComponent implements OnInit {
   ) {
     this._page.actionBarHidden = true;
 
+    // save the throttled commit settings function
+    this._throttledCommitSettingsFunction = throttle(
+      this.commitSettingsChange,
+      this.MAX_COMMIT_INTERVAL_MS,
+      { leading: false, trailing: true }
+    );
+
+    // set up the status watcher for the pushtracker state
     this.bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
       this.updateWatchIcon,
@@ -293,7 +306,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.commitSettingsChange();
+      this._throttledCommitSettingsFunction();
     }
   }
 
@@ -370,11 +383,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      // timeout to ensure the switch animation is smooth
-      // https://github.com/Max-Mobility/permobil-client/issues/179
-      setTimeout(() => {
-        this.commitSettingsChange();
-      }, 300);
+      this._throttledCommitSettingsFunction();
     }
   }
 
