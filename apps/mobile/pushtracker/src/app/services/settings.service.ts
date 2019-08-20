@@ -51,6 +51,10 @@ export class SettingsService {
       this.settings.toObj()
     );
     LS.setItemObject(
+      STORAGE_KEYS.DEVICE_PUSH_SETTINGS,
+      this.pushSettings.toObj()
+    );
+    LS.setItemObject(
       STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS,
       this.switchControlSettings.toObj()
     );
@@ -59,6 +63,9 @@ export class SettingsService {
   loadFromFileSystem() {
     this.settings.copy(
       LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS)
+    );
+    this.pushSettings.copy(
+      LS.getItem(STORAGE_KEYS.DEVICE_PUSH_SETTINGS)
     );
     this.switchControlSettings.copy(
       LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
