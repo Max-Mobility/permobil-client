@@ -1,4 +1,9 @@
 {
+  "actions": {
+    "overwrite-local-settings": "Overwrite app's settings.",
+    "overwrite-remote-settings": "Overwrite PushTracker's settings.",
+    "keep-both-settings": "Do not change either settings."
+  },
   "activity-tab-component": {
     "day": "Day",
     "month": "Month",
@@ -29,6 +34,9 @@
     ],
     "title": "Get going with SmartDrive from Permobil & MaxMobility"
   },
+  "bluetooth": {
+    "service-failure": "Unable to start the bluetooth service."
+  },
   "days": {
     "friday": "Friday",
     "monday": "Monday",
@@ -58,6 +66,7 @@
     "coast-time": "Coast Time",
     "coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the time between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
     "day": "Day",
+    "disabled": "Disabled",
     "disable-power-assist-beep": "Disable Power Assist Beep",
     "display": "Display",
     "distance": "Distance",
@@ -67,6 +76,7 @@
     "email-invalid": "Email is invalid",
     "email-required": "Email is required.",
     "email-sent": "Email Sent",
+    "enabled": "Enabled",
     "error": "Error",
     "ez-on": "EZ-ON",
     "forgot-password": "Forgot Password",
@@ -88,8 +98,12 @@
     "password-change": "Change Password?",
     "password-change-confirm": "Are you sure you want to change your password?",
     "password-required": "Password is required.",
+    "power-assist-beep": "Power Assist Beep",
     "profile": "Profile",
     "pushes": "Pushes",
+    "pushtracker-connected": "PushTracker connected",
+    "pushtracker-disconnected": "PushTracker disconnected",
+    "pushtracker-paired": "PushTracker paired",
     "reset-acct": "Reset Account",
     "reset-pass-desc": "To reset your password, enter the email for your account. You will receive an email with instructions to reset your password.",
     "roll": "roll",
@@ -215,5 +229,17 @@
     "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
     "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
     "switch-control-with-smartdrive": "Switch Control with SmartDrive"
+  },
+  "settings-different": {
+    "title": "App and PushTracker Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
+  },
+  "push-settings-different": {
+    "title": "App and PushTracker Push Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
+  },
+  "switch-control-settings-different": {
+    "title": "App and PushTracker Switch Control Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
   }
 }

@@ -13,7 +13,6 @@ import { ActivityService } from '../../services/activity.service';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'home-tab',
@@ -21,14 +20,14 @@ import { Injectable } from '@angular/core';
   templateUrl: './home-tab.component.html'
 })
 export class HomeTabComponent implements OnInit {
-  distanceCirclePercentage: number;
+  distanceCirclePercentage: number = 0;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
   coastTimeCirclePercentageMaxValue;
-  distanceRemainingText: string;
+  distanceRemainingText: string = '<Insert value>';
   pushCountData: string;
   coastTimeData: string;
-  distanceData: string;
+  distanceData: string = '<0>';
   distanceChartData;
   infoItems;
   user: PushTrackerUser;
@@ -37,7 +36,6 @@ export class HomeTabComponent implements OnInit {
 
   private _currentDayInView: Date;
   public weeklyActivity: ObservableArray<any[]>;
-  private _weeklyActivityCache = {};
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
@@ -47,6 +45,8 @@ export class HomeTabComponent implements OnInit {
   public yAxisStep: number = 2.5;
   public savedTheme: string;
   public weeklyActivityAnnotationValue: number = 0;
+  public coastTimeGoalMessage: string;
+  public weeklyActivityLoaded: boolean = false;
 
   constructor(
     private _translateService: TranslateService,
@@ -62,19 +62,17 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this._loadWeeklyActivity();
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+    this._loadWeeklyActivity();
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.userService.user.subscribe(user => {
       this.user = user;
-      this._refreshGoalData();
-      this._loadWeeklyActivity();
     });
   }
 
@@ -100,27 +98,6 @@ export class HomeTabComponent implements OnInit {
     Log.D('watch item tapped');
   }
 
-  private _refreshGoalData() {
-    // determine users distance value and get user activity goal for distance
-    this.distanceCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.distanceCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_distance;
-
-    // determine users coast-time value and get user activity goal for distance
-    this.coastTimeCirclePercentage = Math.floor(Math.random() * 100) + 1;
-    this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
-
-    this.distanceRemainingText = `0.4 ${this._translateService.instant(
-      'home-tab.miles-to-go'
-    )}`;
-    this.pushCountData = `1514`;
-    this.coastTimeData = `3.6`;
-    this.distanceData = `2.75`;
-
-    this.distanceChartData = null;
-  }
-
   _getFirstDayOfWeek(date) {
     date = new Date(date);
     const day = date.getDay();
@@ -130,52 +107,43 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadWeeklyActivity() {
-    let didLoad = false;
-    // Check if data is available in daily activity cache first
-    if (!(this._weekStart.toUTCString() in this._weeklyActivityCache)) {
-      didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
-      if (didLoad) {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView('Week')
-        );
-        this._weekStart = new Date(this._activityService.weeklyActivity.date);
-        this._weekEnd = new Date(this._weekStart);
-        this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-      } else {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView('Week')
-        );
-      }
-      // Cache activity by day so we can easily pull it up next time
-      this._weeklyActivityCache[this._weekStart.toUTCString()] = {
-        chartData: this.weeklyActivity,
-        weeklyActivity: this._activityService.weeklyActivity
-      };
-    } else {
-      // We have the data cached. Pull it up
-      didLoad = true;
-      const cache = this._weeklyActivityCache[this._weekStart.toUTCString()];
-      this.weeklyActivity = cache.chartData;
-      this._weekStart = new Date(cache.weeklyActivity.date);
+    const didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
+    if (didLoad) {
+      this.weeklyActivity = new ObservableArray(
+        this._formatActivityForView('Week')
+      );
+      this._weekStart = new Date(this._activityService.weeklyActivity.date);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    } else {
+      this.weeklyActivity = new ObservableArray([]);
     }
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return date.getFullYear() + '/' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
         + '/' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
     };
+    this.yAxisMax = 0;
     const days = this._activityService.weeklyActivity['days'];
     for (const i in days) {
       const day = days[i];
       if (day.date === dateFormatted(this._currentDayInView))
         this._todaysActivity = day;
+      if (day.coast_time_avg > this.yAxisMax)
+        this.yAxisMax = day.coast_time_avg + 0.2 * day.coast_time_avg;
     }
     this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
     this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
-    this.yAxisMax = parseInt(((this._todaysActivity.push_count || 0) + 0.1 * this._todaysActivity.push_count).toFixed());
+    this.weeklyActivityAnnotationValue = this.user.data.activity_goal_coast_time;
+
     if (this.yAxisMax === 0)
       this.yAxisMax = 10;
-    this.yAxisStep = parseInt((this.yAxisMax / 4.0).toFixed());
+
+    if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
+    this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
+    this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
+    this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
+    this.weeklyActivityLoaded = true;
   }
 
   _formatActivityForView(viewMode) {
@@ -184,7 +152,7 @@ export class HomeTabComponent implements OnInit {
       if (activity) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function(start, end) {
+        const range = function (start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);

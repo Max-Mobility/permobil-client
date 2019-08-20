@@ -5,6 +5,8 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
+import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 import {
   fromResource as imageFromResource
 } from 'tns-core-modules/image-source';
@@ -36,10 +38,17 @@ export class ProfileSettingsComponent implements OnInit {
   WEIGHT: string;
   DISTANCE_UNITS: string[];
   DISTANCE: string;
-  CURRENT_THEME: string;
+  CURRENT_THEME: string = appSettings.getString(
+    STORAGE_KEYS.APP_THEME,
+    APP_THEMES.DEFAULT
+  );
   CURRENT_LANGUAGE: string;
-  watchIconString: string = 'watch_question_black';
-  watchIconOpacity: number = 0.7;
+  watchIconString: string =
+    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
+      'watch_question_black' : 'watch_question_white';
+  watchIconOpacity: number =
+    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
+      0.7 : 1.0;
   watchIcon: any = imageFromResource(this.watchIconString);
   user: PushTrackerUser; // this is our Kinvey.User
   screenHeight: number;
@@ -50,6 +59,10 @@ export class ProfileSettingsComponent implements OnInit {
   listPickerIndex: number = 0;
 
   private activeSetting: string = null;
+
+  private _debouncedCommitSettingsFunction: any = null;
+
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
 
   constructor(
     public settingsService: SettingsService,
@@ -63,6 +76,14 @@ export class ProfileSettingsComponent implements OnInit {
   ) {
     this._page.actionBarHidden = true;
 
+    // save the debounced commit settings function
+    this._debouncedCommitSettingsFunction = debounce(
+      this.commitSettingsChange.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { leading: true, trailing: true }
+    );
+
+    // set up the status watcher for the pushtracker state
     this.bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
       this.updateWatchIcon,
@@ -293,7 +314,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.commitSettingsChange();
+      this._debouncedCommitSettingsFunction();
     }
   }
 
@@ -346,7 +367,7 @@ export class ProfileSettingsComponent implements OnInit {
   async onSettingsChecked(args: PropertyChangeData, setting: string) {
     let updatedSmartDriveSettings = false;
 
-    const isChecked = args.value;
+    let isChecked = args.value;
     // apply the styles if the switch is false/off
     const sw = args.object as Switch;
     sw.className =
@@ -358,7 +379,10 @@ export class ProfileSettingsComponent implements OnInit {
           updatedSmartDriveSettings = true;
         this.settingsService.settings.ezOn = isChecked;
         break;
-      case 'disable-power-assist-beep':
+      case 'power-assist-beep':
+        // since the value we use is actually the OPPOSITE of the
+        // switch
+        isChecked = !isChecked;
         if (isChecked !== this.settingsService.settings.disablePowerAssistBeep)
           updatedSmartDriveSettings = true;
         this.settingsService.settings.disablePowerAssistBeep = isChecked;
@@ -367,11 +391,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      // timeout to ensure the switch animation is smooth
-      // https://github.com/Max-Mobility/permobil-client/issues/179
-      setTimeout(() => {
-        this.commitSettingsChange();
-      }, 300);
+      this._debouncedCommitSettingsFunction();
     }
   }
 

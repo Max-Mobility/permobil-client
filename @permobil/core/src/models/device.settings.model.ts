@@ -201,7 +201,7 @@ export namespace Device {
         .map(k => this.copyKey(k, s));
     }
 
-    diff(s: any): boolean {
+    equals(s: any): boolean {
       return Object.keys(Device.Settings.Defaults)
         .reduce((equal, key) => {
           return equal && this[key] === s[key];
@@ -258,12 +258,11 @@ export namespace Device {
         .map(k => this.copyKey(k, s));
     }
 
-    diff(ps: any): boolean {
-      return (
-        this.threshold !== ps.threshold ||
-        this.timeWindow !== ps.timeWindow ||
-        this.clearCounter !== ps.clearCounter
-      );
+    equals(ps: any): boolean {
+      return Object.keys(Device.PushSettings.Defaults)
+        .reduce((equal, key) => {
+          return equal && this[key] === ps[key];
+        }, true);
     }
   }
 
@@ -374,7 +373,7 @@ export namespace Device {
         .map(k => this.copyKey(k, s));
     }
 
-    diff(s: any): boolean {
+    equals(s: any): boolean {
       return Object.keys(Device.SwitchControlSettings.Defaults)
         .reduce((equal, key) => {
           return equal && this[key] === s[key];

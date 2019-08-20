@@ -46,7 +46,13 @@
 
   RadCartesianChart {
     width: 90%;
-    height: 200;
+    height: 150;
+  }
+
+  .title {
+    font-size: 16px;
+    color: $black;
+    font-weight: bold;
   }
 
   .chart-layout {
