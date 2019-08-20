@@ -63,18 +63,23 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this.weeklyActivityAnnotationValue = 0;
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+    this._loadWeeklyActivity();
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.userService.user.subscribe(user => {
       this.user = user;
+      this.savedTheme = appSettings.getString(
+        STORAGE_KEYS.APP_THEME,
+        APP_THEMES.DEFAULT
+      );
       this._refreshGoalData();
-      this._loadWeeklyActivity();
     });
   }
 
