@@ -9,6 +9,7 @@ import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 @NgModule({
+  entryComponents: [ActivityTabComponent],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
