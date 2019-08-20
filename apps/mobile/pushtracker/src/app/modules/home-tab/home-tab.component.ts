@@ -44,7 +44,7 @@ export class HomeTabComponent implements OnInit {
   public yAxisMax: number = 10;
   public yAxisStep: number = 2.5;
   public savedTheme: string;
-  public weeklyActivityAnnotationValue: number = 0;
+  public weeklyActivityAnnotationValue: number = 1;
   public coastTimeGoalMessage: string;
   public weeklyActivityLoaded: boolean = false;
 
