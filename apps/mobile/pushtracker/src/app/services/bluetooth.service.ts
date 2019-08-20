@@ -70,7 +70,7 @@ export class BluetoothService extends Observable {
     BluetoothService.pushTrackerStatus.set('state', state);
 
     // enabling `debug` will output console.logs from the bluetooth source code
-    this._bluetooth.debug = true;
+    this._bluetooth.debug = false;
 
     this._loggingService.logBreadCrumb('bluetooth.service constructor');
 
@@ -383,9 +383,6 @@ export class BluetoothService extends Observable {
     const bondState = argdata.bondState;
     switch (bondState) {
       case BondState.bonding:
-        if (isAndroid) {
-          dev.device.fetchUuidsWithSdp();
-        }
         break;
       case BondState.bonded:
         if (isAndroid) {
@@ -394,10 +391,6 @@ export class BluetoothService extends Observable {
         const pt = this.getOrMakePushTracker(dev);
         pt.handlePaired();
         this.updatePushTrackerState();
-        // this.feedback.success({
-        //   title: 'Successfully Paired',
-        //   message: `PushTracker ${pt.address} now paired`
-        // });
         break;
       case BondState.none:
         break;

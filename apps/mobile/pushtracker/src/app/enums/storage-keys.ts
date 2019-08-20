@@ -11,6 +11,12 @@ export enum STORAGE_KEYS {
   'DEVICE_SETTINGS' = 'DEVICE_SETTINGS',
 
   /**
+   * This key is used to store the Device.PushSettings
+   * (PushTracker Push Settings) object.
+   */
+  'DEVICE_PUSH_SETTINGS' = 'DEVICE_PUSH_SETTINGS',
+
+  /**
    * This key is used to store the Device.SwitchControlSettings
    * (SmartDrive Switch Control Settings) object.
    */

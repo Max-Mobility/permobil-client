@@ -43,6 +43,7 @@ export class PushTracker extends Observable {
   static distance_event = 'distance_event';
   static settings_event = 'settings_event';
   static push_settings_event = 'push_settings_event';
+  static switch_control_settings_event = 'switch_control_settings_event';
   static daily_info_event = 'daily_info_event';
   static awake_event = 'awake_event';
   static ota_ready_event = 'ota_ready_event';
@@ -76,6 +77,7 @@ export class PushTracker extends Observable {
 
   settings = new Device.Settings();
   pushSettings = new Device.PushSettings();
+  switchControlSettings = new Device.SwitchControlSettings();
 
   // not serialized
   device: any = null; // the actual device (ios:CBCentral, android:BluetoothDevice)
@@ -805,6 +807,9 @@ export class PushTracker extends Observable {
         case 'PushSettings':
           this.handlePushSettings(p);
           break;
+        case 'SwitchControlSettings':
+          this.handleSwitchControlSettings(p);
+          break;
         case 'Ready':
           this.handleReady(p);
           break;
@@ -815,6 +820,9 @@ export class PushTracker extends Observable {
       switch (subType) {
         case 'SetSettings':
           this.handleSettings(p);
+          break;
+        case 'SetSwitchControlSettings':
+          this.handleSwitchControlSettings(p);
           break;
         case 'OTAReady':
           this.handleOTAReady(p);
@@ -830,12 +838,12 @@ export class PushTracker extends Observable {
     // This is sent by the PushTracker when it connects
     const versionInfo = p.data('versionInfo');
     /* Version Info
-           struct {
-           uint8_t     pushTracker;         // Major.Minor version as the MAJOR and MINOR nibbles of the byte.
-           uint8_t     smartDrive;          // Major.Minor version as the MAJOR and MINOR nibbles of the byte.
-           uint8_t     smartDriveBluetooth; // Major.Minor version as the MAJOR and MINOR nibbles of the byte.
-           }            versionInfo;
-        */
+         struct {
+           uint8_t  pushTracker;         // Major.Minor version as the MAJOR and MINOR nibbles.
+           uint8_t  smartDrive;          // Major.Minor version as the MAJOR and MINOR nibbles.
+           uint8_t  smartDriveBluetooth; // Major.Minor version as the MAJOR and MINOR nibbles.
+         }            versionInfo;
+    */
     this.version = versionInfo.pushTracker;
     this.mcu_version = versionInfo.smartDrive;
     this.ble_version = versionInfo.smartDriveBluetooth;
@@ -851,22 +859,22 @@ export class PushTracker extends Observable {
     // This is sent by the PushTracker when it connects
     const errorInfo = p.data('errorInfo');
     /* Error Info
-           struct {
+         struct {
            uint16_t            year;
            uint8_t             month;
            uint8_t             day;
            uint8_t             hour;
            uint8_t             minute;
            uint8_t             second;
-           SmartDrive::Error   mostRecentError;  // Type of the most recent error, associated with the timeStamp.
+           SmartDrive::Error   mostRecentError;
            uint8_t             numBatteryVoltageErrors;
            uint8_t             numOverCurrentErrors;
            uint8_t             numMotorPhaseErrors;
            uint8_t             numGyroRangeErrors;
            uint8_t             numOverTemperatureErrors;
            uint8_t             numBLEDisconnectErrors;
-           }                     errorInfo;
-        */
+         }                     errorInfo;
+    */
     // TODO: send error event to subscribers so they get updated
     this.sendEvent(PushTracker.error_event, {
       // what should we put here?
@@ -883,16 +891,18 @@ export class PushTracker extends Observable {
     const motorMiles = PushTracker.motorTicksToMiles(motorTicks);
     const caseMiles = PushTracker.caseTicksToMiles(caseTicks);
     /* DistanceInfo
-           struct {
+         struct {
            uint64_t   motorDistance;  /** Cumulative Drive distance in ticks.
            uint64_t   caseDistance;   /** Cumulative Case distance in ticks.
-           }            distanceInfo;
-        */
+         }            distanceInfo;
+    */
     // console.log(`Got distance info: ${motorTicks}, ${caseTicks}`);
     // console.log(`                 : ${motorMiles}, ${caseMiles}`);
     this.sendEvent(PushTracker.distance_event, {
       driveDistance: motorTicks,
-      coastDistance: caseTicks
+      coastDistance: caseTicks,
+      driveMiles: motorMiles,
+      coastMiles: caseMiles
     });
     // TODO: update distance record for this pushtracker (locally
     // and on the server)
@@ -902,7 +912,7 @@ export class PushTracker extends Observable {
     // This is sent by the PushTracker when it connects
     const settings = p.data('settings');
     /* Settings
-           struct Settings {
+         struct Settings {
            ControlMode controlMode;
            Units       units;
            uint8_t     settingsFlags1;  /** Bitmask of boolean settings.
@@ -910,8 +920,8 @@ export class PushTracker extends Observable {
            float       tapSensitivity;  /** Slider setting, range: [0.1, 1.0]
            float       acceleration;    /** Slider setting, range: [0.1, 1.0]
            float       maxSpeed;        /** Slider setting, range: [0.1, 1.0]
-           } settings;
-        */
+         } settings;
+    */
     this.settings.fromSettings(settings);
     this.sendEvent(PushTracker.settings_event, {
       settings: this.settings
@@ -922,15 +932,33 @@ export class PushTracker extends Observable {
     // This is sent by the PushTracker when it connects
     const pushSettings = p.data('pushSettings');
     /* PushSettings
-	       struct PushSettings {
-   	   uint8_t     threshold;       /** Push Detection Threshold, [0, 255]
-		   uint8_t     timeWindow;      /** Push Detection Time Window, [0, 255]
-		   uint8_t     clearCounter;    /** Clear the counter for data below threshold? [0, 1]
-		   }  pushSettings;
-		*/
+       struct PushSettings {
+         uint8_t     threshold;       /** Push Detection Threshold, [0, 255]
+         uint8_t     timeWindow;      /** Push Detection Time Window, [0, 255]
+         uint8_t     clearCounter;    /** Clear the counter for data below threshold? [0, 1]
+       }  pushSettings;
+    */
     this.pushSettings.fromSettings(pushSettings);
     this.sendEvent(PushTracker.push_settings_event, {
       pushSettings: this.pushSettings
+    });
+  }
+
+  private handleSwitchControlSettings(p: Packet) {
+    // This is sent by the PushTracker when it connects
+    const switchControlSettings = p.data('switchControlSettings');
+    /* SwitchControlSettings
+       struct SwitchControlSettings {
+         SwitchControlMode mode;
+         uint8_t padding1;
+         uint8_t padding2;
+         uint8_t padding3;
+         float maxSpeed; // Slider setting, range: [0.1, 1.0]
+       }  switchControlSettings;
+    */
+    this.switchControlSettings.fromSettings(switchControlSettings);
+    this.sendEvent(PushTracker.switch_control_settings_event, {
+      switchControlSettings: this.switchControlSettings
     });
   }
 
@@ -940,7 +968,7 @@ export class PushTracker extends Observable {
     // unsent daily info for previous days on connection
     const di = p.data('dailyInfo');
     /* Daily Info
-           struct {
+         struct {
            uint16_t    year;
            uint8_t     month;
            uint8_t     day;
@@ -952,8 +980,8 @@ export class PushTracker extends Observable {
            uint8_t     speed;           /** Speed (mph) * 10.
            uint8_t     ptBattery;       /** Percent, [0, 100].
            uint8_t     sdBattery;       /** Percent, [0, 100].
-           }            dailyInfo;
-        */
+         }            dailyInfo;
+    */
     this.sendEvent(PushTracker.daily_info_event, {
       year: di.year,
       month: di.month,

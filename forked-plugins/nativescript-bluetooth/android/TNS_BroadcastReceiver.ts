@@ -109,12 +109,27 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
         device: getDevice(device)
       });
     } else if (
+      action === android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED
+    ) {
+      // TODO: device here might be peripheral or central - need to
+      //       figure out which one it is!
+      this._owner.get().sendEvent(Bluetooth.device_acl_connected_event, {
+        device: getDevice(device)
+      });
+    } else if (
       action === android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
     ) {
       CLog(CLogTypes.info, 'discovery finsihed in bluetooth adapter');
       // discovery has finished, give a call to fetchUuidsWithSdp
       const result = device.fetchUuidsWithSdp();
       CLog(CLogTypes.info, 'fetchUuidsWithSdp result', result);
+    } else if (
+      action === android.bluetooth.BluetoothDevice.ACTION_FOUND
+    ) {
+      CLog(CLogTypes.info, `Bluetooth Device Found: ${device}`);
+      this._owner.get().sendEvent(Bluetooth.device_found_event, {
+        device: getDevice(device)
+      });
     }
   }
 }

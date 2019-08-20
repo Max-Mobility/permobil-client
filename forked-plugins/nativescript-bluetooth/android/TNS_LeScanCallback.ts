@@ -65,6 +65,7 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
           );
           this._owner.get().sendEvent(Bluetooth.device_discovered_event, {
             type: 'scanResult', // TODO or use different callback functions?
+            device: device,
             UUID: device.getAddress(), // TODO consider renaming to id (and iOS as well)
             name: device.getName(),
             RSSI: rssi,

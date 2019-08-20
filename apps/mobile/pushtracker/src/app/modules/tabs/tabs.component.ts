@@ -4,12 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
+import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { BluetoothService, SettingsService } from '../../services';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
+import { PushTracker } from '../../models';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import * as application from 'tns-core-modules/application';
-import { alert } from 'tns-core-modules/ui/dialogs';
+import { alert, action } from 'tns-core-modules/ui/dialogs';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import * as appSettings from 'tns-core-modules/application-settings';
 
@@ -49,13 +51,8 @@ export class TabsComponent {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
-    // register for bluetooth events here
-    this._bluetoothService.on(BluetoothService.advertise_error,
-      this.onBluetoothAdvertiseError.bind(this));
-    this._bluetoothService.on(BluetoothService.pushtracker_connected,
-      this.onPushTrackerConnected.bind(this));
-    this._bluetoothService.on(BluetoothService.pushtracker_disconnected,
-      this.onPushTrackerDisconnected.bind(this));
+    this.registerBluetoothEvents();
+    this.registerPushTrackerEvents();
 
     this.homeTabItem = {
       title: this._homeTabTitle,
@@ -106,7 +103,7 @@ export class TabsComponent {
         okButtonText: this._translateService.instant('buttons.ok')
       });
       try {
-        const permissions = await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => { });
         return true;
       } catch (permissionsObj) {
         const hasBlePermission =
@@ -125,6 +122,19 @@ export class TabsComponent {
     }
   }
 
+  /**
+   * BLUETOOTH EVENT MANAGEMENT
+   */
+  registerBluetoothEvents() {
+    // register for bluetooth events here
+    this._bluetoothService.on(BluetoothService.advertise_error,
+      this.onBluetoothAdvertiseError.bind(this));
+    this._bluetoothService.on(BluetoothService.pushtracker_connected,
+      this.onPushTrackerConnected.bind(this));
+    this._bluetoothService.on(BluetoothService.pushtracker_disconnected,
+      this.onPushTrackerDisconnected.bind(this));
+  }
+
   onBluetoothAdvertiseError(args: any) {
     const error = args.data.error;
     alert({
@@ -132,6 +142,12 @@ export class TabsComponent {
       okButtonText: this._translateService.instant('dialogs.ok'),
       message: `${error}`
     });
+  }
+
+  onPushTrackerPaired(args: any) {
+    const pt = args.data.pushtracker;
+    const msg = this._translateService.instant('general.pushtracker-paired') + `: ${pt.address}`;
+    this.snackbar.simple(msg);
   }
 
   onPushTrackerConnected(args: any) {
@@ -146,6 +162,148 @@ export class TabsComponent {
     this.snackbar.simple(msg);
   }
 
+  /**
+   * PUSHTRACKER EVENT MANAGEMENT
+   */
+  unregisterPushTrackerEvents() {
+    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    BluetoothService.PushTrackers.map(pt => {
+      pt.off(PushTracker.paired_event);
+      // pt.off(PushTracker.connect_event);
+      pt.off(PushTracker.settings_event);
+      pt.off(PushTracker.push_settings_event);
+      pt.off(PushTracker.switch_control_settings_event);
+    });
+  }
+
+  _registerEventsForPT(pt: PushTracker) {
+    pt.on(PushTracker.paired_event, () => {
+      Log.D('pt paired:', pt.address);
+      this.onPushTrackerPaired({
+        data: { pushtracker: pt }
+      });
+    });
+    /* // Don't register for connect event here - handled by the bluetoothservice pushtracker_connect
+    pt.on(PushTracker.connect_event, () => {
+      Log.D('pt connected:', pt.address);
+      this.onPushTrackerConnected({
+        data: { pushtracker: pt }
+      })
+    });
+    */
+    // register for settings and push settings
+    pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
+    pt.on(PushTracker.push_settings_event, this.onPushTrackerPushSettings, this);
+    pt.on(PushTracker.switch_control_settings_event, this.onPushTrackerSwitchControlSettings, this);
+  }
+
+  registerPushTrackerEvents() {
+    this.unregisterPushTrackerEvents();
+    // handle pushtracker pairing events for existing pushtrackers
+    BluetoothService.PushTrackers.map(pt => {
+      this._registerEventsForPT(pt);
+    });
+
+    // listen for completely new pusthrackers (that we haven't seen before)
+    BluetoothService.PushTrackers.on(
+      ObservableArray.changeEvent,
+      (args: ChangedData<number>) => {
+        if (args.action === 'add') {
+          const pt = BluetoothService.PushTrackers.getItem(
+            BluetoothService.PushTrackers.length - 1
+          );
+          if (pt) {
+            this._registerEventsForPT(pt);
+          }
+        }
+      }
+    );
+  }
+
+  async onPushTrackerSettings(args: any) {
+    const s = args.data.settings;
+    if (this._settingsService.settings.diff(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant('settings-different.title'),
+        message: this._translateService.instant('settings-different.message'),
+        actions: [
+          this._translateService.instant('actions.overwrite-settings'),
+          this._translateService.instant('actions.keep-settings')
+        ],
+        cancelButtonText: this._translateService.instant('buttons.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-settings'):
+          this._settingsService.settings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant('actions.keep-settings'):
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  async onPushTrackerPushSettings(args: any) {
+    const s = args.data.pushSettings;
+    if (this._settingsService.pushSettings.diff(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant('push-settings-different.title'),
+        message: this._translateService.instant('push-settings-different.message'),
+        actions: [
+          this._translateService.instant('actions.overwrite-settings'),
+          this._translateService.instant('actions.keep-settings')
+        ],
+        cancelButtonText: this._translateService.instant('buttons.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-settings'):
+          this._settingsService.pushSettings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant('actions.keep-settings'):
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  async onPushTrackerSwitchControlSettings(args: any) {
+    const s = args.data.switchControlSettings;
+    if (this._settingsService.switchControlSettings.diff(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant('switch-control-settings-different.title'),
+        message: this._translateService.instant('switch-control-settings-different.message'),
+        actions: [
+          this._translateService.instant('actions.overwrite-settings'),
+          this._translateService.instant('actions.keep-settings')
+        ],
+        cancelButtonText: this._translateService.instant('buttons.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-settings'):
+          this._settingsService.switchControlSettings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant('actions.keep-settings'):
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   * PAGE LIFECYCLE EVENT MANAGEMENT
+   */
   ngOnInit() {
     // load the device settings (sd / pt)
     this._settingsService.loadSettings();

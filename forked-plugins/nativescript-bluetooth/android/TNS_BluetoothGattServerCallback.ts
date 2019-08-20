@@ -38,7 +38,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       `---- TNS_BluetoothGattServerCallback.onCharacteristicReadRequest ---- device: ${device} requestId: ${requestId}, offset: ${offset}, characteristic: ${characteristic}`
     );
 
-    console.log('char read request gattserver', this._owner.get().gattServer);
+    // console.log('char read request gattserver', this._owner.get().gattServer);
     this._owner.get().sendEvent(Bluetooth.characteristic_read_request_event, {
       device: getDevice(device),
       requestId,
@@ -79,7 +79,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       `---- TNS_BluetoothGattServerCallback.onCharacteristicWriteRequest ---- device: ${device} requestId: ${requestId}, characteristic: ${characteristic}`
     );
 
-    console.log('char write request gattserver', this._owner.get().gattServer);
+    // console.log('char write request gattserver', this._owner.get().gattServer);
     this._owner.get().sendEvent(Bluetooth.characteristic_write_request_event, {
       device: getDevice(device),
       requestId,
@@ -147,7 +147,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       `---- TNS_BluetoothGattServerCallback.onDescriptorReadRequest ---- device: ${device}, requestId: ${requestId}, offset: ${offset}, descriptor: ${descriptor}`
     );
 
-    console.log('desc read gattserver', this._owner.get().gattServer);
+    // console.log('desc read gattserver', this._owner.get().gattServer);
     this._owner.get().sendEvent(Bluetooth.descriptor_read_request_event, {
       device: getDevice(device),
       requestId,
@@ -190,7 +190,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       `---- TNS_BluetoothGattServerCallback.onDescriptorWriteRequest ---- device: ${device}, requestId: ${requestId}, descriptor: ${descriptor}`
     );
 
-    console.log('desc write gattserver', this._owner.get().gattServer);
+    // console.log('desc write gattserver', this._owner.get().gattServer);
     this._owner.get().sendEvent(Bluetooth.descriptor_write_request_event, {
       device: getDevice(device),
       requestId,
@@ -232,7 +232,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       execute
     });
 
-    console.log('execute write gattserver', this._owner.get().gattServer);
+    // console.log('execute write gattserver', this._owner.get().gattServer);
     if (this._owner.get().gattServer) {
       const respData = Array.create('byte', 1);
       respData[0] = 0x01;
@@ -282,17 +282,17 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     status: number,
     service: android.bluetooth.BluetoothGattService
   ) {
-    console.log('added service', status, service);
-    console.log('        uuid:', service.getUuid());
+    // console.log('added service', status, service);
+    // console.log('        uuid:', service.getUuid());
     const chars = service.getCharacteristics();
     for (let i = 0; i < chars.size(); i++) {
       const char = chars.get(i);
-      console.log('        ------------');
-      console.log('        char uuid:', char.getUuid());
-      console.log('        char perm:', char.getPermissions());
-      console.log('        char prop:', char.getProperties());
-      console.log('        char type:', char.getWriteType());
-      console.log('        char val: ', Array.from(char.getValue()));
+      // console.log('        ------------');
+      // console.log('        char uuid:', char.getUuid());
+      // console.log('        char perm:', char.getPermissions());
+      // console.log('        char prop:', char.getProperties());
+      // console.log('        char type:', char.getWriteType());
+      // console.log('        char val: ', Array.from(char.getValue()));
     }
     CLog(
       CLogTypes.info,
