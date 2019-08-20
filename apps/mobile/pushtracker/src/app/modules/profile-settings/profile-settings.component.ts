@@ -22,7 +22,15 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
-  infoItems;
+  @ViewChild('sliderSettingDialog', { static: false })
+  sliderSettingDialog: ElementRef;
+
+  @ViewChild('listPickerDialog', { static: false })
+  listPickerDialog: ElementRef;
+
+  @ViewChild('watchImage', { static: false })
+  watchImage: ElementRef;
+
   HEIGHT_UNITS: string[];
   HEIGHT: string;
   WEIGHT_UNITS: string[];
@@ -33,27 +41,16 @@ export class ProfileSettingsComponent implements OnInit {
   CURRENT_LANGUAGE: string;
   watchIcon: string;
   watchIconOpacity: number = 1.0;
-  savedTheme: string;
-  viewInitialized: boolean = false;
-
   user: PushTrackerUser; // this is our Kinvey.User
-
-  @ViewChild('sliderSettingDialog', { static: false })
-  sliderSettingDialog: ElementRef;
-
-  @ViewChild('listPickerDialog', { static: false })
-  listPickerDialog: ElementRef;
-
-  @ViewChild('watchImage', { static: false })
-  watchImage: ElementRef;
-
   screenHeight: number;
-  activeSetting: string = null;
   activeSettingTitle: string = 'Setting';
   activeSettingDescription: string = 'Description';
   SLIDER_VALUE: number = 0;
   listPickerItems: string[];
   listPickerIndex: number = 0;
+
+  private activeSetting: string = null;
+  private viewInitialized: boolean = false;
 
   constructor(
     public settingsService: SettingsService,
@@ -64,9 +61,10 @@ export class ProfileSettingsComponent implements OnInit {
     private userService: PushTrackerUserService,
     private _params: ModalDialogParams
   ) {
-    // this.getUser();
     this._page.actionBarHidden = true;
-    this.savedTheme = appSettings.getString(
+
+    // get current app style theme from app-settings on device
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
@@ -76,9 +74,6 @@ export class ProfileSettingsComponent implements OnInit {
     this._logService.logBreadCrumb('profile-settings.component ngOnInit');
 
     this.getUser();
-    this.infoItems = this._translateService.instant(
-      'profile-settings-component.sections'
-    );
 
     this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
     this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
@@ -92,10 +87,6 @@ export class ProfileSettingsComponent implements OnInit {
     ];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
-
-    // get current app style theme from app-settings on device
-    this.CURRENT_THEME =
-      appSettings.getString(STORAGE_KEYS.APP_THEME) || APP_THEMES.DEFAULT;
   }
 
   ngAfterViewInit() {
@@ -105,7 +96,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.viewInitialized = true;
   }
 
-  getUser(): void {
+  getUser() {
     this.userService.user.subscribe(user => (this.user = user));
   }
 
@@ -116,7 +107,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   setWatchIconVariables(status: string) {
     if (this.viewInitialized) {
-      if (this.savedTheme === 'DEFAULT') {
+      if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
         this.watchIcon = `res://watch_${status}_black`;
         this.watchIconOpacity = 0.7;
       } else {
