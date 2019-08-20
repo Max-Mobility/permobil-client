@@ -1,4 +1,4 @@
-<ScrollView class="home-tab-layout">
+<ScrollView class="home-tab-layout" orientation="vertical" isEnabled="true" width="100%" height="100%">
   <StackLayout>
     // Mock ActionBar
     <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
@@ -76,7 +76,7 @@
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
         </Palette>  
-        <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
+        <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
           [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
           [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
