@@ -146,12 +146,12 @@ export class PairingComponent implements OnInit {
     // update drop downs
     (this.unitsDropDown
       .nativeElement as DropDown).selectedIndex = this.UnitsOptions.indexOf(
-      this.settings.units
-    );
+        this.settings.units
+      );
     (this.controlModeDropDown
       .nativeElement as DropDown).selectedIndex = this.ControlModeOptions.indexOf(
-      this.settings.controlMode
-    );
+        this.settings.controlMode
+      );
   }
 
   unregister(): void {
@@ -175,7 +175,7 @@ export class PairingComponent implements OnInit {
     );
 
     this._zone.run(() => {
-      if (this.settings.diff(args.data.settings)) {
+      if (!this.settings.equals(args.data.settings)) {
         // ask to copy the settings
         confirm({
           message: this._translateService.instant(
@@ -186,7 +186,7 @@ export class PairingComponent implements OnInit {
         }).then(result => {
           this._loggingService.logBreadCrumb(
             PairingComponent.LOG_TAG +
-              `onPushTrackerSettings() confirm result: ${result}`
+            `onPushTrackerSettings() confirm result: ${result}`
           );
 
           if (result === true) {
@@ -213,7 +213,7 @@ export class PairingComponent implements OnInit {
     );
 
     this._zone.run(() => {
-      if (this.pushSettings.diff(args.data.pushSettings)) {
+      if (!this.pushSettings.equals(args.data.pushSettings)) {
         // ask to copy the settings
         confirm({
           message: this._translateService.instant(
@@ -224,7 +224,7 @@ export class PairingComponent implements OnInit {
         }).then(result => {
           this._loggingService.logBreadCrumb(
             PairingComponent.LOG_TAG +
-              `onPushTrackerPushSettings() confirm result: ${result}`
+            `onPushTrackerPushSettings() confirm result: ${result}`
           );
 
           if (result === true) {
@@ -260,7 +260,7 @@ export class PairingComponent implements OnInit {
     const pushTracker = this._getOneConnectedPushTracker();
     this._loggingService.logBreadCrumb(
       PairingComponent.LOG_TAG +
-        `onSaveSettings() pushTracker: ${JSON.stringify(pushTracker)}`
+      `onSaveSettings() pushTracker: ${JSON.stringify(pushTracker)}`
     );
 
     if (pushTracker === null) {
@@ -424,9 +424,9 @@ export class PairingComponent implements OnInit {
 
     this._loggingService.logBreadCrumb(
       PairingComponent.LOG_TAG +
-        `_getOneConnectedPushTracker() connectedPTs: ${JSON.stringify(
-          connectedPTs
-        )}`
+      `_getOneConnectedPushTracker() connectedPTs: ${JSON.stringify(
+        connectedPTs
+      )}`
     );
 
     // no pushtrackers are connected - will show snackbar alert

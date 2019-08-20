@@ -1,4 +1,9 @@
 {
+  "actions": {
+    "overwrite-local-settings": "Overwrite app's settings.",
+    "overwrite-remote-settings": "Overwrite PushTracker's settings.",
+    "keep-both-settings": "Do not change either settings."
+  },
   "activity-tab-component": {
     "day": "Day",
     "month": "Month",
@@ -28,6 +33,9 @@
       }
     ],
     "title": "Get going with SmartDrive from Permobil & MaxMobility"
+  },
+  "bluetooth": {
+    "service-failure": "Unable to start the bluetooth service."
   },
   "days": {
     "friday": "Friday",
@@ -221,5 +229,17 @@
     "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
     "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
     "switch-control-with-smartdrive": "Switch Control with SmartDrive"
+  },
+  "settings-different": {
+    "title": "App and PushTracker Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
+  },
+  "push-settings-different": {
+    "title": "App and PushTracker Push Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
+  },
+  "switch-control-settings-different": {
+    "title": "App and PushTracker Switch Control Settings Differ",
+    "message": "Please select from the options below how to resolve differences between the settings."
   }
 }

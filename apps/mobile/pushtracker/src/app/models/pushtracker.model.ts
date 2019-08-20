@@ -672,6 +672,14 @@ export class PushTracker extends Observable {
     );
   }
 
+  sendPushSettingsObject(settings: Device.PushSettings) {
+    return this.sendPushSettings(
+      settings.threshold,
+      settings.timeWindow,
+      settings.clearCounter
+    );
+  }
+
   sendPushSettings(
     threshold: number,
     timeWindow: number,
