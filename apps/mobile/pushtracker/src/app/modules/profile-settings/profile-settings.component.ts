@@ -5,6 +5,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
+import { fromFile as imageFromFile } from 'tns-core-modules/image-source';
 import { screen } from 'tns-core-modules/platform';
 import { Image } from 'tns-core-modules/ui/image/image';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
@@ -14,7 +15,6 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
-const imageSourceModule = require(`tns-core-modules/image-source`);
 
 @Component({
   selector: 'profile-settings',
@@ -22,7 +22,15 @@ const imageSourceModule = require(`tns-core-modules/image-source`);
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
-  infoItems;
+  @ViewChild('sliderSettingDialog', { static: false })
+  sliderSettingDialog: ElementRef;
+
+  @ViewChild('listPickerDialog', { static: false })
+  listPickerDialog: ElementRef;
+
+  @ViewChild('watchImage', { static: false })
+  watchImage: ElementRef;
+
   HEIGHT_UNITS: string[];
   HEIGHT: string;
   WEIGHT_UNITS: string[];
@@ -33,27 +41,16 @@ export class ProfileSettingsComponent implements OnInit {
   CURRENT_LANGUAGE: string;
   watchIcon: string;
   watchIconOpacity: number = 1.0;
-  savedTheme: string;
-  viewInitialized: boolean = false;
-
   user: PushTrackerUser; // this is our Kinvey.User
-
-  @ViewChild('sliderSettingDialog', { static: false })
-  sliderSettingDialog: ElementRef;
-
-  @ViewChild('listPickerDialog', { static: false })
-  listPickerDialog: ElementRef;
-
-  @ViewChild('watchImage', { static: false })
-  watchImage: ElementRef;
-
   screenHeight: number;
-  activeSetting: string = null;
   activeSettingTitle: string = 'Setting';
   activeSettingDescription: string = 'Description';
   SLIDER_VALUE: number = 0;
   listPickerItems: string[];
   listPickerIndex: number = 0;
+
+  private activeSetting: string = null;
+  private viewInitialized: boolean = false;
 
   constructor(
     public settingsService: SettingsService,
@@ -64,9 +61,10 @@ export class ProfileSettingsComponent implements OnInit {
     private userService: PushTrackerUserService,
     private _params: ModalDialogParams
   ) {
-    // this.getUser();
     this._page.actionBarHidden = true;
-    this.savedTheme = appSettings.getString(
+
+    // get current app style theme from app-settings on device
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
@@ -76,9 +74,6 @@ export class ProfileSettingsComponent implements OnInit {
     this._logService.logBreadCrumb('profile-settings.component ngOnInit');
 
     this.getUser();
-    this.infoItems = this._translateService.instant(
-      'profile-settings-component.sections'
-    );
 
     this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
     this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
@@ -92,20 +87,16 @@ export class ProfileSettingsComponent implements OnInit {
     ];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
-
-    // get current app style theme from app-settings on device
-    this.CURRENT_THEME =
-      appSettings.getString(STORAGE_KEYS.APP_THEME) || APP_THEMES.DEFAULT;
   }
 
   ngAfterViewInit() {
-    this.bluetoothService.on('pushtracker_status_changed', (args) => {
+    this.bluetoothService.on('pushtracker_status_changed', args => {
       if (this.viewInitialized) this.updateWatchIcon({});
     });
     this.viewInitialized = true;
   }
 
-  getUser(): void {
+  getUser() {
     this.userService.user.subscribe(user => (this.user = user));
   }
 
@@ -116,7 +107,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   setWatchIconVariables(status: string) {
     if (this.viewInitialized) {
-      if (this.savedTheme === 'DEFAULT') {
+      if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
         this.watchIcon = `res://watch_${status}_black`;
         this.watchIconOpacity = 0.7;
       } else {
@@ -150,7 +141,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.setWatchIconVariables('check');
         break;
     }
-    const img = imageSourceModule.fromFile(this.watchIcon);
+    const img = imageFromFile(this.watchIcon);
     (this.watchImage.nativeElement as Image).imageSource = img;
   }
 
@@ -318,7 +309,6 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
-
       Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
       // this.setWatchIconVariables('Wait', '.gif');
       this.setWatchIconVariables('empty');
@@ -367,7 +357,11 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this.commitSettingsChange();
+      // timeout to ensure the switch animation is smooth
+      // https://github.com/Max-Mobility/permobil-client/issues/179
+      setTimeout(() => {
+        this.commitSettingsChange();
+      }, 300);
     }
   }
 

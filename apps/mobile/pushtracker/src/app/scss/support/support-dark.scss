@@ -3,9 +3,11 @@
 
 .support-layout {
   @extend .SUPPORT_LAYOUT_BASE;
+  background-color: $black;
 
   .faq-list {
     @extend .FAQ_LIST_BASE;
+    background-color: $black;
   }
 
   .item-icon {
