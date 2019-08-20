@@ -724,7 +724,7 @@ export class BluetoothService extends Observable {
     );
 
     BluetoothService.pushTrackerStatus.set('state', state);
-    this.sendEvent(BluetoothService.pushtracker_status_changed, state);
+    this.sendEvent(BluetoothService.pushtracker_status_changed, { state });
   }
 
   private getOrMakePushTracker(device: any): PushTracker {
