@@ -6,6 +6,7 @@ import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
 import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 import {
   fromResource as imageFromResource
 } from 'tns-core-modules/image-source';
@@ -37,10 +38,17 @@ export class ProfileSettingsComponent implements OnInit {
   WEIGHT: string;
   DISTANCE_UNITS: string[];
   DISTANCE: string;
-  CURRENT_THEME: string;
+  CURRENT_THEME: string = appSettings.getString(
+    STORAGE_KEYS.APP_THEME,
+    APP_THEMES.DEFAULT
+  );
   CURRENT_LANGUAGE: string;
-  watchIconString: string = 'watch_question_black';
-  watchIconOpacity: number = 0.7;
+  watchIconString: string =
+    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
+      'watch_question_black' : 'watch_question_white';
+  watchIconOpacity: number =
+    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
+      0.7 : 1.0;
   watchIcon: any = imageFromResource(this.watchIconString);
   user: PushTrackerUser; // this is our Kinvey.User
   screenHeight: number;
@@ -52,7 +60,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   private activeSetting: string = null;
 
-  private _throttledCommitSettingsFunction: any = null;
+  private _debouncedCommitSettingsFunction: any = null;
 
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
 
@@ -68,11 +76,11 @@ export class ProfileSettingsComponent implements OnInit {
   ) {
     this._page.actionBarHidden = true;
 
-    // save the throttled commit settings function
-    this._throttledCommitSettingsFunction = throttle(
-      this.commitSettingsChange,
+    // save the debounced commit settings function
+    this._debouncedCommitSettingsFunction = debounce(
+      this.commitSettingsChange.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
-      { leading: false, trailing: true }
+      { leading: true, trailing: true }
     );
 
     // set up the status watcher for the pushtracker state
@@ -306,7 +314,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this._throttledCommitSettingsFunction();
+      this._debouncedCommitSettingsFunction();
     }
   }
 
@@ -383,7 +391,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
     if (updatedSmartDriveSettings) {
-      this._throttledCommitSettingsFunction();
+      this._debouncedCommitSettingsFunction();
     }
   }
 
