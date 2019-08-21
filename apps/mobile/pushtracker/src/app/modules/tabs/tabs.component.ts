@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
@@ -21,7 +21,7 @@ import { BluetoothService, SettingsService } from '../../services';
   selector: 'tabs-page',
   templateUrl: './tabs.component.html'
 })
-export class TabsComponent {
+export class TabsComponent implements OnInit, AfterViewInit {
   public homeTabItem;
   public journeyTabItem;
   public profileTabItem;
@@ -55,15 +55,18 @@ export class TabsComponent {
 
     this.homeTabItem = {
       title: this._homeTabTitle,
-      iconSource: AppResourceIcons.HOME_ACTIVE
+      iconSource: AppResourceIcons.HOME_ACTIVE,
+      textTransform: 'capitalize'
     };
     this.journeyTabItem = {
       title: this._journeyTabTitle,
-      iconSource: AppResourceIcons.JOURNEY_INACTIVE
+      iconSource: AppResourceIcons.JOURNEY_INACTIVE,
+      textTransform: 'capitalize'
     };
     this.profileTabItem = {
       title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_INACTIVE
+      iconSource: AppResourceIcons.PROFILE_INACTIVE,
+      textTransform: 'capitalize'
     };
 
     if (isAndroid) {
@@ -73,292 +76,25 @@ export class TabsComponent {
     }
   }
 
-  async askForPermissions() {
-    if (isAndroid) {
-      // determine if we have shown the permissions request
-      const hasShownRequest =
-        appSettings.getBoolean(
-          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
-        ) || false;
-      // will throw an error if permissions are denied, else will
-      // return either true or a permissions object detailing all the
-      // granted permissions. The error thrown details which
-      // permissions were rejected
-      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-      const reasons = [];
-      const neededPermissions = this.permissionsNeeded.filter(
-        p =>
-          !hasPermission(p) &&
-          (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
-            p
-          ) ||
-            !hasShownRequest)
-      );
-      // update the has-shown-request
-      appSettings.setBoolean(
-        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
-        true
-      );
-      const reasoning = {
-        [android.Manifest.permission
-          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
-      };
-      neededPermissions.map(r => {
-        reasons.push(reasoning[r]);
-      });
-      if (neededPermissions && neededPermissions.length > 0) {
-        // Log.D('requesting permissions!', neededPermissions);
-        await alert({
-          title: this._translateService.instant('permissions-request.title'),
-          message: reasons.join('\n\n'),
-          okButtonText: this._translateService.instant('general.ok')
-        });
-        try {
-          await requestPermissions(neededPermissions, () => { });
-          return true;
-        } catch (permissionsObj) {
-          const hasBlePermission =
-            permissionsObj[blePermission] || hasPermission(blePermission);
-          if (hasBlePermission) {
-            return true;
-          } else {
-            throw this._translateService.instant('failures.permissions');
-          }
-        }
-      } else if (hasPermission(blePermission)) {
-        return Promise.resolve(true);
-      } else {
-        throw this._translateService.instant('failures.permissions');
-      }
-    }
-  }
-
-  /**
-   * BLUETOOTH EVENT MANAGEMENT
-   */
-  registerBluetoothEvents() {
-    // register for bluetooth events here
-    this._bluetoothService.on(
-      BluetoothService.advertise_error,
-      this.onBluetoothAdvertiseError.bind(this)
-    );
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_connected,
-      this.onPushTrackerConnected.bind(this)
-    );
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_disconnected,
-      this.onPushTrackerDisconnected.bind(this)
-    );
-  }
-
-  onBluetoothAdvertiseError(args: any) {
-    const error = args.data.error;
-    alert({
-      title: this._translateService.instant('bluetooth.service-failure'),
-      okButtonText: this._translateService.instant('general.ok'),
-      message: `${error}`
-    });
-  }
-
-  onPushTrackerPaired(args: any) {
-    const pt = args.data.pushtracker;
-    const msg =
-      this._translateService.instant('general.pushtracker-paired') +
-      `: ${pt.address}`;
-    this.snackbar.simple(msg);
-  }
-
-  onPushTrackerConnected(args: any) {
-    const pt = args.data.pushtracker;
-    const msg =
-      this._translateService.instant('general.pushtracker-connected') +
-      `: ${pt.address}`;
-    this.snackbar.simple(msg);
-  }
-
-  onPushTrackerDisconnected(args: any) {
-    const pt = args.data.pushtracker;
-    const msg =
-      this._translateService.instant('general.pushtracker-disconnected') +
-      `: ${pt.address}`;
-    this.snackbar.simple(msg);
-  }
-
-  /**
-   * PUSHTRACKER EVENT MANAGEMENT
-   */
-  unregisterPushTrackerEvents() {
-    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
-    BluetoothService.PushTrackers.map(pt => {
-      pt.off(PushTracker.paired_event);
-      // pt.off(PushTracker.connect_event);
-      pt.off(PushTracker.settings_event);
-      pt.off(PushTracker.push_settings_event);
-      pt.off(PushTracker.switch_control_settings_event);
-    });
-  }
-
-  _registerEventsForPT(pt: PushTracker) {
-    pt.on(PushTracker.paired_event, () => {
-      Log.D('pt paired:', pt.address);
-      this.onPushTrackerPaired({
-        data: { pushtracker: pt }
-      });
-    });
-    /* // Don't register for connect event here - handled by the bluetoothservice pushtracker_connect
-    pt.on(PushTracker.connect_event, () => {
-      Log.D('pt connected:', pt.address);
-      this.onPushTrackerConnected({
-        data: { pushtracker: pt }
-      })
-    });
-    */
-    // register for settings and push settings
-    pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
-    pt.on(
-      PushTracker.push_settings_event,
-      this.onPushTrackerPushSettings,
-      this
-    );
-    pt.on(
-      PushTracker.switch_control_settings_event,
-      this.onPushTrackerSwitchControlSettings,
-      this
-    );
-  }
-
-  registerPushTrackerEvents() {
-    this.unregisterPushTrackerEvents();
-    // handle pushtracker pairing events for existing pushtrackers
-    BluetoothService.PushTrackers.map(pt => {
-      this._registerEventsForPT(pt);
-    });
-
-    // listen for completely new pusthrackers (that we haven't seen before)
-    BluetoothService.PushTrackers.on(
-      ObservableArray.changeEvent,
-      (args: ChangedData<number>) => {
-        if (args.action === 'add') {
-          const pt = BluetoothService.PushTrackers.getItem(
-            BluetoothService.PushTrackers.length - 1
-          );
-          if (pt) {
-            this._registerEventsForPT(pt);
-          }
-        }
-      }
-    );
-  }
-
-  async onPushTrackerSettings(args: any) {
-    const s = args.data.settings;
-    const pt = args.object as PushTracker;
-    if (!this._settingsService.settings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant('settings-different.title'),
-        message: this._translateService.instant('settings-different.message'),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.settings.copy(s);
-          this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
-          break;
-        case this._translateService.instant('actions.overwrite-remote-settings'):
-          pt.sendSettingsObject(this._settingsService.settings);
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  async onPushTrackerPushSettings(args: any) {
-    const s = args.data.pushSettings;
-    const pt = args.object as PushTracker;
-    if (!this._settingsService.pushSettings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant('push-settings-different.title'),
-        message: this._translateService.instant(
-          'push-settings-different.message'
-        ),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.pushSettings.copy(s);
-          this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
-          break;
-        case this._translateService.instant('actions.overwrite-remote-settings'):
-          pt.sendPushSettingsObject(this._settingsService.pushSettings);
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  async onPushTrackerSwitchControlSettings(args: any) {
-    const s = args.data.switchControlSettings;
-    const pt = args.object as PushTracker;
-    if (!this._settingsService.switchControlSettings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant(
-          'switch-control-settings-different.title'
-        ),
-        message: this._translateService.instant(
-          'switch-control-settings-different.message'
-        ),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.switchControlSettings.copy(s);
-          this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
-          break;
-        case this._translateService.instant('actions.overwrite-remote-settings'):
-          pt.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
   /**
    * PAGE LIFECYCLE EVENT MANAGEMENT
    */
   ngOnInit() {
+    this._routerExtension.navigate(
+      [
+        {
+          outlets: {
+            homeTab: ['home'],
+            journeyTab: ['journey'],
+            profileTab: ['profile']
+          }
+        }
+      ],
+      { relativeTo: this._activeRoute }
+    );
+  }
+
+  ngAfterViewInit() {
     // load the device settings (sd / pt)
     this._settingsService.loadSettings();
 
@@ -374,19 +110,6 @@ export class TabsComponent {
       .catch(err => {
         Log.E('permission or bluetooth error:', err);
       });
-
-    this._routerExtension.navigate(
-      [
-        {
-          outlets: {
-            homeTab: ['home'],
-            journeyTab: ['journey'],
-            profileTab: ['profile']
-          }
-        }
-      ],
-      { relativeTo: this._activeRoute }
-    );
   }
 
   /**
@@ -441,6 +164,296 @@ export class TabsComponent {
             title: this._profileTabTitle,
             iconSource: AppResourceIcons.PROFILE_ACTIVE
           };
+          break;
+      }
+    }
+  }
+
+  private async askForPermissions() {
+    if (isAndroid) {
+      // determine if we have shown the permissions request
+      const hasShownRequest =
+        appSettings.getBoolean(
+          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
+        ) || false;
+      // will throw an error if permissions are denied, else will
+      // return either true or a permissions object detailing all the
+      // granted permissions. The error thrown details which
+      // permissions were rejected
+      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
+      const reasons = [];
+      const neededPermissions = this.permissionsNeeded.filter(
+        p =>
+          !hasPermission(p) &&
+          (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
+            p
+          ) ||
+            !hasShownRequest)
+      );
+      // update the has-shown-request
+      appSettings.setBoolean(
+        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
+        true
+      );
+      const reasoning = {
+        [android.Manifest.permission
+          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
+          'permissions-reasons.coarse-location'
+        )
+      };
+      neededPermissions.map(r => {
+        reasons.push(reasoning[r]);
+      });
+      if (neededPermissions && neededPermissions.length > 0) {
+        // Log.D('requesting permissions!', neededPermissions);
+        await alert({
+          title: this._translateService.instant('permissions-request.title'),
+          message: reasons.join('\n\n'),
+          okButtonText: this._translateService.instant('general.ok')
+        });
+        try {
+          await requestPermissions(neededPermissions, () => {});
+          return true;
+        } catch (permissionsObj) {
+          const hasBlePermission =
+            permissionsObj[blePermission] || hasPermission(blePermission);
+          if (hasBlePermission) {
+            return true;
+          } else {
+            throw this._translateService.instant('failures.permissions');
+          }
+        }
+      } else if (hasPermission(blePermission)) {
+        return Promise.resolve(true);
+      } else {
+        throw this._translateService.instant('failures.permissions');
+      }
+    }
+  }
+
+  /**
+   * BLUETOOTH EVENT MANAGEMENT
+   */
+  private registerBluetoothEvents() {
+    // register for bluetooth events here
+    this._bluetoothService.on(
+      BluetoothService.advertise_error,
+      this.onBluetoothAdvertiseError.bind(this)
+    );
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_connected,
+      this.onPushTrackerConnected.bind(this)
+    );
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_disconnected,
+      this.onPushTrackerDisconnected.bind(this)
+    );
+  }
+
+  private onBluetoothAdvertiseError(args: any) {
+    const error = args.data.error;
+    alert({
+      title: this._translateService.instant('bluetooth.service-failure'),
+      okButtonText: this._translateService.instant('general.ok'),
+      message: `${error}`
+    });
+  }
+
+  private onPushTrackerPaired(args: any) {
+    const pt = args.data.pushtracker;
+    const msg =
+      this._translateService.instant('general.pushtracker-paired') +
+      `: ${pt.address}`;
+    this.snackbar.simple(msg);
+  }
+
+  private onPushTrackerConnected(args: any) {
+    const pt = args.data.pushtracker;
+    const msg =
+      this._translateService.instant('general.pushtracker-connected') +
+      `: ${pt.address}`;
+    this.snackbar.simple(msg);
+  }
+
+  private onPushTrackerDisconnected(args: any) {
+    const pt = args.data.pushtracker;
+    const msg =
+      this._translateService.instant('general.pushtracker-disconnected') +
+      `: ${pt.address}`;
+    this.snackbar.simple(msg);
+  }
+
+  /**
+   * PUSHTRACKER EVENT MANAGEMENT
+   */
+  private unregisterPushTrackerEvents() {
+    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    BluetoothService.PushTrackers.map(pt => {
+      pt.off(PushTracker.paired_event);
+      // pt.off(PushTracker.connect_event);
+      pt.off(PushTracker.settings_event);
+      pt.off(PushTracker.push_settings_event);
+      pt.off(PushTracker.switch_control_settings_event);
+    });
+  }
+
+  private _registerEventsForPT(pt: PushTracker) {
+    pt.on(PushTracker.paired_event, () => {
+      Log.D('pt paired:', pt.address);
+      this.onPushTrackerPaired({
+        data: { pushtracker: pt }
+      });
+    });
+    /* // Don't register for connect event here - handled by the bluetoothservice pushtracker_connect
+    pt.on(PushTracker.connect_event, () => {
+      Log.D('pt connected:', pt.address);
+      this.onPushTrackerConnected({
+        data: { pushtracker: pt }
+      })
+    });
+    */
+    // register for settings and push settings
+    pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
+    pt.on(
+      PushTracker.push_settings_event,
+      this.onPushTrackerPushSettings,
+      this
+    );
+    pt.on(
+      PushTracker.switch_control_settings_event,
+      this.onPushTrackerSwitchControlSettings,
+      this
+    );
+  }
+
+  private registerPushTrackerEvents() {
+    this.unregisterPushTrackerEvents();
+    // handle pushtracker pairing events for existing pushtrackers
+    BluetoothService.PushTrackers.map(pt => {
+      this._registerEventsForPT(pt);
+    });
+
+    // listen for completely new pusthrackers (that we haven't seen before)
+    BluetoothService.PushTrackers.on(
+      ObservableArray.changeEvent,
+      (args: ChangedData<number>) => {
+        if (args.action === 'add') {
+          const pt = BluetoothService.PushTrackers.getItem(
+            BluetoothService.PushTrackers.length - 1
+          );
+          if (pt) {
+            this._registerEventsForPT(pt);
+          }
+        }
+      }
+    );
+  }
+
+  private async onPushTrackerSettings(args: any) {
+    const s = args.data.settings;
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.settings.equals(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant('settings-different.title'),
+        message: this._translateService.instant('settings-different.message'),
+        actions: [
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
+        ],
+        cancelButtonText: this._translateService.instant('general.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-local-settings'):
+          this._settingsService.settings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant(
+          'actions.overwrite-remote-settings'
+        ):
+          pt.sendSettingsObject(this._settingsService.settings);
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  private async onPushTrackerPushSettings(args: any) {
+    const s = args.data.pushSettings;
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.pushSettings.equals(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant('push-settings-different.title'),
+        message: this._translateService.instant(
+          'push-settings-different.message'
+        ),
+        actions: [
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
+        ],
+        cancelButtonText: this._translateService.instant('general.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-local-settings'):
+          this._settingsService.pushSettings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant(
+          'actions.overwrite-remote-settings'
+        ):
+          pt.sendPushSettingsObject(this._settingsService.pushSettings);
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  private async onPushTrackerSwitchControlSettings(args: any) {
+    const s = args.data.switchControlSettings;
+    const pt = args.object as PushTracker;
+    if (!this._settingsService.switchControlSettings.equals(s)) {
+      const selection = await action({
+        cancelable: false,
+        title: this._translateService.instant(
+          'switch-control-settings-different.title'
+        ),
+        message: this._translateService.instant(
+          'switch-control-settings-different.message'
+        ),
+        actions: [
+          this._translateService.instant('actions.overwrite-local-settings'),
+          this._translateService.instant('actions.overwrite-remote-settings'),
+          this._translateService.instant('actions.keep-both-settings')
+        ],
+        cancelButtonText: this._translateService.instant('general.cancel')
+      });
+      switch (selection) {
+        case this._translateService.instant('actions.overwrite-local-settings'):
+          this._settingsService.switchControlSettings.copy(s);
+          this._settingsService.saveToFileSystem();
+          this._settingsService.save().catch(Log.E);
+          break;
+        case this._translateService.instant(
+          'actions.overwrite-remote-settings'
+        ):
+          pt.sendSwitchControlSettingsObject(
+            this._settingsService.switchControlSettings
+          );
+          break;
+        case this._translateService.instant('actions.keep-both-settings'):
+          break;
+        default:
           break;
       }
     }
