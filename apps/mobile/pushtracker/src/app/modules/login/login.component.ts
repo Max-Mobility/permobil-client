@@ -188,7 +188,7 @@ export class LoginComponent implements OnInit {
     // validate the password
     if (!text) {
       this.passwordError = this._translateService.instant(
-        'general.password-error'
+        'general.password-required'
       );
       return false;
     }

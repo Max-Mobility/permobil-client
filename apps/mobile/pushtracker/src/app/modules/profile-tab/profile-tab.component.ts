@@ -1,11 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  ViewContainerRef
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -13,16 +6,11 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import {
-  DateTimePicker,
-  DateTimePickerStyle
-} from 'nativescript-datetimepicker';
-import { Toasty } from 'nativescript-toasty';
+import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { Color } from 'tns-core-modules/color';
 import { screen } from 'tns-core-modules/platform/platform';
 import { View } from 'tns-core-modules/ui/core/view';
-import { prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
+import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
@@ -30,8 +18,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
-import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
-import { SupportComponent } from '../support/support.component';
+import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 
 @Component({
   selector: 'profile',
@@ -116,8 +103,8 @@ export class ProfileTabComponent implements OnInit {
   screenHeight: number;
 
   constructor(
+    private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
-    private activeRoute: ActivatedRoute,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
@@ -191,13 +178,11 @@ export class ProfileTabComponent implements OnInit {
         this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
         'Miles';
       this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
-    }
-    else {
+    } else {
       this.SETTING_HEIGHT = 'Feet & inches';
       this.SETTING_WEIGHT = 'Pounds';
       this.SETTING_DISTANCE = 'Miles';
     }
-
   }
 
   ngOnInit() {
@@ -212,7 +197,7 @@ export class ProfileTabComponent implements OnInit {
     this.userService.user.subscribe(user => {
       this.user = user;
       this.SETTING_HEIGHT =
-      this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
+        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
         'Feet & inches';
       this.SETTING_WEIGHT =
         this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
@@ -230,41 +215,54 @@ export class ProfileTabComponent implements OnInit {
     });
   }
 
-  onSupportTap(args) {
-    console.log('support tap');
+  onAvatarTap() {
+    const signOut = this._translateService.instant('general.sign-out');
+    action({
+      title: '',
+      cancelButtonText: this._translateService.instant('general.cancel'),
+      actions: [signOut]
+    }).then(result => {
+      if (
+        !result ||
+        result === this._translateService.instant('general.cancel')
+      ) {
+        return;
+      }
 
-    this._modalService
-      .showModal(SupportComponent, {
-        context: {},
-        fullscreen: true,
-        animated: true,
-        viewContainerRef: this._vcRef
-      })
-      .catch(err => {
-        this._logService.logException(err);
-        new Toasty({
-          text:
-            'An unexpected error occurred. If this continues please let us know.',
-          textColor: new Color('#fff000')
+      if (result === signOut) {
+        this._zone.run(async () => {
+          // go ahead and nav to login to keep UI moving without waiting
+          this._routerExtensions.navigate(['/login'], {
+            clearHistory: true
+          });
+
+          const logoutResult = await KinveyUser.logout();
+          console.log('logout result', logoutResult);
         });
-      });
+      }
+    });
   }
 
-  onSettingsTap() {
+  onPrivacyTap() {
     this._modalService
-      .showModal(ProfileSettingsComponent, {
-        context: {},
+      .showModal(PrivacyPolicyComponent, {
+        context: { user: this.user },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
       })
+      .then((result) => {
+        Log.D('result', result);
+        if (result !== undefined) {
+          KinveyUser.update(result);
+          Object.keys(result).map(k => {
+            this.userService.updateDataProperty(k, result[k]);
+            this._logService.logBreadCrumb(`User updated ${k}: ${result[k]}`);
+          });
+        }
+      })
       .catch(err => {
         this._logService.logException(err);
-        new Toasty({
-          text:
-            'An unexpected error occurred. If this continues please let us know.',
-          textColor: new Color('#fff000')
-        });
       });
   }
 
@@ -366,9 +364,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
+      this.activity_goals_dialog_data.config_key +
+      ' ' +
+      this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(
@@ -548,7 +546,9 @@ export class ProfileTabComponent implements OnInit {
           'control_configuration',
           this.primary[this.primaryIndex]
         );
-        KinveyUser.update({ control_configuration: this.user.data.control_configuration });
+        KinveyUser.update({
+          control_configuration: this.user.data.control_configuration
+        });
         break;
     }
 
@@ -725,7 +725,9 @@ export class ProfileTabComponent implements OnInit {
       'Switch Control with SmartDrive'
     ];
 
-    this.primaryIndex = this.primary.indexOf(this.user.data.control_configuration);
+    this.primaryIndex = this.primary.indexOf(
+      this.user.data.control_configuration
+    );
 
     this.listPickerTitle = this._translateService.instant(
       'profile-tab.control-configuration'

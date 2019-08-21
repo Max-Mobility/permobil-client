@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  ViewContainerRef
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
@@ -21,24 +15,17 @@ import { SupportComponent } from '../../../../modules/support/support.component'
 export class MockActionbarComponent {
   @Input() title: string;
   @Input() backNavIcon = 0; // default is the back arrow
+
+  @Input() showSettingsBtn = false; // no emitter
+  @Input() showInfoBtn = false; // no emitter
+  @Input() showSupportBtn = false; // no emitter
+
   @Input() showBackNav = false;
   @Output() navTapEvent = new EventEmitter();
-
-  @Input() showSettingsBtn = false;
-  @Output() settingsTapEvent = new EventEmitter();
-
-  @Input() showSupportBtn = false;
-  @Output() supportTapEvent = new EventEmitter();
-
   @Input() showRefreshBtn = false;
   @Output() refreshTapEvent = new EventEmitter();
-
-  @Input() showInfoBtn = false;
-  @Output() infoTapEvent = new EventEmitter();
-
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
-
   @Input() showWatchBtn = false;
   @Output() watchTapEvent = new EventEmitter();
 

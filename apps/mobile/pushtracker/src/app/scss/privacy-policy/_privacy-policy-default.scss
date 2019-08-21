@@ -1,0 +1,45 @@
+@import '../variables';
+@import 'privacy-policy-base';
+
+.privacy-policy-layout {
+  @extend .APP_INFO_LAYOUT_BASE;
+  background-color: $white;
+
+  .close-btn {
+    @extend .CLOSE_BTN_BASE;
+    color: $black;
+  }
+
+  .more-btn {
+    @extend .MORE_BTN_BASE;
+    color: $black;
+  }
+
+  .title {
+    @extend .TITLE_BASE;
+    color: $black;
+  }
+
+  .section-title {
+    @extend .SECTION_TITLE_BASE;
+    color: $black;
+  }
+
+  .section-text {
+    @extend .SECTION_TEXT_BASE;
+    color: lighten($black, 10%);
+  }
+
+  .ok-btn {
+    @extend .OK_BTN_BASE;
+
+    background-color: #1c72e6;
+    color: $white;
+  }
+
+  .cancel-btn {
+    @extend .CANCEL_BTN_BASE;
+    color: #3d4144;
+    text-transform: capitalize;
+  }
+}

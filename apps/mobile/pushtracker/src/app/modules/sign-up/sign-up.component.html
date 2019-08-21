@@ -2,8 +2,8 @@
   <NavigationButton text="Back" android:[icon]="androidBackIcon" (tap)="goBack()"></NavigationButton>
 </ActionBar>
 
-<ScrollView class="sign-up-layout">
-  <GridLayout rows="*, *, *, *, *, *, *" columns="*">
+<ScrollView class="sign-up-layout" iosOverflowSafeArea="false">
+  <GridLayout rows="*, *, *, *, *, *, *" columns="*" iosOverflowSafeArea="false">
     // Email
     <MaxTextBox row="0" [(text)]="user.username" [error]="emailError" [label]="'general.email' | translate" (textChange)="onEmailTextChange($event)" keyboardType="email" autocorrect="false" autocapitalizationType="none"></MaxTextBox>
 

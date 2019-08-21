@@ -1,0 +1,93 @@
+<GridLayout rows="auto, *" class="privacy-policy-layout">
+  // Mock ActionBar
+  <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="close()"></MockActionBar>
+
+  <ScrollView row="1" height="100%">
+    <StackLayout paddingTop="20">
+      <label
+        class="title"
+        margin="0, 0, 10, 0"
+        [text]="'user.consent-form-title' | translate"
+        ></label>
+      // agreements // end user agreement
+      <label
+        class="section-title"
+        textWrap="true"
+        [text]="'user.accept.header' | translate"
+        ></label>
+      <button
+        [text]="'user.accept.agreement-button' | translate"
+        class="btn link"
+        (tap)="openWebsite('user.end-user-agreement-site')"
+        ></button>
+      <DockLayout stretchLastChild="true">
+        <label
+          dock="left"
+          class="section-text"
+          textWrap="true"
+          [text]="'user.accept.user-agreement' | translate"
+          ></label>
+        <Switch
+          dock="right"
+          [(ngModel)]="has_agreed_to_user_agreement"
+          ></Switch>
+      </DockLayout>
+      // privacy policy
+      <button
+        [text]="'user.accept.privacy-button' | translate"
+        class="btn link"
+        (tap)="openWebsite('user.privacy-policy-site')"
+        ></button>
+      <DockLayout stretchLastChild="true">
+        <label
+          dock="left"
+          class="section-text"
+          textWrap="true"
+          [text]="'user.accept.privacy-policy' | translate"
+          ></label>
+        <Switch dock="right" [(ngModel)]="has_read_privacy_policy"></Switch>
+      </DockLayout>
+      // consent
+      <label
+        class="section-title"
+        textWrap="true"
+        [text]="'user.consent.header' | translate"
+        ></label>
+      <DockLayout stretchLastChild="true">
+        <label
+          dock="left"
+          class="section-text"
+          textWrap="true"
+          [text]="'user.consent.product-development' | translate"
+          ></label>
+        <Switch
+          dock="right"
+          [(ngModel)]="consent_to_product_development"
+          ></Switch>
+      </DockLayout>
+      <DockLayout stretchLastChild="true">
+        <label
+          dock="left"
+          class="section-text"
+          textWrap="true"
+          [text]="'user.consent.research' | translate"
+          ></label>
+        <Switch dock="right" [(ngModel)]="consent_to_research"></Switch>
+      </DockLayout>
+      <GridLayout rows="auto" columns="*,*">
+        <button
+          col="0"
+          class="cancel-btn"
+          [text]="'general.cancel' | translate"
+          (tap)="cancel()"
+          ></button>
+        <button
+          col="1"
+          class="ok-btn"
+          [text]="'general.ok' | translate"
+          (tap)="close()"
+          ></button>
+      </GridLayout>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

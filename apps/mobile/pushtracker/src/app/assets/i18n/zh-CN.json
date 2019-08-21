@@ -50,7 +50,7 @@
     "password": "密码",
     "password-change": "更改密码？",
     "password-change-confirm": "您确定要更改密码吗？",
-    "password-error": "密码是必需的。",
+    "password-required": "密码是必需的。",
     "profile": "轮廓",
     "pushes": "推",
     "reset-acct": "重置帐户",

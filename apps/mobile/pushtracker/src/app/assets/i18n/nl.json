@@ -50,7 +50,7 @@
     "password": "Wachtwoord",
     "password-change": "Wachtwoord wijzigen?",
     "password-change-confirm": "Weet u zeker dat u uw wachtwoord wilt wijzigen?",
-    "password-error": "Een wachtwoord is verplicht.",
+    "password-required": "Een wachtwoord is verplicht.",
     "profile": "Profiel",
     "pushes": "duwt",
     "reset-acct": "Account opnieuw instellen",

@@ -50,7 +50,7 @@
     "password": "암호",
     "password-change": "비밀번호를 변경 하시겠습니까?",
     "password-change-confirm": "비밀번호를 변경 하시겠습니까?",
-    "password-error": "비밀번호가 필요합니다.",
+    "password-required": "비밀번호가 필요합니다.",
     "profile": "윤곽",
     "pushes": "푸시",
     "reset-acct": "계정 재설정",

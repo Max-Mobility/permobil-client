@@ -50,7 +50,7 @@
     "password": "パスワード",
     "password-change": "パスワードを変更する？",
     "password-change-confirm": "パスワードを変更してもよろしいですか？",
-    "password-error": "パスワードが必要です。",
+    "password-required": "パスワードが必要です。",
     "profile": "プロフィール",
     "pushes": "プッシュ",
     "reset-acct": "アカウントをリセット",

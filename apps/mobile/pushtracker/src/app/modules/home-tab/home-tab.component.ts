@@ -1,18 +1,16 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
-import { NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
-import { Subscription } from 'rxjs';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
+import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
+import { ActivityService } from '../../services/activity.service';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
-import { ActivityService } from '../../services/activity.service';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 
 @Component({
   selector: 'home-tab',
@@ -29,31 +27,27 @@ export class HomeTabComponent implements OnInit {
   coastTimeData: string;
   distanceData: string = '<0>';
   distanceChartData;
-  infoItems;
   user: PushTrackerUser;
-
-  private routeSub: Subscription; // subscription to route observer
+  weeklyActivity: ObservableArray<any[]>;
+  todayCoastTime: number;
+  todayPushCount: number;
+  yAxisMax: number = 10;
+  yAxisStep: number = 2.5;
+  savedTheme: string;
+  weeklyActivityAnnotationValue: number = 1;
+  coastTimeGoalMessage: string;
+  weeklyActivityLoaded: boolean = false;
 
   private _currentDayInView: Date;
-  public weeklyActivity: ObservableArray<any[]>;
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
-  public todayCoastTime: number;
-  public todayPushCount: number;
-  public yAxisMax: number = 10;
-  public yAxisStep: number = 2.5;
-  public savedTheme: string;
-  public weeklyActivityAnnotationValue: number = 1;
-  public coastTimeGoalMessage: string;
-  public weeklyActivityLoaded: boolean = false;
 
-  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{xAxis: ' ', coastTime: 5, impact: 7}] as any[]));
+  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: ' ', coastTime: 5, impact: 7 }] as any[]));
 
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
-    private _router: Router,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
@@ -110,7 +104,9 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadWeeklyActivity() {
-    const didLoad = await this._activityService.loadWeeklyActivity(this._weekStart);
+    const didLoad = await this._activityService.loadWeeklyActivity(
+      this._weekStart
+    );
     if (didLoad) {
       this.weeklyActivity = new ObservableArray(
         this._formatActivityForView('Week')
@@ -122,8 +118,15 @@ export class HomeTabComponent implements OnInit {
       this.weeklyActivity = new ObservableArray([]);
     }
     const dateFormatted = function (date: Date) {
-      return date.getFullYear() + '/' + ((date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1))
-        + '/' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
+      return (
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        '/' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+      );
     };
     this.yAxisMax = 0;
     const days = this._activityService.weeklyActivity['days'];
@@ -138,16 +141,20 @@ export class HomeTabComponent implements OnInit {
     this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
     this.weeklyActivityAnnotationValue = this.user.data.activity_goal_coast_time;
 
-    if (this.yAxisMax === 0)
-      this.yAxisMax = 10;
+    if (this.yAxisMax === 0) this.yAxisMax = 10;
 
     if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.4 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
-    this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
-    this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
-    this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
+    this.coastTimeGoalMessage =
+      'Reach an average coast time of ' +
+      this.user.data.activity_goal_coast_time +
+      's per day';
+    this.distanceCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
-    this.bubbleChartData = new ObservableArray(([{xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7}] as any[]));
+    this.bubbleChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
   }
 
   _formatActivityForView(viewMode) {
@@ -225,5 +232,4 @@ export class HomeTabComponent implements OnInit {
       }
     }
   }
-
 }
