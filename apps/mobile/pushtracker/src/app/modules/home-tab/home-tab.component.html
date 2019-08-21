@@ -4,8 +4,7 @@
     <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
     // Activity Circles
-    <GridLayout ripple rippleColorAlpha="0.18" rows="*, auto, *" columns="*, auto, *" height="240" width="100%"
-      (tap)="onActivityTap()">
+    <GridLayout rows="*, auto, *" columns="*, auto, *" height="180" width="100%">
       // Distance Circle (outer/purple)
       <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true"
         animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage">
@@ -14,13 +13,14 @@
       <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true"
         animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage">
       </AnimatedCircle>
-      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle">
+      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle" 
+        ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
         <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
       </GridLayout>
     </GridLayout>
 
     // Percentage Data Details
-    <GridLayout class="percentage-data-layout" height="120" rows="*, *" columns="*, auto, auto, 20, auto, auto, *">
+    <GridLayout class="percentage-data-layout" height="100" rows="*, *" columns="*, auto, auto, 20, auto, auto, *">
       // cousteau circle for coast-time values
       <StackLayout row="0" rowSpan="2" col="1" class="cousteau-circle">
         <Label text="&#xe5cc;"></Label>
@@ -51,7 +51,7 @@
       <Label row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
       // coast time data
       <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayCoastTime : 0"></Label>
-      <Label row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
+      <Label textWrap="true" row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
       // distance data
       <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? distanceData : 0"></Label>
       <Label row="1" col="4" class="detail-description" [text]="'general.miles' | translate"></Label>

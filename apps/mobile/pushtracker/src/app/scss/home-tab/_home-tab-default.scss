@@ -35,11 +35,16 @@
   .detail-data {
     @extend .DETAIL_DATA_BASE;
 
+    width: 70%;
+
     .detail-value {
+      font-size: 16;
+      font-weight: bold;
       color: $black;
     }
 
     .detail-description {
+      font-size: 12;
       color: $black;
     }
   }

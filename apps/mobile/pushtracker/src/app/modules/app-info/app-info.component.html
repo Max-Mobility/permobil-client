@@ -4,7 +4,7 @@
 
   <ScrollView row="1" height="100%">
     <StackLayout paddingTop="20">
-      <Label class="title" [text]="'app-info-component.title' | translate" textWrap="true"></Label>
+      <Label width="98%" class="title" [text]="'app-info-component.title' | translate" textWrap="true"></Label>
       // text sections from the app-info-component translation sections
       <StackLayout padding="10" *ngFor="let item of infoItems">
         <Label class="section-title" [text]="item.title" textWrap="true"></Label>
