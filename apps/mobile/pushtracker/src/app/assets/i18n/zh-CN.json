@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "无线更新"
+  },
   "days": {
     "friday": "星期五",
     "monday": "星期一",
@@ -18,6 +21,8 @@
     "wednesday": "星期三"
   },
   "general": {
+    "start": "开始",
+    "stop": "停止",
     "acceleration": "促进",
     "afternoon": "下午",
     "birthday": "生日",

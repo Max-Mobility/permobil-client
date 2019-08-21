@@ -7,7 +7,9 @@ import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import { isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
+import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -155,6 +157,20 @@ export class LoginComponent implements OnInit {
     //     this._logService.logException(error);
     //   }
     // }
+  }
+
+  onEmailTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypeEmailAddress;
+    }
+  }
+
+  onPasswordTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypePassword;
+    }
   }
 
   onEmailTextChange(value) {

@@ -2,21 +2,17 @@ import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
-import throttle from 'lodash/throttle';
-import debounce from 'lodash/debounce';
-import {
-  fromResource as imageFromResource
-} from 'tns-core-modules/image-source';
+import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { screen } from 'tns-core-modules/platform';
-import { Image } from 'tns-core-modules/ui/image/image';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { BluetoothService, PushTrackerState, LoggingService, SettingsService } from '../../services';
+import { BluetoothService, LoggingService, PushTrackerState, SettingsService } from '../../services';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
@@ -44,11 +40,11 @@ export class ProfileSettingsComponent implements OnInit {
   );
   CURRENT_LANGUAGE: string;
   watchIconString: string =
-    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
-      'watch_question_black' : 'watch_question_white';
+    this.CURRENT_THEME === APP_THEMES.DEFAULT
+      ? 'watch_question_black'
+      : 'watch_question_white';
   watchIconOpacity: number =
-    this.CURRENT_THEME === APP_THEMES.DEFAULT ?
-      0.7 : 1.0;
+    this.CURRENT_THEME === APP_THEMES.DEFAULT ? 0.7 : 1.0;
   watchIcon: any = imageFromResource(this.watchIconString);
   user: PushTrackerUser; // this is our Kinvey.User
   screenHeight: number;
@@ -145,8 +141,7 @@ export class ProfileSettingsComponent implements OnInit {
     this._zone.run(() => {
       Log.D('status changed', event.data);
       const state =
-        (event && event.data && event.data.state)
-        ||
+        (event && event.data && event.data.state) ||
         BluetoothService.pushTrackerStatus.get('state');
       switch (state) {
         default:

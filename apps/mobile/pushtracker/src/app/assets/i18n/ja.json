@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "ワイヤレスアップデート"
+  },
   "days": {
     "friday": "金曜日",
     "monday": "月曜",
@@ -18,6 +21,8 @@
     "wednesday": "水曜日"
   },
   "general": {
+    "start": "開始",
+    "stop": "やめる",
     "acceleration": "加速度",
     "afternoon": "午後",
     "birthday": "お誕生日",

@@ -2,9 +2,11 @@ import * as themes from 'nativescript-themes';
 import * as TNSApplication from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
-import { device, isAndroid } from 'tns-core-modules/platform';
+import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { clearLightStatusBar, setDarkStatusBar, setLightStatusBar } from '.';
 import { APP_THEMES, STORAGE_KEYS } from '../enums';
+
+declare const IQKeyboardManager: any;
 
 export function enableDarkTheme() {
   themes.applyThemeCss(
@@ -14,6 +16,15 @@ export function enableDarkTheme() {
   clearLightStatusBar();
   setDarkStatusBar();
   setDarkNavigationBar();
+
+  // if running on iOS enable the dark mode for IQKeyboardManager
+  if (isIOS && IQKeyboardManager) {
+    const iqKeyboard = IQKeyboardManager.sharedManager();
+    iqKeyboard.overrideKeyboardAppearance = true;
+    iqKeyboard.keyboardAppearance = UIKeyboardAppearance.Dark;
+  }
+
+  // save the dark theme to app-settings
   appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DARK);
 }
 
@@ -24,6 +35,14 @@ export function enableDefaultTheme() {
   );
   setLightStatusBar();
   // setLightNavigationBar();
+
+  // if running on iOS enable the dark mode for IQKeyboardManager
+  if (isIOS && IQKeyboardManager) {
+    const iqKeyboard = IQKeyboardManager.sharedManager();
+    iqKeyboard.overrideKeyboardAppearance = true;
+    iqKeyboard.keyboardAppearance = UIKeyboardAppearance.Light;
+  }
+
   // save the theme to app settings so we can read/load it on app_start
   appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
 }

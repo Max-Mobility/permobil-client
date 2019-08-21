@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/directives/dialogs';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
 import * as utilityModule from 'tns-core-modules/utils/utils';
 
 @Component({
@@ -11,9 +10,8 @@ import * as utilityModule from 'tns-core-modules/utils/utils';
   moduleId: module.id,
   templateUrl: 'privacy-policy.component.html'
 })
-export class PrivacyPolicyComponent implements OnInit {
-  androidBackIcon;
-  user;
+export class PrivacyPolicyComponent {
+  androidBackIcon: any;
 
   has_agreed_to_user_agreement: boolean = false;
   has_read_privacy_policy: boolean = false;
@@ -21,11 +19,19 @@ export class PrivacyPolicyComponent implements OnInit {
   consent_to_research: boolean = false;
 
   constructor(
-    private _logService: LoggingService,
     private _translateService: TranslateService,
     private params: ModalDialogParams
   ) {
-    this.user = this.params.context.user;
+    const data = this.params.context.data;
+    // copy to local vars
+    this.has_agreed_to_user_agreement =
+      data.has_agreed_to_user_agreement || false;
+    this.has_read_privacy_policy =
+      data.has_read_privacy_policy || false;
+    this.consent_to_product_development =
+      data.consent_to_product_development || false;
+    this.consent_to_research =
+      data.consent_to_research || false;
 
     // set the theme
     const currentTheme = appSettings.getString(
@@ -42,18 +48,6 @@ export class PrivacyPolicyComponent implements OnInit {
   openWebsite(url: string) {
     url = this._translateService.instant(url);
     utilityModule.openUrl(url);
-  }
-
-  ngOnInit() {
-    this._logService.logBreadCrumb('privacy-policy.component OnInit');
-    this.has_agreed_to_user_agreement =
-      this.user.has_agreed_to_user_agreement || false;
-    this.has_read_privacy_policy =
-      this.user.has_read_privacy_policy || false;
-    this.consent_to_product_development =
-      this.user.consent_to_product_development || false;
-    this.consent_to_research =
-      this.user.consent_to_research || false;
   }
 
   close() {

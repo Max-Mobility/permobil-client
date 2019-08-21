@@ -41,7 +41,7 @@
   .custom-template-dialog {
     @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
 
-    background-color: rgba(85, 86, 88, 0.808);
+    background-color: $light-custom-dialog-layout-shadow;
 
     > StackLayout {
       background-color: $white;

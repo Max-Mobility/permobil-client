@@ -15,6 +15,7 @@
 
   .SETTING_LAYOUT_BASE {
     width: 100%;
+    margin: 2 0 2 0;
   }
 
   .SETTING_TITLE_BASE {
@@ -25,7 +26,7 @@
   }
 
   .SETTING_VALUE_BASE {
-    font-size: 15;
+    font-size: 13;
     font-family: $os-Light;
     margin: 2 5 5 5;
     padding-left: 15;
@@ -43,6 +44,7 @@
 
   > StackLayout {
     margin: 24;
+    padding: 4;
     border-radius: 4;
 
     .title {
@@ -62,11 +64,17 @@
       text-wrap: true;
     }
 
+    .slider-value {
+      horizontal-align: right;
+      margin: 0 5 0 5;
+      font-size: 20;
+    }
+
     .cancel-btn {
       @extend .btn-transparent;
       horizontal-align: right;
+      text-transform: capitalize;
       text-align: center;
-      margin: 15 0 2 0;
       border-radius: 4;
     }
 
@@ -74,7 +82,6 @@
       @extend .btn-transparent;
       horizontal-align: right;
       text-align: center;
-      margin: 15 0 2 0;
       border-radius: 4;
     }
   }
