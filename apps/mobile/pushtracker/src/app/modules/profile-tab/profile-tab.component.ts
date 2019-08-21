@@ -16,8 +16,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
-import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 
 @Component({
@@ -251,7 +250,7 @@ export class ProfileTabComponent implements OnInit {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then((result) => {
+      .then(result => {
         if (result !== undefined) {
           KinveyUser.update(result);
           Object.keys(result).map(k => {
@@ -362,9 +361,9 @@ export class ProfileTabComponent implements OnInit {
   onSetGoalBtnTap() {
     this._logService.logBreadCrumb(
       'User set activity goals: ' +
-      this.activity_goals_dialog_data.config_key +
-      ' ' +
-      this.activity_goals_dialog_data.config_value
+        this.activity_goals_dialog_data.config_key +
+        ' ' +
+        this.activity_goals_dialog_data.config_value
     );
     // Save the Activity Goals value
     appSettings.setNumber(

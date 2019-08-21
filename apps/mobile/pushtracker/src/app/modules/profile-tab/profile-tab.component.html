@@ -187,7 +187,7 @@
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight + 100" opacity="0" class="list-picker-dialog">
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
     <StackLayout row="1">
       // Mock ActionBar
       <Label class="picker-title" [text]="listPickerTitle | translate" textWrap="true"></Label>
@@ -195,7 +195,7 @@
 
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
         <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
-          <ListPicker [width]="listPickerNeedsSecondary ? '45%' : '90%'" #primaryPicker [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
+          <ListPicker #primaryPicker [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
           <ListPicker
             #secondaryPicker
             [width]="listPickerNeedsSecondary ? '45%' : '0%'"
