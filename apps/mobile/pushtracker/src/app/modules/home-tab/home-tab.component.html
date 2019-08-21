@@ -82,8 +82,8 @@
         <BubbleSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" seriesName="GoalBubbleSeries"
           showLabels="true" valueProperty="coastTime" bubbleScale="5" bubbleSizeProperty="impact">
           <PointLabelStyle tkBubbleLabelStyle margin="10" fontStyle="Bold"
-            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'" textSize="12" textColor="White"
+            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'" textSize="12" textColor="White"
             textFormat="Goal:%s%.0f"></PointLabelStyle>
         </BubbleSeries>
 
@@ -93,14 +93,14 @@
               [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
           </Palette>
           <Palette tkCartesianPalette seriesName="GoalBubbleSeries">
-            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"
-              [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"></PaletteEntry>
+            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"
+              [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"></PaletteEntry>
           </Palette>
         </Palettes>
 
         <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
           [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
-          [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'" strokeDashPattern="3, 3">
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
     </StackLayout>
