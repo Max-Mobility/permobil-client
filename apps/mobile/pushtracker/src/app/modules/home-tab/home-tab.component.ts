@@ -48,6 +48,8 @@ export class HomeTabComponent implements OnInit {
   public coastTimeGoalMessage: string;
   public weeklyActivityLoaded: boolean = false;
 
+  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{xAxis: '       ', coastTime: 5, impact: 7}] as any[]));
+
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
@@ -144,6 +146,7 @@ export class HomeTabComponent implements OnInit {
     this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
+    this.bubbleChartData = new ObservableArray(([{xAxis: '       ', coastTime: this.user.data.activity_goal_coast_time, impact: 7}] as any[]));
   }
 
   _formatActivityForView(viewMode) {
