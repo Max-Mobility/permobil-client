@@ -4,7 +4,7 @@
 
   <StackLayout row="1" rows="*" columns="50, *, 50">
     <TabView row="0" [(ngModel)]="tabSelectedIndex" (selectedIndexChanged)="onSelectedIndexChanged($event)" id="tabViewContainer" androidSwipeEnabled="false">
-      <StackLayout *tabItem="{ title: displayDay }">
+      <StackLayout *tabItem="{ title: displayDay, textTransform: 'capitalize' }">
         <!-- Day View -->
         <GridLayout row="0" rows="auto" cols="auto">
           <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousDayTap($event)"></Button>
@@ -16,7 +16,18 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true" tickHidden="false" majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
           </CategoricalAxis>
-          <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f">
+          <LinearAxis
+            id="vAxis"
+            tkCartesianVerticalAxis
+            [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+            horizontalLocation="Right"
+            labelMargin="10"
+            lineHidden="true"
+            [maximum]="yAxisMax"
+            minumum="1"
+            [majorStep]="yAxisStep"
+            labelFormat="%.0f"
+          >
           </LinearAxis>
           <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="dailyViewMode ? 'pushCount' : 'coastTime'"> </BarSeries>
           <Palette tkCartesianPalette seriesName="DailyActivity">
@@ -57,7 +68,7 @@
         <!-- Horizontal Line -->
         <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
       </StackLayout>
-      <StackLayout *tabItem="{ title: displayWeek }">
+      <StackLayout *tabItem="{ title: displayWeek, textTransform: 'capitalize' }">
         <!-- Week View -->
         <GridLayout row="0" rows="auto" cols="auto">
           <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousWeekTap($event)"></Button>
@@ -109,7 +120,7 @@
         <!-- Horizontal Line -->
         <StackLayout marginTop="10" width="90%" class="hr-light"></StackLayout>
       </StackLayout>
-      <StackLayout *tabItem="{ title: displayMonth }">
+      <StackLayout *tabItem="{ title: displayMonth, textTransform: 'capitalize' }">
         <!-- Month View -->
         <GridLayout row="0" rows="auto" cols="auto">
           <Button row="0" col="0" text="&#x2039;" class="back-btn" (tap)="onPreviousMonthTap($event)"></Button>
