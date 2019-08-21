@@ -41,7 +41,7 @@
     "title": "Permissions Request Notice"
   },
   "permissions-reasons": {
-    "coarse-location": "To control your SmartDrive using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data."
+    "coarse-location": "To communicate with your SmartDrive / PushTracker using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data."
   },
   "failures": {
     "permissions": "Could not perform the requested action - permissions were not granted."
@@ -220,7 +220,7 @@
         "q": "Can my SmartDrive slow me down?"
       },
       {
-        "a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the Smart Evaluation app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!",
+        "a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the PushTracker app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!",
         "q": "Why won't my PushTracker connect to my phone?"
       },
       {
@@ -260,7 +260,7 @@
       "privacy-button": "View Privacy Policy",
       "user-agreement-title": "Accept End User Agreement",
       "privacy-policy-title": "Accept Privacy Policy",
-      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use Smart Evaluation",
+      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use PushTracker",
       "user-agreement": "I have read, understood, and agree to the end user agreement",
       "privacy-policy": "I have read and understood the privacy policy",
       "accept-error": {
@@ -270,7 +270,7 @@
     },
     "consent": {
       "beta-test": "I opt into firmware beta testing and understand the associated risks.",
-      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Account' page of the application.",
+      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Profile' page of the application.",
       "research": "I give my consent to the usage of my data for product development as described in the privacy policy",
       "product-development": "I give my consent to the usage of my data for research as described in the privacy policy"
     }
