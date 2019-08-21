@@ -48,7 +48,7 @@ export class HomeTabComponent implements OnInit {
   public coastTimeGoalMessage: string;
   public weeklyActivityLoaded: boolean = false;
 
-  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{xAxis: '       ', coastTime: 5, impact: 7}] as any[]));
+  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{xAxis: ' ', coastTime: 5, impact: 7}] as any[]));
 
   constructor(
     private _translateService: TranslateService,
@@ -75,6 +75,7 @@ export class HomeTabComponent implements OnInit {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.userService.user.subscribe(user => {
       this.user = user;
+      this._loadWeeklyActivity();
     });
   }
 
@@ -131,7 +132,7 @@ export class HomeTabComponent implements OnInit {
       if (day.date === dateFormatted(this._currentDayInView))
         this._todaysActivity = day;
       if (day.coast_time_avg > this.yAxisMax)
-        this.yAxisMax = day.coast_time_avg + 0.2 * day.coast_time_avg;
+        this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
     }
     this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
     this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
@@ -140,13 +141,13 @@ export class HomeTabComponent implements OnInit {
     if (this.yAxisMax === 0)
       this.yAxisMax = 10;
 
-    if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.2 * this.weeklyActivityAnnotationValue;
+    if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.4 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
     this.coastTimeGoalMessage = 'Reach an average coast time of ' + this.user.data.activity_goal_coast_time + 's per day';
     this.distanceCirclePercentageMaxValue = '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue = '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
-    this.bubbleChartData = new ObservableArray(([{xAxis: '       ', coastTime: this.user.data.activity_goal_coast_time, impact: 7}] as any[]));
+    this.bubbleChartData = new ObservableArray(([{xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7}] as any[]));
   }
 
   _formatActivityForView(viewMode) {

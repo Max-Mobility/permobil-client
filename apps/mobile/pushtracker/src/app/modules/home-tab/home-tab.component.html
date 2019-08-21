@@ -74,8 +74,13 @@
           [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
         <BarSeries tkCartesianSeries  [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
 
-        <BubbleSeries tkCartesianSeries [items]="bubbleChartData" bubbleScale="5" categoryProperty="xAxis" valueProperty="coastTime" bubbleSizeProperty="impact">
-        </BubbleSeries>
+        <LineSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" 
+            showLabels="true" valueProperty="coastTime">
+            <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold" 
+              [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+              [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+              textSize="12" textColor="White" textFormat="Goal: %.0f"></PointLabelStyle>
+        </LineSeries>
 
         <Palette tkCartesianPalette seriesName="WeeklyActivity">
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
