@@ -304,6 +304,11 @@ export class ProfileSettingsComponent implements OnInit {
         } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
           enableDarkTheme();
         }
+        this.userService.updateDataProperty(
+          'theme_preference',
+          this.CURRENT_THEME
+        );
+        KinveyUser.update({ theme_preference: this.CURRENT_THEME });
         break;
       case 'language':
         this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];
