@@ -53,7 +53,7 @@ export class HomeTabComponent implements OnInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
-    private smartDriveUsageService: SmartDriveUsageService,
+    private _smartDriveUsageService: SmartDriveUsageService,
     private _activityService: ActivityService
   ) {
     this.getUser();
@@ -250,9 +250,13 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadSmartDriveUsage() {
-    const didLoad = await this.smartDriveUsageService.loadWeeklyActivity(this._weekStart);
+    console.log('Loading smartdrive usage...');
+    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
     if (didLoad) {
-      console.log(this.smartDriveUsageService.weeklyActivity);
+      console.log(this._smartDriveUsageService.weeklyActivity);
+    }
+    else {
+      console.log('Could not load SmartDriveUsage');
     }
   }
 }
