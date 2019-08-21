@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Trådlösa uppdateringar"
+  },
   "days": {
     "friday": "fredag",
     "monday": "måndag",
@@ -18,6 +21,8 @@
     "wednesday": "ons"
   },
   "general": {
+    "start": "Start",
+    "stop": "Sluta",
     "acceleration": "Acceleration",
     "afternoon": "eftermiddag",
     "birthday": "Födelsedag",

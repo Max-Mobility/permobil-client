@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Mises à jour sans fil"
+  },
   "days": {
     "friday": "Vendredi",
     "monday": "Lundi",
@@ -18,6 +21,8 @@
     "wednesday": "Mer"
   },
   "general": {
+    "start": "Début",
+    "stop": "Arrêtez",
     "acceleration": "Accélération",
     "afternoon": "après midi",
     "birthday": "Anniversaire",

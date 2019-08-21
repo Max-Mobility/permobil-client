@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Беспроводные Обновления"
+  },
   "days": {
     "friday": "пятница",
     "monday": "понедельник",
@@ -18,6 +21,8 @@
     "wednesday": "среда"
   },
   "general": {
+    "start": "Начните",
+    "stop": "Стоп",
     "acceleration": "ускорение",
     "afternoon": "после полудня",
     "birthday": "день рождения",

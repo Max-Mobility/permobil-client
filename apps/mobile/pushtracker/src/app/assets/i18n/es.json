@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Actualizaciones Inalámbricas"
+  },
   "app-info-component": {
     "sections": [
       {
@@ -42,6 +45,8 @@
     "wednesday": "mié"
   },
   "general": {
+    "start": "Comienzo",
+    "stop": "Detener",
     "acceleration": "Aceleración",
     "afternoon": "tarde",
     "birthday": "Cumpleaños",

@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "무선 업데이트"
+  },
   "days": {
     "friday": "금요일",
     "monday": "월요일",
@@ -18,6 +21,8 @@
     "wednesday": "수요일"
   },
   "general": {
+    "start": "스타트",
+    "stop": "중지",
     "acceleration": "가속",
     "afternoon": "대낮",
     "birthday": "생일",

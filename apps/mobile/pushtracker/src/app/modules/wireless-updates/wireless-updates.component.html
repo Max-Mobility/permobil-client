@@ -1,0 +1,30 @@
+<GridLayout rows="auto, *" class="app-info-layout">
+  // Mock ActionBar
+  <MockActionBar row="0" [title]="'general.wireless-updates-component.title'" [showBackNav]="true" [backNavIcon]="1" [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
+
+  <FlexboxLayout row="1" height="100%" flexDirection="column">
+    // PushTracker
+    <StackLayout>
+      <Label text="PushTracker"></Label>
+      <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
+        <Label row="0" text="100%"></Label>
+        <AnimatedCircle id="ptCircle" row="1" rowSpan="4" rowSpan="3" col="1" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="ptCirclePercentage"> </AnimatedCircle>
+        <Button row="2" col="1" text="Start" (tap)="onStartTap('pushtracker')"></Button>
+        <Label row="3" col="1" col="1" text="Updating..." textWrap="true"></Label>
+        <Button row="4" col="1" text="Stop" (tap)="onStopTap('pushtracker')"></Button>
+      </GridLayout>
+    </StackLayout>
+
+    // SmartDrive
+    <StackLayout>
+      <Label row="0" text="SmartDrive"></Label>
+      <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
+        <Label row="0" text="100%"></Label>
+        <AnimatedCircle id="sdCircle" row="1" rowSpan="4" col="1" width="98%" height="98%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="sdCirclePercentage"> </AnimatedCircle>
+        <Button row="2" col="1" text="Start" (tap)="onStartTap('smartdrive')"></Button>
+        <Label row="3" col="1" text="Updating..." textWrap="true"></Label>
+        <Button row="4" col="1" text="Stop" (tap)="onStopTap('smartdrive')"></Button>
+      </GridLayout>
+    </StackLayout>
+  </FlexboxLayout>
+</GridLayout>

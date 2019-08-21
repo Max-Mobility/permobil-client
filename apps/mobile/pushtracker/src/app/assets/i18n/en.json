@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Wireless Updates"
+  },
   "actions": {
     "overwrite-local-settings": "Overwrite app's settings.",
     "overwrite-remote-settings": "Overwrite PushTracker's settings.",
@@ -65,6 +68,8 @@
     "wednesday": "Wed"
   },
   "general": {
+    "start": "Start",
+    "stop": "Stop",
     "acceleration": "Acceleration",
     "afternoon": "afternoon",
     "birthday": "Birthday",

@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Drahtlose Updates"
+  },
   "days": {
     "friday": "Freitag",
     "monday": "Montag",
@@ -18,6 +21,8 @@
     "wednesday": "Mit"
   },
   "general": {
+    "start": "Start",
+    "stop": "Halt",
     "acceleration": "Beschleunigung",
     "afternoon": "Nachmittag",
     "birthday": "Geburtstag",

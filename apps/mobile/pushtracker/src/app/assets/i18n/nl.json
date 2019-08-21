@@ -1,4 +1,7 @@
 {
+  "wireless-updates-component": {
+    "title": "Draadloze updates"
+  },
   "days": {
     "friday": "vrijdag",
     "monday": "maandag",
@@ -18,6 +21,8 @@
     "wednesday": "woe"
   },
   "general": {
+    "start": "Begin",
+    "stop": "Hou op",
     "acceleration": "Versnelling",
     "afternoon": "middag",
     "birthday": "Verjaardag",
