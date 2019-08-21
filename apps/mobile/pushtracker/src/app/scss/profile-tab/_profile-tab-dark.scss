@@ -88,39 +88,4 @@
       }
     }
   }
-
-  .list-picker-dialog {
-    @extend .LIST_PICKER_DIALOG_BASE;
-    background-color: $black;
-
-    GridLayout,
-    StackLayout {
-      background-color: $dark-grey;
-    }
-
-    > StackLayout {
-      background-color: $dark-grey;
-      color: $white;
-
-      .picker-title {
-        color: $white;
-      }
-
-      .picker-description {
-        color: lighten($color: $white, $amount: 0.2);
-      }
-
-      ListPicker {
-        color: $white;
-      }
-
-      .cancel-btn {
-        color: $permobil-cousteau;
-      }
-
-      .ok-btn {
-        color: $permobil-cousteau;
-      }
-    }
-  }
 }

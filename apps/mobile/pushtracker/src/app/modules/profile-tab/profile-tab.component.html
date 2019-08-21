@@ -187,27 +187,27 @@
   </GridLayout>
 
   <!-- List Picker Layout -->
-  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="list-picker-dialog">
+  <GridLayout #listPickerDialog row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="custom-template-dialog">
     <StackLayout row="1">
       // Mock ActionBar
-      <Label class="picker-title" [text]="listPickerTitle | translate" textWrap="true"></Label>
-      <Label [visibility]="listPickerDescriptionNecessary ? 'visible' : 'collapsed'" class="picker-description" [text]="listPickerDescription | translate" textWrap="true"></Label>
+      <Label class="title" [text]="listPickerTitle | translate" textWrap="true"></Label>
+      <Label class="description" [text]="listPickerDescription | translate" [visibility]="listPickerDescriptionNecessary ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
         <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
-          <ListPicker #primaryPicker [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primary" [selectedIndex]="primaryIndex" class="m-r-4" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
+          <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primary" [selectedIndex]="primaryIndex" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
           <ListPicker
             #secondaryPicker
+            class="listpicker m-l-4"
             [width]="listPickerNeedsSecondary ? '45%' : '0%'"
             [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'"
             [items]="secondary"
             [selectedIndex]="secondaryIndex"
-            class="m-l-4"
             (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
           ></ListPicker>
         </FlexboxLayout>
-        <Button row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
-        <Button row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+        <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+        <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
       </GridLayout>
     </StackLayout>
   </GridLayout>
