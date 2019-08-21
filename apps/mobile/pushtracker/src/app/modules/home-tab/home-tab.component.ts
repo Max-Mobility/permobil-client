@@ -69,11 +69,6 @@ export class HomeTabComponent implements OnInit {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
     this.userService.user.subscribe(user => {
       this.user = user;
-      this.savedTheme = appSettings.getString(
-        STORAGE_KEYS.APP_THEME,
-        APP_THEMES.DEFAULT
-      );
-      this._loadWeeklyActivity();
     });
   }
 
