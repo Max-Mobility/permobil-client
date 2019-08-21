@@ -17,6 +17,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { ActivityService } from '../../services/activity.service';
+import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 
 @Component({
   selector: 'activity-tab',
@@ -88,7 +89,8 @@ export class ActivityTabComponent implements OnInit {
     private _logService: LoggingService,
     private _activityService: ActivityService,
     private _translateService: TranslateService,
-    private _params: ModalDialogParams
+    private _params: ModalDialogParams,
+    private userService: PushTrackerUserService
   ) {
     this.currentDayInView = new Date();
     const year = this.currentDayInView.getFullYear();
@@ -116,6 +118,9 @@ export class ActivityTabComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb('activity-tab.component OnInit');
+    this.userService.user.subscribe(user => {
+      this.savedTheme = user.data.theme_preference;
+    });
   }
 
   /**
