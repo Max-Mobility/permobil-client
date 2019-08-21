@@ -6,9 +6,11 @@ import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { SharedModule } from '../shared/shared.module';
+import { WirelessUpdatesComponent } from '../wireless-updates/wireless-updates.component';
 import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
+  entryComponents: [WirelessUpdatesComponent],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
@@ -21,7 +23,7 @@ import { ProfileTabComponent } from './profile-tab.component';
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [ProfileTabComponent],
+  declarations: [ProfileTabComponent, WirelessUpdatesComponent],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })
