@@ -98,5 +98,5 @@ export class SmartDriveUsageService {
       return Promise.reject('no active user');
     }
   }
-  
+
 }
