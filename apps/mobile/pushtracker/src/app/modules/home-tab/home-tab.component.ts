@@ -33,7 +33,7 @@ export class HomeTabComponent implements OnInit {
   todayPushCount: number;
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
-  savedTheme: string;
+  savedTheme: string = 'DEFAULT';
   weeklyActivityAnnotationValue: number = 1;
   coastTimeGoalMessage: string;
   weeklyActivityLoaded: boolean = false;

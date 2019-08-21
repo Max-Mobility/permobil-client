@@ -75,6 +75,7 @@
         <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
           [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+
         <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
           valueProperty="coastTime">
         </BarSeries>
@@ -82,8 +83,8 @@
         <BubbleSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" seriesName="GoalBubbleSeries"
           showLabels="true" valueProperty="coastTime" bubbleScale="5" bubbleSizeProperty="impact">
           <PointLabelStyle tkBubbleLabelStyle margin="10" fontStyle="Bold"
-            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'" textSize="12" textColor="White"
+            fillColor="#e31c79"
+            strokeColor="#e31c79" textSize="12" textColor="White"
             textFormat="Goal:%s%.0f"></PointLabelStyle>
         </BubbleSeries>
 
@@ -93,8 +94,9 @@
               [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
           </Palette>
           <Palette tkCartesianPalette seriesName="GoalBubbleSeries">
-            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"
-              [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'"></PaletteEntry>
+            <PaletteEntry tkCartesianPaletteEntry 
+              fillColor="#e31c79"
+              strokeColor="#e31c79"></PaletteEntry>
           </Palette>
         </Palettes>
 
