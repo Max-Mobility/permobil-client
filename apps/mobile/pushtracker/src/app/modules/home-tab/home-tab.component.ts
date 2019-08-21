@@ -43,7 +43,9 @@ export class HomeTabComponent implements OnInit {
   private _weekEnd: Date;
   private _todaysActivity: any;
 
-  public bubbleChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: ' ', coastTime: 5, impact: 7 }] as any[]));
+  public bubbleChartData: ObservableArray<any[]> = new ObservableArray([
+    { xAxis: ' ', coastTime: 5, impact: 7 }
+  ] as any[]);
 
   constructor(
     private _translateService: TranslateService,
@@ -117,7 +119,7 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.weeklyActivity = new ObservableArray([]);
     }
-    const dateFormatted = function (date: Date) {
+    const dateFormatted = function(date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -137,13 +139,22 @@ export class HomeTabComponent implements OnInit {
       if (day.coast_time_avg > this.yAxisMax)
         this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
     }
-    this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
-    this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+    if (this._todaysActivity) {
+      this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(
+        1
+      );
+      this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+    }
+
     this.weeklyActivityAnnotationValue = this.user.data.activity_goal_coast_time;
 
     if (this.yAxisMax === 0) this.yAxisMax = 10;
 
-    if (this.weeklyActivityAnnotationValue > this.yAxisMax) this.yAxisMax = this.weeklyActivityAnnotationValue + 0.4 * this.weeklyActivityAnnotationValue;
+    if (this.weeklyActivityAnnotationValue > this.yAxisMax)
+      this.yAxisMax =
+        this.weeklyActivityAnnotationValue +
+        0.4 * this.weeklyActivityAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
     this.coastTimeGoalMessage =
       'Reach an average coast time of ' +
@@ -154,7 +165,13 @@ export class HomeTabComponent implements OnInit {
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
-    this.bubbleChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.bubbleChartData = new ObservableArray([
+      {
+        xAxis: ' ',
+        coastTime: this.user.data.activity_goal_coast_time,
+        impact: 7
+      }
+    ] as any[]);
   }
 
   _formatActivityForView(viewMode) {
@@ -163,7 +180,7 @@ export class HomeTabComponent implements OnInit {
       if (activity) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function (start, end) {
+        const range = function(start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);
