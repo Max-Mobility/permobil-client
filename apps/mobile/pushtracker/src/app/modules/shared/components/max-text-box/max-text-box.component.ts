@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { registerElement } from 'nativescript-angular/element-registry';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
+import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
 import { isAndroid } from 'tns-core-modules/platform';
 import { ContentView } from 'tns-core-modules/ui/content-view';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
@@ -18,6 +18,7 @@ export class MaxTextBoxComponent extends TextField {
   @Input() error: string;
   @Input() isSecure = false;
   @Output() textChange = new EventEmitter<string>();
+  @Output() textfieldLoadedEvent = new EventEmitter<EventData>();
 
   constructor() {
     super();
@@ -33,11 +34,12 @@ export class MaxTextBoxComponent extends TextField {
     this.dismissSoftInput();
   }
 
-  textfieldLoaded(args) {
+  textfieldLoaded(args: EventData) {
     if (isAndroid) {
       const tf = args.object as TextField;
       tf.android.setBackgroundColor(android.graphics.Color.TRANSPARENT);
     }
+    this.textfieldLoadedEvent.emit(args);
   }
 
   onFocusTF(args) {
