@@ -10,6 +10,7 @@ import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 import { ActivityService } from '../../services/activity.service';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { SmartDriveUsageService } from '../../services/smartdrive-usage.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 
 @Component({
@@ -37,6 +38,7 @@ export class HomeTabComponent implements OnInit {
   weeklyActivityAnnotationValue: number = 1;
   coastTimeGoalMessage: string;
   weeklyActivityLoaded: boolean = false;
+  weeklySmartDriveUsage: ObservableArray<any[]>;
 
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -51,6 +53,7 @@ export class HomeTabComponent implements OnInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
+    private _smartDriveUsageService: SmartDriveUsageService,
     private _activityService: ActivityService
   ) {
     this.getUser();
@@ -61,6 +64,7 @@ export class HomeTabComponent implements OnInit {
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     this.savedTheme = this.user.data.theme_preference;
     this._loadWeeklyActivity();
+    this._loadSmartDriveUsage();
   }
 
   ngOnInit() {
@@ -242,6 +246,17 @@ export class HomeTabComponent implements OnInit {
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
+    }
+  }
+
+  async _loadSmartDriveUsage() {
+    console.log('Loading smartdrive usage...');
+    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
+    if (didLoad) {
+      console.log(this._smartDriveUsageService.weeklyActivity);
+    }
+    else {
+      console.log('Could not load SmartDriveUsage');
     }
   }
 }

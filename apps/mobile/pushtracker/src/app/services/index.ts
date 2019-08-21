@@ -8,6 +8,7 @@ import { LocationService } from './location.service';
 import { LoggingService } from './logging.service';
 import { ProgressService } from './progress.service';
 import { PushTrackerUserService } from './pushtracker.user.service';
+import { SmartDriveUsageService } from './smartdrive-usage.service';
 import { SettingsService } from './settings.service';
 
 export const PROVIDERS: any[] = [
@@ -21,7 +22,8 @@ export const PROVIDERS: any[] = [
   FirmwareService,
   SettingsService,
   ActivityService,
-  PushTrackerUserService
+  PushTrackerUserService,
+  SmartDriveUsageService
 ];
 
 export * from './auth-guard.service';
