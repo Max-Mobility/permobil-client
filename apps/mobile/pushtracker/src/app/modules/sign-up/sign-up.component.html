@@ -3,22 +3,44 @@
 </ActionBar>
 
 <ScrollView class="sign-up-layout" iosOverflowSafeArea="false">
-  <GridLayout rows="*, *, *, *, *, *, *" columns="*" iosOverflowSafeArea="false">
-    // Email
-    <MaxTextBox row="0" [(text)]="user.username" [error]="emailError" [label]="'general.email' | translate" (textChange)="onEmailTextChange($event)" keyboardType="email" autocorrect="false" autocapitalizationType="none"></MaxTextBox>
+  <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
+  <PreviousNextView>
+    <GridLayout rows="*, *, *, *, *, *, *" columns="*" iosOverflowSafeArea="false">
+      // Email
+      <MaxTextBox
+        row="0"
+        [(text)]="user.username"
+        [error]="emailError"
+        [label]="'general.email' | translate"
+        (textfieldLoadedEvent)="onEmailTextFieldLoaded($event)"
+        (textChange)="onEmailTextChange($event)"
+        keyboardType="email"
+        autocorrect="false"
+        autocapitalizationType="none"
+      ></MaxTextBox>
 
-    // Password
-    <MaxTextBox row="1" [(text)]="user.password" [error]="passwordError" [label]="'general.password' | translate" [isSecure]="true" autocorrect="false" autocapitalizationType="none"></MaxTextBox>
+      // Password
+      <MaxTextBox
+        row="1"
+        [(text)]="user.password"
+        [error]="passwordError"
+        [label]="'general.password' | translate"
+        [isSecure]="true"
+        (textfieldLoadedEvent)="onPasswordTextFieldLoaded($event)"
+        autocorrect="false"
+        autocapitalizationType="none"
+      ></MaxTextBox>
 
-    // FirstName
-    <MaxTextBox row="2" [(text)]="user.first_name" [error]="firstNameError" [label]="'profile-tab.first-name' | translate"></MaxTextBox>
+      // FirstName
+      <MaxTextBox row="2" [(text)]="user.first_name" [error]="firstNameError" [label]="'profile-tab.first-name' | translate" (textfieldLoadedEvent)="onFirstNameTextFieldLoaded($event)"></MaxTextBox>
 
-    // LastName
-    <MaxTextBox row="3" [(text)]="user.last_name" [error]="lastNameError" [label]="'profile-tab.last-name' | translate"></MaxTextBox>
+      // LastName
+      <MaxTextBox row="3" [(text)]="user.last_name" [error]="lastNameError" [label]="'profile-tab.last-name' | translate" (textfieldLoadedEvent)="onLastNameTextFieldLoaded($event)"></MaxTextBox>
 
-    // DOB
-    <DataBox row="4" [(dataValue)]="user.dob" [error]="birthdayError" [label]="'general.birthday' | translate" [isDatePicker]="true"></DataBox>
+      // DOB
+      <DataBox row="4" [(dataValue)]="user.dob" [error]="birthdayError" [label]="'general.birthday' | translate" [isDatePicker]="true"></DataBox>
 
-    <Button row="6" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
-  </GridLayout>
+      <Button row="6" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
+    </GridLayout>
+  </PreviousNextView>
 </ScrollView>

@@ -25,6 +25,10 @@ registerElement(
   'BarcodeScanner',
   () => require('nativescript-barcodescanner').BarcodeScannerView
 );
+registerElement(
+  'PreviousNextView',
+  () => require('nativescript-iqkeyboardmanager').PreviousNextView
+);
 
 @Component({
   selector: 'ns-app',

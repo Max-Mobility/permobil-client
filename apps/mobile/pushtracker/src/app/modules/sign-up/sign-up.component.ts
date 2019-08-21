@@ -7,7 +7,9 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
+import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
@@ -85,14 +87,40 @@ export class SignUpComponent implements OnInit {
     this._router.back();
   }
 
-  onFuckTap(args) {
-    console.log('on fuck tap');
+  onEmailTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypeEmailAddress;
+    }
+  }
+
+  onPasswordTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypePassword;
+    }
+  }
+
+  onFirstNameTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypeGivenName;
+    }
+  }
+
+  onLastNameTextFieldLoaded(args) {
+    if (isIOS) {
+      const uiTF = (args.object as TextField).ios as UITextField;
+      uiTF.textContentType = UITextContentTypeFamilyName;
+    }
   }
 
   async onSubmitSignUp() {
     console.dir(this.user);
     // validate the email
-    const isEmailValid = this._isEmailValid(this.user.username);
+    const isEmailValid = this._isEmailValid(
+      this.user.username.trim().toLowerCase()
+    );
     if (!isEmailValid) {
       return;
     }
@@ -101,15 +129,17 @@ export class SignUpComponent implements OnInit {
       return;
     }
     // validate user form
-    const isFirstNameValid = this._isFirstNameValid(this.user.first_name);
+    const isFirstNameValid = this._isFirstNameValid(
+      this.user.first_name.trim()
+    );
     if (!isFirstNameValid) {
       return;
     }
-    const isLastNameValid = this._isLastNameValid(this.user.last_name);
+    const isLastNameValid = this._isLastNameValid(this.user.last_name.trim());
     if (!isLastNameValid) {
       return;
     }
-    const isBirthdayValid = this._isBirthdayValid(this.user.dob);
+    const isBirthdayValid = this._isBirthdayValid(this.user.dob.trim());
     if (!isBirthdayValid) {
       return;
     }

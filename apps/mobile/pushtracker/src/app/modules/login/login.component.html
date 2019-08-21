@@ -1,29 +1,43 @@
 <ScrollView class="login-layout">
-  <GridLayout rows="auto, *, auto" columns="*">
-    <GridLayout row="1" rows="auto, *, *, *" columns="*" class="login-form">
-      <Image row="0" class="align-center m-20" src="res://permobil_blue" stretch="aspectFit"></Image>
+  <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
+  <PreviousNextView>
+    <GridLayout rows="auto, *, auto" columns="*">
+      <GridLayout row="1" rows="auto, *, *, *" columns="*" class="login-form">
+        <Image row="0" class="align-center" margin="40" src="res://permobil_blue" stretch="aspectFit"></Image>
 
-      // Email
-      <MaxTextBox
-        row="1"
-        [(text)]="user.email"
-        [error]="emailError"
-        [label]="'general.email' | translate"
-        (textChange)="onEmailTextChange($event)"
-        returnKeyType="next"
-        keyboardType="email"
-        autocorrect="false"
-        autocapitalizationType="none"
-      ></MaxTextBox>
+        // Email
+        <MaxTextBox
+          row="1"
+          [(text)]="user.email"
+          [error]="emailError"
+          [label]="'general.email' | translate"
+          (textChange)="onEmailTextChange($event)"
+          (textfieldLoadedEvent)="onEmailTextFieldLoaded($event)"
+          returnKeyType="next"
+          keyboardType="email"
+          autocorrect="false"
+          autocapitalizationType="none"
+        ></MaxTextBox>
 
-      // Password
-      <MaxTextBox row="2" [(text)]="user.password" [error]="passwordError" [label]="'general.password' | translate" [isSecure]="true" returnKeyType="done" autocorrect="false" autocapitalizationType="none"></MaxTextBox>
+        // Password
+        <MaxTextBox
+          row="2"
+          [(text)]="user.password"
+          [error]="passwordError"
+          [label]="'general.password' | translate"
+          (textfieldLoadedEvent)="onPasswordTextFieldLoaded($event)"
+          [isSecure]="true"
+          returnKeyType="done"
+          autocorrect="false"
+          autocapitalizationType="none"
+        ></MaxTextBox>
 
-      <Button row="3" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
+        <Button row="3" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
+      </GridLayout>
+      <GridLayout row="2" rows="*" columns="auto, *, auto">
+        <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="forgot-pw-btn"></Button>
+        <Button col="2" [text]="'sign-up.title' | translate" (tap)="navToSignUp()" class="register-btn"></Button>
+      </GridLayout>
     </GridLayout>
-    <GridLayout row="2" rows="*" columns="auto, *, auto">
-      <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="forgot-pw-btn"></Button>
-      <Button col="2" [text]="'sign-up.title' | translate" (tap)="navToSignUp()" class="register-btn"></Button>
-    </GridLayout>
-  </GridLayout>
+  </PreviousNextView>
 </ScrollView>
