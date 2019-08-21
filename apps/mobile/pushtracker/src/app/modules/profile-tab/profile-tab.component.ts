@@ -246,18 +246,16 @@ export class ProfileTabComponent implements OnInit {
   onPrivacyTap() {
     this._modalService
       .showModal(PrivacyPolicyComponent, {
-        context: { user: this.user },
+        context: { data: this.user.data },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
       })
       .then((result) => {
-        Log.D('result', result);
         if (result !== undefined) {
           KinveyUser.update(result);
           Object.keys(result).map(k => {
             this.userService.updateDataProperty(k, result[k]);
-            this._logService.logBreadCrumb(`User updated ${k}: ${result[k]}`);
           });
         }
       })
