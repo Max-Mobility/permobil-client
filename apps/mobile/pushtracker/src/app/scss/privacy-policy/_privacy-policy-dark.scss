@@ -45,4 +45,18 @@
     @extend .CANCEL_BTN_BASE;
     color: #3d4144;
   }
+
+  .setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $permobil-cousteau;
+    background: darken($white, 10%);
+    off-background-color: $dark-grey;
+  }
+
+  .inactive-setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $grey;
+    background: $dark-grey;
+    off-background-color: lighten($grey, 10%);
+  }
 }

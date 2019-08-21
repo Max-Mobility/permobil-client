@@ -27,7 +27,9 @@
           ></label>
         <Switch
           col="1"
-          [(ngModel)]="has_agreed_to_user_agreement"
+          class="inactive-setting-switch"
+          (checkedChange)="onSettingsChecked($event, 'has_agreed_to_user_agreement')"
+          [checked]="has_agreed_to_user_agreement"
           ></Switch>
       </GridLayout>
       // privacy policy
@@ -42,7 +44,10 @@
           textWrap="true"
           [text]="'user.accept.privacy-policy' | translate"
           ></label>
-        <Switch col="1" [(ngModel)]="has_read_privacy_policy"></Switch>
+        <Switch col="1"
+                class="inactive-setting-switch"
+                (checkedChange)="onSettingsChecked($event, 'has_read_privacy_policy')"
+                [checked]="has_read_privacy_policy"></Switch>
       </GridLayout>
       // consent
       <label
@@ -58,7 +63,9 @@
           ></label>
         <Switch
           col="1"
-          [(ngModel)]="consent_to_product_development"
+          class="inactive-setting-switch"
+          (checkedChange)="onSettingsChecked($event, 'consent_to_product_development')"
+          [checked]="consent_to_product_development"
           ></Switch>
       </GridLayout>
       <GridLayout columns="*, auto" rows="auto">
@@ -67,7 +74,10 @@
           textWrap="true"
           [text]="'user.consent.research' | translate"
           ></label>
-        <Switch col="1" [(ngModel)]="consent_to_research"></Switch>
+        <Switch col="1"
+                class="inactive-setting-switch"
+                (checkedChange)="onSettingsChecked($event, 'consent_to_research')"
+                [checked]="consent_to_research"></Switch>
       </GridLayout>
       <GridLayout rows="auto" columns="*,*">
         <button

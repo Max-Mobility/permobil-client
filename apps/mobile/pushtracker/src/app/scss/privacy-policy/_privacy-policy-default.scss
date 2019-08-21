@@ -42,4 +42,18 @@
     color: #3d4144;
     text-transform: capitalize;
   }
+
+  .setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $permobil-primary;
+    background: $permobil-sky;
+    off-background-color: $dark-grey;
+  }
+
+  .inactive-setting-switch {
+    @extend .SETTING_SWITCH_BASE;
+    color: $dark-grey;
+    background: $dark-grey;
+    off-background-color: $grey;
+  }
 }
