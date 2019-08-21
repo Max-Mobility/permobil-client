@@ -5,7 +5,7 @@
   <Label row="1" text="" class="hr" textWrap="true"></Label>
 
   <StackLayout row="2">
-    <ListView [items]="supportItems" (itemTap)="onItemTap($event)" class="faq-list">
+    <ListView [items]="supportItems" (itemLoading)="onItemLoading($event)" class="faq-list">
       <ng-template let-item="item">
         <GridLayout rows="auto, auto" columns="auto, *" padding="8">
           <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>

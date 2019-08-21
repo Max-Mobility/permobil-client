@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
+import { isIOS } from 'tns-core-modules/platform';
 import { LoggingService } from '../../services';
 
 @Component({
@@ -24,8 +25,11 @@ export class SupportComponent implements OnInit {
     this._logService.logBreadCrumb('support.component OnInit');
   }
 
-  onItemTap(args) {
-    console.log('item tap', args.object);
+  onItemLoading(args) {
+    if (isIOS) {
+      const iosCell = args.ios as UITableViewCell;
+      iosCell.selectionStyle = UITableViewCellSelectionStyle.None;
+    }
   }
 
   onNavBtnTap() {
