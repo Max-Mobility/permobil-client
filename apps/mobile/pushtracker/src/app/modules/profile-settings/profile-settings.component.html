@@ -102,7 +102,7 @@
         <Slider width="80%" class="slider" [value]="SLIDER_VALUE" (valueChange)="onSliderValueChange($event)" minValue="1" maxValue="10"></Slider>
         <Label width="20%" class="slider-value" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
       </StackLayout>
-      <StackLayout orientation="horizontal" horizontalAlignment="right">
+      <StackLayout orientation="horizontal" marginTop="16" horizontalAlignment="right">
         <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
         <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
       </StackLayout>
@@ -116,9 +116,9 @@
       <Label class="description" [text]="activeSettingDescription | translate"></Label>
       <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
         <ListPicker row="0" col="1" colSpan="3" class="listpicker" [items]="listPickerItems" (selectedIndexChange)="listPickerIndexChange($event)" [selectedIndex]="listPickerIndex"></ListPicker>
-        <StackLayout row="1" col="2" orientation="horizontal" horizontalAlignment="right">
-          <Button ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
-          <Button ripple rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+        <StackLayout row="1" col="2" orientation="horizontal" marginTop="16" horizontalAlignment="right">
+          <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
+          <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
         </StackLayout>
       </GridLayout>
     </StackLayout>

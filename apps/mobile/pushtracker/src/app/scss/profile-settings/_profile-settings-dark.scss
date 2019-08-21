@@ -46,10 +46,10 @@
   .custom-template-dialog {
     @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
 
-    background-color: $black;
+    background-color: $dark-custom-dialog-layout-shadow;
 
     > StackLayout {
-      background-color: $dark-grey;
+      background-color: $dark-custom-dialog-layout-black;
 
       .title {
         color: $white;
