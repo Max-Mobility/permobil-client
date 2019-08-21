@@ -133,10 +133,12 @@ export class HomeTabComponent implements OnInit {
     const days = this._activityService.weeklyActivity['days'];
     for (const i in days) {
       const day = days[i];
-      if (day.date === dateFormatted(this._currentDayInView))
-        this._todaysActivity = day;
-      if (day.coast_time_avg > this.yAxisMax)
-        this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
+      if (day) {
+        if (day.date === dateFormatted(this._currentDayInView))
+          this._todaysActivity = day;
+        if (day.coast_time_avg > this.yAxisMax)
+          this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
+      }
     }
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysActivity) {

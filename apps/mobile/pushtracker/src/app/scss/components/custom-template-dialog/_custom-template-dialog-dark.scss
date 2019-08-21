@@ -1,0 +1,36 @@
+@import '../../variables';
+@import 'custom-template-dialog-base';
+
+.custom-template-dialog {
+  @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
+
+  background-color: $dark-custom-dialog-layout-shadow;
+
+  > StackLayout {
+    background-color: $dark-custom-dialog-layout-black;
+
+    .title {
+      color: $white;
+    }
+
+    .description {
+      color: lighten($color: $white, $amount: 0.2);
+    }
+
+    .listpicker {
+      color: $white;
+    }
+
+    .slider-value {
+      color: $white;
+    }
+
+    .cancel-btn {
+      color: $permobil-cousteau;
+    }
+
+    .ok-btn {
+      color: $permobil-cousteau;
+    }
+  }
+}

@@ -37,38 +37,4 @@
     background: $dark-grey;
     off-background-color: $grey;
   }
-
-  .custom-template-dialog {
-    @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
-
-    background-color: $light-custom-dialog-layout-shadow;
-
-    > StackLayout {
-      background-color: $white;
-
-      .title {
-        color: #202125;
-      }
-
-      .description {
-        color: #393a3f;
-      }
-
-      .listpicker {
-        color: $permobil-violet;
-      }
-
-      .slider-value {
-        color: #202125;
-      }
-
-      .cancel-btn {
-        color: #1a73e9;
-      }
-
-      .ok-btn {
-        color: #1a73e9;
-      }
-    }
-  }
 }
