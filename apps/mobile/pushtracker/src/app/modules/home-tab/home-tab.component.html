@@ -58,37 +58,49 @@
     </GridLayout>
 
     <!-- Week View Coast Time -->
-    <ActivityIndicator height="10%" width="10%" *ngIf="!weeklyActivityLoaded" 
-        [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
+    <ActivityIndicator height="10%" width="10%" *ngIf="!weeklyActivityLoaded"
+      [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
     <StackLayout *ngIf="weeklyActivityLoaded">
       <GridLayout row="0" rows="auto" cols="auto">
-        <Label row="0" col="1" marginTop="17" class="title" horizontalAlignment="center" justifyContent="center" [text]="coastTimeGoalMessage"></Label>
+        <Label row="0" col="1" marginTop="17" class="title" horizontalAlignment="center" justifyContent="center"
+          [text]="coastTimeGoalMessage"></Label>
       </GridLayout>
       <RadCartesianChart row="1" id="homeTabWeeklyCoastTimeChart">
         <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
           horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
-        <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
+        <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+          lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1"
+          labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
 
-        <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'" 
-          horizontalLocation="Right" labelMargin="10" lineHidden="true" 
-          [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
-        <BarSeries tkCartesianSeries  [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
+        <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+          horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
+          [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+          valueProperty="coastTime">
+        </BarSeries>
 
-        <LineSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" 
-            showLabels="true" valueProperty="coastTime">
-            <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold" 
-              [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-              [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-              textSize="12" textColor="White" textFormat="Goal: %.0f"></PointLabelStyle>
-        </LineSeries>
+        <BubbleSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" seriesName="GoalBubbleSeries"
+          showLabels="true" valueProperty="coastTime" bubbleScale="5" bubbleSizeProperty="impact">
+          <PointLabelStyle tkBubbleLabelStyle margin="10" fontStyle="Bold"
+            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'" textSize="12" textColor="White"
+            textFormat="Goal:%s%.0f"></PointLabelStyle>
+        </BubbleSeries>
 
-        <Palette tkCartesianPalette seriesName="WeeklyActivity">
-          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
-        </Palette>  
+        <Palettes>
+          <Palette tkCartesianPalette seriesName="WeeklyActivity">
+            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+              [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+          </Palette>
+          <Palette tkCartesianPalette seriesName="GoalBubbleSeries">
+            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"
+              [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'"></PaletteEntry>
+          </Palette>
+        </Palettes>
+
         <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
-          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
-          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
+          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#ff0000'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
     </StackLayout>
