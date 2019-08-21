@@ -13,8 +13,8 @@
       <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true"
         animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage">
       </AnimatedCircle>
-      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle" 
-        ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
+      <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle" ripple
+        rippleColorAlpha="0.18" (tap)="onActivityTap()">
         <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
       </GridLayout>
     </GridLayout>
@@ -52,7 +52,8 @@
       <Label row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
       // coast time data
       <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayCoastTime : 0"></Label>
-      <Label textWrap="true" row="1" col="2" class="detail-description" [text]="'general.coast-time' | translate"></Label>
+      <Label textWrap="true" row="1" col="2" class="detail-description"
+        [text]="'general.coast-time' | translate"></Label>
       // distance data
       <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? distanceData : 0"></Label>
       <Label row="1" col="4" class="detail-description" [text]="'general.miles' | translate"></Label>
@@ -81,29 +82,29 @@
           valueProperty="coastTime">
         </BarSeries>
 
-        <BubbleSeries tkCartesianSeries [items]="bubbleChartData" categoryProperty="xAxis" seriesName="GoalBubbleSeries"
-          showLabels="true" valueProperty="coastTime" bubbleScale="5" bubbleSizeProperty="impact">
-          <PointLabelStyle tkBubbleLabelStyle margin="10" fontStyle="Bold"
-            fillColor="#e31c79"
-            strokeColor="#e31c79" textSize="12" textColor="White"
-            textFormat="Goal:%s%.0f"></PointLabelStyle>
-        </BubbleSeries>
+        <LineSeries tkCartesianSeries [items]="goalLabelChartData" categoryProperty="xAxis" seriesName="GoalLineSeries"
+          showLabels="true" valueProperty="coastTime">
+          <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
+            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" 
+            textColor="White"
+            textFormat="Goal: %.0f"></PointLabelStyle>
+      </LineSeries>
 
         <Palettes>
           <Palette tkCartesianPalette seriesName="WeeklyActivity">
             <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
               [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
           </Palette>
-          <Palette tkCartesianPalette seriesName="GoalBubbleSeries">
-            <PaletteEntry tkCartesianPaletteEntry 
-              fillColor="#e31c79"
-              strokeColor="#e31c79"></PaletteEntry>
+          <Palette tkCartesianPalette seriesName="GoalLineSeries">
+            <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
+              [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"></PaletteEntry>
           </Palette>
         </Palettes>
 
         <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
           [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
-          [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#e31c79'" strokeDashPattern="3, 3">
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
     </StackLayout>

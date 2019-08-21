@@ -304,6 +304,7 @@ export class ProfileSettingsComponent implements OnInit {
           this.CURRENT_THEME
         );
         KinveyUser.update({ theme_preference: this.CURRENT_THEME });
+        appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
         break;
       case 'language':
         this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];

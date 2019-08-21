@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -33,7 +33,7 @@ export class HomeTabComponent implements OnInit {
   todayPushCount: number;
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
-  savedTheme: string = 'DEFAULT';
+  savedTheme: string;
   weeklyActivityAnnotationValue: number = 1;
   coastTimeGoalMessage: string;
   weeklyActivityLoaded: boolean = false;
@@ -43,9 +43,13 @@ export class HomeTabComponent implements OnInit {
   private _weekEnd: Date;
   private _todaysActivity: any;
 
+<<<<<<< HEAD
+  public goalLabelChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: ' ', coastTime: 5, impact: 7 }] as any[]));
+=======
   public bubbleChartData: ObservableArray<any[]> = new ObservableArray([
     { xAxis: ' ', coastTime: 5, impact: 7 }
   ] as any[]);
+>>>>>>> ea44cb39f8f7eabc270705df932e12f32e90f005
 
   constructor(
     private _translateService: TranslateService,
@@ -55,20 +59,21 @@ export class HomeTabComponent implements OnInit {
     private userService: PushTrackerUserService,
     private _activityService: ActivityService
   ) {
+    this.getUser();
     this._currentDayInView = new Date();
     const sunday = this._getFirstDayOfWeek(this._currentDayInView);
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
+    this.savedTheme = this.user.data.theme_preference;
     this._loadWeeklyActivity();
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+  }
+
+  getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
@@ -119,7 +124,7 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.weeklyActivity = new ObservableArray([]);
     }
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -167,13 +172,7 @@ export class HomeTabComponent implements OnInit {
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
     this.weeklyActivityLoaded = true;
-    this.bubbleChartData = new ObservableArray([
-      {
-        xAxis: ' ',
-        coastTime: this.user.data.activity_goal_coast_time,
-        impact: 7
-      }
-    ] as any[]);
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
   }
 
   _formatActivityForView(viewMode) {
@@ -182,7 +181,7 @@ export class HomeTabComponent implements OnInit {
       if (activity) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function(start, end) {
+        const range = function (start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);
