@@ -253,6 +253,13 @@ export class ProfileTabComponent implements OnInit {
       })
       .then((result) => {
         Log.D('result', result);
+        if (result !== undefined) {
+          KinveyUser.update(result);
+          Object.keys(result).map(k => {
+            this.userService.updateDataProperty(k, result[k]);
+            this._logService.logBreadCrumb(`User updated ${k}: ${result[k]}`);
+          });
+        }
       })
       .catch(err => {
         this._logService.logException(err);
