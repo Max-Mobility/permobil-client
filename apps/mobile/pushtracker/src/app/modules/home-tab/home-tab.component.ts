@@ -43,13 +43,7 @@ export class HomeTabComponent implements OnInit {
   private _weekEnd: Date;
   private _todaysActivity: any;
 
-<<<<<<< HEAD
   public goalLabelChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: ' ', coastTime: 5, impact: 7 }] as any[]));
-=======
-  public bubbleChartData: ObservableArray<any[]> = new ObservableArray([
-    { xAxis: ' ', coastTime: 5, impact: 7 }
-  ] as any[]);
->>>>>>> ea44cb39f8f7eabc270705df932e12f32e90f005
 
   constructor(
     private _translateService: TranslateService,

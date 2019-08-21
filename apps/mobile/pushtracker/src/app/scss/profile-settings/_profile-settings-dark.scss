@@ -1,7 +1,7 @@
 @import '../variables';
 @import 'profile-settings-base';
 
-.profile-settings-layout {
+.profile-settings-layout-dark {
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
   background-color: $black;
 

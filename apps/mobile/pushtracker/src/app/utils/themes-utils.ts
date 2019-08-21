@@ -31,7 +31,7 @@ export function enableDarkTheme() {
 export function enableDefaultTheme() {
   themes.applyThemeCss(
     require('../scss/theme-default.scss').toString(),
-    'theme-dark.scss'
+    'theme-default.scss'
   );
   setLightStatusBar();
   // setLightNavigationBar();
