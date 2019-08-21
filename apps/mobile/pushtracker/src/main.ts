@@ -3,7 +3,9 @@ import { enableProdMode } from '@angular/core';
 import { platformNativeScriptDynamic } from 'nativescript-angular/platform';
 import * as themes from 'nativescript-themes';
 import 'reflect-metadata';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { AppModule } from './app/app.module';
+import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 require('nativescript-plugin-firebase'); // for configuring push notifications
 
 // If built with env.uglify
@@ -16,10 +18,25 @@ if (typeof __UGLIFIED__ !== 'undefined' && __UGLIFIED__) {
 // set the default app theme styles here
 // later when settings is cofigured we'll store the user theme preference
 // read their saved setting and then load the theme according to the user pref.
-themes.applyThemeCss(
-  require('./app/scss/theme-default.scss').toString(),
-  'theme-default.scss'
+// themes.applyThemeCss(
+//   require('./app/scss/theme-default.scss').toString(),
+//   'theme-default.scss'
+// );
+const SAVED_THEME = appSettings.getString(
+  STORAGE_KEYS.APP_THEME,
+  APP_THEMES.DEFAULT
 );
+if (SAVED_THEME === APP_THEMES.DEFAULT) {
+  themes.applyThemeCss(
+    require('./app/scss/theme-default.scss').toString(),
+    'theme-default.scss'
+  );
+} else if (SAVED_THEME === APP_THEMES.DARK) {
+  themes.applyThemeCss(
+    require('./app/scss/theme-dark.scss').toString(),
+    'theme-dark.scss'
+  );
+}
 
 // A traditional NativeScript application starts by initializing global objects,
 // setting up global CSS rules, creating, and navigating to the main page.
