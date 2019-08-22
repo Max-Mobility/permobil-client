@@ -741,15 +741,18 @@ export class MainViewModel extends Observable {
   }
 
   loadSmartDriveStateFromLS() {
+    if (this.smartDrive === undefined || this.smartDrive === null) {
+      return;
+    }
+    this._sentryBreadCrumb('Loading SD state from LS');
     const savedSd = LS.getItem(
       'com.permobil.smartdrive.wearos.smartdrive.data'
     );
-    this._sentryBreadCrumb('Loading SD state from LS', savedSd);
     if (savedSd) {
       this.smartDrive.fromObject(savedSd);
     }
     // update the displayed smartdrive data
-    this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+    this.smartDriveCurrentBatteryPercentage = (this.smartDrive && this.smartDrive.battery) || 0;
   }
 
   saveSmartDriveStateToLS() {
@@ -850,13 +853,7 @@ export class MainViewModel extends Observable {
   onUpdateAmbient() {
     this.isAmbient = true;
     this.updateTimeDisplay();
-    this._sentryBreadCrumb(
-      'updateAmbient',
-      this.currentTime,
-      this.currentTimeMeridiem,
-      this.currentDay,
-      this.currentYear
-    );
+    this._sentryBreadCrumb('updateAmbient');
   }
 
   onExitAmbient() {
@@ -960,7 +957,7 @@ export class MainViewModel extends Observable {
     const timeReceiverCallback = (androidContext, intent) => {
       try {
         this.updateTimeDisplay();
-        this._sentryBreadCrumb('timeReceiverCallback', this.currentTime);
+        this._sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
           this.onNewDay();
@@ -1144,12 +1141,17 @@ export class MainViewModel extends Observable {
       this.smartDrive.sendTap().catch(err => {
         Sentry.captureException(err);
         Log.E('could not send tap', err);
-        this.disablePowerAssist();
-        alert({
-          title: L('failures.title'),
-          message: err,
-          okButtonText: L('buttons.ok')
-        });
+        this.disablePowerAssist()
+          .then(() => {
+            alert({
+              title: L('failures.title'),
+              message: err,
+              okButtonText: L('buttons.ok')
+            });
+          })
+          .catch((err) => {
+            Sentry.captureException(err);
+          });
       });
     }
   }
@@ -1241,6 +1243,14 @@ export class MainViewModel extends Observable {
   }
 
   onTrainingTap() {
+    if (!this.watchBeingWorn && !this.disableWearCheck) {
+      alert({
+        title: L('failures.title'),
+        message: L('failures.must-wear-watch'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
     const didEnableTapSensor = this.enableTapSensor();
     if (!didEnableTapSensor) {
       // TODO: translate this alert!
@@ -1413,7 +1423,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
     }
-    this._sentryBreadCrumb('Current FW Versions:', this.currentVersions);
+    this._sentryBreadCrumb(`Current FW Versions: ${this.currentVersions}`);
     let response = null;
     const query = {
       $or: [
@@ -1550,8 +1560,8 @@ export class MainViewModel extends Observable {
     const mcuFw = new Uint8Array(
       this.currentVersions['SmartDriveMCU.ota'].data
     );
-    this._sentryBreadCrumb('mcu length:', typeof mcuFw, mcuFw.length);
-    this._sentryBreadCrumb('ble length:', typeof bleFw, bleFw.length);
+    this._sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
+    this._sentryBreadCrumb(`ble length: ${bleFw.length}`);
     // maintain CPU resources while updating
     this.maintainCPU();
     // smartdrive needs to update
@@ -1583,7 +1593,7 @@ export class MainViewModel extends Observable {
       data: f.data
     };
     // save binary file to fs
-    this._sentryBreadCrumb('saving file', this.currentVersions[f.name].filename);
+    this._sentryBreadCrumb(`saving file ${this.currentVersions[f.name].filename}`);
     SmartDriveData.Firmwares.saveToFileSystem({
       filename: this.currentVersions[f.name].filename,
       data: f.data
@@ -2201,13 +2211,9 @@ export class MainViewModel extends Observable {
     }
     this.updatePowerAssistRing();
     // turn off the smartdrive
-    return this.stopSmartDrive()
-      .then(() => {
-        return this.disconnectFromSmartDrive();
-      })
+    return this.disconnectFromSmartDrive()
       .catch(err => {
         Sentry.captureException(err);
-        return this.disconnectFromSmartDrive();
       });
   }
 
