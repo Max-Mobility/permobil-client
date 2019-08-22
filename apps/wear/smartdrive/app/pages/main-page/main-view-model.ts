@@ -998,7 +998,7 @@ export class MainViewModel extends Observable {
   onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
-      return;
+      return Promise.reject('no sqlite service!');
     }
     // this._sentryBreadCrumb('Network available - sending errors');
     return this.sendErrorsToServer(10)
@@ -2641,7 +2641,7 @@ export class MainViewModel extends Observable {
 
   getRecentErrors(numErrors: number, offset: number = 0) {
     if (this._sqliteService === undefined) {
-      return;
+      return Promise.resolve([]);
     }
     // this._sentryBreadCrumb('getRecentErrors', numErrors, offset);
     let errors = [];
@@ -2881,7 +2881,7 @@ export class MainViewModel extends Observable {
 
   sendErrorsToServer(numErrors: number) {
     if (this._sqliteService === undefined) {
-      return;
+      return Promise.reject('no sqlite service');
     }
     return this._sqliteService
       .getAll({

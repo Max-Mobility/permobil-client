@@ -1158,7 +1158,8 @@ export class SmartDrive extends DeviceBase {
     // now that we're receiving data we can definitly send data
     if (!this.notifying || !this.ableToSend) {
       // request high priority connection on first data received
-      this.requestHighPriorityConnection();
+      const requestWorked = this.requestHighPriorityConnection();
+      console.log('got high priority connection?', requestWorked);
     }
     // update state
     this.notifying = true;
