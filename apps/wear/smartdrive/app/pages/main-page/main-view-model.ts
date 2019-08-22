@@ -454,7 +454,7 @@ export class MainViewModel extends Observable {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
-      // Log.D('requesting permissions!', neededPermissions);
+      // this._sentryBreadCrumb('requesting permissions!', neededPermissions);
       await alert({
         title: L('permissions-request.title'),
         message: reasons.join('\n\n'),
@@ -527,7 +527,7 @@ export class MainViewModel extends Observable {
   private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener({
     onApplyWindowInsets: function(view, insets) {
       this.chinSize = insets.getSystemWindowInsetBottom();
-      Log.D('chinSize', this.chinSize);
+      this._sentryBreadCrumb('chinSize', this.chinSize);
       view.onApplyWindowInsets(insets);
       return insets;
     }
@@ -744,7 +744,7 @@ export class MainViewModel extends Observable {
     const savedSd = LS.getItem(
       'com.permobil.smartdrive.wearos.smartdrive.data'
     );
-    Log.D('Loading SD state from LS', savedSd);
+    this._sentryBreadCrumb('Loading SD state from LS', savedSd);
     if (savedSd) {
       this.smartDrive.fromObject(savedSd);
     }
@@ -753,7 +753,7 @@ export class MainViewModel extends Observable {
   }
 
   saveSmartDriveStateToLS() {
-    Log.D('Saving SD state to LS');
+    this._sentryBreadCrumb('Saving SD state to LS');
     if (this.smartDrive) {
       LS.setItemObject(
         'com.permobil.smartdrive.wearos.smartdrive.data',
@@ -804,7 +804,6 @@ export class MainViewModel extends Observable {
   onActivityPaused(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
       this._sentryBreadCrumb('*** activityPaused ***');
-      Log.D('*** activityPaused ***');
       // paused happens any time a new activity is shown
       // in front, e.g. showSuccess / showFailure - so we
       // probably don't want to fullstop on paused
@@ -814,7 +813,6 @@ export class MainViewModel extends Observable {
   onActivityResumed(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
       this._sentryBreadCrumb('*** activityResumed ***');
-      Log.D('*** activityResumed ***');
       // resumed happens after an app is re-opened out of
       // suspend, even though the app level resume event
       // doesn't seem to fire. Therefore we want to make
@@ -827,7 +825,6 @@ export class MainViewModel extends Observable {
   onActivityStopped(args: application.AndroidActivityBundleEventData) {
     if (this.isActivityThis(args.activity)) {
       this._sentryBreadCrumb('*** activityStopped ***');
-      Log.D('*** activityStopped ***');
       // similar to the app suspend / exit event.
       this.fullStop();
     }
@@ -836,7 +833,6 @@ export class MainViewModel extends Observable {
   onEnterAmbient() {
     this._sentryBreadCrumb('*** enterAmbient ***');
     this.isAmbient = true;
-    Log.D('*** enterAmbient ***');
     // the user can enter ambient mode even when we hold wake lock
     // and use the keepAlive() function by full-palming the screen
     // or going underwater - so we have to handle the cases that
@@ -854,7 +850,7 @@ export class MainViewModel extends Observable {
   onUpdateAmbient() {
     this.isAmbient = true;
     this.updateTimeDisplay();
-    Log.D(
+    this._sentryBreadCrumb(
       'updateAmbient',
       this.currentTime,
       this.currentTimeMeridiem,
@@ -866,7 +862,6 @@ export class MainViewModel extends Observable {
   onExitAmbient() {
     this._sentryBreadCrumb('*** exitAmbient ***');
     this.isAmbient = false;
-    Log.D('*** exitAmbient ***');
     this.enableBodySensor();
     this.applyTheme();
   }
@@ -878,12 +873,12 @@ export class MainViewModel extends Observable {
   }
 
   onAppSuspend() {
-    Log.D('*** appSuspend ***');
+    this._sentryBreadCrumb('*** appSuspend ***');
     this.fullStop();
   }
 
   onAppExit() {
-    Log.D('*** appExit ***');
+    this._sentryBreadCrumb('*** appExit ***');
     this.fullStop();
   }
 
@@ -965,7 +960,7 @@ export class MainViewModel extends Observable {
     const timeReceiverCallback = (androidContext, intent) => {
       try {
         this.updateTimeDisplay();
-        Log.D('timeReceiverCallback', this.currentTime);
+        this._sentryBreadCrumb('timeReceiverCallback', this.currentTime);
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
           this.onNewDay();
@@ -1004,18 +999,18 @@ export class MainViewModel extends Observable {
   }
 
   onNetworkAvailable() {
-    // Log.D('Network available - sending errors');
+    // this._sentryBreadCrumb('Network available - sending errors');
     return this.sendErrorsToServer(10)
       .then(ret => {
-        // Log.D('Network available - sending info');
+        // this._sentryBreadCrumb('Network available - sending info');
         return this.sendInfosToServer(10);
       })
       .then(ret => {
-        // Log.D('Network available - sending settings');
+        // this._sentryBreadCrumb('Network available - sending settings');
         return this.sendSettingsToServer();
       })
       .then(ret => {
-        // Log.D('Have sent data to server - unregistering from network');
+        // this._sentryBreadCrumb('Have sent data to server - unregistering from network');
       })
       .catch(err => {
         Sentry.captureException(err);
@@ -1064,7 +1059,7 @@ export class MainViewModel extends Observable {
         this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
         if (!this.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
-            Log.D('Watch not being worn - disabling power assist!');
+            this._sentryBreadCrumb('Watch not being worn - disabling power assist!');
             // disable power assist if the watch is taken off!
             this.disablePowerAssist();
           }
@@ -1418,7 +1413,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
     }
-    // Log.D('Current FW Versions:', this.currentVersions);
+    this._sentryBreadCrumb('Current FW Versions:', this.currentVersions);
     let response = null;
     const query = {
       $or: [
@@ -1509,7 +1504,7 @@ export class MainViewModel extends Observable {
     // re-enable swipe close of the updates layout
     (this._updatesLayout as any).swipeable = true;
     // now see what we need to do with the data
-    Log.D('Finished downloading updates.');
+    this._sentryBreadCrumb('Finished downloading updates.');
     this.performSmartDriveWirelessUpdate();
   }
 
@@ -1548,15 +1543,15 @@ export class MainViewModel extends Observable {
       okButtonText: L('buttons.ok')
     });
     this.isUpdatingSmartDrive = true;
-    Log.D('Beginning SmartDrive update');
+    this._sentryBreadCrumb('Beginning SmartDrive update');
     const bleFw = new Uint8Array(
       this.currentVersions['SmartDriveBLE.ota'].data
     );
     const mcuFw = new Uint8Array(
       this.currentVersions['SmartDriveMCU.ota'].data
     );
-    Log.D('mcu length:', typeof mcuFw, mcuFw.length);
-    Log.D('ble length:', typeof bleFw, bleFw.length);
+    this._sentryBreadCrumb('mcu length:', typeof mcuFw, mcuFw.length);
+    this._sentryBreadCrumb('ble length:', typeof bleFw, bleFw.length);
     // maintain CPU resources while updating
     this.maintainCPU();
     // smartdrive needs to update
@@ -1588,7 +1583,7 @@ export class MainViewModel extends Observable {
       data: f.data
     };
     // save binary file to fs
-    Log.D('saving file', this.currentVersions[f.name].filename);
+    this._sentryBreadCrumb('saving file', this.currentVersions[f.name].filename);
     SmartDriveData.Firmwares.saveToFileSystem({
       filename: this.currentVersions[f.name].filename,
       data: f.data
@@ -1726,7 +1721,7 @@ export class MainViewModel extends Observable {
   }
 
   updateChartData() {
-    // Log.D('Updating Chart Data / Display');
+    // this._sentryBreadCrumb('Updating Chart Data / Display');
     return this.getUsageInfoFromDatabase(7)
       .then((sdData: any[]) => {
         // we've asked for one more day than needed so that we can
@@ -1749,7 +1744,7 @@ export class MainViewModel extends Observable {
             value: (e.battery * 100.0) / maxBattery
           };
         });
-        // Log.D('Highest Battery Value:', maxBattery);
+        // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
         this.batteryChartMaxValue = maxBattery.toFixed(0);
         this.batteryChartData = batteryData;
 
@@ -1780,7 +1775,7 @@ export class MainViewModel extends Observable {
         distanceData.map(data => {
           data.value = (100.0 * data.value) / maxDist;
         });
-        // Log.D('Highest Distance Value:', maxDist);
+        // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
         this.distanceChartMaxValue = maxDist.toFixed(1);
         this.distanceChartData = distanceData;
 
@@ -2124,7 +2119,6 @@ export class MainViewModel extends Observable {
 
   enablePowerAssist() {
     this._sentryBreadCrumb('Enabling power assist');
-    Log.D('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
       alert({
@@ -2164,7 +2158,7 @@ export class MainViewModel extends Observable {
               );
             }
           } else {
-            Log.D('Did not connect, disabling power assist');
+            this._sentryBreadCrumb('Did not connect, disabling power assist');
             this.disablePowerAssist();
           }
         })
@@ -2179,7 +2173,7 @@ export class MainViewModel extends Observable {
           if (didSave) {
             return this.enablePowerAssist();
           } else {
-            Log.D('SmartDrive was not saved!');
+            this._sentryBreadCrumb('SmartDrive was not saved!');
           }
         })
         .catch(err => {
@@ -2197,7 +2191,6 @@ export class MainViewModel extends Observable {
 
   async disablePowerAssist() {
     this._sentryBreadCrumb('Disabling power assist');
-    Log.D('Disabling power assist');
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
@@ -2273,7 +2266,7 @@ export class MainViewModel extends Observable {
       })
       .then(() => {
         this.hideScanning();
-        Log.D(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
+        this._sentryBreadCrumb(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
         // make sure we have smartdrives
         if (BluetoothService.SmartDrives.length <= 0) {
@@ -2467,7 +2460,7 @@ export class MainViewModel extends Observable {
   }
 
   async onSmartDriveError(args: any) {
-    // Log.D('onSmartDriveError event');
+    // this._sentryBreadCrumb('onSmartDriveError event');
     const errorType = args.data.errorType;
     const errorId = args.data.errorId;
     // save the error into the database
@@ -2491,7 +2484,7 @@ export class MainViewModel extends Observable {
   async onMotorInfo(args: any) {
     // send current settings to SD
     this._onceSendSmartDriveSettings();
-    // Log.D('onMotorInfo event');
+    // this._sentryBreadCrumb('onMotorInfo event');
     const motorInfo = args.data.motorInfo;
 
     // update motor state
@@ -2532,7 +2525,7 @@ export class MainViewModel extends Observable {
     const currentCoast = appSettings.getNumber(DataKeys.SD_DISTANCE_CASE);
     const currentDrive = appSettings.getNumber(DataKeys.SD_DISTANCE_DRIVE);
 
-    // Log.D('onDistance event');
+    // this._sentryBreadCrumb('onDistance event');
     const coastDistance = args.data.coastDistance;
     const driveDistance = args.data.driveDistance;
 
@@ -2556,7 +2549,7 @@ export class MainViewModel extends Observable {
   }
 
   async onSmartDriveVersion() {
-    // Log.D('onSmartDriveVersion event');
+    // this._sentryBreadCrumb('onSmartDriveVersion event');
     // const mcuVersion = args.data.mcu;
 
     // update version displays
@@ -2627,7 +2620,7 @@ export class MainViewModel extends Observable {
   }
 
   getRecentErrors(numErrors: number, offset: number = 0) {
-    // Log.D('getRecentErrors', numErrors, offset);
+    // this._sentryBreadCrumb('getRecentErrors', numErrors, offset);
     let errors = [];
     return this._sqliteService
       .getAll({
@@ -2650,7 +2643,6 @@ export class MainViewModel extends Observable {
             };
           });
         }
-        // Log.D('errors', errors);
         return errors;
       })
       .catch(err => {
@@ -2678,7 +2670,7 @@ export class MainViewModel extends Observable {
     }
     return this.getRecentInfoFromDatabase(1)
       .then((infos: any[]) => {
-        // Log.D('recent infos', infos);
+        // this._sentryBreadCrumb('recent infos', infos);
         if (!infos || !infos.length) {
           // record the data if we have it
           if (driveDistance > 0 && coastDistance > 0) {
@@ -2786,7 +2778,6 @@ export class MainViewModel extends Observable {
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
           const usageDate = dates[index];
-          // Log.D('recent info:', o);
           if (index > -1) {
             usageInfo[index] = obj;
           }
@@ -2930,7 +2921,6 @@ export class MainViewModel extends Observable {
             } catch (err) {
               Log.E('parse error', err);
             }
-            Log.D('info:', i);
             return this._kinveyService.sendInfo(
               i,
               i[SmartDriveData.Info.UuidName]
