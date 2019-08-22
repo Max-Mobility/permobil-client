@@ -987,9 +987,9 @@ export class MainViewModel extends Observable {
    */
   loadSmartDriveInfo() {
     const queries = {
-      "watch_serial_number": this.watchSerialNumber,
-      "data_type": "SmartDriveDailyInfo",
-      "date": this.format(new Date(), 'YYYY/MM/DD')
+      'watch_serial_number': this.watchSerialNumber,
+      'data_type': 'SmartDriveDailyInfo',
+      'date': this.format(new Date(), 'YYYY/MM/DD')
     };
     const limit = 1;
     return this.kinveyService.getEntry(
