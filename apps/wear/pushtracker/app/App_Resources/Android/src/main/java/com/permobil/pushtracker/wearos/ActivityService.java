@@ -228,10 +228,15 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         // register the body sensor so we get events when the user
         // wears the watch and takes it off
         this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+
       } else {
         stopMyService();
       }
     }
+
+    // send message to handler / runnable to send data
+    mHandler.removeCallbacksAndMessages(null);
+    mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
 
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
@@ -276,10 +281,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         Sentry.capture(e);
         Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
       }
-      if (isPlugged()) {
-        // only continue sending if we're still plugged in
-        mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
-      }
+      mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
     }
   }
 
@@ -356,9 +358,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
             plugged == BatteryManager.BATTERY_PLUGGED_AC ||
             plugged == BatteryManager.BATTERY_PLUGGED_USB ||
             plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-          // send message to handler / runnable to send data
-          mHandler.removeCallbacksAndMessages(null);
-          mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
         }
       };
     // register battery receiver
