@@ -100,7 +100,14 @@ export class Bluetooth extends BluetoothCommon {
    * Android Only currently.
    * @param peripheralUUID
    */
-  readRSSI(peripheralUUID: string);
+  readRSSI(peripheralUUID: string): Promise<any>;
+
+  /**
+   * Android Only currently.
+   * @param peripheralUUID
+   * @param priority int
+   */
+  requestConnectionPriority(peripheralUUID: string, priority: number): boolean;
 
   read(options: ReadOptions): Promise<ReadResult>;
 

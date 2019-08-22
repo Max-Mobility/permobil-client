@@ -996,6 +996,10 @@ export class MainViewModel extends Observable {
   }
 
   onNetworkAvailable() {
+    if (this._sqliteService === undefined) {
+      // if this has gotten called before sqlite has been fully set up
+      return;
+    }
     // this._sentryBreadCrumb('Network available - sending errors');
     return this.sendErrorsToServer(10)
       .then(ret => {
@@ -1018,7 +1022,11 @@ export class MainViewModel extends Observable {
   doWhileCharged() {
     // Since we're not sending a lot of data, we'll not bother
     // requesting network
-    this.onNetworkAvailable();
+    try {
+      this.onNetworkAvailable();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   }
 
   /**
@@ -2577,11 +2585,11 @@ export class MainViewModel extends Observable {
    * DATABASE FUNCTIONS
    */
   async getFirmwareData() {
-    const objs = await this._sqliteService
-      .getAll({ tableName: SmartDriveData.Firmwares.TableName });
-    // @ts-ignore
-    const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
     try {
+      const objs = await this._sqliteService
+        .getAll({ tableName: SmartDriveData.Firmwares.TableName });
+      // @ts-ignore
+      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       // make the metadata
       return mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
@@ -2632,6 +2640,9 @@ export class MainViewModel extends Observable {
   }
 
   getRecentErrors(numErrors: number, offset: number = 0) {
+    if (this._sqliteService === undefined) {
+      return;
+    }
     // this._sentryBreadCrumb('getRecentErrors', numErrors, offset);
     let errors = [];
     return this._sqliteService
@@ -2813,6 +2824,7 @@ export class MainViewModel extends Observable {
           limit: numRecentEntries
         });
     } catch (err) {
+      Sentry.captureException(err);
       return Promise.reject(err);
     }
   }
@@ -2830,6 +2842,7 @@ export class MainViewModel extends Observable {
           limit: numEntries
         });
     } catch (err) {
+      Sentry.captureException(err);
       return Promise.reject(err);
     }
   }
@@ -2867,6 +2880,9 @@ export class MainViewModel extends Observable {
   }
 
   sendErrorsToServer(numErrors: number) {
+    if (this._sqliteService === undefined) {
+      return;
+    }
     return this._sqliteService
       .getAll({
         tableName: SmartDriveData.Errors.TableName,

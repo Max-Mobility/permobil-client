@@ -580,6 +580,31 @@ export class Bluetooth extends BluetoothCommon {
     });
   }
 
+  requestConnectionPriority(peripheralUUID: string, priority: number) {
+    try {
+      if (
+        priority !== android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH &&
+        priority !== android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED &&
+        priority !== android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_LOW_POWER
+      ) {
+        return false;
+      }
+
+      const stateObject = this.connections[peripheralUUID];
+      if (!stateObject) {
+        return false;
+      }
+      const gatt = stateObject.device;
+
+      CLog(CLogTypes.info, `Bluetooth.requestConnectionPriority ---- gatt: ${gatt}`);
+
+      return gatt.requestConnectionPriority(priority);
+    } catch (ex) {
+      CLog(CLogTypes.error, `Bluetooth.requestConnectionPriority ---- error: ${ex}`);
+      return false;
+    }
+  }
+
   read(arg: ReadOptions) {
     return new Promise((resolve, reject) => {
       try {
@@ -1332,7 +1357,7 @@ export class Bluetooth extends BluetoothCommon {
       );
     });
   }
-  /* * * * * * END BLUETOOTHcd PERIPHERAL CODE  * * * * */
+  /* * * * * * END BLUETOOTH PERIPHERAL CODE  * * * * */
 
   gattDisconnect(gatt: android.bluetooth.BluetoothGatt) {
     if (gatt !== null) {
