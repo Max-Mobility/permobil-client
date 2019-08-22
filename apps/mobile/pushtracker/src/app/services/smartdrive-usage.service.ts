@@ -75,7 +75,6 @@ export class SmartDriveUsageService {
         (month < 10 ? '0' + month : month) + '/' +
         (day < 10 ? '0' + day : day));
 
-      console.log(query);
       const stream = this.datastore.find(query);
       const data = await stream.toPromise();
       if (data && data.length) {
