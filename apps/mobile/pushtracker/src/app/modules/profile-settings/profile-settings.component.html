@@ -1,5 +1,5 @@
 // profile settings layout
-<GridLayout rows="auto, *" columns="*" 
+<GridLayout rows="auto, *" columns="*"
   [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
@@ -32,14 +32,14 @@
       // EZ-ON
       <GridLayout row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
-        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
+        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
         <Label row="1" col="0" colSpan="2" class="setting-value" [text]="(settingsService.settings.ezOn ? 'general.enabled' : 'general.disabled') | translate" textWrap="true"></Label>
       </GridLayout>
 
       // Power Assist Beep
       <GridLayout row="6" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.power-assist-beep' | translate"></Label>
-        <Switch row="0" rowSpan="2" col="1" [checked]="!settingsService.settings.disablePowerAssistBeep" class="setting-switch" (checkedChange)="onSettingsChecked($event, 'power-assist-beep')"></Switch>
+        <Switch row="0" rowSpan="2" col="1" [checked]="!settingsService.settings.disablePowerAssistBeep" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'power-assist-beep')"></Switch>
         <Label row="1" col="0" colSpan="2" class="setting-value" [text]="(settingsService.settings.disablePowerAssistBeep ? 'general.disabled' : 'general.enabled') | translate" textWrap="true"></Label>
       </GridLayout>
 

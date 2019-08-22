@@ -19,6 +19,8 @@ export namespace SmartDriveData {
     export const BatteryName = 'battery';
     export const DriveDistanceName = 'distance_smartdrive_drive';
     export const CoastDistanceName = 'distance_smartdrive_coast';
+    export const DriveDistanceStartName = 'distance_smartdrive_drive_start';
+    export const CoastDistanceStartName = 'distance_smartdrive_coast_start';
     export const RecordsName = 'records';
     export const UuidName = 'uuid';
     export const HasBeenSentName = 'has_been_sent';
@@ -28,6 +30,8 @@ export namespace SmartDriveData {
       { name: BatteryName, type: 'smallint' },
       { name: DriveDistanceName, type: 'bigint' },
       { name: CoastDistanceName, type: 'bigint' },
+      { name: DriveDistanceStartName, type: 'bigint' },
+      { name: CoastDistanceStartName, type: 'bigint' },
       { name: RecordsName, type: 'TEXT' },
       { name: UuidName, type: 'TEXT' },
       { name: HasBeenSentName, type: 'bit' }
@@ -177,6 +181,8 @@ export namespace SmartDriveData {
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
+        [SmartDriveData.Info.DriveDistanceStartName]: +drive,
+        [SmartDriveData.Info.CoastDistanceStartName]: +coast,
         [SmartDriveData.Info.RecordsName]: '[]',
         [SmartDriveData.Info.UuidName]: java.util.UUID.randomUUID().toString(),
         [SmartDriveData.Info.HasBeenSentName]: 0
@@ -190,6 +196,8 @@ export namespace SmartDriveData {
       battery: number,
       drive: number,
       coast: number,
+      driveStart: number,
+      coastStart: number,
       recordsString: string,
       uuid: string,
       has_been_sent: number
@@ -201,6 +209,8 @@ export namespace SmartDriveData {
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
+        [SmartDriveData.Info.DriveDistanceStartName]: +driveStart,
+        [SmartDriveData.Info.CoastDistanceStartName]: +coastStart,
         [SmartDriveData.Info.RecordsName]: recordsString,
         [SmartDriveData.Info.UuidName]: uuid,
         [SmartDriveData.Info.HasBeenSentName]: +has_been_sent

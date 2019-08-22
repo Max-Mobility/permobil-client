@@ -4,6 +4,8 @@ import { ModalDialogParams } from 'nativescript-angular/directives/dialogs';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import * as utilityModule from 'tns-core-modules/utils/utils';
+import { Switch } from 'tns-core-modules/ui/switch';
+import { PropertyChangeData } from 'tns-core-modules/data/observable';
 
 @Component({
   selector: 'privacy-policy',
@@ -43,6 +45,15 @@ export class PrivacyPolicyComponent {
       currentTheme === APP_THEMES.DEFAULT
         ? AppResourceIcons.BLACK_BACK_NAV
         : AppResourceIcons.WHITE_BACK_NAV;
+  }
+
+  async onSettingsChecked(args: PropertyChangeData, setting: string) {
+    const isChecked = args.value;
+    const sw = args.object as Switch;
+    sw.className =
+      isChecked === true ? 'setting-switch' : 'inactive-setting-switch';
+    // now set the setting
+    this[setting] = isChecked;
   }
 
   openWebsite(url: string) {

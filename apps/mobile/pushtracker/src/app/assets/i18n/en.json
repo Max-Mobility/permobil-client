@@ -265,7 +265,7 @@
       "privacy-button": "View Privacy Policy",
       "user-agreement-title": "Accept End User Agreement",
       "privacy-policy-title": "Accept Privacy Policy",
-      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use PushTracker",
+      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use the PushTracker (Android / iOS), PushTracker (WearOS), and SmartDrive MX2+ (WearOS) apps.",
       "user-agreement": "I have read, understood, and agree to the end user agreement",
       "privacy-policy": "I have read and understood the privacy policy",
       "accept-error": {
