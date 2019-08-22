@@ -7,7 +7,7 @@ import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { isIOS } from 'tns-core-modules/platform';
+import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 import { LoggingService } from '../../services';
@@ -163,6 +163,14 @@ export class LoginComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
+    } else if (isAndroid && device.sdkVersion >= '26') {
+      const et = (args.object as TextField).android as any; // android.widget.EditText
+      et.setAutofillHints([
+        (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
+      ]);
+      et.setImportantForAutofill(
+        (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES
+      );
     }
   }
 
@@ -170,6 +178,12 @@ export class LoginComponent implements OnInit {
     if (isIOS) {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
+    } else if (isAndroid && device.sdkVersion >= '26') {
+      const et = (args.object as TextField).android as any; // android.widget.EditText
+      et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
+      et.setImportantForAutofill(
+        (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES
+      );
     }
   }
 
