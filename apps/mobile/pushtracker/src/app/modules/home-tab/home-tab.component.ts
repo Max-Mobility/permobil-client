@@ -107,6 +107,7 @@ export class HomeTabComponent implements OnInit {
       this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
       this._updateDistancePlotYAxis();
     });
+    console.log('Saved theme', this.savedTheme);
   }
 
   onActivityTap() {
@@ -145,14 +146,12 @@ export class HomeTabComponent implements OnInit {
       this._weekStart
     );
     if (didLoad) {
-      this.weeklyActivity = new ObservableArray(
-        this._formatActivityForView('Week')
-      );
+      this.weeklyActivity = new ObservableArray(this._formatActivityForView('Week'));
       this._weekStart = new Date(this._activityService.weeklyActivity.date);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     } else {
-      this.weeklyActivity = new ObservableArray([]);
+      this.weeklyActivity = new ObservableArray(this._formatActivityForView('Week'));
     }
 
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
@@ -276,6 +275,30 @@ export class HomeTabComponent implements OnInit {
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
+      else {
+        const result = [];
+        const dayNames: string[] = [
+          'Sun',
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat'
+        ];
+        for (const i in dayNames) {
+            result.push({
+              xAxis: dayNames[parseInt(i)],
+              coastTime: 0,
+              pushCount: 0
+            });
+        }
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        return result;
+      }
     }
   }
 
@@ -296,7 +319,7 @@ export class HomeTabComponent implements OnInit {
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     } else {
-      this.usageActivity = new ObservableArray([]);
+      this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
     }
     this.distanceGoalMessage = 'Travel ' +
       this.user.data.activity_goal_distance + ' mi per day';
@@ -352,7 +375,7 @@ export class HomeTabComponent implements OnInit {
   _formatUsageForView(viewMode) {
     if (viewMode === 'Week') {
       const activity = this._smartDriveUsageService.weeklyActivity;
-      if (activity) {
+      if (activity && activity.days) {
         const result = [];
         const date = new Date(activity.date);
         const weekViewDayArray = [];
@@ -393,6 +416,30 @@ export class HomeTabComponent implements OnInit {
               date: dayInWeek
             });
           }
+        }
+        result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
+        result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '       ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
+        return result;
+      }
+      else {
+        const result = [];
+        const dayNames: string[] = [
+          'Sun',
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat'
+        ];
+        for (const i in dayNames) {
+            result.push({
+              xAxis: dayNames[parseInt(i)],
+              coastDistance: 0,
+              driveDistance: 0
+            });
         }
         result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
         result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
