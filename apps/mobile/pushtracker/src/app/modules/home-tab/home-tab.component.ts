@@ -227,7 +227,6 @@ export class HomeTabComponent implements OnInit {
 
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysActivity) {
-      console.log(this._todaysActivity);
       this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
       this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
     } else {
