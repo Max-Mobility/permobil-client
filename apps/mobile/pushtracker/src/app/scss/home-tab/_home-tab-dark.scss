@@ -39,7 +39,7 @@
   .detail-data {
     @extend .DETAIL_DATA_BASE;
 
-    width: 70%;
+    width: 55%;
 
     .detail-value {
       font-size: 16;
@@ -48,7 +48,7 @@
     }
 
     .detail-description {
-      font-size: 12;
+      font-size: 10;
       color: $white;
     }
   }
@@ -65,7 +65,7 @@
   }
 
   .title {
-    font-size: 16px;
+    font-size: 14px;
     color: $white;
     font-weight: bold;
   }

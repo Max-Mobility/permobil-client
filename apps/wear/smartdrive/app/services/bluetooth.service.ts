@@ -269,6 +269,10 @@ export class BluetoothService {
     return this._bluetooth.stopNotifying(opts);
   }
 
+  public requestConnectionPriority(address: string, priority: number) {
+    return this._bluetooth.requestConnectionPriority(address, priority);
+  }
+
   public readRssi(address: string) {
     return this._bluetooth.readRSSI(address);
   }

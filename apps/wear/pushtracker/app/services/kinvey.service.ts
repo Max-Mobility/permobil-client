@@ -11,6 +11,7 @@ export class KinveyService {
   public static api_data_route = '/appdata/';
   public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
   public static api_activity_db = '/PushTrackerActivity';
+  public static api_smartdrive_usage_db = '/SmartDriveUsage';
 
   private _auth: string = null;
   public watch_serial_number: string = null;

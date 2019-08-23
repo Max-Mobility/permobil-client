@@ -861,6 +861,13 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     this.enableBodySensor();
     this.applyTheme();
+    if (this.chargingWorkTimeoutId === null) {
+      // reset our work interval
+      this.chargingWorkTimeoutId = setInterval(
+        this.doWhileCharged.bind(this),
+        this.CHARGING_WORK_PERIOD_MS
+      );
+    }
   }
 
   onAppLaunch() { }
@@ -925,13 +932,6 @@ export class MainViewModel extends Observable {
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_AC ||
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_USB ||
         plugged === android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
-      if (this.watchIsCharging && this.chargingWorkTimeoutId === null) {
-        // do work that we need while charging
-        this.chargingWorkTimeoutId = setTimeout(
-          this.doWhileCharged.bind(this),
-          this.CHARGING_WORK_PERIOD_MS
-        );
-      }
     };
 
     application.android.registerBroadcastReceiver(
@@ -996,6 +996,10 @@ export class MainViewModel extends Observable {
   }
 
   onNetworkAvailable() {
+    if (this._sqliteService === undefined) {
+      // if this has gotten called before sqlite has been fully set up
+      return Promise.reject('no sqlite service!');
+    }
     // this._sentryBreadCrumb('Network available - sending errors');
     return this.sendErrorsToServer(10)
       .then(ret => {
@@ -1016,18 +1020,12 @@ export class MainViewModel extends Observable {
   }
 
   doWhileCharged() {
-    if (this.watchIsCharging) {
-      // Since we're not sending a lot of data, we'll not bother
-      // requesting network
+    // Since we're not sending a lot of data, we'll not bother
+    // requesting network
+    try {
       this.onNetworkAvailable();
-      // re-schedule any work that may still need to be done
-      this.chargingWorkTimeoutId = setTimeout(
-        this.doWhileCharged.bind(this),
-        this.CHARGING_WORK_PERIOD_MS
-      );
-    } else {
-      // clear the timeout id since we're not re-spawning it
-      this.chargingWorkTimeoutId = null;
+    } catch (err) {
+      Sentry.captureException(err);
     }
   }
 
@@ -2138,6 +2136,8 @@ export class MainViewModel extends Observable {
       });
       return;
     } else if (this.hasSavedSmartDrive()) {
+      clearInterval(this.chargingWorkTimeoutId);
+      this.chargingWorkTimeoutId = null;
       this.tapDetector.reset();
       this.maintainCPU();
       this.powerAssistState = PowerAssist.State.Disconnected;
@@ -2200,6 +2200,14 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
+    if (this.chargingWorkTimeoutId === null) {
+      // reset our work interval
+      this.chargingWorkTimeoutId = setInterval(
+        this.doWhileCharged.bind(this),
+        this.CHARGING_WORK_PERIOD_MS
+      );
+    }
+
     this._sentryBreadCrumb('Disabling power assist');
     this.disableTapSensor();
     this.releaseCPU();
@@ -2436,6 +2444,7 @@ export class MainViewModel extends Observable {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
+    /*
     if (this.rssiIntervalId) {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
@@ -2444,13 +2453,16 @@ export class MainViewModel extends Observable {
       this.readSmartDriveSignalStrength.bind(this),
       this.RSSI_INTERVAL_MS
     );
+    */
   }
 
   async onSmartDriveDisconnect() {
+    /*
     if (this.rssiIntervalId) {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
+    */
     if (this.motorOn) {
       // record disconnect error - the SD should never be on when
       // we disconnect!
@@ -2473,6 +2485,7 @@ export class MainViewModel extends Observable {
     this.saveErrorToDatabase(errorType, errorId);
   }
 
+  /*
   private _rssi = 0;
   private rssiIntervalId = null;
   private RSSI_INTERVAL_MS = 500;
@@ -2486,6 +2499,7 @@ export class MainViewModel extends Observable {
         });
     }
   }
+  */
 
   async onMotorInfo(args: any) {
     // send current settings to SD
@@ -2571,11 +2585,11 @@ export class MainViewModel extends Observable {
    * DATABASE FUNCTIONS
    */
   async getFirmwareData() {
-    const objs = await this._sqliteService
-      .getAll({ tableName: SmartDriveData.Firmwares.TableName });
-    // @ts-ignore
-    const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
     try {
+      const objs = await this._sqliteService
+        .getAll({ tableName: SmartDriveData.Firmwares.TableName });
+      // @ts-ignore
+      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       // make the metadata
       return mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
@@ -2626,6 +2640,9 @@ export class MainViewModel extends Observable {
   }
 
   getRecentErrors(numErrors: number, offset: number = 0) {
+    if (this._sqliteService === undefined) {
+      return Promise.resolve([]);
+    }
     // this._sentryBreadCrumb('getRecentErrors', numErrors, offset);
     let errors = [];
     return this._sqliteService
@@ -2807,6 +2824,7 @@ export class MainViewModel extends Observable {
           limit: numRecentEntries
         });
     } catch (err) {
+      Sentry.captureException(err);
       return Promise.reject(err);
     }
   }
@@ -2824,6 +2842,7 @@ export class MainViewModel extends Observable {
           limit: numEntries
         });
     } catch (err) {
+      Sentry.captureException(err);
       return Promise.reject(err);
     }
   }
@@ -2861,6 +2880,9 @@ export class MainViewModel extends Observable {
   }
 
   sendErrorsToServer(numErrors: number) {
+    if (this._sqliteService === undefined) {
+      return Promise.reject('no sqlite service');
+    }
     return this._sqliteService
       .getAll({
         tableName: SmartDriveData.Errors.TableName,

@@ -181,7 +181,6 @@ export class MainViewModel extends Observable {
   private sqliteService: SqliteService;
   private kinveyService: KinveyService;
 
-
   // permissions for the app
   private permissionsNeeded = [
     android.Manifest.permission.READ_PHONE_STATE,
@@ -249,7 +248,14 @@ export class MainViewModel extends Observable {
     this.initSqliteTables();
 
     // load serial number from settings / memory
-    const savedSerial = appSettings.getString(DataKeys.WATCH_SERIAL_NUMBER);
+    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const savedSerial = sharedPreferences.getString(
+      prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
+      ''
+    );
     if (savedSerial && savedSerial.length) {
       this.watchSerialNumber = savedSerial;
       this.kinveyService.watch_serial_number = this.watchSerialNumber;
@@ -554,6 +560,11 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
+    try {
+      this.loadSmartDriveInfo();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   }
 
   onAppLowMemory(args?: any) {
@@ -576,31 +587,6 @@ export class MainViewModel extends Observable {
     return format(d, fmt, {
       locale: dateLocales[getDefaultLang()] || dateLocales['en']
     });
-  }
-
-  onNetworkAvailable(args?: any) {
-    // Log.D('Network available - sending info');
-    return this.sendActivityToServer(10)
-      .then(ret => {
-        // Log.D('Have sent data to server - unregistering from network');
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Error sending data to server', err);
-      });
-  }
-
-  doWhileCharged() {
-    if (this.watchIsCharging) {
-      // Since we're not sending a lot of data, we'll not bother
-      // requesting network
-      this.onNetworkAvailable();
-      // re-schedule any work that may still need to be done
-      setTimeout(
-        this.doWhileCharged.bind(this),
-        this.CHARGING_WORK_PERIOD_MS
-      );
-    }
   }
 
   /**
@@ -986,9 +972,54 @@ export class MainViewModel extends Observable {
     }
   }
 
+
+
+  public motorTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
+  }
+
+  public caseTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
+  }
+
   /**
    * Network Functions
    */
+  loadSmartDriveInfo() {
+    const queries = {
+      'watch_serial_number': this.watchSerialNumber,
+      'data_type': 'SmartDriveDailyInfo',
+      'date': this.format(new Date(), 'YYYY/MM/DD')
+    };
+    const limit = 1;
+    return this.kinveyService.getEntry(
+      KinveyService.api_smartdrive_usage_db,
+      queries,
+      limit
+    )
+      .then((response) => {
+        const statusCode = response.statusCode;
+        if (statusCode === 200) {
+          const content = response.content.toJSON();
+          Log.D('got content', typeof content, content);
+          if (content && content.length) {
+            const info = content[0];
+            const distanceTicks = info.distance_smartdrive_coast || 0;
+            const distanceMiles = this.caseTicksToMiles(distanceTicks);
+            this.distanceGoalCurrentValue = distanceMiles;
+            this.updateDisplay();
+          } else {
+            Log.D('no records found for', queries.date, this.watchSerialNumber);
+          }
+        } else {
+          throw response;
+        }
+      })
+      .catch((err) => {
+        Sentry.captureException(err);
+      });
+  }
+
   sendActivityToServer(numInfo: number) {
     return this.getUnsentInfoFromDatabase(numInfo)
       .then(infos => {

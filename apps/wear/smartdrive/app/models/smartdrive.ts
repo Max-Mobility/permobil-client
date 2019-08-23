@@ -1116,33 +1116,17 @@ export class SmartDrive extends DeviceBase {
   }
 
   public requestHighPriorityConnection(): boolean {
-    let requestSucceeded = false;
-    if (this.device) {
-      try {
-        // register for HIGH_PRIORITY connection
-        requestSucceeded = this.device.requestConnectionPriority(
-          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH
-        );
-      } catch (err) {
-        console.error('could not request high priority connection', err);
-      }
-    }
-    return requestSucceeded;
+    return this._bluetoothService.requestConnectionPriority(
+      this.address,
+      android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH
+    );
   }
 
   public releaseHighPriorityConnection(): boolean {
-    let requestSucceeded = false;
-    if (this.device) {
-      try {
-        // register for HIGH_PRIORITY connection
-        requestSucceeded = this.device.requestConnectionPriority(
-          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED
-        );
-      } catch (err) {
-        console.error('could not request balanced connection', err);
-      }
-    }
-    return requestSucceeded;
+    return this._bluetoothService.requestConnectionPriority(
+      this.address,
+      android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED
+    );
   }
 
   public handleConnect(data?: any) {
@@ -1174,7 +1158,8 @@ export class SmartDrive extends DeviceBase {
     // now that we're receiving data we can definitly send data
     if (!this.notifying || !this.ableToSend) {
       // request high priority connection on first data received
-      this.requestHighPriorityConnection();
+      const requestWorked = this.requestHighPriorityConnection();
+      console.log('got high priority connection?', requestWorked);
     }
     // update state
     this.notifying = true;
