@@ -55,10 +55,10 @@
         // coast time data
         <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayDriveDistance : 0"></Label>
         <Label textWrap="true" row="1" col="2" class="detail-description"
-          [text]="'general.miles-today' | translate"></Label>
+          [text]="(user.data.distance_unit_preference === 0 ? 'general.km-today' : 'general.miles-today') | translate"></Label>
         // distance data
         <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? todayOdometer : 0"></Label>
-        <Label row="1" col="4" class="detail-description" [text]="'general.odometer' | translate"></Label>
+        <Label row="1" col="4" class="detail-description" [text]="(user.data.distance_unit_preference === 0 ? 'general.odometer-km' : 'general.odometer') | translate"></Label>
       </GridLayout>
 
       <!-- Week View Coast Time -->

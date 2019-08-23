@@ -143,7 +143,9 @@
     "weight-guess": "If you don't know your exact weight, enter your best guess.",
     "drive-distance": "Drive Distance",
     "odometer": "miles",
-    "miles-today": "miles today"
+    "miles-today": "miles today",
+    "km-today": "km today",
+    "odometer-km": "km"
   },
   "home-tab": {
     "kilometers-to-go": "kilometers to go",
