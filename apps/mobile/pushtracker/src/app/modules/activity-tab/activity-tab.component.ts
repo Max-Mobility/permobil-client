@@ -302,7 +302,7 @@ export class ActivityTabComponent implements OnInit {
       this.dailyActivity = cache.chartData;
 
       // format chart description for viewMode
-      if ((this.viewMode = ViewMode.COAST_TIME)) {
+      if ((this.viewMode === ViewMode.COAST_TIME)) {
         this.chartDescription =
           (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
