@@ -27,10 +27,10 @@ export class HomeTabComponent implements OnInit {
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
   coastTimeCirclePercentageMaxValue;
-  distanceRemainingText: string = '<Insert value>';
+  distanceRemainingText: string = '0.0';
   pushCountData: string;
   coastTimeData: string;
-  distanceData: string = '<0>';
+  distanceData: string = '0.0';
   distanceChartData;
   user: PushTrackerUser;
   weeklyActivity: ObservableArray<any[]>;
