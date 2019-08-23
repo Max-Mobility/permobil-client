@@ -80,6 +80,13 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+  }
+
+  ngOnInit() {
+    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+  }
+
+  ngAfterViewInit() {
     this.refreshPlots({ object: { refreshing: true } });
   }
 
@@ -89,6 +96,7 @@ export class HomeTabComponent implements OnInit {
     this.savedTheme = this.user.data.theme_preference;
     this._loadWeeklyActivity();
     this._loadSmartDriveUsage();
+    this.updateProgress();
     this.updatePointLabelStyle();
     this.updatePalettes();
     this.weeklyActivityLoaded = true;
@@ -108,6 +116,7 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
+    console.log('Coast Time Progress', this.coastTimeCirclePercentage);
 
     // Update Y axis for coast distance plot
     this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
@@ -155,10 +164,6 @@ export class HomeTabComponent implements OnInit {
         coastDistanceGoalPalette
       ]);
     }
-  }
-
-  ngOnInit() {
-    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
   }
 
   getUser() {
@@ -224,6 +229,7 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.weeklyActivity = new ObservableArray(this._formatActivityForView('Week'));
     }
+    this._updateCoastTimePlotYAxis();
 
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysActivity) {
@@ -258,7 +264,6 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
-    this._updateCoastTimePlotYAxis();
     this.updateProgress();
   }
 
