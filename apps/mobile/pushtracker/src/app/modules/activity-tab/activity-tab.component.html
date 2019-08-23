@@ -1,116 +1,97 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true"
+    (navTapEvent)="closeModal()"></MockActionBar>
 
   <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
-    <SegmentedBar row="0" [items]="tabItems" [selectedIndex]="tabSelectedIndex" (selectedIndexChange)="onSelectedIndexChanged($event)" class="m-5"></SegmentedBar>
+    <SegmentedBar row="0" [items]="tabItems" [selectedIndex]="tabSelectedIndex"
+      (selectedIndexChange)="onSelectedIndexChanged($event)" class="m-5"></SegmentedBar>
 
     // Current Tab Chart title/label with prev/next buttons
-    <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto" [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'">
-      <Button row="0" col="0" text="&#xe5cb;" class="prev-btn" (tap)="onPreviousTap()" ripple rippleColorAlpha="0.18"></Button>
+    <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto"
+      [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'">
+      <Button row="0" col="0" text="&#xe5cb;" class="prev-btn" (tap)="onPreviousTap()" ripple
+        rippleColorAlpha="0.18"></Button>
       <Label row="0" col="1" [text]="chartTitle" class="chart-title"></Label>
-      <Button row="0" col="2" text="&#xe5cc;" class="next-btn" (tap)="onNextTap()" ripple rippleColorAlpha="0.18"></Button>
+      <Button row="0" col="2" text="&#xe5cc;" class="next-btn" (tap)="onNextTap()" ripple
+        rippleColorAlpha="0.18"></Button>
       <StackLayout row="1" col="1" orientation="horizontal" horizontalAlignment="center">
         <Label text="&#xe5cc;" class="chevron-left"></Label>
-        <Label [text]="chartDescription" class="chart-description" [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'"></Label>
+        <Label [text]="chartDescription" class="chart-description"
+          [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'"></Label>
       </StackLayout>
     </GridLayout>
 
     // Day
     <StackLayout row="2" [visibility]="tabSelectedIndex === 0 ? 'visible' : 'collapsed'">
       <RadCartesianChart allowAnimations="true" height="250" width="90%">
-        <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
-        <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'" lineHidden="true" tickHidden="false" majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7" plotMode="OnTicks">
+        <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
+          horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
+        <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
+          lineHidden="true" tickHidden="false" majorTickInterval="4" labelSize="12" labelMargin="20" tickLength="7"
+          plotMode="OnTicks">
         </CategoricalAxis>
-        <LinearAxis
-          id="vAxis"
-          tkCartesianVerticalAxis
-          [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
-          horizontalLocation="Right"
-          labelMargin="10"
-          lineHidden="true"
-          [maximum]="yAxisMax"
-          minumum="1"
-          [majorStep]="yAxisStep"
-          labelFormat="%.0f"
-        >
+        <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
+          horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
+          [majorStep]="yAxisStep" labelFormat="%.0f">
         </LinearAxis>
-        <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
+        <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis"
+          [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
         <Palette tkCartesianPalette seriesName="DailyActivity">
-          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
         </Palette>
-        <ChartGridLineAnnotation
-          #dailyActivityAnnotation
-          tkCartesianAnnotations
-          axisId="vAxis"
-          hidden="false"
-          [value]="dailyActivityAnnotationValue"
-          zPosition="AboveSeries"
-          strokeWidth="1"
-          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-          strokeDashPattern="3, 3"
-        >
+        <ChartGridLineAnnotation #dailyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
+          [value]="dailyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
     </StackLayout>
 
     // Week
     <StackLayout row="2" [visibility]="tabSelectedIndex === 1 ? 'visible' : 'collapsed'">
-      <RadCartesianChart height="250" width="90%" allowAnimations="true" pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
-        <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
-        <CategoricalAxis tkCartesianHorizontalAxis lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
-        <LinearAxis id="vAxis" tkCartesianVerticalAxis horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
-        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
+      <RadCartesianChart height="250" width="90%" allowAnimations="true" pointSelectionMode="Single"
+        (pointSelected)="onWeekPointSelected($event)">
+        <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
+          horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
+        <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
+          lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1"
+          labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
+        <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
+          horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
+          [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
+          [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
         <Palette tkCartesianPalette seriesName="WeeklyActivity">
-          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
+          <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+            [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
         </Palette>
-        <ChartGridLineAnnotation
-          #weeklyActivityAnnotation
-          tkCartesianAnnotations
-          axisId="vAxis"
-          hidden="false"
-          [value]="weeklyActivityAnnotationValue"
-          zPosition="AboveSeries"
-          strokeWidth="1"
-          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-          strokeDashPattern="3, 3"
-        >
+        <ChartGridLineAnnotation #weeklyActivityAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
+          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="1"
+          [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
     </StackLayout>
 
     // Month
     <StackLayout row="2" [visibility]="tabSelectedIndex === 2 ? 'visible' : 'collapsed'">
-      <RadCalendar
-        #calendar
-        selectionMode="Single"
-        viewMode="Month"
-        locale="en-US"
-        height="250"
-        width="90%"
-        marginTop="20"
-        (loaded)="onCalendarLoaded($event)"
-        [minDate]="minDate"
-        [maxDate]="maxDate"
-        [monthViewStyle]="monthViewStyle"
-        (dateSelected)="onCalendarDateSelected($event)"
-      >
+      <RadCalendar #calendar selectionMode="Single" viewMode="Month" locale="en-US" height="250" width="90%"
+        marginTop="20" (loaded)="onCalendarLoaded($event)" [minDate]="minDate" [maxDate]="maxDate"
+        [monthViewStyle]="monthViewStyle" (dateSelected)="onCalendarDateSelected($event)">
       </RadCalendar>
     </StackLayout>
 
     // Coast_Time and Push_Count (distance) buttons and description label
-    <GridLayout row="3" rows="*, *" columns="*, auto, auto, *" [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'">
-      <Button row="0" col="1" [text]="'general.coast-time' | translate" [class]="viewMode === 0 ? 'coast-time-btn-enabled' : 'coast-time-btn-disabled'" (tap)="onCoastTimeTap()"></Button>
-      <Button row="0" col="2" [text]="'general.push-count' | translate" [class]="viewMode === 0 ? 'distance-btn-disabled' : 'distance-btn-enabled'" (tap)="onDistanceTap()"></Button>
-      <Label
-        row="1"
-        col="0"
-        colSpan="4"
-        class="goal-description"
+    <GridLayout row="3" rows="*, *" columns="*, auto, auto, *"
+      [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'">
+      <Button row="0" col="1" [text]="'general.coast-time' | translate"
+        [class]="viewMode === 0 ? 'coast-time-btn-enabled' : 'coast-time-btn-disabled'"
+        (tap)="onCoastTimeTap()"></Button>
+      <Button row="0" col="2" [text]="'general.push-count' | translate"
+        [class]="viewMode === 0 ? 'distance-btn-disabled' : 'distance-btn-enabled'" (tap)="onDistanceTap()"></Button>
+      <Label row="1" col="0" colSpan="4" class="goal-description"
         [text]="viewMode === 0 ? ('general.coast-time-description' | translate) : ('general.distance-description' | translate)"
-        [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'"
-        textWrap="true"
-      ></Label>
+        [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'" textWrap="true"></Label>
     </GridLayout>
   </GridLayout>
 </GridLayout>
