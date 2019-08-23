@@ -13,7 +13,6 @@ import { PushTrackerUserService } from '../../services/pushtracker.user.service'
 import { SmartDriveUsageService } from '../../services/smartdrive-usage.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { PointLabelStyle, ChartFontStyle } from 'nativescript-ui-chart';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { registerElement } from 'nativescript-angular/element-registry';
 registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
@@ -55,6 +54,7 @@ export class HomeTabComponent implements OnInit {
   distanceGoalLabelChartData: ObservableArray<any[]>;
 
   pointLabelStyle: PointLabelStyle;
+  private _progressUpdatedOnce: boolean = false;
 
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -78,17 +78,7 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this.savedTheme = this.user.data.theme_preference;
-
-    // TODO Consider removing these lines after debugging point label styling issue
-    if (this.savedTheme === APP_THEMES.DEFAULT) {
-      enableDefaultTheme();
-    } else if (this.savedTheme === APP_THEMES.DARK) {
-      enableDarkTheme();
-    }
-    this.updatePointLabelStyle();
-    this._loadWeeklyActivity();
-    this._loadSmartDriveUsage();
+    this.refreshPlots({ object: { refreshing: true } });
   }
 
   refreshPlots(args) {
@@ -102,6 +92,27 @@ export class HomeTabComponent implements OnInit {
     pullRefresh.refreshing = false;
   }
 
+  updateProgress() {
+    this.coastTimeGoalMessage =
+      'Reach an average coast time of ' +
+      this.user.data.activity_goal_coast_time +
+      ' s per day';
+    this.distanceGoalMessage = 'Travel ' +
+      this.user.data.activity_goal_distance + ' mi per day';
+    this.distanceCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_coast_time;
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
+
+    // Update Y axis for coast distance plot
+    this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
+    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+    this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
+    this._updateDistancePlotYAxis();
+  }
+
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
   }
@@ -109,36 +120,13 @@ export class HomeTabComponent implements OnInit {
   getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
-      this.savedTheme = this.user.data.theme_preference;
-      // Update bindings for coast_time plot
-      this.coastTimeGoalMessage =
-        'Reach an average coast time of ' +
-        this.user.data.activity_goal_coast_time +
-        ' s per day';
-      this.distanceGoalMessage = 'Travel ' +
-        this.user.data.activity_goal_distance + ' mi per day';
-      this.distanceCirclePercentageMaxValue =
-        '/' + this.user.data.activity_goal_distance;
-      this.coastTimeCirclePercentageMaxValue =
-        '/' + this.user.data.activity_goal_coast_time;
-      this.weeklyActivityLoaded = true;
-      this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
-      this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
-
-      // Update Y axis for coast distance plot
-      this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
-      this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
-      this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
-      this._updateDistancePlotYAxis();
-
-      // Update distance point label style
-      if (this.savedTheme === APP_THEMES.DEFAULT) {
-        enableDefaultTheme();
-      } else if (this.savedTheme === APP_THEMES.DARK) {
-        enableDarkTheme();
+      this.refreshPlots({ object: { refreshing: true } });
+    });
+    this._smartDriveUsageService.usageUpdated.subscribe (usageUpdated => {
+      if (usageUpdated && !this._progressUpdatedOnce) {
+        this.updateProgress();
+        this._progressUpdatedOnce = true;
       }
-      this.updatePointLabelStyle();
-      console.log('User updated in home-tab');
     });
   }
 
@@ -184,7 +172,6 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadWeeklyActivity() {
-    this.weeklyActivityLoaded = false;
     const didLoad = await this._activityService.loadWeeklyActivity(
       this._weekStart
     );
@@ -217,7 +204,6 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.weeklyActivityLoaded = true;
     this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
 
@@ -232,6 +218,7 @@ export class HomeTabComponent implements OnInit {
     this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
     this._updateCoastTimePlotYAxis();
+    this.updateProgress();
   }
 
   _updateCoastTimePlotYAxis() {
@@ -247,14 +234,16 @@ export class HomeTabComponent implements OnInit {
       );
     };
     this.yAxisMax = 0;
-    const days = this._activityService.weeklyActivity['days'];
-    for (const i in days) {
-      const day = days[i];
-      if (day) {
-        if (day.date === dateFormatted(this._currentDayInView))
-          this._todaysActivity = day;
-        if (day.coast_time_avg > this.yAxisMax)
-          this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
+    if (this._activityService.weeklyActivity) {
+      const days = this._activityService.weeklyActivity['days'];
+      for (const i in days) {
+        const day = days[i];
+        if (day) {
+          if (day.date === dateFormatted(this._currentDayInView))
+            this._todaysActivity = day;
+          if (day.coast_time_avg > this.yAxisMax)
+            this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
+        }
       }
     }
     if (this.yAxisMax === 0) this.yAxisMax = 10;
@@ -353,7 +342,6 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadSmartDriveUsage() {
-    this.weeklyActivityLoaded = false;
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
     if (didLoad) {
       this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
@@ -378,7 +366,7 @@ export class HomeTabComponent implements OnInit {
     this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
     this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
     this._updateDistancePlotYAxis();
-    this.weeklyActivityLoaded = true;
+    this.updateProgress();
   }
 
   _updateDistancePlotYAxis() {

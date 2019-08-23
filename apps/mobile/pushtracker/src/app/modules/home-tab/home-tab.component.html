@@ -7,11 +7,11 @@
       // Activity Circles
       <GridLayout rows="*, auto, *" columns="*, auto, *" height="240" width="100%">
         // Distance Circle (outer/purple)
-        <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true"
+        <AnimatedCircle *ngIf="weeklyActivityLoaded" id="distanceCircle" rowSpan="3" colSpan="3" width="98%" height="98%" animated="true"
           animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage">
         </AnimatedCircle>
         // Coast Time Circle (inner/teal)
-        <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true"
+        <AnimatedCircle *ngIf="weeklyActivityLoaded" id="coastTimeCircle" rowSpan="3" colSpan="3" width="83%" height="83%" animated="true"
           animateFrom="0" clockwise="true" rimWidth="10" barWidth="28"
           [progress]="weeklyActivityLoaded ? coastTimeCirclePercentage : 0">
         </AnimatedCircle>

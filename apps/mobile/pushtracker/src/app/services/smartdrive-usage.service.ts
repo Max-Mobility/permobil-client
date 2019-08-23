@@ -5,12 +5,15 @@ import {
   User as KinveyUser
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SmartDriveUsageService {
   private datastore = KinveyDataStore.collection('SmartDriveUsage');
   public dailyActivity: any;
   public weeklyActivity: any;
+  private _usageUpdated = new BehaviorSubject<boolean>(false);
+  usageUpdated = this._usageUpdated.asObservable();
 
   constructor(private _logService: LoggingService) {
     this.login();
@@ -45,6 +48,7 @@ export class SmartDriveUsageService {
       if (data && data.length) {
         this.dailyActivity = data[0];
         // Do something with data
+        this._usageUpdated.next(true);
         return true;
       }
       this.dailyActivity = {};
@@ -80,6 +84,7 @@ export class SmartDriveUsageService {
       if (data && data.length) {
         this.weeklyActivity = data[0];
         // Do something with data
+        this._usageUpdated.next(true);
         return true;
       }
       this.weeklyActivity = [];
