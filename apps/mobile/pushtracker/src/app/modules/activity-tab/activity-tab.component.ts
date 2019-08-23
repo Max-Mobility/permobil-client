@@ -332,17 +332,19 @@ export class ActivityTabComponent implements OnInit {
   private _calculateDailyActivityYAxisMax() {
     this.yAxisMax = 0;
     this.yAxisStep = 15;
-    let i = 4;
-    while (i < 53) {
-      const activity = this.dailyActivity.getItem(i);
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        if (activity['coastTime'] > this.yAxisMax)
-          this.yAxisMax = activity['coastTime'];
-      } else {
-        if (activity['pushCount'] > this.yAxisMax)
-          this.yAxisMax = activity['pushCount'];
+    if (this.dailyActivity) {
+      let i = 4;
+      while (i < 53) {
+        const activity = this.dailyActivity.getItem(i);
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          if (activity['coastTime'] > this.yAxisMax)
+            this.yAxisMax = activity['coastTime'];
+        } else {
+          if (activity['pushCount'] > this.yAxisMax)
+            this.yAxisMax = activity['pushCount'];
+        }
+        i++;
       }
-      i++;
     }
     this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
     if (this.yAxisMax === 0) this.yAxisMax = 30;
@@ -405,17 +407,19 @@ export class ActivityTabComponent implements OnInit {
   private _calculateWeeklyActivityYAxisMax() {
     this.yAxisMax = 0;
     this.yAxisStep = 0;
-    let i = 2;
-    while (i < 9) {
-      const activity = this.weeklyActivity.getItem(i);
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        if (activity['coastTime'] > this.yAxisMax)
-          this.yAxisMax = activity['coastTime'];
-      } else {
-        if (activity['pushCount'] > this.yAxisMax)
-          this.yAxisMax = activity['pushCount'];
+    if (this.weeklyActivity) {
+      let i = 2;
+      while (i < 9) {
+        const activity = this.weeklyActivity.getItem(i);
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          if (activity['coastTime'] > this.yAxisMax)
+            this.yAxisMax = activity['coastTime'];
+        } else {
+          if (activity['pushCount'] > this.yAxisMax)
+            this.yAxisMax = activity['pushCount'];
+        }
+        i++;
       }
-      i++;
     }
     this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
     if (this.yAxisMax === 0) this.yAxisMax = 12;
@@ -440,7 +444,7 @@ export class ActivityTabComponent implements OnInit {
         const year = date.getFullYear();
         const month = date.getMonth();
         const day = date.getDate();
-        const range = function(start, end) {
+        const range = function (start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);
@@ -493,7 +497,7 @@ export class ActivityTabComponent implements OnInit {
         const result = [];
         for (const i in this._dayViewTimeArray) {
           const timePoint = this._dayViewTimeArray[i];
-          result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0});
+          result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0 });
         }
         result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
         result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
@@ -519,7 +523,7 @@ export class ActivityTabComponent implements OnInit {
       if (activity && activity.days) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function(start, end) {
+        const range = function (start, end) {
           return new Array(end - start + 1)
             .fill(undefined)
             .map((_, i) => i + start);
