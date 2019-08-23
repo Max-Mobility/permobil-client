@@ -960,12 +960,10 @@ export class MainViewModel extends Observable {
         'data_type': 'SmartDriveDailyInfo',
         'start_time': { '$gte': startTimes[0] }
       };
-      const limit = 1;
-      Log.D('querying', queries);
+      // Log.D('querying', queries);
       const response = await this.kinveyService.getEntry(
         KinveyService.api_smartdrive_usage_db,
-        queries,
-        limit
+        queries
       );
       const statusCode = response.statusCode;
       if (statusCode === 200) {
