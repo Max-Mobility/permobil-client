@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, NgZone } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -14,6 +14,8 @@ import { SmartDriveUsageService } from '../../services/smartdrive-usage.service'
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { PointLabelStyle, ChartFontStyle } from 'nativescript-ui-chart';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { registerElement } from 'nativescript-angular/element-registry';
+registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
 @Component({
   selector: 'home-tab',
@@ -68,8 +70,7 @@ export class HomeTabComponent implements OnInit {
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
     private _smartDriveUsageService: SmartDriveUsageService,
-    private _activityService: ActivityService,
-    private _zone: NgZone
+    private _activityService: ActivityService
   ) {
     this.getUser();
     this._currentDayInView = new Date();
@@ -85,11 +86,20 @@ export class HomeTabComponent implements OnInit {
     } else if (this.savedTheme === APP_THEMES.DARK) {
       enableDarkTheme();
     }
-    this._zone.run(() => {
-      this.updatePointLabelStyle();
-    });
+    this.updatePointLabelStyle();
     this._loadWeeklyActivity();
     this._loadSmartDriveUsage();
+  }
+
+  refreshPlots(args) {
+    const pullRefresh = args.object;
+    this.weeklyActivityLoaded = false;
+    this.savedTheme = this.user.data.theme_preference;
+    this._loadWeeklyActivity();
+    this._loadSmartDriveUsage();
+    this.updatePointLabelStyle();
+    this.weeklyActivityLoaded = true;
+    pullRefresh.refreshing = false;
   }
 
   ngOnInit() {
@@ -122,15 +132,13 @@ export class HomeTabComponent implements OnInit {
       this._updateDistancePlotYAxis();
 
       // Update distance point label style
-      this._zone.run(() => {
-        if (this.savedTheme === APP_THEMES.DEFAULT) {
-          enableDefaultTheme();
-        } else if (this.savedTheme === APP_THEMES.DARK) {
-          enableDarkTheme();
-        }
-        this.updatePointLabelStyle();
-      });
-
+      if (this.savedTheme === APP_THEMES.DEFAULT) {
+        enableDefaultTheme();
+      } else if (this.savedTheme === APP_THEMES.DARK) {
+        enableDarkTheme();
+      }
+      this.updatePointLabelStyle();
+      console.log('User updated in home-tab');
     });
   }
 
@@ -321,11 +329,11 @@ export class HomeTabComponent implements OnInit {
           'Sat'
         ];
         for (const i in dayNames) {
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastTime: 0,
-              pushCount: 0
-            });
+          result.push({
+            xAxis: dayNames[parseInt(i)],
+            coastTime: 0,
+            pushCount: 0
+          });
         }
         result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
         result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
@@ -468,11 +476,11 @@ export class HomeTabComponent implements OnInit {
           'Sat'
         ];
         for (const i in dayNames) {
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastDistance: 0,
-              driveDistance: 0
-            });
+          result.push({
+            xAxis: dayNames[parseInt(i)],
+            coastDistance: 0,
+            driveDistance: 0
+          });
         }
         result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
         result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });

@@ -22,6 +22,7 @@
     "@ngx-translate/core": "~11.0.1",
     "@nstudio/nativescript-floatingactionbutton": "~1.0.1",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
+    "@nstudio/nativescript-pulltorefresh": "^1.0.1",
     "@nstudio/nativescript-snackbar": "~1.0.0",
     "@permobil/angular": "file:../../../@permobil/angular",
     "@permobil/core": "file:../../../@permobil/core",
