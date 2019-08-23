@@ -227,7 +227,7 @@ export class HomeTabComponent implements OnInit {
   _formatActivityForView(viewMode) {
     if (viewMode === 'Week') {
       const activity = this._activityService.weeklyActivity;
-      if (activity) {
+      if (activity && activity.days) {
         const result = [];
         const date = new Date(activity.date);
         const weekViewDayArray = [];
