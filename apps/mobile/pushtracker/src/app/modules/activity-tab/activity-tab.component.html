@@ -35,7 +35,7 @@
         </CategoricalAxis>
         <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
-          [majorStep]="yAxisStep" labelFormat="%.0f">
+          [majorStep]="yAxisStep" labelFormat="%.1f">
         </LinearAxis>
         <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis"
           [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
@@ -61,7 +61,7 @@
           labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
         <LinearAxis id="vAxis" tkCartesianVerticalAxis [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
-          [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+          [majorStep]="yAxisStep" labelFormat="%.1f"></LinearAxis>
         <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
           [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
         <Palette tkCartesianPalette seriesName="WeeklyActivity">
