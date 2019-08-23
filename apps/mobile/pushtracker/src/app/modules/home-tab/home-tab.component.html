@@ -66,7 +66,7 @@
         [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
       <GridLayout *ngIf="weeklyActivityLoaded">
-        <Label row="0" col="0" class="title chart-title" horizontalAlignment="center"
+        <Label row="0" col="0" class="title" horizontalAlignment="center"
           [text]="coastTimeGoalMessage"></Label>
         <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastTimeChart">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
@@ -106,7 +106,7 @@
       </GridLayout>
 
       <GridLayout *ngIf="weeklyActivityLoaded" marginTop="10">
-        <Label row="0" col="0" class="title chart-title" horizontalAlignment="center"
+        <Label row="0" col="0" class="title" horizontalAlignment="center"
           [text]="distanceGoalMessage"></Label>
         <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastDistanceChart">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
