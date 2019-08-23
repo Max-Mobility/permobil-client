@@ -152,7 +152,7 @@ export class MainViewModel extends Observable {
   /**
    * Data to bind to the Distance Chart repeater.
    */
-  @Prop() distanceChartData: any[];
+  @Prop() distanceChartData: any[] = null;
   @Prop() distanceChartMaxValue: string;
 
   /**
@@ -286,24 +286,23 @@ export class MainViewModel extends Observable {
 
   async initSqliteTables() {
     this.sentryBreadCrumb('Initializing SQLite...');
-    console.time('SQLite_Init');
-    // create / load tables for activity data
-    const sqlitePromises = [
-      this.sqliteService.makeTable(
-        DailyActivity.Info.TableName,
-        DailyActivity.Info.IdName,
-        DailyActivity.Info.Fields
-      )
-    ];
-    return Promise.all(sqlitePromises)
-      .then(() => {
-        console.timeEnd('SQLite_Init');
-        this.sentryBreadCrumb('SQLite has been initialized.');
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Could not make table:', err);
-      });
+    try {
+      console.time('SQLite_Init');
+      // create / load tables for activity data
+      const sqlitePromises = [
+        this.sqliteService.makeTable(
+          DailyActivity.Info.TableName,
+          DailyActivity.Info.IdName,
+          DailyActivity.Info.Fields
+        )
+      ];
+      await Promise.all(sqlitePromises);
+      console.timeEnd('SQLite_Init');
+      this.sentryBreadCrumb('SQLite has been initialized.');
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Could not make table:', err);
+    }
   }
 
   loadCurrentActivityData() {
@@ -382,34 +381,25 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Service Data Update registered.');
   }
 
-  startActivityService() {
-    return this
-      .askForPermissions()
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          this.sentryBreadCrumb('Starting Activity Service.');
-          console.log('Starting activity service!');
-          try {
-            const intent = new android.content.Intent();
-            const context = application.android.context;
-            intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
-            intent.setAction('ACTION_START_SERVICE');
-            context.startService(intent);
-            console.log('Started activity service!');
-            this.sentryBreadCrumb('Activity Service started.');
-            resolve();
-          } catch (err) {
-            console.error('could not start activity service:', err);
-            reject();
-          }
-        });
-      })
-      .catch((err) => {
-        setTimeout(this.startActivityService.bind(this), 5000);
-      });
+  async startActivityService() {
+    try {
+      await this.askForPermissions();
+      this.sentryBreadCrumb('Starting Activity Service.');
+      console.log('Starting activity service!');
+      const intent = new android.content.Intent();
+      const context = application.android.context;
+      intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
+      intent.setAction('ACTION_START_SERVICE');
+      context.startService(intent);
+      console.log('Started activity service!');
+      this.sentryBreadCrumb('Activity Service started.');
+    } catch (err) {
+      console.error('could not start activity service:', err);
+      setTimeout(this.startActivityService.bind(this), 5000);
+    }
   }
 
-  askForPermissions() {
+  async askForPermissions() {
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
@@ -423,38 +413,35 @@ export class MainViewModel extends Observable {
     ].join('\n\n');
     if (neededPermissions && neededPermissions.length > 0) {
       // Log.D('requesting permissions!', neededPermissions);
-      return alert({
+      await alert({
         title: L('permissions-request.title'),
         message: reasons,
         okButtonText: L('buttons.ok')
-      })
-        .then(() => {
-          return requestPermissions(neededPermissions, () => { });
-        })
-        .then(permissions => {
-          // now that we have permissions go ahead and save the serial number
-          this.watchSerialNumber = android.os.Build.getSerial();
-          // save it to datastore for service to use
-          const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
-          const sharedPreferences = ad
-            .getApplicationContext()
-            .getSharedPreferences('prefs.db', 0);
-          const editor = sharedPreferences.edit();
-          editor.putString(
-            prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
-            this.watchSerialNumber
-          );
-          editor.commit();
-          this.kinveyService.watch_serial_number = this.watchSerialNumber;
-          // and return true letting the caller know we got the permissions
-          return true;
-        })
-        .catch(err => {
-          Sentry.captureException(err);
-          throw L('failures.permissions');
-        });
+      });
+      try {
+        const permissions = await requestPermissions(neededPermissions, () => { });
+        // now that we have permissions go ahead and save the serial number
+        this.watchSerialNumber = android.os.Build.getSerial();
+        // save it to datastore for service to use
+        const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+        const sharedPreferences = ad
+          .getApplicationContext()
+          .getSharedPreferences('prefs.db', 0);
+        const editor = sharedPreferences.edit();
+        editor.putString(
+          prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
+          this.watchSerialNumber
+        );
+        editor.commit();
+        this.kinveyService.watch_serial_number = this.watchSerialNumber;
+        // and return true letting the caller know we got the permissions
+        return true;
+      } catch (err) {
+        Sentry.captureException(err);
+        throw L('failures.permissions');
+      }
     } else {
-      return Promise.resolve(true);
+      return true;
     }
   }
 
@@ -641,54 +628,38 @@ export class MainViewModel extends Observable {
     });
   }
 
-  updateChartData() {
+  async updateChartData() {
     // Log.D('Updating Chart Data / Display');
-    return this.getActivityInfoFromDatabase(7)
-      .then((activityData: any[]) => {
-        // we've asked for one more day than needed so that we can
-        // compute distance differences
-        const oldest = activityData[0];
-        const newest = last(activityData);
-        // keep track of the most recent day so we know when to update
-        this.lastChartDay = new Date(newest.date);
-        // remove the oldest so it's not displayed - we only use it
-        // to track distance differences
-        activityData = activityData.slice(1);
-        // update coast data
-        const maxCoast = activityData.reduce((max, obj) => {
-          return obj.coast_time_avg > max ?
-            obj.coast_time_avg : max;
-        }, 0);
-        const coastData = activityData.map(e => {
-          return {
-            day: this.format(new Date(e.date), 'dd'),
-            value: (e.coast_time_avg * 100.0) / maxCoast
-          };
-        });
-        // Log.D('Highest Coast Value:', maxCoast);
-        this.coastChartMaxValue = maxCoast.toFixed(1);
-        this.coastChartData = coastData;
-
-        // update distance data
-        const maxDist = activityData.reduce((max, obj) => {
-          return obj.distance_watch > max ?
-            obj.distance_watch : max;
-        }, 0.0);
-        const distanceData = activityData.map(e => {
-          return {
-            day: this.format(new Date(e.date), 'dd'),
-            value: (e.distance_watch * 100.0) / maxDist
-          };
-        });
-        // Log.D('Highest Distance Value:', maxDist);
-        this.distanceChartMaxValue = maxDist.toFixed(1);
-        this.distanceChartData = distanceData;
-
-        // TODO: update the display of the data
-      })
-      .catch(err => {
-        Sentry.captureException(err);
+    try {
+      let activityData = await this.getActivityInfoFromDatabase(7) as any[];
+      // we've asked for one more day than needed so that we can
+      // compute distance differences
+      const oldest = activityData[0];
+      const newest = last(activityData);
+      // keep track of the most recent day so we know when to update
+      this.lastChartDay = new Date(newest.date);
+      // remove the oldest so it's not displayed - we only use it
+      // to track distance differences
+      activityData = activityData.slice(1);
+      // update coast data
+      const maxCoast = activityData.reduce((max, obj) => {
+        return obj.coast_time_avg > max ?
+          obj.coast_time_avg : max;
+      }, 0);
+      const coastData = activityData.map(e => {
+        return {
+          day: this.format(new Date(e.date), 'dd'),
+          value: (e.coast_time_avg * 100.0) / maxCoast
+        };
       });
+      // Log.D('Highest Coast Value:', maxCoast);
+      this.coastChartMaxValue = maxCoast.toFixed(1);
+      this.coastChartData = coastData;
+      // TODO: update the display of the data
+      this.initDistanceData();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   }
 
   onProfileTap() {
@@ -888,28 +859,27 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  getTodaysActivityInfoFromDatabase() {
-    return this.sqliteService
-      .getLast(DailyActivity.Info.TableName, DailyActivity.Info.IdName)
-      .then(e => {
-        const date = new Date((e && e[1]) || null);
-        if (e && e[1] && isToday(date)) {
-          // @ts-ignore
-          return DailyActivity.Info.loadInfo(...e);
-        } else {
-          return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
-        }
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        // nothing was found
+  async getTodaysActivityInfoFromDatabase() {
+    try {
+      const e = await this.sqliteService
+        .getLast(DailyActivity.Info.TableName, DailyActivity.Info.IdName);
+      const date = new Date((e && e[1]) || null);
+      if (e && e[1] && isToday(date)) {
+        // @ts-ignore
+        return DailyActivity.Info.loadInfo(...e);
+      } else {
         return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
-      });
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      // nothing was found
+      return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
+    }
   }
 
-  getActivityInfoFromDatabase(numDays: number) {
+  async getActivityInfoFromDatabase(numDays: number) {
     const dates = DailyActivity.Info.getPastDates(numDays);
-    const activityInfo = dates.map(d => {
+    const activityInfo = dates.map((d: Date) => {
       if (debug) {
         const pushes = Math.random() * 3000 + 1000;
         const coast = Math.random() * 10.0 + 0.5;
@@ -919,31 +889,29 @@ export class MainViewModel extends Observable {
         return DailyActivity.Info.newInfo(d, 0, 0, 0);
       }
     });
-    return this.getRecentInfoFromDatabase(numDays + 1)
-      .then(objs => {
-        objs.map(o => {
-          // @ts-ignore
-          const obj = DailyActivity.Info.loadInfo(...o);
-          // have to ts-ignore since we're using the java defs.
-          // @ts-ignore
-          const objDate = new Date(obj.date);
-          const index = closestIndexTo(objDate, dates);
-          const activityDate = dates[index];
-          // Log.D('recent info:', o);
-          if (index > -1 && isSameDay(objDate, activityDate)) {
-            activityInfo[index] = obj;
-          }
-        });
-        return activityInfo;
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('error getting recent info:', err);
-        return activityInfo;
+    try {
+      const objs = await this.getRecentInfoFromDatabase(numDays + 1);
+      objs.map((o: any) => {
+        // @ts-ignore
+        const obj = DailyActivity.Info.loadInfo(...o);
+        // have to ts-ignore since we're using the java defs.
+        // @ts-ignore
+        const objDate = new Date(obj.date);
+        const index = closestIndexTo(objDate, dates);
+        const activityDate = dates[index];
+        // Log.D('recent info:', o);
+        if (index > -1 && isSameDay(objDate, activityDate)) {
+          activityInfo[index] = obj;
+        }
       });
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('error getting recent info:', err);
+    }
+    return activityInfo;
   }
 
-  getRecentInfoFromDatabase(numRecentEntries: number) {
+  async getRecentInfoFromDatabase(numRecentEntries: number) {
     try {
       return this.sqliteService.getAll({
         tableName: DailyActivity.Info.TableName,
@@ -952,27 +920,9 @@ export class MainViewModel extends Observable {
         limit: numRecentEntries
       });
     } catch (err) {
-      return Promise.reject(err);
+      Log.E('getRecentnfoFromDatabase', err);
     }
   }
-
-  getUnsentInfoFromDatabase(numEntries: number) {
-    try {
-      return this.sqliteService.getAll({
-        tableName: DailyActivity.Info.TableName,
-        queries: {
-          [DailyActivity.Info.HasBeenSentName]: 0
-        },
-        orderBy: DailyActivity.Info.IdName,
-        ascending: true,
-        limit: numEntries
-      });
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
-
-
 
   public motorTicksToMiles(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
@@ -982,87 +932,100 @@ export class MainViewModel extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
+  initDistanceData() {
+    if (this.distanceChartData !== null) {
+      return;
+    }
+    const dates = DailyActivity.Info.getPastDates(7);
+    const distanceData = dates.map(d => {
+      return {
+        day: this.format(new Date(d), 'dd'),
+        value: 0
+      };
+    });
+    // Log.D('Highest Distance Value:', maxDist);
+    this.distanceChartMaxValue = '0.0';
+    this.distanceChartData = distanceData;
+  }
+
   /**
    * Network Functions
    */
-  loadSmartDriveInfo() {
-    const queries = {
-      'watch_serial_number': this.watchSerialNumber,
-      'data_type': 'SmartDriveDailyInfo',
-      'date': this.format(new Date(), 'YYYY/MM/DD')
-    };
-    const limit = 1;
-    return this.kinveyService.getEntry(
-      KinveyService.api_smartdrive_usage_db,
-      queries,
-      limit
-    )
-      .then((response) => {
-        const statusCode = response.statusCode;
-        if (statusCode === 200) {
-          const content = response.content.toJSON();
-          Log.D('got content', typeof content, content);
-          if (content && content.length) {
-            const info = content[0];
-            const distanceTicks = info.distance_smartdrive_coast || 0;
-            const distanceMiles = this.caseTicksToMiles(distanceTicks);
-            this.distanceGoalCurrentValue = distanceMiles;
-            this.updateDisplay();
-          } else {
-            Log.D('no records found for', queries.date, this.watchSerialNumber);
+  async loadSmartDriveInfo() {
+    try {
+      const dates = DailyActivity.Info.getPastDates(7);
+      const startTimes = dates.map(d => d.getTime());
+      const queries = {
+        'watch_serial_number': this.watchSerialNumber,
+        'data_type': 'SmartDriveDailyInfo',
+        'start_time': { '$gte': startTimes[0] }
+      };
+      const limit = 1;
+      Log.D('querying', queries);
+      const response = await this.kinveyService.getEntry(
+        KinveyService.api_smartdrive_usage_db,
+        queries,
+        limit
+      );
+      const statusCode = response.statusCode;
+      if (statusCode === 200) {
+        const days = response.content.toJSON();
+        /*
+        // pull start / end from info
+        const tickStart = info.distance_smartdrive_coast_start || 0;
+        const tickEnd = info.distance_smartdrive_coast || 0;
+        const distanceMiles = this.caseTicksToMiles(tickEnd - tickStart);
+        // update the displayed value
+        this.distanceGoalCurrentValue = distanceMiles;
+        */
+
+        const maxDist = days.reduce((max, obj) => {
+          const caseStart = obj.distance_smartdrive_coast_start;
+          const caseEnd = obj.distance_smartdrive_coast;
+          const distance = this.caseTicksToMiles(caseEnd - caseStart);
+          return distance > max ? distance : max;
+        }, 0.0);
+        // update distance data
+        const dayMap = {};
+        days.map(d => {
+          const caseStart = d.distance_smartdrive_coast_start;
+          const caseEnd = d.distance_smartdrive_coast;
+          const distance = this.caseTicksToMiles(caseEnd - caseStart);
+          dayMap[d.date] = distance * 100.0 / maxDist;
+        });
+        const distanceData = dates.map(d => {
+          const dStr = this.format(new Date(d), 'YYYY/MM/DD');
+          const data = dayMap[dStr];
+          let distance = 0;
+          if (data) {
+            distance = data;
           }
-        } else {
-          throw response;
-        }
-      })
-      .catch((err) => {
-        Sentry.captureException(err);
-      });
+          return {
+            day: this.format(new Date(d), 'dd'),
+            value: distance
+          };
+        });
+        // Log.D('Highest Distance Value:', maxDist);
+        this.distanceChartMaxValue = maxDist.toFixed(1);
+        this.distanceChartData = distanceData;
+
+        // update the chart
+        this.updateDisplay();
+      } else {
+        throw response;
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E(err);
+    }
   }
 
-  sendActivityToServer(numInfo: number) {
-    return this.getUnsentInfoFromDatabase(numInfo)
-      .then(infos => {
-        if (infos && infos.length) {
-          // now send them one by one
-          const promises = infos.map(i => {
-            // @ts-ignore
-            i = DailyActivity.Info.loadInfo(...i);
-            // update info date here
-            i[DailyActivity.Info.DateName] = new Date(
-              i[DailyActivity.Info.DateName]
-            );
-            return this.kinveyService.sendActivity(
-              i,
-              i[DailyActivity.Info.UuidName]
-            );
-          });
-          return Promise.all(promises);
-        }
-      })
-      .then(rets => {
-        if (rets && rets.length) {
-          const promises = rets
-            .map(r => r.content.toJSON())
-            .map(r => {
-              const id = r['_id'];
-              return this.sqliteService.updateInTable(
-                DailyActivity.Info.TableName,
-                {
-                  [DailyActivity.Info.HasBeenSentName]: 1
-                },
-                {
-                  [DailyActivity.Info.UuidName]: id
-                }
-              );
-            });
-          return Promise.all(promises);
-        }
-      })
-      .catch(e => {
-        Sentry.captureException(e);
-        Log.E('Error sending infos to server:', e);
-      });
+  public getFirstDayOfWeek(date) {
+    date = new Date(date);
+    const day = date.getDay();
+    if (day === 0) return date; // Sunday is the first day of the week
+    const diff = date.getDate() - day;
+    return new Date(date.setDate(diff));
   }
 
   private sentryBreadCrumb(message: string) {

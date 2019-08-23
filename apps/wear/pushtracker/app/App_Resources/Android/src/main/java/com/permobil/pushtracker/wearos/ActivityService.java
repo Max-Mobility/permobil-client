@@ -55,6 +55,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -186,7 +189,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     mKinveyApiService = retrofit.create(KinveyApiService.class);
 
     // save the authorization string needed for kinvey
-    String authorizationToEncode = "pranav.kumar@permobil.com:test";
+    String authorizationToEncode = "test@ptmax.com:testtest";
     byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
     mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
     mKinveyAuthorization = "Basic " + mKinveyAuthorization;
@@ -277,6 +280,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     public void run() {
       try {
         PushDataToKinvey();
+        PullDataFromKinvey();
       } catch (Exception e) {
         Sentry.capture(e);
         Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
@@ -285,9 +289,69 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     }
   }
 
+  private static final float wheelCircumferenceMeters = (2.0f * 3.14159265358f * .09652f);
+  private static final float caseTicksPerRevolution = 36.0f;
+  private static final float motorTicksPerRevolution = 265.714f;
+  private float caseTicksToMeters(long ticks) {
+    float meters = wheelCircumferenceMeters * ticks / caseTicksPerRevolution;
+    return meters;
+  }
+
+  private float motorTicksToMeters(long ticks) {
+    float meters = wheelCircumferenceMeters * ticks / motorTicksPerRevolution;
+    return meters;
+  }
+
+  private void PullDataFromKinvey() {
+    Log.d(TAG, "PullDataFromKinvey()...");
+    try {
+      // set up the query parameters
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+      // get current date
+      Date now = Calendar.getInstance().getTime();
+      String nowString = simpleDateFormat.format(now);
+      int limit = 1;
+      String query = "{"+
+        "\"data_type\": \"SmartDriveDailyInfo\","+
+        "\"date\":\"" + nowString + "\"," +
+        "\"watch_serial_number\":\"" + watchSerialNumber + "\"" +
+        "}";
+      // get today's smartdrive usage data
+      Call<List<Map>> call = mKinveyApiService.getUsage(mKinveyAuthorization, query, limit);
+      call.enqueue(new Callback<List<Map>>() {
+          @Override
+          public void onResponse(Call<List<Map>> call, Response<List<Map>> response) {
+            int statusCode = response.code();
+            Log.d(TAG, "status code: " + statusCode);
+            List<Map> items = response.body();
+            Log.d(TAG, "items received: " + items);
+            if (items.size() > 0) {
+              Map data = items.get(0);
+              // compute total distance
+              double startTicks = (double)data.get("distance_smartdrive_coast_start");
+              double endTicks = (double)data.get("distance_smartdrive_coast");
+              long diffTicks = (long)(endTicks - startTicks);
+              float meters = caseTicksToMeters(diffTicks);
+              // save distance to file system (for sending to app and
+              // showing in complications)
+              currentActivity.distance_watch = meters;
+              datastore.setDistance(currentActivity.distance_watch);
+            }
+          }
+
+          @Override
+          public void onFailure(Call<List<Map>> call, Throwable t) {
+            Log.e(TAG, "get data onFailure()");
+            Sentry.capture(t);
+          }
+        });
+    } catch (Exception e) {
+      Log.e(TAG, "Exception pulling from kinvey:" + e.getMessage());
+      Sentry.capture(e);
+    }
+  }
+
   private void PushDataToKinvey() {
-    // TODO: get X number of unsent data from sqlite storage
-    // TODO:
     Log.d(TAG, "PushDataToKinvey()...");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
