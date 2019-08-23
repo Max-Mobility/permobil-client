@@ -1,23 +1,16 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import {
-  CalendarMonthViewStyle,
-  CellStyle,
-  DayCellStyle,
-  RadCalendar
-} from 'nativescript-ui-calendar';
-import { TrackballCustomContentData } from 'nativescript-ui-chart';
+import { CalendarMonthViewStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import { isAndroid } from 'tns-core-modules/platform';
 import { Button } from 'tns-core-modules/ui/button';
-import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
+import { SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
-import { ActivityService } from '../../services/activity.service';
-import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { APP_THEMES, STORAGE_KEYS } from '~/app/enums';
+import { ActivityService, LoggingService, PushTrackerUserService } from '../../services';
 
 @Component({
   selector: 'activity-tab',
@@ -25,15 +18,17 @@ import { PushTrackerUserService } from '../../services/pushtracker.user.service'
   templateUrl: 'activity-tab.component.html'
 })
 export class ActivityTabComponent implements OnInit {
-  public tabSelectedIndex: number;
-  public displayDay: string = this._translateService.instant('day');
-  public displayWeek: string = this._translateService.instant('week');
-  public displayMonth: string = this._translateService.instant('month');
-  public dailyActivity: ObservableArray<any[]>;
-  public maximumDateTimeValue: Date;
-  public minimumDateTimevalue: Date;
-  public chartTitle: string;
-  public dayNames: string[] = [
+  tabItems: SegmentedBarItem[];
+  tabSelectedIndex: number;
+
+  chartTitle: string;
+  chartDescription: string;
+  viewMode: ViewMode = ViewMode.COAST_TIME; // 0 = Coast Time is plotted, 1 = Distance is plotted
+  savedTheme: string;
+
+  dailyActivity: ObservableArray<any[]>;
+
+  dayNames: string[] = [
     'Sunday',
     'Monday',
     'Tuesday',
@@ -42,7 +37,8 @@ export class ActivityTabComponent implements OnInit {
     'Friday',
     'Saturday'
   ];
-  public monthNames: string[] = [
+
+  monthNames: string[] = [
     'January',
     'February',
     'March',
@@ -56,33 +52,31 @@ export class ActivityTabComponent implements OnInit {
     'November',
     'December'
   ];
-  public currentDayInView: Date;
-  public dayChartLabel: string;
-  public weekStart: Date;
-  public weekEnd: Date;
-  public monthStart: Date;
-  public monthEnd: Date;
-  public minDate: Date;
-  public maxDate: Date;
-  public monthViewStyle: CalendarMonthViewStyle;
+  currentDayInView: Date;
+  // dayChartLabel: string;
+  weekStart: Date;
+  weekEnd: Date;
+
+  // Month View (Calendar tab)
+  minDate: Date;
+  maxDate: Date;
+  monthViewStyle: CalendarMonthViewStyle;
+  dailyActivityAnnotationValue: number = 0;
+  yAxisMax = 0;
+  yAxisStep = 15;
+
   private _calendar: RadCalendar;
   private _dayViewTimeArray: number[] = [];
   private _dailyActivityCache = {};
-  public dailyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
-  public savedTheme: string;
-  public dailyActivityAnnotationValue: number = 0;
-  public yAxisMax = 0;
-  public yAxisStep = 15;
+
   // Member variabes for week view
-  public weeklyActivity: ObservableArray<any[]>;
+  weeklyActivity: ObservableArray<any[]>;
+  weeklyActivityAnnotationValue: number = 0;
   private _weeklyActivityCache = {};
-  public weeklyViewMode = 0; // 0 = Coast Time is plotted, 1 = Distance is plotted
-  public weekChartLabel: string;
-  public weeklyActivityAnnotationValue: number = 0;
 
   // Colors
-  private _colorWhite = new Color('White');
-  private _colorBlack = new Color('Black');
+  private _colorWhite = new Color('#fff');
+  private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
   constructor(
@@ -92,13 +86,28 @@ export class ActivityTabComponent implements OnInit {
     private _params: ModalDialogParams,
     private userService: PushTrackerUserService
   ) {
+    // init the segmented bar items
+    this.tabItems = [];
+    [
+      this._translateService.instant('activity-tab-component.day'),
+      this._translateService.instant('activity-tab-component.week'),
+      this._translateService.instant('activity-tab-component.month')
+    ].forEach(element => {
+      const sbi = new SegmentedBarItem();
+      sbi.title = element;
+      this.tabItems.push(sbi);
+    });
+    this.tabSelectedIndex = 0; // default to the first tab (Day)
+
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
     this.currentDayInView = new Date();
-    const year = this.currentDayInView.getFullYear();
-    const month = this.currentDayInView.getMonth();
-    const day = this.currentDayInView.getDate();
-    this.minimumDateTimevalue = new Date(year, month, day, 0);
-    this.maximumDateTimeValue = new Date(year, month, day, 23);
-    this.loadDailyActivity();
+
+    this._loadDailyActivity();
+
     {
       // Initialize time array for day view
       const rangeStart = 0;
@@ -109,10 +118,7 @@ export class ActivityTabComponent implements OnInit {
         rangeIterator += 0.5;
       }
     }
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
+
     this._initMonthViewStyle();
   }
 
@@ -130,7 +136,139 @@ export class ActivityTabComponent implements OnInit {
     this._params.closeCallback();
   }
 
-  async loadDailyActivity() {
+  // displaying the old and new TabView selectedIndex
+  onSelectedIndexChanged(args) {
+    const date = this.currentDayInView;
+    this.tabSelectedIndex = args.object.selectedIndex;
+    if (this.tabSelectedIndex === 0) {
+      this.chartTitle =
+        this.dayNames[date.getDay()] +
+        ', ' +
+        this.monthNames[date.getMonth()] +
+        ' ' +
+        date.getDate();
+      this._initDayChartTitle();
+      this._loadDailyActivity();
+    } else if (this.tabSelectedIndex === 1) {
+      this._initWeekChartTitle();
+      this._loadWeeklyActivity();
+    } else if (this.tabSelectedIndex === 2) {
+      this._initMonthChartTitle();
+    }
+  }
+
+  onPreviousTap() {
+    if (this.tabSelectedIndex === 0) {
+      // day
+      this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
+      this._updateWeekStartAndEnd();
+      this._initDayChartTitle();
+      this._loadDailyActivity();
+    } else if (this.tabSelectedIndex === 1) {
+      // week
+      this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
+      this._initWeekChartTitle();
+      this._loadWeeklyActivity();
+    } else if (this.tabSelectedIndex === 2) {
+      // month
+      this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
+      this._calendar.navigateBack();
+      this._initMonthChartTitle();
+    }
+  }
+
+  onNextTap() {
+    if (this.tabSelectedIndex === 0) {
+      // day
+      this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
+      this._updateWeekStartAndEnd();
+      this._initDayChartTitle();
+      this._loadDailyActivity();
+    } else if (this.tabSelectedIndex === 1) {
+      // week
+      this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
+      this._initWeekChartTitle();
+      this._loadWeeklyActivity();
+    } else if (this.tabSelectedIndex === 2) {
+      // month
+      this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+      this._calendar.navigateForward();
+      this._initMonthChartTitle();
+    }
+  }
+
+  onCoastTimeTap() {
+    this.viewMode = ViewMode.COAST_TIME; // set view mode to coast_time
+
+    if (this.tabSelectedIndex === 0) {
+      // day
+      this._updateDayChartLabel();
+      this._updateDailyActivityAnnotationValue();
+      this._calculateDailyActivityYAxisMax();
+    } else if (this.tabSelectedIndex === 1) {
+      // week
+      this._updateWeekChartLabel();
+      this._updateWeeklyActivityAnnotationValue();
+      this._calculateWeeklyActivityYAxisMax();
+    }
+  }
+
+  onDistanceTap() {
+    this.viewMode = ViewMode.DISTANCE; // set view mode for distance
+
+    if (this.tabSelectedIndex === 0) {
+      // day
+      this._updateDayChartLabel();
+      this._updateDailyActivityAnnotationValue();
+      this._calculateDailyActivityYAxisMax();
+    } else if (this.tabSelectedIndex === 1) {
+      // week
+      this._updateWeekChartLabel();
+      this._updateWeeklyActivityAnnotationValue();
+      this._calculateWeeklyActivityYAxisMax();
+    }
+  }
+
+  onWeekPointSelected(event) {
+    const selectedDate = new Date(this.weekStart);
+    this.currentDayInView.setDate(
+      selectedDate.getDate() + event.pointIndex - 2
+    );
+    this._loadDailyActivity();
+    this.tabSelectedIndex = 0;
+  }
+
+  onCalendarLoaded(args) {
+    const calendar = args.object as RadCalendar;
+    // Increasing the height of dayNameCells in RadCalendar
+    // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
+    if (calendar.android) {
+      calendar.android.setDayNamesHeight(layout.toDevicePixels(40));
+    } else {
+      calendar.ios.presenter.style.dayNameCellHeight = 40;
+    }
+    this._calendar = calendar;
+    const telCalendar = calendar.nativeView; // com.telerik.widget.calendar.RadCalendarView
+
+    if (telCalendar && isAndroid) {
+      const gestureManager = telCalendar.getGestureManager(); // com.telerik.widget.calendar.CalendarGestureManager
+      gestureManager.setDoubleTapToChangeDisplayMode(false);
+      gestureManager.setPinchCloseToChangeDisplayMode(false);
+      gestureManager.setPinchOpenToChangeDisplayMode(false);
+      gestureManager.setSwipeDownToChangeDisplayMode(false);
+      gestureManager.setSwipeUpToChangeDisplayMode(false);
+      gestureManager.suspendScroll();
+    }
+  }
+
+  onCalendarDateSelected(args) {
+    const date: Date = args.date;
+    this.currentDayInView.setMonth(date.getMonth());
+    this.currentDayInView.setDate(date.getDate());
+    this.tabSelectedIndex = 0;
+  }
+
+  private async _loadDailyActivity() {
     let didLoad = false;
     // Check if data is available in daily activity cache first
     if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
@@ -138,21 +276,16 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView
       );
       if (didLoad) {
-        this.dailyActivity = new ObservableArray(
-          this.formatActivityForView('Day')
-        );
+        this.dailyActivity = new ObservableArray(this._formatActivityForView());
         this._initDayChartTitle();
         const date = this.currentDayInView;
-        const sunday = this._getFirstDayOfWeek(date);
-        this.weekStart = sunday;
+        this.weekStart = this._getFirstDayOfWeek(date);
         this.weekEnd = this.weekStart;
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
         this.minDate = new Date('01/01/1999');
         this.maxDate = new Date('01/01/2099');
       } else {
-        this.dailyActivity = new ObservableArray(
-          this.formatActivityForView('Day')
-        );
+        this.dailyActivity = new ObservableArray(this._formatActivityForView());
       }
       // Cache activity by day so we can easily pull it up next time
       this._dailyActivityCache[this.currentDayInView.toUTCString()] = {
@@ -167,15 +300,16 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.toUTCString()
       ];
       this.dailyActivity = cache.chartData;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.dayChartLabel =
-          '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description for viewMode
+      if ((this.viewMode = ViewMode.COAST_TIME)) {
+        this.chartDescription =
+          (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.dayChartLabel =
-          '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
+        this.chartDescription =
+          (cache.dailyActivity.push_count || 0) + ' pushes';
       }
+
       this._initDayChartTitle();
       const date = this.currentDayInView;
       const sunday = this._getFirstDayOfWeek(date);
@@ -186,62 +320,38 @@ export class ActivityTabComponent implements OnInit {
       this.maxDate = new Date('01/01/2099');
       this._updateDailyActivityAnnotationValue();
     }
-    this.calculateDailyActivityYAxisMax();
+    this._calculateDailyActivityYAxisMax();
   }
 
-  calculateDailyActivityYAxisMax() {
+  private _calculateDailyActivityYAxisMax() {
     this.yAxisMax = 0;
     this.yAxisStep = 15;
     let i = 4;
     while (i < 53) {
-        const activity = this.dailyActivity.getItem(i);
-        if (this.dailyViewMode === 0) {
-            if (activity['coastTime'] > this.yAxisMax)
-            this.yAxisMax = activity['coastTime'];
-        }
-        else {
-            if (activity['pushCount'] > this.yAxisMax)
-            this.yAxisMax = activity['pushCount'];
-        }
-        i++;
+      const activity = this.dailyActivity.getItem(i);
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        if (activity['coastTime'] > this.yAxisMax)
+          this.yAxisMax = activity['coastTime'];
+      } else {
+        if (activity['pushCount'] > this.yAxisMax)
+          this.yAxisMax = activity['pushCount'];
+      }
+      i++;
     }
     this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
-    if (this.yAxisMax === 0)
-        this.yAxisMax = 30;
+    if (this.yAxisMax === 0) this.yAxisMax = 30;
     if (this.yAxisMax < this.yAxisStep)
-        this.yAxisStep = parseInt((this.yAxisMax / 2.0).toFixed());
+      this.yAxisStep = parseInt((this.yAxisMax / 2.0).toFixed());
   }
 
-  calculateWeeklyActivityYAxisMax() {
-    this.yAxisMax = 0;
-    this.yAxisStep = 0;
-    let i = 2;
-    while (i < 9) {
-        const activity = this.weeklyActivity.getItem(i);
-        if (this.weeklyViewMode === 0) {
-            if (activity['coastTime'] > this.yAxisMax)
-            this.yAxisMax = activity['coastTime'];
-        }
-        else {
-            if (activity['pushCount'] > this.yAxisMax)
-            this.yAxisMax = activity['pushCount'];
-        }
-        i++;
-    }
-    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
-    if (this.yAxisMax === 0)
-        this.yAxisMax = 12;
-    this.yAxisStep = parseInt((this.yAxisMax / 4).toFixed());
-  }
-
-  async loadWeeklyActivity() {
+  private async _loadWeeklyActivity() {
     let didLoad = false;
     // Check if data is available in daily activity cache first
     if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
       didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
       if (didLoad) {
         this.weeklyActivity = new ObservableArray(
-          this.formatActivityForView('Week')
+          this._formatActivityForView()
         );
         this._initWeekChartTitle();
         this.weekStart = new Date(this._activityService.weeklyActivity.date);
@@ -251,7 +361,7 @@ export class ActivityTabComponent implements OnInit {
         this.maxDate = new Date('01/01/2099');
       } else {
         this.weeklyActivity = new ObservableArray(
-          this.formatActivityForView('Week')
+          this._formatActivityForView()
         );
       }
       // Cache activity by day so we can easily pull it up next time
@@ -265,15 +375,16 @@ export class ActivityTabComponent implements OnInit {
       didLoad = true;
       const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
       this.weeklyActivity = cache.chartData;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.weekChartLabel =
-          '› ' + (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format the chart description label based on viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.weekChartLabel =
-          '› ' + (cache.weeklyActivity.push_count || 0) + ' pushes';
+        this.chartDescription =
+          (cache.weeklyActivity.push_count || 0) + ' pushes';
       }
+
       this._initWeekChartTitle();
       this.weekStart = new Date(cache.weeklyActivity.date);
       this.weekEnd = new Date(this.weekStart);
@@ -282,20 +393,41 @@ export class ActivityTabComponent implements OnInit {
       this.maxDate = new Date('01/01/2099');
       this._updateWeeklyActivityAnnotationValue();
     }
-    this.calculateWeeklyActivityYAxisMax();
+    this._calculateWeeklyActivityYAxisMax();
   }
 
-  formatActivityForView(viewMode) {
-    if (viewMode === 'Day') {
-      const activity = this._activityService.dailyActivity;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.dayChartLabel =
-          '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+  private _calculateWeeklyActivityYAxisMax() {
+    this.yAxisMax = 0;
+    this.yAxisStep = 0;
+    let i = 2;
+    while (i < 9) {
+      const activity = this.weeklyActivity.getItem(i);
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        if (activity['coastTime'] > this.yAxisMax)
+          this.yAxisMax = activity['coastTime'];
       } else {
-        // push count
-        this.dayChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+        if (activity['pushCount'] > this.yAxisMax)
+          this.yAxisMax = activity['pushCount'];
       }
+      i++;
+    }
+    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
+    if (this.yAxisMax === 0) this.yAxisMax = 12;
+    this.yAxisStep = parseInt((this.yAxisMax / 4).toFixed());
+  }
+
+  private _formatActivityForView() {
+    if (this.tabSelectedIndex === 0) {
+      const activity = this._activityService.dailyActivity;
+
+      // format the chart description based on viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (activity.coast_time_avg || 0).toFixed(1) + ' s';
+      } else {
+        this.chartDescription = (activity.push_count || 0) + ' pushes';
+      }
+
       if (activity) {
         const result = [];
         const date = new Date();
@@ -351,16 +483,17 @@ export class ActivityTabComponent implements OnInit {
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
-    } else if (viewMode === 'Week') {
+    } else if (this.tabSelectedIndex === 1) {
       const activity = this._activityService.weeklyActivity;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.weekChartLabel =
-          '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (activity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.weekChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+        this.chartDescription = (activity.push_count || 0) + ' pushes';
       }
+
       if (activity) {
         const result = [];
         const date = new Date(activity.date);
@@ -434,31 +567,7 @@ export class ActivityTabComponent implements OnInit {
     }
   }
 
-  // displaying the old and new TabView selectedIndex
-  onSelectedIndexChanged(args: SelectedIndexChangedEventData) {
-    const date = this.currentDayInView;
-    const sunday = this._getFirstDayOfWeek(date);
-    if (args.oldIndex !== -1) {
-      const newIndex = args.newIndex;
-      if (newIndex === 0) {
-        this.chartTitle =
-          this.dayNames[date.getDay()] +
-          ', ' +
-          this.monthNames[date.getMonth()] +
-          ' ' +
-          date.getDate();
-        this._initDayChartTitle();
-        this.loadDailyActivity();
-      } else if (newIndex === 1) {
-        this._initWeekChartTitle();
-        this.loadWeeklyActivity();
-      } else if (newIndex === 2) {
-        this._initMonthChartTitle();
-      }
-    }
-  }
-
-  _isCurrentDayInViewToday() {
+  private _isCurrentDayInViewToday() {
     const today = new Date();
     return (
       this.currentDayInView.getDate() === today.getDate() &&
@@ -467,11 +576,11 @@ export class ActivityTabComponent implements OnInit {
     );
   }
 
-  _isNextDayButtonEnabled() {
+  private _isNextDayButtonEnabled() {
     return !this._isCurrentDayInViewToday();
   }
 
-  _initDayChartTitle() {
+  private _initDayChartTitle() {
     const date = this.currentDayInView;
     this.chartTitle =
       this.dayNames[date.getDay()] +
@@ -481,7 +590,7 @@ export class ActivityTabComponent implements OnInit {
       date.getDate();
   }
 
-  _areDaysSame(first: Date, second: Date) {
+  private _areDaysSame(first: Date, second: Date) {
     return (
       first.getFullYear() === second.getFullYear() &&
       first.getMonth() === second.getMonth() &&
@@ -489,7 +598,7 @@ export class ActivityTabComponent implements OnInit {
     );
   }
 
-  _getFirstDayOfWeek(date) {
+  private _getFirstDayOfWeek(date) {
     date = new Date(date);
     const day = date.getDay();
     if (day === 0) return date; // Sunday is the first day of the week
@@ -497,7 +606,7 @@ export class ActivityTabComponent implements OnInit {
     return new Date(date.setDate(diff));
   }
 
-  _initWeekChartTitle() {
+  private _initWeekChartTitle() {
     const date = this.currentDayInView;
     this.weekStart = this._getFirstDayOfWeek(date);
     this.weekEnd = this._getFirstDayOfWeek(date);
@@ -510,59 +619,24 @@ export class ActivityTabComponent implements OnInit {
       this.weekEnd.getDate();
   }
 
-  _updateWeekStartAndEnd() {
+  private _updateWeekStartAndEnd() {
     const date = this.currentDayInView;
     this.weekStart = this._getFirstDayOfWeek(date);
     this.weekEnd = this._getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
   }
 
-  onPreviousDayTap(event) {
-    this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
-    this._updateWeekStartAndEnd();
-    this._initDayChartTitle();
-    this.loadDailyActivity();
-  }
-
-  onNextDayTap(event) {
-    this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
-    this._updateWeekStartAndEnd();
-    this._initDayChartTitle();
-    this.loadDailyActivity();
-  }
-
-  _updateForwardButtonClassName(event) {
+  private _updateForwardButtonClassName(event) {
     // If the next day button is not enabled, change the class of the button to gray it out
     const button = event.object as Button;
     if (!this._isNextDayButtonEnabled()) {
-      button.className = 'forward-btn-disabled';
+      button.className = 'next-btn-disabled';
     } else {
-      button.className = 'forward-btn';
+      button.className = 'next-btn';
     }
   }
 
-  onPreviousWeekTap(event) {
-    this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
-    this._initWeekChartTitle();
-    this.loadWeeklyActivity();
-  }
-
-  onNextWeekTap(event) {
-    this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
-    this._initWeekChartTitle();
-    this.loadWeeklyActivity();
-  }
-
-  onWeekPointSelected(event) {
-    const selectedDate = new Date(this.weekStart);
-    this.currentDayInView.setDate(
-      selectedDate.getDate() + event.pointIndex - 2
-    );
-    this.loadDailyActivity();
-    this.tabSelectedIndex = 0;
-  }
-
-  _initMonthViewStyle() {
+  private _initMonthViewStyle() {
     this.monthViewStyle = new CalendarMonthViewStyle();
     this.monthViewStyle.showTitle = false;
     this.monthViewStyle.showWeekNumbers = false;
@@ -616,63 +690,23 @@ export class ActivityTabComponent implements OnInit {
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
   }
 
-  _initMonthChartTitle() {
+  private _initMonthChartTitle() {
     const date = this.currentDayInView;
     this.chartTitle =
       this.monthNames[date.getMonth()] + ' ' + date.getFullYear();
   }
 
-  onPreviousMonthTap(event) {
-    this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
-    this._calendar.navigateBack();
-    this._initMonthChartTitle();
-  }
-
-  onNextMonthTap(event) {
-    const now = this.currentDayInView;
-    this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-    this._calendar.navigateForward();
-    this._initMonthChartTitle();
-  }
-
-  onCalendarLoaded(args) {
-    const calendar = <RadCalendar>args.object;
-    // Increasing the height of dayNameCells in RadCalendar
-    // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
-    if (calendar.android) {
-      calendar.android.setDayNamesHeight(layout.toDevicePixels(40));
-    } else {
-      calendar.ios.presenter.style.dayNameCellHeight = 40;
-    }
-    this._calendar = calendar;
-    const telCalendar = calendar.nativeView; // com.telerik.widget.calendar.RadCalendarView
-    const gestureManager = telCalendar.getGestureManager(); // com.telerik.widget.calendar.CalendarGestureManager
-    gestureManager.setDoubleTapToChangeDisplayMode(false);
-    gestureManager.setPinchCloseToChangeDisplayMode(false);
-    gestureManager.setPinchOpenToChangeDisplayMode(false);
-    gestureManager.setSwipeDownToChangeDisplayMode(false);
-    gestureManager.setSwipeUpToChangeDisplayMode(false);
-    gestureManager.suspendScroll();
-  }
-
-  onCalendarDateSelected(args) {
-    const date: Date = args.date;
-    this.currentDayInView.setMonth(date.getMonth());
-    this.currentDayInView.setDate(date.getDate());
-    this.tabSelectedIndex = 0;
-  }
-
-  _updateDayChartLabel() {
+  private _updateDayChartLabel() {
     if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
       // No cache
       const activity = this._activityService.dailyActivity;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.dayChartLabel =
-          '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (activity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.dayChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+        this.chartDescription = (activity.push_count || 0) + ' pushes';
       }
     } else {
       // We are showing cached data
@@ -680,23 +714,23 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.toUTCString()
       ];
       this.dailyActivity = cache.chartData;
-      if (this.dailyViewMode === 0) {
-        // coast time
-        this.dayChartLabel =
-          '› ' + (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.dayChartLabel =
-          '› ' + (cache.dailyActivity.push_count || 0) + ' pushes';
+        this.chartDescription =
+          (cache.dailyActivity.push_count || 0) + ' pushes';
       }
     }
   }
 
-  _updateDailyActivityAnnotationValue() {
+  private _updateDailyActivityAnnotationValue() {
     if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
       // No cache
       const activity = this._activityService.dailyActivity;
-      if (this.dailyViewMode === 0) {
+      if (this.viewMode === ViewMode.COAST_TIME) {
         // coast time
         this.dailyActivityAnnotationValue = activity
           ? activity.coast_time_avg || 0
@@ -717,13 +751,13 @@ export class ActivityTabComponent implements OnInit {
       const cache = this._dailyActivityCache[
         this.currentDayInView.toUTCString()
       ];
-      if (this.dailyViewMode === 0) {
-        // coast time
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        // coast_time
         this.dailyActivityAnnotationValue = cache
           ? cache.dailyActivity.coast_time_avg || 0
           : 0;
       } else {
-        // push count
+        // push_count
         const records = cache.dailyActivity.records || [];
         let pushCountTotal = 0;
         for (const i in records) {
@@ -736,53 +770,39 @@ export class ActivityTabComponent implements OnInit {
     }
   }
 
-  onDailyActivityCoastTimeButtonTap(event) {
-    this.dailyViewMode = 0;
-    this._updateDayChartLabel();
-    this._updateDailyActivityAnnotationValue();
-    this.calculateDailyActivityYAxisMax();
-  }
-
-  onDailyActivityDistanceButtonTap(event) {
-    this.dailyViewMode = 1;
-    this._updateDayChartLabel();
-    this._updateDailyActivityAnnotationValue();
-    this.calculateDailyActivityYAxisMax();
-  }
-
-  _updateWeekChartLabel() {
+  private _updateWeekChartLabel() {
     if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
       // No cache
       const activity = this._activityService.weeklyActivity;
-      if (this.weeklyViewMode === 0) {
-        // coast time
-        this.weekChartLabel =
-          '› ' + (activity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (activity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.weekChartLabel = '› ' + (activity.push_count || 0) + ' pushes';
+        this.chartDescription = (activity.push_count || 0) + ' pushes';
       }
     } else {
       // We are showing cached data
       const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
       this.weeklyActivity = cache.chartData;
-      if (this.weeklyViewMode === 0) {
-        // coast time
-        this.weekChartLabel =
-          '› ' + (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
       } else {
-        // push count
-        this.weekChartLabel =
-          '› ' + (cache.weeklyActivity.push_count || 0) + ' pushes';
+        this.chartDescription =
+          (cache.weeklyActivity.push_count || 0) + ' pushes';
       }
     }
   }
 
-  _updateWeeklyActivityAnnotationValue() {
+  private _updateWeeklyActivityAnnotationValue() {
     if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
       // No cache
       const activity = this._activityService.weeklyActivity;
-      if (this.weeklyViewMode === 0) {
+      if (this.viewMode === ViewMode.COAST_TIME) {
         // coast time
         this.weeklyActivityAnnotationValue = activity
           ? activity.coast_time_avg || 0
@@ -795,7 +815,7 @@ export class ActivityTabComponent implements OnInit {
     } else {
       // We are showing cached data
       const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
-      if (this.weeklyViewMode === 0) {
+      if (this.viewMode === ViewMode.COAST_TIME) {
         // coast time
         this.weeklyActivityAnnotationValue = cache
           ? cache.weeklyActivity.coast_time_avg || 0
@@ -807,24 +827,9 @@ export class ActivityTabComponent implements OnInit {
       }
     }
   }
+}
 
-  onWeeklyActivityCoastTimeButtonTap(event) {
-    this.weeklyViewMode = 0;
-    this._updateWeekChartLabel();
-    this._updateWeeklyActivityAnnotationValue();
-    this.calculateWeeklyActivityYAxisMax();
-  }
-
-  onWeeklyActivityDistanceButtonTap(event) {
-    this.weeklyViewMode = 1;
-    this._updateWeekChartLabel();
-    this._updateWeeklyActivityAnnotationValue();
-    this.calculateWeeklyActivityYAxisMax();
-  }
-
-  onTrackBallContentRequested(args: TrackballCustomContentData) {
-    // Keys: [eventName, pointIndex, seriesIndex, series, pointData, object, content]
-    const pointData = args.pointData;
-    args.content = 'Foo';
-  }
+enum ViewMode {
+  'COAST_TIME',
+  'DISTANCE'
 }

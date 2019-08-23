@@ -10,66 +10,39 @@
     background-color: $black;
   }
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
+  .prev-btn {
+    @extend .PREV_BTN_BASE;
     color: $white;
   }
 
-  .back-btn {
-    @extend .BACK_BTN_BASE;
+  .next-btn {
+    @extend .NEXT_BTN_BASE;
     color: $white;
   }
 
-  .forward-btn {
-    @extend .FORWARD_BTN_BASE;
-    color: $white;
-  }
-
-  .forward-btn-disabled {
-    @extend .FORWARD_BTN_BASE;
+  .next-btn-disabled {
+    @extend .NEXT_BTN_BASE;
     color: $grey;
-  }  
-
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $white;
-  }
-
-  .title {
-    @extend .TITLE_BASE;
-    color: $white;
-  }
-
-  .section-title {
-    @extend .SECTION_TITLE_BASE;
-    color: $white;
-  }
-
-  .section-text {
-    @extend .SECTION_TEXT_BASE;
-    color: darken($white, 10%);
-  }
-
-  .page-title {
-    @extend .PAGE_TITLE_BASE;
-    color: $white;
   }
 
   .chart-title {
     @extend .CHART_TITLE_BASE;
+    color: $permobil-cousteau;
+  }
+
+  .chevron-left {
+    @extend .CHEVRON_LEFT_BASE;
+    color: $permobil-violet;
+  }
+
+  .chart-description {
+    @extend .CHART_DESCRIPTION_BASE;
     color: $white;
   }
 
-  TabViewItem {
-    font-size: 16;
-  }
-
-  TabView {
-    tab-text-font-size: 11;
-    tab-text-color: $white;
-    selected-tab-text-color: $white;
-    tab-background-color: $black;
-    android-selected-tab-highlight-color: $white;
+  .chart-label {
+    @extend .CHART_TITLE_BASE;
+    color: $white;
   }
 
   .coast-time-btn-disabled,
@@ -77,8 +50,6 @@
     @extend .CHART_VIEW_BTN_BASE;
     background-color: $dark-grey;
     color: $white;
-    font-weight: bold;
-    text-transform: none;
   }
 
   .coast-time-btn-enabled,
@@ -86,8 +57,6 @@
     @extend .CHART_VIEW_BTN_BASE;
     background-color: #502980;
     color: $white;
-    font-weight: bold;
-    text-transform: none;
   }
 
   RadCartesianChart {
@@ -95,8 +64,12 @@
     color: $white;
   }
 
-  Label {
+  // label {
+  //   color: $white;
+  // }
+
+  .goal-description {
+    @extend .GOAL_DESCRIPTION_BASE;
     color: $white;
   }
-
 }

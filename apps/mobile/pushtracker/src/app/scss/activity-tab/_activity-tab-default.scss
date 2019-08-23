@@ -5,63 +5,39 @@
   @extend .ACTIVITY_TAB_LAYOUT_BASE;
   background-color: $white;
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
+  .prev-btn {
+    @extend .PREV_BTN_BASE;
     color: $black;
   }
 
-  .back-btn {
-    @extend .BACK_BTN_BASE;
+  .next-btn {
+    @extend .NEXT_BTN_BASE;
     color: $black;
   }
 
-  .forward-btn {
-    @extend .FORWARD_BTN_BASE;
-    color: $black;
-  }
-
-  .forward-btn-disabled {
-    @extend .FORWARD_BTN_BASE;
+  .next-btn-disabled {
+    @extend .NEXT_BTN_BASE;
     color: $grey;
-  }
-
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $black;
-  }
-
-  .title {
-    @extend .TITLE_BASE;
-    color: $black;
-  }
-
-  .section-title {
-    @extend .SECTION_TITLE_BASE;
-    color: $black;
-  }
-
-  .section-text {
-    @extend .SECTION_TEXT_BASE;
-    color: lighten($black, 10%);
-  }
-
-  .page-title {
-    @extend .PAGE_TITLE_BASE;
-    color: $black;
   }
 
   .chart-title {
     @extend .CHART_TITLE_BASE;
     color: $black;
-  }  
+  }
 
-  TabView {
-    text-transform: none;
-    tab-text-font-size: 11;
-    tab-text-color: $black;
-    selected-tab-text-color: $black;
-    tab-background-color: $white;
-    android-selected-tab-highlight-color: $black;
+  .chevron-left {
+    @extend .CHEVRON_LEFT_BASE;
+    color: $permobil-cousteau;
+  }
+
+  .chart-description {
+    @extend .CHART_DESCRIPTION_BASE;
+    color: $black;
+  }
+
+  .chart-label {
+    @extend .CHART_TITLE_BASE;
+    color: #66696e;
   }
 
   .coast-time-btn-disabled,
@@ -69,17 +45,17 @@
     @extend .CHART_VIEW_BTN_BASE;
     background-color: $white;
     color: $dark-grey;
-    font-weight: bold;
-    text-transform: none;
   }
 
   .coast-time-btn-enabled,
   .distance-btn-enabled {
     @extend .CHART_VIEW_BTN_BASE;
     background-color: #d8e5f2;
-    color: #4282c1;
-    font-weight: bold;
-    text-transform: none;
+    color: $permobil-primary;
   }
-  
+
+  .goal-description {
+    @extend .GOAL_DESCRIPTION_BASE;
+    color: $black;
+  }
 }

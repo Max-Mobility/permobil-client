@@ -4,85 +4,69 @@
   height: 100%;
   width: 100%;
 
-  .PAGE_TITLE_BASE {
-    font-size: 24;
-    font-family: $os;
-    color: $black;
-    padding-left: 10;
-    margin-top: 5;
-    vertical-align: center;
-  }
-
   .CHART_TITLE_BASE {
-    font-size: 16;
-    font-family: $os;
-    color: $black;
-  }
-
-  .CLOSE_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    padding: 4;
-    font-family: $material-icon;
-    horizontal-align: left;
-    vertical-align: center;
-  }
-
-  .BACK_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    padding: 4;
-    font-family: $material-icon;
-    horizontal-align: left;
-    vertical-align: center;
-  }
-
-  .FORWARD_BTN_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 24;
-    font-family: $material-icon;
-    horizontal-align: right;
-  }
-
-  .MORE_BTN_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 30;
-    font-family: $material-icon;
-    horizontal-align: right;
-  }
-
-  .TITLE_BASE {
-    font-size: 26;
-    font-family: $os;
-    font-weight: bold;
-  }
-
-  .SECTION_TITLE_BASE {
     font-size: 18;
     font-family: $os;
     font-weight: bold;
-    text-align: center;
+    margin: 2;
     horizontal-align: center;
-    margin: 10 0 10 0;
+    vertical-align: bottom;
+    text-align: center;
   }
 
-  .SECTION_TEXT_BASE {
+  .CHART_DESCRIPTION_BASE {
     font-size: 14;
-    font-family: $os-Light;
-    margin: 10 0 30 0;
+    font-family: $os;
+    margin: 2;
+    horizontal-align: center;
+    vertical-align: top;
+    text-align: center;
+    text-wrap: true;
+  }
+
+  .CHEVRON_LEFT_BASE {
+    font-size: 18;
+    font-family: $material-icon;
+    vertical-align: center;
+    horizontal-align: right;
+  }
+
+  .GOAL_DESCRIPTION_BASE {
+    font-size: 12;
+    font-family: $os;
+    margin: 6 8 6 8;
+    vertical-align: center;
+    text-wrap: true;
+  }
+
+  .PREV_BTN_BASE {
+    @extend .btn-transparent;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    font-size: 30;
+    margin: 2;
+    font-family: $material-icon;
+    horizontal-align: left;
+    vertical-align: center;
+  }
+
+  .NEXT_BTN_BASE {
+    @extend .btn-transparent;
+    height: 50;
+    width: 50;
+    border-radius: 25;
+    font-size: 30;
+    margin: 2;
+    font-family: $material-icon;
+    horizontal-align: right;
+    vertical-align: center;
   }
 
   .CHART_VIEW_BTN_BASE {
+    font-weight: bold;
     font-size: 10;
-    height: 120px;
-    background-color: $white;
+    text-transform: capitalize;
+    margin: 2 4 2 4;
   }
 }
