@@ -94,7 +94,9 @@ export class AppComponent implements OnInit {
       });
 
     // if user is logged in, go to default tabs route, else go to login
-    if (Kinvey.User.getActiveUser()) {
+    const user = Kinvey.User.getActiveUser();
+    if (user) {
+      appSettings.setString(STORAGE_KEYS.APP_THEME, user.data['theme_preference'] || APP_THEMES.DEFAULT);
       this._router.navigate(['/tabs/default']);
     } else {
       this._router.navigate(['/login']);

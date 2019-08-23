@@ -11,6 +11,8 @@ import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 import { LoggingService } from '../../services';
+import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 @Component({
   selector: 'login',
@@ -78,6 +80,7 @@ export class LoginComponent implements OnInit {
       );
 
       Log.D(`Logged in user`, user);
+      appSettings.setString(STORAGE_KEYS.APP_THEME, user.data['theme_preference'] || APP_THEMES.DEFAULT);
 
       this._loadingIndicator.hide();
 

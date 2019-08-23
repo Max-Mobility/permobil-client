@@ -15,6 +15,7 @@ import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { PointLabelStyle, ChartFontStyle, Palette, PaletteEntry } from 'nativescript-ui-chart';
 import { registerElement } from 'nativescript-angular/element-registry';
 registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
+import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
 @Component({
   selector: 'home-tab',
@@ -74,6 +75,12 @@ export class HomeTabComponent implements OnInit {
     private _smartDriveUsageService: SmartDriveUsageService,
     private _activityService: ActivityService
   ) {
+    this.savedTheme = appSettings.getString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
+    if (this.savedTheme === APP_THEMES.DEFAULT) {
+      enableDefaultTheme();
+    } else if (this.savedTheme === APP_THEMES.DARK) {
+      enableDarkTheme();
+    }
     this.getUser();
     this._currentDayInView = new Date();
     const sunday = this._getFirstDayOfWeek(this._currentDayInView);
@@ -116,7 +123,6 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
-    console.log('Coast Time Progress', this.coastTimeCirclePercentage);
 
     // Update Y axis for coast distance plot
     this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
