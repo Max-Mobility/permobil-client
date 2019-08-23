@@ -428,7 +428,7 @@ export class ActivityTabComponent implements OnInit {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       }
 
-      if (activity) {
+      if (activity && activity.records) {
         const result = [];
         const date = new Date();
         const year = date.getFullYear();
@@ -494,7 +494,7 @@ export class ActivityTabComponent implements OnInit {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       }
 
-      if (activity) {
+      if (activity && activity.days) {
         const result = [];
         const date = new Date(activity.date);
         const range = function(start, end) {
@@ -523,33 +523,17 @@ export class ActivityTabComponent implements OnInit {
         ];
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
-          if (days && j < days.length) {
-            while (j < days.length) {
-              const dailyActivity = days[j];
-              if (
-                dayInWeek.toDateString() ===
-                new Date(dailyActivity.date).toDateString()
-              ) {
-                // We have daily activity for this day
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastTime: dailyActivity.coast_time_avg || 0,
-                  pushCount: dailyActivity.push_count || 0,
-                  date: dayInWeek
-                });
-                j += 1;
-                continue;
-              } else {
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastTime: 0,
-                  pushCount: 0,
-                  date: dayInWeek
-                });
-                break;
-              }
-            }
-          } else {
+          const dailyActivity = days[i];
+          if (dailyActivity) {
+            // We have daily activity for this day
+            result.push({
+              xAxis: dayNames[parseInt(i)],
+              coastTime: dailyActivity.coast_time_avg || 0,
+              pushCount: dailyActivity.push_count || 0,
+              date: dayInWeek
+            });
+          }
+          else {
             result.push({
               xAxis: dayNames[parseInt(i)],
               coastTime: 0,
@@ -560,7 +544,31 @@ export class ActivityTabComponent implements OnInit {
         }
         result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
         result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        return result;
+      }
+      else {
+        const result = [];
+        const dayNames: string[] = [
+          'Sun',
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat'
+        ];
+        for (const i in dayNames) {
+          result.push({
+            xAxis: dayNames[parseInt(i)],
+            coastTime: 0,
+            pushCount: 0
+          });
+        }
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
