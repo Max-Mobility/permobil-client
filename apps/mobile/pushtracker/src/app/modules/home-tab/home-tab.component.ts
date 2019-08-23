@@ -116,7 +116,7 @@ export class HomeTabComponent implements OnInit {
       this.user.data.activity_goal_coast_time +
       ' s per day';
     this.distanceGoalMessage = 'Travel ' +
-      this.user.data.activity_goal_distance + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
+    this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(1) + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
     this.distanceCirclePercentageMaxValue =
       '/' + (this._updateDistanceUnit(this.user.data.activity_goal_distance)).toFixed(1);
     this.coastTimeCirclePercentageMaxValue =
@@ -125,7 +125,7 @@ export class HomeTabComponent implements OnInit {
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
 
     // Update Y axis for coast distance plot
-    this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
+    this.distancePlotAnnotationValue = this._updateDistanceUnit(this.user.data.activity_goal_distance);
     this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastDistance: this._updateDistanceUnit(this.user.data.activity_goal_distance), impact: 7 }] as any[]));
     this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
     this._updateDistancePlotYAxis();
@@ -252,7 +252,7 @@ export class HomeTabComponent implements OnInit {
       this.user.data.activity_goal_coast_time +
       ' s per day';
     this.distanceGoalMessage = 'Travel ' +
-      this.user.data.activity_goal_distance + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
+    this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(1) + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
     this.distanceCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
@@ -401,7 +401,7 @@ export class HomeTabComponent implements OnInit {
       this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
     }
     this.distanceGoalMessage = 'Travel ' +
-      this._updateDistanceUnit(this.user.data.activity_goal_distance) + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
+      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(1) + (this.user.data.distance_unit_preference === 0 ? ' km per day' : ' mi per day');
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
       this.todayCoastDistance = (this._updateDistanceUnit(this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0)).toFixed(1);
