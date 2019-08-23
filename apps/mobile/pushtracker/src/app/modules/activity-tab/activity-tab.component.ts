@@ -441,7 +441,6 @@ export class ActivityTabComponent implements OnInit {
         };
         const records = activity.records;
 
-        let j = 0;
         for (const i in this._dayViewTimeArray) {
           const timePoint = this._dayViewTimeArray[i];
           if (records && j < records.length) {
@@ -511,7 +510,6 @@ export class ActivityTabComponent implements OnInit {
           i = i + 1;
         }
         const days = activity.days;
-        let j = 0;
         const dayNames: string[] = [
           'Sun',
           'Mon',
