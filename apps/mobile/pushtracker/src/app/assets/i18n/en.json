@@ -78,6 +78,7 @@
     "change-pass": "Change Password",
     "check-email": "Check your email for instructions on resetting your password.",
     "coast-time": "Coast Time",
+    "push-count": "Push Count",
     "coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the time between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
     "day": "Day",
     "disabled": "Disabled",
