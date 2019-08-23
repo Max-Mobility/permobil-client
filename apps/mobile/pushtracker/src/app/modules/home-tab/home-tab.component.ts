@@ -13,6 +13,7 @@ import { PushTrackerUserService } from '../../services/pushtracker.user.service'
 import { SmartDriveUsageService } from '../../services/smartdrive-usage.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 import { PointLabelStyle, ChartFontStyle } from 'nativescript-ui-chart';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
 @Component({
   selector: 'home-tab',
@@ -42,7 +43,6 @@ export class HomeTabComponent implements OnInit {
   distanceGoalMessage: string;
   weeklyActivityLoaded: boolean = false;
   weeklySmartDriveUsage: ObservableArray<any[]>;
-  coastTimePointLabelStyle: PointLabelStyle;
 
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
@@ -51,7 +51,8 @@ export class HomeTabComponent implements OnInit {
   private _todaysUsage: any;
   distancePlotAnnotationValue: number = 0;
   distanceGoalLabelChartData: ObservableArray<any[]>;
-  distancePointLabelStyle: PointLabelStyle;
+
+  pointLabelStyle: PointLabelStyle;
 
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -77,7 +78,16 @@ export class HomeTabComponent implements OnInit {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     this.savedTheme = this.user.data.theme_preference;
-    this.updateDistancePointLabelStyle();
+
+    // TODO Consider removing these lines after debugging point label styling issue
+    if (this.savedTheme === APP_THEMES.DEFAULT) {
+      enableDefaultTheme();
+    } else if (this.savedTheme === APP_THEMES.DARK) {
+      enableDarkTheme();
+    }
+    this._zone.run(() => {
+      this.updatePointLabelStyle();
+    });
     this._loadWeeklyActivity();
     this._loadSmartDriveUsage();
   }
@@ -113,33 +123,26 @@ export class HomeTabComponent implements OnInit {
 
       // Update distance point label style
       this._zone.run(() => {
-        this.updateCoastTimePointLabelStyle();
-        this.updateDistancePointLabelStyle();
+        if (this.savedTheme === APP_THEMES.DEFAULT) {
+          enableDefaultTheme();
+        } else if (this.savedTheme === APP_THEMES.DARK) {
+          enableDarkTheme();
+        }
+        this.updatePointLabelStyle();
       });
 
     });
   }
 
-  updateCoastTimePointLabelStyle() {
-    this.coastTimePointLabelStyle = new PointLabelStyle();
-    this.coastTimePointLabelStyle.margin = 10;
-    this.coastTimePointLabelStyle.fontStyle = ChartFontStyle.Bold;
-    this.coastTimePointLabelStyle.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
-    this.coastTimePointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
-    this.coastTimePointLabelStyle.textSize = 12;
-    this.coastTimePointLabelStyle.textColor = new Color('White');
-    this.coastTimePointLabelStyle.textFormat = 'Goal: %.1f';
-  }
-
-  updateDistancePointLabelStyle() {
-    this.distancePointLabelStyle = new PointLabelStyle();
-    this.distancePointLabelStyle.margin = 10;
-    this.distancePointLabelStyle.fontStyle = ChartFontStyle.Bold;
-    this.distancePointLabelStyle.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
-    this.distancePointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
-    this.distancePointLabelStyle.textSize = 12;
-    this.distancePointLabelStyle.textColor = new Color('White');
-    this.distancePointLabelStyle.textFormat = 'Goal: %.1f';
+  updatePointLabelStyle() {
+    this.pointLabelStyle = new PointLabelStyle();
+    this.pointLabelStyle.margin = 10;
+    this.pointLabelStyle.fontStyle = ChartFontStyle.Bold;
+    this.pointLabelStyle.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.pointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.pointLabelStyle.textSize = 12;
+    this.pointLabelStyle.textColor = new Color('White');
+    this.pointLabelStyle.textFormat = 'Goal: %.1f';
   }
 
   onActivityTap() {
