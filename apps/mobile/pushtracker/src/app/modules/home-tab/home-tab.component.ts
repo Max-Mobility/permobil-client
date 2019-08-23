@@ -401,7 +401,7 @@ export class HomeTabComponent implements OnInit {
     if (this._todaysUsage) {
       this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
       this.todayDriveDistance = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
-      this.todayOdometer = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_drive) || 0).toFixed(1);
+      this.todayOdometer = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_coast) || 0).toFixed(1);
     } else {
       this.todayCoastDistance = (0).toFixed(1);
       this.todayDriveDistance = (0).toFixed();
