@@ -231,7 +231,6 @@ export class HomeTabComponent implements OnInit {
           i = i + 1;
         }
         const days = activity.days;
-        let j = 0;
         const dayNames: string[] = [
           'Sun',
           'Mon',
@@ -330,10 +329,10 @@ export class HomeTabComponent implements OnInit {
     if (this.coastDistanceYAxisMax === 0) this.coastDistanceYAxisMax = 10;
     if (this.distancePlotAnnotationValue > this.coastDistanceYAxisMax)
       this.coastDistanceYAxisMax = this.distancePlotAnnotationValue + 0.4 * this.distancePlotAnnotationValue;
-    this.coastDistanceYAxisStep = parseInt((this.coastDistanceYAxisMax / 3.0).toFixed());
+    this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 3.0;
     this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
     this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
-    console.log(this.todayCoastDistance, this.user.data.activity_goal_distance, this.distanceCirclePercentage);
+    console.log(this.coastDistanceYAxisStep, this.coastDistanceYAxisMax);
   }
 
   _formatUsageForView(viewMode) {
@@ -351,7 +350,6 @@ export class HomeTabComponent implements OnInit {
           i = i + 1;
         }
         const days = activity.days;
-        let j = 0;
         const dayNames: string[] = [
           'Sun',
           'Mon',
