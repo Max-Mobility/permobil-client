@@ -116,7 +116,7 @@
     "password-required": "Password is required.",
     "power-assist-beep": "Power Assist Beep",
     "profile": "Profile",
-    "pushes": "Pushes",
+    "pushes": "pushes",
     "pushtracker-connected": "PushTracker connected",
     "pushtracker-disconnected": "PushTracker disconnected",
     "pushtracker-paired": "PushTracker paired",
@@ -142,8 +142,8 @@
     "weight": "Weight",
     "weight-guess": "If you don't know your exact weight, enter your best guess.",
     "drive-distance": "Drive Distance",
-    "odometer": "Odometer",
-    "miles-today": "Miles today"
+    "odometer": "miles",
+    "miles-today": "miles today"
   },
   "home-tab": {
     "kilometers-to-go": "kilometers to go",

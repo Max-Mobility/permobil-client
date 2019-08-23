@@ -36,10 +36,10 @@ export class SmartDriveUsageService {
       query.equalTo(
         'date',
         date.getFullYear() +
-          '/' +
-          (month < 10 ? '0' + month : month) +
-          '/' +
-          (day < 10 ? '0' + day : day)
+        '/' +
+        (month < 10 ? '0' + month : month) +
+        '/' +
+        (day < 10 ? '0' + day : day)
       );
       query.equalTo('data_type', 'SmartDriveDailyInfo');
 
@@ -72,21 +72,23 @@ export class SmartDriveUsageService {
       query.limit = 1;
       query.equalTo('data_type', 'SmartDriveWeeklyInfo');
 
-      const month = weekStartDate.getMonth() + 1;
-      const day = weekStartDate.getDate();
-      query.equalTo('date',
-        weekStartDate.getFullYear() + '/' +
-        (month < 10 ? '0' + month : month) + '/' +
-        (day < 10 ? '0' + day : day));
-
-      const stream = this.datastore.find(query);
-      const data = await stream.toPromise();
-      if (data && data.length) {
-        this.weeklyActivity = data[0];
-        // Do something with data
-        this._usageUpdated.next(true);
-        return true;
+      if (weekStartDate) {
+        const month = weekStartDate.getMonth() + 1;
+        const day = weekStartDate.getDate();
+        query.equalTo('date',
+          weekStartDate.getFullYear() + '/' +
+          (month < 10 ? '0' + month : month) + '/' +
+          (day < 10 ? '0' + day : day));
+        const stream = this.datastore.find(query);
+        const data = await stream.toPromise();
+        if (data && data.length) {
+          this.weeklyActivity = data[0];
+          // Do something with data
+          this._usageUpdated.next(true);
+          return true;
+        }
       }
+
       this.weeklyActivity = [];
       return false;
     } catch (err) {

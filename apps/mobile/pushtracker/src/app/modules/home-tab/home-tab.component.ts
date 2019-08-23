@@ -221,15 +221,13 @@ export class HomeTabComponent implements OnInit {
     );
     if (didLoad) {
       this.weeklyActivity = new ObservableArray(this._formatActivityForView('Week'));
-      this._weekStart = new Date(this._activityService.weeklyActivity.date);
-      this._weekEnd = new Date(this._weekStart);
-      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     } else {
       this.weeklyActivity = new ObservableArray(this._formatActivityForView('Week'));
     }
 
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysActivity) {
+      console.log(this._todaysActivity);
       this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
       this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
     } else {
@@ -389,9 +387,6 @@ export class HomeTabComponent implements OnInit {
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
     if (didLoad) {
       this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
-      this._weekStart = new Date(this._smartDriveUsageService.weeklyActivity.date);
-      this._weekEnd = new Date(this._weekStart);
-      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     } else {
       this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
     }
@@ -401,7 +396,7 @@ export class HomeTabComponent implements OnInit {
     if (this._todaysUsage) {
       this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
       this.todayDriveDistance = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
-      this.todayOdometer = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_coast) || 0).toFixed(1);
+      this.todayOdometer = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast) || 0).toFixed(1);
     } else {
       this.todayCoastDistance = (0).toFixed(1);
       this.todayDriveDistance = (0).toFixed();
