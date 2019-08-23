@@ -49,6 +49,7 @@ export class HomeTabComponent implements OnInit {
   coastDistanceYAxisStep: number = 0.25;
   todayCoastDistance: string = '0.0';
   todayDriveDistance: string = '0.0';
+  todayOdometer: string = '0.0';
   private _todaysUsage: any;
   distancePlotAnnotationValue: number = 0;
   distanceGoalLabelChartData: ObservableArray<any[]>;
@@ -62,7 +63,7 @@ export class HomeTabComponent implements OnInit {
   private _weekEnd: Date;
   private _todaysActivity: any;
 
-  public goalLabelChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: ' ', coastTime: 5, impact: 7 }] as any[]));
+  public goalLabelChartData: ObservableArray<any[]> = new ObservableArray(([{ xAxis: '        ', coastTime: 5, impact: 7 }] as any[]));
 
   constructor(
     private _translateService: TranslateService,
@@ -105,12 +106,12 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
 
     // Update Y axis for coast distance plot
     this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
-    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
     this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
     this._updateDistancePlotYAxis();
   }
@@ -181,7 +182,7 @@ export class HomeTabComponent implements OnInit {
     this.pointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
     this.pointLabelStyle.textSize = 12;
     this.pointLabelStyle.textColor = new Color('White');
-    this.pointLabelStyle.textFormat = 'Goal: %.1f';
+    this.pointLabelStyle.textFormat = '%.1f';
   }
 
   onActivityTap() {
@@ -247,7 +248,7 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
 
     this.coastTimeGoalMessage =
@@ -258,7 +259,7 @@ export class HomeTabComponent implements OnInit {
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
     this._updateCoastTimePlotYAxis();
     this.updateProgress();
@@ -345,7 +346,7 @@ export class HomeTabComponent implements OnInit {
         }
         result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
         result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
@@ -369,7 +370,7 @@ export class HomeTabComponent implements OnInit {
         }
         result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
         result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
@@ -399,14 +400,16 @@ export class HomeTabComponent implements OnInit {
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
       this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
-      this.todayDriveDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
+      this.todayDriveDistance = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
+      this.todayOdometer = (this._motorTicksToMiles(this._todaysUsage.distance_smartdrive_drive) || 0).toFixed(1);
     } else {
       this.todayCoastDistance = (0).toFixed(1);
       this.todayDriveDistance = (0).toFixed();
+      this.todayOdometer = (0).toFixed();
     }
 
     this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
-    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: '        ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
     this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
     this._updateDistancePlotYAxis();
     this.updateProgress();
@@ -491,7 +494,7 @@ export class HomeTabComponent implements OnInit {
         }
         result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
         result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '       ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
         result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
         return result;
       }
@@ -515,7 +518,7 @@ export class HomeTabComponent implements OnInit {
         }
         result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
         result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '       ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
         result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
         return result;
       }

@@ -106,6 +106,7 @@
     "max-speed": "Max Speed",
     "meters": "Meters",
     "miles": "Miles",
+    "mi": "mi",
     "mode": "Mode",
     "month": "Month",
     "ok": "OK",
@@ -139,7 +140,10 @@
     "units": "Units",
     "week": "Week",
     "weight": "Weight",
-    "weight-guess": "If you don't know your exact weight, enter your best guess."
+    "weight-guess": "If you don't know your exact weight, enter your best guess.",
+    "drive-distance": "Drive Distance",
+    "odometer": "Odometer",
+    "miles-today": "Miles today"
   },
   "home-tab": {
     "kilometers-to-go": "kilometers to go",

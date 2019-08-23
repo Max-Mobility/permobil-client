@@ -53,12 +53,12 @@
         <Label row="0" col="0" class="detail-value" [text]="weeklyActivityLoaded ? todayPushCount : 0"></Label>
         <Label textWrap="true" row="1" col="0" class="detail-description" [text]="'general.pushes' | translate"></Label>
         // coast time data
-        <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayCoastTime : 0"></Label>
+        <Label row="0" col="2" class="detail-value" [text]="weeklyActivityLoaded ? todayDriveDistance : 0"></Label>
         <Label textWrap="true" row="1" col="2" class="detail-description"
-          [text]="'general.coast-time' | translate"></Label>
+          [text]="'general.miles-today' | translate"></Label>
         // distance data
-        <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? distanceData : 0"></Label>
-        <Label row="1" col="4" class="detail-description" [text]="'general.miles' | translate"></Label>
+        <Label row="0" col="4" class="detail-value" [text]="weeklyActivityLoaded ? todayOdometer : 0"></Label>
+        <Label row="1" col="4" class="detail-description" [text]="'general.odometer' | translate"></Label>
       </GridLayout>
 
       <!-- Week View Coast Time -->
