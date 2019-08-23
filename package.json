@@ -88,19 +88,19 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~6.0.4"
+    "tns-core-modules": "~6.0.7"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
     "node-sass": "~4.12.0",
     "prettier": "^1.18.2",
-    "husky": "^3.0.2",
+    "husky": "^3.0.4",
     "prompt": "^1.0.0",
-    "lint-staged": "^9.2.1",
+    "lint-staged": "^9.2.3",
     "rimraf": "~2.6.3",
-    "tns-platform-declarations": "~6.0.4",
-    "tslint": "~5.18.0",
-    "typescript": "~3.4.5"
+    "tns-platform-declarations": "~6.0.7",
+    "tslint": "~5.19.0",
+    "typescript": "~3.5.3"
   },
   "husky": {
     "hooks": {
