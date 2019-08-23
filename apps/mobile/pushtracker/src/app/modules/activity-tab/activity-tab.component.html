@@ -8,17 +8,19 @@
       (selectedIndexChange)="onSelectedIndexChanged($event)" class="m-5"></SegmentedBar>
 
     // Current Tab Chart title/label with prev/next buttons
-    <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto"
-      [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'">
+    <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto">
       <Button row="0" col="0" text="&#xe5cb;" class="prev-btn" (tap)="onPreviousTap()" ripple
         rippleColorAlpha="0.18"></Button>
       <Label row="0" col="1" [text]="chartTitle" class="chart-title"></Label>
-      <Button row="0" col="2" text="&#xe5cc;" class="next-btn" (tap)="onNextTap()" ripple
+      <Button row="0" col="2" text="&#xe5cc;" 
+        [class]="(tabSelectedIndex === 0 && isNextDayButtonEnabled()) || (tabSelectedIndex === 1 && isNextWeekButtonEnabled())  || (tabSelectedIndex === 2 && isNextMonthButtonEnabled()) ? 'next-btn' : 'next-btn-disabled'" 
+        (tap)="onNextTap()" 
+        [isUserInteractionEnabled]="(tabSelectedIndex === 0 && isNextDayButtonEnabled()) || (tabSelectedIndex === 1 && isNextWeekButtonEnabled()) || (tabSelectedIndex === 2 && isNextMonthButtonEnabled())" 
+        ripple
         rippleColorAlpha="0.18"></Button>
-      <StackLayout row="1" col="1" orientation="horizontal" horizontalAlignment="center">
+      <StackLayout [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'" row="1" col="1" orientation="horizontal" horizontalAlignment="center">
         <Label text="&#xe5cc;" class="chevron-left"></Label>
-        <Label [text]="chartDescription" class="chart-description"
-          [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'"></Label>
+        <Label [text]="chartDescription" class="chart-description"></Label>
       </StackLayout>
     </GridLayout>
 

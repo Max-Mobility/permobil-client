@@ -180,15 +180,19 @@ export class ActivityTabComponent implements OnInit {
   onNextTap() {
     if (this.tabSelectedIndex === 0) {
       // day
-      this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
-      this._updateWeekStartAndEnd();
-      this._initDayChartTitle();
-      this._loadDailyActivity();
+      if (this.isNextDayButtonEnabled()) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
+        this._updateWeekStartAndEnd();
+        this._initDayChartTitle();
+        this._loadDailyActivity();
+      }
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
-      this._initWeekChartTitle();
-      this._loadWeeklyActivity();
+      if (this.isNextWeekButtonEnabled()) {
+        this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
+        this._initWeekChartTitle();
+        this._loadWeeklyActivity();
+      }
     } else if (this.tabSelectedIndex === 2) {
       // month
       this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
@@ -263,9 +267,11 @@ export class ActivityTabComponent implements OnInit {
 
   onCalendarDateSelected(args) {
     const date: Date = args.date;
-    this.currentDayInView.setMonth(date.getMonth());
-    this.currentDayInView.setDate(date.getDate());
-    this.tabSelectedIndex = 0;
+    if (date <= new Date()) { // If selected date is in the past or if it's today, switch to day view
+      this.currentDayInView.setMonth(date.getMonth());
+      this.currentDayInView.setDate(date.getDate());
+      this.tabSelectedIndex = 0;
+    }
   }
 
   private async _loadDailyActivity() {
@@ -599,8 +605,27 @@ export class ActivityTabComponent implements OnInit {
     );
   }
 
-  private _isNextDayButtonEnabled() {
+  isNextDayButtonEnabled() {
     return !this._isCurrentDayInViewToday();
+  }
+
+  private _isCurrentDayInViewThisWeek() {
+    const today = new Date();
+    const thisWeek = this._getFirstDayOfWeek(today);
+    return this._areDaysSame(thisWeek, this.weekStart);
+  }
+
+  isNextWeekButtonEnabled() {
+    return !this._isCurrentDayInViewThisWeek();
+  }
+
+  isNextMonthButtonEnabled() {
+    console.log(this.currentDayInView);
+    const today = new Date();
+    const month = today.getMonth();
+    const currentWeekStart = this._getFirstDayOfWeek(this.currentDayInView);
+    const currentMonth = currentWeekStart.getMonth();
+    return (currentWeekStart.getFullYear() <= today.getFullYear() && currentMonth < month);
   }
 
   private _initDayChartTitle() {
@@ -652,7 +677,7 @@ export class ActivityTabComponent implements OnInit {
   private _updateForwardButtonClassName(event) {
     // If the next day button is not enabled, change the class of the button to gray it out
     const button = event.object as Button;
-    if (!this._isNextDayButtonEnabled()) {
+    if (!this.isNextDayButtonEnabled()) {
       button.className = 'next-btn-disabled';
     } else {
       button.className = 'next-btn';
