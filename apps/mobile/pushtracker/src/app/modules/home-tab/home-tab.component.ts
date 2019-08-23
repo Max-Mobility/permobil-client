@@ -35,12 +35,20 @@ export class HomeTabComponent implements OnInit {
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
   savedTheme: string;
-  weeklyActivityAnnotationValue: number = 1;
+  coastTimePlotAnnotationValue: number = 1;
   coastTimeGoalMessage: string;
   usageActivity: ObservableArray<any[]>;
   distanceGoalMessage: string;
   weeklyActivityLoaded: boolean = false;
   weeklySmartDriveUsage: ObservableArray<any[]>;
+
+  coastDistanceYAxisMax: number = 1.0;
+  coastDistanceYAxisStep: number = 0.25;
+  todayCoastDistance: string = '0.0';
+  todayDriveDistance: string = '0.0';
+  private _todaysUsage: any;
+  distancePlotAnnotationValue: number = 0;
+  distanceGoalLabelChartData: ObservableArray<any[]>;
 
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -77,10 +85,14 @@ export class HomeTabComponent implements OnInit {
     this.userService.user.subscribe(user => {
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
+
+      // Update bindings for coast_time plot
       this.coastTimeGoalMessage =
         'Reach an average coast time of ' +
         this.user.data.activity_goal_coast_time +
         's per day';
+      this.distanceGoalMessage = 'Travel ' +
+        this.user.data.activity_goal_distance + 'mi per day';
       this.distanceCirclePercentageMaxValue =
         '/' + this.user.data.activity_goal_distance;
       this.coastTimeCirclePercentageMaxValue =
@@ -88,6 +100,10 @@ export class HomeTabComponent implements OnInit {
       this.weeklyActivityLoaded = true;
       this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
       this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
+
+      // Update bindings for coast_distance plot
+      this._loadSmartDriveUsage();
+
     });
   }
 
@@ -166,14 +182,26 @@ export class HomeTabComponent implements OnInit {
       this.todayPushCount = (0).toFixed();
     }
 
-    this.weeklyActivityAnnotationValue = this.user.data.activity_goal_coast_time;
-
+    this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
+    this.coastTimeGoalMessage =
+    'Reach an average coast time of ' +
+    this.user.data.activity_goal_coast_time +
+    's per day';
+  this.distanceGoalMessage = 'Travel ' +
+    this.user.data.activity_goal_distance + 'mi per day';
+  this.distanceCirclePercentageMaxValue =
+    '/' + this.user.data.activity_goal_distance;
+  this.coastTimeCirclePercentageMaxValue =
+    '/' + this.user.data.activity_goal_coast_time;
+  this.weeklyActivityLoaded = true;
+  this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+  this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
     if (this.yAxisMax === 0) this.yAxisMax = 10;
 
-    if (this.weeklyActivityAnnotationValue > this.yAxisMax)
+    if (this.coastTimePlotAnnotationValue > this.yAxisMax)
       this.yAxisMax =
-        this.weeklyActivityAnnotationValue +
-        0.4 * this.weeklyActivityAnnotationValue;
+        this.coastTimePlotAnnotationValue +
+        0.4 * this.coastTimePlotAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
     this.coastTimeGoalMessage =
       'Reach an average coast time of ' +
@@ -215,33 +243,17 @@ export class HomeTabComponent implements OnInit {
         ];
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
-          if (days && j < days.length) {
-            while (j < days.length) {
-              const dailyActivity = days[j];
-              if (
-                dayInWeek.toDateString() ===
-                new Date(dailyActivity.date).toDateString()
-              ) {
-                // We have daily activity for this day
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastTime: dailyActivity.coast_time_avg || 0,
-                  pushCount: dailyActivity.push_count || 0,
-                  date: dayInWeek
-                });
-                j += 1;
-                continue;
-              } else {
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastTime: 0,
-                  pushCount: 0,
-                  date: dayInWeek
-                });
-                break;
-              }
-            }
-          } else {
+          const dailyActivity = days[i];
+          if (dailyActivity) {
+            // We have daily activity for this day
+            result.push({
+              xAxis: dayNames[parseInt(i)],
+              coastTime: dailyActivity.coast_time_avg || 0,
+              pushCount: dailyActivity.push_count || 0,
+              date: dayInWeek
+            });
+          }
+          else {
             result.push({
               xAxis: dayNames[parseInt(i)],
               coastTime: 0,
@@ -259,6 +271,14 @@ export class HomeTabComponent implements OnInit {
     }
   }
 
+  _motorTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
+  }
+
+  _caseTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
+  }
+
   async _loadSmartDriveUsage() {
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
     if (didLoad) {
@@ -269,9 +289,51 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.usageActivity = new ObservableArray([]);
     }
-    console.log(this._formatUsageForView('Week'));
+    const dateFormatted = function (date: Date) {
+      return (
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        '/' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+      );
+    };
     this.distanceGoalMessage = 'Travel ' +
       this.user.data.activity_goal_distance + 'mi per day';
+    this.coastDistanceYAxisMax = 0;
+    if (this._smartDriveUsageService.weeklyActivity) {
+      const days = this._smartDriveUsageService.weeklyActivity['days'];
+      for (const i in days) {
+        const day = days[i];
+        if (day) {
+          const coastDistance = this._caseTicksToMiles(day.distance_smartdrive_coast - day.distance_smartdrive_coast_start) || 0;
+          if (day.date === dateFormatted(this._currentDayInView))
+            this._todaysUsage = day;
+          if (coastDistance > this.coastDistanceYAxisMax)
+            this.coastDistanceYAxisMax = coastDistance + 0.4 * coastDistance;
+        }
+      }
+    }
+    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+    if (this._todaysUsage) {
+      this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
+      this.todayDriveDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
+    } else {
+      this.todayCoastDistance = (0).toFixed(1);
+      this.todayDriveDistance = (0).toFixed();
+    }
+
+    this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
+
+    if (this.coastDistanceYAxisMax === 0) this.coastDistanceYAxisMax = 10;
+    if (this.distancePlotAnnotationValue > this.coastDistanceYAxisMax)
+      this.coastDistanceYAxisMax = this.distancePlotAnnotationValue + 0.4 * this.distancePlotAnnotationValue;
+    this.coastDistanceYAxisStep = parseInt((this.coastDistanceYAxisMax / 3.0).toFixed());
+    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+    this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
+    console.log(this.todayCoastDistance, this.user.data.activity_goal_distance, this.distanceCirclePercentage);
   }
 
   _formatUsageForView(viewMode) {
@@ -301,53 +363,32 @@ export class HomeTabComponent implements OnInit {
         ];
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
-          if (days && j < days.length) {
-            while (j < days.length) {
-              const dailyUsage = days[j];
-              if (
-                dayInWeek.toDateString() ===
-                new Date(dailyUsage.date).toDateString()
-              ) {
-                // We have daily activity for this day
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastDistanceStart: dailyUsage.distance_smartdrive_coast_start || 0,
-                  coastDistanceEnd: dailyUsage.distance_smartdrive_coast || 0,
-                  driveDistanceStart: dailyUsage.distance_smartdrive_drive_start || 0,
-                  driveDistanceEnd: dailyUsage.distance_smartdrive_drive || 0,
-                  date: dayInWeek
-                });
-                j += 1;
-                continue;
-              } else {
-                result.push({
-                  xAxis: dayNames[parseInt(i)],
-                  coastDistanceStart: 0,
-                  coastDistanceEnd: 0,
-                  driveDistanceStart: 0,
-                  driveDistanceEnd: 0,
-                  date: dayInWeek
-                });
-                break;
-              }
-            }
-          } else {
+          const dailyUsage = days[i];
+          if (dailyUsage) {
+            // We have daily activity for this day
             result.push({
               xAxis: dayNames[parseInt(i)],
-              coastDistanceStart: 0,
-              coastDistanceEnd: 0,
-              driveDistanceStart: 0,
-              driveDistanceEnd: 0,
+              coastDistance: this._caseTicksToMiles(dailyUsage.distance_smartdrive_coast - dailyUsage.distance_smartdrive_coast_start) || 0,
+              driveDistance: this._motorTicksToMiles(dailyUsage.distance_smartdrive_drive - dailyUsage.distance_smartdrive_drive_start) || 0,
+              date: dayInWeek
+            });
+          }
+          else {
+            result.push({
+              xAxis: dayNames[parseInt(i)],
+              coastDistance: 0,
+              driveDistance: 0,
               date: dayInWeek
             });
           }
         }
-        result.unshift({ xAxis: ' ', coastDistanceStart: 0, coastDistanceEnd: 0, driveDistanceStart: 0, driveDistanceEnd: 0 });
-        result.unshift({ xAxis: '  ', coastDistanceStart: 0, coastDistanceEnd: 0, driveDistanceStart: 0, driveDistanceEnd: 0 });
-        result.push({ xAxis: '       ', coastDistanceStart: 0, coastDistanceEnd: 0, driveDistanceStart: 0, driveDistanceEnd: 0 });
-        result.push({ xAxis: '        ', coastDistanceStart: 0, coastDistanceEnd: 0, driveDistanceStart: 0, driveDistanceEnd: 0 });
+        result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
+        result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '       ', coastDistance: 0, driveDistance: 0 });
+        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
         return result;
       }
     }
   }
+
 }

@@ -15,7 +15,7 @@
       </AnimatedCircle>
       <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle" ripple
         rippleColorAlpha="0.18" (tap)="onActivityTap()">
-        <Label row="1" col="1" [text]="distanceRemainingText" textWrap="true"></Label>
+        <Label row="1" col="1" [text]="todayCoastDistance" textWrap="true"></Label>
       </GridLayout>
     </GridLayout>
 
@@ -39,7 +39,7 @@
       </StackLayout>
 
       <GridLayout row="0" rowSpan="2" col="5" rows="auto, auto" columns="*, auto, *">
-        <Label row="0" col="0" class="value" [text]="distanceCirclePercentage"></Label>
+        <Label row="0" col="0" class="value" [text]="weeklyActivityLoaded ? todayCoastDistance : 0"></Label>
         <Label row="0" col="1" class="max-value" [text]="distanceCirclePercentageMaxValue"></Label>
         <Label row="1" col="0" colSpan="3" class="description" [text]="'general.distance' | translate"></Label>
       </GridLayout>
@@ -100,7 +100,7 @@
         </Palettes>
 
         <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
-          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
+          [value]="coastTimePlotAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
           [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>
@@ -108,23 +108,28 @@
 
     <GridLayout *ngIf="weeklyActivityLoaded">
       <Label row="0" col="0" class="title" horizontalAlignment="center" [text]="distanceGoalMessage"></Label>
-      <RadCartesianChart marginTop="10" row="1" col="0" id="homeTabWeeklyCoastTimeChart">
+      <RadCartesianChart marginTop="10" row="1" col="0" id="homeTabWeeklyCoastDistanceChart">
         <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
           horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
+
         <CategoricalAxis tkCartesianHorizontalAxis [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
           lineHidden="true" tickHidden="false" majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1"
           labelFitMode="Multiline" plotMode="OnTicks"> </CategoricalAxis>
 
         <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
-          horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
-          [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+          horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="coastDistanceYAxisMax" minumum="0.0"
+          [majorStep]="coastDistanceYAxisStep" labelFormat="%.0f"></LinearAxis>
 
-        <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
-          valueProperty="coastTime">
+        <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity" categoryProperty="xAxis"
+          valueProperty="coastDistance">
         </BarSeries>
 
-        <LineSeries tkCartesianSeries [items]="goalLabelChartData" categoryProperty="xAxis" seriesName="GoalLineSeries"
-          showLabels="true" valueProperty="coastTime">
+        <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="DriveDistanceUsageActivity" categoryProperty="xAxis"
+          valueProperty="driveDistance">
+        </BarSeries>
+
+        <LineSeries tkCartesianSeries [items]="distanceGoalLabelChartData" categoryProperty="xAxis" seriesName="CoastDistanceGoalLineSeries"
+          showLabels="true" valueProperty="coastDistance">
           <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
             [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" textColor="White"
@@ -132,18 +137,22 @@
         </LineSeries>
 
         <Palettes>
-          <Palette tkCartesianPalette seriesName="WeeklyActivity">
+          <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity">
             <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
               [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
           </Palette>
-          <Palette tkCartesianPalette seriesName="GoalLineSeries">
+          <Palette tkCartesianPalette seriesName="CoasDriveDistanceUsageActivity">
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#00c1d5' : '#753bbd'"
+                [strokeColor]="savedTheme === 'DEFAULT' ? '#00c1d5' : '#753bbd'"></PaletteEntry>
+            </Palette>
+          <Palette tkCartesianPalette seriesName="CoastDistanceGoalLineSeries">
             <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
               [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"></PaletteEntry>
           </Palette>
         </Palettes>
 
         <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
-          [value]="weeklyActivityAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
+          [value]="distancePlotAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
           [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" strokeDashPattern="3, 3">
         </ChartGridLineAnnotation>
       </RadCartesianChart>

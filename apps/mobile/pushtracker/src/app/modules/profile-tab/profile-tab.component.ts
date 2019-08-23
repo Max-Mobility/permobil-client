@@ -348,14 +348,17 @@ export class ProfileTabComponent implements OnInit {
 
   incrementConfigValue() {
     Log.D('Increment the config value');
-    this.activity_goals_dialog_data.config_value =
-      this.activity_goals_dialog_data.config_value + 5;
+    this.activity_goals_dialog_data.config_value = this.activity_goals_dialog_data.config_value + 0.1;
+    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
   }
 
   decrementConfigValue() {
     Log.D('Decrement the config value');
     this.activity_goals_dialog_data.config_value =
-      this.activity_goals_dialog_data.config_value - 5;
+      this.activity_goals_dialog_data.config_value - 0.1;
+    if (this.activity_goals_dialog_data.config_value < 0)
+      this.activity_goals_dialog_data.config_value = 0;
+    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
   }
 
   onSetGoalBtnTap() {

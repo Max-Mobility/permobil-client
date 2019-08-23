@@ -113,7 +113,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.updateWatchIcon({});
+   // this.updateWatchIcon({});
   }
 
   getUser() {
@@ -138,35 +138,31 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   updateWatchIcon(event: any) {
-    this._zone.run(() => {
-      Log.D('status changed', event.data);
-      const state =
-        (event && event.data && event.data.state) ||
-        BluetoothService.pushTrackerStatus.get('state');
-      switch (state) {
-        default:
-        case PushTrackerState.unknown:
-          console.log('Unknown');
-          this.setWatchIconVariables('question');
-          break;
-        case PushTrackerState.paired:
-          console.log('Paired');
-          this.setWatchIconVariables('empty');
-          break;
-        case PushTrackerState.disconnected:
-          console.log('Disconnected');
-          this.setWatchIconVariables('x');
-          break;
-        case PushTrackerState.connected:
-          console.log('Connected');
-          this.setWatchIconVariables('check');
-          break;
-        case PushTrackerState.ready:
-          console.log('ready');
-          this.setWatchIconVariables('check');
-          break;
-      }
-    });
+    const state = (event && event.data && event.data.state) ||
+      BluetoothService.pushTrackerStatus.get('state');
+    switch (state) {
+      default:
+      case PushTrackerState.unknown:
+        console.log('Unknown');
+        this.setWatchIconVariables('question');
+        break;
+      case PushTrackerState.paired:
+        console.log('Paired');
+        this.setWatchIconVariables('empty');
+        break;
+      case PushTrackerState.disconnected:
+        console.log('Disconnected');
+        this.setWatchIconVariables('x');
+        break;
+      case PushTrackerState.connected:
+        console.log('Connected');
+        this.setWatchIconVariables('check');
+        break;
+      case PushTrackerState.ready:
+        console.log('ready');
+        this.setWatchIconVariables('check');
+        break;
+    }
   }
 
   onSliderValueChange(args: any) {
