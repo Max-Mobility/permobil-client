@@ -108,7 +108,7 @@
       <GridLayout *ngIf="weeklyActivityLoaded" marginTop="10">
         <Label row="0" col="0" class="title" horizontalAlignment="center"
           [text]="distanceGoalMessage"></Label>
-        <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastDistanceChart">
+        <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
             horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
@@ -132,21 +132,6 @@
             seriesName="CoastDistanceGoalLineSeries" showLabels="true" valueProperty="coastDistance"
             [labelStyle]="pointLabelStyle">
           </LineSeries>
-
-          <Palettes>
-            <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
-                [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
-            </Palette>
-            <Palette tkCartesianPalette seriesName="DriveDistanceUsageActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#00c1d5' : '#753bbd'"
-                [strokeColor]="savedTheme === 'DEFAULT' ? '#00c1d5' : '#753bbd'"></PaletteEntry>
-            </Palette>
-            <Palette tkCartesianPalette seriesName="CoastDistanceGoalLineSeries">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
-                [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"></PaletteEntry>
-            </Palette>
-          </Palettes>
 
           <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
             [value]="distancePlotAnnotationValue" zPosition="AboveSeries" strokeWidth="2"

@@ -12,7 +12,7 @@ import { ActivityService } from '../../services/activity.service';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { SmartDriveUsageService } from '../../services/smartdrive-usage.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
-import { PointLabelStyle, ChartFontStyle } from 'nativescript-ui-chart';
+import { PointLabelStyle, ChartFontStyle, Palette, PaletteEntry } from 'nativescript-ui-chart';
 import { registerElement } from 'nativescript-angular/element-registry';
 registerElement('PullToRefresh', () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh);
 
@@ -54,6 +54,7 @@ export class HomeTabComponent implements OnInit {
   distanceGoalLabelChartData: ObservableArray<any[]>;
 
   pointLabelStyle: PointLabelStyle;
+  distancePlotPalettes: ObservableArray<Palette>;
   private _progressUpdatedOnce: boolean = false;
 
   private _currentDayInView: Date;
@@ -88,6 +89,7 @@ export class HomeTabComponent implements OnInit {
     this._loadWeeklyActivity();
     this._loadSmartDriveUsage();
     this.updatePointLabelStyle();
+    this.updatePalettes();
     this.weeklyActivityLoaded = true;
     pullRefresh.refreshing = false;
   }
@@ -113,6 +115,47 @@ export class HomeTabComponent implements OnInit {
     this._updateDistancePlotYAxis();
   }
 
+  updatePalettes() {
+    { // Distance Plot Palettes
+
+      // Coast Distance Palette
+      const coastDistancePalette = new Palette();
+      coastDistancePalette.seriesName = 'CoastDistanceUsageActivity';
+      const coastDistancePaletteEntry = new PaletteEntry();
+      coastDistancePaletteEntry.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#00c1d5') : new Color('#753bbd');
+      coastDistancePaletteEntry.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#00c1d5') : new Color('#753bbd');
+      coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
+        coastDistancePaletteEntry
+      ]);
+
+      // Drive Distance Palette
+      const driveDistancePalette = new Palette();
+      driveDistancePalette.seriesName = 'DriveDistanceUsageActivity';
+      const driveDistancePaletteEntry = new PaletteEntry();
+      driveDistancePaletteEntry.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#753bbd') : new Color('#00c1d5');
+      driveDistancePaletteEntry.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#753bbd') : new Color('#00c1d5');
+      driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
+        driveDistancePaletteEntry
+      ]);
+
+      // CoastDistanceGoalLineSeries
+      const coastDistanceGoalPalette = new Palette();
+      coastDistanceGoalPalette.seriesName = 'CoastDistanceGoalLineSeries';
+      const coastDistanceGoalPaletteEntry = new PaletteEntry();
+      coastDistanceGoalPaletteEntry.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+      coastDistanceGoalPaletteEntry.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+      coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
+        coastDistanceGoalPaletteEntry
+      ]);
+
+      this.distancePlotPalettes = new ObservableArray<Palette>([
+        coastDistancePalette,
+        driveDistancePalette,
+        coastDistanceGoalPalette
+      ]);
+    }
+  }
+
   ngOnInit() {
     this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
   }
@@ -122,7 +165,7 @@ export class HomeTabComponent implements OnInit {
       this.user = user;
       this.refreshPlots({ object: { refreshing: true } });
     });
-    this._smartDriveUsageService.usageUpdated.subscribe (usageUpdated => {
+    this._smartDriveUsageService.usageUpdated.subscribe(usageUpdated => {
       if (usageUpdated && !this._progressUpdatedOnce) {
         this.updateProgress();
         this._progressUpdatedOnce = true;
