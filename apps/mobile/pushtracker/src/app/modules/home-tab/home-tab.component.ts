@@ -12,6 +12,7 @@ import { ActivityService } from '../../services/activity.service';
 import { PushTrackerUserService } from '../../services/pushtracker.user.service';
 import { SmartDriveUsageService } from '../../services/smartdrive-usage.service';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
+import { PointLabelStyle, ChartFontStyle } from 'nativescript-ui-chart';
 
 @Component({
   selector: 'home-tab',
@@ -41,6 +42,7 @@ export class HomeTabComponent implements OnInit {
   distanceGoalMessage: string;
   weeklyActivityLoaded: boolean = false;
   weeklySmartDriveUsage: ObservableArray<any[]>;
+  coastTimePointLabelStyle: PointLabelStyle;
 
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
@@ -49,6 +51,7 @@ export class HomeTabComponent implements OnInit {
   private _todaysUsage: any;
   distancePlotAnnotationValue: number = 0;
   distanceGoalLabelChartData: ObservableArray<any[]>;
+  distancePointLabelStyle: PointLabelStyle;
 
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -64,7 +67,8 @@ export class HomeTabComponent implements OnInit {
     private _vcRef: ViewContainerRef,
     private userService: PushTrackerUserService,
     private _smartDriveUsageService: SmartDriveUsageService,
-    private _activityService: ActivityService
+    private _activityService: ActivityService,
+    private _zone: NgZone
   ) {
     this.getUser();
     this._currentDayInView = new Date();
@@ -73,6 +77,7 @@ export class HomeTabComponent implements OnInit {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     this.savedTheme = this.user.data.theme_preference;
+    this.updateDistancePointLabelStyle();
     this._loadWeeklyActivity();
     this._loadSmartDriveUsage();
   }
@@ -85,7 +90,6 @@ export class HomeTabComponent implements OnInit {
     this.userService.user.subscribe(user => {
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
-
       // Update bindings for coast_time plot
       this.coastTimeGoalMessage =
         'Reach an average coast time of ' +
@@ -106,8 +110,36 @@ export class HomeTabComponent implements OnInit {
       this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
       this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
       this._updateDistancePlotYAxis();
+
+      // Update distance point label style
+      this._zone.run(() => {
+        this.updateCoastTimePointLabelStyle();
+        this.updateDistancePointLabelStyle();
+      });
+
     });
-    console.log('Saved theme', this.savedTheme);
+  }
+
+  updateCoastTimePointLabelStyle() {
+    this.coastTimePointLabelStyle = new PointLabelStyle();
+    this.coastTimePointLabelStyle.margin = 10;
+    this.coastTimePointLabelStyle.fontStyle = ChartFontStyle.Bold;
+    this.coastTimePointLabelStyle.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.coastTimePointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.coastTimePointLabelStyle.textSize = 12;
+    this.coastTimePointLabelStyle.textColor = new Color('White');
+    this.coastTimePointLabelStyle.textFormat = 'Goal: %.1f';
+  }
+
+  updateDistancePointLabelStyle() {
+    this.distancePointLabelStyle = new PointLabelStyle();
+    this.distancePointLabelStyle.margin = 10;
+    this.distancePointLabelStyle.fontStyle = ChartFontStyle.Bold;
+    this.distancePointLabelStyle.fillColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.distancePointLabelStyle.strokeColor = this.user.data.theme_preference === 'DEFAULT' ? new Color('#e31c79') : new Color('#00c1d5');
+    this.distancePointLabelStyle.textSize = 12;
+    this.distancePointLabelStyle.textColor = new Color('White');
+    this.distancePointLabelStyle.textFormat = 'Goal: %.1f';
   }
 
   onActivityTap() {
@@ -189,7 +221,6 @@ export class HomeTabComponent implements OnInit {
     this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
     this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
     this._updateCoastTimePlotYAxis();
-    this.weeklyActivityLoaded = true;
   }
 
   _updateCoastTimePlotYAxis() {
@@ -340,7 +371,6 @@ export class HomeTabComponent implements OnInit {
   }
 
   _updateDistancePlotYAxis() {
-    console.log('Updating distance plot y axis');
     const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +

@@ -81,11 +81,7 @@
         </BarSeries>
 
         <LineSeries tkCartesianSeries [items]="goalLabelChartData" categoryProperty="xAxis" seriesName="GoalLineSeries"
-          showLabels="true" valueProperty="coastTime">
-          <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
-            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" textColor="White"
-            textFormat="Goal: %.1f"></PointLabelStyle>
+          showLabels="true" valueProperty="coastTime" [labelStyle]="coastTimePointLabelStyle">
         </LineSeries>
 
         <Palettes>
@@ -129,11 +125,7 @@
         </BarSeries>
 
         <LineSeries tkCartesianSeries [items]="distanceGoalLabelChartData" categoryProperty="xAxis" seriesName="CoastDistanceGoalLineSeries"
-          showLabels="true" valueProperty="coastDistance">
-          <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
-            [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" textColor="White"
-            textFormat="Goal: %.1f"></PointLabelStyle>
+          showLabels="true" valueProperty="coastDistance" [labelStyle]="distancePointLabelStyle">
         </LineSeries>
 
         <Palettes>
