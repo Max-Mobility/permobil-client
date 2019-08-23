@@ -8,8 +8,8 @@ import { LocationService } from './location.service';
 import { LoggingService } from './logging.service';
 import { ProgressService } from './progress.service';
 import { PushTrackerUserService } from './pushtracker.user.service';
-import { SmartDriveUsageService } from './smartdrive-usage.service';
 import { SettingsService } from './settings.service';
+import { SmartDriveUsageService } from './smartdrive-usage.service';
 
 export const PROVIDERS: any[] = [
   LoggingService,
@@ -26,6 +26,7 @@ export const PROVIDERS: any[] = [
   SmartDriveUsageService
 ];
 
+export * from './activity.service';
 export * from './auth-guard.service';
 export * from './bluetooth.service';
 export * from './dialog.service';
@@ -36,3 +37,4 @@ export * from './logging.service';
 export * from './progress.service';
 export * from './pushtracker.user.service';
 export * from './settings.service';
+
