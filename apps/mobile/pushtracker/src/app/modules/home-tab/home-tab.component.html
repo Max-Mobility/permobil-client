@@ -74,7 +74,7 @@
 
         <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
-          [majorStep]="yAxisStep" labelFormat="%.0f"></LinearAxis>
+          [majorStep]="yAxisStep" labelFormat="%.1f"></LinearAxis>
 
         <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
           valueProperty="coastTime">
@@ -85,7 +85,7 @@
           <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
             [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" textColor="White"
-            textFormat="Goal: %.0f"></PointLabelStyle>
+            textFormat="Goal: %.1f"></PointLabelStyle>
         </LineSeries>
 
         <Palettes>
@@ -118,7 +118,7 @@
 
         <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="coastDistanceYAxisMax" minumum="0.0"
-          [majorStep]="coastDistanceYAxisStep" labelFormat="%.0f"></LinearAxis>
+          [majorStep]="coastDistanceYAxisStep" labelFormat="%.1f"></LinearAxis>
 
         <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity" categoryProperty="xAxis"
           valueProperty="coastDistance">
@@ -133,7 +133,7 @@
           <PointLabelStyle tkLineLabelStyle margin="10" fontStyle="Bold"
             [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#00c1d5'" textSize="12" textColor="White"
-            textFormat="Goal: %.0f"></PointLabelStyle>
+            textFormat="Goal: %.1f"></PointLabelStyle>
         </LineSeries>
 
         <Palettes>

@@ -90,9 +90,9 @@ export class HomeTabComponent implements OnInit {
       this.coastTimeGoalMessage =
         'Reach an average coast time of ' +
         this.user.data.activity_goal_coast_time +
-        's per day';
+        ' s per day';
       this.distanceGoalMessage = 'Travel ' +
-        this.user.data.activity_goal_distance + 'mi per day';
+        this.user.data.activity_goal_distance + ' mi per day';
       this.distanceCirclePercentageMaxValue =
         '/' + this.user.data.activity_goal_distance;
       this.coastTimeCirclePercentageMaxValue =
@@ -101,9 +101,11 @@ export class HomeTabComponent implements OnInit {
       this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
       this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
 
-      // Update bindings for coast_distance plot
-      this._loadSmartDriveUsage();
-
+      // Update Y axis for coast distance plot
+      this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
+      this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+      this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
+      this._updateDistancePlotYAxis();
     });
   }
 
@@ -138,6 +140,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadWeeklyActivity() {
+    this.weeklyActivityLoaded = false;
     const didLoad = await this._activityService.loadWeeklyActivity(
       this._weekStart
     );
@@ -151,6 +154,46 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.weeklyActivity = new ObservableArray([]);
     }
+
+    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+    if (this._todaysActivity) {
+      this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
+      this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+    } else {
+      this.todayCoastTime = (0).toFixed(1);
+      this.todayPushCount = (0).toFixed();
+    }
+
+    this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
+    this.coastTimeGoalMessage =
+      'Reach an average coast time of ' +
+      this.user.data.activity_goal_coast_time +
+      ' s per day';
+    this.distanceGoalMessage = 'Travel ' +
+      this.user.data.activity_goal_distance + 'mi per day';
+    this.distanceCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_coast_time;
+    this.weeklyActivityLoaded = true;
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
+
+    this.coastTimeGoalMessage =
+      'Reach an average coast time of ' +
+      this.user.data.activity_goal_coast_time +
+      ' s per day';
+    this.distanceCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_distance;
+    this.coastTimeCirclePercentageMaxValue =
+      '/' + this.user.data.activity_goal_coast_time;
+    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
+    this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
+    this._updateCoastTimePlotYAxis();
+    this.weeklyActivityLoaded = true;
+  }
+
+  _updateCoastTimePlotYAxis() {
     const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
@@ -173,29 +216,6 @@ export class HomeTabComponent implements OnInit {
           this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
       }
     }
-    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-    if (this._todaysActivity) {
-      this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(1);
-      this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
-    } else {
-      this.todayCoastTime = (0).toFixed(1);
-      this.todayPushCount = (0).toFixed();
-    }
-
-    this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-    this.coastTimeGoalMessage =
-    'Reach an average coast time of ' +
-    this.user.data.activity_goal_coast_time +
-    's per day';
-  this.distanceGoalMessage = 'Travel ' +
-    this.user.data.activity_goal_distance + 'mi per day';
-  this.distanceCirclePercentageMaxValue =
-    '/' + this.user.data.activity_goal_distance;
-  this.coastTimeCirclePercentageMaxValue =
-    '/' + this.user.data.activity_goal_coast_time;
-  this.weeklyActivityLoaded = true;
-  this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
-  this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
     if (this.yAxisMax === 0) this.yAxisMax = 10;
 
     if (this.coastTimePlotAnnotationValue > this.yAxisMax)
@@ -203,17 +223,6 @@ export class HomeTabComponent implements OnInit {
         this.coastTimePlotAnnotationValue +
         0.4 * this.coastTimePlotAnnotationValue;
     this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
-    this.coastTimeGoalMessage =
-      'Reach an average coast time of ' +
-      this.user.data.activity_goal_coast_time +
-      's per day';
-    this.distanceCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_distance;
-    this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
-    this.weeklyActivityLoaded = true;
-    this.goalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastTime: this.user.data.activity_goal_coast_time, impact: 7 }] as any[]));
-    this.coastTimeCirclePercentage = (parseFloat(this.todayCoastTime) / this.user.data.activity_goal_coast_time) * 100;
   }
 
   _formatActivityForView(viewMode) {
@@ -279,6 +288,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   async _loadSmartDriveUsage() {
+    this.weeklyActivityLoaded = false;
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(this._weekStart);
     if (didLoad) {
       this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
@@ -288,6 +298,26 @@ export class HomeTabComponent implements OnInit {
     } else {
       this.usageActivity = new ObservableArray([]);
     }
+    this.distanceGoalMessage = 'Travel ' +
+      this.user.data.activity_goal_distance + ' mi per day';
+    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+    if (this._todaysUsage) {
+      this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
+      this.todayDriveDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
+    } else {
+      this.todayCoastDistance = (0).toFixed(1);
+      this.todayDriveDistance = (0).toFixed();
+    }
+
+    this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
+    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
+    this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
+    this._updateDistancePlotYAxis();
+    this.weeklyActivityLoaded = true;
+  }
+
+  _updateDistancePlotYAxis() {
+    console.log('Updating distance plot y axis');
     const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
@@ -299,8 +329,6 @@ export class HomeTabComponent implements OnInit {
         (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
       );
     };
-    this.distanceGoalMessage = 'Travel ' +
-      this.user.data.activity_goal_distance + 'mi per day';
     this.coastDistanceYAxisMax = 0;
     if (this._smartDriveUsageService.weeklyActivity) {
       const days = this._smartDriveUsageService.weeklyActivity['days'];
@@ -315,24 +343,10 @@ export class HomeTabComponent implements OnInit {
         }
       }
     }
-    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-    if (this._todaysUsage) {
-      this.todayCoastDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast - this._todaysUsage.distance_smartdrive_coast_start) || 0).toFixed(1);
-      this.todayDriveDistance = (this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_drive - this._todaysUsage.distance_smartdrive_drive_start) || 0).toFixed(1);
-    } else {
-      this.todayCoastDistance = (0).toFixed(1);
-      this.todayDriveDistance = (0).toFixed();
-    }
-
-    this.distancePlotAnnotationValue = this.user.data.activity_goal_distance;
-
-    if (this.coastDistanceYAxisMax === 0) this.coastDistanceYAxisMax = 10;
+    if (this.coastDistanceYAxisMax === 0) this.coastDistanceYAxisMax = 1.0;
     if (this.distancePlotAnnotationValue > this.coastDistanceYAxisMax)
       this.coastDistanceYAxisMax = this.distancePlotAnnotationValue + 0.4 * this.distancePlotAnnotationValue;
-    this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 3.0;
-    this.distanceGoalLabelChartData = new ObservableArray(([{ xAxis: ' ', coastDistance: this.user.data.activity_goal_distance, impact: 7 }] as any[]));
-    this.distanceCirclePercentage = (parseFloat(this.todayCoastDistance) / this.user.data.activity_goal_distance) * 100;
-    console.log(this.coastDistanceYAxisStep, this.coastDistanceYAxisMax);
+    this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 4.0;
   }
 
   _formatUsageForView(viewMode) {
