@@ -746,7 +746,7 @@ export class ProfileTabComponent implements OnInit {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === 0) {
-      this.displayActivityGoalDistance += ' km';
+      this.displayActivityGoalDistance = ((this.user.data.activity_goal_distance) * 0.621371).toFixed(1) + ' km';
     } else {
       this.displayActivityGoalDistance += ' mi';
     }
