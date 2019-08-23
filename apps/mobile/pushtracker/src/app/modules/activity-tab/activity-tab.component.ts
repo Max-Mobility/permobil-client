@@ -483,6 +483,22 @@ export class ActivityTabComponent implements OnInit {
         result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
         return result;
       }
+      else {
+        const result = [];
+        for (const i in this._dayViewTimeArray) {
+          const timePoint = this._dayViewTimeArray[i];
+          result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0});
+        }
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: '   ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: '    ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '     ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '      ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        return result;
+      }
     } else if (this.tabSelectedIndex === 1) {
       const activity = this._activityService.weeklyActivity;
 
