@@ -140,10 +140,14 @@ export class SqliteService {
   }
 
   public getLast(tableName: string, idName: string) {
-    return this.db.then(db => {
-      return db
-        .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`);
-    });
+    return this.db
+      .then(db => {
+        return db
+          .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`)
+          .catch(err => {
+            return undefined;
+          });
+      });
   }
 
   public getOne(args: {
@@ -184,7 +188,10 @@ export class SqliteService {
           dbGetString += ' DESC';
         }
       }
-      return db.get(dbGetString, parameters);
+      return db.get(dbGetString, parameters)
+        .catch(err => {
+          return undefined;
+        });
     });
   }
 
@@ -236,7 +243,10 @@ export class SqliteService {
       if (orderBy && offset) {
         dbGetString += ` OFFSET ${offset}`;
       }
-      return db.all(dbGetString, parameters);
+      return db.all(dbGetString, parameters)
+        .catch(err => {
+          return [];
+        });
     });
   }
 

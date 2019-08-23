@@ -373,56 +373,40 @@ export class MainViewModel extends Observable {
   }
 
   async initSqliteTables() {
-    this._sentryBreadCrumb('Initializing SQLite...');
-    console.time('SQLite_Init');
-    // create / load tables for smartdrive data
-    const sqlitePromises = [
-      this._sqliteService.makeTable(
-        SmartDriveData.Info.TableName,
-        SmartDriveData.Info.IdName,
-        SmartDriveData.Info.Fields
-      ),
-      this._sqliteService.makeTable(
-        SmartDriveData.Errors.TableName,
-        SmartDriveData.Errors.IdName,
-        SmartDriveData.Errors.Fields
-      ),
-      this._sqliteService.makeTable(
-        SmartDriveData.Firmwares.TableName,
-        SmartDriveData.Firmwares.IdName,
-        SmartDriveData.Firmwares.Fields
-      )
-    ];
-    return Promise.all(sqlitePromises)
-      .then(() => {
-        console.timeEnd('SQLite_Init');
-        this._sentryBreadCrumb('SQLite has been initialized.');
-
-        // get last error
-        return this._sqliteService
-          .getLast(
-            SmartDriveData.Errors.TableName,
-            SmartDriveData.Errors.IdName
-          )
-          .then(obj => {
-            try {
-              const lastErrorId = parseInt((obj && obj[3]) || -1);
-              this.lastErrorId = lastErrorId;
-            } catch (err) { }
-          })
-          .catch(err => {
-            Sentry.captureException(err);
-            alert({
-              title: L('failures.title'),
-              message: `${L('failures.getting-error')}\n\n${err}`,
-              okButtonText: L('buttons.ok')
-            });
-          });
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Could not make table:', err);
-      });
+    try {
+      this._sentryBreadCrumb('Initializing SQLite...');
+      console.time('SQLite_Init');
+      // create / load tables for smartdrive data
+      const sqlitePromises = [
+        this._sqliteService.makeTable(
+          SmartDriveData.Info.TableName,
+          SmartDriveData.Info.IdName,
+          SmartDriveData.Info.Fields
+        ),
+        this._sqliteService.makeTable(
+          SmartDriveData.Errors.TableName,
+          SmartDriveData.Errors.IdName,
+          SmartDriveData.Errors.Fields
+        ),
+        this._sqliteService.makeTable(
+          SmartDriveData.Firmwares.TableName,
+          SmartDriveData.Firmwares.IdName,
+          SmartDriveData.Firmwares.Fields
+        )
+      ];
+      await Promise.all(sqlitePromises);
+      console.timeEnd('SQLite_Init');
+      this._sentryBreadCrumb('SQLite has been initialized.');
+      const obj = await this._sqliteService
+        .getLast(
+          SmartDriveData.Errors.TableName,
+          SmartDriveData.Errors.IdName
+        );
+      const lastErrorId = parseInt((obj && obj[3]) || -1);
+      this.lastErrorId = lastErrorId;
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   }
 
   async askForPermissions() {
@@ -642,8 +626,6 @@ export class MainViewModel extends Observable {
   }
 
   fullStop() {
-    // this.disableAllSensors();
-    // this.disableTapSensor();
     this.disablePowerAssist();
   }
 
@@ -995,28 +977,17 @@ export class MainViewModel extends Observable {
     this.currentYear = this._format(now, 'YYYY');
   }
 
-  onNetworkAvailable() {
+  async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
-      return Promise.reject('no sqlite service!');
+      return;
     }
     // this._sentryBreadCrumb('Network available - sending errors');
-    return this.sendErrorsToServer(10)
-      .then(ret => {
-        // this._sentryBreadCrumb('Network available - sending info');
-        return this.sendInfosToServer(10);
-      })
-      .then(ret => {
-        // this._sentryBreadCrumb('Network available - sending settings');
-        return this.sendSettingsToServer();
-      })
-      .then(ret => {
-        // this._sentryBreadCrumb('Have sent data to server - unregistering from network');
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Error sending data to server', err);
-      });
+    await this.sendErrorsToServer(10);
+    // this._sentryBreadCrumb('Network available - sending info');
+    await this.sendInfosToServer(10);
+    // this._sentryBreadCrumb('Network available - sending settings');
+    await this.sendSettingsToServer();
   }
 
   doWhileCharged() {
@@ -1026,6 +997,7 @@ export class MainViewModel extends Observable {
       this.onNetworkAvailable();
     } catch (err) {
       Sentry.captureException(err);
+      Log.E('Error sending data to server', err);
     }
   }
 
@@ -1136,33 +1108,32 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       this.smartDrive.ableToSend
     ) {
-      this.smartDrive.sendTap().catch(err => {
-        Sentry.captureException(err);
-        Log.E('could not send tap', err);
-        this.disablePowerAssist()
-          .then(() => {
+      this.smartDrive.sendTap()
+        .catch(err => {
+          Sentry.captureException(err);
+          Log.E('could not send tap', err);
+          this.disablePowerAssist()
+            .catch((err) => {
+              Sentry.captureException(err);
+            });
+          setTimeout(() => {
             alert({
               title: L('failures.title'),
               message: err,
               okButtonText: L('buttons.ok')
             });
-          })
-          .catch((err) => {
-            Sentry.captureException(err);
-          });
-      });
+          }, 1000);
+        });
     }
   }
 
-  stopSmartDrive() {
+  async stopSmartDrive() {
     // turn off the motor if SD is connected
     if (this.smartDrive && this.smartDrive.ableToSend && this.motorOn) {
-      return this.smartDrive.stopMotor().catch(err => {
+      this.smartDrive.stopMotor().catch(err => {
         Log.E('Could not stop motor', err);
         Sentry.captureException(err);
       });
-    } else {
-      return Promise.resolve();
     }
   }
 
@@ -1663,27 +1634,26 @@ export class MainViewModel extends Observable {
     });
   }
 
-  onLoadMoreErrors() {
-    this.getRecentErrors(10, this.errorHistoryData.length).then(recents => {
-      // add the back button as the first element - should only load once
-      if (this.errorHistoryData.length === 0) {
-        this.errorHistoryData.push({
-          code: L('buttons.back'),
-          onTap: this.previousLayout.bind(this)
-        });
-      }
-      // determine the unique errors that we have
-      recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
-      if (recents && recents.length) {
-        // now add the recent data
-        this.errorHistoryData.push(...recents);
-      } else if (this.errorHistoryData.length === 1) {
-        // or add the 'no errors' message
-        this.errorHistoryData.push({
-          code: L('error-history.no-errors')
-        });
-      }
-    });
+  async onLoadMoreErrors() {
+    let recents = await this.getRecentErrors(10, this.errorHistoryData.length);
+    // add the back button as the first element - should only load once
+    if (this.errorHistoryData.length === 0) {
+      this.errorHistoryData.push({
+        code: L('buttons.back'),
+        onTap: this.previousLayout.bind(this)
+      });
+    }
+    // determine the unique errors that we have
+    recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
+    if (recents && recents.length) {
+      // now add the recent data
+      this.errorHistoryData.push(...recents);
+    } else if (this.errorHistoryData.length === 1) {
+      // or add the 'no errors' message
+      this.errorHistoryData.push({
+        code: L('error-history.no-errors')
+      });
+    }
   }
 
   showErrorHistory() {
@@ -1728,114 +1698,109 @@ export class MainViewModel extends Observable {
     });
   }
 
-  updateChartData() {
-    // this._sentryBreadCrumb('Updating Chart Data / Display');
-    return this.getUsageInfoFromDatabase(7)
-      .then((sdData: any[]) => {
-        // we've asked for one more day than needed so that we can
-        // compute distance differences, keep a reference to the first
-        // before we remove it below with the call to slice()
-        const oldest = sdData[0];
-        const newest = last(sdData);
-        // keep track of the most recent day so we know when to update
-        this._lastChartDay = new Date(newest.date);
-        // remove the oldest so it's not displayed - we only use it
-        // to track distance differences
-        sdData = sdData.slice(1);
-        // update battery data
-        const maxBattery = sdData.reduce((max, obj) => {
-          return obj.battery > max ? obj.battery : max;
-        }, 0);
-        const batteryData = sdData.map(e => {
-          return {
-            day: this._format(new Date(e.date), 'dd'),
-            value: (e.battery * 100.0) / maxBattery
-          };
-        });
-        // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
-        this.batteryChartMaxValue = maxBattery.toFixed(0);
-        this.batteryChartData = batteryData;
+  async updateChartData() {
+    try {
+      // this._sentryBreadCrumb('Updating Chart Data / Display');
+      let sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      // we've asked for one more day than needed so that we can
+      // compute distance differences, keep a reference to the first
+      // before we remove it below with the call to slice()
+      const oldest = sdData[0];
+      const newest = last(sdData);
+      // keep track of the most recent day so we know when to update
+      this._lastChartDay = new Date(newest.date);
+      // remove the oldest so it's not displayed - we only use it
+      // to track distance differences
+      sdData = sdData.slice(1);
+      // update battery data
+      const maxBattery = sdData.reduce((max, obj) => {
+        return obj.battery > max ? obj.battery : max;
+      }, 0);
+      const batteryData = sdData.map(e => {
+        return {
+          day: this._format(new Date(e.date), 'dd'),
+          value: (e.battery * 100.0) / maxBattery
+        };
+      });
+      // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
+      this.batteryChartMaxValue = maxBattery.toFixed(0);
+      this.batteryChartData = batteryData;
 
-        // update distance data
-        let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
-        const distanceData = sdData.map(e => {
-          let diff = 0;
+      // update distance data
+      let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
+      const distanceData = sdData.map(e => {
+        let diff = 0;
+        const dist = e[SmartDriveData.Info.DriveDistanceName];
+        if (dist > 0) {
+          // make sure we only compute diffs between valid distances
+          if (oldestDist > 0) {
+            diff = dist - oldestDist;
+          }
+          oldestDist = Math.max(dist, oldestDist);
+          diff = SmartDrive.motorTicksToMiles(diff);
+          if (this.settings.units === 'Metric') {
+            diff = diff * 1.609;
+          }
+        }
+        return {
+          day: this._format(new Date(e.date), 'dd'),
+          value: diff
+        };
+      });
+      const maxDist = distanceData.reduce((max, obj) => {
+        return obj.value > max ? obj.value : max;
+      }, 0.0);
+      distanceData.map(data => {
+        data.value = (100.0 * data.value) / maxDist;
+      });
+      // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
+      this.distanceChartMaxValue = maxDist.toFixed(1);
+      this.distanceChartData = distanceData;
+
+      // now get the past data (regardless of when it was collected)
+      // for computing the estimated range:
+      sdData = await this.getRecentInfoFromDatabase(7);
+      // update estimated range based on battery / distance
+      let sumDistance = 0;
+      let sumBattery = 0;
+      // set the range factor to be default (half way between the min/max)
+      let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
+      if (sdData && sdData.length) {
+        let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
+        sdData.map(e => {
           const dist = e[SmartDriveData.Info.DriveDistanceName];
           if (dist > 0) {
             // make sure we only compute diffs between valid distances
             if (oldestDist > 0) {
-              diff = dist - oldestDist;
+              const diff = dist - oldestDist;
+              // used for range computation
+              sumDistance += diff;
+              sumBattery += e[SmartDriveData.Info.BatteryName];
             }
             oldestDist = Math.max(dist, oldestDist);
-            diff = SmartDrive.motorTicksToMiles(diff);
-            if (this.settings.units === 'Metric') {
-              diff = diff * 1.609;
-            }
           }
-          return {
-            day: this._format(new Date(e.date), 'dd'),
-            value: diff
-          };
         });
-        const maxDist = distanceData.reduce((max, obj) => {
-          return obj.value > max ? obj.value : max;
-        }, 0.0);
-        distanceData.map(data => {
-          data.value = (100.0 * data.value) / maxDist;
-        });
-        // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
-        this.distanceChartMaxValue = maxDist.toFixed(1);
-        this.distanceChartData = distanceData;
-
-        // now get the past data (regardless of when it was collected)
-        // for computing the estimated range:
-        return this.getRecentInfoFromDatabase(7);
-      })
-      .then((sdData: any[]) => {
-        // update estimated range based on battery / distance
-        let sumDistance = 0;
-        let sumBattery = 0;
-        // set the range factor to be default (half way between the min/max)
-        let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
-        if (sdData && sdData.length) {
-          let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
-          sdData.map(e => {
-            const dist = e[SmartDriveData.Info.DriveDistanceName];
-            if (dist > 0) {
-              // make sure we only compute diffs between valid distances
-              if (oldestDist > 0) {
-                const diff = dist - oldestDist;
-                // used for range computation
-                sumDistance += diff;
-                sumBattery += e[SmartDriveData.Info.BatteryName];
-              }
-              oldestDist = Math.max(dist, oldestDist);
-            }
-          });
-        }
-        if (sumDistance && sumBattery) {
-          // convert from ticks to miles
-          sumDistance = SmartDrive.motorTicksToMiles(sumDistance);
-          // now compute the range factor
-          rangeFactor = clamp(
-            sumDistance / sumBattery,
-            this.minRangeFactor,
-            this.maxRangeFactor
-          );
-        }
-        // estimated distance is always in miles
-        this.estimatedDistance =
-          this.smartDriveCurrentBatteryPercentage * rangeFactor;
-        // save the updated estimated range for complication use
-        appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
-      })
-      .then(() => {
-        // now actually update the display of the distance
-        this.updateSpeedDisplay();
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-      });
+      }
+      if (sumDistance && sumBattery) {
+        // convert from ticks to miles
+        sumDistance = SmartDrive.motorTicksToMiles(sumDistance);
+        // now compute the range factor
+        rangeFactor = clamp(
+          sumDistance / sumBattery,
+          this.minRangeFactor,
+          this.maxRangeFactor
+        );
+      }
+      // estimated distance is always in miles
+      this.estimatedDistance =
+        this.smartDriveCurrentBatteryPercentage * rangeFactor;
+      // save the updated estimated range for complication use
+      appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
+      // now actually update the display of the distance
+      this.updateSpeedDisplay();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
   }
 
   onSettingsTap() {
@@ -2125,7 +2090,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  enablePowerAssist() {
+  async enablePowerAssist() {
     this._sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this.disableWearCheck) {
@@ -2136,60 +2101,51 @@ export class MainViewModel extends Observable {
       });
       return;
     } else if (this.hasSavedSmartDrive()) {
-      clearInterval(this.chargingWorkTimeoutId);
-      this.chargingWorkTimeoutId = null;
-      this.tapDetector.reset();
-      this.maintainCPU();
-      this.powerAssistState = PowerAssist.State.Disconnected;
-      this.powerAssistActive = true;
-      this.updatePowerAssistRing();
-      return this.askForPermissions()
-        .then(() => {
-          return this.connectToSavedSmartDrive();
-        })
-        .then((didConnect: boolean) => {
-          if (didConnect) {
-            // vibrate for enabling power assist
-            this._vibrator.vibrate(200); // vibrate for 250 ms
-            // enable the tap sensor
-            const didEnableTapSensor = this.enableTapSensor();
-            if (!didEnableTapSensor) {
-              // TODO: translate this alert!
-              alert({
-                title: L('failures.title'),
-                message: L('failures.could-not-enable-tap-sensor'),
-                okButtonText: L('buttons.ok')
-              });
-              throw 'Could not enable tap sensor for power assist!';
-            } else {
-              this._ringTimerId = setInterval(
-                this.blinkPowerAssistRing.bind(this),
-                this.RING_TIMER_INTERVAL_MS
-              );
-            }
+      try {
+        clearInterval(this.chargingWorkTimeoutId);
+        this.chargingWorkTimeoutId = null;
+        this.tapDetector.reset();
+        this.maintainCPU();
+        this.powerAssistState = PowerAssist.State.Disconnected;
+        this.powerAssistActive = true;
+        this.updatePowerAssistRing();
+        await this.askForPermissions();
+        const didConnect = await this.connectToSavedSmartDrive();
+        if (didConnect) {
+          // vibrate for enabling power assist
+          this._vibrator.vibrate(200); // vibrate for 250 ms
+          // enable the tap sensor
+          const didEnableTapSensor = this.enableTapSensor();
+          if (!didEnableTapSensor) {
+            // TODO: translate this alert!
+            alert({
+              title: L('failures.title'),
+              message: L('failures.could-not-enable-tap-sensor'),
+              okButtonText: L('buttons.ok')
+            });
+            throw 'Could not enable tap sensor for power assist!';
           } else {
-            this._sentryBreadCrumb('Did not connect, disabling power assist');
-            this.disablePowerAssist();
+            this._ringTimerId = setInterval(
+              this.blinkPowerAssistRing.bind(this),
+              this.RING_TIMER_INTERVAL_MS
+            );
           }
-        })
-        .catch(err => {
-          Sentry.captureException(err);
-          // Log.E(`Caught error, disabling power assist: ${err}`);
+        } else {
+          this._sentryBreadCrumb('Did not connect, disabling power assist');
           this.disablePowerAssist();
-        });
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        // Log.E(`Caught error, disabling power assist: ${err}`);
+        this.disablePowerAssist();
+      }
     } else {
-      return this.saveNewSmartDrive()
-        .then((didSave: boolean) => {
-          if (didSave) {
-            return this.enablePowerAssist();
-          } else {
-            this._sentryBreadCrumb('SmartDrive was not saved!');
-          }
-        })
-        .catch(err => {
-          Sentry.captureException(err);
-          // Log.E(`Could not save new smartdrive: ${err}`);
-        });
+      const didSave = await this.saveNewSmartDrive();
+      if (didSave) {
+        setTimeout(this.enablePowerAssist, 300);
+      } else {
+        this._sentryBreadCrumb('SmartDrive was not saved!');
+      }
     }
   }
 
@@ -2219,10 +2175,12 @@ export class MainViewModel extends Observable {
     }
     this.updatePowerAssistRing();
     // turn off the smartdrive
-    return this.disconnectFromSmartDrive()
-      .catch(err => {
-        Sentry.captureException(err);
-      });
+    try {
+      await this.disconnectFromSmartDrive();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+    return Promise.resolve();
   }
 
   showScanning() {
@@ -2247,117 +2205,106 @@ export class MainViewModel extends Observable {
   }
 
   async onPairingTap() {
-    return this.saveNewSmartDrive()
-      .then((didSave: boolean) => {
-        if (didSave) {
-          alert({
-            title: L('warnings.title.notice'),
-            message: `${L('settings.paired-to-smartdrive')}\n\n${this.smartDrive.address}`,
-            okButtonText: L('buttons.ok')
-          });
-        }
-      })
-      .catch((err: any) => {
-        Sentry.captureException(err);
-        Log.E('Could not pair', err);
-      });
+    try {
+      const didSave = await this.saveNewSmartDrive();
+      if (didSave) {
+        alert({
+          title: L('warnings.title.notice'),
+          message: `${L('settings.paired-to-smartdrive')}\n\n${this.smartDrive.address}`,
+          okButtonText: L('buttons.ok')
+        });
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Could not pair', err);
+    }
   }
 
   async saveNewSmartDrive(): Promise<any> {
     this._sentryBreadCrumb('Saving new SmartDrive');
-    this.showScanning();
-    // ensure we have the permissions
-    return this.askForPermissions()
-      .then(() => {
-        // ensure bluetoothservice is functional
-        return this._bluetoothService.initialize();
-      })
-      .then(() => {
-        // scan for smartdrives
-        // @ts-ignore
-        this.scanningProgressCircle.spin();
-        return this._bluetoothService.scanForSmartDrives(3);
-      })
-      .then(() => {
-        this.hideScanning();
-        this._sentryBreadCrumb(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
+    try {
+      this.showScanning();
+      // ensure we have the permissions
+      await this.askForPermissions();
+      // ensure bluetoothservice is functional
+      await this._bluetoothService.initialize();
+      // scan for smartdrives
+      // @ts-ignore
+      this.scanningProgressCircle.spin();
+      await this._bluetoothService.scanForSmartDrives(3);
+      this.hideScanning();
+      this._sentryBreadCrumb(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
 
-        // make sure we have smartdrives
-        if (BluetoothService.SmartDrives.length <= 0) {
-          alert({
-            title: L('failures.title'),
-            message: L('failures.no-smartdrives-found'),
-            okButtonText: L('buttons.ok')
-          });
-          return false;
-        }
-
-        // make sure we have only one smartdrive
-        if (BluetoothService.SmartDrives.length > 1) {
-          alert({
-            title: L('failures.title'),
-            message: L('failures.too-many-smartdrives-found'),
-            okButtonText: L('buttons.ok')
-          });
-          return false;
-        }
-
-        // these are the smartdrives that are pushed into an array on the bluetooth service
-        const sds = BluetoothService.SmartDrives;
-
-        // map the smart drives to get all of the addresses
-        const addresses = sds.map(sd => `${sd.address}`);
-
-        // present action dialog to select which smartdrive to connect to
-        return action({
-          title: L('settings.select-smartdrive'),
-          message: L('settings.select-smartdrive'),
-          actions: addresses,
-          cancelButtonText: L('buttons.cancel')
-        }).then(result => {
-          // if user selected one of the smartdrives in the action dialog, attempt to connect to it
-          if (addresses.indexOf(result) > -1) {
-            // save the smartdrive here
-            this.updateSmartDrive(result);
-            appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-            return true;
-          } else {
-            return false;
-          }
-        });
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        this.hideScanning();
-        Log.E('could not scan', err);
+      // make sure we have smartdrives
+      if (BluetoothService.SmartDrives.length <= 0) {
         alert({
           title: L('failures.title'),
-          message: `${L('failures.scan')}\n\n${err}`,
+          message: L('failures.no-smartdrives-found'),
           okButtonText: L('buttons.ok')
         });
         return false;
+      }
+
+      // make sure we have only one smartdrive
+      if (BluetoothService.SmartDrives.length > 1) {
+        alert({
+          title: L('failures.title'),
+          message: L('failures.too-many-smartdrives-found'),
+          okButtonText: L('buttons.ok')
+        });
+        return false;
+      }
+
+      // these are the smartdrives that are pushed into an array on the bluetooth service
+      const sds = BluetoothService.SmartDrives;
+
+      // map the smart drives to get all of the addresses
+      const addresses = sds.map(sd => `${sd.address}`);
+
+      const result = await action({
+        title: L('settings.select-smartdrive'),
+        message: L('settings.select-smartdrive'),
+        actions: addresses,
+        cancelButtonText: L('buttons.cancel')
       });
+      // if user selected one of the smartdrives in the action dialog, attempt to connect to it
+      if (addresses.indexOf(result) > -1) {
+        // save the smartdrive here
+        this.updateSmartDrive(result);
+        appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      this.hideScanning();
+      Log.E('could not scan', err);
+      alert({
+        title: L('failures.title'),
+        message: `${L('failures.scan')}\n\n${err}`,
+        okButtonText: L('buttons.ok')
+      });
+      return false;
+    }
   }
 
-  async connectToSmartDrive(smartDrive) {
-    this._sentryBreadCrumb('Connecting to SmartDrive');
-    if (!smartDrive) return;
-    this.updateSmartDrive(smartDrive.address);
+  async connectToSmartDrive(address: string) {
+    this._sentryBreadCrumb('Connecting to SmartDrive ' + address);
+    this.updateSmartDrive(address);
     // now connect to smart drive
-    return this.smartDrive
-      .connect()
-      .then(() => {
-        return true;
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        alert({
-          title: L('failures.title'),
-          message: L('failures.connect') + '\n\n' + smartDrive.address,
-          okButtonText: L('buttons.ok')
-        });
-        return false;
+    try {
+      await this.smartDrive.connect();
+      return true;
+    } catch (err) {
+      Sentry.captureException(err);
+      alert({
+        title: L('failures.title'),
+        message: L('failures.connect') + '\n\n' + address,
+        okButtonText: L('buttons.ok')
       });
+      return false;
+    }
   }
 
   hasSavedSmartDrive(): boolean {
@@ -2367,35 +2314,22 @@ export class MainViewModel extends Observable {
     );
   }
 
-  async connectToSavedSmartDrive(): Promise<any> {
+  async connectToSavedSmartDrive() {
     if (!this.hasSavedSmartDrive()) {
-      return this.saveNewSmartDrive().then(didSave => {
-        if (didSave) {
-          return this.connectToSavedSmartDrive();
-        }
+      const didSave = await this.saveNewSmartDrive();
+      if (!didSave) {
         return false;
-      });
+      }
     }
 
     // try to connect to the SmartDrive
-    const sd = BluetoothService.SmartDrives.filter(
-      sd => sd.address === this._savedSmartDriveAddress
-    )[0];
-    if (sd) {
-      return this.connectToSmartDrive(sd);
-    } else {
-      const sd = this._bluetoothService.getOrMakeSmartDrive({
-        address: this._savedSmartDriveAddress
-      });
-      return this.connectToSmartDrive(sd);
-    }
+    return this.connectToSmartDrive(this._savedSmartDriveAddress);
   }
 
   async disconnectFromSmartDrive() {
     if (this.smartDrive) {
-      this.smartDrive.disconnect().then(() => {
-        this.motorOn = false;
-      });
+      await this.smartDrive.disconnect();
+      this.motorOn = false;
     }
   }
 
@@ -2614,7 +2548,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  saveErrorToDatabase(errorCode: string, errorId: number) {
+  async saveErrorToDatabase(errorCode: string, errorId: number) {
     if (errorId === undefined) {
       // we use this when saving a local error
       errorId = -1;
@@ -2639,144 +2573,124 @@ export class MainViewModel extends Observable {
     }
   }
 
-  getRecentErrors(numErrors: number, offset: number = 0) {
-    if (this._sqliteService === undefined) {
-      return Promise.resolve([]);
-    }
+  async getRecentErrors(numErrors: number, offset: number = 0) {
     // this._sentryBreadCrumb('getRecentErrors', numErrors, offset);
     let errors = [];
-    return this._sqliteService
-      .getAll({
-        tableName: SmartDriveData.Errors.TableName,
-        orderBy: SmartDriveData.Errors.IdName,
-        ascending: false,
-        limit: numErrors,
-        offset: offset
-      })
-      .then(rows => {
-        if (rows && rows.length) {
-          errors = rows.map(r => {
-            const translationKey =
-              'error-history.errors.' + (r && r[2]).toLowerCase();
-            return {
-              time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-              code: L(translationKey),
-              id: r && r[3],
-              uuid: r && r[4]
-            };
-          });
-        }
-        return errors;
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Could not get errors', err);
-        return errors;
-      });
+    try {
+      const rows = await this._sqliteService
+        .getAll({
+          tableName: SmartDriveData.Errors.TableName,
+          orderBy: SmartDriveData.Errors.IdName,
+          ascending: false,
+          limit: numErrors,
+          offset: offset
+        });
+      if (rows && rows.length) {
+        errors = rows.map(r => {
+          const translationKey =
+            'error-history.errors.' + (r && r[2]).toLowerCase();
+          return {
+            time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
+            code: L(translationKey),
+            id: r && r[3],
+            uuid: r && r[4]
+          };
+        });
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Could not get errors', err);
+    }
+    return errors;
   }
 
-  saveSmartDriveData(args: {
+  async saveSmartDriveData(args: {
     driveDistance?: number;
     coastDistance?: number;
     battery?: number;
   }) {
-    // save state to LS
-    this.saveSmartDriveStateToLS();
-    // now save to database
-    const driveDistance = args.driveDistance || 0;
-    const coastDistance = args.coastDistance || 0;
-    const battery = args.battery || 0;
-    if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
-      return Promise.reject(
-        'Must provide at least one valid usage data point!'
-      );
-    }
-    return this.getRecentInfoFromDatabase(1)
-      .then((infos: any[]) => {
-        // this._sentryBreadCrumb('recent infos', infos);
-        if (!infos || !infos.length) {
-          // record the data if we have it
-          if (driveDistance > 0 && coastDistance > 0) {
-            // make the first entry for computing distance differences
-            const firstEntry = SmartDriveData.Info.newInfo(
-              undefined,
-              subDays(new Date(), 1),
-              0,
-              driveDistance,
-              coastDistance
-            );
-            return this._sqliteService.insertIntoTable(
-              SmartDriveData.Info.TableName,
-              firstEntry
-            );
-          }
-        }
-      })
-      .then(() => {
-        return this.getTodaysUsageInfoFromDatabase();
-      })
-      .then(u => {
-        if (u[SmartDriveData.Info.IdName]) {
-          // there was a record, so we need to update it. we add the
-          // already used battery plus the amount of new battery
-          // that has been used
-          const updates = SmartDriveData.Info.updateInfo(args, u);
-          return this._sqliteService.updateInTable(
-            SmartDriveData.Info.TableName,
-            updates,
-            {
-              [SmartDriveData.Info.IdName]: u.id
-            }
-          );
-        } else {
-          const newEntry = SmartDriveData.Info.newInfo(
+    try {
+      // save state to LS
+      this.saveSmartDriveStateToLS();
+      // now save to database
+      const driveDistance = args.driveDistance || 0;
+      const coastDistance = args.coastDistance || 0;
+      const battery = args.battery || 0;
+      if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
+        return;
+      }
+      const infos = await this.getRecentInfoFromDatabase(1);
+      // this._sentryBreadCrumb('recent infos', infos);
+      if (!infos || !infos.length) {
+        // record the data if we have it
+        if (driveDistance > 0 && coastDistance > 0) {
+          // make the first entry for computing distance differences
+          const firstEntry = SmartDriveData.Info.newInfo(
             undefined,
-            new Date(),
-            battery,
+            subDays(new Date(), 1),
+            0,
             driveDistance,
             coastDistance
           );
-          // this is the first record, so we create it
-          return this._sqliteService.insertIntoTable(
+          await this._sqliteService.insertIntoTable(
             SmartDriveData.Info.TableName,
-            newEntry
+            firstEntry
           );
         }
-      })
-      .then(() => {
-        return this.updateChartData();
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Failed saving usage:', err);
-        alert({
-          title: L('failures.title'),
-          message: `${L('failures.saving-usage')}\n\n${err}`,
-          okButtonText: L('buttons.ok')
-        });
-      });
+      }
+      const u = await this.getTodaysUsageInfoFromDatabase();
+      if (u[SmartDriveData.Info.IdName]) {
+        // there was a record, so we need to update it. we add the
+        // already used battery plus the amount of new battery
+        // that has been used
+        const updates = SmartDriveData.Info.updateInfo(args, u);
+        await this._sqliteService.updateInTable(
+          SmartDriveData.Info.TableName,
+          updates,
+          {
+            [SmartDriveData.Info.IdName]: u.id
+          }
+        );
+      } else {
+        const newEntry = SmartDriveData.Info.newInfo(
+          undefined,
+          new Date(),
+          battery,
+          driveDistance,
+          coastDistance
+        );
+        // this is the first record, so we create it
+        await this._sqliteService.insertIntoTable(
+          SmartDriveData.Info.TableName,
+          newEntry
+        );
+      }
+      this.updateChartData();
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Failed saving usage:', err);
+    }
   }
 
-  getTodaysUsageInfoFromDatabase() {
-    return this._sqliteService
-      .getLast(SmartDriveData.Info.TableName, SmartDriveData.Info.IdName)
-      .then(e => {
-        const date = new Date((e && e[1]) || null);
-        if (e && e[1] && isToday(date)) {
-          // @ts-ignore
-          return SmartDriveData.Info.loadInfo(...e);
-        } else {
-          return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
-        }
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        // nothing was found
+  async getTodaysUsageInfoFromDatabase() {
+    try {
+      const e = await this._sqliteService
+        .getLast(SmartDriveData.Info.TableName, SmartDriveData.Info.IdName);
+      const date = new Date((e && e[1]) || null);
+      if (e && e[1] && isToday(date)) {
+        // @ts-ignore
+        return SmartDriveData.Info.loadInfo(...e);
+      } else {
         return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
-      });
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      // nothing was found
+      return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
+    }
   }
 
-  getUsageInfoFromDatabase(numDays: number) {
+  async getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
     let coastDistance = 0;
     let driveDistance = 0;
@@ -2814,7 +2728,7 @@ export class MainViewModel extends Observable {
       });
   }
 
-  getRecentInfoFromDatabase(numRecentEntries: number) {
+  async getRecentInfoFromDatabase(numRecentEntries: number) {
     try {
       return this._sqliteService
         .getAll({
@@ -2825,11 +2739,11 @@ export class MainViewModel extends Observable {
         });
     } catch (err) {
       Sentry.captureException(err);
-      return Promise.reject(err);
+      return [];
     }
   }
 
-  getUnsentInfoFromDatabase(numEntries: number) {
+  async getUnsentInfoFromDatabase(numEntries: number) {
     try {
       return this._sqliteService
         .getAll({
@@ -2843,7 +2757,7 @@ export class MainViewModel extends Observable {
         });
     } catch (err) {
       Sentry.captureException(err);
-      return Promise.reject(err);
+      return [];
     }
   }
 
@@ -2874,116 +2788,97 @@ export class MainViewModel extends Observable {
         .catch(err => {
           Sentry.captureException(err);
         });
-    } else {
-      return Promise.resolve();
     }
   }
 
-  sendErrorsToServer(numErrors: number) {
-    if (this._sqliteService === undefined) {
-      return Promise.reject('no sqlite service');
-    }
-    return this._sqliteService
-      .getAll({
-        tableName: SmartDriveData.Errors.TableName,
-        orderBy: SmartDriveData.Errors.IdName,
-        queries: {
-          [SmartDriveData.Errors.HasBeenSentName]: 0
-        },
-        ascending: true,
-        limit: numErrors
-      })
-      .then(errors => {
-        if (errors && errors.length) {
-          // now send them one by one
-          const promises = errors.map(e => {
-            // @ts-ignore
-            e = SmartDriveData.Errors.loadError(...e);
-            return this._kinveyService.sendError(
-              e,
-              e[SmartDriveData.Errors.UuidName]
-            );
-          });
-          return Promise.all(promises);
-        }
-      })
-      .then(rets => {
-        if (rets && rets.length) {
-          const promises = rets
-            .map(r => r.content.toJSON())
-            .map(r => {
-              const id = r['_id'];
-              if (id) {
-                return this._sqliteService.updateInTable(
-                  SmartDriveData.Errors.TableName,
-                  {
-                    [SmartDriveData.Errors.HasBeenSentName]: 1
-                  },
-                  {
-                    [SmartDriveData.Errors.UuidName]: id
-                  }
-                );
-              } else {
-                Log.E('no id returned by kinvey!', r);
-              }
-            });
-          return Promise.all(promises);
-        }
-      })
-      .catch(err => {
-        Sentry.captureException(err);
-        Log.E('Error sending errors to server:', err);
+  async sendErrorsToServer(numErrors: number) {
+    try {
+      const errors = await this._sqliteService
+        .getAll({
+          tableName: SmartDriveData.Errors.TableName,
+          orderBy: SmartDriveData.Errors.IdName,
+          queries: {
+            [SmartDriveData.Errors.HasBeenSentName]: 0
+          },
+          ascending: true,
+          limit: numErrors
+        });
+      // now send them one by one
+      const sendPromises = errors.map(e => {
+        // @ts-ignore
+        e = SmartDriveData.Errors.loadError(...e);
+        return this._kinveyService.sendError(
+          e,
+          e[SmartDriveData.Errors.UuidName]
+        );
       });
+      const rets = await Promise.all(sendPromises) as any[];
+      const updatePromises = rets
+        .map(r => r.content.toJSON())
+        .map(r => {
+          const id = r['_id'];
+          if (id) {
+            return this._sqliteService.updateInTable(
+              SmartDriveData.Errors.TableName,
+              {
+                [SmartDriveData.Errors.HasBeenSentName]: 1
+              },
+              {
+                [SmartDriveData.Errors.UuidName]: id
+              }
+            );
+          } else {
+            Log.E('no id returned by kinvey!', r);
+          }
+        });
+      return Promise.all(updatePromises);
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('Error sending errors to server:', err);
+    }
   }
 
-  sendInfosToServer(numInfo: number) {
-    return this.getUnsentInfoFromDatabase(numInfo)
-      .then(infos => {
-        if (infos && infos.length) {
-          // now send them one by one
-          const promises = infos.map(i => {
-            // @ts-ignore
-            i = SmartDriveData.Info.loadInfo(...i);
-            try {
-              i[SmartDriveData.Info.RecordsName] = JSON.parse(i[SmartDriveData.Info.RecordsName]);
-            } catch (err) {
-              Log.E('parse error', err);
-            }
-            return this._kinveyService.sendInfo(
-              i,
-              i[SmartDriveData.Info.UuidName]
-            );
-          });
-          return Promise.all(promises);
+  async sendInfosToServer(numInfo: number) {
+    try {
+      const infos = await this.getUnsentInfoFromDatabase(numInfo);
+      // now send them one by one
+      const sendPromises = infos.map(i => {
+        // @ts-ignore
+        i = SmartDriveData.Info.loadInfo(...i);
+        try {
+          i[SmartDriveData.Info.RecordsName] = JSON.parse(i[SmartDriveData.Info.RecordsName]);
+        } catch (err) {
+          Log.E('parse error', err);
         }
-      })
-      .then(rets => {
-        if (rets && rets.length) {
-          const promises = rets
-            .map(r => r.content.toJSON())
-            .map(r => {
-              const id = r['_id'];
-              if (id) {
-                return this._sqliteService.updateInTable(
-                  SmartDriveData.Info.TableName,
-                  {
-                    [SmartDriveData.Info.HasBeenSentName]: 1
-                  },
-                  {
-                    [SmartDriveData.Info.UuidName]: id
-                  }
-                );
-              } else {
-                Log.E('no id returned by kinvey!', r);
-              }
-            });
-          return Promise.all(promises);
-        }
-      })
-      .catch(e => {
-        Sentry.captureException(e);
-        Log.E('Error sending infos to server:', e);
+        return this._kinveyService.sendInfo(
+          i,
+          i[SmartDriveData.Info.UuidName]
+        );
       });
+      const rets = await Promise.all(sendPromises) as any[];
+      const updatePromises = rets
+        .map(r => r.content.toJSON())
+        .map(r => {
+          const id = r['_id'];
+          if (id) {
+            return this._sqliteService.updateInTable(
+              SmartDriveData.Info.TableName,
+              {
+                [SmartDriveData.Info.HasBeenSentName]: 1
+              },
+              {
+                [SmartDriveData.Info.UuidName]: id
+              }
+            );
+          } else {
+            Log.E('no id returned by kinvey!', r);
+          }
+        });
+      return Promise.all(updatePromises);
+    } catch (e) {
+      Sentry.captureException(e);
+      Log.E('Error sending infos to server:', e);
+    }
   }
 
   private _sentryBreadCrumb(message: string) {
