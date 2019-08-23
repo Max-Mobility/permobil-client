@@ -83,7 +83,7 @@
 
     // Coast_Time and Push_Count (distance) buttons and description label
     <GridLayout row="3" rows="*, *" columns="*, auto, auto, *"
-      [visibility]="tabSelectedIndex === 0 || 1 ? 'visible' : 'collapsed'">
+      [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'">
       <Button row="0" col="1" [text]="'general.coast-time' | translate"
         [class]="viewMode === 0 ? 'coast-time-btn-enabled' : 'coast-time-btn-disabled'"
         (tap)="onCoastTimeTap()"></Button>
