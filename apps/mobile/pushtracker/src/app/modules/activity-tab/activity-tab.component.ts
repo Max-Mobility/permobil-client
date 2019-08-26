@@ -83,6 +83,8 @@ export class ActivityTabComponent implements OnInit {
   private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
+  activityLoaded: boolean = false;
+
   constructor(
     private _logService: LoggingService,
     private _activityService: ActivityService,
@@ -128,6 +130,15 @@ export class ActivityTabComponent implements OnInit {
     this._initMonthViewStyle();
   }
 
+  refreshPlots(args) {
+    const pullRefresh = args.object;
+    this.activityLoaded = false;
+    this.onSelectedIndexChanged({ object: { selectedIndex: this.tabSelectedIndex } }).then(() => {
+      this.activityLoaded = true;
+      pullRefresh.refreshing = false;
+    });
+  }
+
   ngOnInit() {
     this._logService.logBreadCrumb('activity-tab.component OnInit');
     this.userService.user.subscribe(user => {
@@ -149,7 +160,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   // displaying the old and new TabView selectedIndex
-  onSelectedIndexChanged(args) {
+  async onSelectedIndexChanged(args) {
     const date = this.currentDayInView;
     this.tabSelectedIndex = args.object.selectedIndex;
     if (this.tabSelectedIndex === 0) {
@@ -311,6 +322,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private async _loadDailyActivity() {
+    this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
     this.weekStart = this._getFirstDayOfWeek(date);
@@ -337,10 +349,18 @@ export class ActivityTabComponent implements OnInit {
 
       const days = weeklyActivity.days;
 
-      if (this.viewMode === ViewMode.DISTANCE)
-        this._usageService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
-      else
-        this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+      if (days) {
+        if (this.viewMode === ViewMode.DISTANCE)
+          this._usageService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+        else
+          this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+      }
+      else {
+        if (this.viewMode === ViewMode.DISTANCE)
+          this._usageService.dailyActivity = { distance_smartdrive_drive: 0, distance_smartdrive_coast: 0, distance_smartdrive_drive_start: 0, distance_smartdrive_coast_start: 0 };
+        else
+          this._activityService.dailyActivity = { push_count: 0, coast_time_avg: 0 };
+      }
 
       this.dailyActivity = new ObservableArray(this._formatActivityForView(0));
 
@@ -374,6 +394,7 @@ export class ActivityTabComponent implements OnInit {
       this._initDayChartTitle();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
+      this.activityLoaded = true;
     });
   }
 
@@ -404,6 +425,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private async _loadWeeklyActivity() {
+    this.activityLoaded = false;
     let didLoad = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable = (this.viewMode === ViewMode.DISTANCE && (this.weekStart.toUTCString() in this._weeklyUsageCache)) ||
@@ -478,6 +500,7 @@ export class ActivityTabComponent implements OnInit {
     }
     if (this.tabSelectedIndex === 1)
       this._calculateWeeklyActivityYAxisMax();
+    this.activityLoaded = true;
   }
 
   private _calculateWeeklyActivityYAxisMax() {
