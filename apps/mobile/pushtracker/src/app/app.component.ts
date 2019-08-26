@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Fab } from '@nstudio/nativescript-floatingactionbutton';
+import { PullToRefresh } from '@nstudio/nativescript-pulltorefresh';
 import { Log, PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
@@ -29,6 +30,7 @@ registerElement(
   'PreviousNextView',
   () => require('nativescript-iqkeyboardmanager').PreviousNextView
 );
+registerElement('PullToRefresh', () => PullToRefresh);
 
 @Component({
   selector: 'ns-app',
