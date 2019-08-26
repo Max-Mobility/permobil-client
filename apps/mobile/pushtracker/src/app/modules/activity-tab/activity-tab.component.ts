@@ -12,6 +12,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, STORAGE_KEYS } from '~/app/enums';
 import { ActivityService, LoggingService, PushTrackerUserService } from '../../services';
 import { SmartDriveUsageService } from '~/app/services/smartdrive-usage.service';
+import { PushTrackerUser } from '@permobil/core/src';
 
 @Component({
   selector: 'activity-tab',
@@ -19,6 +20,7 @@ import { SmartDriveUsageService } from '~/app/services/smartdrive-usage.service'
   templateUrl: 'activity-tab.component.html'
 })
 export class ActivityTabComponent implements OnInit {
+  user: PushTrackerUser;
   tabItems: SegmentedBarItem[];
   tabSelectedIndex: number;
 
@@ -69,12 +71,12 @@ export class ActivityTabComponent implements OnInit {
   private _calendar: RadCalendar;
   private _dayViewTimeArray: number[] = [];
   private _dailyActivityCache = {}; // cache for coast time and push count
-  private _dailyUsageCache = {}; // cache for distance
 
   // Member variabes for week view
   weeklyActivity: ObservableArray<any[]>;
   weeklyActivityAnnotationValue: number = 0;
   private _weeklyActivityCache = {};
+  private _weeklyUsageCache = {};
 
   // Colors
   private _colorWhite = new Color('#fff');
@@ -89,6 +91,7 @@ export class ActivityTabComponent implements OnInit {
     private _params: ModalDialogParams,
     private userService: PushTrackerUserService
   ) {
+    this.getUser();
     // init the segmented bar items
     this.tabItems = [];
     [
@@ -129,6 +132,12 @@ export class ActivityTabComponent implements OnInit {
     this._logService.logBreadCrumb('activity-tab.component OnInit');
     this.userService.user.subscribe(user => {
       this.savedTheme = user.data.theme_preference;
+    });
+  }
+
+  getUser() {
+    this.userService.user.subscribe(user => {
+      this.user = user;
     });
   }
 
@@ -241,11 +250,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
+      this._loadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
+      this._loadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -310,26 +321,50 @@ export class ActivityTabComponent implements OnInit {
         const timeDiff = Math.abs(date2.getTime() - date1.getTime());
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
       };
-      const weeklyActivity = this._weeklyActivityCache[this.weekStart.toUTCString()].weeklyActivity;
+
+      let weeklyActivity = null;
+
+      if (this.viewMode === ViewMode.DISTANCE)
+        weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()].weeklyActivity;
+      else
+        weeklyActivity = this._weeklyActivityCache[this.weekStart.toUTCString()].weeklyActivity;
+
       const days = weeklyActivity.days;
-      this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+
+      if (this.viewMode === ViewMode.DISTANCE)
+        this._usageService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+      else
+        this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+
       this.dailyActivity = new ObservableArray(this._formatActivityForView(0));
-      if (this._activityService.dailyActivity) {
-        // format chart description for viewMode
-        if ((this.viewMode === ViewMode.COAST_TIME)) {
-          this.chartDescription = (this._activityService.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-        } else if ((this.viewMode === ViewMode.PUSH_COUNT)) {
-          this.chartDescription = (this._activityService.dailyActivity.push_count || 0) + ' pushes';
+
+      if (this.viewMode !== ViewMode.DISTANCE) {
+        if (this._activityService.dailyActivity) {
+          // format chart description for viewMode
+          if ((this.viewMode === ViewMode.COAST_TIME)) {
+            this.chartDescription = (this._activityService.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+          } else if ((this.viewMode === ViewMode.PUSH_COUNT)) {
+            this.chartDescription = (this._activityService.dailyActivity.push_count || 0) + ' pushes';
+          }
+        }
+        else {
+          // format chart description for viewMode
+          if ((this.viewMode === ViewMode.COAST_TIME)) {
+            this.chartDescription = (0).toFixed(1) + ' s';
+          } else if ((this.viewMode === ViewMode.PUSH_COUNT)) {
+            this.chartDescription = (0) + ' pushes';
+          }
         }
       }
       else {
-        // format chart description for viewMode
-        if ((this.viewMode === ViewMode.COAST_TIME)) {
-          this.chartDescription = (0).toFixed(1) + ' s';
-        } else if ((this.viewMode === ViewMode.PUSH_COUNT)) {
-          this.chartDescription = (0) + ' pushes';
+        if (this._usageService.dailyActivity) {
+          this.chartDescription = '<insert_distance> <insert_unit>';
+        }
+        else {
+          this.chartDescription = '<insert_distance> <insert_unit>';
         }
       }
+
       this._initDayChartTitle();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
@@ -364,8 +399,13 @@ export class ActivityTabComponent implements OnInit {
   private async _loadWeeklyActivity() {
     let didLoad = false;
     // Check if data is available in daily activity cache first
-    if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
-      didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
+    const cacheAvailable = (this.viewMode === ViewMode.DISTANCE && (this.weekStart.toUTCString() in this._weeklyUsageCache)) ||
+      ((this.viewMode === ViewMode.COAST_TIME || this.viewMode === ViewMode.PUSH_COUNT) && (this.weekStart.toUTCString() in this._weeklyActivityCache));
+    if (!cacheAvailable) {
+      if (this.viewMode === ViewMode.DISTANCE)
+        didLoad = await this._usageService.loadWeeklyActivity(this.weekStart);
+      else
+        didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
       if (didLoad) {
         this.weeklyActivity = new ObservableArray(
           this._formatActivityForView(1)
@@ -384,11 +424,18 @@ export class ActivityTabComponent implements OnInit {
           this._formatActivityForView(1)
         );
       }
-      // Cache activity by day so we can easily pull it up next time
-      this._weeklyActivityCache[this.weekStart.toUTCString()] = {
-        chartData: this.weeklyActivity,
-        weeklyActivity: this._activityService.weeklyActivity
-      };
+      if (this.viewMode === ViewMode.DISTANCE) {
+        this._weeklyUsageCache[this.weekStart.toUTCString()] = {
+          chartData: this.weeklyActivity,
+          weeklyActivity: this._usageService.weeklyActivity
+        };
+      }
+      else {
+        this._weeklyActivityCache[this.weekStart.toUTCString()] = {
+          chartData: this.weeklyActivity,
+          weeklyActivity: this._activityService.weeklyActivity
+        };
+      }
       this._updateWeeklyActivityAnnotationValue();
     } else {
       // We have the data cached. Pull it up
@@ -447,7 +494,7 @@ export class ActivityTabComponent implements OnInit {
 
   private _formatActivityForView(index: number) {
     if (index === 0) {
-      const activity = this._activityService.dailyActivity;
+      const activity = (this.viewMode === ViewMode.DISTANCE ? this._usageService.dailyActivity : this._activityService.dailyActivity);
 
       if (activity && activity.records) {
 
@@ -471,6 +518,7 @@ export class ActivityTabComponent implements OnInit {
           if (records && j < records.length) {
             while (j < records.length) {
               const record = records[j];
+              if (this.viewMode === ViewMode.DISTANCE) console.log(record);
               const start_time = record.start_time;
               const date = new Date(0); // The 0 there is the key, which sets the date to the epoch
               date.setUTCMilliseconds(start_time);
@@ -480,47 +528,51 @@ export class ActivityTabComponent implements OnInit {
               if (recordMinutes !== 0) {
                 recordTimePoint += 0.5;
               }
+              if (this.viewMode === ViewMode.DISTANCE) console.log(timePoint, recordTimePoint);
               if (timePoint === recordTimePoint) {
                 result.push({
                   xAxis: timePoint,
                   coastTime: record.coast_time_avg || 0,
-                  pushCount: record.push_count || 0
+                  pushCount: record.push_count || 0,
+                  driveDistance: this._updateDistanceUnit(this._motorTicksToMiles(record.distance_smartdrive_drive - record.distance_smartdrive_drive_start)) || 0,
+                  coastDistance: this._updateDistanceUnit(this._caseTicksToMiles(record.distance_smartdrive_coast - record.distance_smartdrive_coast_start)) || 0
                 });
+                if (this.viewMode === ViewMode.DISTANCE) console.log('Appended to result', result[result.length - 1]);
                 j += 1;
                 continue;
               } else {
-                result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0 });
+                result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
                 break;
               }
             }
           } else {
-            result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0 });
+            result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
           }
         }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '   ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '    ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '     ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '      ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '   ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '    ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '     ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '      ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
         return result;
       }
       else {
         const result = [];
         for (const i in this._dayViewTimeArray) {
           const timePoint = this._dayViewTimeArray[i];
-          result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0 });
+          result.push({ xAxis: timePoint, coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
         }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '   ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '    ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '     ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '      ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '   ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '    ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '     ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '      ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '       ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
         return result;
       }
     } else if (index === 1) {
@@ -638,7 +690,6 @@ export class ActivityTabComponent implements OnInit {
   }
 
   isNextMonthButtonEnabled() {
-    console.log(this.currentDayInView);
     const today = new Date();
     const month = today.getMonth();
     const currentWeekStart = this._getFirstDayOfWeek(this.currentDayInView);
@@ -753,121 +804,55 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private _updateDayChartLabel() {
-    if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
-      // No cache
-      const activity = this._activityService.dailyActivity;
+    const activity = this._activityService.dailyActivity;
 
-      if (activity) {
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' s';
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' pushes';
-        } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
-        }
+    if (activity) {
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (activity.coast_time_avg || 0).toFixed(1) + ' s';
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        this.chartDescription = (activity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
-      else {
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          this.chartDescription =
-            (0).toFixed(1) + ' s';
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = (0) + ' pushes';
-        } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
-        }
+    }
+    else {
+      // format chart description for viewMode
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        this.chartDescription =
+          (0).toFixed(1) + ' s';
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        this.chartDescription = (0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
-
-    } else {
-      // We are showing cached data
-      const cache = this._dailyActivityCache[
-        this.currentDayInView.toUTCString()
-      ];
-      this.dailyActivity = cache.chartData;
-
-      if (cache.dailyActivity) {
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          this.chartDescription =
-            (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription =
-            (cache.dailyActivity.push_count || 0) + ' pushes';
-        } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
-        }
-      }
-      else {
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          this.chartDescription =
-            (0).toFixed(1) + ' s';
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription =
-            (0) + ' pushes';
-        } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
-        }
-      }
-
     }
   }
 
   private _updateDailyActivityAnnotationValue() {
-    if (!(this.currentDayInView.toUTCString() in this._dailyActivityCache)) {
-      // No cache
-      const activity = this._activityService.dailyActivity;
-      if (activity) {
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          // coast time
-          this.dailyActivityAnnotationValue = activity.coast_time_avg || 0;
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          // push count
-          const records = activity.records || [];
-          let pushCountTotal = 0;
-          for (const i in records) {
-            const record = records[i];
-            pushCountTotal += record.push_count;
-          }
-          this.dailyActivityAnnotationValue =
-            parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
+    const activity = this._activityService.dailyActivity;
+    if (activity) {
+      if (this.viewMode === ViewMode.COAST_TIME) {
+        // coast time
+        this.dailyActivityAnnotationValue = activity.coast_time_avg || 0;
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        // push count
+        const records = activity.records || [];
+        let pushCountTotal = 0;
+        for (const i in records) {
+          const record = records[i];
+          pushCountTotal += record.push_count;
         }
-        else if (this.viewMode === ViewMode.DISTANCE) {
-          this.dailyActivityAnnotationValue = 0;
-        }
+        this.dailyActivityAnnotationValue =
+          parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
       }
-      else
-        this.dailyActivityAnnotationValue = 0;
-    } else {
-      // We are showing cached data
-      const cache = this._dailyActivityCache[
-        this.currentDayInView.toUTCString()
-      ];
-      if (cache) {
-        if (this.viewMode === ViewMode.COAST_TIME) {
-          // coast_time
-          this.dailyActivityAnnotationValue = cache.dailyActivity.coast_time_avg || 0;
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          // push_count
-          const records = cache.dailyActivity.records || [];
-          let pushCountTotal = 0;
-          for (const i in records) {
-            const record = records[i];
-            pushCountTotal += record.push_count;
-          }
-          this.dailyActivityAnnotationValue =
-            parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
-        }
-        else if (this.viewMode === ViewMode.DISTANCE) {
-          this.dailyActivityAnnotationValue = 0;
-        }
-      }
-      else {
+      else if (this.viewMode === ViewMode.DISTANCE) {
         this.dailyActivityAnnotationValue = 0;
       }
     }
+    else
+      this.dailyActivityAnnotationValue = 0;
   }
 
   private _updateWeekChartLabel() {
@@ -936,6 +921,25 @@ export class ActivityTabComponent implements OnInit {
         this.weeklyActivityAnnotationValue = 0;
       }
     }
+  }
+
+  _motorTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
+  }
+
+  _caseTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
+  }
+
+  _milesToKilometers(miles: number) {
+    return miles * 1.60934;
+  }
+
+  _updateDistanceUnit(distance: number) {
+    if (this.user.data.distance_unit_preference === 0) {
+      return this._milesToKilometers(distance);
+    }
+    return distance;
   }
 }
 
