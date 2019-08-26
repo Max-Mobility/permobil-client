@@ -23,7 +23,7 @@ export class ActivityTabComponent implements OnInit {
 
   chartTitle: string;
   chartDescription: string;
-  viewMode: ViewMode = ViewMode.COAST_TIME; // 0 = Coast Time is plotted, 1 = Distance is plotted
+  viewMode: ViewMode = ViewMode.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
   savedTheme: string;
 
   dailyActivity: ObservableArray<any[]>;
@@ -203,6 +203,22 @@ export class ActivityTabComponent implements OnInit {
 
   onCoastTimeTap() {
     this.viewMode = ViewMode.COAST_TIME; // set view mode to coast_time
+
+    if (this.tabSelectedIndex === 0) {
+      // day
+      this._updateDayChartLabel();
+      this._updateDailyActivityAnnotationValue();
+      this._calculateDailyActivityYAxisMax();
+    } else if (this.tabSelectedIndex === 1) {
+      // week
+      this._updateWeekChartLabel();
+      this._updateWeeklyActivityAnnotationValue();
+      this._calculateWeeklyActivityYAxisMax();
+    }
+  }
+
+  onPushCountTap() {
+    this.viewMode = ViewMode.PUSH_COUNT; // set view mode for push count
 
     if (this.tabSelectedIndex === 0) {
       // day
@@ -883,5 +899,6 @@ export class ActivityTabComponent implements OnInit {
 
 enum ViewMode {
   'COAST_TIME',
+  'PUSH_COUNT',
   'DISTANCE'
 }

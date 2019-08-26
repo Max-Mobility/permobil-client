@@ -87,6 +87,7 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    console.log(this._weekStart, this._weekEnd);
   }
 
   ngOnInit() {
