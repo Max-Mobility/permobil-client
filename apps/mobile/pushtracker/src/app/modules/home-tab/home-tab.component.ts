@@ -48,6 +48,8 @@ export class HomeTabComponent implements OnInit {
   savedTheme: string;
   coastTimePlotAnnotationValue: number = 1;
   coastTimeGoalMessage: string;
+  coastTimeGoalValue: string;
+  coastTimeGoalUnit: string;
   usageActivity: ObservableArray<any[]>;
   distanceGoalMessage: string;
   distanceGoalValue: string;
@@ -127,16 +129,18 @@ export class HomeTabComponent implements OnInit {
 
   updateProgress() {
     this.coastTimeGoalMessage =
-      'Reach an average coast time of ';
+      'Coast for ';
+    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+    this.coastTimeGoalUnit = ' seconds each day';
     this.distanceGoalMessage = 'Travel ';
     this.distanceGoalValue =
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
         1
       );
-    this.distanceGoalUnit =
+      this.distanceGoalUnit =
       (this.user.data.distance_unit_preference === 0
-        ? ' km per day'
-        : ' mi per day');
+        ? ' kilometers per day'
+        : ' miles per day');
     this.distanceCirclePercentageMaxValue =
       '/' +
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
@@ -324,7 +328,9 @@ export class HomeTabComponent implements OnInit {
 
     this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
     this.coastTimeGoalMessage =
-      'Reach an average coast time of ';
+      'Coast for ';
+    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+    this.coastTimeGoalUnit = ' seconds each day';
     this.distanceGoalMessage = 'Travel ';
     this.distanceGoalValue =
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
@@ -332,8 +338,8 @@ export class HomeTabComponent implements OnInit {
       );
     this.distanceGoalUnit =
       (this.user.data.distance_unit_preference === 0
-        ? ' km per day'
-        : ' mi per day');
+        ? ' kilometers per day'
+        : ' miles per day');
     this.distanceCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
@@ -350,8 +356,10 @@ export class HomeTabComponent implements OnInit {
         this.user.data.activity_goal_coast_time) *
       100;
 
-    this.coastTimeGoalMessage =
-      'Reach an average coast time of ';
+      this.coastTimeGoalMessage =
+      'Coast for ';
+    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+    this.coastTimeGoalUnit = ' seconds each day';
     this.distanceCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
@@ -506,10 +514,10 @@ export class HomeTabComponent implements OnInit {
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
         1
       );
-    this.distanceGoalUnit =
+      this.distanceGoalUnit =
       (this.user.data.distance_unit_preference === 0
-        ? ' km per day'
-        : ' mi per day');
+        ? ' kilometers per day'
+        : ' miles per day');
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
       this.todayCoastDistance = this._updateDistanceUnit(
