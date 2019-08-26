@@ -301,6 +301,9 @@ export class ActivityTabComponent implements OnInit {
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     this.minDate = new Date('01/01/1999');
     this.maxDate = new Date('01/01/2099');
+    // Get the weekly summary for the current week
+    // Find the dailyactivity for the currentDayInView from the weekly summary
+    // Cache and visualize
     this._loadWeeklyActivity().then(() => {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
       const getIndex = function (date1, date2) { // date1 = Week start, date2 = current date
@@ -329,6 +332,7 @@ export class ActivityTabComponent implements OnInit {
       }
       this._initDayChartTitle();
       this._updateDailyActivityAnnotationValue();
+      this._calculateDailyActivityYAxisMax();
     });
   }
 
@@ -459,14 +463,6 @@ export class ActivityTabComponent implements OnInit {
 
         const result = [];
         const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const day = date.getDate();
-        const range = function (start, end) {
-          return new Array(end - start + 1)
-            .fill(undefined)
-            .map((_, i) => i + start);
-        };
         const records = activity.records;
 
         let j = 0;
