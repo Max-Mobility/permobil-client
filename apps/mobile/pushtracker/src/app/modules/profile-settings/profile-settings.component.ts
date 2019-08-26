@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -6,15 +6,14 @@ import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
-import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { BluetoothService, LoggingService, PushTrackerState, SettingsService } from '../../services';
-import { PushTrackerUserService } from '../../services/pushtracker.user.service';
+import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { MockActionbarComponent } from '../shared/components/mock-actionbar';
 
 @Component({
   selector: 'profile-settings',
@@ -28,6 +27,9 @@ export class ProfileSettingsComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
+  @ViewChild('mockActionBar', { static: false })
+  mockActionBar: ElementRef;
+
   HEIGHT_UNITS: string[];
   HEIGHT: string;
   WEIGHT_UNITS: string[];
@@ -39,13 +41,7 @@ export class ProfileSettingsComponent implements OnInit {
     APP_THEMES.DEFAULT
   );
   CURRENT_LANGUAGE: string;
-  watchIconString: string =
-    this.CURRENT_THEME === APP_THEMES.DEFAULT
-      ? 'watch_question_black'
-      : 'watch_question_white';
-  watchIconOpacity: number =
-    this.CURRENT_THEME === APP_THEMES.DEFAULT ? 0.7 : 1.0;
-  watchIcon: any = imageFromResource(this.watchIconString);
+
   user: PushTrackerUser; // this is our Kinvey.User
   screenHeight: number;
   activeSettingTitle: string = 'Setting';
@@ -62,12 +58,10 @@ export class ProfileSettingsComponent implements OnInit {
 
   constructor(
     public settingsService: SettingsService,
-    public bluetoothService: BluetoothService,
-    private _zone: NgZone,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
-    private userService: PushTrackerUserService,
+    private _userService: PushTrackerUserService,
     private _params: ModalDialogParams
   ) {
     this._page.actionBarHidden = true;
@@ -77,13 +71,6 @@ export class ProfileSettingsComponent implements OnInit {
       this.commitSettingsChange.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
       { leading: true, trailing: true }
-    );
-
-    // set up the status watcher for the pushtracker state
-    this.bluetoothService.on(
-      BluetoothService.pushtracker_status_changed,
-      this.updateWatchIcon,
-      this
     );
 
     // get current app style theme from app-settings on device
@@ -112,57 +99,13 @@ export class ProfileSettingsComponent implements OnInit {
     this.screenHeight = screen.mainScreen.heightDIPs;
   }
 
-  ngAfterViewInit() {
-   // this.updateWatchIcon({});
-  }
-
   getUser() {
-    this.userService.user.subscribe(user => (this.user = user));
+    this._userService.user.subscribe(user => (this.user = user));
   }
 
   closeModal() {
     Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
-  }
-
-  setWatchIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchIconString = `watch_${status}_black`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-      this.watchIconOpacity = 0.7;
-    } else {
-      this.watchIconString = `watch_${status}_white`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-      this.watchIconOpacity = 1.0;
-    }
-  }
-
-  updateWatchIcon(event: any) {
-    const state = (event && event.data && event.data.state) ||
-      BluetoothService.pushTrackerStatus.get('state');
-    switch (state) {
-      default:
-      case PushTrackerState.unknown:
-        console.log('Unknown');
-        this.setWatchIconVariables('question');
-        break;
-      case PushTrackerState.paired:
-        console.log('Paired');
-        this.setWatchIconVariables('empty');
-        break;
-      case PushTrackerState.disconnected:
-        console.log('Disconnected');
-        this.setWatchIconVariables('x');
-        break;
-      case PushTrackerState.connected:
-        console.log('Connected');
-        this.setWatchIconVariables('check');
-        break;
-      case PushTrackerState.ready:
-        console.log('ready');
-        this.setWatchIconVariables('check');
-        break;
-    }
   }
 
   onSliderValueChange(args: any) {
@@ -238,7 +181,7 @@ export class ProfileSettingsComponent implements OnInit {
     switch (this.activeSetting) {
       case 'height':
         this.HEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'height_unit_preference',
           this.listPickerIndex
         );
@@ -246,7 +189,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'weight':
         this.WEIGHT = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'weight_unit_preference',
           this.listPickerIndex
         );
@@ -254,7 +197,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'distance':
         this.DISTANCE = this.listPickerItems[this.listPickerIndex];
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'distance_unit_preference',
           this.listPickerIndex
         );
@@ -295,13 +238,16 @@ export class ProfileSettingsComponent implements OnInit {
         } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
           enableDarkTheme();
         }
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'theme_preference',
           this.CURRENT_THEME
         );
         KinveyUser.update({ theme_preference: this.CURRENT_THEME });
         appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
-        this.updateWatchIcon({});
+        // this.updateWatchIcon({});
+        console.log(
+          'brad - look into sending event to MockActionBar to update watch status styling when theme changes'
+        );
         break;
       case 'language':
         this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];
@@ -333,22 +279,24 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async commitSettingsChange() {
+    const actionbar = this.mockActionBar
+      .nativeElement as MockActionbarComponent;
+
     this.settingsService.saveToFileSystem();
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
       Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
-      // this.setWatchIconVariables('Wait', '.gif');
-      this.setWatchIconVariables('empty');
+      actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
       await pts.map(async pt => {
         try {
           await pt.sendSettingsObject(this.settingsService.settings);
           await pt.sendSwitchControlSettingsObject(
             this.settingsService.switchControlSettings
           );
-          this.setWatchIconVariables('check');
+          actionbar.updateWatchIcon({ data: PushTrackerState.connected });
         } catch (err) {
           // Show watch icon 'X'
-          this.setWatchIconVariables('x');
+          actionbar.updateWatchIcon({ data: PushTrackerState.disconnected });
           this._logService.logException(err);
         }
       });

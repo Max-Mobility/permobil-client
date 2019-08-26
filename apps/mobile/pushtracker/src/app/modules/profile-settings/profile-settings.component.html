@@ -1,9 +1,7 @@
 // profile settings layout
-<GridLayout rows="auto, *" columns="*"
-  [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
+<GridLayout rows="auto, *" columns="*" [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'settings-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <Image #watchImage row="0" stretch="aspectFit" [src]="watchIcon" [opacity]="watchIconOpacity" horizontalAlignment="right" width="28" height="28" marginRight="15"></Image>
+  <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="true" [showUpdateBtn]="true" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">

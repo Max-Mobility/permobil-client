@@ -22,7 +22,6 @@ export class MockActionbarComponent implements AfterViewInit {
   @Input() title: string;
   @Input() backNavIcon = 0; // default is the back arrow
 
-  // @Input() watchIcon: string; // icon for the watch Image
   @Input() showSettingsBtn = false; // no emitter
   @Input() showInfoBtn = false; // no emitter
   @Input() showSupportBtn = false; // no emitter
@@ -35,7 +34,6 @@ export class MockActionbarComponent implements AfterViewInit {
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
   @Input() showWatchBtn = false;
-  @Output() watchTapEvent = new EventEmitter();
 
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
@@ -68,13 +66,13 @@ export class MockActionbarComponent implements AfterViewInit {
     // set up the status watcher for the pushtracker state
     this._bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
-      this._updateWatchIcon,
+      this.updateWatchIcon,
       this
     );
   }
 
   ngAfterViewInit() {
-    this._updateWatchIcon({});
+    this.updateWatchIcon({});
   }
 
   onNavBtnTap() {
@@ -101,7 +99,7 @@ export class MockActionbarComponent implements AfterViewInit {
         viewContainerRef: this._vcRef
       })
       .catch(err => {
-        console.log(err);
+        Log.E(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',
@@ -123,7 +121,7 @@ export class MockActionbarComponent implements AfterViewInit {
         viewContainerRef: this._vcRef
       })
       .catch(err => {
-        console.log(err);
+        Log.E(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',
@@ -141,7 +139,7 @@ export class MockActionbarComponent implements AfterViewInit {
         viewContainerRef: this._vcRef
       })
       .catch(err => {
-        console.log(err);
+        Log.E(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',
@@ -159,6 +157,7 @@ export class MockActionbarComponent implements AfterViewInit {
         viewContainerRef: this._vcRef
       })
       .catch(err => {
+        Log.E(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',
@@ -167,17 +166,7 @@ export class MockActionbarComponent implements AfterViewInit {
       });
   }
 
-  private _setWatchIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchIconString = `watch_${status}_black`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    } else {
-      this.watchIconString = `watch_${status}_white`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    }
-  }
-
-  private _updateWatchIcon(event: any) {
+  public updateWatchIcon(event: any) {
     this._zone.run(() => {
       Log.D('watch status changed', event.data);
       const state =
@@ -207,6 +196,16 @@ export class MockActionbarComponent implements AfterViewInit {
           break;
       }
     });
+  }
+
+  private _setWatchIconVariables(status: string) {
+    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+      this.watchIconString = `watch_${status}_black`;
+      this.watchIcon = imageFromResource(this.watchIconString);
+    } else {
+      this.watchIconString = `watch_${status}_white`;
+      this.watchIcon = imageFromResource(this.watchIconString);
+    }
   }
 }
 
