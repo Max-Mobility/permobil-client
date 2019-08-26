@@ -38,7 +38,7 @@
           [majorStep]="yAxisStep" labelFormat="%.1f">
         </LinearAxis>
         <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis"
-          [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
+          [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
         <Palette tkCartesianPalette seriesName="DailyActivity">
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
@@ -63,7 +63,7 @@
           horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
           [majorStep]="yAxisStep" labelFormat="%.1f"></LinearAxis>
         <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
-          [valueProperty]="viewMode === 0 ? 'coastTime' : 'pushCount'"> </BarSeries>
+          [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
         <Palette tkCartesianPalette seriesName="WeeklyActivity">
           <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
             [strokeColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"></PaletteEntry>
