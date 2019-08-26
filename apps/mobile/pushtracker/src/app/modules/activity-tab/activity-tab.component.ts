@@ -84,6 +84,7 @@ export class ActivityTabComponent implements OnInit {
   private _colorDarkGrey = new Color('#727377');
 
   activityLoaded: boolean = false;
+  private distanceUnit: string;
 
   constructor(
     private _logService: LoggingService,
@@ -149,6 +150,7 @@ export class ActivityTabComponent implements OnInit {
   getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
+      this.distanceUnit = (this.user.data.distance_unit_preference === 0 ? ' km' : ' mi');
     });
   }
 
@@ -384,10 +386,11 @@ export class ActivityTabComponent implements OnInit {
       }
       else {
         if (this._usageService.dailyActivity) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
+          this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(this._usageService.dailyActivity.distance_smartdrive_coast - this._usageService.dailyActivity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+            this.distanceUnit;
         }
         else {
-          this.chartDescription = '<insert_distance> <insert_unit>';
+          this.chartDescription = '0 ' + this.distanceUnit;
         }
       }
 
@@ -486,7 +489,8 @@ export class ActivityTabComponent implements OnInit {
           this.chartDescription =
             (cache.weeklyActivity.push_count || 0) + ' pushes';
         } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
+          this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+            this.distanceUnit;
         }
 
         this._initWeekChartTitle();
@@ -540,7 +544,8 @@ export class ActivityTabComponent implements OnInit {
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' pushes';
         } else if (this.viewMode === ViewMode.DISTANCE) {
-          this.chartDescription = '<insert_distance> <insert_unit>';
+          this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+          this.distanceUnit;
         }
 
         const result = [];
@@ -617,7 +622,8 @@ export class ActivityTabComponent implements OnInit {
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       } else {
-        this.chartDescription = '<insert_distance> <insert_unit>';
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+        this.distanceUnit;
       }
 
       if (activity && activity.days) {
@@ -849,7 +855,8 @@ export class ActivityTabComponent implements OnInit {
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.chartDescription = '<insert_distance> <insert_unit>';
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+        this.distanceUnit;
       }
     }
     else {
@@ -860,7 +867,8 @@ export class ActivityTabComponent implements OnInit {
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.chartDescription = '<insert_distance> <insert_unit>';
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+        this.distanceUnit;
       }
     }
   }
@@ -902,7 +910,8 @@ export class ActivityTabComponent implements OnInit {
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.chartDescription = '<insert_distance> <insert_unit>';
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
+        this.distanceUnit;
       }
     } else {
       // We are showing cached data
@@ -917,7 +926,8 @@ export class ActivityTabComponent implements OnInit {
         this.chartDescription =
           (cache.weeklyActivity.push_count || 0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.chartDescription = '<insert_distance> <insert_unit>';
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0) +
+        this.distanceUnit;
       }
     }
   }
