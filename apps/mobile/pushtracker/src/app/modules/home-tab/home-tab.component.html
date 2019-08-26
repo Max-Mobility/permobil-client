@@ -71,9 +71,10 @@
       <!-- Week View Coast Time -->
       <ActivityIndicator height="10%" width="10%" *ngIf="!weeklyActivityLoaded" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
-      <GridLayout *ngIf="weeklyActivityLoaded">
-        <Label row="0" col="0" class="title" horizontalAlignment="center" [text]="coastTimeGoalMessage"></Label>
-        <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastTimeChart">
+      // Coast Time Chart
+      <GridLayout rows="auto, *" *ngIf="weeklyActivityLoaded" class="chart-layout">
+        <Label row="0" class="title" [text]="coastTimeGoalMessage" textWrap="true"></Label>
+        <RadCartesianChart row="1" id="homeTabWeeklyCoastTimeChart">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
@@ -129,9 +130,10 @@
         </RadCartesianChart>
       </GridLayout>
 
-      <GridLayout *ngIf="weeklyActivityLoaded" marginTop="10">
-        <Label row="0" col="0" class="title" horizontalAlignment="center" [text]="distanceGoalMessage"></Label>
-        <RadCartesianChart marginTop="20" row="1" col="0" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes">
+      // Distance Time Chart
+      <GridLayout rows="auto, *" *ngIf="weeklyActivityLoaded" class="chart-layout">
+        <Label row="0" class="title" [text]="distanceGoalMessage" textWrap="true"></Label>
+        <RadCartesianChart row="1" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis

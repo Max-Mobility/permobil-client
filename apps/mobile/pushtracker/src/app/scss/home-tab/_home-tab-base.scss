@@ -130,43 +130,11 @@
     margin: 5;
 
     .title {
-      font-family: $os-SemiBold;
-      font-size: 18;
+      font-family: $os;
+      font-size: 14;
+      font-weight: bold;
       vertical-align: center;
-    }
-
-    .more-icon {
-      font-family: $material-icon;
-      font-size: 24;
-      horizontal-align: right;
-      vertical-align: center;
-    }
-
-    /** Label Line Chart Styles **/
-    .chart-stack {
-      vertical-align: bottom;
       horizontal-align: center;
-    }
-
-    .chart-max-value {
-      font-size: 8;
-      color: $white;
-      vertical-align: top;
-    }
-
-    .distance-line {
-      vertical-align: bottom;
-      horizontal-align: center;
-      background-color: #de5f10;
-      width: 5;
-    }
-
-    .line-label {
-      text-align: center;
-      horizontal-align: center;
-      vertical-align: top;
-      color: $white;
-      font-size: 12;
     }
   }
 }
