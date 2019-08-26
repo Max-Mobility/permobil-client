@@ -305,6 +305,96 @@ export class MainViewModel extends Observable {
     }
   }
 
+  loadSmartDriveData() {
+    const plottedDates = DailyActivity.Info.getPastDates(6);
+    let distanceData = plottedDates.map(d => {
+      return {
+        day: this.format(new Date(d), 'dd'),
+        value: 0
+      };
+    });
+    let maxDist = 0;
+    let currentDist = 0;
+    try {
+      const prefix = 'com.permobil.smartdrive.wearos';
+      const cumulativeToken = 'distance.cumulative';
+      const driveToken = 'distance.drive';
+      const dateToken = 'distance.dates';
+      const prefName = 'SmartDriveUsage.db';
+      const context = ad
+        .getApplicationContext()
+        .createPackageContext(
+          prefix,
+          android.content.Context.CONTEXT_IGNORE_SECURITY
+        );
+      if (context !== null) {
+        const sharedPreferences = context
+          .getSharedPreferences(prefName, android.content.Context.MODE_PRIVATE);
+        const datesString = sharedPreferences.getString(
+          prefix + dateToken,
+          "[]"
+        );
+        const driveString = sharedPreferences.getString(
+          prefix + driveToken,
+          "[]"
+        );
+        const cumulativeString = sharedPreferences.getString(
+          prefix + cumulativeToken,
+          "[]"
+        );
+        const dates = JSON.parse(datesString);
+        const drives = JSON.parse(driveString);
+        const totals = JSON.parse(cumulativeString);
+        Log.D('dates', dates);
+        Log.D('drives', drives);
+        Log.D('totals', totals);
+        // distances provided are always in miles
+        currentDist = last(totals) || 0.0;
+        if (this.settings.units === 'metric') {
+          currentDist *= 1.609;
+        }
+        const data = dates.reduce((obj, d, i) => {
+          if (this.settings.units === 'metric') {
+            if (totals[i] > maxDist) maxDist = totals[i] * 1.609;
+            obj[d] = {
+              total: totals[i] * 1.609,
+              drive: drives[i] * 1.609
+            };
+            return obj;
+          } else {
+            if (totals[i] > maxDist) maxDist = totals[i];
+            obj[d] = {
+              total: totals[i],
+              drive: drives[i]
+            };
+            return obj;
+          }
+        }, {});
+        distanceData = plottedDates.map(d => {
+          let value = 0;
+          const dateKey = this.format(new Date(d), 'YYYY/MM/DD');
+          if (data[dateKey] !== undefined && data[dateKey].total > 0) {
+            // for now we're using total
+            value = data[dateKey].total / maxDist;
+          }
+          return {
+            day: this.format(new Date(d), 'dd'),
+            value: value
+          };
+        });
+      } else {
+        Log.E('could not craete package context!');
+      }
+    } catch (err) {
+      Log.E(err);
+      Sentry.captureException(err);
+    }
+    // Log.D('Highest Distance Value:', maxDist);
+    this.distanceChartMaxValue = maxDist.toFixed(1);
+    this.distanceChartData = distanceData;
+    this.distanceGoalCurrentValue = currentDist;
+  }
+
   loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
     const sharedPreferences = ad
@@ -314,10 +404,12 @@ export class MainViewModel extends Observable {
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
       0
     );
+    /*
     this.distanceGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
       0.0
     ) / 1609.0; // what's stored is meters, convert to miles
+    */
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0
@@ -348,18 +440,20 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
+    /*
     const distance = intent.getFloatExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DISTANCE,
       0
     );
+    */
     const heartRate = intent.getFloatExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
       0
     );
-    Log.D('Got service data', pushes, coast, distance, heartRate);
+    Log.D('Got service data', pushes, coast, heartRate);
     this.currentPushCount = pushes;
     // received distance is in meters - need to convert to miles
-    this.distanceGoalCurrentValue = distance / 1609.0;
+    // this.distanceGoalCurrentValue = distance / 1609.0;
     this.coastGoalCurrentValue = coast;
     this.updateDisplay();
   }
@@ -548,7 +642,7 @@ export class MainViewModel extends Observable {
     Log.D('*** exitAmbient ***');
     this.applyTheme();
     try {
-      this.loadSmartDriveInfo();
+      // this.loadSmartDriveInfoFromKinvey();
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -655,8 +749,8 @@ export class MainViewModel extends Observable {
       // Log.D('Highest Coast Value:', maxCoast);
       this.coastChartMaxValue = maxCoast.toFixed(1);
       this.coastChartData = coastData;
-      // TODO: update the display of the data
-      this.initDistanceData();
+      // now update the distance data
+      this.loadSmartDriveData();
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -932,26 +1026,10 @@ export class MainViewModel extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  initDistanceData() {
-    if (this.distanceChartData !== null) {
-      return;
-    }
-    const dates = DailyActivity.Info.getPastDates(7);
-    const distanceData = dates.map(d => {
-      return {
-        day: this.format(new Date(d), 'dd'),
-        value: 0
-      };
-    });
-    // Log.D('Highest Distance Value:', maxDist);
-    this.distanceChartMaxValue = '0.0';
-    this.distanceChartData = distanceData;
-  }
-
   /**
    * Network Functions
    */
-  async loadSmartDriveInfo() {
+  async loadSmartDriveInfoFromKinvey() {
     try {
       const dates = DailyActivity.Info.getPastDates(7);
       const startTimes = dates.map(d => d.getTime());
@@ -968,15 +1046,6 @@ export class MainViewModel extends Observable {
       const statusCode = response.statusCode;
       if (statusCode === 200) {
         const days = response.content.toJSON();
-        /*
-        // pull start / end from info
-        const tickStart = info.distance_smartdrive_coast_start || 0;
-        const tickEnd = info.distance_smartdrive_coast || 0;
-        const distanceMiles = this.caseTicksToMiles(tickEnd - tickStart);
-        // update the displayed value
-        this.distanceGoalCurrentValue = distanceMiles;
-        */
-
         const maxDist = days.reduce((max, obj) => {
           const caseStart = obj.distance_smartdrive_coast_start;
           const caseEnd = obj.distance_smartdrive_coast;

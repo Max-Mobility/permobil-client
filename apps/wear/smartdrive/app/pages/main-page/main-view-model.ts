@@ -1713,20 +1713,8 @@ export class MainViewModel extends Observable {
     });
   }
 
-  async updateChartData() {
+  async updateBatteryChart(sdData: any[]) {
     try {
-      // this._sentryBreadCrumb('Updating Chart Data / Display');
-      let sdData = await this.getUsageInfoFromDatabase(7) as any[];
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      const newest = last(sdData);
-      // keep track of the most recent day so we know when to update
-      this._lastChartDay = new Date(newest.date);
-      // remove the oldest so it's not displayed - we only use it
-      // to track distance differences
-      sdData = sdData.slice(1);
       // update battery data
       const maxBattery = sdData.reduce((max, obj) => {
         return obj.battery > max ? obj.battery : max;
@@ -1740,10 +1728,20 @@ export class MainViewModel extends Observable {
       // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
       this.batteryChartMaxValue = maxBattery.toFixed(0);
       this.batteryChartData = batteryData;
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
 
+  async updateDistanceChart(sdData: any[]) {
+    try {
+      // we've asked for one more day than needed so that we can
+      // compute distance differences, keep a reference to the first
+      // before we remove it below with the call to slice()
+      const oldest = sdData[0];
       // update distance data
       let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
-      const distanceData = sdData.map(e => {
+      const distanceData = sdData.slice(1).map(e => {
         let diff = 0;
         const dist = e[SmartDriveData.Info.DriveDistanceName];
         if (dist > 0) {
@@ -1771,10 +1769,16 @@ export class MainViewModel extends Observable {
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
       this.distanceChartMaxValue = maxDist.toFixed(1);
       this.distanceChartData = distanceData;
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
 
+  async updateEstimatedRange() {
+    try {
       // now get the past data (regardless of when it was collected)
       // for computing the estimated range:
-      sdData = await this.getRecentInfoFromDatabase(7);
+      const sdData = await this.getRecentInfoFromDatabase(7) as any[];
       // update estimated range based on battery / distance
       let sumDistance = 0;
       let sumBattery = 0;
@@ -1811,6 +1815,25 @@ export class MainViewModel extends Observable {
         this.smartDriveCurrentBatteryPercentage * rangeFactor;
       // save the updated estimated range for complication use
       appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
+
+  async updateChartData() {
+    try {
+      // this._sentryBreadCrumb('Updating Chart Data / Display');
+      let sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      // keep track of the most recent day so we know when to update
+      this._lastChartDay = new Date(last(sdData).date);
+      // now update the charts
+      await this.updateBatteryChart(sdData.slice(1));
+      await this.updateDistanceChart(sdData);
+      await this.updateSharedUsageInfo(sdData);
+      // update the estimated range (doesn't use weekly usage info -
+      // since that may not have any data, so it internally pulls the
+      // most recent 7 records (which contain real data
+      await this.updateEstimatedRange();
       // now actually update the display of the distance
       this.updateSpeedDisplay();
     } catch (err) {
@@ -2702,6 +2725,78 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       // nothing was found
       return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
+    }
+  }
+
+  async updateSharedUsageInfo(sdData: any[]) {
+    try {
+      // aggregate the data
+      const cumulativeData = [];
+      const driveData = [];
+      const dates = [];
+      // we've asked for one more day than needed so that we can
+      // compute distance differences, keep a reference to the first
+      // before we remove it below with the call to slice()
+      const oldest = sdData[0];
+      // update distance data
+      let oldestDrive = oldest[SmartDriveData.Info.DriveDistanceName];
+      let oldestTotal = oldest[SmartDriveData.Info.CoastDistanceName];
+      sdData.slice(1).map(e => {
+        // record the date
+        dates.push(this._format(new Date(e.date), 'YYYY/MM/DD'));
+        const drive = e[SmartDriveData.Info.DriveDistanceName];
+        const total = e[SmartDriveData.Info.CoastDistanceName];
+        // update drive data
+        let diff = 0;
+        if (drive > 0) {
+          // make sure we only compute diffs between valid distances
+          if (oldestDrive > 0) {
+            diff = drive - oldestDrive;
+          }
+          oldestDrive = Math.max(drive, oldestDrive);
+          // we only save it in miles
+          diff = SmartDrive.motorTicksToMiles(diff);
+        }
+        // now save it in the array
+        driveData.push(diff);
+        // update cumulative data
+        diff = 0;
+        if (total > 0) {
+          // make sure we only compute diffs between valid distances
+          if (oldestTotal > 0) {
+            diff = total - oldestTotal;
+          }
+          oldestTotal = Math.max(total, oldestTotal);
+          // we only save it in miles
+          diff = SmartDrive.caseTicksToMiles(diff);
+        }
+        // now save it in the array
+        cumulativeData.push(diff);
+      });
+      Log.D('saving dates', dates);
+      Log.D('saving drive', driveData);
+      Log.D('saving total', cumulativeData);
+      // write distance for each day here
+      const cumulativeDataSerialized = JSON.stringify(cumulativeData);
+      const driveDataSerialized = JSON.stringify(driveData);
+      const datesSerialized = JSON.stringify(dates);
+      // now save the data
+      const prefix = 'com.permobil.smartdrive.wearos.';
+      const cumulativeToken = 'distance.cumulative';
+      const driveToken = 'distance.drive';
+      const dateToken = 'distance.dates';
+      const prefName = 'SmartDriveUsage.db';
+      const sharedPreferences = ad
+        .getApplicationContext()
+        .getSharedPreferences(prefName, android.content.Context.MODE_PRIVATE);
+      const editor = sharedPreferences.edit();
+      editor.putString(prefix + cumulativeToken, cumulativeDataSerialized);
+      editor.putString(prefix + driveToken, driveDataSerialized);
+      editor.putString(prefix + dateToken, datesSerialized);
+      editor.commit();
+    } catch (err) {
+      Log.E(err);
+      Sentry.captureException(err);
     }
   }
 
