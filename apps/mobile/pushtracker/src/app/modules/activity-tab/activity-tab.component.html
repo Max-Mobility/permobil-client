@@ -93,7 +93,7 @@
         [class]="viewMode === 1 ? 'push-count-btn-enabled' : 'push-count-btn-disabled'" (tap)="onPushCountTap()"></Button>
       <Button row="0" col="3" [text]="'general.distance' | translate"
         [class]="viewMode === 2 ? 'distance-btn-enabled' : 'distance-btn-disabled'" (tap)="onDistanceTap()"></Button>
-      <Label row="1" col="0" colSpan="4" class="goal-description"
+      <Label row="1" col="0" colSpan="5" class="goal-description"
         [text]="viewMode === 0 ? ('general.coast-time-description' | translate) : viewMode === 1 ? ('general.push-count-description' | translate) : ('general.distance-description' | translate)"
         [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'" textWrap="true"></Label>
     </GridLayout>
