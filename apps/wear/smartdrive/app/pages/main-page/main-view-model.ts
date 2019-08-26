@@ -549,7 +549,11 @@ export class MainViewModel extends Observable {
     }
 
     // apply theme
-    this.applyTheme();
+    if (this.isAmbient) {
+      this.applyTheme('ambient');
+    } else {
+      this.applyTheme('default');
+    }
   }
 
   showAmbientTime() {
