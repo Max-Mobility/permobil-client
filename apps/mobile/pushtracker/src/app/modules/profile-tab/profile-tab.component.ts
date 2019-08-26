@@ -356,6 +356,9 @@ export class ProfileTabComponent implements OnInit {
       this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
       this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
     }
+    else {
+      textField.text = this.activity_goals_dialog_data.config_value + '';
+    }
   }
 
   onTextFieldBlur(event) {
