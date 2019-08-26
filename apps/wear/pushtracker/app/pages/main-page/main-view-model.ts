@@ -332,15 +332,15 @@ export class MainViewModel extends Observable {
           .getSharedPreferences(prefName, android.content.Context.MODE_PRIVATE);
         const datesString = sharedPreferences.getString(
           prefix + dateToken,
-          "[]"
+          '[]'
         );
         const driveString = sharedPreferences.getString(
           prefix + driveToken,
-          "[]"
+          '[]'
         );
         const cumulativeString = sharedPreferences.getString(
           prefix + cumulativeToken,
-          "[]"
+          '[]'
         );
         const dates = JSON.parse(datesString);
         const drives = JSON.parse(driveString);

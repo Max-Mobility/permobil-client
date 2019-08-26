@@ -1823,7 +1823,7 @@ export class MainViewModel extends Observable {
   async updateChartData() {
     try {
       // this._sentryBreadCrumb('Updating Chart Data / Display');
-      let sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      const sdData = await this.getUsageInfoFromDatabase(7) as any[];
       // keep track of the most recent day so we know when to update
       this._lastChartDay = new Date(last(sdData).date);
       // now update the charts
