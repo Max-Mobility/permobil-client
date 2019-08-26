@@ -469,7 +469,6 @@ export class ProfileTabComponent implements OnInit {
           const dateFormatted = month + '/' + day + '/' + year;
           Log.D('Birthday formatted', dateFormatted);
           KinveyUser.update({ dob: dateFormatted });
-          console.log('Here');
         }
       })
       .catch(err => {
