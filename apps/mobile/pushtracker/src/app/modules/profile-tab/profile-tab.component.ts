@@ -18,6 +18,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
+import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 
 @Component({
   selector: 'profile',
@@ -344,6 +345,16 @@ export class ProfileTabComponent implements OnInit {
     this._removeActiveDataBox();
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
     this._animateDialog(cfl, 0, 900);
+  }
+
+  onTextFieldReturnPress(event) {
+    const textField = <TextField>event.object;
+    this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
+    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
+  }
+
+  onTextFieldBlur(event) {
+    this.onTextFieldReturnPress(event);
   }
 
   incrementConfigValue() {

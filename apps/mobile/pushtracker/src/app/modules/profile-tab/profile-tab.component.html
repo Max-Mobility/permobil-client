@@ -178,7 +178,8 @@
       <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="*, *, *">
         <Button row="1" col="0" text="&#xe15b;" textAlign="left" (tap)="decrementConfigValue()"></Button>
         <StackLayout horizontalAlignment="center" row="1" col="1">
-          <Label class="config-value" [text]="activity_goals_dialog_data.config_value"></Label>
+          <!-- <Label class="config-value" [text]="activity_goals_dialog_data.config_value"></Label> -->
+          <TextField class="config-value" [text]="activity_goals_dialog_data.config_value" (returnPress)="onTextFieldReturnPress($event)" (blur)="onTextFieldBlur($event)"></TextField>
           <Label class="config-value-sub" [text]="displayActivityGoalUnitLabel"></Label>
         </StackLayout>
         <Button row="1" col="2" text="&#xe145;" textAlign="right" (tap)="incrementConfigValue()"></Button>
