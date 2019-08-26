@@ -45,5 +45,15 @@
     font-family: $material-icon;
     font-size: 30;
     vertical-align: center;
+    height: 44;
+    width: 44;
+    border-radius: 22;
+  }
+
+  .watch-status-btn {
+    height: 28;
+    width: 28;
+    vertical-align: center;
+    horizontal-align: center;
   }
 }
