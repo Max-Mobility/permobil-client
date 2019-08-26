@@ -19,7 +19,6 @@
         <Button row="0" col="2" text="&#xe5cc;"
           [class]="(tabSelectedIndex === 0 && isNextDayButtonEnabled()) || (tabSelectedIndex === 1 && isNextWeekButtonEnabled())  || (tabSelectedIndex === 2 && isNextMonthButtonEnabled()) ? 'next-btn' : 'next-btn-disabled'"
           (tap)="onNextTap()"
-          [isUserInteractionEnabled]="(tabSelectedIndex === 0 && isNextDayButtonEnabled()) || (tabSelectedIndex === 1 && isNextWeekButtonEnabled()) || (tabSelectedIndex === 2 && isNextMonthButtonEnabled())"
           ripple rippleColorAlpha="0.18"></Button>
         <StackLayout [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'" row="1"
           col="1" orientation="horizontal" horizontalAlignment="center">
