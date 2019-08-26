@@ -347,6 +347,7 @@ export class ProfileTabComponent implements OnInit {
     this._removeActiveDataBox();
     const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
     this._animateDialog(cfl, 0, 900);
+    this.isUserEditingSetting = false;
   }
 
   onTextFieldReturnPress(event) {
@@ -431,6 +432,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onBirthDateTap(args: EventData) {
+    this.isUserEditingSetting = true;
     Log.D(`Birthday tapped`);
 
     this._setActiveDataBox(args);
@@ -453,6 +455,7 @@ export class ProfileTabComponent implements OnInit {
       dateTimePickerStyle
     )
       .then(result => {
+        this.isUserEditingSetting = false;
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
@@ -466,6 +469,7 @@ export class ProfileTabComponent implements OnInit {
           const dateFormatted = month + '/' + day + '/' + year;
           Log.D('Birthday formatted', dateFormatted);
           KinveyUser.update({ dob: dateFormatted });
+          console.log('Here');
         }
       })
       .catch(err => {
@@ -475,6 +479,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListPickerTap(args: EventData, index) {
+    this.isUserEditingSetting = true;
     this.listPickerIndex = index;
     switch (this.listPickerIndex) {
       case 0:
@@ -521,6 +526,7 @@ export class ProfileTabComponent implements OnInit {
     });
 
     this._removeActiveDataBox();
+    this.isUserEditingSetting = false;
   }
 
   async saveListPickerValue() {
@@ -978,6 +984,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onScan(deviceName) {
+    this.isUserEditingSetting = true;
     this._barcodeScanner
       .scan({
         formats: 'QR_CODE, EAN_13',
@@ -998,6 +1005,7 @@ export class ProfileTabComponent implements OnInit {
         openSettingsIfPermissionWasPreviouslyDenied: true
       })
       .then(result => {
+        this.isUserEditingSetting = false;
         const validDevices =
           deviceName === 'pushtracker'
             ? ['pushtracker', 'wristband']
