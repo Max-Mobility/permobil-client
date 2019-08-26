@@ -41,6 +41,7 @@
   }
 
   .coast-time-btn-disabled,
+  .push-count-btn-disabled,
   .distance-btn-disabled {
     @extend .CHART_VIEW_BTN_BASE;
     background-color: $white;
@@ -48,6 +49,7 @@
   }
 
   .coast-time-btn-enabled,
+  .push-count-btn-enabled,
   .distance-btn-enabled {
     @extend .CHART_VIEW_BTN_BASE;
     background-color: #d8e5f2;
