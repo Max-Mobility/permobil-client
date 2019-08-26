@@ -389,7 +389,8 @@ export class ActivityTabComponent implements OnInit {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
         } else if (this.viewMode === ViewMode.DISTANCE) {
-          // TODO: calculate Y axis max for distance
+          if (activity['coastDistance'] > this.yAxisMax)
+            this.yAxisMax = activity['coastDistance'];
         }
         i++;
       }
