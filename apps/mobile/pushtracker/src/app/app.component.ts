@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Fab } from '@nstudio/nativescript-floatingactionbutton';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
@@ -94,9 +94,12 @@ export class AppComponent implements OnInit {
       });
 
     // if user is logged in, go to default tabs route, else go to login
-    const user = Kinvey.User.getActiveUser();
+    const user = <PushTrackerUser>(<any>Kinvey.User.getActiveUser());
     if (user) {
-      appSettings.setString(STORAGE_KEYS.APP_THEME, user.data['theme_preference'] || APP_THEMES.DEFAULT);
+      appSettings.setString(
+        STORAGE_KEYS.APP_THEME,
+        user.data.theme_preference || APP_THEMES.DEFAULT
+      );
       this._router.navigate(['/tabs/default']);
     } else {
       this._router.navigate(['/login']);
