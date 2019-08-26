@@ -33,6 +33,7 @@ export class ProfileTabComponent implements OnInit {
   listPickerDialog: ElementRef;
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
+  isUserEditingSetting: boolean = false;
 
   isHeightInCentimeters: boolean;
   displayActivityGoalCoastTime: string;
@@ -300,6 +301,7 @@ export class ProfileTabComponent implements OnInit {
     configKey: string,
     configValue: number
   ) {
+    this.isUserEditingSetting = true;
     Log.D('user tapped config = ', configTitle, args.object);
     this._setActiveDataBox(args);
 
@@ -349,8 +351,11 @@ export class ProfileTabComponent implements OnInit {
 
   onTextFieldReturnPress(event) {
     const textField = <TextField>event.object;
-    this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
-    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
+    const newValue = parseFloat(textField.text);
+    if (newValue && typeof newValue === 'number') {
+      this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
+      this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
+    }
   }
 
   onTextFieldBlur(event) {
