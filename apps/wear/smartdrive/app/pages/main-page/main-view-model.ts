@@ -258,6 +258,12 @@ export class MainViewModel extends Observable {
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
     }
+    try {
+      // set up the chin inset listener and attach it to the top most frame
+      const frame = topmost();
+      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
+    } catch (err) {
+    }
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -519,6 +525,19 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this.applyTheme('ambient');
+        } else {
+          this.applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
     // now init the ui
     try {
       await this.init();
@@ -528,9 +547,6 @@ export class MainViewModel extends Observable {
     }
     // get child references
     try {
-      // set up the chin inset listener and attach it to the top most frame
-      const frame = topmost();
-      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
       // store reference to pageer so that we can control what page
       // it's on programatically
       const page = args.object as Page;
@@ -547,9 +563,6 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('onMainPageLoaded::error:', err);
     }
-
-    // apply theme
-    this.applyTheme();
   }
 
   showAmbientTime() {
@@ -584,7 +597,9 @@ export class MainViewModel extends Observable {
     }
   }
 
+  private hasAppliedTheme: boolean = false;
   applyTheme(theme?: string) {
+    this.hasAppliedTheme = true;
     // apply theme
     this._sentryBreadCrumb('applying theme');
     try {

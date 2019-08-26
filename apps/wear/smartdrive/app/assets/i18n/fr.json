@@ -1,152 +1,151 @@
 {
   "about": {
-    "database": "ID de base de données",
-    "sd-ble-version": "Version SmartDrive Bluetooth (BT)",
-    "sd-mcu-version": "Version du MCU SmartDrive (SD)",
-    "sd-serial-number": "Numéro de série SmartDrive",
-    "title": "À propos de l'information",
+    "database": "Identifiant de la base de données",
+    "sd-ble-version": "Version Bluetooth (BT) SmartDrive ",
+    "sd-mcu-version": "Version du MCU (SD) SmartDrive",
+    "sd-serial-number": "Numéro de série de la SmartDrive",
+    "title": "À propos de",
     "version": "Version de l'application SmartDrive MX2 Wear OS (SW)",
-    "watch-serial-number": "Numéro de série de Smartwatch"
+    "watch-serial-number": "Numéro de série du PushTracker E2"
   },
   "app-connection": {
     "completed": "Connecté avec succès au compte PushTracker.",
-    "connecting": "Connexion à l'application mobile PushTracker ...",
-    "identifier": "Nom de la montre intelligente",
+    "connecting": "Connexion à l'application mobile PushTracker...",
+    "identifier": "Nom de la montre",
     "preface": "Connexion au compte PushTracker ...",
-    "receiving": "Recevoir les informations de compte ..."
+    "receiving": "Réception des informations du compte ..."
   },
   "buttons": {
-    "allow": "permettre",
+    "allow": "Autoriser",
     "back": "Retour",
-    "cancel": "annuler",
-    "deny": "Nier",
+    "cancel": "Annuler",
+    "deny": "Refuser",
     "disable": "Désactiver",
     "dismiss": "Rejeter",
     "enable": "Activer",
-    "ok": "D'accord"
+    "ok": "OK"
   },
   "charts": {
     "battery": {
       "title": "Utilisation quotidienne de la batterie SmartDrive (%)"
     },
     "distance": {
-      "title": "SmartDrive Distance parcourue quotidiennement"
+      "title": "Distance quotidienne parcourue"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "[ERR: 001] Tension de la batterie SD",
+      "batteryvoltage": "[ERR: 001] SD Niveau de tension de la batterie",
       "bledisconnect": "[ERR: 007] Déconnexion Bluetooth",
-      "gyrorange": "[ERR: 005] Angle SD",
-      "motorphases": "[ERR: 002] Moteur SD",
+      "gyrorange": "[ERR: 005] SD Erreur d'angle de détection ",
+      "motorphases": "[ERR: 002] SD Erreur moteur ",
       "otaunavailable": "[ERR: 006] Mises à jour non disponibles",
-      "overcurrent": "[ERR: 003] Pointe de courant SD",
-      "overtemperature": "[ERR: 004] Surchauffe SD"
+      "overcurrent": "[ERR: 003] SD Erreur de Surintensité",
+      "overtemperature": "[ERR: 004] SD Surchauffe moteur"
     },
     "loading": "Chargement...",
     "no-errors": "Aucune erreur SmartDrive n'a été enregistrée ou reçue.",
-    "title": "Historique des erreurs SmartDrive"
+    "title": "Historique des codes erreurs SmartDrive"
   },
   "failures": {
     "app-connection": {
       "credentials": "Échec de la connexion au compte PushTracker.",
       "logout": "Le compte a été déconnecté. Reconnexion à l'application PushTracker Mobile requise.",
-      "timeout": "La connexion à l'application a expiré."
+      "timeout": "Délai de connexion à l'application expiré."
     },
-    "connect": "Impossible de se connecter à SmartDrive.",
-    "getting-error": "Échec d'obtention de l'erreur SmartDrive.",
-    "must-wear-watch": "Le paramètre [Vérifier le poignet] est activé. Par conséquent, vous devez porter une montre intelligente pour contrôler votre lecteur SmartDrive.",
-    "no-smartdrive-paired": "Pas de SmartDrive jumelé.",
+    "connect": "Impossible de se connecter à la SmartDrive.",
+    "getting-error": "Échec de réception des codes erreurs.",
+    "must-wear-watch": "Le paramètre [Vérifier le poignet] est activé. Vous devez porter obligatoirement le Pushtracker E2  pour contrôler votre SmartDrive.",
+    "no-smartdrive-paired": "Pas de SmartDrive jumelée.",
     "no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
-    "permissions": "Impossible d'effectuer l'action demandée. Les autorisations requises n'ont pas été accordées.",
-    "saving-error": "Échec de l'enregistrement de l'erreur SmartDrive.",
+    "permissions": "Impossible d'effectuer l'action demandée. Les autorisations requises n'ont pas été acceptées.",
+    "saving-error": "Échec d'enregistrement des erreurs SmartDrive.",
     "saving-usage": "Échec de la sauvegarde de l'utilisation.",
-    "scan": "Impossible de numériser.",
-    "send-settings": "Échec de l'envoi des paramètres à SmartDrive.",
-    "title": "Remarquer",
-    "too-many-smartdrives-found": "Plusieurs SmartDrives trouvés. Assurez-vous qu’il n’ya qu’un seul SmartDrive à proximité lors du couplage."
+    "scan": "Recherche impossible.",
+    "send-settings": "Échec d'envoi des paramètres à la SmartDrive.",
+    "title": "Remarque",
+    "too-many-smartdrives-found": "Plusieurs SmartDrives trouvées. Assurez-vous qu’il n’y a qu’une seule SmartDrive à proximité lors du couplage."
   },
   "languages": {
-    "da": "danois",
+    "da": "Danois",
     "de": "Allemand",
     "en": "Anglais",
-    "es": "Espanol",
-    "fr": "français",
+    "es": "Espagnol",
+    "fr": "Français",
     "it": "Italien",
-    "ja": "japonais",
-    "ko": "coréen",
+    "ja": "Japonais",
+    "ko": "Coréen",
     "nb": "Norvégien [Bokmål]",
     "nl": "Néerlandais",
     "nn": "Norvégien [Nynorsk]",
-    "sv": "suédois",
     "zh": "Chinois [traditionnel]"
   },
   "menu": {
-    "about": "sur",
+    "about": "À propos de",
     "settings": "Réglages",
-    "title": "Menu SmartDrive MX2",
-    "training": "Entraînement Tap",
+    "title": "Menu SmartDrive MX2+",
+    "training": "Activer\nle mode entraînement",
     "updates": "Mises à jour sans fil"
   },
   "ota": {
     "action": {
-      "cancel": "annuler",
-      "force": "Obliger",
+      "cancel": "Annuler",
+      "force": "Forcer",
       "pause": "Pause",
-      "resume": "CV",
-      "retry": "Réessayez",
-      "start": "Début"
+      "resume": "Reprendre",
+      "retry": "Réessayer",
+      "start": "Démarrer"
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "En attente sur BT",
-        "awaiting-connection": "Attente de la connexion",
-        "awaiting-mcu-ready": "En attente sur SD",
-        "awaiting-versions": "En attente de versions",
+        "awaiting-ble-ready": "Attente de connexion BT",
+        "awaiting-connection": "Attente de connexion",
+        "awaiting-mcu-ready": "Attente de connexion SD",
+        "awaiting-versions": "Attente de versions",
         "canceled": "Annulé",
-        "canceling": "Annulation",
+        "canceling": "En cours d\"annulation...",
         "comm-failure": "Erreur de communication - Redémarrage SmartDrive requis",
-        "complete": "Achevée",
-        "failed": "Échoué",
-        "not-started": "Pas commencé",
+        "complete": "Terminer",
+        "failed": "Échec",
+        "not-started": "Pas démarré",
         "rebooting-ble": "Redémarrage BT",
         "rebooting-mcu": "Redémarrage SD",
-        "timeout": "Temps libre",
-        "updating-ble": "Mise à jour de BT",
+        "timeout": "Temps écoulé",
+        "updating-ble": "Mise à jour du BT",
         "updating-mcu": "Mise à jour SD",
-        "verifying": "Vérification"
+        "verifying": "En cours de vérification"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "Pour contrôler votre SmartDrive à l'aide de Bluetooth, nous vous demandons d'autoriser l'autorisation Emplacement [ACCESS_COARSE_LOCATION] sur l'écran suivant. À partir de cette autorisation, Permobil n’aura pas accès à vos données de localisation.",
-    "phone-state": "FACULTATIF: pour accéder au numéro de série de votre smartwatch, qui peut s'avérer utile à des fins d'assistance et de garantie, vous devez autoriser l'autorisation Téléphone [READ_PHONE_STATE] sur l'un des écrans suivants. À partir de cette autorisation, Permobil n’aura pas accès à votre numéro de téléphone, aux informations de votre réseau cellulaire ou à d’autres données que le numéro de série de la smartwatch."
+    "coarse-location": "Pour contrôler votre SmartDrive à l'aide du Bluetooth, nous vous demandons votre accord pour autoriser votre localisation [ACCESS_COARSE_LOCATION] sur l'écran suivant. Avec cette autorisation, Permobil n’aura pas accès à vos données de localisation.",
+    "phone-state": "FACULTATIF: pour accéder au numéro de série de votre PushTracker E2, qui peut s'avérer utile à des fins d'assistance et de garantie, vous devez nous donner votre accord pour l'utilisation du téléphone [READ_PHONE_STATE] sur l'un des écrans suivants. À partir de cette autorisation, Permobil n’aura pas accès à votre numéro de téléphone, aux informations de votre réseau cellulaire ou à d’autres données que le numéro de série du PushTracker E2."
   },
   "permissions-request": {
-    "title": "Avis d'autorisations"
+    "title": "Demandes d'autorisations"
   },
   "power-assist": {
-    "activate": "Tour\nPower Assist\nSur",
-    "deactivate": "Tour\nPower Assist\nDe",
-    "estimated-range": "Gamme estimée",
-    "exit-training": "Entraînement à la sortie",
+    "activate": "Activer\nL'assistance électrique",
+    "deactivate": "Désactiver\nL'assistance électrique",
+    "estimated-range": "Autonomie estimée",
+    "exit-training": "Désactiver \nle mode entraînement",
     "speed": "Vitesse actuelle",
     "stop": "Désactiver la conduite"
   },
   "sd": {
     "settings": {
       "power-assist-buzzer": {
-        "disabled": "Désactivé",
+        "disabled": "Désactivée",
         "enabled": "Activée"
       },
       "units": {
         "english": "Impérial",
-        "metric": "métrique"
+        "metric": "Métrique"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "Verrouillé",
+        "latching": "Maintenu",
         "momentary": "Momentané"
       }
     }
@@ -156,37 +155,37 @@
     "connect-pushtracker": "Application mobile Connect PushTracker",
     "control-mode": "Mode de contrôle",
     "description": {
-      "acceleration": "Le taux d'accélération ou de rampe de vitesse du SmartDrive.",
-      "controlmode": "MX2: Opération par défaut basée sur les gestes du SmartDrive. En mode de contrôle MX2, une double frappe commence à entraîner le moteur en augmentant sa vitesse, une simple pression se déplace à la vitesse actuelle et une double pression désactive la conduite.\n\nMX2: En mode de contrôle MX2, le SmartDrive commence à conduire lorsqu'il détecte votre poussée et le désactive lorsque vous tapez sur. Veuillez noter qu'il s'agit d'une option de support hérité.\n\nMX1: En mode de contrôle MX1, le SmartDrive commence à conduire lorsqu'il détecte votre poussée, et s'arrête lorsque vous tapez sur ou lorsque vous freinez sur la main courante. Veuillez noter qu'il s'agit d'une option de support hérité.",
-      "maxspeed": "La vitesse maximale à laquelle le SmartDrive peut conduire lorsqu'elle est contrôlée par votre smartwatch.",
-      "powerassistbuzzer": "Lorsqu'il est activé, le SmartDrive émet un bip chaque fois qu'une connexion est établie avec un périphérique distant ou lorsque Switch Control est retiré de l'état de veille.",
-      "switchcontrolmode": "Momentané: Le mode de commande de commutateur par défaut dans lequel le SmartDrive commencera à entraîner le moteur en augmentant sa vitesse jusqu'à la vitesse maximale de commande de commutateur configurée uniquement pendant que l'un des boutons de commande de commutateur est enfoncé. Lorsque vous relâchez le bouton maintenu ou que vous appuyez sur les deux boutons [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.\n\nVerrouillé: en mode de contrôle de commutateur verrouillé, le SmartDrive commence à entraîner le moteur en augmentant sa vitesse jusqu'à la vitesse maximale de contrôle de commutateur configurée pendant que l'un des boutons de contrôle de commutateur est maintenu enfoncé. Lorsque le bouton maintenu est relâché, le SmartDrive continuera à rouler / à suivre la vitesse actuelle au moment où le bouton a été relâché. Lorsque vous appuyez sur l'un des boutons et que vous le relâchez à nouveau, ou que vous appuyez sur les deux boutons [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.",
-      "switchcontrolspeed": "La vitesse maximale à laquelle le SmartDrive peut conduire lorsqu'elle est contrôlée par Switch Control.",
-      "tapsensitivity": "La sensibilité du geste du robinet utilisé pour activer et désactiver la conduite. Plus le pourcentage est bas, plus il est difficile de tapoter: 100% est le plus sensible, donc le plus facile à exploiter, et 10%, le moins sensible et donc le plus difficile à exploiter.",
-      "units": "Le système d'unités ou les unités de mesure pour afficher la vitesse et les distances dans les interfaces utilisateur. Sélectionnez soit Impérial [mi et mph] ou Métrique [km et km / h].",
-      "wearcheck": "Lorsqu'elle est activée, la montre intelligente doit être au poignet pour activer l'assistance électrique. Si l'assistance électrique est activée et que la smartwatch détecte qu'elle n'est plus au poignet, elle désactivera automatiquement l'assistance électrique."
+      "acceleration": "Réglage du niveau d'accélération de la SmartDrive.",
+      "controlmode": "MX2+: Paramètre par défaut basé sur les mouvements de la montre. En mode de contrôle MX2+, une double tape active le moteur en augmentant sa vitesse puis une simple tape valide et maintient la vitesse. Et enfin une double tape désactive la conduite.\n\nMX2: En mode de contrôle MX2, la SmartDrive démarre lorsqu'elle détecte votre impulsion et se désactive lorsqu'une tape est détectée.\n\nMX1: En mode de contrôle MX1, la SmartDrive démarre lorsqu'elle détecte votre impulsion, et se désactive lorsqu'une tape est détectée ou lorsque vous freinez sur les mains courantes.",
+      "maxspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par votre montre.",
+      "powerassistbuzzer": "Lorsqu'elle est activée, la SmartDrive émet un bip à chaque fois qu'une connexion est établie avec le PushTracker E2 ou lorsque vous la démarrez par les boutons de tierce personne.",
+      "switchcontrolmode": "Discontinu: Mode de contrôle par défaut avec lequel la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons de commande est enfoncé. Lorsque vous relâchez le bouton maintenu ou que vous appuyez sur les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.\n\nMaintenu: En mode de contrôle maintenu, la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons est maintenu enfoncé. Lorsque le bouton maintenu est relâché, la SmartDrive continuera à rouler / à suivre la vitesse actuelle au moment où le bouton a été relâché. Lorsque vous appuyez sur l'un des boutons ou les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.",
+      "switchcontrolspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par les boutons de tierce personne.",
+      "tapsensitivity": "Réglage de la sensibilité du geste de tape utilisé pour activer et désactiver la conduite. Plus le pourcentage est bas, plus il est difficile de taper: 100% est le plus sensible, donc le plus facile à utiliser, et 10%, le moins sensible et donc le plus difficile à utiliser.",
+      "units": "Unités de mesure: la vitesse et les distances dans les interfaces utilisateur. Sélectionnez soit Impérial [mi et mph] ou Métrique [km et km / h].",
+      "wearcheck": "Lorsqu'elle est activée, la montre doit être au poignet pour activer l'assistance électrique. Si l'assistance électrique est activée et que la montre détecte qu'elle n'est plus au poignet, elle désactivera automatiquement l'assistance électrique."
     },
-    "error-history": "Histoire d'erreur",
+    "error-history": "Historique des erreurs",
     "information": "Information",
-    "max-speed": "vitesse maximale",
-    "pair-smartdrive": "Pair SmartDrive",
-    "paired-to-smartdrive": "Couplé avec succès à SmartDrive.",
-    "power-assist-buzzer": "Indication de bip d'assistance",
-    "scanning": "Recherche de SmartDrive à associer à ...",
-    "select-smartdrive": "Sélectionnez SmartDrive",
-    "tap-sensitivity": "Touchez la sensibilité",
+    "max-speed": "Vitesse maximale",
+    "pair-smartdrive": "Jumelage SmartDrive",
+    "paired-to-smartdrive": "Couplage réussi.",
+    "power-assist-buzzer": "Bip d'assistance",
+    "scanning": "Recherche de SmartDrive ...",
+    "select-smartdrive": "Sélectionner la SmartDrive",
+    "tap-sensitivity": "Sensibilité de tape",
     "title": "Paramètres SmartDrive",
-    "units": "des unités",
+    "units": "Unités de mesures",
     "watch-required": {
-      "title": "Vérifier le poignet",
+      "title": "Vérifier contact poignet",
       "values": {
-        "disabled": "Désactivé",
+        "disabled": "Désactivée",
         "enabled": "Activée"
       }
     }
   },
   "switch-control": {
-    "max-speed": "Commutateur Vitesse Max",
+    "max-speed": "Réglage vitesse max sur boutons",
     "mode": "Changer de mode de contrôle"
   },
   "units": {
@@ -195,39 +194,39 @@
       "metric": "km"
     },
     "english": "Impérial",
-    "metric": "métrique",
+    "metric": "Métrique",
     "speed": {
       "english": "mph",
-      "metric": "km / h"
+      "metric": "km/h"
     }
   },
   "updates": {
     "canceled": "Mises à jour SmartDrive annulées.",
     "changes": "Sommaire des changements",
     "checking-for-updates": "Vérification des mises à jour ...",
-    "communications-failed": "Les communications avec le SmartDrive ont échoué. Veuillez redémarrer votre SmartDrive.",
-    "connecting-to-smartdrive": "Connexion à SmartDrive ...",
+    "communications-failed": "Les communications avec la SmartDrive ont échoués. Veuillez redémarrer votre SmartDrive.",
+    "connecting-to-smartdrive": "Connexion à la SmartDrive ...",
     "downloading-new-firmwares": "Téléchargement de nouvelles données de mises à jour ...",
     "errors": {
-      "connecting": "Erreur de connexion à SmartDrive.",
+      "connecting": "Erreur de connexion à la SmartDrive.",
       "downloading": "Erreur lors du téléchargement des mises à jour.",
       "getting": "Erreur lors de la recherche de mises à jour.",
       "saving": "Erreur lors de l'enregistrement des données de mises à jour."
     },
-    "failed": "Les mises à jour SmartDrive ont échoué.",
+    "failed": "Echec des mises à jour de la SmartDrive.",
     "status": "État des mises à jour",
-    "success": "Les mises à jour SmartDrive ont été complétées avec succès!",
-    "timeout": "Les mises à jour SmartDrive ont expiré.",
-    "up-to-date": "SmartDrive est à jour!",
+    "success": "Mises à jour de la SmartDrive réussies !",
+    "timeout": "Les mises à jour de la SmartDrive ont expiré.",
+    "up-to-date": "La SmartDrive est à jour !",
     "version": "Version"
   },
   "warnings": {
     "saved-settings": {
-      "message": "ATTENTION: vous DEVEZ consulter le manuel d'utilisation SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
+      "message": "ATTENTION: vous DEVEZ consulter le manuel d'utilisation de la SmartDrive pour savoir comment la modification des paramètres affecte son fonctionnement et ses performances.",
       "title": "Paramètres modifiés"
     },
     "title": {
-      "notice": "Remarquer"
+      "notice": "Remarque"
     }
   }
 }

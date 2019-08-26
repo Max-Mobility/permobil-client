@@ -7,6 +7,7 @@
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:RL="nativescript-ng-ripple/ripple-view"
       xmlns:ui="nativescript-auto-fit-text"
+      paddingBottom="{{ chinSize }}"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
       actionBarHidden="true">
@@ -246,7 +247,7 @@
                   <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
-              </RL:Ripple>              
+              </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
