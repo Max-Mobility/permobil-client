@@ -22,7 +22,7 @@
         </StackLayout>
 
         // User Email
-        <Label (tap)="onPrivacyTap()" row="2" col="1" colSpan="3" class="profile-email" [text]="user.username" textWrap="true"></Label>
+        <Label [isUserInteractionEnabled]="!isUserEditingSetting" (tap)="onPrivacyTap()" row="2" col="1" colSpan="3" class="profile-email" [text]="user.username" textWrap="true"></Label>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
