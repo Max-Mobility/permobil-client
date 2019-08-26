@@ -4,6 +4,9 @@
     <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true"
       (navTapEvent)="closeModal()"></MockActionBar>
 
+      <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded"
+        [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
+
     <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
       <SegmentedBar row="0" [items]="tabItems" [selectedIndex]="tabSelectedIndex"
         (selectedIndexChange)="onSelectedIndexChanged($event)" class="m-5"></SegmentedBar>
@@ -103,9 +106,6 @@
           [visibility]="tabSelectedIndex === 0 || tabSelectedIndex === 1 ? 'visible' : 'collapsed'"
           textWrap="true"></Label>
       </GridLayout>
-
-      <ActivityIndicator height="10%" width="10%" *ngIf="!activityLoaded"
-        [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
     </GridLayout>
   </GridLayout>
