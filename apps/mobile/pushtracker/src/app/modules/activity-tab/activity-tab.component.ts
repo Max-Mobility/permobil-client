@@ -202,6 +202,8 @@ export class ActivityTabComponent implements OnInit {
       // week
       if (this.isNextWeekButtonEnabled()) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
+        if (this.currentDayInView > new Date())
+          this.currentDayInView = new Date();
         this._initWeekChartTitle();
         this._loadWeeklyActivity();
       }
@@ -528,7 +530,6 @@ export class ActivityTabComponent implements OnInit {
           if (records && j < records.length) {
             while (j < records.length) {
               const record = records[j];
-              if (this.viewMode === ViewMode.DISTANCE) console.log(record);
               const start_time = record.start_time;
               const date = new Date(0); // The 0 there is the key, which sets the date to the epoch
               date.setUTCMilliseconds(start_time);
@@ -538,7 +539,6 @@ export class ActivityTabComponent implements OnInit {
               if (recordMinutes !== 0) {
                 recordTimePoint += 0.5;
               }
-              if (this.viewMode === ViewMode.DISTANCE) console.log(timePoint, recordTimePoint);
               if (timePoint === recordTimePoint) {
                 result.push({
                   xAxis: timePoint,
@@ -547,7 +547,6 @@ export class ActivityTabComponent implements OnInit {
                   driveDistance: this._updateDistanceUnit(this._motorTicksToMiles(record.distance_smartdrive_drive - record.distance_smartdrive_drive_start)) || 0,
                   coastDistance: this._updateDistanceUnit(this._caseTicksToMiles(record.distance_smartdrive_coast - record.distance_smartdrive_coast_start)) || 0
                 });
-                if (this.viewMode === ViewMode.DISTANCE) console.log('Appended to result', result[result.length - 1]);
                 j += 1;
                 continue;
               } else {
