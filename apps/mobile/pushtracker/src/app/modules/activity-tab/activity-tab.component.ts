@@ -327,9 +327,11 @@ export class ActivityTabComponent implements OnInit {
       if ((this.viewMode === ViewMode.COAST_TIME)) {
         this.chartDescription =
           (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if ((this.viewMode === ViewMode.PUSH_COUNT)) {
         this.chartDescription =
           (cache.dailyActivity.push_count || 0) + ' pushes';
+      } else if ((this.viewMode === ViewMode.DISTANCE)) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
 
       this._initDayChartTitle();
@@ -355,9 +357,11 @@ export class ActivityTabComponent implements OnInit {
         if (this.viewMode === ViewMode.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
             this.yAxisMax = activity['coastTime'];
-        } else {
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
+        } else if (this.viewMode === ViewMode.DISTANCE) {
+          // TODO: calculate Y axis max for distance
         }
         i++;
       }
@@ -404,9 +408,11 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription =
           (cache.weeklyActivity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
 
       this._initWeekChartTitle();
@@ -430,9 +436,11 @@ export class ActivityTabComponent implements OnInit {
         if (this.viewMode === ViewMode.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
             this.yAxisMax = activity['coastTime'];
-        } else {
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
+        } else if (this.viewMode === ViewMode.DISTANCE) {
+          // TODO: calculate Y Axis max
         }
         i++;
       }
@@ -450,8 +458,10 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
 
       if (activity && activity.records) {
@@ -773,8 +783,10 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
     } else {
       // We are showing cached data
@@ -787,9 +799,11 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (cache.dailyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription =
           (cache.dailyActivity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
     }
   }
@@ -803,7 +817,7 @@ export class ActivityTabComponent implements OnInit {
         this.dailyActivityAnnotationValue = activity
           ? activity.coast_time_avg || 0
           : 0;
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         // push count
         const records = activity.records || [];
         let pushCountTotal = 0;
@@ -813,6 +827,9 @@ export class ActivityTabComponent implements OnInit {
         }
         this.dailyActivityAnnotationValue =
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
+      }
+      else if (this.viewMode === ViewMode.DISTANCE) {
+        this.dailyActivityAnnotationValue = 0;
       }
     } else {
       // We are showing cached data
@@ -824,7 +841,7 @@ export class ActivityTabComponent implements OnInit {
         this.dailyActivityAnnotationValue = cache
           ? cache.dailyActivity.coast_time_avg || 0
           : 0;
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         // push_count
         const records = cache.dailyActivity.records || [];
         let pushCountTotal = 0;
@@ -834,6 +851,9 @@ export class ActivityTabComponent implements OnInit {
         }
         this.dailyActivityAnnotationValue =
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
+      }
+      else if (this.viewMode === ViewMode.DISTANCE) {
+        this.dailyActivityAnnotationValue = 0;
       }
     }
   }
@@ -847,8 +867,10 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
     } else {
       // We are showing cached data
@@ -859,9 +881,11 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription =
           (cache.weeklyActivity.push_count || 0) + ' pushes';
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
     }
   }
@@ -875,10 +899,13 @@ export class ActivityTabComponent implements OnInit {
         this.weeklyActivityAnnotationValue = activity
           ? activity.coast_time_avg || 0
           : 0;
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         // push count
         this.weeklyActivityAnnotationValue =
           parseInt((activity.push_count / 7).toFixed(1)) || 0;
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        // distance
+        this.weeklyActivityAnnotationValue = 0;
       }
     } else {
       // We are showing cached data
@@ -888,10 +915,13 @@ export class ActivityTabComponent implements OnInit {
         this.weeklyActivityAnnotationValue = cache
           ? cache.weeklyActivity.coast_time_avg || 0
           : 0;
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         // push count
         this.weeklyActivityAnnotationValue =
           parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
+      } else if (this.viewMode === ViewMode.DISTANCE) {
+        // distance
+        this.weeklyActivityAnnotationValue = 0;
       }
     }
   }
