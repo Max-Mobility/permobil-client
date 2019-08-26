@@ -55,23 +55,21 @@
 
   .chart-layout {
     @extend .CHART_LAYOUT_BASE;
-  }
 
-  RadCartesianChart {
-    background-color: $black;
-    color: $white;
-    width: 90%;
-    height: 150;
-  }
+    .title {
+      color: $white;
+    }
 
-  .title {
-    font-size: 14px;
-    color: $white;
-    font-weight: bold;
-  }
+    RadCartesianChart {
+      background-color: $black;
+      color: $white;
+      width: 90%;
+      height: 150;
+      margin: 20 2 2 2;
+    }
 
-  Label {
-    color: $white;
+    label {
+      color: $white;
+    }
   }
-
 }

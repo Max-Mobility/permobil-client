@@ -49,18 +49,17 @@
     }
   }
 
-  RadCartesianChart {
-    width: 90%;
-    height: 150;
-  }
-
-  .title {
-    font-size: 14px;
-    color: $black;
-    font-weight: bold;
-  }
-
   .chart-layout {
     @extend .CHART_LAYOUT_BASE;
+
+    RadCartesianChart {
+      width: 90%;
+      height: 150;
+      margin: 20 2 2 2;
+    }
+
+    .title {
+      color: $black;
+    }
   }
 }

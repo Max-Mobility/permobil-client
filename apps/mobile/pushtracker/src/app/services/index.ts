@@ -37,4 +37,5 @@ export * from './logging.service';
 export * from './progress.service';
 export * from './pushtracker.user.service';
 export * from './settings.service';
+export * from './smartdrive-usage.service';
 
