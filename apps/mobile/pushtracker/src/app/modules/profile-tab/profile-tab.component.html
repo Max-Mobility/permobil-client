@@ -31,17 +31,7 @@
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
-        <!-- <DataBox
-          row="5"
-          col="0"
-          colSpan="2"
-          [label]="'general.coast-time' | translate"
-          [(dataValue)]="displayActivityGoalCoastTime"
-          (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)"
-        ></DataBox> -->
-
-        // Coast Time
-        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL', COAST_TIME_ACTIVITY_GOAL)">
+        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
@@ -50,7 +40,7 @@
         </StackLayout>
 
         // Distance
-        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL', DISTANCE_ACTIVITY_GOAL)">
+        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
@@ -162,28 +152,6 @@
         </StackLayout>
       </GridLayout>
     </ScrollView>
-  </GridLayout>
-
-  <!-- Activity Goals FullScreen Layout -->
-  // custom full-screen modal for presenting user with config changes UI
-  <GridLayout #activityGoalsDialog row="0" rowSpan="3" col="0" rows="auto, *" columns="*" [translateY]="screenHeight + 100" opacity="0" class="activity-goals-dialog">
-    // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, *, auto" class="action-bar">
-      <Button row="0" col="0" text="&#xe5cd;" class="nav-btn" (tap)="closeActivityGoalsDialog()"></Button>
-      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn" (tap)="onSetGoalBtnTap()"></Button>
-    </GridLayout>
-    <GridLayout row="1" rows="auto, auto, *">
-      <Label row="0" [text]="activity_goals_dialog_data.config_title" class="config-title" textWrap="true"></Label>
-      <Label row="1" [text]="activity_goals_dialog_data.config_description" class="config-title-description" textWrap="true"></Label>
-      <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="*, *, *">
-        <Button row="1" col="0" text="&#xe15b;" textAlign="left" (tap)="decrementConfigValue()"></Button>
-        <StackLayout horizontalAlignment="center" row="1" col="1">
-          <Label class="config-value" [text]="activity_goals_dialog_data.config_value"></Label>
-          <Label class="config-value-sub" [text]="displayActivityGoalUnitLabel"></Label>
-        </StackLayout>
-        <Button row="1" col="2" text="&#xe145;" textAlign="right" (tap)="incrementConfigValue()"></Button>
-      </GridLayout>
-    </GridLayout>
   </GridLayout>
 
   <!-- List Picker Layout -->

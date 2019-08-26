@@ -1,0 +1,19 @@
+<GridLayout rows="auto, *" columns="*" class="activity-goals-dialog">
+  // Mock ActionBar
+  <GridLayout row="0" rows="*" columns="50, *, auto" class="action-bar">
+    <Button row="0" col="0" text="&#xe5cd;" class="nav-btn" (tap)="closeModal()" ripple rippleColorAlpha="0.18"></Button>
+    <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn" (tap)="onSetGoalBtnTap()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
+  </GridLayout>
+  <GridLayout row="1" rows="auto, auto, *">
+    <Label row="0" [text]="config.title" class="config-title" textWrap="true"></Label>
+    <Label row="1" [text]="config.description" class="config-title-description" textWrap="true"></Label>
+    <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="*, *, *">
+      <Button row="1" col="0" text="&#xe15b;" horizontalAlignment="left" (tap)="decrementConfigValue()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
+      <StackLayout horizontalAlignment="center" row="1" col="1">
+        <Label [text]="config.value" class="config-value"></Label>
+        <Label [text]="config.value_description" class="config-value-sub" textWrap="true"></Label>
+      </StackLayout>
+      <Button row="1" col="2" text="&#xe145;" horizontalAlignment="right" (tap)="incrementConfigValue()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
+    </GridLayout>
+  </GridLayout>
+</GridLayout>
