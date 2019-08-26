@@ -218,11 +218,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
+      this._loadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
+      this._loadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -234,11 +236,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
+      this._loadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
+      this._loadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -440,7 +444,12 @@ export class ActivityTabComponent implements OnInit {
     } else {
       // We have the data cached. Pull it up
       didLoad = true;
-      const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+      let cache = null;
+      if (this.viewMode === ViewMode.DISTANCE)
+        cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
+      else
+        cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+
       this.weeklyActivity = cache.chartData;
 
       if (this.tabSelectedIndex === 1) {
@@ -576,24 +585,21 @@ export class ActivityTabComponent implements OnInit {
         return result;
       }
     } else if (index === 1) {
-      const activity = this._activityService.weeklyActivity;
+      const activity = (this.viewMode === ViewMode.DISTANCE ? this._usageService.weeklyActivity : this._activityService.weeklyActivity);
 
       // format chart description
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else {
+      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
+      } else {
+        this.chartDescription = '<insert_distance> <insert_unit>';
       }
 
       if (activity && activity.days) {
         const result = [];
         const date = new Date(activity.date);
-        const range = function (start, end) {
-          return new Array(end - start + 1)
-            .fill(undefined)
-            .map((_, i) => i + start);
-        };
         const weekViewDayArray = [];
         const currentDay = date;
         let i = 0;
@@ -621,6 +627,8 @@ export class ActivityTabComponent implements OnInit {
               xAxis: dayNames[parseInt(i)],
               coastTime: dailyActivity.coast_time_avg || 0,
               pushCount: dailyActivity.push_count || 0,
+              driveDistance: this._updateDistanceUnit(this._motorTicksToMiles(dailyActivity.distance_smartdrive_drive - dailyActivity.distance_smartdrive_drive_start)) || 0,
+              coastDistance: this._updateDistanceUnit(this._caseTicksToMiles(dailyActivity.distance_smartdrive_coast - dailyActivity.distance_smartdrive_coast_start)) || 0,
               date: dayInWeek
             });
           }
@@ -629,14 +637,16 @@ export class ActivityTabComponent implements OnInit {
               xAxis: dayNames[parseInt(i)],
               coastTime: 0,
               pushCount: 0,
+              driveDistance: 0,
+              coastDistance: 0,
               date: dayInWeek
             });
           }
         }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
         return result;
       }
       else {
@@ -654,13 +664,15 @@ export class ActivityTabComponent implements OnInit {
           result.push({
             xAxis: dayNames[parseInt(i)],
             coastTime: 0,
-            pushCount: 0
+            pushCount: 0,
+            driveDistance: 0,
+            coastDistance: 0
           });
         }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
+        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0, driveDistance: 0, coastDistance: 0 });
         return result;
       }
     }
