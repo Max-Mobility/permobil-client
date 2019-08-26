@@ -3,13 +3,24 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
-import { ChartFontStyle, Palette, PaletteEntry, PointLabelStyle } from 'nativescript-ui-chart';
+import {
+  ChartFontStyle,
+  Palette,
+  PaletteEntry,
+  PointLabelStyle
+} from 'nativescript-ui-chart';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import {
+  ActivityService,
+  LoggingService,
+  PushTrackerUserService,
+  SmartDriveUsageService
+} from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
 
 @Component({
@@ -18,6 +29,7 @@ import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
   templateUrl: './home-tab.component.html'
 })
 export class HomeTabComponent implements OnInit {
+  screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
   distanceCirclePercentageMaxValue;
   coastTimeCirclePercentage: number;
