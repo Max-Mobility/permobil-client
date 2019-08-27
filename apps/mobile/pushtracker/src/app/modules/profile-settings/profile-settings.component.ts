@@ -13,7 +13,7 @@ import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
-import { MockActionbarComponent } from '../shared/components/mock-actionbar';
+import { MockActionbarComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-settings',

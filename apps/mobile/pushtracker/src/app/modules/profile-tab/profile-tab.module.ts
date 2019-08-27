@@ -5,10 +5,8 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NgRippleModule } from 'nativescript-ng-ripple';
+import { ActivityGoalSettingComponent, ProfileTabComponent, WirelessUpdatesComponent } from '..';
 import { SharedModule } from '../shared/shared.module';
-import { WirelessUpdatesComponent } from '../wireless-updates/wireless-updates.component';
-import { ActivityGoalSettingComponent } from './activity-goal-setting';
-import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
   entryComponents: [WirelessUpdatesComponent, ActivityGoalSettingComponent],

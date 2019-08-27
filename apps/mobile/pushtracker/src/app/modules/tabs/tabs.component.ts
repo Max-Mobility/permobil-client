@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import * as application from 'tns-core-modules/application';
@@ -14,8 +14,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, SettingsService, PushTrackerUserService } from '../../services';
-import { PushTrackerUser } from '@permobil/core/src';
+import { BluetoothService, PushTrackerUserService, SettingsService } from '../../services';
 
 @Component({
   moduleId: module.id,
@@ -109,7 +108,12 @@ export class TabsComponent implements OnInit, AfterViewInit {
   getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
-      if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
+      if (
+        this.user &&
+        this.user.data.control_configuration ===
+          'PushTracker with SmartDrive' &&
+        !this.bluetoothAdvertised
+      ) {
         Log.D('asking for permissions');
         this.askForPermissions()
           .then(() => {
@@ -213,8 +217,8 @@ export class TabsComponent implements OnInit, AfterViewInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -227,7 +231,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
