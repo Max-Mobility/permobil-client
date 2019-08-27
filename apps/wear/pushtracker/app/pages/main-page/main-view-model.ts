@@ -313,7 +313,7 @@ export class MainViewModel extends Observable {
         value: 0
       };
     });
-    let today = this.format(new Date(), 'YYYY/MM/DD');
+    const today = this.format(new Date(), 'YYYY/MM/DD');
     let maxDist = 0;
     let currentDist = 0;
     try {
