@@ -6,6 +6,7 @@
       xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
+      paddingBottom="{{ chinSize }}"
       actionBarHidden="true">
   <GridLayout rows="*" columns="*" width="100%" height="100%">
     <ScrollView visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
