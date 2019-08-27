@@ -7,18 +7,18 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { screen } from 'tns-core-modules/platform/platform';
-import { View } from 'tns-core-modules/ui/core/view';
+import { Toasty } from 'nativescript-toasty';
+import { Color } from 'tns-core-modules/color';
+import { EventData } from 'tns-core-modules/data/observable';
+import { screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
-import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { EventData, Page } from 'tns-core-modules/ui/page';
-import { STORAGE_KEYS } from '../../enums';
+import { Page } from 'tns-core-modules/ui/page';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
-import { TextField } from 'tns-core-modules/ui/text-field/text-field';
+import { ActivityGoalSettingComponent } from './activity-goal-setting';
+import { TextField } from 'tns-core-modules/ui/text-field';
 
 @Component({
   selector: 'profile',
@@ -26,23 +26,19 @@ import { TextField } from 'tns-core-modules/ui/text-field/text-field';
   templateUrl: './profile-tab.component.html'
 })
 export class ProfileTabComponent implements OnInit {
-  @ViewChild('activityGoalsDialog', { static: false })
-  activityGoalsDialog: ElementRef;
-
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   isUserEditingSetting: boolean = false;
-
   isHeightInCentimeters: boolean;
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
-  displayActivityGoalUnitLabel: string;
+
   // List picker related fields
-  LIST_PICKER_OPTIONS: string[];
+
   primary: string[];
   secondary: string[];
   primaryIndex: number;
@@ -52,46 +48,6 @@ export class ProfileTabComponent implements OnInit {
   listPickerDescription: string;
   listPickerDescriptionNecessary: boolean;
   listPickerNeedsSecondary: boolean;
-  // Settings
-  SETTING_WEIGHT_UNITS: string[];
-  SETTING_WEIGHT: string;
-  SETTING_HEIGHT_UNITS: string[];
-  SETTING_HEIGHT: string;
-  SETTING_DISTANCE_UNITS: string[];
-  SETTING_DISTANCE: string;
-  SETTING_MAX_SPEED: string;
-  SETTING_ACCELERATION: string;
-  SETTING_TAP_SENSITIVITY: string;
-  SETTING_MODE: string;
-  COAST_TIME_ACTIVITY_GOAL; // user defined coast-time activity goal
-  DISTANCE_ACTIVITY_GOAL; // user defined distance activity goal
-  _barcodeScanner: BarcodeScanner;
-
-  /**
-   * Object to use for activityGoalsDialog
-   */
-  activity_goals_dialog_data: {
-    /**
-     * The STORAGE_KEYS enum value for the ACTIVITY_GOALS config the user selected.
-     */
-    config_key: string;
-    /**
-     * Value to display to user when they're changing their activity goals
-     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
-     */
-    config_value: any;
-
-    /**
-     * Title to display to user when they're changing their activity goals
-     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
-     */
-    config_title: string;
-    /**
-     * Long-form description text to display to user when they're changing their activity goals
-     * Depending which value the user tapped we show the translation for the goal (distance, coast-time)
-     */
-    config_description: string;
-  };
 
   /**
    * The user selected activity goal layout. Used to keep track of which UI layout was selected to apply/remove CSS classes.
@@ -103,19 +59,21 @@ export class ProfileTabComponent implements OnInit {
    */
   screenHeight: number;
 
+  private _barcodeScanner: BarcodeScanner;
+
   constructor(
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
-    private userService: PushTrackerUserService,
+    private _userService: PushTrackerUserService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
-    // appSettings.clear();
     this._page.actionBarHidden = true;
     this._barcodeScanner = new BarcodeScanner();
+    this.screenHeight = screen.mainScreen.heightDIPs;
 
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
@@ -127,63 +85,9 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this.LIST_PICKER_OPTIONS = [
-      'Gender',
-      'Weight',
-      'Height',
-      'Chair Type',
-      'Chair Make'
-    ];
-    this.listPickerIndex = 0;
-
-    // Units for settings
-    this.SETTING_HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
-    this.SETTING_WEIGHT_UNITS = ['Kilograms', 'Pounds'];
-    this.SETTING_DISTANCE_UNITS = ['Kilometers', 'Miles'];
-
-    // SmartDrive settings
-    this.SETTING_MAX_SPEED = '70%';
-    this.SETTING_ACCELERATION = '70%';
-    this.SETTING_TAP_SENSITIVITY = '100%';
-    this.SETTING_MODE = 'MX2+';
-
-    this.COAST_TIME_ACTIVITY_GOAL =
-      appSettings.getNumber(STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) ||
-      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
-    this.DISTANCE_ACTIVITY_GOAL =
-      appSettings.getNumber(STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) ||
-      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
-
-    this.activity_goals_dialog_data = {
-      config_key: null,
-      config_value: null,
-      config_title: null,
-      config_description: null
-    };
-
-    this.screenHeight = screen.mainScreen.heightDIPs;
-
     this.getUser();
     if (!this.user.data.dob || this.user.data.dob === null)
       this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
-
-    // Unit settings
-    if (this.user.data) {
-      this.SETTING_HEIGHT =
-        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
-        'Feet & inches';
-      this.SETTING_WEIGHT =
-        this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
-        'Pounds';
-      this.SETTING_DISTANCE =
-        this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
-        'Miles';
-      this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
-    } else {
-      this.SETTING_HEIGHT = 'Feet & inches';
-      this.SETTING_WEIGHT = 'Pounds';
-      this.SETTING_DISTANCE = 'Miles';
-    }
   }
 
   ngOnInit() {
@@ -195,24 +99,12 @@ export class ProfileTabComponent implements OnInit {
   }
 
   getUser(): void {
-    this.userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       this.user = user;
-      this.SETTING_HEIGHT =
-        this.SETTING_HEIGHT_UNITS[this.user.data.height_unit_preference] ||
-        'Feet & inches';
-      this.SETTING_WEIGHT =
-        this.SETTING_WEIGHT_UNITS[this.user.data.weight_unit_preference] ||
-        'Pounds';
-      this.SETTING_DISTANCE =
-        this.SETTING_DISTANCE_UNITS[this.user.data.distance_unit_preference] ||
-        'Miles';
-
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
-      this.displayActivityGoalUnitLabel = '';
-      this.isHeightInCentimeters = this.SETTING_HEIGHT === 'Centimeters';
     });
   }
 
@@ -256,7 +148,7 @@ export class ProfileTabComponent implements OnInit {
         if (result !== undefined) {
           KinveyUser.update(result);
           Object.keys(result).map(k => {
-            this.userService.updateDataProperty(k, result[k]);
+            this._userService.updateDataProperty(k, result[k]);
           });
         }
       })
@@ -283,11 +175,11 @@ export class ProfileTabComponent implements OnInit {
       if (r.result === true) {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
-          this.userService.updateDataProperty('first_name', r.text);
+          this._userService.updateDataProperty('first_name', r.text);
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
-          this.userService.updateDataProperty('last_name', r.text);
+          this._userService.updateDataProperty('last_name', r.text);
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -295,59 +187,66 @@ export class ProfileTabComponent implements OnInit {
   }
 
   async onActivityGoalTap(
-    args,
-    configTitle: string,
-    configDescription: string,
-    configKey: string,
-    configValue: number
+    args: EventData,
+    config_title: string,
+    config_description: string,
+    key: string
   ) {
     this.isUserEditingSetting = true;
     Log.D('user tapped config = ', configTitle, args.object);
     this._setActiveDataBox(args);
 
-    // setting the dialog data so we know what we are changing
-    this.activity_goals_dialog_data.config_key = configKey;
-    this.activity_goals_dialog_data.config_value = configValue;
-    this.activity_goals_dialog_data.config_title = this._translateService.instant(
-      `general.${configTitle}`
-    );
-    this.activity_goals_dialog_data.config_description = this._translateService.instant(
-      `general.${configDescription}`
-    );
+    let value_description: string;
+    let value;
 
-    // Setting the dialog data to the actual user value
-    if (configKey === 'COAST_TIME_ACTIVITY_GOAL') {
-      this.displayActivityGoalUnitLabel =
-        this._translateService.instant('profile-tab.coast-time-units') +
-        ' ' +
-        this._translateService.instant('profile-tab.per-day');
+    // Determine the Setting to map to the user preference for units (km/mi)
+    if (key === 'COAST_TIME_ACTIVITY_GOAL') {
+      value_description = `${this._translateService.instant(
+        'profile-tab.coast-time-units'
+      )} ${this._translateService.instant('profile-tab.per-day')}`;
       if (this.user.data.activity_goal_coast_time)
-        this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
-    } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
+        value = this.user.data.activity_goal_coast_time;
+    } else if (key === 'DISTANCE_ACTIVITY_GOAL') {
       if (this.user.data.distance_unit_preference === 0) {
-        this.displayActivityGoalUnitLabel =
-          this._translateService.instant('profile-tab.distance-units-km') +
-          ' ' +
-          this._translateService.instant('profile-tab.per-day');
+        value_description = `${this._translateService.instant(
+          'profile-tab.distance-units-km'
+        )} ${this._translateService.instant('profile-tab.per-day')}`;
       } else {
-        this.displayActivityGoalUnitLabel =
-          this._translateService.instant('profile-tab.distance-units-mi') +
-          ' ' +
-          this._translateService.instant('profile-tab.per-day');
+        value_description = `${this._translateService.instant(
+          'profile-tab.distance-units-mi'
+        )} ${this._translateService.instant('profile-tab.per-day')}`;
       }
       if (this.user.data.activity_goal_distance)
-        this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_distance;
+        value = this.user.data.activity_goal_distance;
     }
 
-    const x = this.activityGoalsDialog.nativeElement as GridLayout;
-    this._animateDialog(x, 0, 0);
-  }
-
-  async closeActivityGoalsDialog() {
-    this._removeActiveDataBox();
-    const cfl = this.activityGoalsDialog.nativeElement as GridLayout;
-    this._animateDialog(cfl, 0, 900);
-    this.isUserEditingSetting = false;
+    this._modalService
+      .showModal(ActivityGoalSettingComponent, {
+        context: {
+          title: this._translateService.instant(`general.${config_title}`),
+          description: this._translateService.instant(
+            `general.${config_description}`
+          ),
+          key,
+          value,
+          value_description
+        },
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .then(res => {
+        this._removeActiveDataBox();
+        this._initDisplayActivityGoalCoastTime();
+        this._initDisplayActivityGoalDistance();
+      })
+      .catch(err => {
+        Log.E(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
   }
 
   onTextFieldReturnPress(event) {
@@ -364,71 +263,6 @@ export class ProfileTabComponent implements OnInit {
 
   onTextFieldBlur(event) {
     this.onTextFieldReturnPress(event);
-  }
-
-  incrementConfigValue() {
-    Log.D('Increment the config value');
-    this.activity_goals_dialog_data.config_value += 0.1;
-    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
-  }
-
-  decrementConfigValue() {
-    Log.D('Decrement the config value');
-    this.activity_goals_dialog_data.config_value -= 0.1;
-    if (this.activity_goals_dialog_data.config_value < 0)
-      this.activity_goals_dialog_data.config_value = 0;
-    this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
-  }
-
-  onSetGoalBtnTap() {
-    this._logService.logBreadCrumb(
-      'User set activity goals: ' +
-        this.activity_goals_dialog_data.config_key +
-        ' ' +
-        this.activity_goals_dialog_data.config_value
-    );
-    // Save the Activity Goals value
-    appSettings.setNumber(
-      this.activity_goals_dialog_data.config_key,
-      this.activity_goals_dialog_data.config_value
-    );
-
-    // Persist this goal in Kinvey
-    if (
-      this.activity_goals_dialog_data.config_key ===
-      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL
-    ) {
-      this.userService.updateDataProperty(
-        'activity_goal_coast_time',
-        this.activity_goals_dialog_data.config_value
-      );
-      KinveyUser.update({
-        activity_goal_coast_time: this.activity_goals_dialog_data.config_value
-      });
-      this._initDisplayActivityGoalCoastTime();
-    } else if (
-      this.activity_goals_dialog_data.config_key ===
-      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL
-    ) {
-      this.userService.updateDataProperty(
-        'activity_goal_distance',
-        this.activity_goals_dialog_data.config_value
-      );
-      KinveyUser.update({
-        activity_goal_distance: this.activity_goals_dialog_data.config_value
-      });
-      this._initDisplayActivityGoalDistance();
-    }
-
-    this.COAST_TIME_ACTIVITY_GOAL =
-      appSettings.getNumber(STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) ||
-      STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL_DEFAULT_VALUE;
-    this.DISTANCE_ACTIVITY_GOAL =
-      appSettings.getNumber(STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) ||
-      STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL_DEFAULT_VALUE;
-
-    // close the dialog which can re-use the function that the close btn uses
-    this.closeActivityGoalsDialog();
   }
 
   onBirthDateTap(args: EventData) {
@@ -461,7 +295,7 @@ export class ProfileTabComponent implements OnInit {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
-          this.userService.updateDataProperty('dob', result);
+          this._userService.updateDataProperty('dob', result);
           const date = new Date(result);
           const month = date.getUTCMonth() + 1;
           const day = date.getUTCDate();
@@ -509,6 +343,38 @@ export class ProfileTabComponent implements OnInit {
     this.secondaryIndex = picker.selectedIndex;
   }
 
+  onScan(deviceName) {
+    this._barcodeScanner
+      .scan({
+        formats: 'QR_CODE, EAN_13',
+        cancelLabel: this._translateService.instant('profile-tab.cancel-scan'), // iOS only
+        cancelLabelBackgroundColor: '#333333', // iOS only
+        message: `${this._translateService.instant(
+          'profile-tab.scan-msg'
+        )} ${this._translateService.instant('profile-tab.sd-or-pt')}`, // Android only
+        showFlipCameraButton: true,
+        preferFrontCamera: false,
+        showTorchButton: true,
+        beepOnScan: true,
+        torchOn: false,
+        closeCallback: () => {
+          // scanner closed, not doing anything for now
+        },
+        resultDisplayDuration: 500, // Android only
+        openSettingsIfPermissionWasPreviouslyDenied: true
+      })
+      .then(result => {
+        const validDevices =
+          deviceName === 'pushtracker'
+            ? ['pushtracker', 'wristband']
+            : ['smartdrive'];
+        this._handleSerial(result.text, validDevices);
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
   async closeListPickerDialog() {
     const x = this.listPickerDialog.nativeElement as GridLayout;
     x.animate({
@@ -532,7 +398,7 @@ export class ProfileTabComponent implements OnInit {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'gender',
           this.primary[this.primaryIndex]
         );
@@ -551,21 +417,21 @@ export class ProfileTabComponent implements OnInit {
         );
         break;
       case 3:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'chair_type',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_type: this.user.data.chair_type });
         break;
       case 4:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'chair_make',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
       case 5:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'control_configuration',
           this.primary[this.primaryIndex]
         );
@@ -581,7 +447,7 @@ export class ProfileTabComponent implements OnInit {
 
   private _getWeightIndices() {
     let weight = this.user.data.weight;
-    if (this.SETTING_WEIGHT === 'Pounds') {
+    if (this.user.data.weight_unit_preference === 0) {
       weight = this._kilogramsToPounds(weight);
     }
     const primaryIndex = Math.floor(weight);
@@ -591,12 +457,12 @@ export class ProfileTabComponent implements OnInit {
 
   private _getHeightIndices() {
     let heightString = this.user.data.height + '';
-    if (this.SETTING_HEIGHT === 'Feet & inches') {
+    if (this.user.data.height_unit_preference === 1) {
       heightString = this._centimetersToFeetInches(this.user.data.height);
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
     let secondaryIndex = 0;
-    if (this.SETTING_HEIGHT === 'Feet & inches')
+    if (this.user.data.height_unit_preference === 0)
       secondaryIndex = parseFloat(heightString.split('.')[1]);
 
     console.log('getHeightIndex', heightString, secondaryIndex);
@@ -629,7 +495,7 @@ export class ProfileTabComponent implements OnInit {
     this.secondaryIndex = 0;
     this._setActiveDataBox(args);
 
-    if (this.SETTING_WEIGHT === 'Kilograms') {
+    if (this.user.data.weight_unit_preference === 1) {
       this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
       this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
     } else {
@@ -660,7 +526,7 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerIndex = 2;
     this._setActiveDataBox(args);
 
-    if (this.SETTING_HEIGHT === 'Centimeters') {
+    if (this.user.data.height_unit_preference === 1) {
       this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
     } else {
       this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
@@ -682,7 +548,8 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerDescription = this._translateService.instant(
       'general.height-guess'
     );
-    this.listPickerNeedsSecondary = !this.isHeightInCentimeters;
+    this.listPickerNeedsSecondary =
+      this.user.data.height_unit_preference === 0 ? true : false;
 
     this._openListPickerDialog();
   }
@@ -770,7 +637,8 @@ export class ProfileTabComponent implements OnInit {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === 0) {
-      this.displayActivityGoalDistance = ((this.user.data.activity_goal_distance) * 0.621371).toFixed(1) + ' km';
+      this.displayActivityGoalDistance =
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' km';
     } else {
       this.displayActivityGoalDistance += ' mi';
     }
@@ -779,7 +647,7 @@ export class ProfileTabComponent implements OnInit {
   private _initDisplayWeight() {
     this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
-    if (this.SETTING_WEIGHT === 'Pounds') {
+    if (this.user.data.weight_unit_preference === 0) {
       this.displayWeight = this._displayWeightInPounds(
         this._kilogramsToPounds(this.user.data.weight)
       );
@@ -792,7 +660,7 @@ export class ProfileTabComponent implements OnInit {
       this.user.data.height
     );
     // convert from metric height (as stored in Kinvey) to user preferred unit
-    if (this.SETTING_HEIGHT === 'Feet & inches') {
+    if (this.user.data.height_unit_preference === 1) {
       const heightString = this._centimetersToFeetInches(this.user.data.height);
       const feet = parseFloat(heightString.split('.')[0]);
       const inches = parseFloat(heightString.split('.')[1]);
@@ -802,12 +670,12 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty(
+    this._userService.updateDataProperty(
       'weight',
       primaryValue + secondaryValue
     );
-    if (this.SETTING_WEIGHT === 'Pounds') {
-      this.userService.updateDataProperty(
+    if (this.user.data.weight_unit_preference === 0) {
+      this._userService.updateDataProperty(
         'weight',
         this._poundsToKilograms(primaryValue + secondaryValue)
       );
@@ -815,7 +683,7 @@ export class ProfileTabComponent implements OnInit {
         primaryValue + secondaryValue
       );
     } else {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'weight',
         primaryValue + secondaryValue
       );
@@ -827,12 +695,12 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty(
+    this._userService.updateDataProperty(
       'height',
       primaryValue + 0.01 * (secondaryValue || 0)
     );
-    if (this.SETTING_HEIGHT === 'Feet & inches') {
-      this.userService.updateDataProperty(
+    if (this.user.data.height_unit_preference === 0) {
+      this._userService.updateDataProperty(
         'height',
         this._feetInchesToCentimeters(primaryValue, secondaryValue)
       );
@@ -841,7 +709,7 @@ export class ProfileTabComponent implements OnInit {
         secondaryValue
       );
     } else {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'height',
         primaryValue + 0.01 * (secondaryValue || 0)
       );
@@ -890,7 +758,7 @@ export class ProfileTabComponent implements OnInit {
     return val.toFixed() + ' cm';
   }
 
-  onListChairTypeTap(args: EventData) {
+  private onListChairTypeTap(args: EventData) {
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
     Log.D('User tapped Chair Type data box');
@@ -909,7 +777,7 @@ export class ProfileTabComponent implements OnInit {
     this._openListPickerDialog();
   }
 
-  onListChairMakeTap(args: EventData) {
+  private onListChairMakeTap(args: EventData) {
     this.primaryIndex = 0;
     this.secondaryIndex = 0;
     Log.D('User tapped Chair Make data box');
@@ -954,68 +822,6 @@ export class ProfileTabComponent implements OnInit {
     });
   }
 
-  private _animateDialog(args, x: number, y: number) {
-    const layout = args as View;
-    layout
-      .animate({
-        duration: 300,
-        opacity: 1,
-        curve: AnimationCurve.easeIn,
-        translate: {
-          x: x,
-          y: y
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
-  }
-
-  private _setActiveDataBox(args: EventData) {
-    const stack = args.object as StackLayout;
-    stack.className = 'data-box-active';
-    this.activeDataBox = stack; // set the activeDataBox so that we can remove the applied css class when the selection is made by the user
-  }
-
-  private _removeActiveDataBox() {
-    // remove the active data box class from the previously selected box
-    this.activeDataBox.className = 'data-box';
-  }
-
-  onScan(deviceName) {
-    this.isUserEditingSetting = true;
-    this._barcodeScanner
-      .scan({
-        formats: 'QR_CODE, EAN_13',
-        cancelLabel: this._translateService.instant('profile-tab.cancel-scan'), // iOS only
-        cancelLabelBackgroundColor: '#333333', // iOS only
-        message: `${this._translateService.instant(
-          'profile-tab.scan-msg'
-        )} ${this._translateService.instant('profile-tab.sd-or-pt')}`, // Android only
-        showFlipCameraButton: true,
-        preferFrontCamera: false,
-        showTorchButton: true,
-        beepOnScan: true,
-        torchOn: false,
-        closeCallback: () => {
-          // scanner closed, not doing anything for now
-        },
-        resultDisplayDuration: 500, // Android only
-        openSettingsIfPermissionWasPreviouslyDenied: true
-      })
-      .then(result => {
-        this.isUserEditingSetting = false;
-        const validDevices =
-          deviceName === 'pushtracker'
-            ? ['pushtracker', 'wristband']
-            : ['smartdrive'];
-        this._handleSerial(result.text, validDevices);
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
-  }
-
   private _handleSerial(text: string, forDevices?: string[]) {
     try {
       text = text || '';
@@ -1053,7 +859,7 @@ export class ProfileTabComponent implements OnInit {
 
       // now set the serial number
       if (deviceType === 'pushtracker' || deviceType === 'wristband') {
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'pushtracker_serial_number',
           serialNumber
         );
@@ -1061,7 +867,7 @@ export class ProfileTabComponent implements OnInit {
           pushtracker_serial_number: this.user.data.pushtracker_serial_number
         });
       } else if (deviceType === 'smartdrive') {
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'smartdrive_serial_number',
           serialNumber
         );
@@ -1072,5 +878,16 @@ export class ProfileTabComponent implements OnInit {
     } catch (error) {
       this._logService.logException(error);
     }
+  }
+
+  private _setActiveDataBox(args: EventData) {
+    const stack = args.object as StackLayout;
+    stack.className = 'data-box-active';
+    this.activeDataBox = stack; // set the activeDataBox so that we can remove the applied css class when the selection is made by the user
+  }
+
+  private _removeActiveDataBox() {
+    // remove the active data box class from the previously selected box
+    this.activeDataBox.className = 'data-box';
   }
 }
