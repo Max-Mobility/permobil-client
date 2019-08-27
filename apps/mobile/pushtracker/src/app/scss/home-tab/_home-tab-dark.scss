@@ -68,8 +68,15 @@
       margin: 20 2 2 2;
     }
 
-    label {
-      color: $white;
-    }
+  }
+
+  FlexboxLayout {
+    color: #00c1d5;
+  }
+
+  .goal-value {
+    font-style: italic;
+    color: #00c1d5;
+    font-weight: bold;
   }
 }

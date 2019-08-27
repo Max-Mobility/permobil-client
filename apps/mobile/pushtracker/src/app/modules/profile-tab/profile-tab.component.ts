@@ -18,6 +18,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 import { ActivityGoalSettingComponent } from './activity-goal-setting';
+import { TextField } from 'tns-core-modules/ui/text-field';
 
 @Component({
   selector: 'profile',
@@ -29,6 +30,7 @@ export class ProfileTabComponent implements OnInit {
   listPickerDialog: ElementRef;
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
+  isUserEditingSetting: boolean = false;
   isHeightInCentimeters: boolean;
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
@@ -190,7 +192,8 @@ export class ProfileTabComponent implements OnInit {
     config_description: string,
     key: string
   ) {
-    Log.D('user tapped config = ', config_title, args.object);
+    this.isUserEditingSetting = true;
+    Log.D('user tapped config = ', configTitle, args.object);
     this._setActiveDataBox(args);
 
     let value_description: string;
@@ -244,10 +247,26 @@ export class ProfileTabComponent implements OnInit {
             'An unexpected error occurred. If this continues please let us know.',
           textColor: new Color('#fff000')
         });
-      });
+  }
+
+  onTextFieldReturnPress(event) {
+    const textField = <TextField>event.object;
+    const newValue = parseFloat(textField.text);
+    if (newValue && typeof newValue === 'number') {
+      this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
+      this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
+    }
+    else {
+      textField.text = this.activity_goals_dialog_data.config_value + '';
+    }
+  }
+
+  onTextFieldBlur(event) {
+    this.onTextFieldReturnPress(event);
   }
 
   onBirthDateTap(args: EventData) {
+    this.isUserEditingSetting = true;
     Log.D(`Birthday tapped`);
 
     this._setActiveDataBox(args);
@@ -270,6 +289,7 @@ export class ProfileTabComponent implements OnInit {
       dateTimePickerStyle
     )
       .then(result => {
+        this.isUserEditingSetting = false;
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
@@ -292,6 +312,7 @@ export class ProfileTabComponent implements OnInit {
   }
 
   onListPickerTap(args: EventData, index) {
+    this.isUserEditingSetting = true;
     this.listPickerIndex = index;
     switch (this.listPickerIndex) {
       case 0:
@@ -370,6 +391,7 @@ export class ProfileTabComponent implements OnInit {
     });
 
     this._removeActiveDataBox();
+    this.isUserEditingSetting = false;
   }
 
   async saveListPickerValue() {

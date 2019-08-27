@@ -51,6 +51,7 @@ export class ProfileSettingsComponent implements OnInit {
   listPickerIndex: number = 0;
 
   private activeSetting: string = null;
+  isUserEditingSetting: boolean = false;
 
   private _debouncedCommitSettingsFunction: any = null;
 
@@ -125,6 +126,7 @@ export class ProfileSettingsComponent implements OnInit {
         },
         duration: 0
       });
+      this.isUserEditingSetting = false;
     });
     // this._removeActiveDataBox();
   }
@@ -163,6 +165,7 @@ export class ProfileSettingsComponent implements OnInit {
         },
         duration: 0
       });
+      this.isUserEditingSetting = false;
     });
   }
 
@@ -342,6 +345,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onItemTap(args: EventData, item: string) {
+    this.isUserEditingSetting = true;
     Log.D(`User tapped: ${item}`);
     this.activeSetting = item;
     switch (this.activeSetting) {
