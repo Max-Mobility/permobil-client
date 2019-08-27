@@ -72,8 +72,9 @@
         <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
       </StackLayout>
+
       // Mode
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="10"
+      <StackLayout *ngIf="user.data.control_configuration !== 'Switch Control with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="10"
         (tap)="onItemTap($event, 'mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.mode' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
