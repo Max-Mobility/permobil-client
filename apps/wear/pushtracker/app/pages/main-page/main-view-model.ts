@@ -22,7 +22,6 @@ import { EventData, fromObject, Observable } from 'tns-core-modules/data/observa
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { topmost } from 'tns-core-modules/ui/frame';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -562,9 +561,6 @@ export class MainViewModel extends Observable {
     // now init the ui
     try {
       await this.init();
-      // set up the chin inset listener and attach it to the top most frame
-      const frame = topmost();
-      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
