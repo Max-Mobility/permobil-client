@@ -12,12 +12,14 @@ import { LoggingService } from '../../services';
 export class WirelessUpdatesComponent implements OnInit {
   ptCirclePercentage: number = 83;
   sdCirclePercentage: number = 30;
-
+  controlConfiguration: string = '';
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _params: ModalDialogParams
-  ) {}
+  ) {
+    this.controlConfiguration = _params.context.controlConfiguration || '';
+  }
 
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');

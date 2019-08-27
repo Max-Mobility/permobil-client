@@ -2,8 +2,9 @@
 <GridLayout rows="auto, *" columns="*"
   [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
-  <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="user.data.control_configuration !== 'Switch Control with SmartDrive'"
-    [showUpdateBtn]="true" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="user.data.control_configuration === 'PushTracker with SmartDrive'"
+    [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"
+    [controlConfiguration]="user.data.control_configuration"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
@@ -30,10 +31,10 @@
       </StackLayout>
 
       // Smart Drive Section
-      <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
+      <Label *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
 
       // EZ-ON
-      <GridLayout *ngIf="user.data.control_configuration !== 'Switch Control with SmartDrive'" row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
+      <GridLayout *ngIf="user.data.control_configuration === 'PushTracker with SmartDrive'" row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
         <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="inactive-setting-switch"
           (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
@@ -43,7 +44,7 @@
       </GridLayout>
 
       // Power Assist Beep
-      <GridLayout row="6" rows="auto, auto" columns="*, auto" class="setting-layout">
+      <GridLayout *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" row="6" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.power-assist-beep' | translate"></Label>
         <Switch row="0" rowSpan="2" col="1" [checked]="!settingsService.settings.disablePowerAssistBeep"
           class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'power-assist-beep')"></Switch>
@@ -53,35 +54,35 @@
       </GridLayout>
 
       // Max Speed
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="7"
+      <StackLayout *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="7"
         (tap)="onItemTap($event, 'max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Acceleration
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="8"
+      <StackLayout *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="8"
         (tap)="onItemTap($event, 'acceleration')" class="setting-layout">
         <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Tap sensitivity
-      <StackLayout *ngIf="user.data.control_configuration !== 'Switch Control with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="9"
+      <StackLayout *ngIf="user.data.control_configuration === 'PushTracker with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="9"
         (tap)="onItemTap($event, 'tap-sensitivity')" class="setting-layout">
         <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Mode
-      <StackLayout *ngIf="user.data.control_configuration !== 'Switch Control with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="10"
+      <StackLayout *ngIf="user.data.control_configuration === 'PushTracker with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="10"
         (tap)="onItemTap($event, 'mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.mode' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Max Speed
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="11"
+      <StackLayout *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="11"
         (tap)="onItemTap($event, 'switch-control-max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'"
@@ -89,7 +90,7 @@
       </StackLayout>
 
       // Switch Control Mode
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="12"
+      <StackLayout *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="12"
         (tap)="onItemTap($event, 'switch-control-mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
         <Label class="setting-value"

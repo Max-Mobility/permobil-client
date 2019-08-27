@@ -14,7 +14,8 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, SettingsService } from '../../services';
+import { BluetoothService, SettingsService, PushTrackerUserService } from '../../services';
+import { PushTrackerUser } from '@permobil/core/src';
 
 @Component({
   moduleId: module.id,
@@ -39,14 +40,20 @@ export class TabsComponent implements OnInit, AfterViewInit {
 
   private snackbar = new SnackBar();
 
+  bluetoothAdvertised: boolean = false;
+  user: PushTrackerUser;
+
   constructor(
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
     private _bluetoothService: BluetoothService,
     private _routerExtension: RouterExtensions,
     private _activeRoute: ActivatedRoute,
-    private _page: Page
+    private _page: Page,
+    private userService: PushTrackerUserService
   ) {
+    this.getUser();
+
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
@@ -97,19 +104,27 @@ export class TabsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // load the device settings (sd / pt)
     this._settingsService.loadSettings();
+  }
 
-    Log.D('asking for permissions');
-    this.askForPermissions()
-      .then(() => {
-        if (!this._bluetoothService.advertising) {
-          Log.D('starting bluetoooth');
-          // start the bluetooth service
-          return this._bluetoothService.advertise();
-        }
-      })
-      .catch(err => {
-        Log.E('permission or bluetooth error:', err);
-      });
+  getUser() {
+    this.userService.user.subscribe(user => {
+      this.user = user;
+      if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
+        Log.D('asking for permissions');
+        this.askForPermissions()
+          .then(() => {
+            if (!this._bluetoothService.advertising) {
+              Log.D('starting bluetoooth');
+              // start the bluetooth service
+              return this._bluetoothService.advertise();
+            }
+          })
+          .catch(err => {
+            Log.E('permission or bluetooth error:', err);
+          });
+        this.bluetoothAdvertised = true;
+      }
+    });
   }
 
   /**
@@ -198,8 +213,8 @@ export class TabsComponent implements OnInit, AfterViewInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -212,7 +227,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =

@@ -4,7 +4,7 @@
 
   <FlexboxLayout row="1" height="100%" flexDirection="column">
     // PushTracker
-    <StackLayout>
+    <StackLayout *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
       <Label text="PushTracker"></Label>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
         <Label row="0" text="100%"></Label>
