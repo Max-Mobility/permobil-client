@@ -269,6 +269,9 @@ export class MainViewModel extends Observable {
     const versionCode = packageInfo.versionCode;
     this.appVersion = versionName;
 
+    // register for time updates
+    this.registerForTimeUpdates();
+
     // load settings from memory
     this.sentryBreadCrumb('Loading settings.');
     this.loadSettings();
@@ -280,6 +283,9 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Updating display.');
     this.updateDisplay();
     this.sentryBreadCrumb('Display updated.');
+
+    // register for time updates
+    this.registerForTimeUpdates();
 
     setTimeout(this.startActivityService.bind(this), 5000);
   }
@@ -375,12 +381,6 @@ export class MainViewModel extends Observable {
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
       0
     );
-    /*
-    this.distanceGoalCurrentValue = sharedPreferences.getFloat(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
-      0.0
-    ) / 1609.0; // what's stored is meters, convert to miles
-    */
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0
@@ -411,20 +411,12 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
-    /*
-    const distance = intent.getFloatExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DISTANCE,
-      0
-    );
-    */
     const heartRate = intent.getFloatExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
       0
     );
     Log.D('Got service data', pushes, coast, heartRate);
     this.currentPushCount = pushes;
-    // received distance is in meters - need to convert to miles
-    // this.distanceGoalCurrentValue = distance / 1609.0;
     this.coastGoalCurrentValue = coast;
     this.updateDisplay();
   }
@@ -693,6 +685,29 @@ export class MainViewModel extends Observable {
     });
   }
 
+  registerForTimeUpdates() {
+    // monitor the clock / system time for display and logging:
+    const timeReceiverCallback = (androidContext, intent) => {
+      try {
+        this.sentryBreadCrumb('timeReceiverCallback');
+        // update charts if date has changed
+        if (!isSameDay(new Date(), this.lastChartDay)) {
+          this.updateDisplay();
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    };
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIME_TICK,
+      timeReceiverCallback
+    );
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIMEZONE_CHANGED,
+      timeReceiverCallback
+    );
+  }
+
   async updateChartData() {
     // Log.D('Updating Chart Data / Display');
     try {
@@ -720,8 +735,6 @@ export class MainViewModel extends Observable {
       // Log.D('Highest Coast Value:', maxCoast);
       this.coastChartMaxValue = maxCoast.toFixed(1);
       this.coastChartData = coastData;
-      // now update the distance data
-      this.loadSmartDriveData();
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -830,8 +843,14 @@ export class MainViewModel extends Observable {
 
   updateDisplay() {
     try {
+      // load the distance from the smartdrive app
+      this.loadSmartDriveData();
+      // update the goal displays
       this.updateGoalDisplay();
-      this.updateSpeedDisplay();
+      // update distance units
+      this.distanceUnits = L(
+        'goals.distance.' + this.settings.units.toLowerCase()
+      );
       this.updateChartData();
     } catch (err) {
       Sentry.captureException(err);
@@ -863,10 +882,6 @@ export class MainViewModel extends Observable {
   }
 
   updateSpeedDisplay() {
-    // update distance units
-    this.distanceUnits = L(
-      'goals.distance.' + this.settings.units.toLowerCase()
-    );
   }
 
   onConfirmChangesTap() {
