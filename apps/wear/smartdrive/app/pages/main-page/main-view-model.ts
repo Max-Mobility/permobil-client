@@ -1745,9 +1745,6 @@ export class MainViewModel extends Observable {
           }
           oldestDist = Math.max(dist, oldestDist);
           diff = SmartDrive.motorTicksToMiles(diff);
-          if (this.settings.units === 'Metric') {
-            diff = diff * 1.609;
-          }
         }
         return {
           day: this._format(new Date(e.date), 'dd'),
@@ -1761,7 +1758,11 @@ export class MainViewModel extends Observable {
         data.value = (100.0 * data.value) / maxDist;
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
-      this.distanceChartMaxValue = maxDist.toFixed(1);
+      if (this.settings.units === 'Metric') {
+        this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+      } else {
+        this.distanceChartMaxValue = maxDist.toFixed(1);
+      }
       this.distanceChartData = distanceData;
     } catch (err) {
       Sentry.captureException(err);
@@ -2767,7 +2768,7 @@ export class MainViewModel extends Observable {
           total: totalDiff
         };
       });
-      Log.D('saving data', data);
+      // Log.D('saving data', data);
       const serialized = JSON.stringify(data);
       // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
       const values = new android.content.ContentValues();

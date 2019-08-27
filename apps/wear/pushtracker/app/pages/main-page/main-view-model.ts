@@ -317,7 +317,6 @@ export class MainViewModel extends Observable {
     let maxDist = 0;
     let currentDist = 0;
     try {
-      Log.D('getting content provider cursor for', today);
       const cursor = ad
         .getApplicationContext()
         .getContentResolver()
@@ -325,12 +324,9 @@ export class MainViewModel extends Observable {
           com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
           null, null, null, null);
       if (cursor.moveToFirst()) {
-        Log.D('cursor has data!');
         // there is data
         const serialized = cursor.getString(1);
-        Log.D('serialized', serialized);
         const data = JSON.parse(serialized);
-        Log.D('data', data);
         // distances provided are always in miles
         if (data[today]) {
           currentDist = data[today].total || 0.0;
@@ -340,14 +336,15 @@ export class MainViewModel extends Observable {
           if (total > maxDist) maxDist = total;
         });
         distanceData = plottedDates.map(d => {
+          const date = new Date(d);
           let value = 0;
-          const dateKey = this.format(new Date(d), 'YYYY/MM/DD');
+          const dateKey = this.format(date, 'YYYY/MM/DD');
           if (data[dateKey] !== undefined && data[dateKey].total > 0) {
             // for now we're using total
-            value = data[dateKey].total / maxDist;
+            value = (100.0 * data[dateKey].total) / maxDist;
           }
           return {
-            day: this.format(new Date(d), 'dd'),
+            day: this.format(date, 'dd'),
             value: value
           };
         });
