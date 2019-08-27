@@ -88,6 +88,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE: {
+      Log.d("SmartDriveUsageProvider", "getting cursor");
       cursor = db.getCursor();
       break;
     }
@@ -108,6 +109,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE: {
+      Log.d("SmartDriveUsageProvider", "getting record");
       data = db.getRecord();
       break;
     }
@@ -130,7 +132,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
   public Uri insert(@NonNull Uri uri, @Nullable String data) {
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE:
-
+      Log.d("SmartDriveUsageProvider", "updating record: " + data);
       long _id = db.updateRecord(data);
       if (_id != -1) {
         /*
