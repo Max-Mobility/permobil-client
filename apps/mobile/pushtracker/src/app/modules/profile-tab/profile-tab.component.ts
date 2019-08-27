@@ -191,7 +191,6 @@ export class ProfileTabComponent implements OnInit {
     config_description: string,
     key: string
   ) {
-    this.isUserEditingSetting = true;
     Log.D('user tapped config = ', config_title, args.object);
     this._setActiveDataBox(args);
 
@@ -234,7 +233,8 @@ export class ProfileTabComponent implements OnInit {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(res => {
+      .then(result => {
+        Log.D('activity setting result', result);
         this._removeActiveDataBox();
         this._initDisplayActivityGoalCoastTime();
         this._initDisplayActivityGoalDistance();
