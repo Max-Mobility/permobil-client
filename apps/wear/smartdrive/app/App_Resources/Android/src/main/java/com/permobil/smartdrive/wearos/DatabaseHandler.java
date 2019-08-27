@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.smartdrive.wearos;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,14 +13,12 @@ import android.util.Log;
 
 import io.sentry.Sentry;
 
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-  public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos";
+  public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos.smartdrive.usage";
   /*
    * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
    * the content provider for Sunshine.
@@ -176,7 +174,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public void deleteRecord(int id) {
     SQLiteDatabase db = this.getWritableDatabase();
-    db.delete(TABLE_NAME, KEY_ID + "=?", new int[]{id});
+    db.delete(TABLE_NAME, KEY_ID + "=?", new String[]{Integer.toString(id)});
     Log.d(TAG, "Deleted record from database with id: " + id);
     db.close();
   }

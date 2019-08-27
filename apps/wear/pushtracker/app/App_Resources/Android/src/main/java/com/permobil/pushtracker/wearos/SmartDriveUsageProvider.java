@@ -3,7 +3,7 @@ package com.permobil.pushtracker.wearos;
 import android.net.Uri;
 
 public class SmartDriveUsageProvider {
-  public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos";
+  public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos.smartdrive.usage";
   /*
    * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
    * the content provider for Sunshine.

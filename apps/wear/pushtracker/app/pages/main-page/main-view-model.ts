@@ -317,6 +317,7 @@ export class MainViewModel extends Observable {
     let maxDist = 0;
     let currentDist = 0;
     try {
+      Log.D('getting content provider cursor for', today);
       const cursor = ad
         .getApplicationContext()
         .getContentResolver()
@@ -324,6 +325,7 @@ export class MainViewModel extends Observable {
           com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
           null, null, null, null);
       if (cursor.moveToFirst()) {
+        Log.D('cursor has data!');
         // there is data
         const serialized = cursor.getString(1);
         Log.D('serialized', serialized);

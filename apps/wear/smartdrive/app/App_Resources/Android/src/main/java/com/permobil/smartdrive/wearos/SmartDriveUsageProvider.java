@@ -12,9 +12,6 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,13 +73,12 @@ public class SmartDriveUsageProvider extends ContentProvider {
    */
   @Override
   public boolean onCreate() {
-    db = new DatabaseHelper(getContext());
+    db = new DatabaseHandler(getContext());
     return db != null;
   }
 
-  @Nullable
   @Override
-  public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+  public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
     Cursor cursor;
 
@@ -101,16 +97,14 @@ public class SmartDriveUsageProvider extends ContentProvider {
     return cursor;
   }
 
-  @Nullable
-  @Override
-  public String getData(@NonNull Uri uri) {
+  public String getData(Uri uri) {
 
     String data = null;
 
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE: {
       Log.d("SmartDriveUsageProvider", "getting record");
-      data = db.getRecord();
+      data = db.getRecord().data;
       break;
     }
 
@@ -121,15 +115,12 @@ public class SmartDriveUsageProvider extends ContentProvider {
     return data;
   }
 
-  @Nullable
   @Override
-  public String getType(@NonNull Uri uri) {
+  public String getType(Uri uri) {
     return null;
   }
 
-  @Nullable
-  @Override
-  public Uri insert(@NonNull Uri uri, @Nullable String data) {
+  public Uri insert(Uri uri, String data) {
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE:
       Log.d("SmartDriveUsageProvider", "updating record: " + data);
@@ -150,12 +141,34 @@ public class SmartDriveUsageProvider extends ContentProvider {
   }
 
   @Override
-  public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+  public Uri insert(Uri uri, ContentValues values) {
+    String data = values.getAsString("data");
+    switch (sUriMatcher.match(uri)) {
+    case CODE_USAGE:
+      Log.d("SmartDriveUsageProvider", "updating record: " + data);
+      long _id = db.updateRecord(data);
+      if (_id != -1) {
+        /*
+         * This will help to broadcast that database has been changed,
+         * and will inform entities to perform automatic update.
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+      }
+
+      return DatabaseHandler.buildUsageUriWithId(_id);
+
+    default:
+      return null;
+    }
+  }
+
+  @Override
+  public int delete(Uri uri, String selection, String[] selectionArgs) {
     return 0;
   }
 
   @Override
-  public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
     return 0;
   }
 }

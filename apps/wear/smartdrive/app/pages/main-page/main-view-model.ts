@@ -2770,10 +2770,12 @@ export class MainViewModel extends Observable {
       Log.D('saving data', data);
       const serialized = JSON.stringify(data);
       // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
+      const values = new android.content.ContentValues();
+      values.put('data', serialized);
       const uri = ad
         .getApplicationContext()
         .getContentResolver()
-        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.CONTENT_URI, serialized);
+        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.CONTENT_URI, values);
       if (uri === null) {
         Log.E('Could not insert into content resolver!');
       }
