@@ -3,7 +3,7 @@
   [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
   <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="user.data.control_configuration === 'PushTracker with SmartDrive'"
-    [showUpdateBtn]="true" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
+    [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
