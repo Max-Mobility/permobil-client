@@ -9,7 +9,6 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { Toasty } from 'nativescript-toasty';
 import { Color } from 'tns-core-modules/color';
-import { EventData } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
