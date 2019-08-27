@@ -33,7 +33,7 @@
       <Label row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
 
       // EZ-ON
-      <GridLayout row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
+      <GridLayout *ngIf="user.data.control_configuration !== 'Switch Control with SmartDrive'" row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
         <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="inactive-setting-switch"
           (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
