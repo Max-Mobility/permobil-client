@@ -541,6 +541,19 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: any) {
     this.sentryBreadCrumb('onMainPageLoaded');
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this.applyTheme('ambient');
+        } else {
+          this.applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
     // now init the ui
     try {
       await this.init();
@@ -551,13 +564,13 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // apply theme
-    this.applyTheme();
   }
 
+  private hasAppliedTheme: boolean = false;
   applyTheme(theme?: string) {
     // apply theme
     this.sentryBreadCrumb('applying theme');
+    this.hasAppliedTheme = true;
     try {
       if (theme === 'ambient' || this.isAmbient) {
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
