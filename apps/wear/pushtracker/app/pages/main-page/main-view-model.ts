@@ -313,63 +313,30 @@ export class MainViewModel extends Observable {
         value: 0
       };
     });
+    let today = this.format(new Date(), 'YYYY/MM/DD');
     let maxDist = 0;
     let currentDist = 0;
     try {
-      const prefix = 'com.permobil.smartdrive.wearos';
-      const cumulativeToken = 'distance.cumulative';
-      const driveToken = 'distance.drive';
-      const dateToken = 'distance.dates';
-      const prefName = 'SmartDriveUsage.db';
-      const context = ad
+      const cursor = ad
         .getApplicationContext()
-        .createPackageContext(
-          prefix,
-          android.content.Context.CONTEXT_IGNORE_SECURITY
-        );
-      if (context !== null) {
-        const sharedPreferences = context
-          .getSharedPreferences(prefName, android.content.Context.MODE_PRIVATE);
-        const datesString = sharedPreferences.getString(
-          prefix + dateToken,
-          '[]'
-        );
-        const driveString = sharedPreferences.getString(
-          prefix + driveToken,
-          '[]'
-        );
-        const cumulativeString = sharedPreferences.getString(
-          prefix + cumulativeToken,
-          '[]'
-        );
-        const dates = JSON.parse(datesString);
-        const drives = JSON.parse(driveString);
-        const totals = JSON.parse(cumulativeString);
-        Log.D('dates', dates);
-        Log.D('drives', drives);
-        Log.D('totals', totals);
+        .getContentResolver()
+        .query(
+          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
+          null, null, null, null);
+      if (cursor.moveToFirst()) {
+        // there is data
+        const serialized = cursor.getString(1);
+        Log.D('serialized', serialized);
+        const data = JSON.parse(serialized);
+        Log.D('data', data);
         // distances provided are always in miles
-        currentDist = last(totals) || 0.0;
-        if (this.settings.units === 'metric') {
-          currentDist *= 1.609;
+        if (data[today]) {
+          currentDist = data[today].total || 0.0;
         }
-        const data = dates.reduce((obj, d, i) => {
-          if (this.settings.units === 'metric') {
-            if (totals[i] > maxDist) maxDist = totals[i] * 1.609;
-            obj[d] = {
-              total: totals[i] * 1.609,
-              drive: drives[i] * 1.609
-            };
-            return obj;
-          } else {
-            if (totals[i] > maxDist) maxDist = totals[i];
-            obj[d] = {
-              total: totals[i],
-              drive: drives[i]
-            };
-            return obj;
-          }
-        }, {});
+        Object.keys(data).map(k => {
+          const total = data[k].total;
+          if (total > maxDist) maxDist = total;
+        });
         distanceData = plottedDates.map(d => {
           let value = 0;
           const dateKey = this.format(new Date(d), 'YYYY/MM/DD');
@@ -390,9 +357,14 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
     }
     // Log.D('Highest Distance Value:', maxDist);
-    this.distanceChartMaxValue = maxDist.toFixed(1);
     this.distanceChartData = distanceData;
-    this.distanceGoalCurrentValue = currentDist;
+    if (this.settings.units === 'metric') {
+      this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+      this.distanceGoalCurrentValue = currentDist * 1.609;
+    } else {
+      this.distanceChartMaxValue = maxDist.toFixed(1);
+      this.distanceGoalCurrentValue = currentDist;
+    }
   }
 
   loadCurrentActivityData() {
