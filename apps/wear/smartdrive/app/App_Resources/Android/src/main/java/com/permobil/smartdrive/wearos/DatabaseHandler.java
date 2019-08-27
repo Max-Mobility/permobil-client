@@ -47,7 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   private Context mContext;
 
-  /* The base CONTENT_URI used to query the Todo table from the content provider */
+  /* The base CONTENT_URI used to query the Usage table from the content provider */
   public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
     .appendPath(TABLE_NAME)
     .build();
@@ -58,14 +58,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   }
 
   /**
-   * Builds a URI that adds the task _ID to the end of the todo content URI path.
-   * This is used to query details about a single todo entry by _ID. This is what we
+   * Builds a URI that adds the task _ID to the end of the usage content URI path.
+   * This is used to query details about a single usage entry by _ID. This is what we
    * use for the detail view query.
    *
    * @param id Unique id pointing to that row
-   * @return Uri to query details about a single todo entry
+   * @return Uri to query details about a single usage entry
    */
-  public static Uri buildTodoUriWithId(long id) {
+  public static Uri buildUsageUriWithId(long id) {
     return CONTENT_URI.buildUpon()
       .appendPath(Long.toString(id))
       .build();
@@ -98,122 +98,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   }
 
   // Insert values to the table
-  synchronized public long addRecord(Map data) {
+  synchronized public long updateRecord(String data) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
-    long _id = -1;
+    long _id = 0;
     try {
-      Gson gson = new Gson();
-      String dataAsJSON = gson.toJson(data);
-      values.put(KEY_DATA, dataAsJSON);
-      Log.d(TAG, "Saving new RECORD to SQL Table");
-      _id = db.insert(TABLE_NAME, null, values);
-    } catch (Exception e) {
-      Log.e(TAG, "Exception adding data to table: " + e.getMessage());
-      Sentry.capture(e);
-    }
-
-    db.close();
-    return _id;
-  }
-  synchronized public void updateRecord(Map data, int id) {
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues values = new ContentValues();
-
-    try {
-      Gson gson = new Gson();
-      String dataAsJSON = gson.toJson(data);
-      values.put(KEY_DATA, dataAsJSON);
-      String whereString = KEY_ID + "=\"" + id + "\"";
-      String[] whereArgs = {};
-      db.update(TABLE_NAME, values, whereString, whereArgs);
-      Log.d(TAG, "Updating RECORD in SQL Table: " + id + " - " + dataAsJSON);
+      values.put(KEY_ID, 0);
+      values.put(KEY_DATA, data);
+      Log.d(TAG, "Updating RECORD in SQL Table");
+      _id = db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
       Sentry.capture(e);
     }
 
     db.close();
-  }
-
-  synchronized public String getMostRecent() {
-    String record = null;
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
-    selectQuery += " ORDER BY " + KEY_ID + " DESC";
-    selectQuery += " LIMIT " + 1;
-    SQLiteDatabase db = this.getReadableDatabase();
-    Cursor cursor = db.rawQuery(selectQuery, null);
-
-    CursorWindow cw;
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-      cw = new CursorWindow("getRecordsCursor", 20000000);
-    } else {
-      cw = new CursorWindow("getRecordsCursor");
-    }
-    AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
-    ac.setWindow(cw);
-
-    // if TABLE has rows
-    if (cursor.moveToFirst()) {
-      Gson gson = new Gson();
-      try {
-        int index = cursor.getInt(ID_INDEX);
-        // set the record
-        record = cursor.getString(DATA_INDEX);
-        Log.d(TAG, "record id: " + index);
-      } catch (Exception e) {
-        Log.e(TAG, "Exception parsing json:" + e.getMessage());
-        Sentry.capture(e);
-      }
-    }
-
-    cursor.close();
-    db.close();
-    Log.d(TAG, "Returning SQLite Record: " + record);
-    return record;
-  }
-
-  synchronized public List<String> getRecords(int numRecords) {
-    List<String> recordList = new ArrayList<>();
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
-    selectQuery += " ORDER BY " + KEY_ID + " ASC";
-    if (numRecords > 0) {
-      selectQuery += " LIMIT " + numRecords;
-    }
-    SQLiteDatabase db = this.getReadableDatabase();
-    Cursor cursor = db.rawQuery(selectQuery, null);
-
-    CursorWindow cw;
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-      cw = new CursorWindow("getRecordsCursor", 20000000);
-    } else {
-      cw = new CursorWindow("getRecordsCursor");
-    }
-    AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
-    ac.setWindow(cw);
-
-    // if TABLE has rows
-    if (cursor.moveToFirst()) {
-      Gson gson = new Gson();
-      try {
-        // Loop through the table rows
-        do {
-          int index = cursor.getInt(ID_INDEX);
-          String record = cursor.getString(DATA_INDEX);
-          Log.d(TAG, "record id: " + index);
-          // Add record to list
-          recordList.add(record);
-        } while (cursor.moveToNext());
-      } catch (Exception e) {
-        Log.e(TAG, "Exception parsing json:" + e.getMessage());
-        Sentry.capture(e);
-      }
-    }
-
-    cursor.close();
-    db.close();
-    Log.d(TAG, "Returning SQLite RecordList with record count: " + recordList.size());
-    return recordList;
+    return _id;
   }
 
   synchronized public Record getRecord() {
@@ -250,6 +150,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.close();
     Log.d(TAG, "Returning SQLite Record");
     return record;
+  }
+
+  synchronized public Cursor getCursor() {
+    String selectQuery = "SELECT * FROM " + TABLE_NAME;
+    selectQuery += " ORDER BY " + KEY_ID + " ASC LIMIT 1";
+
+    SQLiteDatabase db = this.getReadableDatabase();
+    Cursor cursor = db.rawQuery(selectQuery, null);
+    return cursor;
   }
 
   synchronized public long getTableRowCount() {

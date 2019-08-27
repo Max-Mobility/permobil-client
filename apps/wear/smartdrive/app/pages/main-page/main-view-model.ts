@@ -38,6 +38,8 @@ const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
+declare let com: any;
+
 const dateLocales = {
   da: require('date-fns/locale/da'),
   de: require('date-fns/locale/de'),
@@ -257,7 +259,7 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
-    const fontScale = config.fontScale; // floating point
+    const fontScale = androidConfig.fontScale; // floating point
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
@@ -2723,9 +2725,7 @@ export class MainViewModel extends Observable {
   async updateSharedUsageInfo(sdData: any[]) {
     try {
       // aggregate the data
-      const cumulativeData = [];
-      const driveData = [];
-      const dates = [];
+      const data = {};
       // we've asked for one more day than needed so that we can
       // compute distance differences, keep a reference to the first
       // before we remove it below with the call to slice()
@@ -2735,57 +2735,48 @@ export class MainViewModel extends Observable {
       let oldestTotal = oldest[SmartDriveData.Info.CoastDistanceName];
       sdData.slice(1).map(e => {
         // record the date
-        dates.push(this._format(new Date(e.date), 'YYYY/MM/DD'));
         const drive = e[SmartDriveData.Info.DriveDistanceName];
         const total = e[SmartDriveData.Info.CoastDistanceName];
-        // update drive data
-        let diff = 0;
+        // determine drive ditance
+        let driveDiff = 0;
         if (drive > 0) {
           // make sure we only compute diffs between valid distances
           if (oldestDrive > 0) {
-            diff = drive - oldestDrive;
+            driveDiff = drive - oldestDrive;
           }
           oldestDrive = Math.max(drive, oldestDrive);
           // we only save it in miles
-          diff = SmartDrive.motorTicksToMiles(diff);
+          driveDiff = SmartDrive.motorTicksToMiles(driveDiff);
         }
-        // now save it in the array
-        driveData.push(diff);
-        // update cumulative data
-        diff = 0;
+        // determine total distance
+        let totalDiff = 0;
         if (total > 0) {
           // make sure we only compute diffs between valid distances
           if (oldestTotal > 0) {
-            diff = total - oldestTotal;
+            totalDiff = total - oldestTotal;
           }
           oldestTotal = Math.max(total, oldestTotal);
           // we only save it in miles
-          diff = SmartDrive.caseTicksToMiles(diff);
+          totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
-        // now save it in the array
-        cumulativeData.push(diff);
+        // compute the date for the data
+        const date = this._format(new Date(e.date), 'YYYY/MM/DD');
+        // now save the drive / total in this record
+        data[date] = {
+          drive: driveDiff,
+          total: totalDiff
+        }
       });
-      Log.D('saving dates', dates);
-      Log.D('saving drive', driveData);
-      Log.D('saving total', cumulativeData);
-      // write distance for each day here
-      const cumulativeDataSerialized = JSON.stringify(cumulativeData);
-      const driveDataSerialized = JSON.stringify(driveData);
-      const datesSerialized = JSON.stringify(dates);
-      // now save the data
-      const prefix = 'com.permobil.smartdrive.wearos.';
-      const cumulativeToken = 'distance.cumulative';
-      const driveToken = 'distance.drive';
-      const dateToken = 'distance.dates';
-      const prefName = 'SmartDriveUsage.db';
-      const sharedPreferences = ad
+      Log.D('saving data', data);
+      const serialized = JSON.stringify(data);
+      // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
+      const uri = ad
         .getApplicationContext()
-        .getSharedPreferences(prefName, android.content.Context.MODE_PRIVATE);
-      const editor = sharedPreferences.edit();
-      editor.putString(prefix + cumulativeToken, cumulativeDataSerialized);
-      editor.putString(prefix + driveToken, driveDataSerialized);
-      editor.putString(prefix + dateToken, datesSerialized);
-      editor.commit();
+        .getContentResolver()
+        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.CONTENT_URI, serialized);
+      if (uri === null) {
+        Log.E('Could not insert into content resolver!');
+      }
     } catch (err) {
       Log.E(err);
       Sentry.captureException(err);
@@ -2816,7 +2807,7 @@ export class MainViewModel extends Observable {
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
-          const usageDate = dates[index];
+          // const usageDate = dates[index];
           if (index > -1) {
             usageInfo[index] = obj;
           }

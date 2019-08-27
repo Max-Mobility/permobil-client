@@ -33,19 +33,17 @@ public class SmartDriveUsageProvider extends ContentProvider {
    * ourselves, such as using regular expressions.
    */
   public static final int CODE_USAGE = 100;
-  public static final int CODE_USAGE_WITH_ID = 101;
 
   /* The URI Matcher used by this content provider. */
   private static final UriMatcher sUriMatcher = buildUriMatcher();
 
   /**
-   * Creates the UriMatcher that will match each URI to the CODE_USAGE and
-   * CODE_USAGE_WITH_ID constants defined above.
+   * Creates the UriMatcher that will match each URI to the CODE_USAGE
    *
    * UriMatcher does all the hard work for you. You just have to tell it which code to match
    * with which URI, and it does the rest automatically.
    *
-   * @return A UriMatcher that correctly matches the constants for CODE_USAGE and CODE_USAGE_WITH_ID
+   * @return A UriMatcher that correctly matches the constants for CODE_USAGE
    */
   public static UriMatcher buildUriMatcher() {
 
@@ -60,18 +58,11 @@ public class SmartDriveUsageProvider extends ContentProvider {
     /*
      * For each type of URI you want to add, create a corresponding code. Preferably, these are
      * constant fields in your class so that you can use them throughout the class and you no
-     * they aren't going to change. In Todo, we use CODE_USAGE or CODE_USAGE_WITH_ID.
+     * they aren't going to change. In Usage, we use CODE_USAGE
      */
 
-    /* This URI is content://com.example.todo/todo/ */
+    /* This URI is content://com.permobil.smartdrive.wearos.usage/usage/ */
     matcher.addURI(authority, DatabaseHandler.TABLE_NAME, CODE_USAGE);
-
-    /*
-     * This URI would look something like content://com.example.todo/todo/1
-     * The "/#" signifies to the UriMatcher that if TABLE_NAME is followed by ANY number,
-     * that it should return the CODE_USAGE_WITH_ID code
-     */
-    matcher.addURI(authority, DatabaseHandler.TABLE_NAME + "/#", CODE_USAGE_WITH_ID);
 
     return matcher;
   }
@@ -85,14 +76,28 @@ public class SmartDriveUsageProvider extends ContentProvider {
    */
   @Override
   public boolean onCreate() {
-    mOpenHelper = new TodoDbHelper(getContext());
-    return mOpenHelper != null;
+    db = new DatabaseHelper(getContext());
+    return db != null;
   }
 
   @Nullable
   @Override
   public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-    return null;
+
+    Cursor cursor;
+
+    switch (sUriMatcher.match(uri)) {
+    case CODE_USAGE: {
+      cursor = db.getCursor();
+      break;
+    }
+
+    default:
+      throw new UnsupportedOperationException("Unknown uri: " + uri);
+    }
+
+    cursor.setNotificationUri(getContext().getContentResolver(), uri);
+    return cursor;
   }
 
   @Nullable
@@ -103,11 +108,11 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
   @Nullable
   @Override
-  public Uri insert(@NonNull Uri uri, @Nullable Map data) {
+  public Uri insert(@NonNull Uri uri, @Nullable String data) {
     switch (sUriMatcher.match(uri)) {
-    case CODE_TODO:
+    case CODE_USAGE:
 
-      long _id = db.addRecord(data);
+      long _id = db.updateRecord(data);
       if (_id != -1) {
         /*
          * This will help to broadcast that database has been changed,
@@ -116,7 +121,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
       }
 
-      return DatabaseHandler.buildTodoUriWithId(_id);
+      return DatabaseHandler.buildUsageUriWithId(_id);
 
     default:
       return null;
