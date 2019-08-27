@@ -38,6 +38,8 @@ const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
 const retroTheme = require('../../scss/theme-retro.scss').toString();
 
+declare let com: any;
+
 const dateLocales = {
   da: require('date-fns/locale/da'),
   de: require('date-fns/locale/de'),
@@ -249,20 +251,21 @@ export class MainViewModel extends Observable {
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
     // determine inset padding
+    // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
+    const heightPixels = screen.mainScreen.heightPixels;
+    const fontScale = androidConfig.fontScale; // floating point
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
-    }
-    try {
-      // set up the chin inset listener and attach it to the top most frame
-      const frame = topmost();
-      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
-    } catch (err) {
+      // if the height !== width then there is a chin!
+      if (widthPixels !== heightPixels && widthPixels > heightPixels) {
+        this.chinSize = widthPixels - heightPixels;
+      }
     }
   }
 
@@ -513,15 +516,6 @@ export class MainViewModel extends Observable {
   async onPowerAssistViewLoaded(args: EventData) {
     this._powerAssistView = args.object as View;
   }
-
-  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener({
-    onApplyWindowInsets: function(view, insets) {
-      this.chinSize = insets.getSystemWindowInsetBottom();
-      this._sentryBreadCrumb('chinSize', this.chinSize);
-      view.onApplyWindowInsets(insets);
-      return insets;
-    }
-  });
 
   async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
@@ -1713,20 +1707,8 @@ export class MainViewModel extends Observable {
     });
   }
 
-  async updateChartData() {
+  async updateBatteryChart(sdData: any[]) {
     try {
-      // this._sentryBreadCrumb('Updating Chart Data / Display');
-      let sdData = await this.getUsageInfoFromDatabase(7) as any[];
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      const newest = last(sdData);
-      // keep track of the most recent day so we know when to update
-      this._lastChartDay = new Date(newest.date);
-      // remove the oldest so it's not displayed - we only use it
-      // to track distance differences
-      sdData = sdData.slice(1);
       // update battery data
       const maxBattery = sdData.reduce((max, obj) => {
         return obj.battery > max ? obj.battery : max;
@@ -1740,10 +1722,20 @@ export class MainViewModel extends Observable {
       // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
       this.batteryChartMaxValue = maxBattery.toFixed(0);
       this.batteryChartData = batteryData;
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
 
+  async updateDistanceChart(sdData: any[]) {
+    try {
+      // we've asked for one more day than needed so that we can
+      // compute distance differences, keep a reference to the first
+      // before we remove it below with the call to slice()
+      const oldest = sdData[0];
       // update distance data
       let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
-      const distanceData = sdData.map(e => {
+      const distanceData = sdData.slice(1).map(e => {
         let diff = 0;
         const dist = e[SmartDriveData.Info.DriveDistanceName];
         if (dist > 0) {
@@ -1753,9 +1745,6 @@ export class MainViewModel extends Observable {
           }
           oldestDist = Math.max(dist, oldestDist);
           diff = SmartDrive.motorTicksToMiles(diff);
-          if (this.settings.units === 'Metric') {
-            diff = diff * 1.609;
-          }
         }
         return {
           day: this._format(new Date(e.date), 'dd'),
@@ -1769,12 +1758,22 @@ export class MainViewModel extends Observable {
         data.value = (100.0 * data.value) / maxDist;
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
-      this.distanceChartMaxValue = maxDist.toFixed(1);
+      if (this.settings.units === 'Metric') {
+        this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+      } else {
+        this.distanceChartMaxValue = maxDist.toFixed(1);
+      }
       this.distanceChartData = distanceData;
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
 
+  async updateEstimatedRange() {
+    try {
       // now get the past data (regardless of when it was collected)
       // for computing the estimated range:
-      sdData = await this.getRecentInfoFromDatabase(7);
+      const sdData = await this.getRecentInfoFromDatabase(7) as any[];
       // update estimated range based on battery / distance
       let sumDistance = 0;
       let sumBattery = 0;
@@ -1811,6 +1810,25 @@ export class MainViewModel extends Observable {
         this.smartDriveCurrentBatteryPercentage * rangeFactor;
       // save the updated estimated range for complication use
       appSettings.setNumber(DataKeys.SD_ESTIMATED_RANGE, this.estimatedDistance);
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }
+
+  async updateChartData() {
+    try {
+      // this._sentryBreadCrumb('Updating Chart Data / Display');
+      const sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      // keep track of the most recent day so we know when to update
+      this._lastChartDay = new Date(last(sdData).date);
+      // now update the charts
+      await this.updateBatteryChart(sdData.slice(1));
+      await this.updateDistanceChart(sdData);
+      await this.updateSharedUsageInfo(sdData);
+      // update the estimated range (doesn't use weekly usage info -
+      // since that may not have any data, so it internally pulls the
+      // most recent 7 records (which contain real data
+      await this.updateEstimatedRange();
       // now actually update the display of the distance
       this.updateSpeedDisplay();
     } catch (err) {
@@ -2705,6 +2723,69 @@ export class MainViewModel extends Observable {
     }
   }
 
+  async updateSharedUsageInfo(sdData: any[]) {
+    try {
+      // aggregate the data
+      const data = {};
+      // we've asked for one more day than needed so that we can
+      // compute distance differences, keep a reference to the first
+      // before we remove it below with the call to slice()
+      const oldest = sdData[0];
+      // update distance data
+      let oldestDrive = oldest[SmartDriveData.Info.DriveDistanceName];
+      let oldestTotal = oldest[SmartDriveData.Info.CoastDistanceName];
+      sdData.slice(1).map(e => {
+        // record the date
+        const drive = e[SmartDriveData.Info.DriveDistanceName];
+        const total = e[SmartDriveData.Info.CoastDistanceName];
+        // determine drive ditance
+        let driveDiff = 0;
+        if (drive > 0) {
+          // make sure we only compute diffs between valid distances
+          if (oldestDrive > 0) {
+            driveDiff = drive - oldestDrive;
+          }
+          oldestDrive = Math.max(drive, oldestDrive);
+          // we only save it in miles
+          driveDiff = SmartDrive.motorTicksToMiles(driveDiff);
+        }
+        // determine total distance
+        let totalDiff = 0;
+        if (total > 0) {
+          // make sure we only compute diffs between valid distances
+          if (oldestTotal > 0) {
+            totalDiff = total - oldestTotal;
+          }
+          oldestTotal = Math.max(total, oldestTotal);
+          // we only save it in miles
+          totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
+        }
+        // compute the date for the data
+        const date = this._format(new Date(e.date), 'YYYY/MM/DD');
+        // now save the drive / total in this record
+        data[date] = {
+          drive: driveDiff,
+          total: totalDiff
+        };
+      });
+      // Log.D('saving data', data);
+      const serialized = JSON.stringify(data);
+      // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
+      const values = new android.content.ContentValues();
+      values.put('data', serialized);
+      const uri = ad
+        .getApplicationContext()
+        .getContentResolver()
+        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.CONTENT_URI, values);
+      if (uri === null) {
+        Log.E('Could not insert into content resolver!');
+      }
+    } catch (err) {
+      Log.E(err);
+      Sentry.captureException(err);
+    }
+  }
+
   async getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
     let coastDistance = 0;
@@ -2729,7 +2810,7 @@ export class MainViewModel extends Observable {
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
-          const usageDate = dates[index];
+          // const usageDate = dates[index];
           if (index > -1) {
             usageInfo[index] = obj;
           }
