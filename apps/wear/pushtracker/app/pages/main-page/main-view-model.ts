@@ -212,6 +212,11 @@ export class MainViewModel extends Observable {
     const widthPixels = screen.mainScreen.widthPixels;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
+      // if the height !== width then there is a chin!
+      if (this.screenWidth !== this.screenHeight &&
+        this.screenWidth > this.screenHeight) {
+        this.chinSize = this.screenWidth - this.screenHeight;
+      }
     }
   }
 
