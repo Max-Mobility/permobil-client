@@ -7,3 +7,8 @@ export const SHARED_COMPONENTS: any[] = [
   MaxTextBoxComponent,
   MockActionbarComponent
 ];
+
+export * from './data-box';
+export * from './max-text-box';
+export * from './mock-actionbar';
+

@@ -1,0 +1,2 @@
+export * from './support.component';
+

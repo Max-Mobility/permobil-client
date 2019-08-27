@@ -1,11 +1,11 @@
 import { AppInfoComponent } from './app-info/app-info.component';
+import { ConfigurationTabComponent } from './configuration-tab/configuration-tab.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { SupportComponent } from './support/support.component';
-import { ConfigurationTabComponent } from './configuration-tab/configuration-tab.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 export const ENTRY_COMPONENTS = [
   ProfileSettingsComponent,
@@ -24,3 +24,20 @@ export const COMPONENTS = [
   SupportComponent,
   ConfigurationTabComponent
 ];
+
+export * from './activity-goal-setting';
+export * from './activity-tab';
+export * from './app-info';
+export * from './configuration-tab';
+export * from './forgot-password';
+export * from './home-tab';
+export * from './journey-tab';
+export * from './login';
+export * from './privacy-policy';
+export * from './profile-settings';
+export * from './profile-tab';
+export * from './sign-up';
+export * from './support';
+export * from './tabs';
+export * from './wireless-updates';
+

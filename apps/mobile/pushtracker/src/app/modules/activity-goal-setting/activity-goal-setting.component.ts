@@ -5,8 +5,8 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { APP_THEMES, STORAGE_KEYS } from '../../../enums';
-import { LoggingService, PushTrackerUserService } from '../../../services';
+import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { LoggingService, PushTrackerUserService } from '../../services';
 
 @Component({
   moduleId: module.id,
