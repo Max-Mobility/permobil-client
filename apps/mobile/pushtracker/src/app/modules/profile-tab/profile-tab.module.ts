@@ -7,10 +7,11 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { SharedModule } from '../shared/shared.module';
 import { WirelessUpdatesComponent } from '../wireless-updates/wireless-updates.component';
+import { ActivityGoalSettingComponent } from './activity-goal-setting';
 import { ProfileTabComponent } from './profile-tab.component';
 
 @NgModule({
-  entryComponents: [WirelessUpdatesComponent],
+  entryComponents: [WirelessUpdatesComponent, ActivityGoalSettingComponent],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
@@ -23,7 +24,11 @@ import { ProfileTabComponent } from './profile-tab.component';
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [ProfileTabComponent, WirelessUpdatesComponent],
+  declarations: [
+    ProfileTabComponent,
+    WirelessUpdatesComponent,
+    ActivityGoalSettingComponent
+  ],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })

@@ -47,45 +47,4 @@
       color: $black;
     }
   }
-
-  .activity-goals-dialog {
-    @extend .ACTIVITY_GOALS_DIALOG_BASE;
-    background-color: $black;
-
-    GridLayout {
-      color: $white;
-    }
-
-    .close-btn {
-      @extend .btn-transparent;
-      color: $white;
-    }
-
-    .set-goal-btn {
-      color: $permobil-hero;
-    }
-
-    .config-title {
-      color: $white;
-    }
-    .config-title-description {
-      color: $white;
-    }
-
-    .config-circle {
-      @extend .CONFIG_CIRCLE_BASE;
-      border-color: lighten($color: $white, $amount: 0.2);
-
-      button {
-        color: $permobil-primary;
-      }
-
-      .config-value {
-        color: $white;
-      }
-      .config-value-sub {
-        color: $black;
-      }
-    }
-  }
 }

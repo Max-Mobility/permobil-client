@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { Log } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -18,7 +18,8 @@ import { BluetoothService, PushTrackerState } from '../../../../services';
   moduleId: module.id,
   templateUrl: 'mock-actionbar.component.html'
 })
-export class MockActionbarComponent implements AfterViewInit {
+export class MockActionbarComponent
+  implements OnInit, AfterViewInit, OnDestroy {
   @Input() title: string;
   @Input() backNavIcon = 0; // default is the back arrow
 
@@ -45,12 +46,15 @@ export class MockActionbarComponent implements AfterViewInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
-  ) {
+  ) {}
+
+  ngOnInit() {
     if (this.backNavIcon === 0) {
       this.navIcon = String.fromCharCode(0xe5c4); // arrow
     } else {
       this.navIcon = String.fromCharCode(0xe5cd); // close
     }
+
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -73,6 +77,10 @@ export class MockActionbarComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.updateWatchIcon({});
+  }
+
+  ngOnDestroy() {
+    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
   onNavBtnTap() {

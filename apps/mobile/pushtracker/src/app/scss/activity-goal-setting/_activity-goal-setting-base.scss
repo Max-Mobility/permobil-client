@@ -1,0 +1,68 @@
+@import '../variables';
+
+.ACTIVITY_GOALS_DIALOG_BASE {
+  .set-goal-btn {
+    @extend .btn-transparent;
+    horizontal-align: right;
+    font-size: 12;
+    margin-right: 5;
+    padding: 4;
+    border-radius: 3;
+    text-transform: capitalize;
+  }
+
+  .config-title {
+    font-family: $os;
+    font-size: 22;
+    horizontal-align: center;
+    text-align: center;
+    vertical-align: center;
+    margin-top: 40;
+  }
+
+  .config-title-description {
+    font-family: $os-Light;
+    font-size: 14;
+    horizontal-align: center;
+    text-align: center;
+    vertical-align: center;
+    margin-top: 15;
+    margin-bottom: 30;
+  }
+
+  .CONFIG_CIRCLE_BASE {
+    height: 280;
+    width: 280;
+    border-radius: 140;
+    border-width: 2;
+    horizontal-align: center;
+    vertical-align: center;
+
+    button {
+      @extend .btn-transparent;
+      height: 60;
+      width: 60;
+      border-radius: 30;
+      font-family: $material-icon;
+      font-size: 26;
+      vertical-align: center;
+    }
+
+    .config-value {
+      font-family: $os;
+      font-weight: bold;
+      font-size: 38;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+
+    .config-value-sub {
+      font-family: $os-Light;
+      font-size: 12;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center;
+    }
+  }
+}

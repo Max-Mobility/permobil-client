@@ -48,37 +48,4 @@
       color: $white;
     }
   }
-
-  .activity-goals-dialog {
-    @extend .ACTIVITY_GOALS_DIALOG_BASE;
-    background-color: $white;
-
-    .set-goal-btn {
-      color: #1a73e9;
-    }
-
-    .config-title {
-      color: #202125;
-    }
-
-    .config-title-description {
-      color: #64676c;
-    }
-
-    .config-circle {
-      @extend .CONFIG_CIRCLE_BASE;
-      border-color: #e9eaee;
-
-      button {
-        color: #1a73e9;
-      }
-
-      .config-value {
-        color: #3c4043;
-      }
-      .config-value-sub {
-        color: #5f6267;
-      }
-    }
-  }
 }
