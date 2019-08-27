@@ -172,6 +172,7 @@ export class ActivityTabComponent implements OnInit {
         const tabHost = (args.object as SegmentedBar)
           .android as android.widget.TabHost;
         const t = tabHost.getTabWidget() as android.widget.TabWidget;
+
         for (let i = 0; i < t.getChildCount(); i++) {
           const tv = t
             .getChildAt(i)

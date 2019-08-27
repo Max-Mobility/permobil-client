@@ -8,7 +8,15 @@
         <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
         <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
-          <SegmentedBar row="0" [items]="tabItems" [selectedIndex]="tabSelectedIndex" (loaded)="segmentedBarLoaded($event)" (selectedIndexChange)="onSelectedIndexChanged($event)" class="m-5"></SegmentedBar>
+          <SegmentedBar
+            row="0"
+            [items]="tabItems"
+            [selectedIndex]="tabSelectedIndex"
+            [selectedBackgroundColor]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+            (loaded)="segmentedBarLoaded($event)"
+            (selectedIndexChange)="onSelectedIndexChanged($event)"
+            class="m-5"
+          ></SegmentedBar>
 
           // Current Tab Chart title/label with prev/next buttons
           <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto">
