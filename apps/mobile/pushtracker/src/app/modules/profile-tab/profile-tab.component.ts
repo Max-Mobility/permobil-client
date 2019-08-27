@@ -15,7 +15,7 @@ import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
-import { STORAGE_KEYS } from '../../enums';
+import { STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 import { TextField } from 'tns-core-modules/ui/text-field/text-field';
@@ -324,7 +324,7 @@ export class ProfileTabComponent implements OnInit {
       if (this.user.data.activity_goal_coast_time)
         this.activity_goals_dialog_data.config_value = this.user.data.activity_goal_coast_time;
     } else if (configKey === 'DISTANCE_ACTIVITY_GOAL') {
-      if (this.user.data.distance_unit_preference === 0) {
+      if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
         this.displayActivityGoalUnitLabel =
           this._translateService.instant('profile-tab.distance-units-km') +
           ' ' +
@@ -769,7 +769,7 @@ export class ProfileTabComponent implements OnInit {
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
-    if (this.user.data.distance_unit_preference === 0) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       this.displayActivityGoalDistance = ((this.user.data.activity_goal_distance) * 0.621371).toFixed(1) + ' km';
     } else {
       this.displayActivityGoalDistance += ' mi';

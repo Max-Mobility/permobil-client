@@ -12,7 +12,7 @@ import {
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { APP_THEMES, STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
 import {
   ActivityService,
   LoggingService,
@@ -138,7 +138,7 @@ export class HomeTabComponent implements OnInit {
         1
       );
       this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === 0
+      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
         : ' miles per day');
     this.distanceCirclePercentageMaxValue =
@@ -337,7 +337,7 @@ export class HomeTabComponent implements OnInit {
         1
       );
     this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === 0
+      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
         : ' miles per day');
     this.distanceCirclePercentageMaxValue =
@@ -515,7 +515,7 @@ export class HomeTabComponent implements OnInit {
         1
       );
       this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === 0
+      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
         : ' miles per day');
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
@@ -691,7 +691,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === 0) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       return this._milesToKilometers(distance);
     }
     return distance;

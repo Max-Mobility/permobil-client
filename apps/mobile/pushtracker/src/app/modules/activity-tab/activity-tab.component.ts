@@ -9,7 +9,7 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { Button } from 'tns-core-modules/ui/button';
 import { SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { APP_THEMES, STORAGE_KEYS } from '~/app/enums';
+import { APP_THEMES, STORAGE_KEYS, DISTANCE_UNITS } from '~/app/enums';
 import { ActivityService, LoggingService, PushTrackerUserService } from '../../services';
 import { SmartDriveUsageService } from '~/app/services/smartdrive-usage.service';
 import { PushTrackerUser } from '@permobil/core/src';
@@ -150,7 +150,7 @@ export class ActivityTabComponent implements OnInit {
   getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
-      this.distanceUnit = (this.user.data.distance_unit_preference === 0 ? ' km' : ' mi');
+      this.distanceUnit = (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ' km' : ' mi');
     });
   }
 
@@ -985,7 +985,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === 0) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       return this._milesToKilometers(distance);
     }
     return distance;
