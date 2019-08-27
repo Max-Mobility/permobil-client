@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -24,6 +24,8 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   savedTheme: string;
 
+  private _user: PushTrackerUser;
+
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
@@ -45,6 +47,9 @@ export class ActivityGoalSettingComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+    this._userService.user.subscribe(user => {
+      this._user = user;
+    });
   }
 
   closeModal() {
@@ -66,8 +71,19 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   onTextFieldReturnPress(args) {
     const textField = args.object as TextField;
-    this.config.value = parseFloat(textField.text);
-    this.config.value = Math.round(this.config.value * 10) / 10;
+    // check for text to convert first, else just reset for now to avoid NaN
+    if (textField.text || textField.text !== '') {
+      this.config.value = parseFloat(textField.text);
+      this.config.value = Math.round(this.config.value * 10) / 10;
+    } else {
+      if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
+        this.config.value = this._user.data.activity_goal_coast_time;
+      } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
+        this.config.value = this._user.data.activity_goal_distance;
+      }
+
+      this.config.value = Math.round(this.config.value * 10) / 10;
+    }
   }
 
   onTextFieldBlur(args) {
