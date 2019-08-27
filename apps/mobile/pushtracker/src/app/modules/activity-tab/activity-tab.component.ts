@@ -97,15 +97,27 @@ export class ActivityTabComponent implements OnInit {
     this.getUser();
     // init the segmented bar items
     this.tabItems = [];
-    [
-      this._translateService.instant('activity-tab-component.day'),
-      this._translateService.instant('activity-tab-component.week'),
-      this._translateService.instant('activity-tab-component.month')
-    ].forEach(element => {
-      const sbi = new SegmentedBarItem();
-      sbi.title = element;
-      this.tabItems.push(sbi);
-    });
+    if (this.user.data.control_configuration === 'PushTracker with SmartDrive') {
+      [
+        this._translateService.instant('activity-tab-component.week'),
+        this._translateService.instant('activity-tab-component.month')
+      ].forEach(element => {
+        const sbi = new SegmentedBarItem();
+        sbi.title = element;
+        this.tabItems.push(sbi);
+      });
+    }
+    else {
+      [
+        this._translateService.instant('activity-tab-component.day'),
+        this._translateService.instant('activity-tab-component.week'),
+        this._translateService.instant('activity-tab-component.month')
+      ].forEach(element => {
+        const sbi = new SegmentedBarItem();
+        sbi.title = element;
+        this.tabItems.push(sbi);
+      });
+    }
     this.tabSelectedIndex = 0; // default to the first tab (Day)
 
     this.savedTheme = appSettings.getString(
