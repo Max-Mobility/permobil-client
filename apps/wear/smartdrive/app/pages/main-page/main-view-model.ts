@@ -2765,7 +2765,7 @@ export class MainViewModel extends Observable {
         data[date] = {
           drive: driveDiff,
           total: totalDiff
-        }
+        };
       });
       Log.D('saving data', data);
       const serialized = JSON.stringify(data);
