@@ -102,6 +102,25 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
   @Nullable
   @Override
+  public String getData(@NonNull Uri uri) {
+
+    String data = null;
+
+    switch (sUriMatcher.match(uri)) {
+    case CODE_USAGE: {
+      data = db.getRecord();
+      break;
+    }
+
+    default:
+      throw new UnsupportedOperationException("Unknown uri: " + uri);
+    }
+
+    return data;
+  }
+
+  @Nullable
+  @Override
   public String getType(@NonNull Uri uri) {
     return null;
   }
