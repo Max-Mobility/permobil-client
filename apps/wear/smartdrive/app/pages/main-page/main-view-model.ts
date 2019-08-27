@@ -2174,7 +2174,7 @@ export class MainViewModel extends Observable {
     } else {
       const didSave = await this.saveNewSmartDrive();
       if (didSave) {
-        setTimeout(this.enablePowerAssist, 300);
+        setTimeout(this.enablePowerAssist.bind(this), 300);
       } else {
         this._sentryBreadCrumb('SmartDrive was not saved!');
       }
@@ -2371,9 +2371,7 @@ export class MainViewModel extends Observable {
       this.smartDrive &&
       !this.smartDrive.connected
     ) {
-      setTimeout(() => {
-        this.connectToSavedSmartDrive();
-      }, 1 * 1000);
+      setTimeout(this.connectToSavedSmartDrive.bind(this), 1 * 1000);
     }
   }
 
