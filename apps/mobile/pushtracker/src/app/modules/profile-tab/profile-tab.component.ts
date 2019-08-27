@@ -18,7 +18,6 @@ import { Page } from 'tns-core-modules/ui/page';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
 import { ActivityGoalSettingComponent } from './activity-goal-setting';
-import { TextField } from 'tns-core-modules/ui/text-field';
 
 @Component({
   selector: 'profile',
@@ -193,7 +192,7 @@ export class ProfileTabComponent implements OnInit {
     key: string
   ) {
     this.isUserEditingSetting = true;
-    Log.D('user tapped config = ', configTitle, args.object);
+    Log.D('user tapped config = ', config_title, args.object);
     this._setActiveDataBox(args);
 
     let value_description: string;
@@ -247,22 +246,7 @@ export class ProfileTabComponent implements OnInit {
             'An unexpected error occurred. If this continues please let us know.',
           textColor: new Color('#fff000')
         });
-  }
-
-  onTextFieldReturnPress(event) {
-    const textField = <TextField>event.object;
-    const newValue = parseFloat(textField.text);
-    if (newValue && typeof newValue === 'number') {
-      this.activity_goals_dialog_data.config_value = parseFloat(textField.text);
-      this.activity_goals_dialog_data.config_value = Math.round(this.activity_goals_dialog_data.config_value * 10) / 10;
-    }
-    else {
-      textField.text = this.activity_goals_dialog_data.config_value + '';
-    }
-  }
-
-  onTextFieldBlur(event) {
-    this.onTextFieldReturnPress(event);
+      });
   }
 
   onBirthDateTap(args: EventData) {

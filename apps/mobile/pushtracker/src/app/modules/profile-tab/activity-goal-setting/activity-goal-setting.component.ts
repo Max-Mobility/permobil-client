@@ -4,6 +4,7 @@ import { Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../../enums';
 import { LoggingService, PushTrackerUserService } from '../../../services';
 
@@ -61,6 +62,16 @@ export class ActivityGoalSettingComponent implements OnInit {
     Log.D('Increment the config value');
     this.config.value += 0.1;
     this.config.value = Math.round(this.config.value * 10) / 10;
+  }
+
+  onTextFieldReturnPress(args) {
+    const textField = args.object as TextField;
+    this.config.value = parseFloat(textField.text);
+    this.config.value = Math.round(this.config.value * 10) / 10;
+  }
+
+  onTextFieldBlur(args) {
+    this.onTextFieldReturnPress(args);
   }
 
   onSetGoalBtnTap() {

@@ -10,7 +10,8 @@
     <GridLayout class="config-circle" row="2" rows="*, auto, *" columns="*, *, *">
       <Button row="1" col="0" text="&#xe15b;" horizontalAlignment="left" (tap)="decrementConfigValue()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
       <StackLayout horizontalAlignment="center" row="1" col="1">
-        <Label [text]="config.value" class="config-value"></Label>
+        <!-- <Label [text]="config.value" class="config-value"></Label> -->
+        <TextField class="config-value" [text]="config.value" (returnPress)="onTextFieldReturnPress($event)" (blur)="onTextFieldBlur($event)"></TextField>
         <Label [text]="config.value_description" class="config-value-sub" textWrap="true"></Label>
       </StackLayout>
       <Button row="1" col="2" text="&#xe145;" horizontalAlignment="right" (tap)="incrementConfigValue()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
