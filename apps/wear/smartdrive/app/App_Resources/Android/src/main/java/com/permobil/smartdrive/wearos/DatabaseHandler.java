@@ -8,6 +8,7 @@ import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
 import io.sentry.Sentry;
@@ -19,6 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+  public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos";
+  /*
+   * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
+   * the content provider for Sunshine.
+   */
+  public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+
+  /*
+   * Database related stuff:
+   */
   private static final String TAG = "DatabaseHandler";
   // Database Version
   private static final int DATABASE_VERSION = 1;
@@ -29,18 +41,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Table Columns names
   public static final String KEY_ID = "id";
   public static final String KEY_DATA = "data";
-  public static final String KEY_DATE = "date";
 
   public static final int ID_INDEX = 0;
   public static final int DATA_INDEX = 1;
-  public static final int DATE_INDEX = 2;
 
   private Context mContext;
+
+  /* The base CONTENT_URI used to query the Todo table from the content provider */
+  public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TABLE_NAME)
+    .build();
 
   public class Record {
     int id;
     String data;
-    String date;
+  }
+
+  /**
+   * Builds a URI that adds the task _ID to the end of the todo content URI path.
+   * This is used to query details about a single todo entry by _ID. This is what we
+   * use for the detail view query.
+   *
+   * @param id Unique id pointing to that row
+   * @return Uri to query details about a single todo entry
+   */
+  public static Uri buildTodoUriWithId(long id) {
+    return CONTENT_URI.buildUpon()
+      .appendPath(Long.toString(id))
+      .build();
   }
 
   public DatabaseHandler(Context context) {
@@ -53,8 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     try {
       String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + TABLE_NAME + "(" +
         KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-        KEY_DATA + " TEXT, " +
-        KEY_DATE + " TEXT " +
+        KEY_DATA + " TEXT " +
         ")";
       db.execSQL(CREATE_TABLE_ACTIVITYDATA);
     } catch (Exception e) {
@@ -71,23 +98,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   }
 
   // Insert values to the table
-  synchronized public void addRecord(Map data) {
+  synchronized public long addRecord(Map data) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
-
+    long _id = -1;
     try {
       Gson gson = new Gson();
       String dataAsJSON = gson.toJson(data);
-      values.put(KEY_DATE, (string)data.get("date"));
       values.put(KEY_DATA, dataAsJSON);
-      db.insert(TABLE_NAME, null, values);
-      Log.d(TAG, "Saving new RECORD to SQL Table: " + (string)data.get("date"));
+      Log.d(TAG, "Saving new RECORD to SQL Table");
+      _id = db.insert(TABLE_NAME, null, values);
     } catch (Exception e) {
       Log.e(TAG, "Exception adding data to table: " + e.getMessage());
       Sentry.capture(e);
     }
 
     db.close();
+    return _id;
   }
   synchronized public void updateRecord(Map data, int id) {
     SQLiteDatabase db = this.getWritableDatabase();
@@ -212,7 +239,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int index = cursor.getInt(ID_INDEX);
         record.id = index;
         record.data = cursor.getString(DATA_INDEX);
-        record.date = cursor.getString(DATE_INDEX);
         Log.d(TAG, "record id: " + index);
       } catch (Exception e) {
         Log.e(TAG, "Exception getting record from db:" + e.getMessage());

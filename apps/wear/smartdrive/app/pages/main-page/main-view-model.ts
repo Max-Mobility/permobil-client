@@ -249,20 +249,21 @@ export class MainViewModel extends Observable {
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
     // determine inset padding
+    // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
       .getApplicationContext()
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
+    const heightPixels = screen.mainScreen.heightPixels;
+    const fontScale = config.fontScale; // floating point
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
-    }
-    try {
-      // set up the chin inset listener and attach it to the top most frame
-      const frame = topmost();
-      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
-    } catch (err) {
+      // if the height !== width then there is a chin!
+      if (widthPixels !== heightPixels && widthPixels > heightPixels) {
+        this.chinSize = widthPixels - heightPixels;
+      }
     }
   }
 
@@ -513,15 +514,6 @@ export class MainViewModel extends Observable {
   async onPowerAssistViewLoaded(args: EventData) {
     this._powerAssistView = args.object as View;
   }
-
-  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener({
-    onApplyWindowInsets: function(view, insets) {
-      this.chinSize = insets.getSystemWindowInsetBottom();
-      this._sentryBreadCrumb('chinSize', this.chinSize);
-      view.onApplyWindowInsets(insets);
-      return insets;
-    }
-  });
 
   async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
