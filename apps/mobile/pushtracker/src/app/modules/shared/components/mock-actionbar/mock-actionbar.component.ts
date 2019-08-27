@@ -35,6 +35,7 @@ export class MockActionbarComponent
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
   @Input() showWatchBtn = false;
+  @Input() controlConfiguration: string = '';
 
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
@@ -101,7 +102,9 @@ export class MockActionbarComponent
   onUpdateTap() {
     this._modalService
       .showModal(WirelessUpdatesComponent, {
-        context: {},
+        context: {
+          controlConfiguration: this.controlConfiguration
+        },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
