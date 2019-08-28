@@ -76,6 +76,7 @@ export class ActivityTabComponent implements OnInit {
   weeklyActivityAnnotationValue: number = 0;
   private _weeklyActivityCache = {};
   private _weeklyUsageCache = {};
+  enableNextWeekButton = false;
 
   // Colors
   private _colorWhite = new Color('#fff');
@@ -989,6 +990,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   isNextWeekButtonEnabled() {
+    console.log(this._isCurrentDayInViewThisWeek(), this.weekStart, new Date());
     return !this._isCurrentDayInViewThisWeek();
   }
 
@@ -1047,6 +1049,7 @@ export class ActivityTabComponent implements OnInit {
     this.weekStart = this._getFirstDayOfWeek(date);
     this.weekEnd = this._getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+    this.enableNextWeekButton = !this._isCurrentDayInViewThisWeek();
   }
 
   private _initMonthViewStyle() {
@@ -1211,7 +1214,7 @@ export class ActivityTabComponent implements OnInit {
         // We are showing cached data
         const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
         this.weeklyActivity = cache.chartData;
-        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0) +
+        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
           this.distanceUnit;
       }
     }
