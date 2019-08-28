@@ -46,12 +46,10 @@ export class TabsComponent implements OnInit, AfterViewInit {
 
   @ViewChild('rootTabView', { static: false })
   rootTabView: ElementRef;
-
   rootTabViewNativeElement: TabView;
 
   @ViewChild('rootTabViewForSwitchControl', { static: false })
   rootTabViewForSwitchControl: ElementRef;
-
   rootTabViewForSwitchControlNativeElement: TabView;
 
   constructor(
@@ -116,23 +114,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
       { relativeTo: this._activeRoute }
     );
     this.getUser();
-
-    /*
-        new PageRouterOutlet(
-          parentContexts: ChildrenOutletContexts,
-          location: ViewContainerRef,
-          name: string,
-          actionBarVisibility: string,
-          isEmptyOutlet: boolean,
-          locationStrategy: NSLocationStrategy,
-          componentFactoryResolver: ComponentFactoryResolver,
-          resolver: ComponentFactoryResolver,
-          changeDetector: ChangeDetectorRef,
-          device: Device,
-          pageFactory: PageFactory,
-          routeReuseStrategy: NSRouteReuseStrategy,
-          elRef: ElementRef): PageRouterOutlet
-     */
   }
 
   ngAfterViewInit() {
@@ -157,21 +138,21 @@ export class TabsComponent implements OnInit, AfterViewInit {
   }
 
   onTabLoaded(event) {
-    if (this.rootTabView) {
-      const t = this.rootTabView.nativeElement as TabView;
-      this.rootTabViewNativeElement = t;
-      t.selectedIndex = 2;
-      console.log('Tab for PushTracker is ready!!');
-    }
+    // if (this.rootTabView) {
+    //   const t = this.rootTabView.nativeElement as TabView;
+    //   this.rootTabViewNativeElement = t;
+    //   t.selectedIndex = 2;
+    //   console.log('Tab for PushTracker is ready!!');
+    // }
   }
 
   onTabLoadedForSwitchControl(event) {
-    if (this.rootTabViewForSwitchControl) {
-      const t = this.rootTabViewForSwitchControl.nativeElement as TabView;
-      this.rootTabViewForSwitchControlNativeElement = t;
-      t.selectedIndex = 0;
-      console.log('Tab for Switch Control is ready!!');
-    }
+    // if (this.rootTabViewForSwitchControl) {
+    //   const t = this.rootTabViewForSwitchControl.nativeElement as TabView;
+    //   this.rootTabViewForSwitchControlNativeElement = t;
+    //   t.selectedIndex = 0;
+    //   console.log('Tab for Switch Control is ready!!');
+    // }
   }
 
   getUser() {
@@ -180,38 +161,49 @@ export class TabsComponent implements OnInit, AfterViewInit {
       this.user = user;
       console.log(this.user.data.control_configuration);
 
-      if (this.rootTabViewNativeElement && !this.isConfigurationSwitchControl()) {
-        const t1 = this.rootTabViewNativeElement;
+      // if (this.rootTabViewNativeElement) {
+      //   if (!this.isConfigurationSwitchControl()) {
+      //     const t1 = this.rootTabViewNativeElement;
 
-        const homeTabViewItem = t1.items[0];
-        homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
-        t1.items[0] = homeTabViewItem;
+      //     const homeTabViewItem = t1.items[0];
+      //     homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
+      //     t1.items[0] = homeTabViewItem;
 
-        const journeyTabViewItem = t1.items[1];
-        journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
-        t1.items[1] = journeyTabViewItem;
+      //     const journeyTabViewItem = t1.items[1];
+      //     journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
+      //     t1.items[1] = journeyTabViewItem;
 
-        const profileTabViewItem = t1.items[2];
-        profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
-        t1.items[2] = profileTabViewItem;
+      //     const profileTabViewItem = t1.items[2];
+      //     profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
+      //     t1.items[2] = profileTabViewItem;
 
-        console.log((t1.items[0] as TabViewItem).iconSource);
-        console.log((t1.items[1] as TabViewItem).iconSource);
-        console.log((t1.items[2] as TabViewItem).iconSource);
-        t1.selectedIndex = 0;
-        t1.notifyPropertyChange('items', t1.items);
-      }
-      else if (this.rootTabViewForSwitchControlNativeElement && this.isConfigurationSwitchControl()) {
-        const t2 = this.rootTabViewForSwitchControlNativeElement;
+      //     console.log((t1.items[0] as TabViewItem).iconSource);
+      //     console.log((t1.items[1] as TabViewItem).iconSource);
+      //     console.log((t1.items[2] as TabViewItem).iconSource);
+      //     t1.selectedIndex = 0;
+      //     t1.notifyPropertyChange('items', t1.items);
+      //   }
+      //   else {
+      //     const t2 = this.rootTabViewNativeElement;
 
-        const profileTabViewItem = t2.items[0];
-        profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
-        t2.items[0] = profileTabViewItem;
+      //     const homeTabViewItem = t2.items[0];
+      //     homeTabViewItem.iconSource = AppResourceIcons.HOME_INACTIVE;
+      //     t2.items[0] = homeTabViewItem;
 
-        console.log((t2.items[0] as TabViewItem).iconSource);
-        t2.selectedIndex = 0;
-        t2.notifyPropertyChange('items', t2.items);
-      }
+      //     const journeyTabViewItem = t2.items[1];
+      //     journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
+      //     t2.items[1] = journeyTabViewItem;
+
+      //     const profileTabViewItem = t2.items[2];
+      //     profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
+      //     t2.items[2] = profileTabViewItem;
+
+      //     // TODO: Somehow remove the home TabViewItem and journey TabViewItem from the TabView
+
+      //     t2.selectedIndex = 0;
+      //     t2.notifyPropertyChange('items', t2.items);
+      //   }
+      // }
 
       if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
         Log.D('asking for permissions');

@@ -1,6 +1,5 @@
 <TabView #rootTabView androidTabsPosition="bottom" tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" 
-  (loaded)="onTabLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" 
-  [visibility]="!isConfigurationSwitchControl() ? 'visible' : 'collapse'">
+  (loaded)="onTabLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)">
   
   // Home Tab
   <page-router-outlet *tabItem="homeTabItem" name="homeTab" actionBarVisibility="never"> </page-router-outlet>
@@ -10,11 +9,4 @@
 
   // Profile Tab
   <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
-</TabView>
-
-<TabView #rootTabViewForSwitchControl androidTabsPosition="bottom" tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" 
-  (loaded)="onTabLoadedForSwitchControl($event)" (selectedIndexChanged)="tabViewIndexChangeForSwitchControl($event)" 
-  [visibility]="isConfigurationSwitchControl() ? 'visible' : 'collapse'">
-    // Profile Tab
-    <page-router-outlet *tabItem="profileTabItemForSwitchControl" name="profileTab2" actionBarVisibility="never"> </page-router-outlet>
 </TabView>
