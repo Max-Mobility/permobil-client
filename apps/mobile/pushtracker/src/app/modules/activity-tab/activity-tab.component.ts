@@ -463,6 +463,7 @@ export class ActivityTabComponent implements OnInit {
       this._initDayChartTitle();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
+      this._updateWeekStartAndEnd();
       this.activityLoaded = true;
     });
   }
@@ -579,6 +580,7 @@ export class ActivityTabComponent implements OnInit {
       }
     }
     if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
+    this._updateWeekStartAndEnd();
     this.activityLoaded = true;
   }
 
@@ -1199,7 +1201,8 @@ export class ActivityTabComponent implements OnInit {
         this.dailyActivityAnnotationValue =
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.dailyActivityAnnotationValue = 0;
+        this.dailyActivityAnnotationValue = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0);
+        this.dailyActivityAnnotationValue /= activity.records.length;
       }
     } else this.dailyActivityAnnotationValue = 0;
   }
@@ -1281,12 +1284,14 @@ export class ActivityTabComponent implements OnInit {
     else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._usageService.weeklyActivity;
-        this.weeklyActivityAnnotationValue = 0;
+        this.weeklyActivityAnnotationValue = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0);
+        this.weeklyActivityAnnotationValue /= 7;
       } else {
         // We are showing cached data
         const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
         this.weeklyActivity = cache.chartData;
-        this.weeklyActivityAnnotationValue = 0;
+        this.weeklyActivityAnnotationValue = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0);
+        this.weeklyActivityAnnotationValue /= 7;
       }
     }
   }
