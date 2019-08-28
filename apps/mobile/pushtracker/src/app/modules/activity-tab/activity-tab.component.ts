@@ -1202,7 +1202,8 @@ export class ActivityTabComponent implements OnInit {
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
       } else if (this.viewMode === ViewMode.DISTANCE) {
         this.dailyActivityAnnotationValue = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0);
-        this.dailyActivityAnnotationValue /= activity.records.length;
+        if (activity.records && activity.records.length)
+          this.dailyActivityAnnotationValue /= activity.records.length;
       }
     } else this.dailyActivityAnnotationValue = 0;
   }
