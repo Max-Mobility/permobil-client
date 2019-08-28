@@ -64,7 +64,7 @@
                 [maximum]="yAxisMax"
                 minumum="1"
                 [majorStep]="yAxisStep"
-                labelFormat="%.0f"
+                [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
               >
               </LinearAxis>
               <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
@@ -114,7 +114,7 @@
                 [maximum]="yAxisMax"
                 minumum="1"
                 [majorStep]="yAxisStep"
-                labelFormat="%.0f"
+                [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
               ></LinearAxis>
               <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
               <Palette tkCartesianPalette seriesName="WeeklyActivity">
