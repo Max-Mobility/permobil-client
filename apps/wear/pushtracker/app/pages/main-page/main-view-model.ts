@@ -108,9 +108,6 @@ export class MainViewModel extends Observable {
   // for managing the inset of the layouts ourselves
   @Prop() screenWidth: number = 200;
   @Prop() screenHeight: number = 200;
-  @Prop() screenWidth90: number = 180;
-  @Prop() screenHeight90: number = 180;
-  @Prop() circleOffset: number = 10;
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
 
@@ -189,12 +186,6 @@ export class MainViewModel extends Observable {
   constructor() {
     super();
     this.sentryBreadCrumb('Main-View-Model constructor.');
-    // handle application lifecycle events
-    this.sentryBreadCrumb('Registering app event handlers.');
-    this.registerAppEventHandlers();
-    this.sentryBreadCrumb('App event handlers registered.');
-
-    this.registerForServiceDataUpdates();
 
     // determine inset padding
     const androidConfig = ad
@@ -202,21 +193,27 @@ export class MainViewModel extends Observable {
       .getResources()
       .getConfiguration();
     const isCircleWatch = androidConfig.isScreenRound();
-    this.screenWidth = screen.mainScreen.widthPixels;
-    this.screenHeight = screen.mainScreen.heightPixels;
-    this.screenWidth90 = Math.round(this.screenWidth * 0.9);
-    this.screenHeight90 = Math.round(this.screenHeight * 0.9);
-    this.circleOffset = Math.round((this.screenHeight - this.screenHeight90) / 2);
-    Log.D(this.screenWidth, this.screenHeight, this.screenWidth90, this.screenHeight90);
-    const widthPixels = screen.mainScreen.widthPixels;
+    const screenWidth = screen.mainScreen.widthPixels;
+    const screenHeight = screen.mainScreen.heightPixels;
+    // this.screenWidth = screen.mainScreen.widthPixels;
+    // this.screenHeight = screen.mainScreen.heightPixels;
+    Log.D('WxH', screenWidth, screenHeight);
     if (isCircleWatch) {
-      this.insetPadding = Math.round(0.146467 * widthPixels);
+      this.insetPadding = Math.round(0.146467 * screenWidth);
       // if the height !== width then there is a chin!
-      if (this.screenWidth !== this.screenHeight &&
-        this.screenWidth > this.screenHeight) {
-        this.chinSize = this.screenWidth - this.screenHeight;
+      if (screenWidth !== screenHeight &&
+        screenWidth > screenHeight) {
+        this.chinSize = screenWidth - screenHeight;
       }
     }
+    Log.D('chinSize:', this.chinSize);
+
+    // handle application lifecycle events
+    this.sentryBreadCrumb('Registering app event handlers.');
+    this.registerAppEventHandlers();
+    this.sentryBreadCrumb('App event handlers registered.');
+
+    this.registerForServiceDataUpdates();
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -224,7 +221,7 @@ export class MainViewModel extends Observable {
       this.insetPadding,
       this.insetPadding,
       this.insetPadding,
-      this.chinSize
+      0
     );
   }
 
@@ -1006,8 +1003,9 @@ export class MainViewModel extends Observable {
   }
 
   async getRecentInfoFromDatabase(numRecentEntries: number) {
+    let recentInfo = [];
     try {
-      return this.sqliteService.getAll({
+      recentInfo = await this.sqliteService.getAll({
         tableName: DailyActivity.Info.TableName,
         orderBy: DailyActivity.Info.DateName,
         ascending: false,
@@ -1016,6 +1014,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       Log.E('getRecentnfoFromDatabase', err);
     }
+    return recentInfo;
   }
 
   public motorTicksToMiles(ticks: number): number {
@@ -1085,14 +1084,6 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E(err);
     }
-  }
-
-  public getFirstDayOfWeek(date) {
-    date = new Date(date);
-    const day = date.getDay();
-    if (day === 0) return date; // Sunday is the first day of the week
-    const diff = date.getDate() - day;
-    return new Date(date.setDate(diff));
   }
 
   private sentryBreadCrumb(message: string) {
