@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -25,6 +25,9 @@ export class ActivityGoalSettingComponent implements OnInit {
   savedTheme: string;
 
   private _user: PushTrackerUser;
+
+  @ViewChild('textField', { read: false, static: false })
+  textField: ElementRef;
 
   constructor(
     private _logService: LoggingService,
@@ -109,7 +112,9 @@ export class ActivityGoalSettingComponent implements OnInit {
   }
 
   onSetGoalBtnTap() {
-    this._validateGoalValueFromText(this.config.value + '');
+    const textField = (this.textField.nativeElement as TextField);
+    const goalValue = textField.text;
+    this._validateGoalValueFromText(goalValue);
     this._logService.logBreadCrumb(
       'User set activity goals: ' + this.config.key + ' ' + this.config.value
     );
