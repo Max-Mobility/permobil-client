@@ -112,6 +112,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private LocationManager mLocationManager;
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
+  private Sensor mGravity;
+  private Sensor mGyroscope;
   private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
 
@@ -538,6 +540,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // turn on accelerometer sensing
     int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
     registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void offWristCallback() {
@@ -545,6 +549,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     mLocationManager.removeUpdates(this);
     // turn off accelerometer sensing
     unregisterAccelerometer();
+    unregisterGravity();
+    unregisterGyroscope();
   }
 
   @Override
@@ -632,16 +638,27 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
   }
 
+  private boolean hasGyro = false;
+  private boolean hasAccl = false;
+  private boolean hasGrav = false;
+  private float[] activityDetectorData = new float[9];
+  private static final int gyroOffset = 0;
+  private static final int acclOffset = 3;
+  private static final int gravOffset = 6;
+
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
     updateActivity(event);
-    int sensorType = event.sensor.getType();
-    if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
+    updateDetectorInputs(event);
+    if (hasGyro && hasGrav && hasAccl) {
+      hasGyro = false;
+      hasGrav = false;
+      hasAccl = false;
       if (isDebuggable || watchBeingWorn) {
         // use the data to detect activities
         ActivityDetector.Detection detection =
-          activityDetector.detectActivity(event.values, event.timestamp);
+          activityDetector.detectActivity(activityDetectorData, event.timestamp);
         handleDetection(detection);
         long now = System.currentTimeMillis();
         long timeDiffMs = now - _lastSendDataTimeMs;
@@ -662,19 +679,32 @@ public class ActivityService extends Service implements SensorEventListener, Loc
           _lastSendDataTimeMs = now;
         }
       }
-    } else if (sensorType == Sensor.TYPE_HEART_RATE) {
-      // update the heart rate
-      currentActivity.heart_rate = event.values[0];
-      Log.d(TAG, "current heart rate: " + currentActivity.heart_rate);
-      // TODO: save heart rate data as a series of data if the
-      // user has asked us to track their heart rate through the
-      // app (for some period of time)
     }
   }
 
   @Override
   public void onAccuracyChanged(Sensor sensor, int accuracy) {
     // TODO Auto-generated method stub
+  }
+
+  void updateDetectorInputs(SensorEvent event) {
+    int sensorType = event.sensor.getType();
+    if (sensorType == Sensor.TYPE_GYROSCOPE) {
+      hasGyro = true;
+      for (int i=0; i<3; i++) {
+        activityDetectorData[i + gyroOffset] = event.values[i];
+      }
+    } else if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
+      hasAccl = true;
+      for (int i=0; i<3; i++) {
+        activityDetectorData[i + acclOffset] = event.values[i];
+      }
+    } else if (sensorType == Sensor.TYPE_GRAVITY) {
+      hasGrav = true;
+      for (int i=0; i<3; i++) {
+        activityDetectorData[i + gravOffset] = event.values[i];
+      }
+    }
   }
 
   void updateActivity(SensorEvent event) {
@@ -687,6 +717,13 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       } else {
         offWristCallback();
       }
+    } else if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
+      // update the heart rate
+      currentActivity.heart_rate = event.values[0];
+      Log.d(TAG, "current heart rate: " + currentActivity.heart_rate);
+      // TODO: save heart rate data as a series of data if the
+      // user has asked us to track their heart rate through the
+      // app (for some period of time)
     }
   }
 
@@ -724,6 +761,36 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     }
   }
 
+  private void registerGravity(int delay, int reportingLatency) {
+    if (mSensorManager != null) {
+      mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+      if (mGravity != null)
+        mSensorManager.registerListener(this, mGravity, delay, reportingLatency);
+    }
+  }
+
+  private void unregisterGravity() {
+    if (mSensorManager != null) {
+      if (mGravity != null)
+        mSensorManager.unregisterListener(this, mGravity);
+    }
+  }
+
+  private void registerGyroscope(int delay, int reportingLatency) {
+    if (mSensorManager != null) {
+      mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+      if (mGyroscope != null)
+        mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
+    }
+  }
+
+  private void unregisterGyroscope() {
+    if (mSensorManager != null) {
+      if (mGyroscope != null)
+        mSensorManager.unregisterListener(this, mGyroscope);
+    }
+  }
+
   private void registerBodySensor(int delay, int reportingLatency) {
     if (mSensorManager != null) {
       mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
@@ -742,6 +809,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private void unregisterDeviceSensors() {
     // make sure we have the sensor manager for the device
     unregisterAccelerometer();
+    unregisterGravity();
+    unregisterGyroscope();
     unregisterBodySensor();
     unregisterHeartRate();
   }

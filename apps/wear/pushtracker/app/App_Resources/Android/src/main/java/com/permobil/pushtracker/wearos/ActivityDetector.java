@@ -63,25 +63,26 @@ public class ActivityDetector {
   /**
    * Actual inputs / outputs for the TFLite model
    */
-  private float[][] inputData = new float[1][3];
+  private float[][] inputData = new float[1][InputSize];
   private float[][] previousState = new float[1][StateSize];
   private float[][] parsedPrediction = new float[1][1];
 
   /**
    * TFLite model input / output configuration
    */
+  private static final int InputSize = 9;
   private static final int StateSize = 128;
-  private static final int Input_StateIndex = 0;
-  private static final int Input_DataIndex = 1;
-  private static final int Output_StateIndex = 0;
-  private static final int Output_PredictionIndex = 1;
+  private static final int Input_StateIndex = 1;
+  private static final int Input_DataIndex = 0;
+  private static final int Output_StateIndex = 1;
+  private static final int Output_PredictionIndex = 0;
 
   /**
    * Higher-level activity detection - not TFLite related
    */
   private static final int InputHistorySize = 4;
   private static final int PredictionHistorySize = 2;
-  private float[][] inputHistory = new float[InputHistorySize][3];
+  private float[][] inputHistory = new float[InputHistorySize][InputSize];
   private float[] predictionHistory = new float[PredictionHistorySize];
 
   /**
@@ -113,7 +114,7 @@ public class ActivityDetector {
       // now check the input shapes
       int[] inputShapes = { 0, 0 };
       inputShapes[Input_StateIndex] = StateSize;
-      inputShapes[Input_DataIndex] = 3;
+      inputShapes[Input_DataIndex] = InputSize;
       int inputCount = tflite.getInputTensorCount();
       for (int i=0; i<inputCount; i++) {
         int[] inputShape = tflite.getInputTensor(i).shape();
@@ -162,7 +163,7 @@ public class ActivityDetector {
    * Reset the histories to clear out old data
    */
   public void reset() {
-    inputHistory = new float[InputHistorySize][3];
+    inputHistory = new float[InputHistorySize][InputSize];
     predictionHistory = new float[PredictionHistorySize];
   }
 
@@ -182,7 +183,7 @@ public class ActivityDetector {
       return new Detection();
     }
     // copy the data into our input buffer
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<InputSize; i++) {
       inputData[0][i] = data[i];
     }
     // update the input history
