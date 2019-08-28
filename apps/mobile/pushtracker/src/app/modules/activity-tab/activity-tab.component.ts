@@ -990,7 +990,6 @@ export class ActivityTabComponent implements OnInit {
   }
 
   isNextWeekButtonEnabled() {
-    console.log(this._isCurrentDayInViewThisWeek(), this.weekStart, new Date());
     return !this._isCurrentDayInViewThisWeek();
   }
 
