@@ -7,9 +7,9 @@
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:RL="nativescript-ng-ripple/ripple-view"
       xmlns:ui="nativescript-auto-fit-text"
-      paddingBottom="{{ chinSize }}"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
+      marginBottom="{{ chinSize / 2 }}"
       actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">
 
@@ -70,7 +70,8 @@
                        visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
             <Label class="center-label-base ambient-show fs24 bold" textWrap="true"
                    textAlignment="center"
-                   text="{{ currentTime + ' ' + currentTimeMeridiem }}"/>
+                   text="{{ currentTime + (currentTimeMeridiem ? (' ' + currentTimeMeridiem) : '') }}"
+                   />
             <Label class="center-label-base ambient-show fs16" textWrap="true"
                    textAlignment="center"
                    text="{{ currentDay + ' ' + currentYear }}"/>
@@ -194,6 +195,8 @@
 
       <pager:PagerItem>
         <wol:WearOsLayout
+            disableInsetConstraint="true"
+            loaded="{{ customWOLInsetLoaded }}"
             height="100%" width="100%">
           <StackLayout height="100%">
             <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
