@@ -849,7 +849,12 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private _updateDayChartLabel() {
-    const activity = this._activityService.dailyActivity;
+    let activity = undefined;
+    if (this.viewMode !== ViewMode.DISTANCE) {
+      activity = this._activityService.dailyActivity;
+    } else {
+      activity = this._usageService.dailyActivity;
+    }
 
     if (activity) {
       // format chart description for viewMode
@@ -871,14 +876,18 @@ export class ActivityTabComponent implements OnInit {
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
-        this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
-          this.distanceUnit;
+        this.chartDescription = (0).toFixed(1) + this.distanceUnit;
       }
     }
   }
 
   private _updateDailyActivityAnnotationValue() {
-    const activity = this._activityService.dailyActivity;
+    let activity = undefined;
+    if (this.viewMode !== ViewMode.DISTANCE) {
+      activity = this._activityService.dailyActivity;
+    } else {
+      activity = this._usageService.dailyActivity;
+    }
     if (activity) {
       if (this.viewMode === ViewMode.COAST_TIME) {
         // coast time
@@ -903,70 +912,87 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private _updateWeekChartLabel() {
-    if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
-      // No cache
-      const activity = this._activityService.weeklyActivity;
+    if (this.viewMode !== ViewMode.DISTANCE) {
+      if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
+        // No cache
+        const activity = this._activityService.weeklyActivity;
 
-      // format chart description for viewMode
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        this.chartDescription =
-          (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        this.chartDescription = (activity.push_count || 0) + ' pushes';
-      } else if (this.viewMode === ViewMode.DISTANCE) {
+        // format chart description for viewMode
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          this.chartDescription =
+            (activity.coast_time_avg || 0).toFixed(1) + ' s';
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          this.chartDescription = (activity.push_count || 0) + ' pushes';
+        }
+      } else {
+        // We are showing cached data
+        const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+        this.weeklyActivity = cache.chartData;
+
+        // format chart description for viewMode
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          this.chartDescription =
+            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          this.chartDescription =
+            (cache.weeklyActivity.push_count || 0) + ' pushes';
+        }
+      }
+    }
+    else {
+      if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
+        const activity = this._usageService.weeklyActivity;
         this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
           this.distanceUnit;
-      }
-    } else {
-      // We are showing cached data
-      const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
-      this.weeklyActivity = cache.chartData;
-
-      // format chart description for viewMode
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        this.chartDescription =
-          (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        this.chartDescription =
-          (cache.weeklyActivity.push_count || 0) + ' pushes';
-      } else if (this.viewMode === ViewMode.DISTANCE) {
+      } else {
+        // We are showing cached data
+        const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
+        this.weeklyActivity = cache.chartData;
         this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(cache.weeklyActivity.distance_smartdrive_coast - cache.weeklyActivity.distance_smartdrive_coast_start)) || 0) +
           this.distanceUnit;
       }
     }
+
   }
 
   private _updateWeeklyActivityAnnotationValue() {
-    if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
-      // No cache
-      const activity = this._activityService.weeklyActivity;
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        // coast time
-        this.weeklyActivityAnnotationValue = activity
-          ? activity.coast_time_avg || 0
-          : 0;
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        // push count
-        this.weeklyActivityAnnotationValue =
-          parseInt((activity.push_count / 7).toFixed(1)) || 0;
-      } else if (this.viewMode === ViewMode.DISTANCE) {
-        // distance
-        this.weeklyActivityAnnotationValue = 0;
+    if (this.viewMode !== ViewMode.DISTANCE) {
+      if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
+        // No cache
+        const activity = this._activityService.weeklyActivity;
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          // coast time
+          this.weeklyActivityAnnotationValue = activity
+            ? activity.coast_time_avg || 0
+            : 0;
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          // push count
+          this.weeklyActivityAnnotationValue =
+            parseInt((activity.push_count / 7).toFixed(1)) || 0;
+        }
+      } else {
+        // We are showing cached data
+        const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          // coast time
+          this.weeklyActivityAnnotationValue = cache
+            ? cache.weeklyActivity.coast_time_avg || 0
+            : 0;
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          // push count
+          this.weeklyActivityAnnotationValue =
+            parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
+        }
       }
-    } else {
-      // We are showing cached data
-      const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        // coast time
-        this.weeklyActivityAnnotationValue = cache
-          ? cache.weeklyActivity.coast_time_avg || 0
-          : 0;
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        // push count
-        this.weeklyActivityAnnotationValue =
-          parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
-      } else if (this.viewMode === ViewMode.DISTANCE) {
-        // distance
+    }
+    else {
+      if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
+        const activity = this._usageService.weeklyActivity;
+        this.weeklyActivityAnnotationValue = 0;
+      } else {
+        // We are showing cached data
+        const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
+        this.weeklyActivity = cache.chartData;
         this.weeklyActivityAnnotationValue = 0;
       }
     }
