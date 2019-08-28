@@ -12,6 +12,7 @@ import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-ba
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import debounce from 'lodash/debounce';
 
 @Component({
   selector: 'activity-tab',
@@ -69,7 +70,6 @@ export class ActivityTabComponent implements OnInit {
 
   private _calendar: RadCalendar;
   private _dayViewTimeArray: number[] = [];
-  private _dailyActivityCache = {}; // cache for coast time and push count
 
   // Member variabes for week view
   weeklyActivity: ObservableArray<any[]>;
@@ -85,6 +85,9 @@ export class ActivityTabComponent implements OnInit {
 
   activityLoaded: boolean = false;
   private distanceUnit: string;
+  private _debouncedLoadDailyActivity: any = null;
+  private _debouncedLoadWeeklyActivity: any = null;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
 
   constructor(
     private _logService: LoggingService,
@@ -114,8 +117,21 @@ export class ActivityTabComponent implements OnInit {
     );
 
     this.currentDayInView = new Date();
+    this._updateWeekStartAndEnd();
 
-    this._loadDailyActivity();
+    // save the debounced loadDailyActivity function
+    this._debouncedLoadDailyActivity = debounce(
+      this._loadDailyActivity.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
+    this._debouncedLoadWeeklyActivity = debounce(
+      this._loadWeeklyActivity.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
+
+    this._debouncedLoadDailyActivity();
 
     {
       // Initialize time array for day view
@@ -129,6 +145,7 @@ export class ActivityTabComponent implements OnInit {
     }
 
     this._initMonthViewStyle();
+
   }
 
   refreshPlots(args) {
@@ -198,10 +215,10 @@ export class ActivityTabComponent implements OnInit {
         ' ' +
         date.getDate();
       this._initDayChartTitle();
-      this._loadDailyActivity();
+      this._debouncedLoadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
       this._initWeekChartTitle();
-      this._loadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity();
     } else if (this.tabSelectedIndex === 2) {
       this._initMonthChartTitle();
     }
@@ -213,13 +230,13 @@ export class ActivityTabComponent implements OnInit {
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
       this._updateWeekStartAndEnd();
       this._initDayChartTitle();
-      this._loadDailyActivity();
+      this._debouncedLoadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
       // week
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
       this._updateWeekStartAndEnd();
       this._initWeekChartTitle();
-      this._loadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity();
     } else if (this.tabSelectedIndex === 2) {
       // month
       this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
@@ -236,7 +253,7 @@ export class ActivityTabComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
         this._updateWeekStartAndEnd();
         this._initDayChartTitle();
-        this._loadDailyActivity();
+        this._debouncedLoadDailyActivity();
       }
     } else if (this.tabSelectedIndex === 1) {
       // week
@@ -246,7 +263,7 @@ export class ActivityTabComponent implements OnInit {
           this.currentDayInView = new Date();
         this._updateWeekStartAndEnd();
         this._initWeekChartTitle();
-        this._loadWeeklyActivity();
+        this._debouncedLoadWeeklyActivity();
       }
     } else if (this.tabSelectedIndex === 2) {
       // month
@@ -262,13 +279,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._loadDailyActivity();
+      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._loadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -280,13 +297,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._loadDailyActivity();
+      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._loadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -298,13 +315,13 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._loadDailyActivity();
+      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._loadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
@@ -316,7 +333,7 @@ export class ActivityTabComponent implements OnInit {
     this.currentDayInView.setDate(
       selectedDate.getDate() + event.pointIndex - 2
     );
-    this._loadDailyActivity();
+    this._debouncedLoadDailyActivity();
     this.tabSelectedIndex = 0;
   }
 
