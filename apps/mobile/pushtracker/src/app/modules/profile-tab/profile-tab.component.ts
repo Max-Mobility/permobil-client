@@ -14,10 +14,9 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
-import { STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
+import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
+import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { PrivacyPolicyComponent } from '../privacy-policy/privacy-policy.component';
-import { ActivityGoalSettingComponent } from './activity-goal-setting';
 
 @Component({
   selector: 'profile',
@@ -185,7 +184,6 @@ export class ProfileTabComponent implements OnInit {
     });
   }
 
-
   async onActivityGoalTap(
     args: EventData,
     config_title: string,
@@ -206,7 +204,9 @@ export class ProfileTabComponent implements OnInit {
       if (this.user.data.activity_goal_coast_time)
         value = this.user.data.activity_goal_coast_time;
     } else if (key === 'DISTANCE_ACTIVITY_GOAL') {
-      if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
+      if (
+        this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+      ) {
         value_description = `${this._translateService.instant(
           'profile-tab.distance-units-km'
         )} ${this._translateService.instant('profile-tab.per-day')}`;
@@ -432,7 +432,7 @@ export class ProfileTabComponent implements OnInit {
 
   private _getWeightIndices() {
     let weight = this.user.data.weight;
-    if (this.user.data.weight_unit_preference === 0) {
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
       weight = this._kilogramsToPounds(weight);
     }
     const primaryIndex = Math.floor(weight);
@@ -442,12 +442,14 @@ export class ProfileTabComponent implements OnInit {
 
   private _getHeightIndices() {
     let heightString = this.user.data.height + '';
-    if (this.user.data.height_unit_preference === 1) {
+    if (
+      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
+    ) {
       heightString = this._centimetersToFeetInches(this.user.data.height);
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
     let secondaryIndex = 0;
-    if (this.user.data.height_unit_preference === 0)
+    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS)
       secondaryIndex = parseFloat(heightString.split('.')[1]);
 
     console.log('getHeightIndex', heightString, secondaryIndex);
@@ -480,7 +482,7 @@ export class ProfileTabComponent implements OnInit {
     this.secondaryIndex = 0;
     this._setActiveDataBox(args);
 
-    if (this.user.data.weight_unit_preference === 1) {
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
       this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
       this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
     } else {
@@ -511,7 +513,7 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerIndex = 2;
     this._setActiveDataBox(args);
 
-    if (this.user.data.height_unit_preference === 1) {
+    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
       this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
     } else {
       this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
@@ -534,7 +536,9 @@ export class ProfileTabComponent implements OnInit {
       'general.height-guess'
     );
     this.listPickerNeedsSecondary =
-      this.user.data.height_unit_preference === 0 ? true : false;
+      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
+        ? true
+        : false;
 
     this._openListPickerDialog();
   }
@@ -622,7 +626,8 @@ export class ProfileTabComponent implements OnInit {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
-      this.displayActivityGoalDistance = ((this.user.data.activity_goal_distance) * 0.621371).toFixed(1) + ' km';
+      this.displayActivityGoalDistance =
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' km';
     } else {
       this.displayActivityGoalDistance += ' mi';
     }
@@ -631,7 +636,7 @@ export class ProfileTabComponent implements OnInit {
   private _initDisplayWeight() {
     this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
-    if (this.user.data.weight_unit_preference === 0) {
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
       this.displayWeight = this._displayWeightInPounds(
         this._kilogramsToPounds(this.user.data.weight)
       );
@@ -644,7 +649,9 @@ export class ProfileTabComponent implements OnInit {
       this.user.data.height
     );
     // convert from metric height (as stored in Kinvey) to user preferred unit
-    if (this.user.data.height_unit_preference === 1) {
+    if (
+      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
+    ) {
       const heightString = this._centimetersToFeetInches(this.user.data.height);
       const feet = parseFloat(heightString.split('.')[0]);
       const inches = parseFloat(heightString.split('.')[1]);
@@ -658,7 +665,7 @@ export class ProfileTabComponent implements OnInit {
       'weight',
       primaryValue + secondaryValue
     );
-    if (this.user.data.weight_unit_preference === 0) {
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
       this._userService.updateDataProperty(
         'weight',
         this._poundsToKilograms(primaryValue + secondaryValue)
@@ -683,7 +690,7 @@ export class ProfileTabComponent implements OnInit {
       'height',
       primaryValue + 0.01 * (secondaryValue || 0)
     );
-    if (this.user.data.height_unit_preference === 0) {
+    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
       this._userService.updateDataProperty(
         'height',
         this._feetInchesToCentimeters(primaryValue, secondaryValue)

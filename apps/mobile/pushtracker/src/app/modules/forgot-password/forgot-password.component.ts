@@ -6,9 +6,9 @@ import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { device, isAndroid, isIOS } from 'tns-core-modules/platform/platform';
+import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { TextField } from 'tns-core-modules/ui/text-field/text-field';
+import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 

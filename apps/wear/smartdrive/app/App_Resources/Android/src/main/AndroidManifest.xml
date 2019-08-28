@@ -59,6 +59,12 @@
     <!-- end for main activity -->
     <activity android:name="com.tns.ErrorReportActivity"/>
 
+    <!-- for allowing apps to access our data -->
+    <provider android:name="com.permobil.smartdrive.wearos.SmartDriveUsageProvider"
+              android:authorities="com.permobil.smartdrive.wearos.smartdrive.usage"
+              android:exported="true"/>
+    <!-- end for allowing apps to access our data -->
+
     <!-- for providing complications -->
     <service
         android:name="com.permobil.smartdrive.wearos.BatteryComplicationProviderService"

@@ -280,7 +280,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     public void run() {
       try {
         PushDataToKinvey();
-        PullDataFromKinvey();
+        // PullDataFromKinvey();
       } catch (Exception e) {
         Sentry.capture(e);
         Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());

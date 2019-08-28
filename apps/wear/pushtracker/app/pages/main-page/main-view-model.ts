@@ -22,7 +22,6 @@ import { EventData, fromObject, Observable } from 'tns-core-modules/data/observa
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { topmost } from 'tns-core-modules/ui/frame';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
@@ -212,6 +211,11 @@ export class MainViewModel extends Observable {
     const widthPixels = screen.mainScreen.widthPixels;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
+      // if the height !== width then there is a chin!
+      if (this.screenWidth !== this.screenHeight &&
+        this.screenWidth > this.screenHeight) {
+        this.chinSize = this.screenWidth - this.screenHeight;
+      }
     }
   }
 
@@ -269,6 +273,9 @@ export class MainViewModel extends Observable {
     const versionCode = packageInfo.versionCode;
     this.appVersion = versionName;
 
+    // register for time updates
+    this.registerForTimeUpdates();
+
     // load settings from memory
     this.sentryBreadCrumb('Loading settings.');
     this.loadSettings();
@@ -280,6 +287,9 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Updating display.');
     this.updateDisplay();
     this.sentryBreadCrumb('Display updated.');
+
+    // register for time updates
+    this.registerForTimeUpdates();
 
     setTimeout(this.startActivityService.bind(this), 5000);
   }
@@ -305,6 +315,67 @@ export class MainViewModel extends Observable {
     }
   }
 
+  loadSmartDriveData() {
+    const plottedDates = DailyActivity.Info.getPastDates(6);
+    let distanceData = plottedDates.map(d => {
+      return {
+        day: this.format(new Date(d), 'dd'),
+        value: 0
+      };
+    });
+    const today = this.format(new Date(), 'YYYY/MM/DD');
+    let maxDist = 0;
+    let currentDist = 0;
+    try {
+      const cursor = ad
+        .getApplicationContext()
+        .getContentResolver()
+        .query(
+          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
+          null, null, null, null);
+      if (cursor.moveToFirst()) {
+        // there is data
+        const serialized = cursor.getString(1);
+        const data = JSON.parse(serialized);
+        // distances provided are always in miles
+        if (data[today]) {
+          currentDist = data[today].total || 0.0;
+        }
+        Object.keys(data).map(k => {
+          const total = data[k].total;
+          if (total > maxDist) maxDist = total;
+        });
+        distanceData = plottedDates.map(d => {
+          const date = new Date(d);
+          let value = 0;
+          const dateKey = this.format(date, 'YYYY/MM/DD');
+          if (data[dateKey] !== undefined && data[dateKey].total > 0) {
+            // for now we're using total
+            value = (100.0 * data[dateKey].total) / maxDist;
+          }
+          return {
+            day: this.format(date, 'dd'),
+            value: value
+          };
+        });
+      } else {
+        Log.E('could not craete package context!');
+      }
+    } catch (err) {
+      Log.E(err);
+      Sentry.captureException(err);
+    }
+    // Log.D('Highest Distance Value:', maxDist);
+    this.distanceChartData = distanceData;
+    if (this.settings.units === 'metric') {
+      this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
+      this.distanceGoalCurrentValue = currentDist * 1.609;
+    } else {
+      this.distanceChartMaxValue = maxDist.toFixed(1);
+      this.distanceGoalCurrentValue = currentDist;
+    }
+  }
+
   loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
     const sharedPreferences = ad
@@ -314,10 +385,6 @@ export class MainViewModel extends Observable {
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
       0
     );
-    this.distanceGoalCurrentValue = sharedPreferences.getFloat(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_DISTANCE_KEY,
-      0.0
-    ) / 1609.0; // what's stored is meters, convert to miles
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
       prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
       0.0
@@ -348,18 +415,12 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
-    const distance = intent.getFloatExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DISTANCE,
-      0
-    );
     const heartRate = intent.getFloatExtra(
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
       0
     );
-    Log.D('Got service data', pushes, coast, distance, heartRate);
+    Log.D('Got service data', pushes, coast, heartRate);
     this.currentPushCount = pushes;
-    // received distance is in meters - need to convert to miles
-    this.distanceGoalCurrentValue = distance / 1609.0;
     this.coastGoalCurrentValue = coast;
     this.updateDisplay();
   }
@@ -484,23 +545,33 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: any) {
     this.sentryBreadCrumb('onMainPageLoaded');
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this.applyTheme('ambient');
+        } else {
+          this.applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
     // now init the ui
     try {
       await this.init();
-      // set up the chin inset listener and attach it to the top most frame
-      const frame = topmost();
-      frame.nativeView.setOnApplyWindowInsetsListener(this.windowInsetsListener);
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // apply theme
-    this.applyTheme();
   }
 
+  private hasAppliedTheme: boolean = false;
   applyTheme(theme?: string) {
     // apply theme
     this.sentryBreadCrumb('applying theme');
+    this.hasAppliedTheme = true;
     try {
       if (theme === 'ambient' || this.isAmbient) {
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
@@ -548,7 +619,7 @@ export class MainViewModel extends Observable {
     Log.D('*** exitAmbient ***');
     this.applyTheme();
     try {
-      this.loadSmartDriveInfo();
+      // this.loadSmartDriveInfoFromKinvey();
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -628,6 +699,29 @@ export class MainViewModel extends Observable {
     });
   }
 
+  registerForTimeUpdates() {
+    // monitor the clock / system time for display and logging:
+    const timeReceiverCallback = (androidContext, intent) => {
+      try {
+        this.sentryBreadCrumb('timeReceiverCallback');
+        // update charts if date has changed
+        if (!isSameDay(new Date(), this.lastChartDay)) {
+          this.updateDisplay();
+        }
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    };
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIME_TICK,
+      timeReceiverCallback
+    );
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIMEZONE_CHANGED,
+      timeReceiverCallback
+    );
+  }
+
   async updateChartData() {
     // Log.D('Updating Chart Data / Display');
     try {
@@ -655,8 +749,6 @@ export class MainViewModel extends Observable {
       // Log.D('Highest Coast Value:', maxCoast);
       this.coastChartMaxValue = maxCoast.toFixed(1);
       this.coastChartData = coastData;
-      // TODO: update the display of the data
-      this.initDistanceData();
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -765,8 +857,14 @@ export class MainViewModel extends Observable {
 
   updateDisplay() {
     try {
+      // load the distance from the smartdrive app
+      this.loadSmartDriveData();
+      // update the goal displays
       this.updateGoalDisplay();
-      this.updateSpeedDisplay();
+      // update distance units
+      this.distanceUnits = L(
+        'goals.distance.' + this.settings.units.toLowerCase()
+      );
       this.updateChartData();
     } catch (err) {
       Sentry.captureException(err);
@@ -798,10 +896,6 @@ export class MainViewModel extends Observable {
   }
 
   updateSpeedDisplay() {
-    // update distance units
-    this.distanceUnits = L(
-      'goals.distance.' + this.settings.units.toLowerCase()
-    );
   }
 
   onConfirmChangesTap() {
@@ -932,26 +1026,10 @@ export class MainViewModel extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  initDistanceData() {
-    if (this.distanceChartData !== null) {
-      return;
-    }
-    const dates = DailyActivity.Info.getPastDates(7);
-    const distanceData = dates.map(d => {
-      return {
-        day: this.format(new Date(d), 'dd'),
-        value: 0
-      };
-    });
-    // Log.D('Highest Distance Value:', maxDist);
-    this.distanceChartMaxValue = '0.0';
-    this.distanceChartData = distanceData;
-  }
-
   /**
    * Network Functions
    */
-  async loadSmartDriveInfo() {
+  async loadSmartDriveInfoFromKinvey() {
     try {
       const dates = DailyActivity.Info.getPastDates(7);
       const startTimes = dates.map(d => d.getTime());
@@ -968,15 +1046,6 @@ export class MainViewModel extends Observable {
       const statusCode = response.statusCode;
       if (statusCode === 200) {
         const days = response.content.toJSON();
-        /*
-        // pull start / end from info
-        const tickStart = info.distance_smartdrive_coast_start || 0;
-        const tickEnd = info.distance_smartdrive_coast || 0;
-        const distanceMiles = this.caseTicksToMiles(tickEnd - tickStart);
-        // update the displayed value
-        this.distanceGoalCurrentValue = distanceMiles;
-        */
-
         const maxDist = days.reduce((max, obj) => {
           const caseStart = obj.distance_smartdrive_coast_start;
           const caseEnd = obj.distance_smartdrive_coast;

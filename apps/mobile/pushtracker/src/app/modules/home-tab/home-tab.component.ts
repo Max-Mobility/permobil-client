@@ -3,25 +3,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
-import {
-  ChartFontStyle,
-  Palette,
-  PaletteEntry,
-  PointLabelStyle
-} from 'nativescript-ui-chart';
+import { ChartFontStyle, Palette, PaletteEntry, PointLabelStyle } from 'nativescript-ui-chart';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { APP_THEMES, STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
-import {
-  ActivityService,
-  LoggingService,
-  PushTrackerUserService,
-  SmartDriveUsageService
-} from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { screen } from 'tns-core-modules/platform';
-import { ActivityTabComponent } from '../activity-tab/activity-tab.component';
+import { ActivityTabComponent } from '..';
+import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
+import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 
 @Component({
   selector: 'home-tab',
@@ -128,19 +118,17 @@ export class HomeTabComponent implements OnInit {
   }
 
   updateProgress() {
-    this.coastTimeGoalMessage =
-      'Coast for ';
+    this.coastTimeGoalMessage = 'Coast for ';
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' seconds each day';
     this.distanceGoalMessage = 'Travel ';
-    this.distanceGoalValue =
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-        1
-      );
-      this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+    this.distanceGoalValue = this._updateDistanceUnit(
+      this.user.data.activity_goal_distance
+    ).toFixed(1);
+    this.distanceGoalUnit =
+      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
-        : ' miles per day');
+        : ' miles per day';
     this.distanceCirclePercentageMaxValue =
       '/' +
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
@@ -327,19 +315,17 @@ export class HomeTabComponent implements OnInit {
     }
 
     this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-    this.coastTimeGoalMessage =
-      'Coast for ';
+    this.coastTimeGoalMessage = 'Coast for ';
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' seconds each day';
     this.distanceGoalMessage = 'Travel ';
-    this.distanceGoalValue =
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-        1
-      );
+    this.distanceGoalValue = this._updateDistanceUnit(
+      this.user.data.activity_goal_distance
+    ).toFixed(1);
     this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
-        : ' miles per day');
+        : ' miles per day';
     this.distanceCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_distance;
     this.coastTimeCirclePercentageMaxValue =
@@ -356,8 +342,7 @@ export class HomeTabComponent implements OnInit {
         this.user.data.activity_goal_coast_time) *
       100;
 
-      this.coastTimeGoalMessage =
-      'Coast for ';
+    this.coastTimeGoalMessage = 'Coast for ';
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' seconds each day';
     this.distanceCirclePercentageMaxValue =
@@ -379,7 +364,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   _updateCoastTimePlotYAxis() {
-    const dateFormatted = function (date: Date) {
+    const dateFormatted = function(date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -510,26 +495,25 @@ export class HomeTabComponent implements OnInit {
       );
     }
     this.distanceGoalMessage = 'Travel ';
-    this.distanceGoalValue =
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-        1
-      );
-      this.distanceGoalUnit =
-      (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+    this.distanceGoalValue = this._updateDistanceUnit(
+      this.user.data.activity_goal_distance
+    ).toFixed(1);
+    this.distanceGoalUnit =
+      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' kilometers per day'
-        : ' miles per day');
+        : ' miles per day';
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
       this.todayCoastDistance = this._updateDistanceUnit(
         this._caseTicksToMiles(
           this._todaysUsage.distance_smartdrive_coast -
-          this._todaysUsage.distance_smartdrive_coast_start
+            this._todaysUsage.distance_smartdrive_coast_start
         ) || 0
       ).toFixed(1);
       this.todayDriveDistance = this._updateDistanceUnit(
         this._motorTicksToMiles(
           this._todaysUsage.distance_smartdrive_drive -
-          this._todaysUsage.distance_smartdrive_drive_start
+            this._todaysUsage.distance_smartdrive_drive_start
         ) || 0
       ).toFixed(1);
       this.todayOdometer = this._updateDistanceUnit(
@@ -562,7 +546,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   _updateDistancePlotYAxis() {
-    const dateFormatted = function (date: Date) {
+    const dateFormatted = function(date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -582,7 +566,7 @@ export class HomeTabComponent implements OnInit {
           const coastDistance = this._updateDistanceUnit(
             this._caseTicksToMiles(
               day.distance_smartdrive_coast -
-              day.distance_smartdrive_coast_start
+                day.distance_smartdrive_coast_start
             ) || 0
           );
           if (day.date === dateFormatted(this._currentDayInView))
@@ -634,13 +618,13 @@ export class HomeTabComponent implements OnInit {
               coastDistance: this._updateDistanceUnit(
                 this._caseTicksToMiles(
                   dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
+                    dailyUsage.distance_smartdrive_coast_start
                 ) || 0
               ),
               driveDistance: this._updateDistanceUnit(
                 this._motorTicksToMiles(
                   dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
+                    dailyUsage.distance_smartdrive_drive_start
                 ) || 0
               ),
               date: dayInWeek
