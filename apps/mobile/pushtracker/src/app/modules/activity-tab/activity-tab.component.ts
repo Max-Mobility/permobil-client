@@ -472,7 +472,8 @@ export class ActivityTabComponent implements OnInit {
     }
     this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
     this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
-    if (this.yAxisMax === 0) this.yAxisMax = 30;
+    if (this.yAxisMax === 0) this.yAxisMax = 1.0;
+    else if (this.yAxisMax < 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
@@ -586,7 +587,8 @@ export class ActivityTabComponent implements OnInit {
     }
     this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
     this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
-    if (this.yAxisMax === 0) this.yAxisMax = 30;
+    if (this.yAxisMax === 0) this.yAxisMax = 1.0;
+    else if (this.yAxisMax < 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = (this.yAxisMax / 5);
   }
 
