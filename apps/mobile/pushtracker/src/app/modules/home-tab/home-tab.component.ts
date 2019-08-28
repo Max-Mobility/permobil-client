@@ -394,7 +394,11 @@ export class HomeTabComponent implements OnInit {
       this.yAxisMax =
         this.coastTimePlotAnnotationValue +
         0.4 * this.coastTimePlotAnnotationValue;
-    this.yAxisStep = parseInt((this.yAxisMax / 3.0).toFixed());
+
+    if (this.yAxisMax > 1.0) this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
+    else if (this.yAxisMax === 0) this.yAxisMax = 1.0;
+    else if (this.yAxisMax <= 1.0) this.yAxisMax = 1.0;
+    this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
   _formatActivityForView(viewMode) {
@@ -581,7 +585,11 @@ export class HomeTabComponent implements OnInit {
       this.coastDistanceYAxisMax =
         this.distancePlotAnnotationValue +
         0.4 * this.distancePlotAnnotationValue;
-    this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 4.0;
+
+    if (this.coastDistanceYAxisMax > 1.0) this.coastDistanceYAxisMax = Math.ceil(this.coastDistanceYAxisMax / 5) * 5; // round to the nearest multiple of 5
+    else if (this.coastDistanceYAxisMax === 0) this.coastDistanceYAxisMax = 1.0;
+    else if (this.coastDistanceYAxisMax <= 1.0) this.coastDistanceYAxisMax = 1.0;
+    this.coastDistanceYAxisStep = (this.coastDistanceYAxisMax / 5.0);
   }
 
   _formatUsageForView(viewMode) {

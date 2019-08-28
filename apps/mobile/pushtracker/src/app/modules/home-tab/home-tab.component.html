@@ -83,7 +83,7 @@
 
           <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
             horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1"
-            [majorStep]="yAxisStep" labelFormat="%.1f"></LinearAxis>
+            [majorStep]="yAxisStep" [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"></LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis"
             valueProperty="coastTime"> </BarSeries>
@@ -124,7 +124,7 @@
 
           <LinearAxis tkCartesianVerticalAxis id="vAxis" [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
             horizontalLocation="Right" labelMargin="10" lineHidden="true" [maximum]="coastDistanceYAxisMax"
-            minumum="0.0" [majorStep]="coastDistanceYAxisStep" labelFormat="%.1f"></LinearAxis>
+            minumum="0.0" [majorStep]="coastDistanceYAxisStep" [labelFormat]="coastDistanceYAxisMax === 1.0 ? '%.1f' : '%.0f'"></LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity"
             categoryProperty="xAxis" valueProperty="coastDistance"> </BarSeries>
