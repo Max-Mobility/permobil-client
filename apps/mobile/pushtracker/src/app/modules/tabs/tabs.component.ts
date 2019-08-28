@@ -83,7 +83,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
     };
     this.profileTabItemForSwitchControl = {
       title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_INACTIVE,
+      iconSource: AppResourceIcons.PROFILE_ACTIVE,
       textTransform: 'capitalize'
     };
 
@@ -137,12 +137,11 @@ export class TabsComponent implements OnInit, AfterViewInit {
   }
 
   onTabLoaded(event) {
-    // if (this.rootTabView) {
-    //   const t = this.rootTabView.nativeElement as TabView;
-    //   this.rootTabViewNativeElement = t;
-    //   t.selectedIndex = 2;
-    //   console.log('Tab for PushTracker is ready!!');
-    // }
+    if (this.rootTabView) {
+      const t = this.rootTabView.nativeElement as TabView;
+      this.rootTabViewNativeElement = t;
+      console.log('Tab for PushTracker is ready!!');
+    }
   }
 
   onTabLoadedForSwitchControl(event) {
@@ -160,49 +159,50 @@ export class TabsComponent implements OnInit, AfterViewInit {
       this.user = user;
       console.log(this.user.data.control_configuration);
 
-      // if (this.rootTabViewNativeElement) {
-      //   if (!this.isConfigurationSwitchControl()) {
-      //     const t1 = this.rootTabViewNativeElement;
+      if (this.rootTabViewNativeElement) {
+        console.log(this.rootTabViewNativeElement.items);
+        // if (!this.isConfigurationSwitchControl()) {
+        //   const t1 = this.rootTabViewNativeElement;
 
-      //     const homeTabViewItem = t1.items[0];
-      //     homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
-      //     t1.items[0] = homeTabViewItem;
+        //   const homeTabViewItem = t1.items[0];
+        //   homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
+        //   t1.items[0] = homeTabViewItem;
 
-      //     const journeyTabViewItem = t1.items[1];
-      //     journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
-      //     t1.items[1] = journeyTabViewItem;
+        //   const journeyTabViewItem = t1.items[1];
+        //   journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
+        //   t1.items[1] = journeyTabViewItem;
 
-      //     const profileTabViewItem = t1.items[2];
-      //     profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
-      //     t1.items[2] = profileTabViewItem;
+        //   const profileTabViewItem = t1.items[2];
+        //   profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
+        //   t1.items[2] = profileTabViewItem;
 
-      //     console.log((t1.items[0] as TabViewItem).iconSource);
-      //     console.log((t1.items[1] as TabViewItem).iconSource);
-      //     console.log((t1.items[2] as TabViewItem).iconSource);
-      //     t1.selectedIndex = 0;
-      //     t1.notifyPropertyChange('items', t1.items);
-      //   }
-      //   else {
-      //     const t2 = this.rootTabViewNativeElement;
+        //   console.log((t1.items[0] as TabViewItem).iconSource);
+        //   console.log((t1.items[1] as TabViewItem).iconSource);
+        //   console.log((t1.items[2] as TabViewItem).iconSource);
+        //   t1.selectedIndex = 0;
+        //   t1.notifyPropertyChange('items', t1.items);
+        // }
+        // else {
+        //   const t2 = this.rootTabViewNativeElement;
 
-      //     const homeTabViewItem = t2.items[0];
-      //     homeTabViewItem.iconSource = AppResourceIcons.HOME_INACTIVE;
-      //     t2.items[0] = homeTabViewItem;
+        //   const homeTabViewItem = t2.items[0];
+        //   homeTabViewItem.iconSource = AppResourceIcons.HOME_INACTIVE;
+        //   t2.items[0] = homeTabViewItem;
 
-      //     const journeyTabViewItem = t2.items[1];
-      //     journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
-      //     t2.items[1] = journeyTabViewItem;
+        //   const journeyTabViewItem = t2.items[1];
+        //   journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
+        //   t2.items[1] = journeyTabViewItem;
 
-      //     const profileTabViewItem = t2.items[2];
-      //     profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
-      //     t2.items[2] = profileTabViewItem;
+        //   const profileTabViewItem = t2.items[2];
+        //   profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
+        //   t2.items[2] = profileTabViewItem;
 
-      //     // TODO: Somehow remove the home TabViewItem and journey TabViewItem from the TabView
+        //   // TODO: Somehow remove the home TabViewItem and journey TabViewItem from the TabView
 
-      //     t2.selectedIndex = 0;
-      //     t2.notifyPropertyChange('items', t2.items);
-      //   }
-      // }
+        //   t2.selectedIndex = 0;
+        //   t2.notifyPropertyChange('items', t2.items);
+        // }
+      }
 
       if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
         Log.D('asking for permissions');
@@ -228,55 +228,62 @@ export class TabsComponent implements OnInit, AfterViewInit {
    * @param args [SelectedIndexChangedEventData]
    */
   tabViewIndexChange(args: SelectedIndexChangedEventData) {
-    console.log('PushTracker > Tab View Index changed!!!!');
-    if (args.newIndex >= 0) {
-      switch (args.newIndex) {
-        case 0:
-          Log.D('HomeTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_ACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_INACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_INACTIVE
-          };
-          break;
-        case 1:
-          Log.D('JourneyTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_INACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_ACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_INACTIVE
-          };
-          break;
-        case 2:
-          Log.D('ProfileTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_INACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_INACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_ACTIVE
-          };
-          break;
+    if (!this.isConfigurationSwitchControl()) {
+      if (args.newIndex >= 0) {
+        switch (args.newIndex) {
+          case 0:
+            Log.D('HomeTab Active');
+            this.homeTabItem = {
+              title: this._homeTabTitle,
+              iconSource: AppResourceIcons.HOME_ACTIVE
+            };
+            this.journeyTabItem = {
+              title: this._journeyTabTitle,
+              iconSource: AppResourceIcons.JOURNEY_INACTIVE
+            };
+            this.profileTabItem = {
+              title: this._profileTabTitle,
+              iconSource: AppResourceIcons.PROFILE_INACTIVE
+            };
+            break;
+          case 1:
+            Log.D('JourneyTab Active');
+            this.homeTabItem = {
+              title: this._homeTabTitle,
+              iconSource: AppResourceIcons.HOME_INACTIVE
+            };
+            this.journeyTabItem = {
+              title: this._journeyTabTitle,
+              iconSource: AppResourceIcons.JOURNEY_ACTIVE
+            };
+            this.profileTabItem = {
+              title: this._profileTabTitle,
+              iconSource: AppResourceIcons.PROFILE_INACTIVE
+            };
+            break;
+          case 2:
+            Log.D('ProfileTab Active');
+            this.homeTabItem = {
+              title: this._homeTabTitle,
+              iconSource: AppResourceIcons.HOME_INACTIVE
+            };
+            this.journeyTabItem = {
+              title: this._journeyTabTitle,
+              iconSource: AppResourceIcons.JOURNEY_INACTIVE
+            };
+            this.profileTabItem = {
+              title: this._profileTabTitle,
+              iconSource: AppResourceIcons.PROFILE_ACTIVE
+            };
+            break;
+        }
       }
+    }
+    else {
+      this.profileTabItemForSwitchControl = {
+        title: this._profileTabTitle,
+        iconSource: AppResourceIcons.PROFILE_ACTIVE
+      };
     }
   }
 
@@ -329,8 +336,8 @@ export class TabsComponent implements OnInit, AfterViewInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -343,7 +350,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
