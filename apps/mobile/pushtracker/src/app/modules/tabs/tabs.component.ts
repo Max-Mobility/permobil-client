@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { AfterViewInit, Component, OnInit, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
+import { ActivatedRoute, Route, ChildrenOutletContexts } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log } from '@permobil/core';
@@ -11,7 +11,7 @@ import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-a
 import { isAndroid } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
+import { SelectedIndexChangedEventData, TabView, TabViewItem } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { BluetoothService, SettingsService, PushTrackerUserService } from '../../services';
@@ -26,6 +26,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
   public homeTabItem;
   public journeyTabItem;
   public profileTabItem;
+  public profileTabItemForSwitchControl;
 
   private _homeTabTitle = this._translateService.instant('home-tab.title');
   private _journeyTabTitle = this._translateService.instant(
@@ -43,6 +44,16 @@ export class TabsComponent implements OnInit, AfterViewInit {
   bluetoothAdvertised: boolean = false;
   user: PushTrackerUser;
 
+  @ViewChild('rootTabView', { static: false })
+  rootTabView: ElementRef;
+
+  rootTabViewNativeElement: TabView;
+
+  @ViewChild('rootTabViewForSwitchControl', { static: false })
+  rootTabViewForSwitchControl: ElementRef;
+
+  rootTabViewForSwitchControlNativeElement: TabView;
+
   constructor(
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
@@ -52,8 +63,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
     private _page: Page,
     private userService: PushTrackerUserService
   ) {
-    this.getUser();
-
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
@@ -75,6 +84,11 @@ export class TabsComponent implements OnInit, AfterViewInit {
       iconSource: AppResourceIcons.PROFILE_INACTIVE,
       textTransform: 'capitalize'
     };
+    this.profileTabItemForSwitchControl = {
+      title: this._profileTabTitle,
+      iconSource: AppResourceIcons.PROFILE_INACTIVE,
+      textTransform: 'capitalize'
+    };
 
     if (isAndroid) {
       this.permissionsNeeded.push(
@@ -87,28 +101,118 @@ export class TabsComponent implements OnInit, AfterViewInit {
    * PAGE LIFECYCLE EVENT MANAGEMENT
    */
   ngOnInit() {
+    console.log('Tab > on init');
     this._routerExtension.navigate(
       [
         {
           outlets: {
             homeTab: ['home'],
             journeyTab: ['journey'],
-            profileTab: ['profile']
+            profileTab: ['profile'],
+            profileTab2: ['profile']
           }
         }
       ],
       { relativeTo: this._activeRoute }
     );
+    this.getUser();
+
+    /*
+        new PageRouterOutlet(
+          parentContexts: ChildrenOutletContexts,
+          location: ViewContainerRef,
+          name: string,
+          actionBarVisibility: string,
+          isEmptyOutlet: boolean,
+          locationStrategy: NSLocationStrategy,
+          componentFactoryResolver: ComponentFactoryResolver,
+          resolver: ComponentFactoryResolver,
+          changeDetector: ChangeDetectorRef,
+          device: Device,
+          pageFactory: PageFactory,
+          routeReuseStrategy: NSRouteReuseStrategy,
+          elRef: ElementRef): PageRouterOutlet
+     */
   }
 
   ngAfterViewInit() {
     // load the device settings (sd / pt)
     this._settingsService.loadSettings();
+    console.log('Tab > After view init');
+  }
+
+  isConfigurationSwitchControl() {
+    return this.user.data.control_configuration === 'Switch Control with SmartDrive';
+  }
+
+  printpath(parent: String, config: Route[]) {
+    for (let i = 0; i < config.length; i++) {
+      const route = config[i];
+      console.log(parent + '/' + route.path);
+      if (route.children) {
+        const currentPath = route.path ? parent + '/' + route.path : parent;
+        this.printpath(currentPath, route.children);
+      }
+    }
+  }
+
+  onTabLoaded(event) {
+    if (this.rootTabView) {
+      const t = this.rootTabView.nativeElement as TabView;
+      this.rootTabViewNativeElement = t;
+      t.selectedIndex = 2;
+      console.log('Tab for PushTracker is ready!!');
+    }
+  }
+
+  onTabLoadedForSwitchControl(event) {
+    if (this.rootTabViewForSwitchControl) {
+      const t = this.rootTabViewForSwitchControl.nativeElement as TabView;
+      this.rootTabViewForSwitchControlNativeElement = t;
+      t.selectedIndex = 0;
+      console.log('Tab for Switch Control is ready!!');
+    }
   }
 
   getUser() {
     this.userService.user.subscribe(user => {
+      console.log('User updated!!!');
       this.user = user;
+      console.log(this.user.data.control_configuration);
+
+      if (this.rootTabViewNativeElement && !this.isConfigurationSwitchControl()) {
+        const t1 = this.rootTabViewNativeElement;
+
+        const homeTabViewItem = t1.items[0];
+        homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
+        t1.items[0] = homeTabViewItem;
+
+        const journeyTabViewItem = t1.items[1];
+        journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
+        t1.items[1] = journeyTabViewItem;
+
+        const profileTabViewItem = t1.items[2];
+        profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
+        t1.items[2] = profileTabViewItem;
+
+        console.log((t1.items[0] as TabViewItem).iconSource);
+        console.log((t1.items[1] as TabViewItem).iconSource);
+        console.log((t1.items[2] as TabViewItem).iconSource);
+        t1.selectedIndex = 0;
+        t1.notifyPropertyChange('items', t1.items);
+      }
+      else if (this.rootTabViewForSwitchControlNativeElement && this.isConfigurationSwitchControl()) {
+        const t2 = this.rootTabViewForSwitchControlNativeElement;
+
+        const profileTabViewItem = t2.items[0];
+        profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
+        t2.items[0] = profileTabViewItem;
+
+        console.log((t2.items[0] as TabViewItem).iconSource);
+        t2.selectedIndex = 0;
+        t2.notifyPropertyChange('items', t2.items);
+      }
+
       if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
         Log.D('asking for permissions');
         this.askForPermissions()
@@ -133,6 +237,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
    * @param args [SelectedIndexChangedEventData]
    */
   tabViewIndexChange(args: SelectedIndexChangedEventData) {
+    console.log('PushTracker > Tab View Index changed!!!!');
     if (args.newIndex >= 0) {
       switch (args.newIndex) {
         case 0:
@@ -182,6 +287,26 @@ export class TabsComponent implements OnInit, AfterViewInit {
           break;
       }
     }
+  }
+
+  tabViewIndexChangeForSwitchControl(args: SelectedIndexChangedEventData) {
+    console.log('Switch Control > Tab View Index changed!!!!');
+    this.homeTabItem = {
+      title: this._homeTabTitle,
+      iconSource: AppResourceIcons.HOME_INACTIVE
+    };
+    this.journeyTabItem = {
+      title: this._journeyTabTitle,
+      iconSource: AppResourceIcons.JOURNEY_INACTIVE
+    };
+    this.profileTabItem = {
+      title: this._profileTabTitle,
+      iconSource: AppResourceIcons.PROFILE_INACTIVE
+    };
+    this.profileTabItemForSwitchControl = {
+      title: this._profileTabTitle,
+      iconSource: AppResourceIcons.PROFILE_ACTIVE
+    };
   }
 
   private async askForPermissions() {
