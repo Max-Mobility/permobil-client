@@ -72,25 +72,44 @@ export class ActivityGoalSettingComponent implements OnInit {
   onTextFieldReturnPress(args) {
     const textField = args.object as TextField;
     // check for text to convert first, else just reset for now to avoid NaN
-    if (textField.text || textField.text !== '') {
-      this.config.value = parseFloat(textField.text);
-      this.config.value = Math.round(this.config.value * 10) / 10;
-    } else {
-      if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
-        this.config.value = this._user.data.activity_goal_coast_time;
-      } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
-        this.config.value = this._user.data.activity_goal_distance;
-      }
-
-      this.config.value = Math.round(this.config.value * 10) / 10;
-    }
+    this._validateGoalValueFromText(textField.text);
   }
 
   onTextFieldBlur(args) {
     this.onTextFieldReturnPress(args);
   }
 
+  _validateGoalValueFromText(text) {
+    if (text || text !== '') {
+
+      // Attempt to parse as float
+      this.config.value = parseFloat(text);
+
+      // If goal value is negative, discard new value and restore to original value
+      if (this.config.value < 0.0) {
+        if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
+          this.config.value = this._user.data.activity_goal_coast_time;
+        } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
+          this.config.value = this._user.data.activity_goal_distance;
+        }
+      }
+      // round to the nearest 0.1
+      this.config.value = Math.round(this.config.value * 10) / 10;
+    } else {
+
+      // Input text is invalid or empty - restore to original value
+      if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
+        this.config.value = this._user.data.activity_goal_coast_time;
+      } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
+        this.config.value = this._user.data.activity_goal_distance;
+      }
+      // round to the nearest 0.1
+      this.config.value = Math.round(this.config.value * 10) / 10;
+    }
+  }
+
   onSetGoalBtnTap() {
+    this._validateGoalValueFromText(this.config.value + '');
     this._logService.logBreadCrumb(
       'User set activity goals: ' + this.config.key + ' ' + this.config.value
     );
