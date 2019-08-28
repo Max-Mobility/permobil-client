@@ -87,7 +87,7 @@ export class ActivityTabComponent implements OnInit {
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
-  private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
 
   constructor(
     private _logService: LoggingService,
@@ -279,16 +279,16 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
+      this._debouncedLoadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
+      this._debouncedLoadWeeklyActivity();
     }
   }
 
@@ -297,16 +297,16 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
+      this._debouncedLoadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
+      this._debouncedLoadWeeklyActivity();
     }
   }
 
@@ -315,16 +315,16 @@ export class ActivityTabComponent implements OnInit {
 
     if (this.tabSelectedIndex === 0) {
       // day
-      this._debouncedLoadDailyActivity();
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
+      this._debouncedLoadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
       // week
-      this._debouncedLoadWeeklyActivity();
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
       this._calculateWeeklyActivityYAxisMax();
+      this._debouncedLoadWeeklyActivity();
     }
   }
 
@@ -488,9 +488,9 @@ export class ActivityTabComponent implements OnInit {
       }
     }
     this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
-    this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
-    if (this.yAxisMax === 0) this.yAxisMax = 1.0;
-    else if (this.yAxisMax < 1.0) this.yAxisMax = 1.0;
+    if (this.yAxisMax > 1.0) this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
+    else if (this.yAxisMax === 0) this.yAxisMax = 1.0;
+    else if (this.yAxisMax <= 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
@@ -603,9 +603,9 @@ export class ActivityTabComponent implements OnInit {
       }
     }
     this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
-    this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
-    if (this.yAxisMax === 0) this.yAxisMax = 1.0;
-    else if (this.yAxisMax < 1.0) this.yAxisMax = 1.0;
+    if (this.yAxisMax > 1.0) this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
+    else if (this.yAxisMax === 0) this.yAxisMax = 1.0;
+    else if (this.yAxisMax <= 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = (this.yAxisMax / 5);
   }
 
