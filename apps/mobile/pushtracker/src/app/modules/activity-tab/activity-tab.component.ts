@@ -471,9 +471,9 @@ export class ActivityTabComponent implements OnInit {
       }
     }
     this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
+    this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
     if (this.yAxisMax === 0) this.yAxisMax = 30;
-    if (this.yAxisMax < this.yAxisStep)
-      this.yAxisStep = (this.yAxisMax / 4.0);
+    this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
   private async _loadWeeklyActivity() {
@@ -578,14 +578,16 @@ export class ActivityTabComponent implements OnInit {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
         } else if (this.viewMode === ViewMode.DISTANCE) {
-          // TODO: calculate Y Axis max
+          if (activity['coastDistance'] > this.yAxisMax)
+            this.yAxisMax = activity['coastDistance'];
         }
         i++;
       }
     }
-    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
-    if (this.yAxisMax === 0) this.yAxisMax = 12;
-    this.yAxisStep = parseInt((this.yAxisMax / 4).toFixed());
+    this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
+    this.yAxisMax = Math.ceil(this.yAxisMax / 5) * 5; // round to the nearest multiple of 5
+    if (this.yAxisMax === 0) this.yAxisMax = 30;
+    this.yAxisStep = (this.yAxisMax / 5);
   }
 
   private _formatActivityForView(index: number) {
