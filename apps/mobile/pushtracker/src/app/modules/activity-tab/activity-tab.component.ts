@@ -470,10 +470,10 @@ export class ActivityTabComponent implements OnInit {
         i++;
       }
     }
-    this.yAxisMax = parseInt((this.yAxisMax + 0.1 * this.yAxisMax).toFixed());
+    this.yAxisMax = (this.yAxisMax + 0.1 * this.yAxisMax);
     if (this.yAxisMax === 0) this.yAxisMax = 30;
     if (this.yAxisMax < this.yAxisStep)
-      this.yAxisStep = parseInt((this.yAxisMax / 2.0).toFixed());
+      this.yAxisStep = (this.yAxisMax / 4.0);
   }
 
   private async _loadWeeklyActivity() {
@@ -641,8 +641,8 @@ export class ActivityTabComponent implements OnInit {
                   coastDistanceStart = activity.distance_smartdrive_coast_start;
                   driveDistanceStart = activity.distance_smartdrive_drive_start;
                 } else {
-                  coastDistanceStart = records[j - 1].distance_smartdrive_coast_start;
-                  driveDistanceStart = records[j - 1].distance_smartdrive_drive_start;
+                  coastDistanceStart = records[j - 1].distance_smartdrive_coast;
+                  driveDistanceStart = records[j - 1].distance_smartdrive_drive;
                 }
 
                 result.push({
