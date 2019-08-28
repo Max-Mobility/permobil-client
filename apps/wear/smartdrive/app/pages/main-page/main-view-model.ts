@@ -266,6 +266,7 @@ export class MainViewModel extends Observable {
         this.chinSize = widthPixels - heightPixels;
       }
     }
+    Log.D('chinsize:', this.chinSize);
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -273,7 +274,7 @@ export class MainViewModel extends Observable {
       this.insetPadding,
       this.insetPadding,
       this.insetPadding,
-      this.chinSize
+      0
     );
   }
 
@@ -979,8 +980,16 @@ export class MainViewModel extends Observable {
 
   updateTimeDisplay() {
     const now = new Date();
-    this.currentTime = this._format(now, 'h:mm');
-    this.currentTimeMeridiem = this._format(now, 'A');
+    const context = ad
+      .getApplicationContext();
+    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(context);
+    if (is24HourFormat) {
+      this.currentTime = this._format(now, 'HH:mm');
+      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
+    } else {
+      this.currentTime = this._format(now, 'h:mm');
+      this.currentTimeMeridiem = this._format(now, 'A');
+    }
     this.currentDay = this._format(now, 'ddd MMM D');
     this.currentYear = this._format(now, 'YYYY');
   }
