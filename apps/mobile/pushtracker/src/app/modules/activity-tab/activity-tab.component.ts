@@ -329,12 +329,14 @@ export class ActivityTabComponent implements OnInit {
   }
 
   onWeekPointSelected(event) {
-    const selectedDate = new Date(this.weekStart);
-    this.currentDayInView.setDate(
-      selectedDate.getDate() + event.pointIndex - 2
-    );
-    this._debouncedLoadDailyActivity();
-    this.tabSelectedIndex = 0;
+    if (this.user.data.control_configuration !== 'PushTracker with SmartDrive') {
+      const selectedDate = new Date(this.weekStart);
+      this.currentDayInView.setDate(
+        selectedDate.getDate() + event.pointIndex - 2
+      );
+      this._debouncedLoadDailyActivity();
+      this.tabSelectedIndex = 0;
+    }
   }
 
   onCalendarLoaded(args) {
@@ -361,12 +363,14 @@ export class ActivityTabComponent implements OnInit {
   }
 
   onCalendarDateSelected(args) {
-    const date: Date = args.date;
-    if (date <= new Date()) {
-      // If selected date is in the past or if it's today, switch to day view
-      this.currentDayInView.setMonth(date.getMonth());
-      this.currentDayInView.setDate(date.getDate());
-      this.tabSelectedIndex = 0;
+    if (this.user.data.control_configuration !== 'PushTracker with SmartDrive') {
+      const date: Date = args.date;
+      if (date <= new Date()) {
+        // If selected date is in the past or if it's today, switch to day view
+        this.currentDayInView.setMonth(date.getMonth());
+        this.currentDayInView.setDate(date.getDate());
+        this.tabSelectedIndex = 0;
+      }
     }
   }
 
