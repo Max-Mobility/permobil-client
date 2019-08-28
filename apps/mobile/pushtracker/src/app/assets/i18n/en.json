@@ -118,7 +118,7 @@
     "profile": "Profile",
     "pushes": "pushes",
     "pushtracker-connected": "PushTracker connected",
-    "pushtracker-daily-activity-unavailable": "Daily Activity tracking is not available in your current configuration. You can see hourly activity tracking with the PushTracker E2",
+    "pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration. You can see plots of hourly activity only with the PushTracker E2.",
     "pushtracker-disconnected": "PushTracker disconnected",
     "pushtracker-paired": "PushTracker paired",
     "reset-acct": "Reset Account",
