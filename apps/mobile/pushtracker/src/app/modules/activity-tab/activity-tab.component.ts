@@ -367,7 +367,7 @@ export class ActivityTabComponent implements OnInit {
     // Cache and visualize
     this._loadWeeklyActivity().then(() => {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-      const getIndex = function(date1, date2) {
+      const getIndex = function (date1, date2) {
         // date1 = Week start, date2 = current date
         const timeDiff = Math.abs(date2.getTime() - date1.getTime());
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -386,11 +386,9 @@ export class ActivityTabComponent implements OnInit {
 
       if (days) {
         if (this.viewMode === ViewMode.DISTANCE)
-          this._usageService.dailyActivity =
-            days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          this._usageService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
         else
-          this._activityService.dailyActivity =
-            days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
       } else {
         if (this.viewMode === ViewMode.DISTANCE)
           this._usageService.dailyActivity = {
@@ -435,8 +433,8 @@ export class ActivityTabComponent implements OnInit {
               this._updateDistanceUnit(
                 this._caseTicksToMiles(
                   this._usageService.dailyActivity.distance_smartdrive_coast -
-                    this._usageService.dailyActivity
-                      .distance_smartdrive_coast_start
+                  this._usageService.dailyActivity
+                    .distance_smartdrive_coast_start
                 )
               ) || 0
             ).toFixed(1) + this.distanceUnit;
@@ -492,9 +490,7 @@ export class ActivityTabComponent implements OnInit {
       if (this.viewMode === ViewMode.DISTANCE)
         didLoad = await this._usageService.loadWeeklyActivity(this.weekStart);
       else
-        didLoad = await this._activityService.loadWeeklyActivity(
-          this.weekStart
-        );
+        didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
       if (didLoad) {
         this.weeklyActivity = new ObservableArray(
           this._formatActivityForView(1)
@@ -549,7 +545,7 @@ export class ActivityTabComponent implements OnInit {
               this._updateDistanceUnit(
                 this._caseTicksToMiles(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                    cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
                 )
               ) || 0
             ).toFixed(1) + this.distanceUnit;
@@ -612,7 +608,7 @@ export class ActivityTabComponent implements OnInit {
               this._updateDistanceUnit(
                 this._caseTicksToMiles(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 )
               ) || 0
             ).toFixed(1) + this.distanceUnit;
@@ -638,6 +634,17 @@ export class ActivityTabComponent implements OnInit {
                 recordTimePoint += 0.5;
               }
               if (timePoint === recordTimePoint) {
+
+                let coastDistanceStart = 0;
+                let driveDistanceStart = 0;
+                if (j === 0) {
+                  coastDistanceStart = activity.distance_smartdrive_coast_start;
+                  driveDistanceStart = activity.distance_smartdrive_drive_start;
+                } else {
+                  coastDistanceStart = records[j - 1].distance_smartdrive_coast_start;
+                  driveDistanceStart = records[j - 1].distance_smartdrive_drive_start;
+                }
+
                 result.push({
                   xAxis: timePoint,
                   coastTime: record.coast_time_avg || 0,
@@ -646,14 +653,14 @@ export class ActivityTabComponent implements OnInit {
                     this._updateDistanceUnit(
                       this._motorTicksToMiles(
                         record.distance_smartdrive_drive -
-                          record.distance_smartdrive_drive_start
+                        driveDistanceStart
                       )
                     ) || 0,
                   coastDistance:
                     this._updateDistanceUnit(
                       this._caseTicksToMiles(
                         record.distance_smartdrive_coast -
-                          record.distance_smartdrive_coast_start
+                        coastDistanceStart
                       )
                     ) || 0
                 });
@@ -825,7 +832,7 @@ export class ActivityTabComponent implements OnInit {
             this._updateDistanceUnit(
               this._caseTicksToMiles(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               )
             ) || 0
           ).toFixed(1) + this.distanceUnit;
@@ -865,14 +872,14 @@ export class ActivityTabComponent implements OnInit {
                 this._updateDistanceUnit(
                   this._motorTicksToMiles(
                     dailyActivity.distance_smartdrive_drive -
-                      dailyActivity.distance_smartdrive_drive_start
+                    dailyActivity.distance_smartdrive_drive_start
                   )
                 ) || 0,
               coastDistance:
                 this._updateDistanceUnit(
                   this._caseTicksToMiles(
                     dailyActivity.distance_smartdrive_coast -
-                      dailyActivity.distance_smartdrive_coast_start
+                    dailyActivity.distance_smartdrive_coast_start
                   )
                 ) || 0,
               date: dayInWeek
@@ -1132,7 +1139,7 @@ export class ActivityTabComponent implements OnInit {
             this._updateDistanceUnit(
               this._caseTicksToMiles(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               )
             ) || 0
           ).toFixed(1) + this.distanceUnit;
