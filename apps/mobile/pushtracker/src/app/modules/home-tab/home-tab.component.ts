@@ -12,6 +12,7 @@ import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import debounce from 'lodash/debounce';
 
 @Component({
   selector: 'home-tab',
@@ -60,6 +61,10 @@ export class HomeTabComponent implements OnInit {
   distancePlotPalettes: ObservableArray<Palette>;
   private _progressUpdatedOnce: boolean = false;
 
+  private _debouncedLoadWeeklyActivity: any = null;
+  private _debouncedLoadWeeklyUsage: any = null;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
+
   private _currentDayInView: Date;
   private _weekStart: Date;
   private _weekEnd: Date;
@@ -93,7 +98,16 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = sunday;
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    console.log(this._weekStart, this._weekEnd);
+    this._debouncedLoadWeeklyActivity = debounce(
+      this._loadWeeklyActivity.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
+    this._debouncedLoadWeeklyUsage = debounce(
+      this._loadSmartDriveUsage.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
   }
 
   ngOnInit() {
@@ -108,8 +122,8 @@ export class HomeTabComponent implements OnInit {
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
     this.savedTheme = this.user.data.theme_preference;
-    this._loadWeeklyActivity();
-    this._loadSmartDriveUsage();
+    this._debouncedLoadWeeklyActivity();
+    this._debouncedLoadWeeklyUsage();
     this.updateProgress();
     this.updatePointLabelStyle();
     this.updatePalettes();
