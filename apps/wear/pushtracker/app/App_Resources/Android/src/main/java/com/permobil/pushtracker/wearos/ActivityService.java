@@ -584,8 +584,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     long timeDiffMs = 0;
     long now = System.currentTimeMillis();
     // check to see if the user wants to disable wear check
-    timeDiff = now - lastCheckTimeMs;
-    if (timeDiff > WEAR_CHECK_TIME_MS) {
+    timeDiffMs = now - lastCheckTimeMs;
+    if (timeDiffMs > WEAR_CHECK_TIME_MS) {
       disableWearCheck = datastore.getDisableWearCheck();
       lastCheckTimeMs = now;
     }
