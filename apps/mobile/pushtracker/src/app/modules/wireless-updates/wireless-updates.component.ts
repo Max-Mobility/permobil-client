@@ -216,6 +216,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           drives.map(drive => {
             this.smartDrive = drive;
           });
+          console.log(this.smartDrive.address, this.smartDrive.ble_version, this.smartDrive.mcu_version);
         }
       });
       bleVersion = this.smartDrive.ble_version;

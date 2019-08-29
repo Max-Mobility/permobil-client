@@ -21,11 +21,12 @@
         color="#00c1d5"
         marginRight="10" *ngIf="!smartDriveCheckedForUpdates" busy="true"></ActivityIndicator>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto" *ngIf="smartDriveCheckedForUpdates">
-        <AnimatedCircle [class]="!smartDriveUpToDate ? 'update-circle' : 'update-circle-green'" row="1" rowSpan="4" col="1" width="90%" height="90%" 
+        <AnimatedCircle class="update-circle-green" row="1" rowSpan="4" col="1" width="90%" height="90%" 
           animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" 
           [progress]="smartDriveOtaProgress"> </AnimatedCircle>
         <Button *ngFor="let action of smartDriveOtaActions; let i = index"
           [row]="i + 2" col="1" 
+          [marginTop]="i % 2 === 0 ? -30 : 30"
           class="update-button" [text]="action.label" (tap)="action.func(action)">
         </Button>
         <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 

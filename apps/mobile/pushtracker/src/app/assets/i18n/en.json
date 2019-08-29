@@ -174,12 +174,32 @@
   },
   "ota": {
     "action": {
-      "start": "Start",
       "cancel": "Cancel",
+      "force": "Force",
       "pause": "Pause",
       "resume": "Resume",
-      "force": "Force",
-      "retry": "Retry"
+      "retry": "Retry",
+      "start": "Start"
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "Waiting on BT",
+        "awaiting-connection": "Waiting for Connection",
+        "awaiting-mcu-ready": "Waiting on SD",
+        "awaiting-versions": "Waiting for Versions",
+        "canceled": "Canceled",
+        "canceling": "Canceling",
+        "comm-failure": "Communications Error - SmartDrive reboot required",
+        "complete": "Complete",
+        "failed": "Failed",
+        "not-started": "Not Started",
+        "rebooting-ble": "Rebooting BT",
+        "rebooting-mcu": "Rebooting SD",
+        "timeout": "Timeout",
+        "updating-ble": "Updating BT",
+        "updating-mcu": "Updating SD",
+        "verifying": "Verifying"
+      }
     }
   },
   "profile-settings": {
