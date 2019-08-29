@@ -575,12 +575,20 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private boolean hasAccl = false;
   private boolean hasGrav = false;
   private float[] activityDetectorData = new float[ActivityDetector.InputSize];
+  private long lastCheckTimeMs = 0;
+  private static long WEAR_CHECK_TIME_MS = 1000;
 
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
     long timeDiffMs = 0;
     long now = System.currentTimeMillis();
+    // check to see if the user wants to disable wear check
+    timeDiff = now - lastCheckTimeMs;
+    if (timeDiff > WEAR_CHECK_TIME_MS) {
+      disableWearCheck = datastore.getDisableWearCheck();
+      lastCheckTimeMs = now;
+    }
     // handle event
     updateActivity(event);
     updateDetectorInputs(event);
@@ -599,8 +607,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // do we need to send data to the app?
       timeDiffMs = now - _lastSendDataTimeMs;
       if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
-        // check to see if the user wants to disable wear check
-        disableWearCheck = datastore.getDisableWearCheck();
         // update data in datastore / shared preferences for use
         // with the complication providers and mobile app
         datastore.setData(currentActivity.push_count,

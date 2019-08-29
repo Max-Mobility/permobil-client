@@ -179,6 +179,11 @@ public class ActivityDetector {
   public void setSensitivity(int sensitivity) {
   }
 
+  private static final long LOG_TIME_MS = 1000;
+  private long lastLogTimeMs = 0;
+  private long numDetections = 0;
+  private long totalDetectionDuration = 0;
+
   /**
    * Main inference Function for detecting activity
    */
@@ -200,6 +205,18 @@ public class ActivityDetector {
     long endTime = System.nanoTime();
     long duration = (endTime - startTime);
     // Log.d(TAG, "Inference duration: " + duration);
+    // average the detection durations
+    numDetections++;
+    totalDetectionDuration += duration;
+    long now = System.currentTimeMillis();
+    long timeDiffMs = now - lastLogTimeMs;
+    if (timeDiffMs > LOG_TIME_MS) {
+      double average = (totalDetectionDuration / numDetections) / 1000000000.0;
+      Log.d(TAG, "Average inference duration: " + average);
+      numDetections = 0;
+      totalDetectionDuration = 0;
+      lastLogTimeMs = now;
+    }
     // get the prediction
     float prediction = parsedPrediction[0][0];
     // Log.d(TAG, "prediction: " + prediction);

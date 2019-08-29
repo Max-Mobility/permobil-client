@@ -143,18 +143,18 @@
 
         // Menu Page
         <wol:WearOsLayout marginBottom="{{ insetPadding }}">
-          <GridLayout rows="*,*,*,*,*" columns="*" height="100%">
-            <GridLayout row="0" rows="*, *" columns="*">
+          <StackLayout height="100%">
+            <GridLayout rows="*, *" columns="*">
               <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
               <Label text="" row="1" col="0" class="hr-blue" />
             </GridLayout>
-            <RL:Ripple row="1" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
                 <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label col="1" text="{{ L('menu.profile') }}" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-            <RL:Ripple row="3" rippleColor="#ddd">
+            <RL:Ripple rippleColor="#ddd">
               <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
                 <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
@@ -166,7 +166,7 @@
                 <Label row="0" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
-          </GridLayout>
+          </StackLayout>
         </wol:WearOsLayout>
       </StackLayout>
     </ScrollView>
