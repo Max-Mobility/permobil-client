@@ -1,7 +1,4 @@
 {
-  "wireless-updates-component": {
-    "title": "Wireless Updates"
-  },
   "actions": {
     "overwrite-local-settings": "Overwrite app's settings.",
     "overwrite-remote-settings": "Overwrite PushTracker's settings.",
@@ -142,6 +139,9 @@
     "week": "Week",
     "weight": "Weight",
     "weight-guess": "If you don't know your exact weight, enter your best guess.",
+    "wireless-updates-component": {
+      "title": "Wireless Updates"
+    },
     "drive-distance": "Drive Distance",
     "odometer": "miles",
     "miles-today": "miles today",
