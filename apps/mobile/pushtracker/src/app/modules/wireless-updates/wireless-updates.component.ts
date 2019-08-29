@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, Device } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
@@ -8,32 +8,35 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array/observab
 import { SmartDrive } from '~/app/models';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import * as appSettings from 'tns-core-modules/application-settings';
+const dialogs = require('tns-core-modules/ui/dialogs');
+import last from 'lodash/last';
+import debounce from 'lodash/debounce';
 
 @Component({
   selector: 'wireless-updates',
   moduleId: module.id,
   templateUrl: 'wireless-updates.component.html'
 })
-export class WirelessUpdatesComponent implements OnInit {
+export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ptCirclePercentage: number = 83;
   sdCirclePercentage: number = 30;
   controlConfiguration: string = '';
 
   /**
+   * SmartDrive Wireless Updates:
+   */
+  updateProgressText: string = '';
+  isUpdatingSmartDrive: boolean = false;
+  smartDriveOtaProgress: number = 0;
+  smartDriveOtaState: string = null;
+  smartDriveOtaActions = [];
+
+  /**
    * SmartDrive Data / state management
    */
   public smartDrive: SmartDrive;
-  private settings = new Device.Settings();
-  private tempSettings = new Device.Settings();
-  private switchControlSettings = new Device.SwitchControlSettings();
-  private tempSwitchControlSettings = new Device.SwitchControlSettings();
-  private hasSentSettings: boolean = false;
-  private _savedSmartDriveAddress: string = null;
-  private _ringTimerId = null;
-  private RING_TIMER_INTERVAL_MS = 500;
-  private CHARGING_WORK_PERIOD_MS = 30 * 1000;
-  private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
-  private _lastChartDay = null;
+  public smartDriveCheckedForUpdates = false;
+  private _throttledOtaAction: any = null;
 
   constructor(
     private _logService: LoggingService,
@@ -42,10 +45,14 @@ export class WirelessUpdatesComponent implements OnInit {
     private _bluetoothService: BluetoothService
   ) {
     this.controlConfiguration = _params.context.controlConfiguration || '';
+    this.checkForSmartDriveUpdates();
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
+  }
+
+  ngAfterViewInit() {
   }
 
   onMoreBtnTap() {
@@ -54,38 +61,6 @@ export class WirelessUpdatesComponent implements OnInit {
 
   closeModal() {
     this._params.closeCallback();
-  }
-
-  onStartTap(device: string) {
-    Log.D('start', device, 'update tap');
-    if (device === 'pushtracker')
-      this._startPushTrackerUpdate();
-    else if (device === 'smartdrive')
-      this._startSmartDriveUpdate();
-  }
-
-  onStopTap(device: string) {
-    Log.D('stop', device, 'update tap');
-    if (device === 'pushtracker')
-      this._stopPushTrackerUpdate();
-    else if (device === 'smartdrive')
-      this._stopSmartDriveUpdate();
-  }
-
-  private _startPushTrackerUpdate() {
-
-  }
-
-  private _stopPushTrackerUpdate() {
-
-  }
-
-  private _startSmartDriveUpdate() {
-    this.checkForSmartDriveUpdates();
-  }
-
-  private _stopSmartDriveUpdate() {
-
   }
 
   async getFirmwareData() {
@@ -226,9 +201,28 @@ export class WirelessUpdatesComponent implements OnInit {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
-      Log.E('No SmartDrive connected');
-      return;
+      await this._bluetoothService.scanForSmartDrive(10).then(() => {
+        const drives = BluetoothService.SmartDrives;
+        if (drives.length === 0) {
+          dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+          return;
+        }
+        else if (drives.length > 1) {
+          dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+          return;
+        }
+        else {
+          drives.map(drive => {
+            this.smartDrive = drive;
+          });
+        }
+      });
     }
+
+    if (!this.smartDrive)
+      return;
+
+    console.log(this.smartDrive);
 
     if (this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
       // smartdrive is already up to date
@@ -255,12 +249,75 @@ export class WirelessUpdatesComponent implements OnInit {
     // smartdrive needs to update
     let otaStatus = '';
     try {
+      this.registerForSmartDriveEvents();
       otaStatus = await this.smartDrive
         .performOTA(bleFw, mcuFw, bleVersion, mcuVersion, 300 * 1000);
     } catch (err) {
       if (this.smartDrive)
         this.smartDrive.cancelOTA();
     }
+    this.unregisterForSmartDriveEvents();
     console.log(otaStatus);
   }
+
+  registerForSmartDriveEvents() {
+    if (!this.smartDrive) return;
+    this.unregisterForSmartDriveEvents();
+    // set up ota action handler
+    // throttled function to keep people from pressing it too frequently
+    this._throttledOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
+      leading: false,
+      trailing: true
+    });
+    this.smartDrive.on(
+      SmartDrive.smartdrive_ota_status_event,
+      this.onSmartDriveOtaStatus,
+      this
+    );
+  }
+
+  unregisterForSmartDriveEvents() {
+    if (!this.smartDrive) return;
+    this.smartDrive.off(
+      SmartDrive.smartdrive_ota_status_event,
+      this.onSmartDriveOtaStatus,
+      this
+    );
+  }
+
+  onSmartDriveOtaStatus(args: any) {
+    let canSwipeDismiss = true;
+    // get the current progress of the update
+    const progress = args.data.progress;
+    // translate the state
+    const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
+    // now turn the actions into structures for our UI
+    const actions = args.data.actions.map(a => {
+      if (a.includes('cancel')) {
+        canSwipeDismiss = false;
+      }
+      const actionClass = 'action-' + last(a.split('.')) +
+        ' compact';
+      // translate the label
+      const actionLabel = this._translateService.instant(a); // .replace('ota.action.', '');
+      return {
+        label: actionLabel,
+        func: this._throttledOtaAction.bind(this.smartDrive, a),
+        action: a,
+        class: actionClass
+      };
+    });
+    // now set the renderable bound data
+    this.smartDriveOtaProgress = progress;
+    this.smartDriveOtaActions.splice(
+      0,
+      this.smartDriveOtaActions.length,
+      ...actions
+    );
+    this.smartDriveOtaState = state;
+    if (!this.smartDriveCheckedForUpdates)
+      this.smartDriveCheckedForUpdates = true;
+    // console.log(this.smartDriveOtaActions);
+  }
+
 }

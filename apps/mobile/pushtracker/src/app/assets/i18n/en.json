@@ -172,6 +172,16 @@
   "my-activity-component": {
     "title": "My Activity"
   },
+  "ota": {
+    "action": {
+      "start": "Start",
+      "cancel": "Cancel",
+      "pause": "Pause",
+      "resume": "Resume",
+      "force": "Force",
+      "retry": "Retry"
+    }
+  },
   "profile-settings": {
     "language": "Language",
     "theme": "Theme"
