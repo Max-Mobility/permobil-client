@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.tensorflow.lite.Interpreter;
@@ -70,8 +71,11 @@ public class ActivityDetector {
   /**
    * TFLite model input / output configuration
    */
-  private static final int InputSize = 9;
+  public static final int InputSize = 9;
   private static final int StateSize = 128;
+  public static final int InputGyroOffset = 0;
+  public static final int InputAcclOffset = 3;
+  public static final int InputGravOffset = 6;
   private static final int Input_StateIndex = 1;
   private static final int Input_DataIndex = 0;
   private static final int Output_StateIndex = 1;
@@ -236,6 +240,7 @@ public class ActivityDetector {
   }
 
   private void updateHistory(float[] data) {
+    Log.d(TAG, "input: " + Arrays.toString(data));
     for (int i=inputHistory.length - 1; i>0; i--) {
       inputHistory[i] = inputHistory[i-1];
     }
@@ -243,6 +248,7 @@ public class ActivityDetector {
   }
 
   private void updatePredictions(float prediction) {
+    Log.d(TAG, "prediction: " + prediction);
     for (int i=predictionHistory.length - 1; i>0; i--) {
       predictionHistory[i] = predictionHistory[i-1];
     }

@@ -41,6 +41,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,7 +78,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
   private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
   private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
-  private static final int SEND_TASK_PERIOD_MS = 1 * 60 * 1000;
+
+  private long _lastPushDataTimeMs = 0;
+  private static final int PUSH_TASK_PERIOD_MS = 1 * 60 * 1000;
 
   /**
    * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
@@ -114,15 +117,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private Sensor mLinearAcceleration;
   private Sensor mGravity;
   private Sensor mGyroscope;
-  private Sensor mHeartRate;
   private Sensor mOffBodyDetect;
 
   private KinveyApiService mKinveyApiService;
   private String mKinveyAuthorization;
-
-  private HandlerThread mHandlerThread;
-  private Handler mHandler;
-  private Runnable mSendTask;
 
   // for sending to the main app via intent
   private long _lastSendDataTimeMs = 0;
@@ -173,13 +171,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // initialize data
     loadFromDatabase();
 
-    // start up for service
-    this.mHandlerThread = new HandlerThread("com.permobil.pushtracker.wearos.thread");
-    this.mHandlerThread.start();
-    this.mHandler = new Handler(this.mHandlerThread.getLooper());
-
-    this.mSendTask = new SendRunnable();
-
     // create the retrofit instance
     Retrofit retrofit = new Retrofit.Builder()
       .baseUrl(Constants.API_BASE)
@@ -201,10 +192,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // make sure to set the serial number
     currentActivity.watch_serial_number = this.watchSerialNumber;
 
+    /*
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
     mLocationManager = (LocationManager) getApplicationContext()
       .getSystemService(Context.LOCATION_SERVICE);
+    */
     isServiceRunning = false;
   }
 
@@ -229,19 +222,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         Log.d(TAG, "starting service!");
 
         this.initSensors();
-        int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-        // register the body sensor so we get events when the user
-        // wears the watch and takes it off
-        this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+        this.registerAllSensors();
 
       } else {
         stopMyService();
       }
     }
-
-    // send message to handler / runnable to send data
-    mHandler.removeCallbacksAndMessages(null);
-    mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
 
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
@@ -277,82 +263,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     currentActivity.watch_serial_number = this.watchSerialNumber;
   }
 
-  private class SendRunnable implements Runnable {
-    @Override
-    public void run() {
-      try {
-        PushDataToKinvey();
-        // PullDataFromKinvey();
-      } catch (Exception e) {
-        Sentry.capture(e);
-        Log.e(TAG, "Exception in SendRunnable: " + e.getMessage());
-      }
-      mHandler.postDelayed(mSendTask, SEND_TASK_PERIOD_MS);
-    }
-  }
-
-  private static final float wheelCircumferenceMeters = (2.0f * 3.14159265358f * .09652f);
-  private static final float caseTicksPerRevolution = 36.0f;
-  private static final float motorTicksPerRevolution = 265.714f;
-  private float caseTicksToMeters(long ticks) {
-    float meters = wheelCircumferenceMeters * ticks / caseTicksPerRevolution;
-    return meters;
-  }
-
-  private float motorTicksToMeters(long ticks) {
-    float meters = wheelCircumferenceMeters * ticks / motorTicksPerRevolution;
-    return meters;
-  }
-
-  private void PullDataFromKinvey() {
-    Log.d(TAG, "PullDataFromKinvey()...");
-    try {
-      // set up the query parameters
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-      // get current date
-      Date now = Calendar.getInstance().getTime();
-      String nowString = simpleDateFormat.format(now);
-      int limit = 1;
-      String query = "{"+
-        "\"data_type\": \"SmartDriveDailyInfo\","+
-        "\"date\":\"" + nowString + "\"," +
-        "\"watch_serial_number\":\"" + watchSerialNumber + "\"" +
-        "}";
-      // get today's smartdrive usage data
-      Call<List<Map>> call = mKinveyApiService.getUsage(mKinveyAuthorization, query, limit);
-      call.enqueue(new Callback<List<Map>>() {
-          @Override
-          public void onResponse(Call<List<Map>> call, Response<List<Map>> response) {
-            int statusCode = response.code();
-            Log.d(TAG, "status code: " + statusCode);
-            List<Map> items = response.body();
-            Log.d(TAG, "items received: " + items);
-            if (items.size() > 0) {
-              Map data = items.get(0);
-              // compute total distance
-              double startTicks = (double)data.get("distance_smartdrive_coast_start");
-              double endTicks = (double)data.get("distance_smartdrive_coast");
-              long diffTicks = (long)(endTicks - startTicks);
-              float meters = caseTicksToMeters(diffTicks);
-              // save distance to file system (for sending to app and
-              // showing in complications)
-              currentActivity.distance_watch = meters;
-              datastore.setDistance(currentActivity.distance_watch);
-            }
-          }
-
-          @Override
-          public void onFailure(Call<List<Map>> call, Throwable t) {
-            Log.e(TAG, "get data onFailure()");
-            Sentry.capture(t);
-          }
-        });
-    } catch (Exception e) {
-      Log.e(TAG, "Exception pulling from kinvey:" + e.getMessage());
-      Sentry.capture(e);
-    }
-  }
-
   private void PushDataToKinvey() {
     Log.d(TAG, "PushDataToKinvey()...");
     // Check if the SQLite table has any records pending to be pushed
@@ -364,29 +274,41 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       try {
         // get the oldest unsent record
         DatabaseHandler.Record r = db.getRecord(true);
-        Observable.just(RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data))
-          .flatMap(x -> mKinveyApiService.sendData(mKinveyAuthorization, x, r.id))
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .unsubscribeOn(Schedulers.io())
-          .subscribe(
-                     item -> {
-                       Log.d(TAG, "item sent: " + item._id);
-                       // TODO: currently we don't delete any entries,
-                       // do we want to change that?
-                       // db.deleteRecord(item._id);
+        RequestBody body =
+          RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data);
+        Call<DailyActivity> serviceCall = mKinveyApiService.sendData(
+                                                                     mKinveyAuthorization,
+                                                                     body,
+                                                                     r.id
+                                                                     );
+        serviceCall.enqueue(new Callback<DailyActivity>() {
+            @Override
+            public void onResponse(Call<DailyActivity> call, Response<DailyActivity> response) {
+              if (response.isSuccessful()) {
+                DailyActivity item = response.body();
+                Log.d(TAG, "item sent: " + item._id);
+                // TODO: currently we don't delete any entries,
+                // do we want to change that?
+                // db.deleteRecord(item._id);
 
-                       // update the has_been_sent field for that
-                       // activity
-                       db.markRecordAsSent(item._id);
-                     },
-                     error -> {
-                       Log.e(TAG, "send data onError(): " + error);
-                       Sentry.capture(error);
-                     },
-                     () -> {
-                       Log.d(TAG, "onCompleted()");
-                     });
+                // update the has_been_sent field for that
+                // activity
+                db.markRecordAsSent(item._id);
+                if (item._id == currentActivity._id) {
+                  currentActivity.has_been_sent = true;
+                }
+              } else {
+                Log.e(TAG, "send data not successful - " +
+                      response.code() + ": " +
+                      response.message());
+              }
+            }
+            @Override
+            public void onFailure(Call<DailyActivity> call, Throwable t) {
+              Log.e(TAG, "Failed to send: " + t.getMessage());
+              Sentry.capture(t);
+            }
+          });
       } catch (Exception e) {
         Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
         Sentry.capture(e);
@@ -461,7 +383,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
             datastore.setPushes(currentActivity.push_count);
             datastore.setCoast(currentActivity.coast_time_avg);
             datastore.setDistance(currentActivity.distance_watch);
-            datastore.setHeartRate(currentActivity.heart_rate);
             // go ahead and write it to db
             db.addRecord(currentActivity);
           }
@@ -477,7 +398,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   void handleDetection(ActivityDetector.Detection detection) {
     // Log.d(TAG, "detection: " + detection);
-    if (detection.confidence != 0) {
+    if (detection.confidence > 0) {
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
         this.currentActivity.onPush(detection);
@@ -513,15 +434,25 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       }
       // remove sensor listeners
       unregisterDeviceSensors();
-      // remove handler tasks
-      mHandler.removeCallbacksAndMessages(null);
-      mHandlerThread.quitSafely();
+      // remove location listener
+      // mLocationManager.removeUpdates(this);
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
     }
 
     isServiceRunning = false;
+  }
+
+  private void registerAllSensors() {
+    int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
+    // register the body sensor so we get events when the user
+    // wears the watch and takes it off
+    this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    // turn on accelerometer sensing
+    this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void onWristCallback() {
@@ -537,20 +468,19 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                                             this
                                             );
     */
-    // turn on accelerometer sensing
     int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-    registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void offWristCallback() {
-    // turn off location sensing
-    mLocationManager.removeUpdates(this);
-    // turn off accelerometer sensing
+    // turn off activity sensors
+    unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
-    unregisterGyroscope();
+    // turn off location sensing
+    // mLocationManager.removeUpdates(this);
   }
 
   @Override
@@ -641,44 +571,50 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private boolean hasGyro = false;
   private boolean hasAccl = false;
   private boolean hasGrav = false;
-  private float[] activityDetectorData = new float[9];
-  private static final int gyroOffset = 0;
-  private static final int acclOffset = 3;
-  private static final int gravOffset = 6;
+  private float[] activityDetectorData = new float[ActivityDetector.InputSize];
 
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
+    long timeDiffMs = 0;
+    long now = System.currentTimeMillis();
+    // handle event
     updateActivity(event);
     updateDetectorInputs(event);
-    if (hasGyro && hasGrav && hasAccl) {
-      hasGyro = false;
-      hasGrav = false;
-      hasAccl = false;
-      if (isDebuggable || watchBeingWorn) {
-        // use the data to detect activities
-        ActivityDetector.Detection detection =
-          activityDetector.detectActivity(activityDetectorData, event.timestamp);
-        handleDetection(detection);
-        long now = System.currentTimeMillis();
-        long timeDiffMs = now - _lastSendDataTimeMs;
-        if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
-          // update data in datastore / shared preferences for use
-          // with the complication providers and mobile app
-          datastore.setPushes(currentActivity.push_count);
-          datastore.setCoast(currentActivity.coast_time_avg);
-          datastore.setDistance(currentActivity.distance_watch);
-          datastore.setHeartRate(currentActivity.heart_rate);
-          // update data in SQLite tables
-          db.updateRecord(currentActivity);
-          // send intent to main activity with updated data
-          sendDataToActivity(currentActivity.push_count,
-                             currentActivity.coast_time_avg,
-                             currentActivity.distance_watch,
-                             currentActivity.heart_rate);
-          _lastSendDataTimeMs = now;
-        }
+    // detect activity
+    if (canRunDetector()) {
+      clearDetectorInputs();
+      // use the data to detect activities
+      ActivityDetector.Detection detection =
+        activityDetector.detectActivity(activityDetectorData, event.timestamp);
+      handleDetection(detection);
+      // do we need to send data to the app?
+      timeDiffMs = now - _lastSendDataTimeMs;
+      if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+        // update data in datastore / shared preferences for use
+        // with the complication providers and mobile app
+        datastore.setPushes(currentActivity.push_count);
+        datastore.setCoast(currentActivity.coast_time_avg);
+        datastore.setDistance(currentActivity.distance_watch);
+        // update data in SQLite tables
+        db.updateRecord(currentActivity);
+        // send intent to main activity with updated data
+        sendDataToActivity(currentActivity.push_count,
+                           currentActivity.coast_time_avg,
+                           currentActivity.distance_watch);
+        _lastSendDataTimeMs = now;
       }
+    }
+    // do we need to send data to the backend?
+    timeDiffMs = now - _lastPushDataTimeMs;
+    if (timeDiffMs > PUSH_TASK_PERIOD_MS) {
+      try {
+        PushDataToKinvey();
+      } catch (Exception e) {
+        Sentry.capture(e);
+        Log.e(TAG, "Exception pushing data: " + e.getMessage());
+      }
+      _lastPushDataTimeMs = now;
     }
   }
 
@@ -687,22 +623,47 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // TODO Auto-generated method stub
   }
 
+  boolean canRunDetector() {
+    return hasGyro && hasAccl && hasGrav;
+  }
+
+  void clearDetectorInputs() {
+    hasGyro = false;
+    hasGrav = false;
+    hasAccl = false;
+    for (int i=0; i<ActivityDetector.InputSize; i++) {
+      activityDetectorData[i] = 0;
+    }
+  }
+
+  private static final long LOG_TIME_MS = 250;
+  private long lastLogTimeMs = 0;
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
+    boolean[] hasArray = {hasGyro, hasAccl, hasGrav};
+
+
+    long now = System.currentTimeMillis();
+    long timeDiffMs = now - lastLogTimeMs;
+    if (timeDiffMs > LOG_TIME_MS) {
+      Log.d(TAG, "sensorType: " + sensorType + " - " + Arrays.toString(hasArray));
+      lastLogTimeMs = now;
+    }
+
     if (sensorType == Sensor.TYPE_GYROSCOPE) {
       hasGyro = true;
       for (int i=0; i<3; i++) {
-        activityDetectorData[i + gyroOffset] = event.values[i];
+        activityDetectorData[i + ActivityDetector.InputGyroOffset] = event.values[i];
       }
     } else if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       hasAccl = true;
       for (int i=0; i<3; i++) {
-        activityDetectorData[i + acclOffset] = event.values[i];
+        activityDetectorData[i + ActivityDetector.InputAcclOffset] = event.values[i];
       }
     } else if (sensorType == Sensor.TYPE_GRAVITY) {
       hasGrav = true;
       for (int i=0; i<3; i++) {
-        activityDetectorData[i + gravOffset] = event.values[i];
+        activityDetectorData[i + ActivityDetector.InputGravOffset] = event.values[i];
       }
     }
   }
@@ -713,37 +674,15 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // 1.0 => device is on body, 0.0 => device is off body
       watchBeingWorn = (event.values[0] != 0.0);
       if (watchBeingWorn || isDebuggable) {
-        onWristCallback();
+        // onWristCallback();
       } else {
-        offWristCallback();
+        // offWristCallback();
       }
-    } else if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
-      // update the heart rate
-      currentActivity.heart_rate = event.values[0];
-      Log.d(TAG, "current heart rate: " + currentActivity.heart_rate);
-      // TODO: save heart rate data as a series of data if the
-      // user has asked us to track their heart rate through the
-      // app (for some period of time)
     }
   }
 
   private void initSensors() {
     mSensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
-  }
-
-  private void registerHeartRate(int delay, int reportingLatency) {
-    if (mSensorManager != null) {
-      mHeartRate = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
-      if (mHeartRate != null)
-        mSensorManager.registerListener(this, mHeartRate, delay, reportingLatency);
-    }
-  }
-
-  private void unregisterHeartRate() {
-    if (mSensorManager != null) {
-      if (mHeartRate != null)
-        mSensorManager.unregisterListener(this, mHeartRate);
-    }
   }
 
   private void registerAccelerometer(int delay, int reportingLatency) {
@@ -807,21 +746,18 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   private void unregisterDeviceSensors() {
-    // make sure we have the sensor manager for the device
+    unregisterBodySensor();
+    unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
-    unregisterGyroscope();
-    unregisterBodySensor();
-    unregisterHeartRate();
   }
 
-  private void sendDataToActivity(int pushes, float coast, float distance, float heartRate) {
+  private void sendDataToActivity(int pushes, float coast, float distance) {
     Intent intent = new Intent(Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY);
     // You can also include some extra data.
     intent.putExtra(Constants.ACTIVITY_SERVICE_PUSHES, pushes);
     intent.putExtra(Constants.ACTIVITY_SERVICE_COAST, coast);
     intent.putExtra(Constants.ACTIVITY_SERVICE_DISTANCE, distance);
-    intent.putExtra(Constants.ACTIVITY_SERVICE_HEART_RATE, heartRate);
     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
   }
 

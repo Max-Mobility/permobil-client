@@ -412,11 +412,7 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
-    const heartRate = intent.getFloatExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
-      0
-    );
-    Log.D('Got service data', pushes, coast, heartRate);
+    Log.D('Got service data', pushes, coast);
     this.currentPushCount = pushes;
     this.coastGoalCurrentValue = coast;
     this.updateDisplay();
