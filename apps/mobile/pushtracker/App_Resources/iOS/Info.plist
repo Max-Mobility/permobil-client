@@ -45,6 +45,8 @@
 			<string>UIInterfaceOrientationLandscapeLeft</string>
 			<string>UIInterfaceOrientationLandscapeRight</string>
 		</array>
+		<key>NSCameraUsageDescription</key>
+		<string>PushTracker uses your camera to scan the barcodes of SmartDrives and PushTrackers.</string>
 		<key>NSBluetoothPeripheralUsageDescription</key>
 		<string>PushTracker uses background bluetooth modes when performing wireless updates of devices and your app has been suspended.</string>
 		<key>UIBackgroundModes</key>
