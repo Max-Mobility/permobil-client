@@ -86,7 +86,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       Gson gson = new Gson();
       String dataAsJSON = gson.toJson(data);
       values.put(KEY_UUID, data._id);
-      values.put(KEY_HAS_BEEN_SENT, data.has_been_sent);
+      int has_been_sent = data.has_been_sent ? 1 : 0;
+      values.put(KEY_HAS_BEEN_SENT, has_been_sent);
       values.put(KEY_DATE, data.date);
       values.put(KEY_DATA, dataAsJSON);
       db.insert(TABLE_NAME, null, values);
@@ -124,12 +125,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     try {
       Gson gson = new Gson();
       String dataAsJSON = gson.toJson(data);
-      values.put(KEY_HAS_BEEN_SENT, data.has_been_sent);
+      int has_been_sent = data.has_been_sent ? 1 : 0;
+      values.put(KEY_HAS_BEEN_SENT, has_been_sent);
       values.put(KEY_DATA, dataAsJSON);
       String whereString = KEY_UUID + "=\"" + data._id + "\"";
       String[] whereArgs = {};
       db.update(TABLE_NAME, values, whereString, whereArgs);
-      Log.d(TAG, "Updating RECORD in SQL Table: " + data._id + " - " + dataAsJSON);
+      Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
       Sentry.capture(e);
