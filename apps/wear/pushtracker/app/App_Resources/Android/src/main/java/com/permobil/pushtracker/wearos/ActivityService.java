@@ -584,6 +584,10 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     updateDetectorInputs(event);
     // detect activity
     if (canRunDetector()) {
+      // reset flags for running detector
+      hasGyro = false;
+      hasGrav = false;
+      hasAccl = false;
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
@@ -630,9 +634,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   void clearDetectorInputs() {
-    hasGyro = false;
-    hasGrav = false;
-    hasAccl = false;
     for (int i=0; i<ActivityDetector.InputSize; i++) {
       activityDetectorData[i] = 0;
     }
@@ -641,7 +642,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private long numGrav = 0;
   private long numGyro = 0;
   private long numAccl = 0;
-  private static final long LOG_TIME_MS = 250;
+  private static final long LOG_TIME_MS = 1000;
   private long lastLogTimeMs = 0;
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
