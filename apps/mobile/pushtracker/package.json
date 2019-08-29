@@ -6,6 +6,9 @@
     },
     "tns-ios": {
       "version": "6.0.2"
+    },
+    "tns-android": {
+      "version": "6.0.2"
     }
   },
   "dependencies": {
