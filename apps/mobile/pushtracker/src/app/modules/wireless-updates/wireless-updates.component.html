@@ -1,10 +1,11 @@
 <GridLayout rows="auto, *" class="wireless-updates-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="true" [backNavIcon]="1" [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="true" 
+   [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
 
   <FlexboxLayout row="1" height="100%" width="80%" flexDirection="column">
     // PushTracker
-    <StackLayout class="update-stack-layout" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
+    <StackLayout marginTop="30" class="update-stack-layout" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
       <Label class="update-label" text="PushTracker"></Label>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
         <AnimatedCircle class="update-circle" row="1" rowSpan="4" col="1" width="90%" height="90%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="ptCirclePercentage"> </AnimatedCircle>
@@ -17,7 +18,7 @@
     <StackLayout class="hr-light"></StackLayout>
 
     // SmartDrive
-    <StackLayout marginTop="10" class="update-stack-layout">
+    <StackLayout marginTop="30" class="update-stack-layout">
       <Label class="update-label" row="0" text="SmartDrive"></Label>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
         <AnimatedCircle class="update-circle" row="1" rowSpan="4" col="1" width="90%" height="90%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="sdCirclePercentage"> </AnimatedCircle>
