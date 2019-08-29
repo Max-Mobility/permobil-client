@@ -6,6 +6,8 @@
 		<string>en</string>
 		<key>CFBundleDisplayName</key>
 		<string>PushTracker</string>
+		<key>CFBundleIdentifier</key>
+		<string>com.max-mobility.PushTracker</string>
 		<key>CFBundleExecutable</key>
 		<string>${EXECUTABLE_NAME}</string>
 		<key>CFBundleInfoDictionaryVersion</key>
