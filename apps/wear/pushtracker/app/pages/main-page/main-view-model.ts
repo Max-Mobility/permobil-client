@@ -412,11 +412,7 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
-    const heartRate = intent.getFloatExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_HEART_RATE,
-      0
-    );
-    Log.D('Got service data', pushes, coast, heartRate);
+    Log.D('Got service data', pushes, coast);
     this.currentPushCount = pushes;
     this.coastGoalCurrentValue = coast;
     this.updateDisplay();
@@ -696,6 +692,11 @@ export class MainViewModel extends Observable {
     });
   }
 
+  onConnectPushTrackerTap() {
+    // TODO: flesh this out to show UI and connect to PushTracker
+    // Mobile App to receive credentials.
+  }
+
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     const timeReceiverCallback = (androidContext, intent) => {
@@ -842,6 +843,17 @@ export class MainViewModel extends Observable {
         translationKey = 'settings.weight.units.' + this.tempSettings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
+      case 'wearcheck':
+        if (this.disableWearCheck) {
+          this.changeSettingKeyValue = L(
+            'settings.watch-required.values.disabled'
+          );
+        } else {
+          this.changeSettingKeyValue = L(
+            'settings.watch-required.values.enabled'
+          );
+        }
+        break;
       default:
         break;
     }
@@ -910,11 +922,17 @@ export class MainViewModel extends Observable {
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);
+    if (this.activeSettingToChange === 'wearcheck') {
+      this.disableWearCheck = !this.disableWearCheck;
+    }
     this.updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
+    if (this.activeSettingToChange === 'wearcheck') {
+      this.disableWearCheck = !this.disableWearCheck;
+    }
     this.updateSettingsChangeDisplay();
   }
 
@@ -934,9 +952,28 @@ export class MainViewModel extends Observable {
     );
     this.hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
+
+    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    this.disableWearCheck = sharedPreferences.getBoolean(
+      prefix + com.permobil.pushtracker.wearos.Datastore.DISABLE_WEAR_CHECK_KEY,
+      false
+    );
   }
 
   saveSettings() {
+    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const editor = sharedPreferences.edit();
+    editor.putBoolean(
+      prefix + com.permobil.pushtracker.wearos.Datastore.DISABLE_WEAR_CHECK_KEY,
+      this.disableWearCheck
+    );
+    editor.commit();
     appSettings.setBoolean(
       DataKeys.PROFILE_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings

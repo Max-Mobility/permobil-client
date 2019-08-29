@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.tensorflow.lite.Interpreter;
@@ -44,7 +45,7 @@ public class ActivityDetector {
 
   private static final String TAG = "ActivityDetector";
 
-  private static final int LOCKOUT_TIME_MS = 200;
+  private static final int LOCKOUT_TIME_MS = 350;
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
   public float predictionThreshold = 0.8f; // confidence
@@ -70,8 +71,11 @@ public class ActivityDetector {
   /**
    * TFLite model input / output configuration
    */
-  private static final int InputSize = 9;
+  public static final int InputSize = 9;
   private static final int StateSize = 128;
+  public static final int InputGyroOffset = 0;
+  public static final int InputAcclOffset = 3;
+  public static final int InputGravOffset = 6;
   private static final int Input_StateIndex = 1;
   private static final int Input_DataIndex = 0;
   private static final int Output_StateIndex = 1;
@@ -175,6 +179,11 @@ public class ActivityDetector {
   public void setSensitivity(int sensitivity) {
   }
 
+  private static final long LOG_TIME_MS = 1000;
+  private long lastLogTimeMs = 0;
+  private long numDetections = 0;
+  private long totalDetectionDuration = 0;
+
   /**
    * Main inference Function for detecting activity
    */
@@ -182,10 +191,12 @@ public class ActivityDetector {
     if (!properlyConfigured) {
       return new Detection();
     }
+    // Log.d(TAG, "data: " + Arrays.toString(data));
     // copy the data into our input buffer
     for (int i=0; i<InputSize; i++) {
       inputData[0][i] = data[i];
     }
+    // Log.d(TAG, "input: " + Arrays.deepToString(inputData));
     // update the input history
     updateHistory(data);
     // run the inference
@@ -194,8 +205,23 @@ public class ActivityDetector {
     long endTime = System.nanoTime();
     long duration = (endTime - startTime);
     // Log.d(TAG, "Inference duration: " + duration);
+    /*
+    // average the detection durations
+    numDetections++;
+    totalDetectionDuration += duration;
+    long now = System.currentTimeMillis();
+    long timeDiffMs = now - lastLogTimeMs;
+    if (timeDiffMs > LOG_TIME_MS) {
+      double average = (totalDetectionDuration / numDetections) / 1000000000.0;
+      Log.d(TAG, "Average inference duration: " + average);
+      numDetections = 0;
+      totalDetectionDuration = 0;
+      lastLogTimeMs = now;
+    }
+    */
     // get the prediction
     float prediction = parsedPrediction[0][0];
+    // Log.d(TAG, "prediction: " + prediction);
     // update the prediction history
     updatePredictions(prediction);
     // determine the activity
@@ -236,6 +262,8 @@ public class ActivityDetector {
   }
 
   private void updateHistory(float[] data) {
+    // TODO: this function doesn't work - since this is an array of
+    // arrays
     for (int i=inputHistory.length - 1; i>0; i--) {
       inputHistory[i] = inputHistory[i-1];
     }

@@ -8,6 +8,7 @@ import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
@@ -211,7 +212,7 @@ export class MainViewModel extends Observable {
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
   private _kinveyService: KinveyService;
-  private _throttledOtaAction: any = null;
+  private _debouncedOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
@@ -641,8 +642,8 @@ export class MainViewModel extends Observable {
   registerForSmartDriveEvents() {
     this.unregisterForSmartDriveEvents();
     // set up ota action handler
-    // throttled function to keep people from pressing it too frequently
-    this._throttledOtaAction = throttle(this.smartDrive.onOTAActionTap, 500, {
+    // debounced function to keep people from pressing it too frequently
+    this._debouncedOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
       leading: true,
       trailing: false
     });
@@ -1375,7 +1376,7 @@ export class MainViewModel extends Observable {
       const actionLabel = L(a); // .replace('ota.action.', '');
       return {
         label: actionLabel,
-        func: this._throttledOtaAction.bind(this.smartDrive, a),
+        func: this._debouncedOtaAction.bind(this.smartDrive, a),
         action: a,
         class: actionClass
       };
