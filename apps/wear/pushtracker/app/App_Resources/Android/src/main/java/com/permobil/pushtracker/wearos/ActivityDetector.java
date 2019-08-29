@@ -205,6 +205,7 @@ public class ActivityDetector {
     long endTime = System.nanoTime();
     long duration = (endTime - startTime);
     // Log.d(TAG, "Inference duration: " + duration);
+    /*
     // average the detection durations
     numDetections++;
     totalDetectionDuration += duration;
@@ -217,6 +218,7 @@ public class ActivityDetector {
       totalDetectionDuration = 0;
       lastLogTimeMs = now;
     }
+    */
     // get the prediction
     float prediction = parsedPrediction[0][0];
     // Log.d(TAG, "prediction: " + prediction);
