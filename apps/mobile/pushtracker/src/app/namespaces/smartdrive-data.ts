@@ -321,7 +321,7 @@ export namespace SmartDriveData {
           if (progressCallback && typeof progressCallback === 'function') {
             progressCallback(f, progressData);
           } else {
-            console.log('url progress', progressData, url);
+            // console.log('url progress', progressData, url);
           }
         })
         .then((completed: DownloadEventData) => {
