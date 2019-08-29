@@ -1,0 +1,35 @@
+@import '../variables';
+
+.WIRELESS_UPDATES_LAYOUT_BASE {
+    .UPDATE_LABEL_BASE {
+        font-size: 16px;
+        font-family: $os;
+        margin-left: 5;
+        padding: 4;
+        vertical-align: center;
+    }
+    
+    .UPDATE_STACK_LAYOUT_BASE {
+        width: 90%;
+    }
+
+    .UPDATE_BTN_BASE {
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: capitalize;
+        margin: 2 4 2 4;
+        padding: 4;
+        border-radius: 3;
+        width: 200px;
+        height: 90px;
+    }
+
+    .UPDATE_CIRCLE_BASE {
+        background-color: transparent;
+        fill-color: transparent;
+    }
+
+    .UPDATE_STATUS_LABEL_BASE {
+        font-size: 12px;
+    }
+}
