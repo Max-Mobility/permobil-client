@@ -45,7 +45,7 @@ public class ActivityDetector {
 
   private static final String TAG = "ActivityDetector";
 
-  private static final int LOCKOUT_TIME_MS = 200;
+  private static final int LOCKOUT_TIME_MS = 350;
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
   public float predictionThreshold = 0.8f; // confidence

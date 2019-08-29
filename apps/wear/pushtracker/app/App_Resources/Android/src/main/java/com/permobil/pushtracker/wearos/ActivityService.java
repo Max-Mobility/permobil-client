@@ -646,15 +646,16 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private long lastLogTimeMs = 0;
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
-    long[] numArray = {numGyro, numAccl, numGrav};
 
-
+    /*
     long now = System.currentTimeMillis();
     long timeDiffMs = now - lastLogTimeMs;
     if (timeDiffMs > LOG_TIME_MS) {
+      long[] numArray = {numGyro, numAccl, numGrav};
       Log.d(TAG, "numArray: " + Arrays.toString(numArray));
       lastLogTimeMs = now;
     }
+    */
 
     if (sensorType == Sensor.TYPE_GYROSCOPE) {
       numGyro++;
