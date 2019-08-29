@@ -36,6 +36,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
    */
   public smartDrive: SmartDrive;
   public smartDriveCheckedForUpdates = false;
+  public smartDriveUpToDate = false;
   private _throttledOtaAction: any = null;
 
   constructor(
@@ -197,8 +198,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   async performSmartDriveWirelessUpdate() {
     // do we need to update? - check against smartdrive version
-    const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
-    const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
+    let bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
+    let mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
       await this._bluetoothService.scanForSmartDrive(10).then(() => {
@@ -217,17 +218,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           });
         }
       });
+      bleVersion = this.smartDrive.ble_version;
+      mcuVersion = this.smartDrive.mcu_version;
     }
 
     if (!this.smartDrive)
       return;
 
-    console.log(this.smartDrive);
-
     if (this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
       // smartdrive is already up to date
+      this.smartDriveOtaProgress = 100;
+      this.smartDriveCheckedForUpdates = true;
+      this.smartDriveUpToDate = true;
       return;
     }
+
+    this.smartDriveUpToDate = false;
+
     // the smartdrive is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
     // this.smartDriveOtaProgress = 0;
@@ -257,7 +264,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.smartDrive.cancelOTA();
     }
     this.unregisterForSmartDriveEvents();
-    console.log(otaStatus);
   }
 
   registerForSmartDriveEvents() {
@@ -319,5 +325,4 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.smartDriveCheckedForUpdates = true;
     // console.log(this.smartDriveOtaActions);
   }
-
 }

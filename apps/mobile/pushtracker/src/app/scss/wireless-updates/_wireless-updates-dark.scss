@@ -27,6 +27,12 @@
         rim-color: $dark-custom-dialog-layout-black;
     }
 
+    .update-circle-green {
+        @extend .UPDATE_CIRCLE_BASE;
+        bar-color: $green;
+        rim-color: $dark-custom-dialog-layout-black;
+    }
+
     .update-status-label {
         @extend .UPDATE_STATUS_LABEL_BASE;
         text-align: center;

@@ -27,6 +27,12 @@
         rim-color: $grey;
     }
 
+    .update-circle-green {
+        @extend .UPDATE_CIRCLE_BASE;
+        bar-color: $green;
+        rim-color: $grey;
+    }
+
     .update-status-label {
         @extend .UPDATE_STATUS_LABEL_BASE;
         text-align: center;
