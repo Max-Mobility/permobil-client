@@ -583,11 +583,12 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     updateDetectorInputs(event);
     // detect activity
     if (canRunDetector()) {
-      clearDetectorInputs();
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
       handleDetection(detection);
+      // reset the data
+      clearDetectorInputs();
       // do we need to send data to the app?
       timeDiffMs = now - _lastSendDataTimeMs;
       if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
