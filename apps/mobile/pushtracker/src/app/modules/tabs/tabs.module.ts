@@ -37,12 +37,6 @@ import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
             outlet: 'profileTab',
             component: NSEmptyOutletComponent,
             loadChildren: '../profile-tab/profile-tab.module#ProfileTabModule'
-          },
-          {
-            path: 'profile',
-            outlet: 'profileTab2',
-            component: NSEmptyOutletComponent,
-            loadChildren: '../profile-tab/profile-tab.module#ProfileTabModule'
           }
         ]
       }

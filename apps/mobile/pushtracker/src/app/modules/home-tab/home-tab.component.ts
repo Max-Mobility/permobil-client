@@ -69,6 +69,7 @@ export class HomeTabComponent implements OnInit {
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
+  private _firstLoad: boolean = true;
 
   public goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
     { xAxis: '        ', coastTime: 5, impact: 7 }
@@ -122,8 +123,15 @@ export class HomeTabComponent implements OnInit {
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
     this.savedTheme = this.user.data.theme_preference;
-    this._debouncedLoadWeeklyActivity();
-    this._debouncedLoadWeeklyUsage();
+    if (this._firstLoad) {
+      this._loadWeeklyActivity();
+      this._loadSmartDriveUsage();
+      this._firstLoad = false;
+    }
+    else {
+      this._debouncedLoadWeeklyActivity();
+      this._debouncedLoadWeeklyUsage();
+    }
     this.updateProgress();
     this.updatePointLabelStyle();
     this.updatePalettes();

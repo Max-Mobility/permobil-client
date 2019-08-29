@@ -25,7 +25,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
   public homeTabItem;
   public journeyTabItem;
   public profileTabItem;
-  public profileTabItemForSwitchControl;
 
   private _homeTabTitle = this._translateService.instant('home-tab.title');
   private _journeyTabTitle = this._translateService.instant(
@@ -42,14 +41,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
 
   bluetoothAdvertised: boolean = false;
   user: PushTrackerUser;
-
-  @ViewChild('rootTabView', { static: false })
-  rootTabView: ElementRef;
-  rootTabViewNativeElement: TabView;
-
-  @ViewChild('rootTabViewForSwitchControl', { static: false })
-  rootTabViewForSwitchControl: ElementRef;
-  rootTabViewForSwitchControlNativeElement: TabView;
 
   constructor(
     private _translateService: TranslateService,
@@ -81,11 +72,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
       iconSource: AppResourceIcons.PROFILE_INACTIVE,
       textTransform: 'capitalize'
     };
-    this.profileTabItemForSwitchControl = {
-      title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_ACTIVE,
-      textTransform: 'capitalize'
-    };
 
     if (isAndroid) {
       this.permissionsNeeded.push(
@@ -98,15 +84,13 @@ export class TabsComponent implements OnInit, AfterViewInit {
    * PAGE LIFECYCLE EVENT MANAGEMENT
    */
   ngOnInit() {
-    console.log('Tab > on init');
     this._routerExtension.navigate(
       [
         {
           outlets: {
             homeTab: ['home'],
             journeyTab: ['journey'],
-            profileTab: ['profile'],
-            profileTab2: ['profile']
+            profileTab: ['profile']
           }
         }
       ],
@@ -118,92 +102,11 @@ export class TabsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // load the device settings (sd / pt)
     this._settingsService.loadSettings();
-    console.log('Tab > After view init');
-  }
-
-  isConfigurationSwitchControl() {
-    return this.user.data.control_configuration === 'Switch Control with SmartDrive';
-  }
-
-  printpath(parent: String, config: Route[]) {
-    for (let i = 0; i < config.length; i++) {
-      const route = config[i];
-      console.log(parent + '/' + route.path);
-      if (route.children) {
-        const currentPath = route.path ? parent + '/' + route.path : parent;
-        this.printpath(currentPath, route.children);
-      }
-    }
-  }
-
-  onTabLoaded(event) {
-    if (this.rootTabView) {
-      const t = this.rootTabView.nativeElement as TabView;
-      this.rootTabViewNativeElement = t;
-      console.log('Tab for PushTracker is ready!!');
-    }
-  }
-
-  onTabLoadedForSwitchControl(event) {
-    // if (this.rootTabViewForSwitchControl) {
-    //   const t = this.rootTabViewForSwitchControl.nativeElement as TabView;
-    //   this.rootTabViewForSwitchControlNativeElement = t;
-    //   t.selectedIndex = 0;
-    //   console.log('Tab for Switch Control is ready!!');
-    // }
   }
 
   getUser() {
     this.userService.user.subscribe(user => {
-      console.log('User updated!!!');
       this.user = user;
-      console.log(this.user.data.control_configuration);
-
-      if (this.rootTabViewNativeElement) {
-        console.log(this.rootTabViewNativeElement.items);
-        // if (!this.isConfigurationSwitchControl()) {
-        //   const t1 = this.rootTabViewNativeElement;
-
-        //   const homeTabViewItem = t1.items[0];
-        //   homeTabViewItem.iconSource = AppResourceIcons.HOME_ACTIVE;
-        //   t1.items[0] = homeTabViewItem;
-
-        //   const journeyTabViewItem = t1.items[1];
-        //   journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
-        //   t1.items[1] = journeyTabViewItem;
-
-        //   const profileTabViewItem = t1.items[2];
-        //   profileTabViewItem.iconSource = AppResourceIcons.PROFILE_INACTIVE;
-        //   t1.items[2] = profileTabViewItem;
-
-        //   console.log((t1.items[0] as TabViewItem).iconSource);
-        //   console.log((t1.items[1] as TabViewItem).iconSource);
-        //   console.log((t1.items[2] as TabViewItem).iconSource);
-        //   t1.selectedIndex = 0;
-        //   t1.notifyPropertyChange('items', t1.items);
-        // }
-        // else {
-        //   const t2 = this.rootTabViewNativeElement;
-
-        //   const homeTabViewItem = t2.items[0];
-        //   homeTabViewItem.iconSource = AppResourceIcons.HOME_INACTIVE;
-        //   t2.items[0] = homeTabViewItem;
-
-        //   const journeyTabViewItem = t2.items[1];
-        //   journeyTabViewItem.iconSource = AppResourceIcons.JOURNEY_INACTIVE;
-        //   t2.items[1] = journeyTabViewItem;
-
-        //   const profileTabViewItem = t2.items[2];
-        //   profileTabViewItem.iconSource = AppResourceIcons.PROFILE_ACTIVE;
-        //   t2.items[2] = profileTabViewItem;
-
-        //   // TODO: Somehow remove the home TabViewItem and journey TabViewItem from the TabView
-
-        //   t2.selectedIndex = 0;
-        //   t2.notifyPropertyChange('items', t2.items);
-        // }
-      }
-
       if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
         Log.D('asking for permissions');
         this.askForPermissions()
@@ -228,83 +131,55 @@ export class TabsComponent implements OnInit, AfterViewInit {
    * @param args [SelectedIndexChangedEventData]
    */
   tabViewIndexChange(args: SelectedIndexChangedEventData) {
-    if (!this.isConfigurationSwitchControl()) {
-      if (args.newIndex >= 0) {
-        switch (args.newIndex) {
-          case 0:
-            Log.D('HomeTab Active');
-            this.homeTabItem = {
-              title: this._homeTabTitle,
-              iconSource: AppResourceIcons.HOME_ACTIVE
-            };
-            this.journeyTabItem = {
-              title: this._journeyTabTitle,
-              iconSource: AppResourceIcons.JOURNEY_INACTIVE
-            };
-            this.profileTabItem = {
-              title: this._profileTabTitle,
-              iconSource: AppResourceIcons.PROFILE_INACTIVE
-            };
-            break;
-          case 1:
-            Log.D('JourneyTab Active');
-            this.homeTabItem = {
-              title: this._homeTabTitle,
-              iconSource: AppResourceIcons.HOME_INACTIVE
-            };
-            this.journeyTabItem = {
-              title: this._journeyTabTitle,
-              iconSource: AppResourceIcons.JOURNEY_ACTIVE
-            };
-            this.profileTabItem = {
-              title: this._profileTabTitle,
-              iconSource: AppResourceIcons.PROFILE_INACTIVE
-            };
-            break;
-          case 2:
-            Log.D('ProfileTab Active');
-            this.homeTabItem = {
-              title: this._homeTabTitle,
-              iconSource: AppResourceIcons.HOME_INACTIVE
-            };
-            this.journeyTabItem = {
-              title: this._journeyTabTitle,
-              iconSource: AppResourceIcons.JOURNEY_INACTIVE
-            };
-            this.profileTabItem = {
-              title: this._profileTabTitle,
-              iconSource: AppResourceIcons.PROFILE_ACTIVE
-            };
-            break;
-        }
+    if (args.newIndex >= 0) {
+      switch (args.newIndex) {
+        case 0:
+          Log.D('HomeTab Active');
+          this.homeTabItem = {
+            title: this._homeTabTitle,
+            iconSource: AppResourceIcons.HOME_ACTIVE
+          };
+          this.journeyTabItem = {
+            title: this._journeyTabTitle,
+            iconSource: AppResourceIcons.JOURNEY_INACTIVE
+          };
+          this.profileTabItem = {
+            title: this._profileTabTitle,
+            iconSource: AppResourceIcons.PROFILE_INACTIVE
+          };
+          break;
+        case 1:
+          Log.D('JourneyTab Active');
+          this.homeTabItem = {
+            title: this._homeTabTitle,
+            iconSource: AppResourceIcons.HOME_INACTIVE
+          };
+          this.journeyTabItem = {
+            title: this._journeyTabTitle,
+            iconSource: AppResourceIcons.JOURNEY_ACTIVE
+          };
+          this.profileTabItem = {
+            title: this._profileTabTitle,
+            iconSource: AppResourceIcons.PROFILE_INACTIVE
+          };
+          break;
+        case 2:
+          Log.D('ProfileTab Active');
+          this.homeTabItem = {
+            title: this._homeTabTitle,
+            iconSource: AppResourceIcons.HOME_INACTIVE
+          };
+          this.journeyTabItem = {
+            title: this._journeyTabTitle,
+            iconSource: AppResourceIcons.JOURNEY_INACTIVE
+          };
+          this.profileTabItem = {
+            title: this._profileTabTitle,
+            iconSource: AppResourceIcons.PROFILE_ACTIVE
+          };
+          break;
       }
     }
-    else {
-      this.profileTabItemForSwitchControl = {
-        title: this._profileTabTitle,
-        iconSource: AppResourceIcons.PROFILE_ACTIVE
-      };
-    }
-  }
-
-  tabViewIndexChangeForSwitchControl(args: SelectedIndexChangedEventData) {
-    console.log('Switch Control > Tab View Index changed!!!!');
-    this.homeTabItem = {
-      title: this._homeTabTitle,
-      iconSource: AppResourceIcons.HOME_INACTIVE
-    };
-    this.journeyTabItem = {
-      title: this._journeyTabTitle,
-      iconSource: AppResourceIcons.JOURNEY_INACTIVE
-    };
-    this.profileTabItem = {
-      title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_INACTIVE
-    };
-    this.profileTabItemForSwitchControl = {
-      title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_ACTIVE
-    };
   }
 
   private async askForPermissions() {
