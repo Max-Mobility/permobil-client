@@ -18,7 +18,6 @@
     <StackLayout marginTop="30" class="update-stack-layout">
       <Label class="update-label" row="0" text="SmartDrive"></Label>
       <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="30%" width="30%" 
-        color="#00c1d5"
         marginRight="10" *ngIf="!smartDriveCheckedForUpdates" busy="true"></ActivityIndicator>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto" *ngIf="smartDriveCheckedForUpdates">
         <AnimatedCircle class="update-circle-green" row="1" rowSpan="4" col="1" width="90%" height="90%" 
@@ -29,7 +28,7 @@
           [marginTop]="i % 2 === 0 ? -30 : 30"
           class="update-button" [text]="action.label" (tap)="action.func(action)">
         </Button>
-        <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 
+        <Label row="3" marginTop="-10" col="1" width="50%" textWrap="true" 
           *ngIf="!smartDriveUpToDate" class="update-status-label" [text]="smartDriveOtaState"></Label>
         <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 
           *ngIf="smartDriveUpToDate" class="update-status-label" text="Your SmartDrive is up to date"></Label>

@@ -273,7 +273,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // set up ota action handler
     // throttled function to keep people from pressing it too frequently
     this._throttledOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
-      leading: false,
+      leading: true,
       trailing: true
     });
     this.smartDrive.on(
