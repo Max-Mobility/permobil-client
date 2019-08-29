@@ -186,10 +186,12 @@ public class ActivityDetector {
     if (!properlyConfigured) {
       return new Detection();
     }
+    Log.d(TAG, "data: " + Arrays.toString(data));
     // copy the data into our input buffer
     for (int i=0; i<InputSize; i++) {
       inputData[0][i] = data[i];
     }
+    Log.d(TAG, "input: " + Arrays.deepToString(inputData));
     // update the input history
     updateHistory(data);
     // run the inference
@@ -200,6 +202,7 @@ public class ActivityDetector {
     // Log.d(TAG, "Inference duration: " + duration);
     // get the prediction
     float prediction = parsedPrediction[0][0];
+    Log.d(TAG, "prediction: " + prediction);
     // update the prediction history
     updatePredictions(prediction);
     // determine the activity
@@ -240,7 +243,8 @@ public class ActivityDetector {
   }
 
   private void updateHistory(float[] data) {
-    Log.d(TAG, "input: " + Arrays.toString(data));
+    // TODO: this function doesn't work - since this is an array of
+    // arrays
     for (int i=inputHistory.length - 1; i>0; i--) {
       inputHistory[i] = inputHistory[i-1];
     }
@@ -248,7 +252,6 @@ public class ActivityDetector {
   }
 
   private void updatePredictions(float prediction) {
-    Log.d(TAG, "prediction: " + prediction);
     for (int i=predictionHistory.length - 1; i>0; i--) {
       predictionHistory[i] = predictionHistory[i-1];
     }
