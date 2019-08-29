@@ -130,6 +130,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   // activity detection
   public boolean personIsActive = false;
   public boolean watchBeingWorn = false;
+  public boolean disableWearCheck = false;
   public boolean isServiceRunning = false;
 
   // activity data
@@ -190,6 +191,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
     // get the serial number from the data store
     watchSerialNumber = datastore.getSerialNumber();
+    disableWearCheck = datastore.getDisableWearCheck();
     // make sure to set the serial number
     currentActivity.watch_serial_number = this.watchSerialNumber;
 
@@ -381,9 +383,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
             currentActivity.watch_serial_number = watchSerialNumber;
             // update the datastore - these are for the complication
             // providers and the pushtracker wear app
-            datastore.setPushes(currentActivity.push_count);
-            datastore.setCoast(currentActivity.coast_time_avg);
-            datastore.setDistance(currentActivity.distance_watch);
+            datastore.setData(currentActivity.push_count,
+                              currentActivity.coast_time_avg,
+                              currentActivity.distance_watch);
             // go ahead and write it to db
             db.addRecord(currentActivity);
           }
@@ -597,11 +599,13 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       // do we need to send data to the app?
       timeDiffMs = now - _lastSendDataTimeMs;
       if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+        // check to see if the user wants to disable wear check
+        disableWearCheck = datastore.getDisableWearCheck();
         // update data in datastore / shared preferences for use
         // with the complication providers and mobile app
-        datastore.setPushes(currentActivity.push_count);
-        datastore.setCoast(currentActivity.coast_time_avg);
-        datastore.setDistance(currentActivity.distance_watch);
+        datastore.setData(currentActivity.push_count,
+                          currentActivity.coast_time_avg,
+                          currentActivity.distance_watch);
         // update data in SQLite tables
         db.updateRecord(currentActivity);
         // send intent to main activity with updated data
@@ -630,7 +634,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   boolean canRunDetector() {
-    return hasGyro && hasAccl && hasGrav;
+    return hasGyro && hasAccl && hasGrav &&
+      (watchBeingWorn || disableWearCheck);
   }
 
   void clearDetectorInputs() {

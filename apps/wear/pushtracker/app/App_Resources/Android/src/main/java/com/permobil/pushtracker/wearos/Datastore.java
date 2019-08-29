@@ -7,6 +7,7 @@ public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
   public static final String PREFIX = "com.permobil.pushtracker.wearos.";
+  public static final String DISABLE_WEAR_CHECK_KEY = "disable_wear_check";
   public static final String CURRENT_DATE_KEY = "current_date";
   public static final String CURRENT_PUSH_COUNT_KEY = "current_push_count";
   public static final String CURRENT_HEART_RATE_KEY = "current_heart_rate";
@@ -19,6 +20,24 @@ public class Datastore {
 
   public Datastore(Context context) {
     preferences = context.getSharedPreferences(PREF_NAME, 0);
+  }
+
+  public void setData(int pushes, float coastTime, float distance) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putInt(PREFIX + CURRENT_PUSH_COUNT_KEY, pushes);
+    editor.putFloat(PREFIX + CURRENT_COAST_KEY, coastTime);
+    editor.putFloat(PREFIX + CURRENT_DISTANCE_KEY, distance);
+    editor.commit();
+  }
+
+  public boolean getDisableWearCheck() {
+    return preferences.getBoolean(PREFIX + DISABLE_WEAR_CHECK_KEY, false);
+  }
+
+  public void setDisableWearCheck(boolean disabled) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putBoolean(PREFIX + DISABLE_WEAR_CHECK_KEY, disabled);
+    editor.commit();
   }
 
   public String getDate() {
