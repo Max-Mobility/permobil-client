@@ -92,7 +92,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int SENSOR_DELAY_US_DEBUG = 1000 * 1000 / SENSOR_RATE_HZ;
   private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
+  // private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = SENSOR_DELAY_US_RELEASE;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
@@ -637,31 +638,37 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     }
   }
 
+  private long numGrav = 0;
+  private long numGyro = 0;
+  private long numAccl = 0;
   private static final long LOG_TIME_MS = 250;
   private long lastLogTimeMs = 0;
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
-    boolean[] hasArray = {hasGyro, hasAccl, hasGrav};
+    long[] numArray = {numGyro, numAccl, numGrav};
 
 
     long now = System.currentTimeMillis();
     long timeDiffMs = now - lastLogTimeMs;
     if (timeDiffMs > LOG_TIME_MS) {
-      Log.d(TAG, "sensorType: " + sensorType + " - " + Arrays.toString(hasArray));
+      Log.d(TAG, "numArray: " + Arrays.toString(numArray));
       lastLogTimeMs = now;
     }
 
     if (sensorType == Sensor.TYPE_GYROSCOPE) {
+      numGyro++;
       hasGyro = true;
       for (int i=0; i<3; i++) {
         activityDetectorData[i + ActivityDetector.InputGyroOffset] = event.values[i];
       }
     } else if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
+      numAccl++;
       hasAccl = true;
       for (int i=0; i<3; i++) {
         activityDetectorData[i + ActivityDetector.InputAcclOffset] = event.values[i];
       }
     } else if (sensorType == Sensor.TYPE_GRAVITY) {
+      numGrav++;
       hasGrav = true;
       for (int i=0; i<3; i++) {
         activityDetectorData[i + ActivityDetector.InputGravOffset] = event.values[i];
