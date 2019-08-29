@@ -29,6 +29,8 @@
           class="update-button" [text]="action.label" (tap)="action.func(action)">
         </Button>
         <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 
+          *ngIf="!smartDriveUpToDate" class="update-status-label" [text]="smartDriveOtaState"></Label>
+        <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 
           *ngIf="smartDriveUpToDate" class="update-status-label" text="Your SmartDrive is up to date"></Label>
       </GridLayout>
     </StackLayout>
