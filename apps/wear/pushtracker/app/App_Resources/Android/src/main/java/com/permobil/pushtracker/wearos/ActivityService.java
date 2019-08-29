@@ -92,8 +92,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int SENSOR_DELAY_US_DEBUG = 1000 * 1000 / SENSOR_RATE_HZ;
   private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
-  // private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
-  private static final int SENSOR_REPORTING_LATENCY_US = SENSOR_DELAY_US_RELEASE;
+  private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
+  // private static final int SENSOR_REPORTING_LATENCY_US = SENSOR_DELAY_US_RELEASE;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
@@ -640,7 +640,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   boolean canRunDetector() {
-    return hasGyro && hasAccl && hasGrav &&
+    return hasAccl && hasGrav && // hasGyro &&
       (watchBeingWorn || disableWearCheck);
   }
 
