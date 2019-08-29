@@ -34,10 +34,34 @@ export class WirelessUpdatesComponent implements OnInit {
   }
 
   onStartTap(device: string) {
-    Log.D('start tap');
+    Log.D('start', device, 'update tap');
+    if (device === 'pushtracker')
+      this._startPushTrackerUpdate();
+    else if (device === 'smartdrive')
+      this._startSmartDriveUpdate();
   }
 
   onStopTap(device: string) {
-    Log.D('stop tap');
+    Log.D('stop', device, 'update tap');
+    if (device === 'pushtracker')
+      this._stopPushTrackerUpdate();
+    else if (device === 'smartdrive')
+      this._stopSmartDriveUpdate();
+  }
+
+  private _startPushTrackerUpdate() {
+
+  }
+
+  private _stopPushTrackerUpdate() {
+
+  }
+
+  private _startSmartDriveUpdate() {
+
+  }
+
+  private _stopSmartDriveUpdate() {
+
   }
 }
