@@ -1,0 +1,36 @@
+@import '../variables';
+@import './wireless-updates-base';
+
+.wireless-updates-layout {
+    @extend .WIRELESS_UPDATES_LAYOUT_BASE;
+    background-color: $black;
+
+    .update-label {
+        @extend .UPDATE_LABEL_BASE;
+        color: $permobil-cousteau;
+    }
+
+    .update-stack-layout {
+        @extend .UPDATE_STACK_LAYOUT_BASE;
+        background: $black;
+    }
+
+    .update-button {
+        @extend .UPDATE_BTN_BASE;
+        background-color: #502980;
+        color: $white;
+    }
+
+    .update-circle {
+        @extend .UPDATE_CIRCLE_BASE;
+        bar-color: $permobil-cousteau;
+        rim-color: $dark-custom-dialog-layout-black;
+    }
+
+    .update-status-label {
+        @extend .UPDATE_STATUS_LABEL_BASE;
+        text-align: center;
+        color: $white;
+    }
+
+}
