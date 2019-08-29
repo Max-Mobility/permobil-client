@@ -6,10 +6,12 @@ import {
   SD_OTA_State
 } from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
+import { Color } from 'tns-core-modules/color';
 import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base.model';
+import { isAndroid } from 'tns-core-modules/ui/page/page';
 
 export class SmartDrive extends DeviceBase {
   // STATIC:
@@ -887,19 +889,10 @@ export class SmartDrive extends DeviceBase {
   }
 
   public sendSettingsObject(settings: Device.Settings): Promise<any> {
-    const flags = [
-      settings.ezOn,
-      settings.disablePowerAssistBeep
-    ].reduce((f, s, i) => {
-      if (s) {
-        f |= (1 << i);
-      }
-      return f;
-    }, 0);
     const _settings = super.sendSettings(
       settings.controlMode,
       settings.units,
-      flags,
+      settings.getFlags(),
       settings.tapSensitivity / 100.0,
       settings.acceleration / 100.0,
       settings.maxSpeed / 100.0
@@ -1124,33 +1117,20 @@ export class SmartDrive extends DeviceBase {
   }
 
   public requestHighPriorityConnection(): boolean {
-    let requestSucceeded = false;
-    if (this.device) {
-      try {
-        // register for HIGH_PRIORITY connection
-        requestSucceeded = this.device.requestConnectionPriority(
-          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH
-        );
-      } catch (err) {
-        console.error('could not request high priority connection', err);
-      }
-    }
-    return requestSucceeded;
+    let priority = 0;
+    if (isAndroid)
+      priority = android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_HIGH;
+    return this._bluetoothService.requestConnectionPriority(this.address, priority);
   }
 
   public releaseHighPriorityConnection(): boolean {
-    let requestSucceeded = false;
-    if (this.device) {
-      try {
-        // register for HIGH_PRIORITY connection
-        requestSucceeded = this.device.requestConnectionPriority(
-          android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED
-        );
-      } catch (err) {
-        console.error('could not request balanced connection', err);
-      }
-    }
-    return requestSucceeded;
+    let priority = 0;
+    if (isAndroid)
+      priority = android.bluetooth.BluetoothGatt.CONNECTION_PRIORITY_BALANCED;
+    return this._bluetoothService.requestConnectionPriority(
+      this.address,
+      priority
+    );
   }
 
   public handleConnect(data?: any) {
@@ -1182,7 +1162,8 @@ export class SmartDrive extends DeviceBase {
     // now that we're receiving data we can definitly send data
     if (!this.notifying || !this.ableToSend) {
       // request high priority connection on first data received
-      this.requestHighPriorityConnection();
+      const requestWorked = this.requestHighPriorityConnection();
+      console.log('got high priority connection?', requestWorked);
     }
     // update state
     this.notifying = true;

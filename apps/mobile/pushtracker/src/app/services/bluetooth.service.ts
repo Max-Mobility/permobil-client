@@ -334,6 +334,10 @@ export class BluetoothService extends Observable {
     return this._bluetooth.stopNotifying(opts);
   }
 
+  public requestConnectionPriority(address: string, priority: number) {
+    return (isAndroid ? this._bluetooth.requestConnectionPriority(address, priority) : false);
+  }
+
   write(opts: any) {
     return this._bluetooth.write(opts);
   }
