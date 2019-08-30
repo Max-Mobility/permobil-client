@@ -186,7 +186,7 @@
       "state": {
         "awaiting-ble-ready": "Waiting on BT",
         "awaiting-connection": "Waiting for Connection",
-        "awaiting-mcu-ready": "Waiting on SD",
+        "awaiting-mcu-ready": "Waiting on SmartDrive",
         "awaiting-versions": "Waiting for Versions",
         "canceled": "Canceled",
         "canceling": "Canceling",
@@ -196,10 +196,10 @@
         "not-started": "Not Started",
         "detected-sd": "Detected SmartDrive!",
         "rebooting-ble": "Rebooting BT",
-        "rebooting-mcu": "Rebooting SD",
+        "rebooting-mcu": "Rebooting SmartDrive",
         "timeout": "Timeout",
         "updating-ble": "Updating BT",
-        "updating-mcu": "Updating SD",
+        "updating-mcu": "Updating SmartDrive",
         "verifying": "Verifying"
       }
     }
