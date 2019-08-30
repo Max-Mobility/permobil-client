@@ -27,7 +27,7 @@
         <Button *ngIf="noSmartDriveDetected"
           row="2" col="1" 
           marginTop="-30"
-          class="update-button" [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives(action)">
+          class="update-button" [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives($event)">
         </Button>
         <Button *ngFor="let action of smartDriveOtaActions; let i = index"
           [row]="i + 2" col="1" 
