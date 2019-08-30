@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartDrive MX2+</string>
+    <string name="title_activity_kimera">SmartDrive MX2+</string>
+    <string name="complications_provider_service_label_battery">Battery Level</string>
+    <string name="complications_provider_service_label_range">Estimated Range</string>
+    <string name="complications_provider_service_label_drive">Drive Distance</string>
+    <string name="complications_provider_service_label_coast">Coast Distance</string>
+</resources>
