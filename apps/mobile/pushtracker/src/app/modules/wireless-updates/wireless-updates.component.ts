@@ -67,7 +67,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   onRescanForSmartDrives() {
     this.noSmartDriveDetected = false;
-   this.smartDriveCheckedForUpdates = false;
+    this.smartDriveCheckedForUpdates = false;
     this.smartDriveOtaProgress = 0;
     this.checkForSmartDriveUpdates();
   }
@@ -225,6 +225,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant('More than one SmartDrive detected!');
           this.smartDriveOtaProgress = 0;
+          this.noSmartDriveDetected = true;
           return;
         }
         else {
