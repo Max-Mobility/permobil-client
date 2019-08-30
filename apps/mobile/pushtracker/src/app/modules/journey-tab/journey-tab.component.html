@@ -1,38 +1,40 @@
 // Journey Tab Layout
-<GridLayout rows="*" columns="*" class="journey-tab-layout">
-  // main journey-tab layout
-  <GridLayout row="0" col="0" rows="auto, *" columns="*">
-    <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
+<PullToRefresh (refresh)="refreshPage($event)">
+  <GridLayout rows="*" columns="*" class="journey-tab-layout">
+    // main journey-tab layout
+    <GridLayout row="0" col="0" rows="auto, *" columns="*">
+      <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
-    <ScrollView row="1" col="0" padding="10">
-      <GridLayout height="100%" rows="auto, *" columns="auto, *, *, *">
-        // Page Title
-        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
+      <ScrollView row="1" col="0" padding="10">
+        <GridLayout height="100%" rows="auto, *" columns="auto, *, *, *">
+          // Page Title
+          <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
 
-        <ListView row="1" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
-          <ng-template let-item="item" let-odd="odd" let-even="even">
-            <GridLayout rows="*, *" columns="*, *">
-              <Label row="0" [text]="item.description" class="list-group-item"></Label>
-              <GridLayout row="1" rows="*, *" columns="*, *" width="40%">
-                <Label row="0" col="0" [text]="item.coast_time" class="list-group-item"></Label>
-                <Label row="0" col="1" [text]="item.distance" class="list-group-item"></Label>
+          <ListView row="1" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
+            <ng-template let-item="item" let-odd="odd" let-even="even">
+              <GridLayout rows="*, *" columns="*, *">
+                <Label row="0" [text]="item.description" class="list-group-item"></Label>
+                <GridLayout row="1" rows="*, *" columns="*, *" width="40%">
+                  <Label row="0" col="0" [text]="item.coast_time" class="list-group-item"></Label>
+                  <Label row="0" col="1" [text]="item.distance" class="list-group-item"></Label>
+                </GridLayout>
               </GridLayout>
-            </GridLayout>
-          </ng-template>
-        </ListView>
-      </GridLayout>
-    </ScrollView>
-  </GridLayout>
-
-  <!-- ******************************************************************************************* -->
-  <!-- Journey Details FullScreen Layout -->
-  <GridLayout #journeyDetailsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="journey-details-dialog">
-    // Mock ActionBar
-    <GridLayout row="0" rows="*" columns="50, *, auto">
-      <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeJourneyDetailsLayout()"></Button>
-      <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"></Button>
+            </ng-template>
+          </ListView>
+        </GridLayout>
+      </ScrollView>
     </GridLayout>
+
+    <!-- ******************************************************************************************* -->
+    <!-- Journey Details FullScreen Layout -->
+    <GridLayout #journeyDetailsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="journey-details-dialog">
+      // Mock ActionBar
+      <GridLayout row="0" rows="*" columns="50, *, auto">
+        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeJourneyDetailsLayout()"></Button>
+        <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"></Button>
+      </GridLayout>
+    </GridLayout>
+
+
   </GridLayout>
-
-
-</GridLayout>
+</PullToRefresh>
