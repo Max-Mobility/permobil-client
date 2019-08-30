@@ -821,7 +821,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       .setTicker("Permobil")
       .setContentText("Permobil PushTracker is analyzing your activity.")
       .setSmallIcon(R.drawable.ic_notification_icon)
-      .setLargeIcon(Icon.createWithResource(this, R.mipmap.ic_notification_icon))
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
       .setContentIntent(contentPendingIntent)
       .setOngoing(true)
       .setChannelId(channelId);
