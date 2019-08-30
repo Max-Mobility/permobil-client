@@ -820,8 +820,8 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
       .setTicker("Permobil")
       .setContentText("Permobil PushTracker is analyzing your activity.")
-      .setSmallIcon(R.mipmap.ic_launcher_round)
-      .setLargeIcon(Icon.createWithResource(this, R.mipmap.ic_launcher_round))
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.mipmap.ic_notification_icon))
       .setContentIntent(contentPendingIntent)
       .setOngoing(true)
       .setChannelId(channelId);
