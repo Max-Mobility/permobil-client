@@ -66,6 +66,7 @@ export class JourneyTabComponent implements OnInit {
     this.getUser();
     this._loadWeeklyPushtrackerActivity();
     this._loadWeeklySmartDriveUsage();
+    this._processJourneyMap();
   }
 
   _getFirstDayOfWeek(date) {
@@ -256,6 +257,12 @@ export class JourneyTabComponent implements OnInit {
       return this._milesToKilometers(distance);
     }
     return distance;
+  }
+
+  _processJourneyMap() {
+    // Iterate over _journeyMap
+    // Order by start time and group periods of activity by JourneyType and TimeOfDay
+    // Process result, ready for UI 
   }
 
 }
