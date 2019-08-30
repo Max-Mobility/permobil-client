@@ -12,8 +12,9 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
+import { DeviceBase } from '../../models';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import { enableDarkTheme, enableDefaultTheme, milesToKilometers } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -22,7 +23,6 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 })
 export class HomeTabComponent {
   user: PushTrackerUser;
-  isUserLoaded: boolean = false;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
   distanceCirclePercentageMaxValue;
@@ -83,25 +83,21 @@ export class HomeTabComponent {
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
 
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
-    this.savedTheme === APP_THEMES.DEFAULT
-      ? enableDefaultTheme()
-      : enableDarkTheme();
-
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
-      this.isUserLoaded = true;
 
-      this.weeklyActivityLoaded = false;
+      this.savedTheme = appSettings.getString(
+        STORAGE_KEYS.APP_THEME,
+        APP_THEMES.DEFAULT
+      );
+      this.savedTheme === APP_THEMES.DEFAULT
+        ? enableDefaultTheme()
+        : enableDarkTheme();
+
       this._loadWeeklyData();
-      this.weeklyActivityLoaded = true;
 
       this._currentDayInView = new Date();
-      const sunday = this._getFirstDayOfWeek(this._currentDayInView);
-      this._weekStart = sunday;
+      this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
@@ -128,13 +124,13 @@ export class HomeTabComponent {
   refreshPlots(args) {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
-    this.weeklyActivityLoaded = false;
     this._loadWeeklyData();
-    this.weeklyActivityLoaded = true;
     pullRefresh.refreshing = false;
   }
 
   private _loadWeeklyData() {
+    this.weeklyActivityLoaded = false;
+
     this.savedTheme = this.user.data.theme_preference;
     if (this._firstLoad) {
       this._loadWeeklyActivity();
@@ -156,6 +152,8 @@ export class HomeTabComponent {
     this._updateProgress();
     this._updatePointLabelStyle();
     this._updatePalettes();
+
+    this.weeklyActivityLoaded = true;
   }
 
   onActivityTap() {
@@ -200,19 +198,21 @@ export class HomeTabComponent {
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
       this.todayCoastDistance = this._updateDistanceUnit(
-        this._caseTicksToMiles(
+        DeviceBase.caseTicksToMiles(
           this._todaysUsage.distance_smartdrive_coast -
             this._todaysUsage.distance_smartdrive_coast_start
         ) || 0
       ).toFixed(1);
       this.todayDriveDistance = this._updateDistanceUnit(
-        this._motorTicksToMiles(
+        DeviceBase.motorTicksToMiles(
           this._todaysUsage.distance_smartdrive_drive -
             this._todaysUsage.distance_smartdrive_drive_start
         ) || 0
       ).toFixed(1);
       this.todayOdometer = this._updateDistanceUnit(
-        this._caseTicksToMiles(this._todaysUsage.distance_smartdrive_coast) || 0
+        DeviceBase.caseTicksToMiles(
+          this._todaysUsage.distance_smartdrive_coast
+        ) || 0
       ).toFixed(1);
     } else {
       this.todayCoastDistance = (0).toFixed(1);
@@ -566,14 +566,6 @@ export class HomeTabComponent {
     }
   }
 
-  private _motorTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
-  }
-
-  private _caseTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
-  }
-
   private _updateDistancePlotYAxis() {
     const dateFormatted = function(date: Date) {
       return (
@@ -593,11 +585,12 @@ export class HomeTabComponent {
         const day = days[i];
         if (day) {
           const coastDistance = this._updateDistanceUnit(
-            this._caseTicksToMiles(
+            DeviceBase.caseTicksToMiles(
               day.distance_smartdrive_coast -
                 day.distance_smartdrive_coast_start
             ) || 0
           );
+
           if (day.date === dateFormatted(this._currentDayInView))
             this._todaysUsage = day;
           if (coastDistance > this.coastDistanceYAxisMax)
@@ -653,13 +646,13 @@ export class HomeTabComponent {
             result.push({
               xAxis: dayNames[parseInt(i)],
               coastDistance: this._updateDistanceUnit(
-                this._caseTicksToMiles(
+                DeviceBase.caseTicksToMiles(
                   dailyUsage.distance_smartdrive_coast -
                     dailyUsage.distance_smartdrive_coast_start
                 ) || 0
               ),
               driveDistance: this._updateDistanceUnit(
-                this._motorTicksToMiles(
+                DeviceBase.motorTicksToMiles(
                   dailyUsage.distance_smartdrive_drive -
                     dailyUsage.distance_smartdrive_drive_start
                 ) || 0
@@ -707,13 +700,9 @@ export class HomeTabComponent {
     }
   }
 
-  private _milesToKilometers(miles: number) {
-    return miles * 1.60934;
-  }
-
   private _updateDistanceUnit(distance: number) {
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
-      return this._milesToKilometers(distance);
+      return milesToKilometers(distance);
     }
     return distance;
   }
