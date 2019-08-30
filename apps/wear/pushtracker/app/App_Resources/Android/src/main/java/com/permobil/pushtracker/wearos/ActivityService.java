@@ -156,8 +156,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                 "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
                 );
 
-    startServiceWithNotification();
-
     // set the debuggable flag
     // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
@@ -180,7 +178,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     mKinveyApiService = retrofit.create(KinveyApiService.class);
 
     // save the authorization string needed for kinvey
-    String authorizationToEncode = "test@ptmax.com:testtest";
+    String authorizationToEncode = "test@test.com:test";
     byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
     mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
     mKinveyAuthorization = "Basic " + mKinveyAuthorization;
@@ -403,44 +401,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
         this.currentActivity.onPush(detection);
       }
     }
-  }
-
-  private PendingIntent getAlarmIntent(int intentFlag) {
-    Intent i = new Intent(getApplicationContext(), ActivityService.class);
-    i.setAction(Constants.ACTION_START_SERVICE);
-    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
-                                                             0,
-                                                             i,
-                                                             intentFlag);
-    return scheduledIntent;
-  }
-
-  @Override
-  public void onDestroy() {
-    Log.d(TAG, "onDestroy()...");
-    super.onDestroy();
-
-    try {
-      // unregister time receiver
-      if (this.timeReceiver != null) {
-        this.unregisterReceiver(this.timeReceiver);
-        this.timeReceiver = null;
-      }
-      // unregister battery receiver
-      if (this.batteryReceiver != null) {
-        this.unregisterReceiver(this.batteryReceiver);
-        this.batteryReceiver = null;
-      }
-      // remove sensor listeners
-      unregisterDeviceSensors();
-      // remove location listener
-      // mLocationManager.removeUpdates(this);
-    } catch (Exception e) {
-      Sentry.capture(e);
-      Log.e(TAG, "onDestroy() Exception: " + e);
-    }
-
-    isServiceRunning = false;
   }
 
   private void registerAllSensors() {
@@ -769,6 +729,64 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     unregisterGravity();
   }
 
+  private PendingIntent getAlarmIntent(int intentFlag) {
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
+                                                             0,
+                                                             i,
+                                                             intentFlag);
+    return scheduledIntent;
+  }
+
+  private void registerAlarm() {
+    // create calendar object to set the start time (for use with RTC
+    // alarm type)
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.HOUR_OF_DAY, 0); // Midnight
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    // how frequently do we want this to repeat?
+    long interval = AlarmManager.INTERVAL_HALF_HOUR;
+    int alarmType = AlarmManager.ELAPSED_REALTIME;
+    // register alarm to start the service repeatedly
+    PendingIntent intent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
+    AlarmManager am = (AlarmManager) getApplicationContext()
+      .getSystemService(Context.ALARM_SERVICE);
+    am.setRepeating(alarmType,
+                    0, // calendar.getTimeInMillis()
+                    interval,
+                    intent);
+  }
+
+  @Override
+  public void onDestroy() {
+    Log.d(TAG, "onDestroy()...");
+    super.onDestroy();
+
+    try {
+      // unregister time receiver
+      if (this.timeReceiver != null) {
+        this.unregisterReceiver(this.timeReceiver);
+        this.timeReceiver = null;
+      }
+      // unregister battery receiver
+      if (this.batteryReceiver != null) {
+        this.unregisterReceiver(this.batteryReceiver);
+        this.batteryReceiver = null;
+      }
+      // remove sensor listeners
+      unregisterDeviceSensors();
+      // remove location listener
+      // mLocationManager.removeUpdates(this);
+    } catch (Exception e) {
+      Sentry.capture(e);
+      Log.e(TAG, "onDestroy() Exception: " + e);
+    }
+
+    isServiceRunning = false;
+  }
+
   private void sendDataToActivity(int pushes, float coast, float distance) {
     Intent intent = new Intent(Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY);
     // You can also include some extra data.
@@ -788,6 +806,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private void startServiceWithNotification() {
     if (isServiceRunning) return;
     isServiceRunning = true;
+
+    // register alarm to ensure service is always running
+    registerAlarm();
 
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
