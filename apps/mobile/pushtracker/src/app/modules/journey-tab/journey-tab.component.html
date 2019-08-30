@@ -1,5 +1,5 @@
 // Journey Tab Layout
-<PullToRefresh (refresh)="refreshPage($event)">
+<PullToRefresh (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()" (refresh)="refreshPage($event)">
   <GridLayout rows="*" columns="*" class="journey-tab-layout">
     // main journey-tab layout
     <GridLayout row="0" col="0" rows="auto, *" columns="*">
@@ -24,17 +24,5 @@
         </GridLayout>
       </ScrollView>
     </GridLayout>
-
-    <!-- ******************************************************************************************* -->
-    <!-- Journey Details FullScreen Layout -->
-    <GridLayout #journeyDetailsDialog row="0" col="0" rows="auto, *" columns="*" translateY="900" opacity="0" class="journey-details-dialog">
-      // Mock ActionBar
-      <GridLayout row="0" rows="*" columns="50, *, auto">
-        <Button row="0" col="0" text="&#xe5cd;" class="close-btn" (tap)="closeJourneyDetailsLayout()"></Button>
-        <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"></Button>
-      </GridLayout>
-    </GridLayout>
-
-
   </GridLayout>
 </PullToRefresh>

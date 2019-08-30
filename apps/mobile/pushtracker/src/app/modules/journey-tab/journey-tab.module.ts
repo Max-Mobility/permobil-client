@@ -4,7 +4,6 @@ import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { SharedModule } from '../shared/shared.module';
-import { JourneyDetailComponent } from './journey-detail.component';
 import { JourneyTabComponent } from './journey-tab.component';
 
 @NgModule({
@@ -13,14 +12,13 @@ import { JourneyTabComponent } from './journey-tab.component';
     NativeScriptRouterModule,
     NativeScriptRouterModule.forChild([
       { path: '', redirectTo: 'journey' },
-      { path: 'journey', component: JourneyTabComponent },
-      { path: 'journey/:id', component: JourneyDetailComponent }
+      { path: 'journey', component: JourneyTabComponent }
     ]),
     SharedModule,
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [JourneyTabComponent, JourneyDetailComponent],
+  declarations: [JourneyTabComponent],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })

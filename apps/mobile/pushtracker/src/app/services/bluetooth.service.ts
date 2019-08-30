@@ -4,10 +4,10 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -74,7 +74,14 @@ export class BluetoothService extends Observable {
 
     this._loggingService.logBreadCrumb('bluetooth.service constructor');
 
-    this.initialize();
+    console.time('bluetooth_init');
+    this.initialize()
+      .then(() => {
+        console.timeEnd('bluetooth_init');
+      })
+      .catch(err => {
+        this._loggingService.logException(err);
+      });
   }
 
   static requestOtaBackgroundExecution() {
@@ -245,18 +252,20 @@ export class BluetoothService extends Observable {
     // now add them back
     this.addServices();
 
-    await this._bluetooth.startAdvertising({
-      UUID: BluetoothService.AppServiceUUID,
-      settings: {
-        connectable: true
-      },
-      data: {
-        includeDeviceName: true
-      }
-    }).catch((err) => {
-      this.sendEvent(BluetoothService.advertise_error, { error: err });
-      this._loggingService.logException(err);
-    });
+    await this._bluetooth
+      .startAdvertising({
+        UUID: BluetoothService.AppServiceUUID,
+        settings: {
+          connectable: true
+        },
+        data: {
+          includeDeviceName: true
+        }
+      })
+      .catch(err => {
+        this.sendEvent(BluetoothService.advertise_error, { error: err });
+        this._loggingService.logException(err);
+      });
 
     this._bluetooth.addService(this.AppService);
 
@@ -322,9 +331,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(opts: any) { }
+  discoverServices(opts: any) {}
 
-  discoverCharacteristics(opts: any) { }
+  discoverCharacteristics(opts: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -335,7 +344,9 @@ export class BluetoothService extends Observable {
   }
 
   public requestConnectionPriority(address: string, priority: number) {
-    return (isAndroid ? this._bluetooth.requestConnectionPriority(address, priority) : false);
+    return isAndroid
+      ? this._bluetooth.requestConnectionPriority(address, priority)
+      : false;
   }
 
   write(opts: any) {
@@ -575,7 +586,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void { }
+  private onCharacteristicReadRequest(args: any): void {}
 
   // service controls
   private deleteServices() {
@@ -632,8 +643,7 @@ export class BluetoothService extends Observable {
             0
           );
           c.setWriteType(
-            android.bluetooth.BluetoothGattCharacteristic
-              .WRITE_TYPE_DEFAULT
+            android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
           );
         } else {
           // TODO: don't need ios impl apparrently?

@@ -1,31 +1,31 @@
 // profile tab layout
-<GridLayout rows="*, auto, *" columns="*" class="profile-tab-layout">
+<GridLayout (loaded)="onProfileTabLoaded()" (unloaded)="onProfileTabUnloaded()" rows="*, auto, *" columns="*" class="profile-tab-layout">
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
     <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true"></MockActionBar>
 
-    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
+    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false" [visibility]="isUserLoaded ? 'visible' : 'collapsed'">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" iosOverflowSafeArea="false">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
         // User Avatar
         <GridLayout row="1" col="0" rowspan="2" class="avatar-circle" (tap)="onAvatarTap()">
-          <Label [visibility]="!user.data.profile_picture ? 'visible' : 'collapsed'" [text]="user.data.first_name.charAt(0)" textWrap="true"></Label>
-          <Image [visibility]="user.data.profile_picture ? 'visible' : 'collapsed'" [src]="user.data.profile_picture" stretch="aspectFit"></Image>
+          <Label [visibility]="!user?.data.profile_picture ? 'visible' : 'collapsed'" [text]="user?.data.first_name.charAt(0)" textWrap="true"></Label>
+          <Image [visibility]="user?.data.profile_picture ? 'visible' : 'collapsed'" [src]="user?.data.profile_picture" stretch="aspectFit"></Image>
         </GridLayout>
 
         // User Name
         <StackLayout row="1" col="1" colSpan="2" orientation="horizontal">
-          <Label class="profile-name" [text]="user.data.first_name" textWrap="true" (longPress)="onNameLongPress($event, 'first-name')"></Label>
-          <Label class="profile-name" marginLeft="4" [text]="user.data.last_name" textWrap="true" (longPress)="onNameLongPress($event, 'last-name')"></Label>
+          <Label class="profile-name" [text]="user?.data.first_name" textWrap="true" (longPress)="onNameLongPress($event, 'first-name')"></Label>
+          <Label class="profile-name" marginLeft="4" [text]="user?.data.last_name" textWrap="true" (longPress)="onNameLongPress($event, 'last-name')"></Label>
         </StackLayout>
-
-        // User Email
-        <Label [isUserInteractionEnabled]="!isUserEditingSetting" row="2" col="1" colSpan="2" class="profile-email" [text]="user.username" textWrap="true"></Label>
 
         // Privacy Policy Button
         <Button [isUserInteractionEnabled]="!isUserEditingSetting" (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;"></Button>
+
+        // User Email
+        <Label [isUserInteractionEnabled]="!isUserEditingSetting" row="2" col="1" colSpan="2" class="profile-email" [text]="user?.username" textWrap="true"></Label>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
@@ -52,16 +52,6 @@
           </GridLayout>
         </StackLayout>
 
-        // Distance
-        <!-- <DataBox
-          row="5"
-          col="2"
-          colSpan="2"
-          [label]="'general.distance' | translate"
-          [(dataValue)]="displayActivityGoalDistance"
-          (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL', DISTANCE_ACTIVITY_GOAL)"
-        ></DataBox> -->
-
         // About You Label
         <Label row="6" col="0" colSpan="4" class="section-label" [text]="'profile-tab.about-you' | translate"></Label>
 
@@ -72,7 +62,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 0)">
           <Label class="data-box-label" [text]="'general.gender' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.gender" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.gender" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -81,7 +71,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="2" colSpan="2" class="data-box" (tap)="onBirthDateTap($event)">
           <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.dob | date" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.dob | date" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -108,7 +98,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 3)">
           <Label class="data-box-label" [text]="'general.chair-type' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.chair_type" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.chair_type" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -117,7 +107,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="2" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 4)">
           <Label class="data-box-label" [text]="'profile-tab.chair-make' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.chair_make" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.chair_make" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -126,7 +116,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="11" col="0" colSpan="4" class="data-box" (tap)="onListPickerTap($event, 5)">
           <Label class="data-box-label" [text]="'profile-tab.control-configuration' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.control_configuration" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.control_configuration" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -141,7 +131,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="14" col="0" colSpan="2" class="data-box" (tap)="onScan('smartdrive')">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.smartdrive_serial_number" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -150,7 +140,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user.data.pushtracker_serial_number" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
@@ -158,7 +148,6 @@
     </ScrollView>
   </GridLayout>
 
-  <!-- List Picker Layout -->
   <GridLayout #listPickerDialog [isUserInteractionEnabled]="!isUserEditingSetting" row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="custom-template-dialog">
     <StackLayout row="1">
       // Mock ActionBar

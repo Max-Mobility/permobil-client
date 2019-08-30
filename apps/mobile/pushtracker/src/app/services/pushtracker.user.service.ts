@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PushTrackerUserService {
-  private _user = new BehaviorSubject<PushTrackerUser>(<PushTrackerUser>(
-    (<any>KinveyUser.getActiveUser())
-  ));
-  user = this._user.asObservable();
+  private _user: BehaviorSubject<PushTrackerUser>;
 
-  constructor() {}
+  public user: Observable<PushTrackerUser>;
+
+  constructor() {
+    this._user = new BehaviorSubject<PushTrackerUser>(<PushTrackerUser>(
+      (<any>KinveyUser.getActiveUser())
+    ));
+    this.user = this._user.asObservable();
+  }
 
   updateDataProperty(field: string, value: any): void {
     const updatedUser = this._user.value;

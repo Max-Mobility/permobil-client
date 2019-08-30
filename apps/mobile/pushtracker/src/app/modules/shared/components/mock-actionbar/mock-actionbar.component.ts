@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
 import { Log } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -7,10 +7,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { AppInfoComponent } from '../../../../modules/app-info/app-info.component';
-import { ProfileSettingsComponent } from '../../../../modules/profile-settings/profile-settings.component';
-import { SupportComponent } from '../../../../modules/support/support.component';
-import { WirelessUpdatesComponent } from '../../../../modules/wireless-updates/wireless-updates.component';
+import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
 import { BluetoothService, PushTrackerState } from '../../../../services';
 
 @Component({
@@ -18,8 +15,7 @@ import { BluetoothService, PushTrackerState } from '../../../../services';
   moduleId: module.id,
   templateUrl: 'mock-actionbar.component.html'
 })
-export class MockActionbarComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class MockActionbarComponent {
   @Input() title: string;
   @Input() backNavIcon = 0; // default is the back arrow
 
@@ -49,7 +45,8 @@ export class MockActionbarComponent
     private _zone: NgZone
   ) {}
 
-  ngOnInit() {
+  onMockActionBarLoaded() {
+    Log.D('MockActionBar loaded');
     if (this.backNavIcon === 0) {
       this.navIcon = String.fromCharCode(0xe5c4); // arrow
     } else {
@@ -74,13 +71,12 @@ export class MockActionbarComponent
       this.updateWatchIcon,
       this
     );
-  }
 
-  ngAfterViewInit() {
     this.updateWatchIcon({});
   }
 
-  ngOnDestroy() {
+  onUnloaded() {
+    Log.D('MockActionBar unloaded');
     this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
@@ -99,6 +95,10 @@ export class MockActionbarComponent
     this.refreshTapEvent.emit();
   }
 
+  onMoreTap() {
+    this.moreTapEvent.emit();
+  }
+
   onUpdateTap() {
     this._modalService
       .showModal(WirelessUpdatesComponent, {
@@ -108,6 +108,9 @@ export class MockActionbarComponent
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
+      })
+      .then(() => {
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -119,10 +122,6 @@ export class MockActionbarComponent
       });
   }
 
-  onMoreTap() {
-    this.moreTapEvent.emit();
-  }
-
   onSupportTap() {
     this._modalService
       .showModal(SupportComponent, {
@@ -130,6 +129,9 @@ export class MockActionbarComponent
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
+      })
+      .then(() => {
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -149,6 +151,9 @@ export class MockActionbarComponent
         animated: true,
         viewContainerRef: this._vcRef
       })
+      .then(() => {
+        this.onUnloaded();
+      })
       .catch(err => {
         Log.E(err);
         new Toasty({
@@ -167,6 +172,9 @@ export class MockActionbarComponent
         animated: true,
         viewContainerRef: this._vcRef
       })
+      .then(() => {
+        this.onUnloaded();
+      })
       .catch(err => {
         Log.E(err);
         new Toasty({
@@ -179,30 +187,25 @@ export class MockActionbarComponent
 
   public updateWatchIcon(event: any) {
     this._zone.run(() => {
-      Log.D('watch status changed', event.data);
+      Log.D('MockActionBar - Watch Status Change:', event.data);
       const state =
         (event && event.data && event.data.state) ||
         BluetoothService.pushTrackerStatus.get('state');
       switch (state) {
         default:
         case PushTrackerState.unknown:
-          console.log('Unknown');
           this._setWatchIconVariables('question');
           break;
         case PushTrackerState.paired:
-          console.log('Paired');
           this._setWatchIconVariables('empty');
           break;
         case PushTrackerState.disconnected:
-          console.log('Disconnected');
           this._setWatchIconVariables('x');
           break;
         case PushTrackerState.connected:
-          console.log('Connected');
           this._setWatchIconVariables('check');
           break;
         case PushTrackerState.ready:
-          console.log('ready');
           this._setWatchIconVariables('check');
           break;
       }

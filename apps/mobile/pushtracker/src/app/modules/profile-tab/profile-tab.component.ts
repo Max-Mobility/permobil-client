@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef, Input } from '@angular/core';
+import { Component, ElementRef, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -8,6 +8,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { Toasty } from 'nativescript-toasty';
+import { Subscription } from 'rxjs';
 import { Color } from 'tns-core-modules/color';
 import { screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
@@ -23,7 +24,7 @@ import { LoggingService, PushTrackerUserService } from '../../services';
   moduleId: module.id,
   templateUrl: './profile-tab.component.html'
 })
-export class ProfileTabComponent implements OnInit {
+export class ProfileTabComponent {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
@@ -57,21 +58,29 @@ export class ProfileTabComponent implements OnInit {
    */
   screenHeight: number;
 
+  isUserLoaded: boolean;
+
   private _barcodeScanner: BarcodeScanner;
+  private _userSubscription$: Subscription;
 
   constructor(
+    public userService: PushTrackerUserService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
-    private _userService: PushTrackerUserService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {
+  ) {}
+
+  onProfileTabLoaded() {
+    this._logService.logBreadCrumb('ProfileTabComponent loaded');
+    this.isUserLoaded = false;
+    this.screenHeight = screen.mainScreen.heightDIPs;
+
     this._page.actionBarHidden = true;
     this._barcodeScanner = new BarcodeScanner();
-    this.screenHeight = screen.mainScreen.heightDIPs;
 
     this.primary = ['100', '200', '300'];
     this.secondary = ['100', '200', '300'];
@@ -83,27 +92,23 @@ export class ProfileTabComponent implements OnInit {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this.getUser();
-    if (!this.user.data.dob || this.user.data.dob === null)
-      this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
-  }
-
-  ngOnInit() {
-    this._logService.logBreadCrumb('profile-tab.component ngOnInit');
-    this._initDisplayActivityGoalCoastTime();
-    this._initDisplayActivityGoalDistance();
-    this._initDisplayWeight();
-    this._initDisplayHeight();
-  }
-
-  getUser(): void {
-    this._userService.user.subscribe(user => {
+    this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
+      if (!this.user.data.dob || this.user.data.dob === null) {
+        this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
+      }
+
+      this.isUserLoaded = true;
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
     });
+  }
+
+  onProfileTabUnloaded() {
+    this._logService.logBreadCrumb('ProfileTabComponent unloaded');
+    this._userSubscription$.unsubscribe();
   }
 
   onAvatarTap() {
@@ -146,7 +151,7 @@ export class ProfileTabComponent implements OnInit {
         if (result !== undefined) {
           KinveyUser.update(result);
           Object.keys(result).map(k => {
-            this._userService.updateDataProperty(k, result[k]);
+            this.userService.updateDataProperty(k, result[k]);
           });
         }
       })
@@ -173,11 +178,11 @@ export class ProfileTabComponent implements OnInit {
       if (r.result === true) {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
-          this._userService.updateDataProperty('first_name', r.text);
+          this.userService.updateDataProperty('first_name', r.text);
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
-          this._userService.updateDataProperty('last_name', r.text);
+          this.userService.updateDataProperty('last_name', r.text);
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -280,7 +285,7 @@ export class ProfileTabComponent implements OnInit {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
-          this._userService.updateDataProperty('dob', result);
+          this.userService.updateDataProperty('dob', result);
           const date = new Date(result);
           const month = date.getUTCMonth() + 1;
           const day = date.getUTCDate();
@@ -383,7 +388,7 @@ export class ProfileTabComponent implements OnInit {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'gender',
           this.primary[this.primaryIndex]
         );
@@ -402,21 +407,21 @@ export class ProfileTabComponent implements OnInit {
         );
         break;
       case 3:
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'chair_type',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_type: this.user.data.chair_type });
         break;
       case 4:
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'chair_make',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
       case 5:
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'control_configuration',
           this.primary[this.primaryIndex]
         );
@@ -661,12 +666,12 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this._userService.updateDataProperty(
+    this.userService.updateDataProperty(
       'weight',
       primaryValue + secondaryValue
     );
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      this._userService.updateDataProperty(
+      this.userService.updateDataProperty(
         'weight',
         this._poundsToKilograms(primaryValue + secondaryValue)
       );
@@ -674,7 +679,7 @@ export class ProfileTabComponent implements OnInit {
         primaryValue + secondaryValue
       );
     } else {
-      this._userService.updateDataProperty(
+      this.userService.updateDataProperty(
         'weight',
         primaryValue + secondaryValue
       );
@@ -686,12 +691,12 @@ export class ProfileTabComponent implements OnInit {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this._userService.updateDataProperty(
+    this.userService.updateDataProperty(
       'height',
       primaryValue + 0.01 * (secondaryValue || 0)
     );
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      this._userService.updateDataProperty(
+      this.userService.updateDataProperty(
         'height',
         this._feetInchesToCentimeters(primaryValue, secondaryValue)
       );
@@ -700,7 +705,7 @@ export class ProfileTabComponent implements OnInit {
         secondaryValue
       );
     } else {
-      this._userService.updateDataProperty(
+      this.userService.updateDataProperty(
         'height',
         primaryValue + 0.01 * (secondaryValue || 0)
       );
@@ -850,7 +855,7 @@ export class ProfileTabComponent implements OnInit {
 
       // now set the serial number
       if (deviceType === 'pushtracker' || deviceType === 'wristband') {
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'pushtracker_serial_number',
           serialNumber
         );
@@ -858,7 +863,7 @@ export class ProfileTabComponent implements OnInit {
           pushtracker_serial_number: this.user.data.pushtracker_serial_number
         });
       } else if (deviceType === 'smartdrive') {
-        this._userService.updateDataProperty(
+        this.userService.updateDataProperty(
           'smartdrive_serial_number',
           serialNumber
         );

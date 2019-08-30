@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute, Route, ChildrenOutletContexts } from '@angular/router';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log, PushTrackerUser } from '@permobil/core';
@@ -11,7 +11,7 @@ import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-a
 import { isAndroid } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import { SelectedIndexChangedEventData, TabView, TabViewItem } from 'tns-core-modules/ui/tab-view';
+import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { BluetoothService, PushTrackerUserService, SettingsService } from '../../services';
@@ -21,7 +21,7 @@ import { BluetoothService, PushTrackerUserService, SettingsService } from '../..
   selector: 'tabs-page',
   templateUrl: './tabs.component.html'
 })
-export class TabsComponent implements OnInit, AfterViewInit {
+export class TabsComponent {
   public homeTabItem;
   public journeyTabItem;
   public profileTabItem;
@@ -54,9 +54,6 @@ export class TabsComponent implements OnInit, AfterViewInit {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
-    this.registerBluetoothEvents();
-    this.registerPushTrackerEvents();
-
     this.homeTabItem = {
       title: this._homeTabTitle,
       iconSource: AppResourceIcons.HOME_ACTIVE,
@@ -72,18 +69,18 @@ export class TabsComponent implements OnInit, AfterViewInit {
       iconSource: AppResourceIcons.PROFILE_INACTIVE,
       textTransform: 'capitalize'
     };
+  }
+
+  onRootTabViewLoaded() {
+    this.registerBluetoothEvents();
+    this.registerPushTrackerEvents();
 
     if (isAndroid) {
       this.permissionsNeeded.push(
         android.Manifest.permission.ACCESS_COARSE_LOCATION
       );
     }
-  }
 
-  /**
-   * PAGE LIFECYCLE EVENT MANAGEMENT
-   */
-  ngOnInit() {
     this._routerExtension.navigate(
       [
         {
@@ -96,18 +93,15 @@ export class TabsComponent implements OnInit, AfterViewInit {
       ],
       { relativeTo: this._activeRoute }
     );
-    this.getUser();
-  }
 
-  ngAfterViewInit() {
-    // load the device settings (sd / pt)
-    this._settingsService.loadSettings();
-  }
-
-  getUser() {
     this.userService.user.subscribe(user => {
       this.user = user;
-      if (this.user && this.user.data.control_configuration === 'PushTracker with SmartDrive' && !this.bluetoothAdvertised) {
+      if (
+        this.user &&
+        this.user.data.control_configuration ===
+          'PushTracker with SmartDrive' &&
+        !this.bluetoothAdvertised
+      ) {
         Log.D('asking for permissions');
         this.askForPermissions()
           .then(() => {
@@ -123,6 +117,8 @@ export class TabsComponent implements OnInit, AfterViewInit {
         this.bluetoothAdvertised = true;
       }
     });
+
+    // this._settingsService.loadSettings();
   }
 
   /**
@@ -195,13 +191,13 @@ export class TabsComponent implements OnInit, AfterViewInit {
       // permissions were rejected
       const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
       const reasons = [];
+      const activity: android.app.Activity =
+        application.android.startActivity ||
+        application.android.foregroundActivity;
       const neededPermissions = this.permissionsNeeded.filter(
         p =>
           !hasPermission(p) &&
-          (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
-            p
-          ) ||
-            !hasShownRequest)
+          (activity.shouldShowRequestPermissionRationale(p) || !hasShownRequest)
       );
       // update the has-shown-request
       appSettings.setBoolean(
@@ -211,8 +207,8 @@ export class TabsComponent implements OnInit, AfterViewInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -225,7 +221,7 @@ export class TabsComponent implements OnInit, AfterViewInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =

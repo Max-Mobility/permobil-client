@@ -1,4 +1,4 @@
-<GridLayout rows="*" columns="50, *, auto, auto" class="action-bar">
+<GridLayout (loaded)="onMockActionBarLoaded()" (unloaded)="onUnloaded()" rows="*" columns="50, *, auto, auto" class="action-bar">
   <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="action-item-btn"></Button>
   <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
   <ng-content col="2"></ng-content>
