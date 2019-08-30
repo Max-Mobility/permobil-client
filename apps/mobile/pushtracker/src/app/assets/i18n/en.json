@@ -194,6 +194,7 @@
         "complete": "Complete",
         "failed": "Failed",
         "not-started": "Not Started",
+        "detected-sd": "Detected SmartDrive!",
         "rebooting-ble": "Rebooting BT",
         "rebooting-mcu": "Rebooting SD",
         "timeout": "Timeout",

@@ -349,7 +349,7 @@ export class SmartDrive extends DeviceBase {
           // set the action
           this.setOtaActions(['ota.action.start']);
           // now that we're starting the OTA, we are awaiting the versions
-          this.otaState = SmartDrive.OTAState.not_started;
+          this.otaState = SmartDrive.OTAState.detected_sd;
 
           register();
           // stop the timer
@@ -597,7 +597,7 @@ export class SmartDrive extends DeviceBase {
             state: this.otaState
           });
           switch (this.otaState) {
-            case SmartDrive.OTAState.not_started:
+            case SmartDrive.OTAState.detected_sd:
               this.setOtaActions(['ota.action.start']);
               break;
             case SmartDrive.OTAState.awaiting_versions:
