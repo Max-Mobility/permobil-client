@@ -39,6 +39,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public smartDriveUpToDate = false;
   public noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
+  public canBackNavigate = true;
 
   constructor(
     private _logService: LoggingService,
@@ -307,7 +308,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   onSmartDriveOtaStatus(args: any) {
-    let canSwipeDismiss = true;
+    this.canBackNavigate = true;
     // get the current progress of the update
     const progress = args.data.progress;
     // translate the state
@@ -315,7 +316,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
       if (a.includes('cancel')) {
-        canSwipeDismiss = false;
+        this.canBackNavigate = false;
       }
       const actionClass = 'action-' + last(a.split('.')) +
         ' compact';
