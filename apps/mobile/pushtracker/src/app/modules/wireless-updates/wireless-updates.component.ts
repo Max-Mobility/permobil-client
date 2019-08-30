@@ -37,6 +37,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public smartDrive: SmartDrive;
   public smartDriveCheckedForUpdates = false;
   public smartDriveUpToDate = false;
+  public noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
 
   constructor(
@@ -62,6 +63,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   closeModal() {
     this._params.closeCallback();
+  }
+
+  onRescanForSmartDrives() {
+    this.noSmartDriveDetected = false;
+   this.smartDriveCheckedForUpdates = false;
+    this.smartDriveOtaProgress = 0;
+    this.checkForSmartDriveUpdates();
   }
 
   async getFirmwareData() {
@@ -209,6 +217,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant('No SmartDrives detected!');
           this.smartDriveOtaProgress = 0;
+          this.noSmartDriveDetected = true;
           return;
         }
         else if (drives.length > 1) {

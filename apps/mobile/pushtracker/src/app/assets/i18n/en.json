@@ -179,7 +179,8 @@
       "pause": "Pause",
       "resume": "Resume",
       "retry": "Retry",
-      "start": "Start"
+      "start": "Start",
+      "scan": "Scan"
     },
     "sd": {
       "state": {
