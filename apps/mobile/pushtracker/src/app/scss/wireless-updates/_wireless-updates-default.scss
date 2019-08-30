@@ -24,13 +24,13 @@
     .update-circle {
         @extend .UPDATE_CIRCLE_BASE;
         bar-color: $permobil-cousteau;
-        rim-color: $grey;
+        rim-color: $light-grey;
     }
 
     .update-circle-green {
         @extend .UPDATE_CIRCLE_BASE;
         bar-color: $green;
-        rim-color: $grey;
+        rim-color: $light-grey;
     }
 
     .update-status-label {
