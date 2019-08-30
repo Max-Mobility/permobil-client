@@ -8,6 +8,13 @@ import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsag
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import * as appSettings from 'tns-core-modules/application-settings';
 
+enum TimeOfDay {
+  'MORNING' = 0,   // Before 12:00 PM
+  'AFTERNOON' = 1, // 12:01 PM to 5:00 PM
+  'EVENING' = 2,   // 5:01 PM to 8:00 PM
+  'NIGHT' = 3      // After 8:00 PM
+}
+
 @Component({
   selector: 'journey',
   moduleId: module.id,
@@ -146,6 +153,32 @@ export class JourneyTabComponent implements OnInit {
         // There's usage information for today. Update journey list with distance info
       }
     }
+  }
+
+  private _getTimeOfDayFromStartTime(startTime: number) {
+    const date = new Date(startTime);
+    const hour = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    // Morning
+    if (hour < 12)
+      return TimeOfDay.MORNING;
+    else if (hour === 12 && minutes === 0)
+      return TimeOfDay.MORNING;
+    // Afternoon
+    else if (hour === 12 && minutes > 0)
+      return TimeOfDay.AFTERNOON;
+    else if (hour >= 12 && hour < 17)
+      return TimeOfDay.AFTERNOON;
+    else if (hour === 17 && minutes === 0)
+      return TimeOfDay.AFTERNOON;
+    // Evening
+    else if (hour >= 17 && hour < 20)
+      return TimeOfDay.EVENING;
+    else if (hour === 20 && minutes === 0)
+      return TimeOfDay.EVENING;
+    // Night
+    else
+      return TimeOfDay.NIGHT;
   }
 
 }
