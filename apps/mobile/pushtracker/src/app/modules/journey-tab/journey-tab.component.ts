@@ -15,6 +15,19 @@ enum TimeOfDay {
   'NIGHT' = 3      // After 8:00 PM
 }
 
+enum JourneyType {
+  'ROLL',
+  'DRIVE'
+}
+
+class JourneyItem {
+  journeyType: JourneyType;
+  coastTime: number;
+  pushCount: number;
+  coastDistance: number;
+  driveDistance: number;
+}
+
 @Component({
   selector: 'journey',
   moduleId: module.id,
@@ -30,6 +43,7 @@ export class JourneyTabComponent implements OnInit {
   private _weekEnd: Date;
   private _pushtrackerActivity: any;
   private _smartDriveUsage: any;
+  private _journeyMap: Map<number, JourneyItem> = new Map();
 
   constructor(
     private _logService: LoggingService,
@@ -137,6 +151,21 @@ export class JourneyTabComponent implements OnInit {
       }
       else {
         // There's activity for today. Update journey list with coast_time/push_count info
+
+        // Assume that activity.records is an ordered list
+        // For each record, get time of day. Build a list of objects, each object looking like:
+        // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+        //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+        //               }
+        for (const i in this._pushtrackerActivity.records) {
+          const record = this._pushtrackerActivity.records[i];
+          if (!this._journeyMap[record.start_time]) {
+            this._journeyMap[record.start_time] = new JourneyItem();
+            this._journeyMap[record.start_time].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+          }
+          this._journeyMap[record.start_time].coastTime = record.coast_time_avg;
+          this._journeyMap[record.start_time].pushCount = record.push_count;
+        }
       }
     }
   }
