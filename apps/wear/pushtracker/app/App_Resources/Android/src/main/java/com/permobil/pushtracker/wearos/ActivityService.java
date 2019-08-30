@@ -75,9 +75,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final String TAG = "PermobilActivityService";
   private static final int NOTIFICATION_ID = 765;
   private static final int SENSOR_RATE_HZ = 25;
-  private static final int MAX_DATA_TO_PROCESS_PER_PERIOD = 10 * 60 * SENSOR_RATE_HZ;
-  private static final int MAX_DATA_LIST_LENGTH = MAX_DATA_TO_PROCESS_PER_PERIOD * 10;
-  private static final int PROCESSING_PERIOD_MS = 5 * 60 * 1000;
 
   private long _lastPushDataTimeMs = 0;
   private static final int PUSH_TASK_PERIOD_MS = 1 * 60 * 1000;
@@ -93,7 +90,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
   private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
-  // private static final int SENSOR_REPORTING_LATENCY_US = SENSOR_DELAY_US_RELEASE;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
@@ -453,7 +449,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // wears the watch and takes it off
     this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
     // turn on accelerometer sensing
-    this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    // this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
     this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
     this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
   }
@@ -472,14 +468,14 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                                             );
     */
     int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-    this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    // this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
     this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
     this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void offWristCallback() {
     // turn off activity sensors
-    unregisterGyroscope();
+    // unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
     // turn off location sensing
@@ -768,7 +764,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
 
   private void unregisterDeviceSensors() {
     unregisterBodySensor();
-    unregisterGyroscope();
+    // unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
   }
@@ -824,8 +820,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
       .setTicker("Permobil")
       .setContentText("Permobil PushTracker is analyzing your activity.")
-      .setSmallIcon(R.mipmap.ic_launcher_round)
-      .setLargeIcon(Icon.createWithResource(this, R.mipmap.ic_launcher_round))
+      .setColor(0x006ea5)
+      .setSmallIcon(R.drawable.ic_notification_icon)
+      .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
       .setContentIntent(contentPendingIntent)
       .setOngoing(true)
       .setChannelId(channelId);
