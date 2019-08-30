@@ -262,7 +262,7 @@ export class JourneyTabComponent implements OnInit {
   _processJourneyMap() {
     // Iterate over _journeyMap
     // Order by start time and group periods of activity by JourneyType and TimeOfDay
-    // Process result, ready for UI 
+    // Process result, ready for UI
   }
 
 }
