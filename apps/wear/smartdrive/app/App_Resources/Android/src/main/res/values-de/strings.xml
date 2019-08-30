@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">SmartDrive MX2+</string>
     <string name="title_activity_kimera">SmartDrive MX2+</string>
-    <string name="complications_provider_service_label_battery">Battery Level</string>
-    <string name="complications_provider_service_label_range">Estimated Range</string>
-    <string name="complications_provider_service_label_drive">Drive Distance</string>
-    <string name="complications_provider_service_label_coast">Coast Distance</string>
+    <string name="complications_provider_service_label_battery">Batterie Level</string>
+    <string name="complications_provider_service_label_range">Geschätzte Reichweite</string>
+    <string name="complications_provider_service_label_drive">Fahrstrecke</string>
+    <string name="complications_provider_service_label_coast">Küstenentfernung</string>
 </resources>
