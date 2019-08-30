@@ -9,14 +9,17 @@
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
 
-        <!-- <ListView row="1" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
-              <ng-template let-item="item" let-odd="odd" let-even="even">
-                <GridLayout rows="*, *" columns="*, *">
-                  <Label [text]="item.description" class="list-group-item"></Label>
-                  
-                </GridLayout>
-               </ng-template>
-          </ListView> -->
+        <ListView row="1" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
+          <ng-template let-item="item" let-odd="odd" let-even="even">
+            <GridLayout rows="*, *" columns="*, *">
+              <Label row="0" [text]="item.description" class="list-group-item"></Label>
+              <GridLayout row="1" rows="*, *" columns="*, *" width="40%">
+                <Label row="0" col="0" [text]="item.coast_time" class="list-group-item"></Label>
+                <Label row="0" col="1" [text]="item.distance" class="list-group-item"></Label>
+              </GridLayout>
+            </GridLayout>
+          </ng-template>
+        </ListView>
       </GridLayout>
     </ScrollView>
   </GridLayout>
@@ -30,4 +33,6 @@
       <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn"></Button>
     </GridLayout>
   </GridLayout>
+
+
 </GridLayout>
