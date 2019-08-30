@@ -23,7 +23,7 @@
       <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
         *ngIf="!smartDriveCheckedForUpdates" busy="true" color="#753bbd"></ActivityIndicator>
       <GridLayout rows="*" columns="*" *ngIf="smartDriveCheckedForUpdates">
-        <AnimatedCircle [class]="!smartDriveUpToDate ? 'update-circle' : 'update-circle-green'" row="0"
+        <AnimatedCircle [class]="smartDriveOtaProgress < 100 ? 'update-circle' : 'update-circle-green'" row="0"
           width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28"
           [progress]="smartDriveOtaProgress">
         </AnimatedCircle>
@@ -34,10 +34,8 @@
           <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
             [text]="action.label" (tap)="action.func(action)">
           </Button>
-          <Label row="1" width="50%" textWrap="true" *ngIf="!smartDriveUpToDate" class="update-status-label"
+          <Label row="1" width="50%" textWrap="true" class="update-status-label"
             [text]="smartDriveOtaState"></Label>
-          <Label row="1" width="50%" textWrap="true" *ngIf="smartDriveUpToDate" class="update-status-label"
-            text="Your SmartDrive is up to date"></Label>
         </GridLayout>
       </GridLayout>
     </StackLayout>

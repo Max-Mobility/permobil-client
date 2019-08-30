@@ -338,6 +338,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.smartDriveOtaState = state;
     if (!this.smartDriveCheckedForUpdates)
       this.smartDriveCheckedForUpdates = true;
-    // console.log(this.smartDriveOtaActions);
+    if (this.smartDrive.otaState === SmartDrive.OTAState.already_uptodate ||
+        this.smartDrive.otaState === SmartDrive.OTAState.complete) {
+      this.smartDriveOtaProgress = 100;
+    }
   }
 }
