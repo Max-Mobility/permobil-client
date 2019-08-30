@@ -206,10 +206,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+          this.smartDriveCheckedForUpdates = true;
+          this.smartDriveOtaState = this._translateService.instant('No SmartDrives detected!');
+          this.smartDriveOtaProgress = 0;
           return;
         }
         else if (drives.length > 1) {
           dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+          this.smartDriveCheckedForUpdates = true;
+          this.smartDriveOtaState = this._translateService.instant('More than one SmartDrive detected!');
+          this.smartDriveOtaProgress = 0;
           return;
         }
         else {
@@ -219,8 +225,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           console.log(this.smartDrive.address, this.smartDrive.ble_version, this.smartDrive.mcu_version);
         }
       });
-      bleVersion = this.smartDrive.ble_version;
-      mcuVersion = this.smartDrive.mcu_version;
+      if (this.smartDrive) {
+        bleVersion = this.smartDrive.ble_version;
+        mcuVersion = this.smartDrive.mcu_version;
+      }
     }
 
     if (!this.smartDrive)
