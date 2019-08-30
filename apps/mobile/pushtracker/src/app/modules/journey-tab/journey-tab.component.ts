@@ -180,6 +180,35 @@ export class JourneyTabComponent implements OnInit {
       }
       else {
         // There's usage information for today. Update journey list with distance info
+
+        // Assume that usage.records is an ordered list
+        // For each record, get time of day. Build a list of objects, each object looking like:
+        // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+        //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+        //               }
+        let coastDistanceStart = 0;
+        let driveDistanceStart = 0;
+        for (const i in this._smartDriveUsage.records) {
+          const record = this._smartDriveUsage.records[i];
+
+          if (parseInt(i) === 0) {
+            coastDistanceStart = this._smartDriveUsage.distance_smartdrive_coast_start;
+            driveDistanceStart = this._smartDriveUsage.distance_smartdrive_drive_start;
+          } else {
+            coastDistanceStart = this._smartDriveUsage[parseInt(i) - 1].distance_smartdrive_coast;
+            driveDistanceStart = this._smartDriveUsage[parseInt(i) - 1].distance_smartdrive_drive;
+          }
+
+          if (!this._journeyMap[record.start_time]) {
+            this._journeyMap[record.start_time] = new JourneyItem();
+            this._journeyMap[record.start_time].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+          }
+          this._journeyMap[record.start_time].coastDistance =
+            this._updateDistanceUnit(this._caseTicksToMiles(record.distance_smartdrive_coast - coastDistanceStart));
+          this._journeyMap[record.start_time].driveDistance =
+            this._updateDistanceUnit(this._motorTicksToMiles(record.distance_smartdrive_drive - driveDistanceStart));
+        }
+
       }
     }
   }
@@ -208,6 +237,25 @@ export class JourneyTabComponent implements OnInit {
     // Night
     else
       return TimeOfDay.NIGHT;
+  }
+
+  _motorTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
+  }
+
+  _caseTicksToMiles(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
+  }
+
+  _milesToKilometers(miles: number) {
+    return miles * 1.60934;
+  }
+
+  _updateDistanceUnit(distance: number) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
+      return this._milesToKilometers(distance);
+    }
+    return distance;
   }
 
 }
