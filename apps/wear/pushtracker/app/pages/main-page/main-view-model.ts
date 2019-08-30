@@ -843,14 +843,14 @@ export class MainViewModel extends Observable {
         translationKey = 'settings.weight.units.' + this.tempSettings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
-      case 'wearcheck':
+      case 'watchrequired':
         if (this.disableWearCheck) {
           this.changeSettingKeyValue = L(
-            'settings.watch-required.values.disabled'
+            'settings.watchrequired.values.disabled'
           );
         } else {
           this.changeSettingKeyValue = L(
-            'settings.watch-required.values.enabled'
+            'settings.watchrequired.values.enabled'
           );
         }
         break;
@@ -922,7 +922,7 @@ export class MainViewModel extends Observable {
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
+    if (this.activeSettingToChange === 'watchrequired') {
       this.disableWearCheck = !this.disableWearCheck;
     }
     this.updateSettingsChangeDisplay();
@@ -930,7 +930,7 @@ export class MainViewModel extends Observable {
 
   onDecreaseSettingsTap() {
     this.tempSettings.decrease(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
+    if (this.activeSettingToChange === 'watchrequired') {
       this.disableWearCheck = !this.disableWearCheck;
     }
     this.updateSettingsChangeDisplay();

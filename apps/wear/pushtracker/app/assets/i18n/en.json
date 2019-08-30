@@ -67,6 +67,7 @@
   },
   "profile": "Profile",
   "settings": {
+    "connect-pushtracker": "Connect PushTracker Mobile App",
     "chairmake": {
       "title": "Chair Make",
       "description": "",
@@ -119,6 +120,14 @@
       "values": {
         "english": "English",
         "metric": "Metric"
+      }
+    },
+    "watchrequired": {
+      "title": "Check for Wrist",
+      "description": "When enabled, the smartwatch must be on the wrist to detect activity.",
+      "values": {
+        "disabled": "Disabled",
+        "enabled": "Enabled"
       }
     },
     "weight": {

@@ -215,9 +215,9 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="wearCheck" tap="{{ onChangeSettingsItemTap }}">
+                <GridLayout rows="*" columns="15, *" id="watchrequired" tap="{{ onChangeSettingsItemTap }}">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('settings.watchrequired.title') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
             </StackLayout>
