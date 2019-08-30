@@ -308,16 +308,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   onSmartDriveOtaStatus(args: any) {
-    this.canBackNavigate = true;
+    // this.canBackNavigate = true;
     // get the current progress of the update
     const progress = args.data.progress;
     // translate the state
     const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
-      if (a.includes('cancel')) {
-        this.canBackNavigate = false;
-      }
+      // if (a.includes('cancel')) {
+      //   this.canBackNavigate = false;
+      // }
       const actionClass = 'action-' + last(a.split('.')) +
         ' compact';
       // translate the label
