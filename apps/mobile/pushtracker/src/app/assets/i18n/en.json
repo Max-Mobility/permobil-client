@@ -253,7 +253,8 @@
     "sign-up-error": "Could not sign up: ",
     "sign-up-success": "Your user-name is:",
     "title": "Sign Up",
-    "user-exists": "An account already exists for this email."
+    "user-exists": "An account already exists for this email.",
+    "must-agree-and-read": "You must agree to the user agreement and read the privacy policy to sign up."
   },
   "support-component": {
     "faqs": [

@@ -1,9 +1,10 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -12,6 +13,7 @@ import { alert } from 'tns-core-modules/ui/dialogs';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
+import { PrivacyPolicyComponent } from '..';
 
 @Component({
   selector: 'sign-up',
@@ -48,7 +50,11 @@ export class SignUpComponent implements OnInit {
     distance_unit_preference: 1,
     theme_preference: 'DEFAULT',
     activity_goal_distance: 5,
-    activity_goal_coast_time: 5
+    activity_goal_coast_time: 5,
+    has_agreed_to_user_agreement: false,
+    has_read_privacy_policy: false,
+    consent_to_product_development: false,
+    consent_to_research: false
   };
 
   passwordError = '';
@@ -64,8 +70,10 @@ export class SignUpComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _router: RouterExtensions,
+    private _modalService: ModalDialogService,
     private _translateService: TranslateService,
-    private _zone: NgZone
+    private _zone: NgZone,
+    private _vcRef: ViewContainerRef
   ) {
     preventKeyboardFromShowing();
 
@@ -167,6 +175,38 @@ export class SignUpComponent implements OnInit {
       return;
     }
 
+    let has_agreed_to_user_agreement = false;
+    let has_read_privacy_policy = false;
+    let consent_to_product_development = false;
+    let consent_to_research = false;
+    try {
+      const result = await this._modalService
+        .showModal(PrivacyPolicyComponent, {
+          context: { data: {} },
+          fullscreen: true,
+          animated: true,
+          viewContainerRef: this._vcRef
+        });
+      if (result !== undefined) {
+        has_agreed_to_user_agreement = result.has_agreed_to_user_agreement || false;
+        has_read_privacy_policy = result.has_read_privacy_policy || false;
+        consent_to_product_development = result.consent_to_product_development || false;
+        consent_to_research = result.consent_to_research || false;
+      }
+    } catch (err) {
+      this._logService.logException(err);
+      return;
+    }
+
+    if (!has_agreed_to_user_agreement || !has_read_privacy_policy) {
+      new Toasty({
+        text: this._translateService.instant('sign-up.must-agree-and-read'),
+        duration: ToastDuration.LONG,
+        position: ToastPosition.CENTER
+      }).show();
+      return;
+    }
+
     this._loadingIndicator.show({
       message: this._translateService.instant('sign-up.creating-account'),
       dimBackground: true
@@ -178,6 +218,10 @@ export class SignUpComponent implements OnInit {
     this.user.username = this.user.username.trim().toLowerCase();
     this.user.password = this.user.password.trim();
     this.user.dob = this.user.dob.trim();
+    this.user.has_agreed_to_user_agreement = has_agreed_to_user_agreement;
+    this.user.has_read_privacy_policy = has_read_privacy_policy;
+    this.user.consent_to_product_development = consent_to_product_development;
+    this.user.consent_to_research = consent_to_research;
 
     // TODO: need to show privacy / user agreement forms here - the
     //       user cannot create the account without reading and

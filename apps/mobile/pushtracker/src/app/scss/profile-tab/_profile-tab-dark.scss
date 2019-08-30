@@ -34,6 +34,11 @@
     color: $white;
   }
 
+  .privacy-btn {
+    @extend .PRIVACY_BUTTON_BASE;
+    color: $white;
+  }
+
   .section-label {
     @extend .SECTION_LABEL_BASE;
     color: #e7e8ec;
