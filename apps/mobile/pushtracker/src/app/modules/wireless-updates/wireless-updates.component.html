@@ -28,10 +28,10 @@
           [progress]="smartDriveOtaProgress">
         </AnimatedCircle>
         <GridLayout row="0" rows="*, *, *" columns="*">
-          <Button *ngIf="noSmartDriveDetected" row="0" class="update-button"
+          <Button *ngIf="noSmartDriveDetected" row="0" class="action-start"
             [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives($event)">
           </Button>
-          <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" class="update-button"
+          <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
             [text]="action.label" (tap)="action.func(action)">
           </Button>
           <Label row="1" width="50%" textWrap="true" *ngIf="!smartDriveUpToDate" class="update-status-label"

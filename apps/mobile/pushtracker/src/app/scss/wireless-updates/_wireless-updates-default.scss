@@ -1,41 +1,83 @@
 @import '../variables';
 @import './wireless-updates-base';
 
+$start-color: #00a73c;
+$pause-color: #ff8900;
+$resume-color: #00a73c;
+$cancel-color: #db4537;
+$force-color: #ff8900;
+$retry-color: #00a73c;
+
 .wireless-updates-layout {
-    @extend .WIRELESS_UPDATES_LAYOUT_BASE;
-    background-color: $white;
+  @extend .WIRELESS_UPDATES_LAYOUT_BASE;
+  background-color: $white;
 
-    .update-label {
-        @extend .UPDATE_LABEL_BASE;
-        color: $permobil-cousteau-dark;
-    }
+  .update-label {
+    @extend .UPDATE_LABEL_BASE;
+    color: $permobil-cousteau-dark;
+  }
 
-    .update-stack-layout {
-        @extend .UPDATE_STACK_LAYOUT_BASE;
-        background: $white;
-    }
+  .update-stack-layout {
+    @extend .UPDATE_STACK_LAYOUT_BASE;
+    background: $white;
+  }
 
-    .update-button {
-        @extend .UPDATE_BTN_BASE;
-        background-color: #d8e5f2;
-        color: $permobil-primary;
-    }
+  .update-button {
+    @extend .UPDATE_BTN_BASE;
+    background-color: #d8e5f2;
+    color: $permobil-primary;
+  }
 
-    .update-circle {
-        @extend .UPDATE_CIRCLE_BASE;
-        bar-color: $permobil-cousteau;
-        rim-color: $light-grey;
-    }
+  .update-circle {
+    @extend .UPDATE_CIRCLE_BASE;
+    bar-color: $permobil-cousteau;
+    rim-color: $light-grey;
+  }
 
-    .update-circle-green {
-        @extend .UPDATE_CIRCLE_BASE;
-        bar-color: $green;
-        rim-color: $light-grey;
-    }
+  .update-circle-green {
+    @extend .UPDATE_CIRCLE_BASE;
+    bar-color: $green;
+    rim-color: $light-grey;
+  }
 
-    .update-status-label {
-        @extend .UPDATE_STATUS_LABEL_BASE;
-        text-align: center;
-    }
+  .update-status-label {
+    @extend .UPDATE_STATUS_LABEL_BASE;
+    text-align: center;
+  }
 
+  .action-start {
+    @extend .update-button;
+    color: $white;
+    background-color: $start-color;
+  }
+
+  .action-pause {
+    @extend .update-button;
+    color: $white;
+    background-color: $pause-color;
+  }
+
+  .action-resume {
+    @extend .update-button;
+    color: $white;
+    background-color: $resume-color;
+  }
+
+  .action-cancel {
+    @extend .update-button;
+    color: $white;
+    background-color: $cancel-color;
+  }
+
+  .action-force {
+    @extend .update-button;
+    color: $white;
+    background-color: $force-color;
+  }
+
+  .action-retry {
+    @extend .update-button;
+    color: $white;
+    background-color: $retry-color;
+  }
 }

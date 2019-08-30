@@ -206,8 +206,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   async performSmartDriveWirelessUpdate() {
     // do we need to update? - check against smartdrive version
-    let bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
-    let mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
+    const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
+    const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
       await this._bluetoothService.scanForSmartDrive(10).then(() => {
@@ -235,10 +235,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           console.log(this.smartDrive.address, this.smartDrive.ble_version, this.smartDrive.mcu_version);
         }
       });
-      // if (this.smartDrive) {
-      //   bleVersion = this.smartDrive.ble_version;
-      //   mcuVersion = this.smartDrive.mcu_version;
-      // }
     }
 
     if (!this.smartDrive)
