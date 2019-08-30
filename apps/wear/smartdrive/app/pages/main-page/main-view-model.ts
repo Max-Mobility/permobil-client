@@ -2075,6 +2075,12 @@ export class MainViewModel extends Observable {
   }
 
   saveSettings() {
+    // make sure to save the units setting for the complications
+    appSettings.setString(
+      DataKeys.SD_UNITS,
+      this.settings.units.toLowerCase()
+    );
+    // save state and local settings
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
       this.hasSentSettings
@@ -2083,6 +2089,7 @@ export class MainViewModel extends Observable {
       DataKeys.REQUIRE_WATCH_BEING_WORN,
       this.disableWearCheck
     );
+    // now save the actual device settings objects
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.settings',
       this.settings.toObj()
@@ -2538,6 +2545,11 @@ export class MainViewModel extends Observable {
       appSettings.setNumber(
         DataKeys.SD_DISTANCE_DRIVE,
         this.smartDrive.driveDistance
+      );
+      // make sure to save the units setting as well
+      appSettings.setString(
+        DataKeys.SD_UNITS,
+        this.settings.units.toLowerCase()
       );
     }
   }

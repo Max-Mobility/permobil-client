@@ -39,6 +39,8 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     PREFIX + "provider.action.COMPLICATION_ID";
   private static final String EXTRA_DATA_ID =
     PREFIX + "provider.action.DATA_ID";
+  private static final String EXTRA_UNITS_ID =
+    PREFIX + "provider.action.UNITS_ID";
 
   static final String COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY =
     PREFIX + "COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY";
@@ -52,6 +54,7 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     ComponentName provider = extras.getParcelable(EXTRA_PROVIDER_COMPONENT);
     int complicationId = extras.getInt(EXTRA_COMPLICATION_ID);
     String dataId = extras.getString(EXTRA_DATA_ID);
+    String unitsId = extras.getString(EXTRA_UNITS_ID, null);
 
     String preferenceKey = getPreferenceKey(provider, complicationId, dataId);
     SharedPreferences sharedPreferences =
@@ -68,6 +71,11 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     // Now actually get the data to be shown and request an update for
     // the complication that has just been toggled.
     editor.putFloat(preferenceKey, appSharedPreferences.getFloat(dataId, 0.0f));
+
+    if (unitsId) {
+      editor.putString(preferenceKey, appSharedPreferences.getString(unitsId, 'english'));
+    }
+
     // now actually tell the editor to apply the changes
     editor.apply();
 
@@ -88,6 +96,28 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     intent.putExtra(EXTRA_PROVIDER_COMPONENT, provider);
     intent.putExtra(EXTRA_COMPLICATION_ID, complicationId);
     intent.putExtra(EXTRA_DATA_ID, dataId);
+
+    // Pass complicationId as the requestCode to ensure that different complications get
+    // different intents.
+    return PendingIntent.getBroadcast(
+                                      context, complicationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
+  /**
+   * Returns a pending intent, suitable for use as a tap intent, that causes a complication to be
+   * toggled and updated.
+   */
+  static PendingIntent getToggleIntent(
+                                       Context context,
+                                       ComponentName provider,
+                                       int complicationId,
+                                       String dataId,
+                                       String unitsId) {
+    Intent intent = new Intent(context, ComplicationToggleReceiver.class);
+    intent.putExtra(EXTRA_PROVIDER_COMPONENT, provider);
+    intent.putExtra(EXTRA_COMPLICATION_ID, complicationId);
+    intent.putExtra(EXTRA_DATA_ID, dataId);
+    intent.putExtra(EXTRA_UNITS_ID, unitsId);
 
     // Pass complicationId as the requestCode to ensure that different complications get
     // different intents.

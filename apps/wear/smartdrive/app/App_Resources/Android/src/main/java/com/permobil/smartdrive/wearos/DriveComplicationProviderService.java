@@ -37,6 +37,7 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
 
   private static final String TAG = "DriveComplicationProvider";
   private static final String DATA_ID = "sd.distance.drive";
+  private static final String UNITS_ID = "sd.units";
 
   /*
    * Called when a complication has been activated. The method is for any one-time
@@ -70,7 +71,7 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
     ComponentName thisProvider = new ComponentName(this, getClass());
     // We pass the complication id, so we can only update the specific complication tapped.
     PendingIntent complicationTogglePendingIntent =
-      ComplicationToggleReceiver.getToggleIntent(this, thisProvider, complicationId, DATA_ID);
+      ComplicationToggleReceiver.getToggleIntent(this, thisProvider, complicationId, DATA_ID, UNITS_ID);
 
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
@@ -83,10 +84,19 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
                                                                        complicationId,
                                                                        DATA_ID),
                            0);
+    String units =
+      preferences.getString(
+                            ComplicationToggleReceiver.getPreferenceKey(
+                                                                        thisProvider,
+                                                                        complicationId,
+                                                                        UNITS_ID),
+                            "english");
     float miles = ticksToMiles(ticks);
     float kilometers = miles * 1.609f;
-    // TODO: determine units for display
     String numberText = String.format(Locale.getDefault(), "%.1f mi", miles);
+    if (units.equals("metric")) {
+      numberText = String.format(Locale.getDefault(), "%.1f km", kilometers);
+    }
 
     ComplicationData complicationData = null;
 

@@ -37,6 +37,7 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
 
   private static final String TAG = "RangeComplicationProvider";
   private static final String DATA_ID = "sd.estimated_range";
+  private static final String UNITS_ID = "sd.units";
 
   /*
    * Called when a complication has been activated. The method is for any one-time
@@ -70,7 +71,7 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
     ComponentName thisProvider = new ComponentName(this, getClass());
     // We pass the complication id, so we can only update the specific complication tapped.
     PendingIntent complicationTogglePendingIntent =
-      ComplicationToggleReceiver.getToggleIntent(this, thisProvider, complicationId, DATA_ID);
+      ComplicationToggleReceiver.getToggleIntent(this, thisProvider, complicationId, DATA_ID, UNITS_ID);
 
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
@@ -82,9 +83,18 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
                                                                        complicationId,
                                                                        DATA_ID),
                            0.0f);
+    String units =
+      preferences.getString(
+                            ComplicationToggleReceiver.getPreferenceKey(
+                                                                        thisProvider,
+                                                                        complicationId,
+                                                                        UNITS_ID),
+                            "english");
     float kilometers = miles * 1.609f;
-    // TODO: determine units
     String numberText = String.format(Locale.getDefault(), "%.1f mi", miles);
+    if (units.equals("metric")) {
+      numberText = String.format(Locale.getDefault(), "%.1f mi", kilometers);
+    }
 
     ComplicationData complicationData = null;
 
