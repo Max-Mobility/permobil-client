@@ -1,43 +1,44 @@
 <GridLayout rows="auto, *" class="wireless-updates-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="true" 
-   [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
+  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="true"
+    [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
 
   <FlexboxLayout row="1" height="100%" width="80%" flexDirection="column">
     // PushTracker
-    <StackLayout marginTop="30" class="update-stack-layout" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
+    <StackLayout marginTop="30" class="update-stack-layout"
+      *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
       <Label class="update-label" text="PushTracker"></Label>
       <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
-        <AnimatedCircle class="update-circle" row="1" rowSpan="4" col="1" width="90%" height="90%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="ptCirclePercentage"> </AnimatedCircle>
+        <AnimatedCircle class="update-circle" row="1" rowSpan="4" col="1" width="90%" height="90%" animated="true"
+          animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="ptCirclePercentage">
+        </AnimatedCircle>
       </GridLayout>
     </StackLayout>
 
     <StackLayout class="hr-light" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'"></StackLayout>
 
     // SmartDrive
-    <StackLayout marginTop="30" class="update-stack-layout">
+    <StackLayout marginTop="30" class="update-stack-layout" height="40%">
       <Label class="update-label" row="0" text="SmartDrive"></Label>
-      <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" 
-        marginRight="10" *ngIf="!smartDriveCheckedForUpdates" busy="true"
-        color="#753bbd"></ActivityIndicator>
-      <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto" *ngIf="smartDriveCheckedForUpdates">
-        <AnimatedCircle [class]="!smartDriveUpToDate ? 'update-circle' : 'update-circle-green'" row="1" rowSpan="4" col="1" width="90%" height="90%" 
-          animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" 
-          [progress]="smartDriveOtaProgress"> </AnimatedCircle>
-        <Button *ngIf="noSmartDriveDetected"
-          row="2" col="1" 
-          marginTop="-30"
-          class="update-button" [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives($event)">
-        </Button>
-        <Button *ngFor="let action of smartDriveOtaActions; let i = index"
-          [row]="i + 2" col="1" 
-          [marginTop]="i % 2 === 0 ? -30 : 30"
-          class="update-button" [text]="action.label" (tap)="action.func(action)">
-        </Button>
-        <Label row="3" marginTop="-10" col="1" width="50%" textWrap="true" 
-          *ngIf="!smartDriveUpToDate" class="update-status-label" [text]="smartDriveOtaState"></Label>
-        <Label row="3" marginTop="-20" col="1" width="50%" textWrap="true" 
-          *ngIf="smartDriveUpToDate" class="update-status-label" text="Your SmartDrive is up to date"></Label>
+      <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
+        *ngIf="!smartDriveCheckedForUpdates" busy="true" color="#753bbd"></ActivityIndicator>
+      <GridLayout rows="*" columns="*" *ngIf="smartDriveCheckedForUpdates">
+        <AnimatedCircle [class]="!smartDriveUpToDate ? 'update-circle' : 'update-circle-green'" row="0"
+          width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28"
+          [progress]="smartDriveOtaProgress">
+        </AnimatedCircle>
+        <GridLayout row="0" rows="*, *, *" columns="*">
+          <Button *ngIf="noSmartDriveDetected" row="0" class="update-button"
+            [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives($event)">
+          </Button>
+          <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" class="update-button"
+            [text]="action.label" (tap)="action.func(action)">
+          </Button>
+          <Label row="1" width="50%" textWrap="true" *ngIf="!smartDriveUpToDate" class="update-status-label"
+            [text]="smartDriveOtaState"></Label>
+          <Label row="1" width="50%" textWrap="true" *ngIf="smartDriveUpToDate" class="update-status-label"
+            text="Your SmartDrive is up to date"></Label>
+        </GridLayout>
       </GridLayout>
     </StackLayout>
   </FlexboxLayout>

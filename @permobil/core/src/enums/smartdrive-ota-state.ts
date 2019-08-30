@@ -15,5 +15,6 @@ export enum SD_OTA_State {
   canceled = 'ota.sd.state.canceled',
   failed = 'ota.sd.state.failed',
   comm_failure = 'ota.sd.state.comm-failure',
-  timeout = 'ota.sd.state.timeout'
+  timeout = 'ota.sd.state.timeout',
+  already_uptodate = 'ota.sd.state.already-uptodate'
 }

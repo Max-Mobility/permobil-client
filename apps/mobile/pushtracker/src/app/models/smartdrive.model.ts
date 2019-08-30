@@ -608,6 +608,7 @@ export class SmartDrive extends DeviceBase {
                   mcuVersion >= mcuFWVersion
                 ) {
                   this.setOtaActions(['ota.action.force', 'ota.action.cancel']);
+                  this.otaState = SmartDrive.OTAState.already_uptodate;
                 } else {
                   this.otaState = SmartDrive.OTAState.awaiting_mcu_ready;
                 }
@@ -808,6 +809,7 @@ export class SmartDrive extends DeviceBase {
                   16
                 )}, ${bleVersion.toString(16)}`;
                 console.log(msg);
+                console.log(mcuVersion, mcuFWVersion, bleVersion, bleFWVersion);
                 this.otaState = SmartDrive.OTAState.failed;
                 stopOTA('updates.failed', false, true);
               }

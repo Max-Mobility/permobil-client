@@ -200,7 +200,8 @@
         "timeout": "Timeout",
         "updating-ble": "Updating BT",
         "updating-mcu": "Updating SmartDrive",
-        "verifying": "Verifying"
+        "verifying": "Verifying",
+        "already-uptodate": "Already up to date. Select Force to update anyway."
       }
     }
   },

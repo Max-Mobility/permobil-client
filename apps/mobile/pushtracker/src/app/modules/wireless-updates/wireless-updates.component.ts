@@ -235,10 +235,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           console.log(this.smartDrive.address, this.smartDrive.ble_version, this.smartDrive.mcu_version);
         }
       });
-      if (this.smartDrive) {
-        bleVersion = this.smartDrive.ble_version;
-        mcuVersion = this.smartDrive.mcu_version;
-      }
+      // if (this.smartDrive) {
+      //   bleVersion = this.smartDrive.ble_version;
+      //   mcuVersion = this.smartDrive.mcu_version;
+      // }
     }
 
     if (!this.smartDrive)
