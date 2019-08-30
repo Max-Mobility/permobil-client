@@ -22,7 +22,7 @@
         </StackLayout>
 
         // Privacy Policy Button
-        <Button [isUserInteractionEnabled]="!isUserEditingSetting" (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;"></Button>
+        <Button [isUserInteractionEnabled]="!isUserEditingSetting" (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
 
         // User Email
         <Label [isUserInteractionEnabled]="!isUserEditingSetting" row="2" col="1" colSpan="2" class="profile-email" [text]="user?.username" textWrap="true"></Label>
