@@ -144,7 +144,7 @@ export class BluetoothService {
 
   public async radioEnabled() {
     const _enabled = await this._bluetooth.isBluetoothEnabled();
-    return _enabled && this._bluetooth.enabled;
+    return _enabled;
   }
 
   public available(): Promise<boolean> {
@@ -159,22 +159,16 @@ export class BluetoothService {
     return Promise.resolve(this.enabled && this.initialized); // && this._bluetooth.offersService(BluetoothService.AppServiceUUID);
   }
 
-  public async initialize(): Promise<any> {
-    this.enabled = false;
-    this.initialized = false;
-
-    this.clearEventListeners();
-    this.setEventListeners();
-
-    return this._bluetooth
-      .requestCoarseLocationPermission()
-      .then(() => {
-        this.enabled = true;
-        this.initialized = true;
-      });
+  public async initialize() {
+    if (!this.enabled || !this.initialized) {
+      this.clearEventListeners();
+      this.setEventListeners();
+      this.enabled = true;
+      this.initialized = true;
+    }
   }
 
-  public async advertise(): Promise<any> {
+  public async advertise() {
     if (!this.enabled || !this.initialized) {
       return Promise.reject(
         'You must initialize the bluetooth service before advertising!'
@@ -200,7 +194,7 @@ export class BluetoothService {
 
     this.advertising = true;
 
-    return Promise.resolve();
+    return;
   }
 
   public scanForSmartDrives(timeout: number = 4) {
