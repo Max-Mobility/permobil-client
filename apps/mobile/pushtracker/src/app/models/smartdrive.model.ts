@@ -84,6 +84,8 @@ export class SmartDrive extends DeviceBase {
   private doBLEUpdate: boolean = false;
   private doMCUUpdate: boolean = false;
 
+  canBackNavigate = true;
+
   // functions
   constructor(btService: BluetoothService, obj?: any) {
     super(btService);
@@ -585,6 +587,7 @@ export class SmartDrive extends DeviceBase {
             actions: this.otaActions.slice(),
             state: this.otaState
           });
+          this.canBackNavigate = true;
           return this.disconnect()
             .then(finish)
             .catch(finish);
@@ -601,6 +604,7 @@ export class SmartDrive extends DeviceBase {
               this.setOtaActions(['ota.action.start']);
               break;
             case SmartDrive.OTAState.awaiting_versions:
+              this.canBackNavigate = false;
               if (haveBLEVersion && haveMCUVersion) {
                 if (
                   !autoForce &&

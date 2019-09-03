@@ -71,6 +71,8 @@ export class PushTracker extends Observable {
   // private members
   private _bluetoothService: BluetoothService;
 
+  canBackNavigate = true;
+
   // NON STATIC:
   events: any /*IPushTrackerEvents*/;
 
@@ -468,6 +470,7 @@ export class PushTracker extends Observable {
             actions: this.otaActions.slice(),
             state: this.otaState
           });
+          this.canBackNavigate = true;
         };
         const runOTA = () => {
           // send a state update
@@ -485,6 +488,7 @@ export class PushTracker extends Observable {
               }
               break;
             case PushTracker.OTAState.awaiting_version:
+              this.canBackNavigate = false;
               if (this.ableToSend && haveVersion) {
                 if (this.version >= fwVersion) {
                   this.otaActions = ['ota.action.force', 'ota.action.cancel'];

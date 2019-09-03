@@ -1,6 +1,6 @@
 <GridLayout rows="auto, *" class="wireless-updates-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="canBackNavigate"
+  <MockActionBar row="0" [title]="'general.wireless-updates-component.title' | translate" [showBackNav]="(this.pushTracker ? this.pushTracker.canBackNavigate : true) && (this.smartDrive ? this.smartDrive.canBackNavigate : true)"
     [showMoreBtn]="true" (moreBtnTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
 
   <FlexboxLayout row="1" height="100%" width="80%" flexDirection="column">
