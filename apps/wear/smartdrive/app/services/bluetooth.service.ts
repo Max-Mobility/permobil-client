@@ -144,7 +144,7 @@ export class BluetoothService {
 
   public async radioEnabled() {
     const _enabled = await this._bluetooth.isBluetoothEnabled();
-    return _enabled;
+    return _enabled && this._bluetooth.enabled;
   }
 
   public available(): Promise<boolean> {

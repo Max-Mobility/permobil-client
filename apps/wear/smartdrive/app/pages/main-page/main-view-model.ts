@@ -2161,7 +2161,6 @@ export class MainViewModel extends Observable {
         this.powerAssistState = PowerAssist.State.Disconnected;
         this.powerAssistActive = true;
         this.updatePowerAssistRing();
-        await this.askForPermissions();
         const didConnect = await this.connectToSavedSmartDrive();
         if (didConnect) {
           // vibrate for enabling power assist
@@ -2272,10 +2271,8 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async saveNewSmartDrive(): Promise<any> {
-    this._sentryBreadCrumb('Saving new SmartDrive');
+  async ensureBluetoothCapabilities() {
     try {
-      this.showScanning();
       // ensure we have the permissions
       await this.askForPermissions();
       // ensure bluetooth radio is enabled
@@ -2285,11 +2282,27 @@ export class MainViewModel extends Observable {
         const didEnable = await this._bluetoothService.enableRadio();
         if (!didEnable) {
           // we could not enable the radio!
-          throw 'BLE OFF';
+          // throw 'BLE OFF';
+          this.hideScanning();
+          return false;
         }
       }
       // ensure bluetoothservice is functional
       await this._bluetoothService.initialize();
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async saveNewSmartDrive(): Promise<any> {
+    this._sentryBreadCrumb('Saving new SmartDrive');
+    try {
+      this.showScanning();
+      // make sure everything works
+      if (!this.ensureBluetoothCapabilities()) {
+        return false;
+      }
       // scan for smartdrives
       // @ts-ignore
       this.scanningProgressCircle.spin();
@@ -2356,6 +2369,9 @@ export class MainViewModel extends Observable {
     this.updateSmartDrive(address);
     // now connect to smart drive
     try {
+      if (!this.ensureBluetoothCapabilities()) {
+        return false;
+      }
       await this.smartDrive.connect();
       return true;
     } catch (err) {
