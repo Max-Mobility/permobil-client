@@ -164,8 +164,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // TODO: log error
     }
 
-    console.log('Checked for smartdrive updates', this.currentVersions);
-
     const kinveyQuery = new KinveyQuery();
     kinveyQuery.equalTo('firmware_file', true);
     kinveyQuery.equalTo('_filename', 'SmartDriveBLE.ota');
@@ -215,8 +213,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         // TODO: log error
       }
 
-      console.log('>>>>>>>>>>>> Here!!!');
-
       // Now that we have the files, write them to disk and update
       // our local metadata
       promises = [];
@@ -262,21 +258,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           drives.map(drive => {
             this.smartDrive = drive;
           });
-          console.log(this.smartDrive.address, this.smartDrive.ble_version, this.smartDrive.mcu_version);
         }
       });
     }
 
     if (!this.smartDrive)
       return;
-
-    if (this.smartDrive.isMcuUpToDate(mcuVersion) && this.smartDrive.isBleUpToDate(bleVersion)) {
-      // smartdrive is already up to date
-      this.smartDriveOtaProgress = 100;
-      this.smartDriveCheckedForUpdates = true;
-      this.smartDriveUpToDate = true;
-      return;
-    }
 
     this.smartDriveUpToDate = false;
 
@@ -442,9 +429,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // TODO: log error
     }
 
-    console.log('Checking for pushtracker updates');
-    console.log(this.currentPushTrackerVersions);
-
     const kinveyQuery = new KinveyQuery();
     kinveyQuery.equalTo('firmware_file', true);
     kinveyQuery.equalTo('_filename', 'PushTracker.ota');
@@ -454,8 +438,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // have the most up to date firmware files and download them
       // if we don't
       const mds = kinveyResponse;
-
-      console.log('KinveyResponse ', kinveyResponse);
 
       let promises = [];
       // get the max firmware version for each firmware
@@ -478,8 +460,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         return isMax && (!current || v > currentVersion);
       });
 
-      console.log('File metadatas: ', fileMetaDatas);
-
       // do we need to download any firmware files?
       if (fileMetaDatas && fileMetaDatas.length) {
         // TODO: update UI
@@ -493,8 +473,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       } catch (err) {
         // TODO: log error
       }
-
-      console.log('>>>>>>>>>>>> Here PushTracker!!!');
 
       // Now that we have the files, write them to disk and update
       // our local metadata
@@ -514,11 +492,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performPushTrackerWirelessUpdate() {
-    console.log('Performing pushtracker wireless update');
     // do we need to update? - check against pushtracker version
     const ptVersion = this.currentPushTrackerVersions['PushTracker.ota'].version;
-
-    console.log('PtVersion:', ptVersion);
 
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter((val, index, array) => {
@@ -544,7 +519,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         trackers.map(tracker => {
           this.pushTracker = tracker;
         });
-        console.log('PushTracker address & version:', this.pushTracker.address, this.pushTracker.version);
       }
     }
 
@@ -553,7 +527,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.pushTrackerOtaState = PushTracker.OTAState.failed;
       this.pushTrackerCheckedForUpdates = true;
       this.pushTrackerUpToDate = true;
-      console.log('this.pushTracker is not defined');
       return;
     }
 
