@@ -41,10 +41,8 @@ export class JourneyTabComponent {
   private _today: Date;
   private _weekStart: Date;
   private _weekEnd: Date;
-  private _pushtrackerActivity: any;
-  private _smartDriveUsage: any;
   private _userSubscription$: Subscription;
-  private _journeyMap: Map<number, JourneyItem> = new Map();
+  private _journeyMap = {};
 
   constructor(
     private _logService: LoggingService,
@@ -53,7 +51,7 @@ export class JourneyTabComponent {
     private userService: PushTrackerUserService,
     private _smartDriveUsageService: SmartDriveUsageService,
     private _pushtrackerActivityService: ActivityService
-  ) {}
+  ) { }
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb('JourneyTabComponent loaded');
@@ -70,9 +68,11 @@ export class JourneyTabComponent {
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
-      this._loadWeeklyPushtrackerActivity();
-      this._loadWeeklySmartDriveUsage();
-      this._processJourneyMap();
+      this._loadWeeklyPushtrackerActivity().then(() => {
+        this._loadWeeklySmartDriveUsage().then(() => {
+          this._processJourneyMap();
+        });
+      });
 
       this.journeyItems = [
         {
@@ -150,30 +150,26 @@ export class JourneyTabComponent {
       this._weekStart
     );
     if (didLoad) {
-      const index = this._getIndex(this._weekStart, this._today);
-      this._pushtrackerActivity = this._pushtrackerActivityService.weeklyActivity.days[
-        index
-      ];
-      if (!this._pushtrackerActivity) {
-        // No activity for today
-      } else {
-        // There's activity for today. Update journey list with coast_time/push_count info
-
-        // Assume that activity.records is an ordered list
-        // For each record, get time of day. Build a list of objects, each object looking like:
-        // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-        //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-        //               }
-        for (const i in this._pushtrackerActivity.records) {
-          const record = this._pushtrackerActivity.records[i];
-          if (!this._journeyMap[record.start_time]) {
-            this._journeyMap[record.start_time] = new JourneyItem();
-            this._journeyMap[
-              record.start_time
-            ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+      for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
+        const dailyActivity = this._pushtrackerActivityService.weeklyActivity.days[i];
+        if (dailyActivity) {
+          // There's activity for today. Update journey list with coast_time/push_count info
+          // Assume that activity.records is an ordered list
+          // For each record, get time of day. Build a list of objects, each object looking like:
+          // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+          //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+          //               }
+          for (const i in dailyActivity.records) {
+            const record = dailyActivity.records[i];
+            if (!this._journeyMap[record.start_time]) {
+              this._journeyMap[record.start_time] = new JourneyItem();
+              this._journeyMap[
+                record.start_time
+              ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+            }
+            this._journeyMap[record.start_time].coastTime = record.coast_time_avg;
+            this._journeyMap[record.start_time].pushCount = record.push_count;
           }
-          this._journeyMap[record.start_time].coastTime = record.coast_time_avg;
-          this._journeyMap[record.start_time].pushCount = record.push_count;
         }
       }
     }
@@ -184,57 +180,51 @@ export class JourneyTabComponent {
       this._weekStart
     );
     if (didLoad) {
-      const index = this._getIndex(this._weekStart, this._today);
-      this._smartDriveUsage = this._smartDriveUsageService.weeklyActivity.days[
-        index
-      ];
-      if (!this._smartDriveUsage) {
-        // No usage information for today
-      } else {
-        // There's usage information for today. Update journey list with distance info
+      console.log('Loaded weekly usage');
+      for (const i in this._smartDriveUsageService.weeklyActivity.days) {
+        const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
+        if (dailyUsage) {
+          // There's usage information for today. Update journey list with distance info
 
-        // Assume that usage.records is an ordered list
-        // For each record, get time of day. Build a list of objects, each object looking like:
-        // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-        //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-        //               }
-        let coastDistanceStart = 0;
-        let driveDistanceStart = 0;
-        for (const i in this._smartDriveUsage.records) {
-          const record = this._smartDriveUsage.records[i];
+          // Assume that usage.records is an ordered list
+          // For each record, get time of day. Build a list of objects, each object looking like:
+          // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+          //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+          //               }
+          let coastDistanceStart = 0;
+          let driveDistanceStart = 0;
+          for (const i in dailyUsage.records) {
+            const record = dailyUsage.records[i];
 
-          if (parseInt(i) === 0) {
-            coastDistanceStart = this._smartDriveUsage
-              .distance_smartdrive_coast_start;
-            driveDistanceStart = this._smartDriveUsage
-              .distance_smartdrive_drive_start;
-          } else {
-            coastDistanceStart = this._smartDriveUsage[parseInt(i) - 1]
-              .distance_smartdrive_coast;
-            driveDistanceStart = this._smartDriveUsage[parseInt(i) - 1]
-              .distance_smartdrive_drive;
-          }
+            if (parseInt(i) === 0) {
+              coastDistanceStart = dailyUsage.distance_smartdrive_coast_start;
+              driveDistanceStart = dailyUsage.distance_smartdrive_drive_start;
+            } else {
+              coastDistanceStart = dailyUsage.records[parseInt(i) - 1].distance_smartdrive_coast;
+              driveDistanceStart = dailyUsage.records[parseInt(i) - 1].distance_smartdrive_drive;
+            }
 
-          if (!this._journeyMap[record.start_time]) {
-            this._journeyMap[record.start_time] = new JourneyItem();
+            if (!this._journeyMap[record.start_time]) {
+              this._journeyMap[record.start_time] = new JourneyItem();
+              this._journeyMap[
+                record.start_time
+              ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+            }
             this._journeyMap[
               record.start_time
-            ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
+            ].coastDistance = this._updateDistanceUnit(
+              this._caseTicksToMiles(
+                record.distance_smartdrive_coast - coastDistanceStart
+              )
+            );
+            this._journeyMap[
+              record.start_time
+            ].driveDistance = this._updateDistanceUnit(
+              this._motorTicksToMiles(
+                record.distance_smartdrive_drive - driveDistanceStart
+              )
+            );
           }
-          this._journeyMap[
-            record.start_time
-          ].coastDistance = this._updateDistanceUnit(
-            this._caseTicksToMiles(
-              record.distance_smartdrive_coast - coastDistanceStart
-            )
-          );
-          this._journeyMap[
-            record.start_time
-          ].driveDistance = this._updateDistanceUnit(
-            this._motorTicksToMiles(
-              record.distance_smartdrive_drive - driveDistanceStart
-            )
-          );
         }
       }
     }
@@ -278,8 +268,16 @@ export class JourneyTabComponent {
   }
 
   _processJourneyMap() {
-    // Iterate over _journeyMap
-    // Order by start time and group periods of activity by JourneyType and TimeOfDay
-    // Process result, ready for UI
+    // Sort _journeyMap by key
+    const orderedJourneyMap = {};
+    const self = this;
+    Object.keys(this._journeyMap).sort().forEach(function(key) {
+      orderedJourneyMap[key] = self._journeyMap[key];
+    });
+
+    // console.log('Processing journey map');
+    // for (const key in orderedJourneyMap) {
+    //   console.log(key, orderedJourneyMap[key]);
+    // }
   }
 }
