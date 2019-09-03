@@ -12,6 +12,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 const dialogs = require('tns-core-modules/ui/dialogs');
 import last from 'lodash/last';
 import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 import { Downloader } from 'nativescript-downloader';
 
 @Component({
@@ -41,6 +42,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public smartDriveUpToDate = false;
   public noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
+  private _throttledOtaStatus: any = null;
   public canBackNavigate = true;
 
   /**
@@ -53,7 +55,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public pushTrackerCheckedForUpdates = false;
   public pushTrackerUpToDate = false;
   public noPushTrackerDetected = false;
-  public _throttledPTOtaAction: any = null;
+  private _throttledPTOtaAction: any = null;
+  private _throttledPTOtaStatus: any = null;
 
   constructor(
     private _logService: LoggingService,
@@ -307,9 +310,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       leading: true,
       trailing: true
     });
+
+    this._throttledOtaStatus = throttle(this.onSmartDriveOtaStatus, 250, {
+      leading: true,
+      trailing: true
+    });
+
     this.smartDrive.on(
       SmartDrive.smartdrive_ota_status_event,
-      this.onSmartDriveOtaStatus,
+      this._throttledOtaStatus,
       this
     );
   }
@@ -318,7 +327,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     if (!this.smartDrive) return;
     this.smartDrive.off(
       SmartDrive.smartdrive_ota_status_event,
-      this.onSmartDriveOtaStatus,
+      this._throttledOtaStatus,
       this
     );
   }
@@ -567,9 +576,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       leading: true,
       trailing: true
     });
+
+    this._throttledPTOtaStatus = throttle(this.onPushTrackerOtaStatus, 250, {
+      leading: true,
+      trailing: true
+    });
+
     this.pushTracker.on(
       PushTracker.pushtracker_ota_status_event,
-      this.onPushTrackerOtaStatus,
+      this._throttledPTOtaStatus,
       this
     );
   }
@@ -578,7 +593,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     if (!this.pushTracker) return;
     this.pushTracker.off(
       PushTracker.pushtracker_ota_status_event,
-      this.onPushTrackerOtaStatus,
+      this._throttledPTOtaStatus,
       this
     );
   }
