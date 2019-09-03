@@ -145,6 +145,8 @@ export class MainViewModel extends Observable {
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
   // error related info
   lastErrorId: number = null;
+  // whether the settings have been sent to the smartdrive
+  hasSentSettingsToSmartDrive: boolean = false;
 
   /**
    * State tracking for power assist
@@ -1124,7 +1126,8 @@ export class MainViewModel extends Observable {
     if (
       this.powerAssistActive &&
       this.smartDrive &&
-      this.smartDrive.ableToSend
+      this.smartDrive.ableToSend &&
+      this.hasSentSettingsToSmartDrive
     ) {
       this.smartDrive.sendTap()
         .catch(err => {
@@ -2127,7 +2130,7 @@ export class MainViewModel extends Observable {
         this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
       } else {
         if (this.powerAssistRingColor === PowerAssist.InactiveRingColor) {
-          if (this.smartDrive.ableToSend) {
+          if (this.hasSentSettingsToSmartDrive) {
             this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
           } else {
             this.updatePowerAssistRing(PowerAssist.DisconnectedRingColor);
@@ -2397,6 +2400,7 @@ export class MainViewModel extends Observable {
     try {
       await this.smartDrive.sendSettingsObject(this.settings);
       await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
       Sentry.captureException(err);
       // indicate failure
@@ -2424,6 +2428,7 @@ export class MainViewModel extends Observable {
   async onSmartDriveConnect() {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
+    this.hasSentSettingsToSmartDrive = false;
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
     /*
     if (this.rssiIntervalId) {
@@ -2451,6 +2456,7 @@ export class MainViewModel extends Observable {
       this.saveErrorToDatabase(errorCode, undefined);
     }
     this.motorOn = false;
+    this.hasSentSettingsToSmartDrive = false;
     if (this.powerAssistActive) {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.updatePowerAssistRing();
