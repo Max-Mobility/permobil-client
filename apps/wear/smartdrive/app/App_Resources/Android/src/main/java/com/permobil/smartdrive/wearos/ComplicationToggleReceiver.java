@@ -72,7 +72,7 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     // the complication that has just been toggled.
     editor.putFloat(preferenceKey, appSharedPreferences.getFloat(dataId, 0.0f));
 
-    if (unitsId) {
+    if (unitsId != null) {
       editor.putString(preferenceKey, appSharedPreferences.getString(unitsId, "english"));
     }
 
