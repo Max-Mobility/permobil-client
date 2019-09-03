@@ -2278,6 +2278,16 @@ export class MainViewModel extends Observable {
       this.showScanning();
       // ensure we have the permissions
       await this.askForPermissions();
+      // ensure bluetooth radio is enabled
+      const radioEnabled = await this._bluetoothService.radioEnabled();
+      if (!radioEnabled) {
+        // if the radio is not enabled, we should turn it on
+        const didEnable = await this._bluetoothService.enableRadio();
+        if (!didEnable) {
+          // we could not enable the radio!
+          throw 'BLE OFF';
+        }
+      }
       // ensure bluetoothservice is functional
       await this._bluetoothService.initialize();
       // scan for smartdrives
