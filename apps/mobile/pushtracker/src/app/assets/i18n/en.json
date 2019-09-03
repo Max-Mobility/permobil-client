@@ -210,7 +210,7 @@
         "detected-pt": "Detected PushTracker!",
         "awaiting-version": "Awaiting Version",
         "awaiting-ready": "Waiting on PushTracker",
-        "updating": "Updating",
+        "updating": "Updating PushTracker",
         "rebooting": "Rebooting, please re-pair and re-connect your PushTracker",
         "verifying-update": "Verifying",
         "complete": "Complete",

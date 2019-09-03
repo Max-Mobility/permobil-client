@@ -17,7 +17,7 @@
         </AnimatedCircle>
         <GridLayout row="0" rows="*, *, *" columns="*">
           <Button *ngIf="noPushTrackerDetected" row="0" class="action-start"
-            [text]="'ota.action.scan' | translate" (tap)="onRescanForPushTrackers($event)">
+            [text]="'ota.action.retry' | translate" (tap)="onRescanForPushTrackers($event)">
           </Button>
           <Button *ngFor="let action of pushTrackerOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
             [text]="action.label" (tap)="action.func(action)">
