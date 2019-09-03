@@ -137,8 +137,14 @@ export class BluetoothService {
     );
   }
 
-  public radioEnabled(): Promise<boolean> {
-    return this._bluetooth.isBluetoothEnabled();
+  public async enableRadio() {
+    const didEnable = await this._bluetooth.enable();
+    return didEnable;
+  }
+
+  public async radioEnabled() {
+    const _enabled = await this._bluetooth.isBluetoothEnabled();
+    return _enabled && this._bluetooth.enabled;
   }
 
   public available(): Promise<boolean> {

@@ -145,6 +145,8 @@ export class MainViewModel extends Observable {
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
   // error related info
   lastErrorId: number = null;
+  // whether the settings have been sent to the smartdrive
+  hasSentSettingsToSmartDrive: boolean = false;
 
   /**
    * State tracking for power assist
@@ -1124,7 +1126,8 @@ export class MainViewModel extends Observable {
     if (
       this.powerAssistActive &&
       this.smartDrive &&
-      this.smartDrive.ableToSend
+      this.smartDrive.ableToSend &&
+      this.hasSentSettingsToSmartDrive
     ) {
       this.smartDrive.sendTap()
         .catch(err => {
@@ -2127,7 +2130,7 @@ export class MainViewModel extends Observable {
         this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
       } else {
         if (this.powerAssistRingColor === PowerAssist.InactiveRingColor) {
-          if (this.smartDrive.ableToSend) {
+          if (this.hasSentSettingsToSmartDrive) {
             this.updatePowerAssistRing(PowerAssist.ConnectedRingColor);
           } else {
             this.updatePowerAssistRing(PowerAssist.DisconnectedRingColor);
@@ -2158,7 +2161,6 @@ export class MainViewModel extends Observable {
         this.powerAssistState = PowerAssist.State.Disconnected;
         this.powerAssistActive = true;
         this.updatePowerAssistRing();
-        await this.askForPermissions();
         const didConnect = await this.connectToSavedSmartDrive();
         if (didConnect) {
           // vibrate for enabling power assist
@@ -2269,14 +2271,38 @@ export class MainViewModel extends Observable {
     }
   }
 
+  async ensureBluetoothCapabilities() {
+    try {
+      // ensure we have the permissions
+      await this.askForPermissions();
+      // ensure bluetooth radio is enabled
+      const radioEnabled = await this._bluetoothService.radioEnabled();
+      if (!radioEnabled) {
+        // if the radio is not enabled, we should turn it on
+        const didEnable = await this._bluetoothService.enableRadio();
+        if (!didEnable) {
+          // we could not enable the radio!
+          // throw 'BLE OFF';
+          this.hideScanning();
+          return false;
+        }
+      }
+      // ensure bluetoothservice is functional
+      await this._bluetoothService.initialize();
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async saveNewSmartDrive(): Promise<any> {
     this._sentryBreadCrumb('Saving new SmartDrive');
     try {
       this.showScanning();
-      // ensure we have the permissions
-      await this.askForPermissions();
-      // ensure bluetoothservice is functional
-      await this._bluetoothService.initialize();
+      // make sure everything works
+      if (!this.ensureBluetoothCapabilities()) {
+        return false;
+      }
       // scan for smartdrives
       // @ts-ignore
       this.scanningProgressCircle.spin();
@@ -2343,6 +2369,9 @@ export class MainViewModel extends Observable {
     this.updateSmartDrive(address);
     // now connect to smart drive
     try {
+      if (!this.ensureBluetoothCapabilities()) {
+        return false;
+      }
       await this.smartDrive.connect();
       return true;
     } catch (err) {
@@ -2397,6 +2426,7 @@ export class MainViewModel extends Observable {
     try {
       await this.smartDrive.sendSettingsObject(this.settings);
       await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
       Sentry.captureException(err);
       // indicate failure
@@ -2424,6 +2454,7 @@ export class MainViewModel extends Observable {
   async onSmartDriveConnect() {
     this.powerAssistState = PowerAssist.State.Connected;
     this.updatePowerAssistRing();
+    this.hasSentSettingsToSmartDrive = false;
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
     /*
     if (this.rssiIntervalId) {
@@ -2451,6 +2482,7 @@ export class MainViewModel extends Observable {
       this.saveErrorToDatabase(errorCode, undefined);
     }
     this.motorOn = false;
+    this.hasSentSettingsToSmartDrive = false;
     if (this.powerAssistActive) {
       this.powerAssistState = PowerAssist.State.Disconnected;
       this.updatePowerAssistRing();
