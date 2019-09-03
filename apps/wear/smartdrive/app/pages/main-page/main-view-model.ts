@@ -422,6 +422,7 @@ export class MainViewModel extends Observable {
   }
 
   async askForPermissions() {
+    // Log.D('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest = appSettings.getBoolean(
       DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
@@ -2154,6 +2155,12 @@ export class MainViewModel extends Observable {
       return;
     } else if (this.hasSavedSmartDrive()) {
       try {
+        // make sure everything works
+        const didEnsure = await this.ensureBluetoothCapabilities();
+        if (!didEnsure) {
+          return false;
+        }
+        // now actually set up power assist
         clearInterval(this.chargingWorkTimeoutId);
         this.chargingWorkTimeoutId = null;
         this.tapDetector.reset();
@@ -2219,12 +2226,16 @@ export class MainViewModel extends Observable {
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
-    this.powerAssistActive = false;
-    this.motorOn = false;
+
     if (this._ringTimerId) {
       clearInterval(this._ringTimerId);
     }
     this.updatePowerAssistRing();
+    if (!this.powerAssistActive && !this.motorOn) {
+      return;
+    }
+    this.powerAssistActive = false;
+    this.motorOn = false;
     // turn off the smartdrive
     try {
       await this.disconnectFromSmartDrive();
@@ -2276,16 +2287,22 @@ export class MainViewModel extends Observable {
       // ensure we have the permissions
       await this.askForPermissions();
       // ensure bluetooth radio is enabled
+      // Log.D('checking radio is enabled');
       const radioEnabled = await this._bluetoothService.radioEnabled();
       if (!radioEnabled) {
+        Log.D('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
         const didEnable = await this._bluetoothService.enableRadio();
         if (!didEnable) {
           // we could not enable the radio!
           // throw 'BLE OFF';
-          this.hideScanning();
           return false;
         }
+        // await a promise here to ensure that the radio is back on!
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(resolve, 500);
+        });
+        await promise;
       }
       // ensure bluetoothservice is functional
       await this._bluetoothService.initialize();
@@ -2298,11 +2315,12 @@ export class MainViewModel extends Observable {
   async saveNewSmartDrive(): Promise<any> {
     this._sentryBreadCrumb('Saving new SmartDrive');
     try {
-      this.showScanning();
       // make sure everything works
-      if (!this.ensureBluetoothCapabilities()) {
+      const didEnsure = await this.ensureBluetoothCapabilities();
+      if (!didEnsure) {
         return false;
       }
+      this.showScanning();
       // scan for smartdrives
       // @ts-ignore
       this.scanningProgressCircle.spin();
@@ -2369,7 +2387,9 @@ export class MainViewModel extends Observable {
     this.updateSmartDrive(address);
     // now connect to smart drive
     try {
-      if (!this.ensureBluetoothCapabilities()) {
+      const didEnsure = await this.ensureBluetoothCapabilities();
+      if (!didEnsure) {
+        Log.E('could not ensure bluetooth capabilities!');
         return false;
       }
       await this.smartDrive.connect();
@@ -3029,6 +3049,7 @@ export class MainViewModel extends Observable {
   }
 
   private _sentryBreadCrumb(message: string) {
+    // Log.D(message);
     Sentry.captureBreadcrumb({
       message,
       category: 'info',

@@ -1156,11 +1156,13 @@ export class SmartDrive extends DeviceBase {
   public handleNotify(args: any) {
     // Notify is called when the SmartDrive sends us data, args.value is the data
     // now that we're receiving data we can definitly send data
+    /*
     if (!this.notifying || !this.ableToSend) {
       // request high priority connection on first data received
       const requestWorked = this.requestHighPriorityConnection();
       console.log('got high priority connection?', requestWorked);
     }
+    */
     // update state
     this.notifying = true;
     this.ableToSend = true;
