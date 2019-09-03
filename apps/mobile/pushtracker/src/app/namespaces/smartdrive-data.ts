@@ -6,7 +6,6 @@ import { device } from 'tns-core-modules/platform';
 
 const downloadManager = new Downloader();
 Downloader.init();
-// Downloader.setTimeout(120);
 
 export namespace SmartDriveData {
   export namespace Info {
@@ -318,6 +317,7 @@ export namespace SmartDriveData {
       const downloadId = downloadManager.createDownload({ url });
       return downloadManager
         .start(downloadId, (progressData: ProgressEventData) => {
+          console.log('SmartDrive Download', progressData);
           if (progressCallback && typeof progressCallback === 'function') {
             progressCallback(f, progressData);
           } else {

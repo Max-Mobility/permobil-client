@@ -5,17 +5,30 @@
 
   <FlexboxLayout row="1" height="100%" width="80%" flexDirection="column">
     // PushTracker
-    <StackLayout marginTop="30" class="update-stack-layout"
-      *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'">
-      <Label class="update-label" text="PushTracker"></Label>
-      <GridLayout rows="auto, auto, auto, auto, auto" columns="auto, *, auto">
-        <AnimatedCircle class="update-circle" row="1" rowSpan="4" col="1" width="90%" height="90%" animated="true"
-          animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="ptCirclePercentage">
+    <StackLayout marginTop="30" class="update-stack-layout" height="40%"
+      *ngIf="controlConfiguration === 'PushTracker with SmartDrive'">
+      <Label class="update-label" row="0" text="PushTracker"></Label>
+      <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
+        *ngIf="!pushTrackerCheckedForUpdates" busy="true" color="#753bbd"></ActivityIndicator>
+      <GridLayout rows="*" columns="*" *ngIf="pushTrackerCheckedForUpdates">
+        <AnimatedCircle [class]="pushTrackerOtaProgress < 100 ? 'update-circle' : 'update-circle-green'" row="0"
+          width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28"
+          [progress]="pushTrackerOtaProgress">
         </AnimatedCircle>
+        <GridLayout row="0" rows="*, *, *" columns="*">
+          <Button *ngIf="noPushTrackerDetected" row="0" class="action-start"
+            [text]="'ota.action.scan' | translate" (tap)="onRescanForPushTrackers($event)">
+          </Button>
+          <Button *ngFor="let action of pushTrackerOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
+            [text]="action.label" (tap)="action.func(action)">
+          </Button>
+          <Label row="1" width="50%" textWrap="true" class="update-status-label"
+            [text]="pushTrackerOtaState"></Label>
+        </GridLayout>
       </GridLayout>
     </StackLayout>
 
-    <StackLayout class="hr-light" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'"></StackLayout>
+    <StackLayout marginTop="30" class="hr-light" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'"></StackLayout>
 
     // SmartDrive
     <StackLayout marginTop="30" class="update-stack-layout" height="40%">

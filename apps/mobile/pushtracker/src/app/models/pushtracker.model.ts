@@ -3,6 +3,12 @@ import { Observable } from 'tns-core-modules/data/observable';
 import { isIOS } from 'tns-core-modules/platform';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services';
+import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
+import { eachDay, format, subDays } from 'date-fns';
+import { getFile } from 'tns-core-modules/http';
+import { Downloader, ProgressEventData, DownloadEventData } from 'nativescript-downloader';
+import { device } from 'tns-core-modules/platform';
+const downloadManager = new Downloader();
 
 enum OTAState {
   not_started = 'ota.pt.state.not-started',
@@ -15,12 +21,15 @@ enum OTAState {
   canceling = 'ota.pt.state.canceling',
   canceled = 'ota.pt.state.canceled',
   failed = 'ota.pt.state.failed',
-  timeout = 'ota.pt.state.timeout'
+  timeout = 'ota.pt.state.timeout',
+  already_uptodate = 'ota.pt.state.already-uptodate',
+  detected_pt = 'ota.pt.state.detected-pt'
 }
 
 export class PushTracker extends Observable {
   // STATIC:
   static readonly OTAState = OTAState;
+  readonly OTAState = PushTracker.OTAState;
 
   // bluetooth info
   static ServiceUUID = '1d14d6ee-fd63-4fa1-bfa4-8f47b42119f0';
@@ -49,15 +58,16 @@ export class PushTracker extends Observable {
   static ota_ready_event = 'ota_ready_event';
 
   // user interaction events
-  static ota_start_event = 'ota_start_event';
-  static ota_pause_event = 'ota_pause_event';
-  static ota_resume_event = 'ota_resume_event';
-  static ota_cancel_event = 'ota_cancel_event';
-  static ota_force_event = 'ota_force_event';
-  static ota_retry_event = 'ota_retry_event';
-  static ota_failed_event = 'ota_failed_event';
-  static ota_timeout_event = 'ota_timeout_event';
-  readonly OTAState = PushTracker.OTAState;
+  public static ota_start_event = 'ota_start_event';
+  public static ota_pause_event = 'ota_pause_event';
+  public static ota_resume_event = 'ota_resume_event';
+  public static ota_cancel_event = 'ota_cancel_event';
+  public static ota_force_event = 'ota_force_event';
+  public static ota_retry_event = 'ota_retry_event';
+  public static ota_failed_event = 'ota_failed_event';
+  public static ota_timeout_event = 'ota_timeout_event';
+  public static pushtracker_ota_status_event =
+    'pushtracker_ota_status_event';  // sends state, actions, progress
 
   // private members
   private _bluetoothService: BluetoothService;
@@ -174,9 +184,11 @@ export class PushTracker extends Observable {
   }
 
   isUpToDate(version: string, checkAll?: boolean): boolean {
-    const v = PushTracker.versionStringToByte(version);
+    const v = typeof version === 'number'
+      ? version
+      : PushTracker.versionStringToByte(version);
     if (v === 0xff) {
-      return true;
+      return false;
     }
     const versions = [this.version];
     if (checkAll) {
@@ -268,7 +280,7 @@ export class PushTracker extends Observable {
           // set the progress
           this.otaProgress = 0;
           // set the state
-          this.otaState = PushTracker.OTAState.not_started;
+          this.otaState = PushTracker.OTAState.detected_pt;
           this.otaActions = [];
           if (this.connected) {
             if (this.version !== 0xff) {
@@ -451,10 +463,22 @@ export class PushTracker extends Observable {
           } else {
             resolve(reason);
           }
+          // send a state update
+          this.sendEvent(PushTracker.pushtracker_ota_status_event, {
+            progress: this.otaProgress,
+            actions: this.otaActions.slice(),
+            state: this.otaState
+          });
         };
         const runOTA = () => {
+          // send a state update
+          this.sendEvent(PushTracker.pushtracker_ota_status_event, {
+            progress: this.otaProgress,
+            actions: this.otaActions.slice(),
+            state: this.otaState
+          });
           switch (this.otaState) {
-            case PushTracker.OTAState.not_started:
+            case PushTracker.OTAState.detected_pt:
               if (this.connected && this.ableToSend) {
                 this.otaActions = ['ota.action.start'];
               } else {
@@ -465,6 +489,7 @@ export class PushTracker extends Observable {
               if (this.ableToSend && haveVersion) {
                 if (this.version >= fwVersion) {
                   this.otaActions = ['ota.action.force', 'ota.action.cancel'];
+                  this.otaState = PushTracker.OTAState.already_uptodate;
                 } else {
                   this.otaState = PushTracker.OTAState.awaiting_ready;
                 }
@@ -1027,6 +1052,142 @@ export class PushTracker extends Observable {
     }
   }
 }
+
+export namespace PushTrackerData {
+
+  export namespace Firmware {
+    export const TableName = 'PushTrackerFirmware';
+    export const IdName = 'id';
+    export const VersionName = 'version';
+    export const FirmwareName = 'firmware';
+    export const FileName = 'filename';
+    export const ChangesName = 'changes';
+    export const Fields = [
+      { name: VersionName, type: 'int' },
+      { name: FirmwareName, type: 'TEXT' },
+      { name: FileName, type: 'TEXT' },
+      { name: ChangesName, type: 'TEXT' }
+    ];
+
+    export function loadFromFileSystem(f) {
+      const file = File.fromPath(f.filename || f[PushTrackerData.Firmware.FileName]);
+      return file.readSync((err) => {
+        console.error('Could not load from fs:', err);
+      });
+    }
+
+    export function saveToFileSystem(f) {
+      const file = File.fromPath(f.filename || f[PushTrackerData.Firmware.FileName]);
+      // console.log('f.filename', f.filename, file);
+      // console.log('f.data', typeof f.data, f.data.length);
+      file.writeSync(f.data, (err) => {
+        console.error('Could not save to fs:', err);
+      });
+    }
+
+    export type ProgressCallback = (file: any, eventData: ProgressEventData) => void;
+    let progressCallback: ProgressCallback = null;
+
+    export function setDownloadProgressCallback(cb: ProgressCallback) {
+      progressCallback = cb;
+    }
+
+    export function download(f: any) {
+      let url = f['_downloadURL'];
+      // make sure they're https!
+      if (!url.startsWith('https:')) {
+        url = url.replace('http:', 'https:');
+      }
+      console.log('Downloading FW update', f['_filename']);
+
+      const downloadId = downloadManager.createDownload({ url });
+      return downloadManager
+        .start(downloadId, (progressData: ProgressEventData) => {
+          console.log('PushTracker Download', progressData);
+          if (progressCallback && typeof progressCallback === 'function') {
+            progressCallback(f, progressData);
+          } else {
+            // console.log('url progress', progressData, url);
+          }
+        })
+        .then((completed: DownloadEventData) => {
+          const fileData = File.fromPath(completed.path).readSync();
+          return {
+            version: PushTrackerData.Firmware.versionStringToByte(
+              f['version']
+            ),
+            name: f['_filename'],
+            data: fileData,
+            changes:
+              f['change_notes'][device.language] || f['change_notes']['en']
+          };
+        })
+        .catch(error => {
+          console.error('download error', url, error);
+        });
+    }
+
+    export function versionByteToString(version: number): string {
+      if (version === 0xff || version === 0x00) {
+        return 'unknown';
+      } else {
+        return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
+      }
+    }
+
+    export function versionStringToByte(version: string): number {
+      const [major, minor] = version.split('.');
+      return (parseInt(major) << 4) | parseInt(minor);
+    }
+
+    export function getFileName(firmware: string): string {
+      return path.join(
+        knownFolders.currentApp().path,
+        'assets',
+        'firmwares',
+        firmware
+      );
+    }
+
+    export function loadFirmware(
+      id: any,
+      version: number,
+      firmwareName: string,
+      fileName: string,
+      changes: string
+    ) {
+      return {
+        [PushTrackerData.Firmware.IdName]: id,
+        [PushTrackerData.Firmware.VersionName]: version,
+        [PushTrackerData.Firmware.FirmwareName]: firmwareName,
+        [PushTrackerData.Firmware.FileName]: fileName,
+        [PushTrackerData.Firmware.ChangesName]: changes
+          ? JSON.parse(changes)
+          : []
+      };
+    }
+
+    export function newFirmware(
+      version: number,
+      firmwareName: string,
+      fileName?: string,
+      changes?: string[]
+    ) {
+      const fname =
+        fileName || PushTrackerData.Firmware.getFileName(firmwareName);
+      return {
+        [PushTrackerData.Firmware.VersionName]: version,
+        [PushTrackerData.Firmware.FirmwareName]: firmwareName,
+        [PushTrackerData.Firmware.FileName]: fname,
+        [PushTrackerData.Firmware.ChangesName]: changes
+          ? JSON.stringify(changes)
+          : '[]'
+      };
+    }
+  }
+
+}
+
 
 /**
  * All of the events for PushTracker that can be emitted and listened

@@ -203,6 +203,23 @@
         "verifying": "Verifying",
         "already-uptodate": "Already up to date. Select Force to update anyway."
       }
+    },
+    "pt": {
+      "state": {
+        "not-started": "Not Started",
+        "detected-pt": "Detected PushTracker!",
+        "awaiting-version": "Awaiting Version",
+        "awaiting-ready": "Waiting on PushTracker",
+        "updating": "Updating",
+        "rebooting": "Rebooting, please re-pair and re-connect your PushTracker",
+        "verifying-update": "Verifying",
+        "complete": "Complete",
+        "canceling": "Canceling",
+        "canceled": "Canceled",
+        "failed": "Failed",
+        "timeout": "Timeout",
+        "already-uptodate": "Already up to date. Select Force to update anyway."
+      }
     }
   },
   "profile-settings": {

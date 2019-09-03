@@ -166,7 +166,7 @@ export class SmartDrive extends DeviceBase {
         ? version
         : SmartDrive.versionStringToByte(version);
     if (v === 0xff) {
-      return true;
+      return false;
     }
     const versions = [this.mcu_version, this.ble_version];
     return versions.reduce((a, e) => {

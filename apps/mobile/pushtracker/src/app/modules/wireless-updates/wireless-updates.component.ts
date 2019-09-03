@@ -5,12 +5,14 @@ import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService, BluetoothService } from '../../services';
 import { SmartDriveData } from '../../namespaces';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { SmartDrive } from '~/app/models';
+import { SmartDrive, PushTracker } from '~/app/models';
+import { PushTrackerData } from '~/app/models/pushtracker.model';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import * as appSettings from 'tns-core-modules/application-settings';
 const dialogs = require('tns-core-modules/ui/dialogs');
 import last from 'lodash/last';
 import debounce from 'lodash/debounce';
+import { Downloader } from 'nativescript-downloader';
 
 @Component({
   selector: 'wireless-updates',
@@ -41,6 +43,18 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   private _throttledOtaAction: any = null;
   public canBackNavigate = true;
 
+  /**
+   * PushTracker Data / state management
+   */
+  pushTrackerOtaProgress: number = 0;
+  pushTrackerOtaState: string = null;
+  pushTrackerOtaActions = [];
+  public pushTracker: PushTracker;
+  public pushTrackerCheckedForUpdates = false;
+  public pushTrackerUpToDate = false;
+  public noPushTrackerDetected = false;
+  public _throttledPTOtaAction: any = null;
+
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
@@ -48,11 +62,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _bluetoothService: BluetoothService
   ) {
     this.controlConfiguration = _params.context.controlConfiguration || '';
-    this.checkForSmartDriveUpdates();
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
+    Downloader.init();
+    this.checkForSmartDriveUpdates();
+    const self = this;
+    if (this.controlConfiguration === 'PushTracker with SmartDrive')
+      setTimeout(function() { self.checkForPushTrackerUpdates(); }, 10000);
   }
 
   ngAfterViewInit() {
@@ -71,6 +89,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.smartDriveCheckedForUpdates = false;
     this.smartDriveOtaProgress = 0;
     this.checkForSmartDriveUpdates();
+  }
+
+  onRescanForPushTrackers() {
+    this.noPushTrackerDetected = false;
+    this.pushTrackerCheckedForUpdates = false;
+    this.pushTrackerOtaProgress = 0;
+    this.checkForPushTrackerUpdates();
   }
 
   async getFirmwareData() {
@@ -135,10 +160,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   private currentVersions = {};
   async checkForSmartDriveUpdates() {
     try {
-      this.currentVersions = await this.getFirmwareData();
+      const smartDriveVersions = await this.getFirmwareData();
+      this.currentVersions = { ...this.currentVersions, ...smartDriveVersions };
     } catch (err) {
       // TODO: log error
     }
+
+    console.log('Checked for smartdrive updates', this.currentVersions);
 
     const kinveyQuery = new KinveyQuery();
     kinveyQuery.equalTo('firmware_file', true);
@@ -181,12 +209,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         // now download the files
         promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
       }
+
       let files = null;
       try {
         files = await Promise.all(promises);
       } catch (err) {
         // TODO: log error
       }
+
+      console.log('>>>>>>>>>>>> Here!!!');
 
       // Now that we have the files, write them to disk and update
       // our local metadata
@@ -344,4 +375,279 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.smartDriveOtaProgress = 100;
     }
   }
+
+  async getPushTrackerFirmwareData() {
+    const versions = JSON.parse(appSettings.getString(PushTrackerData.Firmware.TableName));
+
+    const objs = [];
+    for (const key in versions) {
+      objs.push(versions[key]);
+    }
+    if (objs.length) {
+      // @ts-ignore
+      const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(...o));
+      // make the metadata
+      return mds.reduce((data, md) => {
+        const fname = md[PushTrackerData.Firmware.FileName];
+        const blob = PushTrackerData.Firmware.loadFromFileSystem({
+          filename: fname
+        });
+        if (blob && blob.length) {
+          data[md[PushTrackerData.Firmware.FirmwareName]] = {
+            version: md[PushTrackerData.Firmware.VersionName],
+            filename: fname,
+            id: md[PushTrackerData.Firmware.IdName],
+            changes: md[PushTrackerData.Firmware.ChangesName],
+            data: blob
+          };
+        }
+        return data;
+      }, {});
+    }
+  }
+
+  async updatePushTrackerFirmwareData(f: any) {
+    const id = this.currentPushTrackerVersions[f.name] && this.currentPushTrackerVersions[f.name].id;
+    // update the data in the db
+    const newFirmware = PushTrackerData.Firmware.newFirmware(
+      f.version,
+      f.name,
+      undefined,
+      f.changes
+    );
+    // update current versions
+    this.currentPushTrackerVersions[f.name] = {
+      version: f.version,
+      changes: f.changes,
+      filename: newFirmware[PushTrackerData.Firmware.FileName],
+      data: f.data
+    };
+    // save binary file to fs
+    PushTrackerData.Firmware.saveToFileSystem({
+      filename: this.currentPushTrackerVersions[f.name].filename,
+      data: f.data
+    });
+    if (id !== undefined) {
+      this.currentPushTrackerVersions[f.name].id = id;
+      newFirmware[PushTrackerData.Firmware.IdName] = id;
+    }
+    appSettings.setString(PushTrackerData.Firmware.TableName,
+      JSON.stringify(this.currentPushTrackerVersions));
+  }
+
+  private currentPushTrackerVersions = {};
+  async checkForPushTrackerUpdates() {
+    try {
+      const pushTrackerVersions = await this.getPushTrackerFirmwareData();
+      this.currentPushTrackerVersions = { ...this.currentPushTrackerVersions, ...pushTrackerVersions };
+    } catch (err) {
+      // TODO: log error
+    }
+
+    console.log('Checking for pushtracker updates');
+    console.log(this.currentPushTrackerVersions);
+
+    const kinveyQuery = new KinveyQuery();
+    kinveyQuery.equalTo('firmware_file', true);
+    kinveyQuery.equalTo('_filename', 'PushTracker.ota');
+
+    KinveyFiles.find(kinveyQuery).then(async kinveyResponse => {
+      // Now that we have the metadata, check to see if we already
+      // have the most up to date firmware files and download them
+      // if we don't
+      const mds = kinveyResponse;
+
+      console.log('KinveyResponse ', kinveyResponse);
+
+      let promises = [];
+      // get the max firmware version for each firmware
+      const maxes = mds.reduce((maxes, md) => {
+        const v = PushTracker.versionStringToByte(md['version']);
+        const fwName = md['_filename'];
+        if (!maxes[fwName]) maxes[fwName] = 0;
+        maxes[fwName] = Math.max(v, maxes[fwName]);
+        return maxes;
+      }, {});
+
+      // filter only the firmwares that we don't have or that are newer
+      // than the ones we have (and are the max)
+      const fileMetaDatas = mds.filter(f => {
+        const v = PushTracker.versionStringToByte(f['version']);
+        const fwName = f['_filename'];
+        const current = this.currentPushTrackerVersions[fwName];
+        const currentVersion = current && current.version;
+        const isMax = v === maxes[fwName];
+        return isMax && (!current || v > currentVersion);
+      });
+
+      console.log('File metadatas: ', fileMetaDatas);
+
+      // do we need to download any firmware files?
+      if (fileMetaDatas && fileMetaDatas.length) {
+        // TODO: update UI
+
+        // now download the files
+        promises = fileMetaDatas.map(PushTrackerData.Firmware.download);
+      }
+      let files = null;
+      try {
+        files = await Promise.all(promises);
+      } catch (err) {
+        // TODO: log error
+      }
+
+      console.log('>>>>>>>>>>>> Here PushTracker!!!');
+
+      // Now that we have the files, write them to disk and update
+      // our local metadata
+      promises = [];
+      if (files && files.length) {
+        promises = files.map(this.updatePushTrackerFirmwareData.bind(this));
+      }
+      try {
+        await Promise.all(promises);
+      } catch (err) {
+        // TODO: log error
+      }
+
+      // Now perform the PushTracker updates if we need to
+      this.performPushTrackerWirelessUpdate();
+    });
+  }
+
+  async performPushTrackerWirelessUpdate() {
+    console.log('Performing pushtracker wireless update');
+    // do we need to update? - check against pushtracker version
+    const ptVersion = this.currentPushTrackerVersions['PushTracker.ota'].version;
+
+    console.log('PtVersion:', ptVersion);
+
+    if (!this.pushTracker) {
+      const trackers = BluetoothService.PushTrackers.filter((val, index, array) => {
+        return val.connected;
+      });
+      if (trackers.length === 0) {
+        dialogs.alert('Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.');
+        this.pushTrackerCheckedForUpdates = true;
+        this.pushTrackerOtaState = this._translateService.instant('No PushTrackers detected!');
+        this.pushTrackerOtaProgress = 0;
+        this.noPushTrackerDetected = true;
+        return;
+      }
+      else if (trackers.length > 1) {
+        dialogs.alert('More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry');
+        this.pushTrackerCheckedForUpdates = true;
+        this.pushTrackerOtaState = this._translateService.instant('More than one PushTracker detected!');
+        this.pushTrackerOtaProgress = 0;
+        this.noPushTrackerDetected = true;
+        return;
+      }
+      else {
+        trackers.map(tracker => {
+          this.pushTracker = tracker;
+        });
+        console.log('PushTracker address & version:', this.pushTracker.address, this.pushTracker.version);
+      }
+    }
+
+    if (!this.pushTracker) {
+      this.pushTrackerOtaProgress = 0;
+      this.pushTrackerOtaState = PushTracker.OTAState.failed;
+      this.pushTrackerCheckedForUpdates = true;
+      this.pushTrackerUpToDate = true;
+      console.log('this.pushTracker is not defined');
+      return;
+    }
+
+    this.pushTrackerUpToDate = false;
+
+    // the smartdrive is not up to date, so we need to update it.
+    // reset the ota progress to 0 (since downloaing may have used it)
+    // this.smartDriveOtaProgress = 0;
+    // get info out to tell the user
+    const version = PushTracker.versionByteToString(ptVersion);
+    Log.D('got version', version);
+    // show dialog to user informing them of the version number and changes
+    const changes = Object.keys(this.currentPushTrackerVersions).map(
+      k => this.currentPushTrackerVersions[k].changes
+    );
+    const ptFw = new Uint8Array(
+      this.currentPushTrackerVersions['PushTracker.ota'].data
+    );
+    // pushtracker needs to update
+    let otaStatus = '';
+    try {
+      this.registerForPushTrackerEvents();
+      otaStatus = await this.pushTracker
+        .performOTA(ptFw, ptVersion, 300 * 1000);
+    } catch (err) {
+      if (this.pushTracker)
+        this.pushTracker.cancelOTA();
+    }
+    this.unregisterForPushTrackerEvents();
+  }
+
+  registerForPushTrackerEvents() {
+    if (!this.pushTracker) return;
+    this.unregisterForPushTrackerEvents();
+    // set up ota action handler
+    // throttled function to keep people from pressing it too frequently
+    this._throttledPTOtaAction = debounce(this.pushTracker.onOTAActionTap, 500, {
+      leading: true,
+      trailing: true
+    });
+    this.pushTracker.on(
+      PushTracker.pushtracker_ota_status_event,
+      this.onPushTrackerOtaStatus,
+      this
+    );
+  }
+
+  unregisterForPushTrackerEvents() {
+    if (!this.pushTracker) return;
+    this.pushTracker.off(
+      PushTracker.pushtracker_ota_status_event,
+      this.onPushTrackerOtaStatus,
+      this
+    );
+  }
+
+  onPushTrackerOtaStatus(args: any) {
+    // this.canBackNavigate = true;
+    // get the current progress of the update
+    const progress = args.data.progress;
+    // translate the state
+    const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
+    // now turn the actions into structures for our UI
+    const actions = args.data.actions.map(a => {
+      // if (a.includes('cancel')) {
+      //   this.canBackNavigate = false;
+      // }
+      const actionClass = 'action-' + last(a.split('.')) +
+        ' compact';
+      // translate the label
+      const actionLabel = this._translateService.instant(a); // .replace('ota.action.', '');
+      return {
+        label: actionLabel,
+        func: this._throttledPTOtaAction.bind(this.pushTracker, a),
+        action: a,
+        class: actionClass
+      };
+    });
+    // now set the renderable bound data
+    this.pushTrackerOtaProgress = progress;
+    this.pushTrackerOtaActions.splice(
+      0,
+      this.pushTrackerOtaActions.length,
+      ...actions
+    );
+    this.pushTrackerOtaState = state;
+    if (!this.pushTrackerCheckedForUpdates)
+      this.pushTrackerCheckedForUpdates = true;
+    if (this.pushTracker.otaState === PushTracker.OTAState.already_uptodate ||
+        this.pushTracker.otaState === PushTracker.OTAState.complete) {
+      this.pushTrackerOtaProgress = 100;
+    }
+  }
+
 }
