@@ -6,9 +6,8 @@ import { BluetoothService } from '../services';
 import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
 import { getFile } from 'tns-core-modules/http';
-import { Downloader, ProgressEventData, DownloadEventData } from 'nativescript-downloader';
 import { device } from 'tns-core-modules/platform';
-const downloadManager = new Downloader();
+import { DownloadProgress } from 'nativescript-download-progress';
 
 enum OTAState {
   not_started = 'ota.pt.state.not-started',
@@ -1085,13 +1084,6 @@ export namespace PushTrackerData {
       });
     }
 
-    export type ProgressCallback = (file: any, eventData: ProgressEventData) => void;
-    let progressCallback: ProgressCallback = null;
-
-    export function setDownloadProgressCallback(cb: ProgressCallback) {
-      progressCallback = cb;
-    }
-
     export function download(f: any) {
       let url = f['_downloadURL'];
       // make sure they're https!
@@ -1100,31 +1092,22 @@ export namespace PushTrackerData {
       }
       console.log('Downloading FW update', f['_filename']);
 
-      const downloadId = downloadManager.createDownload({ url });
-      return downloadManager
-        .start(downloadId, (progressData: ProgressEventData) => {
-          console.log('PushTracker Download', progressData);
-          if (progressCallback && typeof progressCallback === 'function') {
-            progressCallback(f, progressData);
-          } else {
-            // console.log('url progress', progressData, url);
-          }
-        })
-        .then((completed: DownloadEventData) => {
-          const fileData = File.fromPath(completed.path).readSync();
-          return {
-            version: PushTrackerData.Firmware.versionStringToByte(
-              f['version']
-            ),
-            name: f['_filename'],
-            data: fileData,
-            changes:
-              f['change_notes'][device.language] || f['change_notes']['en']
-          };
-        })
-        .catch(error => {
-          console.error('download error', url, error);
-        });
+      const download = new DownloadProgress();
+      return download.downloadFile(url).then(file => {
+        const fileData = File.fromPath(file.path).readSync();
+        return {
+          version: PushTrackerData.Firmware.versionStringToByte(
+            f['version']
+          ),
+          name: f['_filename'],
+          data: fileData,
+          changes:
+            f['change_notes'][device.language] || f['change_notes']['en']
+        };
+      })
+      .catch(error => {
+        console.error('download error', url, error);
+      });
     }
 
     export function versionByteToString(version: number): string {

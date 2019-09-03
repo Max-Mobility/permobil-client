@@ -68,9 +68,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
     Downloader.init();
     this.checkForSmartDriveUpdates();
-    const self = this;
-    if (this.controlConfiguration === 'PushTracker with SmartDrive')
-      setTimeout(function() { self.checkForPushTrackerUpdates(); }, 10000);
+    this.checkForPushTrackerUpdates();
   }
 
   ngAfterViewInit() {
