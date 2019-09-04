@@ -6,12 +6,14 @@ import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.componen
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { SupportComponent } from './support/support.component';
+import { UpdatesInfoComponent } from './updates-info/updates-info.component';
 
 export const ENTRY_COMPONENTS = [
   ProfileSettingsComponent,
   AppInfoComponent,
   PrivacyPolicyComponent,
-  SupportComponent
+  SupportComponent,
+  UpdatesInfoComponent
 ];
 
 export const COMPONENTS = [
@@ -22,7 +24,8 @@ export const COMPONENTS = [
   ProfileSettingsComponent,
   PrivacyPolicyComponent,
   SupportComponent,
-  ConfigurationTabComponent
+  ConfigurationTabComponent,
+  UpdatesInfoComponent
 ];
 
 export * from './activity-goal-setting';

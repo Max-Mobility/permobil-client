@@ -367,5 +367,29 @@
       "research": "I give my consent to the usage of my data for product development as described in the privacy policy",
       "product-development": "I give my consent to the usage of my data for research as described in the privacy policy"
     }
+  },
+  "updates-info-component": {
+    "sections": [
+      {
+        "text": "Permobil is delivering a better experience to users of the SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": ""
+      },
+      {
+        "lottie": "wheelchair.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Working towards better health"
+      },
+      {
+        "lottie": "trophy.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Why do the goals matter?"
+      },
+      {
+        "lottie": "bullseye.json",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
+        "title": "Hit your goals and finish strong"
+      }
+    ],
+    "title": "Firmware Updates"
   }
 }

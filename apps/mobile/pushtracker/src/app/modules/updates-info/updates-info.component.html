@@ -1,0 +1,14 @@
+<GridLayout rows="auto, *" class="updates-info-layout">
+  // Mock ActionBar
+  <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="closeModal()"></MockActionBar>
+
+  <ScrollView row="1" height="100%">
+    <StackLayout paddingTop="20">
+      <Label width="98%" class="title" [text]="'updates-info-component.title' | translate" textWrap="true"></Label>
+      // text sections from the updates-info-component translation sections
+      <StackLayout padding="10" *ngFor="let item of infoItems">
+        <Label class="section-text" [text]="item.text" textWrap="true"></Label>
+      </StackLayout>
+    </StackLayout>
+  </ScrollView>
+</GridLayout>

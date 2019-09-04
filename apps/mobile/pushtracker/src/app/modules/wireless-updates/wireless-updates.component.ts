@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, Device } from '@permobil/core';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
+import { ModalDialogParams, ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { LoggingService, BluetoothService } from '../../services';
 import { SmartDriveData } from '../../namespaces';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
@@ -18,6 +18,9 @@ import { Page } from 'tns-core-modules/ui/page/page';
 import * as app from 'tns-core-modules/application';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { confirm } from 'tns-core-modules/ui/dialogs';
+import { UpdatesInfoComponent } from '../../modules/updates-info/updates-info.component';
+import { Toasty } from 'nativescript-toasty';
+import { Color } from 'tns-core-modules/ui/content-view';
 
 @Component({
   selector: 'wireless-updates',
@@ -68,7 +71,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
-    private _routerExtensions: RouterExtensions
+    private _routerExtensions: RouterExtensions,
+    private _modalService: ModalDialogService,
+    private _vcRef: ViewContainerRef
   ) {
     this.controlConfiguration = _params.context.controlConfiguration || '';
   }
@@ -84,6 +89,28 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   onMoreBtnTap() {
     console.log('morebtn tapped in mock action bar');
+    this._modalService
+    .showModal(UpdatesInfoComponent, {
+      context: {
+        'SmartDriveBLE.ota': this.currentVersions['SmartDriveBLE.ota'],
+        'SmartDriveMCU.ota': this.currentVersions['SmartDriveMCU.ota'],
+        'PushTracker.ota': this.currentPushTrackerVersions['PushTracker.ota']
+      },
+      fullscreen: true,
+      animated: true,
+      viewContainerRef: this._vcRef
+    })
+    .then(() => {
+      // Do anything?
+    })
+    .catch(err => {
+      Log.E(err);
+      new Toasty({
+        text:
+          'An unexpected error occurred. If this continues please let us know.',
+        textColor: new Color('#fff000')
+      });
+    });
   }
 
   closeModal() {
