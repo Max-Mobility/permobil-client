@@ -352,6 +352,7 @@ export class JourneyTabComponent implements OnInit {
       this.journeyItems.push({
         date: journeyDateLabel,
         time: journeyTimeLabel,
+        push_count: (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
         coast_time: (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
         coast_distance: (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') || '0.00',
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',

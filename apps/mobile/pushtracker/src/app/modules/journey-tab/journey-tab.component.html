@@ -48,8 +48,11 @@
                   verticalAlignemnt="center" marginTop="5"></Label>
 
                 // Coast Time and Coast Distance
-                <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
-                                                (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
+                <Label row="1" col="0" [text]="item.coast_time + ' s' + 
+                  '   •   ' + 
+                  item.push_count + ' pushes' +
+                  '   •   ' +
+                  item.coast_distance + ' ' + (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
                   class="journey-item"></Label>
                 // Date - Today, Yesterday or Some Date
                 <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
