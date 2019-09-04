@@ -40,4 +40,9 @@
     font-family: $os;
   }
 
+  .journey-item-date {
+    @extend .journey-item;
+    font-weight: bold;
+  }
+
 }

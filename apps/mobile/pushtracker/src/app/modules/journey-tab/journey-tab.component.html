@@ -24,7 +24,7 @@
                 <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
                                                 (user.data.distance_unit_preference === 0 ? 'km' : 'mi')" class="journey-item"></Label>
                 // Date - Today, Yesterday or Some Date
-                <Label row="2" col="0" [text]="item.date" class="journey-item"></Label>
+                <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
               </GridLayout>
             </GridLayout>
           </ng-template>
