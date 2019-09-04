@@ -11,7 +11,7 @@
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"
           marginBottom="30"></Label>
 
-        <GridLayout row="1" col="0" width="100%" columns="*, auto, auto">
+        <GridLayout row="1" col="0" width="100%" columns="*, auto, auto, auto, auto">
           // Today Label
           <Label row="0" col="0"
             class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
@@ -20,11 +20,15 @@
           <StackLayout row="0" col="1" class="cousteau-circle" horizontalAlignment="right" verticalAlignment="center">
             <Label text="&#xe5cc;"></Label>
           </StackLayout>
-          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10"
+          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
             [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' s'" textWrap="true"></Label>
 
           // Coast Distance
-
+          <StackLayout row="0" col="3" class="violet-circle" horizontalAlignment="right" verticalAlignment="center">
+            <Label text="&#xe5cc;"></Label>
+          </StackLayout>
+          <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
+            [text]="getTodayCoastDistance() + ' ' + (user.data.distance_unit_preference === 0 ? 'km' : 'mi')" textWrap="true"></Label>
 
         </GridLayout>
 

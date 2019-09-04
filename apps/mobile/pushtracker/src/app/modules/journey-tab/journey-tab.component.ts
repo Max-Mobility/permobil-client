@@ -238,6 +238,18 @@ export class JourneyTabComponent implements OnInit {
     return miles * 1.60934;
   }
 
+  getTodayCoastDistance() {
+    if (this.todayUsage) {
+      return this._updateDistanceUnit(
+        this._caseTicksToMiles(
+          this.todayUsage.distance_smartdrive_coast - this.todayUsage.distance_smartdrive_coast_start
+        )
+      );
+    } else {
+      return 0;
+    }
+  }
+
   private _updateDistanceUnit(distance: number) {
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       return this._milesToKilometers(distance);
@@ -295,9 +307,6 @@ export class JourneyTabComponent implements OnInit {
 
     for (const key in orderedJourneyMap) {
       const journey = orderedJourneyMap[key];
-
-      console.log(journey);
-
       let journeyDateLabel = '';
       const today = new Date();
       const yesterday = new Date();
