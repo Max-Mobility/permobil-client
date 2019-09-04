@@ -197,12 +197,16 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
       return;
     }
 
-    if (stateObject.onReadPromise) {
+    if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+      console.error('onCharacteristicRead - bad status:', status);
+    }
+    if (stateObject.onCharacteristicReadPromise) {
       const value = characteristic.getValue();
-      stateObject.onReadPromise({
+      stateObject.onCharacteristicReadPromise({
         valueRaw: value,
         value: this._owner.get().decodeValue(value),
-        characteristicUUID: characteristic.getUuid()
+        characteristicUUID: characteristic.getUuid(),
+        status
       });
     }
   }
@@ -264,9 +268,15 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
       return;
     }
 
-    if (stateObject.onWritePromise) {
-      stateObject.onWritePromise({
-        characteristicUUID: characteristic.getUuid()
+    stateObject.isWriting = false;
+
+    if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+      console.log('BluetoothGattCallback::onCharacteristicWrite - BAD STATUS:', status);
+    }
+    if (stateObject.onCharacteristicWritePromise) {
+      stateObject.onCharacteristicWritePromise({
+        characteristicUUID: characteristic.getUuid(),
+        status
       });
     }
   }
@@ -286,6 +296,23 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
       CLogTypes.info,
       `---- TNS_BluetoothGattCallback.onDescriptorRead ---- gatt: ${gatt}, descriptor: ${descriptor}, status: ${status}`
     );
+
+    const device = gatt.getDevice();
+    const stateObject = this._owner.get().connections[device.getAddress()];
+    if (!stateObject) {
+      this._owner.get().gattDisconnect(gatt);
+      return;
+    }
+
+    if (stateObject.onDescriptorReadPromise) {
+      const value = descriptor.getValue();
+      stateObject.onDescriptorReadPromise({
+        valueRaw: value,
+        value: this._owner.get().decodeValue(value),
+        characteristicUUID: descriptor.getUuid(),
+        status
+      });
+    }
   }
 
   /**
@@ -299,10 +326,29 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     descriptor: android.bluetooth.BluetoothGattDescriptor,
     status: number
   ) {
+    const device = gatt.getDevice();
     CLog(
       CLogTypes.info,
-      `---- TNS_BluetoothGattCallback.onDescriptorWrite ---- gatt: ${gatt}, descriptor: ${descriptor}, status: ${status}`
+      `---- TNS_BluetoothGattCallback.onDescriptorWrite ---- descriptor: ${descriptor}, status: ${status}, device: ${device}`
     );
+
+    const stateObject = this._owner.get().connections[device.getAddress()];
+    if (!stateObject) {
+      this._owner.get().gattDisconnect(gatt);
+      return;
+    }
+
+    stateObject.isWriting = false;
+
+    if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+      console.log('BluetoothGattCallback::onCharacteristicWrite - BAD STATUS:', status);
+    }
+    if (stateObject.onDescriptorWritePromise) {
+      stateObject.onDescriptorWritePromise({
+        characteristicUUID: descriptor.getUuid(),
+        status
+      });
+    }
   }
 
   /**
@@ -324,8 +370,8 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     const device = gatt.getDevice();
     const stateObject = this._owner.get().connections[device.getAddress()];
     if (stateObject) {
-      if (stateObject.onReadRSSIPromise) {
-        stateObject.onReadRSSIPromise({
+      if (stateObject.onRssiReadPromise) {
+        stateObject.onRssiReadPromise({
           value: rssi,
           status: status
         });

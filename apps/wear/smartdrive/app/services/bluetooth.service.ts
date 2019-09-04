@@ -147,16 +147,12 @@ export class BluetoothService {
     return _enabled;
   }
 
-  public available(): Promise<boolean> {
+  public async available() {
     return this.isActive();
-
-    // return this._bluetooth.isBluetoothEnabled().then(enabled => {
-    //   return enabled && this.isActive();
-    // });
   }
 
   public isActive(): Promise<boolean> {
-    return Promise.resolve(this.enabled && this.initialized); // && this._bluetooth.offersService(BluetoothService.AppServiceUUID);
+    return Promise.resolve(this.enabled && this.initialized);
   }
 
   public async initialize() {
@@ -197,21 +193,13 @@ export class BluetoothService {
     return;
   }
 
-  public scanForSmartDrives(timeout: number = 4) {
-    return new Promise((resolve, reject) => {
-      this.clearSmartDrives();
-      this._bluetooth
-        .startScanning({
-          serviceUUIDs: [SmartDrive.ServiceUUID],
-          seconds: timeout
-        })
-        .then(result => {
-          resolve(result);
-        })
-        .catch(error => {
-          reject(error);
-        });
+  public async scanForSmartDrives(timeout: number = 4) {
+    this.clearSmartDrives();
+    const result = await this._bluetooth.startScanning({
+      serviceUUIDs: [SmartDrive.ServiceUUID],
+      seconds: timeout
     });
+    return result;
   }
 
   public stopScanning(): Promise<any> {
@@ -281,7 +269,7 @@ export class BluetoothService {
     return this._bluetooth.write(opts);
   }
 
-  public async stop(): Promise<any> {
+  public async stop() {
     this.enabled = false;
     this.initialized = false;
     // remove the services
@@ -294,19 +282,12 @@ export class BluetoothService {
     // await this.disconnectAll(); // TODO: doesn't work right now
     // stop advertising
     this._bluetooth.stopAdvertising();
-    return Promise.resolve();
   }
 
-  public restart(): Promise<any> {
-    return this.stop()
-      .then(() => {
-        return this.advertise();
-      })
-      .catch(err => {
-        this.enabled = false;
-        this.initialized = false;
-        Log.E('enable err', err);
-      });
+  public async restart() {
+    await this.stop();
+    await this.initialize();
+    await this.advertise();
   }
 
   // private functions
