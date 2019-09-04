@@ -42,10 +42,10 @@
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
               <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
                 // Image and Time
-                <Image row="0" col="0" width="40" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
+                <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
                   src="res://accessible_forward_black" stretch="aspectFit"></Image>
-                <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item"
-                  verticalAlignemnt="center" marginTop="10"></Label>
+                <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
+                  verticalAlignemnt="center" marginTop="5"></Label>
 
                 // Coast Time and Coast Distance
                 <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
@@ -53,6 +53,12 @@
                   class="journey-item"></Label>
                 // Date - Today, Yesterday or Some Date
                 <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
+
+                // Image and Time
+                <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" 
+                  marginRight="10" verticalAlignment="top"
+                  src="res://accessible_forward_black" stretch="aspectFit"></Image>
+
               </GridLayout>
             </GridLayout>
           </ng-template>
