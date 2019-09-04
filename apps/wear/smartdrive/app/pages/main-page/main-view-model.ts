@@ -139,7 +139,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 10 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -1104,12 +1104,59 @@ export class MainViewModel extends Observable {
       const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
       if (didTap) {
         // user has met threshold for tapping
-        this.handleTap(averageTimestamp);
+        this.handleTap(/* averageTimestamp */);
       }
     }
   }
 
-  handleTap(timestamp: number) {
+  async stopTaps() {
+    if (this.sendTapTimeoutId) {
+      clearTimeout(this.sendTapTimeoutId);
+    }
+    this.sendTapTimeoutId = null;
+    this.numTaps = 0;
+  }
+
+  private sendTapTimeoutId: any = null;
+  @Prop() numTaps: number = 0;
+  async sendTap() {
+    // do we have any taps to send now?
+    if (this.numTaps > 0) {
+      try {
+        const ret = await this.smartDrive.sendTap();
+        if (ret.status === android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+          // only decrease the number of unsent taps if it was
+          // successfully sent and if we haven't gone to or below 0
+          if (this.numTaps > 0)
+            this.numTaps--;
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        Log.E('could not send tap', err);
+        /*
+          this.disablePowerAssist()
+          .catch((err) => {
+          Sentry.captureException(err);
+          });
+          setTimeout(() => {
+          alert({
+          title: L('failures.title'),
+          message: err,
+          okButtonText: L('buttons.ok')
+          });
+          }, 1000);
+        */
+      }
+    }
+    // do we have any remaining taps to send?
+    if (this.numTaps > 0) {
+      this.sendTapTimeoutId = setTimeout(this.sendTap.bind(this), 0);
+    } else {
+      this.sendTapTimeoutId = null;
+    }
+  }
+
+  async handleTap(/* timestamp: number */) {
     this.hasTapped = true;
     // timeout for updating the power assist ring
     if (this.tapTimeoutId) {
@@ -1130,22 +1177,12 @@ export class MainViewModel extends Observable {
       this.smartDrive.ableToSend &&
       this.hasSentSettingsToSmartDrive
     ) {
-      this.smartDrive.sendTap()
-        .catch(err => {
-          Sentry.captureException(err);
-          Log.E('could not send tap', err);
-          this.disablePowerAssist()
-            .catch((err) => {
-              Sentry.captureException(err);
-            });
-          setTimeout(() => {
-            alert({
-              title: L('failures.title'),
-              message: err,
-              okButtonText: L('buttons.ok')
-            });
-          }, 1000);
-        });
+      // increase number of taps to send
+      this.numTaps++;
+      // make sure the handler sends the taps
+      if (this.sendTapTimeoutId === null) {
+        this.sendTapTimeoutId = setTimeout(this.sendTap.bind(this), 0);
+      }
     }
   }
 
@@ -2172,6 +2209,8 @@ export class MainViewModel extends Observable {
         if (didConnect) {
           // vibrate for enabling power assist
           this._vibrator.vibrate(200); // vibrate for 250 ms
+          // make sure to clear out any previous tapping state
+          this.stopTaps();
           // enable the tap sensor
           const didEnableTapSensor = this.enableTapSensor();
           if (!didEnableTapSensor) {
@@ -2214,19 +2253,21 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
-    if (this.chargingWorkTimeoutId === null) {
-      // reset our work interval
-      this.chargingWorkTimeoutId = setInterval(
-        this.doWhileCharged.bind(this),
-        this.CHARGING_WORK_PERIOD_MS
-      );
-    }
-
     this._sentryBreadCrumb('Disabling power assist');
+
+    // update state variables
+    this.powerAssistActive = false;
+    this.motorOn = false;
+
+    // make sure to stop any pending taps
+    this.stopTaps();
+
+    // decrease energy consumption
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
 
+    // update UI
     if (this._ringTimerId) {
       clearInterval(this._ringTimerId);
     }
@@ -2234,14 +2275,22 @@ export class MainViewModel extends Observable {
     if (!this.powerAssistActive && !this.motorOn) {
       return;
     }
-    this.powerAssistActive = false;
-    this.motorOn = false;
+
     // turn off the smartdrive
     try {
       await this.disconnectFromSmartDrive();
     } catch (err) {
       Sentry.captureException(err);
     }
+
+    // reset our work interval
+    if (this.chargingWorkTimeoutId === null) {
+      this.chargingWorkTimeoutId = setInterval(
+        this.doWhileCharged.bind(this),
+        this.CHARGING_WORK_PERIOD_MS
+      );
+    }
+
     return Promise.resolve();
   }
 
@@ -2502,6 +2551,9 @@ export class MainViewModel extends Observable {
       this.rssiIntervalId = null;
     }
     */
+    // make sure to stop any pending taps
+    this.stopTaps();
+    // handle the case that the motor is on
     if (this.motorOn) {
       // record disconnect error - the SD should never be on when
       // we disconnect!
