@@ -281,6 +281,7 @@ export class JourneyTabComponent implements OnInit {
       const journey = orderedJourneyMap[key];
 
       let journeyDateLabel = '';
+      let journeyTimeLabel = '';
       const today = new Date();
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -298,8 +299,19 @@ export class JourneyTabComponent implements OnInit {
         journeyDateLabel = journeyDate + '';
       }
 
+      const formatAMPM = function(date: Date) {
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const strTime = hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ' ' + ampm;
+        return strTime;
+      };
+
       this.journeyItems.push({
         date: journeyDateLabel,
+        time: formatAMPM(journeyDate),
         coast_time: (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
         coast_distance: (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') || '0.00',
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
