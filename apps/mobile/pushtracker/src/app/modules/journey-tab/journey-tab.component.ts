@@ -281,7 +281,6 @@ export class JourneyTabComponent implements OnInit {
       const journey = orderedJourneyMap[key];
 
       let journeyDateLabel = '';
-      let journeyTimeLabel = '';
       const today = new Date();
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
