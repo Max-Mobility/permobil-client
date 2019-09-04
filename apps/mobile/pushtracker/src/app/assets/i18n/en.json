@@ -154,7 +154,8 @@
     "title": "Home"
   },
   "journey-tab": {
-    "title": "Journey"
+    "title": "Journey",
+    "today": "Today"
   },
   "languages": {
     "de": "German",

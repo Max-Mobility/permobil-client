@@ -9,4 +9,34 @@
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;
   }
+
+  .journey-today {
+    font-size: 16;
+    font-weight: bold;
+    font-family: $os;
+    color: $black;
+    padding-left: 10;
+    margin-left: 5;
+    margin-bottom: 10;
+  }
+
+  .journey-item-label {
+    font-size: 16;
+    font-weight: bold;
+    font-family: $os;
+    color: $permobil-cousteau-dark;
+    padding-left: 10;
+    margin-top: 10;
+    margin-left: 5;
+    margin-bottom: 10;
+  }
+
+  .journey-item {
+    font-size: 14;
+    margin-bottom: 20;
+    margin-left: 5;
+    padding-left: 10;
+    color: $black;
+    font-family: $os;
+  }
 }

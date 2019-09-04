@@ -1,28 +1,31 @@
 // Journey Tab Layout
-<PullToRefresh (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()" (refresh)="refreshPage($event)">
-  <GridLayout rows="*" columns="*" class="journey-tab-layout">
-    // main journey-tab layout
-    <GridLayout row="0" col="0" rows="auto, *" columns="*">
-      <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
+<GridLayout rows="*" columns="*" class="journey-tab-layout">
+  // main journey-tab layout
+  <GridLayout row="0" col="0" rows="auto, *" columns="*">
+    <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
-      <ScrollView row="1" col="0" padding="10">
-        <GridLayout height="100%" rows="auto, *" columns="auto, *, *, *">
-          // Page Title
-          <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
+    <ScrollView row="1" col="0" padding="10">
+      <GridLayout height="100%" rows="auto, auto, auto, *" columns="auto, *, *, *">
+        // Page Title
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
+        <Label marginTop="30" row="1" col="0" colSpan="4" class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
+        <StackLayout row="2" class="hr-light"></StackLayout>
 
-          <ListView row="1" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
-            <ng-template let-item="item" let-odd="odd" let-even="even">
-              <GridLayout rows="*, *" columns="*, *">
-                <Label row="0" [text]="item.description" class="list-group-item"></Label>
-                <GridLayout row="1" rows="*, *" columns="*, *" width="40%">
-                  <Label row="0" col="0" [text]="item.coast_time" class="list-group-item"></Label>
-                  <Label row="0" col="1" [text]="item.coast_distance" class="list-group-item"></Label>
-                </GridLayout>
+        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
+          <ng-template let-item="item" let-odd="odd" let-even="even">
+            <GridLayout rows="*, *" columns="*, *">
+              <Label row="0" [text]="item.description" class="journey-item-label"></Label>
+              <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
+                <Image row="0" col="0" width="40" horizontalAlignment="left" marginLeft="10"
+                  src="res://accessible_forward_black" stretch="aspectFit"></Image>
+                <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
+                                                (user.data.distance_unit_preference === 0 ? 'km' : 'mi')" class="journey-item"></Label>
+                <Label row="2" col="0" [text]="item.date" class="journey-item"></Label>
               </GridLayout>
-            </ng-template>
-          </ListView>
-        </GridLayout>
-      </ScrollView>
-    </GridLayout>
+            </GridLayout>
+          </ng-template>
+        </ListView>
+      </GridLayout>
+    </ScrollView>
   </GridLayout>
-</PullToRefresh>
+</GridLayout>

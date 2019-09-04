@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { Subscription } from 'rxjs';
@@ -33,7 +33,7 @@ class JourneyItem {
   moduleId: module.id,
   templateUrl: './journey-tab.component.html'
 })
-export class JourneyTabComponent {
+export class JourneyTabComponent implements OnInit {
   journeyItems;
   savedTheme: string;
   user: PushTrackerUser;
@@ -53,7 +53,7 @@ export class JourneyTabComponent {
     private _pushtrackerActivityService: ActivityService
   ) { }
 
-  onJourneyTabLoaded() {
+  ngOnInit() {
     this._logService.logBreadCrumb('JourneyTabComponent loaded');
 
     this._page.actionBarHidden = true;
@@ -74,17 +74,6 @@ export class JourneyTabComponent {
         });
       });
     });
-  }
-
-  onJourneyTabUnloaded() {
-    Log.D('JourneyTabComponent unloaded');
-    this._userSubscription$.unsubscribe();
-  }
-
-  refreshPage(args) {
-    const pullRefresh = args.object;
-    // Do something here
-    pullRefresh.refreshing = false;
   }
 
   onJourneyItemTap(args: ItemEventData) {
@@ -136,8 +125,8 @@ export class JourneyTabComponent {
                 record.start_time
               ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
             }
-            this._journeyMap[record.start_time].coastTime = record.coast_time_avg;
-            this._journeyMap[record.start_time].pushCount = record.push_count;
+            this._journeyMap[record.start_time].coastTime = record.coast_time_avg || 0;
+            this._journeyMap[record.start_time].pushCount = record.push_count || 0;
           }
         }
       }
@@ -149,7 +138,6 @@ export class JourneyTabComponent {
       this._weekStart
     );
     if (didLoad) {
-      console.log('Loaded weekly usage');
       for (const i in this._smartDriveUsageService.weeklyActivity.days) {
         const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
         if (dailyUsage) {
@@ -222,30 +210,30 @@ export class JourneyTabComponent {
     else return TimeOfDay.NIGHT;
   }
 
-  _motorTicksToMiles(ticks: number): number {
+  private _motorTicksToMiles(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
   }
 
-  _caseTicksToMiles(ticks: number): number {
+  private _caseTicksToMiles(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  _milesToKilometers(miles: number) {
+  private _milesToKilometers(miles: number) {
     return miles * 1.60934;
   }
 
-  _updateDistanceUnit(distance: number) {
+  private _updateDistanceUnit(distance: number) {
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       return this._milesToKilometers(distance);
     }
     return distance;
   }
 
-  _processJourneyMap() {
+  private _processJourneyMap() {
     // Sort _journeyMap by key
-    const orderedJourneyMap = {};
+    let orderedJourneyMap = {};
     const self = this;
-    Object.keys(this._journeyMap).sort().forEach(function(key) {
+    Object.keys(this._journeyMap).sort().reverse().forEach(function(key) {
       orderedJourneyMap[key] = self._journeyMap[key];
     });
 
@@ -258,20 +246,134 @@ export class JourneyTabComponent {
       else if (timeOfDay === 3) return 'Night';
     };
 
-    // TODO: Identify and group journey items
-    // before creating ListView items
+    const getJourneyTypeString = function(journeyType: JourneyType) {
+      if (journeyType === JourneyType.ROLL) return 'roll';
+      else if (journeyType === JourneyType.DRIVE) return 'drive';
+    };
 
     for (const key in orderedJourneyMap) {
       const journey = orderedJourneyMap[key];
 
+      // roll - default; used when there is no drive / distance data,
+      // or when the coast data is significantly more than drive
+      if (journey.driveDistance === 0 ||
+          journey.coastDistance > journey.driveDistance * 1.3) {
+        journey.journeyType = JourneyType.ROLL;
+      }
+
+      // drive - used when there is distance data and drive is a significant portion of coast (e.g. > 30%)
+      // https://github.com/Max-Mobility/permobil-client/issues/23
+      if (journey.driveDistance > 0 &&
+        journey.driveDistance > journey.coastDistance * 1.3) {
+        journey.journeyType = JourneyType.DRIVE;
+      }
+
+      if (!journey.journeyType)
+        journey.journeyType = JourneyType.ROLL;
+
+    }
+
+    // TODO: Identify and group journey items
+    // before creating ListView items
+    orderedJourneyMap = this._mergeJourneyItems(orderedJourneyMap);
+
+    for (const key in orderedJourneyMap) {
+      const journey = orderedJourneyMap[key];
+
+      let journeyDateLabel = '';
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const journeyDate = new Date(parseInt(key));
+      if (this._areDaysSame(journeyDate, today)) {
+        journeyDateLabel = 'Today';
+      } else if (this._areDaysSame(journeyDate, yesterday)) {
+        journeyDateLabel = 'Yesterday';
+      } else {
+        const dateStringList = (journeyDate + '').split(' ');
+        journeyDateLabel = dateStringList[0] + ', ' + dateStringList[1] + ' ' + dateStringList[2];
+      }
+
+      if (!journeyDateLabel) {
+        journeyDateLabel = journeyDate + '';
+      }
+
       this.journeyItems.push({
-        date: new Date(key),
-        coast_time: journey.coastTime,
-        coast_distance: journey.coastDistance,
-        drive_distance: journey.driveDistance,
-        description: getTimeOfDayString(journey.timeOfDay) + ' Roll',
+        date: journeyDateLabel,
+        coast_time: (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
+        coast_distance: (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') || '0.00',
+        drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
+        description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0
       });
     }
   }
+
+  private _mergeJourneyItems(orderedJourneyMap: Object) {
+    let journeyList = [];
+    for (const key in orderedJourneyMap) {
+      journeyList.push({startTime: key, stats: orderedJourneyMap[key]});
+    }
+
+    const arrayRemove = function(arr, value) {
+      return arr.filter(function(ele) {
+          return ele !== value;
+      });
+    };
+
+    const ONE_HOUR = 60 * 60 * 1000; /* ms */
+
+    if (journeyList.length > 1) {
+      for (const i in journeyList) {
+        const first = journeyList[parseInt(i)];
+        const firstIndex = parseInt(i);
+        let second = journeyList[parseInt(i) + 1];
+        const secondIndex = parseInt(i) + 1;
+
+        while (secondIndex < journeyList.length) {
+          // If type of journey is the same
+          // If time of day is the same
+          // If first.time + 30 mins == second.time
+          // Then, merge entries
+          const firstDate = new Date(parseInt(first.startTime));
+          const secondDate = new Date(parseInt(second.startTime));
+          const timeDiff = secondDate.getTime() - firstDate.getTime();
+          if (first.stats.journeyType === second.stats.journeyType &&
+              first.stats.timeOfDay === second.stats.timeOfDay &&
+              timeDiff < ONE_HOUR) {
+            journeyList[firstIndex].stats.coastTime = (journeyList[firstIndex].stats.coastTime || 0) + second.stats.coastTime || 0;
+            journeyList[firstIndex].stats.coastDistance = (journeyList[firstIndex].stats.coastDistance || 0) + second.stats.coastDistance || 0;
+            journeyList[firstIndex].stats.driveDistance = (journeyList[firstIndex].stats.driveDistance || 0) + second.stats.driveDistance || 0;
+            journeyList[firstIndex].stats.pushCount = (journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0;
+            journeyList = arrayRemove(journeyList, second);
+            if (secondIndex < journeyList.length) {
+              second = journeyList[secondIndex];
+            }
+            else {
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        if (secondIndex >= journeyList.length)
+          break;
+      }
+    }
+    const result = {};
+    for (const i in journeyList) {
+      const journeyItem = journeyList[i];
+      result[journeyItem.startTime] = journeyItem.stats;
+    }
+    return result;
+  }
+
+  private _areDaysSame(first: Date, second: Date): boolean {
+    return (
+      first.getFullYear() === second.getFullYear() &&
+      first.getMonth() === second.getMonth() &&
+      first.getDate() === second.getDate()
+    );
+  }
+
 }
