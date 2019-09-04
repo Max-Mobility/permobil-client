@@ -289,12 +289,14 @@ export class JourneyTabComponent implements OnInit {
 
     }
 
-    // TODO: Identify and group journey items
+    // Identify and group journey items
     // before creating ListView items
     orderedJourneyMap = this._mergeJourneyItems(orderedJourneyMap);
 
     for (const key in orderedJourneyMap) {
       const journey = orderedJourneyMap[key];
+
+      console.log(journey);
 
       let journeyDateLabel = '';
       const today = new Date();
@@ -324,9 +326,23 @@ export class JourneyTabComponent implements OnInit {
         return strTime;
       };
 
+      let journeyTimeLabel = '';
+      if (journey.mergedTimes && journey.mergedTimes.length) {
+        const lastTimeMerged = new Date(parseInt(journey.mergedTimes.sort()[journey.mergedTimes.length - 1]));
+        // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
+        journeyTimeLabel += formatAMPM(lastTimeMerged);
+        journeyDate.setMinutes(journeyDate.getMinutes() + 30);
+        journeyTimeLabel += ' - ' + formatAMPM(journeyDate);
+      } else {
+        journeyTimeLabel = formatAMPM(journeyDate);
+        const thirtyMinsLater = new Date(journeyDate);
+        thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
+        journeyTimeLabel += ' - ' + formatAMPM(thirtyMinsLater);
+      }
+
       this.journeyItems.push({
         date: journeyDateLabel,
-        time: formatAMPM(journeyDate),
+        time: journeyTimeLabel,
         coast_time: (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
         coast_distance: (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') || '0.00',
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
@@ -369,14 +385,14 @@ export class JourneyTabComponent implements OnInit {
           if (first.stats.journeyType === second.stats.journeyType &&
               first.stats.timeOfDay === second.stats.timeOfDay &&
               timeDiff < ONE_HOUR) {
-            // Sorry to whoever is reading this..
-            // - Pranav
             journeyList[firstIndex].stats.coastTime =
               ((journeyList[firstIndex].stats.coastTimeTotal || 0) + second.stats.coastTimeTotal || 0) /
               (((journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0) || 1);
             journeyList[firstIndex].stats.coastDistance = (journeyList[firstIndex].stats.coastDistance || 0) + second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance = (journeyList[firstIndex].stats.driveDistance || 0) + second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount = (journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0;
+            if (!journeyList[firstIndex].stats.mergedTimes) journeyList[firstIndex].stats.mergedTimes = [];
+            journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
             journeyList = arrayRemove(journeyList, second);
             if (secondIndex < journeyList.length) {
               second = journeyList[secondIndex];

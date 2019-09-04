@@ -33,7 +33,7 @@
         <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)"
           class="list-group">
           <ng-template let-item="item" let-odd="odd" let-even="even">
-            <GridLayout rows="*, *" columns="*, *">
+            <GridLayout rows="*, *" columns="*, auto">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
               <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
                 // Image and Time
@@ -41,6 +41,7 @@
                   src="res://accessible_forward_black" stretch="aspectFit"></Image>
                 <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item"
                   verticalAlignemnt="center" marginTop="10"></Label>
+
                 // Coast Time and Coast Distance
                 <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
                                                 (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
