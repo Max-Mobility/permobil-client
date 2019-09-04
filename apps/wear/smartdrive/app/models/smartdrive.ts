@@ -515,12 +515,16 @@ export class SmartDrive extends DeviceBase {
                   characteristicUUID: characteristic,
                   value: data
                 })
-                .then(() => {
-                  writeFirmwareTimeoutID = timer.setTimeout(() => {
-                    this.ableToSend = true;
-                    index += payloadSize;
-                    writeFirmwareSector(device, fw, characteristic, nextState);
-                  }, 0);
+                .then((ret) => {
+                  if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+                    throw 'bad status: ' + ret.status;
+                  } else {
+                    writeFirmwareTimeoutID = timer.setTimeout(() => {
+                      this.ableToSend = true;
+                      index += payloadSize;
+                      writeFirmwareSector(device, fw, characteristic, nextState);
+                    }, 0);
+                  }
                 })
                 .catch(err => {
                   // console.log(`Could not send fw to ${device}: ${err}`);
@@ -797,18 +801,21 @@ export class SmartDrive extends DeviceBase {
               // of t he updates!
               // - probably add buttons so they can retry?
               this.otaEndTime = new Date();
-              let msg = '';
               if (mcuVersion === mcuFWVersion && bleVersion === bleFWVersion) {
-                msg = `SmartDrive OTA Succeeded! ${mcuVersion.toString(
+                /*
+                const msg = `SmartDrive OTA Succeeded! ${mcuVersion.toString(
                   16
                 )}, ${bleVersion.toString(16)}`;
-                // console.log(msg);
+                console.log(msg);
+                */
                 this.otaState = SmartDrive.OTAState.complete;
               } else {
-                msg = `SmartDrive OTA FAILED! ${mcuVersion.toString(
+                /*
+                const msg = `SmartDrive OTA FAILED! ${mcuVersion.toString(
                   16
                 )}, ${bleVersion.toString(16)}`;
-                // console.log(msg);
+                console.log(msg);
+                */
                 this.otaState = SmartDrive.OTAState.failed;
                 stopOTA('updates.failed', false, true);
               }
@@ -1025,7 +1032,6 @@ export class SmartDrive extends DeviceBase {
 
   public async disconnect() {
     try {
-      const promises = [];
       if (this.connected && this.ableToSend && this.notifying) {
         // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
         const data = Uint8Array.from([0x03]); // this is the OTA stop command
@@ -1059,7 +1065,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public async handleConnect(data?: any) {
+  public async handleConnect() {
     // update state
     this.connected = true;
     this.notifying = false;
