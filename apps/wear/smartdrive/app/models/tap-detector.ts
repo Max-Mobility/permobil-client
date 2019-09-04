@@ -5,15 +5,15 @@ import { knownFolders, path } from 'tns-core-modules/file-system';
 declare const org: any;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 200;
+  public static TapLockoutTimeMs: number = 250;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level tap detection configuration
    */
-  private minPredictionThreshold = 0.7;
-  private maxPredictionThreshold = 1.1;
+  // private minPredictionThreshold = 0.7;
+  // private maxPredictionThreshold = 1.1;
   private predictionThreshold: number = 0.8; // confidence
 
   private minJerkThreshold = 5.0;
