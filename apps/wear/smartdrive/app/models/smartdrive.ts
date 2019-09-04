@@ -989,7 +989,7 @@ export class SmartDrive extends DeviceBase {
   ): Promise<any> {
     // console.log(`StopNotifying`);
     try {
-      for (let c of characteristics) {
+      for (const c of characteristics) {
         await this._bluetoothService.stopNotifying({
           peripheralUUID: this.address,
           serviceUUID: SmartDrive.ServiceUUID,
@@ -1006,7 +1006,7 @@ export class SmartDrive extends DeviceBase {
   ): Promise<any> {
     // console.log(`StartNotifying`);
     try {
-      for (let c of characteristics) {
+      for (const c of characteristics) {
         await this._bluetoothService.startNotifying({
           peripheralUUID: this.address,
           serviceUUID: SmartDrive.ServiceUUID,
