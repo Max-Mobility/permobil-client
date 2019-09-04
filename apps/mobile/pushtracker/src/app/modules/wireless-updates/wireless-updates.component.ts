@@ -13,7 +13,11 @@ const dialogs = require('tns-core-modules/ui/dialogs');
 import last from 'lodash/last';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
-import { Downloader } from 'nativescript-downloader';
+import { isAndroid, isIOS } from 'tns-core-modules/platform';
+import { Page } from 'tns-core-modules/ui/page/page';
+import * as app from 'tns-core-modules/application';
+import { RouterExtensions } from 'nativescript-angular/router';
+import { confirm } from 'tns-core-modules/ui/dialogs';
 
 @Component({
   selector: 'wireless-updates',
@@ -59,17 +63,18 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   private _throttledPTOtaStatus: any = null;
 
   constructor(
+    private _page: Page,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _params: ModalDialogParams,
-    private _bluetoothService: BluetoothService
+    private _bluetoothService: BluetoothService,
+    private _routerExtensions: RouterExtensions
   ) {
     this.controlConfiguration = _params.context.controlConfiguration || '';
   }
 
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
-    Downloader.init();
     this.checkForSmartDriveUpdates();
     this.checkForPushTrackerUpdates();
   }
@@ -321,6 +326,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledOtaStatus,
       this
     );
+    // disable back nav for iOS - add event listener for android hardware back button
+    this.setBackNav(false);
+    this.smartDrive.canBackNavigate = false;
   }
 
   unregisterForSmartDriveEvents() {
@@ -365,8 +373,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     if (!this.smartDriveCheckedForUpdates)
       this.smartDriveCheckedForUpdates = true;
     if (this.smartDrive.otaState === SmartDrive.OTAState.already_uptodate ||
-        this.smartDrive.otaState === SmartDrive.OTAState.complete) {
+      this.smartDrive.otaState === SmartDrive.OTAState.complete) {
       this.smartDriveOtaProgress = 100;
+      this.setBackNav(true);
     }
   }
 
@@ -587,6 +596,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledPTOtaStatus,
       this
     );
+    // disable back nav for iOS - add event listener for android hardware back button
+    this.setBackNav(false);
+    this.pushTracker.canBackNavigate = false;
   }
 
   unregisterForPushTrackerEvents() {
@@ -631,9 +643,60 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     if (!this.pushTrackerCheckedForUpdates)
       this.pushTrackerCheckedForUpdates = true;
     if (this.pushTracker.otaState === PushTracker.OTAState.already_uptodate ||
-        this.pushTracker.otaState === PushTracker.OTAState.complete) {
+      this.pushTracker.otaState === PushTracker.OTAState.complete) {
       this.pushTrackerOtaProgress = 100;
+      this.setBackNav(true);
     }
   }
+
+  private setBackNav(allowed: boolean) {
+    if (isIOS) {
+      if (
+        this._page.ios.navigationController &&
+        this._page.ios.navigationController.interactivePopGestureRecognizer
+      ) {
+        this._page.ios.navigationController.interactivePopGestureRecognizer.enabled = allowed;
+      }
+      this._page.enableSwipeBackNavigation = allowed;
+    } else if (isAndroid) {
+      if (allowed) {
+        app.android.off(app.AndroidApplication.activityBackPressedEvent);
+      } else {
+        // setting the event listener for the android back pressed event
+        app.android.on(
+          app.AndroidApplication.activityBackPressedEvent,
+          (args: app.AndroidActivityBackPressedEventData) => {
+            // cancel the back nav for now then confirm with user to leave
+            args.cancel = true;
+
+            let closeModal = false;
+            confirm({
+              title: this._translateService.instant(
+                'ota.warnings.leaving.title'
+              ),
+              message: this._translateService.instant(
+                'ota.warnings.leaving.message'
+              ),
+              okButtonText: this._translateService.instant('dialogs.yes'),
+              cancelable: true,
+              cancelButtonText: this._translateService.instant('dialogs.cancel')
+            }).then((result: boolean) => {
+              if (result === true) {
+                // user wants to leave so remove the back pressed event
+                app.android.off(
+                  app.AndroidApplication.activityBackPressedEvent
+                );
+                closeModal = true;
+              }
+            }).then(() => {
+              if (closeModal)
+                this.closeModal();
+            });
+          }
+        );
+      }
+    }
+  }
+
 
 }

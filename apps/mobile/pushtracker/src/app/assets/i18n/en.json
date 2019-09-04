@@ -220,7 +220,36 @@
         "timeout": "Timeout",
         "already-uptodate": "Already up to date. Select Force to update anyway."
       }
+    },
+    "warnings": {
+      "starting": {
+        "title": "Starting OTA",
+        "message": "Warning: you should not leave this page while you are performing OTA firmware updates of the SmartDrive or PushTracker. If you leave this page or kill the app, the OTAs will be cancelled or may fail."
+      },
+      "leaving": {
+        "title": "Warning",
+        "message": "Warning: you are leaving the OTA page during an OTA - this will cancel all ongoing OTAs! Are you sure you want to leave?"
+      },
+      "multiple-devices": {
+        "title": "Multiple Devices",
+        "message": "Warning: It is recommended to perform an OTA on one device at a time. Please allow a device to complete updating before starting any additional OTAs."
+      }
     }
+  },
+  "dialogs": {
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "yes-login": "Yes, login!",
+    "yes-delete": "Yes, delete",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "no": "No",
+    "camera": "Camera",
+    "confirm-photo-delete": "Are you sure you want to remove this photo?",
+    "close": "Close",
+    "warning": "Warning",
+    "sms": "Text message",
+    "success": "Success!"
   },
   "profile-settings": {
     "language": "Language",
