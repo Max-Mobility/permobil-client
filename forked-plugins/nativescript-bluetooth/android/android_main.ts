@@ -664,9 +664,12 @@ export class Bluetooth extends BluetoothCommon {
         this.connections[arg.peripheralUUID] &&
         this.connections[arg.peripheralUUID].isWriting
       ) {
-        console.error('calling write while already isWriting!');
-        reject('calling write while already isWriting!');
-        return;
+        CLog(
+          CLogTypes.error,
+          'Bluetooth.write ---- called while already writing'
+        );
+        // reject('calling write while already isWriting!');
+        // return;
       }
       try {
         if (!arg.value) {

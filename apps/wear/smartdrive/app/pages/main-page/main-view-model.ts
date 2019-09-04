@@ -2444,11 +2444,19 @@ export class MainViewModel extends Observable {
   async sendSmartDriveSettings() {
     // send the current settings to the SD
     try {
-      await this.smartDrive.sendSettingsObject(this.settings);
-      await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      let ret = null;
+      ret = await this.smartDrive.sendSettingsObject(this.settings);
+      if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+        throw 'Send Settings bad status: ' + ret.status;
+      }
+      ret = await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+        throw 'Send Switch Control Settings bad status: ' + ret.status;
+      }
       this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
       Sentry.captureException(err);
+      /*
       // indicate failure
       const msg =
         L('failures.send-settings') +
@@ -2461,10 +2469,9 @@ export class MainViewModel extends Observable {
         message: msg,
         okButtonText: L('buttons.ok')
       });
-      setTimeout(() => {
-        // make sure we retry this while we're connected
-        this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
-      }, 500);
+      */
+      // make sure we retry this while we're connected
+      this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
     }
   }
 
