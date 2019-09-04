@@ -73,37 +73,6 @@ export class JourneyTabComponent {
           this._processJourneyMap();
         });
       });
-
-      this.journeyItems = [
-        {
-          date: new Date(),
-          coast_time: 40,
-          distance: 1.3,
-          description: 'Morning roll',
-          duration: 48
-        },
-        {
-          date: '2019-07-09T17:48:55.391Z',
-          coast_time: 20,
-          distance: 0.3,
-          description: 'Afternoon roll',
-          duration: 10
-        },
-        {
-          date: '2019-07-05T17:48:55.391Z',
-          coast_time: 80,
-          distance: 2.5,
-          description: 'Evening roll',
-          duration: 80
-        },
-        {
-          date: '2019-07-04T17:48:55.391Z',
-          coast_time: 40,
-          distance: 4.5,
-          description: 'Morning roll',
-          duration: 120
-        }
-      ];
     });
   }
 
@@ -224,6 +193,11 @@ export class JourneyTabComponent {
                 record.distance_smartdrive_drive - driveDistanceStart
               )
             );
+
+            if (this._journeyMap[record.start_time].coastDistance < 0)
+              this._journeyMap[record.start_time].coastDistance = 0;
+            if (this._journeyMap[record.start_time].driveDistance < 0)
+              this._journeyMap[record.start_time].driveDistance = 0;
           }
         }
       }
@@ -232,8 +206,8 @@ export class JourneyTabComponent {
 
   private _getTimeOfDayFromStartTime(startTime: number) {
     const date = new Date(startTime);
-    const hour = date.getUTCHours();
-    const minutes = date.getUTCMinutes();
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
     // Morning
     if (hour < 12) return TimeOfDay.MORNING;
     else if (hour === 12 && minutes === 0) return TimeOfDay.MORNING;
@@ -275,9 +249,29 @@ export class JourneyTabComponent {
       orderedJourneyMap[key] = self._journeyMap[key];
     });
 
-    // console.log('Processing journey map');
-    // for (const key in orderedJourneyMap) {
-    //   console.log(key, orderedJourneyMap[key]);
-    // }
+    this.journeyItems = [];
+
+    const getTimeOfDayString = function(timeOfDay: TimeOfDay) {
+      if (timeOfDay === 0) return 'Morning';
+      else if (timeOfDay === 1) return 'Afternoon';
+      else if (timeOfDay === 2) return 'Evening';
+      else if (timeOfDay === 3) return 'Night';
+    };
+
+    // TODO: Identify and group journey items
+    // before creating ListView items
+
+    for (const key in orderedJourneyMap) {
+      const journey = orderedJourneyMap[key];
+
+      this.journeyItems.push({
+        date: new Date(key),
+        coast_time: journey.coastTime,
+        coast_distance: journey.coastDistance,
+        drive_distance: journey.driveDistance,
+        description: getTimeOfDayString(journey.timeOfDay) + ' Roll',
+        duration: 0
+      });
+    }
   }
 }
