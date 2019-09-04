@@ -19,7 +19,7 @@
                 // Image and Time
                 <Image row="0" col="0" width="40" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
                   src="res://accessible_forward_black" stretch="aspectFit"></Image>
-                <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item" verticalAlignemnt="center" marginTop="20"></Label>
+                <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item" verticalAlignemnt="center" marginTop="10"></Label>
                 // Coast Time and Coast Distance
                 <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
                                                 (user.data.distance_unit_preference === 0 ? 'km' : 'mi')" class="journey-item"></Label>
