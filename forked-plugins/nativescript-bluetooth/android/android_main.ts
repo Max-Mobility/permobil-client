@@ -668,8 +668,8 @@ export class Bluetooth extends BluetoothCommon {
           CLogTypes.error,
           'Bluetooth.write ---- called while already writing'
         );
-        // reject('calling write while already isWriting!');
-        // return;
+        reject('calling write while already isWriting!');
+        return;
       }
       try {
         if (!arg.value) {
