@@ -5,13 +5,33 @@
     <MockActionBar row="0" [showBackNav]="false" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
     <ScrollView row="1" col="0" padding="10">
-      <GridLayout height="100%" rows="auto, auto, auto, *" columns="auto, *, *, *">
+
+      <GridLayout height="100%" width="100%" rows="auto, auto, auto, *" columns="auto, *, *, *">
         // Page Title
-        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
-        <Label marginTop="30" row="1" col="0" colSpan="4" class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"
+          marginBottom="30"></Label>
+
+        <GridLayout row="1" col="0" width="100%" columns="*, auto, auto">
+          // Today Label
+          <Label row="0" col="0"
+            class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
+
+          // Coast Time
+          <StackLayout row="0" col="1" class="cousteau-circle" horizontalAlignment="right" verticalAlignment="center">
+            <Label text="&#xe5cc;"></Label>
+          </StackLayout>
+          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10"
+            [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' s'" textWrap="true"></Label>
+
+          // Coast Distance
+
+
+        </GridLayout>
+
         <StackLayout row="2" class="hr-light"></StackLayout>
 
-        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" class="list-group">
+        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)"
+          class="list-group">
           <ng-template let-item="item" let-odd="odd" let-even="even">
             <GridLayout rows="*, *" columns="*, *">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
@@ -19,10 +39,12 @@
                 // Image and Time
                 <Image row="0" col="0" width="40" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
                   src="res://accessible_forward_black" stretch="aspectFit"></Image>
-                <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item" verticalAlignemnt="center" marginTop="10"></Label>
+                <Label row="0" col="1" marginLeft="50" [text]="item.time" class="journey-item"
+                  verticalAlignemnt="center" marginTop="10"></Label>
                 // Coast Time and Coast Distance
                 <Label row="1" col="0" [text]="item.coast_time + ' s' + '   •   ' + item.coast_distance + ' ' + 
-                                                (user.data.distance_unit_preference === 0 ? 'km' : 'mi')" class="journey-item"></Label>
+                                                (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
+                  class="journey-item"></Label>
                 // Date - Today, Yesterday or Some Date
                 <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
               </GridLayout>

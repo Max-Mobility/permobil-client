@@ -43,6 +43,8 @@ export class JourneyTabComponent implements OnInit {
   private _weekEnd: Date;
   private _userSubscription$: Subscription;
   private _journeyMap = {};
+  public todayActivity;
+  public todayUsage;
 
   constructor(
     private _logService: LoggingService,
@@ -103,12 +105,21 @@ export class JourneyTabComponent implements OnInit {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   }
 
+  private _getDayOfWeek(date: Date) {
+    // Sunday = 0, Saturday = 6;
+    return date.getDay();
+  }
+
   private async _loadWeeklyPushtrackerActivity() {
     const didLoad = await this._pushtrackerActivityService.loadWeeklyActivity(
       this._weekStart
     );
     if (didLoad) {
       for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
+
+        const index = this._getDayOfWeek(new Date());
+        this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[index];
+
         const dailyActivity = this._pushtrackerActivityService.weeklyActivity.days[i];
         if (dailyActivity) {
           // There's activity for today. Update journey list with coast_time/push_count info
@@ -126,6 +137,7 @@ export class JourneyTabComponent implements OnInit {
               ].timeOfDay = this._getTimeOfDayFromStartTime(record.start_time);
             }
             this._journeyMap[record.start_time].coastTime = record.coast_time_avg || 0;
+            this._journeyMap[record.start_time].coastTimeTotal = record.coast_time_total || 0;
             this._journeyMap[record.start_time].pushCount = record.push_count || 0;
           }
         }
@@ -139,6 +151,10 @@ export class JourneyTabComponent implements OnInit {
     );
     if (didLoad) {
       for (const i in this._smartDriveUsageService.weeklyActivity.days) {
+
+        const index = this._getDayOfWeek(new Date());
+        this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[index];
+
         const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
         if (dailyUsage) {
           // There's usage information for today. Update journey list with distance info
@@ -318,6 +334,7 @@ export class JourneyTabComponent implements OnInit {
         duration: 0
       });
     }
+
   }
 
   private _mergeJourneyItems(orderedJourneyMap: Object) {
@@ -352,7 +369,11 @@ export class JourneyTabComponent implements OnInit {
           if (first.stats.journeyType === second.stats.journeyType &&
               first.stats.timeOfDay === second.stats.timeOfDay &&
               timeDiff < ONE_HOUR) {
-            journeyList[firstIndex].stats.coastTime = (journeyList[firstIndex].stats.coastTime || 0) + second.stats.coastTime || 0;
+            // Sorry to whoever is reading this..
+            // - Pranav
+            journeyList[firstIndex].stats.coastTime =
+              ((journeyList[firstIndex].stats.coastTimeTotal || 0) + second.stats.coastTimeTotal || 0) /
+              (((journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0) || 1);
             journeyList[firstIndex].stats.coastDistance = (journeyList[firstIndex].stats.coastDistance || 0) + second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance = (journeyList[firstIndex].stats.driveDistance || 0) + second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount = (journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0;
