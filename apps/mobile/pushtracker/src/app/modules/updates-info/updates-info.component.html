@@ -6,9 +6,14 @@
     <StackLayout paddingTop="20">
       <Label width="98%" class="title" [text]="'updates-info-component.title' | translate" textWrap="true"></Label>
       // text sections from the updates-info-component translation sections
-      <StackLayout padding="10" *ngFor="let item of infoItems">
-        <Label class="section-text" [text]="item.text" textWrap="true"></Label>
-      </StackLayout>
+
+      <StackLayout padding="10" *ngFor="let section of infoItems">
+        <Label class="section-title" [text]="section.title" textWrap="true"></Label>
+        <StackLayout padding="10" *ngFor="let item of section.items">
+          <Label class="section-text" [text]="item.text" textWrap="true"></Label>
+        </StackLayout>
+      </StackLayout>      
+
     </StackLayout>
   </ScrollView>
 </GridLayout>
