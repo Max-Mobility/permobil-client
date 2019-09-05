@@ -1450,7 +1450,7 @@ export class MainViewModel extends Observable {
     } catch (err) {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
     }
-    this._sentryBreadCrumb(`Current FW Versions: ${this.currentVersions}`);
+    this._sentryBreadCrumb(`Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`);
     let response = null;
     const query = {
       $or: [
@@ -1469,6 +1469,7 @@ export class MainViewModel extends Observable {
     // if we don't
     const mds = response.content.toJSON();
     let promises = [];
+    const files = [];
     // get the max firmware version for each firmware
     const maxes = mds.reduce((maxes, md) => {
       const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
@@ -1502,28 +1503,32 @@ export class MainViewModel extends Observable {
       }, {});
       const progressKeys = Object.keys(progresses);
       SmartDriveData.Firmwares.setDownloadProgressCallback(
-        (file, eventData) => {
-          progresses[file['_filename']] = eventData.value;
+        throttle((file, progress) => {
+          // Log.D(file['_filename'] + ': ' + progress * 100.0);
+          progresses[file['_filename']] = progress * 100.0;
           this.smartDriveOtaProgress =
             progressKeys.reduce((total, k) => {
               return total + progresses[k];
             }, 0) / progressKeys.length;
-        }
+        }, 200)
       );
       // now download the files
-      promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
-    }
-    let files = null;
-    try {
-      files = await Promise.all(promises);
-    } catch (err) {
-      return this.updateError(err, L('updates.errors.downloading'), `${err}`);
+      try {
+        for (const fmd of fileMetaDatas) {
+          const f = await SmartDriveData.Firmwares.download(fmd);
+          files.push(f);
+        }
+      } catch (err) {
+        return this.updateError(err, L('updates.errors.downloading'), `${err}`);
+      }
     }
     // Now that we have the files, write them to disk and update
     // our local metadata
     promises = [];
     if (files && files.length) {
-      promises = files.map(this.updateFirmwareData.bind(this));
+      promises = files
+        .filter(f => f)
+        .map(this.updateFirmwareData.bind(this));
     }
     try {
       await Promise.all(promises);
@@ -2765,7 +2770,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }

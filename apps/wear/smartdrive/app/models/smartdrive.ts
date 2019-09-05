@@ -403,12 +403,10 @@ export class SmartDrive extends DeviceBase {
           begin();
         };
         const connectHandler = () => {
-          this.ableToSend = false;
           // clear out the connection interval
           timer.clearInterval(connectionIntervalID);
         };
         const disconnectHandler = () => {
-          this.ableToSend = false;
           hasRebooted = true;
           if (connectionIntervalID) {
             timer.clearInterval(connectionIntervalID);
@@ -520,7 +518,7 @@ export class SmartDrive extends DeviceBase {
                     throw 'bad status: ' + ret.status;
                   } else {
                     writeFirmwareTimeoutID = timer.setTimeout(() => {
-                      this.ableToSend = true;
+                      // this.ableToSend = true;
                       index += payloadSize;
                       writeFirmwareSector(device, fw, characteristic, nextState);
                     }, 0);
@@ -705,7 +703,7 @@ export class SmartDrive extends DeviceBase {
                     value: data
                   })
                   .then(() => {
-                    this.ableToSend = true;
+                    // this.ableToSend = true;
                   })
                   .catch(err => { });
               }
@@ -766,7 +764,7 @@ export class SmartDrive extends DeviceBase {
                     value: data
                   })
                   .then(() => {
-                    this.ableToSend = true;
+                    // this.ableToSend = true;
                   })
                   .catch(err => { });
               }
@@ -1109,7 +1107,7 @@ export class SmartDrive extends DeviceBase {
     const uArray = new Uint8Array(value);
     const p = new Packet();
     p.initialize(uArray);
-    // console.log(`${p.Type()}::${p.SubType()} ${p.toString()}`);
+    // console.log(`GOT PACKET: ${p.Type()}::${p.SubType()} ${p.toString()}`);
     this.handlePacket(p);
     p.destroy();
   }
