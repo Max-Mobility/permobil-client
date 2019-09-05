@@ -7,6 +7,7 @@ import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import debounce from 'lodash/debounce';
 
 enum TimeOfDay {
   'MORNING' = 0, // Before 12:00 PM
@@ -34,17 +35,20 @@ class JourneyItem {
   templateUrl: './journey-tab.component.html'
 })
 export class JourneyTabComponent implements OnInit {
-  journeyItems;
+  journeyItems = undefined;
   savedTheme: string;
   user: PushTrackerUser;
 
   private _today: Date;
   private _weekStart: Date;
+  private _rollingWeekStart: Date;
   private _userSubscription$: Subscription;
   private _journeyMap = {};
   public todayActivity;
   public todayUsage;
   public journeyItemsLoaded: boolean = false;
+  public debouncedRefresh: any = null;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
 
   constructor(
     private _logService: LoggingService,
@@ -65,14 +69,16 @@ export class JourneyTabComponent implements OnInit {
     );
     this._today = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._today);
+    this._rollingWeekStart = new Date(this._weekStart);
+    this.debouncedRefresh = debounce(
+      this.onRefreshTap.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
-      this._loadWeeklyPushtrackerActivity().then(() => {
-        this._loadWeeklySmartDriveUsage().then(() => {
-          this._processJourneyMap();
-          this.journeyItemsLoaded = true;
-          console.log('Journey items loaded!!!');
-        });
+      this._loadDataForDate(this._weekStart).then(() => {
+        this.journeyItemsLoaded = true;
       });
     });
   }
@@ -86,10 +92,17 @@ export class JourneyTabComponent implements OnInit {
     Log.D('refresh tap');
     this._today = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._today);
-    this._loadWeeklyPushtrackerActivity().then(() => {
-      this._loadWeeklySmartDriveUsage().then(() => {
+    this._rollingWeekStart = new Date(this._weekStart);
+    this.journeyItems = undefined;
+    this._loadDataForDate(this._weekStart).then(() => {
+      this.journeyItemsLoaded = true;
+    });
+  }
+
+  async _loadDataForDate(date: Date) {
+    return this._loadWeeklyPushtrackerActivity(date).then(() => {
+      this._loadWeeklySmartDriveUsage(date).then(() => {
         this._processJourneyMap();
-        this.journeyItemsLoaded = true;
       });
     });
   }
@@ -118,10 +131,8 @@ export class JourneyTabComponent implements OnInit {
     return date.getDay();
   }
 
-  private async _loadWeeklyPushtrackerActivity() {
-    const didLoad = await this._pushtrackerActivityService.loadWeeklyActivity(
-      this._weekStart
-    );
+  private async _loadWeeklyPushtrackerActivity(date: Date) {
+    const didLoad = await this._pushtrackerActivityService.loadWeeklyActivity(date);
     if (didLoad) {
       for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
 
@@ -151,12 +162,11 @@ export class JourneyTabComponent implements OnInit {
         }
       }
     }
+    return didLoad;
   }
 
-  private async _loadWeeklySmartDriveUsage() {
-    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(
-      this._weekStart
-    );
+  private async _loadWeeklySmartDriveUsage(date: Date) {
+    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(date);
     if (didLoad) {
       for (const i in this._smartDriveUsageService.weeklyActivity.days) {
 
@@ -214,6 +224,7 @@ export class JourneyTabComponent implements OnInit {
         }
       }
     }
+    return didLoad;
   }
 
   private _getTimeOfDayFromStartTime(startTime: number) {
@@ -273,7 +284,8 @@ export class JourneyTabComponent implements OnInit {
       orderedJourneyMap[key] = self._journeyMap[key];
     });
 
-    this.journeyItems = [];
+    if (!this.journeyItems)
+      this.journeyItems = [];
 
     const getTimeOfDayString = function(timeOfDay: TimeOfDay) {
       if (timeOfDay === 0) return 'Morning';
@@ -300,7 +312,7 @@ export class JourneyTabComponent implements OnInit {
       // drive - used when there is distance data and drive is a significant portion of coast (e.g. > 30%)
       // https://github.com/Max-Mobility/permobil-client/issues/23
       if (journey.driveDistance > 0 &&
-        journey.driveDistance > journey.coastDistance * 1.3) {
+        journey.coastDistance < journey.driveDistance * 1.3) {
         journey.journeyType = JourneyType.DRIVE;
       }
 
@@ -368,6 +380,12 @@ export class JourneyTabComponent implements OnInit {
         duration: 0
       });
     }
+
+    // Check if there are enough entries in this.journeyItems. If not, load more
+    // if (this.journeyItems.length < 5) {
+    //   this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
+    //   this._loadDataForDate(this._rollingWeekStart);
+    // }
 
   }
 
