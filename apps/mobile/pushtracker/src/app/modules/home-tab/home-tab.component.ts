@@ -70,6 +70,9 @@ export class HomeTabComponent {
     { xAxis: '        ', coastTime: 5, impact: 7 }
   ] as any[]);
 
+  private _debouncedLoadWeeklyActivity: any;
+  private _debouncedLoadWeeklyUsage: any;
+
   constructor(
     public userService: PushTrackerUserService,
     private _translateService: TranslateService,
@@ -101,7 +104,13 @@ export class HomeTabComponent {
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
       this._loadWeeklyData();
 
-      debounce(
+      this._debouncedLoadWeeklyActivity = debounce(
+        this._loadWeeklyActivity.bind(this),
+        this.MAX_COMMIT_INTERVAL_MS,
+        { trailing: true }
+      );
+
+      this._debouncedLoadWeeklyUsage = debounce(
         this._loadSmartDriveUsage.bind(this),
         this.MAX_COMMIT_INTERVAL_MS,
         { trailing: true }
@@ -137,17 +146,8 @@ export class HomeTabComponent {
       this._loadSmartDriveUsage();
       this._firstLoad = false;
     } else {
-      debounce(
-        this._loadWeeklyActivity.bind(this),
-        this.MAX_COMMIT_INTERVAL_MS,
-        { trailing: true }
-      );
-
-      debounce(
-        this._loadSmartDriveUsage.bind(this),
-        this.MAX_COMMIT_INTERVAL_MS,
-        { trailing: true }
-      );
+      this._debouncedLoadWeeklyActivity();
+      this._debouncedLoadWeeklyUsage();
     }
     this._updateProgress();
     this._updatePointLabelStyle();

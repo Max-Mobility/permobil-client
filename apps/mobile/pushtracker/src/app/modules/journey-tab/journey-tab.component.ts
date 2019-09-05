@@ -421,11 +421,11 @@ export class JourneyTabComponent implements OnInit {
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0,
         icon_small: this.savedTheme === 'DEFAULT' ?
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_black' : 'smartdrive_material_black') :
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white'),
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_black' : 'smartdrive_material_black_45') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white_45'),
         icon_large: this.savedTheme === 'DEFAULT' ?
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white') :
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white')
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white_45') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white_45')
       });
     }
 
