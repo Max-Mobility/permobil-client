@@ -38,14 +38,14 @@
       "batteryvoltage": "[ERR: 001] SD-batterispenning",
       "bledisconnect": "[ERR: 007] Bluetooth frakblet",
       "gyrorange": "[ERR: 005] SD Vinkel",
-      "motorphases": "[ERR: 002] SD motor",
+      "motorphases": "[ERR: 002] SD Motor",
       "otaunavailable": "[ERR: 006] Oppdateringer ikke tilgjengelig",
       "overcurrent": "[ERR: 003] SD Strøm topp",
-      "overtemperature": "[ERR: 004] SD overoppheting"
+      "overtemperature": "[ERR: 004] SD Overoppheting"
     },
     "loading": "Laster ...",
     "no-errors": "Ingen SmartDrive feil er registrert eller mottatt.",
-    "title": "SmartDrive feilhistorikk"
+    "title": "SmartDrive Feilhistorikk"
   },
   "failures": {
     "app-connection": {
@@ -78,12 +78,13 @@
     "nb": "Norsk [bokmål]",
     "nl": "Nederlandsk",
     "nn": "Norsk [nynorsk]",
+    "sv": "",
     "zh": "Tradisjonell kinesisk"
   },
   "menu": {
     "about": "Om",
     "settings": "Innstillinger",
-    "title": "SmartDrive MX2 meny",
+    "title": "SmartDrive MX2 Meny",
     "training": "Trykk på Trening",
     "updates": "Trådløse oppdateringer"
   },
@@ -203,7 +204,7 @@
   "updates": {
     "canceled": "SmartDrive oppdateringer kansellert.",
     "changes": "Sammendrag av endringer",
-    "checking-for-updates": "Ser etter oppdateringer...",
+    "checking-for-updates": "Ser etter oppdateringer ...",
     "communications-failed": "Kommunikasjonen med SmartDrive enheten har mislyktes, start SmartDrive på nytt.",
     "connecting-to-smartdrive": "Kobler til SmartDrive ...",
     "downloading-new-firmwares": "Laster ned nye oppdateringsdata ...",

@@ -10,7 +10,7 @@
   },
   "app-connection": {
     "completed": "Connecté avec succès au compte PushTracker.",
-    "connecting": "Connexion à l'application mobile PushTracker...",
+    "connecting": "Connexion à l'application mobile PushTracker ...",
     "identifier": "Nom de la montre",
     "preface": "Connexion au compte PushTracker ...",
     "receiving": "Réception des informations du compte ..."
@@ -43,7 +43,7 @@
       "overcurrent": "[ERR: 003] SD Erreur de Surintensité",
       "overtemperature": "[ERR: 004] SD Surchauffe moteur"
     },
-    "loading": "Chargement...",
+    "loading": "Chargement ...",
     "no-errors": "Aucune erreur SmartDrive n'a été enregistrée ou reçue.",
     "title": "Historique des codes erreurs SmartDrive"
   },
@@ -78,13 +78,14 @@
     "nb": "Norvégien [Bokmål]",
     "nl": "Néerlandais",
     "nn": "Norvégien [Nynorsk]",
+    "sv": "",
     "zh": "Chinois [traditionnel]"
   },
   "menu": {
     "about": "À propos de",
     "settings": "Réglages",
     "title": "Menu SmartDrive MX2+",
-    "training": "Activer\nle mode entraînement",
+    "training": "Activer le mode entraînement",
     "updates": "Mises à jour sans fil"
   },
   "ota": {
@@ -103,7 +104,7 @@
         "awaiting-mcu-ready": "Attente de connexion SD",
         "awaiting-versions": "Attente de versions",
         "canceled": "Annulé",
-        "canceling": "En cours d\"annulation...",
+        "canceling": "En cours d\"annulation",
         "comm-failure": "Erreur de communication - Redémarrage SmartDrive requis",
         "complete": "Terminer",
         "failed": "Échec",
@@ -161,7 +162,7 @@
       "powerassistbuzzer": "Lorsqu'elle est activée, la SmartDrive émet un bip à chaque fois qu'une connexion est établie avec le PushTracker E2 ou lorsque vous la démarrez par les boutons de tierce personne.",
       "switchcontrolmode": "Discontinu: Mode de contrôle par défaut avec lequel la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons de commande est enfoncé. Lorsque vous relâchez le bouton maintenu ou que vous appuyez sur les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.\n\nMaintenu: En mode de contrôle maintenu, la SmartDrive active le moteur en augmentant sa vitesse jusqu'à la vitesse maximale tant que l'un des boutons est maintenu enfoncé. Lorsque le bouton maintenu est relâché, la SmartDrive continuera à rouler / à suivre la vitesse actuelle au moment où le bouton a été relâché. Lorsque vous appuyez sur l'un des boutons ou les deux boutons simultanément [le cas échéant], la conduite est désactivée. Veuillez noter que lors de la désactivation, l'appareil ne se met pas en veille.",
       "switchcontrolspeed": "La vitesse maximale à laquelle la SmartDrive peut rouler lorsqu'elle est contrôlée par les boutons de tierce personne.",
-      "tapsensitivity": "Réglage de la sensibilité du geste de tape utilisé pour activer et désactiver la conduite. Plus le pourcentage est bas, plus il est difficile de taper: 100% est le plus sensible, donc le plus facile à utiliser, et 10%, le moins sensible et donc le plus difficile à utiliser.",
+      "tapsensitivity": "Réglage de la sensibilité du geste de tape utilisé pour activer et désactiver la conduite. Plus le pourcentage est bas, plus il est difficile de taper - 100% est le plus sensible, donc le plus facile à utiliser, et 10%, le moins sensible et donc le plus difficile à utiliser.",
       "units": "Unités de mesure: la vitesse et les distances dans les interfaces utilisateur. Sélectionnez soit Impérial [mi et mph] ou Métrique [km et km / h].",
       "wearcheck": "Lorsqu'elle est activée, la montre doit être au poignet pour activer l'assistance électrique. Si l'assistance électrique est activée et que la montre détecte qu'elle n'est plus au poignet, elle désactivera automatiquement l'assistance électrique."
     },

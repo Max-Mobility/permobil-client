@@ -9,7 +9,7 @@
     "watch-serial-number": "Smartwatch Serienummer"
   },
   "app-connection": {
-    "completed": "Succesvol verbonden met PushTracker Account.",
+    "completed": "Succesvol verbonden met PushTracker account.",
     "connecting": "Verbinding maken met de mobiele PushTracker App ...",
     "identifier": "Smartwatch Naam",
     "preface": "Verbinding maken met PushTracker Account ...",
@@ -43,7 +43,7 @@
       "overcurrent": "[ERR: 003] SD Stroom piek",
       "overtemperature": "[ERR: 004] SD Oververhitting"
     },
-    "loading": "Bezig met laden...",
+    "loading": "Bezig met laden ...",
     "no-errors": "Er zijn geen SmartDrive fouten geregistreerd of ontvangen.",
     "title": "SmartDrive Foutgeschiedenis"
   },
@@ -78,6 +78,7 @@
     "nb": "Noors [Bokmål]",
     "nl": "Nederlands",
     "nn": "Noors [Nynorsk]",
+    "sv": "",
     "zh": "Chinese [Traditional]"
   },
   "menu": {
@@ -161,9 +162,9 @@
       "powerassistbuzzer": "Indien ingeschakeld, piept de SmartDrive telkens wanneer een verbinding vanaf een extern apparaat tot stand wordt gebracht of wanneer Switch Control uit de stand-by status wordt gehaald.",
       "switchcontrolmode": "Direct rijden:\nDe standaard besturingsmode waarbij de SmartDrive gaat rijden door het indrukken en vasthouden van één van beide knoppen tot de maximaal geconfigureerde snelheid. \nWanneer de ingehouden knop wordt losgelaten, of wanneer beide knoppen [indien aanwezig] worden ingedrukt, wordt het rijden gedeactiveerd. Houd er rekening mee dat het apparaat na deactivering niet in de standby-mode wordt gezet.\n\nGeschakeld rijden: \nIn de modus geschakeld rijden begint de SmartDrive na het indrukken van één knop te rijden en te versnellen.\nNa het loslaten van de knop wordt de huidige snelheid vastgezet. \nWanneer een van de knoppen opnieuw wordt ingedrukt en losgelaten, of wanneer beide knoppen [indien aanwezig] worden ingedrukt, wordt de aandrijving gedeactiveerd. Houd er rekening mee dat het apparaat na deactivering niet in de standby-mode wordt gezet.\n",
       "switchcontrolspeed": "De maximale snelheid waarmee de SmartDrive kan rijden wanneer deze wordt bediend door knoppen.",
-      "tapsensitivity": "De gevoeligheid van het tikken dat wordt gebruikt om het rijden te activeren en te deactiveren. Hoe lager het percentage is, hoe harder je moet tikken. \n100% is het meest gevoelig en daarom het gemakkelijkst te tikken.\n10% is het minst gevoelig en daarom het moeilijkst te tikken.",
+      "tapsensitivity": "De gevoeligheid van het tikken dat wordt gebruikt om het rijden te activeren en te deactiveren. Hoe lager het percentage is, hoe harder je moet tikken - 100% is het meest gevoelig en daarom het gemakkelijkst te tikken, 10% is het minst gevoelig en daarom het moeilijkst te tikken.",
       "units": "Het eenhedensysteem of maateenheden om de snelheid en afstanden binnen de gebruikersinterfaces weer te geven. Selecteer Imperiaal [mi en mph] of Metrisch [km en km/u].",
-      "wearcheck": "Indien ingeschakeld, moet de Smartwatch om de pols zitten om de SmartDrive IN te kunnen schakelen. Als de SmartDrive ingeschakeld is en de Smartwatch niet langer om de pols zit, schakelt de SmartDrive automatisch UIT."
+      "wearcheck": "Indien ingeschakeld, moet de smartwatch om de pols zitten om de SmartDrive IN te kunnen schakelen. Als de SmartDrive ingeschakeld is en de smartwatch niet langer om de pols zit, schakelt de SmartDrive automatisch UIT."
     },
     "error-history": "Foutgeschiedenis",
     "information": "Informatie",
@@ -203,10 +204,10 @@
   "updates": {
     "canceled": "SmartDrive updates geannuleerd.",
     "changes": "Samenvatting van de wijzigingen",
-    "checking-for-updates": "Controleren op updates...",
+    "checking-for-updates": "Controleren op updates ...",
     "communications-failed": "Communicatie met de SmartDrive is mislukt. Start uw SmartDrive opnieuw op.",
-    "connecting-to-smartdrive": "Verbinding maken met SmartDrive...",
-    "downloading-new-firmwares": "Nieuwe updates downloaden...",
+    "connecting-to-smartdrive": "Verbinding maken met SmartDrive ...",
+    "downloading-new-firmwares": "Nieuwe updates downloaden ...",
     "errors": {
       "connecting": "Fout bij verbinding maken met SmartDrive.",
       "downloading": "Fout bij downloaden van updates.",
