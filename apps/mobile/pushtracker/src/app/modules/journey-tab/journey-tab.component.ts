@@ -73,7 +73,7 @@ export class JourneyTabComponent implements OnInit {
     this._weekStart = this._getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
     this.debouncedRefresh = debounce(
-      this.onRefreshTap.bind(this),
+      this._refresh.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
       { trailing: true }
     );
@@ -91,8 +91,12 @@ export class JourneyTabComponent implements OnInit {
   }
 
   onRefreshTap() {
-    this.journeyItemsLoaded = false;
     Log.D('refresh tap');
+    this.debouncedRefresh();
+  }
+
+  private _refresh() {
+    this.journeyItemsLoaded = false;
     this._today = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
