@@ -45,6 +45,7 @@ export class JourneyTabComponent implements OnInit {
   private _journeyMap = {};
   public todayActivity;
   public todayUsage;
+  public journeyItemsLoaded: boolean = false;
 
   constructor(
     private _logService: LoggingService,
@@ -73,6 +74,8 @@ export class JourneyTabComponent implements OnInit {
       this._loadWeeklyPushtrackerActivity().then(() => {
         this._loadWeeklySmartDriveUsage().then(() => {
           this._processJourneyMap();
+          this.journeyItemsLoaded = true;
+          console.log('Journey items loaded!!!');
         });
       });
     });
@@ -83,6 +86,7 @@ export class JourneyTabComponent implements OnInit {
   }
 
   onRefreshTap() {
+    this.journeyItemsLoaded = false;
     Log.D('refresh tap');
     this._today = new Date();
     const sunday = this._getFirstDayOfWeek(this._today);
@@ -92,6 +96,7 @@ export class JourneyTabComponent implements OnInit {
     this._loadWeeklyPushtrackerActivity().then(() => {
       this._loadWeeklySmartDriveUsage().then(() => {
         this._processJourneyMap();
+        this.journeyItemsLoaded = true;
       });
     });
   }

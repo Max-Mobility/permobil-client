@@ -36,7 +36,7 @@
         <StackLayout width="95%" marginTop="5" marginBottom="5" row="2" class="hr-light"></StackLayout>
 
         <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)"
-          class="list-group">
+          class="list-group" *ngIf="journeyItemsLoaded">
           <ng-template let-item="item" let-odd="odd" let-even="even">
             <GridLayout rows="*, *" columns="*, auto">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
@@ -66,6 +66,9 @@
             </GridLayout>
           </ng-template>
         </ListView>
+
+        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="center" *ngIf="!journeyItemsLoaded"
+          [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
       </GridLayout>
     </ScrollView>
