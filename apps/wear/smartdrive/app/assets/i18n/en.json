@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
     "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive Serial Number",
+    "sd-recent-signal-strength": "Recent SmartDrive Signal Strength (dB)",
     "title": "About Information",
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
     "watch-serial-number": "Smartwatch Serial Number"
