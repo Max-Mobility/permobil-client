@@ -410,8 +410,6 @@ export class JourneyTabComponent implements OnInit {
         }
       }
 
-      console.log(journey.coastTime, journey.coastDistance);
-
       this.journeyItems.push({
         date: journeyDateLabel,
         time: journeyTimeLabel,
