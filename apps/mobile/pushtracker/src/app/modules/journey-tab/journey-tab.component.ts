@@ -84,6 +84,16 @@ export class JourneyTabComponent implements OnInit {
 
   onRefreshTap() {
     Log.D('refresh tap');
+    this._today = new Date();
+    const sunday = this._getFirstDayOfWeek(this._today);
+    this._weekStart = sunday;
+    this._weekEnd = new Date(this._weekStart);
+    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this._loadWeeklyPushtrackerActivity().then(() => {
+      this._loadWeeklySmartDriveUsage().then(() => {
+        this._processJourneyMap();
+      });
+    });
   }
 
   closeJourneyDetailsLayout() {
