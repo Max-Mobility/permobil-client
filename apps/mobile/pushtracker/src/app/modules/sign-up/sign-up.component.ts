@@ -42,7 +42,7 @@ export class SignUpComponent implements OnInit {
     first_name: '',
     last_name: '',
     dob: '',
-    gender: 'Male',
+    gender: '',
     height: 0,
     height_unit_preference: 1,
     weight: 0,
