@@ -1,233 +1,233 @@
 {
   "about": {
     "database": "데이터베이스 ID",
-    "sd-ble-version": "SmartDrive Bluetooth (BT) 버전",
-    "sd-mcu-version": "SmartDrive MCU (SD) 버전",
-    "sd-serial-number": "SmartDrive 일련 번호",
+    "sd-ble-version": "스마트드라이브 블루투스(BT) 버전",
+    "sd-mcu-version": "스마트드라이브 기기(SD) 버전",
+    "sd-serial-number": "스마트드라이브 일련번호",
     "title": "정보",
-    "version": "SmartDrive MX2 Wear OS 응용 프로그램 (SW) 버전",
-    "watch-serial-number": "Smartwatch 일련 번호"
+    "version": "스마트드라이브 MX2+ WearOS 앱(SW) 버전",
+    "watch-serial-number": "스마트워치 일련번호"
   },
   "app-connection": {
     "completed": "PushTracker 계정에 성공적으로 연결되었습니다.",
     "connecting": "PushTracker 모바일 앱에 연결하는 중 ...",
-    "identifier": "스마트 워치 이름",
+    "identifier": "스마트워치 이름",
     "preface": "PushTracker 계정에 연결하는 중 ...",
-    "receiving": "계정 정보를받는 중 ..."
+    "receiving": "계정 정보를 받는 중 ..."
   },
   "buttons": {
-    "allow": "허용하다",
+    "allow": "허용",
     "back": "뒤로",
     "cancel": "취소",
-    "deny": "거부하다",
+    "deny": "거부",
     "disable": "사용 안함",
-    "dismiss": "버리다",
-    "enable": "사용",
-    "ok": "승인"
+    "dismiss": "해제",
+    "enable": "사용함",
+    "ok": "확인"
   },
   "charts": {
     "battery": {
-      "title": "SmartDrive 배터리 사용량 매일 (%)"
+      "title": "배터리 일일 사용량(%)"
     },
     "distance": {
-      "title": "매일 여행하는 SmartDrive 거리"
+      "title": "일일 주행거리"
     }
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "[ERR : 001] SD 배터리 전압",
-      "bledisconnect": "[ERR : 007] 블루투스 연결 끊기",
-      "gyrorange": "[ERR : 005] SD 각도",
-      "motorphases": "[ERR : 002] SD 모터",
-      "otaunavailable": "[ERR : 006] 업데이트를 사용할 수 없습니다.",
-      "overcurrent": "[ERR : 003] SD 전류 스파이크",
-      "overtemperature": "[ERR : 004] SD 과열"
+      "batteryvoltage": "[ERR : 001] 배터리 전압",
+      "bledisconnect": "[ERR : 007] 블루투스 연결 끊김",
+      "gyrorange": "[ERR : 005] 각도",
+      "motorphases": "[ERR : 002] 모터",
+      "otaunavailable": "[ERR : 006] 업데이트를 사용할 수 없습니다",
+      "overcurrent": "[ERR : 003] 전류 이상",
+      "overtemperature": "[ERR : 005] 과열"
     },
-    "loading": "로드 중 ...",
-    "no-errors": "SmartDrive 오류가 기록되거나 수신되지 않았습니다.",
-    "title": "SmartDrive 오류 기록"
+    "loading": "불러오는 중 ...",
+    "no-errors": "오류가 기록되거나 수신되지 않았습니다.",
+    "title": "스마트드라이브 오류 기록"
   },
   "failures": {
     "app-connection": {
-      "credentials": "PushTracker 계정을 연결하지 못했습니다.",
-      "logout": "계정이 로그 아웃되었습니다. PushTracker Mobile 앱에 다시 연결해야합니다.",
+      "credentials": "PushTracker 계정에 연결하지 못했습니다.",
+      "logout": "계정이 로그아웃되었습니다. PushTracker 앱에 다시 연결해야합니다.",
       "timeout": "앱 연결 시간이 초과되었습니다."
     },
-    "connect": "SmartDrive에 연결할 수 없습니다.",
-    "getting-error": "SmartDrive 오류를 가져 오는 데 실패했습니다.",
-    "must-wear-watch": "[Check for Wrist] 설정이 활성화되어 있으므로 SmartWatch를 착용하여 SmartDrive를 제어해야합니다.",
-    "no-smartdrive-paired": "SmartDrive가 페어링되지 않았습니다.",
-    "no-smartdrives-found": "근처에 SmartDrive가 없습니다.",
+    "connect": "스마트드라이브에 연결할 수 없습니다.",
+    "getting-error": "오류를 가져오는 데 실패했습니다.",
+    "must-wear-watch": "[착용 확인] 설정이 완료되었습니다. 스마트드라이브를 제어를 위해 반드시 스마트워치를 착용하십시오.",
+    "no-smartdrive-paired": "스마트드라이브가 페어링되지 않았습니다.",
+    "no-smartdrives-found": "스마트드라이브를 찾을 수 없습니다.",
     "permissions": "요청한 작업을 수행 할 수 없습니다. 필요한 권한이 부여되지 않았습니다.",
-    "saving-error": "SmartDrive 오류를 저장하지 못했습니다.",
-    "saving-usage": "저장 사용에 실패했습니다.",
-    "scan": "스캔 할 수 없습니다.",
-    "send-settings": "SmartDrive로 설정을 보내지 못했습니다.",
+    "saving-error": "스마트드라이브 오류를 저장하지 못했습니다.",
+    "saving-usage": "사용 내역 저장에 실패했습니다.",
+    "scan": "스캔할 수 없습니다.",
+    "send-settings": "스마트드라이브로 설정을 보내지 못했습니다.",
     "title": "주의",
-    "too-many-smartdrives-found": "여러 개의 SmartDrive가 발견되었습니다. 페어링 할 때 주변에 SmartDrive가 하나만 있는지 확인하십시오."
+    "too-many-smartdrives-found": "여러 개의 스마트드라이브가 발견되었습니다. 페어링시 주변에 스마트드라이브가 하나만 있도록 확인하십시오."
   },
   "languages": {
-    "da": "덴마크 말",
-    "de": "독일 사람",
+    "da": "덴마크어",
+    "de": "독일어",
     "en": "영어",
-    "es": "스페인 사람",
-    "fr": "프랑스 국민",
-    "it": "이탈리아 사람",
+    "es": "스페인어",
+    "fr": "프랑스어",
+    "it": "이탈리아어",
     "ja": "일본어",
     "ko": "한국어",
     "nb": "노르웨이어 [Bokmål]",
-    "nl": "네덜란드 사람",
+    "nl": "네덜란드어",
     "nn": "노르웨이어 [Nynorsk]",
-    "sv": "스웨덴어",
-    "zh": "중국 전통]"
+    "sv": "",
+    "zh": "중국어 [Traditional]"
   },
   "menu": {
-    "about": "약",
+    "about": "관련 정보",
     "settings": "설정",
-    "title": "SmartDrive MX2 메뉴",
-    "training": "탭 교육",
+    "title": "스마트드라이브 MX2+ 메뉴",
+    "training": "탭 조작법",
     "updates": "무선 업데이트"
   },
   "ota": {
     "action": {
       "cancel": "취소",
-      "force": "힘",
-      "pause": "중지",
-      "resume": "이력서",
-      "retry": "다시 해 보다",
-      "start": "스타트"
+      "force": "강도",
+      "pause": "일시정지",
+      "resume": "재개",
+      "retry": "다시 시작",
+      "start": "시작"
     },
     "sd": {
       "state": {
-        "awaiting-ble-ready": "BT에서 대기 중",
+        "awaiting-ble-ready": "블루투스 대기 중",
         "awaiting-connection": "연결 대기 중",
-        "awaiting-mcu-ready": "SD를 기다리는 중",
-        "awaiting-versions": "버전 대기 중",
-        "canceled": "취소 된",
+        "awaiting-mcu-ready": "스마트드라이브를 기다리는 중",
+        "awaiting-versions": "버전 확인중",
+        "canceled": "취소됨",
         "canceling": "취소 중",
-        "comm-failure": "통신 오류 - SmartDrive 재부팅 필요",
-        "complete": "완전한",
-        "failed": "실패한",
+        "comm-failure": "통신 오류 - 스마트드라이브 재부팅이 필요함",
+        "complete": "완료 ",
+        "failed": "실패",
         "not-started": "시작되지 않음",
-        "rebooting-ble": "BT 재부팅",
-        "rebooting-mcu": "SD 재부팅",
+        "rebooting-ble": "블루투스 재부팅",
+        "rebooting-mcu": "스마트드라이브 재부팅",
         "timeout": "시간 초과",
-        "updating-ble": "BT 업데이트 중",
-        "updating-mcu": "SD 업데이트 중",
+        "updating-ble": "블루투스 업데이트 중",
+        "updating-mcu": "스마트드라이브 업데이트 중",
         "verifying": "확인 중"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "Bluetooth를 사용하여 SmartDrive를 제어하려면 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야합니다. 이 허가에서 Permobil은 귀하의 위치 데이터에 액세스하지 않습니다.",
-    "phone-state": "선택 사항 : 지원 및 보증 목적으로 유용 할 수있는 스마트 시계 일련 번호에 액세스하려면 다음 화면 중 하나에서 전화 권한 [READ_PHONE_STATE]을 허용해야합니다. 이 허가에서 Permobil은 귀하의 전화 번호, 셀룰러 네트워크 정보 또는 스마트 워치 일련 번호를 제외한 기타 데이터에 액세스하지 않습니다."
+    "coarse-location": "블루투스를 사용하여 스마트드라이브를 제어하기 위해서는 다음 화면에서 위치 권한 [ACCESS_COARSE_LOCATION]을 허용해야 합니다. 퍼모빌은 해당 권한을 이용하여 귀하의 위치 데이터에 접근하지 않습니다.",
+    "phone-state": "선택사항 : 지원 및 보증 목적으로 유용할 수있는 스마트워치의 일련 번호에 접근하려면 다음 화면에서 전화 권한 [READ_PHONE_STATE]을 허용해야합니다. 이 허가에서 퍼모빌은 귀하의 전화 번호, 셀룰러 네트워크 정보 또는 스마트워치 일련 번호를 제외한 기타 데이터에 접근하지 않습니다."
   },
   "permissions-request": {
-    "title": "권한 공지"
+    "title": "권한 공지사항"
   },
   "power-assist": {
-    "activate": "회전\n파워 어시스트\n에",
-    "deactivate": "회전\n파워 어시스트\n떨어져서",
-    "estimated-range": "예상 범위",
-    "exit-training": "출구 훈련",
+    "activate": "회전\n파워 어시스트\n켜기",
+    "deactivate": "회전\n파워 어시스트\n끄기",
+    "estimated-range": "예상 활동반경",
+    "exit-training": "훈련 종료하기",
     "speed": "현재 속도",
-    "stop": "운전을 비활성화하십시오"
+    "stop": "운행 비활성화"
   },
   "sd": {
     "settings": {
       "power-assist-buzzer": {
-        "disabled": "장애인",
-        "enabled": "사용"
+        "disabled": "비활성",
+        "enabled": "사용함"
       },
       "units": {
-        "english": "장엄한",
-        "metric": "미터법"
+        "english": "인치",
+        "metric": "미터"
       }
     },
     "switch-settings": {
       "mode": {
-        "latching": "래치 형",
-        "momentary": "순간"
+        "latching": "지속 모드",
+        "momentary": "순간 모드"
       }
     }
   },
   "settings": {
     "acceleration": "가속",
-    "connect-pushtracker": "PushTracker 모바일 앱 연결",
-    "control-mode": "제어 모드",
+    "connect-pushtracker": "PushTracker 앱 연결",
+    "control-mode": "컨트롤 모드",
     "description": {
-      "acceleration": "SmartDrive의 가속 또는 속도 램프 속도.",
-      "controlmode": "MX2 : SmartDrive의 기본 제스처 기반 작업입니다. MX2 제어 모드에서 더블 탭은 속도를 올리면서 모터를 구동하기 시작할 것이고, 한 번 탭하면 현재 속도로 움직이고 두 번 누르면 구동이 비활성화됩니다.\n\nMX2 : MX2 제어 모드에서 SmartDrive는 누름을 감지하면 운전을 시작하고, 누를 때 운전을 비활성화합니다. 이 옵션은 레거시 지원 옵션입니다.\n\nMX1 : MX1 제어 모드에서 SmartDrive는 누름을 감지하면 주행을 시작하고, 길게 누르거나 손잡이를 제동 할 때 운전을 멈 춥니 다. 이 옵션은 레거시 지원 옵션입니다.",
-      "maxspeed": "스마트 드라이브로 제어 할 때 SmartDrive가 주행 할 수있는 최대 속도입니다.",
-      "powerassistbuzzer": "활성화되면 원격 장치로부터의 연결이 설정되거나 스위치 제어가 대기 상태에서 벗어날 때마다 SmartDrive에서 신호음이 울립니다.",
-      "switchcontrolmode": "Momentary (모멘터 리) : 스위치 제어 버튼 중 하나를 누르고있는 동안에 만 구성된 Switch Control Max Speed로 속도를 상승시켜 SmartDrive가 모터 구동을 시작하는 기본 Switch Control Mode입니다. 누르고있는 버튼을 놓거나 양쪽 버튼 [있는 경우]을 누르면 운전이 비활성화됩니다. 비활성화하면 장치가 대기 상태가되지 않습니다.\n\n래치 : 래치 스위치 제어 모드에서 SmartDrive는 스위치 컨트롤 버튼 중 하나를 누른 상태에서 구성된 스위치 컨트롤 최대 속도로 속도를 올려 모터 구동을 시작합니다. 버튼을 놓으면 SmartDrive는 버튼을 놓을 때 현재 속도로 주행 / 연안을 유지합니다. 버튼 중 하나를 다시 눌렀다 놓거나 버튼 [있는 경우]을 모두 누르면 운전이 비활성화됩니다. 비활성화하면 장치가 대기 상태가되지 않습니다.",
-      "switchcontrolspeed": "스위치 컨트롤로 제어 할 때 SmartDrive가 주행 할 수있는 최대 속도입니다.",
+      "acceleration": "스마트드라이브의 가속 또는 속도 증가량.",
+      "controlmode": "MX2+: 기본 설정, 스마트드라이브를 팔의 움직임을 통해 조종합니다. 이 제어 모드에서는 더블 탭은 속도를 올리면서 구동하기 시작해서, 한 번 탭하면 현재 속도를 유지하며, 다시 두 번 누르면 구동이 비활성화됩니다.\n\nMX2 : 이 모드에서는 스마트드라이브는 휠체어를 앞으로 밀면 움직임을 감지하여 운전을 시작되고, 탭하면 운전을 비활성화합니다. 이 옵션은 기존 제품들의 지원을 위한 옵션입니다.\n\nMX1 : 이 모드에서 스마트드라이브는 휠체어를 앞으로 밀면 움직임을 감지하여 주행을 시작하고, 탭을 하거나 핸드림으로 휠체어를 멈추면 그에 따라 멈추는 모두로 역시 기존 제품들의 지원을 위한 옵션입니다.",
+      "maxspeed": "최대 속도, 스마트드라이브의 제어를 통해 주행 가능한 최대속도입니다.",
+      "powerassistbuzzer": "비프음이 활성화되면 원격 장치로부터의 연결이 설정되거나 스위치 제어가 대기 상태에서 벗어날 때마다 스마트드라이브에서 신호음이 울립니다.",
+      "switchcontrolmode": "순간모드(모멘터리) : 기본 설정, 컨트롤 스위치 버튼을 누르고 있는 동안에 컨트롤스위치 최대속도까지 속도를 상승시키도록 스마트드라이브가 구동되는 방식. 누르고있는 버튼에서 손을 떼거나 양쪽 버튼 [있는 경우]을 누르면 운전이 비활성화됩니다. 비활성화된 상태에서는 장치가 대기 상태로 유지되지 않습니다.\n\n지속모드(래치) : 컨트롤 스위치를 누른 상태를 유지하면 설정된 최대 속도까지 올라가도록 설정되어 있으며, 버튼에서 손을 떼면 스마트드라이브가 현재 속도로 주행을 유지합니다. 버튼 중 하나를 다시 눌렀다 놓거나 버튼 [있는 경우]을 모두 누르면 운전이 비활성화됩니다. 비활성화된 상태에서는 장치가 대기 상태로 유지되지 않습니다.",
+      "switchcontrolspeed": "컨트롤스위치로 제어할 때 스마트드라이브가 주행할 수있는 최대 속도입니다.",
       "tapsensitivity": "운전을 활성화하고 비활성화하는 데 사용되는 탭 제스처의 민감도. 비율을 낮추면 입력하는 것이 어려워집니다. 100 %는 가장 민감하기 때문에 탭하는 것이 가장 쉽고 10 %는 덜 민감하므로 길게 누르기가 가장 어렵습니다.",
-      "units": "사용자 인터페이스 내의 속도와 거리를 표시하는 단위 시스템 또는 측정 단위. Imperial [mi and mph] 또는 Metric [km and km / h]를 선택하십시오.",
-      "wearcheck": "사용하도록 설정하면 스마트 워치가 손목에 있어야 전원 보조 기능이 켜집니다. 파워 어시 스가 켜져 있고 스마트 워치가 더 이상 손목에 없다고 느끼면 자동으로 파워 어시스트가 꺼집니다."
+      "units": "사용자 인터페이스 내의 속도와 거리를 표시하는 단위시스템 또는 측정 단위. 인치 [마일, mph] 또는 미터 [KM, KM/h]를 선택하십시오.",
+      "wearcheck": "사용이 활성화 되면, 반드시 스마트워치가 손목에 있어야 전원이 켜집니다. 파워 어시스트 모드가 켜져 있지만 스마트워치가 손목에 착용되지 않은 경우에는 자동으로 파워 어시스트 모드가 꺼집니다."
     },
     "error-history": "오류 기록",
     "information": "정보",
     "max-speed": "최대 속도",
-    "pair-smartdrive": "쌍 SmartDrive",
-    "paired-to-smartdrive": "SmartDrive에 성공적으로 연결되었습니다.",
-    "power-assist-buzzer": "전원 보조 경고음 표시",
-    "scanning": "페어링 할 SmartDrive 스캔 중 ...",
-    "select-smartdrive": "SmartDrive 선택",
+    "pair-smartdrive": "스마트드라이브 페어링",
+    "paired-to-smartdrive": "스마트드라이브에 성공적으로 연결되었습니다.",
+    "power-assist-buzzer": "파워 어시스트 경고음 알림",
+    "scanning": "페어링 할 스마트드라이브 스캔 중 ...",
+    "select-smartdrive": "스마트드라이브 선택",
     "tap-sensitivity": "탭 감도",
-    "title": "SmartDrive 설정",
+    "title": "스마트드라이브 설정",
     "units": "단위",
     "watch-required": {
-      "title": "손목 확인",
+      "title": "손목에 착용 확인",
       "values": {
-        "disabled": "장애인",
-        "enabled": "사용"
+        "disabled": "사용 불가",
+        "enabled": "사용 가능"
       }
     }
   },
   "switch-control": {
-    "max-speed": "스위치 제어 최대 속도",
-    "mode": "스위치 제어 모드"
+    "max-speed": "컨트롤스위치 최대 속도",
+    "mode": "컨트롤스위치 모드"
   },
   "units": {
     "distance": {
-      "english": "미",
+      "english": "Mile",
       "metric": "km"
     },
-    "english": "장엄한",
-    "metric": "미터법",
+    "english": "인치",
+    "metric": "미터",
     "speed": {
-      "english": "MPH",
-      "metric": "km / h"
+      "english": "mph",
+      "metric": "km/h"
     }
   },
   "updates": {
-    "canceled": "SmartDrive 업데이트가 취소되었습니다.",
-    "changes": "변경 사항 요약",
+    "canceled": "스마트드라이브 업데이트가 취소되었습니다.",
+    "changes": "변경된 사항 요약",
     "checking-for-updates": "업데이트 확인 중 ...",
-    "communications-failed": "SmartDrive와의 통신이 실패했습니다. SmartDrive를 재부팅하십시오.",
-    "connecting-to-smartdrive": "SmartDrive에 연결 중 ...",
-    "downloading-new-firmwares": "새 업데이트 데이터 다운로드 중 ...",
+    "communications-failed": "스마트드라이브와의 통신이 실패했습니다. 스마트드라이브를 재부팅하십시오.",
+    "connecting-to-smartdrive": "스마트드라이브에 연결 중 ...",
+    "downloading-new-firmwares": "업데이트 데이터 다운로드 중 ...",
     "errors": {
-      "connecting": "SmartDrive에 연결하는 중 오류가 발생했습니다.",
-      "downloading": "업데이트 다운로드 중 오류가 발생했습니다.",
-      "getting": "업데이트를 검색하는 중 오류가 발생했습니다.",
-      "saving": "업데이트 데이터를 저장하는 중 오류가 발생했습니다."
+      "connecting": "스마트드라이브 연결 오류.",
+      "downloading": "업데이트 다운로드 오류.",
+      "getting": "업데이트 검색중 오류.",
+      "saving": "업데이트 데이터 저장 오류."
     },
-    "failed": "SmartDrive 업데이트가 실패했습니다.",
+    "failed": "스마트드라이브 업데이트 실패.",
     "status": "업데이트 상태",
-    "success": "SmartDrive 업데이트가 성공적으로 완료되었습니다!",
-    "timeout": "SmartDrive 업데이트 시간이 초과되었습니다.",
-    "up-to-date": "SmartDrive가 최신 버전입니다!",
-    "version": "번역"
+    "success": "스마트드라이브 업데이트 완료!",
+    "timeout": "스마트드라이브 업데이트 시간 초과.",
+    "up-to-date": "스마트드라이브가 최신 버전입니다!",
+    "version": "버젼"
   },
   "warnings": {
     "saved-settings": {
-      "message": "주의 : 설정 변경이 작동 및 성능에 미치는 영향에 대해서는 SmartDrive 사용 설명서를 반드시 읽어야합니다.",
+      "message": "주의 : 설정 변경에 따른 작동 및 성능에 미치는 영향에 대해서는 반드시 스마트드라이브 사용 설명서를 참조하십시오.",
       "title": "변경된 설정"
     },
     "title": {
-      "notice": "주의"
+      "notice": "주의사항"
     }
   }
 }

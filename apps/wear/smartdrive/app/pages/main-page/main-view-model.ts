@@ -2016,11 +2016,11 @@ export class MainViewModel extends Observable {
 
   @Prop() displayDebug: boolean = false;
   toggleDebug() {
-    this.displayDebug = !this.displayDebug;
+    // this.displayDebug = !this.displayDebug;
   }
 
   toggleRssiDisplay() {
-    this.displayRssi = !this.displayRssi;
+    // this.displayRssi = !this.displayRssi;
   }
 
   updateSpeedDisplay() {

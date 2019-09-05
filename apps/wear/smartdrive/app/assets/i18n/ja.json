@@ -3,10 +3,10 @@
     "database": "データベースID",
     "sd-ble-version": "SmartDrive Bluetooth（BT）バージョン",
     "sd-mcu-version": "SmartDrive MCU（SD）バージョン",
-    "sd-serial-number": "SmartDriveシリアル番号",
+    "sd-serial-number": "SmartDrive シリアル番号",
     "title": "情報について",
-    "version": "SmartDrive MX2 Wear OSアプリ（SW）バージョン",
-    "watch-serial-number": "スマートウォッチのシリアル番号"
+    "version": "SmartDrive MX2+ Wear OSアプリ（SW）バージョン",
+    "watch-serial-number": "スマートウォッチ シリアル番号"
   },
   "app-connection": {
     "completed": "PushTrackerアカウントに正常に接続しました。",
@@ -17,7 +17,7 @@
   },
   "buttons": {
     "allow": "許可する",
-    "back": "バック",
+    "back": "戻る",
     "cancel": "キャンセル",
     "deny": "拒否",
     "disable": "無効にする",
@@ -30,7 +30,7 @@
       "title": "毎日のSmartDriveバッテリー使用量（%）"
     },
     "distance": {
-      "title": "毎日のSmartDrive距離"
+      "title": "毎日のSmartDrive走行距離"
     }
   },
   "error-history": {
@@ -39,7 +39,7 @@
       "bledisconnect": "[ERR：007] Bluetooth切断",
       "gyrorange": "[ERR：005] SD角度",
       "motorphases": "[ERR：002] SDモーター",
-      "otaunavailable": "[ERR：006]アップデートは利用できません",
+      "otaunavailable": "[ERR：006] アップデートは利用できません",
       "overcurrent": "[ERR：003] SD電流スパイク",
       "overtemperature": "[ERR：004] SDの過熱"
     },
@@ -68,32 +68,32 @@
   },
   "languages": {
     "da": "デンマーク語",
-    "de": "ドイツ人",
+    "de": "ドイツ語",
     "en": "英語",
     "es": "スペイン語",
     "fr": "フランス語",
-    "it": "イタリアの",
-    "ja": "日本人",
+    "it": "イタリア語",
+    "ja": "日本語",
     "ko": "韓国語",
     "nb": "ノルウェー語[ブークモール]",
-    "nl": "オランダの",
+    "nl": "オランダ語",
     "nn": "ノルウェー語[ニーノシュク]",
-    "sv": "スウェーデンの",
-    "zh": "中国の伝統的な]"
+    "sv": "",
+    "zh": "中国語[繁体字]"
   },
   "menu": {
-    "about": "約",
+    "about": "バージョン情報",
     "settings": "設定",
-    "title": "SmartDrive MX2メニュー",
+    "title": "SmartDrive MX2+ メニュー",
     "training": "タップトレーニング",
     "updates": "ワイヤレスアップデート"
   },
   "ota": {
     "action": {
-      "cancel": "キャンセル",
+      "cancel": "キャンセル ",
       "force": "力",
       "pause": "一時停止",
-      "resume": "履歴書",
+      "resume": "再開",
       "retry": "リトライ",
       "start": "開始"
     },
@@ -103,33 +103,33 @@
         "awaiting-connection": "接続待ち",
         "awaiting-mcu-ready": "SDで待機中",
         "awaiting-versions": "バージョンを待っています",
-        "canceled": "キャンセル",
+        "canceled": "キャンセルしました",
         "canceling": "キャンセル中",
-        "comm-failure": "通信エラー-SmartDriveの再起動が必要",
-        "complete": "コンプリート",
-        "failed": "失敗",
-        "not-started": "始まっていない",
+        "comm-failure": "通信エラー - SmartDriveの再起動が必要",
+        "complete": "完了",
+        "failed": "失敗しました",
+        "not-started": "開始していません",
         "rebooting-ble": "BTの再起動",
         "rebooting-mcu": "SDの再起動",
         "timeout": "タイムアウト",
-        "updating-ble": "BTの更新",
-        "updating-mcu": "SDの更新",
+        "updating-ble": "BTを更新中",
+        "updating-mcu": "SDを更新中",
         "verifying": "確認中"
       }
     }
   },
   "permissions-reasons": {
-    "coarse-location": "Bluetoothを使用してSmartDriveを制御するには、次の画面でロケーション許可[ACCESS_COARSE_LOCATION]を許可する必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
-    "phone-state": "オプション：スマートウォッチのシリアル番号にアクセスするには、サポートと保証の目的に役立ちます。次のいずれかの画面で電話の許可[READ_PHONE_STATE]を許可する必要があります。この許可から、Permobilは電話番号、セルラーネットワーク情報、またはスマートウォッチのシリアル番号以外のデータにアクセスしなくなります。"
+    "coarse-location": "Bluetoothを使用してSmartDriveを制御するには、次の画面で位置情報の許可[ACCESS_COARSE_LOCATION]を認める必要があります。この許可から、Permobilはあなたの位置データにアクセスしなくなります。",
+    "phone-state": "オプション：スマートウォッチのシリアル番号はサポートと保証の目的に役立ち、これにアクセスするには次のいずれかの画面で電話の許可[READ_PHONE_STATE]を認める必要があります。この許可から、Permobilは電話番号、セルラーネットワーク情報、またはスマートウォッチのシリアル番号以外のデータにアクセスしなくなります。"
   },
   "permissions-request": {
     "title": "許可通知"
   },
   "power-assist": {
-    "activate": "順番\nパワーアシスト\nに",
-    "deactivate": "順番\nパワーアシスト\nオフ",
+    "activate": "パワーアシスト\nをONにする",
+    "deactivate": "パワーアシスト\nをOFFにする",
     "estimated-range": "推定範囲",
-    "exit-training": "出口トレーニング",
+    "exit-training": "トレーニングを終える",
     "speed": "現在の速度",
     "stop": "運転を無効にする"
   },
@@ -147,7 +147,7 @@
     "switch-settings": {
       "mode": {
         "latching": "ラッチ",
-        "momentary": "一瞬"
+        "momentary": "モーメンタリー"
       }
     }
   },
@@ -157,19 +157,19 @@
     "control-mode": "制御モード",
     "description": {
       "acceleration": "SmartDriveの加速または速度上昇率。",
-      "controlmode": "MX2：デフォルトのジェスチャベースのSmartDriveの操作。 MX2制御モードでは、ダブルタップで速度を上げてモーターの駆動を開始し、シングルタップで現在の速度でcoast性走行し、ダブルタップで駆動を停止します。\n\nMX2：MX2コントロールモードでは、SmartDriveはプッシュを感知すると運転を開始し、タップすると運転を無効にします。これはレガシーサポートオプションであることに注意してください。\n\nMX1：MX1コントロールモードでは、SmartDriveはプッシュを感知すると運転を開始し、タップするかハンドリムをブレーキすると運転を停止します。これはレガシーサポートオプションであることに注意してください。",
+      "controlmode": "MX2+：デフォルトは、ジェスチャベースのSmartDriveの操作。 MX2＋制御モードでは、ダブルタップで速度を上げてモーターの駆動を開始し、シングルタップで現在の速度で惰性走行し、ダブルタップで駆動を停止します。\n\nMX2：MX2制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップすると運転を無効にします。これは以前からサポートされているオプションです。\n\nMX1：MX1制御モードでは、SmartDriveはプッシュを感知すると運転を開始し、タップするかハンドリムをブレーキすると運転を停止します。これは以前からサポートされているオプションです。",
       "maxspeed": "スマートウォッチで制御されたときにSmartDriveが駆動できる最大速度。",
-      "powerassistbuzzer": "有効にすると、リモートデバイスからの接続が確立されるたびに、またはSwitch Controlがスタンバイ状態から解除されるたびに、ビープ音が鳴ります。",
-      "switchcontrolmode": "モーメンタリー：スイッチ制御ボタンの1つが保持されている間のみ、SmartDriveが構成されたスイッチ制御最大速度まで速度を上げてモーターの駆動を開始するデフォルトのスイッチ制御モード。保持されたボタンが放されるか、両方のボタンが存在する場合は両方が押されると、運転は停止します。非アクティブ化すると、デバイスはスタンバイ状態にならないことに注意してください。\n\nラッチ：ラッチスイッチ制御モードでは、SmartDriveは、スイッチ制御ボタンの1つが保持されている間、構成されたスイッチ制御最大速度まで速度を上げてモーターの駆動を開始します。押したままのボタンを離すと、SmartDriveはボタンを離したときに現在の速度で運転/ coast性走行を続けます。ボタンの1つをもう一度押して放すか、両方のボタン（存在する場合）を押すと、運転が停止します。非アクティブ化すると、デバイスはスタンバイ状態にならないことに注意してください。",
-      "switchcontrolspeed": "スイッチ制御によって制御されるときにSmartDriveが駆動できる最大速度。",
-      "tapsensitivity": "運転の有効化と無効化に使用されるタップジェスチャの感度。パーセンテージが低いほど、タップするのが難しくなります-100%が最も感度が高く、したがって最も簡単にタップでき、10%が最も感度が低く、したがって最もタップが難しくなります。",
-      "units": "ユーザーインターフェイス内の速度と距離を表示する単位系。 Imperial [mi and mph]またはMetric [km and km / h]を選択します。",
+      "powerassistbuzzer": "有効にすると、リモートデバイスからの接続が確立されるたびに、またはSwitch Controlがスタンバイ状態から解除されるたびに、SmartDriveからビープ音が鳴ります。",
+      "switchcontrolmode": "モーメンタリー：Switch Controlのデフォルトモードで、Switch Controlボタンの1つを押し続けている間のみ、SmartDriveは設定したSwitch Controlの最大速度まで速度を上げてモーターの駆動を開始します。押したままのボタンを放すか、両方のボタン（存在する場合）を押すと運転が停止します。運転停止時、デバイスはスタンバイ状態にならないことに注意してください。\n\nラッチ：Switch Controlのラッチモードでは、Switch Controlボタンの1つを押し続けている間、SmartDriveは設定したSwitch Controlの最大速度まで速度を上げてモーターの駆動を開始します。押したままのボタンを放すと、SmartDriveはボタンを放したときに現在の速度で運転/ 惰性走行を続けます。ボタンの1つをもう一度押して放すか、両方のボタン（存在する場合）を押すと運転が停止します。運転停止時、デバイスはスタンバイ状態にならないことに注意してください。",
+      "switchcontrolspeed": "Switch Controlによって制御されるときにSmartDriveが駆動できる最大速度。",
+      "tapsensitivity": "運転の有効化と無効化に使用されるタップジェスチャの感度。パーセンテージが低いほど、タップするのが難しくなります-100%が最も感度が高く、したがって最もタップし易く、10%が最も感度が低く、したがって最もタップしづらくなります。",
+      "units": "ユーザーインターフェイス内の速度と距離を表示する単位系あるいは測定単位。 Imperial [mi and mph]またはMetric [km and km / h]を選択します。",
       "wearcheck": "有効にした場合、パワーアシストをオンにするには、スマートウォッチを手首に装着する必要があります。パワーアシストがオンで、スマートウォッチが手首にないことを検知すると、パワーアシストは自動的にパワーアシストをオフにします。"
     },
     "error-history": "エラー履歴",
     "information": "情報",
-    "max-speed": "マックス・スピード",
-    "pair-smartdrive": "ペアSmartDrive",
+    "max-speed": "最大速度",
+    "pair-smartdrive": "SmartDriveをペアリングする",
     "paired-to-smartdrive": "SmartDriveとのペアリングに成功しました。",
     "power-assist-buzzer": "パワーアシストビープ表示",
     "scanning": "ペアリングするSmartDriveをスキャンしています...",
@@ -186,28 +186,28 @@
     }
   },
   "switch-control": {
-    "max-speed": "スイッチ制御最大速度",
-    "mode": "制御モードの切り替え"
+    "max-speed": "Switch Control 最大速度",
+    "mode": "Switch Control モード"
   },
   "units": {
     "distance": {
-      "english": "ミ",
+      "english": "mi",
       "metric": "km"
     },
     "english": "インペリアル",
     "metric": "メトリック",
     "speed": {
-      "english": "時速",
-      "metric": "km / h"
+      "english": "mph",
+      "metric": "km/h"
     }
   },
   "updates": {
     "canceled": "SmartDriveの更新はキャンセルされました。",
     "changes": "変更の概要",
-    "checking-for-updates": "アップデートの確認...",
+    "checking-for-updates": "アップデートの確認 ...",
     "communications-failed": "SmartDriveとの通信に失敗しました。SmartDriveを再起動してください。",
-    "connecting-to-smartdrive": "SmartDriveへの接続...",
-    "downloading-new-firmwares": "新しい更新データをダウンロードしています...",
+    "connecting-to-smartdrive": "SmartDriveへの接続 ...",
+    "downloading-new-firmwares": "新しい更新データをダウンロードしています ...",
     "errors": {
       "connecting": "SmartDriveへの接続エラー。",
       "downloading": "更新のダウンロード中にエラーが発生しました。",
@@ -223,7 +223,7 @@
   },
   "warnings": {
     "saved-settings": {
-      "message": "注意：設定の変更がその操作とパフォーマンスに与える影響については、SmartDriveユーザーマニュアルを参照する必要があります。",
+      "message": "注意：設定の変更がその操作と動作に与える影響については、SmartDriveユーザーマニュアルを参照する必要があります。",
       "title": "変更された設定"
     },
     "title": {
