@@ -139,7 +139,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 20 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 100 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -205,7 +205,6 @@ export class MainViewModel extends Observable {
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
-  private errorsScrollView: ScrollView;
   private aboutScrollView: ScrollView;
   private updateProgressCircle: AnimatedCircle;
   private scanningProgressCircle: AnimatedCircle;
@@ -1104,12 +1103,59 @@ export class MainViewModel extends Observable {
       const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
       if (didTap) {
         // user has met threshold for tapping
-        this.handleTap(averageTimestamp);
+        this.handleTap(/* averageTimestamp */);
       }
     }
   }
 
-  handleTap(timestamp: number) {
+  async stopTaps() {
+    if (this.sendTapTimeoutId) {
+      clearTimeout(this.sendTapTimeoutId);
+    }
+    this.sendTapTimeoutId = null;
+    this.numTaps = 0;
+  }
+
+  private sendTapTimeoutId: any = null;
+  @Prop() numTaps: number = 0;
+  async sendTap() {
+    // do we have any taps to send now?
+    if (this.numTaps > 0) {
+      try {
+        const ret = await this.smartDrive.sendTap();
+        if (ret.status === android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+          // only decrease the number of unsent taps if it was
+          // successfully sent and if we haven't gone to or below 0
+          if (this.numTaps > 0)
+            this.numTaps--;
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        Log.E('could not send tap', err);
+        /*
+          this.disablePowerAssist()
+          .catch((err) => {
+          Sentry.captureException(err);
+          });
+          setTimeout(() => {
+          alert({
+          title: L('failures.title'),
+          message: err,
+          okButtonText: L('buttons.ok')
+          });
+          }, 1000);
+        */
+      }
+    }
+    // do we have any remaining taps to send?
+    if (this.numTaps > 0) {
+      this.sendTapTimeoutId = setTimeout(this.sendTap.bind(this), 0);
+    } else {
+      this.sendTapTimeoutId = null;
+    }
+  }
+
+  async handleTap(/* timestamp: number */) {
     this.hasTapped = true;
     // timeout for updating the power assist ring
     if (this.tapTimeoutId) {
@@ -1130,22 +1176,12 @@ export class MainViewModel extends Observable {
       this.smartDrive.ableToSend &&
       this.hasSentSettingsToSmartDrive
     ) {
-      this.smartDrive.sendTap()
-        .catch(err => {
-          Sentry.captureException(err);
-          Log.E('could not send tap', err);
-          this.disablePowerAssist()
-            .catch((err) => {
-              Sentry.captureException(err);
-            });
-          setTimeout(() => {
-            alert({
-              title: L('failures.title'),
-              message: err,
-              okButtonText: L('buttons.ok')
-            });
-          }, 1000);
-        });
+      // increase number of taps to send
+      this.numTaps++;
+      // make sure the handler sends the taps
+      if (this.sendTapTimeoutId === null) {
+        this.sendTapTimeoutId = setTimeout(this.sendTap.bind(this), 0);
+      }
     }
   }
 
@@ -1644,9 +1680,6 @@ export class MainViewModel extends Observable {
   onErrorHistoryLayoutLoaded(args: EventData) {
     // show the chart
     this._errorHistoryLayout = args.object as SwipeDismissLayout;
-    this.errorsScrollView = this._errorHistoryLayout.getViewById(
-      'errorsScrollView'
-    ) as ScrollView;
     this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
@@ -1656,13 +1689,20 @@ export class MainViewModel extends Observable {
     });
   }
 
+  selectErrorTemplate(item, index, items) {
+    if (item.isBack) return 'back';
+    else if (index === (items.length - 1)) return 'last';
+    else return 'error';
+  }
+
   async onLoadMoreErrors() {
     let recents = await this.getRecentErrors(10, this.errorHistoryData.length);
     // add the back button as the first element - should only load once
     if (this.errorHistoryData.length === 0) {
       this.errorHistoryData.push({
         code: L('buttons.back'),
-        onTap: this.previousLayout.bind(this)
+        onTap: this.previousLayout.bind(this),
+        isBack: true
       });
     }
     // determine the unique errors that we have
@@ -1673,7 +1713,9 @@ export class MainViewModel extends Observable {
     } else if (this.errorHistoryData.length === 1) {
       // or add the 'no errors' message
       this.errorHistoryData.push({
-        code: L('error-history.no-errors')
+        code: L('error-history.no-errors'),
+        insetPadding: this.insetPadding,
+        isBack: false
       });
     }
   }
@@ -1681,10 +1723,6 @@ export class MainViewModel extends Observable {
   showErrorHistory() {
     // clear out any pre-loaded data
     this.errorHistoryData.splice(0, this.errorHistoryData.length);
-    if (this.errorsScrollView) {
-      // reset to to the top when entering the page
-      this.errorsScrollView.scrollToVerticalOffset(0, true);
-    }
     // load the error data
     this.onLoadMoreErrors();
     // show the layout
@@ -1983,8 +2021,13 @@ export class MainViewModel extends Observable {
     this.updateChartData();
   }
 
-  toggleDisplay() {
-    // this.displayRssi = !this.displayRssi;
+  @Prop() displayDebug: boolean = false;
+  toggleDebug() {
+    this.displayDebug = !this.displayDebug;
+  }
+
+  toggleRssiDisplay() {
+    this.displayRssi = !this.displayRssi;
   }
 
   updateSpeedDisplay() {
@@ -2172,6 +2215,8 @@ export class MainViewModel extends Observable {
         if (didConnect) {
           // vibrate for enabling power assist
           this._vibrator.vibrate(200); // vibrate for 250 ms
+          // make sure to clear out any previous tapping state
+          this.stopTaps();
           // enable the tap sensor
           const didEnableTapSensor = this.enableTapSensor();
           if (!didEnableTapSensor) {
@@ -2214,19 +2259,21 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
-    if (this.chargingWorkTimeoutId === null) {
-      // reset our work interval
-      this.chargingWorkTimeoutId = setInterval(
-        this.doWhileCharged.bind(this),
-        this.CHARGING_WORK_PERIOD_MS
-      );
-    }
-
     this._sentryBreadCrumb('Disabling power assist');
+
+    // update state variables
+    this.powerAssistActive = false;
+    this.motorOn = false;
+
+    // make sure to stop any pending taps
+    this.stopTaps();
+
+    // decrease energy consumption
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
 
+    // update UI
     if (this._ringTimerId) {
       clearInterval(this._ringTimerId);
     }
@@ -2234,14 +2281,22 @@ export class MainViewModel extends Observable {
     if (!this.powerAssistActive && !this.motorOn) {
       return;
     }
-    this.powerAssistActive = false;
-    this.motorOn = false;
+
     // turn off the smartdrive
     try {
       await this.disconnectFromSmartDrive();
     } catch (err) {
       Sentry.captureException(err);
     }
+
+    // reset our work interval
+    if (this.chargingWorkTimeoutId === null) {
+      this.chargingWorkTimeoutId = setInterval(
+        this.doWhileCharged.bind(this),
+        this.CHARGING_WORK_PERIOD_MS
+      );
+    }
+
     return Promise.resolve();
   }
 
@@ -2444,11 +2499,19 @@ export class MainViewModel extends Observable {
   async sendSmartDriveSettings() {
     // send the current settings to the SD
     try {
-      await this.smartDrive.sendSettingsObject(this.settings);
-      await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      let ret = null;
+      ret = await this.smartDrive.sendSettingsObject(this.settings);
+      if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+        throw 'Send Settings bad status: ' + ret.status;
+      }
+      ret = await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+        throw 'Send Switch Control Settings bad status: ' + ret.status;
+      }
       this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
       Sentry.captureException(err);
+      /*
       // indicate failure
       const msg =
         L('failures.send-settings') +
@@ -2461,10 +2524,9 @@ export class MainViewModel extends Observable {
         message: msg,
         okButtonText: L('buttons.ok')
       });
-      setTimeout(() => {
-        // make sure we retry this while we're connected
-        this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
-      }, 500);
+      */
+      // make sure we retry this while we're connected
+      this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
     }
   }
 
@@ -2495,6 +2557,9 @@ export class MainViewModel extends Observable {
       this.rssiIntervalId = null;
     }
     */
+    // make sure to stop any pending taps
+    this.stopTaps();
+    // handle the case that the motor is on
     if (this.motorOn) {
       // record disconnect error - the SD should never be on when
       // we disconnect!
@@ -2697,7 +2762,10 @@ export class MainViewModel extends Observable {
             time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
             code: L(translationKey),
             id: r && r[3],
-            uuid: r && r[4]
+            uuid: r && r[4],
+            insetPadding: this.insetPadding,
+            isBack: false,
+            onTap: () => {}
           };
         });
       }

@@ -569,7 +569,7 @@ export class Bluetooth extends BluetoothCommon {
 
         CLog(CLogTypes.info, `Bluetooth.readRSSI ---- gatt: ${gatt}`);
 
-        stateObject.onReadRSSIPromise = resolve;
+        stateObject.onRssiReadPromise = resolve;
         if (!gatt.readRemoteRssi()) {
           reject('Failed to read remote rssi for ' + peripheralUUID);
         }
@@ -645,7 +645,7 @@ export class Bluetooth extends BluetoothCommon {
         }
 
         const stateObject = this.connections[arg.peripheralUUID];
-        stateObject.onReadPromise = resolve;
+        stateObject.onCharacteristicReadPromise = resolve;
         if (!gatt.readCharacteristic(bluetoothGattCharacteristic)) {
           reject(
             'Failed to set client characteristic read for ' + characteristicUUID
@@ -660,6 +660,17 @@ export class Bluetooth extends BluetoothCommon {
 
   write(arg: WriteOptions) {
     return new Promise((resolve, reject) => {
+      if (
+        this.connections[arg.peripheralUUID] &&
+        this.connections[arg.peripheralUUID].isWriting
+      ) {
+        CLog(
+          CLogTypes.error,
+          'Bluetooth.write ---- called while already writing'
+        );
+        reject('calling write while already isWriting!');
+        return;
+      }
       try {
         if (!arg.value) {
           reject(
@@ -701,7 +712,8 @@ export class Bluetooth extends BluetoothCommon {
           android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
         );
 
-        this.connections[arg.peripheralUUID].onWritePromise = resolve;
+        this.connections[arg.peripheralUUID].onCharacteristicWritePromise = resolve;
+        this.connections[arg.peripheralUUID].isWriting = true;
         if (!wrapper.gatt.writeCharacteristic(characteristic)) {
           reject(`Failed to write to characteristic ${arg.characteristicUUID}`);
         }
@@ -849,6 +861,8 @@ export class Bluetooth extends BluetoothCommon {
           return;
         }
 
+        const stateObject = this.connections[arg.peripheralUUID];
+        stateObject.onDescriptorWritePromise = resolve;
         if (gatt.writeDescriptor(bluetoothGattDescriptor)) {
           const cb =
             arg.onNotify ||
@@ -858,10 +872,8 @@ export class Bluetooth extends BluetoothCommon {
                 `No 'onNotify' callback function specified for 'startNotifying'`
               );
             };
-          const stateObject = this.connections[arg.peripheralUUID];
           stateObject.onNotifyCallback = cb;
           CLog(CLogTypes.info, '--- notifying');
-          resolve();
         } else {
           reject(
             `Failed to set client characteristic notification for ${characteristicUUID}`
