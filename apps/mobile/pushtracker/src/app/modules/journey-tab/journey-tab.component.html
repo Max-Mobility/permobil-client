@@ -67,7 +67,7 @@
           </ng-template>
         </ListView>
 
-        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="right" *ngIf="!journeyItemsLoaded"
+        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="right" *ngIf="!journeyItemsLoaded || showLoadingIndicator"
           [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true" marginRight="15" marginTop="-30"></ActivityIndicator>
 
       </GridLayout>

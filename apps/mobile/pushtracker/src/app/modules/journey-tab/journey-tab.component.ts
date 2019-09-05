@@ -48,6 +48,7 @@ export class JourneyTabComponent implements OnInit {
   public todayActivity;
   public todayUsage;
   public journeyItemsLoaded: boolean = false;
+  public showLoadingIndicator: boolean = false;
   public debouncedRefresh: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
 
@@ -95,6 +96,7 @@ export class JourneyTabComponent implements OnInit {
     this._today = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
+    this._journeyMap = {};
     this.journeyItems = undefined;
     this._loadDataForDate(this._weekStart, true).then(() => {
       this.journeyItemsLoaded = true;
@@ -401,10 +403,6 @@ export class JourneyTabComponent implements OnInit {
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_nobkg' : 'drive_nobkg') :
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'drive_white')
       });
-
-      // After even one journey items is ready for view, stop loading indicator
-      if (!this.journeyItemsLoaded)
-        this.journeyItemsLoaded = true;
     }
 
   }
@@ -481,9 +479,12 @@ export class JourneyTabComponent implements OnInit {
   }
 
   onLoadMoreItems(args: ItemEventData) {
+    this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
     console.log('Loading more for', this._rollingWeekStart);
-    this._loadDataForDate(this._rollingWeekStart, false);
+    this._loadDataForDate(this._rollingWeekStart, false).then(() => {
+      this.showLoadingIndicator = false;
+    });
   }
 
 }
