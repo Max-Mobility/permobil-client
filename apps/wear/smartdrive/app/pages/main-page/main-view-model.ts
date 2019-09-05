@@ -1691,7 +1691,7 @@ export class MainViewModel extends Observable {
 
   selectErrorTemplate(item, index, items) {
     if (item.isBack) return 'back';
-    else if (index === (items.length -1)) return 'last';
+    else if (index === (items.length - 1)) return 'last';
     else return 'error';
   }
 
