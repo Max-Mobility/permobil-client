@@ -78,7 +78,8 @@ export class JourneyTabComponent implements OnInit {
     );
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
-      this._loadDataForDate(this._weekStart).then(() => {
+      this.savedTheme = this.user.data.theme_preference;
+      this._loadDataForDate(this._weekStart, true).then(() => {
         this.journeyItemsLoaded = true;
       });
     });
@@ -95,15 +96,15 @@ export class JourneyTabComponent implements OnInit {
     this._weekStart = this._getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
     this.journeyItems = undefined;
-    this._loadDataForDate(this._weekStart).then(() => {
+    this._loadDataForDate(this._weekStart, true).then(() => {
       this.journeyItemsLoaded = true;
     });
   }
 
-  async _loadDataForDate(date: Date) {
+  async _loadDataForDate(date: Date, reset: boolean = false) {
     return this._loadWeeklyPushtrackerActivity(date).then(() => {
       this._loadWeeklySmartDriveUsage(date).then(() => {
-        this._processJourneyMap();
+        this._processJourneyMap(date, reset);
       });
     });
   }
@@ -137,8 +138,10 @@ export class JourneyTabComponent implements OnInit {
     if (didLoad) {
       for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
 
-        const index = this._getDayOfWeek(new Date());
-        this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[index];
+        if (this._areDaysSame(this._weekStart, date)) {
+          const index = this._getDayOfWeek(new Date());
+          this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[index];
+        }
 
         const dailyActivity = this._pushtrackerActivityService.weeklyActivity.days[i];
         if (dailyActivity) {
@@ -171,8 +174,10 @@ export class JourneyTabComponent implements OnInit {
     if (didLoad) {
       for (const i in this._smartDriveUsageService.weeklyActivity.days) {
 
-        const index = this._getDayOfWeek(new Date());
-        this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[index];
+        if (this._areDaysSame(this._weekStart, date)) {
+          const index = this._getDayOfWeek(new Date());
+          this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[index];
+        }
 
         const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
         if (dailyUsage) {
@@ -277,15 +282,28 @@ export class JourneyTabComponent implements OnInit {
     return distance;
   }
 
-  private _processJourneyMap() {
+  private _processJourneyMap(date: Date, reset: boolean) {
     // Sort _journeyMap by key
     let orderedJourneyMap = {};
     const self = this;
-    Object.keys(this._journeyMap).sort().reverse().forEach(function(key) {
+
+    const start = date;
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+    const startTime = start.getTime();
+    const endTime = end.getTime();
+
+    Object.keys(this._journeyMap)
+      .filter(key => {
+        return (parseInt(key) >= startTime && parseInt(key) <= endTime);
+      })
+      .sort()
+      .reverse()
+      .forEach(function(key) {
       orderedJourneyMap[key] = self._journeyMap[key];
     });
 
-    if (!this.journeyItems)
+    if (reset)
       this.journeyItems = [];
 
     const getTimeOfDayString = function(timeOfDay: TimeOfDay) {
@@ -379,17 +397,15 @@ export class JourneyTabComponent implements OnInit {
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0,
-        icon: this.savedTheme === 'DARK' ?
+        icon: this.savedTheme === 'DEFAULT' ?
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_nobkg' : 'drive_nobkg') :
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'drive_white')
       });
-    }
 
-    // Check if there are enough entries in this.journeyItems. If not, load more
-    // if (this.journeyItems.length < 5) {
-    //   this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
-    //   this._loadDataForDate(this._rollingWeekStart);
-    // }
+      // After even one journey items is ready for view, stop loading indicator
+      if (!this.journeyItemsLoaded)
+        this.journeyItemsLoaded = true;
+    }
 
   }
 
@@ -462,6 +478,12 @@ export class JourneyTabComponent implements OnInit {
       first.getMonth() === second.getMonth() &&
       first.getDate() === second.getDate()
     );
+  }
+
+  onLoadMoreItems(args: ItemEventData) {
+    this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
+    console.log('Loading more for', this._rollingWeekStart);
+    this._loadDataForDate(this._rollingWeekStart, false);
   }
 
 }
