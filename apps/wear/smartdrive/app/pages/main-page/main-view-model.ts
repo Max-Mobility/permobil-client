@@ -1132,19 +1132,7 @@ export class MainViewModel extends Observable {
       } catch (err) {
         Sentry.captureException(err);
         Log.E('could not send tap', err);
-        /*
-          this.disablePowerAssist()
-          .catch((err) => {
-          Sentry.captureException(err);
-          });
-          setTimeout(() => {
-          alert({
-          title: L('failures.title'),
-          message: err,
-          okButtonText: L('buttons.ok')
-          });
-          }, 1000);
-        */
+        // this.disablePowerAssist();
       }
     }
     // do we have any remaining taps to send?
@@ -2516,20 +2504,6 @@ export class MainViewModel extends Observable {
       this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
       Sentry.captureException(err);
-      /*
-      // indicate failure
-      const msg =
-        L('failures.send-settings') +
-        '\n\n' +
-        this._savedSmartDriveAddress +
-        '\n\n' +
-        err;
-      alert({
-        title: L('failures.title'),
-        message: msg,
-        okButtonText: L('buttons.ok')
-      });
-      */
       // make sure we retry this while we're connected
       this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
     }
@@ -2543,11 +2517,11 @@ export class MainViewModel extends Observable {
     this.updatePowerAssistRing();
     this.hasSentSettingsToSmartDrive = false;
     this._onceSendSmartDriveSettings = once(this.sendSmartDriveSettings);
-    /*
     if (this.rssiIntervalId) {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
+    /*
     this.rssiIntervalId = setInterval(
       this.readSmartDriveSignalStrength.bind(this),
       this.RSSI_INTERVAL_MS
@@ -2556,12 +2530,10 @@ export class MainViewModel extends Observable {
   }
 
   async onSmartDriveDisconnect() {
-    /*
     if (this.rssiIntervalId) {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
-    */
     // make sure to stop any pending taps
     this.stopTaps();
     // handle the case that the motor is on
@@ -2588,7 +2560,6 @@ export class MainViewModel extends Observable {
     this.saveErrorToDatabase(errorType, errorId);
   }
 
-  /*
   private _rssi = 0;
   private rssiIntervalId = null;
   private RSSI_INTERVAL_MS = 500;
@@ -2602,7 +2573,6 @@ export class MainViewModel extends Observable {
         });
     }
   }
-  */
 
   async onMotorInfo(args: any) {
     // send current settings to SD

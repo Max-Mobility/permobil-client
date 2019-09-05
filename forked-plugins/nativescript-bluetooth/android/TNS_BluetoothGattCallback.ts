@@ -198,7 +198,10 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     }
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      console.error('onCharacteristicRead - bad status:', status);
+      CLog(
+        CLogTypes.info,
+        `BluetoothGatt::onCharacteristicRead - bad status: ${status}`
+      );
     }
     if (stateObject.onCharacteristicReadPromise) {
       const value = characteristic.getValue();
@@ -271,7 +274,10 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     stateObject.isWriting = false;
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      console.log('BluetoothGattCallback::onCharacteristicWrite - BAD STATUS:', status);
+      CLog(
+        CLogTypes.info,
+        `BluetoothGattCallback::onCharacteristicWrite - BAD STATUS: ${status}`
+      );
     }
     if (stateObject.onCharacteristicWritePromise) {
       stateObject.onCharacteristicWritePromise({
@@ -341,7 +347,10 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
     stateObject.isWriting = false;
 
     if (status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-      console.log('BluetoothGattCallback::onCharacteristicWrite - BAD STATUS:', status);
+      CLog(
+        CLogTypes.info,
+        `BluetoothGattCallback::onDescriptorWrite - BAD STATUS: ${status}`
+      );
     }
     if (stateObject.onDescriptorWritePromise) {
       stateObject.onDescriptorWritePromise({
