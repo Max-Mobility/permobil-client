@@ -40,7 +40,6 @@ export class JourneyTabComponent implements OnInit {
 
   private _today: Date;
   private _weekStart: Date;
-  private _weekEnd: Date;
   private _userSubscription$: Subscription;
   private _journeyMap = {};
   public todayActivity;
@@ -65,10 +64,7 @@ export class JourneyTabComponent implements OnInit {
       APP_THEMES.DEFAULT
     );
     this._today = new Date();
-    const sunday = this._getFirstDayOfWeek(this._today);
-    this._weekStart = sunday;
-    this._weekEnd = new Date(this._weekStart);
-    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this._weekStart = this._getFirstDayOfWeek(this._today);
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
       this._loadWeeklyPushtrackerActivity().then(() => {
@@ -89,10 +85,7 @@ export class JourneyTabComponent implements OnInit {
     this.journeyItemsLoaded = false;
     Log.D('refresh tap');
     this._today = new Date();
-    const sunday = this._getFirstDayOfWeek(this._today);
-    this._weekStart = sunday;
-    this._weekEnd = new Date(this._weekStart);
-    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this._weekStart = this._getFirstDayOfWeek(this._today);
     this._loadWeeklyPushtrackerActivity().then(() => {
       this._loadWeeklySmartDriveUsage().then(() => {
         this._processJourneyMap();
