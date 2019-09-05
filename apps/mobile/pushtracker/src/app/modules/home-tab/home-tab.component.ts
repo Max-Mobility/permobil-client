@@ -81,19 +81,30 @@ export class HomeTabComponent {
     private _vcRef: ViewContainerRef,
     private _smartDriveUsageService: SmartDriveUsageService,
     private _activityService: ActivityService
-  ) {}
+  ) {
+    this._debouncedLoadWeeklyActivity = debounce(
+      this._loadWeeklyActivity.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
+
+    this._debouncedLoadWeeklyUsage = debounce(
+      this._loadSmartDriveUsage.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { trailing: true }
+    );
+  }
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
-
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
     this._userSubscription$ = this.userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
-
-      this.savedTheme = appSettings.getString(
-        STORAGE_KEYS.APP_THEME,
-        APP_THEMES.DEFAULT
-      );
+      this.savedTheme = user.data.theme_preference;
       this.savedTheme === APP_THEMES.DEFAULT
         ? enableDefaultTheme()
         : enableDarkTheme();
@@ -103,18 +114,6 @@ export class HomeTabComponent {
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
       this._loadWeeklyData();
-
-      this._debouncedLoadWeeklyActivity = debounce(
-        this._loadWeeklyActivity.bind(this),
-        this.MAX_COMMIT_INTERVAL_MS,
-        { trailing: true }
-      );
-
-      this._debouncedLoadWeeklyUsage = debounce(
-        this._loadSmartDriveUsage.bind(this),
-        this.MAX_COMMIT_INTERVAL_MS,
-        { trailing: true }
-      );
 
       this._smartDriveUsageService.usageUpdated.subscribe(usageUpdated => {
         if (usageUpdated && !this._progressUpdatedOnce) {

@@ -9,6 +9,7 @@ import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
 import debounce from 'lodash/debounce';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
+import { enableDarkTheme, enableDefaultTheme, milesToKilometers } from '../../utils';
 
 enum TimeOfDay {
   'MORNING' = 0, // Before 12:00 PM
