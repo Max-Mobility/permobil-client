@@ -505,7 +505,6 @@ export class JourneyTabComponent implements OnInit {
   onLoadMoreItems(args: ItemEventData) {
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
-    console.log('Loading more for', this._rollingWeekStart);
     this._loadDataForDate(this._rollingWeekStart, false).then(() => {
       this.showLoadingIndicator = false;
     });
