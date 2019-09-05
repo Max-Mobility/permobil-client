@@ -67,8 +67,8 @@
           </ng-template>
         </ListView>
 
-        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="center" *ngIf="!journeyItemsLoaded"
-          [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
+        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="right" *ngIf="!journeyItemsLoaded"
+          [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true" marginRight="15" marginTop="-30"></ActivityIndicator>
 
       </GridLayout>
     </ScrollView>
