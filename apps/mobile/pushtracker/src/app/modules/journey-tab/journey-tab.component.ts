@@ -398,16 +398,16 @@ export class JourneyTabComponent implements OnInit {
       // Selectively hide list items in Journey tab #249
       // https://github.com/Max-Mobility/permobil-client/issues/249
       // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
-      // if (!journey.coastTime || journey.coastTime === 0) {
-      //   if (journey.coastDistance < 0.1)
-      //     continue;
-      // }
-      // // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
-      // else if (journey.coastTime) {
-      //   if (journey.coastTime < 0.05) {
-      //     continue;
-      //   }
-      // }
+      if (!journey.coastTime || journey.coastTime === 0) {
+        if (journey.coastDistance < 0.1)
+          continue;
+      }
+      // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
+      else if (journey.coastTime) {
+        if (journey.coastTime < 0.05) {
+          continue;
+        }
+      }
 
       this.journeyItems.push({
         journey_type: journey.journeyType,
