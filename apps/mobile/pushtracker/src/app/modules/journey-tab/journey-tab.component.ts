@@ -244,9 +244,9 @@ export class JourneyTabComponent implements OnInit {
         this._caseTicksToMiles(
           this.todayUsage.distance_smartdrive_coast - this.todayUsage.distance_smartdrive_coast_start
         )
-      );
+      ).toFixed(2);
     } else {
-      return 0;
+      return '0.00';
     }
   }
 
