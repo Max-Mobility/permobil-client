@@ -18,6 +18,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 @Component({
   selector: 'profile',
@@ -93,6 +94,7 @@ export class ProfileTabComponent {
     this.listPickerNeedsSecondary = false;
 
     this._userSubscription$ = this.userService.user.subscribe(user => {
+      if (!user) return;
       this.user = user;
       if (!this.user.data.dob || this.user.data.dob === null) {
         this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
@@ -127,13 +129,13 @@ export class ProfileTabComponent {
 
       if (result === signOut) {
         this._zone.run(async () => {
+          const logoutResult = await KinveyUser.logout();
+          console.log('logout result', logoutResult);
+          this.userService.reset();
           // go ahead and nav to login to keep UI moving without waiting
           this._routerExtensions.navigate(['/login'], {
             clearHistory: true
           });
-
-          const logoutResult = await KinveyUser.logout();
-          console.log('logout result', logoutResult);
         });
       }
     });

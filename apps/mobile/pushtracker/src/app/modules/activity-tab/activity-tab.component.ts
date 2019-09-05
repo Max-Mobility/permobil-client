@@ -168,6 +168,7 @@ export class ActivityTabComponent implements OnInit {
 
   getUser() {
     this.userService.user.subscribe(user => {
+      if (!user) return;
       this.user = user;
       this.distanceUnit =
         this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS

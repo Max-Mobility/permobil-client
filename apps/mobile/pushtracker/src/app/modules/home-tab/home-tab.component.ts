@@ -84,6 +84,7 @@ export class HomeTabComponent {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
 
     this._userSubscription$ = this.userService.user.subscribe(user => {
+      if (!user) return;
       this.user = user;
 
       this.savedTheme = appSettings.getString(

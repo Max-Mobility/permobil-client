@@ -78,6 +78,7 @@ export class JourneyTabComponent implements OnInit {
       { trailing: true }
     );
     this._userSubscription$ = this.userService.user.subscribe(user => {
+      if (!user) return;
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
     });

@@ -12,7 +12,7 @@ import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
+import { LoggingService, PushTrackerUserService } from '../../services';
 
 @Component({
   selector: 'login',
@@ -31,7 +31,8 @@ export class LoginComponent implements OnInit {
     private _logService: LoggingService,
     private _page: Page,
     private _translateService: TranslateService,
-    private _zone: NgZone
+    private _zone: NgZone,
+    private _userService: PushTrackerUserService
   ) {
     this._page.actionBarHidden = true;
     preventKeyboardFromShowing();
@@ -88,6 +89,7 @@ export class LoginComponent implements OnInit {
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory
+      this._userService.reset();
       this._zone.run(() => {
         this._routerExtensions.navigate(['/tabs/default'], {
           clearHistory: true
