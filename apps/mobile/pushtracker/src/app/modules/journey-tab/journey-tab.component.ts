@@ -394,6 +394,24 @@ export class JourneyTabComponent implements OnInit {
         journeyTimeLabel += ' - ' + formatAMPM(thirtyMinsLater);
       }
 
+      // Selectively hide list items in Journey tab #249
+      // https://github.com/Max-Mobility/permobil-client/issues/249
+      // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
+      if (!journey.coastTime || journey.coastTime === 0) {
+        console.log(journey.coastDistance);
+        if (journey.coastDistance < 0.1)
+          continue;
+      }
+      // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
+      else if (journey.coastTime) {
+        console.log(journey.coastDistance);
+        if (journey.coastTime < 5) {
+          continue;
+        }
+      }
+
+      console.log(journey.coastTime, journey.coastDistance);
+
       this.journeyItems.push({
         date: journeyDateLabel,
         time: journeyTimeLabel,
@@ -409,6 +427,12 @@ export class JourneyTabComponent implements OnInit {
       });
     }
 
+    // If there are no items to show for 
+    // current week (possibly because the items got filtered out),
+    // check previous week once
+    if (!this.journeyItems.length) {
+      this.onLoadMoreItems(undefined);
+    }
   }
 
   private _mergeJourneyItems(orderedJourneyMap: Object) {
