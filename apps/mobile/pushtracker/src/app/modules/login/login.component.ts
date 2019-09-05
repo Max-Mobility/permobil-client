@@ -13,6 +13,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   selector: 'login',
@@ -85,6 +86,10 @@ export class LoginComponent implements OnInit {
         STORAGE_KEYS.APP_THEME,
         user.data['theme_preference'] || APP_THEMES.DEFAULT
       );
+
+      user.data['theme_preference'] === APP_THEMES.DEFAULT
+      ? enableDefaultTheme()
+      : enableDarkTheme();
 
       this._loadingIndicator.hide();
 

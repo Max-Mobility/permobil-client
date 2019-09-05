@@ -19,6 +19,7 @@ import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { enableDefaultTheme } from '../../utils';
 
 @Component({
   selector: 'profile',
@@ -132,6 +133,7 @@ export class ProfileTabComponent {
           const logoutResult = await KinveyUser.logout();
           console.log('logout result', logoutResult);
           this.userService.reset();
+          enableDefaultTheme();  
           // go ahead and nav to login to keep UI moving without waiting
           this._routerExtensions.navigate(['/login'], {
             clearHistory: true
