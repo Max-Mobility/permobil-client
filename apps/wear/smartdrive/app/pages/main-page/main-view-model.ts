@@ -34,9 +34,9 @@ import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
-const ambientTheme = require('../../scss/theme-ambient.scss').toString();
-const defaultTheme = require('../../scss/theme-default.scss').toString();
-const retroTheme = require('../../scss/theme-retro.scss').toString();
+const ambientTheme = require('../../scss/theme-ambient.css').toString();
+const defaultTheme = require('../../scss/theme-default.css').toString();
+const retroTheme = require('../../scss/theme-retro.css').toString();
 
 declare let com: any;
 
