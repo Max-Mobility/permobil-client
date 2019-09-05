@@ -94,12 +94,11 @@ export class HomeTabComponent {
         ? enableDefaultTheme()
         : enableDarkTheme();
 
-      this._loadWeeklyData();
-
       this._currentDayInView = new Date();
       this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+      this._loadWeeklyData();
 
       debounce(
         this._loadSmartDriveUsage.bind(this),
