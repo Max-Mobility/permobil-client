@@ -95,6 +95,7 @@ export class TabsComponent {
     );
 
     this.userService.user.subscribe(user => {
+      if (!user) return;
       this.user = user;
       if (
         this.user &&

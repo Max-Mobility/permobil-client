@@ -101,7 +101,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   getUser() {
-    this._userService.user.subscribe(user => (this.user = user));
+    this._userService.user.subscribe(user => {
+      if (!user) return;
+      this.user = user;
+    });
   }
 
   closeModal() {
