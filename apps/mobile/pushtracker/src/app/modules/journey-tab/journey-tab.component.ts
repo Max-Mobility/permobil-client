@@ -427,7 +427,7 @@ export class JourneyTabComponent implements OnInit {
       });
     }
 
-    // If there are no items to show for 
+    // If there are no items to show for
     // current week (possibly because the items got filtered out),
     // check previous week once
     if (!this.journeyItems.length) {
