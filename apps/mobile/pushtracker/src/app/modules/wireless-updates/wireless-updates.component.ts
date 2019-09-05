@@ -81,7 +81,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
     this.checkForSmartDriveUpdates();
-    this.checkForPushTrackerUpdates();
+    if (this.controlConfiguration === 'PushTracker with SmartDrive')
+      this.checkForPushTrackerUpdates();
   }
 
   ngAfterViewInit() {
@@ -266,6 +267,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performSmartDriveWirelessUpdate() {
+
+    if (!this.currentVersions['SmartDriveBLE.ota'] || !this.currentVersions['SmartDriveMCU.ota']) {
+      // Download failed
+      this.smartDriveCheckedForUpdates = true;
+      this.smartDriveOtaState = this._translateService.instant('Firmware Download Failed!');
+      this.smartDriveOtaProgress = 0;
+      this.noSmartDriveDetected = true;
+      return;
+    }
+
     // do we need to update? - check against smartdrive version
     const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
@@ -537,6 +548,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performPushTrackerWirelessUpdate() {
+
+    if (!this.currentPushTrackerVersions['PushTracker.ota']) {
+      // Download failed
+      this.pushTrackerCheckedForUpdates = true;
+      this.pushTrackerOtaState = this._translateService.instant('Firmware Download Failed!');
+      this.pushTrackerOtaProgress = 0;
+      this.noPushTrackerDetected = true;
+      return;
+    }
+
     // do we need to update? - check against pushtracker version
     const ptVersion = this.currentPushTrackerVersions['PushTracker.ota'].version;
 

@@ -17,7 +17,7 @@
           [progress]="pushTrackerOtaProgress">
         </AnimatedCircle>
         <GridLayout row="0" rows="*, *, *" columns="*">
-          <Button *ngIf="noPushTrackerDetected" row="0" class="action-start"
+          <Button *ngIf="noPushTrackerDetected" row="0" class="action-retry"
             [text]="'ota.action.retry' | translate" (tap)="onRescanForPushTrackers($event)">
           </Button>
           <Button *ngFor="let action of pushTrackerOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
@@ -42,8 +42,8 @@
           [progress]="smartDriveOtaProgress">
         </AnimatedCircle>
         <GridLayout row="0" rows="*, *, *" columns="*">
-          <Button *ngIf="noSmartDriveDetected" row="0" class="action-start"
-            [text]="'ota.action.scan' | translate" (tap)="onRescanForSmartDrives($event)">
+          <Button *ngIf="noSmartDriveDetected" row="0" class="action-retry"
+            [text]="'ota.action.retry' | translate" (tap)="onRescanForSmartDrives($event)">
           </Button>
           <Button *ngFor="let action of smartDriveOtaActions; let i = index" [row]="i === 0 ? 0 : 2" [class]="action.class"
             [text]="action.label" (tap)="action.func(action)">
