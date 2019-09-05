@@ -59,7 +59,7 @@
 
                 // Image and Time
                 <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" 
-                  marginRight="10" verticalAlignment="top"
+                  marginRight="10" verticalAlignment="top" [rotate]="item.journey_type === 0 ? 0 : -45"
                   [src]="item.icon_large" stretch="aspectFit" class="journey-type-image"></Image>
 
               </GridLayout>

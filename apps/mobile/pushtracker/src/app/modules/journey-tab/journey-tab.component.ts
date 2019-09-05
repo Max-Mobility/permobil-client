@@ -80,9 +80,10 @@ export class JourneyTabComponent implements OnInit {
     this._userSubscription$ = this.userService.user.subscribe(user => {
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
-      this._loadDataForDate(this._weekStart, true).then(() => {
-        this.journeyItemsLoaded = true;
-      });
+    });
+
+    this._loadDataForDate(this._weekStart, true).then(() => {
+      this.journeyItemsLoaded = true;
     });
   }
 
@@ -397,18 +398,19 @@ export class JourneyTabComponent implements OnInit {
       // Selectively hide list items in Journey tab #249
       // https://github.com/Max-Mobility/permobil-client/issues/249
       // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
-      if (!journey.coastTime || journey.coastTime === 0) {
-        if (journey.coastDistance < 0.1)
-          continue;
-      }
-      // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
-      else if (journey.coastTime) {
-        if (journey.coastTime < 0.05) {
-          continue;
-        }
-      }
+      // if (!journey.coastTime || journey.coastTime === 0) {
+      //   if (journey.coastDistance < 0.1)
+      //     continue;
+      // }
+      // // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
+      // else if (journey.coastTime) {
+      //   if (journey.coastTime < 0.05) {
+      //     continue;
+      //   }
+      // }
 
       this.journeyItems.push({
+        journey_type: journey.journeyType,
         date: journeyDateLabel,
         time: journeyTimeLabel,
         push_count: (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
@@ -418,10 +420,10 @@ export class JourneyTabComponent implements OnInit {
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0,
         icon_small: this.savedTheme === 'DEFAULT' ?
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'accessible_forward_black' : 'smartdrive_material_black') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_black' : 'smartdrive_material_black') :
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white'),
         icon_large: this.savedTheme === 'DEFAULT' ?
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'accessible_forward_black' : 'smartdrive_material_white') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white') :
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white')
       });
     }
