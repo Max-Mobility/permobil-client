@@ -403,7 +403,7 @@ export class JourneyTabComponent implements OnInit {
       }
       // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
       else if (journey.coastTime) {
-        if (journey.coastTime < 5) {
+        if (journey.coastTime < 0.05) {
           continue;
         }
       }
