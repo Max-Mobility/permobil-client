@@ -54,7 +54,11 @@ export class SignUpComponent implements OnInit {
     has_agreed_to_user_agreement: false,
     has_read_privacy_policy: false,
     consent_to_product_development: false,
-    consent_to_research: false
+    consent_to_research: false,
+    chair_type: '',
+    chair_make: '',
+    smartdrive_serial_number: '',
+    pushtracker_serial_number: ''
   };
 
   passwordError = '';
