@@ -40,10 +40,10 @@
           <ng-template let-item="item" let-odd="odd" let-even="even">
             <GridLayout rows="*, *" columns="*, auto">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
-              <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
+              <GridLayout row="1" rows="*, *, *" columns="*" width="100%"> 
                 // Image and Time
                 <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
-                  [src]="item.journeyType === 0 ? 'res://roll_nobkg' : 'res://drive_nobkg'" stretch="aspectFit"></Image>
+                  [src]="item.icon" stretch="aspectFit"></Image>
                 <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
                   verticalAlignemnt="center" marginTop="5"></Label>
 
@@ -60,7 +60,7 @@
                 // Image and Time
                 <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" 
                   marginRight="10" verticalAlignment="top"
-                  src="item.journeyType === 0 ? 'res://roll_nobkg' : 'res://drive_nobkg'" stretch="aspectFit"></Image>
+                  [src]="item.icon" stretch="aspectFit"></Image>
 
               </GridLayout>
             </GridLayout>

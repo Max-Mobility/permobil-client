@@ -8,6 +8,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
 import debounce from 'lodash/debounce';
+import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 
 enum TimeOfDay {
   'MORNING' = 0, // Before 12:00 PM
@@ -377,7 +378,10 @@ export class JourneyTabComponent implements OnInit {
         coast_distance: (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') || '0.00',
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
-        duration: 0
+        duration: 0,
+        icon: this.savedTheme === 'DARK' ?
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_nobkg' : 'drive_nobkg') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'drive_white')
       });
     }
 
