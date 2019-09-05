@@ -139,7 +139,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 10 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 100 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
