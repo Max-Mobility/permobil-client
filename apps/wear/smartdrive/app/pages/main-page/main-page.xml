@@ -85,28 +85,29 @@
                       class="circleDetails"
                       visibility="{{ isAmbient, isAmbient ? 'collapsed':'visible'}}">
             <StackLayout row="1" col="1" rowSpan="2"
-                         tap="{{ toggleDisplay }}"
-                         visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}">
+                         tap="{{ toggleDebug }}"
+                         visibility="{{ (!motorOn && !displayDebug) ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ estimatedDistanceDisplay }}"
-                     visibility="{{ (!motorOn && !displayRssi) ? 'visible':'collapsed' }}"/>
+                     text="{{ estimatedDistanceDisplay }}"/>
               <Label class="topValueDescription" textWrap="true"
                      text="{{ estimatedDistanceDescription }}"/>
             </StackLayout>
             <StackLayout row="1" col="1" rowSpan="2"
-                         tap="{{ toggleDisplay }}"
-                         visibility="{{ (!motorOn && displayRssi) ? 'visible':'collapsed' }}">
+                         tap="{{ toggleDebug }}"
+                         visibility="{{ displayDebug ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ currentSignalStrength }}"/>
+                     text="{{ numTaps }}"/>
               <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="Signal Strength (dB)"/>
+                     text="Number of unsent taps"/>
             </StackLayout>
-            <Label row="1" col="1" class="topValue" horizontalAlignment="center" textWrap="true"
-                   text="{{ currentSpeedDisplay }}"
-                   visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
-            <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                   text="{{ currentSpeedDescription }}"
-                   visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+            <StackLayout row="1" col="1" rowSpan="2"
+                         tap="{{ toggleDebug }}"
+                         visibility="{{ (motorOn && !displayDebug) ? 'visible':'collapsed' }}">
+              <Label class="topValue" horizontalAlignment="center" textWrap="true"
+                     text="{{ currentSpeedDisplay }}"/>
+              <Label class="topValueDescription" textWrap="true"
+                     text="{{ currentSpeedDescription }}"/>
+            </StackLayout>
             <Button row="3" col="1"
                     class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}"
                     text="{{ L('power-assist.activate') }}"
@@ -448,29 +449,46 @@
           disableInsetConstraint="true"
           loaded="{{ customWOLInsetLoaded }}"
           height="100%" width="100%">
-        <StackLayout height="100%">
-          <Label text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
-          <Label text="" class="hr-blue" />
-          <ScrollView height="100%" id="errorsScrollView">
-            <ListView row="2" colSpan="1" items="{{ errorHistoryData }}"
-                      paddingBottom="{{ insetPadding }}"
+        <GridLayout height="100%" rows="auto, auto, *" colums="*">
+          <Label row="0" text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
+          <Label row="1" text="" class="hr-blue" />
+            <ListView row="2" items="{{ errorHistoryData }}"
+                      itemTemplateSelector="{{ selectErrorTemplate }}"
                       loadMoreItems="{{ onLoadMoreErrors }}">
-              <ListView.itemTemplate>
-                <RL:Ripple rippleColor="#ddd">
-                  <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap && onTap }}">
-                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"
-                           visibility="{{ onTap ? 'collapsed':'visible' }}"/>
-                    <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true"
-                           visibility="{{ onTap ? 'visible':'collapsed' }}"/>
-                    <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
-                    <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label"
-                           textWrap="true" visibility="{{ time ? 'visible':'collapsed'}}"/>
-                  </GridLayout>
-                </RL:Ripple>
-              </ListView.itemTemplate>
+              <ListView.itemTemplates>
+                <template key="back">
+                  <RL:Ripple rippleColor="#ddd">
+                    <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap }}">
+                      <Label row="0" col="0" text="&#xf107;"
+                             class="bullet-list-icon back-icon" textWrap="true"/>
+                      <Label row="0" col="1" text="{{ code }}" class="settings-label"
+                             textWrap="true" />
+                    </GridLayout>
+                  </RL:Ripple>
+                </template>
+                <template key="error">
+                  <RL:Ripple rippleColor="#ddd">
+                    <GridLayout rows="auto, auto" columns="15, *">
+                      <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"/>
+                      <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true"/>
+                      <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label"
+                             textWrap="true"/>
+                    </GridLayout>
+                  </RL:Ripple>
+                </template>
+                <template key="last">
+                  <RL:Ripple rippleColor="#ddd">
+                    <GridLayout rows="auto, auto" columns="15, *" marginBottom="{{ insetPadding }}">
+                      <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"/>
+                      <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true"/>
+                      <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label"
+                             textWrap="true"/>
+                    </GridLayout>
+                  </RL:Ripple>
+                </template>
+              </ListView.itemTemplates>
             </ListView>
-          </ScrollView>
-        </StackLayout>
+        </GridLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
@@ -527,11 +545,32 @@
                 </GridLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.sd-serial-number') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ sdSerialNumber }}" class="settings-label" textWrap="true" />
-                </GridLayout>
+                <StackLayout>
+                  <GridLayout rows="auto, auto" columns="15, *"
+                              tap="{{ toggleRssiDisplay }}"
+                              visibility="{{ displayRssi ? 'collapsed':'visible' }}">
+                    <Label row="0" col="0"
+                           text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="0" col="1"
+                           text="{{ L('about.sd-serial-number') }}"
+                           class="settings-label" textWrap="true" />
+                    <Label row="1" col="1"
+                           text="{{ sdSerialNumber }}"
+                           class="settings-label" textWrap="true" />
+                  </GridLayout>
+                  <GridLayout rows="auto, auto" columns="15, *"
+                              tap="{{ toggleRssiDisplay }}"
+                              visibility="{{ displayRssi ? 'visible':'collapsed' }}">
+                    <Label row="0" col="0"
+                           text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="0" col="1"
+                           text="{{ L('about.sd-recent-signal-strength') }}"
+                           class="settings-label" textWrap="true" />
+                    <Label row="1" col="1"
+                           text="{{ currentSignalStrength }}"
+                           class="settings-label" textWrap="true" />
+                  </GridLayout>
+                </StackLayout>
               </RL:Ripple>
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">

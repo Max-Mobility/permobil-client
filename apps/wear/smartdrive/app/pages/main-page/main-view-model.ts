@@ -205,7 +205,6 @@ export class MainViewModel extends Observable {
   private wakeLock: any = null;
   private pager: Pager;
   private settingsScrollView: ScrollView;
-  private errorsScrollView: ScrollView;
   private aboutScrollView: ScrollView;
   private updateProgressCircle: AnimatedCircle;
   private scanningProgressCircle: AnimatedCircle;
@@ -1681,9 +1680,6 @@ export class MainViewModel extends Observable {
   onErrorHistoryLayoutLoaded(args: EventData) {
     // show the chart
     this._errorHistoryLayout = args.object as SwipeDismissLayout;
-    this.errorsScrollView = this._errorHistoryLayout.getViewById(
-      'errorsScrollView'
-    ) as ScrollView;
     this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
@@ -1693,13 +1689,20 @@ export class MainViewModel extends Observable {
     });
   }
 
+  selectErrorTemplate(item, index, items) {
+    if (item.isBack) return 'back';
+    else if (index === (items.length -1)) return 'last';
+    else return 'error';
+  }
+
   async onLoadMoreErrors() {
     let recents = await this.getRecentErrors(10, this.errorHistoryData.length);
     // add the back button as the first element - should only load once
     if (this.errorHistoryData.length === 0) {
       this.errorHistoryData.push({
         code: L('buttons.back'),
-        onTap: this.previousLayout.bind(this)
+        onTap: this.previousLayout.bind(this),
+        isBack: true
       });
     }
     // determine the unique errors that we have
@@ -1710,7 +1713,9 @@ export class MainViewModel extends Observable {
     } else if (this.errorHistoryData.length === 1) {
       // or add the 'no errors' message
       this.errorHistoryData.push({
-        code: L('error-history.no-errors')
+        code: L('error-history.no-errors'),
+        insetPadding: this.insetPadding,
+        isBack: false
       });
     }
   }
@@ -1718,10 +1723,6 @@ export class MainViewModel extends Observable {
   showErrorHistory() {
     // clear out any pre-loaded data
     this.errorHistoryData.splice(0, this.errorHistoryData.length);
-    if (this.errorsScrollView) {
-      // reset to to the top when entering the page
-      this.errorsScrollView.scrollToVerticalOffset(0, true);
-    }
     // load the error data
     this.onLoadMoreErrors();
     // show the layout
@@ -2020,8 +2021,13 @@ export class MainViewModel extends Observable {
     this.updateChartData();
   }
 
-  toggleDisplay() {
-    // this.displayRssi = !this.displayRssi;
+  @Prop() displayDebug: boolean = false;
+  toggleDebug() {
+    this.displayDebug = !this.displayDebug;
+  }
+
+  toggleRssiDisplay() {
+    this.displayRssi = !this.displayRssi;
   }
 
   updateSpeedDisplay() {
@@ -2756,7 +2762,10 @@ export class MainViewModel extends Observable {
             time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
             code: L(translationKey),
             id: r && r[3],
-            uuid: r && r[4]
+            uuid: r && r[4],
+            insetPadding: this.insetPadding,
+            isBack: false,
+            onTap: () => {}
           };
         });
       }
