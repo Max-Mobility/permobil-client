@@ -417,8 +417,11 @@ export class JourneyTabComponent implements OnInit {
         drive_distance: (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') || '0.00',
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0,
-        icon: this.savedTheme === 'DEFAULT' ?
+        icon_small: this.savedTheme === 'DEFAULT' ?
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'accessible_forward_black' : 'smartdrive_material_black') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white'),
+        icon_large: this.savedTheme === 'DEFAULT' ?
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'accessible_forward_black' : 'smartdrive_material_white') :
           imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white')
       });
     }

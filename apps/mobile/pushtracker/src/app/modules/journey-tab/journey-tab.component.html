@@ -43,7 +43,7 @@
               <GridLayout row="1" rows="*, *, *" columns="*" width="100%"> 
                 // Image and Time
                 <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
-                  [src]="item.icon" stretch="aspectFit"></Image>
+                  [src]="item.icon_small" stretch="aspectFit"></Image>
                 <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
                   verticalAlignemnt="center" marginTop="5"></Label>
 
@@ -60,7 +60,7 @@
                 // Image and Time
                 <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" 
                   marginRight="10" verticalAlignment="top"
-                  [src]="item.icon" stretch="aspectFit"></Image>
+                  [src]="item.icon_large" stretch="aspectFit" class="journey-type-image"></Image>
 
               </GridLayout>
             </GridLayout>
