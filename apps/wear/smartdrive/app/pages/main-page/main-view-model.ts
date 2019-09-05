@@ -1469,7 +1469,7 @@ export class MainViewModel extends Observable {
     // if we don't
     const mds = response.content.toJSON();
     let promises = [];
-    let files = [];
+    const files = [];
     // get the max firmware version for each firmware
     const maxes = mds.reduce((maxes, md) => {
       const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
