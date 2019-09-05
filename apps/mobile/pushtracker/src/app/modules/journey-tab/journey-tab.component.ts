@@ -404,8 +404,8 @@ export class JourneyTabComponent implements OnInit {
         description: getTimeOfDayString(journey.timeOfDay) + ' ' + getJourneyTypeString(journey.journeyType),
         duration: 0,
         icon: this.savedTheme === 'DEFAULT' ?
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_nobkg' : 'drive_nobkg') :
-          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'drive_white')
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'accessible_forward_black' : 'smartdrive_material_black') :
+          imageFromResource(journey.journeyType === JourneyType.ROLL ? 'roll_white' : 'smartdrive_material_white')
       });
     }
 
