@@ -60,6 +60,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   private smartDrive: SmartDrive = undefined;
   public syncingWithSmartDrive = false;
+  public syncSuccessful = false;
 
   constructor(
     public settingsService: SettingsService,
@@ -114,7 +115,12 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
-  async scanForSmartDrive() {
+  async scanForSmartDrive(force: boolean = false) {
+    Log.D('Scanning for SmartDrives');
+    if (!force && this.smartDrive && this.smartDrive.address) {
+      Log.D('Scan is not forced - Already have a SmartDrive', this.smartDrive.address);
+      return;
+    }
     if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
       await this._bluetoothService.scanForSmartDrive(10).then(() => {
         const drives = BluetoothService.SmartDrives;
@@ -131,8 +137,8 @@ export class ProfileSettingsComponent implements OnInit {
         else {
           drives.map(async drive => {
             this.smartDrive = drive;
-            await this.smartDrive.connect();
-            Log.D('Connected to SmartDrive', this.smartDrive.address);
+            Log.D('SmartDrive detected', this.smartDrive.address);
+            Log.D('Scan successful');
           });
         }
       });
@@ -319,6 +325,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async commitSettingsChange() {
+    this.syncSuccessful = false;
     const actionbar = this.mockActionBar
       .nativeElement as MockActionbarComponent;
 
@@ -375,6 +382,7 @@ export class ProfileSettingsComponent implements OnInit {
           Log.D('Done sync\'ing with SmartDrive');
           Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
           Log.D('Syncing with SmartDrive?', this.syncingWithSmartDrive);
+          this.syncSuccessful = true;
         } catch (err) {
           Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
           Log.D(err);
@@ -386,13 +394,27 @@ export class ProfileSettingsComponent implements OnInit {
 
   async onSmartDriveDisconnect(args: any) {
     Log.D('SmartDrive disconnected', this.smartDrive.address);
+    // Unregister for SmartDrive connected and disconnected events
+    this.smartDrive.off(
+      SmartDrive.smartdrive_connect_event,
+      this.onSmartDriveConnect,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_disconnect_event,
+      this.onSmartDriveDisconnect,
+      this
+    );
   }
 
   onSyncSettingsWithSmartDrive(args) {
     this.syncingWithSmartDrive = true;
     Log.D('Synchronizing settings with SmartDrive');
-    this.scanForSmartDrive().then(() => {
+    this.scanForSmartDrive().then(async () => {
       if (!this.smartDrive) return;
+      await this.smartDrive.connect();
+      Log.D('Connected to SmartDrive', this.smartDrive.address);
+
       // Register for SmartDrive connected and disconnected events
       this.smartDrive.on(
         SmartDrive.smartdrive_connect_event,
@@ -405,6 +427,10 @@ export class ProfileSettingsComponent implements OnInit {
         this
       );
     });
+  }
+
+  async onRefreshTap(args) {
+    await this.scanForSmartDrive(true);
   }
 
   async onSettingsChecked(args: PropertyChangeData, setting: string) {
