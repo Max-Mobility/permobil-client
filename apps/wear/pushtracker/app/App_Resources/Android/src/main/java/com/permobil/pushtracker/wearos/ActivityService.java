@@ -36,6 +36,14 @@ import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.WearableListenerService;
+
 import android.app.Notification.Builder;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -70,9 +78,19 @@ import com.permobil.pushtracker.wearos.DailyActivity;
 //        * heart rate
 //        * GPS
 
-public class ActivityService extends Service implements SensorEventListener, LocationListener {
+public class ActivityService
+  extends WearableListenerService implements SensorEventListener,
+                                             LocationListener {
 
   private static final String TAG = "PermobilActivityService";
+
+  private static final String START_ACTIVITY_PATH = "/activity";
+  private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
+
+  public static final String APP_DATA_PATH = "/app-data";
+  public static final String APP_DATA_KEY = "app-data";
+  public static final String WEAR_DATA_PATH = "/wear-data";
+  public static final String WEAR_DATA_KEY = "wear-data";
 
   private long _lastPushDataTimeMs = 0;
   private static final int PUSH_TASK_PERIOD_MS = 1 * 60 * 1000;
@@ -132,12 +150,6 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private Datastore datastore;
 
   public ActivityService() {
-  }
-
-  @Override
-  public IBinder onBind(Intent intent) {
-    // TODO: Return the communication channel to the service.
-    throw new UnsupportedOperationException("Not yet implemented");
   }
 
   @Override
@@ -223,6 +235,16 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     // START_STICKY is used for services that are explicitly started
     // and stopped as needed
     return START_STICKY;
+  }
+
+  @Override
+  public void onDataChanged(DataEventBuffer dataEvents) {
+    Log.d(TAG, "onDataChanged()");
+  }
+
+  @Override
+  public void onMessageReceived(MessageEvent event) {
+    Log.d(TAG, "onMessageReceived()");
   }
 
   private void loadFromDatabase() {
