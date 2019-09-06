@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
-  public static final String PREFIX = "com.permobil.pushtracker.wearos.";
+  public static final String PREFIX = "com.permobil.pushtracker.";
   public static final String DISABLE_WEAR_CHECK_KEY = "disable_wear_check";
   public static final String CURRENT_DATE_KEY = "current_date";
   public static final String CURRENT_PUSH_COUNT_KEY = "current_push_count";

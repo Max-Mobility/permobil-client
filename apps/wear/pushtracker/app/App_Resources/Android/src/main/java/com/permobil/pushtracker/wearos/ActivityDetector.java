@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

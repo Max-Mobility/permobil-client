@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -26,8 +26,8 @@ import android.support.wearable.complications.ComplicationProviderService;
 import android.support.wearable.complications.ComplicationText;
 import android.util.Log;
 
-import com.permobil.pushtracker.wearos.ComplicationToggleReceiver;
-import com.permobil.pushtracker.wearos.Datastore;
+import com.permobil.pushtracker.ComplicationToggleReceiver;
+import com.permobil.pushtracker.Datastore;
 
 import java.util.Locale;
 

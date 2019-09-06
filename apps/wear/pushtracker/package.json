@@ -1,6 +1,6 @@
 {
   "nativescript": {
-    "id": "com.permobil.pushtracker.wearos",
+    "id": "com.permobil.pushtracker",
     "tns-android": {
       "version": "6.0.1"
     }

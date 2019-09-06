@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -72,7 +72,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import io.sentry.Sentry;
 
-import com.permobil.pushtracker.wearos.DailyActivity;
+import com.permobil.pushtracker.DailyActivity;
 
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate

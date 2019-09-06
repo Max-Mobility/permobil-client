@@ -3,22 +3,22 @@ import { eachDay, format, subDays } from 'date-fns';
 declare const com: any;
 
 export namespace DailyActivity {
-  export class Record extends com.permobil.pushtracker.wearos.DailyActivity {
+  export class Record extends com.permobil.pushtracker.DailyActivity {
   }
 
   export namespace Info {
     export const TableName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.TABLE_NAME || 'DailyActivity';
+      com.permobil.pushtracker.DatabaseHandler.TABLE_NAME || 'DailyActivity';
     export const IdName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.KEY_ID || 'id';
+      com.permobil.pushtracker.DatabaseHandler.KEY_ID || 'id';
     export const DataName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.KEY_DATA || 'data';
+      com.permobil.pushtracker.DatabaseHandler.KEY_DATA || 'data';
     export const DateName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.KEY_DATE || 'date';
+      com.permobil.pushtracker.DatabaseHandler.KEY_DATE || 'date';
     export const UuidName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.KEY_UUID || 'uuid';
+      com.permobil.pushtracker.DatabaseHandler.KEY_UUID || 'uuid';
     export const HasBeenSentName =
-      com.permobil.pushtracker.wearos.DatabaseHandler.KEY_HAS_BEEN_SENT || 'has_been_sent';
+      com.permobil.pushtracker.DatabaseHandler.KEY_HAS_BEEN_SENT || 'has_been_sent';
     export const Fields = [
       { name: DataName, type: 'TEXT' },
       { name: DateName, type: 'TEXT' },
