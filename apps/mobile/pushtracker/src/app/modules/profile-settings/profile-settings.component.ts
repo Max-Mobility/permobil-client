@@ -59,6 +59,7 @@ export class ProfileSettingsComponent implements OnInit {
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
 
   private smartDrive: SmartDrive = undefined;
+  public syncingWithSmartDrive = false;
 
   constructor(
     public settingsService: SettingsService,
@@ -118,9 +119,12 @@ export class ProfileSettingsComponent implements OnInit {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+          this.syncingWithSmartDrive = false;
+          return;
         }
         else if (drives.length > 1) {
           dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+          this.syncingWithSmartDrive = false;
           return;
         }
         else {
@@ -346,61 +350,6 @@ export class ProfileSettingsComponent implements OnInit {
           Log.D('no pushtrackers!');
         }
       }
-      else if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
-        // When the control configuration is set to 'Switch Control with SmartDrive'
-        // there is no PushTracker. The mobile phone is the "master" in this scenario.
-        // Directly commit changes to the SmartDrive from the phone
-        // This requires that we first use the BluetoothService to search for nearby
-        // SmartDrives. Then, if we're only connected to one SmartDrive - great! Commit changes
-        // If more than one SmartDrive is connected, show a warning alert dialog box and
-        // tell the user that the settings changes have not been committed on the SmartDrive.
-        // If no SmartDrives are detected, then too show a warning alert dialog box.
-        if (this.smartDrive && this.smartDrive.ableToSend) {
-          try {
-            await this.smartDrive.sendSettingsObject(this.settingsService.settings);
-            await this.smartDrive.sendSwitchControlSettingsObject(
-              this.settingsService.switchControlSettings);
-            Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
-          } catch (err) {
-            Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
-            Log.D(err);
-            this._logService.logException(err);
-          }
-        }
-        else {
-          const self = this;
-          dialogs.confirm({
-            title: this._translateService.instant(
-              'settings-component.no-smartdrive-title'
-            ),
-            message: this._translateService.instant(
-              'settings-component.no-smartdrive-message'
-            ),
-            okButtonText: this._translateService.instant('settings-component.scan-again'),
-            cancelable: true,
-            cancelButtonText: this._translateService.instant('dialogs.cancel')
-          }).then((result: boolean) => {
-            if (result === true) {
-              // user wants to scan again for SmartDrives
-              this.scanForSmartDrive().then(async () => {
-                if (self.smartDrive) {
-                  try {
-                    await self.smartDrive.sendSettingsObject(self.settingsService.settings);
-                    await self.smartDrive.sendSwitchControlSettingsObject(
-                      self.settingsService.switchControlSettings);
-                    Log.D('Settings successfully commited to SmartDrive', self.smartDrive.address);
-                  } catch (err) {
-                    Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
-                    Log.D(err);
-                    self._logService.logException(err);
-                  }
-                }
-              });
-            }
-          });
-
-        }
-      }
     }
 
     try {
@@ -408,6 +357,50 @@ export class ProfileSettingsComponent implements OnInit {
     } catch (error) {
       this._logService.logException(error);
     }
+  }
+
+  async onSmartDriveConnect(args: any) {
+    Log.D('SmartDrive connected', this.smartDrive.address);
+    Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
+    if (this.smartDrive && this.smartDrive.ableToSend) {
+      try {
+        await this.smartDrive.sendSettingsObject(this.settingsService.settings);
+        await this.smartDrive.sendSwitchControlSettingsObject(
+          this.settingsService.switchControlSettings);
+        this.smartDrive.disconnect().then(() => {
+          this.syncingWithSmartDrive = false;
+          Log.D('Done sync\'ing with SmartDrive');
+          Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
+        });
+      } catch (err) {
+        Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
+        Log.D(err);
+        this._logService.logException(err);
+      }
+    }
+  }
+
+  async onSmartDriveDisconnect(args: any) {
+    Log.D('SmartDrive disconnected', this.smartDrive.address);
+  }
+
+  onSyncSettingsWithSmartDrive(args) {
+    this.syncingWithSmartDrive = true;
+    Log.D('Synchronizing settings with SmartDrive');
+    this.scanForSmartDrive().then(() => {
+      if (!this.smartDrive) return;
+      // Register for SmartDrive connected and disconnected events
+      this.smartDrive.on(
+        SmartDrive.smartdrive_connect_event,
+        this.onSmartDriveConnect,
+        this
+      );
+      this.smartDrive.on(
+        SmartDrive.smartdrive_disconnect_event,
+        this.onSmartDriveDisconnect,
+        this
+      );
+    });
   }
 
   async onSettingsChecked(args: PropertyChangeData, setting: string) {
