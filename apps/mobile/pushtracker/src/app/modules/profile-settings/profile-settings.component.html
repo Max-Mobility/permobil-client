@@ -6,10 +6,8 @@
     [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"
     [controlConfiguration]="user.data.control_configuration"></MockActionBar>
 
-  <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="10%" width="10%" marginRight="10"
-    *ngIf="syncingWithSmartDrive" busy="true" color="#753bbd"></ActivityIndicator>
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*" *ngIf="!syncingWithSmartDrive">
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
@@ -100,8 +98,18 @@
           textWrap="true"></Label>
       </StackLayout>
 
-      <StackLayout *ngIf="user.data.control_configuration === 'Switch Control with SmartDrive'" row="13" marginTop="10">
-        <Button (tap)="onSyncSettingsWithSmartDrive($event)" class="sync-button" width="70%" [text]="'settings-component.sync-button' | translate"></Button>
+      <StackLayout *ngIf="user.data.control_configuration === 'Switch Control with SmartDrive'" 
+        row="13" marginTop="10">
+        <StackLayout>
+          <ActivityIndicator row="0" horizontalAlignment="center" height="10%" width="10%"
+            *ngIf='syncingWithSmartDrive'
+            busy="true" color="#753bbd"></ActivityIndicator>
+          <Button
+            *ngIf='!syncingWithSmartDrive'
+            (tap)="onSyncSettingsWithSmartDrive($event)" 
+            class="sync-button" width="70%" 
+            [text]="'settings-component.sync-button' | translate"></Button>
+        </StackLayout>
       </StackLayout>
 
       // Display Section

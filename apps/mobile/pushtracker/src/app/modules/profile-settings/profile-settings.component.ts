@@ -1,20 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, NgZone } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, PropertyChangeData, EventData } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
 import { SmartDrive } from '~/app/models';
+import { BehaviorSubject, Observable } from 'rxjs';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
@@ -68,7 +68,8 @@ export class ProfileSettingsComponent implements OnInit {
     private _page: Page,
     private _userService: PushTrackerUserService,
     private _params: ModalDialogParams,
-    private _bluetoothService: BluetoothService
+    private _bluetoothService: BluetoothService,
+    private _zone: NgZone
   ) {
     this._page.actionBarHidden = true;
 
@@ -363,20 +364,23 @@ export class ProfileSettingsComponent implements OnInit {
     Log.D('SmartDrive connected', this.smartDrive.address);
     Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
     if (this.smartDrive && this.smartDrive.ableToSend) {
-      try {
-        await this.smartDrive.sendSettingsObject(this.settingsService.settings);
-        await this.smartDrive.sendSwitchControlSettingsObject(
-          this.settingsService.switchControlSettings);
-        this.smartDrive.disconnect().then(() => {
+
+      this._zone.run(async () => {
+        try {
+          await this.smartDrive.sendSettingsObject(this.settingsService.settings);
+          await this.smartDrive.sendSwitchControlSettingsObject(
+            this.settingsService.switchControlSettings);
+          await this.smartDrive.disconnect();
           this.syncingWithSmartDrive = false;
           Log.D('Done sync\'ing with SmartDrive');
           Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
-        });
-      } catch (err) {
-        Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
-        Log.D(err);
-        this._logService.logException(err);
-      }
+          Log.D('Syncing with SmartDrive?', this.syncingWithSmartDrive);
+        } catch (err) {
+          Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
+          Log.D(err);
+          this._logService.logException(err);
+        }
+      });
     }
   }
 
