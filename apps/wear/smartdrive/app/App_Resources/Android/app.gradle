@@ -4,6 +4,7 @@ dependencies {
   implementation 'com.android.support:wear:28.0.0'
   implementation 'com.google.android.support:wearable:2.4.0'
 	implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
+  implementation 'com.github.Max-Mobility:WearOsMessaging:0.1.1'
   compileOnly 'com.google.android.wearable:wearable:2.4.0'
 }
 
