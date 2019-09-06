@@ -4,6 +4,7 @@
   // Mock ActionBar
   <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="user.data.control_configuration === 'PushTracker with SmartDrive'"
     [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"
+    [showRefreshBtn]="user.data.control_configuration === 'Switch Control with SmartDrive' ? true : false" (refreshTapEvent)="onRefreshTap($event)"
     [controlConfiguration]="user.data.control_configuration"></MockActionBar>
 
   <ScrollView row="1" height="100%">
@@ -105,7 +106,7 @@
             *ngIf='syncingWithSmartDrive'
             busy="true" color="#753bbd"></ActivityIndicator>
           <Button
-            *ngIf='!syncingWithSmartDrive'
+            *ngIf='!syncingWithSmartDrive && !syncSuccessful'
             (tap)="onSyncSettingsWithSmartDrive($event)" 
             class="sync-button" width="70%" 
             [text]="'settings-component.sync-button' | translate"></Button>
