@@ -143,7 +143,7 @@ export class JourneyTabComponent implements OnInit {
   }
 
   private async _loadWeeklyPushtrackerActivity(date: Date) {
-    const didLoad = await this._pushtrackerActivityService.loadWeeklyActivity(date);
+    const didLoad = await this._pushtrackerActivityService.loadAllWeeklyActivityTill(date);
     if (didLoad) {
       for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
 
@@ -179,7 +179,7 @@ export class JourneyTabComponent implements OnInit {
   }
 
   private async _loadWeeklySmartDriveUsage(date: Date) {
-    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(date);
+    const didLoad = await this._smartDriveUsageService.loadAllWeeklyActivityTill(date);
     if (didLoad) {
       for (const i in this._smartDriveUsageService.weeklyActivity.days) {
 

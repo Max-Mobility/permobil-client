@@ -93,6 +93,45 @@ export class ActivityService {
     }
   }
 
+  async loadAllWeeklyActivityTill(weekStartDate: Date, limit: number = 1): Promise<boolean> {
+    try {
+      // await this.login();
+      // await this.datastore.sync();
+      const query = new KinveyQuery();
+
+      // configure the query to search for only activity that was
+      // saved by this user, and to get only the most recent activity
+      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      query.descending('date');
+      query.equalTo('data_type', 'WeeklyActivity');
+
+      if (weekStartDate) {
+
+        const month = weekStartDate.getMonth() + 1;
+        const day = weekStartDate.getDate();
+        query.lessThanOrEqualTo('date',
+          weekStartDate.getFullYear() + '/' +
+          (month < 10 ? '0' + month : month) + '/' +
+          (day < 10 ? '0' + day : day));
+
+        query.limit = limit;
+
+        const stream = this.datastore.find(query);
+        const data = await stream.toPromise();
+        if (data && data.length) {
+          this.weeklyActivity = data[0];
+          // Do something with data
+          return true;
+        }
+      }
+      this.weeklyActivity = [];
+      return false;
+    } catch (err) {
+      this._logService.logException(err);
+      return false;
+    }
+  }
+
   private login(): Promise<any> {
     if (!!KinveyUser.getActiveUser()) {
       return Promise.resolve();
