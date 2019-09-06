@@ -278,11 +278,56 @@ export class TabsComponent {
   }
 
   private onPushTrackerConnected(args: any) {
-    const pt = args.data.pushtracker;
+    const pt = args.data.pushtracker as PushTracker;
     const msg =
       this._translateService.instant('general.pushtracker-connected') +
       `: ${pt.address}`;
     this.snackbar.simple(msg);
+    pt.on(
+      PushTracker.daily_info_event,
+      this.onDailyInfoEvent,
+      this
+    );
+  }
+
+  onDailyInfoEvent(args) {
+    Log.D('Daily info event received!');
+    const data = args.data;
+    const year = data.year;
+    const month = data.month - 1;
+    const day = data.day;
+    const pushesWith = data.pushesWith;
+    const pushesWithout = data.pushesWithout;
+    const coastWith = data.coastWith;
+    const coastWithout = data.coastWithout;
+    const date = new Date(year, month, day);
+    date.setHours(0, 0, 0, 0);
+
+    const dateFormatted = function(date: Date) {
+      return (
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        '/' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+      );
+    };
+
+    const dailyActivity = {
+      _acl: { creator: this.user._id },
+      coast_time_avg: coastWithout,
+      coast_time_total: coastWith + coastWithout,
+      data_type: 'DailyActivity',
+      date: dateFormatted(date),
+      has_been_sent: false,
+      push_count: pushesWithout,
+      records: [],
+      start_time: date.getTime()
+    };
+    Log.D('DailyInfo', data);
+    Log.D('DailyActivity', dailyActivity);
   }
 
   private onPushTrackerDisconnected(args: any) {
