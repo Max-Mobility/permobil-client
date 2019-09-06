@@ -73,38 +73,32 @@ import com.permobil.pushtracker.wearos.DailyActivity;
 public class ActivityService extends Service implements SensorEventListener, LocationListener {
 
   private static final String TAG = "PermobilActivityService";
-  private static final int NOTIFICATION_ID = 765;
-  private static final int SENSOR_RATE_HZ = 25;
 
   private long _lastPushDataTimeMs = 0;
   private static final int PUSH_TASK_PERIOD_MS = 1 * 60 * 1000;
 
-  /**
-   * SensorManager.SENSOR_DELAY_NORMAL:  ~ 200ms
-   * SensorManager.SENSOR_DELAY_UI:      ~ 60ms
-   * SensorManager.SENSOR_DELAY_GAME:    ~ 40ms
-   * SensorManager.SENSOR_DELAY_FASTEST: ~ ??ms
-   */
+  public boolean isDebuggable = false;
+
+  public String watchSerialNumber = null;
+
+  private static final int NOTIFICATION_ID = 765;
+
+  // rate at which we request sensor data updates
+  private static final int SENSOR_RATE_HZ = 25;
   // microseconds between sensor data
-  private static final int SENSOR_DELAY_US_DEBUG = 1000 * 1000 / SENSOR_RATE_HZ;
-  private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
+  private static final int SENSOR_DELAY_US = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = 3 * 60 * 1000 * 1000;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
   private static final float LOCATION_LISTENER_MIN_DISTANCE_M = 125;
-
   // distance in m under which we don't consider the device to have moved
   private static final float LOCATION_DISTANCE_THRESHOLD_M = LOCATION_LISTENER_MIN_DISTANCE_M;
   // speed in m/s under which we don't compute distance travelled
   private static final float LOCATION_SPEED_THRESHOLD_MIN_MPS = 0.4f; // ~= 0.9 miles per hour
   // speed in m/s over which we don't compute distance travelled
   private static final float LOCATION_SPEED_THRESHOLD_MAX_MPS = 4.0f; // ~= 9.0 miles per hour
-
-  public boolean isDebuggable = false;
-
-  public String watchSerialNumber = null;
 
   private BroadcastReceiver timeReceiver = null;
   private BroadcastReceiver batteryReceiver = null;
@@ -261,55 +255,55 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   private void PushDataToKinvey() {
-    Log.d(TAG, "PushDataToKinvey()...");
+    Log.d(TAG, "PushDataToKinvey()");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
-    // Log.d(TAG, "Database size: " + db.getTableSizeBytes() + " bytes");
     if (numUnsent == 0) {
-      Log.d(TAG, "No unsent data.");
-    } else {
-      try {
-        // get the oldest unsent record
-        DatabaseHandler.Record r = db.getRecord(true);
-        RequestBody body =
-          RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data);
-        Call<DailyActivity> serviceCall = mKinveyApiService.sendData(
-                                                                     mKinveyAuthorization,
-                                                                     body,
-                                                                     r.id
-                                                                     );
-        serviceCall.enqueue(new Callback<DailyActivity>() {
-            @Override
-            public void onResponse(Call<DailyActivity> call, Response<DailyActivity> response) {
-              if (response.isSuccessful()) {
-                DailyActivity item = response.body();
-                Log.d(TAG, "item sent: " + item._id);
-                // TODO: currently we don't delete any entries,
-                // do we want to change that?
-                // db.deleteRecord(item._id);
+      return;
+    }
+    // we have data to send - so send it!
+    try {
+      Log.d(TAG, "Pushing Data");
+      // get the oldest unsent record
+      DatabaseHandler.Record r = db.getRecord(true);
+      RequestBody body =
+        RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data);
+      Call<DailyActivity> serviceCall = mKinveyApiService.sendData(
+                                                                   mKinveyAuthorization,
+                                                                   body,
+                                                                   r.id
+                                                                   );
+      serviceCall.enqueue(new Callback<DailyActivity>() {
+          @Override
+          public void onResponse(Call<DailyActivity> call, Response<DailyActivity> response) {
+            if (response.isSuccessful()) {
+              DailyActivity item = response.body();
+              Log.d(TAG, "item sent: " + item._id);
+              // TODO: currently we don't delete any entries,
+              // do we want to change that?
+              // db.deleteRecord(item._id);
 
-                // update the has_been_sent field for that
-                // activity
-                db.markRecordAsSent(item._id);
-                if (item._id.equals(currentActivity._id)) {
-                  currentActivity.has_been_sent = true;
-                }
-              } else {
-                Log.e(TAG, "send data not successful - " +
-                      response.code() + ": " +
-                      response.message());
+              // update the has_been_sent field for that
+              // activity
+              db.markRecordAsSent(item._id);
+              if (item._id.equals(currentActivity._id)) {
+                currentActivity.has_been_sent = true;
               }
+            } else {
+              Log.e(TAG, "send data not successful - " +
+                    response.code() + ": " +
+                    response.message());
             }
-            @Override
-            public void onFailure(Call<DailyActivity> call, Throwable t) {
-              Log.e(TAG, "Failed to send: " + t.getMessage());
-              Sentry.capture(t);
-            }
-          });
-      } catch (Exception e) {
-        Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
-        Sentry.capture(e);
-      }
+          }
+          @Override
+          public void onFailure(Call<DailyActivity> call, Throwable t) {
+            Log.e(TAG, "Failed to send: " + t.getMessage());
+            Sentry.capture(t);
+          }
+        });
+    } catch (Exception e) {
+      Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
+      Sentry.capture(e);
     }
   }
 
@@ -396,6 +390,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   void handleDetection(ActivityDetector.Detection detection) {
     // Log.d(TAG, "detection: " + detection);
     if (detection.confidence > 0) {
+      hasNewActivity = true;
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
         currentActivity.onPush(detection);
@@ -404,14 +399,13 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   private void registerAllSensors() {
-    int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
     // register the body sensor so we get events when the user
     // wears the watch and takes it off
-    this.registerBodySensor(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     // turn on accelerometer sensing
-    // this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    // this.registerGyroscope(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
+    this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
+    this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void onWristCallback() {
@@ -427,10 +421,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                                             this
                                             );
     */
-    int sensorDelayUs = isDebuggable ? SENSOR_DELAY_US_DEBUG : SENSOR_DELAY_US_RELEASE;
-    // this.registerGyroscope(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    this.registerAccelerometer(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
-    this.registerGravity(sensorDelayUs, SENSOR_REPORTING_LATENCY_US);
+    // this.registerGyroscope(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
+    this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
+    this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void offWristCallback() {
@@ -527,6 +520,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
   }
 
+  private boolean hasNewActivity = false;
   private boolean hasGyro = false;
   private boolean hasAccl = false;
   private boolean hasGrav = false;
@@ -562,7 +556,9 @@ public class ActivityService extends Service implements SensorEventListener, Loc
       clearDetectorInputs();
       // do we need to send data to the app?
       timeDiffMs = now - _lastSendDataTimeMs;
-      if (timeDiffMs > SEND_DATA_INTERVAL_MS) {
+      if (timeDiffMs > SEND_DATA_INTERVAL_MS && hasNewActivity) {
+        // reset flag
+        hasNewActivity = false;
         // update data in datastore / shared preferences for use
         // with the complication providers and mobile app
         datastore.setData(currentActivity.push_count,
