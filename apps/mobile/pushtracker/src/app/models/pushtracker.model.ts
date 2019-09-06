@@ -773,7 +773,7 @@ export class PushTracker extends Observable {
     const date = (d !== undefined) ? new Date(d) : new Date();
     // now fill in the packet
     timeSettings.year = date.getFullYear();
-    timeSettings.month = date.getMonth();
+    timeSettings.month = date.getMonth() + 1;
     timeSettings.day = date.getDate();
     timeSettings.hours = date.getHours();
     timeSettings.minutes = date.getMinutes();
