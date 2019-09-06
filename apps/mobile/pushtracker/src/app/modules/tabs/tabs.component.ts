@@ -73,8 +73,9 @@ export class TabsComponent {
       textTransform: 'capitalize'
     };
 
-    // Run every minute
-    this._throttledOnDailyInfoEvent = throttle(this.onDailyInfoEvent, 60000, {
+    // Run every 10 minutes
+    const TEN_MINUTES = 10 * 60 * 1000;
+    this._throttledOnDailyInfoEvent = throttle(this.onDailyInfoEvent, TEN_MINUTES, {
       leading: true,
       trailing: true
     });
