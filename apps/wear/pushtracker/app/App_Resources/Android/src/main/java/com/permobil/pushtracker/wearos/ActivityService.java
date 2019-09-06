@@ -89,7 +89,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   private static final int SENSOR_DELAY_US_DEBUG = 1000 * 1000 / SENSOR_RATE_HZ;
   private static final int SENSOR_DELAY_US_RELEASE = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 5 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = 1 * 60 * 1000 * 1000;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
@@ -291,7 +291,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
                 // update the has_been_sent field for that
                 // activity
                 db.markRecordAsSent(item._id);
-                if (item._id == currentActivity._id) {
+                if (item._id.equals(currentActivity._id)) {
                   currentActivity.has_been_sent = true;
                 }
               } else {
@@ -398,7 +398,7 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     if (detection.confidence > 0) {
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
-        this.currentActivity.onPush(detection);
+        currentActivity.onPush(detection);
       }
     }
   }
@@ -730,12 +730,11 @@ public class ActivityService extends Service implements SensorEventListener, Loc
   }
 
   private PendingIntent getAlarmIntent(int intentFlag) {
-    Intent i = new Intent(getApplicationContext(), ActivityService.class);
-    i.setAction(Constants.ACTION_START_SERVICE);
-    PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(),
-                                                             0,
-                                                             i,
-                                                             intentFlag);
+    Intent i = new Intent(getApplicationContext(), BootReceiver.class);
+    PendingIntent scheduledIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                                                               BootReceiver.REQUEST_CODE,
+                                                               i,
+                                                               intentFlag);
     return scheduledIntent;
   }
 
@@ -746,15 +745,17 @@ public class ActivityService extends Service implements SensorEventListener, Loc
     calendar.set(Calendar.HOUR_OF_DAY, 0); // Midnight
     calendar.set(Calendar.MINUTE, 0);
     calendar.set(Calendar.SECOND, 0);
+    // long startTime = calendar.getTimeInMillis();
+    long startTime = System.currentTimeMillis();
     // how frequently do we want this to repeat?
     long interval = AlarmManager.INTERVAL_HALF_HOUR;
-    int alarmType = AlarmManager.ELAPSED_REALTIME;
+    int alarmType = AlarmManager.RTC;
     // register alarm to start the service repeatedly
     PendingIntent intent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
     AlarmManager am = (AlarmManager) getApplicationContext()
       .getSystemService(Context.ALARM_SERVICE);
     am.setRepeating(alarmType,
-                    0, // calendar.getTimeInMillis()
+                    startTime,
                     interval,
                     intent);
   }

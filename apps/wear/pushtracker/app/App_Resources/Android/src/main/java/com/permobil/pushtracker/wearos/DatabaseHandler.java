@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         KEY_DATA + " TEXT, " +
         KEY_DATE + " TEXT, " +
         KEY_UUID + " TEXT, " +
-        KEY_HAS_BEEN_SENT + " bit" +
+        KEY_HAS_BEEN_SENT + " INTEGER DEFAULT 0" +
         ")";
       db.execSQL(CREATE_TABLE_ACTIVITYDATA);
     } catch (Exception e) {
@@ -109,9 +109,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       String whereString = KEY_UUID + "=\"" + id + "\"";
       String[] whereArgs = {};
       db.update(TABLE_NAME, values, whereString, whereArgs);
-      Log.d(TAG, "Updating RECORD in SQL Table: " + id);
+      Log.d(TAG, "Marking record as sent in SQL Table: " + id);
     } catch (Exception e) {
-      Log.e(TAG, "Exception updating data in table: " + e.getMessage());
+      Log.e(TAG, "Exception marking record as sent in table: " + e.getMessage());
       Sentry.capture(e);
     }
 
