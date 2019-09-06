@@ -6,11 +6,16 @@
     <GridLayout order="1" height="44" width="44" borderRadius="22" [visibility]="showWatchBtn ? 'visible' : 'collapse'" (tap)="onWatchTap()" class="action-item-btn">
       <Image [src]="watchIcon" stretch="aspectFit" class="watch-status-btn"></Image>
     </GridLayout>
-    <Button order="2" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" (tap)="onSupportTap()" ripple class="action-item-btn"></Button>
-    <Button order="3" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" (tap)="onSettingsTap()" ripple class="action-item-btn"></Button>
-    <Button order="4" text="&#xe5d5;" [visibility]="showRefreshBtn ? 'visible' : 'collapse'" (tap)="onRefreshTap()" ripple class="action-item-btn"></Button>
-    <Button order="5" text="&#xe88f;" [visibility]="showInfoBtn ? 'visible' : 'collapse'" (tap)="onInfoTap()" ripple class="action-item-btn"></Button>
-    <Button order="6" text="&#xe62a;" [visibility]="showUpdateBtn ? 'visible' : 'collapse'" (tap)="onUpdateTap()" ripple class="action-item-btn"></Button>
+
+    <GridLayout order="2" height="44" width="44" borderRadius="22" [visibility]="showWatchConnectBtn ? 'visible' : 'collapse'" (tap)="onWatchConnectTap()" ripple class="action-item-btn">
+      <Image [src]="watchConnectIcon" stretch="aspectFit" class="watch-status-btn"></Image>
+    </GridLayout>
+
+    <Button order="3" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" (tap)="onSupportTap()" ripple class="action-item-btn"></Button>
+    <Button order="4" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" (tap)="onSettingsTap()" ripple class="action-item-btn"></Button>
+    <Button order="5" text="&#xe5d5;" [visibility]="showRefreshBtn ? 'visible' : 'collapse'" (tap)="onRefreshTap()" ripple class="action-item-btn"></Button>
+    <Button order="6" text="&#xe88f;" [visibility]="showInfoBtn ? 'visible' : 'collapse'" (tap)="onInfoTap()" ripple class="action-item-btn"></Button>
+    <Button order="7" text="&#xe62a;" [visibility]="showUpdateBtn ? 'visible' : 'collapse'" (tap)="onUpdateTap()" ripple class="action-item-btn"></Button>
     <Button order="8" text="&#xe5d4;" [visibility]="showMoreBtn ? 'visible' : 'collapse'" (tap)="onMoreTap()" ripple class="action-item-btn"></Button>
   </FlexboxLayout>
 </GridLayout>

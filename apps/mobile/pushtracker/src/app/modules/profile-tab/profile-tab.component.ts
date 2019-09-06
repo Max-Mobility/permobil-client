@@ -890,4 +890,8 @@ export class ProfileTabComponent {
     // remove the active data box class from the previously selected box
     this.activeDataBox.className = 'data-box';
   }
+
+  onWatchConnectTap() {
+    Log.D('Connecting to Watch...');
+  }
 }

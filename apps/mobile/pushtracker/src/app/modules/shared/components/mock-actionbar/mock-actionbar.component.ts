@@ -32,6 +32,10 @@ export class MockActionbarComponent {
   @Output() moreTapEvent = new EventEmitter();
   @Input() showWatchBtn = false;
   @Input() controlConfiguration: string = '';
+  @Input() showWatchConnectBtn = false;
+  @Output() watchConnectEvent = new EventEmitter();
+  watchConnectIconString: string;
+  watchConnectIcon: ImageSource;
 
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
@@ -73,6 +77,7 @@ export class MockActionbarComponent {
     );
 
     this.updateWatchIcon({});
+    this._setWatchConnectIconVariables('check');
   }
 
   onUnloaded() {
@@ -89,6 +94,10 @@ export class MockActionbarComponent {
       text: 'Show info about current watch status.',
       position: ToastPosition.CENTER
     }).show();
+  }
+
+  onWatchConnectTap() {
+    this.watchConnectEvent.emit();
   }
 
   onRefreshTap() {
@@ -219,6 +228,16 @@ export class MockActionbarComponent {
     } else {
       this.watchIconString = `watch_${status}_white`;
       this.watchIcon = imageFromResource(this.watchIconString);
+    }
+  }
+
+  private _setWatchConnectIconVariables(status: string) {
+    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+      this.watchConnectIconString = `watch_${status}_black`;
+      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
+    } else {
+      this.watchConnectIconString = `watch_${status}_white`;
+      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
     }
   }
 }
