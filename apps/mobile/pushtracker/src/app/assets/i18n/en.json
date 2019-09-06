@@ -290,7 +290,10 @@
     }
   },
   "settings-component": {
-    "title": "Settings"
+    "title": "Settings",
+    "no-smartdrive-title": "No SmartDrive detected!",
+    "no-smartdrive-message": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby. This change has not been committed to a SmartDrive.",
+    "scan-again": "Scan Again"
   },
   "sign-up": {
     "birthdate-required": "Birth date is required.",

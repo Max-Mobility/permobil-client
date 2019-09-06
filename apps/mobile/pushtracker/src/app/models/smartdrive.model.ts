@@ -406,12 +406,10 @@ export class SmartDrive extends DeviceBase {
           begin();
         };
         const connectHandler = () => {
-          this.ableToSend = false;
           // clear out the connection interval
           timer.clearInterval(connectionIntervalID);
         };
         const disconnectHandler = () => {
-          this.ableToSend = false;
           hasRebooted = true;
           if (connectionIntervalID) {
             timer.clearInterval(connectionIntervalID);
@@ -516,12 +514,15 @@ export class SmartDrive extends DeviceBase {
                   characteristicUUID: characteristic,
                   value: data
                 })
-                .then(() => {
-                  writeFirmwareTimeoutID = timer.setTimeout(() => {
-                    this.ableToSend = true;
-                    index += payloadSize;
-                    writeFirmwareSector(device, fw, characteristic, nextState);
-                  }, 0);
+                .then((ret) => {
+                  if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+                    throw 'bad status: ' + ret.status;
+                  } else {
+                    writeFirmwareTimeoutID = timer.setTimeout(() => {
+                      index += payloadSize;
+                      writeFirmwareSector(device, fw, characteristic, nextState);
+                    }, 0);
+                  }
                 })
                 .catch(err => {
                   console.log(`Could not send fw to ${device}: ${err}`);
@@ -704,9 +705,6 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .then(() => {
-                    this.ableToSend = true;
-                  })
                   .catch(err => { });
               }
               break;
@@ -764,9 +762,6 @@ export class SmartDrive extends DeviceBase {
                     serviceUUID: SmartDrive.ServiceUUID,
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
-                  })
-                  .then(() => {
-                    this.ableToSend = true;
                   })
                   .catch(err => { });
               }
@@ -982,110 +977,41 @@ export class SmartDrive extends DeviceBase {
 
   // handlers
 
-  private stoppingNotify = false;
-  private stopNotifyCharacteristics(
+  private async stopNotifyCharacteristics(
     characteristics: Array<string>
   ): Promise<any> {
-    if (this.stoppingNotify)
-      return Promise.resolve('Already stopping notifying!');
-    else this.stoppingNotify = true;
     // console.log(`StopNotifying`);
-    const retry = (maxRetries, fn) => {
-      return fn().catch(err => {
-        if (maxRetries <= 0) {
-          throw err;
-        } else {
-          console.log(`RETRYING: ${err}, ${maxRetries}`);
-          return retry(maxRetries - 1, fn);
-        }
-      });
-    };
-    const retries = 3;
-    return characteristics
-      .reduce((p, characteristic) => {
-        return p.then(() => {
-          return retry(retries, () => {
-            return new Promise((resolve, reject) => {
-              timer.setTimeout(() => {
-                // console.log(`Stop Notifying ${characteristic}`);
-                this._bluetoothService
-                  .stopNotifying({
-                    peripheralUUID: this.address,
-                    serviceUUID: SmartDrive.ServiceUUID,
-                    characteristicUUID: characteristic.toUpperCase(),
-                    onNotify: this.handleNotify.bind(this)
-                  })
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    // if we failed we probably stopped anyway
-                    resolve(err);
-                  });
-              }, 250);
-            });
-          });
+    try {
+      for (const c of characteristics) {
+        await this._bluetoothService.stopNotifying({
+          peripheralUUID: this.address,
+          serviceUUID: SmartDrive.ServiceUUID,
+          characteristicUUID: c.toUpperCase()
         });
-      }, Promise.resolve())
-      .then(() => {
-        this.stoppingNotify = false;
-      });
+      }
+    } catch (err) {
+      // console.error('could not stop notifying:', err);
+    }
   }
 
-  private startingNotify = false;
-  private startNotifyCharacteristics(
-    characteristics: Array<string>
-  ): Promise<any> {
-    if (this.startingNotify)
-      return Promise.reject('Already started notifying!');
-    else this.startingNotify = true;
-    // console.log(`StartNotifying`);
-    const retry = (maxRetries, fn) => {
-      return fn().catch(err => {
-        if (err.includes('peripheral is disconnected')) {
-          // can't notify a disconnected peripheral
-          throw err;
-        } else {
-          if (maxRetries <= 0) {
-            throw err;
-          } else {
-            console.log(`RETRYING: ${err}, ${maxRetries}`);
-            return retry(maxRetries - 1, fn);
-          }
-        }
-      });
-    };
-    return characteristics
-      .reduce((p, characteristic) => {
-        return p.then(() => {
-          return retry(3, () => {
-            return new Promise((resolve, reject) => {
-              timer.setTimeout(() => {
-                // console.log(`Start Notifying ${characteristic}`);
-                this._bluetoothService
-                  .startNotifying({
-                    peripheralUUID: this.address,
-                    serviceUUID: SmartDrive.ServiceUUID,
-                    characteristicUUID: characteristic.toUpperCase(),
-                    onNotify: this.handleNotify.bind(this)
-                  })
-                  .then(() => {
-                    resolve();
-                  })
-                  .catch(err => {
-                    reject(err);
-                  });
-              }, 250);
-            });
-          });
+  private async startNotifyCharacteristics(characteristics: Array<string>): Promise<any> {
+    console.log(`StartNotifying`);
+    try {
+      for (const c of characteristics) {
+        await this._bluetoothService.startNotifying({
+          peripheralUUID: this.address,
+          serviceUUID: SmartDrive.ServiceUUID,
+          characteristicUUID: c.toUpperCase(),
+          onNotify: this.handleNotify.bind(this)
         });
-      }, Promise.resolve())
-      .then(() => {
-        this.startingNotify = false;
-      })
-      .catch(() => {
-        this.startingNotify = false;
-      });
+      }
+      this.sendEvent(SmartDrive.smartdrive_connect_event);
+    } catch (err) {
+      console.error('could not start notifying:', err);
+      setTimeout(() => {
+        this.startNotifyCharacteristics(characteristics);
+      }, 100);
+    }
   }
 
   public connect() {
@@ -1139,17 +1065,15 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public handleConnect(data?: any) {
+  public async handleConnect(data?: any) {
     // update state
     this.connected = true;
     this.notifying = false;
     this.ableToSend = false;
     // now that we're connected, subscribe to the characteristics
-    this.startNotifyCharacteristics(SmartDrive.Characteristics)
-      .then(() => {
-        this.sendEvent(SmartDrive.smartdrive_connect_event);
-      })
-      .catch(err => { });
+    try {
+      await this.startNotifyCharacteristics(SmartDrive.Characteristics);
+    } catch (err) { }
   }
 
   public handleDisconnect() {

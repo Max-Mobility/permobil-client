@@ -14,6 +14,8 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
+import { SmartDrive } from '~/app/models';
+const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
   selector: 'profile-settings',
@@ -54,8 +56,9 @@ export class ProfileSettingsComponent implements OnInit {
   isUserEditingSetting: boolean = false;
 
   private _debouncedCommitSettingsFunction: any = null;
-
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
+
+  private smartDrive: SmartDrive = undefined;
 
   constructor(
     public settingsService: SettingsService,
@@ -63,7 +66,8 @@ export class ProfileSettingsComponent implements OnInit {
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService,
-    private _params: ModalDialogParams
+    private _params: ModalDialogParams,
+    private _bluetoothService: BluetoothService
   ) {
     this._page.actionBarHidden = true;
 
@@ -98,6 +102,7 @@ export class ProfileSettingsComponent implements OnInit {
     ];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
+    // this.scanForSmartDrive();
   }
 
   getUser() {
@@ -107,9 +112,33 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  async scanForSmartDrive() {
+    if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
+      await this._bluetoothService.scanForSmartDrive(10).then(() => {
+        const drives = BluetoothService.SmartDrives;
+        if (drives.length === 0) {
+          dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+        }
+        else if (drives.length > 1) {
+          dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+          return;
+        }
+        else {
+          drives.map(async drive => {
+            this.smartDrive = drive;
+            await this.smartDrive.connect();
+            Log.D('Connected to SmartDrive', this.smartDrive.address);
+          });
+        }
+      });
+    }
+  }
+
   closeModal() {
     Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
+    if (this.smartDrive)
+      this.smartDrive.disconnect();
   }
 
   onSliderValueChange(args: any) {
@@ -290,39 +319,89 @@ export class ProfileSettingsComponent implements OnInit {
 
     this.settingsService.saveToFileSystem();
 
-    // When configuration is PushTracker, commit settings changes
-    // to any connected PushTracker. The PushTracker, being master,
-    // will then communicate these settings changes to the
-    // connected SmartDrive.
-    const pts = BluetoothService.PushTrackers.filter(p => p.connected);
-    if (pts && pts.length > 0) {
-      Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
-      actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
-      await pts.map(async pt => {
-        try {
-          await pt.sendSettingsObject(this.settingsService.settings);
-          await pt.sendSwitchControlSettingsObject(
-            this.settingsService.switchControlSettings
-          );
-          actionbar.updateWatchIcon({ data: PushTrackerState.connected });
-        } catch (err) {
-          // Show watch icon 'X'
-          actionbar.updateWatchIcon({ data: PushTrackerState.disconnected });
-          this._logService.logException(err);
+    if (this.user) {
+      if (this.user.data.control_configuration === 'PushTracker with SmartDrive') {
+        // When configuration is PushTracker, commit settings changes
+        // to any connected PushTracker. The PushTracker, being master,
+        // will then communicate these settings changes to the
+        // connected SmartDrive.
+        const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+        if (pts && pts.length > 0) {
+          Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
+          actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
+          await pts.map(async pt => {
+            try {
+              await pt.sendSettingsObject(this.settingsService.settings);
+              await pt.sendSwitchControlSettingsObject(
+                this.settingsService.switchControlSettings
+              );
+              actionbar.updateWatchIcon({ data: PushTrackerState.connected });
+            } catch (err) {
+              // Show watch icon 'X'
+              actionbar.updateWatchIcon({ data: PushTrackerState.disconnected });
+              this._logService.logException(err);
+            }
+          });
+        } else {
+          Log.D('no pushtrackers!');
         }
-      });
-    } else {
-      Log.D('no pushtrackers!');
-    }
+      }
+      else if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
+        // When the control configuration is set to 'Switch Control with SmartDrive'
+        // there is no PushTracker. The mobile phone is the "master" in this scenario.
+        // Directly commit changes to the SmartDrive from the phone
+        // This requires that we first use the BluetoothService to search for nearby
+        // SmartDrives. Then, if we're only connected to one SmartDrive - great! Commit changes
+        // If more than one SmartDrive is connected, show a warning alert dialog box and
+        // tell the user that the settings changes have not been committed on the SmartDrive.
+        // If no SmartDrives are detected, then too show a warning alert dialog box.
+        if (this.smartDrive && this.smartDrive.ableToSend) {
+          try {
+            await this.smartDrive.sendSettingsObject(this.settingsService.settings);
+            await this.smartDrive.sendSwitchControlSettingsObject(
+              this.settingsService.switchControlSettings);
+            Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
+          } catch (err) {
+            Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
+            Log.D(err);
+            this._logService.logException(err);
+          }
+        }
+        else {
+          const self = this;
+          dialogs.confirm({
+            title: this._translateService.instant(
+              'settings-component.no-smartdrive-title'
+            ),
+            message: this._translateService.instant(
+              'settings-component.no-smartdrive-message'
+            ),
+            okButtonText: this._translateService.instant('settings-component.scan-again'),
+            cancelable: true,
+            cancelButtonText: this._translateService.instant('dialogs.cancel')
+          }).then((result: boolean) => {
+            if (result === true) {
+              // user wants to scan again for SmartDrives
+              this.scanForSmartDrive().then(async () => {
+                if (self.smartDrive) {
+                  try {
+                    await self.smartDrive.sendSettingsObject(self.settingsService.settings);
+                    await self.smartDrive.sendSwitchControlSettingsObject(
+                      self.settingsService.switchControlSettings);
+                    Log.D('Settings successfully commited to SmartDrive', self.smartDrive.address);
+                  } catch (err) {
+                    Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
+                    Log.D(err);
+                    self._logService.logException(err);
+                  }
+                }
+              });
+            }
+          });
 
-    // When the control configuration is set to 'Switch Control with SmartDrive'
-    // there is no PushTracker. The mobile phone is the "master" in this scenario.
-    // Directly commit changes to the SmartDrive from the phone
-    // This requires that we first use the BluetoothService to search for nearby
-    // SmartDrives. Then, if we're only connected to one SmartDrive - great! Commit changes
-    // If more than one SmartDrive is connected, show a warning alert dialog box and
-    // tell the user that the settings changes have not been committed on the SmartDrive.
-    // If no SmartDrives are detected, then too show a warning alert dialog box.
+        }
+      }
+    }
 
     try {
       await this.settingsService.save();
