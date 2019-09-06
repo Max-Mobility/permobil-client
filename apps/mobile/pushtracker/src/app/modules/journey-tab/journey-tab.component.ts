@@ -102,6 +102,9 @@ export class JourneyTabComponent implements OnInit {
   }
 
   private _refresh() {
+    this._noMorePushTrackerActivityDataAvailable = false;
+    this._noMoreSmartDriveUsageDataAvailable = false;
+    this._noMoreDataAvailable = false;
     this.journeyItemsLoaded = false;
     this._today = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._today);
