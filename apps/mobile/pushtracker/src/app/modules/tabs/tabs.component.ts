@@ -14,7 +14,8 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, PushTrackerUserService, SettingsService } from '../../services';
+import { BluetoothService, PushTrackerUserService, SettingsService, ActivityService } from '../../services';
+import throttle from 'lodash/throttle';
 
 @Component({
   moduleId: module.id,
@@ -41,8 +42,10 @@ export class TabsComponent {
 
   bluetoothAdvertised: boolean = false;
   user: PushTrackerUser;
+  private _throttledOnDailyInfoEvent: any = null;
 
   constructor(
+    private _activityService: ActivityService,
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
     private _bluetoothService: BluetoothService,
@@ -69,6 +72,13 @@ export class TabsComponent {
       iconSource: AppResourceIcons.PROFILE_INACTIVE,
       textTransform: 'capitalize'
     };
+
+    // Run every minute
+    this._throttledOnDailyInfoEvent = throttle(this.onDailyInfoEvent, 60000, {
+      leading: true,
+      trailing: true
+    });
+
   }
 
   onRootTabViewLoaded() {
@@ -285,7 +295,7 @@ export class TabsComponent {
     this.snackbar.simple(msg);
     pt.on(
       PushTracker.daily_info_event,
-      this.onDailyInfoEvent,
+      this._throttledOnDailyInfoEvent,
       this
     );
   }
@@ -328,6 +338,7 @@ export class TabsComponent {
     };
     Log.D('DailyInfo', data);
     Log.D('DailyActivity', dailyActivity);
+    this._activityService.saveDailyActivityFromPushTracker(dailyActivity);
   }
 
   private onPushTrackerDisconnected(args: any) {

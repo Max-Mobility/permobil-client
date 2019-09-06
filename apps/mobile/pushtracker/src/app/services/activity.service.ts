@@ -17,6 +17,42 @@ export class ActivityService {
     this.datastore.sync();
   }
 
+  async saveDailyActivityFromPushTracker(dailyActivity: any): Promise<boolean> {
+    try {
+      await this.login();
+      await this.datastore.sync();
+      const query = new KinveyQuery();
+
+      // configure the query to search for only activity that was
+      // saved by this user, and to get only the most recent activity
+      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      query.equalTo('date', dailyActivity.date);
+      query.equalTo('data_type', 'DailyActivity');
+
+      // Run a .find first to get the _id of the daily activity
+      {
+        const stream = this.datastore.find(query);
+        const data = await stream.toPromise();
+        if (data && data.length) {
+          const id = data[0]._id;
+          dailyActivity._id = id;
+        }
+        const promise = this.datastore.save(dailyActivity)
+          .then(function onSuccess(entity) {
+            console.log('Success. Upserted', entity);
+            return true;
+          }).catch(function onError(error) {
+            this._logService.logException(error);
+            return false;
+          });
+      }
+
+    } catch (err) {
+      this._logService.logException(err);
+      return false;
+    }
+  }
+
   async loadDailyActivity(date: Date): Promise<boolean> {
     try {
       await this.login();
