@@ -52,6 +52,9 @@ export class JourneyTabComponent implements OnInit {
   public showLoadingIndicator: boolean = false;
   public debouncedRefresh: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
+  private _noMorePushTrackerActivityDataAvailable = false;
+  private _noMoreSmartDriveUsageDataAvailable = false;
+  private _noMoreDataAvailable = false;
 
   constructor(
     private _logService: LoggingService,
@@ -111,11 +114,33 @@ export class JourneyTabComponent implements OnInit {
   }
 
   async _loadDataForDate(date: Date, reset: boolean = false) {
-    return this._loadWeeklyPushtrackerActivity(date).then(() => {
-      this._loadWeeklySmartDriveUsage(date).then(() => {
-        this._processJourneyMap(date, reset);
+
+    // Check if there's any more PushTracker WeeklyActivity available to load
+    if (!this._noMorePushTrackerActivityDataAvailable) {
+      return this._loadWeeklyPushtrackerActivity(date).then((ptResult) => {
+        this._noMorePushTrackerActivityDataAvailable = !ptResult;
+
+        // Check if there's any more SmartDrive WeeklyInfo usage data available to load
+        if (!this._noMoreSmartDriveUsageDataAvailable) {
+          this._loadWeeklySmartDriveUsage(date).then((sdResult) => {
+            this._noMoreSmartDriveUsageDataAvailable = !sdResult;
+            this._processJourneyMap(date, reset);
+          });
+        }
+
       });
-    });
+    } else if (!this._noMoreSmartDriveUsageDataAvailable) {
+        // No PushTracker activity data available
+        // Just check SmartDrive WeeklyInfo usage data  
+        this._loadWeeklySmartDriveUsage(date).then((result) => {
+          this._noMoreSmartDriveUsageDataAvailable = !result;
+          this._processJourneyMap(date, reset);
+        });
+    } else {
+      // No data available
+      this._noMoreDataAvailable = true;
+      Log.D('No more data available in the database', this._rollingWeekStart);
+    }
   }
 
   closeJourneyDetailsLayout() {
@@ -510,6 +535,7 @@ export class JourneyTabComponent implements OnInit {
   }
 
   onLoadMoreItems(args: ItemEventData) {
+    if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
     Log.D('Loading journey records for week of ' + this._rollingWeekStart);
