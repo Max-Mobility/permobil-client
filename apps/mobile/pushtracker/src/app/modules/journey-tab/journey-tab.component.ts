@@ -131,7 +131,7 @@ export class JourneyTabComponent implements OnInit {
       });
     } else if (!this._noMoreSmartDriveUsageDataAvailable) {
         // No PushTracker activity data available
-        // Just check SmartDrive WeeklyInfo usage data  
+        // Just check SmartDrive WeeklyInfo usage data
         this._loadWeeklySmartDriveUsage(date).then((result) => {
           this._noMoreSmartDriveUsageDataAvailable = !result;
           this._processJourneyMap(date, reset);
