@@ -6,7 +6,10 @@
     }
   },
   "main": "app.js",
-  "scripts": {},
+  "scripts": {
+    "scss-b": "node-sass --watch ./app/scss -o ./app/scss",
+    "scss": "node-sass ./app/scss -o ./app/scss"
+  },
   "dependencies": {
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@permobil/core": "file:../../../@permobil/core",
