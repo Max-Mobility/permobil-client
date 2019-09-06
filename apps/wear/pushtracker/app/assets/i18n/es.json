@@ -1,0 +1,154 @@
+{
+	"about": {
+		"database": "ID de base de datos",
+		"title": "información",
+		"version": "Version de aplicacion",
+		"watch-serial-number": "Número de serie de TicWatch"
+	},
+	"buttons": {
+		"back": "atrás",
+		"dismiss": "Despedir",
+		"ok": "De acuerdo"
+	},
+	"charts": {
+		"coast": {
+			"title": "Hora (s) diaria de la costa"
+		},
+		"distance": {
+			"title": "Distancia diaria recorrida"
+		}
+	},
+	"failures": {
+		"connect": "No pudo conectarse a",
+		"must-wear-watch": "Debe usar el dispositivo para controlar su SmartDrive.",
+		"permissions": "Los permisos requeridos no fueron otorgados!",
+		"saving-activity": "Error al guardar la actividad",
+		"scan": "No se pudo escanear",
+		"title": "Fracaso"
+	},
+	"goals": {
+		"coast": {
+			"units": "Segundos"
+		},
+		"distance": {
+			"english": "millas",
+			"metric": "Kilómetros"
+		}
+	},
+	"information": "información",
+	"languages": {
+		"da": "danés",
+		"de": "alemán",
+		"en": "Inglés",
+		"es": "español",
+		"fr": "francés",
+		"it": "italiano",
+		"ja": "japonés",
+		"ko": "coreano",
+		"nb": "Noruego (Bokmål)",
+		"nl": "holandés",
+		"nn": "Noruego (nynorsk)",
+		"zh": "Chino tradicional)"
+	},
+	"menu": {
+		"about": "Acerca de",
+		"profile": "Perfil",
+		"title": "menú"
+	},
+	"permissions-reasons": {
+		"coarse-location": "Para controlar su SmartDrive usando bluetooth, necesitamos el permiso ACCESS_COARSE_LOCATION.",
+		"phone-state": "Para leer el número de serie de su dispositivo (para fines de garantía / soporte) necesitamos el permiso READ_PHONE_STATE."
+	},
+	"permissions-request": {
+		"title": "Solicitud de permisos"
+	},
+	"profile": "Perfil",
+	"pushes": {
+		"units": "empuja"
+	},
+	"settings": {
+		"chairmake": {
+			"description": "",
+			"title": "Hacer silla",
+			"values": {
+				"colours": "Colores",
+				"invacare": "Invacare / Küschall",
+				"karman": "Karman",
+				"ki": "Ki",
+				"motion-composites": "Composites de movimiento",
+				"other": "otro",
+				"panthera": "Pantera",
+				"quickie": "Quickie / Sopur / RGK",
+				"tilite": "TiLite",
+				"top-end": "Extremo superior"
+			}
+		},
+		"chairtype": {
+			"description": "",
+			"title": "Tipo de silla",
+			"values": {
+				"folding": "Marco plegable",
+				"other": "otro",
+				"pediatric": "Pedante",
+				"rigid": "Marco rígido"
+			}
+		},
+		"coastgoal": {
+			"description": "",
+			"title": "Gol de la costa",
+			"units": "s"
+		},
+		"connect-pushtracker": "Connect PushTracker Mobile App",
+		"distancegoal": {
+			"description": "",
+			"title": "Objetivo de distancia",
+			"units": {
+				"english": "mi",
+				"metric": "km"
+			}
+		},
+		"edit-profile": "Editar Perfil",
+		"height": {
+			"description": "",
+			"title": "Altura"
+		},
+		"information": "información",
+		"title": "Ajustes",
+		"units": {
+			"description": "",
+			"title": "Unidades",
+			"values": {
+				"english": "Inglés",
+				"metric": "Métrico"
+			}
+		},
+		"watchrequired": {
+			"description": "Cuando está habilitado, el reloj inteligente debe estar en la muñeca para detectar actividad.",
+			"title": "Verificar la muñeca",
+			"values": {
+				"disabled": "Discapacitado",
+				"enabled": "Habilitado"
+			}
+		},
+		"weight": {
+			"description": "",
+			"title": "Peso",
+			"units": {
+				"english": "libra",
+				"metric": "kg"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "mi",
+			"metric": "km"
+		},
+		"english": "Inglés",
+		"metric": "Métrico",
+		"speed": {
+			"english": "mph",
+			"metric": "kph"
+		}
+	}
+}

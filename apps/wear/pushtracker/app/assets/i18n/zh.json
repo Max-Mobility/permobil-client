@@ -1,0 +1,154 @@
+{
+	"about": {
+		"database": "數據庫ID",
+		"title": "信息",
+		"version": "應用版本",
+		"watch-serial-number": "TicWatch序列號"
+	},
+	"buttons": {
+		"back": "背部",
+		"dismiss": "解僱",
+		"ok": "好"
+	},
+	"charts": {
+		"coast": {
+			"title": "每日海岸時間"
+		},
+		"distance": {
+			"title": "每日行程距離"
+		}
+	},
+	"failures": {
+		"connect": "無法連接到",
+		"must-wear-watch": "您必須佩戴設備才能控制SmartDrive。",
+		"permissions": "未授予所需權限！",
+		"saving-activity": "保存活動失敗",
+		"scan": "無法掃描",
+		"title": "失敗"
+	},
+	"goals": {
+		"coast": {
+			"units": "秒"
+		},
+		"distance": {
+			"english": "英里",
+			"metric": "公里"
+		}
+	},
+	"information": "信息",
+	"languages": {
+		"da": "丹麥",
+		"de": "德語",
+		"en": "英語",
+		"es": "西班牙語",
+		"fr": "法國",
+		"it": "意大利",
+		"ja": "日本",
+		"ko": "朝鮮的",
+		"nb": "挪威語（Bokmål）",
+		"nl": "荷蘭人",
+		"nn": "挪威人（尼諾斯克）",
+		"zh": "中國傳統的）"
+	},
+	"menu": {
+		"about": "關於",
+		"profile": "輪廓",
+		"title": "菜單"
+	},
+	"permissions-reasons": {
+		"coarse-location": "要使用藍牙控制SmartDrive，我們需要ACCESS_COARSE_LOCATION權限。",
+		"phone-state": "要讀取設備序列號（出於保修/支持目的），我們需要READ_PHONE_STATE權限。"
+	},
+	"permissions-request": {
+		"title": "權限請求"
+	},
+	"profile": "輪廓",
+	"pushes": {
+		"units": "推"
+	},
+	"settings": {
+		"chairmake": {
+			"description": "",
+			"title": "椅子製作",
+			"values": {
+				"colours": "顏色",
+				"invacare": "Invacare /Küschall",
+				"karman": "卡門",
+				"ki": "文",
+				"motion-composites": "運動複合材料",
+				"other": "其他",
+				"panthera": "豹",
+				"quickie": "Quickie / Sopur / RGK",
+				"tilite": "TILITE",
+				"top-end": "高端"
+			}
+		},
+		"chairtype": {
+			"description": "",
+			"title": "椅子類型",
+			"values": {
+				"folding": "折疊框架",
+				"other": "其他",
+				"pediatric": "Pedatric",
+				"rigid": "剛架"
+			}
+		},
+		"coastgoal": {
+			"description": "",
+			"title": "海岸目標",
+			"units": "小號"
+		},
+		"connect-pushtracker": "連接PushTracker移動應用程序",
+		"distancegoal": {
+			"description": "",
+			"title": "距離目標",
+			"units": {
+				"english": "MI",
+				"metric": "千米"
+			}
+		},
+		"edit-profile": "編輯個人資料",
+		"height": {
+			"description": "",
+			"title": "高度"
+		},
+		"information": "信息",
+		"title": "設置",
+		"units": {
+			"description": "",
+			"title": "單位",
+			"values": {
+				"english": "英語",
+				"metric": "公"
+			}
+		},
+		"watchrequired": {
+			"description": "啟用後，智能手錶必須在手腕上才能檢測到活動。",
+			"title": "檢查手腕",
+			"values": {
+				"disabled": "殘",
+				"enabled": "啟用"
+			}
+		},
+		"weight": {
+			"description": "",
+			"title": "重量",
+			"units": {
+				"english": "磅",
+				"metric": "公斤"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "MI",
+			"metric": "千米"
+		},
+		"english": "英語",
+		"metric": "公",
+		"speed": {
+			"english": "英里",
+			"metric": "KPH"
+		}
+	}
+}
