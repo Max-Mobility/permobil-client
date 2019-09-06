@@ -289,6 +289,11 @@ export class ProfileSettingsComponent implements OnInit {
       .nativeElement as MockActionbarComponent;
 
     this.settingsService.saveToFileSystem();
+
+    // When configuration is PushTracker, commit settings changes
+    // to any connected PushTracker. The PushTracker, being master,
+    // will then communicate these settings changes to the
+    // connected SmartDrive.
     const pts = BluetoothService.PushTrackers.filter(p => p.connected);
     if (pts && pts.length > 0) {
       Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
@@ -309,6 +314,16 @@ export class ProfileSettingsComponent implements OnInit {
     } else {
       Log.D('no pushtrackers!');
     }
+
+    // When the control configuration is set to 'Switch Control with SmartDrive'
+    // there is no PushTracker. The mobile phone is the "master" in this scenario.
+    // Directly commit changes to the SmartDrive from the phone
+    // This requires that we first use the BluetoothService to search for nearby
+    // SmartDrives. Then, if we're only connected to one SmartDrive - great! Commit changes
+    // If more than one SmartDrive is connected, show a warning alert dialog box and
+    // tell the user that the settings changes have not been committed on the SmartDrive.
+    // If no SmartDrives are detected, then too show a warning alert dialog box.
+
     try {
       await this.settingsService.save();
     } catch (error) {
