@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="__PACKAGE__">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="__PACKAGE__">
 
   <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true"/>
 
@@ -29,6 +31,7 @@
   <uses-feature android:name="android.hardware.type.watch" android:required="true" />
 
   <application
+      tools:replace="android:label"
       android:name="com.tns.NativeScriptApplication"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
