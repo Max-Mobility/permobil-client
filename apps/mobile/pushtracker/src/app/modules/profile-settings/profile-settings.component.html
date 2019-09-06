@@ -6,8 +6,10 @@
     [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"
     [controlConfiguration]="user.data.control_configuration"></MockActionBar>
 
+  <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="10%" width="10%" marginRight="10"
+    *ngIf="syncingWithSmartDrive" busy="true" color="#753bbd"></ActivityIndicator>
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*" *ngIf="!syncingWithSmartDrive">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
@@ -98,17 +100,21 @@
           textWrap="true"></Label>
       </StackLayout>
 
+      <StackLayout *ngIf="user.data.control_configuration === 'Switch Control with SmartDrive'" row="13" marginTop="10">
+        <Button (tap)="onSyncSettingsWithSmartDrive($event)" class="sync-button" width="70%" [text]="'settings-component.sync-button' | translate"></Button>
+      </StackLayout>
+
       // Display Section
-      <Label row="13" class="category" [text]="'general.display' | translate"></Label>
+      <Label row="14" class="category" [text]="'general.display' | translate"></Label>
 
       // Theme
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="14"
+      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="15"
         (tap)="onItemTap($event, 'theme')" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="15"
+      <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="16"
         (tap)="onItemTap($event, 'language')" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
