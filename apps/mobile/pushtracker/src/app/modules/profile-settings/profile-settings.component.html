@@ -102,9 +102,13 @@
       <StackLayout *ngIf="user.data.control_configuration === 'Switch Control with SmartDrive'" 
         row="13" marginTop="10">
         <StackLayout>
-          <ActivityIndicator row="0" horizontalAlignment="center" height="10%" width="10%"
-            *ngIf='syncingWithSmartDrive'
-            busy="true" color="#753bbd"></ActivityIndicator>
+          <GridLayout width="100%" columns="auto, *" *ngIf='syncingWithSmartDrive'>
+            <ActivityIndicator row="0" col="0" horizontalAlignment="right" height="10%" width="10%"
+              *ngIf='syncingWithSmartDrive' marginLeft="40"
+              busy="true" [color]="CURRENT_THEME === 'DEFAULT' ? '#00c1d5' : '#00c1d5'"></ActivityIndicator>
+            <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status"
+              row="0" col="1" [text]="syncState" *ngIf='syncingWithSmartDrive'></Label>
+          </GridLayout>
           <Button
             *ngIf='!syncingWithSmartDrive && !syncSuccessful'
             (tap)="onSyncSettingsWithSmartDrive($event)" 
