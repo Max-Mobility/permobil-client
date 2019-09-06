@@ -88,7 +88,7 @@
 
         // Distance Chart
         <wol:WearOsLayout>
-          <GridLayout rows="auto, auto, *" columns="*, auto">
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
             <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}"
                    class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
@@ -101,13 +101,13 @@
                 <FlexboxLayout justifyContent="space-between" flexDirection="row" />
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
-                <StackLayout class="chart-stack">
+                <GridLayout rows="*, auto" columns="auto" class="chart-stack">
                   <Label height="{{ value }}" class="distance-line"
                          visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
                   <Label height="100" class="distance-line" backgroundColor="black"
                          visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
-                  <Label text="{{ day }}" class="line-label" />
-                </StackLayout>
+                  <Label row="1" text="{{ day }}" class="line-label" />
+                </GridLayout>
               </Repeater.itemTemplate>
             </Repeater>
           </GridLayout>
@@ -115,7 +115,7 @@
 
         // Coast Chart
         <wol:WearOsLayout>
-          <GridLayout rows="auto, auto, *" columns="*, auto">
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
             // Chart Title
             <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}"
                    class="chart-title" textWrap="true" />
@@ -129,13 +129,13 @@
                 <FlexboxLayout justifyContent="space-between" flexDirection="row" />
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
-                <StackLayout class="chart-stack">
+                <GridLayout rows="*, auto" columns="auto" class="chart-stack">
                   <Label height="{{ value }}" class="coast-line"
                          visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
-                  <Label height="100" class="distance-line" backgroundColor="black"
+                  <Label height="100" class="coast-line" backgroundColor="black"
                          visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
-                  <Label text="{{ day }}" class="line-label" />
-                </StackLayout>
+                  <Label row="1" text="{{ day }}" class="line-label" />
+                </GridLayout>
               </Repeater.itemTemplate>
             </Repeater>
           </GridLayout>

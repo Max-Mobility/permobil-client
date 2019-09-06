@@ -1,0 +1,154 @@
+{
+	"about": {
+		"database": "Database-ID",
+		"title": "Informatie",
+		"version": "App versie",
+		"watch-serial-number": "TicWatch-serienummer"
+	},
+	"buttons": {
+		"back": "terug",
+		"dismiss": "ontslaan",
+		"ok": "OK"
+	},
+	"charts": {
+		"coast": {
+			"title": "Dagelijkse kusttijd (en)"
+		},
+		"distance": {
+			"title": "Dagelijkse afgelegde afstand"
+		}
+	},
+	"failures": {
+		"connect": "Kon geen verbinding maken met",
+		"must-wear-watch": "U moet het apparaat dragen om uw SmartDrive te bedienen.",
+		"permissions": "Vereiste rechten werden niet verleend!",
+		"saving-activity": "Opslaan van activiteit mislukt",
+		"scan": "Kon niet scannen",
+		"title": "Mislukking"
+	},
+	"goals": {
+		"coast": {
+			"units": "seconden"
+		},
+		"distance": {
+			"english": "Mijlen",
+			"metric": "kilometer"
+		}
+	},
+	"information": "Informatie",
+	"languages": {
+		"da": "Deens",
+		"de": "Duitse",
+		"en": "Engels",
+		"es": "Spaans",
+		"fr": "Frans",
+		"it": "Italiaans",
+		"ja": "Japans",
+		"ko": "Koreaans",
+		"nb": "Noors (Bokmål)",
+		"nl": "Nederlands",
+		"nn": "Noors (Nynorsk)",
+		"zh": "Chinese traditionele)"
+	},
+	"menu": {
+		"about": "Wat betreft",
+		"profile": "Profiel",
+		"title": "Menu"
+	},
+	"permissions-reasons": {
+		"coarse-location": "Om uw SmartDrive met bluetooth te kunnen bedienen, hebben we de toestemming ACCESS_COARSE_LOCATION nodig.",
+		"phone-state": "Om het serienummer van uw apparaat te lezen (voor garantie / ondersteuningsdoelen) hebben we de machtiging READ_PHONE_STATE nodig."
+	},
+	"permissions-request": {
+		"title": "Verzoek om toestemming"
+	},
+	"profile": "Profiel",
+	"pushes": {
+		"units": "duwt"
+	},
+	"settings": {
+		"chairmake": {
+			"description": "",
+			"title": "Stoel maken",
+			"values": {
+				"colours": "kleuren",
+				"invacare": "Invacare / Küschall",
+				"karman": "Karman",
+				"ki": "Ki",
+				"motion-composites": "Motion Composites",
+				"other": "Anders",
+				"panthera": "Panthera",
+				"quickie": "Quickie / Sopur / RGK",
+				"tilite": "TiLite",
+				"top-end": "De beste"
+			}
+		},
+		"chairtype": {
+			"description": "",
+			"title": "Stoel type",
+			"values": {
+				"folding": "Vouwframe",
+				"other": "Anders",
+				"pediatric": "Pedatric",
+				"rigid": "Stijf frame"
+			}
+		},
+		"coastgoal": {
+			"description": "",
+			"title": "Kustdoel",
+			"units": "s"
+		},
+		"connect-pushtracker": "Connect PushTracker mobiele app",
+		"distancegoal": {
+			"description": "",
+			"title": "Doel op afstand",
+			"units": {
+				"english": "Mi",
+				"metric": "km"
+			}
+		},
+		"edit-profile": "Bewerk profiel",
+		"height": {
+			"description": "",
+			"title": "Hoogte"
+		},
+		"information": "Informatie",
+		"title": "instellingen",
+		"units": {
+			"description": "",
+			"title": "eenheden",
+			"values": {
+				"english": "Engels",
+				"metric": "Metriek"
+			}
+		},
+		"watchrequired": {
+			"description": "Indien ingeschakeld, moet de smartwatch om de pols zijn om activiteit te detecteren.",
+			"title": "Controleer op pols",
+			"values": {
+				"disabled": "invalide",
+				"enabled": "Ingeschakeld"
+			}
+		},
+		"weight": {
+			"description": "",
+			"title": "Gewicht",
+			"units": {
+				"english": "pond",
+				"metric": "Kg"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "Mi",
+			"metric": "km"
+		},
+		"english": "Engels",
+		"metric": "Metriek",
+		"speed": {
+			"english": "mph",
+			"metric": "kph"
+		}
+	}
+}

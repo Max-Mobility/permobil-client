@@ -1760,7 +1760,7 @@ export class MainViewModel extends Observable {
       const batteryData = sdData.map(e => {
         return {
           day: this._format(new Date(e.date), 'dd'),
-          value: (e.battery * 100.0) / maxBattery
+          value: (e.battery * 100.0) / (maxBattery || 1)
         };
       });
       // this._sentryBreadCrumb('Highest Battery Value:', maxBattery);
@@ -1799,7 +1799,7 @@ export class MainViewModel extends Observable {
         return obj.value > max ? obj.value : max;
       }, 0.0);
       distanceData.map(data => {
-        data.value = (100.0 * data.value) / maxDist;
+        data.value = (100.0 * data.value) / (maxDist || 1);
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
       if (this.settings.units === 'Metric') {

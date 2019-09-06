@@ -741,7 +741,7 @@ export class MainViewModel extends Observable {
       const coastData = activityData.map(e => {
         return {
           day: this.format(new Date(e.date), 'dd'),
-          value: (e.coast_time_avg * 100.0) / maxCoast
+          value: (e.coast_time_avg * 100.0) / (maxCoast || 1)
         };
       });
       // Log.D('Highest Coast Value:', maxCoast);
@@ -1094,7 +1094,7 @@ export class MainViewModel extends Observable {
           const caseStart = d.distance_smartdrive_coast_start;
           const caseEnd = d.distance_smartdrive_coast;
           const distance = this.caseTicksToMiles(caseEnd - caseStart);
-          dayMap[d.date] = distance * 100.0 / maxDist;
+          dayMap[d.date] = distance * 100.0 / (maxDist || 1);
         });
         const distanceData = dates.map(d => {
           const dStr = this.format(new Date(d), 'YYYY/MM/DD');

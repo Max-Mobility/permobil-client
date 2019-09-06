@@ -1,0 +1,154 @@
+{
+	"about": {
+		"database": "Database ID",
+		"title": "Information",
+		"version": "App Version",
+		"watch-serial-number": "TicWatch serienummer"
+	},
+	"buttons": {
+		"back": "Tilbage",
+		"dismiss": "Afskedige",
+		"ok": "Okay"
+	},
+	"charts": {
+		"coast": {
+			"title": "Daglig kystid (er)"
+		},
+		"distance": {
+			"title": "Daglig rejse rejset"
+		}
+	},
+	"failures": {
+		"connect": "Kunne ikke oprette forbindelse til",
+		"must-wear-watch": "Du skal bære enheden for at styre din SmartDrive.",
+		"permissions": "Nødvendige tilladelser blev ikke givet!",
+		"saving-activity": "Gemt aktivitet ikke",
+		"scan": "Kunne ikke scanne",
+		"title": "Fiasko"
+	},
+	"goals": {
+		"coast": {
+			"units": "sekunder"
+		},
+		"distance": {
+			"english": "miles",
+			"metric": "kilometer"
+		}
+	},
+	"information": "Information",
+	"languages": {
+		"da": "dansk",
+		"de": "tysk",
+		"en": "engelsk",
+		"es": "spansk",
+		"fr": "fransk",
+		"it": "italiensk",
+		"ja": "japansk",
+		"ko": "Korean",
+		"nb": "Norsk (bokmål)",
+		"nl": "hollandske",
+		"nn": "Norsk (nynorsk)",
+		"zh": "Kinesisk (traditionel)"
+	},
+	"menu": {
+		"about": "Om",
+		"profile": "Profil",
+		"title": "Menu"
+	},
+	"permissions-reasons": {
+		"coarse-location": "For at styre din SmartDrive ved hjælp af bluetooth har vi brug for ACCESS_COARSE_LOCATION tilladelse.",
+		"phone-state": "For at læse serienummeret til din enhed (for garanti / support) har vi brug for READ_PHONE_STATE tilladelsen."
+	},
+	"permissions-request": {
+		"title": "Tilladelsesanmodning"
+	},
+	"profile": "Profil",
+	"pushes": {
+		"units": "skubber"
+	},
+	"settings": {
+		"chairmake": {
+			"description": "",
+			"title": "Stol Make",
+			"values": {
+				"colours": "Farver",
+				"invacare": "Invacare / Küschall",
+				"karman": "Karman",
+				"ki": "ki",
+				"motion-composites": "Bevægelseskompositter",
+				"other": "Andet",
+				"panthera": "Panthera",
+				"quickie": "Quickie / Sopur / RGK",
+				"tilite": "TiLite",
+				"top-end": "Øverste ende"
+			}
+		},
+		"chairtype": {
+			"description": "",
+			"title": "Stoltype",
+			"values": {
+				"folding": "Sammenklappelig ramme",
+				"other": "Andet",
+				"pediatric": "Pedatric",
+				"rigid": "Stiv ramme"
+			}
+		},
+		"coastgoal": {
+			"description": "",
+			"title": "Kystmål",
+			"units": "S"
+		},
+		"connect-pushtracker": "Tilslut PushTracker mobilapp",
+		"distancegoal": {
+			"description": "",
+			"title": "Afstandsmål",
+			"units": {
+				"english": "mi",
+				"metric": "km"
+			}
+		},
+		"edit-profile": "Rediger profil",
+		"height": {
+			"description": "",
+			"title": "Højde"
+		},
+		"information": "Information",
+		"title": "INDSTILLINGER",
+		"units": {
+			"description": "",
+			"title": "enheder",
+			"values": {
+				"english": "engelsk",
+				"metric": "metric"
+			}
+		},
+		"watchrequired": {
+			"description": "Når det er aktiveret, skal smartwatch være på håndleddet for at registrere aktivitet.",
+			"title": "Kontroller for håndleddet",
+			"values": {
+				"disabled": "handicappet",
+				"enabled": "Aktiveret"
+			}
+		},
+		"weight": {
+			"description": "",
+			"title": "Vægt",
+			"units": {
+				"english": "Ib",
+				"metric": "kg"
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "mi",
+			"metric": "km"
+		},
+		"english": "engelsk",
+		"metric": "metric",
+		"speed": {
+			"english": "mph",
+			"metric": "km i timen"
+		}
+	}
+}
