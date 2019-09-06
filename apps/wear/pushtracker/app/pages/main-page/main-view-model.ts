@@ -330,7 +330,7 @@ export class MainViewModel extends Observable {
         .query(
           com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
           null, null, null, null);
-      if (cursor.moveToFirst()) {
+      if (cursor && cursor.moveToFirst()) {
         // there is data
         const serialized = cursor.getString(1);
         const data = JSON.parse(serialized);
