@@ -1003,9 +1003,10 @@ export class MainViewModel extends Observable {
     let authorization = null;
     let userId = null;
     try {
-      const authCursor = ad
+      const contentResolver = ad
         .getApplicationContext()
-        .getContentResolver()
+        .getContentResolver();
+      const authCursor = contentResolver
         .query(
           com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_URI,
           null, null, null, null);
@@ -1014,14 +1015,16 @@ export class MainViewModel extends Observable {
         const token = authCursor.getString(
           com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
         );
+        authCursor.close();
+        Log.D('Got token:', token);
         if (token !== null && token.length) {
           // we have a valid token
           authorization = token;
         }
+      } else {
+        Log.E('Could not get authCursor to move to first:', authCursor);
       }
-      const idCursor = ad
-        .getApplicationContext()
-        .getContentResolver()
+      const idCursor = contentResolver
         .query(
           com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_URI,
           null, null, null, null);
@@ -1030,12 +1033,17 @@ export class MainViewModel extends Observable {
         const uid = idCursor.getString(
           com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
         );
+        idCursor.close();
+        Log.D('Got uid:', uid);
         if (uid !== null && uid.length) {
           // we have a valid token
           userId = uid;
         }
+      } else {
+        Log.E('Could not get idCursor to move to first:', idCursor);
       }
     } catch (err) {
+      Log.E('error getting auth:', err);
     }
     if (authorization === null || userId === null) {
       // if the user has not configured this app with the PushTracker
@@ -1059,10 +1067,12 @@ export class MainViewModel extends Observable {
     if (!this._kinveyService.hasAuth()) {
       const validAuth = await this.updateAuthorization();
       if (!validAuth) {
+        Log.E('authorization invalid!');
         // we still don't have valid authorization, don't send any
         // data
         return;
       }
+      Log.D('Got valid authorization!');
     }
     // this._sentryBreadCrumb('Network available - sending errors');
     await this.sendErrorsToServer(10);

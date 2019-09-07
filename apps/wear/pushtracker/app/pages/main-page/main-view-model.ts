@@ -335,6 +335,7 @@ export class MainViewModel extends Observable {
         const serialized = cursor.getString(
           com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
         );
+        cursor.close();
         const data = JSON.parse(serialized);
         // distances provided are always in miles
         if (data[today]) {

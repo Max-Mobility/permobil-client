@@ -124,7 +124,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       uuid = TYPE_USAGE_UUID;
     } else if (type.equals(TYPE_AUTHORIZATION_TOKEN)) {
       uuid = TYPE_AUTHORIZATION_TOKEN_UUID;
-    } else if (type.equals(TYPE_USER_ID_UUID)) {
+    } else if (type.equals(TYPE_USER_ID)) {
       uuid = TYPE_USER_ID_UUID;
     }
     return uuid;

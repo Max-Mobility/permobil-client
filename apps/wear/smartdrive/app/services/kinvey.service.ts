@@ -52,11 +52,17 @@ export class KinveyService {
     try {
       // see if we can get the user info
       const userInfo = await this.getUserInfo(newAuth, userId);
+      // console.log('got user info:', JSON.stringify(userInfo, null, 2));
+      const statusCode = userInfo && userInfo.statusCode;
+      if (statusCode !== 200) {
+        throw statusCode;
+      }
       // if we do then set the auth / id accordingly
       this._auth = newAuth;
       this._userId = userId;
       return true;
     } catch (err) {
+      console.error('error getting user info', err);
       // reset to null if login failed
       this._auth = null;
       this._userId = null;
@@ -80,12 +86,11 @@ export class KinveyService {
       KinveyService.api_base +
       KinveyService.api_user_route +
       KinveyService.api_app_key +
-      `${userId}`;
+      `/${userId}`;
     return request({
       url: url,
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: auth
       }
     });
