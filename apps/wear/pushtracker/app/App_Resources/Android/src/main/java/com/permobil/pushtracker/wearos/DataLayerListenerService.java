@@ -62,12 +62,23 @@ public class DataLayerListenerService extends WearableListenerService {
   public void onMessageReceived(MessageEvent messageEvent) {
     Log.d(TAG, "onMessageReceived: " + messageEvent);
     Log.d(TAG, "Message Path: " + messageEvent.getData().toString());
-    Log.d(TAG, "Message: " + new String(messageEvent.getData()));
+    String message = new String(messageEvent.getData());
+    Log.d(TAG, "Message: " + message);
 
     String token = "";
     String userId = "";
-    // TODO: get authorization (parse into token / user id from
-    // string or depending on path)
+    // get authorization (parse into token / user id from string or
+    // depending on path) - right now we're just parsing a string of
+    // the form: "${auth token}:${user id}", but we should send them
+    // to different paths in case the auth token can have ':' in it...
+    String[] parts = message.split(":", 0);
+    if (parts.length != 2) {
+      Log.e(TAG, "Error, bad auth received!");
+      return;
+    }
+    token = parts[0];
+    userId = parts[1];
+    Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
 
     // write token to content provider for smartdrive wear
     ContentValues tokenValue = new ContentValues();

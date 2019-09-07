@@ -899,12 +899,22 @@ export class ProfileTabComponent {
     this.sendMessage();
   }
 
+  getSerializedAuth() {
+    // get user
+    const user = KinveyUser.getActiveUser();
+    const id = user._id;
+    const token = user._kmd.authtoken;
+    // Log.D('user:', JSON.stringify(user, null, 2));
+    Log.D('user id:', id);
+    Log.D('user token:', token);
+    return `Kinvey ${token}:${id}`;
+  }
+
   sendData() {
     // testing communications wearos
     const l = new com.github.maxmobility.wearmessage.Data(android.context);
     // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-    console.dir(l);
-    l.sendData('This is great!');
+    l.sendData(this.getSerializedAuth());
     Log.D('Data sent');
   }
 
@@ -912,8 +922,7 @@ export class ProfileTabComponent {
     // testing communications wearos
     const r = new com.github.maxmobility.wearmessage.Message(android.context);
     // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-    console.dir(r);
-    r.sendMessage('/app-message', 'This is great!');
+    r.sendMessage('/app-message', this.getSerializedAuth());
     Log.D('Message sent');
   }
 
