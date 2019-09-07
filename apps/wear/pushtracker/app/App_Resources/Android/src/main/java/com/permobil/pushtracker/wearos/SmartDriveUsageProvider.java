@@ -10,13 +10,20 @@ public class SmartDriveUsageProvider {
    */
   public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-  /*
-   * Database related stuff:
-   */
-  public static final String TABLE_NAME = "DailyUsage";
+  public static final String TYPE_USAGE = "UsageRecord";
+  public static final String TYPE_AUTHORIZATION_TOKEN = "AuthorizationToken";
+  public static final String TYPE_USER_ID = "UserId";
 
   /* The base CONTENT_URI used to query the Usage table from the content provider */
-  public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
-    .appendPath(TABLE_NAME)
+  public static final Uri USAGE_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USAGE)
+    .build();
+
+  public static final Uri AUTHORIZATION_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_AUTHORIZATION_TOKEN)
+    .build();
+
+  public static final Uri USER_ID_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USER_ID)
     .build();
 }
