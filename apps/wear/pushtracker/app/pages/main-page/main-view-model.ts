@@ -333,7 +333,7 @@ export class MainViewModel extends Observable {
       if (cursor && cursor.moveToFirst()) {
         // there is data
         const serialized = cursor.getString(
-          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.DATA_INDEX
+          com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
         );
         const data = JSON.parse(serialized);
         // distances provided are always in miles

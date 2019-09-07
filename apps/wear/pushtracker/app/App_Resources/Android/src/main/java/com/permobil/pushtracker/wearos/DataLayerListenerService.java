@@ -17,6 +17,7 @@
 package com.permobil.pushtracker;
 
 import android.content.Intent;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
 
@@ -33,25 +34,57 @@ import com.google.android.gms.wearable.DataMapItem;
 /** Listens to DataItems and Messages from the local node. */
 public class DataLayerListenerService extends WearableListenerService {
 
-    private static final String TAG = "DataLayerService";
+  private static final String TAG = "DataLayerService";
 
-    private static final String START_ACTIVITY_PATH = "/activity";
-    private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
+  private static final String START_ACTIVITY_PATH = "/activity";
+  private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
 
-    public static final String APP_DATA_PATH = "/app-data";
-    public static final String APP_DATA_KEY = "app-data";
-    public static final String WEAR_DATA_PATH = "/wear-data";
-    public static final String WEAR_DATA_KEY = "wear-data";
+  public static final String APP_DATA_PATH = "/app-data";
+  public static final String APP_DATA_KEY = "app-data";
+  public static final String WEAR_DATA_PATH = "/wear-data";
+  public static final String WEAR_DATA_KEY = "wear-data";
 
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.d(TAG, "onDataChanged: " + dataEvents);
-    }
+  private Datastore datastore;
 
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        Log.d(TAG, "onMessageReceived: " + messageEvent);
-        Log.d(TAG, "Message Path: " + messageEvent.getData().toString());
-        Log.d(TAG, "Message: " + new String(messageEvent.getData()));
-    }
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    Log.d(TAG, "onCreate()");
+    datastore = new Datastore(this);
+  }
+
+  @Override
+  public void onDataChanged(DataEventBuffer dataEvents) {
+    Log.d(TAG, "onDataChanged: " + dataEvents);
+  }
+
+  @Override
+  public void onMessageReceived(MessageEvent messageEvent) {
+    Log.d(TAG, "onMessageReceived: " + messageEvent);
+    Log.d(TAG, "Message Path: " + messageEvent.getData().toString());
+    Log.d(TAG, "Message: " + new String(messageEvent.getData()));
+
+    String token = "";
+    String userId = "";
+    // TODO: get authorization (parse into token / user id from
+    // string or depending on path)
+
+    // write token to content provider for smartdrive wear
+    ContentValues tokenValue = new ContentValues();
+    tokenValue.put("data", token);
+    getContentResolver()
+      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI, tokenValue);
+
+    // write token to app settings for pushtracker wear
+    datastore.setAuthorization(token);
+
+    // write user id to content provider for smartdrive wear
+    ContentValues userValue = new ContentValues();
+    userValue.put("data", userId);
+    getContentResolver()
+      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI, userValue);
+
+    // write user id to app settings for pushtracker wear
+    datastore.setUserId(userId);
+  }
 }

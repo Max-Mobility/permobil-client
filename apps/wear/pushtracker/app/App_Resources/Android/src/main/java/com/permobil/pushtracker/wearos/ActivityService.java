@@ -279,7 +279,14 @@ public class ActivityService
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
     if (numUnsent == 0 || mKinveyAuthorization == null) {
-      return;
+      String token = datastore.getAuthorization();
+      if (token == null || token.isEmpty()) {
+        // we have still not gotten the token, so don't send anything
+        // to the database
+        return;
+      }
+      // we have gotten the token, save it so we can use it!
+      mKinveyAuthorization = token;
     }
     // we have data to send - so send it!
     try {

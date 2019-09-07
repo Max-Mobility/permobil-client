@@ -16,6 +16,9 @@ public class Datastore {
   public static final String CURRENT_DISTANCE_KEY = "current_distance";
   public static final String WATCH_SERIAL_NUMBER_KEY = "watch_serial_number";
 
+  public static final String AUTHORIZATION_KEY = "authorization_token";
+  public static final String USER_ID_KEY = "user_id";
+
   private SharedPreferences preferences;
 
   public Datastore(Context context) {
@@ -37,6 +40,26 @@ public class Datastore {
   public void setDisableWearCheck(boolean disabled) {
     SharedPreferences.Editor editor = preferences.edit();
     editor.putBoolean(PREFIX + DISABLE_WEAR_CHECK_KEY, disabled);
+    editor.commit();
+  }
+
+  public String getAuthorization() {
+    return preferences.getString(PREFIX + AUTHORIZATION_KEY, "");
+  }
+
+  public void setAuthorization(String token) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putString(PREFIX + AUTHORIZATION_KEY, token);
+    editor.commit();
+  }
+
+  public String getUserId() {
+    return preferences.getString(PREFIX + USER_ID_KEY, "");
+  }
+
+  public void setUserId(String id) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putString(PREFIX + USER_ID_KEY, id);
     editor.commit();
   }
 
