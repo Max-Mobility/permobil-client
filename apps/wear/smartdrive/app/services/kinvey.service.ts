@@ -74,7 +74,7 @@ export class KinveyService {
   }
 
   public async getUserInfo(auth: string, userId: string) {
-    let url =
+    const url =
       KinveyService.api_base +
       KinveyService.api_user_route +
       KinveyService.api_app_key +
@@ -90,12 +90,12 @@ export class KinveyService {
   }
 
   public async login(username: string, password: string) {
-    let url =
+    const url =
       KinveyService.api_base +
       KinveyService.api_user_route +
       KinveyService.api_app_key +
       KinveyService.api_login;
-    let content = {
+    const content = {
       username,
       password
     };
