@@ -239,12 +239,14 @@ public class ActivityService
 
   @Override
   public void onDataChanged(DataEventBuffer dataEvents) {
-    Log.d(TAG, "onDataChanged()");
+    Log.d(TAG, "onDataChanged: " + dataEvents);
   }
 
   @Override
   public void onMessageReceived(MessageEvent event) {
-    Log.d(TAG, "onMessageReceived()");
+    Log.d(TAG, "onMessageReceived: " + event);
+    Log.d(TAG, "Message Path: " + event.getData().toString());
+    Log.d(TAG, "Message: " + new String(event.getData()));
   }
 
   private void loadFromDatabase() {
