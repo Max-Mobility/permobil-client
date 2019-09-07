@@ -54,7 +54,7 @@ declare const com: any;
 
 let debug: boolean = false;
 
-@JavaProxy('com.permobil.pushtracker.wearos.DataBroadcastReceiver')
+@JavaProxy('com.permobil.pushtracker.DataBroadcastReceiver')
 class DataBroadcastReceiver extends android.content.BroadcastReceiver {
   public onReceiveFunction: any = null;
   constructor() {
@@ -249,12 +249,12 @@ export class MainViewModel extends Observable {
     this.initSqliteTables();
 
     // load serial number from settings / memory
-    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const savedSerial = sharedPreferences.getString(
-      prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
+      prefix + com.permobil.pushtracker.Datastore.WATCH_SERIAL_NUMBER_KEY,
       ''
     );
     if (savedSerial && savedSerial.length) {
@@ -328,7 +328,7 @@ export class MainViewModel extends Observable {
         .getApplicationContext()
         .getContentResolver()
         .query(
-          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.USAGE_URI,
+          com.permobil.pushtracker.SmartDriveUsageProvider.USAGE_URI,
           null, null, null, null);
       if (cursor && cursor.moveToFirst()) {
         // there is data
@@ -376,16 +376,16 @@ export class MainViewModel extends Observable {
   }
 
   loadCurrentActivityData() {
-    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     this.currentPushCount = sharedPreferences.getInt(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_PUSH_COUNT_KEY,
+      prefix + com.permobil.pushtracker.Datastore.CURRENT_PUSH_COUNT_KEY,
       0
     );
     this.coastGoalCurrentValue = sharedPreferences.getFloat(
-      prefix + com.permobil.pushtracker.wearos.Datastore.CURRENT_COAST_KEY,
+      prefix + com.permobil.pushtracker.Datastore.CURRENT_COAST_KEY,
       0.0
     );
   }
@@ -407,11 +407,11 @@ export class MainViewModel extends Observable {
   onServiceData(context, intent) {
     // get the info from the event
     const pushes = intent.getIntExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_PUSHES,
+      com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_PUSHES,
       0
     );
     const coast = intent.getFloatExtra(
-      com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_COAST,
+      com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
     Log.D('Got service data', pushes, coast);
@@ -431,7 +431,7 @@ export class MainViewModel extends Observable {
       .registerReceiver(
         this.serviceDataReceiver,
         new android.content.IntentFilter(
-          com.permobil.pushtracker.wearos.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
+          com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
         )
       );
     this.sentryBreadCrumb('Service Data Update registered.');
@@ -444,7 +444,7 @@ export class MainViewModel extends Observable {
       console.log('Starting activity service!');
       const intent = new android.content.Intent();
       const context = application.android.context;
-      intent.setClassName(context, 'com.permobil.pushtracker.wearos.ActivityService');
+      intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
       console.log('Started activity service!');
@@ -479,13 +479,13 @@ export class MainViewModel extends Observable {
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
         // save it to datastore for service to use
-        const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+        const prefix = com.permobil.pushtracker.Datastore.PREFIX;
         const sharedPreferences = ad
           .getApplicationContext()
           .getSharedPreferences('prefs.db', 0);
         const editor = sharedPreferences.edit();
         editor.putString(
-          prefix + com.permobil.pushtracker.wearos.Datastore.WATCH_SERIAL_NUMBER_KEY,
+          prefix + com.permobil.pushtracker.Datastore.WATCH_SERIAL_NUMBER_KEY,
           this.watchSerialNumber
         );
         editor.commit();
@@ -950,29 +950,29 @@ export class MainViewModel extends Observable {
    */
   loadSettings() {
     this.settings.copy(
-      LS.getItem('com.permobil.pushtracker.wearos.profile.settings')
+      LS.getItem('com.permobil.pushtracker.profile.settings')
     );
     this.hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
 
-    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     this.disableWearCheck = sharedPreferences.getBoolean(
-      prefix + com.permobil.pushtracker.wearos.Datastore.DISABLE_WEAR_CHECK_KEY,
+      prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
       false
     );
   }
 
   saveSettings() {
-    const prefix = com.permobil.pushtracker.wearos.Datastore.PREFIX;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const editor = sharedPreferences.edit();
     editor.putBoolean(
-      prefix + com.permobil.pushtracker.wearos.Datastore.DISABLE_WEAR_CHECK_KEY,
+      prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
       this.disableWearCheck
     );
     editor.commit();
@@ -981,7 +981,7 @@ export class MainViewModel extends Observable {
       this.hasSentSettings
     );
     LS.setItemObject(
-      'com.permobil.pushtracker.wearos.profile.settings',
+      'com.permobil.pushtracker.profile.settings',
       this.settings.toObj()
     );
   }

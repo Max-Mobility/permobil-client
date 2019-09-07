@@ -1,7 +1,7 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 public class Constants {
-    public static final String NOTIFICATION_CHANNEL = "com.permobil.pushtracker.wearos.notification_channel";
+    public static final String NOTIFICATION_CHANNEL = "com.permobil.pushtracker.notification_channel";
     public static final String ACTION_START_SERVICE = "ACTION_START_SERVICE";
     public static final String ACTIVITY_SERVICE_MESSAGE_INTENT_KEY = "ACTIVITY_SERVICE_MESSAGE_INTENT_KEY";
     public static final String ACTIVITY_SERVICE_DATA_INTENT_KEY = "ACTIVITY_SERVICE_DATA_INTENT_KEY";

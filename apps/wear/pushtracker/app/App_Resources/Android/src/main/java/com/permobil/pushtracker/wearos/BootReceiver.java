@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.util.Log;
 public class BootReceiver extends BroadcastReceiver {
   private static final String TAG = "Pushtracker::BootReceiver";
   public static final int REQUEST_CODE = 9001;
-  public static final String ACTION = "com.permobil.pushtracker.wearos.alarm";
+  public static final String ACTION = "com.permobil.pushtracker.alarm";
 
   @Override
   public void onReceive(Context context, Intent intent) {

@@ -1,4 +1,4 @@
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -72,7 +72,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import io.sentry.Sentry;
 
-import com.permobil.pushtracker.wearos.DailyActivity;
+import com.permobil.pushtracker.DailyActivity;
 
 // TODO: receive kinvey authentication from DataLayerListenerService
 
@@ -235,12 +235,14 @@ public class ActivityService
 
   @Override
   public void onDataChanged(DataEventBuffer dataEvents) {
-    Log.d(TAG, "onDataChanged()");
+    Log.d(TAG, "onDataChanged: " + dataEvents);
   }
 
   @Override
   public void onMessageReceived(MessageEvent event) {
-    Log.d(TAG, "onMessageReceived()");
+    Log.d(TAG, "onMessageReceived: " + event);
+    Log.d(TAG, "Message Path: " + event.getData().toString());
+    Log.d(TAG, "Message: " + new String(event.getData()));
   }
 
   private void loadFromDatabase() {

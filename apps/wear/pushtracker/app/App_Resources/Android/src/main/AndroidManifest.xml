@@ -34,23 +34,37 @@
       android:label="@string/app_name"
       android:theme="@style/AppTheme">
 
+
     <service
-        android:name="com.permobil.pushtracker.wearos.ActivityService"
-        android:enabled="true"
-        android:exported="false"
-        android:permission="android.permission.BIND_JOB_SERVICE">
+        android:name="com.permobil.pushtracker.DataLayerListenerService" >
       <intent-filter>
         <!-- listeners receive events that match the action and data filters -->
         <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/user-data"/>
+      </intent-filter>
+      <intent-filter>
         <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-        <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
-        <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />
-        <data android:scheme="wear" android:host="*" android:pathPrefix="/prefix" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/app-message"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/wear-data"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/wear-message"/>
       </intent-filter>
     </service>
 
+    <service
+        android:name="com.permobil.pushtracker.ActivityService"
+        android:enabled="true"
+        android:exported="false"
+        android:permission="android.permission.BIND_JOB_SERVICE">
+    </service>
+
     <receiver
-        android:name="com.permobil.pushtracker.wearos.BootReceiver"
+        android:name="com.permobil.pushtracker.BootReceiver"
         android:enabled="true">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -83,7 +97,7 @@
 
     <!-- for providing complications -->
     <service
-        android:name="com.permobil.pushtracker.wearos.PushesComplicationProviderService"
+        android:name="com.permobil.pushtracker.PushesComplicationProviderService"
         android:icon="@drawable/ic_pushes_white"
         android:label="@string/complications_provider_service_label_pushes"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
@@ -99,7 +113,7 @@
           android:value="600"/>
     </service>
     <service
-        android:name="com.permobil.pushtracker.wearos.CoastTimeComplicationProviderService"
+        android:name="com.permobil.pushtracker.CoastTimeComplicationProviderService"
         android:icon="@drawable/ic_coast_time_white"
         android:label="@string/complications_provider_service_label_coast_time"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
@@ -115,7 +129,7 @@
           android:value="600"/>
     </service>
     <service
-        android:name="com.permobil.pushtracker.wearos.DistanceComplicationProviderService"
+        android:name="com.permobil.pushtracker.DistanceComplicationProviderService"
         android:icon="@drawable/ic_distance_white"
         android:label="@string/complications_provider_service_label_distance"
         android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
@@ -133,7 +147,7 @@
     <!-- end for providing complications -->
 
     <!-- for receiving complications -->
-    <receiver android:name="com.permobil.pushtracker.wearos.ComplicationToggleReceiver" />
+    <receiver android:name="com.permobil.pushtracker.ComplicationToggleReceiver" />
     <!-- end for receiving complications -->
 
   </application>

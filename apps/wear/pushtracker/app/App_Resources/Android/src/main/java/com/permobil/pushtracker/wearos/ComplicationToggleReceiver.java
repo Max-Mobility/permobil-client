@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.permobil.pushtracker.wearos;
+package com.permobil.pushtracker;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -23,7 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.complications.ProviderUpdateRequester;
 
-import com.permobil.pushtracker.wearos.Datastore;
+import com.permobil.pushtracker.Datastore;
 
 /**
  * Simple {@link BroadcastReceiver} subclass for asynchronously incrementing an integer for any
@@ -32,7 +32,7 @@ import com.permobil.pushtracker.wearos.Datastore;
  */
 public class ComplicationToggleReceiver extends BroadcastReceiver {
 
-  private static final String PREFIX = "com.permobil.pushtracker.wearos.";
+  private static final String PREFIX = "com.permobil.pushtracker.";
 
   private static final String EXTRA_PROVIDER_COMPONENT =
     PREFIX + "provider.action.PROVIDER_COMPONENT";
