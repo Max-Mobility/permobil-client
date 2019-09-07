@@ -30,6 +30,8 @@ public class SmartDriveUsageProvider extends ContentProvider {
    * ourselves, such as using regular expressions.
    */
   public static final int CODE_USAGE = 100;
+  public static final int CODE_AUTHORIZATION = 200;
+  public static final int CODE_USER_ID = 201;
 
   /* The URI Matcher used by this content provider. */
   private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -59,7 +61,11 @@ public class SmartDriveUsageProvider extends ContentProvider {
      */
 
     /* This URI is content://com.permobil.smartdrive.wearos.usage/usage/ */
-    matcher.addURI(authority, DatabaseHandler.TABLE_NAME, CODE_USAGE);
+    matcher.addURI(authority, DatabaseHandler.TYPE_USAGE, CODE_USAGE);
+    /* This URI is content://com.permobil.smartdrive.wearos.usage/usage/ */
+    matcher.addURI(authority, DatabaseHandler.TYPE_AUTHORIZATION_TOKEN, CODE_AUTHORIZATION);
+    /* This URI is content://com.permobil.smartdrive.wearos.usage/usage/ */
+    matcher.addURI(authority, DatabaseHandler.TYPE_USER_ID, CODE_USER_ID);
 
     return matcher;
   }
@@ -84,8 +90,18 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE: {
-      Log.d("SmartDriveUsageProvider", "getting cursor");
-      cursor = db.getCursor();
+      Log.d("SmartDriveUsageProvider", "getting cursor for type usage");
+      cursor = db.getCursor(DatabaseHandler.TYPE_USAGE);
+      break;
+    }
+    case CODE_AUTHORIZATION: {
+      Log.d("SmartDriveUsageProvider", "getting cursor for type authorization");
+      cursor = db.getCursor(DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
+      break;
+    }
+    case CODE_USER_ID: {
+      Log.d("SmartDriveUsageProvider", "getting cursor for type user id");
+      cursor = db.getCursor(DatabaseHandler.TYPE_USER_ID);
       break;
     }
 
@@ -97,56 +113,18 @@ public class SmartDriveUsageProvider extends ContentProvider {
     return cursor;
   }
 
-  public String getData(Uri uri) {
-
-    String data = null;
-
-    switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE: {
-      Log.d("SmartDriveUsageProvider", "getting record");
-      data = db.getRecord().data;
-      break;
-    }
-
-    default:
-      throw new UnsupportedOperationException("Unknown uri: " + uri);
-    }
-
-    return data;
-  }
-
   @Override
   public String getType(Uri uri) {
     return null;
-  }
-
-  public Uri insert(Uri uri, String data) {
-    switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE:
-      Log.d("SmartDriveUsageProvider", "updating record: " + data);
-      long _id = db.updateRecord(data);
-      if (_id != -1) {
-        /*
-         * This will help to broadcast that database has been changed,
-         * and will inform entities to perform automatic update.
-         */
-        getContext().getContentResolver().notifyChange(uri, null);
-      }
-
-      return DatabaseHandler.buildUsageUriWithId(_id);
-
-    default:
-      return null;
-    }
   }
 
   @Override
   public Uri insert(Uri uri, ContentValues values) {
     String data = values.getAsString("data");
     switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE:
+    case CODE_USAGE: {
       Log.d("SmartDriveUsageProvider", "updating record: " + data);
-      long _id = db.updateRecord(data);
+      long _id = db.updateRecord(data, DatabaseHandler.TYPE_USAGE);
       if (_id != -1) {
         /*
          * This will help to broadcast that database has been changed,
@@ -156,7 +134,33 @@ public class SmartDriveUsageProvider extends ContentProvider {
       }
 
       return DatabaseHandler.buildUsageUriWithId(_id);
+    }
+    case CODE_AUTHORIZATION: {
+      Log.d("SmartDriveUsageProvider", "updating record: " + data);
+      long _id = db.updateRecord(data, DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
+      if (_id != -1) {
+        /*
+         * This will help to broadcast that database has been changed,
+         * and will inform entities to perform automatic update.
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+      }
 
+      return DatabaseHandler.buildAuthorizationUriWithId(_id);
+    }
+    case CODE_USER_ID: {
+      Log.d("SmartDriveUsageProvider", "updating record: " + data);
+      long _id = db.updateRecord(data, DatabaseHandler.TYPE_USER_ID);
+      if (_id != -1) {
+        /*
+         * This will help to broadcast that database has been changed,
+         * and will inform entities to perform automatic update.
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+      }
+
+      return DatabaseHandler.buildUserIdUriWithId(_id);
+    }
     default:
       return null;
     }

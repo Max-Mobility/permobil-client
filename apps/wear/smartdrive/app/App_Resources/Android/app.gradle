@@ -7,6 +7,9 @@ dependencies {
   implementation 'com.github.Max-Mobility:WearOsMessaging:0.1.1'
   compileOnly 'com.google.android.wearable:wearable:2.4.0'
 }
+repositories {
+  maven { url 'https://jitpack.io' }
+}
 
 android {
   defaultConfig {

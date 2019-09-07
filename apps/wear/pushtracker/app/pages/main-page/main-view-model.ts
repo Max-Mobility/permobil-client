@@ -328,11 +328,13 @@ export class MainViewModel extends Observable {
         .getApplicationContext()
         .getContentResolver()
         .query(
-          com.permobil.pushtracker.SmartDriveUsageProvider.CONTENT_URI,
+          com.permobil.pushtracker.SmartDriveUsageProvider.USAGE_URI,
           null, null, null, null);
       if (cursor && cursor.moveToFirst()) {
         // there is data
-        const serialized = cursor.getString(1);
+        const serialized = cursor.getString(
+          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.DATA_INDEX
+        );
         const data = JSON.parse(serialized);
         // distances provided are always in miles
         if (data[today]) {
@@ -359,7 +361,7 @@ export class MainViewModel extends Observable {
         Log.E('could not craete package context!');
       }
     } catch (err) {
-      Log.E(err);
+      Log.E('Could not get smartdrive data', err);
       Sentry.captureException(err);
     }
     // Log.D('Highest Distance Value:', maxDist);
