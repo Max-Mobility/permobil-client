@@ -997,6 +997,56 @@ export class MainViewModel extends Observable {
     this.currentYear = this._format(now, 'YYYY');
   }
 
+  async updateAuthorization() {
+    // check the content provider here to see if the user has
+    // sync-ed up with the pushtracker mobile app
+    let authorization = null;
+    let userId = null;
+    try {
+      const authCursor = ad
+        .getApplicationContext()
+        .getContentResolver()
+        .query(
+          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_URI,
+          null, null, null, null);
+      if (authCursor && authCursor.moveToFirst()) {
+        // there is data
+        const token = authCursor.getString(
+          com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
+        );
+        if (token !== null && token.length) {
+          // we have a valid token
+          authorization = token;
+        }
+      }
+      const idCursor = ad
+        .getApplicationContext()
+        .getContentResolver()
+        .query(
+          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_URI,
+          null, null, null, null);
+      if (idCursor && idCursor.moveToFirst()) {
+        // there is data
+        const uid = idCursor.getString(
+          com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
+        );
+        if (uid !== null && uid.length) {
+          // we have a valid token
+          userId = uid;
+        }
+      }
+    } catch (err) {
+    }
+    if (authorization === null || userId === null) {
+      // if the user has not configured this app with the PushTracker
+      // Mobile app
+      return false;
+    }
+    // now set the authorization and see if it's valid
+    const validAuth = await this._kinveyService.setAuth(authorization, userId);
+    return validAuth;
+  }
+
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
@@ -1007,9 +1057,12 @@ export class MainViewModel extends Observable {
       return;
     }
     if (!this._kinveyService.hasAuth()) {
-      // if the user has not configured this app with the PushTracker
-      // Mobile app
-      return;
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        // we still don't have valid authorization, don't send any
+        // data
+        return;
+      }
     }
     // this._sentryBreadCrumb('Network available - sending errors');
     await this.sendErrorsToServer(10);

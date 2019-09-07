@@ -55,10 +55,12 @@ export class KinveyService {
       // if we do then set the auth / id accordingly
       this._auth = newAuth;
       this._userId = userId;
+      return true;
     } catch (err) {
       // reset to null if login failed
       this._auth = null;
       this._userId = null;
+      return false;
     }
   }
 
