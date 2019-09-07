@@ -90,17 +90,17 @@ public class SmartDriveUsageProvider extends ContentProvider {
 
     switch (sUriMatcher.match(uri)) {
     case CODE_USAGE: {
-      Log.d("SmartDriveUsageProvider", "getting cursor", "for type usage");
+      Log.d("SmartDriveUsageProvider", "getting cursor for type usage");
       cursor = db.getCursor(DatabaseHandler.TYPE_USAGE);
       break;
     }
     case CODE_AUTHORIZATION: {
-      Log.d("SmartDriveUsageProvider", "getting cursor", "for type authorization");
+      Log.d("SmartDriveUsageProvider", "getting cursor for type authorization");
       cursor = db.getCursor(DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
       break;
     }
     case CODE_USER_ID: {
-      Log.d("SmartDriveUsageProvider", "getting cursor", "for type user id");
+      Log.d("SmartDriveUsageProvider", "getting cursor for type user id");
       cursor = db.getCursor(DatabaseHandler.TYPE_USER_ID);
       break;
     }
@@ -122,7 +122,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     String data = values.getAsString("data");
     switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE:
+    case CODE_USAGE: {
       Log.d("SmartDriveUsageProvider", "updating record: " + data);
       long _id = db.updateRecord(data, DatabaseHandler.TYPE_USAGE);
       if (_id != -1) {
@@ -134,8 +134,8 @@ public class SmartDriveUsageProvider extends ContentProvider {
       }
 
       return DatabaseHandler.buildUsageUriWithId(_id);
-
-    case CODE_AUTHORIZATION:
+    }
+    case CODE_AUTHORIZATION: {
       Log.d("SmartDriveUsageProvider", "updating record: " + data);
       long _id = db.updateRecord(data, DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
       if (_id != -1) {
@@ -147,8 +147,8 @@ public class SmartDriveUsageProvider extends ContentProvider {
       }
 
       return DatabaseHandler.buildAuthorizationUriWithId(_id);
-
-    case CODE_USER_ID:
+    }
+    case CODE_USER_ID: {
       Log.d("SmartDriveUsageProvider", "updating record: " + data);
       long _id = db.updateRecord(data, DatabaseHandler.TYPE_USER_ID);
       if (_id != -1) {
@@ -160,7 +160,7 @@ public class SmartDriveUsageProvider extends ContentProvider {
       }
 
       return DatabaseHandler.buildUserIdUriWithId(_id);
-
+    }
     default:
       return null;
     }
