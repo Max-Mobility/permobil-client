@@ -328,7 +328,7 @@ export class MainViewModel extends Observable {
         .getApplicationContext()
         .getContentResolver()
         .query(
-          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.CONTENT_URI,
+          com.permobil.pushtracker.wearos.SmartDriveUsageProvider.USAGE_URI,
           null, null, null, null);
       if (cursor && cursor.moveToFirst()) {
         // there is data

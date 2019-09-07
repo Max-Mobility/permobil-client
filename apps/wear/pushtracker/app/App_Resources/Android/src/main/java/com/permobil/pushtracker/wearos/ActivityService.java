@@ -74,6 +74,8 @@ import io.sentry.Sentry;
 
 import com.permobil.pushtracker.wearos.DailyActivity;
 
+// TODO: receive kinvey authentication from DataLayerListenerService
+
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
 //        * GPS
@@ -129,7 +131,7 @@ public class ActivityService
   private Sensor mOffBodyDetect;
 
   private KinveyApiService mKinveyApiService;
-  private String mKinveyAuthorization;
+  private String mKinveyAuthorization = null;
 
   // for sending to the main app via intent
   private long _lastSendDataTimeMs = 0;
@@ -182,12 +184,6 @@ public class ActivityService
 
     // create an instance of the KinveyApiService
     mKinveyApiService = retrofit.create(KinveyApiService.class);
-
-    // save the authorization string needed for kinvey
-    String authorizationToEncode = "test@test.com:test";
-    byte[] data = authorizationToEncode.getBytes(StandardCharsets.UTF_8);
-    mKinveyAuthorization = Base64.encodeToString(data, Base64.NO_WRAP);
-    mKinveyAuthorization = "Basic " + mKinveyAuthorization;
 
     // get the serial number from the data store
     watchSerialNumber = datastore.getSerialNumber();
@@ -280,7 +276,7 @@ public class ActivityService
     Log.d(TAG, "PushDataToKinvey()");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
-    if (numUnsent == 0) {
+    if (numUnsent == 0 || mKinveyAuthorization == null) {
       return;
     }
     // we have data to send - so send it!

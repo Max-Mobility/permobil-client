@@ -1002,6 +1002,15 @@ export class MainViewModel extends Observable {
       // if this has gotten called before sqlite has been fully set up
       return;
     }
+    if (this._kinveyService === undefined) {
+      // if this has gotten called before kinvey service has been fully set up
+      return;
+    }
+    if (!this._kinveyService.hasAuth()) {
+      // if the user has not configured this app with the PushTracker
+      // Mobile app
+      return;
+    }
     // this._sentryBreadCrumb('Network available - sending errors');
     await this.sendErrorsToServer(10);
     // this._sentryBreadCrumb('Network available - sending info');
@@ -1448,6 +1457,9 @@ export class MainViewModel extends Observable {
       firmware_file: true
     };
     try {
+      // NOTE: This is the only kinvey service function which *DOES
+      // NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
+      // this._kinveyService.hasAuth()
       response = await this._kinveyService.getFile(undefined, query);
     } catch (err) {
       return this.updateError(err, L('updates.errors.getting'), `${err}`);
@@ -2908,7 +2920,7 @@ export class MainViewModel extends Observable {
       const uri = ad
         .getApplicationContext()
         .getContentResolver()
-        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.CONTENT_URI, values);
+        .insert(com.permobil.smartdrive.wearos.DatabaseHandler.USAGE_URI, values);
       if (uri === null) {
         Log.E('Could not insert into content resolver!');
       }
@@ -2993,7 +3005,7 @@ export class MainViewModel extends Observable {
    * Network Functions
    */
   async sendSettingsToServer() {
-    if (!this.hasSentSettings) {
+    if (!this.hasSentSettings && this._kinveyService.hasAuth()) {
       const settingsObj = {
         settings: this.settings.toObj(),
         switchControlSettings: this.switchControlSettings.toObj()
@@ -3021,6 +3033,9 @@ export class MainViewModel extends Observable {
 
   async sendErrorsToServer(numErrors: number) {
     try {
+      if (!this._kinveyService.hasAuth()) {
+        return;
+      }
       const errors = await this._sqliteService
         .getAll({
           tableName: SmartDriveData.Errors.TableName,
@@ -3068,6 +3083,9 @@ export class MainViewModel extends Observable {
 
   async sendInfosToServer(numInfo: number) {
     try {
+      if (!this._kinveyService.hasAuth()) {
+        return;
+      }
       const infos = await this.getUnsentInfoFromDatabase(numInfo);
       // now send them one by one
       const sendPromises = infos.map(i => {

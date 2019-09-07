@@ -25,6 +25,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    */
   public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
+  public static final String TYPE_USAGE = "UsageRecord";
+  public static final String TYPE_AUTHORIZATION_TOKEN = "AuthorizationToken";
+  public static final String TYPE_USER_ID = "UserId";
 
   /*
    * Database related stuff:
@@ -38,22 +41,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String TABLE_NAME = "DailyUsage";
   // Table Columns names
   public static final String KEY_ID = "id";
+  public static final String KEY_TYPE = "type";
   public static final String KEY_DATA = "data";
 
   public static final int ID_INDEX = 0;
-  public static final int DATA_INDEX = 1;
+  public static final int TYPE_INDEX = 1;
+  public static final int DATA_INDEX = 2;
+
+  private static final int TYPE_USAGE_UUID = 0;
+  private static final int TYPE_AUTHORIZATION_TOKEN_UUID = 1;
+  private static final int TYPE_USER_ID_UUID = 2;
 
   private Context mContext;
 
   /* The base CONTENT_URI used to query the Usage table from the content provider */
-  public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
-    .appendPath(TABLE_NAME)
+  public static final Uri USAGE_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USAGE)
     .build();
 
-  public class Record {
-    int id;
-    String data;
-  }
+  public static final Uri AUTHORIZATION_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_AUTHORIZATION_TOKEN)
+    .build();
+
+  public static final Uri USER_ID_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USER_ID)
+    .build();
 
   /**
    * Builds a URI that adds the task _ID to the end of the usage content URI path.
@@ -64,7 +76,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    * @return Uri to query details about a single usage entry
    */
   public static Uri buildUsageUriWithId(long id) {
-    return CONTENT_URI.buildUpon()
+    return USAGE_URI.buildUpon()
+      .appendPath(Long.toString(id))
+      .build();
+  }
+  public static Uri buildAuthorizationUriWithId(long id) {
+    return AUTHORIZATION_URI.buildUpon()
+      .appendPath(Long.toString(id))
+      .build();
+  }
+  public static Uri buildUserIdUriWithId(long id) {
+    return USER_ID_URI.buildUpon()
       .appendPath(Long.toString(id))
       .build();
   }
@@ -79,6 +101,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     try {
       String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + TABLE_NAME + "(" +
         KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        KEY_TYPE + " TEXT, " +
         KEY_DATA + " TEXT " +
         ")";
       db.execSQL(CREATE_TABLE_ACTIVITYDATA);
@@ -95,16 +118,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     onCreate(db);
   }
 
+  public long getUUID(String type) {
+    long uuid = -1;
+    if (type.equals(TYPE_USAGE)) {
+      uuid = TYPE_USAGE_UUID;
+    } else if (type.equals(TYPE_AUTHORIZATION_TOKEN)) {
+      uuid = TYPE_AUTHORIZATION_TOKEN_UUID;
+    } else if (type.equals(TYPE_USER_ID_UUID)) {
+      uuid = TYPE_USER_ID_UUID;
+    }
+    return uuid;
+  }
+
   // Insert values to the table
-  synchronized public long updateRecord(String data) {
+  synchronized public long updateRecord(String data, String type) {
     SQLiteDatabase db = this.getWritableDatabase();
     ContentValues values = new ContentValues();
     long _id = 0;
     try {
-      values.put(KEY_ID, 0);
-      values.put(KEY_DATA, data);
-      Log.d(TAG, "Updating RECORD in SQL Table");
-      _id = db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+      long uuid = getUUID(type);
+      if (uuid != -1) {
+        values.put(KEY_ID, uuid);
+        values.put(KEY_TYPE, type);
+        values.put(KEY_DATA, data);
+        Log.d(TAG, "Updating RECORD in SQL Table");
+        _id = db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+      }
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
       Sentry.capture(e);
@@ -114,44 +153,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     return _id;
   }
 
-  synchronized public Record getRecord() {
-    Record record = new Record();
+  synchronized public Cursor getCursor(String type) {
     String selectQuery = "SELECT * FROM " + TABLE_NAME;
-    selectQuery += " ORDER BY " + KEY_ID + " ASC LIMIT 1";
-
-    SQLiteDatabase db = this.getReadableDatabase();
-    Cursor cursor = db.rawQuery(selectQuery, null);
-
-    CursorWindow cw;
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-      cw = new CursorWindow("getRecordCursor", 20000000);
-    } else {
-      cw = new CursorWindow("getRecordCursor");
-    }
-    AbstractWindowedCursor ac = (AbstractWindowedCursor) cursor;
-    ac.setWindow(cw);
-
-    // if TABLE has rows
-    if (cursor.moveToFirst()) {
-      try {
-        int index = cursor.getInt(ID_INDEX);
-        record.id = index;
-        record.data = cursor.getString(DATA_INDEX);
-        Log.d(TAG, "record id: " + index);
-      } catch (Exception e) {
-        Log.e(TAG, "Exception getting record from db:" + e.getMessage());
-        Sentry.capture(e);
-      }
-    }
-
-    cursor.close();
-    db.close();
-    Log.d(TAG, "Returning SQLite Record");
-    return record;
-  }
-
-  synchronized public Cursor getCursor() {
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
+    selectQuery += " WHERE " + KEY_TYPE + "=\"" + type + "\"";
     selectQuery += " ORDER BY " + KEY_ID + " ASC LIMIT 1";
 
     SQLiteDatabase db = this.getReadableDatabase();
