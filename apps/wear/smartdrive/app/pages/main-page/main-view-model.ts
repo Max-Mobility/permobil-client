@@ -1510,7 +1510,8 @@ export class MainViewModel extends Observable {
             progressKeys.reduce((total, k) => {
               return total + progresses[k];
             }, 0) / progressKeys.length;
-        }, 200)
+          // Log.D('progress: ', this.smartDriveOtaProgress);
+        }, 400)
       );
       // now download the files
       try {
