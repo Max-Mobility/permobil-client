@@ -108,7 +108,7 @@ public class ActivityService
   // microseconds between sensor data
   private static final int SENSOR_DELAY_US = 1000 * 1000 / SENSOR_RATE_HZ;
   // 1 minute between sensor updates in microseconds
-  private static final int SENSOR_REPORTING_LATENCY_US = 3 * 60 * 1000 * 1000;
+  private static final int SENSOR_REPORTING_LATENCY_US = 3 * 60  * 1000 * 1000;//3 * 60 * 1000 * 1000;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
   private static final long LOCATION_LISTENER_MIN_TIME_MS = 5 * 60 * 1000;
@@ -127,7 +127,7 @@ public class ActivityService
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mGravity;
-  private Sensor mGyroscope;
+  //private Sensor mGyroscope;
   private Sensor mOffBodyDetect;
 
   private KinveyApiService mKinveyApiService;
@@ -551,10 +551,15 @@ public class ActivityService
   private boolean hasGyro = false;
   private boolean hasAccl = false;
   private boolean hasGrav = false;
+  private boolean hasData = false;
+  private long numDataSend =0;
+  private long numValidData=0;
+  private long numUnValidData=0;
   private float[] activityDetectorData = new float[ActivityDetector.InputSize];
   private long lastCheckTimeMs = 0;
   private static long WEAR_CHECK_TIME_MS = 1000;
 
+  private long lastDataTimeStamp =0;
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
@@ -572,20 +577,37 @@ public class ActivityService
     // detect activity
     if (canRunDetector()) {
       // reset flags for running detector
-      hasGyro = false;
-      hasGrav = false;
-      hasAccl = false;
+      //hasGyro = false;
+      // hasGrav = false;
+      // hasAccl = false;
+      numDataSend++;
+      // if(numDataSend==1)
+      //   Log.e(TAG,"Start Sending Data to model.");
+      hasData = false;
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
       handleDetection(detection);
+      // if ((event.timestamp - lastDataTimeStamp >= 35*1000*1000) &&(lastDataTimeStamp>0)&&(event.timestamp - lastDataTimeStamp <= 45*1000*1000))
+      // {
+        
+      // }
+      // else{
+      //   numValidData++;
+      //   Log.e(TAG,"nonValidTimeStamp"+(event.timestamp - lastDataTimeStamp));
+      // }
+      
+      lastDataTimeStamp=event.timestamp;
       // reset the data
       clearDetectorInputs();
       // do we need to send data to the app?
       timeDiffMs = now - _lastSendDataTimeMs;
-      if (timeDiffMs > SEND_DATA_INTERVAL_MS && hasNewActivity) {
+      if (timeDiffMs > SEND_DATA_INTERVAL_MS ){//&& hasNewActivity) {
         // reset flag
         hasNewActivity = false;
+        // Log.e(TAG,"Send activity.");
+        // Log.e(TAG,"numNonValiData: "+numValidData);
+        // Log.e(TAG,"numAcc: "+numAccl +"; numGrav: "+numGrav+"; numDataSend: "+numDataSend);
         // update data in datastore / shared preferences for use
         // with the complication providers and mobile app
         datastore.setData(currentActivity.push_count,
@@ -619,7 +641,7 @@ public class ActivityService
   }
 
   boolean canRunDetector() {
-    return hasAccl && hasGrav && // hasGyro &&
+    return hasData && //hasAccl && hasGrav && // hasGyro &&
       (watchBeingWorn || disableWearCheck);
   }
 
@@ -630,10 +652,15 @@ public class ActivityService
   }
 
   private long numGrav = 0;
-  private long numGyro = 0;
+  
+  //private long numGyro = 0;
   private long numAccl = 0;
   private static final long LOG_TIME_MS = 1000;
   private long lastLogTimeMs = 0;
+  private List<float[]> mAccList = new ArrayList<float[]>();
+  private List<float[]> mGravList = new ArrayList<float[]>();
+
+
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
 
@@ -648,24 +675,52 @@ public class ActivityService
     */
 
     if (sensorType == Sensor.TYPE_GYROSCOPE) {
-      numGyro++;
-      hasGyro = true;
-      for (int i=0; i<3; i++) {
-        activityDetectorData[i + ActivityDetector.InputGyroOffset] = event.values[i];
-      }
+      // numGyro++;
+      // hasGyro = true;
+      // for (int i=0; i<3; i++) {
+      //   activityDetectorData[i + ActivityDetector.InputGyroOffset] = event.values[i];
+      // }
     } else if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       numAccl++;
-      hasAccl = true;
-      for (int i=0; i<3; i++) {
-        activityDetectorData[i + ActivityDetector.InputAcclOffset] = event.values[i];
-      }
+      //hasAccl = true;
+
+      mAccList.add(event.values);
+
+
+      // for (int i=0; i<3; i++) {
+      //   activityDetectorData[i + ActivityDetector.InputAcclOffset] = event.values[i];
+      // }
+
     } else if (sensorType == Sensor.TYPE_GRAVITY) {
       numGrav++;
-      hasGrav = true;
-      for (int i=0; i<3; i++) {
-        activityDetectorData[i + ActivityDetector.InputGravOffset] = event.values[i];
-      }
+      //hasGrav = true;
+
+      mGravList.add(event.values);
+
+
+      // for (int i=0; i<3; i++) {
+      //   activityDetectorData[i + ActivityDetector.InputGravOffset] = event.values[i];
+      // }
     }
+
+
+
+    if (mAccList.size() > 0 && mGravList.size() > 0) {
+      for (int i=0; i<3; i++) {
+        activityDetectorData[i + ActivityDetector.InputAcclOffset] = mAccList.get(0)[i];
+        activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i]; 
+      }
+      // if (numAccl%100==0)
+      // {
+      //   Log.e(TAG,"numAcc:"+numAccl+"; acc:" + activityDetectorData[0] +" "+activityDetectorData[1]+" "+activityDetectorData[2]+"; Grav: "+activityDetectorData[3]+" "+activityDetectorData[4]+" "+activityDetectorData[5]);
+      // }
+      hasData = true;
+      mAccList.remove(0);
+      mGravList.remove(0);
+
+      
+    }
+
   }
 
   void updateActivity(SensorEvent event) {
@@ -715,20 +770,20 @@ public class ActivityService
     }
   }
 
-  private void registerGyroscope(int delay, int reportingLatency) {
-    if (mSensorManager != null) {
-      mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-      if (mGyroscope != null)
-        mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
-    }
-  }
+  // private void registerGyroscope(int delay, int reportingLatency) {
+  //   if (mSensorManager != null) {
+  //     mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+  //     if (mGyroscope != null)
+  //       mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
+  //   }
+  // }
 
-  private void unregisterGyroscope() {
-    if (mSensorManager != null) {
-      if (mGyroscope != null)
-        mSensorManager.unregisterListener(this, mGyroscope);
-    }
-  }
+  // private void unregisterGyroscope() {
+  //   if (mSensorManager != null) {
+  //     if (mGyroscope != null)
+  //       mSensorManager.unregisterListener(this, mGyroscope);
+  //   }
+  // }
 
   private void registerBodySensor(int delay, int reportingLatency) {
     if (mSensorManager != null) {

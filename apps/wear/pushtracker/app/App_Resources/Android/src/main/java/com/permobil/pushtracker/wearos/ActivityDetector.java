@@ -45,10 +45,10 @@ public class ActivityDetector {
 
   private static final String TAG = "ActivityDetector";
 
-  private static final int LOCKOUT_TIME_MS = 350;
+  private static final int LOCKOUT_TIME_MS = 600;
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
-  public float predictionThreshold = 0.8f; // confidence
+  public float predictionThreshold = 0.6f; // confidence
 
   private long lastActivityTime = 0; // timestamp of last detected activity
 
@@ -71,11 +71,11 @@ public class ActivityDetector {
   /**
    * TFLite model input / output configuration
    */
-  public static final int InputSize = 9;
+  public static final int InputSize = 6;
   private static final int StateSize = 128;
-  public static final int InputGyroOffset = 0;
-  public static final int InputAcclOffset = 3;
-  public static final int InputGravOffset = 6;
+  //public static final int InputGyroOffset = 0;
+  public static final int InputAcclOffset = 0;
+  public static final int InputGravOffset = 3;
   private static final int Input_StateIndex = 1;
   private static final int Input_DataIndex = 0;
   private static final int Output_StateIndex = 1;
@@ -130,7 +130,7 @@ public class ActivityDetector {
           properlyConfigured = false;
         }
       }
-      // now check the input shapes
+      // now check the output shapes
       int[] outputShapes = { 0, 0 };
       outputShapes[Output_StateIndex] = StateSize;
       outputShapes[Output_PredictionIndex] = 1;
@@ -223,6 +223,7 @@ public class ActivityDetector {
     float prediction = parsedPrediction[0][0];
     // Log.d(TAG, "prediction: " + prediction);
     // update the prediction history
+    //updatePredictions(prediction);
     updatePredictions(prediction);
     // determine the activity
     return getActivity(timestamp);
