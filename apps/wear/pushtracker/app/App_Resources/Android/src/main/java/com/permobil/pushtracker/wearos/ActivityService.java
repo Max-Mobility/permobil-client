@@ -911,7 +911,7 @@ public class ActivityService
 
     // A string containing the action name
     notificationIntent.setAction(Constants.ACTION_START_SERVICE);
-    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //  | Intent.FLAG_ACTIVITY_CLEAR_TASK
     PendingIntent contentPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
     // Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round);
