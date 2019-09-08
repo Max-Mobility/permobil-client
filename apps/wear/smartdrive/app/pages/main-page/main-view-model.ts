@@ -36,7 +36,6 @@ import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../scss/theme-default.css').toString();
-const retroTheme = require('../../scss/theme-retro.css').toString();
 
 declare let com: any;
 
@@ -2093,28 +2092,10 @@ export class MainViewModel extends Observable {
   @Prop() displayDebug: boolean = false;
   toggleDebug() {
     // this.displayDebug = !this.displayDebug;
-    this.sendData();
   }
 
   toggleRssiDisplay() {
     // this.displayRssi = !this.displayRssi;
-    this.sendMessage();
-  }
-
-  sendData() {
-    // testing communications wearos
-    const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-    console.dir(l);
-    l.sendData('This is great!');
-    Log.D('Data sent');
-  }
-
-  sendMessage() {
-    // testing communications wearos
-    const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-    console.dir(r);
-    r.sendMessage('/app-message', 'This is great!');
-    Log.D('Message sent');
   }
 
   updateSpeedDisplay() {
