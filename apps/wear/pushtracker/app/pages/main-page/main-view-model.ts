@@ -391,19 +391,19 @@ export class MainViewModel extends Observable {
     );
   }
 
-  // debugTap() {
-  //   debug = !debug;
-  //   if (debug) {
-  //     this.currentPushCount = ((Math.random() * 2000) + 1000);
-  //     this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
-  //     this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
-  //     this.coastGoalValue = ((Math.random() * 10) + 2.0);
-  //     this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
-  //   } else {
-  //     this.loadCurrentActivityData();
-  //   }
-  //   this.updateDisplay();
-  // }
+  debugTap() {
+    debug = !debug;
+    if (debug) {
+      this.currentPushCount = ((Math.random() * 2000) + 1000);
+      this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
+      this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
+      this.coastGoalValue = ((Math.random() * 10) + 2.0);
+      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    } else {
+      this.loadCurrentActivityData();
+    }
+    this.updateDisplay();
+  }
 
   onServiceData(context, intent) {
     // get the info from the event
