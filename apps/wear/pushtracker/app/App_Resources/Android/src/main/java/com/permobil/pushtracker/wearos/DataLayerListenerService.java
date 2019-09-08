@@ -19,6 +19,7 @@ package com.permobil.pushtracker;
 import android.content.Intent;
 import android.content.ContentValues;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,9 +54,33 @@ public class DataLayerListenerService extends WearableListenerService {
     datastore = new Datastore(this);
   }
 
+  private void startService() {
+    Intent i = new Intent(getApplicationContext(), ActivityService.class);
+    i.setAction(Constants.ACTION_START_SERVICE);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      startForegroundService(i);
+    } else {
+      startService(i);
+    }
+  }
+
+  private void openApp(String packageName) {
+    Intent i = new Intent();
+    i.setClassName(getApplicationContext(), packageName);
+    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(i);
+  }
+
   @Override
   public void onDataChanged(DataEventBuffer dataEvents) {
     Log.d(TAG, "onDataChanged: " + dataEvents);
+
+    /*
+    Log.d(TAG, "Starting Service from app data!");
+    startService();
+    Log.d(TAG, "Opening wear app from app data!");
+    openApp("com.permobil.pushtracker.MainActivity");
+    */
   }
 
   @Override
@@ -79,6 +104,15 @@ public class DataLayerListenerService extends WearableListenerService {
     token = parts[0];
     userId = parts[1];
     Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
+
+    // Log.d(TAG, "Starting Service from app message!");
+    // startService();
+
+    Log.d(TAG, "Opening com.permobil.pushtracker.MainActivity from app message!");
+    openApp("com.permobil.pushtracker.MainActivity");
+
+    // Log.d(TAG, "Opening com.permobil.smartdrive.wearos.MainActivity from app message!");
+    // openApp("com.permobil.smartdrive.wearos.MainActivity");
 
     // write token to content provider for smartdrive wear
     ContentValues tokenValue = new ContentValues();
