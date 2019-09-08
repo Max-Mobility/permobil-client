@@ -23,7 +23,7 @@ export namespace DailyActivity {
       { name: DataName, type: 'TEXT' },
       { name: DateName, type: 'TEXT' },
       { name: UuidName, type: 'TEXT' },
-      { name: HasBeenSentName, type: 'bit' }
+      { name: HasBeenSentName, type: 'INTEGER DEFAULT 0' }
     ];
 
     export function getDateValue(date: any) {

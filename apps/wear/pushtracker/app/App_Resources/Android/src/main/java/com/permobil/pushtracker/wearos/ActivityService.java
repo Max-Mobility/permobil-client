@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -74,8 +75,6 @@ import io.sentry.Sentry;
 
 import com.permobil.pushtracker.DailyActivity;
 
-// TODO: receive kinvey authentication from DataLayerListenerService
-
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
 //        * GPS
@@ -86,16 +85,9 @@ public class ActivityService
 
   private static final String TAG = "PermobilActivityService";
 
-  private static final String START_ACTIVITY_PATH = "/activity";
-  private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
-
-  public static final String APP_DATA_PATH = "/app-data";
-  public static final String APP_DATA_KEY = "app-data";
-  public static final String WEAR_DATA_PATH = "/wear-data";
-  public static final String WEAR_DATA_KEY = "wear-data";
-
-  private long _lastPushDataTimeMs = 0;
-  private static final int PUSH_TASK_PERIOD_MS = 1 * 60 * 1000;
+  // for sending to the main app via intent
+  public static final long SEND_DATA_PERIOD_MS = 1 * 1000;
+  public static final long PUSH_DATA_PERIOD_MS = 1 * 60 * 1000;
 
   public boolean isDebuggable = false;
 
@@ -127,15 +119,17 @@ public class ActivityService
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mGravity;
-  //private Sensor mGyroscope;
+  private Sensor mGyroscope;
   private Sensor mOffBodyDetect;
+
+  // for sending data to the app and the backend
+  private HandlerThread mHandlerThread;
+  private Handler mHandler;
+  private Runnable mSendTask;
+  private Runnable mPushTask;
 
   private KinveyApiService mKinveyApiService;
   private String mKinveyAuthorization = null;
-
-  // for sending to the main app via intent
-  private long _lastSendDataTimeMs = 0;
-  public static final long SEND_DATA_INTERVAL_MS = 5000;
 
   // activity detection
   public boolean personIsActive = false;
@@ -154,6 +148,14 @@ public class ActivityService
   public ActivityService() {
   }
 
+  /*
+  @Override
+  public IBinder onBind(Intent intent) {
+    // TODO: Return the communication channel to the service.
+    throw new UnsupportedOperationException("Not yet implemented");
+  }
+  */
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -171,6 +173,51 @@ public class ActivityService
     activityDetector = new ActivityDetector(this);
     db = new DatabaseHandler(this);
     datastore = new Datastore(this);
+    mHandlerThread = new HandlerThread("com.permobil.pushtracker.thread");
+    mHandlerThread.start();
+    mHandler = new Handler(this.mHandlerThread.getLooper());
+    // mHandler = new Handler();
+    mSendTask = new Runnable() {
+        @Override
+        public void run() {
+          try {
+            synchronized (currentActivity) {
+              Log.d(TAG, "Sending data to app...");
+              // update data in datastore / shared preferences for use
+              // with the complication providers and mobile app
+              datastore.setData(currentActivity.push_count,
+                                currentActivity.coast_time_avg,
+                                currentActivity.distance_watch);
+              // update data in SQLite tables
+              db.updateRecord(currentActivity);
+              // send intent to main activity with updated data
+              sendDataToActivity(currentActivity.push_count,
+                                 currentActivity.coast_time_avg,
+                                 currentActivity.distance_watch);
+            }
+          } catch (Exception e) {
+            Sentry.capture(e);
+            Log.e(TAG, "Exception sending data: " + e.getMessage());
+            // post to the push runnable to try again
+            mHandler.removeCallbacks(mSendTask);
+            mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
+          }
+        }
+      };
+    mPushTask = new Runnable() {
+        @Override
+        public void run() {
+          try {
+            PushDataToKinvey();
+          } catch (Exception e) {
+            Sentry.capture(e);
+            Log.e(TAG, "Exception pushing data: " + e.getMessage());
+            // post to the push runnable to try again
+            mHandler.removeCallbacks(mPushTask);
+            mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+          }
+        }
+      };
 
     // initialize data
     loadFromDatabase();
@@ -239,42 +286,78 @@ public class ActivityService
   }
 
   @Override
-  public void onMessageReceived(MessageEvent event) {
-    Log.d(TAG, "onMessageReceived: " + event);
-    Log.d(TAG, "Message Path: " + event.getData().toString());
-    Log.d(TAG, "Message: " + new String(event.getData()));
+  public void onMessageReceived(MessageEvent messageEvent) {
+    Log.d(TAG, "onMessageReceived: " + messageEvent);
+    Log.d(TAG, "Message Path: " + messageEvent.getData().toString());
+    String message = new String(messageEvent.getData());
+    Log.d(TAG, "Message: " + message);
+
+    String token = "";
+    String userId = "";
+    // get authorization (parse into token / user id from string or
+    // depending on path) - right now we're just parsing a string of
+    // the form: "${auth token}:${user id}", but we should send them
+    // to different paths in case the auth token can have ':' in it...
+    String[] parts = message.split(":", 0);
+    if (parts.length != 2) {
+      Log.e(TAG, "Error, bad auth received!");
+      return;
+    }
+    token = parts[0];
+    userId = parts[1];
+    Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
+
+    // write token to content provider for smartdrive wear
+    ContentValues tokenValue = new ContentValues();
+    tokenValue.put("data", token);
+    getContentResolver()
+      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI, tokenValue);
+
+    // write token to app settings for pushtracker wear
+    datastore.setAuthorization(token);
+
+    // write user id to content provider for smartdrive wear
+    ContentValues userValue = new ContentValues();
+    userValue.put("data", userId);
+    getContentResolver()
+      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI, userValue);
+
+    // write user id to app settings for pushtracker wear
+    datastore.setUserId(userId);
   }
 
   private void loadFromDatabase() {
     // TODO: load from sqlite here
     long tableRowCount = db.getTableRowCount();
-    if (tableRowCount == 0) {
-      // make new DailyActivity
-      currentActivity = new DailyActivity();
-      // go ahead and write it to db
-      db.addRecord(currentActivity);
-    } else {
-      // get latest record
-      DailyActivity dailyActivity = db.getMostRecent(false);
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-      // get current date
-      Date now = Calendar.getInstance().getTime();
-      String nowString = simpleDateFormat.format(now);
-      if (dailyActivity.date.equals(nowString)) {
-        // use the one we found
-        currentActivity = dailyActivity;
-      } else {
+    synchronized (currentActivity) {
+      if (tableRowCount == 0) {
         // make new DailyActivity
         currentActivity = new DailyActivity();
         // go ahead and write it to db
         db.addRecord(currentActivity);
+      } else {
+        // get latest record
+        DailyActivity dailyActivity = db.getMostRecent(false);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        // get current date
+        Date now = Calendar.getInstance().getTime();
+        String nowString = simpleDateFormat.format(now);
+        if (dailyActivity.date.equals(nowString)) {
+          // use the one we found
+          currentActivity = dailyActivity;
+        } else {
+          // make new DailyActivity
+          currentActivity = new DailyActivity();
+          // go ahead and write it to db
+          db.addRecord(currentActivity);
+        }
       }
+      // make sure to set the serial number
+      currentActivity.watch_serial_number = this.watchSerialNumber;
     }
-    // make sure to set the serial number
-    currentActivity.watch_serial_number = this.watchSerialNumber;
   }
 
-  private void PushDataToKinvey() {
+  private void PushDataToKinvey() throws Exception {
     Log.d(TAG, "PushDataToKinvey()");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
@@ -283,7 +366,7 @@ public class ActivityService
       if (token == null || token.isEmpty()) {
         // we have still not gotten the token, so don't send anything
         // to the database
-        return;
+        throw new Exception("No authorization token provided for kinvey");
       }
       // we have gotten the token, save it so we can use it!
       mKinveyAuthorization = token;
@@ -313,8 +396,10 @@ public class ActivityService
               // update the has_been_sent field for that
               // activity
               db.markRecordAsSent(item._id);
-              if (item._id.equals(currentActivity._id)) {
-                currentActivity.has_been_sent = true;
+              synchronized (currentActivity) {
+                if (item._id.equals(currentActivity._id)) {
+                  currentActivity.has_been_sent = true;
+                }
               }
             } else {
               Log.e(TAG, "send data not successful - " +
@@ -381,28 +466,30 @@ public class ActivityService
     this.timeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-          // Log.d(TAG, "TimeReceiver::onReceive()");
-          // get the date from the datastore
-          String currentDate = currentActivity.date;
-          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
-          // get current date
-          Date now = Calendar.getInstance().getTime();
-          String nowString = simpleDateFormat.format(now);
-          boolean sameDate = currentDate.equals(nowString);
-          // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
-          // determine if it's a new day
-          if (!sameDate) {
-            // reset values to zero
-            currentActivity = new DailyActivity();
-            // make sure to set the serial number
-            currentActivity.watch_serial_number = watchSerialNumber;
-            // update the datastore - these are for the complication
-            // providers and the pushtracker wear app
-            datastore.setData(currentActivity.push_count,
-                              currentActivity.coast_time_avg,
-                              currentActivity.distance_watch);
-            // go ahead and write it to db
-            db.addRecord(currentActivity);
+          synchronized (currentActivity) {
+            // Log.d(TAG, "TimeReceiver::onReceive()");
+            // get the date from the datastore
+            String currentDate = currentActivity.date;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            // get current date
+            Date now = Calendar.getInstance().getTime();
+            String nowString = simpleDateFormat.format(now);
+            boolean sameDate = currentDate.equals(nowString);
+            // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
+            // determine if it's a new day
+            if (!sameDate) {
+              // reset values to zero
+              currentActivity = new DailyActivity();
+              // make sure to set the serial number
+              currentActivity.watch_serial_number = watchSerialNumber;
+              // update the datastore - these are for the complication
+              // providers and the pushtracker wear app
+              datastore.setData(currentActivity.push_count,
+                                currentActivity.coast_time_avg,
+                                currentActivity.distance_watch);
+              // go ahead and write it to db
+              db.addRecord(currentActivity);
+            }
           }
         }
       };
@@ -417,10 +504,11 @@ public class ActivityService
   void handleDetection(ActivityDetector.Detection detection) {
     // Log.d(TAG, "detection: " + detection);
     if (detection.confidence > 0) {
-      hasNewActivity = true;
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
-        currentActivity.onPush(detection);
+        synchronized (currentActivity) {
+          currentActivity.onPush(detection);
+        }
       }
     }
   }
@@ -547,19 +635,12 @@ public class ActivityService
     Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
   }
 
-  private boolean hasNewActivity = false;
-  private boolean hasGyro = false;
-  private boolean hasAccl = false;
-  private boolean hasGrav = false;
   private boolean hasData = false;
-  private long numDataSend =0;
-  private long numValidData=0;
   private long numUnValidData=0;
   private float[] activityDetectorData = new float[ActivityDetector.InputSize];
   private long lastCheckTimeMs = 0;
   private static long WEAR_CHECK_TIME_MS = 1000;
 
-  private long lastDataTimeStamp =0;
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
@@ -577,61 +658,19 @@ public class ActivityService
     // detect activity
     if (canRunDetector()) {
       // reset flags for running detector
-      //hasGyro = false;
-      // hasGrav = false;
-      // hasAccl = false;
-      numDataSend++;
-      // if(numDataSend==1)
-      //   Log.e(TAG,"Start Sending Data to model.");
       hasData = false;
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
       handleDetection(detection);
-      // if ((event.timestamp - lastDataTimeStamp >= 35*1000*1000) &&(lastDataTimeStamp>0)&&(event.timestamp - lastDataTimeStamp <= 45*1000*1000))
-      // {
-        
-      // }
-      // else{
-      //   numValidData++;
-      //   Log.e(TAG,"nonValidTimeStamp"+(event.timestamp - lastDataTimeStamp));
-      // }
-      
-      lastDataTimeStamp=event.timestamp;
       // reset the data
       clearDetectorInputs();
-      // do we need to send data to the app?
-      timeDiffMs = now - _lastSendDataTimeMs;
-      if (timeDiffMs > SEND_DATA_INTERVAL_MS ){//&& hasNewActivity) {
-        // reset flag
-        hasNewActivity = false;
-        // Log.e(TAG,"Send activity.");
-        // Log.e(TAG,"numNonValiData: "+numValidData);
-        // Log.e(TAG,"numAcc: "+numAccl +"; numGrav: "+numGrav+"; numDataSend: "+numDataSend);
-        // update data in datastore / shared preferences for use
-        // with the complication providers and mobile app
-        datastore.setData(currentActivity.push_count,
-                          currentActivity.coast_time_avg,
-                          currentActivity.distance_watch);
-        // update data in SQLite tables
-        db.updateRecord(currentActivity);
-        // send intent to main activity with updated data
-        sendDataToActivity(currentActivity.push_count,
-                           currentActivity.coast_time_avg,
-                           currentActivity.distance_watch);
-        _lastSendDataTimeMs = now;
-      }
-    }
-    // do we need to send data to the backend?
-    timeDiffMs = now - _lastPushDataTimeMs;
-    if (timeDiffMs > PUSH_TASK_PERIOD_MS) {
-      try {
-        PushDataToKinvey();
-      } catch (Exception e) {
-        Sentry.capture(e);
-        Log.e(TAG, "Exception pushing data: " + e.getMessage());
-      }
-      _lastPushDataTimeMs = now;
+      // post to the send runnable
+      mHandler.removeCallbacks(mSendTask);
+      mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
+      // post to the push runnable
+      mHandler.removeCallbacks(mPushTask);
+      mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
     }
   }
 
@@ -641,7 +680,7 @@ public class ActivityService
   }
 
   boolean canRunDetector() {
-    return hasData && //hasAccl && hasGrav && // hasGyro &&
+    return hasData &&
       (watchBeingWorn || disableWearCheck);
   }
 
@@ -652,8 +691,6 @@ public class ActivityService
   }
 
   private long numGrav = 0;
-  
-  //private long numGyro = 0;
   private long numAccl = 0;
   private static final long LOG_TIME_MS = 1000;
   private long lastLogTimeMs = 0;
@@ -674,51 +711,22 @@ public class ActivityService
     }
     */
 
-    if (sensorType == Sensor.TYPE_GYROSCOPE) {
-      // numGyro++;
-      // hasGyro = true;
-      // for (int i=0; i<3; i++) {
-      //   activityDetectorData[i + ActivityDetector.InputGyroOffset] = event.values[i];
-      // }
-    } else if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
+    if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       numAccl++;
-      //hasAccl = true;
-
       mAccList.add(event.values);
-
-
-      // for (int i=0; i<3; i++) {
-      //   activityDetectorData[i + ActivityDetector.InputAcclOffset] = event.values[i];
-      // }
-
     } else if (sensorType == Sensor.TYPE_GRAVITY) {
       numGrav++;
-      //hasGrav = true;
-
       mGravList.add(event.values);
-
-
-      // for (int i=0; i<3; i++) {
-      //   activityDetectorData[i + ActivityDetector.InputGravOffset] = event.values[i];
-      // }
     }
-
-
 
     if (mAccList.size() > 0 && mGravList.size() > 0) {
       for (int i=0; i<3; i++) {
         activityDetectorData[i + ActivityDetector.InputAcclOffset] = mAccList.get(0)[i];
-        activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i]; 
+        activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i];
       }
-      // if (numAccl%100==0)
-      // {
-      //   Log.e(TAG,"numAcc:"+numAccl+"; acc:" + activityDetectorData[0] +" "+activityDetectorData[1]+" "+activityDetectorData[2]+"; Grav: "+activityDetectorData[3]+" "+activityDetectorData[4]+" "+activityDetectorData[5]);
-      // }
       hasData = true;
       mAccList.remove(0);
       mGravList.remove(0);
-
-      
     }
 
   }
@@ -770,20 +778,20 @@ public class ActivityService
     }
   }
 
-  // private void registerGyroscope(int delay, int reportingLatency) {
-  //   if (mSensorManager != null) {
-  //     mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-  //     if (mGyroscope != null)
-  //       mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
-  //   }
-  // }
+  private void registerGyroscope(int delay, int reportingLatency) {
+    if (mSensorManager != null) {
+      mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+      if (mGyroscope != null)
+        mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
+    }
+  }
 
-  // private void unregisterGyroscope() {
-  //   if (mSensorManager != null) {
-  //     if (mGyroscope != null)
-  //       mSensorManager.unregisterListener(this, mGyroscope);
-  //   }
-  // }
+  private void unregisterGyroscope() {
+    if (mSensorManager != null) {
+      if (mGyroscope != null)
+        mSensorManager.unregisterListener(this, mGyroscope);
+    }
+  }
 
   private void registerBodySensor(int delay, int reportingLatency) {
     if (mSensorManager != null) {
@@ -840,8 +848,8 @@ public class ActivityService
 
   @Override
   public void onDestroy() {
-    Log.d(TAG, "onDestroy()...");
     super.onDestroy();
+    Log.d(TAG, "onDestroy()...");
 
     try {
       // unregister time receiver
@@ -849,15 +857,22 @@ public class ActivityService
         this.unregisterReceiver(this.timeReceiver);
         this.timeReceiver = null;
       }
+
       // unregister battery receiver
       if (this.batteryReceiver != null) {
         this.unregisterReceiver(this.batteryReceiver);
         this.batteryReceiver = null;
       }
+
       // remove sensor listeners
       unregisterDeviceSensors();
+
       // remove location listener
       // mLocationManager.removeUpdates(this);
+
+      // remove all callbacks from the handler
+      mHandler.removeCallbacksAndMessages(null);
+      mHandlerThread.quitSafely();
     } catch (Exception e) {
       Sentry.capture(e);
       Log.e(TAG, "onDestroy() Exception: " + e);
