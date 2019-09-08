@@ -716,10 +716,10 @@ export class MainViewModel extends Observable {
 
   onResultData(resultCode: number, resultData: android.os.Bundle) {
     Log.D('onResultData:', resultCode);
-    if (resultCode == com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
+    if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
       Log.D('result ok!');
-      //new android.support.wearable.view.ConfirmationOverlay().showOn(this);
-    } else if (resultCode == com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
+      // new android.support.wearable.view.ConfirmationOverlay().showOn(this);
+    } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
       Log.D('result failed!');
       /*
       new android.support.wearable.view.ConfirmationOverlay()
@@ -727,7 +727,7 @@ export class MainViewModel extends Observable {
         .showOn(ad.getApplicationContext());
       */
     } else {
-      Log.E("Unexpected result " + resultCode);
+      Log.E('Unexpected result ' + resultCode);
     }
   }
 
@@ -740,7 +740,7 @@ export class MainViewModel extends Observable {
   private mResultReceiver = new ResultReceiver(new android.os.Handler());
 
   openAppOnPhone() {
-    Log.D("openAppInStoreOnPhone()");
+    Log.D('openAppInStoreOnPhone()');
 
     this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
 
@@ -749,7 +749,7 @@ export class MainViewModel extends Observable {
     switch (phoneDeviceType) {
       // Paired to Android phone, use Play Store URI.
       case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-        Log.D("\tDEVICE_TYPE_ANDROID");
+        Log.D('\tDEVICE_TYPE_ANDROID');
         // Create Remote Intent to open Play Store listing of app on remote device.
         const intentAndroid =
           new android.content.Intent(android.content.Intent.ACTION_VIEW)
@@ -764,7 +764,7 @@ export class MainViewModel extends Observable {
 
       // Paired to iPhone, use iTunes App Store URI
       case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-        Log.D("\tDEVICE_TYPE_IOS");
+        Log.D('\tDEVICE_TYPE_IOS');
 
         // Create Remote Intent to open App Store listing of app on iPhone.
         const intentIOS =
@@ -779,7 +779,7 @@ export class MainViewModel extends Observable {
         break;
 
       case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-        Log.E("\tDEVICE_TYPE_ERROR_UNKNOWN");
+        Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
         break;
     }
   }
