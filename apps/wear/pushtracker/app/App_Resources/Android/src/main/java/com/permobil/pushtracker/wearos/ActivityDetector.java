@@ -73,7 +73,6 @@ public class ActivityDetector {
    */
   public static final int InputSize = 6;
   private static final int StateSize = 128;
-  //public static final int InputGyroOffset = 0;
   public static final int InputAcclOffset = 0;
   public static final int InputGravOffset = 3;
   private static final int Input_StateIndex = 1;
@@ -223,7 +222,6 @@ public class ActivityDetector {
     float prediction = parsedPrediction[0][0];
     // Log.d(TAG, "prediction: " + prediction);
     // update the prediction history
-    //updatePredictions(prediction);
     updatePredictions(prediction);
     // determine the activity
     return getActivity(timestamp);
