@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core/src';
+import { Log } from '@permobil/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { CalendarMonthViewStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -152,7 +153,8 @@ export class ActivityTabComponent implements OnInit {
     const pullRefresh = args.object;
     this.activityLoaded = false;
     this.onSelectedIndexChanged({
-      object: { selectedIndex: this.tabSelectedIndex }
+      object: { selectedIndex: this.tabSelectedIndex },
+      options: { forcePullFromDatabase: true }
     }).then(() => {
       this.activityLoaded = true;
       pullRefresh.refreshing = false;
@@ -208,6 +210,7 @@ export class ActivityTabComponent implements OnInit {
   async onSelectedIndexChanged(args) {
     const date = this.currentDayInView;
     this.tabSelectedIndex = args.object.selectedIndex;
+    const forcePullFromDatabase = (args.options ? args.options.forcePullFromDatabase : false) || false;
     if (this.tabSelectedIndex === 0) {
       this.chartTitle =
         this.dayNames[date.getDay()] +
@@ -216,10 +219,10 @@ export class ActivityTabComponent implements OnInit {
         ' ' +
         date.getDate();
       this._initDayChartTitle();
-      this._debouncedLoadDailyActivity();
+      this._debouncedLoadDailyActivity(forcePullFromDatabase);
     } else if (this.tabSelectedIndex === 1) {
       this._initWeekChartTitle();
-      this._debouncedLoadWeeklyActivity();
+      this._debouncedLoadWeeklyActivity(forcePullFromDatabase);
     } else if (this.tabSelectedIndex === 2) {
       this._initMonthChartTitle();
     }
@@ -375,7 +378,7 @@ export class ActivityTabComponent implements OnInit {
     }
   }
 
-  private async _loadDailyActivity() {
+  private async _loadDailyActivity(forcePullFromDatabase: boolean = false) {
     this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
@@ -387,7 +390,7 @@ export class ActivityTabComponent implements OnInit {
     // Get the weekly summary for the current week
     // Find the dailyactivity for the currentDayInView from the weekly summary
     // Cache and visualize
-    this._loadWeeklyActivity().then(() => {
+    this._loadWeeklyActivity(forcePullFromDatabase).then(() => {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
       const getIndex = function (date1, date2) {
         // date1 = Week start, date2 = current date
@@ -500,7 +503,7 @@ export class ActivityTabComponent implements OnInit {
     this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
-  private async _loadWeeklyActivity() {
+  private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
     this.activityLoaded = false;
     let didLoad = false;
     // Check if data is available in daily activity cache first
@@ -510,7 +513,11 @@ export class ActivityTabComponent implements OnInit {
       ((this.viewMode === ViewMode.COAST_TIME ||
         this.viewMode === ViewMode.PUSH_COUNT) &&
         this.weekStart.toUTCString() in this._weeklyActivityCache);
-    if (!cacheAvailable) {
+    if (!cacheAvailable || forcePullFromDatabase) {
+
+      if (forcePullFromDatabase)
+        Log.D('Forcing pull from database instead of using cache');
+
       if (this.viewMode === ViewMode.DISTANCE)
         didLoad = await this._usageService.loadWeeklyActivity(this.weekStart);
       else
@@ -547,6 +554,8 @@ export class ActivityTabComponent implements OnInit {
       this._updateWeeklyActivityAnnotationValue();
     } else {
       // We have the data cached. Pull it up
+      Log.D('Using local cache instead of pulling from database');
+
       didLoad = true;
       let cache = null;
       if (this.viewMode === ViewMode.DISTANCE)
