@@ -732,8 +732,8 @@ export class MainViewModel extends Observable {
   }
 
   private ANDROID_MARKET_APP_URI =
-    // 'market://details?id=com.permobil.pushtracker';
-    'market://details?id=com.iconfactory.smartdrive';
+    'market://details?id=com.permobil.pushtracker';
+  // 'market://details?id=com.iconfactory.smartdrive';
   private APP_STORE_APP_URI =
     'https://itunes.apple.com/us/app/android-wear/id986496028?mt=8';
 
