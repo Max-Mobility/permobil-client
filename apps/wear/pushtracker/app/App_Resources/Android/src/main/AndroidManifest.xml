@@ -97,7 +97,8 @@
 
     <!-- for confirmation (success / failure / open-on-phone) activity -->
     <activity
-        android:name="android.support.wearable.activity.ConfirmationActivity">
+        android:name="android.support.wearable.activity.ConfirmationActivity"
+        android:theme="@style/Theme.Transparent">
     </activity>
     <!-- end for confirmation (success / failure / open-on-phone) activity -->
 

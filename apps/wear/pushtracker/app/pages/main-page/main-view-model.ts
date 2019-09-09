@@ -810,7 +810,9 @@ export class MainViewModel extends Observable {
         android.support.wearable.activity.ConfirmationActivity.EXTRA_MESSAGE,
         message);
     }
+    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
+    application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   registerForTimeUpdates() {

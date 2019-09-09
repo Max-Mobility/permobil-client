@@ -2507,7 +2507,9 @@ export class MainViewModel extends Observable {
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
       android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
+    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
+    application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
   async onPairingTap() {
