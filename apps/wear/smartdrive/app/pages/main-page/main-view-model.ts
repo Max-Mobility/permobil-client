@@ -2423,7 +2423,7 @@ export class MainViewModel extends Observable {
     'market://details?id=com.permobil.pushtracker';
   // 'market://details?id=com.iconfactory.smartdrive';
   private APP_STORE_APP_URI =
-    'https://itunes.apple.com/us/app/android-wear/id986496028?mt=8';
+    'https://itunes.apple.com/us/app/pushtracker/id1121427802';
 
   private mResultReceiver = new ResultReceiver(new android.os.Handler());
 
