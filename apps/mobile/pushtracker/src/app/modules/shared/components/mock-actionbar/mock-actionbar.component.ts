@@ -36,7 +36,6 @@ export class MockActionbarComponent {
   @Output() watchConnectEvent = new EventEmitter();
   watchConnectIconString: string;
   watchConnectIcon: ImageSource;
-
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
   watchIconString: string;
@@ -196,7 +195,7 @@ export class MockActionbarComponent {
 
   public updateWatchIcon(event: any) {
     this._zone.run(() => {
-      Log.D('MockActionBar - Watch Status Change:', event.data);
+      // Log.D('MockActionBar - Watch Status Change:', event.data);
       const state =
         (event && event.data && event.data.state) ||
         BluetoothService.pushTrackerStatus.get('state');
