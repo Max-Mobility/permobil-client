@@ -81,7 +81,7 @@ export class SettingsService {
       // configure the query to search for only settings that were
       // saved by this user, and to get only the most recent settings
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.ect');
+      query.descending('_kmd.lmt');
       query.limit = 1;
 
       const stream = this.datastore.find(query);

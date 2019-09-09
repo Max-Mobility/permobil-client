@@ -61,7 +61,7 @@ export class ActivityService {
       // configure the query to search for only activity that was
       // saved by this user, and to get only the most recent activity
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.ect');
+      query.descending('_kmd.lmt');
       query.limit = 1;
       const month = date.getMonth() + 1;
       const day = date.getDate();
@@ -99,7 +99,7 @@ export class ActivityService {
       // configure the query to search for only activity that was
       // saved by this user, and to get only the most recent activity
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.ect');
+      query.descending('_kmd.lmt');
       query.limit = 1;
       query.equalTo('data_type', 'WeeklyActivity');
 
