@@ -177,15 +177,9 @@ export class HomeTabComponent {
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(
       this._weekStart
     );
-    if (didLoad) {
-      this.usageActivity = new ObservableArray(
-        this._formatUsageForView('Week')
-      );
-    } else {
-      this.usageActivity = new ObservableArray(
-        this._formatUsageForView('Week')
-      );
-    }
+    this.usageActivity = new ObservableArray(
+      this._formatUsageForView('Week')
+    );
     this.distanceGoalMessage = 'Travel ';
     this.distanceGoalValue = this._updateDistanceUnit(
       this.user.data.activity_goal_distance
@@ -243,15 +237,9 @@ export class HomeTabComponent {
     const didLoad = await this._activityService.loadWeeklyActivity(
       this._weekStart
     );
-    if (didLoad) {
-      this.weeklyActivity = new ObservableArray(
-        this._formatActivityForView('Week')
-      );
-    } else {
-      this.weeklyActivity = new ObservableArray(
-        this._formatActivityForView('Week')
-      );
-    }
+    this.weeklyActivity = new ObservableArray(
+      this._formatActivityForView('Week')
+    );
     this._updateCoastTimePlotYAxis();
 
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
