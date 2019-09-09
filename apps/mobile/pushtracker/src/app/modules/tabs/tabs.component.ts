@@ -83,7 +83,7 @@ export class TabsComponent {
       trailing: true
     });
 
-    this._throttledOnDistanceEvent = throttle(this.onDistanceEvent, 60 * 1000, {
+    this._throttledOnDistanceEvent = throttle(this.onDistanceEvent, TEN_MINUTES, {
       leading: true,
       trailing: true
     });
