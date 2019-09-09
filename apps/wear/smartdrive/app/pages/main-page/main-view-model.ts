@@ -206,7 +206,7 @@ export class MainViewModel extends Observable {
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
-  private CHARGING_WORK_PERIOD_MS = 30 * 1000;
+  private CHARGING_WORK_PERIOD_MS = 1 * 60 * 1000;
   private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
   private _lastChartDay = null;
 
