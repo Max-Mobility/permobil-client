@@ -114,6 +114,7 @@
     "power-assist-beep": "Power Assist Beep",
     "profile": "Profile",
     "pushes": "pushes",
+    "pushes-today": "pushes today",
     "pushtracker-connected": "PushTracker connected",
     "pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration. You can see plots of hourly activity only with the PushTracker E2.",
     "pushtracker-disconnected": "PushTracker disconnected",
@@ -143,10 +144,10 @@
       "title": "Wireless Updates"
     },
     "drive-distance": "Drive Distance",
-    "odometer": "miles",
+    "odometer": "miles total",
+    "odometer-km": "kilometers total",
     "miles-today": "miles today",
-    "km-today": "km today",
-    "odometer-km": "km"
+    "km-today": "kilometers today"
   },
   "home-tab": {
     "kilometers-to-go": "kilometers to go",
