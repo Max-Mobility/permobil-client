@@ -274,7 +274,7 @@ export class HomeTabComponent {
       }
     ] as any[]);
     this.distanceCirclePercentage =
-      (this._updateDistanceUnit(parseFloat(this.todayCoastDistance)) /
+      (parseFloat(this.todayCoastDistance) /
       this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
       100;
     this._updateDistancePlotYAxis();
@@ -401,7 +401,7 @@ export class HomeTabComponent {
       }
     ] as any[]);
     this.distanceCirclePercentage =
-      (this._updateDistanceUnit(parseFloat(this.todayCoastDistance)) /
+      (parseFloat(this.todayCoastDistance) /
       this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
       100;
     this._updateDistancePlotYAxis();
