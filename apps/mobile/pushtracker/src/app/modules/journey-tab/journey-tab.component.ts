@@ -478,7 +478,7 @@ export class JourneyTabComponent implements OnInit {
       });
     };
 
-    const HALF_HOUR = 30 * 60 * 1000; /* ms */
+    const FORTY_FIVE_MINUTES = 45 * 60 * 1000; /* ms */
 
     if (journeyList.length > 1) {
       for (const i in journeyList) {
@@ -497,7 +497,7 @@ export class JourneyTabComponent implements OnInit {
           const timeDiff = secondDate.getTime() - firstDate.getTime();
           if (first.stats.journeyType === second.stats.journeyType &&
               first.stats.timeOfDay === second.stats.timeOfDay &&
-              timeDiff === HALF_HOUR) {
+              timeDiff < FORTY_FIVE_MINUTES) {
             journeyList[firstIndex].stats.coastTime =
               ((journeyList[firstIndex].stats.coastTimeTotal || 0) + second.stats.coastTimeTotal || 0) /
               (((journeyList[firstIndex].stats.pushCount || 0) + second.stats.pushCount || 0) || 1);
