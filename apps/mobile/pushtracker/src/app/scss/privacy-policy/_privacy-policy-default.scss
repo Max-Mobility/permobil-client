@@ -5,16 +5,6 @@
   @extend .APP_INFO_LAYOUT_BASE;
   background-color: $white;
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
-    color: $black;
-  }
-
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $black;
-  }
-
   .title {
     @extend .TITLE_BASE;
     color: $black;
@@ -32,7 +22,6 @@
 
   .ok-btn {
     @extend .OK_BTN_BASE;
-
     background-color: #1c72e6;
     color: $white;
   }

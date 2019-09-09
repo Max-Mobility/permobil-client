@@ -9,16 +9,6 @@
     background-color: $black;
   }
 
-  .close-btn {
-    @extend .CLOSE_BTN_BASE;
-    color: $white;
-  }
-
-  .more-btn {
-    @extend .MORE_BTN_BASE;
-    color: $white;
-  }
-
   .title {
     @extend .TITLE_BASE;
     color: $white;
@@ -36,7 +26,6 @@
 
   .ok-btn {
     @extend .OK_BTN_BASE;
-
     background-color: $permobil-cousteau;
     color: $white;
   }
@@ -44,6 +33,7 @@
   .cancel-btn {
     @extend .CANCEL_BTN_BASE;
     color: #3d4144;
+    text-transform: capitalize;
   }
 
   .setting-switch {

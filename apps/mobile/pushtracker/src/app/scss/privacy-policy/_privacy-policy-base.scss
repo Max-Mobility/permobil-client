@@ -6,27 +6,6 @@
   vertical-align: center;
   horizontal-align: center;
 
-  .CLOSE_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    padding: 4;
-    font-family: $material-icon;
-    horizontal-align: left;
-    vertical-align: center;
-  }
-
-  .MORE_BTN_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 30;
-    font-family: $material-icon;
-    horizontal-align: right;
-    vertical-align: center;
-  }
-
   .TITLE_BASE {
     font-size: 26;
     font-family: $os;
