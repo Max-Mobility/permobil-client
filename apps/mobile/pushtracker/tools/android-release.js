@@ -25,7 +25,7 @@ askKeystorePassword().then(result => {
   );
   // execute the android release build cmd with the result as password
   exec(
-    `tns build android --release --env.aot --env.uglify --key-store-path ./tools/pushtracker-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./pushtracker.aab`,
+    `tns build android --release --env.aot --env.uglify --key-store-path ./pushtracker-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./pushtracker.aab`,
     // `tns build android --release --env.aot --env.uglify --key-store-path ./tools/pushtracker-keystore.jks --key-store-password ${result} --key-store-alias upload --key-store-alias-password ${result} --aab --copy-to ./pushtracker.aab`,
     (err, stdout, stderr) => {
       if (err) {
