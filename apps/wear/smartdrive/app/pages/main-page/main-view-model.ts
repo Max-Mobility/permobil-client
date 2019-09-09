@@ -2503,6 +2503,10 @@ export class MainViewModel extends Observable {
         android.support.wearable.activity.ConfirmationActivity.EXTRA_MESSAGE,
         message);
     }
+    intent.addFlags(
+      android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+    );
     application.android.foregroundActivity.startActivity(intent);
   }
 

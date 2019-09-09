@@ -23,7 +23,6 @@ export class KinveyService {
   public watch_serial_number: string = null;
 
   constructor() {
-    // configure authorization here:
     // TODO: try to load authorization from ContentProvider
   }
 
