@@ -55,6 +55,7 @@ export class JourneyTabComponent implements OnInit {
   private _noMorePushTrackerActivityDataAvailable = false;
   private _noMoreSmartDriveUsageDataAvailable = false;
   private _noMoreDataAvailable = false;
+  private _currentTheme = '';
 
   constructor(
     private _logService: LoggingService,
@@ -85,6 +86,12 @@ export class JourneyTabComponent implements OnInit {
       if (!user) return;
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
+      if (this._currentTheme !== '' && this._currentTheme !== this.savedTheme) {
+        // Theme has changed - Refresh view so icon images can update
+        // to match the theme
+        this._refresh();
+      }
+      this._currentTheme = this.savedTheme;
     });
 
     this._loadDataForDate(this._weekStart, true).then(() => {
