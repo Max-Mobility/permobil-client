@@ -628,11 +628,6 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
-    try {
-      // this.loadSmartDriveInfoFromKinvey();
-    } catch (err) {
-      Sentry.captureException(err);
-    }
   }
 
   onAppLowMemory(args?: any) {
@@ -1186,64 +1181,6 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
-  async loadSmartDriveInfoFromKinvey() {
-    try {
-      const dates = DailyActivity.Info.getPastDates(7);
-      const startTimes = dates.map(d => d.getTime());
-      const queries = {
-        'watch_serial_number': this.watchSerialNumber,
-        'data_type': 'SmartDriveDailyInfo',
-        'start_time': { '$gte': startTimes[0] }
-      };
-      // Log.D('querying', queries);
-      const response = await this.kinveyService.getEntry(
-        KinveyService.api_smartdrive_usage_db,
-        queries
-      );
-      const statusCode = response.statusCode;
-      if (statusCode === 200) {
-        const days = response.content.toJSON();
-        const maxDist = days.reduce((max, obj) => {
-          const caseStart = obj.distance_smartdrive_coast_start;
-          const caseEnd = obj.distance_smartdrive_coast;
-          const distance = this.caseTicksToMiles(caseEnd - caseStart);
-          return distance > max ? distance : max;
-        }, 0.0);
-        // update distance data
-        const dayMap = {};
-        days.map(d => {
-          const caseStart = d.distance_smartdrive_coast_start;
-          const caseEnd = d.distance_smartdrive_coast;
-          const distance = this.caseTicksToMiles(caseEnd - caseStart);
-          dayMap[d.date] = distance * 100.0 / (maxDist || 1);
-        });
-        const distanceData = dates.map(d => {
-          const dStr = this.format(new Date(d), 'YYYY/MM/DD');
-          const data = dayMap[dStr];
-          let distance = 0;
-          if (data) {
-            distance = data;
-          }
-          return {
-            day: this.format(new Date(d), 'dd'),
-            value: distance
-          };
-        });
-        // Log.D('Highest Distance Value:', maxDist);
-        this.distanceChartMaxValue = maxDist.toFixed(1);
-        this.distanceChartData = distanceData;
-
-        // update the chart
-        this.updateDisplay();
-      } else {
-        throw response;
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E(err);
-    }
-  }
-
   private sentryBreadCrumb(message: string) {
     Sentry.captureBreadcrumb({
       message,
