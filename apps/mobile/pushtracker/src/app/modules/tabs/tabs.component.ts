@@ -352,7 +352,12 @@ export class TabsComponent {
       start_time: date.getTime(),
       watch_serial_number: this.user.data.pushtracker_serial_number
     };
-    this._activityService.saveDailyActivityFromPushTracker(dailyActivity);
+    this._activityService.saveDailyActivityFromPushTracker(dailyActivity).then((result) => {
+      if (result)
+        Log.D('DailyActivity from PushTracker successfully saved in database');
+      else
+        Log.E('Failed to saved DailyActivity from PushTracker in database');
+    });
 
     // Request distance information from PushTracker
     if (this.pushTracker) {
@@ -394,9 +399,12 @@ export class TabsComponent {
       watch_uuid: '',
       watch_serial_number: this.user.data.pushtracker_serial_number,
     };
-    Log.D('Distance', data);
-    Log.D('SmartDriveDailyInfo', dailyUsage);
-    this._usageService.saveDailyUsageFromPushTracker(dailyUsage);
+    this._usageService.saveDailyUsageFromPushTracker(dailyUsage).then((result) => {
+      if (result)
+        Log.D('SmartDriveDailyInfo from PushTracker successfully saved in database');
+      else
+        Log.E('Failed to saved SmartDriveDailyInfo from PushTracker in database');
+    });
   }
 
   private onPushTrackerDisconnected(args: any) {
