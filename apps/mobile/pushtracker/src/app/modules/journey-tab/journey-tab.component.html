@@ -1,15 +1,13 @@
 // Journey Tab Layout
-<GridLayout rows="*" columns="*" class="journey-tab-layout">
+<GridLayout (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()" rows="*" columns="*" class="journey-tab-layout">
   // main journey-tab layout
   <GridLayout row="0" col="0" rows="auto, *" columns="*">
     <MockActionBar row="0" [showBackNav]="false" [showRefreshBtn]="true" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
     <ScrollView row="1" col="0" padding="10">
-
       <GridLayout height="100%" width="100%" rows="auto, auto, auto, *" columns="auto, *, *, *">
         // Page Title
-        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true"
-          marginBottom="30"></Label>
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true" marginBottom="30"></Label>
 
         // TODO: Move this GridLayout inside the ListView and parameterize by day
         <GridLayout row="1" col="0" width="100%" columns="*, auto, auto, auto, auto">
@@ -20,56 +18,54 @@
           <StackLayout row="0" col="1" class="cousteau-circle" horizontalAlignment="right" verticalAlignment="center">
             <Label text="&#xe5cc;"></Label>
           </StackLayout>
-          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
-            [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' s'" textWrap="true"></Label>
+          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5" [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' s'" textWrap="true"></Label>
 
           // Coast Distance
           <StackLayout row="0" col="3" class="violet-circle" horizontalAlignment="right" verticalAlignment="center">
             <Label text="&#xe5cc;"></Label>
           </StackLayout>
-          <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
-            [text]="getTodayCoastDistance() + ' ' + (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
-            textWrap="true"></Label>
-
+          <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5" [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === 0 ? 'km' : 'mi')" textWrap="true"></Label>
         </GridLayout>
 
         <StackLayout width="95%" marginTop="5" marginBottom="5" row="2" class="hr-light"></StackLayout>
 
-        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" (loadMoreItems)="onLoadMoreItems($event)"
-          class="list-group" *ngIf="journeyItemsLoaded">
+        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (itemTap)="onJourneyItemTap($event)" (loadMoreItems)="onLoadMoreItems($event)" class="list-group" *ngIf="journeyItemsLoaded">
           <ng-template let-item="item" let-odd="odd" let-even="even">
             <GridLayout rows="*, *" columns="*, auto">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
-              <GridLayout row="1" rows="*, *, *" columns="*" width="100%"> 
+              <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
                 // Image and Time
-                <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
-                  [src]="item.icon_small" stretch="aspectFit"></Image>
-                <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
-                  verticalAlignemnt="center" marginTop="5"></Label>
+                <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center" [src]="item.icon_small" stretch="aspectFit"></Image>
+                <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item" verticalAlignemnt="center" marginTop="5"></Label>
 
                 // Coast Time and Coast Distance
-                <Label row="1" col="0" [text]="item.coast_time + ' s' + 
-                  '   •   ' + 
-                  item.push_count + ' pushes' +
-                  '   •   ' +
-                  item.coast_distance + ' ' + (user.data.distance_unit_preference === 0 ? 'km' : 'mi')"
-                  class="journey-item"></Label>
+                <Label
+                  row="1"
+                  col="0"
+                  [text]="item.coast_time + ' s' + '   •   ' + item.push_count + ' pushes' + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === 0 ? 'km' : 'mi')"
+                  class="journey-item"
+                ></Label>
                 // Date - Today, Yesterday or Some Date
                 <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
 
                 // Image and Time
-                <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" 
-                  marginRight="10" verticalAlignment="top"
-                  [src]="item.icon_large" stretch="aspectFit" class="journey-type-image"></Image>
-
+                <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" marginRight="10" verticalAlignment="top" [src]="item.icon_large" stretch="aspectFit" class="journey-type-image"></Image>
               </GridLayout>
             </GridLayout>
           </ng-template>
         </ListView>
 
-        <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="right" *ngIf="!journeyItemsLoaded || showLoadingIndicator"
-          [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true" marginRight="15" marginTop="-30"></ActivityIndicator>
-
+        <ActivityIndicator
+          height="10%"
+          width="10%"
+          verticalAlignment="center"
+          horizontalAlignment="right"
+          *ngIf="!journeyItemsLoaded || showLoadingIndicator"
+          [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'"
+          busy="true"
+          marginRight="15"
+          marginTop="-30"
+        ></ActivityIndicator>
       </GridLayout>
     </ScrollView>
   </GridLayout>

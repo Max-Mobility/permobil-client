@@ -3,95 +3,34 @@
   <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="close()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
-    <StackLayout paddingTop="20">
-      <label
-        class="title"
-        [text]="'user.consent-form-title' | translate"
-        ></label>
+    <StackLayout paddingTop="20" padding="20">
+      <Label class="title" [text]="'user.consent-form-title' | translate"></Label>
       // agreements // end user agreement
-      <label
-        class="section-title"
-        textWrap="true"
-        [text]="'user.accept.header' | translate"
-        ></label>
-      <button
-        width="100%"
-        [text]="'user.accept.agreement-button' | translate"
-        (tap)="openWebsite('user.end-user-agreement-site')"
-        ></button>
+      <Label class="section-title" textWrap="true" [text]="'user.accept.header' | translate"></Label>
+      <Button width="100%" [text]="'user.accept.agreement-Button' | translate" (tap)="openWebsite('user.end-user-agreement-site')"></Button>
       <GridLayout columns="*, auto" rows="auto">
-        <label
-          class="section-text"
-          textWrap="true"
-          [text]="'user.accept.user-agreement' | translate"
-          ></label>
-        <Switch
-          col="1"
-          class="inactive-setting-switch"
-          (checkedChange)="onSettingsChecked($event, 'has_agreed_to_user_agreement')"
-          [checked]="has_agreed_to_user_agreement"
-          ></Switch>
+        <Label class="section-text" textWrap="true" [text]="'user.accept.user-agreement' | translate"></Label>
+        <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_agreed_to_user_agreement')" [checked]="has_agreed_to_user_agreement"></Switch>
       </GridLayout>
       // privacy policy
-      <button
-        width="100%"
-        [text]="'user.accept.privacy-button' | translate"
-        (tap)="openWebsite('user.privacy-policy-site')"
-        ></button>
+      <Button width="100%" [text]="'user.accept.privacy-Button' | translate" (tap)="openWebsite('user.privacy-policy-site')"></Button>
       <GridLayout columns="*, auto" rows="auto">
-        <label
-          class="section-text"
-          textWrap="true"
-          [text]="'user.accept.privacy-policy' | translate"
-          ></label>
-        <Switch col="1"
-                class="inactive-setting-switch"
-                (checkedChange)="onSettingsChecked($event, 'has_read_privacy_policy')"
-                [checked]="has_read_privacy_policy"></Switch>
+        <Label class="section-text" textWrap="true" [text]="'user.accept.privacy-policy' | translate"></Label>
+        <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_read_privacy_policy')" [checked]="has_read_privacy_policy"></Switch>
       </GridLayout>
       // consent
-      <label
-        class="section-title"
-        textWrap="true"
-        [text]="'user.consent.header' | translate"
-        ></label>
+      <Label class="section-title" textWrap="true" [text]="'user.consent.header' | translate"></Label>
       <GridLayout columns="*, auto" rows="auto">
-        <label
-          class="section-text"
-          textWrap="true"
-          [text]="'user.consent.product-development' | translate"
-          ></label>
-        <Switch
-          col="1"
-          class="inactive-setting-switch"
-          (checkedChange)="onSettingsChecked($event, 'consent_to_product_development')"
-          [checked]="consent_to_product_development"
-          ></Switch>
+        <Label class="section-text" textWrap="true" [text]="'user.consent.product-development' | translate"></Label>
+        <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'consent_to_product_development')" [checked]="consent_to_product_development"></Switch>
       </GridLayout>
       <GridLayout columns="*, auto" rows="auto">
-        <label
-          class="section-text"
-          textWrap="true"
-          [text]="'user.consent.research' | translate"
-          ></label>
-        <Switch col="1"
-                class="inactive-setting-switch"
-                (checkedChange)="onSettingsChecked($event, 'consent_to_research')"
-                [checked]="consent_to_research"></Switch>
+        <Label class="section-text" textWrap="true" [text]="'user.consent.research' | translate"></Label>
+        <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'consent_to_research')" [checked]="consent_to_research"></Switch>
       </GridLayout>
       <GridLayout rows="auto" columns="*,*">
-        <button
-          col="0"
-          class="cancel-btn"
-          [text]="'general.cancel' | translate"
-          (tap)="cancel()"
-          ></button>
-        <button
-          col="1"
-          class="ok-btn"
-          [text]="'general.ok' | translate"
-          (tap)="close()"
-          ></button>
+        <Button col="0" class="cancel-btn" [text]="'general.cancel' | translate" (tap)="cancel()"></Button>
+        <Button col="1" class="ok-btn" [text]="'general.ok' | translate" (tap)="close()"></Button>
       </GridLayout>
     </StackLayout>
   </ScrollView>

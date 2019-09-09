@@ -628,11 +628,6 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
-    try {
-      // this.loadSmartDriveInfoFromKinvey();
-    } catch (err) {
-      Sentry.captureException(err);
-    }
   }
 
   onAppLowMemory(args?: any) {
@@ -741,46 +736,54 @@ export class MainViewModel extends Observable {
 
   openAppOnPhone() {
     Log.D('openAppInStoreOnPhone()');
+    try {
 
-    this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
+      this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
 
-    const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-      .getPhoneDeviceType(ad.getApplicationContext());
-    switch (phoneDeviceType) {
-      // Paired to Android phone, use Play Store URI.
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-        Log.D('\tDEVICE_TYPE_ANDROID');
-        // Create Remote Intent to open Play Store listing of app on remote device.
-        const intentAndroid =
-          new android.content.Intent(android.content.Intent.ACTION_VIEW)
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
+      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
+        .getPhoneDeviceType(ad.getApplicationContext());
+      switch (phoneDeviceType) {
+        // Paired to Android phone, use Play Store URI.
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+          Log.D('\tDEVICE_TYPE_ANDROID');
+          // Create Remote Intent to open Play Store listing of app on remote device.
+          const intentAndroid =
+            new android.content.Intent(android.content.Intent.ACTION_VIEW)
+              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+              .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
 
-        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-          ad.getApplicationContext(),
-          intentAndroid,
-          this.mResultReceiver);
-        break;
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentAndroid,
+            this.mResultReceiver);
+          break;
 
-      // Paired to iPhone, use iTunes App Store URI
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-        Log.D('\tDEVICE_TYPE_IOS');
+        // Paired to iPhone, use iTunes App Store URI
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+          Log.D('\tDEVICE_TYPE_IOS');
 
-        // Create Remote Intent to open App Store listing of app on iPhone.
-        const intentIOS =
-          new android.content.Intent(android.content.Intent.ACTION_VIEW)
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
+          // Create Remote Intent to open App Store listing of app on iPhone.
+          const intentIOS =
+            new android.content.Intent(android.content.Intent.ACTION_VIEW)
+              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+              .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
 
-        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-          ad.getApplicationContext(),
-          intentIOS,
-          this.mResultReceiver);
-        break;
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentIOS,
+            this.mResultReceiver);
+          break;
 
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-        Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
-        break;
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
+          Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
+          break;
+      }
+      // now show the open on phone activity
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.OPEN_ON_PHONE_ANIMATION
+      );
+    } catch (err) {
+      Log.E('Error opening on phone:', err);
     }
   }
 
@@ -793,6 +796,24 @@ export class MainViewModel extends Observable {
   /**
    * END FOR COMMUNICATIONS WITH PHONE
    */
+
+  async showConfirmation(animationType: number, message?: string) {
+    const intent = new android.content.Intent(
+      ad.getApplicationContext(),
+      android.support.wearable.activity.ConfirmationActivity.class
+    );
+    intent.putExtra(
+      android.support.wearable.activity.ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+      animationType);
+    if (message !== undefined) {
+      intent.putExtra(
+        android.support.wearable.activity.ConfirmationActivity.EXTRA_MESSAGE,
+        message);
+    }
+    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
+    application.android.foregroundActivity.startActivity(intent);
+    application.android.foregroundActivity.overridePendingTransition(0, 0);
+  }
 
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
@@ -1162,64 +1183,6 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
-  async loadSmartDriveInfoFromKinvey() {
-    try {
-      const dates = DailyActivity.Info.getPastDates(7);
-      const startTimes = dates.map(d => d.getTime());
-      const queries = {
-        'watch_serial_number': this.watchSerialNumber,
-        'data_type': 'SmartDriveDailyInfo',
-        'start_time': { '$gte': startTimes[0] }
-      };
-      // Log.D('querying', queries);
-      const response = await this.kinveyService.getEntry(
-        KinveyService.api_smartdrive_usage_db,
-        queries
-      );
-      const statusCode = response.statusCode;
-      if (statusCode === 200) {
-        const days = response.content.toJSON();
-        const maxDist = days.reduce((max, obj) => {
-          const caseStart = obj.distance_smartdrive_coast_start;
-          const caseEnd = obj.distance_smartdrive_coast;
-          const distance = this.caseTicksToMiles(caseEnd - caseStart);
-          return distance > max ? distance : max;
-        }, 0.0);
-        // update distance data
-        const dayMap = {};
-        days.map(d => {
-          const caseStart = d.distance_smartdrive_coast_start;
-          const caseEnd = d.distance_smartdrive_coast;
-          const distance = this.caseTicksToMiles(caseEnd - caseStart);
-          dayMap[d.date] = distance * 100.0 / (maxDist || 1);
-        });
-        const distanceData = dates.map(d => {
-          const dStr = this.format(new Date(d), 'YYYY/MM/DD');
-          const data = dayMap[dStr];
-          let distance = 0;
-          if (data) {
-            distance = data;
-          }
-          return {
-            day: this.format(new Date(d), 'dd'),
-            value: distance
-          };
-        });
-        // Log.D('Highest Distance Value:', maxDist);
-        this.distanceChartMaxValue = maxDist.toFixed(1);
-        this.distanceChartData = distanceData;
-
-        // update the chart
-        this.updateDisplay();
-      } else {
-        throw response;
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E(err);
-    }
-  }
-
   private sentryBreadCrumb(message: string) {
     Sentry.captureBreadcrumb({
       message,

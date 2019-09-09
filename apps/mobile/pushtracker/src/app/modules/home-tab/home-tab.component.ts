@@ -43,7 +43,6 @@ export class HomeTabComponent {
   distanceGoalValue: string;
   distanceGoalUnit: string;
   weeklyActivityLoaded: boolean = false;
-  weeklySmartDriveUsage: ObservableArray<any[]>;
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
 
@@ -51,13 +50,14 @@ export class HomeTabComponent {
   todayCoastDistance: string = '0.0';
   todayDriveDistance: string = '0.0';
   todayOdometer: string = '0.0';
-  private _todaysUsage: any;
   distancePlotAnnotationValue: number = 0;
   distanceGoalLabelChartData: ObservableArray<any[]>;
-
   distancePlotPalettes: ObservableArray<Palette>;
+  goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
+    { xAxis: '        ', coastTime: 5, impact: 7 }
+  ] as any[]);
+  private _todaysUsage: any;
   private pointLabelStyle: PointLabelStyle;
-
   private _progressUpdatedOnce: boolean = false;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
   private _currentDayInView: Date;
@@ -65,18 +65,12 @@ export class HomeTabComponent {
   private _weekEnd: Date;
   private _todaysActivity: any;
   private _firstLoad: boolean = true;
-
   private _userSubscription$: Subscription;
-
-  public goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
-    { xAxis: '        ', coastTime: 5, impact: 7 }
-  ] as any[]);
-
   private _debouncedLoadWeeklyActivity: any;
   private _debouncedLoadWeeklyUsage: any;
 
   constructor(
-    public userService: PushTrackerUserService,
+    private _userService: PushTrackerUserService,
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
@@ -103,7 +97,7 @@ export class HomeTabComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    this._userSubscription$ = this.userService.user.subscribe(user => {
+    this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       this.savedTheme = user.data.theme_preference;
@@ -233,9 +227,7 @@ export class HomeTabComponent {
     const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(
       this._weekStart
     );
-    this.usageActivity = new ObservableArray(
-      this._formatUsageForView('Week')
-    );
+    this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
     this.distanceGoalMessage = 'Travel ';
     this.distanceGoalValue = this._updateDistanceUnit(
       this.user.data.activity_goal_distance

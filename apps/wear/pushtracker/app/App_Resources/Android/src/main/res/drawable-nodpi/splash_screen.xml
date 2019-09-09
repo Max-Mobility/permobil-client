@@ -3,6 +3,6 @@
     <bitmap android:gravity="fill" android:src="@drawable/background" />
   </item>
   <item>
-    <bitmap android:gravity="center" android:src="@drawable/permobillogo" />
+    <bitmap android:gravity="center" android:src="@drawable/pushtracker_wear_splash_screen" />
   </item>
 </layer-list>
