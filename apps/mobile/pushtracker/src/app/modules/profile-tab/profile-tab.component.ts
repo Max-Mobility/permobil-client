@@ -63,7 +63,6 @@ export class ProfileTabComponent {
   isUserLoaded: boolean;
 
   private _barcodeScanner: BarcodeScanner;
-  private _userSubscription$: Subscription;
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -94,13 +93,12 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this._userSubscription$ = this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       if (!this.user.data.dob || this.user.data.dob === null) {
         this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
       }
-
       this.isUserLoaded = true;
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
@@ -111,7 +109,6 @@ export class ProfileTabComponent {
 
   onProfileTabUnloaded() {
     this._logService.logBreadCrumb('ProfileTabComponent unloaded');
-    this._userSubscription$.unsubscribe();
   }
 
   onWatchConnectTap() {
@@ -640,11 +637,11 @@ export class ProfileTabComponent {
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
-        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' km';
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' mi';
     } else {
-      this.displayActivityGoalDistance += ' mi';
+      this.displayActivityGoalDistance += ' km';
     }
   }
 

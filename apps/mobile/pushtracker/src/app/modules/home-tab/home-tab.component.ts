@@ -14,7 +14,7 @@ import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme, milesToKilometers } from '../../utils';
+import { enableDarkTheme, enableDefaultTheme, milesToKilometers, kilometersToMiles } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -65,7 +65,6 @@ export class HomeTabComponent {
   private _weekEnd: Date;
   private _todaysActivity: any;
   private _firstLoad: boolean = true;
-  private _userSubscription$: Subscription;
   private _debouncedLoadWeeklyActivity: any;
   private _debouncedLoadWeeklyUsage: any;
 
@@ -97,7 +96,7 @@ export class HomeTabComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    this._userSubscription$ = this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       this.savedTheme = user.data.theme_preference;
@@ -142,7 +141,7 @@ export class HomeTabComponent {
     }
     // Going strong if the user is >= 30% of one of the goals but < 70% of both goals
     else if ((coastTimeValue >= 0.3 * coastTimeGoal && coastTimeValue < coastTimeGoal) ||
-             (distanceValue >= 0.3 * distanceGoal && distanceValue < distanceGoal)) {
+      (distanceValue >= 0.3 * distanceGoal && distanceValue < distanceGoal)) {
       this.todayMessage = this._translateService.instant('Going strong!');
       return;
     }
@@ -176,7 +175,6 @@ export class HomeTabComponent {
 
   onHomeTabUnloaded() {
     Log.D('HomeTabComponent unloaded');
-    this._userSubscription$.unsubscribe();
   }
 
   refreshPlots(args) {
@@ -318,7 +316,9 @@ export class HomeTabComponent {
         ? ' kilometers per day'
         : ' miles per day';
     this.distanceCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_distance;
+      '/' + this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
+        1
+      );
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray([
@@ -337,7 +337,9 @@ export class HomeTabComponent {
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' seconds each day';
     this.distanceCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_distance;
+      '/' + this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
+        1
+      );
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray([
@@ -740,8 +742,8 @@ export class HomeTabComponent {
   }
 
   private _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
-      return milesToKilometers(distance);
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
+      return kilometersToMiles(distance);
     }
     return distance;
   }
