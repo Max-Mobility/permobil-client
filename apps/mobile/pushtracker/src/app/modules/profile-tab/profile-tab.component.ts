@@ -19,7 +19,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
+import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, milesToKilometers, kilometersToMiles } from '../../utils';
 declare var com: any;
 
 @Component({
@@ -228,7 +228,7 @@ export class ProfileTabComponent {
         )} ${this._translateService.instant('profile-tab.per-day')}`;
       }
       if (this.user.data.activity_goal_distance)
-        value = this.user.data.activity_goal_distance;
+        value = this._updateDistanceUnit(this.user.data.activity_goal_distance);
     }
 
     this._modalService
@@ -857,5 +857,12 @@ export class ProfileTabComponent {
       r.sendMessage('/app-message', this._getSerializedAuth());
       Log.D('Message sent');
     }
+  }
+
+  private _updateDistanceUnit(distance: number) {
+    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
+      return kilometersToMiles(distance);
+    }
+    return distance;
   }
 }

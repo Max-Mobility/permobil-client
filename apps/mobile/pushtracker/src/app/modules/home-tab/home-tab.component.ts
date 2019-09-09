@@ -126,7 +126,7 @@ export class HomeTabComponent {
     const coastTimeValue = parseFloat(this.todayCoastTime) || 0.0;
     const coastTimeGoal = this.user.data.activity_goal_coast_time;
     const distanceValue = parseFloat(this.todayCoastDistance) || 0.0;
-    const distanceGoal = this.user.data.activity_goal_distance;
+    const distanceGoal = this._updateDistanceUnit(this.user.data.activity_goal_distance);
     const distanceUnit = (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'km' : 'mi');
     // Welcome back ${first name} if the user is at 0 of both goals
     if (coastTimeValue === 0.0 && distanceValue === 0.0) {
