@@ -16,6 +16,12 @@ export class PushTrackerUserService {
     this.user = this._user.asObservable();
   }
 
+  initializeUser(user: PushTrackerUser) {
+    this._user = new BehaviorSubject<PushTrackerUser>(user);
+    this.user = this._user.asObservable();
+    console.log('User initialized', this._user.value);
+  }
+
   reset() {
     this._user = new BehaviorSubject<PushTrackerUser>(<PushTrackerUser>(
       (<any>KinveyUser.getActiveUser())
@@ -24,8 +30,10 @@ export class PushTrackerUserService {
   }
 
   updateDataProperty(field: string, value: any): void {
-    const updatedUser = this._user.value;
-    updatedUser.data[field] = value;
-    this._user.next(updatedUser);
+    if (this._user) {
+      const updatedUser = this._user.value;
+      updatedUser.data[field] = value;
+      this._user.next(updatedUser);
+    }
   }
 }

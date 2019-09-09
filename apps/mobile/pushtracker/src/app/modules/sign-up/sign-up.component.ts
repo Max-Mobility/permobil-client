@@ -12,8 +12,11 @@ import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService } from '../../services';
+import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
+import { PushTrackerUser } from '@permobil/core';
+import * as Kinvey from 'kinvey-nativescript-sdk';
+import { APP_KEY, APP_SECRET } from '../../utils/kinvey-keys';
 
 @Component({
   selector: 'sign-up',
@@ -77,7 +80,8 @@ export class SignUpComponent implements OnInit {
     private _modalService: ModalDialogService,
     private _translateService: TranslateService,
     private _zone: NgZone,
-    private _vcRef: ViewContainerRef
+    private _vcRef: ViewContainerRef,
+    private _userService: PushTrackerUserService
   ) {
     preventKeyboardFromShowing();
 
@@ -140,14 +144,6 @@ export class SignUpComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeFamilyName;
     }
-    // not enabling android autofill for name fields bc it isn't specific to first (given) & last (family) and autofills the google user full name instead
-    // else if (isAndroid && device.sdkVersion >= '26') {
-    //   const et = (args.object as TextField).android as any; // android.widget.EditText
-    //   et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_NAME]);
-    //   et.setImportantForAutofill(
-    //     (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES
-    //   );
-    // }
   }
 
   async onSubmitSignUp() {
@@ -172,10 +168,6 @@ export class SignUpComponent implements OnInit {
     }
     const isLastNameValid = this._isLastNameValid(this.user.last_name.trim());
     if (!isLastNameValid) {
-      return;
-    }
-    const isBirthdayValid = this._isBirthdayValid(this.user.dob.trim());
-    if (!isBirthdayValid) {
       return;
     }
 
@@ -221,19 +213,11 @@ export class SignUpComponent implements OnInit {
     this.user.last_name = this.user.last_name.trim();
     this.user.username = this.user.username.trim().toLowerCase();
     this.user.password = this.user.password.trim();
-    this.user.dob = this.user.dob.trim();
     this.user.has_agreed_to_user_agreement = has_agreed_to_user_agreement;
     this.user.has_read_privacy_policy = has_read_privacy_policy;
     this.user.consent_to_product_development = consent_to_product_development;
     this.user.consent_to_research = consent_to_research;
 
-    // TODO: need to show privacy / user agreement forms here - the
-    //       user cannot create the account without reading and
-    //       agreeing to both!
-    // this._logService.logBreadCrumb(
-    //   SignUpComponent.LOG_TAG +
-    //     `onSubmitTap() creating new account: ${JSON.stringify(this.user)}`
-    // );
     // // need to make sure the username is not already taken
     const userExists = await KinveyUser.exists(this.user.username);
 
@@ -259,13 +243,21 @@ export class SignUpComponent implements OnInit {
           this._translateService.instant('sign-up.sign-up-success') +
           ` ${user.username}`,
         okButtonText: this._translateService.instant('general.ok')
-      }).then(() => {
-        // Navigate to tabs home with clearHistory
-        this._zone.run(() => {
-          this._router.navigate(['configuration-tab'], {
-            clearHistory: true
+      }).then(async () => {
+
+        Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
+        Kinvey.ping()
+          .then(() => {
+            // Kinvey SDK is working
+            // Navigate to tabs home with clearHistory
+            this._userService.initializeUser(<PushTrackerUser>((<any>KinveyUser.getActiveUser())));
+            this._router.navigate(['configuration-tab'], {
+              clearHistory: true
+            });
+          })
+          .catch(err => {
+            this._logService.logException(err);
           });
-        });
       });
     } catch (err) {
       this._loadingIndicator.hide();
@@ -338,18 +330,6 @@ export class SignUpComponent implements OnInit {
       return false;
     }
     this.lastNameError = '';
-    return true;
-  }
-
-  private _isBirthdayValid(text: string): boolean {
-    // validate the birthday
-    if (!text) {
-      this.birthdayError = this._translateService.instant(
-        'sign-up.birthdate-required'
-      );
-      return false;
-    }
-    this.birthdayError = '';
     return true;
   }
 }

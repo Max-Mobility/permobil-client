@@ -37,9 +37,6 @@
       // LastName
       <MaxTextBox row="3" [(text)]="user.last_name" [error]="lastNameError" [label]="'profile-tab.last-name' | translate" (textfieldLoadedEvent)="onLastNameTextFieldLoaded($event)"></MaxTextBox>
 
-      // DOB
-      <DataBox row="4" [(dataValue)]="user.dob" [error]="birthdayError" [label]="'general.birthday' | translate" [isDatePicker]="true"></DataBox>
-
       <Button row="6" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
     </GridLayout>
   </PreviousNextView>

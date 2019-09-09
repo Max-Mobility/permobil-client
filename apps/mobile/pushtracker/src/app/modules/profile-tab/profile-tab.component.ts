@@ -132,7 +132,6 @@ export class ProfileTabComponent {
       if (result === signOut) {
         this._zone.run(async () => {
           const logoutResult = await KinveyUser.logout();
-          console.log('logout result', logoutResult);
           this.userService.reset();
           enableDefaultTheme();
           // go ahead and nav to login to keep UI moving without waiting
