@@ -1,8 +1,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="fill">
     <item>
-        <bitmap android:gravity="fill" android:src="@drawable/background" />
+       <shape android:shape="rectangle">
+            <solid android:color="@color/PermobilBlue" />
+       </shape>
     </item>
     <item>
-        <bitmap android:gravity="center" android:src="@drawable/logo" />
+        <bitmap android:drawable="@android:color/black" 
+            android:gravity="center_vertical|center_horizontal"
+            android:src="@drawable/splash_background" />
     </item>
 </layer-list>
