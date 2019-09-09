@@ -39,7 +39,6 @@ export class ActivityService {
         }
         const promise = this.datastore.save(dailyActivity)
           .then(function onSuccess(entity) {
-            console.log('Success. Upserted', entity);
             return true;
           }).catch(function onError(error) {
             this._logService.logException(error);

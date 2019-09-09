@@ -20,6 +20,49 @@ export class SmartDriveUsageService {
     this.datastore.sync();
   }
 
+  async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
+    try {
+      await this.login();
+      await this.datastore.sync();
+      const query = new KinveyQuery();
+
+      // configure the query to search for only activity that was
+      // saved by this user, and to get only the most recent activity
+      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      query.equalTo('date', dailyUsage.date);
+      query.equalTo('data_type', 'SmartDriveDailyInfo');
+
+      // Run a .find first to get the _id of the daily activity
+      {
+        const stream = this.datastore.find(query);
+        const data = await stream.toPromise();
+        if (data && data.length) {
+          const id = data[0]._id;
+          dailyUsage._id = id;
+          dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
+          dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
+        }
+        else {
+          // First record for this day
+          // Save distance_start
+          dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
+          dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
+        }
+        const promise = this.datastore.save(dailyUsage)
+          .then(function onSuccess(entity) {
+            return true;
+          }).catch(function onError(error) {
+            this._logService.logException(error);
+            return false;
+          });
+      }
+
+    } catch (err) {
+      this._logService.logException(err);
+      return false;
+    }
+  }
+
   async loadDailyActivity(date: Date): Promise<boolean> {
     try {
       await this.login();

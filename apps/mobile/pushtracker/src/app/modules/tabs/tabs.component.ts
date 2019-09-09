@@ -14,7 +14,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, PushTrackerUserService, SettingsService, ActivityService } from '../../services';
+import { BluetoothService, PushTrackerUserService, SettingsService, ActivityService, SmartDriveUsageService } from '../../services';
 import throttle from 'lodash/throttle';
 
 @Component({
@@ -41,8 +41,10 @@ export class TabsComponent {
   private snackbar = new SnackBar();
 
   bluetoothAdvertised: boolean = false;
+  pushTracker: PushTracker;
   user: PushTrackerUser;
   private _throttledOnDailyInfoEvent: any = null;
+  private _throttledOnDistanceEvent: any = null;
 
   constructor(
     private _activityService: ActivityService,
@@ -52,7 +54,8 @@ export class TabsComponent {
     private _routerExtension: RouterExtensions,
     private _activeRoute: ActivatedRoute,
     private _page: Page,
-    private userService: PushTrackerUserService
+    private userService: PushTrackerUserService,
+    private _usageService: SmartDriveUsageService
   ) {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
@@ -76,6 +79,11 @@ export class TabsComponent {
     // Run every 10 minutes
     const TEN_MINUTES = 10 * 60 * 1000;
     this._throttledOnDailyInfoEvent = throttle(this.onDailyInfoEvent, TEN_MINUTES, {
+      leading: true,
+      trailing: true
+    });
+
+    this._throttledOnDistanceEvent = throttle(this.onDistanceEvent, 60 * 1000, {
       leading: true,
       trailing: true
     });
@@ -290,6 +298,7 @@ export class TabsComponent {
 
   private onPushTrackerConnected(args: any) {
     const pt = args.data.pushtracker as PushTracker;
+    if (!this.pushTracker) this.pushTracker = pt;
     const msg =
       this._translateService.instant('general.pushtracker-connected') +
       `: ${pt.address}`;
@@ -299,10 +308,15 @@ export class TabsComponent {
       this._throttledOnDailyInfoEvent,
       this
     );
+    pt.on(
+      PushTracker.distance_event,
+      this._throttledOnDistanceEvent,
+      this
+    );
   }
 
   onDailyInfoEvent(args) {
-    Log.D('Daily info event received!');
+    Log.D('daily_info_event received from Pushtracker');
     const data = args.data;
     const year = data.year;
     const month = data.month - 1;
@@ -335,11 +349,54 @@ export class TabsComponent {
       has_been_sent: false,
       push_count: pushesWithout,
       records: [],
-      start_time: date.getTime()
+      start_time: date.getTime(),
+      watch_serial_number: this.user.data.pushtracker_serial_number
     };
-    Log.D('DailyInfo', data);
-    Log.D('DailyActivity', dailyActivity);
     this._activityService.saveDailyActivityFromPushTracker(dailyActivity);
+
+    // Request distance information from PushTracker
+    if (this.pushTracker) {
+      this.pushTracker.sendPacket('Command', 'DistanceRequest');
+      Log.D('Distance data requested from PushTracker');
+    }
+  }
+
+  onDistanceEvent(args) {
+    Log.D('Distance event received');
+    const data = args.data;
+    const distance_smartdrive_drive = data.driveDistance;
+    const distance_smartdrive_coast = data.coastDistance;
+    const battery = 0;
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    const start_time = date.getTime();
+    const dateFormatted = function(date: Date) {
+      return (
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        '/' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+      );
+    };
+
+    const dailyUsage = {
+      _acl: { creator: this.user._id },
+      data_type: 'SmartDriveDailyInfo',
+      date: dateFormatted(date),
+      battery: 0,
+      distance_smartdrive_coast: distance_smartdrive_coast,
+      distance_smartdrive_drive: distance_smartdrive_drive,
+      records: [],
+      start_time: start_time,
+      watch_uuid: '',
+      watch_serial_number: this.user.data.pushtracker_serial_number,
+    };
+    Log.D('Distance', data);
+    Log.D('SmartDriveDailyInfo', dailyUsage);
+    this._usageService.saveDailyUsageFromPushTracker(dailyUsage);
   }
 
   private onPushTrackerDisconnected(args: any) {
