@@ -95,6 +95,12 @@
     <!-- end for main activity -->
     <activity android:name="com.tns.ErrorReportActivity"/>
 
+    <!-- for confirmation (success / failure / open-on-phone) activity -->
+    <activity
+        android:name="android.support.wearable.activity.ConfirmationActivity">
+    </activity>
+    <!-- end for confirmation (success / failure / open-on-phone) activity -->
+
     <!-- for providing complications -->
     <service
         android:name="com.permobil.pushtracker.PushesComplicationProviderService"

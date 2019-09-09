@@ -741,46 +741,54 @@ export class MainViewModel extends Observable {
 
   openAppOnPhone() {
     Log.D('openAppInStoreOnPhone()');
+    try {
 
-    this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
+      this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
 
-    const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-      .getPhoneDeviceType(ad.getApplicationContext());
-    switch (phoneDeviceType) {
-      // Paired to Android phone, use Play Store URI.
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-        Log.D('\tDEVICE_TYPE_ANDROID');
-        // Create Remote Intent to open Play Store listing of app on remote device.
-        const intentAndroid =
-          new android.content.Intent(android.content.Intent.ACTION_VIEW)
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
+      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
+        .getPhoneDeviceType(ad.getApplicationContext());
+      switch (phoneDeviceType) {
+        // Paired to Android phone, use Play Store URI.
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+          Log.D('\tDEVICE_TYPE_ANDROID');
+          // Create Remote Intent to open Play Store listing of app on remote device.
+          const intentAndroid =
+            new android.content.Intent(android.content.Intent.ACTION_VIEW)
+              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+              .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
 
-        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-          ad.getApplicationContext(),
-          intentAndroid,
-          this.mResultReceiver);
-        break;
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentAndroid,
+            this.mResultReceiver);
+          break;
 
-      // Paired to iPhone, use iTunes App Store URI
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-        Log.D('\tDEVICE_TYPE_IOS');
+        // Paired to iPhone, use iTunes App Store URI
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+          Log.D('\tDEVICE_TYPE_IOS');
 
-        // Create Remote Intent to open App Store listing of app on iPhone.
-        const intentIOS =
-          new android.content.Intent(android.content.Intent.ACTION_VIEW)
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
+          // Create Remote Intent to open App Store listing of app on iPhone.
+          const intentIOS =
+            new android.content.Intent(android.content.Intent.ACTION_VIEW)
+              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+              .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
 
-        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-          ad.getApplicationContext(),
-          intentIOS,
-          this.mResultReceiver);
-        break;
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentIOS,
+            this.mResultReceiver);
+          break;
 
-      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-        Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
-        break;
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
+          Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
+          break;
+      }
+      // now show the open on phone activity
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.OPEN_ON_PHONE_ANIMATION
+      );
+    } catch (err) {
+      Log.E('Error opening on phone:', err);
     }
   }
 
@@ -793,6 +801,22 @@ export class MainViewModel extends Observable {
   /**
    * END FOR COMMUNICATIONS WITH PHONE
    */
+
+  async showConfirmation(animationType: number, message?: string) {
+    const intent = new android.content.Intent(
+      ad.getApplicationContext(),
+      android.support.wearable.activity.ConfirmationActivity.class
+    );
+    intent.putExtra(
+      android.support.wearable.activity.ConfirmationActivity.EXTRA_ANIMATION_TYPE,
+      animationType);
+    if (message !== undefined) {
+      intent.putExtra(
+        android.support.wearable.activity.ConfirmationActivity.EXTRA_MESSAGE,
+        message);
+    }
+    application.android.foregroundActivity.startActivity(intent);
+  }
 
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
