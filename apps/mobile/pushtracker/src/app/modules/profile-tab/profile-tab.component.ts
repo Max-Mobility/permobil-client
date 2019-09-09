@@ -228,7 +228,7 @@ export class ProfileTabComponent {
         )} ${this._translateService.instant('profile-tab.per-day')}`;
       }
       if (this.user.data.activity_goal_distance)
-        value = this._updateDistanceUnit(this.user.data.activity_goal_distance);
+        value = parseFloat(this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(1)) || 0.0;
     }
 
     this._modalService
