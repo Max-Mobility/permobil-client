@@ -46,6 +46,8 @@ export class HomeTabComponent {
   weeklySmartDriveUsage: ObservableArray<any[]>;
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
+
+  todayMessage: string = '';
   todayCoastDistance: string = '0.0';
   todayDriveDistance: string = '0.0';
   todayOdometer: string = '0.0';
@@ -118,10 +120,75 @@ export class HomeTabComponent {
       this._smartDriveUsageService.usageUpdated.subscribe(usageUpdated => {
         if (usageUpdated && !this._progressUpdatedOnce) {
           this._updateProgress();
+          this.updateTodayMessage();
           this._progressUpdatedOnce = true;
         }
       });
     });
+  }
+
+  // Update what is displayed in the center of the home-tab circle #263
+  // https://github.com/Max-Mobility/permobil-client/issues/263
+  updateTodayMessage() {
+    const coastTimeValue = parseFloat(this.todayCoastTime) || 0.0;
+    const coastTimeGoal = this.user.data.activity_goal_coast_time;
+    const distanceValue = parseFloat(this.todayCoastDistance) || 0.0;
+    const distanceGoal = this.user.data.activity_goal_distance;
+
+    Log.D('Today coast time ', this.todayCoastTime);
+    Log.D('Today coast time ', this.todayCoastDistance);
+
+    Log.D({
+      coastTimeValue: coastTimeValue,
+      coastTimeGoal: coastTimeGoal,
+      distanceValue: distanceValue,
+      distanceGoal: distanceGoal
+    });
+
+    const distanceUnit = (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'km' : 'mi');
+    // Welcome back ${first name} if the user is at 0 of both goals
+    if (coastTimeValue === 0.0 && distanceValue === 0.0) {
+      this.todayMessage = this._translateService.instant('Welcome back ' + this.user.data.first_name);
+      return;
+    }
+    // Off to a good start if the user is > 0 of one of the goals but < 30% of both goals
+    else if ((coastTimeValue > 0.0 || distanceValue > 0.0) &&
+      (coastTimeValue < 0.3 * coastTimeGoal && distanceValue < 0.3 * distanceGoal)) {
+      this.todayMessage = this._translateService.instant('Off to a good start');
+      return;
+    }
+    // Going strong if the user is >= 30% of one of the goals but < 70% of both goals
+    else if ((coastTimeValue >= 0.3 * coastTimeGoal && coastTimeValue < coastTimeGoal) ||
+             (distanceValue >= 0.3 * distanceGoal && distanceValue < distanceGoal)) {
+      this.todayMessage = this._translateService.instant('Going strong!');
+      return;
+    }
+    // Only ${x} ${units} left if the user is >= 70% of one of the goals but < 100% of both goals
+    else if (coastTimeValue >= 0.7 * coastTimeGoal && coastTimeValue < coastTimeGoal) {
+      this.todayMessage = this._translateService.instant('Only ' + (coastTimeGoal - coastTimeValue).toFixed(1) + ' seconds left');
+      return;
+    }
+    else if (distanceValue >= 0.7 * distanceGoal && distanceValue < distanceGoal) {
+      this.todayMessage = this._translateService.instant('Only ' + (distanceGoal - distanceValue).toFixed(1) + ' ' + distanceUnit + ' left');
+      return;
+    }
+    // Reached ${goal name} goal, way to go! if the user is >= 100% of one goal but < 100% of the other goal
+    else if (coastTimeValue >= coastTimeGoal && distanceValue < distanceGoal) {
+      this.todayMessage = this._translateService.instant('Reached coast time goal, way to go!');
+      return;
+    }
+    else if (distanceValue >= distanceGoal && coastTimeValue < coastTimeGoal) {
+      this.todayMessage = this._translateService.instant('Reached distance goal, way to go!');
+      return;
+    }
+    // Reached all your goals, you're amazing! if the user is >= 100% of both goals
+    else if (distanceValue >= distanceGoal && coastTimeValue >= coastTimeGoal) {
+      this.todayMessage = this._translateService.instant('Reached all your goals, you\'re amazing!');
+      return;
+    }
+
+    // Something's wrong if we're here
+    this.todayMessage = this._translateService.instant('Welcome back ' + this.user.data.first_name);
   }
 
   onHomeTabUnloaded() {
@@ -151,7 +218,7 @@ export class HomeTabComponent {
     this._updateProgress();
     this._updatePointLabelStyle();
     this._updatePalettes();
-
+    this.updateTodayMessage();
     this.weeklyActivityLoaded = true;
   }
 
@@ -193,13 +260,13 @@ export class HomeTabComponent {
       this.todayCoastDistance = this._updateDistanceUnit(
         DeviceBase.caseTicksToMiles(
           this._todaysUsage.distance_smartdrive_coast -
-            this._todaysUsage.distance_smartdrive_coast_start
+          this._todaysUsage.distance_smartdrive_coast_start
         ) || 0
       ).toFixed(1);
       this.todayDriveDistance = this._updateDistanceUnit(
         DeviceBase.motorTicksToMiles(
           this._todaysUsage.distance_smartdrive_drive -
-            this._todaysUsage.distance_smartdrive_drive_start
+          this._todaysUsage.distance_smartdrive_drive_start
         ) || 0
       ).toFixed(1);
       this.todayOdometer = this._updateDistanceUnit(
@@ -207,6 +274,8 @@ export class HomeTabComponent {
           this._todaysUsage.distance_smartdrive_coast
         ) || 0
       ).toFixed(1);
+      // Today coast distance changed, update message
+      this.updateTodayMessage();
     } else {
       this.todayCoastDistance = (0).toFixed(1);
       this.todayDriveDistance = (0).toFixed();
@@ -248,6 +317,8 @@ export class HomeTabComponent {
         1
       );
       this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+      // Today coast time changed, update message
+      this.updateTodayMessage();
     } else {
       this.todayCoastTime = (0).toFixed(1);
       this.todayPushCount = (0).toFixed();
@@ -439,7 +510,7 @@ export class HomeTabComponent {
   }
 
   private _updateCoastTimePlotYAxis() {
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -554,7 +625,7 @@ export class HomeTabComponent {
   }
 
   private _updateDistancePlotYAxis() {
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -574,7 +645,7 @@ export class HomeTabComponent {
           const coastDistance = this._updateDistanceUnit(
             DeviceBase.caseTicksToMiles(
               day.distance_smartdrive_coast -
-                day.distance_smartdrive_coast_start
+              day.distance_smartdrive_coast_start
             ) || 0
           );
 
@@ -635,13 +706,13 @@ export class HomeTabComponent {
               coastDistance: this._updateDistanceUnit(
                 DeviceBase.caseTicksToMiles(
                   dailyUsage.distance_smartdrive_coast -
-                    dailyUsage.distance_smartdrive_coast_start
+                  dailyUsage.distance_smartdrive_coast_start
                 ) || 0
               ),
               driveDistance: this._updateDistanceUnit(
                 DeviceBase.motorTicksToMiles(
                   dailyUsage.distance_smartdrive_drive -
-                    dailyUsage.distance_smartdrive_drive_start
+                  dailyUsage.distance_smartdrive_drive_start
                 ) || 0
               ),
               date: dayInWeek
