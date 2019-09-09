@@ -4,9 +4,12 @@
             <solid android:color="@color/PermobilBlue" />
        </shape>
     </item>
-    <item>
-        <bitmap android:drawable="@android:color/black" 
-            android:gravity="center_vertical|center_horizontal"
+    <item
+        android:width="400dp"
+        android:height="400dp"
+        android:gravity="center">
+        <bitmap 
+            android:drawable="@android:color/black" 
             android:src="@drawable/splash_background" />
     </item>
 </layer-list>
