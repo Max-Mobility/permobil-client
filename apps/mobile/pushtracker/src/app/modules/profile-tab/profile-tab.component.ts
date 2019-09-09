@@ -19,7 +19,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDefaultTheme } from '../../utils';
+import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
 declare var com: any;
 
 @Component({
@@ -33,7 +33,6 @@ export class ProfileTabComponent {
 
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   isUserEditingSetting: boolean = false;
-  isHeightInCentimeters: boolean;
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
   displayWeight: string;
@@ -67,7 +66,7 @@ export class ProfileTabComponent {
   private _userSubscription$: Subscription;
 
   constructor(
-    public userService: PushTrackerUserService,
+    private _userService: PushTrackerUserService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
@@ -95,7 +94,7 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this._userSubscription$ = this.userService.user.subscribe(user => {
+    this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       if (!this.user.data.dob || this.user.data.dob === null) {
@@ -115,6 +114,12 @@ export class ProfileTabComponent {
     this._userSubscription$.unsubscribe();
   }
 
+  onWatchConnectTap() {
+    Log.D('Connecting to Watch...');
+    this._sendData();
+    this._sendMessage();
+  }
+
   onAvatarTap() {
     const signOut = this._translateService.instant('general.sign-out');
     action({
@@ -132,8 +137,8 @@ export class ProfileTabComponent {
       if (result === signOut) {
         this._zone.run(async () => {
           const logoutResult = await KinveyUser.logout();
-          console.log('logout result', logoutResult);
-          this.userService.reset();
+          Log.D('logout result', logoutResult);
+          this._userService.reset();
           enableDefaultTheme();
           // go ahead and nav to login to keep UI moving without waiting
           this._routerExtensions.navigate(['/login'], {
@@ -156,7 +161,7 @@ export class ProfileTabComponent {
         if (result !== undefined) {
           KinveyUser.update(result);
           Object.keys(result).map(k => {
-            this.userService.updateDataProperty(k, result[k]);
+            this._userService.updateDataProperty(k, result[k]);
           });
         }
       })
@@ -183,11 +188,11 @@ export class ProfileTabComponent {
       if (r.result === true) {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
-          this.userService.updateDataProperty('first_name', r.text);
+          this._userService.updateDataProperty('first_name', r.text);
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
-          this.userService.updateDataProperty('last_name', r.text);
+          this._userService.updateDataProperty('last_name', r.text);
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -290,7 +295,7 @@ export class ProfileTabComponent {
           this._logService.logBreadCrumb(
             `User changed birthday: ${result.toDateString()}`
           );
-          this.userService.updateDataProperty('dob', result);
+          this._userService.updateDataProperty('dob', result);
           const date = new Date(result);
           const month = date.getUTCMonth() + 1;
           const day = date.getUTCDate();
@@ -393,7 +398,7 @@ export class ProfileTabComponent {
     this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'gender',
           this.primary[this.primaryIndex]
         );
@@ -412,21 +417,21 @@ export class ProfileTabComponent {
         );
         break;
       case 3:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'chair_type',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_type: this.user.data.chair_type });
         break;
       case 4:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'chair_make',
           this.primary[this.primaryIndex]
         );
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
       case 5:
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'control_configuration',
           this.primary[this.primaryIndex]
         );
@@ -443,7 +448,7 @@ export class ProfileTabComponent {
   private _getWeightIndices() {
     let weight = this.user.data.weight;
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
-      weight = this._kilogramsToPounds(weight);
+      weight = kilogramsToPounds(weight);
     }
     const primaryIndex = Math.floor(weight);
     const secondaryIndex = parseFloat((weight % 1).toFixed(1));
@@ -455,7 +460,7 @@ export class ProfileTabComponent {
     if (
       this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
     ) {
-      heightString = this._centimetersToFeetInches(this.user.data.height);
+      heightString = centimetersToFeetInches(this.user.data.height);
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
     let secondaryIndex = 0;
@@ -648,7 +653,7 @@ export class ProfileTabComponent {
     // convert from metric weight (as stored in Kinvey) to user preferred unit
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
       this.displayWeight = this._displayWeightInPounds(
-        this._kilogramsToPounds(this.user.data.weight)
+        kilogramsToPounds(this.user.data.weight)
       );
     }
     if (!this.displayWeight) this.displayWeight = '';
@@ -662,7 +667,7 @@ export class ProfileTabComponent {
     if (
       this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
     ) {
-      const heightString = this._centimetersToFeetInches(this.user.data.height);
+      const heightString = centimetersToFeetInches(this.user.data.height);
       const feet = parseFloat(heightString.split('.')[0]);
       const inches = parseFloat(heightString.split('.')[1]);
       this.displayHeight = this._displayHeightInFeetInches(feet, inches);
@@ -671,20 +676,20 @@ export class ProfileTabComponent {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty(
+    this._userService.updateDataProperty(
       'weight',
       primaryValue + secondaryValue
     );
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'weight',
-        this._poundsToKilograms(primaryValue + secondaryValue)
+        poundsToKilograms(primaryValue + secondaryValue)
       );
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
       );
     } else {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'weight',
         primaryValue + secondaryValue
       );
@@ -696,21 +701,21 @@ export class ProfileTabComponent {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this.userService.updateDataProperty(
+    this._userService.updateDataProperty(
       'height',
       primaryValue + 0.01 * (secondaryValue || 0)
     );
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'height',
-        this._feetInchesToCentimeters(primaryValue, secondaryValue)
+        feetInchesToCentimeters(primaryValue, secondaryValue)
       );
       this.displayHeight = this._displayHeightInFeetInches(
         primaryValue,
         secondaryValue
       );
     } else {
-      this.userService.updateDataProperty(
+      this._userService.updateDataProperty(
         'height',
         primaryValue + 0.01 * (secondaryValue || 0)
       );
@@ -719,24 +724,6 @@ export class ProfileTabComponent {
       );
     }
     KinveyUser.update({ height: this.user.data.height });
-  }
-
-  private _poundsToKilograms(val: number) {
-    return val * 0.453592;
-  }
-
-  private _kilogramsToPounds(val: number) {
-    return parseFloat((val * 2.20462).toFixed(1));
-  }
-
-  private _feetInchesToCentimeters(feet: number, inches: number) {
-    return (feet * 12 + inches) * 2.54;
-  }
-
-  private _centimetersToFeetInches(val: number) {
-    const inch = val * 0.3937;
-    if (Math.round(inch % 12) === 0) return Math.floor(inch / 12) + 1 + '.0';
-    else return Math.floor(inch / 12) + '.' + Math.round(inch % 12);
   }
 
   private _displayWeightInPounds(val: number) {
@@ -757,54 +744,6 @@ export class ProfileTabComponent {
   private _displayHeightInCentimeters(val: number) {
     if (!val) return 0 + ' cm';
     return val.toFixed() + ' cm';
-  }
-
-  private onListChairTypeTap(args: EventData) {
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    Log.D('User tapped Chair Type data box');
-    this._setActiveDataBox(args);
-
-    this.primary = [];
-    this._translateService.instant('profile-tab.chair-types').forEach(i => {
-      this.primary.push(i);
-    });
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
-
-    this.listPickerTitle = this._translateService.instant('general.chair-type');
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-  }
-
-  private onListChairMakeTap(args: EventData) {
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    Log.D('User tapped Chair Make data box');
-    this._setActiveDataBox(args);
-
-    this.primary = [
-      'Colours',
-      'Invacare / Küschall',
-      'Karman',
-      'Ki',
-      'Motion Composites',
-      'Panthera',
-      'Quickie / Sopur / RGK',
-      'TiLite',
-      'Top End',
-      'Other'
-    ];
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
-
-    this.listPickerTitle = this._translateService.instant(
-      'profile-tab.chair-make'
-    );
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
   }
 
   private _openListPickerDialog() {
@@ -860,7 +799,7 @@ export class ProfileTabComponent {
 
       // now set the serial number
       if (deviceType === 'pushtracker' || deviceType === 'wristband') {
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'pushtracker_serial_number',
           serialNumber
         );
@@ -868,7 +807,7 @@ export class ProfileTabComponent {
           pushtracker_serial_number: this.user.data.pushtracker_serial_number
         });
       } else if (deviceType === 'smartdrive') {
-        this.userService.updateDataProperty(
+        this._userService.updateDataProperty(
           'smartdrive_serial_number',
           serialNumber
         );
@@ -892,13 +831,7 @@ export class ProfileTabComponent {
     this.activeDataBox.className = 'data-box';
   }
 
-  onWatchConnectTap() {
-    Log.D('Connecting to Watch...');
-    this.sendData();
-    this.sendMessage();
-  }
-
-  getSerializedAuth() {
+  private _getSerializedAuth() {
     // get user
     const user = KinveyUser.getActiveUser();
     const id = user._id;
@@ -909,22 +842,22 @@ export class ProfileTabComponent {
     return `Kinvey ${token}:${id}`;
   }
 
-  sendData() {
+  private _sendData() {
     if (isAndroid) {
       // testing communications wearos
       const l = new com.github.maxmobility.wearmessage.Data(android.context);
       // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-      l.sendData(this.getSerializedAuth());
+      l.sendData(this._getSerializedAuth());
       Log.D('Data sent');
     }
   }
 
-  sendMessage() {
+  private _sendMessage() {
     if (isAndroid) {
       // testing communications wearos
       const r = new com.github.maxmobility.wearmessage.Message(android.context);
       // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-      r.sendMessage('/app-message', this.getSerializedAuth());
+      r.sendMessage('/app-message', this._getSerializedAuth());
       Log.D('Message sent');
     }
   }

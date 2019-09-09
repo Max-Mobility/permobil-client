@@ -15,8 +15,7 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { enableDarkTheme, enableDefaultTheme } from './utils';
-import { APP_KEY, APP_SECRET } from './utils/kinvey-keys';
+import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme } from './utils';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
