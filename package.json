@@ -48,7 +48,7 @@
     "pt.m.i.nohmr": "cd apps/mobile/pushtracker && tns run ios --env.aot --no-hmr",
     "pt.m.start.ios": "cd apps/mobile/pushtracker && tns run ios --env.aot",
     "pt.m.start.ios.report": "cd apps/mobile/pushtracker && tns run ios --env.aot --env.report",
-    "pt.m.ios.release": "npm run nuki && cd apps/mobile/pushtracker && tns build ios --release --bundle --env.aot --env.uglify",
+    "pt.m.ios.release": "cd apps/mobile/pushtracker && tns build ios --release --env.aot --env.uglify",
     "pt.m.android.release": "cd apps/mobile/pushtracker/tools && node ./android-release.js",
     "pt.m.android.layouts": "adb shell dumpsys gfxinfo com.permobil.pushtracker > layout-profile.txt",
     "pt.m.android.framestats": "adb shell dumpsys gfxinfo com.permobil.pushtracker framestats > framestats.txt",

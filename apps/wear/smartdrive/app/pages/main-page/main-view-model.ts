@@ -54,6 +54,19 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
+@JavaProxy('com.permobil.smartdrive.wearos.ResultReceiver')
+class ResultReceiver extends android.os.ResultReceiver {
+  public onReceiveFunction: any = null;
+  constructor(handler: android.os.Handler) {
+    super(handler);
+    return global.__native(this);
+  }
+  onReceiveResult(resultCode: number, resultData: android.os.Bundle) {
+    if (this.onReceiveFunction)
+      this.onReceiveFunction(resultCode, resultData);
+  }
+}
+
 export class MainViewModel extends Observable {
   // for managing the inset of the layouts ourselves
   @Prop() insetPadding: number = 0;
@@ -2384,10 +2397,90 @@ export class MainViewModel extends Observable {
     this.scanningProgressCircle.stopSpinning();
   }
 
+  /**
+   * FOR COMMUNICATING WITH PHONE AND DETERMINING IF THE PHONE HAS THE
+   * APP, AND FOR OPENING THE APP STORE OR APP
+   */
+
+  onResultData(resultCode: number, resultData: android.os.Bundle) {
+    Log.D('onResultData:', resultCode);
+    if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
+      Log.D('result ok!');
+      // new android.support.wearable.view.ConfirmationOverlay().showOn(this);
+    } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
+      Log.D('result failed!');
+      /*
+      new android.support.wearable.view.ConfirmationOverlay()
+        .setType(android.support.wearable.view.ConfirmationOverlay.FAILURE_ANIMATION)
+        .showOn(ad.getApplicationContext());
+      */
+    } else {
+      Log.E('Unexpected result ' + resultCode);
+    }
+  }
+
+  private ANDROID_MARKET_APP_URI =
+    'market://details?id=com.permobil.pushtracker';
+  // 'market://details?id=com.iconfactory.smartdrive';
+  private APP_STORE_APP_URI =
+    'https://itunes.apple.com/us/app/pushtracker/id1121427802';
+
+  private mResultReceiver = new ResultReceiver(new android.os.Handler());
+
+  openAppOnPhone() {
+    Log.D('openAppInStoreOnPhone()');
+
+    this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
+
+    const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
+      .getPhoneDeviceType(ad.getApplicationContext());
+    switch (phoneDeviceType) {
+      // Paired to Android phone, use Play Store URI.
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+        Log.D('\tDEVICE_TYPE_ANDROID');
+        // Create Remote Intent to open Play Store listing of app on remote device.
+        const intentAndroid =
+          new android.content.Intent(android.content.Intent.ACTION_VIEW)
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
+
+        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+          ad.getApplicationContext(),
+          intentAndroid,
+          this.mResultReceiver);
+        break;
+
+      // Paired to iPhone, use iTunes App Store URI
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+        Log.D('\tDEVICE_TYPE_IOS');
+
+        // Create Remote Intent to open App Store listing of app on iPhone.
+        const intentIOS =
+          new android.content.Intent(android.content.Intent.ACTION_VIEW)
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
+
+        com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+          ad.getApplicationContext(),
+          intentIOS,
+          this.mResultReceiver);
+        break;
+
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
+        Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
+        break;
+    }
+  }
+
   onConnectPushTrackerTap() {
     // TODO: flesh this out to show UI and connect to PushTracker
     // Mobile App to receive credentials.
+    this.openAppOnPhone();
   }
+
+  /**
+   * END FOR COMMUNICATIONS WITH PHONE
+   */
 
   async onPairingTap() {
     try {

@@ -9,8 +9,9 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
+import { android } from 'tns-core-modules/application';
 import { Color } from 'tns-core-modules/color';
-import { screen } from 'tns-core-modules/platform';
+import { isAndroid, screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
@@ -18,9 +19,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { enableDefaultTheme } from '../../utils';
-import { android } from 'tns-core-modules/application';
 declare var com: any;
 
 @Component({
@@ -76,7 +75,7 @@ export class ProfileTabComponent {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -911,19 +910,22 @@ export class ProfileTabComponent {
   }
 
   sendData() {
-    // testing communications wearos
-    const l = new com.github.maxmobility.wearmessage.Data(android.context);
-    // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-    l.sendData(this.getSerializedAuth());
-    Log.D('Data sent');
+    if (isAndroid) {
+      // testing communications wearos
+      const l = new com.github.maxmobility.wearmessage.Data(android.context);
+      // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
+      l.sendData(this.getSerializedAuth());
+      Log.D('Data sent');
+    }
   }
 
   sendMessage() {
-    // testing communications wearos
-    const r = new com.github.maxmobility.wearmessage.Message(android.context);
-    // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-    r.sendMessage('/app-message', this.getSerializedAuth());
-    Log.D('Message sent');
+    if (isAndroid) {
+      // testing communications wearos
+      const r = new com.github.maxmobility.wearmessage.Message(android.context);
+      // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
+      r.sendMessage('/app-message', this.getSerializedAuth());
+      Log.D('Message sent');
+    }
   }
-
 }
