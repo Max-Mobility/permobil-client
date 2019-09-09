@@ -10,42 +10,111 @@ export class KinveyService {
   public static api_file_route = '/blob/';
   public static api_data_route = '/appdata/';
   public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  public static api_login = '/login';
+  public static api_logout = '/logout';
+  public static api_error_db = '/SmartDriveErrors';
+  public static api_info_db = '/SmartDriveUsage';
+  public static api_settings_db = '/SmartDriveSettings';
   public static api_activity_db = '/PushTrackerActivity';
-  public static api_smartdrive_usage_db = '/SmartDriveUsage';
 
   private _auth: string = null;
+  private _userId: string = null;
   public watch_serial_number: string = null;
 
   constructor() {
-    // configure authorization here:
+    // TODO: try to load authorization from ContentProvider
+  }
+
+  public hasAuth() {
+    return this._auth !== null;
+  }
+
+  private checkAuth() {
+    if (this._auth === null) {
+      throw 'Login credentials not provided!';
+    }
+  }
+
+  public async setAuth(newAuth: string, userId: string) {
+    try {
+      // see if we can get the user info
+      const userInfo = await this.getUserInfo(newAuth, userId);
+      // console.log('got user info:', JSON.stringify(userInfo, null, 2));
+      const statusCode = userInfo && userInfo.statusCode;
+      if (statusCode !== 200) {
+        throw statusCode;
+      }
+      // if we do then set the auth / id accordingly
+      this._auth = newAuth;
+      this._userId = userId;
+      return true;
+    } catch (err) {
+      console.error('error getting user info', err);
+      // reset to null if login failed
+      this._auth = null;
+      this._userId = null;
+      return false;
+    }
+  }
+
+  private makeAuth(un: string, pw: string) {
     const authorizationToEncode = new java.lang.String(
-      PushTrackerKinveyKeys.TEST_USER_PREAUTH
+      `${un}:${pw}`
     );
     const data = authorizationToEncode.getBytes(
       java.nio.charset.StandardCharsets.UTF_8
     );
-    this._auth =
-      'Basic ' +
+    return 'Basic ' +
       android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
   }
 
-  private reformatForDb(o) {
-    // remove fields we don't want in the db
-    delete o.id;
-    delete o.uuid;
-    delete o.has_been_sent;
-    // set watch_uuid for log
-    o.watch_uuid = device.uuid;
-    o.watch_serial_number = this.watch_serial_number;
+  public async getUserInfo(auth: string, userId: string) {
+    const url =
+      KinveyService.api_base +
+      KinveyService.api_user_route +
+      KinveyService.api_app_key +
+      `/${userId}`;
+    return request({
+      url: url,
+      method: 'GET',
+      headers: {
+        Authorization: auth
+      }
+    });
   }
 
-  getFile(
+  public async login(username: string, password: string) {
+    const url =
+      KinveyService.api_base +
+      KinveyService.api_user_route +
+      KinveyService.api_app_key +
+      KinveyService.api_login;
+    const content = {
+      username,
+      password
+    };
+    return request({
+      url: url,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this.makeAuth(KinveyService.api_app_key, KinveyService.api_app_secret)
+      },
+      content: JSON.stringify(content)
+    });
+  }
+
+  async getFile(
     fileId?: string,
     queries?: any,
     limit?: number,
     sort?: any,
     skip?: any
   ) {
+    // NOTE: This is the only kinvey service function which *DOES
+    // NOT REQUIRE USER AUTHENTICATION*, so we don't need to check
+    // this.hasAuth() OR this.checkAuth()
     let url =
       KinveyService.api_base +
       KinveyService.api_file_route +
@@ -67,12 +136,13 @@ export class KinveyService {
       url: url,
       method: 'GET',
       headers: {
-        Authorization: this._auth
+        Authorization: this.makeAuth(KinveyService.api_app_key, KinveyService.api_app_secret)
       }
     });
   }
 
   getEntry(db: string, queries?: any, limit?: number, sort?: any, skip?: any) {
+    this.checkAuth();
     let url =
       KinveyService.api_base +
       KinveyService.api_data_route +
@@ -98,6 +168,7 @@ export class KinveyService {
   }
 
   post(db: string, content: any) {
+    this.checkAuth();
     const url =
       KinveyService.api_base +
       KinveyService.api_data_route +
@@ -115,6 +186,7 @@ export class KinveyService {
   }
 
   put(db: string, content: any, id: any) {
+    this.checkAuth();
     const url =
       KinveyService.api_base +
       KinveyService.api_data_route +
@@ -130,11 +202,5 @@ export class KinveyService {
       },
       content: JSON.stringify(content)
     });
-  }
-
-  sendActivity(activity: any, id?: string) {
-    this.reformatForDb(activity);
-    if (id) return this.put(KinveyService.api_activity_db, activity, id);
-    else return this.post(KinveyService.api_activity_db, activity);
   }
 }
