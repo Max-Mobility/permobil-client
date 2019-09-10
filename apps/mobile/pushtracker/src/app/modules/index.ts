@@ -42,5 +42,6 @@ export * from './profile-tab';
 export * from './sign-up';
 export * from './support';
 export * from './tabs';
+export * from './updates-info';
 export * from './wireless-updates';
 
