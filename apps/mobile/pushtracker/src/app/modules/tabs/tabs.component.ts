@@ -97,9 +97,8 @@ export class TabsComponent {
   }
 
   onRootTabViewLoaded() {
-    const self = this;
-    setTimeout(function() {
-      self.registerBluetoothEvents();
+    setTimeout(() => {
+      this.registerBluetoothEvents();
     }, 5000);
     this.registerPushTrackerEvents();
 
@@ -132,20 +131,19 @@ export class TabsComponent {
         !this.bluetoothAdvertised
       ) {
         Log.D('asking for permissions');
-        const self = this;
-        setTimeout(function () {
-          self.askForPermissions()
+        setTimeout(() => {
+          this.askForPermissions()
             .then(() => {
-              if (!self._bluetoothService.advertising) {
+              if (!this._bluetoothService.advertising) {
                 Log.D('starting bluetoooth');
                 // start the bluetooth service
-                return self._bluetoothService.advertise();
+                return this._bluetoothService.advertise();
               }
             })
             .catch(err => {
               Log.E('permission or bluetooth error:', err);
             });
-          self.bluetoothAdvertised = true;
+          this.bluetoothAdvertised = true;
         }, 5000);
       }
     });
