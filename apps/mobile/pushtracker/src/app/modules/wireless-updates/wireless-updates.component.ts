@@ -1,26 +1,34 @@
-import { Component, OnInit, AfterViewInit, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewContainerRef
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log, Device } from '@permobil/core';
-import { ModalDialogParams, ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { LoggingService, BluetoothService } from '../../services';
-import { SmartDriveData } from '../../namespaces';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import { SmartDrive, PushTracker } from '~/app/models';
-import { PushTrackerData } from '~/app/models/pushtracker.model';
-import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
-import * as appSettings from 'tns-core-modules/application-settings';
-const dialogs = require('tns-core-modules/ui/dialogs');
-import last from 'lodash/last';
+import { Log } from '@permobil/core';
+import {
+  Files as KinveyFiles,
+  Query as KinveyQuery
+} from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
+import last from 'lodash/last';
 import throttle from 'lodash/throttle';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { Page } from 'tns-core-modules/ui/page/page';
-import * as app from 'tns-core-modules/application';
+import {
+  ModalDialogParams,
+  ModalDialogService
+} from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { confirm } from 'tns-core-modules/ui/dialogs';
-import { UpdatesInfoComponent } from '../../modules/updates-info/updates-info.component';
 import { Toasty } from 'nativescript-toasty';
+import * as app from 'tns-core-modules/application';
+import * as appSettings from 'tns-core-modules/application-settings';
+import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Color } from 'tns-core-modules/ui/content-view';
+import * as dialogs from 'tns-core-modules/ui/dialogs';
+import { Page } from 'tns-core-modules/ui/page';
+import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
+import { UpdatesInfoComponent } from '../../modules';
+import { SmartDriveData } from '../../namespaces';
+import { BluetoothService, LoggingService } from '../../services';
 
 @Component({
   selector: 'wireless-updates',
@@ -85,33 +93,32 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.checkForPushTrackerUpdates();
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   onMoreBtnTap() {
     console.log('morebtn tapped in mock action bar');
     this._modalService
-    .showModal(UpdatesInfoComponent, {
-      context: {
-        'SmartDriveBLE.ota': this.currentVersions['SmartDriveBLE.ota'],
-        'SmartDriveMCU.ota': this.currentVersions['SmartDriveMCU.ota'],
-        'PushTracker.ota': this.currentPushTrackerVersions['PushTracker.ota']
-      },
-      fullscreen: true,
-      animated: true,
-      viewContainerRef: this._vcRef
-    })
-    .then(() => {
-      // Do anything?
-    })
-    .catch(err => {
-      Log.E(err);
-      new Toasty({
-        text:
-          'An unexpected error occurred. If this continues please let us know.',
-        textColor: new Color('#fff000')
+      .showModal(UpdatesInfoComponent, {
+        context: {
+          'SmartDriveBLE.ota': this.currentVersions['SmartDriveBLE.ota'],
+          'SmartDriveMCU.ota': this.currentVersions['SmartDriveMCU.ota'],
+          'PushTracker.ota': this.currentPushTrackerVersions['PushTracker.ota']
+        },
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .then(() => {
+        // Do anything?
+      })
+      .catch(err => {
+        Log.E(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
       });
-    });
   }
 
   closeModal() {
@@ -133,7 +140,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async getFirmwareData() {
-    const versions = JSON.parse(appSettings.getString(SmartDriveData.Firmwares.TableName));
+    const versions = JSON.parse(
+      appSettings.getString(SmartDriveData.Firmwares.TableName)
+    );
 
     const objs = [];
     for (const key in versions) {
@@ -187,8 +196,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentVersions[f.name].id = id;
       newFirmware[SmartDriveData.Firmwares.IdName] = id;
     }
-    appSettings.setString(SmartDriveData.Firmwares.TableName,
-      JSON.stringify(this.currentVersions));
+    appSettings.setString(
+      SmartDriveData.Firmwares.TableName,
+      JSON.stringify(this.currentVersions)
+    );
   }
 
   private currentVersions = {};
@@ -267,11 +278,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performSmartDriveWirelessUpdate() {
-
-    if (!this.currentVersions['SmartDriveBLE.ota'] || !this.currentVersions['SmartDriveMCU.ota']) {
+    if (
+      !this.currentVersions['SmartDriveBLE.ota'] ||
+      !this.currentVersions['SmartDriveMCU.ota']
+    ) {
       // Download failed
       this.smartDriveCheckedForUpdates = true;
-      this.smartDriveOtaState = this._translateService.instant('Firmware Download Failed!');
+      this.smartDriveOtaState = this._translateService.instant(
+        'Firmware Download Failed!'
+      );
       this.smartDriveOtaProgress = 0;
       this.noSmartDriveDetected = true;
       return;
@@ -285,22 +300,32 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       await this._bluetoothService.scanForSmartDrive(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
-          dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+          dialogs.alert({
+            message:
+              'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
+            okButtonText: this._translateService.instant('general.ok')
+          });
           this.smartDriveCheckedForUpdates = true;
-          this.smartDriveOtaState = this._translateService.instant('No SmartDrives detected!');
+          this.smartDriveOtaState = this._translateService.instant(
+            'No SmartDrives detected!'
+          );
           this.smartDriveOtaProgress = 0;
           this.noSmartDriveDetected = true;
           return;
-        }
-        else if (drives.length > 1) {
-          dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+        } else if (drives.length > 1) {
+          dialogs.alert({
+            message:
+              'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
+            okButtonText: this._translateService.instant('general.ok')
+          });
           this.smartDriveCheckedForUpdates = true;
-          this.smartDriveOtaState = this._translateService.instant('More than one SmartDrive detected!');
+          this.smartDriveOtaState = this._translateService.instant(
+            'More than one SmartDrive detected!'
+          );
           this.smartDriveOtaProgress = 0;
           this.noSmartDriveDetected = true;
           return;
-        }
-        else {
+        } else {
           drives.map(drive => {
             this.smartDrive = drive;
           });
@@ -308,8 +333,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       });
     }
 
-    if (!this.smartDrive)
-      return;
+    if (!this.smartDrive) return;
 
     this.smartDriveUpToDate = false;
 
@@ -335,11 +359,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     let otaStatus = '';
     try {
       this.registerForSmartDriveEvents();
-      otaStatus = await this.smartDrive
-        .performOTA(bleFw, mcuFw, bleVersion, mcuVersion, 300 * 1000);
+      otaStatus = await this.smartDrive.performOTA(
+        bleFw,
+        mcuFw,
+        bleVersion,
+        mcuVersion,
+        300 * 1000
+      );
     } catch (err) {
-      if (this.smartDrive)
-        this.smartDrive.cancelOTA();
+      if (this.smartDrive) this.smartDrive.cancelOTA();
     }
     this.unregisterForSmartDriveEvents();
   }
@@ -389,8 +417,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // if (a.includes('cancel')) {
       //   this.canBackNavigate = false;
       // }
-      const actionClass = 'action-' + last(a.split('.')) +
-        ' compact';
+      const actionClass = 'action-' + last(a.split('.')) + ' compact';
       // translate the label
       const actionLabel = this._translateService.instant(a); // .replace('ota.action.', '');
       return {
@@ -410,15 +437,19 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.smartDriveOtaState = state;
     if (!this.smartDriveCheckedForUpdates)
       this.smartDriveCheckedForUpdates = true;
-    if (this.smartDrive.otaState === SmartDrive.OTAState.already_uptodate ||
-      this.smartDrive.otaState === SmartDrive.OTAState.complete) {
+    if (
+      this.smartDrive.otaState === SmartDrive.OTAState.already_uptodate ||
+      this.smartDrive.otaState === SmartDrive.OTAState.complete
+    ) {
       this.smartDriveOtaProgress = 100;
       this.setBackNav(true);
     }
   }
 
   async getPushTrackerFirmwareData() {
-    const versions = JSON.parse(appSettings.getString(PushTrackerData.Firmware.TableName));
+    const versions = JSON.parse(
+      appSettings.getString(PushTrackerData.Firmware.TableName)
+    );
 
     const objs = [];
     for (const key in versions) {
@@ -448,7 +479,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async updatePushTrackerFirmwareData(f: any) {
-    const id = this.currentPushTrackerVersions[f.name] && this.currentPushTrackerVersions[f.name].id;
+    const id =
+      this.currentPushTrackerVersions[f.name] &&
+      this.currentPushTrackerVersions[f.name].id;
     // update the data in the db
     const newFirmware = PushTrackerData.Firmware.newFirmware(
       f.version,
@@ -472,15 +505,20 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentPushTrackerVersions[f.name].id = id;
       newFirmware[PushTrackerData.Firmware.IdName] = id;
     }
-    appSettings.setString(PushTrackerData.Firmware.TableName,
-      JSON.stringify(this.currentPushTrackerVersions));
+    appSettings.setString(
+      PushTrackerData.Firmware.TableName,
+      JSON.stringify(this.currentPushTrackerVersions)
+    );
   }
 
   private currentPushTrackerVersions = {};
   async checkForPushTrackerUpdates() {
     try {
       const pushTrackerVersions = await this.getPushTrackerFirmwareData();
-      this.currentPushTrackerVersions = { ...this.currentPushTrackerVersions, ...pushTrackerVersions };
+      this.currentPushTrackerVersions = {
+        ...this.currentPushTrackerVersions,
+        ...pushTrackerVersions
+      };
     } catch (err) {
       // TODO: log error
     }
@@ -548,40 +586,55 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async performPushTrackerWirelessUpdate() {
-
     if (!this.currentPushTrackerVersions['PushTracker.ota']) {
       // Download failed
       this.pushTrackerCheckedForUpdates = true;
-      this.pushTrackerOtaState = this._translateService.instant('Firmware Download Failed!');
+      this.pushTrackerOtaState = this._translateService.instant(
+        'Firmware Download Failed!'
+      );
       this.pushTrackerOtaProgress = 0;
       this.noPushTrackerDetected = true;
       return;
     }
 
     // do we need to update? - check against pushtracker version
-    const ptVersion = this.currentPushTrackerVersions['PushTracker.ota'].version;
+    const ptVersion = this.currentPushTrackerVersions['PushTracker.ota']
+      .version;
 
     if (!this.pushTracker) {
-      const trackers = BluetoothService.PushTrackers.filter((val, index, array) => {
-        return val.connected;
-      });
+      const trackers = BluetoothService.PushTrackers.filter(
+        (val, index, array) => {
+          return val.connected;
+        }
+      );
       if (trackers.length === 0) {
-        dialogs.alert('Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.');
+        dialogs.alert({
+          message:
+            'Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.',
+          okButtonText: this._translateService.instant('general.ok')
+        });
+
         this.pushTrackerCheckedForUpdates = true;
-        this.pushTrackerOtaState = this._translateService.instant('No PushTrackers detected!');
+        this.pushTrackerOtaState = this._translateService.instant(
+          'No PushTrackers detected!'
+        );
         this.pushTrackerOtaProgress = 0;
         this.noPushTrackerDetected = true;
         return;
-      }
-      else if (trackers.length > 1) {
-        dialogs.alert('More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry');
+      } else if (trackers.length > 1) {
+        dialogs.alert({
+          message:
+            'More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry',
+          okButtonText: this._translateService.instant('general.ok')
+        });
         this.pushTrackerCheckedForUpdates = true;
-        this.pushTrackerOtaState = this._translateService.instant('More than one PushTracker detected!');
+        this.pushTrackerOtaState = this._translateService.instant(
+          'More than one PushTracker detected!'
+        );
         this.pushTrackerOtaProgress = 0;
         this.noPushTrackerDetected = true;
         return;
-      }
-      else {
+      } else {
         trackers.map(tracker => {
           this.pushTracker = tracker;
         });
@@ -615,11 +668,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     let otaStatus = '';
     try {
       this.registerForPushTrackerEvents();
-      otaStatus = await this.pushTracker
-        .performOTA(ptFw, ptVersion, 300 * 1000);
+      otaStatus = await this.pushTracker.performOTA(
+        ptFw,
+        ptVersion,
+        300 * 1000
+      );
     } catch (err) {
-      if (this.pushTracker)
-        this.pushTracker.cancelOTA();
+      if (this.pushTracker) this.pushTracker.cancelOTA();
     }
     this.unregisterForPushTrackerEvents();
   }
@@ -629,10 +684,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.unregisterForPushTrackerEvents();
     // set up ota action handler
     // throttled function to keep people from pressing it too frequently
-    this._throttledPTOtaAction = debounce(this.pushTracker.onOTAActionTap, 500, {
-      leading: true,
-      trailing: true
-    });
+    this._throttledPTOtaAction = debounce(
+      this.pushTracker.onOTAActionTap,
+      500,
+      {
+        leading: true,
+        trailing: true
+      }
+    );
 
     this._throttledPTOtaStatus = throttle(this.onPushTrackerOtaStatus, 250, {
       leading: true,
@@ -669,8 +728,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // if (a.includes('cancel')) {
       //   this.canBackNavigate = false;
       // }
-      const actionClass = 'action-' + last(a.split('.')) +
-        ' compact';
+      const actionClass = 'action-' + last(a.split('.')) + ' compact';
       // translate the label
       const actionLabel = this._translateService.instant(a); // .replace('ota.action.', '');
       return {
@@ -690,8 +748,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.pushTrackerOtaState = state;
     if (!this.pushTrackerCheckedForUpdates)
       this.pushTrackerCheckedForUpdates = true;
-    if (this.pushTracker.otaState === PushTracker.OTAState.already_uptodate ||
-      this.pushTracker.otaState === PushTracker.OTAState.complete) {
+    if (
+      this.pushTracker.otaState === PushTracker.OTAState.already_uptodate ||
+      this.pushTracker.otaState === PushTracker.OTAState.complete
+    ) {
       this.pushTrackerOtaProgress = 100;
       this.setBackNav(true);
     }
@@ -718,33 +778,35 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             args.cancel = true;
 
             let closeModal = false;
-            confirm({
-              title: this._translateService.instant(
-                'ota.warnings.leaving.title'
-              ),
-              message: this._translateService.instant(
-                'ota.warnings.leaving.message'
-              ),
-              okButtonText: this._translateService.instant('dialogs.yes'),
-              cancelable: true,
-              cancelButtonText: this._translateService.instant('dialogs.cancel')
-            }).then((result: boolean) => {
-              if (result === true) {
-                // user wants to leave so remove the back pressed event
-                app.android.off(
-                  app.AndroidApplication.activityBackPressedEvent
-                );
-                closeModal = true;
-              }
-            }).then(() => {
-              if (closeModal)
-                this.closeModal();
-            });
+            dialogs
+              .confirm({
+                title: this._translateService.instant(
+                  'ota.warnings.leaving.title'
+                ),
+                message: this._translateService.instant(
+                  'ota.warnings.leaving.message'
+                ),
+                okButtonText: this._translateService.instant('dialogs.yes'),
+                cancelable: true,
+                cancelButtonText: this._translateService.instant(
+                  'general.cancel'
+                )
+              })
+              .then((result: boolean) => {
+                if (result === true) {
+                  // user wants to leave so remove the back pressed event
+                  app.android.off(
+                    app.AndroidApplication.activityBackPressedEvent
+                  );
+                  closeModal = true;
+                }
+              })
+              .then(() => {
+                if (closeModal) this.closeModal();
+              });
           }
         );
       }
     }
   }
-
-
 }
