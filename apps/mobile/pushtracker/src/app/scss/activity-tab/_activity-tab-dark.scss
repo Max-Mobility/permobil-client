@@ -77,10 +77,11 @@
   .goal-description {
     @extend .GOAL_DESCRIPTION_BASE;
     color: $white;
+    font-size: 16;
   }
 
   .no-daily-data {
     @extend .goal-description;
-    font-size: 18;
+    font-size: 16;
   }
 }
