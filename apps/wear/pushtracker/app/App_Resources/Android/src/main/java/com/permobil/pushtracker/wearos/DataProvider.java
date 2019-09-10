@@ -1,4 +1,4 @@
-package com.permobil.smartdrive.wearos;
+package com.permobil.pushtracker;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
-public class SmartDriveUsageProvider extends ContentProvider {
+public class DataProvider extends ContentProvider {
 
   /*
    * Actual data storage interface
@@ -29,18 +29,21 @@ public class SmartDriveUsageProvider extends ContentProvider {
    * advantage of the UriMatcher class to make that matching MUCH easier than doing something
    * ourselves, such as using regular expressions.
    */
-  public static final int CODE_USAGE = 100;
+  public static final int CODE_AUTHORIZATION = 200;
+  public static final int CODE_USER_ID = 201;
 
   /* The URI Matcher used by this content provider. */
   private static final UriMatcher sUriMatcher = buildUriMatcher();
 
+  private static final String TAG = "DataProvider";
+
   /**
-   * Creates the UriMatcher that will match each URI to the CODE_USAGE
+   * Creates the UriMatcher that will match each URI to the CODE_*
    *
    * UriMatcher does all the hard work for you. You just have to tell it which code to match
    * with which URI, and it does the rest automatically.
    *
-   * @return A UriMatcher that correctly matches the constants for CODE_USAGE
+   * @return A UriMatcher that correctly matches the constants for CODE_*
    */
   public static UriMatcher buildUriMatcher() {
 
@@ -55,11 +58,13 @@ public class SmartDriveUsageProvider extends ContentProvider {
     /*
      * For each type of URI you want to add, create a corresponding code. Preferably, these are
      * constant fields in your class so that you can use them throughout the class and you no
-     * they aren't going to change. In Usage, we use CODE_USAGE
+     * they aren't going to change.
      */
 
-    /* This URI is content://com.permobil.smartdrive.wearos.usage/usage/ */
-    matcher.addURI(authority, DatabaseHandler.TYPE_USAGE, CODE_USAGE);
+    /* This URI is content://com.permobil.pushtracker.usage/AuthorizationToken/ */
+    matcher.addURI(authority, DatabaseHandler.TYPE_AUTHORIZATION_TOKEN, CODE_AUTHORIZATION);
+    /* This URI is content://com.permobil.pushtracker.usage/UserId/ */
+    matcher.addURI(authority, DatabaseHandler.TYPE_USER_ID, CODE_USER_ID);
 
     return matcher;
   }
@@ -83,11 +88,17 @@ public class SmartDriveUsageProvider extends ContentProvider {
     Cursor cursor;
 
     switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE: {
-      Log.d("SmartDriveUsageProvider", "getting cursor for type usage");
-      cursor = db.getCursor(DatabaseHandler.TYPE_USAGE);
+    case CODE_AUTHORIZATION: {
+      Log.d(TAG, "getting cursor for type authorization");
+      cursor = db.getCursor(DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
       break;
     }
+    case CODE_USER_ID: {
+      Log.d(TAG, "getting cursor for type user id");
+      cursor = db.getCursor(DatabaseHandler.TYPE_USER_ID);
+      break;
+    }
+
     default:
       throw new UnsupportedOperationException("Unknown uri: " + uri);
     }
@@ -105,9 +116,9 @@ public class SmartDriveUsageProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     String data = values.getAsString("data");
     switch (sUriMatcher.match(uri)) {
-    case CODE_USAGE: {
-      Log.d("SmartDriveUsageProvider", "updating record: " + data);
-      long _id = db.updateRecord(data, DatabaseHandler.TYPE_USAGE);
+    case CODE_AUTHORIZATION: {
+      Log.d(TAG, "updating record: " + data);
+      long _id = db.updateContent(data, DatabaseHandler.TYPE_AUTHORIZATION_TOKEN);
       if (_id != -1) {
         /*
          * This will help to broadcast that database has been changed,
@@ -116,7 +127,20 @@ public class SmartDriveUsageProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
       }
 
-      return DatabaseHandler.buildUsageUriWithId(_id);
+      return DatabaseHandler.buildAuthorizationUriWithId(_id);
+    }
+    case CODE_USER_ID: {
+      Log.d(TAG, "updating record: " + data);
+      long _id = db.updateContent(data, DatabaseHandler.TYPE_USER_ID);
+      if (_id != -1) {
+        /*
+         * This will help to broadcast that database has been changed,
+         * and will inform entities to perform automatic update.
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+      }
+
+      return DatabaseHandler.buildUserIdUriWithId(_id);
     }
     default:
       return null;

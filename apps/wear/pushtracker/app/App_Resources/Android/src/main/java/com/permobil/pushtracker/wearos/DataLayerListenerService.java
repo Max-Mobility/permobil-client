@@ -125,13 +125,13 @@ public class DataLayerListenerService extends WearableListenerService {
       ContentValues tokenValue = new ContentValues();
       tokenValue.put("data", token);
       getContentResolver()
-        .insert(com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI, tokenValue);
+        .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
 
       // write user id to content provider for smartdrive wear
       ContentValues userValue = new ContentValues();
       userValue.put("data", userId);
       getContentResolver()
-        .insert(com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI, userValue);
+        .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
     } catch (Exception e) {
       Log.e(TAG, "Could not set content values for authorization: " + e.getMessage());
     }

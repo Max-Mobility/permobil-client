@@ -50,12 +50,7 @@ export class KinveyService {
   public async setAuth(newAuth: string, userId: string) {
     try {
       // see if we can get the user info
-      const userInfo = await this.getUserInfo(newAuth, userId);
-      // console.log('got user info:', JSON.stringify(userInfo, null, 2));
-      const statusCode = userInfo && userInfo.statusCode;
-      if (statusCode !== 200) {
-        throw statusCode;
-      }
+      await this.getUser(newAuth, userId);
       // if we do then set the auth / id accordingly
       this._auth = newAuth;
       this._userId = userId;
@@ -80,19 +75,51 @@ export class KinveyService {
       android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
   }
 
-  public async getUserInfo(auth: string, userId: string) {
+  public async getUserData() {
+    try {
+      const user = await this.getUser(this._auth, this._userId);
+      return user;
+    } catch (err) {
+      return undefined;
+    }
+  }
+
+  public async updateUser(data: any) {
+    this.checkAuth();
+    const url =
+      KinveyService.api_base +
+      KinveyService.api_user_route +
+      KinveyService.api_app_key +
+      `/${this._userId}`;
+    return request({
+      url: url,
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._auth
+      },
+      content: JSON.stringify(data)
+    });
+  }
+
+  private async getUser(auth: string, userId: string) {
     const url =
       KinveyService.api_base +
       KinveyService.api_user_route +
       KinveyService.api_app_key +
       `/${userId}`;
-    return request({
+    const response = await request({
       url: url,
       method: 'GET',
       headers: {
         Authorization: auth
       }
     });
+    const statusCode = response && response.statusCode;
+    if (statusCode !== 200) {
+      throw response;
+    }
+    return response.content.toJSON();
   }
 
   public async login(username: string, password: string) {

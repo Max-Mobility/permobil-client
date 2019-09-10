@@ -102,6 +102,12 @@
     </activity>
     <!-- end for confirmation (success / failure / open-on-phone) activity -->
 
+    <!-- for allowing apps to access our data -->
+    <provider android:name="com.permobil.pushtracker.DataProvider"
+              android:authorities="com.permobil.pushtracker.data"
+              android:exported="true"/>
+    <!-- end for allowing apps to access our data -->
+
     <!-- for providing complications -->
     <service
         android:name="com.permobil.pushtracker.PushesComplicationProviderService"

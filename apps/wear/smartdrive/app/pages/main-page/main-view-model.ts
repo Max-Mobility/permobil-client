@@ -1025,7 +1025,7 @@ export class MainViewModel extends Observable {
       if (authCursor && authCursor.moveToFirst()) {
         // there is data
         const token = authCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
+          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_DATA_INDEX
         );
         authCursor.close();
         Log.D('Got token:', token);
@@ -1043,7 +1043,7 @@ export class MainViewModel extends Observable {
       if (idCursor && idCursor.moveToFirst()) {
         // there is data
         const uid = idCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.DATA_INDEX
+          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_DATA_INDEX
         );
         idCursor.close();
         Log.D('Got uid:', uid);
