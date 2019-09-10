@@ -59,7 +59,7 @@
       </GridLayout>
 
       // Coast Time Chart
-      <GridLayout rows="auto, *" class="chart-layout" (tap)="onCoastTimeChartSelected($event)">
+      <GridLayout rows="auto, *" class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="coastTimeGoalMessage"></Label>
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
@@ -120,7 +120,7 @@
       </GridLayout>
 
       // Distance Time Chart
-      <GridLayout rows="auto, *" class="chart-layout" (tap)="onDistanceChartSelected($event)">
+      <GridLayout rows="auto, *" class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="distanceGoalMessage"></Label>
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
