@@ -2421,11 +2421,31 @@ export class MainViewModel extends Observable {
 
   private ANDROID_MARKET_APP_URI =
     'market://details?id=com.permobil.pushtracker';
-  // 'market://details?id=com.iconfactory.smartdrive';
   private APP_STORE_APP_URI =
     'https://itunes.apple.com/us/app/pushtracker/id1121427802';
 
   private mResultReceiver = new ResultReceiver(new android.os.Handler());
+
+  checkPackageInstalled(packageName: string) {
+    let found = true;
+    try {
+      application.android.context.getPackageManager()
+        .getPackageInfo(packageName, 0);
+    } catch (err) {
+      found = false;
+    }
+    return found;
+  }
+
+  openInPlayStore(uri: string) {
+    const intent =
+      new android.content.Intent(android.content.Intent.ACTION_VIEW)
+        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+        .addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+        .setData(android.net.Uri.parse(uri));
+    application.android.foregroundActivity.startActivity(intent);
+  }
 
   openAppOnPhone() {
     Log.D('openAppInStoreOnPhone()');
@@ -2480,10 +2500,22 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onConnectPushTrackerTap() {
-    // TODO: flesh this out to show UI and connect to PushTracker
-    // Mobile App to receive credentials.
-    this.openAppOnPhone();
+  async onConnectPushTrackerTap() {
+    if (!this.checkPackageInstalled('com.permobil.pushtracker')) {
+      this.openInPlayStore(this.ANDROID_MARKET_APP_URI);
+      return;
+    }
+    if (!this._kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        this.openAppOnPhone();
+        return;
+      }
+    }
+    // if we got here then we have valid authorization!
+    this.showConfirmation(
+      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+    );
   }
 
   /**
