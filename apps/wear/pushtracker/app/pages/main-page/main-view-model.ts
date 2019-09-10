@@ -713,14 +713,8 @@ export class MainViewModel extends Observable {
     Log.D('onResultData:', resultCode);
     if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
       Log.D('result ok!');
-      // new android.support.wearable.view.ConfirmationOverlay().showOn(this);
     } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
       Log.D('result failed!');
-      /*
-      new android.support.wearable.view.ConfirmationOverlay()
-        .setType(android.support.wearable.view.ConfirmationOverlay.FAILURE_ANIMATION)
-        .showOn(ad.getApplicationContext());
-      */
     } else {
       Log.E('Unexpected result ' + resultCode);
     }
@@ -787,10 +781,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onConnectPushTrackerTap() {
-    // TODO: flesh this out to show UI and connect to PushTracker
-    // Mobile App to receive credentials.
-    this.openAppOnPhone();
+  async onConnectPushTrackerTap() {
+    if (!this.kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        this.openAppOnPhone();
+        return;
+      }
+    }
+    // if we got here then we have valid authorization!
+    this.showConfirmation(
+      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+    );
   }
 
   /**
@@ -1183,6 +1185,85 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
+  async updateAuthorization() {
+    // check the content provider here to see if the user has
+    // sync-ed up with the pushtracker mobile app
+    let authorization = null;
+    let userId = null;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const savedToken = sharedPreferences.getString(
+      prefix + com.permobil.pushtracker.Datastore.AUTHORIZATION_KEY,
+      ''
+    );
+    const savedUserId = sharedPreferences.getString(
+      prefix + com.permobil.pushtracker.Datastore.USER_ID_KEY,
+      ''
+    );
+    if (savedToken && savedToken.length && savedUserId && savedUserId.length) {
+      authorization = savedToken;
+      userId = savedUserId;
+    }
+
+    if (authorization === null || userId === null) {
+      // if the user has not configured this app with the PushTracker
+      // Mobile app
+      Log.D('No authorization found in app settings!');
+      try {
+        const contentResolver = ad
+          .getApplicationContext()
+          .getContentResolver();
+        const authCursor = contentResolver
+          .query(
+            com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI,
+            null, null, null, null);
+        if (authCursor && authCursor.moveToFirst()) {
+          // there is data
+          const token = authCursor.getString(
+            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+          );
+          authCursor.close();
+          Log.D('Got token:', token);
+          if (token !== null && token.length) {
+            // we have a valid token
+            authorization = token;
+          }
+        } else {
+          Log.E('Could not get authCursor to move to first:', authCursor);
+        }
+        const idCursor = contentResolver
+          .query(
+            com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI,
+            null, null, null, null);
+        if (idCursor && idCursor.moveToFirst()) {
+          // there is data
+          const uid = idCursor.getString(
+            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+          );
+          idCursor.close();
+          Log.D('Got uid:', uid);
+          if (uid !== null && uid.length) {
+            // we have a valid token
+            userId = uid;
+          }
+        } else {
+          Log.E('Could not get idCursor to move to first:', idCursor);
+        }
+      } catch (err) {
+        Log.E('error getting auth:', err);
+      }
+    }
+    if (authorization === null || userId === null) {
+      Log.D('No authorization found in anywhere!');
+      return false;
+    }
+    // now set the authorization and see if it's valid
+    const validAuth = await this.kinveyService.setAuth(authorization, userId);
+    return validAuth;
+  }
+
   private sentryBreadCrumb(message: string) {
     Sentry.captureBreadcrumb({
       message,
