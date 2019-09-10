@@ -1088,12 +1088,20 @@ export class MainViewModel extends Observable {
   async sendSettings() {
     // make sure kinvey service is initialized
     if (this.kinveyService === undefined) {
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
+        L('failures.not-fully-initialized')
+      );
       return;
     }
     // make sure the kinvey service has authentication (or get it)
     if (!this.kinveyService.hasAuth()) {
       const validAuth = await this.updateAuthorization();
       if (!validAuth) {
+        this.showConfirmation(
+          android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
+          L('failures.not-connected-to-mobile')
+        );
         return;
       }
     }
@@ -1117,8 +1125,15 @@ export class MainViewModel extends Observable {
       if (statusCode !== 200) {
         throw response;
       }
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+      );
     } catch (err) {
       Log.E('could not save to database:', err);
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
+        L('failures.could-not-update-profile') + `: ${err}`
+      );
     }
   }
 
