@@ -1,0 +1,61 @@
+{
+  "name": "@maxmobility/nativescript-wear-os-comms",
+  "version": "0.1.0",
+  "description": "Your awesome NativeScript plugin.",
+  "main": "wear-os-comms",
+  "typings": "index.d.ts",
+  "nativescript": {
+    "platforms": {
+      "android": "6.0.0",
+      "ios": "6.0.1"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Max-Mobility/permobil-client/@permobil/nativescript/nativescript-wear-os-comms.git"
+  },
+  "scripts": {
+    "tsc": "npm i && tsc",
+    "build": "npm run tsc && npm run build.native",
+    "build.native": "node scripts/build-native.js",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/node_modules/**\"",
+    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/node_modules/**' --exclude '**/platforms/**'",
+    "prepack": "npm run build.native",
+    "demo.ios": "npm run tsc && cd ../demo && tns run ios --emulator",
+    "demo.android": "npm run tsc && cd ../demo && tns run android --emulator",
+    "demo.reset": "cd ../demo && npx rimraf -- hooks node_modules platforms package-lock.json",
+    "demo-angular.ios": "npm run tsc && cd ../demo-angular && tns run ios --emulator",
+    "demo-angular.android": "npm run tsc && cd ../demo-angular && tns run android --emulator",
+    "demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
+    "plugin.prepare": "npm run build && cd ../demo && tns plugin remove nativescript-wear-os-comms && tns plugin add ../src && cd ../demo-angular && tns plugin remove nativescript-wear-os-comms && tns plugin add ../src",
+    "clean": "npm run demo.reset && npm run demo-angular.reset && npx rimraf -- node_modules package-lock.json && npm i"
+  },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "WearOS",
+    "Wearables",
+    "watches"
+  ],
+  "author": {
+    "name": "Max-Mobility",
+    "email": "something@permobil.com"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Max-Mobility/permobil-client/@permobil/nativescript/nativescript-wear-os-comms",
+  "devDependencies": {
+    "tns-core-modules": "^6.1.0",
+    "tns-platform-declarations": "^6.1.0",
+    "typescript": "~3.5.3",
+    "prompt": "^1.0.0",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.19.0",
+    "semver": "^5.6.0"
+  },
+  "dependencies": {
+    "nativescript-bluetooth": "file:../../../../../../forked-plugins/nativescript-bluetooth"
+  },
+  "bootstrapper": "nativescript-plugin-seed"
+}

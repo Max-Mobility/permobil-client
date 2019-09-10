@@ -1,0 +1,12 @@
+dependencies {
+   	implementation 'com.github.Max-Mobility:WearOsMessaging:0.1.1'
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { 
+          url 'https://jitpack.io' 
+        }
+    }
+}
