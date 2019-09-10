@@ -1288,12 +1288,12 @@ export class MainViewModel extends Observable {
           .getContentResolver();
         const authCursor = contentResolver
           .query(
-            com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI,
+            com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI,
             null, null, null, null);
         if (authCursor && authCursor.moveToFirst()) {
           // there is data
           const token = authCursor.getString(
-            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+            com.permobil.pushtracker.DatabaseHandler.DATA_INDEX
           );
           authCursor.close();
           Log.D('Got token:', token);
@@ -1306,12 +1306,12 @@ export class MainViewModel extends Observable {
         }
         const idCursor = contentResolver
           .query(
-            com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI,
+            com.permobil.pushtracker.DatabaseHandler.USER_ID_URI,
             null, null, null, null);
         if (idCursor && idCursor.moveToFirst()) {
           // there is data
           const uid = idCursor.getString(
-            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+            com.permobil.pushtracker.DatabaseHandler.DATA_INDEX
           );
           idCursor.close();
           Log.D('Got uid:', uid);

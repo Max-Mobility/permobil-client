@@ -311,7 +311,7 @@ public class ActivityService
     ContentValues tokenValue = new ContentValues();
     tokenValue.put("data", token);
     getContentResolver()
-      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI, tokenValue);
+      .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
 
     // write token to app settings for pushtracker wear
     datastore.setAuthorization(token);
@@ -320,7 +320,7 @@ public class ActivityService
     ContentValues userValue = new ContentValues();
     userValue.put("data", userId);
     getContentResolver()
-      .insert(com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI, userValue);
+      .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
 
     // write user id to app settings for pushtracker wear
     datastore.setUserId(userId);

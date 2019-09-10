@@ -19,33 +19,83 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+  public class Record {
+    String data;
+    String date;
+    String id;
+    boolean has_been_sent;
+  }
+
+  public static final String CONTENT_AUTHORITY = "com.permobil.pushtracker.data";
+  /*
+   * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
+   * the content provider for Sunshine.
+   */
+  public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+  public static final String TYPE_AUTHORIZATION_TOKEN = "AuthorizationToken";
+  public static final String TYPE_USER_ID = "UserId";
+
+  /**
+   * Database related stuff:
+   */
+  private Context mContext;
+
   private static final String TAG = "DatabaseHandler";
+
   // Database Version
   private static final int DATABASE_VERSION = 1;
+
   // Database Name
   public static final String DATABASE_NAME = "PushTrackerDatabase";
-  // Table name
-  public static final String TABLE_NAME = "DailyActivity";
-  // Table Columns names
+
+  // Tables
+  public static final String CONTENT_TABLE_NAME = "SharedData";
+  public static final String ACTIVITY_TABLE_NAME = "DailyActivity";
+
+  // Table info for ACTIVITY_TABLE_NAME
   public static final String KEY_ID = "id";
   public static final String KEY_DATA = "data";
   public static final String KEY_DATE = "date";
   public static final String KEY_UUID = "uuid";
   public static final String KEY_HAS_BEEN_SENT = "has_been_sent";
-
   public static final int ID_INDEX = 0;
   public static final int DATA_INDEX = 1;
   public static final int DATE_INDEX = 2;
   public static final int UUID_INDEX = 3;
   public static final int HAS_BEEN_SENT_INDEX = 4;
 
-  private Context mContext;
+  // Table info for CONTENT_TABLE_NAME
+  public static final String KEY_TYPE = "type";
+  public static final int TYPE_INDEX = 2;
+  private static final int TYPE_AUTHORIZATION_TOKEN_UUID = 0;
+  private static final int TYPE_USER_ID_UUID = 1;
 
-  public class Record {
-    String data;
-    String date;
-    String id;
-    boolean has_been_sent;
+  /* The base CONTENT_URI used to query the Usage table from the content provider */
+  public static final Uri AUTHORIZATION_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_AUTHORIZATION_TOKEN)
+    .build();
+  public static final Uri USER_ID_URI = BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USER_ID)
+    .build();
+
+  /**
+   * Builds a URI that adds the task _ID to the end of the usage content URI path.
+   * This is used to query details about a single usage entry by _ID. This is what we
+   * use for the detail view query.
+   *
+   * @param id Unique id pointing to that row
+   * @return Uri to query details about a single usage entry
+   */
+  public static Uri buildAuthorizationUriWithId(long id) {
+    return AUTHORIZATION_URI.buildUpon()
+      .appendPath(Long.toString(id))
+      .build();
+  }
+  public static Uri buildUserIdUriWithId(long id) {
+    return USER_ID_URI.buildUpon()
+      .appendPath(Long.toString(id))
+      .build();
   }
 
   public DatabaseHandler(Context context) {
@@ -56,12 +106,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   @Override
   public void onCreate(SQLiteDatabase db) {
     try {
-      String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + TABLE_NAME + "(" +
+      String CREATE_TABLE_ACTIVITYDATA = "CREATE TABLE " + ACTIVITY_TABLE_NAME + "(" +
         KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
         KEY_DATA + " TEXT, " +
         KEY_DATE + " TEXT, " +
         KEY_UUID + " TEXT, " +
         KEY_HAS_BEEN_SENT + " INTEGER DEFAULT 0" +
+        ")";
+      db.execSQL(CREATE_TABLE_ACTIVITYDATA);
+      String CREATE_TABLE_CONTENT = "CREATE TABLE " + CONTENT_TABLE_NAME + "(" +
+        KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+        KEY_DATA + " TEXT, " +
+        KEY_TYPE + " TEXT " +
         ")";
       db.execSQL(CREATE_TABLE_ACTIVITYDATA);
     } catch (Exception e) {
@@ -72,10 +128,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     // Drop older table if existed
-    db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+    db.execSQL("DROP TABLE IF EXISTS " + ACTIVITY_TABLE_NAME);
+    db.execSQL("DROP TABLE IF EXISTS " + CONTENT_TABLE_NAME);
     // Create tables again
     onCreate(db);
   }
+
+  /**
+   * FOR CONTENT PROVIDER:
+   */
+  public long getUUID(String type) {
+    long uuid = -1;
+    if (type.equals(TYPE_AUTHORIZATION_TOKEN)) {
+      uuid = TYPE_AUTHORIZATION_TOKEN_UUID;
+    } else if (type.equals(TYPE_USER_ID)) {
+      uuid = TYPE_USER_ID_UUID;
+    }
+    return uuid;
+  }
+
+  // Insert content to the table
+  synchronized public long updateContent(String data, String type) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    long _id = 0;
+    try {
+      long uuid = getUUID(type);
+      if (uuid != -1) {
+        values.put(KEY_ID, uuid);
+        values.put(KEY_DATA, data);
+        values.put(KEY_TYPE, type);
+        Log.d(TAG, "Updating RECORD in SQL Table");
+        _id = db.insertWithOnConflict(CONTENT_TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+      }
+    } catch (Exception e) {
+      Log.e(TAG, "Exception updating data in table: " + e.getMessage());
+      Sentry.capture(e);
+    }
+
+    db.close();
+    return _id;
+  }
+
+  synchronized public Cursor getCursor(String type) {
+    String selectQuery = "SELECT * FROM " + CONTENT_TABLE_NAME;
+    selectQuery += " WHERE " + KEY_TYPE + "=\"" + type + "\"";
+    selectQuery += " ORDER BY " + KEY_ID + " ASC LIMIT 1";
+
+    SQLiteDatabase db = this.getReadableDatabase();
+    Cursor cursor = db.rawQuery(selectQuery, null);
+    return cursor;
+  }
+
+  /**
+   * FOR REGULAR DB FUNCTIONS!
+   */
 
   // Insert values to the table
   synchronized public void addRecord(DailyActivity data) {
@@ -90,7 +197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       values.put(KEY_HAS_BEEN_SENT, has_been_sent);
       values.put(KEY_DATE, data.date);
       values.put(KEY_DATA, dataAsJSON);
-      db.insert(TABLE_NAME, null, values);
+      db.insert(ACTIVITY_TABLE_NAME, null, values);
       Log.d(TAG, "Saving new RECORD to SQL Table: " + data._id);
     } catch (Exception e) {
       Log.e(TAG, "Exception adding data to table: " + e.getMessage());
@@ -108,7 +215,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       values.put(KEY_HAS_BEEN_SENT, 1);
       String whereString = KEY_UUID + "=\"" + id + "\"";
       String[] whereArgs = {};
-      db.update(TABLE_NAME, values, whereString, whereArgs);
+      db.update(ACTIVITY_TABLE_NAME, values, whereString, whereArgs);
       Log.d(TAG, "Marking record as sent in SQL Table: " + id);
     } catch (Exception e) {
       Log.e(TAG, "Exception marking record as sent in table: " + e.getMessage());
@@ -130,7 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
       values.put(KEY_DATA, dataAsJSON);
       String whereString = KEY_UUID + "=\"" + data._id + "\"";
       String[] whereArgs = {};
-      db.update(TABLE_NAME, values, whereString, whereArgs);
+      db.update(ACTIVITY_TABLE_NAME, values, whereString, whereArgs);
       Log.d(TAG, "Updating RECORD in SQL Table: " + data._id);
     } catch (Exception e) {
       Log.e(TAG, "Exception updating data in table: " + e.getMessage());
@@ -142,7 +249,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public DailyActivity getMostRecent(boolean onlyUnsent) {
     DailyActivity record = null;
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
+    String selectQuery = "SELECT * FROM " + ACTIVITY_TABLE_NAME;
     if (onlyUnsent) {
       selectQuery += " WHERE " + KEY_HAS_BEEN_SENT + "=0";
     }
@@ -183,7 +290,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public List<DailyActivity> getRecords(int numRecords, boolean onlyUnsent) {
     List<DailyActivity> recordList = new ArrayList<>();
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
+    String selectQuery = "SELECT * FROM " + ACTIVITY_TABLE_NAME;
     if (onlyUnsent) {
       selectQuery += " WHERE " + KEY_HAS_BEEN_SENT + "=0";
     }
@@ -230,7 +337,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public Record getRecord(boolean onlyUnsent) {
     Record record = new Record();
-    String selectQuery = "SELECT * FROM " + TABLE_NAME;
+    String selectQuery = "SELECT * FROM " + ACTIVITY_TABLE_NAME;
     if (onlyUnsent) {
       selectQuery += " WHERE " + KEY_HAS_BEEN_SENT + "=0";
     }
@@ -271,7 +378,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public long getTableRowCount() {
     SQLiteDatabase db = this.getReadableDatabase();
-    long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME);
+    long count = DatabaseUtils.queryNumEntries(db, ACTIVITY_TABLE_NAME);
     Log.d(TAG, "Current SQLite Table Row Count: " + count);
     db.close();
     return count;
@@ -280,7 +387,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   synchronized public long countUnsentEntries() {
     SQLiteDatabase db = this.getReadableDatabase();
     String selection = KEY_HAS_BEEN_SENT + "=0";
-    long count = DatabaseUtils.queryNumEntries(db, TABLE_NAME, selection);
+    long count = DatabaseUtils.queryNumEntries(db, ACTIVITY_TABLE_NAME, selection);
     Log.d(TAG, "Current SQLite Table Unsent Row Count: " + count);
     db.close();
     return count;
@@ -293,7 +400,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   synchronized public void deleteRecord(String id) {
     SQLiteDatabase db = this.getWritableDatabase();
-    db.delete(TABLE_NAME, KEY_UUID + "=?", new String[]{id});
+    db.delete(ACTIVITY_TABLE_NAME, KEY_UUID + "=?", new String[]{id});
     Log.d(TAG, "Deleted record from database with id: " + id);
     db.close();
   }
