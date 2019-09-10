@@ -180,6 +180,14 @@ export class HomeTabComponent {
   refreshPlots(args) {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
+    // The user might come back and refresh the next day, just keeping
+    // the app running - Update currentDayInView and weekStart to
+    // account for this
+    this._currentDayInView = new Date();
+    this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
+    this._weekEnd = new Date(this._weekStart);
+    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    // Now refresh the data
     this._loadWeeklyData();
     pullRefresh.refreshing = false;
   }

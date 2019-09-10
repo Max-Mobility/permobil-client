@@ -78,4 +78,9 @@
     @extend .GOAL_DESCRIPTION_BASE;
     color: $white;
   }
+
+  .no-daily-data {
+    @extend .goal-description;
+    font-size: 18;
+  }
 }

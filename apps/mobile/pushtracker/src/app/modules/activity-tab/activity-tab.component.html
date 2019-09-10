@@ -176,10 +176,12 @@
           <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" 
             [visibility]="(tabSelectedIndex === 0) && (user.data.control_configuration === 'PushTracker with SmartDrive') ? 'visible' : 'collapsed'">
             <Label
+              marginTop="20"
+              width="80%"
               row="1"
               col="0"
               colSpan="5"
-              class="goal-description"
+              class="no-daily-data"
               [text]="'general.pushtracker-daily-activity-unavailable' | translate"
               [visibility]="tabSelectedIndex === 0 ? 'visible' : 'collapsed'"
               textWrap="true"
