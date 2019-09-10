@@ -113,6 +113,7 @@
     "password-required": "Password is required.",
     "power-assist-beep": "Power Assist Beep",
     "profile": "Profile",
+    "push-count-description": "The daily goal you want to meet or exceed for number of pushes.",
     "pushes": "pushes",
     "pushes-today": "pushes today",
     "pushtracker-connected": "PushTracker connected",
@@ -274,6 +275,7 @@
     "last-name": "last name",
     "per-day": "per day",
     "pushtracker": "PushTracker",
+    "pushtracker-e2": "PushTracker E2",
     "pushtracker-serial-number": "PushTracker Serial Number",
     "scan-msg": "Scan a",
     "sd-or-pt": "SmartDrive or PushTracker",
@@ -284,7 +286,9 @@
     "ok": "OK",
     "cancel": "Cancel",
     "configuration-change-dialog-title": "Changing Control Configuration",
-    "configuration-change-dialog-message": "Login required. You will be redirected to the login page."
+    "configuration-change-dialog-message": "Login required. You will be redirected to the login page.",
+    "pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
+    "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here."
   },
   "sd": {
     "switch-settings": {
