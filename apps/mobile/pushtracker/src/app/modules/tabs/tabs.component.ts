@@ -97,7 +97,10 @@ export class TabsComponent {
   }
 
   onRootTabViewLoaded() {
-    this.registerBluetoothEvents();
+    const self = this;
+    setTimeout(function() {
+      self.registerBluetoothEvents();
+    }, 5000);
     this.registerPushTrackerEvents();
 
     if (isAndroid) {
@@ -125,22 +128,25 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-          'PushTracker with SmartDrive' &&
+        'PushTracker with SmartDrive' &&
         !this.bluetoothAdvertised
       ) {
         Log.D('asking for permissions');
-        this.askForPermissions()
-          .then(() => {
-            if (!this._bluetoothService.advertising) {
-              Log.D('starting bluetoooth');
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
-            }
-          })
-          .catch(err => {
-            Log.E('permission or bluetooth error:', err);
-          });
-        this.bluetoothAdvertised = true;
+        const self = this;
+        setTimeout(function () {
+          self.askForPermissions()
+            .then(() => {
+              if (!self._bluetoothService.advertising) {
+                Log.D('starting bluetoooth');
+                // start the bluetooth service
+                return self._bluetoothService.advertise();
+              }
+            })
+            .catch(err => {
+              Log.E('permission or bluetooth error:', err);
+            });
+          self.bluetoothAdvertised = true;
+        }, 5000);
       }
     });
 
@@ -233,8 +239,8 @@ export class TabsComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -247,7 +253,7 @@ export class TabsComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -339,7 +345,7 @@ export class TabsComponent {
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
 
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -385,7 +391,7 @@ export class TabsComponent {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     const start_time = date.getTime();
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
