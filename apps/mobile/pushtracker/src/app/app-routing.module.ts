@@ -6,6 +6,7 @@ import { LoginComponent } from './modules/login/login.component';
 import { SignUpComponent } from './modules/sign-up/sign-up.component';
 import { ConfigurationTabComponent } from './modules/configuration-tab/configuration-tab.component';
 import { AuthGuardService } from './services';
+import { ProfileTabComponent } from './modules';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -29,6 +30,10 @@ const routes: Routes = [
     path: 'tabs',
     loadChildren: './modules/tabs/tabs.module#TabsModule',
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'profile',
+    component: ProfileTabComponent
   }
 ];
 

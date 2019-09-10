@@ -21,6 +21,7 @@ import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, milesToKilometers, kilometersToMiles } from '../../utils';
 declare var com: any;
+const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
   selector: 'profile',
@@ -73,7 +74,7 @@ export class ProfileTabComponent {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) { }
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -428,12 +429,38 @@ export class ProfileTabComponent {
         KinveyUser.update({ chair_make: this.user.data.chair_make });
         break;
       case 5:
-        this._userService.updateDataProperty(
-          'control_configuration',
-          this.primary[this.primaryIndex]
-        );
-        KinveyUser.update({
-          control_configuration: this.user.data.control_configuration
+        const newConfiguration = this.primary[this.primaryIndex];
+        const self = this;
+        // Confirm if the user is OK being logged out on change here
+        dialogs.confirm({
+          title: this._translateService.instant('profile-tab.configuration-change-dialog-title'),
+          message: this._translateService.instant('profile-tab.configuration-change-dialog-message'),
+          okButtonText: this._translateService.instant('profile-tab.ok'),
+          cancelButtonText: this._translateService.instant('profile-tab.cancel')
+        }).then(async function(result) {
+          if (result) {
+            self._userService.updateDataProperty(
+              'control_configuration',
+              newConfiguration
+            );
+            Log.D('Configuration changed to', newConfiguration);
+            await KinveyUser.update({
+              control_configuration: newConfiguration
+            });
+            // Control configuration has changed
+            // Tabs need to be re-initialized
+            // Logout the user
+            self._zone.run(async () => {
+              const logoutResult = await KinveyUser.logout();
+              Log.D('logout result', logoutResult);
+              self._userService.reset();
+              enableDefaultTheme();
+              // go ahead and nav to login to keep UI moving without waiting
+              self._routerExtensions.navigate(['/login'], {
+                clearHistory: true
+              });
+            });
+          }
         });
         break;
     }

@@ -95,11 +95,19 @@ export class LoginComponent implements OnInit {
 
       // Navigate to tabs home with clearHistory
       this._userService.reset();
-      this._zone.run(() => {
-        this._routerExtensions.navigate(['/tabs/default'], {
-          clearHistory: true
+      if (user.data['control_configuration'] === 'Switch Control with SmartDrive') {
+        this._zone.run(() => {
+          this._routerExtensions.navigate(['/profile'], {
+            clearHistory: true
+          });
         });
-      });
+      } else {
+        this._zone.run(() => {
+          this._routerExtensions.navigate(['/tabs/default'], {
+            clearHistory: true
+          });
+        });
+      }
     } catch (error) {
       this._loadingIndicator.hide();
       // handle the errors (mainly for kinvey exceptions so we can inform user what happened with log in)

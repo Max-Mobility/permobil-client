@@ -280,7 +280,11 @@
     "set-goal": "Set goal",
     "smartdrive": "SmartDrive",
     "smartdrive-serial-number": "SmartDrive Serial Number",
-    "title": "Profile"
+    "title": "Profile",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "configuration-change-dialog-title": "Changing Control Configuration",
+    "configuration-change-dialog-message": "Login required. You will be redirected to the login page."
   },
   "sd": {
     "switch-settings": {

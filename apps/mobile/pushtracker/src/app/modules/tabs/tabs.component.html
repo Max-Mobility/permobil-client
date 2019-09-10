@@ -1,9 +1,20 @@
-<TabView (loaded)="onRootTabViewLoaded()" #rootTabView androidTabsPosition="bottom" tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" (selectedIndexChanged)="tabViewIndexChange($event)">
+<TabView (loaded)="onRootTabViewLoaded()" #rootTabView androidTabsPosition="bottom" 
+  tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" 
+  (selectedIndexChanged)="tabViewIndexChange($event)"
+  *ngIf="user ? user.data.control_configuration !== 'Switch Control with SmartDrive' : true">
   // Home Tab
   <page-router-outlet *tabItem="homeTabItem" name="homeTab" actionBarVisibility="never"> </page-router-outlet>
   // Journey Tab
   <page-router-outlet *tabItem="journeyTabItem" name="journeyTab" actionBarVisibility="never"> </page-router-outlet>
 
+  // Profile Tab
+  <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
+</TabView>
+
+<TabView (loaded)="onRootTabViewLoaded()" #rootTabView androidTabsPosition="bottom" 
+  tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" 
+  (selectedIndexChanged)="tabViewIndexChange($event)"
+  *ngIf="user ? user.data.control_configuration === 'Switch Control with SmartDrive' : false">
   // Profile Tab
   <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
 </TabView>
