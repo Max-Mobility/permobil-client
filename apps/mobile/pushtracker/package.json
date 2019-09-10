@@ -18,6 +18,7 @@
     "@angular/platform-browser": "~8.2.5",
     "@angular/platform-browser-dynamic": "~8.2.5",
     "@angular/router": "~8.2.5",
+    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@ngx-translate/core": "~11.0.1",
     "@nstudio/nativescript-floatingactionbutton": "~1.1.0",
