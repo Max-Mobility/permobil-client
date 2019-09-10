@@ -15,7 +15,7 @@ export interface PushTrackerUser {
     // weight and height in metric
     weight: number; // kg
     height: number; // cm
-    chair_type: string;
+    chair_type: number; // enum ["Rigid" = 0, "Folding" = 1, "Pediatric" = 2]
     chair_make: string;
     // (1) smartdrive with switch control only, (2) smartdrive with pushtracker, or (3) smartdrive with pushtracker e2
     control_configuration: string;

@@ -98,7 +98,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 3)">
           <Label class="data-box-label" [text]="'general.chair-type' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.chair_type" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayChairType" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>

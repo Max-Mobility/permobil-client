@@ -17,7 +17,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_TYPE } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, milesToKilometers, kilometersToMiles } from '../../utils';
 declare var com: any;
@@ -38,7 +38,8 @@ export class ProfileTabComponent {
   displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
-
+  chairTypes: Array<string> = [];
+  displayChairType: string;
   // List picker related fields
 
   primary: string[];
@@ -74,7 +75,7 @@ export class ProfileTabComponent {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -94,6 +95,11 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
+    this.chairTypes = [];
+    this._translateService.instant('profile-tab.chair-types').forEach(i => {
+      this.chairTypes.push(i);
+    });
+
     this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
@@ -105,6 +111,7 @@ export class ProfileTabComponent {
       this._initDisplayActivityGoalDistance();
       this._initDisplayWeight();
       this._initDisplayHeight();
+      this._initDisplayChairType();
     });
   }
 
@@ -424,10 +431,9 @@ export class ProfileTabComponent {
         break;
       case 3:
         this._userService.updateDataProperty(
-          'chair_type',
-          this.primary[this.primaryIndex]
+          'chair_type', this.primaryIndex // index into CHAIR_TYPE enum
         );
-        KinveyUser.update({ chair_type: this.user.data.chair_type });
+        KinveyUser.update({ chair_type: this.primaryIndex });
         break;
       case 4:
         this._userService.updateDataProperty(
@@ -498,8 +504,6 @@ export class ProfileTabComponent {
     let secondaryIndex = 0;
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS)
       secondaryIndex = parseFloat(heightString.split('.')[1]);
-
-    console.log('getHeightIndex', heightString, secondaryIndex);
     return [primaryIndex - 2, secondaryIndex];
   }
 
@@ -600,7 +604,7 @@ export class ProfileTabComponent {
     this._translateService.instant('profile-tab.chair-types').forEach(i => {
       this.primary.push(i);
     });
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_type);
+    this.primaryIndex = this.user.data.chair_type || 0;
 
     this.listPickerTitle = this._translateService.instant('general.chair-type');
     this.listPickerDescriptionNecessary = false;
@@ -705,6 +709,10 @@ export class ProfileTabComponent {
       this.displayHeight = this._displayHeightInFeetInches(feet, inches);
     }
     if (!this.displayHeight) this.displayHeight = '';
+  }
+
+  private _initDisplayChairType() {
+    this.displayChairType = this.chairTypes[this.user.data.chair_type || 0];
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
