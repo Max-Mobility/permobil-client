@@ -17,7 +17,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_TYPE } from '../../enums';
+import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, milesToKilometers, kilometersToMiles } from '../../utils';
 declare var com: any;
@@ -38,8 +38,13 @@ export class ProfileTabComponent {
   displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
+
   chairTypes: Array<string> = [];
   displayChairType: string;
+
+  chairMakes: Array<string> = [];
+  displayChairMake: string;
+
   // List picker related fields
 
   primary: string[];
@@ -100,6 +105,11 @@ export class ProfileTabComponent {
       this.chairTypes.push(i);
     });
 
+    this.chairMakes = [];
+    this._translateService.instant('profile-tab.chair-makes').forEach(i => {
+      this.chairMakes.push(i);
+    });
+
     this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
@@ -112,6 +122,7 @@ export class ProfileTabComponent {
       this._initDisplayWeight();
       this._initDisplayHeight();
       this._initDisplayChairType();
+      this._initDisplayChairMake();
     });
   }
 
@@ -437,10 +448,9 @@ export class ProfileTabComponent {
         break;
       case 4:
         this._userService.updateDataProperty(
-          'chair_make',
-          this.primary[this.primaryIndex]
+          'chair_make', this.primaryIndex // index into CHAIR_MAKE enum
         );
-        KinveyUser.update({ chair_make: this.user.data.chair_make });
+        KinveyUser.update({ chair_make: this.primaryIndex });
         break;
       case 5:
         const newConfiguration = this.primary[this.primaryIndex];
@@ -600,10 +610,7 @@ export class ProfileTabComponent {
     this.primaryIndex = 0;
     this._setActiveDataBox(args);
 
-    this.primary = [];
-    this._translateService.instant('profile-tab.chair-types').forEach(i => {
-      this.primary.push(i);
-    });
+    this.primary = this.chairTypes;
     this.primaryIndex = this.user.data.chair_type || 0;
 
     this.listPickerTitle = this._translateService.instant('general.chair-type');
@@ -619,20 +626,8 @@ export class ProfileTabComponent {
     this.primaryIndex = 0;
     this._setActiveDataBox(args);
 
-    this.primary = [
-      'Colours',
-      'Invacare / Küschall',
-      'Karman',
-      'Ki',
-      'Motion Composites',
-      'Panthera',
-      'Quickie / Sopur / RGK',
-      'TiLite',
-      'Top End',
-      'Other'
-    ];
-
-    this.primaryIndex = this.primary.indexOf(this.user.data.chair_make);
+    this.primary = this.chairMakes;
+    this.primaryIndex = this.user.data.chair_make;
 
     this.listPickerTitle = this._translateService.instant(
       'profile-tab.chair-make'
@@ -713,6 +708,10 @@ export class ProfileTabComponent {
 
   private _initDisplayChairType() {
     this.displayChairType = this.chairTypes[this.user.data.chair_type || 0];
+  }
+
+  private _initDisplayChairMake() {
+    this.displayChairMake = this.chairMakes[this.user.data.chair_make || 0];
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
