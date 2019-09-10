@@ -373,6 +373,14 @@ export class ProfileTabComponent {
       });
   }
 
+  onPushTrackerE2SerialNumberTap(args) {
+    dialogs.alert({
+      title: this._translateService.instant('profile-tab.pushtracker-e2-serial-number-dialog-title'),
+      message: this._translateService.instant('profile-tab.pushtracker-e2-serial-number-dialog-message'),
+      okButtonText: this._translateService.instant('profile-tab.ok')
+    });
+  }
+
   async closeListPickerDialog() {
     const x = this.listPickerDialog.nativeElement as GridLayout;
     x.animate({
