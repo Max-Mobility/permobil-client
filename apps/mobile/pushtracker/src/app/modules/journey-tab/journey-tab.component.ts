@@ -516,6 +516,10 @@ export class JourneyTabComponent {
                 record.distance_smartdrive_coast - coastDistanceStart
               )
             );
+            // https://github.com/Max-Mobility/permobil-client/issues/266
+            if (this._journeyMap[record.start_time].coastDistance < 0.0)
+              this._journeyMap[record.start_time].coastDistance = 0.0;
+
             this._journeyMap[
               record.start_time
             ].driveDistance = this._updateDistanceUnit(
@@ -523,6 +527,9 @@ export class JourneyTabComponent {
                 record.distance_smartdrive_drive - driveDistanceStart
               )
             );
+            // https://github.com/Max-Mobility/permobil-client/issues/266
+            if (this._journeyMap[record.start_time].driveDistance < 0.0)
+              this._journeyMap[record.start_time].driveDistance = 0.0;
 
             if (this._journeyMap[record.start_time].coastDistance < 0)
               this._journeyMap[record.start_time].coastDistance = 0;
