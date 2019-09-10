@@ -673,22 +673,21 @@ export class ProfileTabComponent {
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
-    this._userService.updateDataProperty(
-      'weight',
-      primaryValue + secondaryValue
-    );
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
       this._userService.updateDataProperty(
         'weight',
-        poundsToKilograms(primaryValue + secondaryValue)
+        primaryValue + secondaryValue // user's preferred unit is Kg. Save as is
       );
-      this.displayWeight = this._displayWeightInPounds(
+      this.displayWeight = this._displayWeightInKilograms(
         primaryValue + secondaryValue
       );
     } else {
+      // User's preferred unit is lbs
+      // Database stores all weight measures in metric
+      // Convert to Kg and then store in database
       this._userService.updateDataProperty(
         'weight',
-        primaryValue + secondaryValue
+        poundsToKilograms(primaryValue + secondaryValue)
       );
       this.displayWeight = this._displayWeightInPounds(
         primaryValue + secondaryValue
@@ -698,11 +697,20 @@ export class ProfileTabComponent {
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
-    this._userService.updateDataProperty(
-      'height',
-      primaryValue + 0.01 * (secondaryValue || 0)
-    );
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
+      // User's preference matches the database preference - Metric
+      // Save height as is
+      this._userService.updateDataProperty(
+        'height',
+        primaryValue
+      );
+      this.displayHeight = this._displayHeightInCentimeters(
+        primaryValue
+      );
+    } else {
+      // User's preference is Ft and inches
+      // Database wants height in Centimeters
+      // Convert and save
       this._userService.updateDataProperty(
         'height',
         feetInchesToCentimeters(primaryValue, secondaryValue)
@@ -710,14 +718,6 @@ export class ProfileTabComponent {
       this.displayHeight = this._displayHeightInFeetInches(
         primaryValue,
         secondaryValue
-      );
-    } else {
-      this._userService.updateDataProperty(
-        'height',
-        primaryValue + 0.01 * (secondaryValue || 0)
-      );
-      this.displayHeight = this._displayHeightInCentimeters(
-        this.user.data.height
       );
     }
     KinveyUser.update({ height: this.user.data.height });
