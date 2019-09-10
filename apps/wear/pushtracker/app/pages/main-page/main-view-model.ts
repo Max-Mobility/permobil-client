@@ -713,14 +713,8 @@ export class MainViewModel extends Observable {
     Log.D('onResultData:', resultCode);
     if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
       Log.D('result ok!');
-      // new android.support.wearable.view.ConfirmationOverlay().showOn(this);
     } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
       Log.D('result failed!');
-      /*
-      new android.support.wearable.view.ConfirmationOverlay()
-        .setType(android.support.wearable.view.ConfirmationOverlay.FAILURE_ANIMATION)
-        .showOn(ad.getApplicationContext());
-      */
     } else {
       Log.E('Unexpected result ' + resultCode);
     }
