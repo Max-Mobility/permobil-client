@@ -18,16 +18,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+  public static final String AUTHORIZATION_CONTENT_AUTHORITY = "com.permobil.pushtracker.data";
+  public static final Uri AUTHORIZATION_BASE_CONTENT_URI = Uri.parse("content://" + AUTHORIZATION_CONTENT_AUTHORITY);
+  public static final String TYPE_AUTHORIZATION_TOKEN = "AuthorizationToken";
+  public static final String TYPE_USER_ID = "UserId";
+
+  /* The base CONTENT_URI used to query the Usage table from the content provider */
+  public static final Uri AUTHORIZATION_URI = AUTHORIZATION_BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_AUTHORIZATION_TOKEN)
+    .build();
+  public static final Uri USER_ID_URI = AUTHORIZATION_BASE_CONTENT_URI.buildUpon()
+    .appendPath(TYPE_USER_ID)
+    .build();
+
+
+
+
   public static final String CONTENT_AUTHORITY = "com.permobil.smartdrive.wearos.smartdrive.usage";
   /*
    * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
    * the content provider for Sunshine.
    */
   public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
   public static final String TYPE_USAGE = "UsageRecord";
-  public static final String TYPE_AUTHORIZATION_TOKEN = "AuthorizationToken";
-  public static final String TYPE_USER_ID = "UserId";
 
   /*
    * Database related stuff:
@@ -49,22 +62,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final int DATA_INDEX = 2;
 
   private static final int TYPE_USAGE_UUID = 0;
-  private static final int TYPE_AUTHORIZATION_TOKEN_UUID = 1;
-  private static final int TYPE_USER_ID_UUID = 2;
 
   private Context mContext;
 
   /* The base CONTENT_URI used to query the Usage table from the content provider */
   public static final Uri USAGE_URI = BASE_CONTENT_URI.buildUpon()
     .appendPath(TYPE_USAGE)
-    .build();
-
-  public static final Uri AUTHORIZATION_URI = BASE_CONTENT_URI.buildUpon()
-    .appendPath(TYPE_AUTHORIZATION_TOKEN)
-    .build();
-
-  public static final Uri USER_ID_URI = BASE_CONTENT_URI.buildUpon()
-    .appendPath(TYPE_USER_ID)
     .build();
 
   /**
@@ -77,16 +80,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
    */
   public static Uri buildUsageUriWithId(long id) {
     return USAGE_URI.buildUpon()
-      .appendPath(Long.toString(id))
-      .build();
-  }
-  public static Uri buildAuthorizationUriWithId(long id) {
-    return AUTHORIZATION_URI.buildUpon()
-      .appendPath(Long.toString(id))
-      .build();
-  }
-  public static Uri buildUserIdUriWithId(long id) {
-    return USER_ID_URI.buildUpon()
       .appendPath(Long.toString(id))
       .build();
   }
@@ -122,10 +115,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     long uuid = -1;
     if (type.equals(TYPE_USAGE)) {
       uuid = TYPE_USAGE_UUID;
-    } else if (type.equals(TYPE_AUTHORIZATION_TOKEN)) {
-      uuid = TYPE_AUTHORIZATION_TOKEN_UUID;
-    } else if (type.equals(TYPE_USER_ID)) {
-      uuid = TYPE_USER_ID_UUID;
     }
     return uuid;
   }
