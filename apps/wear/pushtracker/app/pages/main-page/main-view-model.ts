@@ -320,7 +320,7 @@ export class MainViewModel extends Observable {
       console.timeEnd('SQLite_Init');
       this.sentryBreadCrumb('SQLite has been initialized.');
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       Log.E('Could not make table:', err);
     }
   }
@@ -376,7 +376,7 @@ export class MainViewModel extends Observable {
       }
     } catch (err) {
       Log.E('Could not get smartdrive data', err);
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
     }
     // Log.D('Highest Distance Value:', maxDist);
     this.distanceChartData = distanceData;
@@ -508,7 +508,7 @@ export class MainViewModel extends Observable {
         // and return true letting the caller know we got the permissions
         return true;
       } catch (err) {
-        Sentry.captureException(err);
+        // Sentry.captureException(err);
         throw L('failures.permissions');
       }
     } else {
@@ -589,7 +589,7 @@ export class MainViewModel extends Observable {
         themes.applyThemeCss(defaultTheme, 'theme-default.scss');
       }
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       Log.E('apply theme error:', err);
     }
     this.sentryBreadCrumb('theme applied');
@@ -650,6 +650,33 @@ export class MainViewModel extends Observable {
     return format(d, fmt, {
       locale: dateLocales[getDefaultLang()] || dateLocales['en']
     });
+  }
+
+  async updateUserData() {
+    // make sure kinvey service is initialized
+    if (this.kinveyService === undefined) {
+      return;
+    }
+    // make sure the kinvey service has authentication (or get it)
+    if (!this.kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        return;
+      }
+    }
+    try {
+      Log.D('requesting user data');
+      // now request user data
+      const userData = await this.kinveyService.getUserData() as any;
+      Log.D('userInfo', JSON.stringify(userData, null, 2));
+      // pull the data out of the user structure
+      this.settings.fromUser(userData);
+      this.saveSettings();
+      // now update any display that needs settings:
+      this.updateDisplay();
+    } catch (err) {
+      Log.E('could not get user data:', err);
+    }
   }
 
   /**
@@ -827,7 +854,7 @@ export class MainViewModel extends Observable {
           this.updateDisplay();
         }
       } catch (error) {
-        Sentry.captureException(error);
+        // Sentry.captureException(error);
       }
     };
     application.android.registerBroadcastReceiver(
@@ -868,11 +895,12 @@ export class MainViewModel extends Observable {
       this.coastChartMaxValue = maxCoast.toFixed(1);
       this.coastChartData = coastData;
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
     }
   }
 
   onProfileTap() {
+    this.updateUserData();
     if (this.settingsScrollView) {
       // reset to to the top when entering the page
       this.settingsScrollView.scrollToVerticalOffset(0, true);
@@ -923,16 +951,6 @@ export class MainViewModel extends Observable {
     let translationKey = '';
     let value = null;
     switch (this.activeSettingToChange) {
-      case 'chairmake':
-        translationKey =
-          'settings.chairmake.values.' + this.tempSettings.chairMake.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        break;
-      case 'chairtype':
-        translationKey =
-          'settings.chairtype.values.' + this.tempSettings.chairType.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        break;
       case 'coastgoal':
         this.changeSettingKeyValue =
           this.tempSettings.coastGoal.toFixed(1) + ' ' + L('settings.coastgoal.units');
@@ -996,7 +1014,7 @@ export class MainViewModel extends Observable {
       );
       this.updateChartData();
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       Log.E('Could not update display', err);
     }
   }
@@ -1036,6 +1054,7 @@ export class MainViewModel extends Observable {
     // SAVE THE VALUE to local data for the setting user has selected
     this.settings.copy(this.tempSettings);
     this.saveSettings();
+    this.sendSettings();
     // now update any display that needs settings:
     this.updateDisplay();
   }
@@ -1066,6 +1085,43 @@ export class MainViewModel extends Observable {
   /**
    * user / Profile / Settings saving / loading
    */
+  async sendSettings() {
+    // make sure kinvey service is initialized
+    if (this.kinveyService === undefined) {
+      return;
+    }
+    // make sure the kinvey service has authentication (or get it)
+    if (!this.kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        return;
+      }
+    }
+    try {
+      // TODO: waiting on the resolution of this to not have to get
+      // the user data again
+      // https://support.kinvey.com/support/tickets/6897
+      Log.D('requesting user data');
+      // now request user data
+      const userData = await this.kinveyService.getUserData() as any;
+      const values = this.settings.toUser();
+      Object.keys(values).map(k => {
+        userData[k] = values[k];
+      });
+      // don't want to do anything to these
+      delete userData._acl;
+      delete userData._kmd;
+
+      const response = await this.kinveyService.updateUser(userData);
+      const statusCode = response && response.statusCode;
+      if (statusCode !== 200) {
+        throw response;
+      }
+    } catch (err) {
+      Log.E('could not save to database:', err);
+    }
+  }
+
   loadSettings() {
     this.settings.copy(
       LS.getItem('com.permobil.pushtracker.profile.settings')
@@ -1119,7 +1175,7 @@ export class MainViewModel extends Observable {
         return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
       }
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       // nothing was found
       return DailyActivity.Info.newInfo(new Date(), 0, 0, 0);
     }
@@ -1153,7 +1209,7 @@ export class MainViewModel extends Observable {
         }
       });
     } catch (err) {
-      Sentry.captureException(err);
+      // Sentry.captureException(err);
       Log.E('error getting recent info:', err);
     }
     return activityInfo;

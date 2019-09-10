@@ -179,6 +179,26 @@ export namespace Profile {
       }
     }
 
+    fromUser(obj: any) {
+      if (obj && obj.height)
+        this.height = obj.height / 100.0;
+      if (obj && obj.weight)
+        this.weight = obj.weight;
+      if (obj && obj.activity_goal_distance)
+        this.distanceGoal = obj.activity_goal_distance / 1.609;
+      if (obj && obj.activity_goal_coast_time)
+        this.coastGoal = obj.activity_goal_coast_time;
+    }
+
+    toUser(): any {
+      return {
+        height: this.height * 100.0, // cm
+        weight: this.weight,
+        activity_goal_distance: this.distanceGoal * 1.609, // km
+        activity_goal_coast_time: this.coastGoal
+      };
+    }
+
     toObj(): any {
       return Object.keys(Profile.Settings.Defaults)
         .reduce((obj, key) => {
