@@ -1216,6 +1216,53 @@ export class MainViewModel extends Observable {
     if (authorization === null || userId === null) {
       // if the user has not configured this app with the PushTracker
       // Mobile app
+      Log.D('No authorization found in app settings!');
+      try {
+        const contentResolver = ad
+          .getApplicationContext()
+          .getContentResolver();
+        const authCursor = contentResolver
+          .query(
+            com.permobil.pushtracker.SmartDriveUsageProvider.AUTHORIZATION_URI,
+            null, null, null, null);
+        if (authCursor && authCursor.moveToFirst()) {
+          // there is data
+          const token = authCursor.getString(
+            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+          );
+          authCursor.close();
+          Log.D('Got token:', token);
+          if (token !== null && token.length) {
+            // we have a valid token
+            authorization = token;
+          }
+        } else {
+          Log.E('Could not get authCursor to move to first:', authCursor);
+        }
+        const idCursor = contentResolver
+          .query(
+            com.permobil.pushtracker.SmartDriveUsageProvider.USER_ID_URI,
+            null, null, null, null);
+        if (idCursor && idCursor.moveToFirst()) {
+          // there is data
+          const uid = idCursor.getString(
+            com.permobil.pushtracker.SmartDriveUsageProvider.DATA_INDEX
+          );
+          idCursor.close();
+          Log.D('Got uid:', uid);
+          if (uid !== null && uid.length) {
+            // we have a valid token
+            userId = uid;
+          }
+        } else {
+          Log.E('Could not get idCursor to move to first:', idCursor);
+        }
+      } catch (err) {
+        Log.E('error getting auth:', err);
+      }
+    }
+    if (authorization === null || userId === null) {
+      Log.D('No authorization found in anywhere!');
       return false;
     }
     // now set the authorization and see if it's valid
