@@ -215,6 +215,8 @@ export class HomeTabComponent {
   refreshPlots(args) {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
+    this.weeklyActivityLoaded = false;
+    this._userService.refreshUser();
     // The user might come back and refresh the next day, just keeping
     // the app running - Update currentDayInView and weekStart to
     // account for this
