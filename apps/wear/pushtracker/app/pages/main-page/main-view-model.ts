@@ -787,10 +787,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onConnectPushTrackerTap() {
-    // TODO: flesh this out to show UI and connect to PushTracker
-    // Mobile App to receive credentials.
-    this.openAppOnPhone();
+  async onConnectPushTrackerTap() {
+    if (!this.kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        this.openAppOnPhone();
+        return;
+      }
+    }
+    // if we got here then we have valid authorization!
+    this.showConfirmation(
+      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+    );
   }
 
   /**
@@ -1183,6 +1191,38 @@ export class MainViewModel extends Observable {
   /**
    * Network Functions
    */
+  async updateAuthorization() {
+    // check the content provider here to see if the user has
+    // sync-ed up with the pushtracker mobile app
+    let authorization = null;
+    let userId = null;
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const savedToken = sharedPreferences.getString(
+      prefix + com.permobil.pushtracker.Datastore.AUTHORIZATION_KEY,
+      ''
+    );
+    const savedUserId = sharedPreferences.getString(
+      prefix + com.permobil.pushtracker.Datastore.USER_ID_KEY,
+      ''
+    );
+    if (savedToken && savedToken.length && savedUserId && savedUserId.length) {
+      authorization = savedToken;
+      userId = savedUserId;
+    }
+
+    if (authorization === null || userId === null) {
+      // if the user has not configured this app with the PushTracker
+      // Mobile app
+      return false;
+    }
+    // now set the authorization and see if it's valid
+    const validAuth = await this.kinveyService.setAuth(authorization, userId);
+    return validAuth;
+  }
+
   private sentryBreadCrumb(message: string) {
     Sentry.captureBreadcrumb({
       message,

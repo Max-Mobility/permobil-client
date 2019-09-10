@@ -2480,10 +2480,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onConnectPushTrackerTap() {
-    // TODO: flesh this out to show UI and connect to PushTracker
-    // Mobile App to receive credentials.
-    this.openAppOnPhone();
+  async onConnectPushTrackerTap() {
+    if (!this._kinveyService.hasAuth()) {
+      const validAuth = await this.updateAuthorization();
+      if (!validAuth) {
+        this.openAppOnPhone();
+        return;
+      }
+    }
+    // if we got here then we have valid authorization!
+    this.showConfirmation(
+      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+    );
   }
 
   /**
