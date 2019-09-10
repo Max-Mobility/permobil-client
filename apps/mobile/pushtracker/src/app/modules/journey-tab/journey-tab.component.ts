@@ -115,12 +115,14 @@ export class JourneyTabComponent {
 
   getTodayCoastDistance() {
     if (this.todayUsage) {
-      return this._updateDistanceUnit(
+      let coastDistance = this._updateDistanceUnit(
         DeviceBase.caseTicksToMiles(
           this.todayUsage.distance_smartdrive_coast -
             this.todayUsage.distance_smartdrive_coast_start
         )
-      ).toFixed(2);
+      );
+      if (coastDistance < 0.0) coastDistance = 0.0;
+      return coastDistance.toFixed(2);
     } else {
       return '0.00';
     }
