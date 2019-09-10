@@ -257,18 +257,6 @@
                   <Label row="0" col="1" text="{{ L('settings.height.title') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="chairType" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.chairtype.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="chairMake" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.chairmake.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
             </StackLayout>
           </ScrollView>
         </StackLayout>
