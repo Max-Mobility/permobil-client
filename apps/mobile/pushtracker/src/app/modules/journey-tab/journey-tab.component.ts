@@ -115,12 +115,14 @@ export class JourneyTabComponent {
 
   getTodayCoastDistance() {
     if (this.todayUsage) {
-      return this._updateDistanceUnit(
+      let coastDistance = this._updateDistanceUnit(
         DeviceBase.caseTicksToMiles(
           this.todayUsage.distance_smartdrive_coast -
             this.todayUsage.distance_smartdrive_coast_start
         )
-      ).toFixed(2);
+      );
+      if (coastDistance < 0.0) coastDistance = 0.0;
+      return coastDistance.toFixed(2);
     } else {
       return '0.00';
     }
@@ -514,6 +516,10 @@ export class JourneyTabComponent {
                 record.distance_smartdrive_coast - coastDistanceStart
               )
             );
+            // https://github.com/Max-Mobility/permobil-client/issues/266
+            if (this._journeyMap[record.start_time].coastDistance < 0.0)
+              this._journeyMap[record.start_time].coastDistance = 0.0;
+
             this._journeyMap[
               record.start_time
             ].driveDistance = this._updateDistanceUnit(
@@ -521,6 +527,9 @@ export class JourneyTabComponent {
                 record.distance_smartdrive_drive - driveDistanceStart
               )
             );
+            // https://github.com/Max-Mobility/permobil-client/issues/266
+            if (this._journeyMap[record.start_time].driveDistance < 0.0)
+              this._journeyMap[record.start_time].driveDistance = 0.0;
 
             if (this._journeyMap[record.start_time].coastDistance < 0)
               this._journeyMap[record.start_time].coastDistance = 0;

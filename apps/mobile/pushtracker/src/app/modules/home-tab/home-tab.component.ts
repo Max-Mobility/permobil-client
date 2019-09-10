@@ -281,18 +281,24 @@ export class HomeTabComponent {
         : ' miles per day';
     // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
     if (this._todaysUsage) {
-      this.todayCoastDistance = this._updateDistanceUnit(
+      let coastDistance = this._updateDistanceUnit(
         DeviceBase.caseTicksToMiles(
           this._todaysUsage.distance_smartdrive_coast -
             this._todaysUsage.distance_smartdrive_coast_start
         ) || 0
-      ).toFixed(1);
-      this.todayDriveDistance = this._updateDistanceUnit(
+      );
+      if (coastDistance < 0.0) coastDistance = 0.0;
+      this.todayCoastDistance = coastDistance.toFixed(1);
+
+      let driveDistance = this._updateDistanceUnit(
         DeviceBase.motorTicksToMiles(
           this._todaysUsage.distance_smartdrive_drive -
             this._todaysUsage.distance_smartdrive_drive_start
         ) || 0
-      ).toFixed(1);
+      );
+      if (driveDistance < 0.0) driveDistance = 0.0;
+      this.todayDriveDistance = driveDistance.toFixed(1);
+
       this.todayOdometer = this._updateDistanceUnit(
         DeviceBase.caseTicksToMiles(
           this._todaysUsage.distance_smartdrive_coast
@@ -672,12 +678,13 @@ export class HomeTabComponent {
       for (const i in days) {
         const day = days[i];
         if (day) {
-          const coastDistance = this._updateDistanceUnit(
+          let coastDistance = this._updateDistanceUnit(
             DeviceBase.caseTicksToMiles(
               day.distance_smartdrive_coast -
                 day.distance_smartdrive_coast_start
             ) || 0
           );
+          if (coastDistance < 0.0) coastDistance = 0.0;
 
           if (day.date === dateFormatted(this._currentDayInView))
             this._todaysUsage = day;
@@ -731,20 +738,26 @@ export class HomeTabComponent {
           const dailyUsage = days[i];
           if (dailyUsage) {
             // We have daily activity for this day
+            let coastDistance = this._updateDistanceUnit(
+              DeviceBase.caseTicksToMiles(
+                dailyUsage.distance_smartdrive_coast -
+                  dailyUsage.distance_smartdrive_coast_start
+              ) || 0
+            );
+            if (coastDistance < 0.0) coastDistance = 0.0;
+
+            let driveDistance = this._updateDistanceUnit(
+              DeviceBase.motorTicksToMiles(
+                dailyUsage.distance_smartdrive_drive -
+                  dailyUsage.distance_smartdrive_drive_start
+              ) || 0
+            );
+            if (driveDistance < 0.0) driveDistance = 0.0;
+
             result.push({
               xAxis: dayNames[parseInt(i)],
-              coastDistance: this._updateDistanceUnit(
-                DeviceBase.caseTicksToMiles(
-                  dailyUsage.distance_smartdrive_coast -
-                    dailyUsage.distance_smartdrive_coast_start
-                ) || 0
-              ),
-              driveDistance: this._updateDistanceUnit(
-                DeviceBase.motorTicksToMiles(
-                  dailyUsage.distance_smartdrive_drive -
-                    dailyUsage.distance_smartdrive_drive_start
-                ) || 0
-              ),
+              coastDistance: coastDistance || 0.0,
+              driveDistance: driveDistance || 0.0,
               date: dayInWeek
             });
           } else {

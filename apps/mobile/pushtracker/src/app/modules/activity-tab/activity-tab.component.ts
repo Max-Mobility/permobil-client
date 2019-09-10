@@ -693,24 +693,33 @@ export class ActivityTabComponent implements OnInit {
                   driveDistanceStart = records[j - 1].distance_smartdrive_drive;
                 }
 
+                // Check if coast distance is negative
+                // https://github.com/Max-Mobility/permobil-client/issues/266
+                // Distance records in DB show as zero - leading to negative distance
+                let coastDistance = this._updateDistanceUnit(
+                  this._caseTicksToMiles(
+                    record.distance_smartdrive_coast -
+                    coastDistanceStart
+                  )
+                );
+                if (coastDistance < 0.0)
+                    coastDistance = 0.0;
+
+                let driveDistance = this._updateDistanceUnit(
+                  this._motorTicksToMiles(
+                    record.distance_smartdrive_drive -
+                    driveDistanceStart
+                  )
+                );
+                if (driveDistance < 0.0)
+                    driveDistance = 0.0;
+
                 result.push({
                   xAxis: timePoint,
                   coastTime: record.coast_time_avg || 0,
                   pushCount: record.push_count || 0,
-                  driveDistance:
-                    this._updateDistanceUnit(
-                      this._motorTicksToMiles(
-                        record.distance_smartdrive_drive -
-                        driveDistanceStart
-                      )
-                    ) || 0,
-                  coastDistance:
-                    this._updateDistanceUnit(
-                      this._caseTicksToMiles(
-                        record.distance_smartdrive_coast -
-                        coastDistanceStart
-                      )
-                    ) || 0
+                  driveDistance: driveDistance || 0,
+                  coastDistance: coastDistance || 0
                 });
                 j += 1;
                 continue;
