@@ -30,7 +30,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final Uri USER_ID_URI = AUTHORIZATION_BASE_CONTENT_URI.buildUpon()
     .appendPath(TYPE_USER_ID)
     .build();
-
+  public static final int AUTHORIZATION_DATA_INDEX = 1;
+  public static final int USER_ID_DATA_INDEX = 1;
 
 
 
