@@ -59,13 +59,13 @@
       </GridLayout>
 
       // Coast Time Chart
-      <GridLayout rows="auto, *" class="chart-layout">
+      <GridLayout rows="auto, *" class="chart-layout" (tap)="onCoastTimeChartSelected($event)">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="coastTimeGoalMessage"></Label>
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
           <Label class="title" [text]="coastTimeGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" id="homeTabWeeklyCoastTimeChart">
+        <RadCartesianChart row="1" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
@@ -120,13 +120,13 @@
       </GridLayout>
 
       // Distance Time Chart
-      <GridLayout rows="auto, *" class="chart-layout">
+      <GridLayout rows="auto, *" class="chart-layout" (tap)="onDistanceChartSelected($event)">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="distanceGoalMessage"></Label>
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
           <Label class="title" [text]="distanceGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes">
+        <RadCartesianChart row="1" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis
