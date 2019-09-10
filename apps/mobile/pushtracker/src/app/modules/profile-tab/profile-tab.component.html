@@ -107,7 +107,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="2" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 4)">
           <Label class="data-box-label" [text]="'profile-tab.chair-make' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.chair_make" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayChairMake" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
