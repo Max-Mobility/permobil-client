@@ -828,14 +828,6 @@ export class HomeTabComponent {
       });
   }
 
-  onCoastTimeChartSelected(event) {
-    Log.D('Coast time chart selected');
-    this._openActivityTabModal({
-      tabSelectedIndex: 1, // Week mode
-      viewMode: 0 // ViewMode.COAST_TIME
-    });
-  }
-
   onCoastTimeBarSelected(event) {
     Log.D('Coast time bar selected');
     const dayIndex = event.pointIndex - 2;
@@ -847,14 +839,6 @@ export class HomeTabComponent {
           : 1,
       currentDayInView: dailyActivity.date,
       viewMode: 0 // ViewMode.COAST_TIME
-    });
-  }
-
-  onDistanceChartSelected(event) {
-    Log.D('Distance chart selected');
-    this._openActivityTabModal({
-      tabSelectedIndex: 1, // Week mode
-      viewMode: 2 // ViewMode.COAST_TIME
     });
   }
 
