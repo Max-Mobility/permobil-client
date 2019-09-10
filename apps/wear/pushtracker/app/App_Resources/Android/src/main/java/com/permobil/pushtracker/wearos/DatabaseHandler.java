@@ -115,12 +115,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         KEY_HAS_BEEN_SENT + " INTEGER DEFAULT 0" +
         ")";
       db.execSQL(CREATE_TABLE_ACTIVITYDATA);
+    } catch (Exception e) {
+      Log.e(TAG, "exception creating table: " + e.getMessage());
+    }
+    try {
       String CREATE_TABLE_CONTENT = "CREATE TABLE " + CONTENT_TABLE_NAME + "(" +
         KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
         KEY_DATA + " TEXT, " +
         KEY_TYPE + " TEXT " +
         ")";
-      db.execSQL(CREATE_TABLE_ACTIVITYDATA);
+      db.execSQL(CREATE_TABLE_CONTENT);
     } catch (Exception e) {
       Log.e(TAG, "exception creating table: " + e.getMessage());
     }
