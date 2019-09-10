@@ -45,6 +45,7 @@ export class TabsComponent {
   user: PushTrackerUser;
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
+  private _throttledOnErrorEvent: any = null;
 
   constructor(
     private _activityService: ActivityService,
@@ -84,6 +85,11 @@ export class TabsComponent {
     });
 
     this._throttledOnDistanceEvent = throttle(this.onDistanceEvent, TEN_MINUTES, {
+      leading: true,
+      trailing: true
+    });
+
+    this._throttledOnErrorEvent = throttle(this.onErrorEvent, TEN_MINUTES, {
       leading: true,
       trailing: true
     });
@@ -313,6 +319,11 @@ export class TabsComponent {
       this._throttledOnDistanceEvent,
       this
     );
+    pt.on(
+      PushTracker.error_event,
+      this._throttledOnErrorEvent,
+      this
+    );
   }
 
   onDailyInfoEvent(args) {
@@ -371,7 +382,6 @@ export class TabsComponent {
     const data = args.data;
     const distance_smartdrive_drive = data.driveDistance;
     const distance_smartdrive_coast = data.coastDistance;
-    const battery = 0;
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     const start_time = date.getTime();
@@ -405,6 +415,11 @@ export class TabsComponent {
       else
         Log.E('Failed to saved SmartDriveDailyInfo from PushTracker in database');
     });
+  }
+
+  onErrorEvent(args) {
+    Log.D('Error event received');
+
   }
 
   private onPushTrackerDisconnected(args: any) {
