@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log, PushTrackerUser } from '@permobil/core';
+import throttle from 'lodash/throttle';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import * as application from 'tns-core-modules/application';
@@ -14,8 +15,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, PushTrackerUserService, SettingsService, ActivityService, SmartDriveUsageService } from '../../services';
-import throttle from 'lodash/throttle';
+import { ActivityService, BluetoothService, PushTrackerUserService, SettingsService, SmartDriveUsageService } from '../../services';
 
 @Component({
   moduleId: module.id,
@@ -79,25 +79,34 @@ export class TabsComponent {
 
     // Run every 10 minutes
     const TEN_MINUTES = 10 * 60 * 1000;
-    this._throttledOnDailyInfoEvent = throttle(this.onDailyInfoEvent, TEN_MINUTES, {
-      leading: true,
-      trailing: true
-    });
+    this._throttledOnDailyInfoEvent = throttle(
+      this.onDailyInfoEvent,
+      TEN_MINUTES,
+      {
+        leading: true,
+        trailing: true
+      }
+    );
 
-    this._throttledOnDistanceEvent = throttle(this.onDistanceEvent, TEN_MINUTES, {
-      leading: true,
-      trailing: true
-    });
+    this._throttledOnDistanceEvent = throttle(
+      this.onDistanceEvent,
+      TEN_MINUTES,
+      {
+        leading: true,
+        trailing: true
+      }
+    );
 
     this._throttledOnErrorEvent = throttle(this.onErrorEvent, TEN_MINUTES, {
       leading: true,
       trailing: true
     });
-
   }
 
   onRootTabViewLoaded() {
-    this.registerBluetoothEvents();
+    setTimeout(() => {
+      this.registerBluetoothEvents();
+    }, 5000);
     this.registerPushTrackerEvents();
 
     if (isAndroid) {
@@ -129,18 +138,20 @@ export class TabsComponent {
         !this.bluetoothAdvertised
       ) {
         Log.D('asking for permissions');
-        this.askForPermissions()
-          .then(() => {
-            if (!this._bluetoothService.advertising) {
-              Log.D('starting bluetoooth');
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
-            }
-          })
-          .catch(err => {
-            Log.E('permission or bluetooth error:', err);
-          });
-        this.bluetoothAdvertised = true;
+        setTimeout(() => {
+          this.askForPermissions()
+            .then(() => {
+              if (!this._bluetoothService.advertising) {
+                Log.D('starting bluetoooth');
+                // start the bluetooth service
+                return this._bluetoothService.advertise();
+              }
+            })
+            .catch(err => {
+              Log.E('permission or bluetooth error:', err);
+            });
+          this.bluetoothAdvertised = true;
+        }, 5000);
       }
     });
 
@@ -309,21 +320,9 @@ export class TabsComponent {
       this._translateService.instant('general.pushtracker-connected') +
       `: ${pt.address}`;
     this.snackbar.simple(msg);
-    pt.on(
-      PushTracker.daily_info_event,
-      this._throttledOnDailyInfoEvent,
-      this
-    );
-    pt.on(
-      PushTracker.distance_event,
-      this._throttledOnDistanceEvent,
-      this
-    );
-    pt.on(
-      PushTracker.error_event,
-      this._throttledOnErrorEvent,
-      this
-    );
+    pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
+    pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
+    pt.on(PushTracker.error_event, this._throttledOnErrorEvent, this);
   }
 
   onDailyInfoEvent(args) {
@@ -363,12 +362,16 @@ export class TabsComponent {
       start_time: date.getTime(),
       watch_serial_number: this.user.data.pushtracker_serial_number
     };
-    this._activityService.saveDailyActivityFromPushTracker(dailyActivity).then((result) => {
-      if (result)
-        Log.D('DailyActivity from PushTracker successfully saved in database');
-      else
-        Log.E('Failed to saved DailyActivity from PushTracker in database');
-    });
+    this._activityService
+      .saveDailyActivityFromPushTracker(dailyActivity)
+      .then(result => {
+        if (result)
+          Log.D(
+            'DailyActivity from PushTracker successfully saved in database'
+          );
+        else
+          Log.E('Failed to saved DailyActivity from PushTracker in database');
+      });
 
     // Request distance information from PushTracker
     if (this.pushTracker) {
@@ -407,19 +410,24 @@ export class TabsComponent {
       records: [],
       start_time: start_time,
       watch_uuid: '',
-      watch_serial_number: this.user.data.pushtracker_serial_number,
+      watch_serial_number: this.user.data.pushtracker_serial_number
     };
-    this._usageService.saveDailyUsageFromPushTracker(dailyUsage).then((result) => {
-      if (result)
-        Log.D('SmartDriveDailyInfo from PushTracker successfully saved in database');
-      else
-        Log.E('Failed to saved SmartDriveDailyInfo from PushTracker in database');
-    });
+    this._usageService
+      .saveDailyUsageFromPushTracker(dailyUsage)
+      .then(result => {
+        if (result)
+          Log.D(
+            'SmartDriveDailyInfo from PushTracker successfully saved in database'
+          );
+        else
+          Log.E(
+            'Failed to saved SmartDriveDailyInfo from PushTracker in database'
+          );
+      });
   }
 
   onErrorEvent(args) {
     Log.D('Error event received');
-
   }
 
   private onPushTrackerDisconnected(args: any) {

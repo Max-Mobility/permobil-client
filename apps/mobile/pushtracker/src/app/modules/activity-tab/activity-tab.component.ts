@@ -98,6 +98,11 @@ export class ActivityTabComponent implements OnInit {
     private _params: ModalDialogParams,
     private userService: PushTrackerUserService
   ) {
+
+    if (this._params.context.viewMode) {
+      this.viewMode = this._params.context.viewMode;
+    }
+
     this.getUser();
     // init the segmented bar items
     this.tabItems = [];
@@ -110,14 +115,18 @@ export class ActivityTabComponent implements OnInit {
       sbi.title = element;
       this.tabItems.push(sbi);
     });
-    this.tabSelectedIndex = 0; // default to the first tab (Day)
+    this.tabSelectedIndex = this._params.context.tabSelectedIndex;
 
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
 
-    this.currentDayInView = new Date();
+    if (this._params.context.currentDayInView) {
+      this.currentDayInView = new Date(this._params.context.currentDayInView);
+    } else {
+      this.currentDayInView = new Date();
+    }
     this._updateWeekStartAndEnd();
 
     // save the debounced loadDailyActivity function
@@ -132,7 +141,11 @@ export class ActivityTabComponent implements OnInit {
       { trailing: true }
     );
 
-    this._debouncedLoadDailyActivity();
+    if (this.tabSelectedIndex === 0) {
+      this._debouncedLoadDailyActivity();
+    } else if (this.tabSelectedIndex === 1) {
+      this._debouncedLoadWeeklyActivity();
+    }
 
     {
       // Initialize time array for day view
@@ -399,13 +412,10 @@ export class ActivityTabComponent implements OnInit {
       };
 
       let weeklyActivity = null;
-
       if (this.viewMode === ViewMode.DISTANCE)
-        weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()]
-          .weeklyActivity;
+        weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()].weeklyActivity;
       else
-        weeklyActivity = this._weeklyActivityCache[this.weekStart.toUTCString()]
-          .weeklyActivity;
+        weeklyActivity = this._weeklyActivityCache[this.weekStart.toUTCString()].weeklyActivity;
 
       const days = weeklyActivity.days;
 
@@ -514,7 +524,8 @@ export class ActivityTabComponent implements OnInit {
         this.viewMode === ViewMode.PUSH_COUNT) &&
         this.weekStart.toUTCString() in this._weeklyActivityCache);
     if (!cacheAvailable || forcePullFromDatabase) {
-
+      if (!cacheAvailable)
+        Log.D('No cache available. Pulling activity from database');
       if (forcePullFromDatabase)
         Log.D('Forcing pull from database instead of using cache');
 

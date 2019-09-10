@@ -214,10 +214,12 @@ export class HomeTabComponent {
   onActivityTap() {
     this._modalService
       .showModal(ActivityTabComponent, {
-        context: {},
+        context: {
+          tabSelectedIndex: 0
+        },
         fullscreen: true,
         animated: true,
-        viewContainerRef: this._vcRef
+        viewContainerRef: this._vcRef,
       })
       .catch(err => {
         this._logService.logException(err);
@@ -754,5 +756,61 @@ export class HomeTabComponent {
       return kilometersToMiles(distance);
     }
     return distance;
+  }
+
+  _openActivityTabModal(context: any) {
+    this._modalService
+    .showModal(ActivityTabComponent, {
+      context: context,
+      fullscreen: true,
+      animated: true,
+      viewContainerRef: this._vcRef,
+    })
+    .catch(err => {
+      this._logService.logException(err);
+      new Toasty({
+        text:
+          'An unexpected error occurred. If this continues please let us know.',
+        textColor: new Color('#fff000')
+      });
+    });
+  }
+
+  onCoastTimeChartSelected(event) {
+    Log.D('Coast time chart selected');
+    this._openActivityTabModal({
+        tabSelectedIndex: 1, // Week mode
+        viewMode: 0 // ViewMode.COAST_TIME
+      });
+  }
+
+  onCoastTimeBarSelected(event) {
+    Log.D('Coast time bar selected');
+    const dayIndex = event.pointIndex - 2;
+    const dailyActivity = this._activityService.weeklyActivity.days[dayIndex];
+    this._openActivityTabModal({
+      tabSelectedIndex: (this.user.data.control_configuration !== 'PushTracker with SmartDrive' ? 0 : 1),
+      currentDayInView: dailyActivity.date,
+      viewMode: 0 // ViewMode.COAST_TIME
+    });
+  }
+
+  onDistanceChartSelected(event) {
+    Log.D('Distance chart selected');
+    this._openActivityTabModal({
+        tabSelectedIndex: 1, // Week mode
+        viewMode: 2 // ViewMode.COAST_TIME
+      });
+  }
+
+  onDistanceBarSelected(event) {
+    Log.D('Distance bar selected');
+    const dayIndex = event.pointIndex - 2;
+    const dailyActivity = this._smartDriveUsageService.weeklyActivity.days[dayIndex];
+    this._openActivityTabModal({
+      tabSelectedIndex: (this.user.data.control_configuration !== 'PushTracker with SmartDrive' ? 0 : 1),
+      currentDayInView: dailyActivity.date,
+      viewMode: 2 // ViewMode.COAST_TIME
+    });
   }
 }
