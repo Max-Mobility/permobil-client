@@ -1040,6 +1040,10 @@ export class SmartDrive extends DeviceBase {
           value: data
         });
       }
+    } catch (err) {
+      // console.error('could not send disconnect command:', err);
+    }
+    try {
       await this._bluetoothService.disconnect({
         UUID: this.address
       });
