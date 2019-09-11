@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
-import { Log } from '@permobil/core';
+import { Log, PushTrackerUser } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { ToastPosition, Toasty } from 'nativescript-toasty';
@@ -34,6 +34,9 @@ export class MockActionbarComponent {
   @Input() controlConfiguration: string = '';
   @Input() showWatchConnectBtn = false;
   @Output() watchConnectEvent = new EventEmitter();
+
+  @Input() user: PushTrackerUser;
+
   watchConnectIconString: string;
   watchConnectIcon: ImageSource;
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
@@ -157,7 +160,7 @@ export class MockActionbarComponent {
   onSettingsTap() {
     this._modalService
       .showModal(ProfileSettingsComponent, {
-        context: {},
+        context: { user: this.user },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef

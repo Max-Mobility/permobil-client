@@ -109,11 +109,9 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   getUser() {
-    this._userService.user.subscribe(user => {
-      if (!user) return;
-      this.user = user;
+    this.user = this._params.context.user;
+    if (this.user && this.user.data)
       this.CURRENT_THEME = this.user.data.theme_preference;
-    });
   }
 
   async scanForSmartDrive(force: boolean = false) {
@@ -122,20 +120,20 @@ export class ProfileSettingsComponent implements OnInit {
     if (!force && this.smartDrive && this.smartDrive.address) {
       this.syncState = this._translateService.instant('Detected a SmartDrive!');
       Log.D('Scan is not forced - Already have a SmartDrive', this.smartDrive.address);
-      return;
+      return true;
     }
     if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
-      await this._bluetoothService.scanForSmartDrive(10).then(() => {
+      return this._bluetoothService.scanForSmartDrive(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
           this.syncingWithSmartDrive = false;
-          return;
+          return false;
         }
         else if (drives.length > 1) {
           dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
           this.syncingWithSmartDrive = false;
-          return;
+          return true;
         }
         else {
           drives.map(async drive => {
@@ -144,6 +142,7 @@ export class ProfileSettingsComponent implements OnInit {
             Log.D('Scan successful');
             this.syncState = this._translateService.instant('Detected a SmartDrive!');
           });
+          return true;
         }
       });
     }
