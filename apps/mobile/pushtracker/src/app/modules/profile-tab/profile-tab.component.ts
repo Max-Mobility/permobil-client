@@ -168,7 +168,7 @@ export class ProfileTabComponent {
   onPrivacyTap() {
     this._modalService
       .showModal(PrivacyPolicyComponent, {
-        context: { data: this.user.data },
+        context: { data: this.user.data, navigatedFrom: 'profile' },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef

@@ -12,6 +12,7 @@
   .title {
     @extend .TITLE_BASE;
     color: $white;
+    width: 70%;
   }
 
   .section-title {

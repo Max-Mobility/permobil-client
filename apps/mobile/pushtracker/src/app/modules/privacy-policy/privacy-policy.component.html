@@ -4,17 +4,17 @@
 
   <ScrollView row="1" height="100%">
     <StackLayout paddingTop="20" padding="20">
-      <Label class="title" [text]="'user.consent-form-title' | translate"></Label>
+      <Label class="title" textWrap="true" [text]="'user.consent-form-title' | translate"></Label>
       // agreements // end user agreement
       <Label class="section-title" textWrap="true" [text]="'user.accept.header' | translate"></Label>
       <Button width="100%" [text]="'user.accept.agreement-button' | translate" (tap)="openWebsite('user.end-user-agreement-site')"></Button>
-      <GridLayout columns="*, auto" rows="auto">
+      <GridLayout columns="*, auto" rows="auto" *ngIf="!readonly">
         <Label class="section-text" textWrap="true" [text]="'user.accept.user-agreement' | translate"></Label>
         <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_agreed_to_user_agreement')" [checked]="has_agreed_to_user_agreement"></Switch>
       </GridLayout>
       // privacy policy
       <Button width="100%" [text]="'user.accept.privacy-button' | translate" (tap)="openWebsite('user.privacy-policy-site')"></Button>
-      <GridLayout columns="*, auto" rows="auto">
+      <GridLayout columns="*, auto" rows="auto" *ngIf="!readonly">
         <Label class="section-text" textWrap="true" [text]="'user.accept.privacy-policy' | translate"></Label>
         <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_read_privacy_policy')" [checked]="has_read_privacy_policy"></Switch>
       </GridLayout>

@@ -17,6 +17,7 @@ export class PrivacyPolicyComponent {
 
   has_agreed_to_user_agreement: boolean = false;
   has_read_privacy_policy: boolean = false;
+  readonly: boolean = false;
   consent_to_product_development: boolean = false;
   consent_to_research: boolean = false;
 
@@ -24,6 +25,13 @@ export class PrivacyPolicyComponent {
     private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {
+
+    if (this._params.context.navigatedFrom) {
+      if (this._params.context.navigatedFrom === 'profile') {
+        this.readonly = true;
+      }
+    }
+
     const data = this._params.context.data;
     // copy to local vars
     this.has_agreed_to_user_agreement =
