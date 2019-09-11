@@ -46,10 +46,7 @@ export class MockActionbarComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
-  ) {}
-
-  onMockActionBarLoaded() {
-    Log.D('MockActionBar loaded');
+  ) {
     if (this.backNavIcon === 0) {
       this.navIcon = String.fromCharCode(0xe5c4); // arrow
     } else {
@@ -61,27 +58,33 @@ export class MockActionbarComponent {
       APP_THEMES.DEFAULT
     );
 
-    this.watchIconString =
+    if (this.showWatchBtn) {
+      this.watchIconString =
       this.CURRENT_THEME === APP_THEMES.DEFAULT
         ? 'watch_question_black'
         : 'watch_question_white';
 
-    this.watchIcon = imageFromResource(this.watchIconString);
+      this.watchIcon = imageFromResource(this.watchIconString);
 
-    // set up the status watcher for the pushtracker state
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_status_changed,
-      this.updateWatchIcon,
-      this
-    );
+      // set up the status watcher for the pushtracker state
+      this._bluetoothService.on(
+        BluetoothService.pushtracker_status_changed,
+        this.updateWatchIcon,
+        this
+      );
 
-    this.updateWatchIcon({});
-    this._setWatchConnectIconVariables('check');
+      this.updateWatchIcon({});
+      this._setWatchConnectIconVariables('check');
+    }
+  }
+
+  onMockActionBarLoaded() {
+    Log.D('MockActionBar loaded');
   }
 
   onUnloaded() {
     Log.D('MockActionBar unloaded');
-    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
+    // this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
   onNavBtnTap() {

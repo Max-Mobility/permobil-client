@@ -22,10 +22,11 @@ export class PushTrackerUserService {
     console.log('User initialized', this._user.value);
   }
 
-  refreshUser() {
-    <any>KinveyUser.getActiveUser().me()
+  refreshUser(): Promise<boolean> {
+    return <any>KinveyUser.getActiveUser().me()
       .then((activeUser) => {
         this._user.next(<PushTrackerUser>(<any>activeUser));
+        return true;
       });
   }
 

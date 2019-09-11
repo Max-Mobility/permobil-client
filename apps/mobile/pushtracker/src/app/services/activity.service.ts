@@ -19,8 +19,6 @@ export class ActivityService {
 
   async saveDailyActivityFromPushTracker(dailyActivity: any): Promise<boolean> {
     try {
-      await this.login();
-      await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -32,18 +30,19 @@ export class ActivityService {
       // Run a .find first to get the _id of the daily activity
       {
         const stream = this.datastore.find(query);
-        const data = await stream.toPromise();
-        if (data && data.length) {
-          const id = data[0]._id;
-          dailyActivity._id = id;
-        }
-        const promise = this.datastore.save(dailyActivity)
-          .then(function onSuccess(entity) {
-            return true;
-          }).catch(function onError(error) {
-            this._logService.logException(error);
-            return false;
-          });
+        return stream.toPromise().then(data => {
+          if (data && data.length) {
+            const id = data[0]._id;
+            dailyActivity._id = id;
+          }
+          return this.datastore.save(dailyActivity)
+            .then(function onSuccess(entity) {
+              return true;
+            }).catch(function onError(error) {
+              this._logService.logException(error);
+              return false;
+            });
+        });
       }
 
     } catch (err) {
@@ -54,8 +53,6 @@ export class ActivityService {
 
   async loadDailyActivity(date: Date): Promise<boolean> {
     try {
-      await this.login();
-      await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -76,14 +73,14 @@ export class ActivityService {
       query.equalTo('data_type', 'DailyActivity');
 
       const stream = this.datastore.find(query);
-      const data = await stream.toPromise();
-      if (data && data.length) {
-        this.dailyActivity = data[0];
-        // Do something with data
-        return true;
-      }
-      this.dailyActivity = {};
-      return false;
+      return stream.toPromise().then(data => {
+        if (data && data.length) {
+          this.dailyActivity = data[0];
+          return true;
+        }
+        this.dailyActivity = {};
+        return false;
+      });
     } catch (err) {
       this._logService.logException(err);
       return false;
@@ -92,8 +89,6 @@ export class ActivityService {
 
   async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
     try {
-      // await this.login();
-      // await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -104,7 +99,6 @@ export class ActivityService {
       query.equalTo('data_type', 'WeeklyActivity');
 
       if (weekStartDate) {
-
         const month = weekStartDate.getMonth() + 1;
         const day = weekStartDate.getDate();
         query.equalTo('date',
@@ -113,12 +107,15 @@ export class ActivityService {
           (day < 10 ? '0' + day : day));
 
         const stream = this.datastore.find(query);
-        const data = await stream.toPromise();
-        if (data && data.length) {
-          this.weeklyActivity = data[0];
-          // Do something with data
-          return true;
-        }
+        return stream.toPromise().then(data => {
+          if (data && data.length) {
+            this.weeklyActivity = data[0];
+            // Do something with data
+            return true;
+          }
+          this.weeklyActivity = [];
+          return false;
+        });
       }
       this.weeklyActivity = [];
       return false;
@@ -130,8 +127,6 @@ export class ActivityService {
 
   async loadAllWeeklyActivityTill(weekStartDate: Date, limit: number = 1): Promise<boolean> {
     try {
-      // await this.login();
-      // await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was

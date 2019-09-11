@@ -76,6 +76,31 @@ export class HomeTabComponent {
     private _smartDriveUsageService: SmartDriveUsageService,
     private _activityService: ActivityService
   ) {
+    this._logService.logBreadCrumb(`HomeTabComponent constructed`);
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+    this._userService.user.subscribe(user => {
+      if (!user) return;
+      this.user = user;
+      this.savedTheme = user.data.theme_preference;
+      this.savedTheme === APP_THEMES.DEFAULT
+        ? enableDefaultTheme()
+        : enableDarkTheme();
+    });
+    this._currentDayInView = new Date();
+    this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
+    this._weekEnd = new Date(this._weekStart);
+    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this._loadWeeklyData();
+    this._smartDriveUsageService.usageUpdated.subscribe(usageUpdated => {
+      if (usageUpdated && !this._progressUpdatedOnce) {
+        this._updateProgress();
+        this.updateTodayMessage();
+        this._progressUpdatedOnce = true;
+      }
+    });
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
@@ -91,32 +116,6 @@ export class HomeTabComponent {
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
-    this._userService.user.subscribe(user => {
-      if (!user) return;
-      this.user = user;
-      this.savedTheme = user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-        ? enableDefaultTheme()
-        : enableDarkTheme();
-
-      this._currentDayInView = new Date();
-      this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
-      this._weekEnd = new Date(this._weekStart);
-      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-      this._loadWeeklyData();
-
-      this._smartDriveUsageService.usageUpdated.subscribe(usageUpdated => {
-        if (usageUpdated && !this._progressUpdatedOnce) {
-          this._updateProgress();
-          this.updateTodayMessage();
-          this._progressUpdatedOnce = true;
-        }
-      });
-    });
   }
 
   // Update what is displayed in the center of the home-tab circle #263
@@ -212,24 +211,26 @@ export class HomeTabComponent {
     Log.D('HomeTabComponent unloaded');
   }
 
-  refreshPlots(args) {
+  async refreshPlots(args) {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this._userService.refreshUser();
-    // The user might come back and refresh the next day, just keeping
-    // the app running - Update currentDayInView and weekStart to
-    // account for this
-    this._currentDayInView = new Date();
-    this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
-    this._weekEnd = new Date(this._weekStart);
-    this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    // Now refresh the data
-    this._loadWeeklyData();
-    pullRefresh.refreshing = false;
+    this._userService.refreshUser().then(() => {
+      // The user might come back and refresh the next day, just keeping
+      // the app running - Update currentDayInView and weekStart to
+      // account for this
+      this._currentDayInView = new Date();
+      this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
+      this._weekEnd = new Date(this._weekStart);
+      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+      // Now refresh the data
+      this._loadWeeklyData().then(() => {
+        pullRefresh.refreshing = false;
+      });
+    });
   }
 
-  private _loadWeeklyData() {
+  private async _loadWeeklyData() {
     this.weeklyActivityLoaded = false;
 
     this.savedTheme = this.user.data.theme_preference;
@@ -269,149 +270,149 @@ export class HomeTabComponent {
   }
 
   private async _loadSmartDriveUsage() {
-    const didLoad = await this._smartDriveUsageService.loadWeeklyActivity(
-      this._weekStart
-    );
-    this.usageActivity = new ObservableArray(this._formatUsageForView('Week'));
-    this.distanceGoalMessage = 'Travel ';
-    this.distanceGoalValue = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
-    ).toFixed(1);
-    this.distanceGoalUnit =
-      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-        ? ' kilometers per day'
-        : ' miles per day';
-    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-    if (this._todaysUsage) {
-      let coastDistance = this._updateDistanceUnit(
-        DeviceBase.caseTicksToMiles(
-          this._todaysUsage.distance_smartdrive_coast -
-            this._todaysUsage.distance_smartdrive_coast_start
-        ) || 0
-      );
-      if (coastDistance < 0.0) coastDistance = 0.0;
-      this.todayCoastDistance = coastDistance.toFixed(1);
-
-      let driveDistance = this._updateDistanceUnit(
-        DeviceBase.motorTicksToMiles(
-          this._todaysUsage.distance_smartdrive_drive -
-            this._todaysUsage.distance_smartdrive_drive_start
-        ) || 0
-      );
-      if (driveDistance < 0.0) driveDistance = 0.0;
-      this.todayDriveDistance = driveDistance.toFixed(1);
-
-      this.todayOdometer = this._updateDistanceUnit(
-        DeviceBase.caseTicksToMiles(
-          this._todaysUsage.distance_smartdrive_coast
-        ) || 0
-      ).toFixed(1);
-      // Today coast distance changed, update message
-      this.updateTodayMessage();
-    } else {
-      this.todayCoastDistance = (0).toFixed(1);
-      this.todayDriveDistance = (0).toFixed();
-      this.todayOdometer = (0).toFixed();
-    }
-
-    this.distancePlotAnnotationValue = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
-    );
-    this.distanceGoalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastDistance: this._updateDistanceUnit(
+    this._smartDriveUsageService.loadWeeklyActivity(this._weekStart).then(() => {
+      this._formatUsageForView('Week').then(result => {
+        this.usageActivity = new ObservableArray(result);
+        this.distanceGoalMessage = 'Travel ';
+        this.distanceGoalValue = this._updateDistanceUnit(
           this.user.data.activity_goal_distance
-        ),
-        impact: 7
-      }
-    ] as any[]);
-    this.distanceCirclePercentage =
-      (parseFloat(this.todayCoastDistance) /
-        this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
-      100;
-    this._updateDistancePlotYAxis();
-    this._updateProgress();
+        ).toFixed(1);
+        this.distanceGoalUnit =
+          this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+            ? ' kilometers per day'
+            : ' miles per day';
+        // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+        if (this._todaysUsage) {
+          let coastDistance = this._updateDistanceUnit(
+            DeviceBase.caseTicksToMiles(
+              this._todaysUsage.distance_smartdrive_coast -
+                this._todaysUsage.distance_smartdrive_coast_start
+            ) || 0
+          );
+          if (coastDistance < 0.0) coastDistance = 0.0;
+          this.todayCoastDistance = coastDistance.toFixed(1);
+
+          let driveDistance = this._updateDistanceUnit(
+            DeviceBase.motorTicksToMiles(
+              this._todaysUsage.distance_smartdrive_drive -
+                this._todaysUsage.distance_smartdrive_drive_start
+            ) || 0
+          );
+          if (driveDistance < 0.0) driveDistance = 0.0;
+          this.todayDriveDistance = driveDistance.toFixed(1);
+
+          this.todayOdometer = this._updateDistanceUnit(
+            DeviceBase.caseTicksToMiles(
+              this._todaysUsage.distance_smartdrive_coast
+            ) || 0
+          ).toFixed(1);
+          // Today coast distance changed, update message
+          this.updateTodayMessage();
+        } else {
+          this.todayCoastDistance = (0).toFixed(1);
+          this.todayDriveDistance = (0).toFixed();
+          this.todayOdometer = (0).toFixed();
+        }
+
+        this.distancePlotAnnotationValue = this._updateDistanceUnit(
+          this.user.data.activity_goal_distance
+        );
+        this.distanceGoalLabelChartData = new ObservableArray([
+          {
+            xAxis: '        ',
+            coastDistance: this._updateDistanceUnit(
+              this.user.data.activity_goal_distance
+            ),
+            impact: 7
+          }
+        ] as any[]);
+        this.distanceCirclePercentage =
+          (parseFloat(this.todayCoastDistance) /
+            this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
+          100;
+        this._updateDistancePlotYAxis();
+        this._updateProgress();
+      });
+    });
   }
 
   private async _loadWeeklyActivity() {
-    const didLoad = await this._activityService.loadWeeklyActivity(
-      this._weekStart
-    );
-    this.weeklyActivity = new ObservableArray(
-      this._formatActivityForView('Week')
-    );
-    this._updateCoastTimePlotYAxis();
+    this._activityService.loadWeeklyActivity(this._weekStart).then(() => {
+      this._formatActivityForView('Week').then(result => {
+        this.weeklyActivity = new ObservableArray(result);
+        this._updateCoastTimePlotYAxis();
 
-    // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-    if (this._todaysActivity) {
-      this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(
-        1
-      );
-      this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
-      // Today coast time changed, update message
-      this.updateTodayMessage();
-    } else {
-      this.todayCoastTime = (0).toFixed(1);
-      this.todayPushCount = (0).toFixed();
-    }
+        // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+        if (this._todaysActivity) {
+          this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(
+            1
+          );
+          this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+          // Today coast time changed, update message
+          this.updateTodayMessage();
+        } else {
+          this.todayCoastTime = (0).toFixed(1);
+          this.todayPushCount = (0).toFixed();
+        }
 
-    this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-    this.coastTimeGoalMessage = 'Coast for ';
-    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-    this.coastTimeGoalUnit = ' seconds each day';
-    this.distanceGoalMessage = 'Travel ';
-    this.distanceGoalValue = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
-    ).toFixed(1);
-    this.distanceGoalUnit =
-      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-        ? ' kilometers per day'
-        : ' miles per day';
-    this.distanceCirclePercentageMaxValue =
-      '/' +
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-        1
-      );
-    this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastTime: this.user.data.activity_goal_coast_time,
-        impact: 7
-      }
-    ] as any[]);
-    this.coastTimeCirclePercentage =
-      (parseFloat(this.todayCoastTime) /
-        this.user.data.activity_goal_coast_time) *
-      100;
+        this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
+        this.coastTimeGoalMessage = 'Coast for ';
+        this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+        this.coastTimeGoalUnit = ' seconds each day';
+        this.distanceGoalMessage = 'Travel ';
+        this.distanceGoalValue = this._updateDistanceUnit(
+          this.user.data.activity_goal_distance
+        ).toFixed(1);
+        this.distanceGoalUnit =
+          this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+            ? ' kilometers per day'
+            : ' miles per day';
+        this.distanceCirclePercentageMaxValue =
+          '/' +
+          this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
+            1
+          );
+        this.coastTimeCirclePercentageMaxValue =
+          '/' + this.user.data.activity_goal_coast_time;
+        this.goalLabelChartData = new ObservableArray([
+          {
+            xAxis: '        ',
+            coastTime: this.user.data.activity_goal_coast_time,
+            impact: 7
+          }
+        ] as any[]);
+        this.coastTimeCirclePercentage =
+          (parseFloat(this.todayCoastTime) /
+            this.user.data.activity_goal_coast_time) *
+          100;
 
-    this.coastTimeGoalMessage = 'Coast for ';
-    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-    this.coastTimeGoalUnit = ' seconds each day';
-    this.distanceCirclePercentageMaxValue =
-      '/' +
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-        1
-      );
-    this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastTime: this.user.data.activity_goal_coast_time,
-        impact: 7
-      }
-    ] as any[]);
-    this.coastTimeCirclePercentage =
-      (parseFloat(this.todayCoastTime) /
-        this.user.data.activity_goal_coast_time) *
-      100;
-    this._updateProgress();
+        this.coastTimeGoalMessage = 'Coast for ';
+        this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+        this.coastTimeGoalUnit = ' seconds each day';
+        this.distanceCirclePercentageMaxValue =
+          '/' +
+          this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
+            1
+          );
+        this.coastTimeCirclePercentageMaxValue =
+          '/' + this.user.data.activity_goal_coast_time;
+        this.goalLabelChartData = new ObservableArray([
+          {
+            xAxis: '        ',
+            coastTime: this.user.data.activity_goal_coast_time,
+            impact: 7
+          }
+        ] as any[]);
+        this.coastTimeCirclePercentage =
+          (parseFloat(this.todayCoastTime) /
+            this.user.data.activity_goal_coast_time) *
+          100;
+        this._updateProgress();
+      });
+    });
   }
 
-  private _updateProgress() {
+  private async _updateProgress() {
     this.coastTimeGoalMessage = 'Coast for ';
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' seconds each day';
@@ -462,7 +463,7 @@ export class HomeTabComponent {
     this._updateDistancePlotYAxis();
   }
 
-  private _updatePalettes() {
+  private async _updatePalettes() {
     {
       // Distance Plot Palettes
 
@@ -522,7 +523,7 @@ export class HomeTabComponent {
     }
   }
 
-  private _updatePointLabelStyle() {
+  private async _updatePointLabelStyle() {
     this.pointLabelStyle = new PointLabelStyle();
     this.pointLabelStyle.margin = 10;
     this.pointLabelStyle.fontStyle = ChartFontStyle.Bold;
@@ -547,7 +548,7 @@ export class HomeTabComponent {
     return new Date(date.setDate(diff));
   }
 
-  private _updateCoastTimePlotYAxis() {
+  private async _updateCoastTimePlotYAxis() {
     const dateFormatted = function(date: Date) {
       return (
         date.getFullYear() +
@@ -586,7 +587,7 @@ export class HomeTabComponent {
     this.yAxisStep = this.yAxisMax / 5.0;
   }
 
-  private _formatActivityForView(viewMode) {
+  private async _formatActivityForView(viewMode) {
     if (viewMode === 'Week') {
       const activity = this._activityService.weeklyActivity;
       if (activity && activity.days) {
@@ -662,7 +663,7 @@ export class HomeTabComponent {
     }
   }
 
-  private _updateDistancePlotYAxis() {
+  private async _updateDistancePlotYAxis() {
     const dateFormatted = function(date: Date) {
       return (
         date.getFullYear() +
@@ -711,7 +712,7 @@ export class HomeTabComponent {
     this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 5.0;
   }
 
-  private _formatUsageForView(viewMode) {
+  private async _formatUsageForView(viewMode) {
     if (viewMode === 'Week') {
       const activity = this._smartDriveUsageService.weeklyActivity;
       if (activity && activity.days) {

@@ -56,11 +56,7 @@ export class JourneyTabComponent {
     private _userService: PushTrackerUserService,
     private _smartDriveUsageService: SmartDriveUsageService,
     private _pushtrackerActivityService: ActivityService
-  ) {}
-
-  onJourneyTabLoaded() {
-    this._logService.logBreadCrumb('JourneyTabComponent loaded');
-
+  ) {
     this._page.actionBarHidden = true;
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -72,7 +68,7 @@ export class JourneyTabComponent {
     this.debouncedRefresh = debounce(this._refresh.bind(this), 500, {
       trailing: true
     });
-    this._userSubscription$ = this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       this.savedTheme = this.user.data.theme_preference;
@@ -89,9 +85,12 @@ export class JourneyTabComponent {
     });
   }
 
+  onJourneyTabLoaded() {
+    this._logService.logBreadCrumb('JourneyTabComponent loaded');
+  }
+
   onJourneyTabUnloaded() {
     this._logService.logBreadCrumb('JourneyTabComponent unloaded');
-    this._userSubscription$.unsubscribe();
   }
 
   onJourneyItemTap(args: ItemEventData) {
@@ -103,7 +102,7 @@ export class JourneyTabComponent {
     this.debouncedRefresh();
   }
 
-  onLoadMoreItems(args: ItemEventData) {
+  async onLoadMoreItems(args: ItemEventData) {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
@@ -128,7 +127,7 @@ export class JourneyTabComponent {
     }
   }
 
-  private _refresh() {
+  private async _refresh() {
     this._noMorePushTrackerActivityDataAvailable = false;
     this._noMoreSmartDriveUsageDataAvailable = false;
     this._noMoreDataAvailable = false;
@@ -171,13 +170,6 @@ export class JourneyTabComponent {
     }
   }
 
-  // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-  private _getIndex(date1, date2) {
-    // date1 = Week start, date2 = current date
-    const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    return Math.ceil(timeDiff / (1000 * 3600 * 24));
-  }
-
   private _updateDistanceUnit(distance: number) {
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
       return milesToKilometers(distance);
@@ -185,7 +177,7 @@ export class JourneyTabComponent {
     return distance;
   }
 
-  private _processJourneyMap(date: Date, reset: boolean) {
+  private async _processJourneyMap(date: Date, reset: boolean) {
     // Sort _journeyMap by key
     let orderedJourneyMap = {};
     const self = this;
@@ -239,117 +231,118 @@ export class JourneyTabComponent {
 
     // Identify and group journey items
     // before creating ListView items
-    orderedJourneyMap = this._mergeJourneyItems(orderedJourneyMap);
-
-    for (const key in orderedJourneyMap) {
-      const journey = orderedJourneyMap[key];
-      let journeyDateLabel = '';
-      const today = new Date();
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const journeyDate = new Date(parseInt(key));
-      if (areDatesSame(journeyDate, today)) {
-        journeyDateLabel = 'Today';
-      } else if (areDatesSame(journeyDate, yesterday)) {
-        journeyDateLabel = 'Yesterday';
-      } else {
-        const dateStringList = (journeyDate + '').split(' ');
-        journeyDateLabel =
-          dateStringList[0] +
-          ', ' +
-          dateStringList[1] +
-          ' ' +
-          dateStringList[2];
-      }
-
-      if (!journeyDateLabel) {
-        journeyDateLabel = journeyDate + '';
-      }
-
-      let journeyTimeLabel = '';
-      if (journey.mergedTimes && journey.mergedTimes.length) {
-        const lastTimeMerged = new Date(
-          parseInt(journey.mergedTimes.sort()[journey.mergedTimes.length - 1])
-        );
-        // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
-        journeyTimeLabel += formatAMPM(lastTimeMerged);
-        journeyDate.setMinutes(journeyDate.getMinutes() + 30);
-        journeyTimeLabel += ' - ' + formatAMPM(journeyDate);
-      } else {
-        journeyTimeLabel = formatAMPM(journeyDate);
-        const thirtyMinsLater = new Date(journeyDate);
-        thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
-        journeyTimeLabel += ' - ' + formatAMPM(thirtyMinsLater);
-      }
-
-      // Selectively hide list items in Journey tab #249
-      // https://github.com/Max-Mobility/permobil-client/issues/249
-      // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
-      if (!journey.coastTime || journey.coastTime === 0) {
-        if (journey.coastDistance < 0.1) continue;
-      }
-      // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
-      else if (journey.coastTime) {
-        if (journey.coastTime < 0.05) {
-          continue;
+    this._mergeJourneyItems(orderedJourneyMap).then(result => {
+      orderedJourneyMap = result;
+      for (const key in orderedJourneyMap) {
+        const journey = orderedJourneyMap[key];
+        let journeyDateLabel = '';
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const journeyDate = new Date(parseInt(key));
+        if (areDatesSame(journeyDate, today)) {
+          journeyDateLabel = 'Today';
+        } else if (areDatesSame(journeyDate, yesterday)) {
+          journeyDateLabel = 'Yesterday';
+        } else {
+          const dateStringList = (journeyDate + '').split(' ');
+          journeyDateLabel =
+            dateStringList[0] +
+            ', ' +
+            dateStringList[1] +
+            ' ' +
+            dateStringList[2];
         }
+
+        if (!journeyDateLabel) {
+          journeyDateLabel = journeyDate + '';
+        }
+
+        let journeyTimeLabel = '';
+        if (journey.mergedTimes && journey.mergedTimes.length) {
+          const lastTimeMerged = new Date(
+            parseInt(journey.mergedTimes.sort()[journey.mergedTimes.length - 1])
+          );
+          // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
+          journeyTimeLabel += formatAMPM(lastTimeMerged);
+          journeyDate.setMinutes(journeyDate.getMinutes() + 30);
+          journeyTimeLabel += ' - ' + formatAMPM(journeyDate);
+        } else {
+          journeyTimeLabel = formatAMPM(journeyDate);
+          const thirtyMinsLater = new Date(journeyDate);
+          thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
+          journeyTimeLabel += ' - ' + formatAMPM(thirtyMinsLater);
+        }
+
+        // Selectively hide list items in Journey tab #249
+        // https://github.com/Max-Mobility/permobil-client/issues/249
+        // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
+        if (!journey.coastTime || journey.coastTime === 0) {
+          if (journey.coastDistance < 0.1) continue;
+        }
+        // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
+        else if (journey.coastTime) {
+          if (journey.coastTime < 0.05) {
+            continue;
+          }
+        }
+
+        this.journeyItems.push({
+          journey_type: journey.journeyType,
+          date: journeyDateLabel,
+          time: journeyTimeLabel,
+          push_count:
+            (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
+          coast_time:
+            (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
+          coast_distance:
+            (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') ||
+            '0.00',
+          drive_distance:
+            (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') ||
+            '0.00',
+          description:
+            getTimeOfDayString(journey.timeOfDay) +
+            ' ' +
+            getJourneyTypeString(journey.journeyType),
+          duration: 0,
+          icon_small:
+            this.savedTheme === 'DEFAULT'
+              ? imageFromResource(
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_black'
+                    : 'smartdrive_material_black_45'
+                )
+              : imageFromResource(
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                ),
+          icon_large:
+            this.savedTheme === 'DEFAULT'
+              ? imageFromResource(
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
+              : imageFromResource(
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
+        });
       }
 
-      this.journeyItems.push({
-        journey_type: journey.journeyType,
-        date: journeyDateLabel,
-        time: journeyTimeLabel,
-        push_count:
-          (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
-        coast_time:
-          (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
-        coast_distance:
-          (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') ||
-          '0.00',
-        drive_distance:
-          (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') ||
-          '0.00',
-        description:
-          getTimeOfDayString(journey.timeOfDay) +
-          ' ' +
-          getJourneyTypeString(journey.journeyType),
-        duration: 0,
-        icon_small:
-          this.savedTheme === 'DEFAULT'
-            ? imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_black'
-                  : 'smartdrive_material_black_45'
-              )
-            : imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              ),
-        icon_large:
-          this.savedTheme === 'DEFAULT'
-            ? imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              )
-            : imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              )
-      });
-    }
-
-    // If there are no items to show for
-    // current week (possibly because the items got filtered out),
-    // check previous week once
-    if (!this.journeyItems.length) {
-      this.onLoadMoreItems(undefined);
-    }
+      // If there are no items to show for
+      // current week (possibly because the items got filtered out),
+      // check previous week once
+      if (!this.journeyItems.length) {
+        this.onLoadMoreItems(undefined);
+      }
+    });
   }
 
-  private _mergeJourneyItems(orderedJourneyMap: Object) {
+  private async _mergeJourneyItems(orderedJourneyMap: Object) {
     let journeyList = [];
     for (const key in orderedJourneyMap) {
       journeyList.push({ startTime: key, stats: orderedJourneyMap[key] });
@@ -424,121 +417,119 @@ export class JourneyTabComponent {
   }
 
   private async _loadWeeklyPushtrackerActivity(date: Date) {
-    const didLoad = await this._pushtrackerActivityService.loadAllWeeklyActivityTill(
-      date
-    );
-    if (didLoad) {
-      for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
-        if (areDatesSame(this._weekStart, date)) {
-          const index = getDayOfWeek(new Date());
-          this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[
-            index
-          ];
-        }
+    return this._pushtrackerActivityService.loadAllWeeklyActivityTill(date).then(didLoad => {
+      if (didLoad) {
+        for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
+          if (areDatesSame(this._weekStart, date)) {
+            const index = getDayOfWeek(new Date());
+            this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[
+              index
+            ];
+          }
 
-        const dailyActivity = this._pushtrackerActivityService.weeklyActivity
-          .days[i];
-        if (dailyActivity) {
-          // There's activity for today. Update journey list with coast_time/push_count info
-          // Assume that activity.records is an ordered list
-          // For each record, get time of day. Build a list of objects, each object looking like:
-          // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-          //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-          //               }
-          for (const i in dailyActivity.records) {
-            const record = dailyActivity.records[i];
-            if (!this._journeyMap[record.start_time]) {
-              this._journeyMap[record.start_time] = new JourneyItem();
-              this._journeyMap[
-                record.start_time
-              ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+          const dailyActivity = this._pushtrackerActivityService.weeklyActivity
+            .days[i];
+          if (dailyActivity) {
+            // There's activity for today. Update journey list with coast_time/push_count info
+            // Assume that activity.records is an ordered list
+            // For each record, get time of day. Build a list of objects, each object looking like:
+            // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+            //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+            //               }
+            for (const i in dailyActivity.records) {
+              const record = dailyActivity.records[i];
+              if (!this._journeyMap[record.start_time]) {
+                this._journeyMap[record.start_time] = new JourneyItem();
+                this._journeyMap[
+                  record.start_time
+                ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+              }
+              this._journeyMap[record.start_time].coastTime =
+                record.coast_time_avg || 0;
+              this._journeyMap[record.start_time].coastTimeTotal =
+                record.coast_time_total || 0;
+              this._journeyMap[record.start_time].pushCount =
+                record.push_count || 0;
             }
-            this._journeyMap[record.start_time].coastTime =
-              record.coast_time_avg || 0;
-            this._journeyMap[record.start_time].coastTimeTotal =
-              record.coast_time_total || 0;
-            this._journeyMap[record.start_time].pushCount =
-              record.push_count || 0;
           }
         }
       }
-    }
-    return didLoad;
+      return didLoad;
+    });
   }
 
   private async _loadWeeklySmartDriveUsage(date: Date) {
-    const didLoad = await this._smartDriveUsageService.loadAllWeeklyActivityTill(
-      date
-    );
-    if (didLoad) {
-      for (const i in this._smartDriveUsageService.weeklyActivity.days) {
-        if (areDatesSame(this._weekStart, date)) {
-          const index = getDayOfWeek(new Date());
-          this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[
-            index
-          ];
-        }
+    return this._smartDriveUsageService.loadAllWeeklyActivityTill(date).then(didLoad => {
+      if (didLoad) {
+        for (const i in this._smartDriveUsageService.weeklyActivity.days) {
+          if (areDatesSame(this._weekStart, date)) {
+            const index = getDayOfWeek(new Date());
+            this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[
+              index
+            ];
+          }
 
-        const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
-        if (dailyUsage) {
-          // There's usage information for today. Update journey list with distance info
+          const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
+          if (dailyUsage) {
+            // There's usage information for today. Update journey list with distance info
 
-          // Assume that usage.records is an ordered list
-          // For each record, get time of day. Build a list of objects, each object looking like:
-          // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-          //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-          //               }
-          let coastDistanceStart = 0;
-          let driveDistanceStart = 0;
-          for (const i in dailyUsage.records) {
-            const record = dailyUsage.records[i];
+            // Assume that usage.records is an ordered list
+            // For each record, get time of day. Build a list of objects, each object looking like:
+            // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+            //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+            //               }
+            let coastDistanceStart = 0;
+            let driveDistanceStart = 0;
+            for (const i in dailyUsage.records) {
+              const record = dailyUsage.records[i];
 
-            if (parseInt(i) === 0) {
-              coastDistanceStart = dailyUsage.distance_smartdrive_coast_start;
-              driveDistanceStart = dailyUsage.distance_smartdrive_drive_start;
-            } else {
-              coastDistanceStart =
-                dailyUsage.records[parseInt(i) - 1].distance_smartdrive_coast;
-              driveDistanceStart =
-                dailyUsage.records[parseInt(i) - 1].distance_smartdrive_drive;
-            }
+              if (parseInt(i) === 0) {
+                coastDistanceStart = dailyUsage.distance_smartdrive_coast_start;
+                driveDistanceStart = dailyUsage.distance_smartdrive_drive_start;
+              } else {
+                coastDistanceStart =
+                  dailyUsage.records[parseInt(i) - 1].distance_smartdrive_coast;
+                driveDistanceStart =
+                  dailyUsage.records[parseInt(i) - 1].distance_smartdrive_drive;
+              }
 
-            if (!this._journeyMap[record.start_time]) {
-              this._journeyMap[record.start_time] = new JourneyItem();
+              if (!this._journeyMap[record.start_time]) {
+                this._journeyMap[record.start_time] = new JourneyItem();
+                this._journeyMap[
+                  record.start_time
+                ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+              }
               this._journeyMap[
                 record.start_time
-              ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+              ].coastDistance = this._updateDistanceUnit(
+                DeviceBase.caseTicksToMiles(
+                  record.distance_smartdrive_coast - coastDistanceStart
+                )
+              );
+              // https://github.com/Max-Mobility/permobil-client/issues/266
+              if (this._journeyMap[record.start_time].coastDistance < 0.0)
+                this._journeyMap[record.start_time].coastDistance = 0.0;
+
+              this._journeyMap[
+                record.start_time
+              ].driveDistance = this._updateDistanceUnit(
+                DeviceBase.motorTicksToMiles(
+                  record.distance_smartdrive_drive - driveDistanceStart
+                )
+              );
+              // https://github.com/Max-Mobility/permobil-client/issues/266
+              if (this._journeyMap[record.start_time].driveDistance < 0.0)
+                this._journeyMap[record.start_time].driveDistance = 0.0;
+
+              if (this._journeyMap[record.start_time].coastDistance < 0)
+                this._journeyMap[record.start_time].coastDistance = 0;
+              if (this._journeyMap[record.start_time].driveDistance < 0)
+                this._journeyMap[record.start_time].driveDistance = 0;
             }
-            this._journeyMap[
-              record.start_time
-            ].coastDistance = this._updateDistanceUnit(
-              DeviceBase.caseTicksToMiles(
-                record.distance_smartdrive_coast - coastDistanceStart
-              )
-            );
-            // https://github.com/Max-Mobility/permobil-client/issues/266
-            if (this._journeyMap[record.start_time].coastDistance < 0.0)
-              this._journeyMap[record.start_time].coastDistance = 0.0;
-
-            this._journeyMap[
-              record.start_time
-            ].driveDistance = this._updateDistanceUnit(
-              DeviceBase.motorTicksToMiles(
-                record.distance_smartdrive_drive - driveDistanceStart
-              )
-            );
-            // https://github.com/Max-Mobility/permobil-client/issues/266
-            if (this._journeyMap[record.start_time].driveDistance < 0.0)
-              this._journeyMap[record.start_time].driveDistance = 0.0;
-
-            if (this._journeyMap[record.start_time].coastDistance < 0)
-              this._journeyMap[record.start_time].coastDistance = 0;
-            if (this._journeyMap[record.start_time].driveDistance < 0)
-              this._journeyMap[record.start_time].driveDistance = 0;
           }
         }
       }
-    }
-    return didLoad;
+      return didLoad;
+    });
   }
 }

@@ -22,8 +22,6 @@ export class SmartDriveUsageService {
 
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
     try {
-      await this.login();
-      await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -35,26 +33,27 @@ export class SmartDriveUsageService {
       // Run a .find first to get the _id of the daily activity
       {
         const stream = this.datastore.find(query);
-        const data = await stream.toPromise();
-        if (data && data.length) {
-          const id = data[0]._id;
-          dailyUsage._id = id;
-          dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
-          dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
-        }
-        else {
-          // First record for this day
-          // Save distance_start
-          dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
-          dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
-        }
-        const promise = this.datastore.save(dailyUsage)
-          .then(function onSuccess(entity) {
-            return true;
-          }).catch(function onError(error) {
-            this._logService.logException(error);
-            return false;
-          });
+        return stream.toPromise().then(data => {
+          if (data && data.length) {
+            const id = data[0]._id;
+            dailyUsage._id = id;
+            dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
+            dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
+          }
+          else {
+            // First record for this day
+            // Save distance_start
+            dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
+            dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
+          }
+          return this.datastore.save(dailyUsage)
+            .then(function onSuccess(entity) {
+              return true;
+            }).catch(function onError(error) {
+              this._logService.logException(error);
+              return false;
+            });
+        });
       }
 
     } catch (err) {
@@ -65,8 +64,6 @@ export class SmartDriveUsageService {
 
   async loadDailyActivity(date: Date): Promise<boolean> {
     try {
-      await this.login();
-      await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -87,15 +84,16 @@ export class SmartDriveUsageService {
       query.equalTo('data_type', 'SmartDriveDailyInfo');
 
       const stream = this.datastore.find(query);
-      const data = await stream.toPromise();
-      if (data && data.length) {
-        this.dailyActivity = data[0];
-        // Do something with data
-        this._usageUpdated.next(true);
-        return true;
-      }
-      this.dailyActivity = {};
-      return false;
+      return stream.toPromise().then(data => {
+        if (data && data.length) {
+          this.dailyActivity = data[0];
+          // Do something with data
+          this._usageUpdated.next(true);
+          return true;
+        }
+        this.dailyActivity = {};
+        return false;
+      });
     } catch (err) {
       this._logService.logException(err);
       return false;
@@ -104,8 +102,6 @@ export class SmartDriveUsageService {
 
   async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
     try {
-      // await this.login();
-      // await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -123,15 +119,17 @@ export class SmartDriveUsageService {
           (month < 10 ? '0' + month : month) + '/' +
           (day < 10 ? '0' + day : day));
         const stream = this.datastore.find(query);
-        const data = await stream.toPromise();
-        if (data && data.length) {
-          this.weeklyActivity = data[0];
-          // Do something with data
-          this._usageUpdated.next(true);
-          return true;
-        }
+        return stream.toPromise().then(data => {
+          if (data && data.length) {
+            this.weeklyActivity = data[0];
+            // Do something with data
+            this._usageUpdated.next(true);
+            return true;
+          }
+          this.weeklyActivity = [];
+          return false;
+        });
       }
-
       this.weeklyActivity = [];
       return false;
     } catch (err) {
@@ -142,8 +140,6 @@ export class SmartDriveUsageService {
 
   async loadAllWeeklyActivityTill(weekStartDate: Date, limit: number = 1): Promise<boolean> {
     try {
-      // await this.login();
-      // await this.datastore.sync();
       const query = new KinveyQuery();
 
       // configure the query to search for only activity that was
@@ -162,15 +158,17 @@ export class SmartDriveUsageService {
         query.limit = limit;
 
         const stream = this.datastore.find(query);
-        const data = await stream.toPromise();
-        if (data && data.length) {
-          this.weeklyActivity = data[0];
-          // Do something with data
-          this._usageUpdated.next(true);
-          return true;
-        }
+        return stream.toPromise().then(data => {
+          if (data && data.length) {
+            this.weeklyActivity = data[0];
+            // Do something with data
+            this._usageUpdated.next(true);
+            return true;
+          }
+          this.weeklyActivity = [];
+          return false;
+        });
       }
-
       this.weeklyActivity = [];
       return false;
     } catch (err) {

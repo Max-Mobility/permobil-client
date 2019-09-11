@@ -515,7 +515,6 @@ export class ActivityTabComponent implements OnInit {
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
     this.activityLoaded = false;
-    let didLoad = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
       (this.viewMode === ViewMode.DISTANCE &&
@@ -530,44 +529,72 @@ export class ActivityTabComponent implements OnInit {
         Log.D('Forcing pull from database instead of using cache');
 
       if (this.viewMode === ViewMode.DISTANCE)
-        didLoad = await this._usageService.loadWeeklyActivity(this.weekStart);
+        this._usageService.loadWeeklyActivity(this.weekStart).then(didLoad => {
+          if (didLoad) {
+            this.weeklyActivity = new ObservableArray(
+              this._formatActivityForView(1)
+            );
+            if (this.tabSelectedIndex === 1) {
+              this._initWeekChartTitle();
+              this.weekStart = new Date(this._activityService.weeklyActivity.date);
+              this.weekEnd = new Date(this.weekStart);
+              this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+              this.minDate = new Date('01/01/1999');
+              this.maxDate = new Date('01/01/2099');
+            }
+          } else {
+            this.weeklyActivity = new ObservableArray(
+              this._formatActivityForView(1)
+            );
+          }
+          if (this.viewMode === ViewMode.DISTANCE) {
+            this._weeklyUsageCache[this.weekStart.toUTCString()] = {
+              chartData: this.weeklyActivity,
+              weeklyActivity: this._usageService.weeklyActivity
+            };
+          } else {
+            this._weeklyActivityCache[this.weekStart.toUTCString()] = {
+              chartData: this.weeklyActivity,
+              weeklyActivity: this._activityService.weeklyActivity
+            };
+          }
+          this._updateWeeklyActivityAnnotationValue();
+        });
       else
-        didLoad = await this._activityService.loadWeeklyActivity(this.weekStart);
-      if (didLoad) {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView(1)
-        );
-
-        if (this.tabSelectedIndex === 1) {
-          this._initWeekChartTitle();
-          this.weekStart = new Date(this._activityService.weeklyActivity.date);
-          this.weekEnd = new Date(this.weekStart);
-          this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-          this.minDate = new Date('01/01/1999');
-          this.maxDate = new Date('01/01/2099');
-        }
-      } else {
-        this.weeklyActivity = new ObservableArray(
-          this._formatActivityForView(1)
-        );
-      }
-      if (this.viewMode === ViewMode.DISTANCE) {
-        this._weeklyUsageCache[this.weekStart.toUTCString()] = {
-          chartData: this.weeklyActivity,
-          weeklyActivity: this._usageService.weeklyActivity
-        };
-      } else {
-        this._weeklyActivityCache[this.weekStart.toUTCString()] = {
-          chartData: this.weeklyActivity,
-          weeklyActivity: this._activityService.weeklyActivity
-        };
-      }
-      this._updateWeeklyActivityAnnotationValue();
+        this._activityService.loadWeeklyActivity(this.weekStart).then(didLoad => {
+          if (didLoad) {
+            this.weeklyActivity = new ObservableArray(
+              this._formatActivityForView(1)
+            );
+            if (this.tabSelectedIndex === 1) {
+              this._initWeekChartTitle();
+              this.weekStart = new Date(this._activityService.weeklyActivity.date);
+              this.weekEnd = new Date(this.weekStart);
+              this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+              this.minDate = new Date('01/01/1999');
+              this.maxDate = new Date('01/01/2099');
+            }
+          } else {
+            this.weeklyActivity = new ObservableArray(
+              this._formatActivityForView(1)
+            );
+          }
+          if (this.viewMode === ViewMode.DISTANCE) {
+            this._weeklyUsageCache[this.weekStart.toUTCString()] = {
+              chartData: this.weeklyActivity,
+              weeklyActivity: this._usageService.weeklyActivity
+            };
+          } else {
+            this._weeklyActivityCache[this.weekStart.toUTCString()] = {
+              chartData: this.weeklyActivity,
+              weeklyActivity: this._activityService.weeklyActivity
+            };
+          }
+          this._updateWeeklyActivityAnnotationValue();
+        });
     } else {
       // We have the data cached. Pull it up
       Log.D('Using local cache instead of pulling from database');
-
-      didLoad = true;
       let cache = null;
       if (this.viewMode === ViewMode.DISTANCE)
         cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
