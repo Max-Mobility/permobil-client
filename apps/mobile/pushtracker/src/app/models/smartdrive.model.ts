@@ -1022,30 +1022,29 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public disconnect() {
-    const promises = [];
-    if (this.connected && this.ableToSend && this.notifying) {
-      // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
-      const data = Uint8Array.from([0x03]); // this is the OTA stop command
-      const writePromise = this._bluetoothService
-        .write({
+  public async disconnect() {
+    try {
+      if (this.connected && this.ableToSend && this.notifying) {
+        // TODO: THIS IS A HACK TO FORCE THE BLE CHIP TO REBOOT AND CLOSE THE CONNECTION
+        const data = Uint8Array.from([0x03]); // this is the OTA stop command
+        await this._bluetoothService.write({
           peripheralUUID: this.address,
           serviceUUID: SmartDrive.ServiceUUID,
           characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
           value: data
         });
-      promises.push(writePromise);
+      }
+    } catch (err) {
+      // console.error('could not send disconnect command:', err);
     }
-    return Promise.all(promises)
-      .then(() => {
-        return this._bluetoothService.disconnect({
-          UUID: this.address
-        });
-      })
-      .catch(err => {
-        console.log('DISCONNECT ERR:', err);
-        this.handleDisconnect();
+    try {
+      await this._bluetoothService.disconnect({
+        UUID: this.address
       });
+    } catch (err) {
+      // console.log('DISCONNECT ERR:', err);
+      this.handleDisconnect();
+    }
   }
 
   public requestHighPriorityConnection(): boolean {
