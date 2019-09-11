@@ -818,7 +818,7 @@ export class HomeTabComponent {
         context: context,
         fullscreen: true,
         animated: true,
-        viewContainerRef: this._vcRef
+        viewContainerRef: this._vcRef,
       })
       .catch(err => {
         this._logService.logException(err);
@@ -840,7 +840,8 @@ export class HomeTabComponent {
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
-      viewMode: 0 // ViewMode.COAST_TIME
+      viewMode: 0, // ViewMode.COAST_TIME
+      user: this.user
     });
   }
 
@@ -856,7 +857,8 @@ export class HomeTabComponent {
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
-      viewMode: 2 // ViewMode.COAST_TIME
+      viewMode: 2, // ViewMode.COAST_TIME
+      user: this.user
     });
   }
 }
