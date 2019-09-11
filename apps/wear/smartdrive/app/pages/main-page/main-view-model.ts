@@ -2340,11 +2340,14 @@ export class MainViewModel extends Observable {
   }
 
   async disablePowerAssist() {
-    this._sentryBreadCrumb('Disabling power assist');
-
+    if (!this.powerAssistActive && !this.motorOn) {
+      return;
+    }
     // update state variables
     this.powerAssistActive = false;
     this.motorOn = false;
+
+    this._sentryBreadCrumb('Disabling power assist');
 
     // make sure to stop any pending taps
     this.stopTaps();
@@ -2359,9 +2362,6 @@ export class MainViewModel extends Observable {
       clearInterval(this._ringTimerId);
     }
     this.updatePowerAssistRing();
-    if (!this.powerAssistActive && !this.motorOn) {
-      return;
-    }
 
     // turn off the smartdrive
     try {
