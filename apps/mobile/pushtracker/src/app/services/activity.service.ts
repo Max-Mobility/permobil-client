@@ -5,6 +5,8 @@ import {
   User as KinveyUser
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
+import * as TNSHTTP from 'tns-core-modules/http';
+import { Log } from '@permobil/core';
 
 @Injectable()
 export class ActivityService {
@@ -88,37 +90,41 @@ export class ActivityService {
   }
 
   async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
     try {
-      const query = new KinveyQuery();
-
-      // configure the query to search for only activity that was
-      // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.lmt');
-      query.limit = 1;
-      query.equalTo('data_type', 'WeeklyActivity');
-
-      if (weekStartDate) {
-        const month = weekStartDate.getMonth() + 1;
-        const day = weekStartDate.getDate();
-        query.equalTo('date',
-          weekStartDate.getFullYear() + '/' +
-          (month < 10 ? '0' + month : month) + '/' +
-          (day < 10 ? '0' + day : day));
-
-        const stream = this.datastore.find(query);
-        return stream.toPromise().then(data => {
-          if (data && data.length) {
-            this.weeklyActivity = data[0];
-            // Do something with data
-            return true;
-          }
-          this.weeklyActivity = [];
-          return false;
-        });
-      }
-      this.weeklyActivity = [];
-      return false;
+      const queryString = '?query={"_acl.creator":"' + KinveyUser.getActiveUser()._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization:
+            'Kinvey 904de4dc-f5c5-4b75-b506-fd2ee601c631.x/ZbF//c1ZXSzbakn+pMp31ct4t3ZoF1+hapoGlrmDo=',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          this.weeklyActivity = data[0];
+          Log.D('Loaded weekly activity');
+          return true;
+        }
+        this.weeklyActivity = [];
+        return false;
+      })
+      .catch(err => {
+        console.log(err);
+        this.weeklyActivity = [];
+        return false;
+      });
     } catch (err) {
       this._logService.logException(err);
       return false;
