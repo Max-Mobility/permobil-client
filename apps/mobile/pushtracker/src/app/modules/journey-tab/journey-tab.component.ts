@@ -79,11 +79,7 @@ export class JourneyTabComponent {
       }
       this._currentTheme = this.savedTheme;
     });
-
-    this._loadDataForDate(this._weekStart, true).then((result) => {
-      this.journeyItems = result;
-      this.journeyItemsLoaded = true;
-    });
+    this.initJourneyItems();
   }
 
   onJourneyTabLoaded() {
@@ -92,6 +88,13 @@ export class JourneyTabComponent {
 
   onJourneyTabUnloaded() {
     this._logService.logBreadCrumb('JourneyTabComponent unloaded');
+  }
+
+  async initJourneyItems() {
+    this._loadDataForDate(this._weekStart, true).then((result) => {
+      this.journeyItems = result;
+      this.journeyItemsLoaded = true;
+    });
   }
 
   onRefreshTap() {
