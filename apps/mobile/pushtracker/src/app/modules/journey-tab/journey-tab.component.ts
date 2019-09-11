@@ -94,10 +94,6 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb('JourneyTabComponent unloaded');
   }
 
-  onJourneyItemTap(args: ItemEventData) {
-    Log.D('journey item tap', args.index);
-  }
-
   onRefreshTap() {
     Log.D('refresh tap');
     this.debouncedRefresh();
