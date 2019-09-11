@@ -2,7 +2,7 @@
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout row="1" col="0" verticalAlignment="center" *ngIf="!weeklyActivityLoaded">
       <ActivityIndicator height="10%" width="10%" verticalAlignment="center" horizontalAlignment="center" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
-      <Label text="Loading your data..." textAlign="center" textWrap="true"></Label>
+      <Label verticalAlignment="center" horizontalAlignment="center" [text]="'general.loading' | translate" textAlign="center" textWrap="true"></Label>
     </StackLayout>
     <StackLayout row="1" col="0" *ngIf="weeklyActivityLoaded">
       // Mock ActionBar

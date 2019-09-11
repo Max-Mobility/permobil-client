@@ -46,6 +46,7 @@ export class TabsComponent {
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
   private _throttledOnErrorEvent: any = null;
+  private _firstLoad = false;
 
   constructor(
     private _activityService: ActivityService,
@@ -104,6 +105,7 @@ export class TabsComponent {
   }
 
   onRootTabViewLoaded() {
+    if (this._firstLoad) return;
     setTimeout(() => {
       this.registerBluetoothEvents();
     }, 5000);
@@ -154,7 +156,7 @@ export class TabsComponent {
         }, 5000);
       }
     });
-
+    this._firstLoad = true;
     // this._settingsService.loadSettings();
   }
 
@@ -163,7 +165,7 @@ export class TabsComponent {
    * Update the icon for the visual indicator which tab is active.
    * @param args [SelectedIndexChangedEventData]
    */
-  tabViewIndexChange(args: SelectedIndexChangedEventData) {
+  async tabViewIndexChange(args: SelectedIndexChangedEventData) {
     if (args.newIndex >= 0) {
       switch (args.newIndex) {
         case 0:
