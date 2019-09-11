@@ -253,7 +253,8 @@ export class HomeTabComponent {
     this._modalService
       .showModal(ActivityTabComponent, {
         context: {
-          tabSelectedIndex: 0
+          tabSelectedIndex: 0,
+          user: this.user
         },
         fullscreen: true,
         animated: true,

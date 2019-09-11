@@ -104,6 +104,7 @@ export class ActivityTabComponent implements OnInit {
     }
 
     this.getUser();
+    
     // init the segmented bar items
     this.tabItems = [];
     [
@@ -116,11 +117,6 @@ export class ActivityTabComponent implements OnInit {
       this.tabItems.push(sbi);
     });
     this.tabSelectedIndex = this._params.context.tabSelectedIndex;
-
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
 
     if (this._params.context.currentDayInView) {
       this.currentDayInView = new Date(this._params.context.currentDayInView);
@@ -176,20 +172,15 @@ export class ActivityTabComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb('activity-tab.component OnInit');
-    this.userService.user.subscribe(user => {
-      this.savedTheme = user.data.theme_preference;
-    });
   }
 
   getUser() {
-    this.userService.user.subscribe(user => {
-      if (!user) return;
-      this.user = user;
-      this.distanceUnit =
-        this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-          ? ' km'
-          : ' mi';
-    });
+    this.user = this._params.context.user;
+    this.distanceUnit =
+      this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
+        ? ' km'
+        : ' mi';
+    this.savedTheme = this.user.data.theme_preference;
   }
 
   /**
