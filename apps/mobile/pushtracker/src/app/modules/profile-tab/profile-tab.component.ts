@@ -80,10 +80,7 @@ export class ProfileTabComponent {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {}
-
-  onProfileTabLoaded() {
-    this._logService.logBreadCrumb('ProfileTabComponent loaded');
+  ) {
     this.isUserLoaded = false;
     this.screenHeight = screen.mainScreen.heightDIPs;
 
@@ -124,6 +121,10 @@ export class ProfileTabComponent {
       this._initDisplayChairType();
       this._initDisplayChairMake();
     });
+  }
+
+  onProfileTabLoaded() {
+    this._logService.logBreadCrumb('ProfileTabComponent loaded');
   }
 
   onProfileTabUnloaded() {
@@ -663,12 +664,12 @@ export class ProfileTabComponent {
     this._openListPickerDialog();
   }
 
-  private _initDisplayActivityGoalCoastTime() {
+  private async _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
       this.user.data.activity_goal_coast_time + ' s';
   }
 
-  private _initDisplayActivityGoalDistance() {
+  private async _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
@@ -679,7 +680,7 @@ export class ProfileTabComponent {
     }
   }
 
-  private _initDisplayWeight() {
+  private async _initDisplayWeight() {
     this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
@@ -690,7 +691,7 @@ export class ProfileTabComponent {
     if (!this.displayWeight) this.displayWeight = '';
   }
 
-  private _initDisplayHeight() {
+  private async _initDisplayHeight() {
     this.displayHeight = this._displayHeightInCentimeters(
       this.user.data.height
     );
@@ -706,11 +707,11 @@ export class ProfileTabComponent {
     if (!this.displayHeight) this.displayHeight = '';
   }
 
-  private _initDisplayChairType() {
+  private async _initDisplayChairType() {
     this.displayChairType = this.chairTypes[this.user.data.chair_type || 0];
   }
 
-  private _initDisplayChairMake() {
+  private async _initDisplayChairMake() {
     this.displayChairMake = this.chairMakes[this.user.data.chair_make || 0];
   }
 
