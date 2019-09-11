@@ -80,7 +80,8 @@ export class JourneyTabComponent {
       this._currentTheme = this.savedTheme;
     });
 
-    this._loadDataForDate(this._weekStart, true).then(() => {
+    this._loadDataForDate(this._weekStart, true).then((result) => {
+      this.journeyItems = result;
       this.journeyItemsLoaded = true;
     });
   }
@@ -106,8 +107,8 @@ export class JourneyTabComponent {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
-    Log.D('Loading journey records for week of ' + this._rollingWeekStart);
-    this._loadDataForDate(this._rollingWeekStart, false).then(() => {
+    return this._loadDataForDate(this._rollingWeekStart, false).then((result) => {
+      this.journeyItems = result;
       this.showLoadingIndicator = false;
     });
   }
@@ -137,7 +138,8 @@ export class JourneyTabComponent {
     this._rollingWeekStart = new Date(this._weekStart);
     this._journeyMap = {};
     this.journeyItems = undefined;
-    this._loadDataForDate(this._weekStart, true).then(() => {
+    return this._loadDataForDate(this._weekStart, true).then((result) => {
+      this.journeyItems = result;
       this.journeyItemsLoaded = true;
     });
   }
@@ -150,23 +152,30 @@ export class JourneyTabComponent {
 
         // Check if there's any more SmartDrive WeeklyInfo usage data available to load
         if (!this._noMoreSmartDriveUsageDataAvailable) {
-          this._loadWeeklySmartDriveUsage(date).then(sdResult => {
+          return this._loadWeeklySmartDriveUsage(date).then(sdResult => {
             this._noMoreSmartDriveUsageDataAvailable = !sdResult;
-            this._processJourneyMap(date, reset);
+            return this._processJourneyMap(date, reset).then(result => {
+              return result;
+            });
           });
+        } else {
+          return this.journeyItems;
         }
       });
     } else if (!this._noMoreSmartDriveUsageDataAvailable) {
       // No PushTracker activity data available
       // Just check SmartDrive WeeklyInfo usage data
-      this._loadWeeklySmartDriveUsage(date).then(result => {
+      return this._loadWeeklySmartDriveUsage(date).then(result => {
         this._noMoreSmartDriveUsageDataAvailable = !result;
-        this._processJourneyMap(date, reset);
+        return this._processJourneyMap(date, reset).then(result => {
+          return result;
+        });
       });
     } else {
       // No data available
       this._noMoreDataAvailable = true;
       Log.D('No more data available in the database', this._rollingWeekStart);
+      return this.journeyItems;
     }
   }
 
@@ -231,8 +240,9 @@ export class JourneyTabComponent {
 
     // Identify and group journey items
     // before creating ListView items
-    this._mergeJourneyItems(orderedJourneyMap).then(result => {
+    return this._mergeJourneyItems(orderedJourneyMap).then(result => {
       orderedJourneyMap = result;
+      const newJourneyItems = this.journeyItems;
       for (const key in orderedJourneyMap) {
         const journey = orderedJourneyMap[key];
         let journeyDateLabel = '';
@@ -287,7 +297,7 @@ export class JourneyTabComponent {
           }
         }
 
-        this.journeyItems.push({
+        newJourneyItems.push({
           journey_type: journey.journeyType,
           date: journeyDateLabel,
           time: journeyTimeLabel,
@@ -332,13 +342,7 @@ export class JourneyTabComponent {
                 )
         });
       }
-
-      // If there are no items to show for
-      // current week (possibly because the items got filtered out),
-      // check previous week once
-      if (!this.journeyItems.length) {
-        this.onLoadMoreItems(undefined);
-      }
+      return newJourneyItems;
     });
   }
 

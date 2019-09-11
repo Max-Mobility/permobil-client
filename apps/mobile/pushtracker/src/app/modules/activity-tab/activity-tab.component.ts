@@ -104,7 +104,7 @@ export class ActivityTabComponent implements OnInit {
     }
 
     this.getUser();
-    
+
     // init the segmented bar items
     this.tabItems = [];
     [
