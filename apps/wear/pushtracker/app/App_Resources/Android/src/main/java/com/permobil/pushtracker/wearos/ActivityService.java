@@ -86,7 +86,7 @@ public class ActivityService
   private static final String TAG = "PermobilActivityService";
 
   // for sending to the main app via intent
-  public static final long SEND_DATA_PERIOD_MS = 1 * 1000;
+  public static final long SEND_DATA_PERIOD_MS = 10 * 1000;
   public static final long PUSH_DATA_PERIOD_MS = 1 * 60 * 1000;
 
   public boolean isDebuggable = false;
@@ -99,7 +99,7 @@ public class ActivityService
   private static final int SENSOR_RATE_HZ = 25;
   // microseconds between sensor data
   private static final int SENSOR_DELAY_US = 1000 * 1000 / SENSOR_RATE_HZ;
-  // 1 minute between sensor updates in microseconds
+  // 3 minute between sensor updates in microseconds
   private static final int SENSOR_REPORTING_LATENCY_US = 3 * 60  * 1000 * 1000;//3 * 60 * 1000 * 1000;
 
   // 25 meters / minute = 1.5 km / hr (~1 mph)
@@ -119,7 +119,6 @@ public class ActivityService
   private SensorManager mSensorManager;
   private Sensor mLinearAcceleration;
   private Sensor mGravity;
-  private Sensor mGyroscope;
   private Sensor mOffBodyDetect;
 
   // for sending data to the app and the backend
@@ -238,6 +237,17 @@ public class ActivityService
     // make sure to set the serial number
     currentActivity.watch_serial_number = this.watchSerialNumber;
 
+    // for keeping track of the days
+    this.setupTimeReceiver();
+
+    // for getting notified when we're on the charger (to send data)
+    this.setupBatteryReceiver();
+
+    Log.d(TAG, "starting service!");
+
+    this.initSensors();
+    this.registerAllSensors();
+
     /*
     // Get the LocationManager so we can send last known location
     // with the record when saving to Kinvey
@@ -258,18 +268,6 @@ public class ActivityService
       if (intent != null &&
           Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
         startServiceWithNotification();
-
-        // for keeping track of the days
-        this.setupTimeReceiver();
-
-        // for getting notified when we're on the charger (to send data)
-        this.setupBatteryReceiver();
-
-        Log.d(TAG, "starting service!");
-
-        this.initSensors();
-        this.registerAllSensors();
-
       } else {
         stopMyService();
       }
@@ -518,7 +516,6 @@ public class ActivityService
     // wears the watch and takes it off
     this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     // turn on accelerometer sensing
-    // this.registerGyroscope(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
   }
@@ -536,14 +533,12 @@ public class ActivityService
                                             this
                                             );
     */
-    // this.registerGyroscope(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     this.registerAccelerometer(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
     this.registerGravity(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
   }
 
   private void offWristCallback() {
     // turn off activity sensors
-    // unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
     // turn off location sensing
@@ -665,11 +660,11 @@ public class ActivityService
       handleDetection(detection);
       // reset the data
       clearDetectorInputs();
+      // remove all callbacks
+      mHandler.removeCallbacks(null);
       // post to the send runnable
-      mHandler.removeCallbacks(mSendTask);
       mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
       // post to the push runnable
-      mHandler.removeCallbacks(mPushTask);
       mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
     }
   }
@@ -700,16 +695,6 @@ public class ActivityService
 
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
-
-    /*
-    long now = System.currentTimeMillis();
-    long timeDiffMs = now - lastLogTimeMs;
-    if (timeDiffMs > LOG_TIME_MS) {
-      long[] numArray = {numGyro, numAccl, numGrav};
-      Log.d(TAG, "numArray: " + Arrays.toString(numArray));
-      lastLogTimeMs = now;
-    }
-    */
 
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       numAccl++;
@@ -778,21 +763,6 @@ public class ActivityService
     }
   }
 
-  private void registerGyroscope(int delay, int reportingLatency) {
-    if (mSensorManager != null) {
-      mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-      if (mGyroscope != null)
-        mSensorManager.registerListener(this, mGyroscope, delay, reportingLatency);
-    }
-  }
-
-  private void unregisterGyroscope() {
-    if (mSensorManager != null) {
-      if (mGyroscope != null)
-        mSensorManager.unregisterListener(this, mGyroscope);
-    }
-  }
-
   private void registerBodySensor(int delay, int reportingLatency) {
     if (mSensorManager != null) {
       mOffBodyDetect = mSensorManager.getDefaultSensor(Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT);
@@ -810,7 +780,6 @@ public class ActivityService
 
   private void unregisterDeviceSensors() {
     unregisterBodySensor();
-    // unregisterGyroscope();
     unregisterAccelerometer();
     unregisterGravity();
   }
@@ -902,7 +871,7 @@ public class ActivityService
     isServiceRunning = true;
 
     // register alarm to ensure service is always running
-    registerAlarm();
+    // registerAlarm();
 
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
