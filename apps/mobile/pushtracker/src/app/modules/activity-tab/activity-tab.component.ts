@@ -518,7 +518,7 @@ export class ActivityTabComponent implements OnInit {
     Log.D('ActivityTab | Loading weekly activity from Kinvey...');
 
     let result = [];
-    if (!this.user) return result;
+    if (!this.user) return Promise.reject(false);
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
@@ -545,24 +545,25 @@ export class ActivityTabComponent implements OnInit {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache result
           Log.D('ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly activity');
-          return Promise.resolve(result);
+          return Promise.resolve(true);
         }
-        return Promise.resolve(this._weeklyActivityFromKinvey);
+        this._weeklyActivityFromKinvey = [];
+        return Promise.resolve(true);
       })
       .catch(err => {
         Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-        return Promise.reject([]);
+        return Promise.reject(false);
       });
     } catch (err) {
       Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-      return Promise.reject([]);
+      return Promise.reject(false);
     }
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
     Log.D('ActivityTab | Loading weekly usage from Kinvey...');
     let result = [];
-    if (!this.user) return result;
+    if (!this.user) return Promise.reject(false);
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
@@ -589,17 +590,18 @@ export class ActivityTabComponent implements OnInit {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
           Log.D('ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage');
-          return Promise.resolve(result);
+          return Promise.resolve(true);
         }
-        return Promise.resolve(this._weeklyUsageFromKinvey);
+        this._weeklyUsageFromKinvey = [];
+        return Promise.resolve(true);
       })
       .catch(err => {
         Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-        return Promise.reject([]);
+        return Promise.reject(false);
       });
     } catch (err) {
       Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-      return Promise.reject([]);
+      return Promise.reject(false);
     }
   }
 
@@ -619,7 +621,8 @@ export class ActivityTabComponent implements OnInit {
         Log.D('Forcing pull from database instead of using cache');
 
       if (this.viewMode === ViewMode.DISTANCE)
-        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(didLoad => {
+        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
+        onResolved => {
           return this._formatActivityForView(1).then(result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
@@ -639,9 +642,13 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeekStartAndEnd();
             this.activityLoaded = true;
           });
+        },
+        onRejected => {
+          return [];
         });
       else
-        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(didLoad => {
+        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(
+        onResolved => {
           return this._formatActivityForView(1).then(async result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
@@ -661,6 +668,9 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeekStartAndEnd();
             this.activityLoaded = true;
           });
+        },
+        onRejected => {
+          return [];
         });
     } else {
       // We have the data cached. Pull it up
