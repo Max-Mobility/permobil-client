@@ -87,7 +87,6 @@ export class ActivityTabComponent implements OnInit {
   private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
-  activityLoaded: boolean = false;
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
@@ -168,12 +167,10 @@ export class ActivityTabComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
-    this.activityLoaded = false;
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.tabSelectedIndex },
       options: { forcePullFromDatabase: true }
     }).then(() => {
-      this.activityLoaded = true;
       pullRefresh.refreshing = false;
     });
   }
@@ -379,6 +376,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   async onCalendarDateSelected(args) {
+    if (!this.user) return;
     if (this.user.data.control_configuration !== 'PushTracker with SmartDrive') {
       const date: Date = args.date;
       if (date <= new Date()) {
@@ -391,7 +389,6 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private async _loadDailyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
     this.weekStart = this._getFirstDayOfWeek(date);
@@ -482,7 +479,6 @@ export class ActivityTabComponent implements OnInit {
         this._updateDailyActivityAnnotationValue();
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
-        this.activityLoaded = true;
       });
     });
   }
@@ -606,7 +602,6 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
       (this.viewMode === ViewMode.DISTANCE &&
@@ -640,7 +635,6 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
             this._updateWeekStartAndEnd();
-            this.activityLoaded = true;
           });
         },
         onRejected => {
@@ -666,7 +660,6 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
             this._updateWeekStartAndEnd();
-            this.activityLoaded = true;
           });
         },
         onRejected => {
@@ -713,7 +706,6 @@ export class ActivityTabComponent implements OnInit {
     }
     if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
     this._updateWeekStartAndEnd();
-    this.activityLoaded = true;
   }
 
   private _calculateWeeklyActivityYAxisMax() {
