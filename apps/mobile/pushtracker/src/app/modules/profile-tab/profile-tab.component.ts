@@ -491,7 +491,7 @@ export class ProfileTabComponent {
     }
     const primaryIndex = Math.floor(parseFloat(heightString));
     let secondaryIndex = 0;
-    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS)
+    if (this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES)
       secondaryIndex = parseFloat(heightString.split('.')[1]);
     return [primaryIndex - 2, secondaryIndex];
   }
@@ -562,9 +562,8 @@ export class ProfileTabComponent {
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
     const indices = this._getHeightIndices();
-
-    this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = indices[1];
+    this.primaryIndex = parseInt(this.primary[indices[0]]);
+    this.secondaryIndex = parseInt(this.secondary[indices[1]]);
     if (this.secondaryIndex === 12) {
       this.primaryIndex += 1;
       this.secondaryIndex = 0;
