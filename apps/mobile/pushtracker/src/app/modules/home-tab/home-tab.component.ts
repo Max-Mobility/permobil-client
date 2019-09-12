@@ -219,7 +219,7 @@ export class HomeTabComponent {
     Log.D('HomeTabComponent unloaded');
   }
 
-  getPushTrackerUserFromKinveyUser(user: any) : PushTrackerUser{
+  getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
     const result: any = {};
     result._id = user._id;
     result._acl = user._acl;
