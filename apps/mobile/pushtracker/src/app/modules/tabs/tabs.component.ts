@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log, PushTrackerUser } from '@permobil/core';
 import throttle from 'lodash/throttle';
-import { RouterExtensions } from 'nativescript-angular/router';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid } from 'tns-core-modules/platform';
+import { BottomNavigation } from 'tns-core-modules/ui/bottom-navigation';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { AppResourceIcons, STORAGE_KEYS } from '../../enums';
+import { STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { ActivityService, BluetoothService, PushTrackerUserService, SettingsService, SmartDriveUsageService } from '../../services';
 
@@ -23,23 +22,9 @@ import { ActivityService, BluetoothService, PushTrackerUserService, SettingsServ
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {
-  public homeTabItem;
-  public journeyTabItem;
-  public profileTabItem;
-
-  private _homeTabTitle = this._translateService.instant('home-tab.title');
-  private _journeyTabTitle = this._translateService.instant(
-    'journey-tab.title'
-  );
-  private _profileTabTitle = this._translateService.instant(
-    'profile-tab.title'
-  );
-
-  // permissions for the bluetooth service
-  private permissionsNeeded = [];
-
-  private snackbar = new SnackBar();
-
+  homeTabTitle = this._translateService.instant('home-tab.title');
+  journeyTabTitle = this._translateService.instant('journey-tab.title');
+  profileTabTitle = this._translateService.instant('profile-tab.title');
   bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
@@ -47,36 +32,21 @@ export class TabsComponent {
   private _throttledOnDistanceEvent: any = null;
   private _throttledOnErrorEvent: any = null;
   private _firstLoad = false;
+  // permissions for the bluetooth service
+  private permissionsNeeded = [];
+  private snackbar = new SnackBar();
 
   constructor(
     private _activityService: ActivityService,
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
     private _bluetoothService: BluetoothService,
-    private _routerExtension: RouterExtensions,
-    private _activeRoute: ActivatedRoute,
     private _page: Page,
-    private userService: PushTrackerUserService,
+    private _userService: PushTrackerUserService,
     private _usageService: SmartDriveUsageService
   ) {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
-
-    this.homeTabItem = {
-      title: this._homeTabTitle,
-      iconSource: AppResourceIcons.HOME_ACTIVE,
-      textTransform: 'capitalize'
-    };
-    this.journeyTabItem = {
-      title: this._journeyTabTitle,
-      iconSource: AppResourceIcons.JOURNEY_INACTIVE,
-      textTransform: 'capitalize'
-    };
-    this.profileTabItem = {
-      title: this._profileTabTitle,
-      iconSource: AppResourceIcons.PROFILE_INACTIVE,
-      textTransform: 'capitalize'
-    };
 
     // Run every 10 minutes
     const TEN_MINUTES = 10 * 60 * 1000;
@@ -104,8 +74,9 @@ export class TabsComponent {
     });
   }
 
-  onRootTabViewLoaded() {
+  onRootBottomNavLoaded(args) {
     if (this._firstLoad) return;
+
     setTimeout(() => {
       this.registerBluetoothEvents();
     }, 5000);
@@ -117,21 +88,9 @@ export class TabsComponent {
       );
     }
 
-    this._routerExtension.navigate(
-      [
-        {
-          outlets: {
-            homeTab: ['home'],
-            journeyTab: ['journey'],
-            profileTab: ['profile']
-          }
-        }
-      ],
-      { relativeTo: this._activeRoute }
-    );
-
-    this.userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       if (!user) return;
+
       this.user = user;
       if (
         this.user &&
@@ -161,57 +120,29 @@ export class TabsComponent {
   }
 
   /**
-   * Executes when the tabview item index is changed. Usually in response to user interaction changing which tab they are viewing.
-   * Update the icon for the visual indicator which tab is active.
+   * Executes when the bottomnavigation item index is changed.
+   * Update the css class for styling the active/inactive tabstripitems.
    * @param args [SelectedIndexChangedEventData]
    */
   async tabViewIndexChange(args: SelectedIndexChangedEventData) {
+    const x = args.object as BottomNavigation;
+    const z = x.tabStrip.items;
     if (args.newIndex >= 0) {
       switch (args.newIndex) {
         case 0:
-          Log.D('HomeTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_ACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_INACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_INACTIVE
-          };
+          z[0].className = 'tabstripitem-active';
+          z[1].className = 'tabstripitem';
+          z[2].className = 'tabstripitem';
           break;
         case 1:
-          Log.D('JourneyTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_INACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_ACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_INACTIVE
-          };
+          z[0].className = 'tabstripitem';
+          z[1].className = 'tabstripitem-active';
+          z[2].className = 'tabstripitem';
           break;
         case 2:
-          Log.D('ProfileTab Active');
-          this.homeTabItem = {
-            title: this._homeTabTitle,
-            iconSource: AppResourceIcons.HOME_INACTIVE
-          };
-          this.journeyTabItem = {
-            title: this._journeyTabTitle,
-            iconSource: AppResourceIcons.JOURNEY_INACTIVE
-          };
-          this.profileTabItem = {
-            title: this._profileTabTitle,
-            iconSource: AppResourceIcons.PROFILE_ACTIVE
-          };
+          z[0].className = 'tabstripitem';
+          z[1].className = 'tabstripitem';
+          z[2].className = 'tabstripitem-active';
           break;
       }
     }

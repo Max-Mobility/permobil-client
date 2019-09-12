@@ -1,4 +1,4 @@
-<TabView (loaded)="onRootTabViewLoaded()" #rootTabView androidTabsPosition="bottom" 
+<!-- <TabView (loaded)="onRootTabViewLoaded()" #rootTabView androidTabsPosition="bottom" 
   tabTextFontSize="10" iosIconRenderingMode="alwaysOriginal" 
   (selectedIndexChanged)="tabViewIndexChange($event)"
   *ngIf="user ? user.data.control_configuration !== 'Switch Control with SmartDrive' : true">
@@ -17,4 +17,40 @@
   *ngIf="user ? user.data.control_configuration === 'Switch Control with SmartDrive' : false">
   // Profile Tab
   <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
-</TabView>
+</TabView> -->
+
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1">
+  <TabStrip>
+    // Journey
+    <TabStripItem class="tabstripitem">
+      <Label [text]="journeyTabTitle"></Label>
+      <Image src="font://&#xe55b;"></Image>
+    </TabStripItem>
+
+    // Home
+    <TabStripItem class="tabstripitem">
+      <Label [text]="homeTabTitle"></Label>
+      <Image src="font://&#xe88a;"></Image>
+    </TabStripItem>
+
+    // Profile
+    <TabStripItem class="tabstripitem">
+      <Label [text]="profileTabTitle"></Label>
+      <Image src="font://&#xe7ff;"></Image>
+    </TabStripItem>
+  </TabStrip>
+
+  <!-- The number of TabContentItem components should corespond to the number of TabStripItem components -->
+  // Journey
+  <TabContentItem>
+    <journey-tab></journey-tab>
+  </TabContentItem>
+  // Home
+  <TabContentItem>
+    <home-tab></home-tab>
+  </TabContentItem>
+  // Profile
+  <TabContentItem>
+    <profile-tab></profile-tab>
+  </TabContentItem>
+</BottomNavigation>

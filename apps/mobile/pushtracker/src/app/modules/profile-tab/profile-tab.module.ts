@@ -5,7 +5,7 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NgRippleModule } from 'nativescript-ng-ripple';
-import { ActivityGoalSettingComponent, ProfileTabComponent, WirelessUpdatesComponent } from '..';
+import { ActivityGoalSettingComponent, WirelessUpdatesComponent } from '..';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -14,19 +14,11 @@ import { SharedModule } from '../shared/shared.module';
     NativeScriptCommonModule,
     NativeScriptRouterModule,
     NativeScriptFormsModule,
-    NativeScriptRouterModule.forChild([
-      { path: '', redirectTo: 'profile' },
-      { path: 'profile', component: ProfileTabComponent }
-    ]),
     SharedModule,
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [
-    ProfileTabComponent,
-    WirelessUpdatesComponent,
-    ActivityGoalSettingComponent
-  ],
+  declarations: [WirelessUpdatesComponent, ActivityGoalSettingComponent],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })

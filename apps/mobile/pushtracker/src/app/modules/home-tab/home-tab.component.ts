@@ -1,6 +1,8 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
@@ -8,22 +10,20 @@ import { ChartFontStyle, Palette, PaletteEntry, PointLabelStyle } from 'nativesc
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import * as TNSHTTP from 'tns-core-modules/http';
 import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../utils';
-import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
-import * as TNSHTTP from 'tns-core-modules/http';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 @Component({
   selector: 'home-tab',
   moduleId: module.id,
   templateUrl: './home-tab.component.html'
 })
-export class HomeTabComponent {
+export class HomeTabComponent implements OnInit {
   user: PushTrackerUser;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
@@ -80,8 +80,11 @@ export class HomeTabComponent {
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {
-    this._logService.logBreadCrumb(`HomeTabComponent constructed`);
+  ) {}
+
+  ngOnInit() {
+    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -108,6 +111,10 @@ export class HomeTabComponent {
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
+  }
+
+  onHomeTabUnloaded() {
+    Log.D('HomeTabComponent unloaded');
   }
 
   // Update what is displayed in the center of the home-tab circle #263
@@ -199,10 +206,6 @@ export class HomeTabComponent {
     );
   }
 
-  onHomeTabUnloaded() {
-    Log.D('HomeTabComponent unloaded');
-  }
-
   getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
     const kinveyActiveUser = KinveyUser.getActiveUser();
     const result: any = {};
@@ -216,7 +219,9 @@ export class HomeTabComponent {
     const keys = Object.keys(user);
     for (const i in keys) {
       const key = keys[i];
-      if (!['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)) {
+      if (
+        !['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)
+      ) {
         result.data[key] = user[key];
       }
     }
@@ -248,22 +253,24 @@ export class HomeTabComponent {
     const kinveyActiveUser = KinveyUser.getActiveUser();
     try {
       return TNSHTTP.request({
-        url: 'https://baas.kinvey.com/user/kid_rkoCpw8VG/' + kinveyActiveUser['_id'],
+        url:
+          'https://baas.kinvey.com/user/kid_rkoCpw8VG/' +
+          kinveyActiveUser['_id'],
         method: 'GET',
         headers: {
           Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        this.user = this.getPushTrackerUserFromKinveyUser(data);
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        Log.E(err);
-        return Promise.reject(false);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          this.user = this.getPushTrackerUserFromKinveyUser(data);
+          return Promise.resolve(true);
+        })
+        .catch(err => {
+          Log.E(err);
+          return Promise.reject(false);
+        });
     } catch (err) {
       Log.E(err);
       return Promise.reject(false);
@@ -274,7 +281,7 @@ export class HomeTabComponent {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey().then((result) => {
+    this.refreshUserFromKinvey().then(result => {
       if (!result) return;
       // The user might come back and refresh the next day, just keeping
       // the app running - Update currentDayInView and weekStart to
@@ -346,8 +353,11 @@ export class HomeTabComponent {
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
 
     if (this._firstLoad) {
@@ -365,10 +375,16 @@ export class HomeTabComponent {
     }
 
     try {
-      const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"SmartDriveWeeklyInfo","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        this.user._id +
+        '","data_type":"SmartDriveWeeklyInfo","date":"' +
+        date +
+        '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -377,20 +393,22 @@ export class HomeTabComponent {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          this._weeklyUsageFromKinvey = result; // cache
-          Log.D('HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage');
-          return Promise.resolve(result);
-        }
-        return Promise.resolve(this._weeklyUsageFromKinvey);
-      })
-      .catch(err => {
-        Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
-        return Promise.reject([]);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            this._weeklyUsageFromKinvey = result; // cache
+            Log.D(
+              'HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
+            );
+            return Promise.resolve(result);
+          }
+          return Promise.resolve(this._weeklyUsageFromKinvey);
+        })
+        .catch(err => {
+          Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
+          return Promise.reject([]);
+        });
     } catch (err) {
       Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
       return Promise.reject([]);
@@ -472,8 +490,11 @@ export class HomeTabComponent {
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
 
     if (this._firstLoad) {
@@ -491,10 +512,16 @@ export class HomeTabComponent {
     }
 
     try {
-      const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        this.user._id +
+        '","data_type":"WeeklyActivity","date":"' +
+        date +
+        '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -503,20 +530,22 @@ export class HomeTabComponent {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          this._weeklyActivityFromKinvey = result; // cache result
-          Log.D('HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly activity');
-          return Promise.resolve(result);
-        }
-        return Promise.resolve(this._weeklyActivityFromKinvey);
-      })
-      .catch(err => {
-        Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
-        return Promise.reject([]);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            this._weeklyActivityFromKinvey = result; // cache result
+            Log.D(
+              'HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly activity'
+            );
+            return Promise.resolve(result);
+          }
+          return Promise.resolve(this._weeklyActivityFromKinvey);
+        })
+        .catch(err => {
+          Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
+          return Promise.reject([]);
+        });
     } catch (err) {
       Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
       return Promise.reject([]);
@@ -531,10 +560,12 @@ export class HomeTabComponent {
 
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysActivity) {
-          this.todayCoastTime = (this._todaysActivity.coast_time_avg || 0).toFixed(
-            1
-          );
-          this.todayPushCount = (this._todaysActivity.push_count || 0).toFixed();
+          this.todayCoastTime = (
+            this._todaysActivity.coast_time_avg || 0
+          ).toFixed(1);
+          this.todayPushCount = (
+            this._todaysActivity.push_count || 0
+          ).toFixed();
           // Today coast time changed, update message
           this.updateTodayMessage();
         } else {
@@ -556,9 +587,9 @@ export class HomeTabComponent {
             : ' miles per day';
         this.distanceCirclePercentageMaxValue =
           '/' +
-          this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-            1
-          );
+          this._updateDistanceUnit(
+            this.user.data.activity_goal_distance
+          ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
         this.goalLabelChartData = new ObservableArray([
@@ -578,9 +609,9 @@ export class HomeTabComponent {
         this.coastTimeGoalUnit = ' seconds each day';
         this.distanceCirclePercentageMaxValue =
           '/' +
-          this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
-            1
-          );
+          this._updateDistanceUnit(
+            this.user.data.activity_goal_distance
+          ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
         this.goalLabelChartData = new ObservableArray([
@@ -1004,7 +1035,7 @@ export class HomeTabComponent {
         context: context,
         fullscreen: true,
         animated: true,
-        viewContainerRef: this._vcRef,
+        viewContainerRef: this._vcRef
       })
       .catch(err => {
         this._logService.logException(err);
@@ -1036,9 +1067,7 @@ export class HomeTabComponent {
     Log.D('Distance bar selected');
     if (!this._weeklyUsageFromKinvey) return;
     const dayIndex = event.pointIndex - 2;
-    const dailyActivity = this._weeklyUsageFromKinvey.days[
-      dayIndex
-    ];
+    const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       tabSelectedIndex:
         this.user.data.control_configuration !== 'PushTracker with SmartDrive'

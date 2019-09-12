@@ -24,16 +24,46 @@
 @import './components/max-text-box/max-text-box-default';
 @import './components/mock-action-bar/mock-action-bar-default';
 
-TabView {
-  tab-background-color: $white;
-  // android-selected-tab-highlight-color: $permobil-primary;
-  tab-text-color: $inactive-grey;
-  selected-tab-text-color: $permobil-primary;
-}
-
 .hr {
   height: 1;
   width: 100%;
   color: #e9eaee;
   background-color: #e9eaee;
+}
+
+// Bottom Navigation
+TabStrip {
+  background-color: $white;
+}
+
+TabStripItem > label {
+  font-family: $os;
+}
+
+TabStripItem > image {
+  font-family: $material-icon;
+}
+
+TabStripItem.tabstripitem {
+  color: $inactive-grey;
+
+  > label {
+    font-size: 12;
+  }
+
+  > image {
+    font-size: 10;
+  }
+}
+
+TabStripItem.tabstripitem-active {
+  color: $permobil-primary;
+
+  > label {
+    font-size: 14;
+  }
+
+  > image {
+    font-size: 10;
+  }
 }

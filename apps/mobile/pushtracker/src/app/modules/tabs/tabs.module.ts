@@ -1,52 +1,41 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
-import {
-  NativeScriptRouterModule,
-  NSEmptyOutletComponent
-} from 'nativescript-angular/router';
+import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
-import { SharedModule } from '../shared/shared.module';
-import { TabsComponent } from './tabs.component';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
+import { ActivityGoalSettingComponent, ActivityTabComponent, ConfigurationTabComponent, HomeTabComponent, JourneyTabComponent, PrivacyPolicyComponent, ProfileSettingsComponent, ProfileTabComponent, SupportComponent, TabsComponent, UpdatesInfoComponent, WirelessUpdatesComponent } from '..';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
+  entryComponents: [
+    ActivityGoalSettingComponent,
+    ActivityTabComponent,
+    ConfigurationTabComponent,
+    PrivacyPolicyComponent,
+    ProfileSettingsComponent,
+    SupportComponent,
+    UpdatesInfoComponent,
+    WirelessUpdatesComponent
+  ],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
-    NativeScriptUIChartModule,
     NativeScriptRouterModule.forChild([
-      {
-        path: 'default',
-        component: TabsComponent,
-        children: [
-          {
-            path: 'home',
-            outlet: 'homeTab',
-            component: NSEmptyOutletComponent,
-            loadChildren: '../home-tab/home-tab.module#HomeTabModule'
-          },
-          {
-            path: 'journey',
-            outlet: 'journeyTab',
-            component: NSEmptyOutletComponent,
-            loadChildren: '../journey-tab/journey-tab.module#JourneyTabModule'
-          },
-          {
-            path: 'profile',
-            outlet: 'profileTab',
-            component: NSEmptyOutletComponent,
-            loadChildren: '../profile-tab/profile-tab.module#ProfileTabModule'
-          }
-        ]
-      }
+      { path: 'default', component: TabsComponent }
     ]),
+    NativeScriptUIChartModule,
     SharedModule,
     TranslateModule,
     NgRippleModule
   ],
   exports: [SharedModule],
-  declarations: [TabsComponent],
+  declarations: [
+    TabsComponent,
+    ProfileTabComponent,
+    JourneyTabComponent,
+    HomeTabComponent
+  ],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })

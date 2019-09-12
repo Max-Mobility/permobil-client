@@ -1,19 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
-import { Subscription } from 'rxjs';
-import * as appSettings from 'tns-core-modules/application-settings';
+import * as TNSHTTP from 'tns-core-modules/http';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
-import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
+import { DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
-import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
-import * as TNSHTTP from 'tns-core-modules/http';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 enum JourneyType {
   'ROLL',
@@ -29,11 +27,11 @@ class JourneyItem {
 }
 
 @Component({
-  selector: 'journey',
+  selector: 'journey-tab',
   moduleId: module.id,
   templateUrl: './journey-tab.component.html'
 })
-export class JourneyTabComponent {
+export class JourneyTabComponent implements OnInit {
   journeyItems = undefined;
   savedTheme: string;
   user: PushTrackerUser;
@@ -62,7 +60,11 @@ export class JourneyTabComponent {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this._logService.logBreadCrumb('JourneyTabComponent OnInit');
+
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey().then(() => {
       this.savedTheme = this.user.data.theme_preference;
@@ -73,21 +75,15 @@ export class JourneyTabComponent {
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
-    this.debouncedRefresh = debounce(this._refresh.bind(this),
-      this.MAX_COMMIT_INTERVAL_MS, { leading: true, trailing: true }
+    this.debouncedRefresh = debounce(
+      this._refresh.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS,
+      { leading: true, trailing: true }
     );
   }
 
-  onJourneyTabLoaded() {
-    this._logService.logBreadCrumb('JourneyTabComponent loaded');
-  }
-
-  onJourneyTabUnloaded() {
-    this._logService.logBreadCrumb('JourneyTabComponent unloaded');
-  }
-
   async initJourneyItems() {
-    this._loadDataForDate(this._weekStart, true).then((result) => {
+    this._loadDataForDate(this._weekStart, true).then(result => {
       this.journeyItems = result;
       this.journeyItemsLoaded = true;
     });
@@ -102,7 +98,7 @@ export class JourneyTabComponent {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
-    return this._loadDataForDate(this._rollingWeekStart, false).then((result) => {
+    return this._loadDataForDate(this._rollingWeekStart, false).then(result => {
       this.journeyItems = result;
       this.showLoadingIndicator = false;
     });
@@ -136,7 +132,9 @@ export class JourneyTabComponent {
     const keys = Object.keys(user);
     for (const i in keys) {
       const key = keys[i];
-      if (!['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)) {
+      if (
+        !['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)
+      ) {
         result.data[key] = user[key];
       }
     }
@@ -167,22 +165,24 @@ export class JourneyTabComponent {
     const kinveyActiveUser = KinveyUser.getActiveUser();
     try {
       return TNSHTTP.request({
-        url: 'https://baas.kinvey.com/user/kid_rkoCpw8VG/' + kinveyActiveUser['_id'],
+        url:
+          'https://baas.kinvey.com/user/kid_rkoCpw8VG/' +
+          kinveyActiveUser['_id'],
         method: 'GET',
         headers: {
           Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        this.user = this.getPushTrackerUserFromKinveyUser(data);
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        Log.E(err);
-        return Promise.reject(false);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          this.user = this.getPushTrackerUserFromKinveyUser(data);
+          return Promise.resolve(true);
+        })
+        .catch(err => {
+          Log.E(err);
+          return Promise.reject(false);
+        });
     } catch (err) {
       Log.E(err);
       return Promise.reject(false);
@@ -200,7 +200,7 @@ export class JourneyTabComponent {
       this._rollingWeekStart = new Date(this._weekStart);
       this._journeyMap = {};
       this.journeyItems = undefined;
-      return this._loadDataForDate(this._weekStart, true).then((result) => {
+      return this._loadDataForDate(this._weekStart, true).then(result => {
         this.journeyItems = result;
         this.journeyItemsLoaded = true;
       });
@@ -369,11 +369,13 @@ export class JourneyTabComponent {
           coast_time:
             (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
           coast_distance:
-            (journey.coastDistance ? journey.coastDistance.toFixed(2) : '0.00') ||
-            '0.00',
+            (journey.coastDistance
+              ? journey.coastDistance.toFixed(2)
+              : '0.00') || '0.00',
           drive_distance:
-            (journey.driveDistance ? journey.driveDistance.toFixed(2) : '0.00') ||
-            '0.00',
+            (journey.driveDistance
+              ? journey.driveDistance.toFixed(2)
+              : '0.00') || '0.00',
           description:
             getTimeOfDayString(journey.timeOfDay) +
             ' ' +
@@ -490,16 +492,24 @@ export class JourneyTabComponent {
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
 
     try {
-      const queryString = '?query={"_acl.creator":"' + this.user._id +
-        '","data_type":"WeeklyActivity","date":{"$lte":"' + date + '"}}&limit=1&sort={"date": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        this.user._id +
+        '","data_type":"WeeklyActivity","date":{"$lte":"' +
+        date +
+        '"}}&limit=1&sort={"date": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -508,20 +518,22 @@ export class JourneyTabComponent {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          this._weeklyActivityFromKinvey = result; // cache result
-          Log.D('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly activity');
-          return Promise.resolve(result);
-        }
-        return Promise.resolve(this._weeklyActivityFromKinvey);
-      })
-      .catch(err => {
-        Log.E('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
-        return Promise.reject([]);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            this._weeklyActivityFromKinvey = result; // cache result
+            Log.D(
+              'JourneyTab | loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly activity'
+            );
+            return Promise.resolve(result);
+          }
+          return Promise.resolve(this._weeklyActivityFromKinvey);
+        })
+        .catch(err => {
+          Log.E('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
+          return Promise.reject([]);
+        });
     } catch (err) {
       Log.E('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
       return Promise.reject([]);
@@ -534,13 +546,10 @@ export class JourneyTabComponent {
         for (const i in this._weeklyActivityFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayActivity = this._weeklyActivityFromKinvey.days[
-              index
-            ];
+            this.todayActivity = this._weeklyActivityFromKinvey.days[index];
           }
 
-          const dailyActivity = this._weeklyActivityFromKinvey
-            .days[i];
+          const dailyActivity = this._weeklyActivityFromKinvey.days[i];
           if (dailyActivity) {
             // There's activity for today. Update journey list with coast_time/push_count info
             // Assume that activity.records is an ordered list
@@ -577,15 +586,23 @@ export class JourneyTabComponent {
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
     try {
-      const queryString = '?query={"_acl.creator":"' + this.user._id +
-        '","data_type":"SmartDriveWeeklyInfo","date":{"$lte":"' + date + '"}}&limit=1&sort={"date": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        this.user._id +
+        '","data_type":"SmartDriveWeeklyInfo","date":{"$lte":"' +
+        date +
+        '"}}&limit=1&sort={"date": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -594,20 +611,22 @@ export class JourneyTabComponent {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          this._weeklyUsageFromKinvey = result; // cache
-          Log.D('JourneyTab | loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage');
-          return Promise.resolve(result);
-        }
-        return Promise.resolve(this._weeklyUsageFromKinvey);
-      })
-      .catch(err => {
-        Log.E('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
-        return Promise.reject([]);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            this._weeklyUsageFromKinvey = result; // cache
+            Log.D(
+              'JourneyTab | loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage'
+            );
+            return Promise.resolve(result);
+          }
+          return Promise.resolve(this._weeklyUsageFromKinvey);
+        })
+        .catch(err => {
+          Log.E('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
+          return Promise.reject([]);
+        });
     } catch (err) {
       Log.E('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
       return Promise.reject([]);
@@ -620,9 +639,7 @@ export class JourneyTabComponent {
         for (const i in this._weeklyUsageFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayUsage = this._weeklyUsageFromKinvey.days[
-              index
-            ];
+            this.todayUsage = this._weeklyUsageFromKinvey.days[index];
           }
 
           const dailyUsage = this._weeklyUsageFromKinvey.days[i];

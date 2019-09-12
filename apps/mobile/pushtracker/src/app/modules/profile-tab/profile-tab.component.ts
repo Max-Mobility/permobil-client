@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -9,26 +9,23 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
-import { android } from 'tns-core-modules/application';
 import { Color } from 'tns-core-modules/color';
-import { isAndroid, screen } from 'tns-core-modules/platform';
-import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
+import { screen } from 'tns-core-modules/platform';
+import { action, confirm, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, milesToKilometers, kilometersToMiles } from '../../utils';
-declare var com: any;
-const dialogs = require('tns-core-modules/ui/dialogs');
+import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
 
 @Component({
-  selector: 'profile',
+  selector: 'profile-tab',
   moduleId: module.id,
   templateUrl: './profile-tab.component.html'
 })
-export class ProfileTabComponent {
+export class ProfileTabComponent implements OnInit {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
@@ -38,15 +35,12 @@ export class ProfileTabComponent {
   displayActivityGoalDistance: string;
   displayWeight: string;
   displayHeight: string;
-
   chairTypes: Array<string> = [];
   displayChairType: string;
-
   chairMakes: Array<string> = [];
   displayChairMake: string;
 
   // List picker related fields
-
   primary: string[];
   secondary: string[];
   primaryIndex: number;
@@ -66,10 +60,9 @@ export class ProfileTabComponent {
    * Being used to databind the translateY for 'off-screen' positioned layouts.
    */
   screenHeight: number;
-
   isUserLoaded: boolean;
-
   private _barcodeScanner: BarcodeScanner;
+  private _userSubscription$: Subscription;
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -80,7 +73,11 @@ export class ProfileTabComponent {
     private _page: Page,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this._logService.logBreadCrumb('ProfileTabComponent loaded');
+
     this.isUserLoaded = false;
     this.screenHeight = screen.mainScreen.heightDIPs;
 
@@ -107,7 +104,7 @@ export class ProfileTabComponent {
       this.chairMakes.push(i);
     });
 
-    this._userService.user.subscribe(user => {
+    this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       if (!this.user.data.dob || this.user.data.dob === null) {
@@ -121,14 +118,6 @@ export class ProfileTabComponent {
       this._initDisplayChairType();
       this._initDisplayChairMake();
     });
-  }
-
-  onProfileTabLoaded() {
-    this._logService.logBreadCrumb('ProfileTabComponent loaded');
-  }
-
-  onProfileTabUnloaded() {
-    this._logService.logBreadCrumb('ProfileTabComponent unloaded');
   }
 
   onWatchConnectTap() {
@@ -248,7 +237,12 @@ export class ProfileTabComponent {
         )} ${this._translateService.instant('profile-tab.per-day')}`;
       }
       if (this.user.data.activity_goal_distance)
-        value = parseFloat(this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(1)) || 0.0;
+        value =
+          parseFloat(
+            this._updateDistanceUnit(
+              this.user.data.activity_goal_distance
+            ).toFixed(1)
+          ) || 0.0;
     }
 
     this._modalService
@@ -393,9 +387,13 @@ export class ProfileTabComponent {
   }
 
   onPushTrackerE2SerialNumberTap(args) {
-    dialogs.alert({
-      title: this._translateService.instant('profile-tab.pushtracker-e2-serial-number-dialog-title'),
-      message: this._translateService.instant('profile-tab.pushtracker-e2-serial-number-dialog-message'),
+    alert({
+      title: this._translateService.instant(
+        'profile-tab.pushtracker-e2-serial-number-dialog-title'
+      ),
+      message: this._translateService.instant(
+        'profile-tab.pushtracker-e2-serial-number-dialog-message'
+      ),
       okButtonText: this._translateService.instant('profile-tab.ok')
     });
   }
@@ -443,28 +441,33 @@ export class ProfileTabComponent {
         break;
       case 3:
         this._userService.updateDataProperty(
-          'chair_type', this.primaryIndex // index into CHAIR_TYPE enum
+          'chair_type',
+          this.primaryIndex // index into CHAIR_TYPE enum
         );
         KinveyUser.update({ chair_type: this.primaryIndex });
         break;
       case 4:
         this._userService.updateDataProperty(
-          'chair_make', this.primaryIndex // index into CHAIR_MAKE enum
+          'chair_make',
+          this.primaryIndex // index into CHAIR_MAKE enum
         );
         KinveyUser.update({ chair_make: this.primaryIndex });
         break;
       case 5:
         const newConfiguration = this.primary[this.primaryIndex];
-        const self = this;
         // Confirm if the user is OK being logged out on change here
-        dialogs.confirm({
-          title: this._translateService.instant('profile-tab.configuration-change-dialog-title'),
-          message: this._translateService.instant('profile-tab.configuration-change-dialog-message'),
+        confirm({
+          title: this._translateService.instant(
+            'profile-tab.configuration-change-dialog-title'
+          ),
+          message: this._translateService.instant(
+            'profile-tab.configuration-change-dialog-message'
+          ),
           okButtonText: this._translateService.instant('profile-tab.ok'),
           cancelButtonText: this._translateService.instant('profile-tab.cancel')
-        }).then(async function(result) {
+        }).then(async result => {
           if (result) {
-            self._userService.updateDataProperty(
+            this._userService.updateDataProperty(
               'control_configuration',
               newConfiguration
             );
@@ -475,13 +478,13 @@ export class ProfileTabComponent {
             // Control configuration has changed
             // Tabs need to be re-initialized
             // Logout the user
-            self._zone.run(async () => {
+            this._zone.run(async () => {
               const logoutResult = await KinveyUser.logout();
               Log.D('logout result', logoutResult);
-              self._userService.reset();
+              this._userService.reset();
               enableDefaultTheme();
               // go ahead and nav to login to keep UI moving without waiting
-              self._routerExtensions.navigate(['/login'], {
+              this._routerExtensions.navigate(['/login'], {
                 clearHistory: true
               });
             });
@@ -743,13 +746,8 @@ export class ProfileTabComponent {
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
       // User's preference matches the database preference - Metric
       // Save height as is
-      this._userService.updateDataProperty(
-        'height',
-        primaryValue
-      );
-      this.displayHeight = this._displayHeightInCentimeters(
-        primaryValue
-      );
+      this._userService.updateDataProperty('height', primaryValue);
+      this.displayHeight = this._displayHeightInCentimeters(primaryValue);
     } else {
       // User's preference is Ft and inches
       // Database wants height in Centimeters
@@ -883,23 +881,23 @@ export class ProfileTabComponent {
   }
 
   private _sendData() {
-    if (isAndroid) {
-      // testing communications wearos
-      const l = new com.github.maxmobility.wearmessage.Data(android.context);
-      // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-      l.sendData(this._getSerializedAuth());
-      Log.D('Data sent');
-    }
+    // if (isAndroid) {
+    //   // testing communications wearos
+    //   const l = new com.github.maxmobility.wearmessage.Data(android.context);
+    //   // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
+    //   l.sendData(this._getSerializedAuth());
+    //   Log.D('Data sent');
+    // }
   }
 
   private _sendMessage() {
-    if (isAndroid) {
-      // testing communications wearos
-      const r = new com.github.maxmobility.wearmessage.Message(android.context);
-      // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-      r.sendMessage('/app-message', this._getSerializedAuth());
-      Log.D('Message sent');
-    }
+    // if (isAndroid) {
+    //   // testing communications wearos
+    //   const r = new com.github.maxmobility.wearmessage.Message(android.context);
+    //   // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
+    //   r.sendMessage('/app-message', this._getSerializedAuth());
+    //   Log.D('Message sent');
+    // }
   }
 
   private _updateDistanceUnit(distance: number) {
