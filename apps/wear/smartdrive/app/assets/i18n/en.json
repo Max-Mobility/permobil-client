@@ -25,6 +25,9 @@
     "enable": "Enable",
     "ok": "OK"
   },
+  "busy": {
+    "synchronizing": "Synchronizing with server..."
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive Battery Usage Daily (%)"

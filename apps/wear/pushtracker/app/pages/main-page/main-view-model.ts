@@ -108,7 +108,7 @@ export class MainViewModel extends Observable {
    * For showing busy status
    */
   @Prop() isBusy: boolean = false;
-  @Prop() busyText: string = 'Syncrhonizing with server...';
+  @Prop() busyText: string = L('busy.synchronizing');
 
   /**
    * Settings
