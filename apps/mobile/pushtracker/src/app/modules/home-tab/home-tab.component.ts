@@ -226,19 +226,23 @@ export class HomeTabComponent {
   async refreshUserFromKinvey() {
 
     if (this._firstLoad) {
-      const user = JSON.parse(appSettings.getString('Kinvey.User'));
-      if (user) {
-        this.user = user;
-        user._id = user.data._id;
-        user._acl = user.data._acl;
-        user._kmd = user.data._kmd;
-        user.authtoken = user.data._kmd.authtoken;
-        user.username = user.data.username;
-        user.email = user.data.email;
-        this.user = user;
-        return Promise.resolve(true);
+      try {
+        const user = JSON.parse(appSettings.getString('Kinvey.User'));
+        if (user) {
+          this.user = user;
+          user._id = user.data._id;
+          user._acl = user.data._acl;
+          user._kmd = user.data._kmd;
+          user.authtoken = user.data._kmd.authtoken;
+          user.username = user.data.username;
+          user.email = user.data.email;
+          this.user = user;
+          return Promise.resolve(true);
+        }
+        else Promise.reject(false);
+      } catch (err) {
+        Log.E('HomeTab | refreshUserFromKinvey |', err);
       }
-      else Promise.reject(false);
     }
 
     const kinveyActiveUser = KinveyUser.getActiveUser();
@@ -350,7 +354,11 @@ export class HomeTabComponent {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
       Log.D('HomeTab | Loading weekly usage from appSettings');
-      result = JSON.parse(appSettings.getString('SmartDrive.WeeklyUsage.' + date));
+      try {
+        result = JSON.parse(appSettings.getString('SmartDrive.WeeklyUsage.' + date));
+      } catch (err) {
+        Log.E('HomeTab | Loading weekly usage from appSettings |', err);
+      }
       if (result && result.length) {
         return result[0];
       }
@@ -472,7 +480,11 @@ export class HomeTabComponent {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
       Log.D('HomeTab | Loading weekly activity from appSettings');
-      result = JSON.parse(appSettings.getString('PushTracker.WeeklyActivity.' + date));
+      try {
+        result = JSON.parse(appSettings.getString('PushTracker.WeeklyActivity.' + date));
+      } catch (err) {
+        Log.E('HomeTab | Loading weekly activity from appSettings |', err);
+      }
       if (result && result.length) {
         return result[0];
       }

@@ -137,18 +137,18 @@ export class ActivityTabComponent implements OnInit {
     this._debouncedLoadDailyActivity = debounce(
       this._loadDailyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
-      { trailing: true }
+      { leading: true, trailing: true }
     );
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
-      { trailing: true }
+      { leading: true, trailing: true }
     );
 
     if (this.tabSelectedIndex === 0) {
-      this._debouncedLoadDailyActivity();
+      this._loadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
-      this._debouncedLoadWeeklyActivity();
+      this._loadWeeklyActivity();
     }
 
     {

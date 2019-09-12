@@ -145,19 +145,23 @@ export class JourneyTabComponent {
 
   async refreshUserFromKinvey() {
     if (this._firstLoad) {
-      const user = JSON.parse(appSettings.getString('Kinvey.User'));
-      if (user) {
-        this.user = user;
-        user._id = user.data._id;
-        user._acl = user.data._acl;
-        user._kmd = user.data._kmd;
-        user.authtoken = user.data._kmd.authtoken;
-        user.username = user.data.username;
-        user.email = user.data.email;
-        this.user = user;
-        return Promise.resolve(true);
+      try {
+        const user = JSON.parse(appSettings.getString('Kinvey.User'));
+        if (user) {
+          this.user = user;
+          user._id = user.data._id;
+          user._acl = user.data._acl;
+          user._kmd = user.data._kmd;
+          user.authtoken = user.data._kmd.authtoken;
+          user.username = user.data.username;
+          user.email = user.data.email;
+          this.user = user;
+          return Promise.resolve(true);
+        }
+        else Promise.reject(false);
+      } catch (err) {
+        Log.E('HomeTab | refreshUserFromKinvey |', err);
       }
-      else Promise.reject(false);
     }
 
     const kinveyActiveUser = KinveyUser.getActiveUser();
