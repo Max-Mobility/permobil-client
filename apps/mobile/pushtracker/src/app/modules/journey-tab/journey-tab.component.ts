@@ -56,6 +56,7 @@ export class JourneyTabComponent {
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
+  private _firstLoad = true;
 
   constructor(
     private _logService: LoggingService,
@@ -65,7 +66,9 @@ export class JourneyTabComponent {
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey().then(() => {
       this.savedTheme = this.user.data.theme_preference;
-      this.initJourneyItems();
+      this.initJourneyItems().then(() => {
+        this._firstLoad = false;
+      });
     });
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
@@ -141,6 +144,22 @@ export class JourneyTabComponent {
   }
 
   async refreshUserFromKinvey() {
+    if (this._firstLoad) {
+      const user = JSON.parse(appSettings.getString('Kinvey.User'));
+      if (user) {
+        this.user = user;
+        user._id = user.data._id;
+        user._acl = user.data._acl;
+        user._kmd = user.data._kmd;
+        user.authtoken = user.data._kmd.authtoken;
+        user.username = user.data.username;
+        user.email = user.data.email;
+        this.user = user;
+        return Promise.resolve(true);
+      }
+      else Promise.reject(false);
+    }
+
     const kinveyActiveUser = KinveyUser.getActiveUser();
     try {
       return TNSHTTP.request({

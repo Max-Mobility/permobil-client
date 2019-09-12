@@ -224,6 +224,23 @@ export class HomeTabComponent {
   }
 
   async refreshUserFromKinvey() {
+
+    if (this._firstLoad) {
+      const user = JSON.parse(appSettings.getString('Kinvey.User'));
+      if (user) {
+        this.user = user;
+        user._id = user.data._id;
+        user._acl = user.data._acl;
+        user._kmd = user.data._kmd;
+        user.authtoken = user.data._kmd.authtoken;
+        user.username = user.data.username;
+        user.email = user.data.email;
+        this.user = user;
+        return Promise.resolve(true);
+      }
+      else Promise.reject(false);
+    }
+
     const kinveyActiveUser = KinveyUser.getActiveUser();
     try {
       return TNSHTTP.request({
@@ -319,7 +336,7 @@ export class HomeTabComponent {
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly usage from Kinvey');
+    Log.D('HomeTab | Loading weekly usage from Kinvey...');
     let result = [];
     if (!this.user) return result;
 
@@ -328,6 +345,17 @@ export class HomeTabComponent {
     const date = weekStartDate.getFullYear() + '/' +
       (month < 10 ? '0' + month : month) + '/' +
       (day < 10 ? '0' + day : day);
+
+    if (this._firstLoad) {
+      // First load of the home tab
+      // Check if there's cached activity loaded in app.component.ts
+      Log.D('HomeTab | Loading weekly usage from appSettings');
+      result = JSON.parse(appSettings.getString('SmartDrive.WeeklyUsage.' + date));
+      if (result && result.length) {
+        return result[0];
+      }
+    }
+
     try {
       const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"SmartDriveWeeklyInfo","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
@@ -429,7 +457,8 @@ export class HomeTabComponent {
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly activity from Kinvey');
+    Log.D('HomeTab | Loading weekly activity from Kinvey...');
+
     let result = [];
     if (!this.user) return result;
 
@@ -438,6 +467,17 @@ export class HomeTabComponent {
     const date = weekStartDate.getFullYear() + '/' +
       (month < 10 ? '0' + month : month) + '/' +
       (day < 10 ? '0' + day : day);
+
+    if (this._firstLoad) {
+      // First load of the home tab
+      // Check if there's cached activity loaded in app.component.ts
+      Log.D('HomeTab | Loading weekly activity from appSettings');
+      result = JSON.parse(appSettings.getString('PushTracker.WeeklyActivity.' + date));
+      if (result && result.length) {
+        return result[0];
+      }
+    }
+
     try {
       const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({

@@ -16,6 +16,9 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme } from './utils';
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import * as TNSHTTP from 'tns-core-modules/http';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -85,6 +88,16 @@ export class AppComponent implements OnInit {
       }
     );
 
+    application.on(
+      application.resumeEvent,
+      () => {
+        Log.D('Application resumed');
+        const weekStart = this._getFirstDayOfWeek(new Date());
+        this._loadWeeklyActivityFromKinvey(weekStart);
+        this._loadSmartDriveUsageFromKinvey(weekStart);
+      }
+    );
+
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
     Kinvey.ping()
       .then(() => {
@@ -101,6 +114,7 @@ export class AppComponent implements OnInit {
         STORAGE_KEYS.APP_THEME,
         user.data.theme_preference || APP_THEMES.DEFAULT
       );
+      appSettings.setString('Kinvey.User', JSON.stringify(user));
       this._router.navigate(['/tabs/default']);
     } else {
       this._router.navigate(['/login']);
@@ -121,4 +135,96 @@ export class AppComponent implements OnInit {
       enableDarkTheme();
     }
   }
+
+  private _getFirstDayOfWeek(date) {
+    date = new Date(date);
+    const day = date.getDay();
+    if (day === 0) return date; // Sunday is the first day of the week
+    const diff = date.getDate() - day;
+    return new Date(date.setDate(diff));
+  }
+
+  async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
+    Log.D('Loading weekly activity from Kinvey');
+    const user = KinveyUser.getActiveUser();
+    if (!user) return;
+    let result = [];
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+    try {
+      const queryString = '?query={"_acl.creator":"' + user._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          appSettings.setString('PushTracker.WeeklyActivity.' + date, JSON.stringify(result));
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      })
+      .catch(err => {
+        return Promise.reject(false);
+      });
+    } catch (err) {
+      return Promise.reject(false);
+    }
+  }
+
+  async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
+    Log.D('Loading weekly usage from Kinvey');
+    const user = KinveyUser.getActiveUser();
+    let result = [];
+    if (!user) return result;
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+    try {
+      const queryString = '?query={"_acl.creator":"' +
+        user._id + '","data_type":"SmartDriveWeeklyInfo","date":"' +
+        date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          appSettings.setString('SmartDrive.WeeklyUsage.' + date, JSON.stringify(result));
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      })
+      .catch(err => {
+        return Promise.reject(false);
+      });
+    } catch (err) {
+      return Promise.reject(false);
+    }
+  }
+
 }
