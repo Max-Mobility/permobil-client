@@ -606,7 +606,7 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     this.primary = this.chairMakes;
-    this.primaryIndex = this.user.data.chair_make;
+    this.primaryIndex = this.user.data.chair_make || 0;
 
     this.listPickerTitle = this._translateService.instant(
       'profile-tab.chair-make'
