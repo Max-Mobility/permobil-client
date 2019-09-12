@@ -353,6 +353,13 @@
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
+    <StackLayout background="black" width="100%" height="100%" visibility="{{ isBusy ? 'visible':'collapsed' }}">
+      <ActivityIndicator busy="{{ isBusy }}"
+                         color="#006ea4"
+                         width="50%" height="50%"/>
+      <Label class="center-label-base fs20" text="{{ busyText }}" textWrap="true"/>
+    </StackLayout>
+
   </GridLayout>
 
 </Page>

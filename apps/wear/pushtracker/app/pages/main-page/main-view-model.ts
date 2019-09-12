@@ -105,6 +105,12 @@ export class MainViewModel extends Observable {
   @Prop() distanceUnits: string = '';
 
   /**
+   * For showing busy status
+   */
+  @Prop() isBusy: boolean = false;
+  @Prop() busyText: string = "Syncrhonizing with server..."
+
+  /**
    * Settings
    */
   @Prop() settings: Profile.Settings = new Profile.Settings();
@@ -372,7 +378,7 @@ export class MainViewModel extends Observable {
           };
         });
       } else {
-        Log.E('could not craete package context!');
+        Log.E('could not create package context!');
       }
     } catch (err) {
       Log.E('Could not get smartdrive data', err);
@@ -667,6 +673,7 @@ export class MainViewModel extends Observable {
     try {
       Log.D('requesting user data');
       // now request user data
+      this.isBusy = true;
       const userData = await this.kinveyService.getUserData() as any;
       Log.D('userInfo', JSON.stringify(userData, null, 2));
       // pull the data out of the user structure
@@ -674,7 +681,9 @@ export class MainViewModel extends Observable {
       this.saveSettings();
       // now update any display that needs settings:
       this.updateDisplay();
+      this.isBusy = false;
     } catch (err) {
+      this.isBusy = false;
       Log.E('could not get user data:', err);
     }
   }
@@ -1106,6 +1115,7 @@ export class MainViewModel extends Observable {
       }
     }
     try {
+      this.isBusy = true;
       // TODO: waiting on the resolution of this to not have to get
       // the user data again
       // https://support.kinvey.com/support/tickets/6897
@@ -1125,10 +1135,12 @@ export class MainViewModel extends Observable {
       if (statusCode !== 200) {
         throw response;
       }
+      this.isBusy = false;
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
       );
     } catch (err) {
+      this.isBusy = false;
       Log.E('could not save to database:', err);
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
