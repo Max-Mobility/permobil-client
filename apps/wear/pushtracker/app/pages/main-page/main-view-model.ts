@@ -1097,20 +1097,34 @@ export class MainViewModel extends Observable {
   async sendSettings() {
     // make sure kinvey service is initialized
     if (this.kinveyService === undefined) {
+      alert({
+        title: L('failures.title'),
+        message: L('failures.not-fully-initialized'),
+        okButtonText: L('buttons.ok')
+      });
+      /*
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
         L('failures.not-fully-initialized')
       );
+      */
       return;
     }
     // make sure the kinvey service has authentication (or get it)
     if (!this.kinveyService.hasAuth()) {
       const validAuth = await this.updateAuthorization();
       if (!validAuth) {
+        alert({
+          title: L('failures.title'),
+          message: L('failures.not-connected-to-mobile'),
+          okButtonText: L('buttons.ok')
+        });
+        /*
         this.showConfirmation(
           android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
           L('failures.not-connected-to-mobile')
         );
+        */
         return;
       }
     }
@@ -1142,10 +1156,17 @@ export class MainViewModel extends Observable {
     } catch (err) {
       this.isBusy = false;
       Log.E('could not save to database:', err);
+      alert({
+        title: L('failures.title'),
+        message: L('failures.could-not-update-profile') + `:\n\n${err}`,
+        okButtonText: L('buttons.ok')
+      });
+      /*
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
         L('failures.could-not-update-profile') + `: ${err}`
       );
+      */
     }
   }
 

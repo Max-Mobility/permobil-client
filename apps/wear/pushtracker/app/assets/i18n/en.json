@@ -24,7 +24,10 @@
 		"permissions": "Required permissions were not granted!",
 		"saving-activity": "Failed saving activity",
 		"scan": "Could not scan",
-		"title": "Failure"
+		"title": "Failure",
+    "not-fully-initialize": "PushTracker has not finished initializing.",
+    "not-connected-to-mobile": "Could not authenticate with server, please re-connect with PushTracker mobile app.",
+    "could-not-update-profile": "Could not update user profile on the server"
 	},
 	"goals": {
 		"coast": {
