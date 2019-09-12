@@ -45,12 +45,10 @@ export class JourneyTabComponent {
   private _today: Date;
   private _weekStart: Date;
   private _rollingWeekStart: Date;
-  private _userSubscription$: Subscription;
   private _journeyMap = {};
   private _noMorePushTrackerActivityDataAvailable = false;
   private _noMoreSmartDriveUsageDataAvailable = false;
   private _noMoreDataAvailable = false;
-  private _currentTheme = '';
 
   public static api_base = PushTrackerKinveyKeys.HOST_URL;
   public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
@@ -73,7 +71,7 @@ export class JourneyTabComponent {
     this._weekStart = getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
     this.debouncedRefresh = debounce(this._refresh.bind(this),
-      this.MAX_COMMIT_INTERVAL_MS, { trailing: true }
+      this.MAX_COMMIT_INTERVAL_MS, { leading: true, trailing: true }
     );
   }
 
@@ -170,7 +168,6 @@ export class JourneyTabComponent {
 
   private async _refresh() {
     return this.refreshUserFromKinvey().then(() => {
-      this._currentTheme = this.savedTheme;
       this._noMorePushTrackerActivityDataAvailable = false;
       this._noMoreSmartDriveUsageDataAvailable = false;
       this._noMoreDataAvailable = false;
@@ -473,6 +470,7 @@ export class JourneyTabComponent {
     const date = weekStartDate.getFullYear() + '/' +
       (month < 10 ? '0' + month : month) + '/' +
       (day < 10 ? '0' + day : day);
+
     try {
       const queryString = '?query={"_acl.creator":"' + this.user._id +
         '","data_type":"WeeklyActivity","date":{"$lte":"' + date + '"}}&limit=1&sort={"date": -1}';
