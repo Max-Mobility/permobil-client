@@ -131,8 +131,10 @@ export class TabsComponent {
       switch (args.newIndex) {
         case 0:
           z[0].className = 'tabstripitem-active';
-          z[1].className = 'tabstripitem';
-          z[2].className = 'tabstripitem';
+          if (z.length > 1) {
+            z[1].className = 'tabstripitem';
+            z[2].className = 'tabstripitem';
+          }
           break;
         case 1:
           z[0].className = 'tabstripitem';
