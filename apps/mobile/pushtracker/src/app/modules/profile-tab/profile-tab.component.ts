@@ -107,9 +107,6 @@ export class ProfileTabComponent {
     this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
-      if (!this.user.data.dob || this.user.data.dob === null) {
-        this.user.data.dob = subYears(new Date(), 18); // 'Jan 01, 2001';
-      }
       this.isUserLoaded = true;
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
@@ -294,7 +291,7 @@ export class ProfileTabComponent {
     DateTimePicker.pickDate(
       {
         context: (args.object as StackLayout)._context,
-        date: new Date(this.user.data.dob),
+        date: (this.user.data.dob ? new Date(this.user.data.dob) : subYears(new Date(), 18)),
         minDate: subYears(new Date(), 110),
         maxDate: new Date(),
         title: this._translateService.instant('general.birthday'),
