@@ -243,8 +243,6 @@ public class ActivityService
     // for getting notified when we're on the charger (to send data)
     this.setupBatteryReceiver();
 
-    Log.d(TAG, "starting service!");
-
     this.initSensors();
     this.registerAllSensors();
 
@@ -255,6 +253,7 @@ public class ActivityService
       .getSystemService(Context.LOCATION_SERVICE);
     */
     isServiceRunning = false;
+    Log.d(TAG, "service created!");
   }
 
   @Override
@@ -515,6 +514,7 @@ public class ActivityService
   }
 
   private void registerAllSensors() {
+    Log.d(TAG, "registerAllSensors()");
     // register the body sensor so we get events when the user
     // wears the watch and takes it off
     this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
@@ -735,6 +735,7 @@ public class ActivityService
   }
 
   private void initSensors() {
+    Log.d(TAG, "initSensors()");
     mSensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
   }
 
@@ -784,6 +785,7 @@ public class ActivityService
   }
 
   private void unregisterDeviceSensors() {
+    Log.d(TAG, "unregisterDeviceSensors()");
     unregisterBodySensor();
     unregisterAccelerometer();
     unregisterGravity();
