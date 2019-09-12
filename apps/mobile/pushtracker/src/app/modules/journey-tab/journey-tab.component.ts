@@ -10,7 +10,7 @@ import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService } from '../../services';
+import { LoggingService, PushTrackerUserService } from '../../services';
 import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
 import * as appSettings from 'tns-core-modules/application-settings';
 
@@ -60,7 +60,8 @@ export class JourneyTabComponent implements OnInit {
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _page: Page
+    private _page: Page,
+    private _userService: PushTrackerUserService
   ) {}
 
   ngOnInit() {
@@ -81,6 +82,18 @@ export class JourneyTabComponent implements OnInit {
       this.MAX_COMMIT_INTERVAL_MS,
       { leading: true, trailing: true }
     );
+
+    this._userService.user.subscribe(user => {
+      Log.D('User theme changed', this.savedTheme);
+      if (this.savedTheme !== user.data.theme_preference) {
+        this.savedTheme = user.data.theme_preference;
+        Log.D('Refreshing');
+        // Theme has changed - Refresh view so icon images can update
+        // to match the theme
+        this._refresh();
+      }
+    });
+
   }
 
   async initJourneyItems() {

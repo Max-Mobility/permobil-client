@@ -15,7 +15,7 @@ import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService } from '../../services';
+import { LoggingService, PushTrackerUserService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../utils';
 
 @Component({
@@ -79,7 +79,8 @@ export class HomeTabComponent implements OnInit {
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
-    private _vcRef: ViewContainerRef
+    private _vcRef: ViewContainerRef,
+    private _userService: PushTrackerUserService
   ) {}
 
   ngOnInit() {
@@ -107,6 +108,15 @@ export class HomeTabComponent implements OnInit {
       this.MAX_COMMIT_INTERVAL_MS,
       { trailing: true }
     );
+
+    this._userService.user.subscribe(user => {
+      if (this.savedTheme !== user.data.theme_preference)
+        this.savedTheme = user.data.theme_preference;
+        this.savedTheme === APP_THEMES.DEFAULT
+        ? enableDefaultTheme()
+        : enableDarkTheme();
+    });
+
   }
 
   onHomeTabLoaded() {
