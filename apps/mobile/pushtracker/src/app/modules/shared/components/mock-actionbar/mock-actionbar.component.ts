@@ -63,9 +63,9 @@ export class MockActionbarComponent {
 
     if (this.showWatchBtn) {
       this.watchIconString =
-      this.CURRENT_THEME === APP_THEMES.DEFAULT
-        ? 'watch_question_black'
-        : 'watch_question_white';
+        this.CURRENT_THEME === APP_THEMES.DEFAULT
+          ? 'watch_question_black'
+          : 'watch_question_white';
 
       this.watchIcon = imageFromResource(this.watchIconString);
 
@@ -82,12 +82,12 @@ export class MockActionbarComponent {
   }
 
   onMockActionBarLoaded() {
-    Log.D('MockActionBar loaded');
+    // Log.D('MockActionBar loaded');
   }
 
   onUnloaded() {
-    Log.D('MockActionBar unloaded');
-    // this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
+    // Log.D('MockActionBar unloaded');
+    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
   onNavBtnTap() {
