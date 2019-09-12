@@ -661,7 +661,7 @@ public class ActivityService
       // reset the data
       clearDetectorInputs();
       // remove all callbacks
-      mHandler.removeCallbacks(null);
+      mHandler.removeCallbacksAndMessages(null);
       // post to the send runnable
       mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
       // post to the push runnable
