@@ -1,4 +1,4 @@
-<PullToRefresh (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'">
+<PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'">
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout row="1" col="0">
       // Mock ActionBar

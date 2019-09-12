@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
@@ -15,7 +15,7 @@ import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService } from '../../services';
+import { ActivityService, LoggingService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../utils';
 
 @Component({
@@ -23,7 +23,7 @@ import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../ut
   moduleId: module.id,
   templateUrl: './home-tab.component.html'
 })
-export class HomeTabComponent implements OnInit {
+export class HomeTabComponent {
   user: PushTrackerUser;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
@@ -79,11 +79,12 @@ export class HomeTabComponent implements OnInit {
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
-    private _vcRef: ViewContainerRef
+    private _vcRef: ViewContainerRef,
+    private _activityService: ActivityService
   ) {}
 
-  ngOnInit() {
-    this._logService.logBreadCrumb(`HomeTabComponent OnInit`);
+  onHomeTabLoaded() {
+    this._logService.logBreadCrumb(`HomeTabComponent loaded`);
 
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -93,9 +94,11 @@ export class HomeTabComponent implements OnInit {
     this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+
     this.refreshUserFromKinvey().then(() => {
       this._loadWeeklyData();
     });
+
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
@@ -107,10 +110,6 @@ export class HomeTabComponent implements OnInit {
       this.MAX_COMMIT_INTERVAL_MS,
       { trailing: true }
     );
-  }
-
-  onHomeTabLoaded() {
-    this._logService.logBreadCrumb(`HomeTabComponent loaded`);
   }
 
   onHomeTabUnloaded() {
@@ -229,7 +228,6 @@ export class HomeTabComponent implements OnInit {
   }
 
   async refreshUserFromKinvey() {
-
     if (this._firstLoad) {
       try {
         const user = JSON.parse(appSettings.getString('Kinvey.User'));
@@ -243,8 +241,7 @@ export class HomeTabComponent implements OnInit {
           user.email = user.data.email;
           this.user = user;
           return Promise.resolve(true);
-        }
-        else Promise.reject(false);
+        } else Promise.reject(false);
       } catch (err) {
         Log.E('HomeTab | refreshUserFromKinvey |', err);
       }
@@ -365,7 +362,9 @@ export class HomeTabComponent implements OnInit {
       // Check if there's cached activity loaded in app.component.ts
       Log.D('HomeTab | Loading weekly usage from appSettings');
       try {
-        result = JSON.parse(appSettings.getString('SmartDrive.WeeklyUsage.' + date));
+        result = JSON.parse(
+          appSettings.getString('SmartDrive.WeeklyUsage.' + date)
+        );
       } catch (err) {
         Log.E('HomeTab | Loading weekly usage from appSettings |', err);
       }
@@ -502,7 +501,9 @@ export class HomeTabComponent implements OnInit {
       // Check if there's cached activity loaded in app.component.ts
       Log.D('HomeTab | Loading weekly activity from appSettings');
       try {
-        result = JSON.parse(appSettings.getString('PushTracker.WeeklyActivity.' + date));
+        result = JSON.parse(
+          appSettings.getString('PushTracker.WeeklyActivity.' + date)
+        );
       } catch (err) {
         Log.E('HomeTab | Loading weekly activity from appSettings |', err);
       }

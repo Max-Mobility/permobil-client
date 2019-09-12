@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
+import * as appSettings from 'tns-core-modules/application-settings';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
@@ -12,7 +13,6 @@ import { DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
-import * as appSettings from 'tns-core-modules/application-settings';
 
 enum JourneyType {
   'ROLL',
@@ -32,7 +32,7 @@ class JourneyItem {
   moduleId: module.id,
   templateUrl: './journey-tab.component.html'
 })
-export class JourneyTabComponent implements OnInit {
+export class JourneyTabComponent {
   journeyItems = undefined;
   savedTheme: string;
   user: PushTrackerUser;
@@ -63,8 +63,8 @@ export class JourneyTabComponent implements OnInit {
     private _page: Page
   ) {}
 
-  ngOnInit() {
-    this._logService.logBreadCrumb('JourneyTabComponent OnInit');
+  onJourneyTabLoaded() {
+    this._logService.logBreadCrumb('JourneyTabComponent loaded');
 
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey().then(() => {
@@ -81,6 +81,10 @@ export class JourneyTabComponent implements OnInit {
       this.MAX_COMMIT_INTERVAL_MS,
       { leading: true, trailing: true }
     );
+  }
+
+  onJourneyTabUnloaded() {
+    this._logService.logBreadCrumb('JourneyTabComponent unloaded');
   }
 
   async initJourneyItems() {
@@ -156,8 +160,7 @@ export class JourneyTabComponent implements OnInit {
           user.email = user.data.email;
           this.user = user;
           return Promise.resolve(true);
-        }
-        else Promise.reject(false);
+        } else Promise.reject(false);
       } catch (err) {
         Log.E('HomeTab | refreshUserFromKinvey |', err);
       }

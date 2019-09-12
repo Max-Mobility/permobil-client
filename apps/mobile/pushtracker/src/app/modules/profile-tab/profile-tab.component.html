@@ -1,5 +1,5 @@
 // profile tab layout
-<GridLayout rows="*, auto, *" columns="*" class="profile-tab-layout">
+<GridLayout (loaded)="onProfileTabLoaded()" (unloaded)="onProfileTabUnloaded()" rows="*, auto, *" columns="*" class="profile-tab-layout">
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar

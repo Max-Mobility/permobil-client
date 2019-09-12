@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -25,7 +25,7 @@ import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, k
   moduleId: module.id,
   templateUrl: './profile-tab.component.html'
 })
-export class ProfileTabComponent implements OnInit {
+export class ProfileTabComponent {
   @ViewChild('listPickerDialog', { static: false })
   listPickerDialog: ElementRef;
 
@@ -75,7 +75,7 @@ export class ProfileTabComponent implements OnInit {
     private _vcRef: ViewContainerRef
   ) {}
 
-  ngOnInit() {
+  onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
 
     this.isUserLoaded = false;
@@ -118,6 +118,11 @@ export class ProfileTabComponent implements OnInit {
       this._initDisplayChairType();
       this._initDisplayChairMake();
     });
+  }
+
+  onProfileTabUnloaded() {
+    this._logService.logBreadCrumb('ProfileTabComponent unloaded');
+    // this._userSubscription$.unsubscribe();
   }
 
   onWatchConnectTap() {
