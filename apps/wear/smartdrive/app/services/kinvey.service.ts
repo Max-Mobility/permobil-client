@@ -47,7 +47,7 @@ export class KinveyService {
     }
   }
 
-  private wasInvalidCredentials(statusCode: number) {
+  public wasInvalidCredentials(statusCode: number) {
     return statusCode === 400 ||
       statusCode === 401 ||
       statusCode === 422;

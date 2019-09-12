@@ -3204,23 +3204,24 @@ export class MainViewModel extends Observable {
         settings: this.settings.toObj(),
         switchControlSettings: this.switchControlSettings.toObj()
       };
-      return this._kinveyService
-        .sendSettings(settingsObj)
-        .then(r => {
-          const id = r['_id'];
-          if (id) {
-            this.hasSentSettings = true;
-            appSettings.setBoolean(
-              DataKeys.SD_SETTINGS_DIRTY_FLAG,
-              this.hasSentSettings
-            );
-          } else {
-            Log.E('no id returned by kinvey!', r);
-          }
-        })
-        .catch(err => {
-          Sentry.captureException(err);
-        });
+      try {
+        const r = await this._kinveyService
+          .sendSettings(settingsObj);
+        const id = r['_id'];
+        if (id) {
+          this.hasSentSettings = true;
+          appSettings.setBoolean(
+            DataKeys.SD_SETTINGS_DIRTY_FLAG,
+            this.hasSentSettings
+          );
+        } else {
+          Log.E('no id returned by kinvey!', r);
+        }
+      } catch (err) {
+        this.handleAuthException(err);
+        // Sentry.captureException(err);
+        Log.E('Error sending errors to server:', err);
+      }
     }
   }
 
@@ -3268,7 +3269,8 @@ export class MainViewModel extends Observable {
         });
       return Promise.all(updatePromises);
     } catch (err) {
-      Sentry.captureException(err);
+      this.handleAuthException(err);
+      // Sentry.captureException(err);
       Log.E('Error sending errors to server:', err);
     }
   }
@@ -3313,8 +3315,24 @@ export class MainViewModel extends Observable {
         });
       return Promise.all(updatePromises);
     } catch (e) {
-      Sentry.captureException(e);
+      this.handleAuthException(e);
+      // Sentry.captureException(e);
       Log.E('Error sending infos to server:', e);
+    }
+  }
+
+  private handleAuthException(e: any) {
+    const statusCode = e && e.statusCode;
+    const invalidCredentials = this._kinveyService
+      .wasInvalidCredentials(statusCode);
+    if (invalidCredentials || !this._kinveyService.hasAuth()) {
+      // we had auth and now we don't - alert the user that it's
+      // invalidated and we need new credentials
+      alert({
+        title: L('failures.title'),
+        message: L('failures.app-connection.logout'),
+        okButtonText: L('buttons.ok')
+      });
     }
   }
 
