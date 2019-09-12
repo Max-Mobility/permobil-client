@@ -37,3 +37,40 @@ TabView {
   color: #3b3f42;
   background-color: #3b3f42;
 }
+
+// Bottom Navigation
+TabStrip {
+  background-color: #37383c;
+}
+
+TabStripItem > label {
+  font-family: $os;
+}
+
+TabStripItem > image {
+  font-family: $material-icon;
+}
+
+TabStripItem.tabstripitem {
+  color: #9b9fa6;
+
+  > label {
+    font-size: 12;
+  }
+
+  > image {
+    font-size: 10;
+  }
+}
+
+TabStripItem.tabstripitem-active {
+  color: $permobil-primary;
+
+  > label {
+    font-size: 14;
+  }
+
+  > image {
+    font-size: 10;
+  }
+}
