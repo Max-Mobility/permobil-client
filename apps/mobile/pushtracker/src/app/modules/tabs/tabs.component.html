@@ -19,7 +19,9 @@
   <page-router-outlet *tabItem="profileTabItem" name="profileTab" actionBarVisibility="never"> </page-router-outlet>
 </TabView> -->
 
-<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1">
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" 
+  (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1"
+  [visibility]="user?.data.control_configuration !== 'Switch Control with SmartDrive' ? 'visible' : 'collapse'">
   <TabStrip>
     // Journey
     <TabStripItem class="tabstripitem">
@@ -49,6 +51,24 @@
   <TabContentItem>
     <home-tab></home-tab>
   </TabContentItem>
+  // Profile
+  <TabContentItem>
+    <profile-tab></profile-tab>
+  </TabContentItem>
+</BottomNavigation>
+
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" 
+  (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="0"
+  [visibility]="user?.data.control_configuration === 'Switch Control with SmartDrive' ? 'visible' : 'collapse'">
+  <TabStrip>
+    // Profile
+    <TabStripItem class="tabstripitem">
+      <Label [text]="profileTabTitle"></Label>
+      <Image src="font://&#xe7ff;"></Image>
+    </TabStripItem>
+  </TabStrip>
+
+  <!-- The number of TabContentItem components should corespond to the number of TabStripItem components -->
   // Profile
   <TabContentItem>
     <profile-tab></profile-tab>

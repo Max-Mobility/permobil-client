@@ -455,40 +455,13 @@ export class ProfileTabComponent implements OnInit {
         break;
       case 5:
         const newConfiguration = this.primary[this.primaryIndex];
-        // Confirm if the user is OK being logged out on change here
-        confirm({
-          title: this._translateService.instant(
-            'profile-tab.configuration-change-dialog-title'
-          ),
-          message: this._translateService.instant(
-            'profile-tab.configuration-change-dialog-message'
-          ),
-          okButtonText: this._translateService.instant('profile-tab.ok'),
-          cancelButtonText: this._translateService.instant('profile-tab.cancel')
-        }).then(async result => {
-          if (result) {
-            this._userService.updateDataProperty(
-              'control_configuration',
-              newConfiguration
-            );
-            Log.D('Configuration changed to', newConfiguration);
-            await KinveyUser.update({
-              control_configuration: newConfiguration
-            });
-            // Control configuration has changed
-            // Tabs need to be re-initialized
-            // Logout the user
-            this._zone.run(async () => {
-              const logoutResult = await KinveyUser.logout();
-              Log.D('logout result', logoutResult);
-              this._userService.reset();
-              enableDefaultTheme();
-              // go ahead and nav to login to keep UI moving without waiting
-              this._routerExtensions.navigate(['/login'], {
-                clearHistory: true
-              });
-            });
-          }
+        this._userService.updateDataProperty(
+          'control_configuration',
+          newConfiguration
+        );
+        Log.D('Configuration changed to', newConfiguration);
+        KinveyUser.update({
+          control_configuration: newConfiguration
         });
         break;
     }
