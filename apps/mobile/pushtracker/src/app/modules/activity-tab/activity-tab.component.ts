@@ -12,8 +12,11 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
-import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import { LoggingService } from '../../services';
 import debounce from 'lodash/debounce';
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import * as TNSHTTP from 'tns-core-modules/http';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 @Component({
   selector: 'activity-tab',
@@ -90,13 +93,18 @@ export class ActivityTabComponent implements OnInit {
   private _debouncedLoadWeeklyActivity: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
 
+  public static api_base = PushTrackerKinveyKeys.HOST_URL;
+  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  private _weeklyActivityFromKinvey: any;
+  private _dailyActivityFromKinvey: any;
+  private _weeklyUsageFromKinvey: any;
+  private _dailyUsageFromKinvey: any;
+
   constructor(
     private _logService: LoggingService,
-    private _activityService: ActivityService,
-    private _usageService: SmartDriveUsageService,
     private _translateService: TranslateService,
-    private _params: ModalDialogParams,
-    private userService: PushTrackerUserService
+    private _params: ModalDialogParams
   ) {
 
     if (this._params.context.viewMode) {
@@ -414,19 +422,19 @@ export class ActivityTabComponent implements OnInit {
 
       if (days) {
         if (this.viewMode === ViewMode.DISTANCE)
-          this._usageService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          this._dailyUsageFromKinvey = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
         else
-          this._activityService.dailyActivity = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          this._dailyActivityFromKinvey = days[getIndex(new Date(this.weekStart), this.currentDayInView)];
       } else {
         if (this.viewMode === ViewMode.DISTANCE)
-          this._usageService.dailyActivity = {
+          this._dailyUsageFromKinvey = {
             distance_smartdrive_drive: 0,
             distance_smartdrive_coast: 0,
             distance_smartdrive_drive_start: 0,
             distance_smartdrive_coast_start: 0
           };
         else
-          this._activityService.dailyActivity = {
+          this._dailyActivityFromKinvey = {
             push_count: 0,
             coast_time_avg: 0
           };
@@ -435,16 +443,16 @@ export class ActivityTabComponent implements OnInit {
       this._formatActivityForView(0).then(result => {
         this.dailyActivity = new ObservableArray(result);
         if (this.viewMode !== ViewMode.DISTANCE) {
-          if (this._activityService.dailyActivity) {
+          if (this._dailyActivityFromKinvey) {
             // format chart description for viewMode
             if (this.viewMode === ViewMode.COAST_TIME) {
               this.chartDescription =
-                (this._activityService.dailyActivity.coast_time_avg || 0).toFixed(
+                (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(
                   1
                 ) + ' s';
             } else if (this.viewMode === ViewMode.PUSH_COUNT) {
               this.chartDescription =
-                (this._activityService.dailyActivity.push_count || 0) + ' pushes';
+                (this._dailyActivityFromKinvey.push_count || 0) + ' pushes';
             }
           } else {
             // format chart description for viewMode
@@ -455,14 +463,13 @@ export class ActivityTabComponent implements OnInit {
             }
           }
         } else {
-          if (this._usageService.dailyActivity) {
+          if (this._dailyUsageFromKinvey) {
             this.chartDescription =
               (
                 this._updateDistanceUnit(
                   this._caseTicksToMiles(
-                    this._usageService.dailyActivity.distance_smartdrive_coast -
-                    this._usageService.dailyActivity
-                      .distance_smartdrive_coast_start
+                    this._dailyUsageFromKinvey.distance_smartdrive_coast -
+                    this._dailyUsageFromKinvey.distance_smartdrive_coast_start
                   )
                 ) || 0
               ).toFixed(1) + this.distanceUnit;
@@ -507,6 +514,95 @@ export class ActivityTabComponent implements OnInit {
     this.yAxisStep = (this.yAxisMax / 5.0);
   }
 
+  async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
+    Log.D('ActivityTab | Loading weekly activity from Kinvey...');
+
+    let result = [];
+    if (!this.user) return result;
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+
+    try {
+      const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyActivityFromKinvey = result; // cache result
+          Log.D('ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly activity');
+          return Promise.resolve(result);
+        }
+        return Promise.resolve(this._weeklyActivityFromKinvey);
+      })
+      .catch(err => {
+        Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
+        return Promise.reject([]);
+      });
+    } catch (err) {
+      Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
+      return Promise.reject([]);
+    }
+  }
+
+  async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
+    Log.D('ActivityTab | Loading weekly usage from Kinvey...');
+    let result = [];
+    if (!this.user) return result;
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+
+    try {
+      const queryString = '?query={"_acl.creator":"' + this.user._id + '","data_type":"SmartDriveWeeklyInfo","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyUsageFromKinvey = result; // cache
+          Log.D('ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage');
+          return Promise.resolve(result);
+        }
+        return Promise.resolve(this._weeklyUsageFromKinvey);
+      })
+      .catch(err => {
+        Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
+        return Promise.reject([]);
+      });
+    } catch (err) {
+      Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
+      return Promise.reject([]);
+    }
+  }
+
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
     this.activityLoaded = false;
     // Check if data is available in daily activity cache first
@@ -523,12 +619,12 @@ export class ActivityTabComponent implements OnInit {
         Log.D('Forcing pull from database instead of using cache');
 
       if (this.viewMode === ViewMode.DISTANCE)
-        return this._usageService.loadWeeklyActivity(this.weekStart).then(didLoad => {
+        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(didLoad => {
           return this._formatActivityForView(1).then(result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
               this._initWeekChartTitle();
-              this.weekStart = new Date(this._activityService.weeklyActivity.date);
+              this.weekStart = new Date(this._weeklyUsageFromKinvey.date);
               this.weekEnd = new Date(this.weekStart);
               this.weekEnd.setDate(this.weekEnd.getDate() + 6);
               this.minDate = new Date('01/01/1999');
@@ -536,7 +632,7 @@ export class ActivityTabComponent implements OnInit {
             }
             this._weeklyUsageCache[this.weekStart.toUTCString()] = {
               chartData: this.weeklyActivity,
-              weeklyActivity: this._usageService.weeklyActivity
+              weeklyActivity: this._weeklyUsageFromKinvey
             };
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
@@ -545,12 +641,12 @@ export class ActivityTabComponent implements OnInit {
           });
         });
       else
-        return this._activityService.loadWeeklyActivity(this.weekStart).then(didLoad => {
+        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(didLoad => {
           return this._formatActivityForView(1).then(async result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
               this._initWeekChartTitle();
-              this.weekStart = new Date(this._activityService.weeklyActivity.date);
+              this.weekStart = new Date(this._weeklyActivityFromKinvey.date);
               this.weekEnd = new Date(this.weekStart);
               this.weekEnd.setDate(this.weekEnd.getDate() + 6);
               this.minDate = new Date('01/01/1999');
@@ -558,7 +654,7 @@ export class ActivityTabComponent implements OnInit {
             }
             this._weeklyActivityCache[this.weekStart.toUTCString()] = {
               chartData: this.weeklyActivity,
-              weeklyActivity: this._activityService.weeklyActivity
+              weeklyActivity: this._weeklyActivityFromKinvey
             };
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
@@ -641,8 +737,8 @@ export class ActivityTabComponent implements OnInit {
     if (index === 0) {
       const activity =
         this.viewMode === ViewMode.DISTANCE
-          ? this._usageService.dailyActivity
-          : this._activityService.dailyActivity;
+          ? this._dailyUsageFromKinvey
+          : this._dailyActivityFromKinvey;
 
       if (activity && activity.records) {
         // format the chart description based on viewMode
@@ -875,8 +971,8 @@ export class ActivityTabComponent implements OnInit {
     } else if (index === 1) {
       const activity =
         this.viewMode === ViewMode.DISTANCE
-          ? this._usageService.weeklyActivity
-          : this._activityService.weeklyActivity;
+          ? this._weeklyUsageFromKinvey
+          : this._weeklyActivityFromKinvey;
 
       // format chart description
       if (this.viewMode === ViewMode.COAST_TIME) {
@@ -1179,9 +1275,9 @@ export class ActivityTabComponent implements OnInit {
   private async _updateDayChartLabel() {
     let activity = undefined;
     if (this.viewMode !== ViewMode.DISTANCE) {
-      activity = this._activityService.dailyActivity;
+      activity = this._dailyActivityFromKinvey;
     } else {
-      activity = this._usageService.dailyActivity;
+      activity = this._dailyUsageFromKinvey;
     }
 
     if (activity) {
@@ -1217,9 +1313,9 @@ export class ActivityTabComponent implements OnInit {
   private async _updateDailyActivityAnnotationValue() {
     let activity = undefined;
     if (this.viewMode !== ViewMode.DISTANCE) {
-      activity = this._activityService.dailyActivity;
+      activity = this._dailyActivityFromKinvey;
     } else {
-      activity = this._usageService.dailyActivity;
+      activity = this._dailyUsageFromKinvey;
     }
     if (activity) {
       if (this.viewMode === ViewMode.COAST_TIME) {
@@ -1247,7 +1343,7 @@ export class ActivityTabComponent implements OnInit {
     if (this.viewMode !== ViewMode.DISTANCE) {
       if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
         // No cache
-        const activity = this._activityService.weeklyActivity;
+        const activity = this._weeklyActivityFromKinvey;
 
         // format chart description for viewMode
         if (this.viewMode === ViewMode.COAST_TIME) {
@@ -1273,7 +1369,7 @@ export class ActivityTabComponent implements OnInit {
     }
     else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
-        const activity = this._usageService.weeklyActivity;
+        const activity = this._weeklyUsageFromKinvey;
         this.chartDescription = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0).toFixed(1) +
           this.distanceUnit;
       } else {
@@ -1291,7 +1387,7 @@ export class ActivityTabComponent implements OnInit {
     if (this.viewMode !== ViewMode.DISTANCE) {
       if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
         // No cache
-        const activity = this._activityService.weeklyActivity;
+        const activity = this._weeklyActivityFromKinvey;
         if (this.viewMode === ViewMode.COAST_TIME) {
           // coast time
           this.weeklyActivityAnnotationValue = activity
@@ -1319,7 +1415,7 @@ export class ActivityTabComponent implements OnInit {
     }
     else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
-        const activity = this._usageService.weeklyActivity;
+        const activity = this._weeklyUsageFromKinvey;
         this.weeklyActivityAnnotationValue = (this._updateDistanceUnit(this._caseTicksToMiles(activity.distance_smartdrive_coast - activity.distance_smartdrive_coast_start)) || 0);
         this.weeklyActivityAnnotationValue /= 7;
       } else {
