@@ -12,6 +12,7 @@ import { DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 enum JourneyType {
   'ROLL',
