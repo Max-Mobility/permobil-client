@@ -499,9 +499,11 @@ public class ActivityService
     this.registerReceiver(this.timeReceiver, timeFilter);
   }
 
-  void handleDetection(ActivityDetector.Detection detection) {
+  boolean handleDetection(ActivityDetector.Detection detection) {
+    boolean hasNewActivity = false;
     // Log.d(TAG, "detection: " + detection);
     if (detection.confidence > 0) {
+      hasNewActivity = true;
       // update push detection
       if (detection.activity == ActivityDetector.Detection.Activity.PUSH) {
         synchronized (currentActivity) {
@@ -509,6 +511,7 @@ public class ActivityService
         }
       }
     }
+    return hasNewActivity;
   }
 
   private void registerAllSensors() {
@@ -657,15 +660,17 @@ public class ActivityService
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
-      handleDetection(detection);
+      boolean hasNewActivity = handleDetection(detection);
       // reset the data
       clearDetectorInputs();
-      // remove all callbacks
-      mHandler.removeCallbacks(null);
-      // post to the send runnable
-      mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
-      // post to the push runnable
-      mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+      if (hasNewActivity) {
+        // remove all callbacks
+        mHandler.removeCallbacksAndMessages(null);
+        // post to the send runnable
+        mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
+        // post to the push runnable
+        mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
+      }
     }
   }
 
