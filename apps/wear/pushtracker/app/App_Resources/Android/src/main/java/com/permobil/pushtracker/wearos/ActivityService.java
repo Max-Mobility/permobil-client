@@ -814,10 +814,10 @@ public class ActivityService
     PendingIntent intent = getAlarmIntent(PendingIntent.FLAG_UPDATE_CURRENT);
     AlarmManager am = (AlarmManager) getApplicationContext()
       .getSystemService(Context.ALARM_SERVICE);
-    am.setRepeating(alarmType,
-                    startTime,
-                    interval,
-                    intent);
+    am.setInexactRepeating(alarmType,
+                           startTime,
+                           interval,
+                           intent);
   }
 
   @Override
@@ -876,7 +876,7 @@ public class ActivityService
     isServiceRunning = true;
 
     // register alarm to ensure service is always running
-    // registerAlarm();
+    registerAlarm();
 
     Intent notificationIntent = new Intent();
     notificationIntent.setClassName(
