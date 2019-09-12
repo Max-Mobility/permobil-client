@@ -363,6 +363,40 @@ export class TabsComponent {
 
   onErrorEvent(args) {
     Log.D('Error event received');
+    const data = args.data;
+    const year = data.year;
+    const month = data.month;
+    const day = data.day;
+    const hour = data.hour;
+    const minute = data.minute;
+    const second = data.second;
+    const date = new Date(year, month, day, hour, minute, second);
+    const dateFormatted = function(date: Date) {
+      return (
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        '/' +
+        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+      );
+    };
+    const dailyErrors = {
+      _acl: { creator: this.user._id },
+      data_type: 'SmartDriveDailyError',
+      date: dateFormatted(date),
+      most_recent_error: data.mostRecentError,
+      num_battery_voltage_errors: data.numBatteryVoltageErrors,
+      num_over_current_errors: data.numOverCurrentErrors,
+      num_motor_phase_errors: data.numMotorPhaseErrors,
+      num_gyro_range_errors: data.numGyroRangeErrors,
+      num_over_temperature_errors: data.numOverTemperatureErrors,
+      num_ble_disconnect_errors: data.numBLEDisconnectErrors,
+      watch_serial_number: this.user.data.pushtracker_serial_number
+    };
+    Log.D('Error summary', dailyErrors);
+    // TODO: Write code to push to SmartDriveErrors collection
   }
 
   private onPushTrackerDisconnected(args: any) {
