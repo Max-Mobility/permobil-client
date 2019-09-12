@@ -36,6 +36,39 @@ export class KinveyService {
     }
   }
 
+  private wasInvalidCredentials(statusCode: number) {
+    return statusCode === 400 ||
+      statusCode === 401 ||
+      statusCode === 422;
+  }
+
+  private handleBadStatus(statusCode: number) {
+    if (this.wasInvalidCredentials(statusCode)) {
+      // we have an invalid token now - invalidate the credentials!
+      this._auth = null;
+    }
+  }
+
+  private handleResponse(response: any) {
+    const statusCode = response && response.statusCode;
+    if (statusCode !== 200) {
+      this.handleBadStatus(statusCode);
+      throw response;
+    }
+    return response.content.toJSON();
+  }
+
+  private makeAuth(un: string, pw: string) {
+    const authorizationToEncode = new java.lang.String(
+      `${un}:${pw}`
+    );
+    const data = authorizationToEncode.getBytes(
+      java.nio.charset.StandardCharsets.UTF_8
+    );
+    return 'Basic ' +
+      android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
+  }
+
   public async setAuth(newAuth: string, userId: string) {
     try {
       // see if we can get the user info
@@ -51,17 +84,6 @@ export class KinveyService {
       this._userId = null;
       return false;
     }
-  }
-
-  private makeAuth(un: string, pw: string) {
-    const authorizationToEncode = new java.lang.String(
-      `${un}:${pw}`
-    );
-    const data = authorizationToEncode.getBytes(
-      java.nio.charset.StandardCharsets.UTF_8
-    );
-    return 'Basic ' +
-      android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
   }
 
   public async getUserData() {
@@ -80,7 +102,7 @@ export class KinveyService {
       KinveyService.api_user_route +
       KinveyService.api_app_key +
       `/${this._userId}`;
-    return request({
+    const response = await request({
       url: url,
       method: 'PUT',
       headers: {
@@ -89,6 +111,7 @@ export class KinveyService {
       },
       content: JSON.stringify(data)
     });
+    return this.handleResponse(response);
   }
 
   private async getUser(auth: string, userId: string) {
@@ -104,11 +127,7 @@ export class KinveyService {
         Authorization: auth
       }
     });
-    const statusCode = response && response.statusCode;
-    if (statusCode !== 200) {
-      throw response;
-    }
-    return response.content.toJSON();
+    return this.handleResponse(response);
   }
 
   public async login(username: string, password: string) {
@@ -121,7 +140,7 @@ export class KinveyService {
       username,
       password
     };
-    return request({
+    const response = await request({
       url: url,
       method: 'POST',
       headers: {
@@ -130,6 +149,7 @@ export class KinveyService {
       },
       content: JSON.stringify(content)
     });
+    return this.handleResponse(response);
   }
 
   async getFile(
@@ -159,16 +179,17 @@ export class KinveyService {
     if (args.length) {
       url += '?' + args.map(a => `${a}=${JSON.stringify(argObj[a])}`).join('&');
     }
-    return request({
+    const response = await request({
       url: url,
       method: 'GET',
       headers: {
         Authorization: this.makeAuth(KinveyService.api_app_key, KinveyService.api_app_secret)
       }
     });
+    return this.handleResponse(response);
   }
 
-  getEntry(db: string, queries?: any, limit?: number, sort?: any, skip?: any) {
+  async getEntry(db: string, queries?: any, limit?: number, sort?: any, skip?: any) {
     this.checkAuth();
     let url =
       KinveyService.api_base +
@@ -185,23 +206,24 @@ export class KinveyService {
     if (args.length) {
       url += '?' + args.map(a => `${a}=${JSON.stringify(argObj[a])}`).join('&');
     }
-    return request({
+    const response = await request({
       url: url,
       method: 'GET',
       headers: {
         Authorization: this._auth
       }
     });
+    return this.handleResponse(response);
   }
 
-  post(db: string, content: any) {
+  async post(db: string, content: any) {
     this.checkAuth();
     const url =
       KinveyService.api_base +
       KinveyService.api_data_route +
       KinveyService.api_app_key +
       db;
-    return request({
+    const response = await request({
       url: url,
       method: 'POST',
       headers: {
@@ -210,9 +232,10 @@ export class KinveyService {
       },
       content: JSON.stringify(content)
     });
+    return this.handleResponse(response);
   }
 
-  put(db: string, content: any, id: any) {
+  async put(db: string, content: any, id: any) {
     this.checkAuth();
     const url =
       KinveyService.api_base +
@@ -220,7 +243,7 @@ export class KinveyService {
       KinveyService.api_app_key +
       db +
       `/${id}`;
-    return request({
+    const response = await request({
       url: url,
       method: 'PUT',
       headers: {
@@ -229,5 +252,6 @@ export class KinveyService {
       },
       content: JSON.stringify(content)
     });
+    return this.handleResponse(response);
   }
 }

@@ -1542,7 +1542,7 @@ export class MainViewModel extends Observable {
     // Now that we have the metadata, check to see if we already
     // have the most up to date firmware files and download them
     // if we don't
-    const mds = response.content.toJSON();
+    const mds = response;
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
@@ -3206,7 +3206,6 @@ export class MainViewModel extends Observable {
       };
       return this._kinveyService
         .sendSettings(settingsObj)
-        .then(r => r.content.toJSON())
         .then(r => {
           const id = r['_id'];
           if (id) {
@@ -3251,7 +3250,6 @@ export class MainViewModel extends Observable {
       });
       const rets = await Promise.all(sendPromises) as any[];
       const updatePromises = rets
-        .map(r => r.content.toJSON())
         .map(r => {
           const id = r['_id'];
           if (id) {
@@ -3297,7 +3295,6 @@ export class MainViewModel extends Observable {
       });
       const rets = await Promise.all(sendPromises) as any[];
       const updatePromises = rets
-        .map(r => r.content.toJSON())
         .map(r => {
           const id = r['_id'];
           if (id) {
