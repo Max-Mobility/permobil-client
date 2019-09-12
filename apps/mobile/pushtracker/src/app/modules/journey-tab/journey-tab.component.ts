@@ -9,8 +9,11 @@ import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
-import { ActivityService, LoggingService, PushTrackerUserService, SmartDriveUsageService } from '../../services';
+import { LoggingService } from '../../services';
 import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
+import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import * as TNSHTTP from 'tns-core-modules/http';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 enum JourneyType {
   'ROLL',
@@ -49,37 +52,29 @@ export class JourneyTabComponent {
   private _noMoreDataAvailable = false;
   private _currentTheme = '';
 
+  public static api_base = PushTrackerKinveyKeys.HOST_URL;
+  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  private _weeklyActivityFromKinvey: any;
+  private _weeklyUsageFromKinvey: any;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
+
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _page: Page,
-    private _userService: PushTrackerUserService,
-    private _smartDriveUsageService: SmartDriveUsageService,
-    private _pushtrackerActivityService: ActivityService
+    private _page: Page
   ) {
     this._page.actionBarHidden = true;
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
+    this.refreshUserFromKinvey().then(() => {
+      this.savedTheme = this.user.data.theme_preference;
+      this.initJourneyItems();
+    });
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
-    this.debouncedRefresh = debounce(this._refresh.bind(this), 500, {
-      trailing: true
-    });
-    this._userService.user.subscribe(user => {
-      if (!user) return;
-      this.user = user;
-      this.savedTheme = this.user.data.theme_preference;
-      if (this._currentTheme !== '' && this._currentTheme !== this.savedTheme) {
-        // Theme has changed - Refresh view so icon images can update
-        // to match the theme
-        this._refresh();
-      }
-      this._currentTheme = this.savedTheme;
-    });
-    this.initJourneyItems();
+    this.debouncedRefresh = debounce(this._refresh.bind(this),
+      this.MAX_COMMIT_INTERVAL_MS, { trailing: true }
+    );
   }
 
   onJourneyTabLoaded() {
@@ -127,19 +122,68 @@ export class JourneyTabComponent {
     }
   }
 
+  getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
+    const kinveyActiveUser = KinveyUser.getActiveUser();
+    const result: any = {};
+    result._id = user._id;
+    result._acl = user._acl;
+    result._kmd = kinveyActiveUser._kmd;
+    result.authtoken = kinveyActiveUser._kmd.authtoken;
+    result.username = user.username;
+    result.email = user.username;
+    result.data = {};
+    const keys = Object.keys(user);
+    for (const i in keys) {
+      const key = keys[i];
+      if (!['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)) {
+        result.data[key] = user[key];
+      }
+    }
+    return result;
+  }
+
+  async refreshUserFromKinvey() {
+    const kinveyActiveUser = KinveyUser.getActiveUser();
+    try {
+      return TNSHTTP.request({
+        url: 'https://baas.kinvey.com/user/kid_rkoCpw8VG/' + kinveyActiveUser['_id'],
+        method: 'GET',
+        headers: {
+          Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        this.user = this.getPushTrackerUserFromKinveyUser(data);
+        return Promise.resolve(true);
+      })
+      .catch(err => {
+        Log.E(err);
+        return Promise.reject(false);
+      });
+    } catch (err) {
+      Log.E(err);
+      return Promise.reject(false);
+    }
+  }
+
   private async _refresh() {
-    this._noMorePushTrackerActivityDataAvailable = false;
-    this._noMoreSmartDriveUsageDataAvailable = false;
-    this._noMoreDataAvailable = false;
-    this.journeyItemsLoaded = false;
-    this._today = new Date();
-    this._weekStart = getFirstDayOfWeek(this._today);
-    this._rollingWeekStart = new Date(this._weekStart);
-    this._journeyMap = {};
-    this.journeyItems = undefined;
-    return this._loadDataForDate(this._weekStart, true).then((result) => {
-      this.journeyItems = result;
-      this.journeyItemsLoaded = true;
+    return this.refreshUserFromKinvey().then(() => {
+      this._currentTheme = this.savedTheme;
+      this._noMorePushTrackerActivityDataAvailable = false;
+      this._noMoreSmartDriveUsageDataAvailable = false;
+      this._noMoreDataAvailable = false;
+      this.journeyItemsLoaded = false;
+      this._today = new Date();
+      this._weekStart = getFirstDayOfWeek(this._today);
+      this._rollingWeekStart = new Date(this._weekStart);
+      this._journeyMap = {};
+      this.journeyItems = undefined;
+      return this._loadDataForDate(this._weekStart, true).then((result) => {
+        this.journeyItems = result;
+        this.journeyItemsLoaded = true;
+      });
     });
   }
 
@@ -419,18 +463,62 @@ export class JourneyTabComponent {
     return result;
   }
 
+  async loadWeeklyPushtrackerActivityFromKinvey(weekStartDate: Date) {
+    Log.D('Loading weekly activity from Kinvey');
+    let result = [];
+    if (!this.user) return result;
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+    try {
+      const queryString = '?query={"_acl.creator":"' + this.user._id +
+        '","data_type":"WeeklyActivity","date":{"$lte":"' + date + '"}}&limit=1&sort={"date": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyActivityFromKinvey = result; // cache result
+          Log.D('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly activity');
+          return Promise.resolve(result);
+        }
+        return Promise.resolve(this._weeklyActivityFromKinvey);
+      })
+      .catch(err => {
+        Log.E('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
+        return Promise.reject([]);
+      });
+    } catch (err) {
+      Log.E('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
+      return Promise.reject([]);
+    }
+  }
+
   private async _loadWeeklyPushtrackerActivity(date: Date) {
-    return this._pushtrackerActivityService.loadAllWeeklyActivityTill(date).then(didLoad => {
+    return this.loadWeeklyPushtrackerActivityFromKinvey(date).then(didLoad => {
       if (didLoad) {
-        for (const i in this._pushtrackerActivityService.weeklyActivity.days) {
+        for (const i in this._weeklyActivityFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayActivity = this._pushtrackerActivityService.weeklyActivity.days[
+            this.todayActivity = this._weeklyActivityFromKinvey.days[
               index
             ];
           }
 
-          const dailyActivity = this._pushtrackerActivityService.weeklyActivity
+          const dailyActivity = this._weeklyActivityFromKinvey
             .days[i];
           if (dailyActivity) {
             // There's activity for today. Update journey list with coast_time/push_count info
@@ -461,18 +549,62 @@ export class JourneyTabComponent {
     });
   }
 
+  async loadWeeklySmartDriveUsageFromKinvey(weekStartDate: Date) {
+    Log.D('Loading weekly usage from Kinvey');
+    let result = [];
+    if (!this.user) return result;
+
+    const month = weekStartDate.getMonth() + 1;
+    const day = weekStartDate.getDate();
+    const date = weekStartDate.getFullYear() + '/' +
+      (month < 10 ? '0' + month : month) + '/' +
+      (day < 10 ? '0' + day : day);
+    try {
+      const queryString = '?query={"_acl.creator":"' + this.user._id +
+        '","data_type":"SmartDriveWeeklyInfo","date":{"$lte":"' + date + '"}}&limit=1&sort={"date": -1}';
+      return TNSHTTP.request({
+        url:
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json; charset=utf-8',
+          'Accept-Encoding': 'gzip',
+          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(resp => {
+        const data = resp.content.toJSON();
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyUsageFromKinvey = result; // cache
+          Log.D('JourneyTab | loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage');
+          return Promise.resolve(result);
+        }
+        return Promise.resolve(this._weeklyUsageFromKinvey);
+      })
+      .catch(err => {
+        Log.E('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
+        return Promise.reject([]);
+      });
+    } catch (err) {
+      Log.E('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
+      return Promise.reject([]);
+    }
+  }
+
   private async _loadWeeklySmartDriveUsage(date: Date) {
-    return this._smartDriveUsageService.loadAllWeeklyActivityTill(date).then(didLoad => {
+    return this.loadWeeklySmartDriveUsageFromKinvey(date).then(didLoad => {
       if (didLoad) {
-        for (const i in this._smartDriveUsageService.weeklyActivity.days) {
+        for (const i in this._weeklyUsageFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayUsage = this._smartDriveUsageService.weeklyActivity.days[
+            this.todayUsage = this._weeklyUsageFromKinvey.days[
               index
             ];
           }
 
-          const dailyUsage = this._smartDriveUsageService.weeklyActivity.days[i];
+          const dailyUsage = this._weeklyUsageFromKinvey.days[i];
           if (dailyUsage) {
             // There's usage information for today. Update journey list with distance info
 

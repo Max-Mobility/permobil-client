@@ -12,10 +12,11 @@ import { screen } from 'tns-core-modules/platform';
 import { ActivityTabComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../utils';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import * as TNSHTTP from 'tns-core-modules/http';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 @Component({
   selector: 'home-tab',
@@ -59,7 +60,7 @@ export class HomeTabComponent {
   ] as any[]);
   private _todaysUsage: any;
   private pointLabelStyle: PointLabelStyle;
-  private MAX_COMMIT_INTERVAL_MS: number = 1 * 500;
+  private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
   private _currentDayInView: Date;
   private _weekStart: Date;
   private _weekEnd: Date;
@@ -69,23 +70,12 @@ export class HomeTabComponent {
   private _debouncedLoadWeeklyUsage: any;
 
   public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_user_route = '/user/';
-  public static api_file_route = '/blob/';
-  public static api_data_route = '/appdata/';
   public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
   public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
-  public static api_login = '/login';
-  public static api_logout = '/logout';
-  public static api_error_db = '/SmartDriveErrors';
-  public static api_info_db = '/SmartDriveUsage';
-  public static api_settings_db = '/SmartDriveSettings';
-  public static api_activity_db = '/PushTrackerActivity';
-
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
 
   constructor(
-    private _userService: PushTrackerUserService,
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
@@ -96,19 +86,13 @@ export class HomeTabComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    this._userService.user.subscribe(user => {
-      if (!user) return;
-      this.user = user;
-      this.savedTheme = user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-        ? enableDefaultTheme()
-        : enableDarkTheme();
-    });
     this._currentDayInView = new Date();
     this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-    this._loadWeeklyData();
+    this.refreshUserFromKinvey().then(() => {
+      this._loadWeeklyData();
+    });
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
@@ -220,11 +204,12 @@ export class HomeTabComponent {
   }
 
   getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
+    const kinveyActiveUser = KinveyUser.getActiveUser();
     const result: any = {};
     result._id = user._id;
     result._acl = user._acl;
-    result._kmd = this.user._kmd;
-    result.authtoken = this.user._kmd.authtoken;
+    result._kmd = kinveyActiveUser._kmd;
+    result.authtoken = kinveyActiveUser._kmd.authtoken;
     result.username = user.username;
     result.email = user.username;
     result.data = {};
@@ -239,13 +224,13 @@ export class HomeTabComponent {
   }
 
   async refreshUserFromKinvey() {
-    if (!this.user) return;
+    const kinveyActiveUser = KinveyUser.getActiveUser();
     try {
       return TNSHTTP.request({
-        url: 'https://baas.kinvey.com/user/kid_rkoCpw8VG/' + this.user._id,
+        url: 'https://baas.kinvey.com/user/kid_rkoCpw8VG/' + kinveyActiveUser['_id'],
         method: 'GET',
         headers: {
-          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
+          Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
           'Content-Type': 'application/json'
         }
       })
@@ -268,7 +253,8 @@ export class HomeTabComponent {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey().then(() => {
+    this.refreshUserFromKinvey().then((result) => {
+      if (!result) return;
       // The user might come back and refresh the next day, just keeping
       // the app running - Update currentDayInView and weekStart to
       // account for this
@@ -276,6 +262,15 @@ export class HomeTabComponent {
       this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+
+      // Check for theme changes
+      if (this.savedTheme !== this.user.data.theme_preference) {
+        this.savedTheme = this.user.data.theme_preference;
+        this.savedTheme === APP_THEMES.DEFAULT
+          ? enableDefaultTheme()
+          : enableDarkTheme();
+      }
+
       // Now refresh the data
       this._loadWeeklyData().then(() => {
         pullRefresh.refreshing = false;
@@ -351,17 +346,17 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          Log.D('Loaded weekly usage');
+          Log.D('HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage');
           return Promise.resolve(result);
         }
-        return Promise.reject([]);
+        return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        Log.E(err);
+        Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
         return Promise.reject([]);
       });
     } catch (err) {
-      Log.E(err);
+      Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
       return Promise.reject([]);
     }
   }
@@ -461,17 +456,17 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache result
-          Log.D('Loaded weekly activity');
+          Log.D('HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly activity');
           return Promise.resolve(result);
         }
-        return Promise.reject([]);
+        return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        Log.E(err);
+        Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
         return Promise.reject([]);
       });
     } catch (err) {
-      Log.E(err);
+      Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
       return Promise.reject([]);
     }
   }
