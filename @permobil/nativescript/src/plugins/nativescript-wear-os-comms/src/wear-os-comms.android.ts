@@ -10,8 +10,6 @@ export class WearOsComms extends Common {
   public static sendMessage(channel: string, msg: string) {
     return new Promise((resolve, reject) => {
       try {
-        console.dir(com.github.maxmobility.wearmessage);
-
         const r = new com.github.maxmobility.wearmessage.Message(
           androidUtils.getApplicationContext()
         );
@@ -27,8 +25,6 @@ export class WearOsComms extends Common {
   public static sendData(data: any) {
     return new Promise((resolve, reject) => {
       try {
-        console.dir(com.github.maxmobility.wearmessage);
-
         const l = new com.github.maxmobility.wearmessage.Data(
           androidUtils.getApplicationContext()
         );
