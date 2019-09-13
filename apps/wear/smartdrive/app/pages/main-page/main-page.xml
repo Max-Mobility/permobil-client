@@ -110,18 +110,30 @@
             </StackLayout>
             <Button row="3" col="1"
                     class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}"
+                    height="100%"
+                    width="100%"
+                    margin="20" padding="0"
                     text="{{ L('power-assist.activate') }}"
                     tap="{{ enablePowerAssist }}"
                     visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
             <Button row="3" col="1" class="powerAssist-active"
                     text="{{ L('power-assist.deactivate') }}"
                     tap="{{ disablePowerAssist }}"
+                    height="100%"
+                    width="100%"
+                    margin="20" padding="0"
                     visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
             <Button row="3" col="1" class="powerAssist-active"
+                    height="100%"
+                    width="100%"
+                    margin="20" padding="0"
                     text="{{ L('power-assist.stop') }}"
                     tap="{{ stopSmartDrive }}"
                     visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
             <Button row="3" col="1" class="powerAssist-training"
+                    height="100%"
+                    width="100%"
+                    margin="20" padding="0"
                     text="{{ L('power-assist.exit-training') }}"
                     tap="{{ onExitTrainingModeTap }}"
                     visibility="{{ isTraining ? 'visible':'collapsed' }}" />
