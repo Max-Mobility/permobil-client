@@ -15,6 +15,11 @@
     color: $permobil-cousteau;
   }
 
+  .version-info {
+    @extend .category;
+    color: $neon-green;
+  }
+
   .setting-layout {
     @extend .SETTING_LAYOUT_BASE;
   }

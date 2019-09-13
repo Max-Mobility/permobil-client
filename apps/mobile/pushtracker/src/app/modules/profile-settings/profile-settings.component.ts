@@ -15,6 +15,7 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
 import { SmartDrive } from '~/app/models';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Label } from 'tns-core-modules/ui/label/label';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
@@ -62,6 +63,9 @@ export class ProfileSettingsComponent implements OnInit {
   public syncingWithSmartDrive = false;
   public syncSuccessful = false;
   public syncState = '';
+  private _mcu_version = '';
+  private _ble_version = '';
+  public versionInfo = '';
 
   constructor(
     public settingsService: SettingsService,
@@ -370,8 +374,29 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
+  async onSmartDriveBleVersion(args: any) {
+    this._ble_version = SmartDrive.versionByteToString(args.data.ble);
+    this.updateSmartDriveSectionLabel();
+  }
+
+  async onSmartDriveMcuVersion(args: any) {
+    this._mcu_version = SmartDrive.versionByteToString(args.data.mcu);
+    this.updateSmartDriveSectionLabel();
+  }
+
+  async updateSmartDriveSectionLabel() {
+    if (this._mcu_version && this._ble_version)
+      if (this._mcu_version !== '' && this._ble_version !== '')
+        if (this._mcu_version !== 'unknown' && this._ble_version !== 'unknown')
+          this.versionInfo = '(SD ' + this.smartDrive.mcu_version_string + ', BT ' + this.smartDrive.ble_version_string + ')';
+  }
+
   async onSmartDriveConnect(args: any) {
     Log.D('SmartDrive connected', this.smartDrive.address);
+    this._mcu_version = this.smartDrive.mcu_version_string;
+    this._ble_version = this.smartDrive.ble_version_string;
+    this.updateSmartDriveSectionLabel();
+
     Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
     if (this.smartDrive && this.smartDrive.ableToSend) {
       this.syncState = this._translateService.instant('Sending settings...');
@@ -407,6 +432,16 @@ export class ProfileSettingsComponent implements OnInit {
       this
     );
     this.smartDrive.off(
+      SmartDrive.smartdrive_ble_version_event,
+      this.onSmartDriveBleVersion,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_mcu_version_event,
+      this.onSmartDriveMcuVersion,
+      this
+    );
+    this.smartDrive.off(
       SmartDrive.smartdrive_disconnect_event,
       this.onSmartDriveDisconnect,
       this
@@ -425,6 +460,16 @@ export class ProfileSettingsComponent implements OnInit {
       this.smartDrive.on(
         SmartDrive.smartdrive_connect_event,
         this.onSmartDriveConnect,
+        this
+      );
+      this.smartDrive.on(
+        SmartDrive.smartdrive_ble_version_event,
+        this.onSmartDriveBleVersion,
+        this
+      );
+      this.smartDrive.on(
+        SmartDrive.smartdrive_mcu_version_event,
+        this.onSmartDriveMcuVersion,
         this
       );
       this.smartDrive.on(

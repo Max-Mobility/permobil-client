@@ -32,7 +32,10 @@
       </StackLayout>
 
       // Smart Drive Section
-      <Label *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" row="4" class="category" [text]="'general.smartdrive' | translate"></Label>
+      <StackLayout row="4" orientation="horizontal" *ngIf="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'">
+        <Label class="category" [text]="'general.smartdrive' | translate"></Label>
+        <Label class="version-info" [text]="versionInfo"></Label>
+      </StackLayout>
 
       // EZ-ON
       <GridLayout *ngIf="user.data.control_configuration === 'PushTracker with SmartDrive'" row="5" rows="auto, auto" columns="*, auto" class="setting-layout">

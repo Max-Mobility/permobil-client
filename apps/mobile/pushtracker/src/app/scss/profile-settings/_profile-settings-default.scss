@@ -10,6 +10,11 @@
     color: #2075e8;
   }
 
+  .version-info {
+    @extend .category;
+    color: $permobil-rose;
+  }
+
   .setting-layout {
     @extend .SETTING_LAYOUT_BASE;
   }
