@@ -21,10 +21,8 @@ Page {
 /** Buttons **/
 .power-assist-btn {
 	border-radius: 50%;
-	width: 100%;
-	height: 40%;
   horizontal-align: $center;
-  vertical-align: center;
+  vertical-align: $center;
 }
 
 .updates-btn {
