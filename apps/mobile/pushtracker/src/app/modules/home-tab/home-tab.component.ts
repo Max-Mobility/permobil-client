@@ -12,7 +12,7 @@ import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { screen } from 'tns-core-modules/platform';
-import { ActivityTabComponent } from '..';
+import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
@@ -332,7 +332,7 @@ export class HomeTabComponent {
 
   onActivityTap() {
     this._modalService
-      .showModal(ActivityTabComponent, {
+      .showModal(ActivityComponent, {
         context: {
           tabSelectedIndex: 0,
           user: this.user
@@ -1040,7 +1040,7 @@ export class HomeTabComponent {
 
   _openActivityTabModal(context: any) {
     this._modalService
-      .showModal(ActivityTabComponent, {
+      .showModal(ActivityComponent, {
         context: context,
         fullscreen: true,
         animated: true,
