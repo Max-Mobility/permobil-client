@@ -1,6 +1,7 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
+  <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'" busy="true"></ActivityIndicator>
 
   <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#753bbd' : '#00c1d5'">
     <ScrollView>
@@ -41,6 +42,7 @@
             <RadCartesianChart allowAnimations="true" height="250" width="90%" [visibility]="user.data.control_configuration !== 'PushTracker with SmartDrive' ? 'visible' : 'collapse'">
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
+                *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
                 [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
                 lineHidden="true"
@@ -89,6 +91,7 @@
             <RadCartesianChart height="250" width="90%" allowAnimations="true" pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
+                *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
                 [labelTextColor]="savedTheme == 'DARK' ? 'white' : 'black'"
                 lineHidden="true"

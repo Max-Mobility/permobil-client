@@ -15,14 +15,13 @@ export class SupportComponent implements OnInit {
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _params: ModalDialogParams
-  ) {
-    this.supportItems = this._translateService.instant(
-      'support-component.faqs'
-    );
-  }
+  ) {}
 
   ngOnInit() {
     this._logService.logBreadCrumb('support.component OnInit');
+    this.supportItems = this._translateService.instant(
+      'support-component.faqs'
+    );
   }
 
   onItemLoading(args) {
