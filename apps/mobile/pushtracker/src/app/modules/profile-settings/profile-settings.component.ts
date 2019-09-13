@@ -129,17 +129,6 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  // onVersionEvent(args) {
-  //   Log.D('version_event received from PushTracker');
-  //   const data = args.data;
-  //   this._ptVersion = PushTracker.versionByteToString(data.pt);
-  //   this._mcuVersion = SmartDrive.versionByteToString(data.mcu);
-  //   this._bleVersion = SmartDrive.versionByteToString(data.ble);
-  //   Log.D('PT version', this._ptVersion);
-  //   Log.D('MCU version:', this._mcuVersion);
-  //   Log.D('BLE version:', this._bleVersion);
-  // }
-
   getUser() {
     this.user = this._params.context.user;
     if (this.user && this.user.data)
