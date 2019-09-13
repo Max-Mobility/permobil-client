@@ -61,24 +61,22 @@ export class MockActionbarComponent {
       APP_THEMES.DEFAULT
     );
 
-    if (this.showWatchBtn) {
-      this.watchIconString =
-        this.CURRENT_THEME === APP_THEMES.DEFAULT
-          ? 'watch_question_black'
-          : 'watch_question_white';
+    this.watchIconString =
+      this.CURRENT_THEME === APP_THEMES.DEFAULT
+        ? 'watch_question_black'
+        : 'watch_question_white';
 
-      this.watchIcon = imageFromResource(this.watchIconString);
+    this.watchIcon = imageFromResource(this.watchIconString);
 
-      // set up the status watcher for the pushtracker state
-      this._bluetoothService.on(
-        BluetoothService.pushtracker_status_changed,
-        this.updateWatchIcon,
-        this
-      );
+    // set up the status watcher for the pushtracker state
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_status_changed,
+      this.updateWatchIcon,
+      this
+    );
 
-      this.updateWatchIcon({});
-      this._setWatchConnectIconVariables('check');
-    }
+    this.updateWatchIcon({});
+    this._setWatchConnectIconVariables('check');
   }
 
   onMockActionBarLoaded() {
