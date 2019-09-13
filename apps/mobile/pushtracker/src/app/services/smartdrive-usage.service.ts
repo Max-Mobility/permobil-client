@@ -47,9 +47,9 @@ export class SmartDriveUsageService {
             dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
           }
           return this.datastore.save(dailyUsage)
-            .then(function onSuccess(entity) {
+            .then((entity) => {
               return true;
-            }).catch(function onError(error) {
+            }).catch((error) => {
               this._logService.logException(error);
               return false;
             });

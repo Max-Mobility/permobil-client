@@ -977,21 +977,31 @@ export class ActivityTabComponent implements OnInit {
           : this._weeklyActivityFromKinvey;
 
       // format chart description
-      if (this.viewMode === ViewMode.COAST_TIME) {
-        this.chartDescription =
-          (activity.coast_time_avg || 0).toFixed(1) + ' s';
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        this.chartDescription = (activity.push_count || 0) + ' pushes';
+      if (activity) {
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          this.chartDescription =
+            (activity.coast_time_avg || 0).toFixed(1) + ' s';
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          this.chartDescription = (activity.push_count || 0) + ' pushes';
+        } else {
+          this.chartDescription =
+            (
+              this._updateDistanceUnit(
+                this._caseTicksToMiles(
+                  activity.distance_smartdrive_coast -
+                  activity.distance_smartdrive_coast_start
+                )
+              ) || 0
+            ).toFixed(1) + this.distanceUnit;
+        }
       } else {
-        this.chartDescription =
-          (
-            this._updateDistanceUnit(
-              this._caseTicksToMiles(
-                activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
-              )
-            ) || 0
-          ).toFixed(1) + this.distanceUnit;
+        if (this.viewMode === ViewMode.COAST_TIME) {
+          this.chartDescription = '0 s';
+        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+          this.chartDescription = '0 pushes';
+        } else {
+          this.chartDescription = '0.0' + this.distanceUnit;
+        }
       }
 
       if (activity && activity.days) {

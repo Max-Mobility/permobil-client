@@ -38,9 +38,9 @@ export class ActivityService {
             dailyActivity._id = id;
           }
           return this.datastore.save(dailyActivity)
-            .then(function onSuccess(entity) {
+            .then((entity) => {
               return true;
-            }).catch(function onError(error) {
+            }).catch((error) => {
               this._logService.logException(error);
               return false;
             });

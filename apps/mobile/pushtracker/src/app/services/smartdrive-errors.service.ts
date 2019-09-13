@@ -46,9 +46,9 @@ export class SmartDriveErrorsService {
             dailyErrors.num_ble_disconnect_errors += data[0].num_ble_disconnect_errors || 0;
           }
           return this.datastore.save(dailyErrors)
-            .then(function onSuccess(entity) {
+            .then((entity) => {
               return true;
-            }).catch(function onError(error) {
+            }).catch((error) => {
               this._logService.logException(error);
               return false;
             });
