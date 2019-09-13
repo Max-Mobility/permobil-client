@@ -87,7 +87,6 @@ export class ActivityTabComponent implements OnInit {
   private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
-  activityLoaded: boolean = false;
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
@@ -168,12 +167,10 @@ export class ActivityTabComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
-    this.activityLoaded = false;
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.tabSelectedIndex },
       options: { forcePullFromDatabase: true }
     }).then(() => {
-      this.activityLoaded = true;
       pullRefresh.refreshing = false;
     });
   }
@@ -379,6 +376,7 @@ export class ActivityTabComponent implements OnInit {
   }
 
   async onCalendarDateSelected(args) {
+    if (!this.user) return;
     if (this.user.data.control_configuration !== 'PushTracker with SmartDrive') {
       const date: Date = args.date;
       if (date <= new Date()) {
@@ -391,7 +389,6 @@ export class ActivityTabComponent implements OnInit {
   }
 
   private async _loadDailyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
     this.weekStart = this._getFirstDayOfWeek(date);
@@ -482,7 +479,6 @@ export class ActivityTabComponent implements OnInit {
         this._updateDailyActivityAnnotationValue();
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
-        this.activityLoaded = true;
       });
     });
   }
@@ -518,7 +514,7 @@ export class ActivityTabComponent implements OnInit {
     Log.D('ActivityTab | Loading weekly activity from Kinvey...');
 
     let result = [];
-    if (!this.user) return result;
+    if (!this.user) return Promise.reject(false);
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
@@ -545,24 +541,25 @@ export class ActivityTabComponent implements OnInit {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache result
           Log.D('ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly activity');
-          return Promise.resolve(result);
+          return Promise.resolve(true);
         }
-        return Promise.resolve(this._weeklyActivityFromKinvey);
+        this._weeklyActivityFromKinvey = [];
+        return Promise.resolve(true);
       })
       .catch(err => {
         Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-        return Promise.reject([]);
+        return Promise.reject(false);
       });
     } catch (err) {
       Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-      return Promise.reject([]);
+      return Promise.reject(false);
     }
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
     Log.D('ActivityTab | Loading weekly usage from Kinvey...');
     let result = [];
-    if (!this.user) return result;
+    if (!this.user) return Promise.reject(false);
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
@@ -589,22 +586,22 @@ export class ActivityTabComponent implements OnInit {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
           Log.D('ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage');
-          return Promise.resolve(result);
+          return Promise.resolve(true);
         }
-        return Promise.resolve(this._weeklyUsageFromKinvey);
+        this._weeklyUsageFromKinvey = [];
+        return Promise.resolve(true);
       })
       .catch(err => {
         Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-        return Promise.reject([]);
+        return Promise.reject(false);
       });
     } catch (err) {
       Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-      return Promise.reject([]);
+      return Promise.reject(false);
     }
   }
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
       (this.viewMode === ViewMode.DISTANCE &&
@@ -619,7 +616,8 @@ export class ActivityTabComponent implements OnInit {
         Log.D('Forcing pull from database instead of using cache');
 
       if (this.viewMode === ViewMode.DISTANCE)
-        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(didLoad => {
+        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
+        onResolved => {
           return this._formatActivityForView(1).then(result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
@@ -637,11 +635,14 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
             this._updateWeekStartAndEnd();
-            this.activityLoaded = true;
           });
+        },
+        onRejected => {
+          return [];
         });
       else
-        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(didLoad => {
+        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(
+        onResolved => {
           return this._formatActivityForView(1).then(async result => {
             this.weeklyActivity = new ObservableArray(result);
             if (this.tabSelectedIndex === 1) {
@@ -659,8 +660,10 @@ export class ActivityTabComponent implements OnInit {
             this._updateWeeklyActivityAnnotationValue();
             if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
             this._updateWeekStartAndEnd();
-            this.activityLoaded = true;
           });
+        },
+        onRejected => {
+          return [];
         });
     } else {
       // We have the data cached. Pull it up
@@ -703,7 +706,6 @@ export class ActivityTabComponent implements OnInit {
     }
     if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
     this._updateWeekStartAndEnd();
-    this.activityLoaded = true;
   }
 
   private _calculateWeeklyActivityYAxisMax() {

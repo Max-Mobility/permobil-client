@@ -15,22 +15,14 @@ Page {
   font-weight: bold; }
 
 /** Buttons **/
-.power-assist-btn, .powerAssist-active,
-.powerAssist-deactive,
-.powerAssist-disabled,
-.powerAssist-training {
+.power-assist-btn, .powerAssist-active, .powerAssist-disabled, .powerAssist-deactive, .powerAssist-training {
   border-radius: 50%;
   width: 100%;
   height: 40%;
   horizontal-align: center;
   vertical-align: center; }
 
-.updates-btn, .action-start,
-.action-pause,
-.action-resume,
-.action-cancel,
-.action-force,
-.action-retry {
+.updates-btn, .action-start, .action-pause, .action-resume, .action-cancel, .action-force, .action-retry {
   font-size: 15;
   border-radius: 50%;
   width: 60%;
@@ -132,28 +124,31 @@ Page {
   vertical-align: bottom;
   horizontal-align: center; }
 
+.chart-max-line {
+  background-color: #89d4e3; }
+
 .chart-max-value {
   font-size: 8;
-  color: #888888;
+  color: #fff;
   vertical-align: top; }
 
 .battery-line {
   vertical-align: bottom;
   horizontal-align: center;
-  background-color: #888888;
+  background-color: #009ac7;
   width: 5; }
 
 .distance-line {
   vertical-align: bottom;
   horizontal-align: center;
-  background-color: #888888;
+  background-color: #009ac7;
   width: 5; }
 
 .line-label {
   text-align: center;
   horizontal-align: center;
   vertical-align: top;
-  color: #888888;
+  color: #fff;
   font-size: 12; }
 
 /** Fonts **/
@@ -161,33 +156,31 @@ Page {
 #changeSettingsPage {
   margin: 4; }
   #changeSettingsPage .increase-btn {
-    color: #888888;
-    background-color: transparent; }
+    color: #fff; }
   #changeSettingsPage .decrease-btn {
-    color: #888888;
-    background-color: transparent; }
+    color: #fff; }
   #changeSettingsPage .cancel-btn {
-    color: #888888;
-    background-color: transparent; }
+    color: #fff;
+    background-color: gray; }
   #changeSettingsPage .confirm-btn {
-    color: #888888;
-    background-color: transparent; }
+    color: #fff;
+    background-color: #009ac7; }
   #changeSettingsPage .value-circle {
     height: 100;
     width: 100;
     border-radius: 50;
     horizontal-align: center;
     vertical-align: center;
-    background-color: transparent;
+    background-color: #004f7e;
     color: #fff; }
     #changeSettingsPage .value-circle .changeSettingsTitle {
+      color: #fff;
       width: 90%;
-      color: #888888;
       text-align: center;
       horizontal-align: center;
       vertical-align: center; }
     #changeSettingsPage .value-circle .changeSettingsValue {
-      color: #888888;
+      color: #fff;
       width: 60%;
       font-weight: bold;
       text-align: center;
@@ -196,7 +189,7 @@ Page {
 
 /** Fonts **/
 .batteryIconStack {
-  background-color: transparent; }
+  background-color: #000; }
 
 .powerAssistCircle {
   background-color: transparent;
@@ -205,8 +198,8 @@ Page {
   height: 100%; }
 
 .tapCircle {
-  bar-color: #B9B9B9;
-  rim-color: #B9B9B9;
+  bar-color: #db4537;
+  rim-color: #db4537;
   background-color: transparent;
   fill-color: transparent;
   width: 100%;
@@ -217,52 +210,61 @@ Page {
   fill-color: transparent;
   width: 90%;
   height: 90%;
-  bar-color: #B9B9B9;
-  rim-color: #000; }
+  bar-color: #89d4e3;
+  rim-color: #414042; }
 
 .watchBatteryCircle {
   background-color: transparent;
   fill-color: transparent;
   width: 80%;
   height: 80%;
-  bar-color: #B9B9B9;
-  rim-color: #000; }
+  bar-color: #009ac7;
+  rim-color: #414042; }
 
 .topValue {
-  color: #888888;
+  color: #fff;
   font-size: 18;
   horizontal-align: center;
   vertical-align: top; }
 
 .topValueDescription {
-  color: #888888;
+  color: #fff;
   font-size: 10;
   horizontal-align: center;
   vertical-align: top; }
 
 .centerMessage {
-  color: #888888;
+  color: #fff;
   font-size: 16;
   horizontal-align: center;
   vertical-align: center;
   text-align: center;
   text-wrap: true; }
 
-.powerAssist-active,
-.powerAssist-deactive,
-.powerAssist-disabled,
+.powerAssist-active {
+  color: #fff;
+  background-color: #db4537; }
+
+.powerAssist-disabled {
+  color: #fff;
+  background-color: #414042; }
+
+.powerAssist-deactive {
+  color: #fff;
+  background-color: #00a73c; }
+
 .powerAssist-training {
-  color: #888888;
-  background-color: #000; }
+  color: #fff;
+  background-color: #00a73c; }
 
 .currentTime {
-  color: #888888;
+  color: #fff;
   font-size: 18;
   horizontal-align: center;
   vertical-align: bottom; }
 
 .currentTimeMeridiem {
-  color: #888888;
+  color: #fff;
   font-size: 10;
   horizontal-align: center;
   vertical-align: bottom; }
@@ -272,7 +274,7 @@ Page {
 .bullet-list-icon {
   font-size: 8;
   font-family: ionicons, "ionicons", Ionicons, "Ionicons";
-  color: #888888;
+  color: #fff;
   vertical-align: center;
   horizontal-align: center;
   margin: 5 5 5 0; }
@@ -280,7 +282,7 @@ Page {
 .settings-label {
   font-size: 18;
   font-weight: normal;
-  color: #888888;
+  color: #fff;
   vertical-align: center;
   margin: 5 0 5 0; }
 
@@ -301,22 +303,14 @@ Page {
   font-weight: bold; }
 
 /** Buttons **/
-.power-assist-btn, .powerAssist-active,
-.powerAssist-deactive,
-.powerAssist-disabled,
-.powerAssist-training {
+.power-assist-btn, .powerAssist-active, .powerAssist-disabled, .powerAssist-deactive, .powerAssist-training {
   border-radius: 50%;
   width: 100%;
   height: 40%;
   horizontal-align: center;
   vertical-align: center; }
 
-.updates-btn, .action-start,
-.action-pause,
-.action-resume,
-.action-cancel,
-.action-force,
-.action-retry {
+.updates-btn, .action-start, .action-pause, .action-resume, .action-cancel, .action-force, .action-retry {
   font-size: 15;
   border-radius: 50%;
   width: 60%;
@@ -417,57 +411,72 @@ Page {
   fill-color: transparent;
   width: 100%;
   height: 100%;
-  spin-bar-color: #B9B9B9;
-  bar-color: #B9B9B9;
-  rim-color: #000; }
+  bar-color: #009ac7;
+  rim-color: #696969;
+  spin-bar-color: #009ac7; }
 
 .action-label {
   font-size: 15;
   font-weight: normal;
   text-align: center;
-  color: #888888;
+  color: #fff;
   vertical-align: center;
   horizontal-align: center;
   margin: 2 0 2 0; }
 
 .topValue {
-  color: #888888;
+  color: #fff;
   font-size: 18;
   horizontal-align: center;
   vertical-align: top; }
 
 .topValueDescription {
-  color: #888888;
+  color: #fff;
   font-size: 10;
   horizontal-align: center;
   vertical-align: top; }
 
-.action-start,
-.action-pause,
-.action-resume,
-.action-cancel,
-.action-force,
+.action-start {
+  color: #fff;
+  background-color: #00a73c; }
+
+.action-pause {
+  color: #fff;
+  background-color: #ff8900; }
+
+.action-resume {
+  color: #fff;
+  background-color: #00a73c; }
+
+.action-cancel {
+  color: #fff;
+  background-color: #db4537; }
+
+.action-force {
+  color: #fff;
+  background-color: #ff8900; }
+
 .action-retry {
-  color: #888888;
-  background-color: #000; }
+  color: #fff;
+  background-color: #00a73c; }
 
 .currentTime {
-  color: #888888;
+  color: #fff;
   font-size: 18;
   horizontal-align: center;
   vertical-align: bottom; }
 
 .currentTimeMeridiem {
-  color: #888888;
+  color: #fff;
   font-size: 10;
   horizontal-align: center;
   vertical-align: bottom; }
 
 label {
-  color: #888888; }
+  color: #fff; }
 
 .hr-blue {
-  background-color: #888888;
+  background-color: #336699;
   width: 100%;
   height: 2;
   margin: 0; }
