@@ -37,8 +37,10 @@ export class ProfileTabComponent {
   displayWeight: string;
   displayHeight: string;
   chairTypes: Array<string> = [];
+  chairTypesTranslated: Array<string> = [];
   displayChairType: string;
   chairMakes: Array<string> = [];
+  chairMakesTranslated: Array<string> = [];
   displayChairMake: string;
 
   // List picker related fields
@@ -95,11 +97,12 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this.chairTypes = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
-    this.chairMakes = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
-    this.chairMakes.sort(); // Sort chair makes alphabetically
-    Log.D('Chair Types', this.chairTypes);
-    Log.D('Chair Makes', this.chairMakes);
+    this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
+    this.chairMakes = Object.keys(CHAIR_MAKE).map(key => CHAIR_MAKE[key]);
+    this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
+    this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
+    Log.D('Chair Types', this.chairTypesTranslated);
+    Log.D('Chair Makes', this.chairMakesTranslated);
 
     this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
@@ -587,10 +590,10 @@ export class ProfileTabComponent {
     this.primaryIndex = 0;
     this._setActiveDataBox(args);
 
-    this.primary = this.chairTypes;
+    this.primary = this.chairTypesTranslated;
     const userChairType = this.user.data.chair_type;
     try {
-      this.primaryIndex = this.chairTypes.indexOf(this._translateService.instant(userChairType));
+      this.primaryIndex = this.chairTypesTranslated.indexOf(this._translateService.instant(userChairType));
       if (this.primaryIndex < 0) this.primaryIndex = 0;
     } catch (err) {
       this.primaryIndex = 0;
@@ -609,11 +612,11 @@ export class ProfileTabComponent {
     this.primaryIndex = 0;
     this._setActiveDataBox(args);
 
-    this.primary = this.chairMakes;
+    this.primary = this.chairMakesTranslated;
 
     const userChairMake = this.user.data.chair_make;
     try {
-      this.primaryIndex = this.chairMakes.indexOf(this._translateService.instant(userChairMake));
+      this.primaryIndex = this.chairMakesTranslated.indexOf(this._translateService.instant(userChairMake));
       if (this.primaryIndex < 0) this.primaryIndex = 0;
     } catch (err) {
       this.primaryIndex = 0;
