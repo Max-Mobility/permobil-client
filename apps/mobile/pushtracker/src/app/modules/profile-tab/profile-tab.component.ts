@@ -1,4 +1,5 @@
 import { Component, ElementRef, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -11,7 +12,7 @@ import { Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
 import { Color } from 'tns-core-modules/color';
 import { screen } from 'tns-core-modules/platform';
-import { action, confirm, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
+import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
@@ -291,7 +292,9 @@ export class ProfileTabComponent {
     DateTimePicker.pickDate(
       {
         context: (args.object as StackLayout)._context,
-        date: (this.user.data.dob ? new Date(this.user.data.dob) : subYears(new Date(), 18)),
+        date: this.user.data.dob
+          ? new Date(this.user.data.dob)
+          : subYears(new Date(), 18),
         minDate: subYears(new Date(), 110),
         maxDate: new Date(),
         title: this._translateService.instant('general.birthday'),
@@ -856,23 +859,25 @@ export class ProfileTabComponent {
   }
 
   private _sendData() {
-    // if (isAndroid) {
-    //   // testing communications wearos
-    //   const l = new com.github.maxmobility.wearmessage.Data(android.context);
-    //   // const l = new com.github.maxmobility.wearmessage.Data(application.android.context);
-    //   l.sendData(this._getSerializedAuth());
-    //   Log.D('Data sent');
-    // }
+    try {
+      WearOsComms.sendData(this._getSerializedAuth()).then(() => {
+        Log.D('SendData successful.');
+      });
+    } catch (error) {
+      Log.E(error);
+    }
   }
 
   private _sendMessage() {
-    // if (isAndroid) {
-    //   // testing communications wearos
-    //   const r = new com.github.maxmobility.wearmessage.Message(android.context);
-    //   // const r = new com.github.maxmobility.wearmessage.Message(application.android.context);
-    //   r.sendMessage('/app-message', this._getSerializedAuth());
-    //   Log.D('Message sent');
-    // }
+    try {
+      WearOsComms.sendMessage('/app-message', this._getSerializedAuth()).then(
+        () => {
+          Log.D('SendData successful.');
+        }
+      );
+    } catch (error) {
+      Log.E(error);
+    }
   }
 
   private _updateDistanceUnit(distance: number) {
