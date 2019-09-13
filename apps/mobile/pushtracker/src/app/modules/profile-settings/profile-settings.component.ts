@@ -13,7 +13,7 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
-import { SmartDrive } from '~/app/models';
+import { PushTracker, SmartDrive } from '~/app/models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Label } from 'tns-core-modules/ui/label/label';
 const dialogs = require('tns-core-modules/ui/dialogs');
@@ -63,6 +63,7 @@ export class ProfileSettingsComponent implements OnInit {
   public syncingWithSmartDrive = false;
   public syncSuccessful = false;
   public syncState = '';
+  private _pt_version = '';
   private _mcu_version = '';
   private _ble_version = '';
   public versionInfo = '';
@@ -110,7 +111,34 @@ export class ProfileSettingsComponent implements OnInit {
     ];
 
     this.screenHeight = screen.mainScreen.heightDIPs;
+
+    if (this.user.data.control_configuration === 'PushTracker with SmartDrive') {
+      const ptConnected = BluetoothService.PushTrackers.filter(pt => { return pt.connected === true; });
+      if (ptConnected && ptConnected.length === 1) {
+        const pt = ptConnected[0] as PushTracker;
+        this._pt_version = PushTracker.versionByteToString(pt.version);
+        this._mcu_version = PushTracker.versionByteToString(pt.mcu_version);
+        this._ble_version = PushTracker.versionByteToString(pt.ble_version);
+        if (!(this._pt_version === '??' && this._mcu_version === '??' && this._ble_version === '??')) {
+          this.versionInfo = '(PT ' + this._pt_version +
+          ', SD ' + this._mcu_version +
+          ', BT ' + this._ble_version + ')';
+          Log.D('PushTracker connected', this.versionInfo);
+        }
+      }
+    }
   }
+
+  // onVersionEvent(args) {
+  //   Log.D('version_event received from PushTracker');
+  //   const data = args.data;
+  //   this._ptVersion = PushTracker.versionByteToString(data.pt);
+  //   this._mcuVersion = SmartDrive.versionByteToString(data.mcu);
+  //   this._bleVersion = SmartDrive.versionByteToString(data.ble);
+  //   Log.D('PT version', this._ptVersion);
+  //   Log.D('MCU version:', this._mcuVersion);
+  //   Log.D('BLE version:', this._bleVersion);
+  // }
 
   getUser() {
     this.user = this._params.context.user;

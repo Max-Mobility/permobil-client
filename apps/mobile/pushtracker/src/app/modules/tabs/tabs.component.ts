@@ -13,7 +13,7 @@ import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { STORAGE_KEYS } from '../../enums';
-import { PushTracker, SmartDrive } from '../../models';
+import { PushTracker } from '../../models';
 import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
   SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
@@ -36,10 +36,6 @@ export class TabsComponent {
   // permissions for the bluetooth service
   private permissionsNeeded = [];
   private snackbar = new SnackBar();
-
-  private _mcuVersion = '';
-  private _bleVersion = '';
-  private _ptVersion = '';
 
   constructor(
     private _activityService: ActivityService,
@@ -260,16 +256,6 @@ export class TabsComponent {
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.on(PushTracker.error_event, this.onErrorEvent, this);
-    pt.on(PushTracker.version_event, this.onVersionEvent, this);
-  }
-
-  onVersionEvent(args) {
-    Log.D('version_event received from PushTracker');
-    const data = args.data;
-    this._ptVersion = PushTracker.versionByteToString(data.pt);
-    this._mcuVersion = SmartDrive.versionByteToString(data.mcu);
-    this._bleVersion = SmartDrive.versionByteToString(data.ble);
-    console.log(this._ptVersion, this._mcuVersion, this._bleVersion);
   }
 
   onDailyInfoEvent(args) {
