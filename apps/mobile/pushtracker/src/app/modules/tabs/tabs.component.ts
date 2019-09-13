@@ -397,7 +397,6 @@ export class TabsComponent {
       num_ble_disconnect_errors: data.numBLEDisconnectErrors || 0,
       watch_serial_number: this.user.data.pushtracker_serial_number
     };
-    Log.D('Error summary', dailyErrors);
 
     // Write code to push to SmartDriveErrors collection
     this._errorsService
