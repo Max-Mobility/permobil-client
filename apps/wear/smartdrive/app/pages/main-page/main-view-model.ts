@@ -613,9 +613,11 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('applying theme');
     try {
       if (theme === 'ambient' || this.isAmbient) {
+        // Log.D('applying ambient theme');
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
         this.showAmbientTime();
       } else {
+        // Log.D('applying default theme');
         themes.applyThemeCss(defaultTheme, 'theme-default.scss');
         this.showMainDisplay();
       }
@@ -1028,13 +1030,13 @@ export class MainViewModel extends Observable {
           com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_DATA_INDEX
         );
         authCursor.close();
-        Log.D('Got token:', token);
+        // Log.D('Got token:', token);
         if (token !== null && token.length) {
           // we have a valid token
           authorization = token;
         }
       } else {
-        Log.E('Could not get authCursor to move to first:', authCursor);
+        // Log.E('Could not get authCursor to move to first:', authCursor);
       }
       const idCursor = contentResolver
         .query(
@@ -1046,13 +1048,13 @@ export class MainViewModel extends Observable {
           com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_DATA_INDEX
         );
         idCursor.close();
-        Log.D('Got uid:', uid);
+        // Log.D('Got uid:', uid);
         if (uid !== null && uid.length) {
           // we have a valid token
           userId = uid;
         }
       } else {
-        Log.E('Could not get idCursor to move to first:', idCursor);
+        // Log.E('Could not get idCursor to move to first:', idCursor);
       }
     } catch (err) {
       Log.E('error getting auth:', err);
@@ -1060,10 +1062,14 @@ export class MainViewModel extends Observable {
     if (authorization === null || userId === null) {
       // if the user has not configured this app with the PushTracker
       // Mobile app
+      Log.D('Could not load authorization');
       return false;
     }
     // now set the authorization and see if it's valid
     const validAuth = await this._kinveyService.setAuth(authorization, userId);
+    if (!validAuth) {
+      Log.E('Have invalid authorization!');
+    }
     return validAuth;
   }
 
@@ -1079,7 +1085,6 @@ export class MainViewModel extends Observable {
     if (!this._kinveyService.hasAuth()) {
       const validAuth = await this.updateAuthorization();
       if (!validAuth) {
-        Log.E('authorization invalid!');
         // we still don't have valid authorization, don't send any
         // data
         return;
