@@ -16,7 +16,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme, kilometersToMiles } from '../../utils';
+import { enableDarkTheme, enableDefaultTheme, kilometersToMiles, milesToKilometers } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -437,27 +437,27 @@ export class HomeTabComponent {
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
           let coastDistance = this._updateDistanceUnit(
-            DeviceBase.caseTicksToMiles(
+            milesToKilometers(DeviceBase.caseTicksToMiles(
               this._todaysUsage.distance_smartdrive_coast -
                 this._todaysUsage.distance_smartdrive_coast_start
-            ) || 0
+            ) || 0)
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
           this.todayCoastDistance = coastDistance.toFixed(1);
 
           let driveDistance = this._updateDistanceUnit(
-            DeviceBase.motorTicksToMiles(
+            milesToKilometers(DeviceBase.motorTicksToMiles(
               this._todaysUsage.distance_smartdrive_drive -
                 this._todaysUsage.distance_smartdrive_drive_start
-            ) || 0
+            ) || 0)
           );
           if (driveDistance < 0.0) driveDistance = 0.0;
           this.todayDriveDistance = driveDistance.toFixed(1);
 
           this.todayOdometer = this._updateDistanceUnit(
-            DeviceBase.caseTicksToMiles(
+            milesToKilometers(DeviceBase.caseTicksToMiles(
               this._todaysUsage.distance_smartdrive_coast
-            ) || 0
+            ) || 0)
           ).toFixed(1);
           // Today coast distance changed, update message
           this.updateTodayMessage();
@@ -909,10 +909,10 @@ export class HomeTabComponent {
         const day = days[i];
         if (day) {
           let coastDistance = this._updateDistanceUnit(
-            DeviceBase.caseTicksToMiles(
+            milesToKilometers(DeviceBase.caseTicksToMiles(
               day.distance_smartdrive_coast -
                 day.distance_smartdrive_coast_start
-            ) || 0
+            ) || 0)
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
 
@@ -969,18 +969,18 @@ export class HomeTabComponent {
           if (dailyUsage) {
             // We have daily activity for this day
             let coastDistance = this._updateDistanceUnit(
-              DeviceBase.caseTicksToMiles(
+              milesToKilometers(DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
                   dailyUsage.distance_smartdrive_coast_start
-              ) || 0
+              ) || 0)
             );
             if (coastDistance < 0.0) coastDistance = 0.0;
 
             let driveDistance = this._updateDistanceUnit(
-              DeviceBase.motorTicksToMiles(
+              milesToKilometers(DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
                   dailyUsage.distance_smartdrive_drive_start
-              ) || 0
+              ) || 0)
             );
             if (driveDistance < 0.0) driveDistance = 0.0;
 
