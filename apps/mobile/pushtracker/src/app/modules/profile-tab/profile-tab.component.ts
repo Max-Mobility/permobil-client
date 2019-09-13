@@ -97,10 +97,19 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
+    // WARNING: There's an important assumption here
+    // chairTypes and chairTypesTranslated (or chairMakes and chairMakesTranslated) are
+    // assumed to be ordered in the same way, i.e., chairMakes[foo] === chairMakesTranslated[foo]
+    // When we index into chairTypes[i] and chairTypesTranslated[i] the assumption is that
+    // indexing results in the same chair type on both lists. One's just a translated version of the other
+    // DO NOT sort the translated list as it'll mess up the relative ordering
     this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
     this.chairMakes = Object.keys(CHAIR_MAKE).map(key => CHAIR_MAKE[key]);
     this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
     this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
+    // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
+    // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
+
     Log.D('Chair Types', this.chairTypesTranslated);
     Log.D('Chair Makes', this.chairMakesTranslated);
 
