@@ -17,7 +17,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_TYPE, CHAIR_MAKE } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
 
@@ -95,15 +95,11 @@ export class ProfileTabComponent {
     this.listPickerDescriptionNecessary = true;
     this.listPickerNeedsSecondary = false;
 
-    this.chairTypes = [];
-    this._translateService.instant('profile-tab.chair-types').forEach(i => {
-      this.chairTypes.push(i);
-    });
-
-    this.chairMakes = [];
-    this._translateService.instant('profile-tab.chair-makes').forEach(i => {
-      this.chairMakes.push(i);
-    });
+    this.chairTypes = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
+    this.chairMakes = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
+    this.chairMakes.sort(); // Sort chair makes alphabetically
+    Log.D('Chair Types', this.chairTypes);
+    Log.D('Chair Makes', this.chairMakes);
 
     this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
@@ -447,16 +443,16 @@ export class ProfileTabComponent {
       case 3:
         this._userService.updateDataProperty(
           'chair_type',
-          this.primaryIndex // index into CHAIR_TYPE enum
+          this.chairTypes[this.primaryIndex] // index into CHAIR_TYPE enum
         );
-        KinveyUser.update({ chair_type: this.primaryIndex });
+        KinveyUser.update({ chair_type: this.chairTypes[this.primaryIndex] });
         break;
       case 4:
         this._userService.updateDataProperty(
           'chair_make',
-          this.primaryIndex // index into CHAIR_MAKE enum
+          this.chairMakes[this.primaryIndex] // index into CHAIR_MAKE enum
         );
-        KinveyUser.update({ chair_make: this.primaryIndex });
+        KinveyUser.update({ chair_make: this.chairMakes[this.primaryIndex] });
         break;
       case 5:
         const newConfiguration = this.primary[this.primaryIndex];
@@ -592,7 +588,13 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     this.primary = this.chairTypes;
-    this.primaryIndex = this.user.data.chair_type || 0;
+    const userChairType = this.user.data.chair_type;
+    try {
+      this.primaryIndex = this.chairTypes.indexOf(this._translateService.instant(userChairType));
+      if (this.primaryIndex < 0) this.primaryIndex = 0;
+    } catch (err) {
+      this.primaryIndex = 0;
+    }
 
     this.listPickerTitle = this._translateService.instant('general.chair-type');
     this.listPickerDescriptionNecessary = false;
@@ -608,7 +610,14 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     this.primary = this.chairMakes;
-    this.primaryIndex = this.user.data.chair_make || 0;
+
+    const userChairMake = this.user.data.chair_make;
+    try {
+      this.primaryIndex = this.chairMakes.indexOf(this._translateService.instant(userChairMake));
+      if (this.primaryIndex < 0) this.primaryIndex = 0;
+    } catch (err) {
+      this.primaryIndex = 0;
+    }
 
     this.listPickerTitle = this._translateService.instant(
       'profile-tab.chair-make'
@@ -688,11 +697,11 @@ export class ProfileTabComponent {
   }
 
   private async _initDisplayChairType() {
-    this.displayChairType = this.chairTypes[this.user.data.chair_type || 0];
+    this.displayChairType = this._translateService.instant(this.user.data.chair_type);
   }
 
   private async _initDisplayChairMake() {
-    this.displayChairMake = this.chairMakes[this.user.data.chair_make || 0];
+    this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
