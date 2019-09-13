@@ -37,6 +37,7 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     );
     if (!device) {
       CLog(CLogTypes.warning, `No device found in the intent: ${intent}`);
+      return;
     }
 
     const owner = this._owner.get();
