@@ -26,5 +26,5 @@
   },
   "files": ["./src/main.ts"],
   "include": ["./src/app/**/*.module.ts"],
-  "exclude": ["node_modules", "platforms"]
+  "exclude": ["node_modules", "platforms", "../../../@permobil/nativescript/src/plugins/*"]
 }
