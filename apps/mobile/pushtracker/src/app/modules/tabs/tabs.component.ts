@@ -14,7 +14,9 @@ import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { ActivityService, BluetoothService, PushTrackerUserService, SettingsService, SmartDriveUsageService } from '../../services';
+import { ActivityService,
+  BluetoothService, PushTrackerUserService, SettingsService,
+  SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
 
 @Component({
   moduleId: module.id,
@@ -30,7 +32,6 @@ export class TabsComponent {
   user: PushTrackerUser;
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
-  private _throttledOnErrorEvent: any = null;
   private _firstLoad = false;
   // permissions for the bluetooth service
   private permissionsNeeded = [];
@@ -43,7 +44,8 @@ export class TabsComponent {
     private _bluetoothService: BluetoothService,
     private _page: Page,
     private _userService: PushTrackerUserService,
-    private _usageService: SmartDriveUsageService
+    private _usageService: SmartDriveUsageService,
+    private _errorsService: SmartDriveErrorsService
   ) {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
@@ -67,11 +69,6 @@ export class TabsComponent {
         trailing: true
       }
     );
-
-    this._throttledOnErrorEvent = throttle(this.onErrorEvent, TEN_MINUTES, {
-      leading: true,
-      trailing: true
-    });
   }
 
   onRootBottomNavLoaded(args) {
@@ -257,7 +254,7 @@ export class TabsComponent {
     this.snackbar.simple(msg);
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
-    pt.on(PushTracker.error_event, this._throttledOnErrorEvent, this);
+    pt.on(PushTracker.error_event, this.onErrorEvent, this);
   }
 
   onDailyInfoEvent(args) {
@@ -367,6 +364,11 @@ export class TabsComponent {
     const year = data.year;
     const month = data.month;
     const day = data.day;
+    if (year === 0 && month === 0 && day === 0)  {
+      Log.D('No errors detected. Discarding error event');
+      return;
+    }
+
     const hour = data.hour;
     const minute = data.minute;
     const second = data.second;
@@ -387,16 +389,27 @@ export class TabsComponent {
       data_type: 'SmartDriveDailyError',
       date: dateFormatted(date),
       most_recent_error: data.mostRecentError,
-      num_battery_voltage_errors: data.numBatteryVoltageErrors,
-      num_over_current_errors: data.numOverCurrentErrors,
-      num_motor_phase_errors: data.numMotorPhaseErrors,
-      num_gyro_range_errors: data.numGyroRangeErrors,
-      num_over_temperature_errors: data.numOverTemperatureErrors,
-      num_ble_disconnect_errors: data.numBLEDisconnectErrors,
+      num_battery_voltage_errors: data.numBatteryVoltageErrors || 0,
+      num_over_current_errors: data.numOverCurrentErrors || 0,
+      num_motor_phase_errors: data.numMotorPhaseErrors || 0,
+      num_gyro_range_errors: data.numGyroRangeErrors || 0,
+      num_over_temperature_errors: data.numOverTemperatureErrors || 0,
+      num_ble_disconnect_errors: data.numBLEDisconnectErrors || 0,
       watch_serial_number: this.user.data.pushtracker_serial_number
     };
     Log.D('Error summary', dailyErrors);
-    // TODO: Write code to push to SmartDriveErrors collection
+
+    // Write code to push to SmartDriveErrors collection
+    this._errorsService
+    .saveDailyErrorsFromPushTracker(dailyErrors)
+    .then(result => {
+      if (result)
+        Log.D(
+          'DailyErrors from PushTracker successfully saved in database'
+        );
+      else
+        Log.E('Failed to saved DailyErrors from PushTracker in database');
+    });
   }
 
   private onPushTrackerDisconnected(args: any) {

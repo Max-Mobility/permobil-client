@@ -10,6 +10,7 @@ import { ProgressService } from './progress.service';
 import { PushTrackerUserService } from './pushtracker.user.service';
 import { SettingsService } from './settings.service';
 import { SmartDriveUsageService } from './smartdrive-usage.service';
+import { SmartDriveErrorsService } from './smartdrive-errors.service';
 
 export const PROVIDERS: any[] = [
   LoggingService,
@@ -23,7 +24,8 @@ export const PROVIDERS: any[] = [
   SettingsService,
   ActivityService,
   PushTrackerUserService,
-  SmartDriveUsageService
+  SmartDriveUsageService,
+  SmartDriveErrorsService
 ];
 
 export * from './activity.service';
@@ -38,4 +40,5 @@ export * from './progress.service';
 export * from './pushtracker.user.service';
 export * from './settings.service';
 export * from './smartdrive-usage.service';
+export * from './smartdrive-errors.service';
 

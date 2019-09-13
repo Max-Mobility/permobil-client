@@ -913,7 +913,19 @@ export class PushTracker extends Observable {
     */
     // TODO: send error event to subscribers so they get updated
     this.sendEvent(PushTracker.error_event, {
-      // what should we put here?
+      year: errorInfo.year,
+      month: errorInfo.month,
+      day: errorInfo.day,
+      hour: errorInfo.hour,
+      minute: errorInfo.minute,
+      second: errorInfo.second,
+      mostRecentError: bindingTypeToString('PacketErrorType', errorInfo.mostRecentError),
+      numBatteryVoltageErrors: errorInfo.numBatteryVoltageErrors,
+      numOverCurrentErrors: errorInfo.numOverCurrentErrors,
+      numMotorPhaseErrors: errorInfo.numMotorPhaseErrors,
+      numGyroRangeErrors: errorInfo.numGyroRangeErrors,
+      numOverTemperatureErrors: errorInfo.numOverTemperatureErrors,
+      numBLEDisconnectErrors: errorInfo.numBLEDisconnectErrors
     });
     // TODO: update error record for this pushtracker (locally and
     // on the server)
