@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { ConfigurationComponent, ForgotPasswordComponent, LoginComponent, SignUpComponent } from './modules';
 import { AuthGuardService } from './services';
+import { ProfileTabComponent } from './modules';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -26,6 +27,10 @@ const routes: Routes = [
     path: 'tabs',
     loadChildren: './modules/tabs/tabs.module#TabsModule',
     canActivate: [AuthGuardService]
+  },
+  {
+    path: 'profile',
+    component: ProfileTabComponent
   }
 ];
 
