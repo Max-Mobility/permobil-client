@@ -163,7 +163,7 @@
       "switchcontrolmode": "Momentáneo: el modo de control de interruptor predeterminado en el que el SmartDrive comenzará a conducir el motor aumentando su velocidad a la velocidad máxima de control de interruptor configurada solo mientras se mantiene presionado uno de los botones de control de interruptor. Cuando se suelta el Botón retenido, o se presionan ambos Botones [si están presentes], la conducción se desactivará. Tenga en cuenta que, tras la desactivación, no pone el dispositivo en estado de espera.\n\nEnganchado: en el modo de control de interruptor enganchado, el SmartDrive comenzará a conducir el motor aumentando su velocidad a la velocidad máxima de control de interruptor configurada mientras se mantiene presionado uno de los botones de control de interruptor. Cuando se suelta el botón retenido, el SmartDrive seguirá manejando / costando a la velocidad actual cuando se soltó el botón. Cuando se presiona y suelta uno de los Botones nuevamente, o se presionan ambos Botones [si está presente], la conducción se desactivará. Tenga en cuenta que, tras la desactivación, no pone el dispositivo en estado de espera.",
       "switchcontrolspeed": "La velocidad máxima a la que puede conducir el SmartDrive cuando está controlado por Switch Control.",
       "tapsensitivity": "La sensibilidad del gesto de tap utilizado para activar y desactivar la conducción. Cuanto más bajo sea el porcentaje, más difícil será tocar: el 100% es el más sensible y, por lo tanto, más fácil de tocar, y el 10% es el menos sensible y, por lo tanto, el más difícil de tocar.",
-      "units": "El sistema de unidades o unidades de medida para mostrar la velocidad y las distancias dentro de las interfaces de usuario. Seleccione Imperial [mi y mph] o Metric [km y km / h].",
+      "units": "El sistema de unidades o unidades de medida para mostrar la velocidad y las distancias dentro de las interfaces de usuario. Seleccione Imperial [mi y mph] o Metric [km y km/h].",
       "wearcheck": "Cuando está habilitado, el reloj inteligente debe estar en la muñeca para activar la asistencia eléctrica. Si la asistencia eléctrica está ENCENDIDA y el reloj inteligente detecta que ya no está en la muñeca, la APAGARÁ automáticamente."
     },
     "error-history": "Historial de errores",
@@ -198,7 +198,7 @@
     "metric": "Métrico",
     "speed": {
       "english": "mph",
-      "metric": "km / h"
+      "metric": "km/h"
     }
   },
   "updates": {

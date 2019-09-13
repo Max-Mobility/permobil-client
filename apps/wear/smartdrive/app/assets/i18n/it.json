@@ -163,7 +163,7 @@
       "switchcontrolmode": "Momentaneo: la modalità di controllo interruttore predefinita in cui SmartDrive inizierà a guidare il motore aumentando la sua velocità alla velocità massima di controllo interruttore configurata solo mentre si tiene premuto uno dei pulsanti di controllo interruttore. Quando il pulsante premuto viene rilasciato o entrambi i pulsanti [se presenti] vengono premuti, la guida si disattiva. Si noti che alla disattivazione non mette il dispositivo in stato di standby.\n\nAgganciato: in modalità di controllo interruttore bloccato, SmartDrive inizierà a guidare il motore aumentando la sua velocità alla velocità massima di controllo interruttore configurata mentre si tiene premuto uno dei pulsanti di controllo interruttore. Quando il pulsante premuto viene rilasciato, SmartDrive rimarrà in marcia / per inerzia alla velocità corrente al momento del rilascio del pulsante. Quando uno dei pulsanti viene premuto e rilasciato di nuovo, o entrambi i pulsanti [se presenti] vengono premuti, la guida si disattiva. Si noti che alla disattivazione non mette il dispositivo in stato di standby.",
       "switchcontrolspeed": "La velocità massima alla quale SmartDrive può guidare quando è controllata da Switch Control.",
       "tapsensitivity": "La sensibilità del gesto del rubinetto utilizzato per attivare e disattivare la guida. Più bassa è la percentuale, più è difficile toccare: il 100% è il più sensibile e quindi il più facile da toccare, e il 10% è il meno sensibile e quindi il più difficile da toccare.",
-      "units": "Il sistema di unità o unità di misura per visualizzare la velocità e le distanze all'interno delle interfacce utente. Selezionare Imperial [mi e mph] o Metrico [km e km / h].",
+      "units": "Il sistema di unità o unità di misura per visualizzare la velocità e le distanze all'interno delle interfacce utente. Selezionare Imperial [mi e mph] o Metrico [km e km/h].",
       "wearcheck": "Se abilitato, lo smartwatch deve essere al polso per attivare il Power Assist. Se il Power Assist è attivo e lo smartwatch rileva che non è più al polso, spegnerà automaticamente il Power Assist."
     },
     "error-history": "Cronologia degli errori",
@@ -198,7 +198,7 @@
     "metric": "metrico",
     "speed": {
       "english": "mph",
-      "metric": "km / h"
+      "metric": "km/h"
     }
   },
   "updates": {

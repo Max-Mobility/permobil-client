@@ -85,27 +85,21 @@
                       class="circleDetails"
                       visibility="{{ isAmbient, isAmbient ? 'collapsed':'visible'}}">
             <StackLayout row="1" col="1" rowSpan="2"
+                         padding="0 0 5 0"
                          tap="{{ toggleDebug }}"
-                         visibility="{{ (!motorOn && !displayDebug) ? 'visible':'collapsed' }}">
+                         visibility="{{ !motorOn ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true"
                      text="{{ estimatedDistanceDisplay }}"/>
-              <Label class="topValueDescription" textWrap="true"
+              <ui:AutoFitText class="topValueDescription"
                      text="{{ estimatedDistanceDescription }}"/>
             </StackLayout>
             <StackLayout row="1" col="1" rowSpan="2"
                          tap="{{ toggleDebug }}"
-                         visibility="{{ displayDebug ? 'visible':'collapsed' }}">
-              <Label class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ numTaps }}"/>
-              <Label row="2" col="1" class="topValueDescription" textWrap="true"
-                     text="Number of unsent taps"/>
-            </StackLayout>
-            <StackLayout row="1" col="1" rowSpan="2"
-                         tap="{{ toggleDebug }}"
-                         visibility="{{ (motorOn && !displayDebug) ? 'visible':'collapsed' }}">
+                         padding="0 0 5 0"
+                         visibility="{{ motorOn ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true"
                      text="{{ currentSpeedDisplay }}"/>
-              <Label class="topValueDescription" textWrap="true"
+              <ui:AutoFitText class="topValueDescription"
                      text="{{ currentSpeedDescription }}"/>
             </StackLayout>
             <Button row="3" col="1"

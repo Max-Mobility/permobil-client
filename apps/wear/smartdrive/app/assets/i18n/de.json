@@ -91,7 +91,7 @@
   "ota": {
     "action": {
       "cancel": "Abbrechen",
-      "force": "Möge die Macht mit dir sein!",
+      "force": "Erzwingen",
       "pause": "Pause",
       "resume": "Fortsetzen",
       "retry": "Wiederholen",
@@ -163,7 +163,7 @@
       "switchcontrolmode": "Tote-Mann-Schaltung: Der Standard-Switch Control-Modus, in dem der SmartDrive den Motor antreibt, indem er seine Geschwindigkeit nur auf die konfigurierte maximale Geschwindigkeit erhöht, während eine der Switch Controls gedrückt gehalten wird. Wenn der gehaltene Knopf losgelassen wird oder beide Knöpfe gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.\n\nLatched: In diesem Modus startet der SmartDrive den Antrieb des Motors, indem er seine Geschwindigkeit auf die konfigurierte maximale Switch Control-Geschwindigkeit erhöht, während eine der Switch Controls gedrückt gehalten wird. Wenn die Taste losgelassen wird, fährt der SmartDrive weiterhin mit der aktuellen Geschwindigkeit, in der die Taste losgelassen wurde. Wenn eine der Tasten gedrückt und wieder losgelassen wird oder beide Tasten gedrückt werden, wird das Fahren deaktiviert. Bitte beachten Sie, dass das Gerät beim Deaktivieren nicht in den Standby-Modus versetzt wird.",
       "switchcontrolspeed": "Die maximale Geschwindigkeit, mit der der SmartDrive fahren kann, wenn er von Switch Control gesteuert wird.",
       "tapsensitivity": "Die Empfindlichkeit der Tippbewegung, die zum Aktivieren und Deaktivieren des Fahrens verwendet wird. Je niedriger der Prozentsatz, desto schwieriger ist das Antippen. 100% ist am empfindlichsten und daher am einfachsten zu tippen, und 10% ist am unempfindlichsten und daher am schwersten zu tippen.",
-      "units": "Das Einheitensystem oder die Maßeinheiten zur Anzeige von Geschwindigkeit und Entfernung innerhalb der Benutzeroberflächen. Wählen Sie entweder Imperial [mi und mph] oder Metrisch [km und km / h].",
+      "units": "Das Einheitensystem oder die Maßeinheiten zur Anzeige von Geschwindigkeit und Entfernung innerhalb der Benutzeroberflächen. Wählen Sie entweder Imperial [mi und mph] oder Metrisch [km und km/h].",
       "wearcheck": "Wenn diese Funktion aktiviert ist, muss sich der PushTracker E2 (Smartwatch) am Handgelenk befinden, um die Servounterstützung einzuschalten. Wenn die Servounterstützung eingeschaltet ist und der PushTracker E2 (Smartwatch) feststellt, dass sie nicht mehr am Handgelenk sitzt, wird sie automatisch ausgeschaltet."
     },
     "error-history": "Fehlerhistorie",
@@ -218,7 +218,7 @@
     "status": "Updatestatus",
     "success": "SmartDrive-Updates erfolgreich abgeschlossen!",
     "timeout": "Zeitüberschreitung bei SmartDrive-Updates",
-    "up-to-date": "SmartDrive ist auf dem neuesten Stand!",
+    "up-to-date": "SmartDrive ist auf dem neuesten stand!",
     "version": "Version"
   },
   "warnings": {
