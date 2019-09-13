@@ -89,6 +89,7 @@ export class TabsComponent {
       if (!user) return;
 
       this.user = user;
+      Log.D('Configuration: ', this.user.data.control_configuration);
       if (
         this.user &&
         this.user.data.control_configuration ===
