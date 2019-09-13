@@ -2831,7 +2831,9 @@ export class MainViewModel extends Observable {
       this._throttledSmartDriveSaveFn.flush();
       // save to the database
       this._throttledSmartDriveSaveFn({
-        battery: 1
+        battery: 1,
+        driveDistance: this.smartDrive.driveDistance,
+        coastDistance: this.smartDrive.coastDistance
       });
     }
     // update battery percentage
@@ -2854,6 +2856,7 @@ export class MainViewModel extends Observable {
     if (coastDistance !== currentCoast || driveDistance !== currentDrive) {
       // save to the database
       this._throttledSmartDriveSaveFn({
+        battery: 0,
         driveDistance: this.smartDrive.driveDistance,
         coastDistance: this.smartDrive.coastDistance
       });
