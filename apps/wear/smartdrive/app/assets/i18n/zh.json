@@ -12,8 +12,8 @@
     "completed": "已成功連接到PushTracker帳戶。",
     "connecting": "連接到PushTracker移動應用程序...",
     "identifier": "智能手錶名稱",
-    "preface": "連接到PushTracker帳戶......",
-    "receiving": "收到帳戶信息......"
+    "preface": "連接到PushTracker帳戶...",
+    "receiving": "收到帳戶信息..."
   },
   "buttons": {
     "allow": "允許",
@@ -35,13 +35,13 @@
   },
   "error-history": {
     "errors": {
-      "batteryvoltage": "[錯誤：001] SD電池電壓",
-      "bledisconnect": "[錯誤：007]藍牙斷開連接",
-      "gyrorange": "[錯誤號：005] SD角度",
-      "motorphases": "[錯誤號：002] SD馬達",
-      "otaunavailable": "[錯誤：006]更新不可用",
+      "batteryvoltage": "[ERR：001] SD電池電壓",
+      "bledisconnect": "[ERR：007] 藍牙斷開連接",
+      "gyrorange": "[ERR：005] SD角度",
+      "motorphases": "[ERR：002] SD馬達",
+      "otaunavailable": "[ERR：006] 更新不可用",
       "overcurrent": "[ERR：003] SD電流尖峰",
-      "overtemperature": "[錯誤號：004] SD過熱"
+      "overtemperature": "[ERR：004] SD過熱"
     },
     "loading": "載入中...",
     "no-errors": "未記錄或接收到SmartDrive錯誤。",
@@ -79,12 +79,12 @@
     "nl": "荷蘭人",
     "nn": "挪威語[尼諾斯克]",
     "sv": "瑞典",
-    "zh": "中國傳統的]"
+    "zh": "中國傳統的"
   },
   "menu": {
     "about": "關於",
     "settings": "設置",
-    "title": "SmartDrive MX2菜單",
+    "title": "SmartDrive MX2+ 菜單",
     "training": "點擊培訓",
     "updates": "無線更新"
   },
@@ -157,13 +157,13 @@
     "control-mode": "控制模式",
     "description": {
       "acceleration": "SmartDrive的加速或速度斜率。",
-      "controlmode": "MX2：SmartDrive的默認基於手勢的操作。在MX2控制模式下，雙擊將通過提高其速度開始驅動電機，單擊將以當前速度滑行，雙擊將停用驅動。\n\nMX2：在MX2控制模式下，SmartDrive會在感應到推動時開始駕駛，並在您點擊時停用駕駛。請注意，這是遺留支持選項。\n\nMX1：在MX1控制模式下，SmartDrive將在感應到您的推動時開始駕駛，並在您輕敲或在您的手柄上製動時停止駕駛。請注意，這是遺留支持選項。",
+      "controlmode": "MX2： SmartDrive的默認基於手勢的操作。在MX2控制模式下，雙擊將通過提高其速度開始驅動電機，單擊將以當前速度滑行，雙擊將停用驅動。\n\nMX2： 在MX2控制模式下，SmartDrive會在感應到推動時開始駕駛，並在您點擊時停用駕駛。請注意，這是遺留支持選項。\n\nMX1： 在MX1控制模式下，SmartDrive將在感應到您的推動時開始駕駛，並在您輕敲或在您的手柄上製動時停止駕駛。請注意，這是遺留支持選項。",
       "maxspeed": "SmartDrive在智能手錶控制下可以達到的最高速度。",
       "powerassistbuzzer": "啟用後，只要建立與遠程設備的連接，或者當Switch Control退出待機狀態，SmartDrive就會發出蜂鳴聲。",
-      "switchcontrolmode": "瞬間：默認的開關控制模式，只有在其中一個開關控制按鈕被保持時，SmartDrive才會通過將其速度提升到配置的開關控制最大速度來開始驅動電機。釋放保持按鈕或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。\n\n鎖存：在鎖存開關控制模式下，SmartDrive將通過在保持其中一個開關控制按鈕的同時將其速度提升至配置的開關控制最大速度來開始驅動電機。當釋放按鈕時，釋放按鈕時，SmartDrive將保持以當前速度行駛/滑行。當按下並再次釋放其中一個按鈕，或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。",
+      "switchcontrolmode": "瞬間： 默認的開關控制模式，只有在其中一個開關控制按鈕被保持時，SmartDrive才會通過將其速度提升到配置的開關控制最大速度來開始驅動電機。釋放保持按鈕或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。\n\n鎖存： 在鎖存開關控制模式下，SmartDrive將通過在保持其中一個開關控制按鈕的同時將其速度提升至配置的開關控制最大速度來開始驅動電機。當釋放按鈕時，釋放按鈕時，SmartDrive將保持以當前速度行駛/滑行。當按下並再次釋放其中一個按鈕，或按下兩個按鈕[如果存在]時，驅動將停用。請注意，取消激活後，它不會使設備進入待機狀態。",
       "switchcontrolspeed": "由Switch Control控制時SmartDrive可以驅動的最大速度。",
-      "tapsensitivity": "用於激活和停用駕駛的輕擊手勢的靈敏度。百分比越低，您需要點擊率越高 -  100%是最敏感的，因此最容易點擊，10%是最不敏感的，因此最難挖掘。",
-      "units": "單位系統或度量單位，用於顯示用戶界面內的速度和距離。選擇英制[mi和mph]或公制[km和km / h]。",
+      "tapsensitivity": "用於激活和停用駕駛的輕擊手勢的靈敏度。百分比越低，您需要點擊率越高 - 100%是最敏感的，因此最容易點擊，10%是最不敏感的，因此最難挖掘。",
+      "units": "單位系統或度量單位，用於顯示用戶界面內的速度和距離。選擇英制[mi和mph]或公制[km和km/h]。",
       "wearcheck": "啟用後，智能手錶必須在手腕上才能打開電源輔助功能。如果電源輔助開啟並且智能手錶感覺到它不再在手腕上，它將自動關閉電源輔助。"
     },
     "error-history": "錯誤歷史記錄",
@@ -172,7 +172,7 @@
     "pair-smartdrive": "配對SmartDrive",
     "paired-to-smartdrive": "成功與SmartDrive配對。",
     "power-assist-buzzer": "動力輔助嗶聲指示",
-    "scanning": "掃描SmartDrive與...配對",
+    "scanning": "掃描SmartDrive與配對...",
     "select-smartdrive": "選擇SmartDrive",
     "tap-sensitivity": "點擊靈敏度",
     "title": "SmartDrive設置",
@@ -191,14 +191,14 @@
   },
   "units": {
     "distance": {
-      "english": "MI",
-      "metric": "千米"
+      "english": "mi",
+      "metric": "km"
     },
     "english": "帝國",
     "metric": "公",
     "speed": {
-      "english": "英里",
-      "metric": "公里/小時"
+      "english": "mph",
+      "metric": "km/h"
     }
   },
   "updates": {
@@ -206,8 +206,8 @@
     "changes": "變更摘要",
     "checking-for-updates": "查詢更新...",
     "communications-failed": "與SmartDrive的通信失敗，請重新啟動SmartDrive。",
-    "connecting-to-smartdrive": "連接到SmartDrive ......",
-    "downloading-new-firmwares": "下載新的更新數據......",
+    "connecting-to-smartdrive": "連接到SmartDrive...",
+    "downloading-new-firmwares": "下載新的更新數據...",
     "errors": {
       "connecting": "連接到SmartDrive時出錯。",
       "downloading": "下載更新時出錯。",

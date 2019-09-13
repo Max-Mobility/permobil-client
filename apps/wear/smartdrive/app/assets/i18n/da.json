@@ -191,7 +191,7 @@
   },
   "units": {
     "distance": {
-      "english": "mil",
+      "english": "mi",
       "metric": "km"
     },
     "english": "Imperial",
