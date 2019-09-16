@@ -1,6 +1,4 @@
-<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" 
-  (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1"
-  *ngIf="user?.data.control_configuration !== 'Switch Control with SmartDrive'">
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1" *ngIf="user?.data.control_configuration !== 'Switch Control with SmartDrive'">
   <TabStrip>
     // Journey
     <TabStripItem class="tabstripitem">
@@ -21,18 +19,23 @@
     </TabStripItem>
   </TabStrip>
 
-  <!-- The number of TabContentItem components should corespond to the number of TabStripItem components -->
   // Journey
   <TabContentItem>
-    <journey-tab></journey-tab>
+    <StackLayout>
+      <journey-tab></journey-tab>
+    </StackLayout>
   </TabContentItem>
   // Home
   <TabContentItem>
-    <home-tab></home-tab>
+    <StackLayout>
+      <home-tab></home-tab>
+    </StackLayout>
   </TabContentItem>
   // Profile
   <TabContentItem>
-    <profile-tab></profile-tab>
+    <StackLayout>
+      <profile-tab></profile-tab>
+    </StackLayout>
   </TabContentItem>
 </BottomNavigation>
 
