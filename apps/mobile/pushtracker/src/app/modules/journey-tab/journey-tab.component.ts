@@ -368,7 +368,7 @@ export class JourneyTabComponent {
         // https://github.com/Max-Mobility/permobil-client/issues/249
         // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
         if (!journey.coastTime || journey.coastTime === 0) {
-          if (journey.coastDistance < 0.1) continue;
+          if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
         }
         // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
         else if (journey.coastTime) {
@@ -656,7 +656,12 @@ export class JourneyTabComponent {
         for (const i in this._weeklyUsageFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayUsage = this._weeklyUsageFromKinvey.days[index];
+            const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
+            if (firstDayOfCurrentWeek && firstDayOfCurrentWeek.date &&
+                areDatesSame(this._weekStart, new Date(firstDayOfCurrentWeek.date))) {
+              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
+              console.log(this.todayUsage.date);
+            }
           }
 
           const dailyUsage = this._weeklyUsageFromKinvey.days[i];
