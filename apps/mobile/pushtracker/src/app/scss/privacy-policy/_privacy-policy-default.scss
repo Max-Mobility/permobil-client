@@ -23,7 +23,7 @@
 
   .ok-btn {
     @extend .OK_BTN_BASE;
-    background-color: #1c72e6;
+    background-color: $permobil-primary;
     color: $white;
   }
 
