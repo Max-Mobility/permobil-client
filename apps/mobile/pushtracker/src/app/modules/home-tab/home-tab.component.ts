@@ -436,7 +436,6 @@ export class HomeTabComponent {
             ? ' kilometers per day'
             : ' miles per day';
         this._updateDistancePlotYAxis(); // sets this._todaysUsage
-        Log.D('Today\'s Usage', this._todaysUsage);
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
           let coastDistance = this._updateDistanceUnit(
