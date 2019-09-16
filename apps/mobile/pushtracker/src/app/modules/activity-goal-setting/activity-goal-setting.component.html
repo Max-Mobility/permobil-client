@@ -1,9 +1,11 @@
 <GridLayout rows="auto, *" columns="*" class="activity-goals-dialog">
-  // Mock ActionBar
-  <GridLayout row="0" rows="*" columns="50, *, auto" class="action-bar">
-    <Button row="0" col="0" text="&#xe5cd;" class="nav-btn" (tap)="closeModal()" ripple rippleColorAlpha="0.18"></Button>
+
+  <GridLayout row="0" rows="*" columns="auto, *" class="action-bar">
+    // Mock ActionBar
+    <MockActionBar row="0" col="1" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
     <Button row="0" col="2" [text]="'profile-tab.set-goal' | translate" class="set-goal-btn" (tap)="onSetGoalBtnTap()" ripple [rippleColor]="savedTheme === 'DEFAULT' ? '#A3C7F6' : '#00c1d5'"></Button>
   </GridLayout>
+
   <ScrollView row="1">
     <GridLayout rows="auto, auto, *">
       <Label row="0" [text]="config.title" class="config-title" textWrap="true"></Label>
