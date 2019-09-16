@@ -701,12 +701,12 @@ export class HomeTabComponent {
       const coastDistancePaletteEntry = new PaletteEntry();
       coastDistancePaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#00c1d5')
-          : new Color('#753bbd');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       coastDistancePaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#00c1d5')
-          : new Color('#753bbd');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
         coastDistancePaletteEntry
       ]);
@@ -717,12 +717,12 @@ export class HomeTabComponent {
       const driveDistancePaletteEntry = new PaletteEntry();
       driveDistancePaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#753bbd')
-          : new Color('#00c1d5');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       driveDistancePaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#753bbd')
-          : new Color('#00c1d5');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
         driveDistancePaletteEntry
       ]);
@@ -733,12 +733,12 @@ export class HomeTabComponent {
       const coastDistanceGoalPaletteEntry = new PaletteEntry();
       coastDistanceGoalPaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#e31c79')
-          : new Color('#00c1d5');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       coastDistanceGoalPaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
-          ? new Color('#e31c79')
-          : new Color('#00c1d5');
+          ? new Color('#0067a6')
+          : new Color('#89d4e3');
       coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
         coastDistanceGoalPaletteEntry
       ]);
