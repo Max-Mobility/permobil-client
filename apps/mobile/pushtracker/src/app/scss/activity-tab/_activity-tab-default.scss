@@ -27,7 +27,7 @@
 
   .chevron-left {
     @extend .CHEVRON_LEFT_BASE;
-    color: $permobil-cousteau;
+    color: $permobil-primary;
   }
 
   .chart-description {
@@ -68,7 +68,7 @@
   }
 
   SegmentedBar {
-    color: $permobil-prussian;
+    color: $permobil-primary;
   }
 
 }

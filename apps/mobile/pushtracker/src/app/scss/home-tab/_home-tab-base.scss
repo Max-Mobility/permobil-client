@@ -60,8 +60,8 @@
   }
 
   .cousteau-circle {
-    background-color: $permobil-cousteau-light;
-    color: $permobil-cousteau-dark;
+    background-color: #bad4ee;
+    color: $permobil-primary;
     height: 30;
     width: 30;
     border-radius: 20;
@@ -77,12 +77,13 @@
       text-align: center;
       vertical-align: center;
       horizontal-align: center;
+      font-weight: bold;
     }
   }
 
   .violet-circle {
-    background-color: $permobil-violet-light;
-    color: $permobil-violet-dark;
+    background-color: #cbb3ec;
+    color: $permobil-violet;
     height: 30;
     width: 30;
     border-radius: 20;
@@ -98,6 +99,7 @@
       text-align: center;
       vertical-align: center;
       horizontal-align: center;
+      font-weight: bold;
     }
   }
 
