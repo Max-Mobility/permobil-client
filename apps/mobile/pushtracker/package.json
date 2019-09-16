@@ -3,21 +3,18 @@
     "id": {
       "ios": "com.max-mobility.PushTracker",
       "android": "com.permobil.pushtracker"
-    },
-    "tns-android": {
-      "version": "6.1.0"
     }
   },
   "dependencies": {
-    "@angular/animations": "~8.2.5",
-    "@angular/common": "~8.2.5",
-    "@angular/compiler": "~8.2.5",
-    "@angular/core": "~8.2.5",
-    "@angular/forms": "~8.2.5",
+    "@angular/animations": "~8.2.6",
+    "@angular/common": "~8.2.6",
+    "@angular/compiler": "~8.2.6",
+    "@angular/core": "~8.2.6",
+    "@angular/forms": "~8.2.6",
     "@angular/http": "~8.0.0-beta.10",
-    "@angular/platform-browser": "~8.2.5",
-    "@angular/platform-browser-dynamic": "~8.2.5",
-    "@angular/router": "~8.2.5",
+    "@angular/platform-browser": "~8.2.6",
+    "@angular/platform-browser-dynamic": "~8.2.6",
+    "@angular/router": "~8.2.6",
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.0.tgz",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@ngx-translate/core": "~11.0.1",
@@ -60,15 +57,15 @@
     "nativescript-ui-listview": "7.0.5",
     "reflect-metadata": "~0.1.12",
     "rxjs": "~6.5.2",
-    "tns-core-modules": "~6.1.0",
+    "tns-core-modules": "~6.1.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "~8.2.5",
-    "@ngtools/webpack": "~8.3.3",
+    "@angular/compiler-cli": "~8.2.6",
+    "@ngtools/webpack": "~8.3.4",
     "nativescript-dev-webpack": "1.2.0",
     "prompts": "^2.1.0",
-    "tns-platform-declarations": "6.1.0",
+    "tns-platform-declarations": "6.1.1",
     "typescript": "~3.5.3"
   }
 }
