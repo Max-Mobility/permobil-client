@@ -6,7 +6,8 @@
   background-color: $white;
 
   .set-goal-btn {
-    color: #1a73e9;
+    color: $permobil-primary;
+    font-size: 16;
   }
 
   .config-title {
@@ -22,7 +23,7 @@
     border-color: #e9eaee;
 
     button {
-      color: #1a73e9;
+      color: $permobil-primary;
     }
 
     .config-value {
