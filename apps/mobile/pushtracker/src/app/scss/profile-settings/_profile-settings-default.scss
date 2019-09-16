@@ -7,12 +7,12 @@
 
   .category {
     @extend .CATEGORY_BASE;
-    color: #2075e8;
+    color: $permobil-primary;
   }
 
   .version-info {
     @extend .category;
-    color: $permobil-rose;
+    color: $permobil-primary;
   }
 
   .setting-layout {

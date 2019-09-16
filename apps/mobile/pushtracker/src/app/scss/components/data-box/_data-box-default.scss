@@ -24,12 +24,12 @@
 .data-box-active {
   @extend .DATA_BOX_BASE;
   .data-box-label {
-    color: #1c72e6;
+    color: $permobil-primary;
     background-color: $white;
   }
 
   GridLayout {
-    border-color: #1c72e6;
+    border-color: $permobil-primary;
   }
 }
 .data-box-error-label {

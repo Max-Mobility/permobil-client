@@ -12,13 +12,8 @@
 
   .distance-remaining-circle {
     @extend .DISTANCE_REMAINING_CIRCLE_BASE;
-    // background-image: linear-gradient(to bottom, #a90329 0%,#8f0222 44%,#6d0019 100%);
-    // background-image: linear-gradient(to right, #c2e59c, #64b3f4);
-
-    // Netflix:
-    // background-image: linear-gradient(to bottom, #8e0e00, #1f1c18);
-
-    background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
+    // background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
+    background-image: linear-gradient(to bottom, #0067a6, #004f7e);
 
     label {
       color: $white;
@@ -71,7 +66,7 @@
 
   .goal-value {
     font-style: italic;
-    color: $permobil-rose;
+    color: $permobil-primary;
     font-weight: bold;
   }
 

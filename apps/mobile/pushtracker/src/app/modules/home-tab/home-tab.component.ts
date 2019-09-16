@@ -354,7 +354,7 @@ export class HomeTabComponent {
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
     Log.D('HomeTab | Loading weekly usage from Kinvey...');
     let result = [];
-    if (!this.user) return result;
+    if (!this.user) return Promise.resolve(result);
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
@@ -373,11 +373,11 @@ export class HomeTabComponent {
         result = JSON.parse(
           appSettings.getString('SmartDrive.WeeklyUsage.' + date)
         );
+        if (result && result.length) {
+          return Promise.resolve(result[0]);
+        }
       } catch (err) {
         Log.E('HomeTab | Loading weekly usage from appSettings |', err);
-      }
-      if (result && result.length) {
-        return result[0];
       }
     }
 
@@ -410,6 +410,7 @@ export class HomeTabComponent {
             );
             return Promise.resolve(result);
           }
+          Log.D('HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet');
           return Promise.resolve(this._weeklyUsageFromKinvey);
         })
         .catch(err => {
@@ -434,6 +435,8 @@ export class HomeTabComponent {
           this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
             ? ' kilometers per day'
             : ' miles per day';
+        this._updateDistancePlotYAxis(); // sets this._todaysUsage
+        Log.D('Today\'s Usage', this._todaysUsage);
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
           let coastDistance = this._updateDistanceUnit(
@@ -483,7 +486,6 @@ export class HomeTabComponent {
           (parseFloat(this.todayCoastDistance) /
             this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
           100;
-        this._updateDistancePlotYAxis();
         this._updateProgress();
       });
     });
