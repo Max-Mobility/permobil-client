@@ -29,6 +29,8 @@ import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
 import { SmartDriveData } from '../../namespaces';
 import { BluetoothService, LoggingService } from '../../services';
+import { APP_THEMES } from '../../enums';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   selector: 'wireless-updates',
@@ -72,6 +74,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public noPushTrackerDetected = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
+  savedTheme: string;
 
   constructor(
     private _page: Page,
@@ -84,6 +87,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _vcRef: ViewContainerRef
   ) {
     this.controlConfiguration = _params.context.controlConfiguration || '';
+    this.savedTheme = this._params.context.savedTheme;
   }
 
   ngOnInit() {
