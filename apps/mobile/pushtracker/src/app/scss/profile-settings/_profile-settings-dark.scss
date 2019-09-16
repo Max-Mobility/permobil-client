@@ -12,7 +12,7 @@
 
   .category {
     @extend .CATEGORY_BASE;
-    color: $permobil-cousteau;
+    color: $permobil-sky;
   }
 
   .version-info {
@@ -36,7 +36,7 @@
 
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
-    color: $permobil-cousteau;
+    color: $permobil-sky;
     background: darken($white, 10%);
     off-background-color: $dark-grey;
   }

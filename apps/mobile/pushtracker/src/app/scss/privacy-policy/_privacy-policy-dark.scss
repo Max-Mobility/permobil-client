@@ -27,7 +27,7 @@
 
   .ok-btn {
     @extend .OK_BTN_BASE;
-    background-color: $permobil-cousteau;
+    background-color: $permobil-sky;
     color: $white;
   }
 
@@ -39,7 +39,7 @@
 
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
-    color: $permobil-cousteau;
+    color: $permobil-sky;
     background: darken($white, 10%);
     off-background-color: $dark-grey;
   }

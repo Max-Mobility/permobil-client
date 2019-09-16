@@ -27,12 +27,12 @@
 .data-box-active {
   @extend .DATA_BOX_BASE;
   .data-box-label {
-    color: $permobil-cousteau;
+    color: $permobil-sky;
     background-color: $black;
   }
 
   GridLayout {
-    border-color: $permobil-cousteau;
+    border-color: $permobil-sky;
   }
 }
 

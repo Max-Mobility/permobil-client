@@ -16,8 +16,7 @@
 
   .distance-remaining-circle {
     @extend .DISTANCE_REMAINING_CIRCLE_BASE;
-    // background-image: linear-gradient(to bottom, #a90329 0%,#8f0222 44%,#6d0019 100%);
-    background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
+    background-image: linear-gradient(to bottom, #3d4b6d, #3f4e6b);
 
     label {
       color: $white;
@@ -72,12 +71,12 @@
   }
 
   FlexboxLayout {
-    color: #00c1d5;
+    color: $white;
   }
 
   .goal-value {
     font-style: italic;
-    color: #00c1d5;
+    color: $grey;
     font-weight: bold;
   }
 

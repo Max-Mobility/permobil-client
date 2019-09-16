@@ -24,12 +24,12 @@
 .max-textbox-active {
   @extend .MAX_TEXTBOX_BASE;
   .max-textbox-label {
-    color: $permobil-cousteau;
+    color: $permobil-sky;
     background-color: $black;
   }
 
   GridLayout {
-    border-color: $permobil-cousteau;
+    border-color: $permobil-sky;
 
     > .max-textbox-value {
       color: $white;
