@@ -9,7 +9,7 @@
 
     .item-icon {
       @extend .ITEM_ICON_BASE;
-      color: #1a73e9;
+      color: $permobil-primary;
     }
 
     .faq-question {
