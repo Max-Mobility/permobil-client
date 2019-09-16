@@ -17,6 +17,8 @@ import { PushTracker } from '../../models';
 import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
   SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
+import { APP_THEMES } from '../../enums';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -87,6 +89,12 @@ export class TabsComponent {
 
     this._userService.user.subscribe(user => {
       if (!user) return;
+
+      if (user.data.theme_preference === APP_THEMES.DEFAULT) {
+        enableDefaultTheme();
+      } else {
+        enableDarkTheme();
+      }
 
       this.user = user;
       Log.D('Configuration: ', this.user.data.control_configuration);
