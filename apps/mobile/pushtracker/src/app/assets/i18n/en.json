@@ -327,7 +327,7 @@
     "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
     "gender": {
       "male": "Male",
-      "female": "Female"  
+      "female": "Female"
     },
     "chair-types": {
       "rigid": "Rigid",
