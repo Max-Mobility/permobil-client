@@ -421,6 +421,11 @@
     "title": "App and PushTracker Switch Control Settings Differ",
     "message": "Please select from the options below how to resolve differences between the settings."
   },
+  "units": {
+    "km": "km",
+    "mi": "mi",
+    "s": "s"
+  },
   "user": {
     "consent-form-title": "Privacy Policy Consent Form",
     "privacy-policy-site": "https://privacy.permobil.com",

@@ -135,8 +135,8 @@ export class HomeTabComponent {
     );
     const distanceUnit =
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-        ? 'km'
-        : 'mi';
+        ? this._translateService.instant('units.km')
+        : this._translateService.instant('units.mi');
     // Welcome back ${first name} if the user is at 0 of both goals
     if (coastTimeValue === 0.0 && distanceValue === 0.0) {
       this.todayMessage = this._translateService.instant('home-tab.welcome-back')

@@ -736,7 +736,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
-      this.user.data.activity_goal_coast_time + ' s';
+      this.user.data.activity_goal_coast_time + ' ' + this._translateService.instant('units.s');
   }
 
   private _initDisplayActivityGoalDistance() {

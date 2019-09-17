@@ -451,7 +451,7 @@ export class ActivityComponent implements OnInit {
             if (this.viewMode === ViewMode.COAST_TIME) {
               this.chartDescription =
                 (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(1) +
-                ' s';
+                ' ' + this._translateService.instant('units.s');
             } else if (this.viewMode === ViewMode.PUSH_COUNT) {
               this.chartDescription =
                 (this._dailyActivityFromKinvey.push_count || 0) + ' pushes';
@@ -459,7 +459,7 @@ export class ActivityComponent implements OnInit {
           } else {
             // format chart description for viewMode
             if (this.viewMode === ViewMode.COAST_TIME) {
-              this.chartDescription = (0).toFixed(1) + ' s';
+              this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
             } else if (this.viewMode === ViewMode.PUSH_COUNT) {
               this.chartDescription = 0 + ' pushes';
             }
@@ -707,7 +707,7 @@ export class ActivityComponent implements OnInit {
         // format the chart description label based on viewMode
         if (this.viewMode === ViewMode.COAST_TIME) {
           this.chartDescription =
-            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription =
             (cache.weeklyActivity.push_count || 0) + ' pushes';
@@ -776,7 +776,7 @@ export class ActivityComponent implements OnInit {
         // format the chart description based on viewMode
         if (this.viewMode === ViewMode.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' s';
+            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' pushes';
         } else if (this.viewMode === ViewMode.DISTANCE) {
@@ -1005,7 +1005,7 @@ export class ActivityComponent implements OnInit {
       if (activity) {
         if (this.viewMode === ViewMode.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' s';
+            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' pushes';
         } else {
@@ -1321,7 +1321,7 @@ export class ActivityComponent implements OnInit {
       // format chart description for viewMode
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription =
-          (activity.coast_time_avg || 0).toFixed(1) + ' s';
+          (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
@@ -1338,7 +1338,7 @@ export class ActivityComponent implements OnInit {
     } else {
       // format chart description for viewMode
       if (this.viewMode === ViewMode.COAST_TIME) {
-        this.chartDescription = (0).toFixed(1) + ' s';
+        this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
         this.chartDescription = 0 + ' pushes';
       } else if (this.viewMode === ViewMode.DISTANCE) {
@@ -1391,7 +1391,7 @@ export class ActivityComponent implements OnInit {
         // format chart description for viewMode
         if (this.viewMode === ViewMode.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' s';
+            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' pushes';
         }
@@ -1403,7 +1403,7 @@ export class ActivityComponent implements OnInit {
         // format chart description for viewMode
         if (this.viewMode === ViewMode.COAST_TIME) {
           this.chartDescription =
-            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' s';
+            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription =
             (cache.weeklyActivity.push_count || 0) + ' pushes';
