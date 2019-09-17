@@ -697,11 +697,11 @@ export class HomeTabComponent {
       coastDistancePaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       coastDistancePaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
         coastDistancePaletteEntry
       ]);
@@ -713,11 +713,11 @@ export class HomeTabComponent {
       driveDistancePaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       driveDistancePaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
         driveDistancePaletteEntry
       ]);
@@ -729,11 +729,11 @@ export class HomeTabComponent {
       coastDistanceGoalPaletteEntry.fillColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       coastDistanceGoalPaletteEntry.strokeColor =
         this.user.data.theme_preference === 'DEFAULT'
           ? new Color('#0067a6')
-          : new Color('#cbb3ec');
+          : new Color('#89d4e3');
       coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
         coastDistanceGoalPaletteEntry
       ]);
