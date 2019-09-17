@@ -46,6 +46,9 @@ export class ActivityGoalSettingComponent implements OnInit {
       value: 0,
       value_description: ''
     };
+    // The assumption here is that the parent component, profile-tab is passing translated text
+    // in this._params.context - So we're not bothering to run this text through the translate
+    // service here. https://github.com/Max-Mobility/permobil-client/issues/280
     Object.assign(this.config, this._params.context);
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
