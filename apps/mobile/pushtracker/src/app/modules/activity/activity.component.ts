@@ -1412,7 +1412,7 @@ export class ActivityComponent implements OnInit {
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        if (activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
+        if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
           this.chartDescription =
           (
             this._updateDistanceUnit(
@@ -1474,7 +1474,7 @@ export class ActivityComponent implements OnInit {
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        if (activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
+        if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
           this.weeklyActivityAnnotationValue =
           this._updateDistanceUnit(
             this._caseTicksToMiles(
