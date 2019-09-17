@@ -1,0 +1,32 @@
+@import '../../variables';
+@import 'bottom-sheets-base';
+
+.bottom-sheet-layout {
+  @extend .BOTTOM_SHEET_LAYOUT_BASE;
+
+  background-color: $dark-custom-dialog-layout-black;
+
+  .title {
+    color: $white;
+  }
+
+  .description {
+    color: lighten($color: $white, $amount: 0.2);
+  }
+
+  .listpicker {
+    color: $white;
+  }
+
+  .slider-value {
+    color: $white;
+  }
+
+  .cancel-btn {
+    color: $permobil-cousteau;
+  }
+
+  .ok-btn {
+    color: $permobil-cousteau;
+  }
+}
