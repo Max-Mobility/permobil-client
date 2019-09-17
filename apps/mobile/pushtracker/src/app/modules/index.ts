@@ -1,3 +1,5 @@
+import { ActivityComponent } from './activity';
+import { ActivityGoalSettingComponent } from './activity-goal-setting';
 import { AppInfoComponent } from './app-info';
 import { ConfigurationComponent } from './configuration';
 import { ForgotPasswordComponent } from './forgot-password';
@@ -5,10 +7,14 @@ import { LoginComponent } from './login';
 import { PrivacyPolicyComponent } from './privacy-policy';
 import { ProfileSettingsComponent } from './profile-settings';
 import { SignUpComponent } from './sign-up';
+import { SupportComponent } from './support';
 import { UpdatesInfoComponent } from './updates-info';
+import { WirelessUpdatesComponent } from './wireless-updates';
 
 export const ENTRY_COMPONENTS = [
   AppInfoComponent,
+  SupportComponent,
+  ActivityComponent,
   ProfileSettingsComponent,
   PrivacyPolicyComponent,
   UpdatesInfoComponent
@@ -18,6 +24,10 @@ export const COMPONENTS = [
   LoginComponent,
   SignUpComponent,
   ForgotPasswordComponent,
+  ActivityComponent,
+  ActivityGoalSettingComponent,
+  SupportComponent,
+  WirelessUpdatesComponent,
   AppInfoComponent,
   ProfileSettingsComponent,
   PrivacyPolicyComponent,

@@ -32,6 +32,8 @@ export class ListPickerSheetComponent {
       this.description = data.description;
       this.primaryItems = data.primaryItems;
       this.primaryIndex = data.primaryIndex;
+      this.secondaryItems = data.secondaryItems;
+      this.secondaryIndex = data.secondaryIndex;
       this.listPickerNeedsSecondary = data.listPickerNeedsSecondary;
     }
     // set the theme

@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
 import { Color } from 'tns-core-modules/color';
 import { screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
@@ -29,11 +28,7 @@ import { ListPickerSheetComponent } from '../shared/components';
   templateUrl: './profile-tab.component.html'
 })
 export class ProfileTabComponent {
-  @ViewChild('listPickerDialog', { static: false })
-  listPickerDialog: ElementRef;
-
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
-  isUserEditingSetting: boolean = false;
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
   displayGender: string;
@@ -55,10 +50,6 @@ export class ProfileTabComponent {
   primaryIndex: number;
   secondaryIndex: number;
   listPickerIndex: number;
-  listPickerTitle: string;
-  listPickerDescription: string;
-  listPickerDescriptionNecessary: boolean;
-  listPickerNeedsSecondary: boolean;
 
   /**
    * The user selected activity goal layout. Used to keep track of which UI layout was selected to apply/remove CSS classes.
@@ -69,7 +60,6 @@ export class ProfileTabComponent {
    * Being used to databind the translateY for 'off-screen' positioned layouts.
    */
   screenHeight: number;
-  isUserLoaded: boolean;
   private _barcodeScanner: BarcodeScanner;
   private _userSubscription$: Subscription;
 
@@ -88,21 +78,9 @@ export class ProfileTabComponent {
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
 
-    this.isUserLoaded = false;
-    this.screenHeight = screen.mainScreen.heightDIPs;
-
     this._page.actionBarHidden = true;
+    this.screenHeight = screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
-
-    this.primary = ['100', '200', '300'];
-    this.secondary = ['100', '200', '300'];
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    this.listPickerIndex = 0;
-    this.listPickerTitle = '';
-    this.listPickerDescription = '';
-    this.listPickerDescriptionNecessary = true;
-    this.listPickerNeedsSecondary = false;
 
     // WARNING: There's an important assumption here
     // chairTypes and chairTypesTranslated (or chairMakes and chairMakesTranslated) are
@@ -134,7 +112,6 @@ export class ProfileTabComponent {
     this._userSubscription$ = this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
-      this.isUserLoaded = true;
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
       this._initDisplayGender();
@@ -308,7 +285,6 @@ export class ProfileTabComponent {
   }
 
   onBirthDateTap(args: EventData) {
-    this.isUserEditingSetting = true;
     Log.D(`Birthday tapped`);
 
     this._setActiveDataBox(args);
@@ -333,7 +309,6 @@ export class ProfileTabComponent {
       dateTimePickerStyle
     )
       .then(result => {
-        this.isUserEditingSetting = false;
         this._removeActiveDataBox();
         if (result) {
           this._logService.logBreadCrumb(
@@ -355,8 +330,10 @@ export class ProfileTabComponent {
       });
   }
 
-  onGenderTap(args: EventData) {
-    console.log('gender tap');
+  onGenderTap(args) {
+    Log.D('User tapped Gender data box');
+    this._setActiveDataBox(args);
+
     let primaryIndex;
     if (this.user.data.gender === 'Male') {
       primaryIndex = 0;
@@ -368,9 +345,11 @@ export class ProfileTabComponent {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true,
       context: {
-        title: 'Gender',
-        description: 'Some description',
-        primaryItems: ['Male', 'Female'],
+        title: this._translateService.instant('general.gender'),
+        primaryItems: [
+          this._translateService.instant('profile-tab.male'),
+          this._translateService.instant('profile-tab.female')
+        ],
         primaryIndex,
         listPickerNeedsSecondary: false
       }
@@ -379,39 +358,212 @@ export class ProfileTabComponent {
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
         console.log(result);
+        this._removeActiveDataBox();
       });
   }
 
-  onListPickerTap(args: EventData, index) {
-    this.isUserEditingSetting = true;
-    this.listPickerIndex = index;
-    switch (this.listPickerIndex) {
-      case 0:
-        this._onListGenderTap(args);
-        break;
-      case 1:
-        this._onListWeightTap(args);
-        break;
-      case 2:
-        this._onListHeightTap(args);
-        break;
-      case 3:
-        this._onListChairTypeTap(args);
-        break;
-      case 4:
-        this._onListChairMakeTap(args);
-        break;
-      case 5:
-        this._onListControlConfigurationTap(args);
+  onWeightTap(args) {
+    Log.D('User tapped Weight data box');
+    this._setActiveDataBox(args);
+
+    let primaryIndex = 0;
+    let secondaryIndex = 0;
+    let primaryItems;
+    let secondaryItems;
+
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
+      primaryItems = Array.from({ length: 280 }, (v, k) => k + 1 + '');
+      secondaryItems = Array.from({ length: 9 }, (v, k) => '.' + k);
+    } else {
+      primaryItems = Array.from({ length: 600 }, (v, k) => k + 1 + '');
+      secondaryItems = Array.from({ length: 10 }, (v, k) => '.' + k);
     }
+
+    // Initialize primaryIndex and secondaryIndex from user.data.weight
+    const indices = this._getWeightIndices();
+    primaryIndex = parseFloat(primaryItems[indices[0]]);
+    secondaryIndex = 10 * indices[1];
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.weight'),
+        description: this._translateService.instant('general.weight-guess'),
+        primaryItems,
+        primaryIndex,
+        secondaryItems,
+        secondaryIndex,
+        listPickerNeedsSecondary: true
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
+        this._removeActiveDataBox();
+      });
   }
 
-  primaryIndexChanged(picker) {
-    this.primaryIndex = picker.selectedIndex;
+  onHeightTap(args) {
+    Log.D('User tapped Height data box');
+    this._setActiveDataBox(args);
+
+    const listPickerNeedsSecondary =
+      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
+        ? true
+        : false;
+
+    let primaryIndex = 0;
+    let secondaryIndex = 0;
+    // let listPickerIndex = 2;
+    let primaryItems;
+    let secondaryItems;
+
+    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
+      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
+    } else {
+      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
+      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' in');
+    }
+
+    // Initialize primaryIndex and secondaryIndex from user.data.height
+    const indices = this._getHeightIndices();
+    primaryIndex = parseInt(primaryItems[indices[0]]);
+    secondaryIndex = parseInt(secondaryItems[indices[1]]);
+    if (secondaryIndex === 12) {
+      primaryIndex += 1;
+      secondaryIndex = 0;
+    }
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.height'),
+        description: this._translateService.instant('general.height-guess'),
+        primaryItems,
+        primaryIndex,
+        secondaryItems,
+        secondaryIndex,
+        listPickerNeedsSecondary
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
+        this._removeActiveDataBox();
+      });
   }
 
-  secondaryIndexChanged(picker) {
-    this.secondaryIndex = picker.selectedIndex;
+  onChairTypeTap(args) {
+    Log.D('User tapped Chair Type data box');
+    this._setActiveDataBox(args);
+
+    let primaryIndex = 0;
+
+    try {
+      const userChairType = this.user.data.chair_type;
+      primaryIndex = this.chairTypesTranslated.indexOf(
+        this._translateService.instant(userChairType)
+      );
+      if (primaryIndex < 0) primaryIndex = 0;
+    } catch (err) {
+      primaryIndex = 0;
+    }
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.height'),
+        primaryItems: this.chairTypesTranslated,
+        primaryIndex,
+        listPickerNeedsSecondary: false
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
+        this._removeActiveDataBox();
+      });
+  }
+
+  onChairMakeTap(args) {
+    Log.D('User tapped Chair Make data box');
+    this._setActiveDataBox(args);
+
+    let primaryIndex = 0;
+
+    try {
+      const userChairMake = this.user.data.chair_make;
+      primaryIndex = this.chairMakesTranslated.indexOf(
+        this._translateService.instant(userChairMake)
+      );
+      if (primaryIndex < 0) primaryIndex = 0;
+    } catch (err) {
+      primaryIndex = 0;
+    }
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('profile-tab.chair-make'),
+        primaryItems: this.chairMakesTranslated,
+        primaryIndex,
+        listPickerNeedsSecondary: false
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
+        this._removeActiveDataBox();
+      });
+  }
+
+  onControlConfigTap(args) {
+    Log.D('User tapped Control Configuration data box');
+    this._setActiveDataBox(args);
+
+    let primaryIndex = 0;
+
+    try {
+      const userConfiguration = this.user.data.control_configuration;
+      primaryIndex = this.configurationsTranslated.indexOf(
+        this._translateService.instant(userConfiguration)
+      );
+      if (primaryIndex < 0) primaryIndex = 0;
+    } catch (err) {
+      primaryIndex = 0;
+    }
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant(
+          'profile-tab.control-configuration'
+        ),
+        primaryItems: this.configurationsTranslated,
+        primaryIndex,
+        listPickerNeedsSecondary: false
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
+        this._removeActiveDataBox();
+      });
   }
 
   onScan(deviceName) {
@@ -458,27 +610,8 @@ export class ProfileTabComponent {
     });
   }
 
-  async closeListPickerDialog() {
-    const x = this.listPickerDialog.nativeElement as GridLayout;
-    x.animate({
-      opacity: 0,
-      duration: 200
-    }).then(() => {
-      x.animate({
-        translate: {
-          x: 0,
-          y: this.screenHeight
-        },
-        duration: 0
-      });
-    });
-
-    this._removeActiveDataBox();
-    this.isUserEditingSetting = false;
-  }
-
   async saveListPickerValue() {
-    this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
+    // this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
     switch (this.listPickerIndex) {
       case 0:
         this._userService.updateDataProperty(
@@ -558,179 +691,12 @@ export class ProfileTabComponent {
     return [primaryIndex - 2, secondaryIndex];
   }
 
-  private _onListGenderTap(args: EventData) {
-    Log.D('User tapped Gender data box');
-
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    Log.D('User tapped gender data box');
-    this._setActiveDataBox(args);
-
-    this.primary = [
-      this._translateService.instant('profile-tab.male'),
-      this._translateService.instant('profile-tab.female')
-    ];
-    if (this.user.data.gender === 'Male') this.primaryIndex = 0;
-    else this.primaryIndex = 1;
-
-    this.listPickerTitle = this._translateService.instant('general.gender');
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-  }
-
-  private _onListWeightTap(args: EventData) {
-    Log.D('User tapped Weight data box');
-
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    this._setActiveDataBox(args);
-
-    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      this.primary = Array.from({ length: 280 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 9 }, (v, k) => '.' + k);
-    } else {
-      this.primary = Array.from({ length: 600 }, (v, k) => k + 1 + '');
-      this.secondary = Array.from({ length: 10 }, (v, k) => '.' + k);
-    }
-
-    // Initialize primaryIndex and secondaryIndex from user.data.weight
-    const indices = this._getWeightIndices();
-    this.primaryIndex = parseFloat(this.primary[indices[0]]);
-    this.secondaryIndex = 10 * indices[1];
-
-    this.listPickerTitle = this._translateService.instant('general.weight');
-    this.listPickerDescriptionNecessary = true;
-    this.listPickerDescription = this._translateService.instant(
-      'general.weight-guess'
-    );
-    this.listPickerNeedsSecondary = true;
-
-    this._openListPickerDialog();
-  }
-
-  private _onListHeightTap(args: EventData) {
-    Log.D('User tapped Height data box');
-
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
-    this.listPickerIndex = 2;
-    this._setActiveDataBox(args);
-
-    if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      this.primary = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
-    } else {
-      this.primary = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
-      this.secondary = Array.from({ length: 12 }, (v, k) => k + ' in');
-    }
-
-    // Initialize primaryIndex and secondaryIndex from user.data.height
-    const indices = this._getHeightIndices();
-    this.primaryIndex = parseInt(this.primary[indices[0]]);
-    this.secondaryIndex = parseInt(this.secondary[indices[1]]);
-    if (this.secondaryIndex === 12) {
-      this.primaryIndex += 1;
-      this.secondaryIndex = 0;
-    }
-
-    this.listPickerTitle = this._translateService.instant('general.height');
-    this.listPickerDescriptionNecessary = true;
-    this.listPickerDescription = this._translateService.instant(
-      'general.height-guess'
-    );
-    this.listPickerNeedsSecondary =
-      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
-        ? true
-        : false;
-
-    this._openListPickerDialog();
-  }
-
-  private _onListChairTypeTap(args: EventData) {
-    Log.D('User tapped Chair Type data box');
-
-    this.primaryIndex = 0;
-    this._setActiveDataBox(args);
-
-    this.primary = this.chairTypesTranslated;
-    const userChairType = this.user.data.chair_type;
-    try {
-      this.primaryIndex = this.chairTypesTranslated.indexOf(
-        this._translateService.instant(userChairType)
-      );
-      if (this.primaryIndex < 0) this.primaryIndex = 0;
-    } catch (err) {
-      this.primaryIndex = 0;
-    }
-
-    this.listPickerTitle = this._translateService.instant('general.chair-type');
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-  }
-
-  private _onListChairMakeTap(args: EventData) {
-    Log.D('User tapped Chair Make data box');
-
-    this.primaryIndex = 0;
-    this._setActiveDataBox(args);
-
-    this.primary = this.chairMakesTranslated;
-
-    const userChairMake = this.user.data.chair_make;
-    try {
-      this.primaryIndex = this.chairMakesTranslated.indexOf(
-        this._translateService.instant(userChairMake)
-      );
-      if (this.primaryIndex < 0) this.primaryIndex = 0;
-    } catch (err) {
-      this.primaryIndex = 0;
-    }
-
-    this.listPickerTitle = this._translateService.instant(
-      'profile-tab.chair-make'
-    );
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-  }
-
-  private _onListControlConfigurationTap(args: EventData) {
-    Log.D('User tapped Control Configuration data box');
-
-    this.primaryIndex = 0;
-    this._setActiveDataBox(args);
-
-    this.primary = this.configurationsTranslated;
-
-    const userConfiguration = this.user.data.control_configuration;
-    try {
-      this.primaryIndex = this.configurationsTranslated.indexOf(
-        this._translateService.instant(userConfiguration)
-      );
-      if (this.primaryIndex < 0) this.primaryIndex = 0;
-    } catch (err) {
-      this.primaryIndex = 0;
-    }
-
-    this.listPickerTitle = this._translateService.instant(
-      'profile-tab.control-configuration'
-    );
-    this.listPickerDescriptionNecessary = false;
-    this.listPickerNeedsSecondary = false;
-
-    this._openListPickerDialog();
-  }
-
-  private async _initDisplayActivityGoalCoastTime() {
+  private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
       this.user.data.activity_goal_coast_time + ' s';
   }
 
-  private async _initDisplayActivityGoalDistance() {
+  private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
@@ -741,7 +707,7 @@ export class ProfileTabComponent {
     }
   }
 
-  private async _initDisplayGender() {
+  private _initDisplayGender() {
     this.displayGender = '';
     if (this.user && this.user.data && this.user.data.gender)
       this.displayGender = this._translateService.instant(
@@ -749,7 +715,7 @@ export class ProfileTabComponent {
       );
   }
 
-  private async _initDisplayWeight() {
+  private _initDisplayWeight() {
     this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
     // convert from metric weight (as stored in Kinvey) to user preferred unit
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
@@ -760,7 +726,7 @@ export class ProfileTabComponent {
     if (!this.displayWeight) this.displayWeight = '';
   }
 
-  private async _initDisplayHeight() {
+  private _initDisplayHeight() {
     this.displayHeight = this._displayHeightInCentimeters(
       this.user.data.height
     );
@@ -776,7 +742,7 @@ export class ProfileTabComponent {
     if (!this.displayHeight) this.displayHeight = '';
   }
 
-  private async _initDisplayChairType() {
+  private _initDisplayChairType() {
     if (!this.user || !this.user.data) this.displayChairType = '';
     if (this.user.data.chair_type && this.user.data.chair_type !== '')
       this.displayChairType = this._translateService.instant(
@@ -785,7 +751,7 @@ export class ProfileTabComponent {
     else this.displayChairType = '';
   }
 
-  private async _initDisplayChairMake() {
+  private _initDisplayChairMake() {
     if (!this.user || !this.user.data) this.displayChairMake = '';
     if (this.user.data.chair_make && this.user.data.chair_make !== '')
       this.displayChairMake = this._translateService.instant(
@@ -794,7 +760,7 @@ export class ProfileTabComponent {
     else this.displayChairMake = '';
   }
 
-  private async _initDisplayControlConfiguration() {
+  private _initDisplayControlConfiguration() {
     this.displayControlConfiguration = '';
     if (this.user && this.user.data && this.user.data.control_configuration)
       this.displayControlConfiguration = this._translateService.instant(
@@ -866,22 +832,6 @@ export class ProfileTabComponent {
   private _displayHeightInCentimeters(val: number) {
     if (!val) return 0 + ' cm';
     return val.toFixed() + ' cm';
-  }
-
-  private _openListPickerDialog() {
-    const x = this.listPickerDialog.nativeElement as GridLayout;
-    x.animate({
-      translate: {
-        x: 0,
-        y: 0
-      },
-      duration: 0
-    }).then(() => {
-      x.animate({
-        opacity: 1,
-        duration: 200
-      });
-    });
   }
 
   private _handleSerial(text: string, forDevices?: string[]) {

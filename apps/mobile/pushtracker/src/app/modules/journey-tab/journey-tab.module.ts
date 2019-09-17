@@ -13,7 +13,6 @@ import { SharedModule } from '../shared/shared.module';
     TranslateModule,
     NgRippleModule
   ],
-  providers: [],
   schemas: [NO_ERRORS_SCHEMA]
 })
 export class JourneyTabModule {}

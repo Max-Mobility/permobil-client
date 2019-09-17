@@ -5,7 +5,7 @@
     // Mock ActionBar
     <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" [showWatchConnectBtn]="true" (watchConnectEvent)="onWatchConnectTap()" [user]="user"></MockActionBar>
 
-    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false" [visibility]="isUserLoaded ? 'visible' : 'collapsed'">
+    <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" iosOverflowSafeArea="false">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
@@ -22,10 +22,10 @@
         </StackLayout>
 
         // Privacy Policy Button
-        <Button [isUserInteractionEnabled]="!isUserEditingSetting" (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
+        <Button (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
 
         // User Email
-        <Label [isUserInteractionEnabled]="!isUserEditingSetting" row="2" col="1" colSpan="2" class="profile-email" [text]="user?.username" textWrap="true"></Label>
+        <Label row="2" col="1" colSpan="2" class="profile-email" [text]="user?.username" textWrap="true"></Label>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
@@ -34,7 +34,7 @@
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL')">
+        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
@@ -44,7 +44,7 @@
 
         // Distance
 
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL')">
+        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
@@ -59,8 +59,7 @@
         <StackLayout row="7" col="0" colspan="4" class="hr"></StackLayout>
 
         // Gender Box
-        <!-- <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 0)"> -->
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="0" colSpan="2" class="data-box" (tap)="onGenderTap($event)">
+        <StackLayout row="8" col="0" colSpan="2" class="data-box" (tap)="onGenderTap($event)">
           <Label class="data-box-label" [text]="'general.gender' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayGender" textWrap="true"></Label>
@@ -69,7 +68,7 @@
         </StackLayout>
 
         // Birthday Box
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="2" colSpan="2" class="data-box" (tap)="onBirthDateTap($event)">
+        <StackLayout row="8" col="2" colSpan="2" class="data-box" (tap)="onBirthDateTap($event)">
           <Label class="data-box-label" [text]="'general.birthday' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.dob | date" textWrap="true"></Label>
@@ -78,7 +77,7 @@
         </StackLayout>
 
         // Weight Box
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="9" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 1)">
+        <StackLayout row="9" col="0" colSpan="2" class="data-box" (tap)="onWeightTap($event)">
           <Label class="data-box-label" [text]="'general.weight' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayWeight" textWrap="true"></Label>
@@ -87,7 +86,7 @@
         </StackLayout>
 
         // Height Box
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="9" col="2" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 2)">
+        <StackLayout row="9" col="2" colSpan="2" class="data-box" (tap)="onHeightTap($event)">
           <Label class="data-box-label" [text]="'general.height' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayHeight" textWrap="true"></Label>
@@ -96,7 +95,7 @@
         </StackLayout>
 
         // Chair Type Box
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 3)">
+        <StackLayout row="10" col="0" colSpan="2" class="data-box" (tap)="onChairTypeTap($event)">
           <Label class="data-box-label" [text]="'general.chair-type' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayChairType" textWrap="true"></Label>
@@ -105,7 +104,7 @@
         </StackLayout>
 
         // Chair Make Box
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="10" col="2" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 4)">
+        <StackLayout row="10" col="2" colSpan="2" class="data-box" (tap)="onChairMakeTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.chair-make' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayChairMake" textWrap="true"></Label>
@@ -114,7 +113,7 @@
         </StackLayout>
 
         // Control Configuration
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="11" col="0" colSpan="4" class="data-box" (tap)="onListPickerTap($event, 5)">
+        <StackLayout row="11" col="0" colSpan="4" class="data-box" (tap)="onControlConfigTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.control-configuration' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayControlConfiguration" textWrap="true"></Label>
@@ -123,13 +122,13 @@
         </StackLayout>
 
         // Device Serial Numbers
-        <Label [isUserInteractionEnabled]="!isUserEditingSetting" row="12" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
+        <Label row="12" col="0" colSpan="4" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
 
         // Horizontal Line
         <StackLayout row="13" col="0" colspan="4" class="hr"></StackLayout>
 
         // SmartDrive Serial Number
-        <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="14" col="0" [colSpan]="user?.data.control_configuration === 'Switch Control with SmartDrive' ? 4 : 2" class="data-box" (tap)="onScan('smartdrive')">
+        <StackLayout row="14" col="0" [colSpan]="user?.data.control_configuration === 'Switch Control with SmartDrive' ? 4 : 2" class="data-box" (tap)="onScan('smartdrive')">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true"></Label>
@@ -139,7 +138,7 @@
 
         // Pushtracker Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker then we show the current PushTracker serial number // field that includes the QR code reader for reading the
         OGPT qr code
-        <StackLayout *ngIf="user?.data.control_configuration === 'PushTracker with SmartDrive'" [isUserInteractionEnabled]="!isUserEditingSetting" row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
+        <StackLayout *ngIf="user?.data.control_configuration === 'PushTracker with SmartDrive'" row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
@@ -149,15 +148,7 @@
 
         // Pushtracker E2 Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker E2 then we show a read-only PushTracker E2 serial number field // which shows the serial number saved with
         the user account (comes from the wear apps). // If the user presses on the field, then we show a dialog indicating that the // serial number comes from the wear os apps.
-        <StackLayout
-          *ngIf="user?.data.control_configuration === 'PushTracker E2 with SmartDrive'"
-          [isUserInteractionEnabled]="!isUserEditingSetting"
-          row="14"
-          col="2"
-          colSpan="2"
-          class="data-box"
-          (tap)="onPushTrackerE2SerialNumberTap($event)"
-        >
+        <StackLayout *ngIf="user?.data.control_configuration === 'PushTracker E2 with SmartDrive'" row="14" col="2" colSpan="2" class="data-box" (tap)="onPushTrackerE2SerialNumberTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker-e2' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
@@ -165,30 +156,5 @@
         </StackLayout>
       </GridLayout>
     </ScrollView>
-  </GridLayout>
-
-  <GridLayout #listPickerDialog [isUserInteractionEnabled]="!isUserEditingSetting" row="0" rowSpan="3" col="0" rows="*, auto, *" columns="*" [translateY]="screenHeight" opacity="0" class="custom-template-dialog">
-    <StackLayout row="1">
-      // Mock ActionBar
-      <Label class="title" [text]="listPickerTitle | translate" textWrap="true"></Label>
-      <Label class="description" [text]="listPickerDescription | translate" [visibility]="listPickerDescriptionNecessary ? 'visible' : 'collapsed'" textWrap="true"></Label>
-
-      <GridLayout row="1" rows="*, auto" columns="auto, *, auto">
-        <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
-          <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primary" [selectedIndex]="primaryIndex" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
-          <ListPicker
-            #secondaryPicker
-            class="listpicker m-l-4"
-            [width]="listPickerNeedsSecondary ? '45%' : '0%'"
-            [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'"
-            [items]="secondary"
-            [selectedIndex]="secondaryIndex"
-            (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
-          ></ListPicker>
-        </FlexboxLayout>
-        <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeListPickerDialog()"></Button>
-        <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
-      </GridLayout>
-    </StackLayout>
   </GridLayout>
 </GridLayout>
