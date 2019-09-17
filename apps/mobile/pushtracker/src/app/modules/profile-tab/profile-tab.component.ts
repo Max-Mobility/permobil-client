@@ -8,6 +8,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
+import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty } from 'nativescript-toasty';
 import { Subscription } from 'rxjs';
 import { Color } from 'tns-core-modules/color';
@@ -17,9 +18,10 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_TYPE, CHAIR_MAKE } from '../../enums';
+import { CHAIR_MAKE, CHAIR_TYPE, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
+import { ListPickerSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-tab',
@@ -75,6 +77,7 @@ export class ProfileTabComponent {
     private _translateService: TranslateService,
     private _page: Page,
     private _modalService: ModalDialogService,
+    private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
   ) {}
 
@@ -105,8 +108,12 @@ export class ProfileTabComponent {
     // DO NOT sort the translated list as it'll mess up the relative ordering
     this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
     this.chairMakes = Object.keys(CHAIR_MAKE).map(key => CHAIR_MAKE[key]);
-    this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
-    this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
+    this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key =>
+      this._translateService.instant(CHAIR_TYPE[key])
+    );
+    this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key =>
+      this._translateService.instant(CHAIR_MAKE[key])
+    );
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
@@ -332,6 +339,33 @@ export class ProfileTabComponent {
       .catch(err => {
         this._removeActiveDataBox();
         this._logService.logException(err);
+      });
+  }
+
+  onGenderTap(args: EventData) {
+    console.log('gender tap');
+    let primaryIndex;
+    if (this.user.data.gender === 'Male') {
+      primaryIndex = 0;
+    } else {
+      primaryIndex = 1;
+    }
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: 'Gender',
+        description: 'Some description',
+        primaryItems: ['Male', 'Female'],
+        primaryIndex,
+        listPickerNeedsSecondary: false
+      }
+    };
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        console.log(result);
       });
   }
 
@@ -602,7 +636,9 @@ export class ProfileTabComponent {
     this.primary = this.chairTypesTranslated;
     const userChairType = this.user.data.chair_type;
     try {
-      this.primaryIndex = this.chairTypesTranslated.indexOf(this._translateService.instant(userChairType));
+      this.primaryIndex = this.chairTypesTranslated.indexOf(
+        this._translateService.instant(userChairType)
+      );
       if (this.primaryIndex < 0) this.primaryIndex = 0;
     } catch (err) {
       this.primaryIndex = 0;
@@ -625,7 +661,9 @@ export class ProfileTabComponent {
 
     const userChairMake = this.user.data.chair_make;
     try {
-      this.primaryIndex = this.chairMakesTranslated.indexOf(this._translateService.instant(userChairMake));
+      this.primaryIndex = this.chairMakesTranslated.indexOf(
+        this._translateService.instant(userChairMake)
+      );
       if (this.primaryIndex < 0) this.primaryIndex = 0;
     } catch (err) {
       this.primaryIndex = 0;
@@ -709,11 +747,15 @@ export class ProfileTabComponent {
   }
 
   private async _initDisplayChairType() {
-    this.displayChairType = this._translateService.instant(this.user.data.chair_type);
+    this.displayChairType = this._translateService.instant(
+      this.user.data.chair_type
+    );
   }
 
   private async _initDisplayChairMake() {
-    this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
+    this.displayChairMake = this._translateService.instant(
+      this.user.data.chair_make
+    );
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
