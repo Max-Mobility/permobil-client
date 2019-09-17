@@ -1412,7 +1412,8 @@ export class ActivityComponent implements OnInit {
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        this.chartDescription =
+        if (activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
+          this.chartDescription =
           (
             this._updateDistanceUnit(
               this._caseTicksToMiles(
@@ -1421,6 +1422,9 @@ export class ActivityComponent implements OnInit {
               )
             ) || 0
           ).toFixed(1) + this.distanceUnit;
+        } else {
+          this.chartDescription = '0.0' + this.distanceUnit;
+        }
       } else {
         // We are showing cached data
         const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
@@ -1470,13 +1474,17 @@ export class ActivityComponent implements OnInit {
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        this.weeklyActivityAnnotationValue =
+        if (activity.distance_smartdrive_coastT && activity.distance_smartdrive_coast_start) {
+          this.weeklyActivityAnnotationValue =
           this._updateDistanceUnit(
             this._caseTicksToMiles(
               activity.distance_smartdrive_coast -
                 activity.distance_smartdrive_coast_start
             )
           ) || 0;
+        } else {
+          this.weeklyActivityAnnotationValue = 0;
+        }
         this.weeklyActivityAnnotationValue /= 7;
       } else {
         // We are showing cached data
