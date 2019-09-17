@@ -112,17 +112,18 @@ export class ProfileTabComponent {
     // DO NOT sort the translated list as it'll mess up the relative ordering
     this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
     this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key =>
-      this._translateService.instant(CHAIR_TYPE[key])
+      this._translateService.instant(this.getTranslationKeyForChairType(key))
     );
+
     this.chairMakes = Object.keys(CHAIR_MAKE).map(key => CHAIR_MAKE[key]);
     this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key =>
-      this._translateService.instant(CHAIR_MAKE[key])
+      this._translateService.instant(this.getTranslationKeyForChairMake(key))
     );
     this.configurations = Object.keys(CONFIGURATIONS).map(
       key => CONFIGURATIONS[key]
     );
     this.configurationsTranslated = Object.keys(CONFIGURATIONS).map(key =>
-      this._translateService.instant(CONFIGURATIONS[key])
+      this._translateService.instant(this.getTranslationKeyForConfiguration(key))
     );
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
@@ -144,6 +145,34 @@ export class ProfileTabComponent {
       this._initDisplayChairMake();
       this._initDisplayControlConfiguration();
     });
+  }
+
+  getTranslationKeyForChairType(key) {
+    if (CHAIR_TYPE[key] === CHAIR_TYPE.RIGID) return 'profile-tab.chair-types.rigid';
+    else if (CHAIR_TYPE[key] === CHAIR_TYPE.FOLDING) return 'profile-tab.chair-types.folding';
+    else if (CHAIR_TYPE[key] === CHAIR_TYPE.PEDIATRIC) return 'profile-tab.chair-types.pediatric';
+    else return 'profile-tab.chair-types.rigid';
+  }
+
+  getTranslationKeyForChairMake(key) {
+    if (CHAIR_MAKE[key] === CHAIR_MAKE.COLOURS) return 'profile-tab.chair-makes.colours';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.INVACARE_KUSCHALL) return 'profile-tab.chair-makes.invacare-kuschall';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.KARMAN) return 'profile-tab.chair-makes.karman';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.KI) return 'profile-tab.chair-makes.ki';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.MOTION_COMPOSITES) return 'profile-tab.chair-makes.motion-composites';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.PANTHERA) return 'profile-tab.chair-makes.panthera';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.QUICKIE_SOPUR_RGK) return 'profile-tab.chair-makes.quickie-sopur-rgk';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.TILITE) return 'profile-tab.chair-makes.tilite';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.TOP_END) return 'profile-tab.chair-makes.top-end';
+    else if (CHAIR_MAKE[key] === CHAIR_MAKE.OTHER) return 'profile-tab.chair-makes.other';
+    else return 'profile-tab.chair-makes.colours';
+  }
+
+  getTranslationKeyForConfiguration(key) {
+    if (CONFIGURATIONS[key] === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) return 'profile-tab.configurations.pushtracker-e2-with-smartdrive';
+    else if (CONFIGURATIONS[key] === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) return 'profile-tab.configurations.pushtracker-with-smartdrive';
+    else if (CONFIGURATIONS[key] === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) return 'profile-tab.configurations.switch-control-with-smartdrive';
+    else return 'profile-tab.configurations.pushtracker-e2-with-smartdrive';
   }
 
   onProfileTabUnloaded() {

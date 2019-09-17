@@ -300,19 +300,6 @@
     "activity-goals": "Activity Goals",
     "cancel-scan": "Cancel Scan",
     "chair-make": "Chair Make",
-    "chair-types": ["Rigid", "Folding", "Pediatric"],
-    "chair-makes": [
-      "Colours",
-      "Invacare / Küschall",
-      "Karman",
-      "Ki",
-      "Motion Composites",
-      "Panthera",
-      "Quickie / Sopur / RGK",
-      "TiLite",
-      "Top End",
-      "Other"
-    ],
     "control-configuration": "Control Configuration",
     "coast-time-units": "seconds",
     "device-serial-numbers": "Device Serial Numbers",
@@ -339,7 +326,29 @@
     "pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
     "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
     "male": "Male",
-    "female": "Female"
+    "female": "Female",
+    "chair-types": {
+      "rigid": "Rigid",
+      "folding": "Folding",
+      "pediatric": "Pediatric"
+    },
+    "chair-makes": {
+      "colours": "Colours",
+      "invacare-kuschall": "Invacare / Küschall",
+      "karman": "Karman",
+      "ki": "Ki",
+      "motion-composites": "Motion Composites",
+      "panthera": "Panthera",
+      "quickie-sopur-rgk": "Quickie / Sopur / RGK",
+      "tilite": "TiLite",
+      "top-end": "Top End",
+      "other": "Other"
+    },
+    "configurations": {
+      "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
+      "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
+      "switch-control-with-smartdrive": "Switch Control with SmartDrive"
+    }
   },
   "sd": {
     "switch-settings": {
