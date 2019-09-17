@@ -430,14 +430,14 @@ export class HomeTabComponent {
     this.loadSmartDriveUsageFromKinvey(this._weekStart).then(() => {
       this._formatUsageForView('Week').then(result => {
         this.usageActivity = new ObservableArray(result);
-        this.distanceGoalMessage = 'Travel ';
+        this.distanceGoalMessage = this._translateService.instant('Travel ');
         this.distanceGoalValue = this._updateDistanceUnit(
           this.user.data.activity_goal_distance
         ).toFixed(1);
         this.distanceGoalUnit =
           this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-            ? ' kilometers per day'
-            : ' miles per day';
+            ? this._translateService.instant(' kilometers per day')
+            : this._translateService.instant(' miles per day');
         this._updateDistancePlotYAxis(); // sets this._todaysUsage
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
@@ -587,17 +587,17 @@ export class HomeTabComponent {
         }
 
         this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-        this.coastTimeGoalMessage = 'Coast for ';
+        this.coastTimeGoalMessage = this._translateService.instant('Coast for ');
         this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit = ' seconds each day';
-        this.distanceGoalMessage = 'Travel ';
+        this.coastTimeGoalUnit = this._translateService.instant(' seconds each day');
+        this.distanceGoalMessage = this._translateService.instant('Travel ');
         this.distanceGoalValue = this._updateDistanceUnit(
           this.user.data.activity_goal_distance
         ).toFixed(1);
         this.distanceGoalUnit =
           this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-            ? ' kilometers per day'
-            : ' miles per day';
+            ? this._translateService.instant(' kilometers per day')
+            : this._translateService.instant(' miles per day');
         this.distanceCirclePercentageMaxValue =
           '/' +
           this._updateDistanceUnit(
@@ -617,9 +617,9 @@ export class HomeTabComponent {
             this.user.data.activity_goal_coast_time) *
           100;
 
-        this.coastTimeGoalMessage = 'Coast for ';
+        this.coastTimeGoalMessage = this._translateService.instant('Coast for ');
         this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit = ' seconds each day';
+        this.coastTimeGoalUnit = this._translateService.instant(' seconds each day');
         this.distanceCirclePercentageMaxValue =
           '/' +
           this._updateDistanceUnit(
@@ -644,17 +644,17 @@ export class HomeTabComponent {
   }
 
   private async _updateProgress() {
-    this.coastTimeGoalMessage = 'Coast for ';
+    this.coastTimeGoalMessage = this._translateService.instant('Coast for ');
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-    this.coastTimeGoalUnit = ' seconds each day';
-    this.distanceGoalMessage = 'Travel ';
+    this.coastTimeGoalUnit = this._translateService.instant(' seconds each day');
+    this.distanceGoalMessage = this._translateService.instant('Travel ');
     this.distanceGoalValue = this._updateDistanceUnit(
       this.user.data.activity_goal_distance
     ).toFixed(1);
     this.distanceGoalUnit =
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-        ? ' kilometers per day'
-        : ' miles per day';
+        ? this._translateService.instant(' kilometers per day')
+        : this._translateService.instant(' miles per day');
     this.distanceCirclePercentageMaxValue =
       '/' +
       this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
@@ -833,15 +833,7 @@ export class HomeTabComponent {
           i = i + 1;
         }
         const days = activity.days;
-        const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
-        ];
+        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
           const dailyActivity = days[i];
@@ -869,15 +861,7 @@ export class HomeTabComponent {
         return Promise.resolve(result);
       } else {
         const result = [];
-        const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
-        ];
+        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
         for (const i in dayNames) {
           result.push({
             xAxis: dayNames[parseInt(i)],
@@ -1010,15 +994,7 @@ export class HomeTabComponent {
         return result;
       } else {
         const result = [];
-        const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
-        ];
+        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
         for (const i in dayNames) {
           result.push({
             xAxis: dayNames[parseInt(i)],

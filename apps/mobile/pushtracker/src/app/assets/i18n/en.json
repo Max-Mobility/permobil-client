@@ -154,7 +154,10 @@
   "home-tab": {
     "kilometers-to-go": "kilometers to go",
     "miles-to-go": "miles to go",
-    "title": "Home"
+    "title": "Home",
+    "day-names": [
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    ]
   },
   "journey-tab": {
     "title": "Journey",
