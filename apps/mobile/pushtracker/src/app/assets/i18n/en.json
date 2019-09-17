@@ -424,7 +424,8 @@
   "units": {
     "km": "km",
     "mi": "mi",
-    "s": "s"
+    "s": "s",
+    "pushes": "pushes"
   },
   "user": {
     "consent-form-title": "Privacy Policy Consent Form",

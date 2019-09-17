@@ -454,14 +454,14 @@ export class ActivityComponent implements OnInit {
                 ' ' + this._translateService.instant('units.s');
             } else if (this.viewMode === ViewMode.PUSH_COUNT) {
               this.chartDescription =
-                (this._dailyActivityFromKinvey.push_count || 0) + ' pushes';
+                (this._dailyActivityFromKinvey.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
             }
           } else {
             // format chart description for viewMode
             if (this.viewMode === ViewMode.COAST_TIME) {
               this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
             } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-              this.chartDescription = 0 + ' pushes';
+              this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
             }
           }
         } else {
@@ -710,7 +710,7 @@ export class ActivityComponent implements OnInit {
             (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription =
-            (cache.weeklyActivity.push_count || 0) + ' pushes';
+            (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         } else if (this.viewMode === ViewMode.DISTANCE) {
           this.chartDescription =
             (
@@ -778,7 +778,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' pushes';
+          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         } else if (this.viewMode === ViewMode.DISTANCE) {
           this.chartDescription =
             (
@@ -1007,7 +1007,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' pushes';
+          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         } else {
           this.chartDescription =
             (
@@ -1021,9 +1021,9 @@ export class ActivityComponent implements OnInit {
         }
       } else {
         if (this.viewMode === ViewMode.COAST_TIME) {
-          this.chartDescription = '0 s';
+          this.chartDescription = '0' + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = '0 pushes';
+          this.chartDescription = '0' + ' ' + this._translateService.instant('units.pushes');
         } else {
           this.chartDescription = '0.0' + this.distanceUnit;
         }
@@ -1323,7 +1323,7 @@ export class ActivityComponent implements OnInit {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        this.chartDescription = (activity.push_count || 0) + ' pushes';
+        this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
       } else if (this.viewMode === ViewMode.DISTANCE) {
         this.chartDescription =
           (
@@ -1340,7 +1340,7 @@ export class ActivityComponent implements OnInit {
       if (this.viewMode === ViewMode.COAST_TIME) {
         this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
       } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-        this.chartDescription = 0 + ' pushes';
+        this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
       } else if (this.viewMode === ViewMode.DISTANCE) {
         this.chartDescription = (0).toFixed(1) + this.distanceUnit;
       }
@@ -1393,7 +1393,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' pushes';
+          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         }
       } else {
         // We are showing cached data
@@ -1406,7 +1406,7 @@ export class ActivityComponent implements OnInit {
             (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
         } else if (this.viewMode === ViewMode.PUSH_COUNT) {
           this.chartDescription =
-            (cache.weeklyActivity.push_count || 0) + ' pushes';
+            (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         }
       }
     } else {

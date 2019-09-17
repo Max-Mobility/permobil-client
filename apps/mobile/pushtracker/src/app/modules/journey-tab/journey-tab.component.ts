@@ -383,7 +383,7 @@ export class JourneyTabComponent {
           time: journeyTimeLabel,
           push_count:
             (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
-          push_count_unit: ' ' + this._translateService.instant('journey-tab.pushes'),
+          push_count_unit: ' ' + this._translateService.instant('units.pushes'),
           coast_time:
             (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
           coast_distance:
