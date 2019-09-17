@@ -17,10 +17,10 @@ export function getTimeOfDayFromStartTime(startTime: number) {
 }
 
 export function getTimeOfDayString(timeOfDay: TimeOfDay) {
-  if (timeOfDay === 0) return 'Morning';
-  else if (timeOfDay === 1) return 'Afternoon';
-  else if (timeOfDay === 2) return 'Evening';
-  else if (timeOfDay === 3) return 'Night';
+  if (timeOfDay === 0) return 'morning';
+  else if (timeOfDay === 1) return 'afternoon';
+  else if (timeOfDay === 2) return 'evening';
+  else if (timeOfDay === 3) return 'night';
 }
 
 export function getDayOfWeek(date: Date) {

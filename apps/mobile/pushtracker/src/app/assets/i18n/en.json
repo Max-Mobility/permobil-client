@@ -165,11 +165,33 @@
     "title": "Home",
     "day-names": [
       "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-    ]
+    ],
+    "welcome-back": "Welcome back",
+    "off-to-a-good-start": "Off to a good start",
+    "going-strong": "Going strong!",
+    "only": "Only",
+    "seconds": "seconds",
+    "left": "left",
+    "reached-coast-time-goal": "Reached coast time goal, way to go!",
+    "reached-distance-goal": "Reached distance goal, way to go!",
+    "reached-all-goals": "Reached all your goals, you're amazing!",
+    "travel": "Travel",
+    "km-per-day": "kilometers per day",
+    "mi-per-day": "miles per day",
+    "coast-for": "Coast for",
+    "seconds-per-day": "seconds per day"
   },
   "journey-tab": {
     "title": "Journey",
-    "today": "Today"
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "roll": "roll",
+    "drive": "drive",
+    "pushes": "pushes",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night"
   },
   "languages": {
     "de": "German",

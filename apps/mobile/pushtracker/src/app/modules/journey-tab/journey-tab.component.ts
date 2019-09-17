@@ -290,8 +290,8 @@ export class JourneyTabComponent {
     if (reset) this.journeyItems = [];
 
     const getJourneyTypeString = (journeyType: JourneyType) => {
-      if (journeyType === JourneyType.ROLL) return this._translateService.instant('roll');
-      else if (journeyType === JourneyType.DRIVE) return this._translateService.instant('drive');
+      if (journeyType === JourneyType.ROLL) return this._translateService.instant('journey-tab.roll');
+      else if (journeyType === JourneyType.DRIVE) return this._translateService.instant('journey-tab.drive');
     };
 
     for (const key in orderedJourneyMap) {
@@ -331,9 +331,9 @@ export class JourneyTabComponent {
         yesterday.setDate(yesterday.getDate() - 1);
         const journeyDate = new Date(parseInt(key));
         if (areDatesSame(journeyDate, today)) {
-          journeyDateLabel = this._translateService.instant('Today');
+          journeyDateLabel = this._translateService.instant('journey-tab.today');
         } else if (areDatesSame(journeyDate, yesterday)) {
-          journeyDateLabel = this._translateService.instant('Yesterday');
+          journeyDateLabel = this._translateService.instant('journey-tab.yesterday');
         } else {
           const dateStringList = (journeyDate + '').split(' ');
           journeyDateLabel =
@@ -383,7 +383,7 @@ export class JourneyTabComponent {
           time: journeyTimeLabel,
           push_count:
             (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
-          push_count_unit: this._translateService.instant(' pushes'),
+          push_count_unit: ' ' + this._translateService.instant('journey-tab.pushes'),
           coast_time:
             (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
           coast_distance:
@@ -395,7 +395,7 @@ export class JourneyTabComponent {
               ? journey.driveDistance.toFixed(2)
               : '0.00') || '0.00',
           description:
-            this._translateService.instant(getTimeOfDayString(journey.timeOfDay)) +
+            this._translateService.instant('journey-tab.' + getTimeOfDayString(journey.timeOfDay)) +
             ' ' +
             getJourneyTypeString(journey.journeyType),
           duration: 0,
