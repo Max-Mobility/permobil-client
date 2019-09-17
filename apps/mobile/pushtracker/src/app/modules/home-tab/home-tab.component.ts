@@ -942,15 +942,7 @@ export class HomeTabComponent {
           i = i + 1;
         }
         const days = activity.days;
-        const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
-        ];
+        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
           const dailyUsage = days[i];
