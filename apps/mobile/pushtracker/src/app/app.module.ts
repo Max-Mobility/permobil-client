@@ -8,6 +8,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
+import { NativeScriptMaterialBottomSheetModule } from 'nativescript-material-bottomsheet/angular';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
@@ -48,7 +49,9 @@ export function createTranslateLoader() {
         provide: TranslateLoader,
         useFactory: createTranslateLoader
       }
-    })
+    }),
+    // This will call the install method and inject a global service called BottomSheetService
+    NativeScriptMaterialBottomSheetModule.forRoot()
   ],
   exports: [SharedModule],
   declarations: [AppComponent, ...COMPONENTS],

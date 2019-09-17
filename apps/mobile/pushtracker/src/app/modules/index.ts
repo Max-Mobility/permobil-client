@@ -1,18 +1,16 @@
-import { AppInfoComponent } from './app-info/app-info.component';
-import { ConfigurationComponent } from './configuration/configuration.component';
-import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
-import { LoginComponent } from './login/login.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
-// import { SupportComponent } from './support/support.component';
-import { UpdatesInfoComponent } from './updates-info/updates-info.component';
+import { AppInfoComponent } from './app-info';
+import { ConfigurationComponent } from './configuration';
+import { ForgotPasswordComponent } from './forgot-password';
+import { LoginComponent } from './login';
+import { PrivacyPolicyComponent } from './privacy-policy';
+import { ProfileSettingsComponent } from './profile-settings';
+import { SignUpComponent } from './sign-up';
+import { UpdatesInfoComponent } from './updates-info';
 
 export const ENTRY_COMPONENTS = [
-  ProfileSettingsComponent,
   AppInfoComponent,
+  ProfileSettingsComponent,
   PrivacyPolicyComponent,
-  // SupportComponent,
   UpdatesInfoComponent
 ];
 
@@ -23,7 +21,6 @@ export const COMPONENTS = [
   AppInfoComponent,
   ProfileSettingsComponent,
   PrivacyPolicyComponent,
-  // SupportComponent,
   ConfigurationComponent,
   UpdatesInfoComponent
 ];

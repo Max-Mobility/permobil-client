@@ -5,6 +5,7 @@ import { Fab } from '@nstudio/nativescript-floatingactionbutton';
 import { PullToRefresh } from '@nstudio/nativescript-pulltorefresh';
 import { Log, PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { AnimatedCircle } from 'nativescript-animated-circle';
@@ -13,12 +14,10 @@ import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
+import * as TNSHTTP from 'tns-core-modules/http';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme } from './utils';
-import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
-import * as TNSHTTP from 'tns-core-modules/http';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -45,6 +44,7 @@ export class AppComponent implements OnInit {
     private _router: RouterExtensions
   ) {
     console.time('AppComponent_Constructor');
+
     // init sentry - DNS key is in the SmartEvalKinvey package
     Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
 
@@ -88,15 +88,12 @@ export class AppComponent implements OnInit {
       }
     );
 
-    application.on(
-      application.resumeEvent,
-      () => {
-        Log.D('Application resumed');
-        const weekStart = this._getFirstDayOfWeek(new Date());
-        this._loadWeeklyActivityFromKinvey(weekStart);
-        this._loadSmartDriveUsageFromKinvey(weekStart);
-      }
-    );
+    application.on(application.resumeEvent, () => {
+      Log.D('Application resumed');
+      const weekStart = this._getFirstDayOfWeek(new Date());
+      this._loadWeeklyActivityFromKinvey(weekStart);
+      this._loadSmartDriveUsageFromKinvey(weekStart);
+    });
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
     Kinvey.ping()
@@ -151,14 +148,23 @@ export class AppComponent implements OnInit {
     let result = [];
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
     try {
-      const queryString = '?query={"_acl.creator":"' + user._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        user._id +
+        '","data_type":"WeeklyActivity","date":"' +
+        date +
+        '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -167,18 +173,21 @@ export class AppComponent implements OnInit {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString('PushTracker.WeeklyActivity.' + date, JSON.stringify(result));
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(false);
-      })
-      .catch(err => {
-        return Promise.reject(false);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            appSettings.setString(
+              'PushTracker.WeeklyActivity.' + date,
+              JSON.stringify(result)
+            );
+            return Promise.resolve(true);
+          }
+          return Promise.resolve(false);
+        })
+        .catch(err => {
+          return Promise.reject(false);
+        });
     } catch (err) {
       return Promise.reject(false);
     }
@@ -192,16 +201,23 @@ export class AppComponent implements OnInit {
 
     const month = weekStartDate.getMonth() + 1;
     const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
+    const date =
+      weekStartDate.getFullYear() +
+      '/' +
+      (month < 10 ? '0' + month : month) +
+      '/' +
       (day < 10 ? '0' + day : day);
     try {
-      const queryString = '?query={"_acl.creator":"' +
-        user._id + '","data_type":"SmartDriveWeeklyInfo","date":"' +
-        date + '"}&limit=1&sort={"_kmd.lmt": -1}';
+      const queryString =
+        '?query={"_acl.creator":"' +
+        user._id +
+        '","data_type":"SmartDriveWeeklyInfo","date":"' +
+        date +
+        '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
         url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' + queryString,
+          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
+          queryString,
         method: 'GET',
         headers: {
           Accept: 'application/json; charset=utf-8',
@@ -210,21 +226,23 @@ export class AppComponent implements OnInit {
           'Content-Type': 'application/json'
         }
       })
-      .then(resp => {
-        const data = resp.content.toJSON();
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString('SmartDrive.WeeklyUsage.' + date, JSON.stringify(result));
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(false);
-      })
-      .catch(err => {
-        return Promise.reject(false);
-      });
+        .then(resp => {
+          const data = resp.content.toJSON();
+          if (data && data.length) {
+            result = data[0];
+            appSettings.setString(
+              'SmartDrive.WeeklyUsage.' + date,
+              JSON.stringify(result)
+            );
+            return Promise.resolve(true);
+          }
+          return Promise.resolve(false);
+        })
+        .catch(err => {
+          return Promise.reject(false);
+        });
     } catch (err) {
       return Promise.reject(false);
     }
   }
-
 }

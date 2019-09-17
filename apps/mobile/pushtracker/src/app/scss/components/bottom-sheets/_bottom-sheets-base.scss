@@ -1,0 +1,50 @@
+@import '../../variables';
+
+.BOTTOM_SHEET_LAYOUT_BASE {
+  width: 100%;
+  padding: 8;
+
+  margin: 24;
+  padding: 4;
+  border-radius: 4;
+
+  .title {
+    font-family: $os;
+    font-size: 18;
+    font-weight: bold;
+    horizontal-align: left;
+    vertical-align: center;
+    margin: 10;
+    text-wrap: true;
+  }
+
+  .description {
+    font-family: $os;
+    font-size: 12;
+    margin: 2 2 15 10;
+    text-wrap: true;
+  }
+
+  .slider-value {
+    horizontal-align: right;
+    margin: 0 5 0 5;
+    font-size: 20;
+  }
+
+  .cancel-btn {
+    @extend .btn-transparent;
+    horizontal-align: right;
+    text-transform: capitalize;
+    text-align: center;
+    border-radius: 4;
+    height: 20;
+  }
+
+  .ok-btn {
+    @extend .btn-transparent;
+    horizontal-align: right;
+    text-align: center;
+    border-radius: 4;
+    height: 20;
+  }
+}
