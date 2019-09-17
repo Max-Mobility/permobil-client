@@ -13,26 +13,34 @@
   "app-info-component": {
     "sections": [
       {
-        "text": "Permobil is delivering a better experience to users of the SmartDrive. Lorem ipsum consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "title": ""
+        "lottie": "trophy.json",
+        "text": "SmartDrive and PushTracker technologies produce and deliver the following activity statistics designed to facilitate independence, increase activity, and promote optimal health.",
+        "title": "Activity"
+      },
+      {
+        "text": "It’s important to set goals since they give you long-term vision and short-term motivation.",
+        "title": "Goals"
       },
       {
         "lottie": "wheelchair.json",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "title": "Working towards better health"
+        "text": "This represents how many times a person pushes the wheel during mobility. The fewer the pushes, the less demand on the person in the chair.",
+        "title": "Pushing"
       },
       {
-        "lottie": "trophy.json",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "title": "Why do the goals matter?"
+        "text": "This represents the time between pushes. The greater the time between pushes, means the further the person goes without the demand on their muscles and joints.",
+        "title": "Coast time"
       },
       {
         "lottie": "bullseye.json",
-        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur enim dolor, hendrerit eu tellus in, faucibus consectetur arcu. In vulputate lacus ut dui molestie, in dapibus tortor blandit. Integer consectetur ligula risus, sit amet pretium lacus iaculis a. Cras et leo eu ante ultricies tristique nec a ligula. Phasellus placerat ut arcu non egestas. Quisque at placerat dui. Nulla aliquam, neque in convallis tempor, nunc neque sodales quam, sit amet facilisis enim ante auctor nulla.",
-        "title": "Hit your goals and finish strong"
+        "text": "This tracks how far you go each day. SmartDrive allows people to go further by providing an assist when they need it.",
+        "title": "Distance"
+      },
+      {
+        "text": "Between pushing thousands of times a day, transferring to multiple surfaces and reaching above 90 degrees frequently, manual chair users put a lot of strain on their shoulders and upper extremities. While we can’t control everything—we can control how many pushes a person using a manual wheelchair needs to perform in to participate to the fullest. ",
+        "title": "Your Health"
       }
     ],
-    "title": "Get going with SmartDrive from Permobil & MaxMobility"
+    "title": "Permobil SmartDrive"
   },
   "bluetooth": {
     "service-failure": "Unable to start the bluetooth service."
