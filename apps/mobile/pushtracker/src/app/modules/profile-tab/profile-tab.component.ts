@@ -18,7 +18,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_TYPE, CHAIR_MAKE, CONFIGURATIONS } from '../../enums';
+import { CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent } from '../shared/components';
@@ -111,11 +111,19 @@ export class ProfileTabComponent {
     // indexing results in the same chair type on both lists. One's just a translated version of the other
     // DO NOT sort the translated list as it'll mess up the relative ordering
     this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
-    this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key => this._translateService.instant(CHAIR_TYPE[key]));
+    this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key =>
+      this._translateService.instant(CHAIR_TYPE[key])
+    );
     this.chairMakes = Object.keys(CHAIR_MAKE).map(key => CHAIR_MAKE[key]);
-    this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key => this._translateService.instant(CHAIR_MAKE[key]));
-    this.configurations = Object.keys(CONFIGURATIONS).map(key => CONFIGURATIONS[key]);
-    this.configurationsTranslated = Object.keys(CONFIGURATIONS).map(key => this._translateService.instant(CONFIGURATIONS[key]));
+    this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key =>
+      this._translateService.instant(CHAIR_MAKE[key])
+    );
+    this.configurations = Object.keys(CONFIGURATIONS).map(
+      key => CONFIGURATIONS[key]
+    );
+    this.configurationsTranslated = Object.keys(CONFIGURATIONS).map(key =>
+      this._translateService.instant(CONFIGURATIONS[key])
+    );
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
@@ -475,9 +483,11 @@ export class ProfileTabComponent {
       case 0:
         this._userService.updateDataProperty(
           'gender',
-          (this.primaryIndex === 0 ? 'Male' : 'Female')
+          this.primaryIndex === 0 ? 'Male' : 'Female'
         );
-        KinveyUser.update({ gender: (this.primaryIndex === 0 ? 'Male' : 'Female') });
+        KinveyUser.update({
+          gender: this.primaryIndex === 0 ? 'Male' : 'Female'
+        });
         break;
       case 1:
         this._saveWeightOnChange(
@@ -510,7 +520,10 @@ export class ProfileTabComponent {
           'control_configuration',
           this.configurations[this.primaryIndex]
         );
-        Log.D('Configuration changed to', this.configurations[this.primaryIndex]);
+        Log.D(
+          'Configuration changed to',
+          this.configurations[this.primaryIndex]
+        );
         KinveyUser.update({
           control_configuration: this.configurations[this.primaryIndex]
         });
@@ -553,7 +566,10 @@ export class ProfileTabComponent {
     Log.D('User tapped gender data box');
     this._setActiveDataBox(args);
 
-    this.primary = [this._translateService.instant('Male'), this._translateService.instant('Female')];
+    this.primary = [
+      this._translateService.instant('Male'),
+      this._translateService.instant('Female')
+    ];
     if (this.user.data.gender === 'Male') this.primaryIndex = 0;
     else this.primaryIndex = 1;
 
@@ -692,7 +708,9 @@ export class ProfileTabComponent {
 
     const userConfiguration = this.user.data.control_configuration;
     try {
-      this.primaryIndex = this.configurationsTranslated.indexOf(this._translateService.instant(userConfiguration));
+      this.primaryIndex = this.configurationsTranslated.indexOf(
+        this._translateService.instant(userConfiguration)
+      );
       if (this.primaryIndex < 0) this.primaryIndex = 0;
     } catch (err) {
       this.primaryIndex = 0;
@@ -726,7 +744,9 @@ export class ProfileTabComponent {
   private async _initDisplayGender() {
     this.displayGender = '';
     if (this.user && this.user.data && this.user.data.gender)
-      this.displayGender = this._translateService.instant(this.user.data.gender);
+      this.displayGender = this._translateService.instant(
+        this.user.data.gender
+      );
   }
 
   private async _initDisplayWeight() {
@@ -759,23 +779,27 @@ export class ProfileTabComponent {
   private async _initDisplayChairType() {
     if (!this.user || !this.user.data) this.displayChairType = '';
     if (this.user.data.chair_type && this.user.data.chair_type !== '')
-      this.displayChairType = this._translateService.instant(this.user.data.chair_type);
-    else
-      this.displayChairType = '';
+      this.displayChairType = this._translateService.instant(
+        this.user.data.chair_type
+      );
+    else this.displayChairType = '';
   }
 
   private async _initDisplayChairMake() {
     if (!this.user || !this.user.data) this.displayChairMake = '';
     if (this.user.data.chair_make && this.user.data.chair_make !== '')
-      this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
-    else
-      this.displayChairMake = '';
+      this.displayChairMake = this._translateService.instant(
+        this.user.data.chair_make
+      );
+    else this.displayChairMake = '';
   }
 
   private async _initDisplayControlConfiguration() {
     this.displayControlConfiguration = '';
     if (this.user && this.user.data && this.user.data.control_configuration)
-      this.displayControlConfiguration = this._translateService.instant(this.user.data.control_configuration);
+      this.displayControlConfiguration = this._translateService.instant(
+        this.user.data.control_configuration
+      );
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
