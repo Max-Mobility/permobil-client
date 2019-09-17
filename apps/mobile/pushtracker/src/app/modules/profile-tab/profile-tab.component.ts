@@ -399,7 +399,10 @@ export class ProfileTabComponent {
       context: {
         title: 'Gender',
         description: 'Some description',
-        primaryItems: ['Male', 'Female'],
+        primaryItems: [
+          this._translateService.instant('profile-tab.gender.male'),
+          this._translateService.instant('profile-tab.gender.female')
+        ],
         primaryIndex,
         listPickerNeedsSecondary: false
       }
@@ -596,8 +599,8 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     this.primary = [
-      this._translateService.instant('profile-tab.male'),
-      this._translateService.instant('profile-tab.female')
+      this._translateService.instant('profile-tab.gender.male'),
+      this._translateService.instant('profile-tab.gender.female')
     ];
     if (this.user.data.gender === 'Male') this.primaryIndex = 0;
     else this.primaryIndex = 1;

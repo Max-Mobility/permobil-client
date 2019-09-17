@@ -325,8 +325,10 @@
     "configuration-change-dialog-message": "Login required. You will be redirected to the login page.",
     "pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
     "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
-    "male": "Male",
-    "female": "Female",
+    "gender": {
+      "male": "Male",
+      "female": "Female"  
+    },
     "chair-types": {
       "rigid": "Rigid",
       "folding": "Folding",
