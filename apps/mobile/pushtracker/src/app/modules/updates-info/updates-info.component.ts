@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
+import { Log } from '@permobil/core';
 
 @Component({
   selector: 'updates-info',
@@ -29,13 +30,37 @@ export class UpdatesInfoComponent implements OnInit {
     this._logService.logBreadCrumb('updates-info.component OnInit');
     const context = this._params.context;
     this.infoItems = [];
+    const smartDriveMCUData = context['SmartDriveMCU.ota'];
+    const smartDriveBLEData = context['SmartDriveBLE.ota'];
+    const pushTrackerOTAData = context['PushTracker.ota'];
     if (context) {
-      const smartDriveMCUChanges = context['SmartDriveMCU.ota'] ? context['SmartDriveMCU.ota'].changes || [] : [];
-      const smartDriveMCUVersion = context['SmartDriveMCU.ota'] ? this.versionByteToString(context['SmartDriveMCU.ota'].version) || '' : '';
-      const smartDriveBLEChanges = context['SmartDriveBLE.ota'] ? context['SmartDriveBLE.ota'].changes || [] : [];
-      const smartDriveBLEVersion = context['SmartDriveBLE.ota'] ? this.versionByteToString(context['SmartDriveBLE.ota'].version) || '' : '';
-      const pushTrackerChanges = context['PushTracker.ota'] ? context['PushTracker.ota'].changes || [] : [];
-      const pushTrackerVersion = context['PushTracker.ota'] ? this.versionByteToString(context['PushTracker.ota'].version) || '' : '';
+      // Assumption here: The changelog for each category is translated per the preferred language of
+      // the user in the parent component, i.e., wireless updates
+      // So check in wireless updates to make sure that the translated version of the changelog
+      // is propagated here https://github.com/Max-Mobility/permobil-client/issues/280
+      let smartDriveMCUChanges = [];
+      let smartDriveMCUVersion = '';
+      if (smartDriveMCUData && smartDriveMCUData.changes) {
+        smartDriveMCUChanges = smartDriveMCUData.changes;
+        smartDriveMCUVersion = this.versionByteToString(smartDriveMCUData.version);
+      }
+      Log.D(smartDriveMCUChanges);
+
+      let smartDriveBLEChanges = [];
+      let smartDriveBLEVersion = '';
+      if (smartDriveBLEData && smartDriveBLEData.changes) {
+        smartDriveBLEChanges = smartDriveBLEData.changes;
+        smartDriveBLEVersion = this.versionByteToString(smartDriveBLEData.version);
+      }
+      Log.D(smartDriveBLEChanges);
+
+      let pushTrackerChanges = [];
+      let pushTrackerVersion = '';
+      if (pushTrackerOTAData && pushTrackerOTAData.changes) {
+        pushTrackerChanges = pushTrackerOTAData.changes;
+        pushTrackerVersion = this.versionByteToString(pushTrackerOTAData.version);
+      }
+      Log.D(pushTrackerChanges);
 
       if (smartDriveMCUVersion !== '') {
         const smartDriveMCUSection = { 'title': 'SmartDrive MCU v' + smartDriveMCUVersion, 'items': [] };
