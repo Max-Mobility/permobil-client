@@ -29,8 +29,6 @@ import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
 import { SmartDriveData } from '../../namespaces';
 import { BluetoothService, LoggingService } from '../../services';
-import { APP_THEMES } from '../../enums';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   selector: 'wireless-updates',
