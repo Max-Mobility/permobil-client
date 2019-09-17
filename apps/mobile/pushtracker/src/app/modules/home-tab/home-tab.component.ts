@@ -334,7 +334,10 @@ export class HomeTabComponent {
     this._modalService
       .showModal(ActivityComponent, {
         context: {
-          tabSelectedIndex: 0,
+          tabSelectedIndex:
+          this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+            ? 0
+            : 1,
           user: this.user
         },
         fullscreen: true,
