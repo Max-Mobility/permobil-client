@@ -45,6 +45,7 @@ export class ProfileTabComponent {
   displayChairMake: string;
   configurations: Array<string> = [];
   configurationsTranslated: Array<string> = [];
+  displayControlConfiguration: string;
 
   // List picker related fields
   primary: string[];
@@ -130,6 +131,7 @@ export class ProfileTabComponent {
       this._initDisplayHeight();
       this._initDisplayChairType();
       this._initDisplayChairMake();
+      this._initDisplayControlConfiguration();
     });
   }
 
@@ -474,14 +476,13 @@ export class ProfileTabComponent {
         KinveyUser.update({ chair_make: this.chairMakes[this.primaryIndex] });
         break;
       case 5:
-        const newConfiguration = this.primary[this.primaryIndex];
         this._userService.updateDataProperty(
           'control_configuration',
           this.configurations[this.primaryIndex]
         );
         Log.D('Configuration changed to', this.configurations[this.primaryIndex]);
         KinveyUser.update({
-          control_configuration: newConfiguration
+          control_configuration: this.configurations[this.primaryIndex]
         });
         break;
     }
@@ -735,6 +736,12 @@ export class ProfileTabComponent {
       this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
     else
       this.displayChairMake = '';
+  }
+
+  private async _initDisplayControlConfiguration() {
+    this.displayControlConfiguration = '';
+    if (this.user && this.user.data && this.user.data.control_configuration)
+      this.displayControlConfiguration = this._translateService.instant(this.user.data.control_configuration);
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {

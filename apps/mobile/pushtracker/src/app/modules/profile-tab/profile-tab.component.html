@@ -116,7 +116,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="11" col="0" colSpan="4" class="data-box" (tap)="onListPickerTap($event, 5)">
           <Label class="data-box-label" [text]="'profile-tab.control-configuration' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.control_configuration" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayControlConfiguration" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
