@@ -14,7 +14,7 @@ $retry-color: #db4537;
 
   .update-label {
     @extend .UPDATE_LABEL_BASE;
-    color: $permobil-cousteau;
+    color: $permobil-sky;
   }
 
   .update-stack-layout {
@@ -30,7 +30,7 @@ $retry-color: #db4537;
 
   .update-circle {
     @extend .UPDATE_CIRCLE_BASE;
-    bar-color: $permobil-cousteau;
+    bar-color: $permobil-sky;
     rim-color: $dark-custom-dialog-layout-black;
   }
 

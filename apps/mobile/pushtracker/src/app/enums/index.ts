@@ -4,3 +4,4 @@ export * from './app-themes';
 export * from './storage-keys';
 export * from './units';
 export * from './chair-info';
+export * from './configurations';

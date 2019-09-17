@@ -27,12 +27,12 @@
 
   .chart-title {
     @extend .CHART_TITLE_BASE;
-    color: $permobil-cousteau;
+    color: $white;
   }
 
   .chevron-left {
     @extend .CHEVRON_LEFT_BASE;
-    color: $permobil-violet;
+    color: $permobil-sky;
   }
 
   .chart-description {
@@ -57,8 +57,8 @@
   .push-count-btn-enabled,
   .distance-btn-enabled {
     @extend .CHART_VIEW_BTN_BASE;
-    background-color: #502980;
-    color: $white;
+    background-color: $white;
+    color: $black;
   }
 
   RadCartesianChart {
@@ -69,10 +69,6 @@
   SegmentedBar {
     color: $white;
   }
-
-  // label {
-  //   color: $white;
-  // }
 
   .goal-description {
     @extend .GOAL_DESCRIPTION_BASE;

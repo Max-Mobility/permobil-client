@@ -251,7 +251,7 @@ export class SignUpComponent implements OnInit {
             // Kinvey SDK is working
             // Navigate to tabs home with clearHistory
             this._userService.initializeUser(<PushTrackerUser>((<any>KinveyUser.getActiveUser())));
-            this._router.navigate(['configuration-tab'], {
+            this._router.navigate(['configuration'], {
               clearHistory: true
             });
           })

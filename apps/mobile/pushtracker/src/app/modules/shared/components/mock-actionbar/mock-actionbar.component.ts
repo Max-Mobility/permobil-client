@@ -115,7 +115,8 @@ export class MockActionbarComponent {
     this._modalService
       .showModal(WirelessUpdatesComponent, {
         context: {
-          controlConfiguration: this.controlConfiguration
+          controlConfiguration: this.controlConfiguration,
+          savedTheme: this.CURRENT_THEME
         },
         fullscreen: true,
         animated: true,

@@ -1,9 +1,9 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'" busy="true"></ActivityIndicator>
+  <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" busy="true"></ActivityIndicator>
 
-  <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'">
+  <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'">
     <ScrollView>
       <GridLayout rows="auto, *">
         <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
@@ -11,7 +11,7 @@
             row="0"
             [items]="tabItems"
             [selectedIndex]="tabSelectedIndex"
-            [selectedBackgroundColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"
+            [selectedBackgroundColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
             (loaded)="segmentedBarLoaded($event)"
             (selectedIndexChange)="onSelectedIndexChanged($event)"
             class="m-5"
@@ -69,7 +69,7 @@
               </LinearAxis>
               <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
               <Palette tkCartesianPalette seriesName="DailyActivity">
-                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"></PaletteEntry>
+                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></PaletteEntry>
               </Palette>
               <ChartGridLineAnnotation
                 #dailyActivityAnnotation
@@ -79,7 +79,7 @@
                 [value]="dailyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"
+                [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>
@@ -118,7 +118,7 @@
               ></LinearAxis>
               <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
               <Palette tkCartesianPalette seriesName="WeeklyActivity">
-                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"></PaletteEntry>
+                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></PaletteEntry>
               </Palette>
               <ChartGridLineAnnotation
                 #weeklyActivityAnnotation
@@ -128,7 +128,7 @@
                 [value]="weeklyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"
+                [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>

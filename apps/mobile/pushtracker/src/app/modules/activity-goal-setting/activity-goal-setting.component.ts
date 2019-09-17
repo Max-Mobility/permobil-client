@@ -7,6 +7,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -45,6 +46,9 @@ export class ActivityGoalSettingComponent implements OnInit {
       value: 0,
       value_description: ''
     };
+    // The assumption here is that the parent component, profile-tab is passing translated text
+    // in this._params.context - So we're not bothering to run this text through the translate
+    // service here. https://github.com/Max-Mobility/permobil-client/issues/280
     Object.assign(this.config, this._params.context);
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -52,6 +56,10 @@ export class ActivityGoalSettingComponent implements OnInit {
     );
     this._userService.user.subscribe(user => {
       this._user = user;
+      this.savedTheme = this._user.data.theme_preference;
+      this.savedTheme === APP_THEMES.DEFAULT
+      ? enableDefaultTheme()
+      : enableDarkTheme();
     });
   }
 

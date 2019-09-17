@@ -42,7 +42,7 @@
                 <Label
                   row="1"
                   col="0"
-                  [text]="item.coast_time + ' s' + '   •   ' + item.push_count + ' pushes' + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === 0 ? 'km' : 'mi')"
+                  [text]="item.coast_time + ' s' + '   •   ' + item.push_count + item.push_count_unit + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === 0 ? 'km' : 'mi')"
                   class="journey-item"
                 ></Label>
                 // Date - Today, Yesterday or Some Date
@@ -61,7 +61,7 @@
           verticalAlignment="center"
           horizontalAlignment="right"
           *ngIf="!journeyItemsLoaded || showLoadingIndicator"
-          [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#00c1d5'"
+          [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
           busy="true"
           marginRight="15"
           marginTop="-30"

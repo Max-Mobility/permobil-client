@@ -12,7 +12,7 @@
   color: $white;
 }
 .date-time-picker-buttons {
-  color: $permobil-cousteau;
+  color: $permobil-sky;
 }
 
 .profile-tab-layout {
@@ -46,7 +46,7 @@
 
   .avatar-circle {
     @extend .AVATAR_CIRCLE_BASE;
-    background-color: $permobil-cousteau;
+    background-color: $permobil-sky;
 
     label {
       color: $black;

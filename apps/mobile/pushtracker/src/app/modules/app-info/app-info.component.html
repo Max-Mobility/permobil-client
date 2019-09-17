@@ -3,10 +3,10 @@
   <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
-    <StackLayout paddingTop="20">
+    <StackLayout paddingTop="10">
       <Label width="98%" class="title" [text]="'app-info-component.title' | translate" textWrap="true"></Label>
       // text sections from the app-info-component translation sections
-      <StackLayout padding="10" *ngFor="let item of infoItems">
+      <StackLayout padding="5" width="90%" *ngFor="let item of infoItems">
         <Label class="section-title" [text]="item.title" textWrap="true"></Label>
         <Label class="section-text" [text]="item.text" textWrap="true"></Label>
         <LottieView height="120" [src]="item.lottie" loop="true" autoPlay="true" [visibility]="item.lottie ? 'visible' : 'collapsed'"></LottieView>

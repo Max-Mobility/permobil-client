@@ -289,9 +289,9 @@ export class JourneyTabComponent {
 
     if (reset) this.journeyItems = [];
 
-    const getJourneyTypeString = function(journeyType: JourneyType) {
-      if (journeyType === JourneyType.ROLL) return 'roll';
-      else if (journeyType === JourneyType.DRIVE) return 'drive';
+    const getJourneyTypeString = (journeyType: JourneyType) => {
+      if (journeyType === JourneyType.ROLL) return this._translateService.instant('roll');
+      else if (journeyType === JourneyType.DRIVE) return this._translateService.instant('drive');
     };
 
     for (const key in orderedJourneyMap) {
@@ -331,9 +331,9 @@ export class JourneyTabComponent {
         yesterday.setDate(yesterday.getDate() - 1);
         const journeyDate = new Date(parseInt(key));
         if (areDatesSame(journeyDate, today)) {
-          journeyDateLabel = 'Today';
+          journeyDateLabel = this._translateService.instant('Today');
         } else if (areDatesSame(journeyDate, yesterday)) {
-          journeyDateLabel = 'Yesterday';
+          journeyDateLabel = this._translateService.instant('Yesterday');
         } else {
           const dateStringList = (journeyDate + '').split(' ');
           journeyDateLabel =
@@ -368,7 +368,7 @@ export class JourneyTabComponent {
         // https://github.com/Max-Mobility/permobil-client/issues/249
         // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
         if (!journey.coastTime || journey.coastTime === 0) {
-          if (journey.coastDistance < 0.1) continue;
+          if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
         }
         // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
         else if (journey.coastTime) {
@@ -383,6 +383,7 @@ export class JourneyTabComponent {
           time: journeyTimeLabel,
           push_count:
             (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
+          push_count_unit: this._translateService.instant(' pushes'),
           coast_time:
             (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
           coast_distance:
@@ -394,7 +395,7 @@ export class JourneyTabComponent {
               ? journey.driveDistance.toFixed(2)
               : '0.00') || '0.00',
           description:
-            getTimeOfDayString(journey.timeOfDay) +
+            this._translateService.instant(getTimeOfDayString(journey.timeOfDay)) +
             ' ' +
             getJourneyTypeString(journey.journeyType),
           duration: 0,
@@ -656,7 +657,12 @@ export class JourneyTabComponent {
         for (const i in this._weeklyUsageFromKinvey.days) {
           if (areDatesSame(this._weekStart, date)) {
             const index = getDayOfWeek(new Date());
-            this.todayUsage = this._weeklyUsageFromKinvey.days[index];
+            const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
+            if (firstDayOfCurrentWeek && firstDayOfCurrentWeek.date &&
+                areDatesSame(this._weekStart, new Date(firstDayOfCurrentWeek.date))) {
+              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
+              console.log(this.todayUsage.date);
+            }
           }
 
           const dailyUsage = this._weeklyUsageFromKinvey.days[i];
