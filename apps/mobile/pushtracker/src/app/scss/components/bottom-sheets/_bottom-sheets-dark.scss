@@ -4,7 +4,7 @@
 .bottom-sheet-layout {
   @extend .BOTTOM_SHEET_LAYOUT_BASE;
 
-  background-color: $dark-custom-dialog-layout-black;
+  background-color: rgb(53, 54, 58);
 
   .title {
     color: $white;
