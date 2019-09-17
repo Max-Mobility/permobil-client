@@ -290,7 +290,12 @@
   },
   "profile-settings": {
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "scanning-for-smartdrives": "Scanning for SmartDrives...",
+    "detected-a-smartdrive": "Detected a SmartDrive!",
+    "sending-settings": "Sending settings...",
+    "sync-successful": "Sync successful!",
+    "error-sending-settings": "Error sending settings"
   },
   "profile-tab": {
     "about-you": "About You",

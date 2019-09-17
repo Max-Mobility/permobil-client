@@ -136,10 +136,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async scanForSmartDrive(force: boolean = false) {
-    this.syncState = this._translateService.instant('Scanning for SmartDrives...');
+    this.syncState = this._translateService.instant('profile-settings.scanning-for-smartdrives');
     Log.D('Scanning for SmartDrives');
     if (!force && this.smartDrive && this.smartDrive.address) {
-      this.syncState = this._translateService.instant('Detected a SmartDrive!');
+      this.syncState = this._translateService.instant('profile-settings.detected-a-smartdrive');
       Log.D('Scan is not forced - Already have a SmartDrive', this.smartDrive.address);
       return true;
     }
@@ -161,7 +161,7 @@ export class ProfileSettingsComponent implements OnInit {
             this.smartDrive = drive;
             Log.D('SmartDrive detected', this.smartDrive.address);
             Log.D('Scan successful');
-            this.syncState = this._translateService.instant('Detected a SmartDrive!');
+            this.syncState = this._translateService.instant('profile-settings.detected-a-smartdrive');
           });
           return true;
         }
@@ -416,14 +416,14 @@ export class ProfileSettingsComponent implements OnInit {
 
     Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
     if (this.smartDrive && this.smartDrive.ableToSend) {
-      this.syncState = this._translateService.instant('Sending settings...');
+      this.syncState = this._translateService.instant('profile-settings.sending-settings');
       this._zone.run(async () => {
         try {
           await this.smartDrive.sendSettingsObject(this.settingsService.settings);
           await this.smartDrive.sendSwitchControlSettingsObject(
             this.settingsService.switchControlSettings);
           await this.smartDrive.disconnect();
-          this.syncState = this._translateService.instant('Sync Successful!');
+          this.syncState = this._translateService.instant('profile-settings.sync-successful');
           await this.sleep(3000);
           this.syncingWithSmartDrive = false;
           Log.D('Done sync\'ing with SmartDrive');
@@ -431,7 +431,7 @@ export class ProfileSettingsComponent implements OnInit {
           Log.D('Syncing with SmartDrive?', this.syncingWithSmartDrive);
           this.syncSuccessful = true;
         } catch (err) {
-          this.syncState = this._translateService.instant('Error sending settings');
+          this.syncState = this._translateService.instant('profile-settings.error-sending-settings');
           Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
           Log.D(err);
           this._logService.logException(err);
@@ -472,7 +472,7 @@ export class ProfileSettingsComponent implements OnInit {
       if (!this.smartDrive) return;
       await this.smartDrive.connect();
       Log.D('Connected to SmartDrive', this.smartDrive.address);
-      this.syncState = this._translateService.instant('Connected to SmartDrive');
+      this.syncState = this._translateService.instant('profile-settings.connected-a-smartdrive');
       // Register for SmartDrive connected and disconnected events
       this.smartDrive.on(
         SmartDrive.smartdrive_connect_event,
