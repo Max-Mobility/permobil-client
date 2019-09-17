@@ -354,7 +354,7 @@
     ],
     "title": "Support"
   },
-  "configuration-tab-component": {
+  "configuration": {
     "title": "Configuration",
     "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
     "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
