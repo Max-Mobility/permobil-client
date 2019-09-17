@@ -1014,7 +1014,7 @@ export class ActivityComponent implements OnInit {
               this._updateDistanceUnit(
                 this._caseTicksToMiles(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 )
               ) || 0
             ).toFixed(1) + this.distanceUnit;

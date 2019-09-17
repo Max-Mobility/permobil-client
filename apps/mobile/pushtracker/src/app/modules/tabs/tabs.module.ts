@@ -4,17 +4,15 @@ import { NativeScriptCommonModule } from 'nativescript-angular/common';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
-import { ActivityComponent, ActivityGoalSettingComponent, ConfigurationComponent, HomeTabComponent, JourneyTabComponent, PrivacyPolicyComponent, ProfileSettingsComponent, ProfileTabComponent, SupportComponent, TabsComponent, UpdatesInfoComponent, WirelessUpdatesComponent } from '..';
+import { ActivityComponent, ConfigurationComponent, HomeTabComponent, JourneyTabComponent, PrivacyPolicyComponent, ProfileSettingsComponent, ProfileTabComponent, TabsComponent, UpdatesInfoComponent, WirelessUpdatesComponent } from '..';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   entryComponents: [
-    ActivityGoalSettingComponent,
     ActivityComponent,
     ConfigurationComponent,
     PrivacyPolicyComponent,
     ProfileSettingsComponent,
-    SupportComponent,
     UpdatesInfoComponent,
     WirelessUpdatesComponent
   ],
@@ -34,8 +32,7 @@ import { SharedModule } from '../shared/shared.module';
     TabsComponent,
     ProfileTabComponent,
     JourneyTabComponent,
-    HomeTabComponent,
-    SupportComponent
+    HomeTabComponent
   ],
   providers: [],
   schemas: [NO_ERRORS_SCHEMA]

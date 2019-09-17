@@ -5,11 +5,15 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NgRippleModule } from 'nativescript-ng-ripple';
-import { ActivityGoalSettingComponent, WirelessUpdatesComponent } from '..';
+import { ActivityGoalSettingComponent, SupportComponent, WirelessUpdatesComponent } from '..';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  entryComponents: [WirelessUpdatesComponent, ActivityGoalSettingComponent],
+  entryComponents: [
+    WirelessUpdatesComponent,
+    ActivityGoalSettingComponent,
+    SupportComponent
+  ],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,
@@ -18,7 +22,11 @@ import { SharedModule } from '../shared/shared.module';
     TranslateModule,
     NgRippleModule
   ],
-  declarations: [WirelessUpdatesComponent, ActivityGoalSettingComponent],
+  declarations: [
+    WirelessUpdatesComponent,
+    ActivityGoalSettingComponent,
+    SupportComponent
+  ],
   providers: [BarcodeScanner],
   schemas: [NO_ERRORS_SCHEMA]
 })
