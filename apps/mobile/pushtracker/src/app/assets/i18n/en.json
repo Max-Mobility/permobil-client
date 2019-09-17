@@ -150,9 +150,6 @@
     "week": "Week",
     "weight": "Weight",
     "weight-guess": "If you don't know your exact weight, enter your best guess.",
-    "wireless-updates-component": {
-      "title": "Wireless Updates"
-    },
     "drive-distance": "Drive Distance",
     "odometer": "miles total",
     "odometer-km": "kilometers total",
@@ -295,7 +292,8 @@
     "detected-a-smartdrive": "Detected a SmartDrive!",
     "sending-settings": "Sending settings...",
     "sync-successful": "Sync successful!",
-    "error-sending-settings": "Error sending settings"
+    "error-sending-settings": "Error sending settings",
+    "connected-a-smartdrive": "Connected a SmartDrive"
   },
   "profile-tab": {
     "about-you": "About You",
@@ -339,7 +337,9 @@
     "configuration-change-dialog-title": "Changing Control Configuration",
     "configuration-change-dialog-message": "Login required. You will be redirected to the login page.",
     "pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
-    "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here."
+    "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
+    "male": "Male",
+    "female": "Female"
   },
   "sd": {
     "switch-settings": {
@@ -457,5 +457,21 @@
       }
     ],
     "title": "Firmware Updates"
+  },
+  "wireless-updates": {
+    "title": "Wireless Updates",
+    "state": {
+      "firmware-download-failed": "Firmware Download Failed!",
+      "no-smartdrives-detected": "No SmartDrives detected!",
+      "more-than-one-smartdrive-detected": "More than one SmartDrive detected!",
+      "no-pushtracker-detected": "No PushTracker detected!",
+      "more-than-one-pushtracker-detected": "More than one PushTracker detected!"
+    },
+    "messages": {
+      "no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
+      "more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
+      "no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
+      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry"
+    }
   }
 }

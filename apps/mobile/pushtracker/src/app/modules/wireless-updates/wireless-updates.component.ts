@@ -286,9 +286,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     ) {
       // Download failed
       this.smartDriveCheckedForUpdates = true;
-      this.smartDriveOtaState = this._translateService.instant(
-        'Firmware Download Failed!'
-      );
+      this.smartDriveOtaState = 
+        this._translateService.instant('wireless-updates.state.firmware-download-failed');
       this.smartDriveOtaProgress = 0;
       this.noSmartDriveDetected = true;
       return;
@@ -304,12 +303,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         if (drives.length === 0) {
           dialogs.alert({
             message:
-              'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
+              this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
             okButtonText: this._translateService.instant('general.ok')
           });
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant(
-            'No SmartDrives detected!'
+            'wireless-updates.state.no-smartdrives.detected'
           );
           this.smartDriveOtaProgress = 0;
           this.noSmartDriveDetected = true;
@@ -317,12 +316,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         } else if (drives.length > 1) {
           dialogs.alert({
             message:
-              'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
+            this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
             okButtonText: this._translateService.instant('general.ok')
           });
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant(
-            'More than one SmartDrive detected!'
+            'wireless-updates.state.more-than-one-smartdrive-detected'
           );
           this.smartDriveOtaProgress = 0;
           this.noSmartDriveDetected = true;
@@ -592,7 +591,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // Download failed
       this.pushTrackerCheckedForUpdates = true;
       this.pushTrackerOtaState = this._translateService.instant(
-        'Firmware Download Failed!'
+        'wireless-updates.state.firmware-download-failed'
       );
       this.pushTrackerOtaProgress = 0;
       this.noPushTrackerDetected = true;
@@ -612,13 +611,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       if (trackers.length === 0) {
         dialogs.alert({
           message:
-            'Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.',
+            'wireless-updates.messages.no-pushtracker-detected',
           okButtonText: this._translateService.instant('general.ok')
         });
 
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
-          'No PushTrackers detected!'
+          'wireless-updates.state.no-pushtracker-detected'
         );
         this.pushTrackerOtaProgress = 0;
         this.noPushTrackerDetected = true;
@@ -626,12 +625,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       } else if (trackers.length > 1) {
         dialogs.alert({
           message:
-            'More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry',
+            'wireless-updates.messages.more-than-one-pushtracker-connected',
           okButtonText: this._translateService.instant('general.ok')
         });
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
-          'More than one PushTracker detected!'
+          'wireless-updates.state.more-than-one-pushtracker-detected'
         );
         this.pushTrackerOtaProgress = 0;
         this.noPushTrackerDetected = true;

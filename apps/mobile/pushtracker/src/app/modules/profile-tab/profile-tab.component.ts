@@ -567,8 +567,8 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     this.primary = [
-      this._translateService.instant('Male'),
-      this._translateService.instant('Female')
+      this._translateService.instant('profile-tab.male'),
+      this._translateService.instant('profile-tab.female')
     ];
     if (this.user.data.gender === 'Male') this.primaryIndex = 0;
     else this.primaryIndex = 1;
