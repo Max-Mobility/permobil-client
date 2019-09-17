@@ -62,7 +62,7 @@
         <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" row="8" col="0" colSpan="2" class="data-box" (tap)="onListPickerTap($event, 0)">
           <Label class="data-box-label" [text]="'general.gender' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.gender" textWrap="true"></Label>
+            <Label col="0" class="data-box-value" [text]="displayGender" textWrap="true"></Label>
             <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>

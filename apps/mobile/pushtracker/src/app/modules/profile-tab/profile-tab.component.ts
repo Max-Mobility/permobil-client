@@ -34,6 +34,7 @@ export class ProfileTabComponent {
   isUserEditingSetting: boolean = false;
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
+  displayGender: string;
   displayWeight: string;
   displayHeight: string;
   chairTypes: Array<string> = [];
@@ -124,6 +125,7 @@ export class ProfileTabComponent {
       this.isUserLoaded = true;
       this._initDisplayActivityGoalCoastTime();
       this._initDisplayActivityGoalDistance();
+      this._initDisplayGender();
       this._initDisplayWeight();
       this._initDisplayHeight();
       this._initDisplayChairType();
@@ -441,9 +443,9 @@ export class ProfileTabComponent {
       case 0:
         this._userService.updateDataProperty(
           'gender',
-          this.primary[this.primaryIndex]
+          (this.primaryIndex === 0 ? 'Male' : 'Female')
         );
-        KinveyUser.update({ gender: this.user.data.gender });
+        KinveyUser.update({ gender: (this.primaryIndex === 0 ? 'Male' : 'Female') });
         break;
       case 1:
         this._saveWeightOnChange(
@@ -520,7 +522,7 @@ export class ProfileTabComponent {
     Log.D('User tapped gender data box');
     this._setActiveDataBox(args);
 
-    this.primary = ['Male', 'Female'];
+    this.primary = [this._translateService.instant('Male'), this._translateService.instant('Female')];
     if (this.user.data.gender === 'Male') this.primaryIndex = 0;
     else this.primaryIndex = 1;
 
@@ -684,6 +686,12 @@ export class ProfileTabComponent {
     } else {
       this.displayActivityGoalDistance += ' km';
     }
+  }
+
+  private async _initDisplayGender() {
+    this.displayGender = '';
+    if (this.user && this.user.data && this.user.data.gender)
+      this.displayGender = this._translateService.instant(this.user.data.gender);
   }
 
   private async _initDisplayWeight() {
