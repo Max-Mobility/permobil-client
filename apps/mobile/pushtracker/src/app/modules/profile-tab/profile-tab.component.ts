@@ -714,11 +714,19 @@ export class ProfileTabComponent {
   }
 
   private async _initDisplayChairType() {
-    this.displayChairType = this._translateService.instant(this.user.data.chair_type);
+    if (!this.user || !this.user.data) this.displayChairType = '';
+    if (this.user.data.chair_type && this.user.data.chair_type !== '')
+      this.displayChairType = this._translateService.instant(this.user.data.chair_type);
+    else
+      this.displayChairType = '';
   }
 
   private async _initDisplayChairMake() {
-    this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
+    if (!this.user || !this.user.data) this.displayChairMake = '';
+    if (this.user.data.chair_make && this.user.data.chair_make !== '')
+      this.displayChairMake = this._translateService.instant(this.user.data.chair_make);
+    else
+      this.displayChairMake = '';
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
