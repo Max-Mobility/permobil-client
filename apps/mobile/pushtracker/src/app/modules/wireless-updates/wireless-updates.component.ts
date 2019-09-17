@@ -286,7 +286,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     ) {
       // Download failed
       this.smartDriveCheckedForUpdates = true;
-      this.smartDriveOtaState = 
+      this.smartDriveOtaState =
         this._translateService.instant('wireless-updates.state.firmware-download-failed');
       this.smartDriveOtaProgress = 0;
       this.noSmartDriveDetected = true;
