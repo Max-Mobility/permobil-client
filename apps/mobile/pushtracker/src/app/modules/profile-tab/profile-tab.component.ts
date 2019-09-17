@@ -396,8 +396,8 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.gender'),
         primaryItems: [
-          this._translateService.instant('profile-tab.male'),
-          this._translateService.instant('profile-tab.female')
+          this._translateService.instant('profile-tab.gender.male'),
+          this._translateService.instant('profile-tab.gender.female')
         ],
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -516,9 +516,7 @@ export class ProfileTabComponent {
 
     try {
       const userChairType = this.user.data.chair_type;
-      primaryIndex = this.chairTypesTranslated.indexOf(
-        this._translateService.instant(userChairType)
-      );
+      primaryIndex = this.chairTypes.indexOf(userChairType);
       if (primaryIndex < 0) primaryIndex = 0;
     } catch (err) {
       primaryIndex = 0;
@@ -551,9 +549,7 @@ export class ProfileTabComponent {
 
     try {
       const userChairMake = this.user.data.chair_make;
-      primaryIndex = this.chairMakesTranslated.indexOf(
-        this._translateService.instant(userChairMake)
-      );
+      primaryIndex = this.chairMakes.indexOf(userChairMake);
       if (primaryIndex < 0) primaryIndex = 0;
     } catch (err) {
       primaryIndex = 0;
@@ -586,9 +582,7 @@ export class ProfileTabComponent {
 
     try {
       const userConfiguration = this.user.data.control_configuration;
-      primaryIndex = this.configurationsTranslated.indexOf(
-        this._translateService.instant(userConfiguration)
-      );
+      primaryIndex = this.configurations.indexOf(userConfiguration);
       if (primaryIndex < 0) primaryIndex = 0;
     } catch (err) {
       primaryIndex = 0;
