@@ -185,8 +185,8 @@ export class ActivityComponent implements OnInit {
     this.user = this._params.context.user;
     this.distanceUnit =
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-        ? ' km'
-        : ' mi';
+        ? ' ' + this._translateService.instant('units.km')
+        : ' ' + this._translateService.instant('units.mi');
     this.savedTheme = this.user.data.theme_preference;
   }
 
