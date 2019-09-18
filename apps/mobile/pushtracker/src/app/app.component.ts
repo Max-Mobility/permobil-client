@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
-      this._translateService.setDefaultLang('fr');
+      this._translateService.setDefaultLang('en');
       this._translateService.addLangs([
         'en',
         'es',
