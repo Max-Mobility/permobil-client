@@ -131,8 +131,10 @@ export class ProfileSettingsComponent implements OnInit {
 
   getUser() {
     this.user = this._params.context.user;
-    if (this.user && this.user.data)
+    if (this.user && this.user.data) {
       this.CURRENT_THEME = this.user.data.theme_preference;
+      this.CURRENT_LANGUAGE = this.user.data.language_preference || 'English';
+    }
   }
 
   async scanForSmartDrive(force: boolean = false) {
@@ -321,10 +323,12 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'language':
         this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];
-        console.log(
-          'need to get the value of the enum to set the correct translation'
+        this._userService.updateDataProperty(
+          'language_preference',
+          this.CURRENT_LANGUAGE
         );
-        this._translateService.use(this.CURRENT_LANGUAGE);
+        KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
+        this._translateService.use(APP_LANGUAGES[this.CURRENT_LANGUAGE]);
         break;
     }
     if (updatedSmartDriveSettings) {

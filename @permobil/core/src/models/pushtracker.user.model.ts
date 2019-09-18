@@ -33,7 +33,9 @@ export interface PushTrackerUser {
     weight_unit_preference: number;
     height_unit_preference: number;
     distance_unit_preference: number;
+    // Display preferences
     theme_preference: string;
+    language_preference: string;
     // serial number
     smartdrive_serial_number: string;
     pushtracker_serial_number: string;
