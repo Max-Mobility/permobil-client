@@ -18,6 +18,7 @@ import { COMPONENTS, ENTRY_COMPONENTS } from './modules';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 export function createBarcodeScanner() {
   return new BarcodeScanner();
@@ -35,11 +36,10 @@ export function createTranslateLoader() {
     NativeScriptModule,
     NativeScriptHttpClientModule,
     NativeScriptUIListViewModule,
-    NativeScriptCommonModule,
     NativeScriptFormsModule,
-    NativeScriptUIListViewModule,
     NativeScriptDateTimePickerModule,
     NativeScriptUICalendarModule,
+    NativeScriptUIChartModule,
     NgRippleModule,
     SharedModule,
     PermobilCoreModule,

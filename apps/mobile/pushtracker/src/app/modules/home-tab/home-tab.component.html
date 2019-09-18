@@ -90,7 +90,9 @@
             [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
           ></LinearAxis>
 
-          <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
+          <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" 
+            categoryProperty="xAxis" valueProperty="coastTime">
+          </BarSeries>
 
           <Palettes>
             <Palette tkCartesianPalette seriesName="WeeklyActivity">

@@ -39,8 +39,12 @@
 
           // Day
           <StackLayout row="2" [visibility]="tabSelectedIndex === 0 ? 'visible' : 'collapsed'">
-            <RadCartesianChart allowAnimations="true" height="250" width="90%" [visibility]="user.data.control_configuration !== 'PushTracker with SmartDrive' ? 'visible' : 'collapse'">
-              <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
+            <RadCartesianChart allowAnimations="true" height="250" width="90%" 
+              [visibility]="user.data.control_configuration !== 'PushTracker with SmartDrive' ? 'visible' : 'collapse'">
+              <RadCartesianChartGrid tkCartesianGrid 
+                horizontalLinesVisible="true" verticalLinesVisible="false" 
+                horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
+              </RadCartesianChartGrid>
               <CategoricalAxis
                 *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
@@ -67,9 +71,15 @@
                 [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
               >
               </LinearAxis>
-              <BarSeries tkCartesianSeries [items]="dailyActivity" seriesName="DailyActivity" categoryProperty="xAxis" [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'"> </BarSeries>
+              <BarSeries tkCartesianSeries seriesName="DailyActivity"
+                [items]="dailyActivity" 
+                categoryProperty="xAxis" 
+                [valueProperty]="viewMode === 0 ? 'coastTime' : viewMode === 1 ? 'pushCount' : 'coastDistance'">
+              </BarSeries>
               <Palette tkCartesianPalette seriesName="DailyActivity">
-                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                <PaletteEntry tkCartesianPaletteEntry 
+                  [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" 
+                  [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></PaletteEntry>
               </Palette>
               <ChartGridLineAnnotation
                 #dailyActivityAnnotation

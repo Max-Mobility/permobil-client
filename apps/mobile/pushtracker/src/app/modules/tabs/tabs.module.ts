@@ -8,16 +8,6 @@ import { HomeTabComponent, JourneyTabComponent, ProfileTabComponent, TabsCompone
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  // entryComponents: [
-  //   ActivityComponent,
-  //   ConfigurationComponent,
-  //   PrivacyPolicyComponent,
-  //   ProfileSettingsComponent,
-  //   ActivityGoalSettingComponent,
-  //   SupportComponent,
-  //   UpdatesInfoComponent,
-  //   WirelessUpdatesComponent
-  // ],
   imports: [
     NativeScriptCommonModule,
     NativeScriptRouterModule,

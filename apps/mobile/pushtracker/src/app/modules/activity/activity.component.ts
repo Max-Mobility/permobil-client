@@ -14,6 +14,7 @@ import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-ba
 import { layout } from 'tns-core-modules/utils/utils';
 import { DISTANCE_UNITS } from '../../enums';
 import { LoggingService } from '../../services';
+const util = require('util');
 
 @Component({
   selector: 'activity',
@@ -106,6 +107,7 @@ export class ActivityComponent implements OnInit {
     if (this._params.context.viewMode) {
       this.viewMode = this._params.context.viewMode;
     }
+    Log.D('View mode:', this.viewMode, typeof this.viewMode);
 
     this.getUser();
 
@@ -142,8 +144,10 @@ export class ActivityComponent implements OnInit {
     );
 
     if (this.tabSelectedIndex === 0) {
+      Log.D('tabSelectedIndex = 0, loading daily activity...');
       this._loadDailyActivity();
     } else if (this.tabSelectedIndex === 1) {
+      Log.D('tabSelectedIndex = 1, loading weekly activity...');
       this._loadWeeklyActivity();
     }
 
@@ -445,6 +449,7 @@ export class ActivityComponent implements OnInit {
 
       this._formatActivityForView(0).then(result => {
         this.dailyActivity = new ObservableArray(result);
+        Log.D('Created daily activity for plotting');
         if (this.viewMode !== ViewMode.DISTANCE) {
           if (this._dailyActivityFromKinvey) {
             // format chart description for viewMode
@@ -490,6 +495,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private _calculateDailyActivityYAxisMax() {
+    Log.D('Calculating y-axis max');
     this.yAxisMax = 0;
     this.yAxisStep = 15;
     if (this.dailyActivity) {
@@ -515,6 +521,7 @@ export class ActivityComponent implements OnInit {
     else if (this.yAxisMax === 0) this.yAxisMax = 1.0;
     else if (this.yAxisMax <= 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = this.yAxisMax / 5.0;
+    Log.D('yAxisMax =', this.yAxisMax + '; yAxisStep = ' + this.yAxisStep);
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
@@ -765,6 +772,14 @@ export class ActivityComponent implements OnInit {
     this.yAxisStep = this.yAxisMax / 5;
   }
 
+  private _printResult(result) {
+    console.log('Printing result [length = ' + result.length + ']');
+    // for (const i in result) {
+    //   const r = result[i];
+    //   console.log(r);
+    // }
+  }
+
   private async _formatActivityForView(index: number) {
     if (index === 0) {
       const activity =
@@ -924,6 +939,7 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
+        this._printResult(result);
         return result;
       } else {
         const result = [];
@@ -993,6 +1009,7 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
+        this._printResult(result);
         return result;
       }
     } else if (index === 1) {
@@ -1100,8 +1117,36 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
+        result.unshift({
+          xAxis: '   ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.unshift({
+          xAxis: '    ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
         result.push({
-          xAxis: '        ',
+          xAxis: '     ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.push({
+          xAxis: '      ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.push({
+          xAxis: '       ',
           coastTime: 0,
           pushCount: 0,
           driveDistance: 0,
@@ -1114,6 +1159,7 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
+        this._printResult(result);
         return result;
       } else {
         const result = [];
@@ -1149,8 +1195,36 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
+        result.unshift({
+          xAxis: '   ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.unshift({
+          xAxis: '    ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
         result.push({
-          xAxis: '        ',
+          xAxis: '     ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.push({
+          xAxis: '      ',
+          coastTime: 0,
+          pushCount: 0,
+          driveDistance: 0,
+          coastDistance: 0
+        });
+        result.push({
+          xAxis: '       ',
           coastTime: 0,
           pushCount: 0,
           driveDistance: 0,
@@ -1210,6 +1284,7 @@ export class ActivityComponent implements OnInit {
       this.monthNames[date.getMonth()] +
       ' ' +
       date.getDate();
+    Log.D('Chart Title: ' + this.chartTitle);
   }
 
   private _areDaysSame(first: Date, second: Date) {
