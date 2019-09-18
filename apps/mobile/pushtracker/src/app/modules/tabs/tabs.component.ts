@@ -26,9 +26,6 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils';
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {
-  homeTabTitle = this._translateService.instant('home-tab.title');
-  journeyTabTitle = this._translateService.instant('journey-tab.title');
-  profileTabTitle = this._translateService.instant('profile-tab.title');
   bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
@@ -98,8 +95,9 @@ export class TabsComponent {
 
       this.user = user;
       if (this.user.data.language_preference) {
-        Log.D('Switching language to', this.user.data.language_preference);
-        this._translateService.use(APP_LANGUAGES[this.user.data.language_preference]);
+        Log.D('Switching to', this.user.data.language_preference);
+        const language = APP_LANGUAGES[this.user.data.language_preference];
+        this._translateService.use(language);
       }
 
       Log.D('Configuration: ', this.user.data.control_configuration);
