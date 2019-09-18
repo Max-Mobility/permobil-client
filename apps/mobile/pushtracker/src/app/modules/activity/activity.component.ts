@@ -34,28 +34,28 @@ export class ActivityComponent implements OnInit {
   dailyActivity: ObservableArray<any[]>;
 
   dayNames: string[] = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday'
+    this._translateService.instant('days.sunday'),
+    this._translateService.instant('days.monday'),
+    this._translateService.instant('days.tuesday'),
+    this._translateService.instant('days.wednesday'),
+    this._translateService.instant('days.thursday'),
+    this._translateService.instant('days.friday'),
+    this._translateService.instant('days.saturday'),
   ];
 
   monthNames: string[] = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    this._translateService.instant('months.january'),
+    this._translateService.instant('months.february'),
+    this._translateService.instant('months.march'),
+    this._translateService.instant('months.april'),
+    this._translateService.instant('months.may'),
+    this._translateService.instant('months.june'),
+    this._translateService.instant('months.july'),
+    this._translateService.instant('months.august'),
+    this._translateService.instant('months.september'),
+    this._translateService.instant('months.october'),
+    this._translateService.instant('months.november'),
+    this._translateService.instant('months.december')
   ];
   currentDayInView: Date;
   // dayChartLabel: string;
@@ -1059,13 +1059,13 @@ export class ActivityComponent implements OnInit {
         }
         const days = activity.days;
         const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
+          this._translateService.instant('days-abbreviated.sunday'),
+          this._translateService.instant('days-abbreviated.monday'),
+          this._translateService.instant('days-abbreviated.tuesday'),
+          this._translateService.instant('days-abbreviated.wednesday'),
+          this._translateService.instant('days-abbreviated.thursday'),
+          this._translateService.instant('days-abbreviated.friday'),
+          this._translateService.instant('days-abbreviated.saturday'),
         ];
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
@@ -1164,13 +1164,13 @@ export class ActivityComponent implements OnInit {
       } else {
         const result = [];
         const dayNames: string[] = [
-          'Sun',
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat'
+          this._translateService.instant('days-abbreviated.sunday'),
+          this._translateService.instant('days-abbreviated.monday'),
+          this._translateService.instant('days-abbreviated.tuesday'),
+          this._translateService.instant('days-abbreviated.wednesday'),
+          this._translateService.instant('days-abbreviated.thursday'),
+          this._translateService.instant('days-abbreviated.friday'),
+          this._translateService.instant('days-abbreviated.saturday'),
         ];
         for (const i in dayNames) {
           result.push({

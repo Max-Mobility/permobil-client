@@ -335,13 +335,35 @@ export class JourneyTabComponent {
         } else if (areDatesSame(journeyDate, yesterday)) {
           journeyDateLabel = this._translateService.instant('journey-tab.yesterday');
         } else {
-          const dateStringList = (journeyDate + '').split(' ');
+          const dayNames: string[] = [
+            this._translateService.instant('days-abbreviated.sunday'),
+            this._translateService.instant('days-abbreviated.monday'),
+            this._translateService.instant('days-abbreviated.tuesday'),
+            this._translateService.instant('days-abbreviated.wednesday'),
+            this._translateService.instant('days-abbreviated.thursday'),
+            this._translateService.instant('days-abbreviated.friday'),
+            this._translateService.instant('days-abbreviated.saturday'),
+          ];
+          const monthNamesAbbreviated = [
+            this._translateService.instant('months-abbreviated.january'),
+            this._translateService.instant('months-abbreviated.february'),
+            this._translateService.instant('months-abbreviated.march'),
+            this._translateService.instant('months-abbreviated.april'),
+            this._translateService.instant('months-abbreviated.may'),
+            this._translateService.instant('months-abbreviated.june'),
+            this._translateService.instant('months-abbreviated.july'),
+            this._translateService.instant('months-abbreviated.august'),
+            this._translateService.instant('months-abbreviated.september'),
+            this._translateService.instant('months-abbreviated.october'),
+            this._translateService.instant('months-abbreviated.november'),
+            this._translateService.instant('months-abbreviated.december')
+          ];
           journeyDateLabel =
-            dateStringList[0] +
+            dayNames[journeyDate.getDay()] +
             ', ' +
-            dateStringList[1] +
+            monthNamesAbbreviated[journeyDate.getMonth()] +
             ' ' +
-            dateStringList[2];
+            journeyDate.getDate();
         }
 
         if (!journeyDateLabel) {
