@@ -12,12 +12,14 @@ import { UpdatesInfoComponent } from './updates-info';
 import { WirelessUpdatesComponent } from './wireless-updates';
 
 export const ENTRY_COMPONENTS = [
+  ActivityGoalSettingComponent,
   AppInfoComponent,
   SupportComponent,
   ActivityComponent,
   ProfileSettingsComponent,
   PrivacyPolicyComponent,
-  UpdatesInfoComponent
+  UpdatesInfoComponent,
+  WirelessUpdatesComponent
 ];
 
 export const COMPONENTS = [
