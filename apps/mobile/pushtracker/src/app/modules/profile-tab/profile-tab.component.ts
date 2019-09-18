@@ -850,13 +850,13 @@ export class ProfileTabComponent {
   }
 
   private _displayWeightInPounds(val: number) {
-    if (!val) return 0 + ' lbs';
-    else return val.toFixed(1) + ' lbs';
+    if (!val) return 0 + ' ' + this._translateService.instant('units.lbs');
+    else return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
   }
 
   private _displayWeightInKilograms(val: number) {
-    if (!val) return 0 + ' kg';
-    else return val.toFixed(1) + ' kg';
+    if (!val) return 0 + ' ' + this._translateService.instant('units.kg');
+    else return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {

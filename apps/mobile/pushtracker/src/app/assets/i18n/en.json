@@ -450,6 +450,8 @@
     "message": "Please select from the options below how to resolve differences between the settings."
   },
   "units": {
+    "kg": "kg",
+    "lbs": "lbs",
     "km": "km",
     "mi": "mi",
     "s": "s",
