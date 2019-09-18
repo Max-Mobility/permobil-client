@@ -17,7 +17,7 @@ import { PushTracker } from '../../models';
 import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
   SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
-import { APP_THEMES } from '../../enums';
+import { APP_LANGUAGES, APP_THEMES } from '../../enums';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
@@ -97,6 +97,11 @@ export class TabsComponent {
       }
 
       this.user = user;
+      if (this.user.data.language_preference) {
+        Log.D('Switching language to', this.user.data.language_preference);
+        this._translateService.use(APP_LANGUAGES[this.user.data.language_preference]);
+      }
+
       Log.D('Configuration: ', this.user.data.control_configuration);
       if (
         this.user &&

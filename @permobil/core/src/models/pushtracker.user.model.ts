@@ -19,7 +19,6 @@ export interface PushTrackerUser {
     chair_make: string;
     // (1) smartdrive with switch control only, (2) smartdrive with pushtracker, or (3) smartdrive with pushtracker e2
     control_configuration: string;
-    language: string;
     phone: string;
     accessToken: string;
     profile_picture: string;
