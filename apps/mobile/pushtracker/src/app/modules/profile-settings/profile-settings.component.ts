@@ -328,7 +328,10 @@ export class ProfileSettingsComponent implements OnInit {
           this.CURRENT_LANGUAGE
         );
         KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
-        this._translateService.use(APP_LANGUAGES[this.CURRENT_LANGUAGE]);
+
+        const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
+        if (this._translateService.currentLang !== language)
+          this._translateService.use(language);
         break;
     }
     if (updatedSmartDriveSettings) {

@@ -97,7 +97,8 @@ export class TabsComponent {
       if (this.user.data.language_preference) {
         Log.D('Switching to', this.user.data.language_preference);
         const language = APP_LANGUAGES[this.user.data.language_preference];
-        this._translateService.use(language);
+        if (this._translateService.currentLang !== language)
+          this._translateService.use(language);
       }
 
       Log.D('Configuration: ', this.user.data.control_configuration);
