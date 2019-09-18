@@ -117,6 +117,7 @@ export class ProfileTabComponent {
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
+    Log.D('Genders', this.gendersTranslated);
     Log.D('Chair Types', this.chairTypesTranslated);
     Log.D('Chair Makes', this.chairMakesTranslated);
     Log.D('Configurations', this.configurations);
@@ -401,10 +402,12 @@ export class ProfileTabComponent {
     this._setActiveDataBox(args);
 
     let primaryIndex;
-    if (this.user.data.gender === 'Male') {
+    try {
+      const userGender = this.user.data.gender;
+      primaryIndex = this.genders.indexOf(userGender);
+      if (primaryIndex < 0) primaryIndex = 0;
+    } catch (err) {
       primaryIndex = 0;
-    } else {
-      primaryIndex = 1;
     }
 
     const options: BottomSheetOptions = {
