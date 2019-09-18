@@ -423,7 +423,11 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._userService.updateDataProperty(
+          'gender',
+          this.genders[result.data.primaryIndex]
+        );
+        KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         this._removeActiveDataBox();
       });
   }
@@ -467,7 +471,10 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._saveWeightOnChange(
+          parseFloat(primaryItems[result.data.primaryIndex]),
+          parseFloat(secondaryItems[result.data.secondaryIndex])
+        );
         this._removeActiveDataBox();
       });
   }
@@ -520,7 +527,10 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._saveHeightOnChange(
+          parseFloat(primaryItems[result.data.primaryIndex]),
+          parseFloat(secondaryItems[result.data.secondaryIndex])
+        );
         this._removeActiveDataBox();
       });
   }
@@ -553,7 +563,11 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._userService.updateDataProperty(
+          'chair_type',
+          this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
+        );
+        KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
         this._removeActiveDataBox();
       });
   }
@@ -586,7 +600,11 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._userService.updateDataProperty(
+          'chair_make',
+          this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
+        );
+        KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
         this._removeActiveDataBox();
       });
   }
@@ -621,7 +639,17 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        console.log(result);
+        this._userService.updateDataProperty(
+          'control_configuration',
+          this.configurations[result.data.primaryIndex]
+        );
+        Log.D(
+          'Configuration changed to',
+          this.configurations[result.data.primaryIndex]
+        );
+        KinveyUser.update({
+          control_configuration: this.configurations[result.data.primaryIndex]
+        });
         this._removeActiveDataBox();
       });
   }
@@ -668,61 +696,6 @@ export class ProfileTabComponent {
       ),
       okButtonText: this._translateService.instant('profile-tab.ok')
     });
-  }
-
-  async saveListPickerValue() {
-    // this.closeListPickerDialog(); // close the list picker dialog from the UI then save the height/weight value for the user based on their settings
-    switch (this.listPickerIndex) {
-      case 0:
-        this._userService.updateDataProperty(
-          'gender',
-          this.genders[this.primaryIndex]
-        );
-        KinveyUser.update({ gender: this.genders[this.primaryIndex] });
-        break;
-      case 1:
-        this._saveWeightOnChange(
-          parseFloat(this.primary[this.primaryIndex]),
-          parseFloat(this.secondary[this.secondaryIndex])
-        );
-        break;
-      case 2:
-        this._saveHeightOnChange(
-          parseFloat(this.primary[this.primaryIndex]),
-          parseFloat(this.secondary[this.secondaryIndex])
-        );
-        break;
-      case 3:
-        this._userService.updateDataProperty(
-          'chair_type',
-          this.chairTypes[this.primaryIndex] // index into CHAIR_TYPE enum
-        );
-        KinveyUser.update({ chair_type: this.chairTypes[this.primaryIndex] });
-        break;
-      case 4:
-        this._userService.updateDataProperty(
-          'chair_make',
-          this.chairMakes[this.primaryIndex] // index into CHAIR_MAKE enum
-        );
-        KinveyUser.update({ chair_make: this.chairMakes[this.primaryIndex] });
-        break;
-      case 5:
-        this._userService.updateDataProperty(
-          'control_configuration',
-          this.configurations[this.primaryIndex]
-        );
-        Log.D(
-          'Configuration changed to',
-          this.configurations[this.primaryIndex]
-        );
-        KinveyUser.update({
-          control_configuration: this.configurations[this.primaryIndex]
-        });
-        break;
-    }
-
-    this.primaryIndex = 0;
-    this.secondaryIndex = 0;
   }
 
   private _getWeightIndices() {
