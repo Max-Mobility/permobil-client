@@ -744,9 +744,9 @@ export class ProfileTabComponent {
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
-        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' mi';
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' ' + this._translateService.instant('units.mi');
     } else {
-      this.displayActivityGoalDistance += ' km';
+      this.displayActivityGoalDistance += ' ' + this._translateService.instant('units.km');
     }
   }
 
@@ -787,28 +787,31 @@ export class ProfileTabComponent {
 
   private _initDisplayChairType() {
     if (!this.user || !this.user.data) this.displayChairType = '';
-    if (this.user.data.chair_type && this.user.data.chair_type !== '')
-      this.displayChairType = this._translateService.instant(
-        this.user.data.chair_type
-      );
+    if (this.user.data.chair_type && this.user.data.chair_type !== '') {
+      const englishValue = this.user.data.chair_type;
+      const index = this.chairTypes.indexOf(englishValue);
+      this.displayChairType = this.chairTypesTranslated[index];
+    }
     else this.displayChairType = '';
   }
 
   private _initDisplayChairMake() {
     if (!this.user || !this.user.data) this.displayChairMake = '';
-    if (this.user.data.chair_make && this.user.data.chair_make !== '')
-      this.displayChairMake = this._translateService.instant(
-        this.user.data.chair_make
-      );
+    if (this.user.data.chair_make && this.user.data.chair_make !== '') {
+      const englishValue = this.user.data.chair_make;
+      const index = this.chairMakes.indexOf(englishValue);
+      this.displayChairMake = this.chairMakesTranslated[index];
+    }
     else this.displayChairMake = '';
   }
 
   private _initDisplayControlConfiguration() {
     this.displayControlConfiguration = '';
-    if (this.user && this.user.data && this.user.data.control_configuration)
-      this.displayControlConfiguration = this._translateService.instant(
-        this.user.data.control_configuration
-      );
+    if (this.user && this.user.data && this.user.data.control_configuration) {
+      const englishValue = this.user.data.control_configuration;
+      const index = this.configurations.indexOf(englishValue);
+      this.displayControlConfiguration = this.configurationsTranslated[index];
+    }
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
