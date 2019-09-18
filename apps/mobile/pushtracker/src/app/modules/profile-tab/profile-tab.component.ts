@@ -17,7 +17,7 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent } from '../shared/components';
@@ -31,7 +31,6 @@ export class ProfileTabComponent {
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;
-  displayGender: string;
   displayWeight: string;
   displayHeight: string;
   chairTypes: Array<string> = [];
@@ -43,6 +42,10 @@ export class ProfileTabComponent {
   configurations: Array<string> = [];
   configurationsTranslated: Array<string> = [];
   displayControlConfiguration: string;
+
+  genders: Array<String> = [];
+  gendersTranslated: Array<string> = [];
+  displayGender: string;
 
   // List picker related fields
   primary: string[];
@@ -88,6 +91,11 @@ export class ProfileTabComponent {
     // When we index into chairTypes[i] and chairTypesTranslated[i] the assumption is that
     // indexing results in the same chair type on both lists. One's just a translated version of the other
     // DO NOT sort the translated list as it'll mess up the relative ordering
+    this.genders = Object.keys(GENDERS).map(key => GENDERS[key]);
+    this.gendersTranslated = Object.keys(GENDERS).map(key =>
+      this._translateService.instant(this.getTranslationKeyForGenders(key))
+    );
+
     this.chairTypes = Object.keys(CHAIR_TYPE).map(key => CHAIR_TYPE[key]);
     this.chairTypesTranslated = Object.keys(CHAIR_TYPE).map(key =>
       this._translateService.instant(this.getTranslationKeyForChairType(key))
@@ -97,6 +105,7 @@ export class ProfileTabComponent {
     this.chairMakesTranslated = Object.keys(CHAIR_MAKE).map(key =>
       this._translateService.instant(this.getTranslationKeyForChairMake(key))
     );
+
     this.configurations = Object.keys(CONFIGURATIONS).map(
       key => CONFIGURATIONS[key]
     );
@@ -124,6 +133,14 @@ export class ProfileTabComponent {
       this._initDisplayChairMake();
       this._initDisplayControlConfiguration();
     });
+  }
+
+  getTranslationKeyForGenders(key) {
+    if (GENDERS[key] === GENDERS.MALE)
+      return 'profile-tab.genders.male';
+    else if (GENDERS[key] === GENDERS.FEMALE)
+      return 'profile-tab.genders.female';
+    else return 'profile-tab.genders.male';
   }
 
   getTranslationKeyForChairType(key) {
@@ -395,10 +412,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.gender'),
-        primaryItems: [
-          this._translateService.instant('profile-tab.gender.male'),
-          this._translateService.instant('profile-tab.gender.female')
-        ],
+        primaryItems: this.gendersTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
       }
@@ -659,11 +673,9 @@ export class ProfileTabComponent {
       case 0:
         this._userService.updateDataProperty(
           'gender',
-          this.primaryIndex === 0 ? 'Male' : 'Female'
+          this.genders[this.primaryIndex]
         );
-        KinveyUser.update({
-          gender: this.primaryIndex === 0 ? 'Male' : 'Female'
-        });
+        KinveyUser.update({ gender: this.genders[this.primaryIndex] });
         break;
       case 1:
         this._saveWeightOnChange(
@@ -752,10 +764,11 @@ export class ProfileTabComponent {
 
   private _initDisplayGender() {
     this.displayGender = '';
-    if (this.user && this.user.data && this.user.data.gender)
-      this.displayGender = this._translateService.instant(
-        this.user.data.gender
-      );
+    if (this.user && this.user.data && this.user.data.gender) {
+      const englishValue = this.user.data.gender;
+      const index = this.genders.indexOf(englishValue);
+      this.displayGender = this.gendersTranslated[index];
+    }
   }
 
   private _initDisplayWeight() {
