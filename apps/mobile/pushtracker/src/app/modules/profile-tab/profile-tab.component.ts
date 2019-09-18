@@ -138,10 +138,10 @@ export class ProfileTabComponent {
 
   getTranslationKeyForGenders(key) {
     if (GENDERS[key] === GENDERS.MALE)
-      return 'profile-tab.genders.male';
+      return 'profile-tab.gender.male';
     else if (GENDERS[key] === GENDERS.FEMALE)
-      return 'profile-tab.genders.female';
-    else return 'profile-tab.genders.male';
+      return 'profile-tab.gender.female';
+    else return 'profile-tab.gender.male';
   }
 
   getTranslationKeyForChairType(key) {
