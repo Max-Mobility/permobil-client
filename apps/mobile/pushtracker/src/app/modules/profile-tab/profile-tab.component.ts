@@ -76,7 +76,7 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) { }
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -423,11 +423,13 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._userService.updateDataProperty(
-          'gender',
-          this.genders[result.data.primaryIndex]
-        );
-        KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
+        if (result && result.data) {
+          this._userService.updateDataProperty(
+            'gender',
+            this.genders[result.data.primaryIndex]
+          );
+          KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
+        }
         this._removeActiveDataBox();
       });
   }
@@ -471,10 +473,12 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._saveWeightOnChange(
-          parseFloat(primaryItems[result.data.primaryIndex]),
-          parseFloat(secondaryItems[result.data.secondaryIndex])
-        );
+        if (result && result.data) {
+          this._saveWeightOnChange(
+            parseFloat(primaryItems[result.data.primaryIndex]),
+            parseFloat(secondaryItems[result.data.secondaryIndex])
+          );
+        }
         this._removeActiveDataBox();
       });
   }
@@ -527,10 +531,12 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._saveHeightOnChange(
-          parseFloat(primaryItems[result.data.primaryIndex]),
-          parseFloat(secondaryItems[result.data.secondaryIndex])
-        );
+        if (result && result.data) {
+          this._saveHeightOnChange(
+            parseFloat(primaryItems[result.data.primaryIndex]),
+            parseFloat(secondaryItems[result.data.secondaryIndex])
+          );
+        }
         this._removeActiveDataBox();
       });
   }
@@ -563,11 +569,13 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._userService.updateDataProperty(
-          'chair_type',
-          this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
-        );
-        KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
+        if (result && result.data) {
+          this._userService.updateDataProperty(
+            'chair_type',
+            this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
+          );
+          KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
+        }
         this._removeActiveDataBox();
       });
   }
@@ -600,11 +608,13 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._userService.updateDataProperty(
-          'chair_make',
-          this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
-        );
-        KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
+        if (result && result.data) {
+          this._userService.updateDataProperty(
+            'chair_make',
+            this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
+          );
+          KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
+        }
         this._removeActiveDataBox();
       });
   }
@@ -639,17 +649,19 @@ export class ProfileTabComponent {
     this._bottomSheet
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
-        this._userService.updateDataProperty(
-          'control_configuration',
-          this.configurations[result.data.primaryIndex]
-        );
-        Log.D(
-          'Configuration changed to',
-          this.configurations[result.data.primaryIndex]
-        );
-        KinveyUser.update({
-          control_configuration: this.configurations[result.data.primaryIndex]
-        });
+        if (result && result.data) {
+          this._userService.updateDataProperty(
+            'control_configuration',
+            this.configurations[result.data.primaryIndex]
+          );
+          Log.D(
+            'Configuration changed to',
+            this.configurations[result.data.primaryIndex]
+          );
+          KinveyUser.update({
+            control_configuration: this.configurations[result.data.primaryIndex]
+          });
+        }
         this._removeActiveDataBox();
       });
   }
