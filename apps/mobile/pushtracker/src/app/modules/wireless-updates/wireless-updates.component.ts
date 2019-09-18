@@ -38,6 +38,7 @@ import { BluetoothService, LoggingService } from '../../services';
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ptCirclePercentage: number = 83;
   sdCirclePercentage: number = 30;
+  languagePreference: string = '';
   controlConfiguration: string = '';
 
   /**
@@ -84,6 +85,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
+    this.languagePreference = _params.context.languagePreference || 'English';
+    Log.D('Language preference', this.languagePreference);
     this.controlConfiguration = _params.context.controlConfiguration || '';
     this.savedTheme = this._params.context.savedTheme;
   }
@@ -102,6 +105,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this._modalService
       .showModal(UpdatesInfoComponent, {
         context: {
+          'languagePreference': this.languagePreference,
           'SmartDriveBLE.ota': this.currentVersions['SmartDriveBLE.ota'],
           'SmartDriveMCU.ota': this.currentVersions['SmartDriveMCU.ota'],
           'PushTracker.ota': this.currentPushTrackerVersions['PushTracker.ota']

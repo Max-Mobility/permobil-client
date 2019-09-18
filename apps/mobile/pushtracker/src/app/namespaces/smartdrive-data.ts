@@ -313,8 +313,7 @@ export namespace SmartDriveData {
           ),
           name: f['_filename'],
           data: fileData,
-          changes:
-            f['change_notes'][device.language] || f['change_notes']['en']
+          changes: f['change_notes']
         };
       })
       .catch(error => {

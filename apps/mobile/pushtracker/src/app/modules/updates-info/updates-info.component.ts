@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
 import { Log } from '@permobil/core';
+import { APP_LANGUAGES } from '../../enums';
 
 @Component({
   selector: 'updates-info',
@@ -30,6 +31,7 @@ export class UpdatesInfoComponent implements OnInit {
     this._logService.logBreadCrumb('updates-info.component OnInit');
     const context = this._params.context;
     this.infoItems = [];
+    const languagePreference = context['languagePreference'];
     const smartDriveMCUData = context['SmartDriveMCU.ota'];
     const smartDriveBLEData = context['SmartDriveBLE.ota'];
     const pushTrackerOTAData = context['PushTracker.ota'];
@@ -41,7 +43,7 @@ export class UpdatesInfoComponent implements OnInit {
       let smartDriveMCUChanges = [];
       let smartDriveMCUVersion = '';
       if (smartDriveMCUData && smartDriveMCUData.changes) {
-        smartDriveMCUChanges = smartDriveMCUData.changes;
+        smartDriveMCUChanges = smartDriveMCUData.changes[APP_LANGUAGES[languagePreference]];
         smartDriveMCUVersion = this.versionByteToString(smartDriveMCUData.version);
       }
       Log.D(smartDriveMCUChanges);
@@ -49,7 +51,7 @@ export class UpdatesInfoComponent implements OnInit {
       let smartDriveBLEChanges = [];
       let smartDriveBLEVersion = '';
       if (smartDriveBLEData && smartDriveBLEData.changes) {
-        smartDriveBLEChanges = smartDriveBLEData.changes;
+        smartDriveBLEChanges = smartDriveBLEData.changes[APP_LANGUAGES[languagePreference]];
         smartDriveBLEVersion = this.versionByteToString(smartDriveBLEData.version);
       }
       Log.D(smartDriveBLEChanges);
@@ -57,7 +59,7 @@ export class UpdatesInfoComponent implements OnInit {
       let pushTrackerChanges = [];
       let pushTrackerVersion = '';
       if (pushTrackerOTAData && pushTrackerOTAData.changes) {
-        pushTrackerChanges = pushTrackerOTAData.changes;
+        pushTrackerChanges = pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference]];
         pushTrackerVersion = this.versionByteToString(pushTrackerOTAData.version);
       }
       Log.D(pushTrackerChanges);

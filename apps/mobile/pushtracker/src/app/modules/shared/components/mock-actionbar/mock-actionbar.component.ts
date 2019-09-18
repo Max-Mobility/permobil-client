@@ -31,6 +31,7 @@ export class MockActionbarComponent {
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
   @Input() showWatchBtn = false;
+  @Input() languagePreference: string = 'English';
   @Input() controlConfiguration: string = '';
   @Input() showWatchConnectBtn = false;
   @Output() watchConnectEvent = new EventEmitter();
@@ -115,6 +116,7 @@ export class MockActionbarComponent {
     this._modalService
       .showModal(WirelessUpdatesComponent, {
         context: {
+          languagePreference: this.languagePreference,
           controlConfiguration: this.controlConfiguration,
           savedTheme: this.CURRENT_THEME
         },
