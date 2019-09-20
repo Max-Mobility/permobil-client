@@ -882,8 +882,8 @@ export class ProfileTabComponent {
   }
 
   private _displayHeightInCentimeters(val: number) {
-    if (!val) return 0 + ' cm';
-    return val.toFixed() + ' cm';
+    if (!val) return 0 + ' ' + this._translateService.instant('units.cm');
+    return val.toFixed() + ' ' + this._translateService.instant('units.cm');
   }
 
   private _handleSerial(text: string, forDevices?: string[]) {
