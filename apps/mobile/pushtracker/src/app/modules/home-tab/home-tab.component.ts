@@ -922,7 +922,7 @@ export class HomeTabComponent {
     this.coastDistanceYAxisStep = this.coastDistanceYAxisMax / 5.0;
   }
 
-  private async _formatUsageForView(viewMode) {
+  private async _formatUsageForView() {
     const activity = this._weeklyUsageFromKinvey;
     if (activity && activity.days) {
       const result = [];
