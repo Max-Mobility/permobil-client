@@ -511,10 +511,12 @@ export class ProfileTabComponent {
     // Initialize primaryIndex and secondaryIndex from user.data.height
     const indices = this._getHeightIndices();
     primaryIndex = parseInt(primaryItems[indices[0]]);
-    secondaryIndex = parseInt(secondaryItems[indices[1]]);
-    if (secondaryIndex === 12) {
-      primaryIndex += 1;
-      secondaryIndex = 0;
+    if (listPickerNeedsSecondary) {
+      secondaryIndex = parseInt(secondaryItems[indices[1]]);
+      if (secondaryIndex === 12) {
+        primaryIndex += 1;
+        secondaryIndex = 0;
+      }
     }
 
     const options: BottomSheetOptions = {
