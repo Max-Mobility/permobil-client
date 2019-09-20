@@ -43,15 +43,6 @@ export class ListPickerSheetComponent {
     );
   }
 
-  //   close() {
-  //     this._params.closeCallback({
-  //       has_agreed_to_user_agreement: this.has_agreed_to_user_agreement,
-  //       has_read_privacy_policy: this.has_read_privacy_policy,
-  //       consent_to_product_development: this.consent_to_product_development,
-  //       consent_to_research: this.consent_to_research
-  //     });
-  //   }
-
   primaryIndexChanged(picker) {
     this.primaryIndex = picker.selectedIndex;
   }

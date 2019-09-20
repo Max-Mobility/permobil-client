@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
 import { Log } from '@permobil/core';
@@ -15,7 +14,6 @@ export class UpdatesInfoComponent implements OnInit {
 
   constructor(
     private _logService: LoggingService,
-    private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {}
 

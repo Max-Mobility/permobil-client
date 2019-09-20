@@ -1,7 +1,5 @@
 import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
-import { getFile } from 'tns-core-modules/http';
-import { device } from 'tns-core-modules/platform';
 import { DownloadProgress } from 'nativescript-download-progress';
 
 export namespace SmartDriveData {

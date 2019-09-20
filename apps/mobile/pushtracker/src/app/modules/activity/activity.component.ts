@@ -14,7 +14,6 @@ import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-ba
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { LoggingService } from '../../services';
-const util = require('util');
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
 import { DeviceBase } from '../../models';
 
