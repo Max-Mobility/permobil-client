@@ -33,7 +33,6 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   constructor(
     private _logService: LoggingService,
-    private _translateService: TranslateService,
     private _userService: PushTrackerUserService,
     private _params: ModalDialogParams
   ) {}
