@@ -458,7 +458,13 @@
     "km": "km",
     "mi": "mi",
     "s": "s",
-    "pushes": "pushes"
+    "pushes": "pushes",
+    "centimeters": "Centimeters",
+    "feet-inches": "Feet & inches",
+    "kilograms": "Kilograms",
+    "pounds": "Pounds",
+    "kilometers": "Kilometers",
+    "miles": "Miles"
   },
   "user": {
     "consent-form-title": "Privacy Policy Consent Form",

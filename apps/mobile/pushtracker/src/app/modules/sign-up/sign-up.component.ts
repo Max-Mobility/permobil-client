@@ -11,7 +11,8 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { AppResourceIcons, APP_THEMES, STORAGE_KEYS,
+  DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
 import { PushTrackerUser } from '@permobil/core';
@@ -47,10 +48,10 @@ export class SignUpComponent implements OnInit {
     dob: '',
     gender: '',
     height: 0,
-    height_unit_preference: 1,
+    height_unit_preference: HEIGHT_UNITS.FEET_AND_INCHES,
     weight: 0,
-    weight_unit_preference: 1,
-    distance_unit_preference: 1,
+    weight_unit_preference: WEIGHT_UNITS.POUNDS,
+    distance_unit_preference: DISTANCE_UNITS.MILES,
     theme_preference: APP_THEMES.DEFAULT,
     activity_goal_distance: 5,
     activity_goal_coast_time: 5,
@@ -58,8 +59,8 @@ export class SignUpComponent implements OnInit {
     has_read_privacy_policy: false,
     consent_to_product_development: false,
     consent_to_research: false,
-    chair_type: '',
-    chair_make: '',
+    chair_type: CHAIR_TYPE.RIGID,
+    chair_make: CHAIR_MAKE.COLOURS,
     smartdrive_serial_number: '',
     pushtracker_serial_number: ''
   };

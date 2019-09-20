@@ -1,14 +1,14 @@
 export enum WEIGHT_UNITS {
-    'KILOGRAMS' = 0,
-    'POUNDS' = 1
+    KILOGRAMS = 'Kilograms',
+    POUNDS = 'Pounds'
 }
 
 export enum HEIGHT_UNITS {
-    'CENTIMETERS' = 0,
-    'FEET_AND_INCHES' = 1
+    CENTIMETERS = 'Centimeters',
+    FEET_AND_INCHES = 'Feet & inches'
 }
 
 export enum DISTANCE_UNITS {
-    'KILOMETERS' = 0,
-    'MILES' = 1
+    KILOMETERS = 'Kilometers',
+    MILES = 'Miles'
 }

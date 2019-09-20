@@ -9,7 +9,7 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page, PropertyChangeData, EventData } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
-import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS, CONFIGURATIONS } from '../../enums';
+import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS, CONFIGURATIONS, HEIGHT_UNITS, WEIGHT_UNITS, DISTANCE_UNITS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
@@ -33,12 +33,16 @@ export class ProfileSettingsComponent implements OnInit {
   @ViewChild('mockActionBar', { static: false })
   mockActionBar: ElementRef;
 
-  HEIGHT_UNITS: string[];
-  HEIGHT: string;
-  WEIGHT_UNITS: string[];
-  WEIGHT: string;
-  DISTANCE_UNITS: string[];
-  DISTANCE: string;
+  heightUnits: Array<string> = [];
+  heightUnitsTranslated: Array<string> = [];
+  displayHeightUnit: string;
+  weightUnits: Array<string> = [];
+  weightUnitsTranslated: Array<string> = [];
+  displayWeightUnit: string;
+  distanceUnits: Array<string> = [];
+  distanceUnitsTranslated: Array<string> = [];
+  displayDistanceUnit: string;
+
   CURRENT_THEME: string = appSettings.getString(
     STORAGE_KEYS.APP_THEME,
     APP_THEMES.DEFAULT
@@ -94,21 +98,63 @@ export class ProfileSettingsComponent implements OnInit {
     );
   }
 
+  getTranslationKeyForHeightUnit(key) {
+    if (HEIGHT_UNITS[key] === HEIGHT_UNITS.CENTIMETERS)
+      return 'units.centimeters';
+    else if (HEIGHT_UNITS[key] === HEIGHT_UNITS.FEET_AND_INCHES)
+      return 'units.feet-inches';
+    else return 'units.centimeters';
+  }
+
+  getTranslationKeyForWeightUnit(key) {
+    if (WEIGHT_UNITS[key] === WEIGHT_UNITS.KILOGRAMS)
+      return 'units.kilograms';
+    else if (WEIGHT_UNITS[key] === WEIGHT_UNITS.POUNDS)
+      return 'units.pounds';
+    else return 'units.kilograms';
+  }
+
+  getTranslationKeyForDistanceUnit(key) {
+    if (DISTANCE_UNITS[key] === DISTANCE_UNITS.KILOMETERS)
+      return 'units.kilometers';
+    else if (DISTANCE_UNITS[key] === DISTANCE_UNITS.MILES)
+      return 'units.miles';
+    else return 'units.kilometers';
+  }
+
   ngOnInit() {
     this._logService.logBreadCrumb('profile-settings.component ngOnInit');
 
     this.getUser();
 
-    this.HEIGHT_UNITS = ['Centimeters', 'Feet & inches'];
-    this.HEIGHT = this.HEIGHT_UNITS[this.user.data.height_unit_preference];
+    this.heightUnits = Object.keys(HEIGHT_UNITS).map(key => HEIGHT_UNITS[key]);
+    this.heightUnitsTranslated = Object.keys(HEIGHT_UNITS).map(key =>
+      this._translateService.instant(this.getTranslationKeyForHeightUnit(key))
+    );
 
-    this.WEIGHT_UNITS = ['Kilograms', 'Pounds'];
-    this.WEIGHT = this.WEIGHT_UNITS[this.user.data.weight_unit_preference];
+    this.weightUnits = Object.keys(WEIGHT_UNITS).map(key => WEIGHT_UNITS[key]);
+    this.weightUnitsTranslated = Object.keys(WEIGHT_UNITS).map(key =>
+      this._translateService.instant(this.getTranslationKeyForWeightUnit(key))
+    );
 
-    this.DISTANCE_UNITS = ['Kilometers', 'Miles'];
-    this.DISTANCE = this.DISTANCE_UNITS[
-      this.user.data.distance_unit_preference
-    ];
+    this.distanceUnits = Object.keys(DISTANCE_UNITS).map(key => DISTANCE_UNITS[key]);
+    this.distanceUnitsTranslated = Object.keys(DISTANCE_UNITS).map(key =>
+      this._translateService.instant(this.getTranslationKeyForDistanceUnit(key))
+    );
+
+    if (this.user) {
+      let index = this.heightUnits.indexOf(this.user.data.height_unit_preference);
+      if (index < 0) index = 0;
+      this.displayHeightUnit = this.heightUnitsTranslated[index];
+
+      index = this.weightUnits.indexOf(this.user.data.weight_unit_preference);
+      if (index < 0) index = 0;
+      this.displayWeightUnit = this.weightUnitsTranslated[index];
+
+      index = this.distanceUnits.indexOf(this.user.data.distance_unit_preference);
+      if (index < 0) index = 0;
+      this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+    }
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
@@ -252,28 +298,28 @@ export class ProfileSettingsComponent implements OnInit {
     // save settings
     switch (this.activeSetting) {
       case 'height':
-        this.HEIGHT = this.listPickerItems[this.listPickerIndex];
         this._userService.updateDataProperty(
           'height_unit_preference',
-          this.listPickerIndex
+          this.heightUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ height_unit_preference: this.listPickerIndex });
+        KinveyUser.update({ height_unit_preference: this.heightUnits[this.listPickerIndex] });
+        this.displayHeightUnit = this.heightUnitsTranslated[this.listPickerIndex];
         break;
       case 'weight':
-        this.WEIGHT = this.listPickerItems[this.listPickerIndex];
         this._userService.updateDataProperty(
           'weight_unit_preference',
-          this.listPickerIndex
+          this.weightUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ weight_unit_preference: this.listPickerIndex });
+        KinveyUser.update({ weight_unit_preference: this.weightUnits[this.listPickerIndex] });
+        this.displayWeightUnit = this.weightUnitsTranslated[this.listPickerIndex];
         break;
       case 'distance':
-        this.DISTANCE = this.listPickerItems[this.listPickerIndex];
         this._userService.updateDataProperty(
           'distance_unit_preference',
-          this.listPickerIndex
+          this.distanceUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ distance_unit_preference: this.listPickerIndex });
+        KinveyUser.update({ distance_unit_preference: this.distanceUnits[this.listPickerIndex] });
+        this.displayDistanceUnit = this.distanceUnitsTranslated[this.listPickerIndex];
         break;
       case 'max-speed':
         updatedSmartDriveSettings = true;
@@ -559,8 +605,12 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.height'
         );
-        this.listPickerItems = this.HEIGHT_UNITS;
-        this.listPickerIndex = this.listPickerItems.indexOf(this.HEIGHT);
+        this.listPickerItems = this.heightUnitsTranslated;
+        let userHeightUnitPreference = '';
+        if (this.user)
+          userHeightUnitPreference = this.user.data.height_unit_preference;
+        this.listPickerIndex = this.heightUnits.indexOf(userHeightUnitPreference);
+        if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;
       case 'weight':
@@ -570,8 +620,12 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.weight'
         );
-        this.listPickerItems = this.WEIGHT_UNITS;
-        this.listPickerIndex = this.listPickerItems.indexOf(this.WEIGHT);
+        this.listPickerItems = this.weightUnitsTranslated;
+        let userWeightUnitPreference = '';
+        if (this.user)
+          userWeightUnitPreference = this.user.data.weight_unit_preference;
+        this.listPickerIndex = this.weightUnits.indexOf(userWeightUnitPreference);
+        if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;
       case 'distance':
@@ -581,8 +635,12 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSettingDescription = this._translateService.instant(
           'general.distance'
         );
-        this.listPickerItems = this.DISTANCE_UNITS;
-        this.listPickerIndex = this.listPickerItems.indexOf(this.DISTANCE);
+        this.listPickerItems = this.distanceUnitsTranslated;
+        let userDistanceUnitPreference = '';
+        if (this.user)
+        userDistanceUnitPreference = this.user.data.distance_unit_preference;
+        this.listPickerIndex = this.distanceUnits.indexOf(userDistanceUnitPreference);
+        if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;
       case 'max-speed':

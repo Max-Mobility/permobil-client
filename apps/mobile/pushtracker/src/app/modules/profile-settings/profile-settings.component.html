@@ -16,20 +16,20 @@
       <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="1"
         (tap)="onItemTap($event, 'height')" class="setting-layout">
         <Label class="setting-title" [text]="'general.height' | translate"></Label>
-        <Label class="setting-value" [text]="HEIGHT" textWrap="true"></Label>
+        <Label class="setting-value" [text]="displayHeightUnit" textWrap="true"></Label>
       </StackLayout>
       // Weight
       <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="2"
         (tap)="onItemTap($event, 'weight')" class="setting-layout">
         <Label class="setting-title" [text]="'general.weight' | translate"></Label>
-        <Label class="setting-value" [text]="WEIGHT" textWrap="true"></Label>
+        <Label class="setting-value" [text]="displayWeightUnit" textWrap="true"></Label>
       </StackLayout>
 
       // Distance
       <StackLayout [isUserInteractionEnabled]="!isUserEditingSetting" ripple rippleColorAlpha="0.18" row="3"
         (tap)="onItemTap($event, 'distance')" class="setting-layout">
         <Label class="setting-title" [text]="'general.distance' | translate"></Label>
-        <Label class="setting-value" [text]="DISTANCE" textWrap="true"></Label>
+        <Label class="setting-value" [text]="displayDistanceUnit" textWrap="true"></Label>
       </StackLayout>
 
       // Smart Drive Section

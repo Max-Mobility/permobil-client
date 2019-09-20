@@ -29,9 +29,9 @@ export interface PushTrackerUser {
     activity_goal_coast_time: number;
     activity_goal_distance: number;
     // unit preference
-    weight_unit_preference: number;
-    height_unit_preference: number;
-    distance_unit_preference: number;
+    weight_unit_preference: string;
+    height_unit_preference: string;
+    distance_unit_preference: string;
     // Display preferences
     theme_preference: string;
     language_preference: string;
