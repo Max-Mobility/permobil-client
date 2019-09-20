@@ -12,7 +12,7 @@ import * as TNSHTTP from 'tns-core-modules/http';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, DISTANCE_UNITS } from '../../enums';
 import { LoggingService } from '../../services';
 const util = require('util');
 import { convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
@@ -1340,12 +1340,12 @@ export class ActivityComponent implements OnInit {
     this.monthViewStyle.showWeekNumbers = false;
     this.monthViewStyle.showDayNames = true;
     this.monthViewStyle.backgroundColor =
-      this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
 
     // Today cell style
     const todayCellStyle = new DayCellStyle();
     todayCellStyle.cellBorderColor =
-      this.savedTheme === 'DARK' ? new Color('#00c1d5') : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? new Color('#00c1d5') : this._colorWhite;
     todayCellStyle.cellTextSize = 12;
     todayCellStyle.cellTextColor = new Color('#00c1d5');
     this.monthViewStyle.todayCellStyle = todayCellStyle;
@@ -1353,15 +1353,15 @@ export class ActivityComponent implements OnInit {
     // Day cell style
     const dayCellStyle = new DayCellStyle();
     dayCellStyle.cellBackgroundColor =
-      this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayCellStyle.cellBorderColor =
-      this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
 
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
     weekendCellStyle.cellBorderColor =
-      this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
     // Selected cell style
@@ -1373,18 +1373,18 @@ export class ActivityComponent implements OnInit {
     // Week number cell style
     const weekNumberCellStyle = new CellStyle();
     weekNumberCellStyle.cellTextColor =
-      this.savedTheme === 'DARK' ? this._colorWhite : this._colorBlack;
+      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     weekNumberCellStyle.cellBorderColor = this._colorWhite;
     this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
 
     // Day name cell style
     const dayNameCellStyle = new CellStyle();
     dayNameCellStyle.cellBackgroundColor =
-      this.savedTheme === 'DARK' ? this._colorBlack : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayNameCellStyle.cellTextColor =
-      this.savedTheme === 'DARK' ? this._colorWhite : this._colorBlack;
+      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     dayNameCellStyle.cellBorderColor =
-      this.savedTheme === 'DARK' ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
   }
 

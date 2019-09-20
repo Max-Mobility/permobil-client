@@ -711,11 +711,11 @@ export class HomeTabComponent {
       coastDistancePalette.seriesName = 'CoastDistanceUsageActivity';
       const coastDistancePaletteEntry = new PaletteEntry();
       coastDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       coastDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
@@ -727,11 +727,11 @@ export class HomeTabComponent {
       driveDistancePalette.seriesName = 'DriveDistanceUsageActivity';
       const driveDistancePaletteEntry = new PaletteEntry();
       driveDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       driveDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
@@ -743,11 +743,11 @@ export class HomeTabComponent {
       coastDistanceGoalPalette.seriesName = 'CoastDistanceGoalLineSeries';
       const coastDistanceGoalPaletteEntry = new PaletteEntry();
       coastDistanceGoalPaletteEntry.fillColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       coastDistanceGoalPaletteEntry.strokeColor =
-        this.user.data.theme_preference === 'DEFAULT'
+        this.user.data.theme_preference === APP_THEMES.DEFAULT
           ? new Color('#0067a6')
           : new Color('#89d4e3');
       coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
@@ -767,11 +767,11 @@ export class HomeTabComponent {
     this.pointLabelStyle.margin = 10;
     this.pointLabelStyle.fontStyle = ChartFontStyle.Bold;
     this.pointLabelStyle.fillColor =
-      this.user.data.theme_preference === 'DEFAULT'
+      this.user.data.theme_preference === APP_THEMES.DEFAULT
         ? new Color('#e31c79')
         : new Color('#00c1d5');
     this.pointLabelStyle.strokeColor =
-      this.user.data.theme_preference === 'DEFAULT'
+      this.user.data.theme_preference === APP_THEMES.DEFAULT
         ? new Color('#e31c79')
         : new Color('#00c1d5');
     this.pointLabelStyle.textSize = 12;

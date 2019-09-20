@@ -14,6 +14,7 @@ import { LoggingService, PushTrackerUserService } from '../../services';
 import { areDatesSame, formatAMPM,
          getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
          convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
+import { APP_THEMES } from '../../enums';
 
 enum JourneyType {
   'ROLL',
@@ -417,7 +418,7 @@ export class JourneyTabComponent {
             getJourneyTypeString(journey.journeyType),
           duration: 0,
           icon_small:
-            this.savedTheme === 'DEFAULT'
+            this.savedTheme === APP_THEMES.DEFAULT
               ? imageFromResource(
                   journey.journeyType === JourneyType.ROLL
                     ? 'roll_black'
@@ -429,7 +430,7 @@ export class JourneyTabComponent {
                     : 'smartdrive_material_white_45'
                 ),
           icon_large:
-            this.savedTheme === 'DEFAULT'
+            this.savedTheme === APP_THEMES.DEFAULT
               ? imageFromResource(
                   journey.journeyType === JourneyType.ROLL
                     ? 'roll_white'
