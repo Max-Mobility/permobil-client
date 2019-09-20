@@ -6,12 +6,11 @@ import {
   SD_OTA_State
 } from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
-import { Color } from 'tns-core-modules/color';
-import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base.model';
 import { isAndroid } from 'tns-core-modules/ui/page/page';
+import { SMARTDRIVE_PACKET_TYPE, SMARTDRIVE_PACKET_SUBTYPE } from '../enums';
 
 export class SmartDrive extends DeviceBase {
   // STATIC:
@@ -1113,29 +1112,29 @@ export class SmartDrive extends DeviceBase {
     const subType = p.SubType();
     if (!packetType || !subType) {
       return;
-    } else if (packetType === 'Data') {
+    } else if (packetType === SMARTDRIVE_PACKET_TYPE.DATA) {
       switch (subType) {
-        case 'DeviceInfo':
+        case SMARTDRIVE_PACKET_SUBTYPE.DEVICE_INFO:
           this._handleDeviceInfo(p);
           break;
-        case 'MotorInfo':
+        case SMARTDRIVE_PACKET_SUBTYPE.MOTOR_INFO:
           this._handleMotorInfo(p);
           break;
-        case 'MotorDistance':
+        case SMARTDRIVE_PACKET_SUBTYPE.MOTOR_DISTANCE:
           this._handleDistanceInfo(p);
           break;
         default:
           break;
       }
-    } else if (packetType === 'Command') {
+    } else if (packetType === SMARTDRIVE_PACKET_TYPE.COMMAND) {
       switch (subType) {
-        case 'OTAReady':
+        case SMARTDRIVE_PACKET_SUBTYPE.OTA_READY:
           this._handleOTAReady(p);
           break;
         default:
           break;
       }
-    } else if (packetType === 'Error') {
+    } else if (packetType === SMARTDRIVE_PACKET_TYPE.ERROR) {
       this._handleError(p);
     }
   }

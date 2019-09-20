@@ -16,3 +16,16 @@ export enum SMARTDRIVE_UNIT {
     METRIC = 'Metric',
     ENGLISH = 'English'
 }
+
+export enum SMARTDRIVE_PACKET_TYPE {
+    DATA = 'Data',
+    COMMAND = 'Command',
+    ERROR = 'Error'
+}
+
+export enum SMARTDRIVE_PACKET_SUBTYPE {
+    DEVICE_INFO = 'DeviceInfo',
+    MOTOR_INFO = 'MotorInfo',
+    MOTOR_DISTANCE = 'MotorDistance',
+    OTA_READY = 'OTAReady'
+}
