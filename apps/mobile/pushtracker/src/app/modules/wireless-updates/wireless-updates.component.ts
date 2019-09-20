@@ -29,7 +29,7 @@ import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
 import { SmartDriveData } from '../../namespaces';
 import { BluetoothService, LoggingService } from '../../services';
-import { APP_THEMES } from '../../enums';
+import { APP_THEMES, CONFIGURATIONS } from '../../enums';
 
 @Component({
   selector: 'wireless-updates',
@@ -38,6 +38,7 @@ import { APP_THEMES } from '../../enums';
 })
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public APP_THEMES = APP_THEMES;
+  public CONFIGURATIONS = CONFIGURATIONS;
   ptCirclePercentage: number = 83;
   sdCirclePercentage: number = 30;
   languagePreference: string = '';
@@ -96,7 +97,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this._logService.logBreadCrumb('wireless-updates.component OnInit');
     this.checkForSmartDriveUpdates();
-    if (this.controlConfiguration === 'PushTracker with SmartDrive')
+    if (this.controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE)
       this.checkForPushTrackerUpdates();
   }
 
