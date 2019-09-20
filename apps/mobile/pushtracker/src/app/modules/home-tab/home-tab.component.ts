@@ -416,7 +416,7 @@ export class HomeTabComponent {
 
   private async _loadSmartDriveUsage() {
     this.loadSmartDriveUsageFromKinvey(this._weekStart).then(() => {
-      this._formatUsageForView('Week').then(result => {
+      this._formatUsageForView().then(result => {
         this.usageActivity = new ObservableArray(result);
         this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
         this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
@@ -555,7 +555,7 @@ export class HomeTabComponent {
 
   private async _loadWeeklyActivity() {
     this.loadWeeklyActivityFromKinvey(this._weekStart).then(() => {
-      this._formatActivityForView('Week').then(result => {
+      this._formatActivityForView().then(result => {
         this.weeklyActivity = new ObservableArray(result);
         this._updateCoastTimePlotYAxis();
 
@@ -814,63 +814,61 @@ export class HomeTabComponent {
     this.yAxisStep = this.yAxisMax / 5.0;
   }
 
-  private async _formatActivityForView(viewMode) {
-    if (viewMode === 'Week') {
-      const activity = this._weeklyActivityFromKinvey;
-      if (activity && activity.days) {
-        const result = [];
-        const date = new Date(activity.date);
-        const weekViewDayArray = [];
-        const currentDay = date;
-        let i = 0;
-        while (i < 7) {
-          weekViewDayArray.push(new Date(currentDay));
-          currentDay.setDate(currentDay.getDate() + 1);
-          i = i + 1;
-        }
-        const days = activity.days;
-        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
-        for (const i in weekViewDayArray) {
-          const dayInWeek = weekViewDayArray[i];
-          const dailyActivity = days[i];
-          if (dailyActivity) {
-            // We have daily activity for this day
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastTime: dailyActivity.coast_time_avg || 0,
-              pushCount: dailyActivity.push_count || 0,
-              date: dayInWeek
-            });
-          } else {
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastTime: 0,
-              pushCount: 0,
-              date: dayInWeek
-            });
-          }
-        }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        return Promise.resolve(result);
-      } else {
-        const result = [];
-        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
-        for (const i in dayNames) {
+  private async _formatActivityForView() {
+    const activity = this._weeklyActivityFromKinvey;
+    if (activity && activity.days) {
+      const result = [];
+      const date = new Date(activity.date);
+      const weekViewDayArray = [];
+      const currentDay = date;
+      let i = 0;
+      while (i < 7) {
+        weekViewDayArray.push(new Date(currentDay));
+        currentDay.setDate(currentDay.getDate() + 1);
+        i = i + 1;
+      }
+      const days = activity.days;
+      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      for (const i in weekViewDayArray) {
+        const dayInWeek = weekViewDayArray[i];
+        const dailyActivity = days[i];
+        if (dailyActivity) {
+          // We have daily activity for this day
+          result.push({
+            xAxis: dayNames[parseInt(i)],
+            coastTime: dailyActivity.coast_time_avg || 0,
+            pushCount: dailyActivity.push_count || 0,
+            date: dayInWeek
+          });
+        } else {
           result.push({
             xAxis: dayNames[parseInt(i)],
             coastTime: 0,
-            pushCount: 0
+            pushCount: 0,
+            date: dayInWeek
           });
         }
-        result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
-        result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
-        return Promise.resolve(result);
       }
+      result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+      result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+      return Promise.resolve(result);
+    } else {
+      const result = [];
+      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      for (const i in dayNames) {
+        result.push({
+          xAxis: dayNames[parseInt(i)],
+          coastTime: 0,
+          pushCount: 0
+        });
+      }
+      result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
+      result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
+      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
+      return Promise.resolve(result);
     }
   }
 
@@ -925,80 +923,78 @@ export class HomeTabComponent {
   }
 
   private async _formatUsageForView(viewMode) {
-    if (viewMode === 'Week') {
-      const activity = this._weeklyUsageFromKinvey;
-      if (activity && activity.days) {
-        const result = [];
-        const date = new Date(activity.date);
-        const weekViewDayArray = [];
-        const currentDay = date;
-        let i = 0;
-        while (i < 7) {
-          weekViewDayArray.push(new Date(currentDay));
-          currentDay.setDate(currentDay.getDate() + 1);
-          i = i + 1;
-        }
-        const days = activity.days;
-        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
-        for (const i in weekViewDayArray) {
-          const dayInWeek = weekViewDayArray[i];
-          const dailyUsage = days[i];
-          if (dailyUsage) {
-            // We have daily activity for this day
-            let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-              milesToKilometers(DeviceBase.caseTicksToMiles(
-                dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
-              ) || 0),
-              this.user.data.distance_unit_preference
-            );
-            if (coastDistance < 0.0) coastDistance = 0.0;
+    const activity = this._weeklyUsageFromKinvey;
+    if (activity && activity.days) {
+      const result = [];
+      const date = new Date(activity.date);
+      const weekViewDayArray = [];
+      const currentDay = date;
+      let i = 0;
+      while (i < 7) {
+        weekViewDayArray.push(new Date(currentDay));
+        currentDay.setDate(currentDay.getDate() + 1);
+        i = i + 1;
+      }
+      const days = activity.days;
+      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      for (const i in weekViewDayArray) {
+        const dayInWeek = weekViewDayArray[i];
+        const dailyUsage = days[i];
+        if (dailyUsage) {
+          // We have daily activity for this day
+          let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+            milesToKilometers(DeviceBase.caseTicksToMiles(
+              dailyUsage.distance_smartdrive_coast -
+                dailyUsage.distance_smartdrive_coast_start
+            ) || 0),
+            this.user.data.distance_unit_preference
+          );
+          if (coastDistance < 0.0) coastDistance = 0.0;
 
-            let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-              milesToKilometers(DeviceBase.motorTicksToMiles(
-                dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
-              ) || 0),
-              this.user.data.distance_unit_preference
-            );
-            if (driveDistance < 0.0) driveDistance = 0.0;
+          let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+            milesToKilometers(DeviceBase.motorTicksToMiles(
+              dailyUsage.distance_smartdrive_drive -
+                dailyUsage.distance_smartdrive_drive_start
+            ) || 0),
+            this.user.data.distance_unit_preference
+          );
+          if (driveDistance < 0.0) driveDistance = 0.0;
 
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastDistance: coastDistance || 0.0,
-              driveDistance: driveDistance || 0.0,
-              date: dayInWeek
-            });
-          } else {
-            result.push({
-              xAxis: dayNames[parseInt(i)],
-              coastDistance: 0,
-              driveDistance: 0,
-              date: dayInWeek
-            });
-          }
-        }
-        result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
-        result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
-        return result;
-      } else {
-        const result = [];
-        const dayNames: string[] = this._translateService.instant('home-tab.day-names');
-        for (const i in dayNames) {
+          result.push({
+            xAxis: dayNames[parseInt(i)],
+            coastDistance: coastDistance || 0.0,
+            driveDistance: driveDistance || 0.0,
+            date: dayInWeek
+          });
+        } else {
           result.push({
             xAxis: dayNames[parseInt(i)],
             coastDistance: 0,
-            driveDistance: 0
+            driveDistance: 0,
+            date: dayInWeek
           });
         }
-        result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
-        result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
-        result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
-        return result;
       }
+      result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
+      result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
+      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
+      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
+      return result;
+    } else {
+      const result = [];
+      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      for (const i in dayNames) {
+        result.push({
+          xAxis: dayNames[parseInt(i)],
+          coastDistance: 0,
+          driveDistance: 0
+        });
+      }
+      result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
+      result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
+      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
+      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
+      return result;
     }
   }
 
