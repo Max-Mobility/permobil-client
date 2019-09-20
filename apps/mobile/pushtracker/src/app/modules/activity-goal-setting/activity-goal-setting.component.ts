@@ -16,7 +16,6 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 })
 export class ActivityGoalSettingComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
-  
   config: {
     title: string;
     description: string;

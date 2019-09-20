@@ -29,6 +29,7 @@ import { ListPickerSheetComponent } from '../shared/components';
 })
 export class ProfileTabComponent {
   public APP_THEMES = APP_THEMES;
+  public CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;

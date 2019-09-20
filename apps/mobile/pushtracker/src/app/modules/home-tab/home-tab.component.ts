@@ -13,7 +13,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { screen } from 'tns-core-modules/platform';
 import { ActivityComponent } from '..';
-import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
+import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
@@ -329,7 +329,7 @@ export class HomeTabComponent {
       .showModal(ActivityComponent, {
         context: {
           tabSelectedIndex:
-          this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+          this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
             ? 0
             : 1,
           user: this.user
@@ -1040,7 +1040,7 @@ export class HomeTabComponent {
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       tabSelectedIndex:
-        this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+        this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1056,7 +1056,7 @@ export class HomeTabComponent {
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       tabSelectedIndex:
-        this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+        this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,

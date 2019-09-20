@@ -127,7 +127,7 @@
         <StackLayout row="13" col="0" colspan="4" class="hr"></StackLayout>
 
         // SmartDrive Serial Number
-        <StackLayout row="14" col="0" [colSpan]="user?.data.control_configuration === 'Switch Control with SmartDrive' ? 4 : 2" class="data-box" (tap)="onScan('smartdrive')">
+        <StackLayout row="14" col="0" [colSpan]="user?.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE ? 4 : 2" class="data-box" (tap)="onScan('smartdrive')">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true"></Label>
@@ -137,7 +137,7 @@
 
         // Pushtracker Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker then we show the current PushTracker serial number // field that includes the QR code reader for reading the
         OGPT qr code
-        <StackLayout *ngIf="user?.data.control_configuration === 'PushTracker with SmartDrive'" row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
+        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="14" col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
@@ -147,7 +147,7 @@
 
         // Pushtracker E2 Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker E2 then we show a read-only PushTracker E2 serial number field // which shows the serial number saved with
         the user account (comes from the wear apps). // If the user presses on the field, then we show a dialog indicating that the // serial number comes from the wear os apps.
-        <StackLayout *ngIf="user?.data.control_configuration === 'PushTracker E2 with SmartDrive'" row="14" col="2" colSpan="2" class="data-box" (tap)="onPushTrackerE2SerialNumberTap($event)">
+        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" row="14" col="2" colSpan="2" class="data-box" (tap)="onPushTrackerE2SerialNumberTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker-e2' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>

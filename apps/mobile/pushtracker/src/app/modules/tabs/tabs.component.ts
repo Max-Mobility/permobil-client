@@ -12,7 +12,7 @@ import { BottomNavigation } from 'tns-core-modules/ui/bottom-navigation';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { STORAGE_KEYS } from '../../enums';
+import { CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
@@ -26,6 +26,7 @@ import { enableDarkTheme, enableDefaultTheme } from '../../utils';
   templateUrl: './tabs.component.html'
 })
 export class TabsComponent {
+  public CONFIGURATIONS = CONFIGURATIONS;
   bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
@@ -105,7 +106,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-          'PushTracker with SmartDrive' &&
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
         Log.D('asking for permissions');

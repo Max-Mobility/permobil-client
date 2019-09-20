@@ -19,7 +19,7 @@
           </SegmentedBar>
 
           // Current Tab Chart title/label with prev/next buttons
-          <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto" [visibility]="tabSelectedIndex === 0 && user.data.control_configuration === 'PushTracker with SmartDrive' ? 'collapse' : 'visible'">
+          <GridLayout row="1" width="100%" rows="auto, auto, auto" columns="auto, *, auto" [visibility]="tabSelectedIndex === 0 && user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'collapse' : 'visible'">
             <Button row="0" col="0" text="&#xe5cb;" class="prev-btn" (tap)="onPreviousTap()" ripple rippleColorAlpha="0.18"></Button>
             <Label row="0" col="1" [text]="chartTitle" class="chart-title"></Label>
             <Button
@@ -40,7 +40,7 @@
           // Day
           <StackLayout row="2" [visibility]="tabSelectedIndex === 0 ? 'visible' : 'collapsed'">
             <RadCartesianChart allowAnimations="true" height="250" width="90%" 
-              [visibility]="user.data.control_configuration !== 'PushTracker with SmartDrive' ? 'visible' : 'collapse'">
+              [visibility]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapse'">
               <RadCartesianChartGrid tkCartesianGrid 
                 horizontalLinesVisible="true" verticalLinesVisible="false" 
                 horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
@@ -165,7 +165,7 @@
           </StackLayout>
 
           // Coast_Time and Push_Count buttons and description label
-          <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" [visibility]="(tabSelectedIndex === 0 && user.data.control_configuration === 'PushTracker with SmartDrive') || tabSelectedIndex == 2 ? 'collapse' : 'visible'">
+          <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" [visibility]="(tabSelectedIndex === 0 && user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) || tabSelectedIndex == 2 ? 'collapse' : 'visible'">
             <Button row="0" col="1" [text]="'general.coast-time' | translate" [class]="viewMode === 0 ? 'coast-time-btn-enabled' : 'coast-time-btn-disabled'" (tap)="onCoastTimeTap()"></Button>
             <Button row="0" col="2" [text]="'general.push-count' | translate" [class]="viewMode === 1 ? 'push-count-btn-enabled' : 'push-count-btn-disabled'" (tap)="onPushCountTap()"></Button>
             <Button row="0" col="3" [text]="'general.distance' | translate" [class]="viewMode === 2 ? 'distance-btn-enabled' : 'distance-btn-disabled'" (tap)="onDistanceTap()"></Button>
@@ -183,7 +183,7 @@
           </GridLayout>
 
           // Message regarding daily activity if control configuration = PushTracker with SmartDrive
-          <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" [visibility]="tabSelectedIndex === 0 && user.data.control_configuration === 'PushTracker with SmartDrive' ? 'visible' : 'collapsed'">
+          <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" [visibility]="tabSelectedIndex === 0 && user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapsed'">
             <Label
               marginTop="20"
               width="80%"

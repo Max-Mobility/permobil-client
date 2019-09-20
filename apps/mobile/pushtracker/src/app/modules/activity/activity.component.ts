@@ -12,7 +12,7 @@ import * as TNSHTTP from 'tns-core-modules/http';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { APP_THEMES, DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { LoggingService } from '../../services';
 const util = require('util');
 import { convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
@@ -25,6 +25,7 @@ import { DeviceBase } from '../../models';
 })
 export class ActivityComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
+  public CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser;
   tabItems: SegmentedBarItem[];
   tabSelectedIndex: number;
@@ -349,7 +350,7 @@ export class ActivityComponent implements OnInit {
 
   async onWeekPointSelected(event) {
     if (
-      this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+      this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const selectedDate = new Date(this.weekStart);
       this.currentDayInView.setDate(
@@ -385,7 +386,7 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarDateSelected(args) {
     if (
-      this.user.data.control_configuration !== 'PushTracker with SmartDrive'
+      this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const date: Date = args.date;
       if (date <= new Date()) {

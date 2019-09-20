@@ -9,7 +9,7 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page, PropertyChangeData, EventData } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
-import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS } from '../../enums';
+import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS, CONFIGURATIONS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
@@ -23,6 +23,7 @@ const dialogs = require('tns-core-modules/ui/dialogs');
 })
 export class ProfileSettingsComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
+  public CONFIGURATIONS = CONFIGURATIONS;
   @ViewChild('sliderSettingDialog', { static: false })
   sliderSettingDialog: ElementRef;
 
@@ -111,7 +112,7 @@ export class ProfileSettingsComponent implements OnInit {
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
-    if (this.user.data.control_configuration === 'PushTracker with SmartDrive') {
+    if (this.user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
       const ptConnected = BluetoothService.PushTrackers.filter(pt => { return pt.connected === true; });
       if (ptConnected && ptConnected.length === 1) {
         const pt = ptConnected[0] as PushTracker;
@@ -144,7 +145,7 @@ export class ProfileSettingsComponent implements OnInit {
       Log.D('Scan is not forced - Already have a SmartDrive', this.smartDrive.address);
       return true;
     }
-    if (this.user.data.control_configuration === 'Switch Control with SmartDrive') {
+    if (this.user.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
       return this._bluetoothService.scanForSmartDrive(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
@@ -362,7 +363,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
 
     if (this.user) {
-      if (this.user.data.control_configuration === 'PushTracker with SmartDrive') {
+      if (this.user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
         // When configuration is PushTracker, commit settings changes
         // to any connected PushTracker. The PushTracker, being master,
         // will then communicate these settings changes to the
