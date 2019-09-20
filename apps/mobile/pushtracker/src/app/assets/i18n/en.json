@@ -450,6 +450,9 @@
     "message": "Please select from the options below how to resolve differences between the settings."
   },
   "units": {
+    "cm": "cm",
+    "ft": "ft",
+    "in": "in",
     "kg": "kg",
     "lbs": "lbs",
     "km": "km",

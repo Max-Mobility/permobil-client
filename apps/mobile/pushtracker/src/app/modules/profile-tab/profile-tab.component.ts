@@ -502,10 +502,10 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' cm');
+      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
     } else {
-      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ft');
-      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' in');
+      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
+      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' ' + this._translateService.instant('units.in'));
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
