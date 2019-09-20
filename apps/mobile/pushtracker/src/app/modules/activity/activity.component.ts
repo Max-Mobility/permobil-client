@@ -24,6 +24,7 @@ import { DeviceBase } from '../../models';
   templateUrl: 'activity.component.html'
 })
 export class ActivityComponent implements OnInit {
+  public APP_THEMES = APP_THEMES;
   user: PushTrackerUser;
   tabItems: SegmentedBarItem[];
   tabSelectedIndex: number;

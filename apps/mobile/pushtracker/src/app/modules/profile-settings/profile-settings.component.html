@@ -1,6 +1,6 @@
 // profile settings layout
 <GridLayout rows="auto, *" columns="*"
-  [class]="CURRENT_THEME === 'DEFAULT' ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
+  [class]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
   <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate" [showWatchBtn]="user.data.control_configuration === 'PushTracker with SmartDrive'"
     [showUpdateBtn]="user.data.control_configuration !== 'PushTracker E2 with SmartDrive'" [showBackNav]="true" (navTapEvent)="closeModal()"
@@ -109,7 +109,7 @@
           <GridLayout width="100%" columns="auto, *" *ngIf='syncingWithSmartDrive'>
             <ActivityIndicator row="0" col="0" horizontalAlignment="right" height="10%" width="10%"
               *ngIf='syncingWithSmartDrive' marginLeft="30" marginRight="-30"
-              busy="true" [color]="CURRENT_THEME === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
+              busy="true" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
             <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status"
               row="0" col="1" [text]="syncState" *ngIf='syncingWithSmartDrive'></Label>
           </GridLayout>

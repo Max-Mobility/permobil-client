@@ -35,6 +35,7 @@ class JourneyItem {
   templateUrl: './journey-tab.component.html'
 })
 export class JourneyTabComponent {
+  public APP_THEMES = APP_THEMES;
   journeyItems = undefined;
   savedTheme: string;
   user: PushTrackerUser;

@@ -17,7 +17,7 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { APP_THEMES, GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, convertToMilesIfUnitPreferenceIsMiles, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent } from '../shared/components';
@@ -28,6 +28,7 @@ import { ListPickerSheetComponent } from '../shared/components';
   templateUrl: './profile-tab.component.html'
 })
 export class ProfileTabComponent {
+  public APP_THEMES = APP_THEMES;
   user: PushTrackerUser; // this is a Kinvey.User - assigning to any to bypass AOT template errors until we have better data models for our User
   displayActivityGoalCoastTime: string;
   displayActivityGoalDistance: string;

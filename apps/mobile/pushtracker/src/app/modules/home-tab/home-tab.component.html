@@ -1,4 +1,4 @@
-<PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)" [color]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'">
+<PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout row="1" col="0">
       // Mock ActionBar
@@ -65,7 +65,7 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -80,7 +80,7 @@
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -96,10 +96,10 @@
 
           <Palettes>
             <Palette tkCartesianPalette seriesName="WeeklyActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
             <Palette tkCartesianPalette seriesName="GoalLineSeries">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#89d4e3'" [strokeColor]="savedTheme === 'DEFAULT' ? '#e31c79' : '#89d4e3'"></PaletteEntry>
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#e31c79' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#e31c79' : '#89d4e3'"></PaletteEntry>
             </Palette>
           </Palettes>
 
@@ -110,7 +110,7 @@
             [value]="coastTimePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
+            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
           >
           </ChartGridLineAnnotation>
@@ -129,7 +129,7 @@
 
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -144,7 +144,7 @@
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="savedTheme == 'DARK' ? 'White' : 'Black'"
+            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -163,7 +163,7 @@
             [value]="distancePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="savedTheme === 'DEFAULT' ? '#0067a6' : '#89d4e3'"
+            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
           >
           </ChartGridLineAnnotation>

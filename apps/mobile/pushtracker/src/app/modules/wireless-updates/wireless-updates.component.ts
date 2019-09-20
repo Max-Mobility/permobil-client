@@ -29,6 +29,7 @@ import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
 import { SmartDriveData } from '../../namespaces';
 import { BluetoothService, LoggingService } from '../../services';
+import { APP_THEMES } from '../../enums';
 
 @Component({
   selector: 'wireless-updates',
@@ -36,6 +37,7 @@ import { BluetoothService, LoggingService } from '../../services';
   templateUrl: 'wireless-updates.component.html'
 })
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
+  public APP_THEMES = APP_THEMES;
   ptCirclePercentage: number = 83;
   sdCirclePercentage: number = 30;
   languagePreference: string = '';

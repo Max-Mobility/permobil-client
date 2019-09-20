@@ -24,6 +24,7 @@ import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesI
   templateUrl: './home-tab.component.html'
 })
 export class HomeTabComponent {
+  public APP_THEMES = APP_THEMES;
   user: PushTrackerUser;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
