@@ -7,7 +7,7 @@
   <FlexboxLayout row="1" height="100%" width="80%" flexDirection="column">
     // PushTracker
     <StackLayout marginTop="30" class="update-stack-layout" height="40%"
-      *ngIf="controlConfiguration === 'PushTracker with SmartDrive'">
+      *ngIf="controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
       <Label class="update-label" row="0" text="PushTracker"></Label>
       <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
         *ngIf="!pushTrackerCheckedForUpdates" busy="true" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
@@ -29,7 +29,7 @@
       </GridLayout>
     </StackLayout>
 
-    <StackLayout marginTop="30" class="hr-light" *ngIf="controlConfiguration !== 'Switch Control with SmartDrive'"></StackLayout>
+    <StackLayout marginTop="30" class="hr-light" *ngIf="controlConfiguration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"></StackLayout>
 
     // SmartDrive
     <StackLayout marginTop="30" class="update-stack-layout" height="40%">
