@@ -10,7 +10,6 @@ import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base.model';
 import { isAndroid } from 'tns-core-modules/ui/page/page';
-import { SMARTDRIVE_PACKET_TYPE, SMARTDRIVE_PACKET_SUBTYPE } from '../enums';
 
 export class SmartDrive extends DeviceBase {
   // STATIC:
@@ -1112,29 +1111,29 @@ export class SmartDrive extends DeviceBase {
     const subType = p.SubType();
     if (!packetType || !subType) {
       return;
-    } else if (packetType === SMARTDRIVE_PACKET_TYPE.DATA) {
+    } else if (packetType === 'Data') {
       switch (subType) {
-        case SMARTDRIVE_PACKET_SUBTYPE.DEVICE_INFO:
+        case 'DeviceInfo':
           this._handleDeviceInfo(p);
           break;
-        case SMARTDRIVE_PACKET_SUBTYPE.MOTOR_INFO:
+        case 'MotorInfo':
           this._handleMotorInfo(p);
           break;
-        case SMARTDRIVE_PACKET_SUBTYPE.MOTOR_DISTANCE:
+        case 'MotorDistance':
           this._handleDistanceInfo(p);
           break;
         default:
           break;
       }
-    } else if (packetType === SMARTDRIVE_PACKET_TYPE.COMMAND) {
+    } else if (packetType === 'Command') {
       switch (subType) {
-        case SMARTDRIVE_PACKET_SUBTYPE.OTA_READY:
+        case 'OTAReady':
           this._handleOTAReady(p);
           break;
         default:
           break;
       }
-    } else if (packetType === SMARTDRIVE_PACKET_TYPE.ERROR) {
+    } else if (packetType === 'Error') {
       this._handleError(p);
     }
   }
