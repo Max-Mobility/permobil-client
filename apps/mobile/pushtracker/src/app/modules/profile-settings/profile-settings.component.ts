@@ -9,13 +9,11 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page, PropertyChangeData, EventData } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
-import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS } from '../../enums';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
 import { MockActionbarComponent } from '../shared/components';
 import { PushTracker, SmartDrive } from '~/app/models';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Label } from 'tns-core-modules/ui/label/label';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
@@ -24,6 +22,7 @@ const dialogs = require('tns-core-modules/ui/dialogs');
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
+  public APP_THEMES = APP_THEMES;
   @ViewChild('sliderSettingDialog', { static: false })
   sliderSettingDialog: ElementRef;
 
