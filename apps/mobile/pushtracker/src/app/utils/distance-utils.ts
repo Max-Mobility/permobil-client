@@ -9,7 +9,7 @@ export function kilometersToMiles(km: number) {
 }
 
 export function convertToMilesIfUnitPreferenceIsMiles(distance: number, unit_preference: string) {
-  if (DISTANCE_UNITS[unit_preference] === DISTANCE_UNITS.MILES) {
+  if (unit_preference === DISTANCE_UNITS.MILES) {
     return kilometersToMiles(distance);
   }
   return distance;

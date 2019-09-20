@@ -14,7 +14,7 @@ import { LoggingService, PushTrackerUserService } from '../../services';
 import { areDatesSame, formatAMPM,
          getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
          convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
-import { APP_THEMES } from '../../enums';
+import { APP_THEMES, DISTANCE_UNITS } from '../../enums';
 
 enum JourneyType {
   'ROLL',
@@ -36,6 +36,7 @@ class JourneyItem {
 })
 export class JourneyTabComponent {
   public APP_THEMES = APP_THEMES;
+  public DISTANCE_UNITS = DISTANCE_UNITS;
   journeyItems = undefined;
   savedTheme: string;
   user: PushTrackerUser;

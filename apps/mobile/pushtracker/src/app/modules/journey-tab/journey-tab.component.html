@@ -25,7 +25,7 @@
             <Label text="&#xe5cc;"></Label>
           </StackLayout>
           <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5" 
-            [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === 0 ? ('units.km' | translate) : ('units.mi' | translate))" textWrap="true"></Label>
+            [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))" textWrap="true"></Label>
         </GridLayout>
 
         <StackLayout width="95%" marginTop="5" marginBottom="5" row="2" class="hr-light"></StackLayout>
@@ -43,7 +43,7 @@
                 <Label
                   row="1"
                   col="0"
-                  [text]="item.coast_time + ' ' + ('units.s' | translate) + '   •   ' + item.push_count + item.push_count_unit + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === 0 ? 
+                  [text]="item.coast_time + ' ' + ('units.s' | translate) + '   •   ' + item.push_count + item.push_count_unit + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 
                     ('units.km' | translate) : ('units.mi' | translate))"
                   class="journey-item"
                 ></Label>
