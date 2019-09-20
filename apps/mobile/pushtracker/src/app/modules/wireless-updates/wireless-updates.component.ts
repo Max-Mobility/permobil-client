@@ -312,7 +312,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           });
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant(
-            'wireless-updates.state.no-smartdrives.detected'
+            'wireless-updates.state.no-smartdrives-detected'
           );
           this.smartDriveOtaProgress = 0;
           this.noSmartDriveDetected = true;
