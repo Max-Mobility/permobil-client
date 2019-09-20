@@ -9,10 +9,11 @@ import * as TNSHTTP from 'tns-core-modules/http';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
-import { DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { areDatesSame, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, milesToKilometers } from '../../utils';
+import { areDatesSame, formatAMPM,
+         getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
+         convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -124,11 +125,12 @@ export class JourneyTabComponent {
 
   getTodayCoastDistance() {
     if (this.todayUsage) {
-      let coastDistance = this._updateDistanceUnit(
+      let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToMiles(
           this.todayUsage.distance_smartdrive_coast -
             this.todayUsage.distance_smartdrive_coast_start
-        )
+        ),
+        this.user.data.distance_unit_preference
       );
       if (coastDistance < 0.0) coastDistance = 0.0;
       return coastDistance.toFixed(2);
@@ -257,13 +259,6 @@ export class JourneyTabComponent {
       Log.D('No more data available in the database', this._rollingWeekStart);
       return this.journeyItems;
     }
-  }
-
-  private _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
-      return milesToKilometers(distance);
-    }
-    return distance;
   }
 
   private async _processJourneyMap(date: Date, reset: boolean) {
@@ -719,10 +714,11 @@ export class JourneyTabComponent {
               }
               this._journeyMap[
                 record.start_time
-              ].coastDistance = this._updateDistanceUnit(
+              ].coastDistance = convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToMiles(
                   record.distance_smartdrive_coast - coastDistanceStart
-                )
+                ),
+                this.user.data.distance_unit_preference
               );
               // https://github.com/Max-Mobility/permobil-client/issues/266
               if (this._journeyMap[record.start_time].coastDistance < 0.0)
@@ -730,10 +726,11 @@ export class JourneyTabComponent {
 
               this._journeyMap[
                 record.start_time
-              ].driveDistance = this._updateDistanceUnit(
+              ].driveDistance = convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.motorTicksToMiles(
                   record.distance_smartdrive_drive - driveDistanceStart
-                )
+                ),
+                this.user.data.distance_unit_preference
               );
               // https://github.com/Max-Mobility/permobil-client/issues/266
               if (this._journeyMap[record.start_time].driveDistance < 0.0)

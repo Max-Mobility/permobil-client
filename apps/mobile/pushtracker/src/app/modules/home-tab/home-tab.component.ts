@@ -16,7 +16,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme, kilometersToMiles, milesToKilometers } from '../../utils';
+import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -130,8 +130,9 @@ export class HomeTabComponent {
     const coastTimeValue = parseFloat(this.todayCoastTime) || 0.0;
     const coastTimeGoal = this.user.data.activity_goal_coast_time;
     const distanceValue = parseFloat(this.todayCoastDistance) || 0.0;
-    const distanceGoal = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
+    const distanceGoal = convertToMilesIfUnitPreferenceIsMiles(
+      this.user.data.activity_goal_distance,
+      this.user.data.distance_unit_preference
     );
     const distanceUnit =
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
@@ -423,8 +424,9 @@ export class HomeTabComponent {
       this._formatUsageForView('Week').then(result => {
         this.usageActivity = new ObservableArray(result);
         this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
-        this.distanceGoalValue = this._updateDistanceUnit(
-          this.user.data.activity_goal_distance
+        this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
         ).toFixed(1);
         this.distanceGoalUnit =
           this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
@@ -433,28 +435,31 @@ export class HomeTabComponent {
         this._updateDistancePlotYAxis(); // sets this._todaysUsage
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
-          let coastDistance = this._updateDistanceUnit(
+          let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
             milesToKilometers(DeviceBase.caseTicksToMiles(
               this._todaysUsage.distance_smartdrive_coast -
                 this._todaysUsage.distance_smartdrive_coast_start
-            ) || 0)
+            ) || 0),
+            this.user.data.distance_unit_preference
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
           this.todayCoastDistance = coastDistance.toFixed(1);
 
-          let driveDistance = this._updateDistanceUnit(
+          let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
             milesToKilometers(DeviceBase.motorTicksToMiles(
               this._todaysUsage.distance_smartdrive_drive -
                 this._todaysUsage.distance_smartdrive_drive_start
-            ) || 0)
+            ) || 0),
+            this.user.data.distance_unit_preference
           );
           if (driveDistance < 0.0) driveDistance = 0.0;
           this.todayDriveDistance = driveDistance.toFixed(1);
 
-          this.todayOdometer = this._updateDistanceUnit(
+          this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
             milesToKilometers(DeviceBase.caseTicksToMiles(
               this._todaysUsage.distance_smartdrive_coast
-            ) || 0)
+            ) || 0),
+            this.user.data.distance_unit_preference
           ).toFixed(1);
           // Today coast distance changed, update message
           this.updateTodayMessage();
@@ -464,21 +469,24 @@ export class HomeTabComponent {
           this.todayOdometer = (0).toFixed();
         }
 
-        this.distancePlotAnnotationValue = this._updateDistanceUnit(
-          this.user.data.activity_goal_distance
+        this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
         );
         this.distanceGoalLabelChartData = new ObservableArray([
           {
             xAxis: '        ',
-            coastDistance: this._updateDistanceUnit(
-              this.user.data.activity_goal_distance
+            coastDistance: convertToMilesIfUnitPreferenceIsMiles(
+              this.user.data.activity_goal_distance,
+              this.user.data.distance_unit_preference
             ),
             impact: 7
           }
         ] as any[]);
         this.distanceCirclePercentage =
           (parseFloat(this.todayCoastDistance) /
-            this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
+            convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
+              this.user.data.distance_unit_preference)) *
           100;
         this._updateProgress();
       });
@@ -583,8 +591,9 @@ export class HomeTabComponent {
         this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
         this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
         this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
-        this.distanceGoalValue = this._updateDistanceUnit(
-          this.user.data.activity_goal_distance
+        this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
         ).toFixed(1);
         this.distanceGoalUnit =
           this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
@@ -592,8 +601,9 @@ export class HomeTabComponent {
             : ' ' + this._translateService.instant('home-tab.mi-per-day');
         this.distanceCirclePercentageMaxValue =
           '/' +
-          this._updateDistanceUnit(
-            this.user.data.activity_goal_distance
+          convertToMilesIfUnitPreferenceIsMiles(
+            this.user.data.activity_goal_distance,
+            this.user.data.distance_unit_preference
           ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
@@ -614,8 +624,9 @@ export class HomeTabComponent {
         this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
         this.distanceCirclePercentageMaxValue =
           '/' +
-          this._updateDistanceUnit(
-            this.user.data.activity_goal_distance
+          convertToMilesIfUnitPreferenceIsMiles(
+            this.user.data.activity_goal_distance,
+            this.user.data.distance_unit_preference
           ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
@@ -640,8 +651,9 @@ export class HomeTabComponent {
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
     this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
     this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
-    this.distanceGoalValue = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
+    this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+      this.user.data.activity_goal_distance,
+      this.user.data.distance_unit_preference
     ).toFixed(1);
     this.distanceGoalUnit =
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
@@ -649,7 +661,8 @@ export class HomeTabComponent {
         : ' ' + this._translateService.instant('home-tab.mi-per-day');
     this.distanceCirclePercentageMaxValue =
       '/' +
-      this._updateDistanceUnit(this.user.data.activity_goal_distance).toFixed(
+      convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
+        this.user.data.distance_unit_preference).toFixed(
         1
       );
     this.coastTimeCirclePercentageMaxValue =
@@ -667,21 +680,24 @@ export class HomeTabComponent {
       100;
 
     // Update Y axis for coast distance plot
-    this.distancePlotAnnotationValue = this._updateDistanceUnit(
-      this.user.data.activity_goal_distance
+    this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
+      this.user.data.activity_goal_distance,
+      this.user.data.distance_unit_preference
     );
     this.distanceGoalLabelChartData = new ObservableArray([
       {
         xAxis: '        ',
-        coastDistance: this._updateDistanceUnit(
-          this.user.data.activity_goal_distance
+        coastDistance: convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
         ),
         impact: 7
       }
     ] as any[]);
     this.distanceCirclePercentage =
       (parseFloat(this.todayCoastDistance) /
-        this._updateDistanceUnit(this.user.data.activity_goal_distance)) *
+        convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference)) *
       100;
     this._updateDistancePlotYAxis();
   }
@@ -888,11 +904,12 @@ export class HomeTabComponent {
       for (const i in days) {
         const day = days[i];
         if (day) {
-          let coastDistance = this._updateDistanceUnit(
+          let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
             milesToKilometers(DeviceBase.caseTicksToMiles(
               day.distance_smartdrive_coast -
                 day.distance_smartdrive_coast_start
-            ) || 0)
+            ) || 0),
+            this.user.data.distance_unit_preference
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
 
@@ -940,19 +957,21 @@ export class HomeTabComponent {
           const dailyUsage = days[i];
           if (dailyUsage) {
             // We have daily activity for this day
-            let coastDistance = this._updateDistanceUnit(
+            let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
               milesToKilometers(DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
                   dailyUsage.distance_smartdrive_coast_start
-              ) || 0)
+              ) || 0),
+              this.user.data.distance_unit_preference
             );
             if (coastDistance < 0.0) coastDistance = 0.0;
 
-            let driveDistance = this._updateDistanceUnit(
+            let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
               milesToKilometers(DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
                   dailyUsage.distance_smartdrive_drive_start
-              ) || 0)
+              ) || 0),
+              this.user.data.distance_unit_preference
             );
             if (driveDistance < 0.0) driveDistance = 0.0;
 
@@ -993,13 +1012,6 @@ export class HomeTabComponent {
         return result;
       }
     }
-  }
-
-  private _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
-      return kilometersToMiles(distance);
-    }
-    return distance;
   }
 
   _openActivityTabModal(context: any) {

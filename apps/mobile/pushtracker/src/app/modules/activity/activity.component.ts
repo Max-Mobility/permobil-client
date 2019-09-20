@@ -15,6 +15,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { DISTANCE_UNITS } from '../../enums';
 import { LoggingService } from '../../services';
 const util = require('util');
+import { convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
 
 @Component({
   selector: 'activity',
@@ -473,11 +474,12 @@ export class ActivityComponent implements OnInit {
           if (this._dailyUsageFromKinvey) {
             this.chartDescription =
               (
-                this._updateDistanceUnit(
+                convertToMilesIfUnitPreferenceIsMiles(
                   this._caseTicksToMiles(
                     this._dailyUsageFromKinvey.distance_smartdrive_coast -
                       this._dailyUsageFromKinvey.distance_smartdrive_coast_start
-                  )
+                  ),
+                  this.user.data.distance_unit_preference
                 ) || 0
               ).toFixed(1) + this.distanceUnit;
           } else {
@@ -721,11 +723,12 @@ export class ActivityComponent implements OnInit {
         } else if (this.viewMode === ViewMode.DISTANCE) {
           this.chartDescription =
             (
-              this._updateDistanceUnit(
+              convertToMilesIfUnitPreferenceIsMiles(
                 this._caseTicksToMiles(
                   cache.weeklyActivity.distance_smartdrive_coast -
                     cache.weeklyActivity.distance_smartdrive_coast_start
-                )
+                ),
+                this.user.data.distance_unit_preference
               ) || 0
             ).toFixed(1) + this.distanceUnit;
         }
@@ -797,11 +800,12 @@ export class ActivityComponent implements OnInit {
         } else if (this.viewMode === ViewMode.DISTANCE) {
           this.chartDescription =
             (
-              this._updateDistanceUnit(
+              convertToMilesIfUnitPreferenceIsMiles(
                 this._caseTicksToMiles(
                   activity.distance_smartdrive_coast -
                     activity.distance_smartdrive_coast_start
-                )
+                ),
+                this.user.data.distance_unit_preference
               ) || 0
             ).toFixed(1) + this.distanceUnit;
         }
@@ -839,17 +843,19 @@ export class ActivityComponent implements OnInit {
                 // Check if coast distance is negative
                 // https://github.com/Max-Mobility/permobil-client/issues/266
                 // Distance records in DB show as zero - leading to negative distance
-                let coastDistance = this._updateDistanceUnit(
+                let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
                   this._caseTicksToMiles(
                     record.distance_smartdrive_coast - coastDistanceStart
-                  )
+                  ),
+                  this.user.data.distance_unit_preference
                 );
                 if (coastDistance < 0.0) coastDistance = 0.0;
 
-                let driveDistance = this._updateDistanceUnit(
+                let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
                   this._motorTicksToMiles(
                     record.distance_smartdrive_drive - driveDistanceStart
-                  )
+                  ),
+                  this.user.data.distance_unit_preference
                 );
                 if (driveDistance < 0.0) driveDistance = 0.0;
 
@@ -1028,11 +1034,12 @@ export class ActivityComponent implements OnInit {
         } else {
           this.chartDescription =
             (
-              this._updateDistanceUnit(
+              convertToMilesIfUnitPreferenceIsMiles(
                 this._caseTicksToMiles(
                   activity.distance_smartdrive_coast -
                     activity.distance_smartdrive_coast_start
-                )
+                ),
+                this.user.data.distance_unit_preference
               ) || 0
             ).toFixed(1) + this.distanceUnit;
         }
@@ -1077,18 +1084,20 @@ export class ActivityComponent implements OnInit {
               coastTime: dailyActivity.coast_time_avg || 0,
               pushCount: dailyActivity.push_count || 0,
               driveDistance:
-                this._updateDistanceUnit(
+                convertToMilesIfUnitPreferenceIsMiles(
                   this._motorTicksToMiles(
                     dailyActivity.distance_smartdrive_drive -
                       dailyActivity.distance_smartdrive_drive_start
-                  )
+                  ),
+                  this.user.data.distance_unit_preference
                 ) || 0,
               coastDistance:
-                this._updateDistanceUnit(
+                convertToMilesIfUnitPreferenceIsMiles(
                   this._caseTicksToMiles(
                     dailyActivity.distance_smartdrive_coast -
                       dailyActivity.distance_smartdrive_coast_start
-                  )
+                  ),
+                  this.user.data.distance_unit_preference
                 ) || 0,
               date: dayInWeek
             });
@@ -1402,11 +1411,12 @@ export class ActivityComponent implements OnInit {
       } else if (this.viewMode === ViewMode.DISTANCE) {
         this.chartDescription =
           (
-            this._updateDistanceUnit(
+            convertToMilesIfUnitPreferenceIsMiles(
               this._caseTicksToMiles(
                 activity.distance_smartdrive_coast -
                   activity.distance_smartdrive_coast_start
-              )
+              ),
+              this.user.data.distance_unit_preference
             ) || 0
           ).toFixed(1) + this.distanceUnit;
       }
@@ -1445,11 +1455,12 @@ export class ActivityComponent implements OnInit {
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
       } else if (this.viewMode === ViewMode.DISTANCE) {
         this.dailyActivityAnnotationValue =
-          this._updateDistanceUnit(
+          convertToMilesIfUnitPreferenceIsMiles(
             this._caseTicksToMiles(
               activity.distance_smartdrive_coast -
                 activity.distance_smartdrive_coast_start
-            )
+            ),
+            this.user.data.distance_unit_preference
           ) || 0;
         if (activity.records && activity.records.length)
           this.dailyActivityAnnotationValue /= activity.records.length;
@@ -1490,11 +1501,12 @@ export class ActivityComponent implements OnInit {
         if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
           this.chartDescription =
           (
-            this._updateDistanceUnit(
+            convertToMilesIfUnitPreferenceIsMiles(
               this._caseTicksToMiles(
                 activity.distance_smartdrive_coast -
                   activity.distance_smartdrive_coast_start
-              )
+              ),
+              this.user.data.distance_unit_preference
             ) || 0
           ).toFixed(1) + this.distanceUnit;
         } else {
@@ -1506,11 +1518,12 @@ export class ActivityComponent implements OnInit {
         this.weeklyActivity = cache.chartData;
         this.chartDescription =
           (
-            this._updateDistanceUnit(
+            convertToMilesIfUnitPreferenceIsMiles(
               this._caseTicksToMiles(
                 cache.weeklyActivity.distance_smartdrive_coast -
                   cache.weeklyActivity.distance_smartdrive_coast_start
-              )
+              ),
+              this.user.data.distance_unit_preference
             ) || 0
           ).toFixed(1) + this.distanceUnit;
       }
@@ -1551,11 +1564,12 @@ export class ActivityComponent implements OnInit {
         const activity = this._weeklyUsageFromKinvey;
         if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
           this.weeklyActivityAnnotationValue =
-          this._updateDistanceUnit(
+          convertToMilesIfUnitPreferenceIsMiles(
             this._caseTicksToMiles(
               activity.distance_smartdrive_coast -
                 activity.distance_smartdrive_coast_start
-            )
+            ),
+            this.user.data.distance_unit_preference
           ) || 0;
         } else {
           this.weeklyActivityAnnotationValue = 0;
@@ -1566,11 +1580,12 @@ export class ActivityComponent implements OnInit {
         const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
         this.weeklyActivity = cache.chartData;
         this.weeklyActivityAnnotationValue =
-          this._updateDistanceUnit(
+          convertToMilesIfUnitPreferenceIsMiles(
             this._caseTicksToMiles(
               cache.weeklyActivity.distance_smartdrive_coast -
                 cache.weeklyActivity.distance_smartdrive_coast_start
-            )
+            ),
+            this.user.data.distance_unit_preference
           ) || 0;
         this.weeklyActivityAnnotationValue /= 7;
       }
@@ -1587,13 +1602,6 @@ export class ActivityComponent implements OnInit {
 
   _milesToKilometers(miles: number) {
     return miles * 1.60934;
-  }
-
-  _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS) {
-      return this._milesToKilometers(distance);
-    }
-    return distance;
   }
 }
 

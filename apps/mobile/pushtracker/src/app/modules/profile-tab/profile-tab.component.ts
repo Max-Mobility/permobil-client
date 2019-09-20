@@ -19,7 +19,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, kilometersToMiles, poundsToKilograms } from '../../utils';
+import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, convertToMilesIfUnitPreferenceIsMiles, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent } from '../shared/components';
 
 @Component({
@@ -314,8 +314,9 @@ export class ProfileTabComponent {
       if (this.user.data.activity_goal_distance)
         value =
           parseFloat(
-            this._updateDistanceUnit(
-              this.user.data.activity_goal_distance
+            convertToMilesIfUnitPreferenceIsMiles(
+              this.user.data.activity_goal_distance,
+              this.user.data.distance_unit_preference
             ).toFixed(1)
           ) || 0.0;
     }
@@ -981,12 +982,5 @@ export class ProfileTabComponent {
     } catch (error) {
       Log.E(error);
     }
-  }
-
-  private _updateDistanceUnit(distance: number) {
-    if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
-      return kilometersToMiles(distance);
-    }
-    return distance;
   }
 }
