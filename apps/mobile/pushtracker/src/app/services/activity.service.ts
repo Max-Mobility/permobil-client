@@ -7,6 +7,7 @@ import {
 import { LoggingService } from './logging.service';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { Log } from '@permobil/core';
+import { YYYY_MM_DD } from '../utils';
 
 @Injectable()
 export class ActivityService {
@@ -62,15 +63,9 @@ export class ActivityService {
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.descending('_kmd.lmt');
       query.limit = 1;
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
       query.equalTo(
         'date',
-        date.getFullYear() +
-        '/' +
-        (month < 10 ? '0' + month : month) +
-        '/' +
-        (day < 10 ? '0' + day : day)
+        YYYY_MM_DD(date)
       );
       query.equalTo('data_type', 'DailyActivity');
 
@@ -90,12 +85,8 @@ export class ActivityService {
   }
 
   async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
+    const date = YYYY_MM_DD(weekStartDate);
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date = weekStartDate.getFullYear() + '/' +
-      (month < 10 ? '0' + month : month) + '/' +
-      (day < 10 ? '0' + day : day);
     try {
       const queryString = '?query={"_acl.creator":"' + KinveyUser.getActiveUser()._id + '","data_type":"WeeklyActivity","date":"' + date + '"}&limit=1&sort={"_kmd.lmt": -1}';
       return TNSHTTP.request({
@@ -142,13 +133,8 @@ export class ActivityService {
       query.equalTo('data_type', 'WeeklyActivity');
 
       if (weekStartDate) {
-
-        const month = weekStartDate.getMonth() + 1;
-        const day = weekStartDate.getDate();
         query.lessThanOrEqualTo('date',
-          weekStartDate.getFullYear() + '/' +
-          (month < 10 ? '0' + month : month) + '/' +
-          (day < 10 ? '0' + day : day));
+          YYYY_MM_DD(weekStartDate));
 
         query.limit = limit;
 

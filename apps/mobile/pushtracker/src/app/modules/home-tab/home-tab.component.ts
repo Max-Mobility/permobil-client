@@ -16,7 +16,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
+import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -353,14 +353,7 @@ export class HomeTabComponent {
     let result = [];
     if (!this.user) return Promise.resolve(result);
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
 
     if (this._firstLoad) {
       // First load of the home tab
@@ -500,14 +493,7 @@ export class HomeTabComponent {
     let result = [];
     if (!this.user) return result;
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
 
     if (this._firstLoad) {
       // First load of the home tab

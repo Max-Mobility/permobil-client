@@ -17,7 +17,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme } from './utils';
+import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD } from './utils';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -146,14 +146,7 @@ export class AppComponent implements OnInit {
     const user = KinveyUser.getActiveUser();
     if (!user) return;
     let result = [];
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
     try {
       const queryString =
         '?query={"_acl.creator":"' +
@@ -199,14 +192,7 @@ export class AppComponent implements OnInit {
     let result = [];
     if (!user) return result;
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
     try {
       const queryString =
         '?query={"_acl.creator":"' +

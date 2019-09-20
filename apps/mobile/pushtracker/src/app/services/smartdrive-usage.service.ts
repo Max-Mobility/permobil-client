@@ -6,6 +6,7 @@ import {
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 import { BehaviorSubject } from 'rxjs';
+import { YYYY_MM_DD } from '../utils';
 
 @Injectable()
 export class SmartDriveUsageService {
@@ -71,15 +72,9 @@ export class SmartDriveUsageService {
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.descending('_kmd.lmt');
       query.limit = 1;
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
       query.equalTo(
         'date',
-        date.getFullYear() +
-        '/' +
-        (month < 10 ? '0' + month : month) +
-        '/' +
-        (day < 10 ? '0' + day : day)
+        YYYY_MM_DD(date)
       );
       query.equalTo('data_type', 'SmartDriveDailyInfo');
 
@@ -112,12 +107,7 @@ export class SmartDriveUsageService {
       query.equalTo('data_type', 'SmartDriveWeeklyInfo');
 
       if (weekStartDate) {
-        const month = weekStartDate.getMonth() + 1;
-        const day = weekStartDate.getDate();
-        query.equalTo('date',
-          weekStartDate.getFullYear() + '/' +
-          (month < 10 ? '0' + month : month) + '/' +
-          (day < 10 ? '0' + day : day));
+        query.equalTo('date', YYYY_MM_DD(weekStartDate));
         const stream = this.datastore.find(query);
         return stream.toPromise().then(data => {
           if (data && data.length) {
@@ -151,10 +141,7 @@ export class SmartDriveUsageService {
       if (weekStartDate) {
         const month = weekStartDate.getMonth() + 1;
         const day = weekStartDate.getDate();
-        query.lessThanOrEqualTo('date',
-          weekStartDate.getFullYear() + '/' +
-          (month < 10 ? '0' + month : month) + '/' +
-          (day < 10 ? '0' + day : day));
+        query.lessThanOrEqualTo('date', YYYY_MM_DD(weekStartDate));
         query.limit = limit;
 
         const stream = this.datastore.find(query);

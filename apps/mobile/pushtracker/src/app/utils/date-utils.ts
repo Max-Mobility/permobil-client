@@ -61,3 +61,11 @@ export enum TimeOfDay {
   'EVENING' = 2, // 5:01 PM to 8:00 PM
   'NIGHT' = 3 // After 8:00 PM
 }
+
+export function YYYY_MM_DD(date: Date) {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return date.getFullYear() + '/' +
+    (month < 10 ? '0' + month : month) +
+    '/' + (day < 10 ? '0' + day : day);
+}

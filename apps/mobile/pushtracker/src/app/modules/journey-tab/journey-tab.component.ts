@@ -13,7 +13,7 @@ import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { areDatesSame, formatAMPM,
          getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
-         convertToMilesIfUnitPreferenceIsMiles } from '../../utils';
+         convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
 import { APP_THEMES } from '../../enums';
 
 enum JourneyType {
@@ -527,14 +527,7 @@ export class JourneyTabComponent {
     let result = [];
     if (!this.user) return result;
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
 
     try {
       const queryString =
@@ -621,14 +614,8 @@ export class JourneyTabComponent {
     let result = [];
     if (!this.user) return result;
 
-    const month = weekStartDate.getMonth() + 1;
-    const day = weekStartDate.getDate();
-    const date =
-      weekStartDate.getFullYear() +
-      '/' +
-      (month < 10 ? '0' + month : month) +
-      '/' +
-      (day < 10 ? '0' + day : day);
+    const date = YYYY_MM_DD(weekStartDate);
+
     try {
       const queryString =
         '?query={"_acl.creator":"' +
