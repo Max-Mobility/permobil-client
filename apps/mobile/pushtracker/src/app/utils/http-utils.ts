@@ -3,7 +3,6 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import * as TNS_HTTP from 'tns-core-modules/http';
 import { APP_KEY } from './kinvey-keys';
 
-const BASE_USER_URL = `https://baas.kinvey.com/user/${APP_KEY}/`;
 const BASE_URL = `https://baas.kinvey.com/appdata/${APP_KEY}/`;
 
 export function getJSONFromKinvey(queryString: string): Promise<any> {
@@ -28,6 +27,31 @@ export function getJSONFromKinvey(queryString: string): Promise<any> {
         if (resp) {
           const data = resp.content.toJSON();
           console.log('data', data);
+          resolve(resp.content.toJSON());
+        }
+      })
+      .catch(err => {
+        Log.E(err);
+        reject(err);
+      });
+  });
+}
+
+export function getUserDataFromKinvey() {
+  return new Promise((resolve, reject) => {
+    const kinveyActiveUser = KinveyUser.getActiveUser();
+    TNS_HTTP.request({
+      url: encodeURI(
+        `https://baas.kinvey.com/user/${APP_KEY}/${kinveyActiveUser._id}`
+      ),
+      method: 'GET',
+      headers: {
+        Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(resp => {
+        if (resp) {
           resolve(resp.content.toJSON());
         }
       })
