@@ -564,7 +564,7 @@ export class ProfileTabComponent {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true,
       context: {
-        title: this._translateService.instant('general.height'),
+        title: this._translateService.instant('profile-tab.chair-type'),
         primaryItems: this.chairTypesTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
