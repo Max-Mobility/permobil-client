@@ -12,3 +12,8 @@ export enum DISTANCE_UNITS {
     KILOMETERS = 'Kilometers',
     MILES = 'Miles'
 }
+
+export enum TIME_FORMAT {
+    'AM_PM' = 'AM/PM',
+    'MILITARY' = '24-hour'
+}
