@@ -63,3 +63,12 @@
     }
   }
 }
+
+// Highlighted setting class unreadable
+// https://github.com/Max-Mobility/permobil-client/issues/324
+// In dark mode on the profile tab, when the user clicks on a setting,
+// the highlighted class is applied, but in dark mode the highlighted text
+// becomes black, which is unreadable.
+.data-box-value {
+  color: $permobil-sky;
+}
