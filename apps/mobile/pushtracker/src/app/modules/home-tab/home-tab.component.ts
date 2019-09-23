@@ -16,7 +16,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, milesToKilometers, YYYY_MM_DD } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -268,31 +268,18 @@ export class HomeTabComponent {
       }
     }
 
-    const kinveyActiveUser = KinveyUser.getActiveUser();
-    try {
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/user/kid_rkoCpw8VG/' +
-          kinveyActiveUser['_id'],
-        method: 'GET',
-        headers: {
-          Authorization: 'Kinvey ' + kinveyActiveUser['_kmd']['authtoken'],
-          'Content-Type': 'application/json'
-        }
+    // const kinveyActiveUser = KinveyUser.getActiveUser();
+
+    getUserDataFromKinvey()
+      .then(data => {
+        console.log('refreshed user data from kinvey');
+        this.user = this.getPushTrackerUserFromKinveyUser(data);
+        return Promise.resolve(true);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          this.user = this.getPushTrackerUserFromKinveyUser(data);
-          return Promise.resolve(true);
-        })
-        .catch(err => {
-          Log.E(err);
-          return Promise.reject(false);
-        });
-    } catch (err) {
-      Log.E(err);
-      return Promise.reject(false);
-    }
+      .catch(err => {
+        Log.E(err);
+        return Promise.reject(false);
+      });
   }
 
   async refreshPlots(args) {
@@ -391,48 +378,26 @@ export class HomeTabComponent {
       }
     }
 
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        this.user._id +
-        '","data_type":"SmartDriveWeeklyInfo","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            this._weeklyUsageFromKinvey = result; // cache
-            Log.D(
-              'HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
-            );
-            return Promise.resolve(result);
-          }
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":"${date}"}&limit=1}`;
+    getJSONFromKinvey(`SmartDriveUsage${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyUsageFromKinvey = result; // cache
           Log.D(
-            'HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
+            'HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
           );
-          return Promise.resolve(this._weeklyUsageFromKinvey);
-        })
-        .catch(err => {
-          Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
-          return Promise.reject([]);
-        });
-    } catch (err) {
-      Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
-      return Promise.reject([]);
-    }
+          return Promise.resolve(result);
+        }
+        Log.D(
+          'HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
+        );
+        return Promise.resolve(this._weeklyUsageFromKinvey);
+      })
+      .catch(err => {
+        Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
+        return Promise.reject([]);
+      });
   }
 
   private async _loadSmartDriveUsage() {
