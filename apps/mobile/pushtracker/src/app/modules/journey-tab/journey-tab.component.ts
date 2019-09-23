@@ -549,7 +549,7 @@ export class JourneyTabComponent {
         this.user._id +
         '","data_type":"WeeklyActivity","date":{"$lte":"' +
         date +
-        '"}}&limit=1&sort={"date": -1}';
+        '"}}&limit=1&sort={"date":-1}';
       return TNSHTTP.request({
         url:
           'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
@@ -636,7 +636,7 @@ export class JourneyTabComponent {
         this.user._id +
         '","data_type":"SmartDriveWeeklyInfo","date":{"$lte":"' +
         date +
-        '"}}&limit=1&sort={"date": -1}';
+        '"}}&limit=1&sort={"date":-1}';
       return TNSHTTP.request({
         url:
           'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
