@@ -11,10 +11,10 @@ import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { areDatesSame, formatAMPM,
+import { areDatesSame, formatAMPM, format24Hour,
          getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
          convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
-import { APP_THEMES, DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, DISTANCE_UNITS, TIME_FORMAT } from '../../enums';
 
 enum JourneyType {
   'ROLL',
@@ -368,20 +368,33 @@ export class JourneyTabComponent {
           journeyDateLabel = journeyDate + '';
         }
 
+        // Setup time format function based on user preference
+        // default is AM/PM
+        // https://github.com/Max-Mobility/permobil-client/issues/327
+        let formatTime = formatAMPM;
+        if (this.user) {
+          // If the preference is available and saved in the DB:
+          if (this.user.data.time_format_preference) {
+            if (this.user.data.time_format_preference === TIME_FORMAT.MILITARY) {
+              formatTime = format24Hour;
+            }
+          }
+        }
+
         let journeyTimeLabel = '';
         if (journey.mergedTimes && journey.mergedTimes.length) {
           const lastTimeMerged = new Date(
             parseInt(journey.mergedTimes.sort()[journey.mergedTimes.length - 1])
           );
           // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
-          journeyTimeLabel += formatAMPM(lastTimeMerged);
+          journeyTimeLabel += formatTime(lastTimeMerged);
           journeyDate.setMinutes(journeyDate.getMinutes() + 30);
-          journeyTimeLabel += ' - ' + formatAMPM(journeyDate);
+          journeyTimeLabel += ' - ' + formatTime(journeyDate);
         } else {
-          journeyTimeLabel = formatAMPM(journeyDate);
+          journeyTimeLabel = formatTime(journeyDate);
           const thirtyMinsLater = new Date(journeyDate);
           thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
-          journeyTimeLabel += ' - ' + formatAMPM(thirtyMinsLater);
+          journeyTimeLabel += ' - ' + formatTime(thirtyMinsLater);
         }
 
         // Selectively hide list items in Journey tab #249
