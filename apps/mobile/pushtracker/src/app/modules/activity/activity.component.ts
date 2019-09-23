@@ -637,7 +637,7 @@ export class ActivityComponent implements OnInit {
             );
             return Promise.resolve(result);
           }
-          this._weeklyActivityFromKinvey = [];
+          this._weeklyUsageFromKinvey = [];
           return Promise.resolve(this._weeklyUsageFromKinvey);
         })
         .catch(err => {
