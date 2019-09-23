@@ -46,6 +46,14 @@ export function formatAMPM(date: Date) {
   return strTime;
 }
 
+export function format24Hour(date: Date) {
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const strTime = (hours < 10 ? '0' + hours : hours) + ':' +
+    (minutes < 10 ? '0' + minutes : minutes);
+  return strTime;
+}
+
 export function areDatesSame(first: Date, second: Date): boolean {
   return (
     first.getFullYear() === second.getFullYear() &&
