@@ -1,4 +1,4 @@
-import { ListPickerSheetComponent } from './bottom-sheets';
+import { ListPickerSheetComponent, SliderSheetComponent } from './bottom-sheets';
 import { DataBoxComponent } from './data-box';
 import { MaxTextBoxComponent } from './max-text-box';
 import { MockActionbarComponent } from './mock-actionbar';
@@ -7,7 +7,8 @@ export const SHARED_COMPONENTS: any[] = [
   DataBoxComponent,
   MaxTextBoxComponent,
   MockActionbarComponent,
-  ListPickerSheetComponent
+  ListPickerSheetComponent,
+  SliderSheetComponent
 ];
 
 export * from './bottom-sheets';

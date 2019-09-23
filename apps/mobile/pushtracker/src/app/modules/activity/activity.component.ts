@@ -13,9 +13,9 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
+import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
-import { DeviceBase } from '../../models';
 
 enum TAB {
   DAY = 0,
@@ -1509,4 +1509,14 @@ export class ActivityComponent implements OnInit {
       }
     }
   }
+<<<<<<< Updated upstream
 }
+=======
+}
+
+enum ViewMode {
+  'COAST_TIME',
+  'PUSH_COUNT',
+  'DISTANCE'
+}
+>>>>>>> Stashed changes

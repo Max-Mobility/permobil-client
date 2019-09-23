@@ -17,9 +17,9 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, convertToMilesIfUnitPreferenceIsMiles, poundsToKilograms } from '../../utils';
+import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent } from '../shared/components';
 
 @Component({
@@ -78,7 +78,7 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -139,8 +139,7 @@ export class ProfileTabComponent {
   }
 
   getTranslationKeyForGenders(key) {
-    if (GENDERS[key] === GENDERS.MALE)
-      return 'profile-tab.gender.male';
+    if (GENDERS[key] === GENDERS.MALE) return 'profile-tab.gender.male';
     else if (GENDERS[key] === GENDERS.FEMALE)
       return 'profile-tab.gender.female';
     else return 'profile-tab.gender.male';
@@ -502,10 +501,19 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
+      primaryItems = Array.from(
+        { length: 300 },
+        (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm')
+      );
     } else {
-      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
-      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' ' + this._translateService.instant('units.in'));
+      primaryItems = Array.from(
+        { length: 8 },
+        (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft')
+      );
+      secondaryItems = Array.from(
+        { length: 12 },
+        (v, k) => k + ' ' + this._translateService.instant('units.in')
+      );
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
@@ -579,7 +587,9 @@ export class ProfileTabComponent {
             'chair_type',
             this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
           );
-          KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
+          KinveyUser.update({
+            chair_type: this.chairTypes[result.data.primaryIndex]
+          });
         }
         this._removeActiveDataBox();
       });
@@ -618,7 +628,9 @@ export class ProfileTabComponent {
             'chair_make',
             this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
           );
-          KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
+          KinveyUser.update({
+            chair_make: this.chairMakes[result.data.primaryIndex]
+          });
         }
         this._removeActiveDataBox();
       });
@@ -741,7 +753,9 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
-      this.user.data.activity_goal_coast_time + ' ' + this._translateService.instant('units.s');
+      this.user.data.activity_goal_coast_time +
+      ' ' +
+      this._translateService.instant('units.s');
   }
 
   private _initDisplayActivityGoalDistance() {
@@ -749,9 +763,12 @@ export class ProfileTabComponent {
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
-        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' ' + this._translateService.instant('units.mi');
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +
+        ' ' +
+        this._translateService.instant('units.mi');
     } else {
-      this.displayActivityGoalDistance += ' ' + this._translateService.instant('units.km');
+      this.displayActivityGoalDistance +=
+        ' ' + this._translateService.instant('units.km');
     }
   }
 
@@ -797,8 +814,7 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_type;
       const index = this.chairTypes.indexOf(englishValue);
       this.displayChairType = this.chairTypesTranslated[index];
-    }
-    else this.displayChairType = '';
+    } else this.displayChairType = '';
   }
 
   private _initDisplayChairMake() {
@@ -807,8 +823,7 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_make;
       const index = this.chairMakes.indexOf(englishValue);
       this.displayChairMake = this.chairMakesTranslated[index];
-    }
-    else this.displayChairMake = '';
+    } else this.displayChairMake = '';
   }
 
   private _initDisplayControlConfiguration() {
@@ -868,12 +883,14 @@ export class ProfileTabComponent {
 
   private _displayWeightInPounds(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.lbs');
-    else return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
+    else
+      return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
   }
 
   private _displayWeightInKilograms(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.kg');
-    else return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
+    else
+      return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {

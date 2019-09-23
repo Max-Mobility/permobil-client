@@ -39,12 +39,8 @@
 
           // Day
           <StackLayout row="2" [visibility]="currentTab === TAB.DAY ? 'visible' : 'collapsed'">
-            <RadCartesianChart allowAnimations="true" height="250" width="90%" 
-              [visibility]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapse'">
-              <RadCartesianChartGrid tkCartesianGrid 
-                horizontalLinesVisible="true" verticalLinesVisible="false" 
-                horizontalStripLinesVisible="false" verticalStripLinesVisible="false">
-              </RadCartesianChartGrid>
+            <RadCartesianChart allowAnimations="true" height="250" width="90%" [visibility]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapse'">
+              <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
                 *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
@@ -71,15 +67,16 @@
                 [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
               >
               </LinearAxis>
-              <BarSeries tkCartesianSeries seriesName="DailyActivity"
-                [items]="dailyActivity" 
-                categoryProperty="xAxis" 
-                [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'">
+              <BarSeries
+                tkCartesianSeries
+                seriesName="DailyActivity"
+                [items]="dailyActivity"
+                categoryProperty="xAxis"
+                [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"
+              >
               </BarSeries>
               <Palette tkCartesianPalette seriesName="DailyActivity">
-                <PaletteEntry tkCartesianPaletteEntry 
-                  [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" 
-                  [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
               </Palette>
               <ChartGridLineAnnotation
                 #dailyActivityAnnotation
@@ -126,7 +123,14 @@
                 [majorStep]="yAxisStep"
                 [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
               ></LinearAxis>
-              <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"> </BarSeries>
+              <BarSeries
+                tkCartesianSeries
+                [items]="weeklyActivity"
+                seriesName="WeeklyActivity"
+                categoryProperty="xAxis"
+                [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"
+              >
+              </BarSeries>
               <Palette tkCartesianPalette seriesName="WeeklyActivity">
                 <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
               </Palette>
@@ -165,7 +169,12 @@
           </StackLayout>
 
           // Coast_Time and Push_Count buttons and description label
-          <GridLayout row="3" rows="*, *" columns="*, auto, auto, auto, *" [visibility]="(currentTab === TAB.DAY && user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) || currentTab === TAB.MONTH ? 'collapse' : 'visible'">
+          <GridLayout
+            row="3"
+            rows="*, *"
+            columns="*, auto, auto, auto, *"
+            [visibility]="(currentTab === TAB.DAY && user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) || currentTab === TAB.MONTH ? 'collapse' : 'visible'"
+          >
             <Button row="0" col="1" [text]="'general.coast-time' | translate" [class]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coast-time-btn-enabled' : 'coast-time-btn-disabled'" (tap)="onCoastTimeTap()"></Button>
             <Button row="0" col="2" [text]="'general.push-count' | translate" [class]="chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'push-count-btn-enabled' : 'push-count-btn-disabled'" (tap)="onPushCountTap()"></Button>
             <Button row="0" col="3" [text]="'general.distance' | translate" [class]="chartYAxis === CHART_Y_AXIS.DISTANCE ? 'distance-btn-enabled' : 'distance-btn-disabled'" (tap)="onDistanceTap()"></Button>
@@ -176,7 +185,9 @@
               col="0"
               colSpan="5"
               class="goal-description"
-              [text]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? ('general.coast-time-description' | translate) : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? ('general.push-count-description' | translate) : ('general.distance-description' | translate)"
+              [text]="
+                chartYAxis === CHART_Y_AXIS.COAST_TIME ? ('general.coast-time-description' | translate) : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? ('general.push-count-description' | translate) : ('general.distance-description' | translate)
+              "
               [visibility]="currentTab === TAB.DAY || currentTab === TAB.WEEK ? 'visible' : 'collapsed'"
               textWrap="true"
             ></Label>

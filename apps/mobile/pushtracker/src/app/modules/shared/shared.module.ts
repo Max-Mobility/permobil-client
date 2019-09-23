@@ -6,7 +6,7 @@ import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
-import { ListPickerSheetComponent, SHARED_COMPONENTS } from './components';
+import { ListPickerSheetComponent, SHARED_COMPONENTS, SliderSheetComponent } from './components';
 
 const SHARED_MODULES = [
   NativeScriptCommonModule,
@@ -19,7 +19,7 @@ const SHARED_MODULES = [
 
 @NgModule({
   imports: [...SHARED_MODULES],
-  entryComponents: [ListPickerSheetComponent],
+  entryComponents: [ListPickerSheetComponent, SliderSheetComponent],
   declarations: [...SHARED_COMPONENTS],
   providers: [ModalDialogService],
   exports: [...SHARED_MODULES, ...SHARED_COMPONENTS],

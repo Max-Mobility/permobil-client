@@ -34,7 +34,9 @@ export class ListPickerSheetComponent {
       this.primaryIndex = data.primaryIndex;
       this.secondaryItems = data.secondaryItems;
       this.secondaryIndex = data.secondaryIndex;
-      this.listPickerNeedsSecondary = data.listPickerNeedsSecondary;
+      this.listPickerNeedsSecondary = data.listPickerNeedsSecondary
+        ? data.listPickerNeedsSecondary
+        : false;
     }
     // set the theme
     this.savedTheme = appSettings.getString(
