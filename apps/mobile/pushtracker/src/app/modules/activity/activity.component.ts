@@ -565,7 +565,7 @@ export class ActivityComponent implements OnInit {
         this.user._id +
         '","data_type":"WeeklyActivity","date":"' +
         date +
-        '"}&limit=1&sort={"_kmd.lmt": -1}';
+        '"}&limit=1&sort={"_kmd.lmt":-1}';
       return TNSHTTP.request({
         url:
           'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
@@ -614,7 +614,7 @@ export class ActivityComponent implements OnInit {
         this.user._id +
         '","data_type":"SmartDriveWeeklyInfo","date":"' +
         date +
-        '"}&limit=1&sort={"_kmd.lmt": -1}';
+        '"}&limit=1&sort={"_kmd.lmt":-1}';
       return TNSHTTP.request({
         url:
           'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
