@@ -16,6 +16,15 @@
   color: #1a73e9;
 }
 
+.textfield {
+  font-size: 34;
+}
+
+.textfield-suffix {
+  font-size: 18;
+  color: $permobil-primary;
+}
+
 .profile-tab-layout {
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $white;

@@ -3,38 +3,31 @@ import { TranslateService } from '@ngx-translate/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
+import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 
 @Component({
-  selector: 'list-picker-sheet',
+  selector: 'textfield-sheet',
   moduleId: module.id,
-  templateUrl: 'list-picker-sheet.component.html'
+  templateUrl: 'textfield-sheet.component.html'
 })
-export class ListPickerSheetComponent {
+export class TextFieldSheetComponent {
   savedTheme;
   title: string;
   description: string;
-  primaryItems: any[];
-  secondaryItems?: any[];
-  listPickerNeedsSecondary: boolean;
-  primaryIndex: number;
-  secondaryIndex?: number;
+  text: string = '';
+  suffix: string = '';
 
   constructor(
     private _params: BottomSheetParams
   ) {
-    console.log('params', this._params);
-
     const data = this._params.context;
-
     if (data) {
       this.title = data.title;
       this.description = data.description;
-      this.primaryItems = data.primaryItems;
-      this.primaryIndex = data.primaryIndex;
-      this.secondaryItems = data.secondaryItems;
-      this.secondaryIndex = data.secondaryIndex;
-      this.listPickerNeedsSecondary = data.listPickerNeedsSecondary;
+      this.text = data.text;
+      this.suffix = data.suffix;
     }
+
     // set the theme
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -42,24 +35,22 @@ export class ListPickerSheetComponent {
     );
   }
 
-  primaryIndexChanged(picker) {
-    this.primaryIndex = picker.selectedIndex;
-  }
-
-  secondaryIndexChanged(picker) {
-    this.secondaryIndex = picker.selectedIndex;
-  }
-
   closeSheet() {
     this._params.closeCallback();
   }
 
+  onReturnPress(args) {
+    // returnPress event will be triggered when user submits a value
+    const textField: TextField = <TextField>args.object;
+    // Gets or sets the input text.
+    this.text = textField.text;
+  }
+
   // When user selects the new data value we need to pass it back to the calling component.
-  saveListPickerValue() {
+  saveTextFieldValue() {
     this._params.closeCallback({
       data: {
-        primaryIndex: this.primaryIndex,
-        secondaryIndex: this.secondaryIndex
+        text: this.text
       }
     });
   }

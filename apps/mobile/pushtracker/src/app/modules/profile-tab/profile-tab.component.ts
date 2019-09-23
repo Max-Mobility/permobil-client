@@ -20,7 +20,7 @@ import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, convertToMilesIfUnitPreferenceIsMiles, poundsToKilograms } from '../../utils';
-import { ListPickerSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-tab',
@@ -456,8 +456,36 @@ export class ProfileTabComponent {
 
     // Initialize primaryIndex and secondaryIndex from user.data.weight
     const indices = this._getWeightIndices();
-    primaryIndex = parseFloat(primaryItems[indices[0]]);
-    secondaryIndex = 10 * indices[1];
+    if (indices[0] > 0) {
+      primaryIndex = parseFloat(primaryItems[indices[0]]);
+      secondaryIndex = 10 * indices[1];
+    }
+
+    let text = '';
+    if (primaryIndex === 0 && secondaryIndex === 0) {
+      text = '0.0';
+    } else {
+      text += primaryItems[primaryIndex] || '0';
+      text += secondaryItems[secondaryIndex] || '.0';
+    }
+
+    const _validateWeightFromText = function(text) {
+      if (text || text !== '') {
+        // Attempt to parse as float
+        const newWeight = parseFloat(text);
+        // If weight is negative, discard new value
+        if (newWeight < 0.0) return;
+        if (newWeight > 0 && newWeight <= 1400) {
+          // round to the nearest 0.1
+          return Math.round(newWeight * 10) / 10;
+        }
+      }
+    };
+
+    let suffix = this._translateService.instant('units.kg');
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
+      suffix = this._translateService.instant('units.lbs');
+    }
 
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
@@ -465,22 +493,24 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        primaryItems,
-        primaryIndex,
-        secondaryItems,
-        secondaryIndex,
-        listPickerNeedsSecondary: true
+        text: text,
+        suffix: suffix
       }
     };
 
     this._bottomSheet
-      .show(ListPickerSheetComponent, options)
+      .show(TextFieldSheetComponent, options)
       .subscribe(result => {
         if (result && result.data) {
-          this._saveWeightOnChange(
-            parseFloat(primaryItems[result.data.primaryIndex]),
-            parseFloat(secondaryItems[result.data.secondaryIndex])
-          );
+          const newWeight = _validateWeightFromText(result.data.text);
+          if (newWeight) {
+            const primary = (newWeight + '').split('.')[0];
+            const secondary = '0.' + (newWeight + '').split('.')[1];
+            this._saveWeightOnChange(
+              parseFloat(primary),
+              parseFloat(secondary)
+            );
+          }
         }
         this._removeActiveDataBox();
       });
@@ -722,7 +752,10 @@ export class ProfileTabComponent {
     }
     const primaryIndex = Math.floor(weight);
     const secondaryIndex = parseFloat((weight % 1).toFixed(1));
-    return [primaryIndex - 2, secondaryIndex];
+    if (primaryIndex <= 0 && secondaryIndex <= 0) {
+      return [0, 0];
+    } else
+      return [primaryIndex - 2, secondaryIndex];
   }
 
   private _getHeightIndices() {

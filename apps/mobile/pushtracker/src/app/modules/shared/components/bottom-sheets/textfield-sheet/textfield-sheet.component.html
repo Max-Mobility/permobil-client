@@ -1,0 +1,20 @@
+<StackLayout class="bottom-sheet-layout">
+  <Label class="title" [text]="title | translate" textWrap="true"></Label>
+  <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
+
+  <GridLayout rows="auto, auto" columns="auto, *, auto">
+    <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
+      <TextField
+        [text]='text'
+        secure="false"
+        (returnPress)="onReturnPress($event)"
+        keyboardType="number"
+        justifyContent="center"
+        class="textfield m-r-4">
+      </TextField>
+      <Label class="textfield-suffix" [text]='suffix'></Label>
+    </FlexboxLayout>
+    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
+    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveTextFieldValue()"></Button>
+  </GridLayout>
+</StackLayout>

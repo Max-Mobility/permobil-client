@@ -15,6 +15,16 @@
   color: $permobil-sky;
 }
 
+.textfield {
+  color: $white;
+  font-size: 34;
+}
+
+.textfield-suffix {
+  color: $permobil-sky;
+  font-size: 18;
+}
+
 .profile-tab-layout {
   @extend .PROFILE_TAB_LAYOUT_BASE;
   background-color: $black;
