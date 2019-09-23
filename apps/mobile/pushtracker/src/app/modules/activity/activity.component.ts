@@ -1514,8 +1514,15 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          for (const i in activity.days) {
-            if (activity.days[i]) numDaysOfActivity += 1;
+          if (activity.days) {
+            for (const i in activity.days) {
+              if (activity.days[i]) {
+                if (activity.days[i].push_count > 0) {
+                  // At least one push on this day. Include it
+                  numDaysOfActivity += 1;
+                }
+              }
+            }
           }
           Log.D('Calculating average push_count', numDaysOfActivity);
           if (numDaysOfActivity === 0) numDaysOfActivity = 1;
@@ -1533,10 +1540,14 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          for (const i in cache.weeklyActivity.days) {
-            if (cache.weeklyActivity.days[i]) {
-              // console.log(cache.)
-              numDaysOfActivity += 1;
+          if (cache.weeklyActivity.days) {
+            for (const i in cache.weeklyActivity.days) {
+              if (cache.weeklyActivity.days[i]) {
+                if (cache.weeklyActivity.days[i].push_count > 0) {
+                  // At least one push on this day. Include it
+                  numDaysOfActivity += 1;
+                }
+              }
             }
           }
           Log.D('Calculating average push_count with cache', numDaysOfActivity);
@@ -1565,8 +1576,16 @@ export class ActivityComponent implements OnInit {
           this.weeklyActivityAnnotationValue = 0;
         }
         let numDaysOfActivity = 0;
-        for (const i in activity.days) {
-          if (activity.days[i]) numDaysOfActivity += 1;
+        if (activity.days) {
+          for (const i in activity.days) {
+            if (activity.days[i])  {
+              if (activity.days[i].records &&
+                  activity.days[i].records.length) {
+                // There at least one record for this day. Include it.
+                numDaysOfActivity += 1;
+              }
+            }
+          }
         }
         Log.D('Calculating average push_count', numDaysOfActivity);
         if (numDaysOfActivity === 0) numDaysOfActivity = 1;
@@ -1584,8 +1603,16 @@ export class ActivityComponent implements OnInit {
             this.user.data.distance_unit_preference
           ) || 0;
         let numDaysOfActivity = 0;
-        for (const i in cache.weeklyActivity.days) {
-          if (cache.weeklyActivity.days[i]) numDaysOfActivity += 1;
+        if (cache.weeklyActivity.days) {
+          for (const i in cache.weeklyActivity.days) {
+            if (cache.weeklyActivity.days[i]) {
+              if (cache.weeklyActivity.days[i].records &&
+                  cache.weeklyActivity.days[i].records.length) {
+                // There at least one record for this day. Include it.
+                numDaysOfActivity += 1;
+              }
+            }
+          }
         }
         Log.D('Calculating average push_count', numDaysOfActivity);
         if (numDaysOfActivity === 0) numDaysOfActivity = 1;
