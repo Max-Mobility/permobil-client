@@ -12,7 +12,7 @@ import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS,
-  DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS } from '../../enums';
+  DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_MAKE, CHAIR_TYPE, TIME_FORMAT } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
 import { PushTrackerUser } from '@permobil/core';
@@ -53,6 +53,7 @@ export class SignUpComponent implements OnInit {
     weight_unit_preference: WEIGHT_UNITS.POUNDS,
     distance_unit_preference: DISTANCE_UNITS.MILES,
     theme_preference: APP_THEMES.DEFAULT,
+    time_format_preference: TIME_FORMAT.AM_PM,
     activity_goal_distance: 5,
     activity_goal_coast_time: 5,
     has_agreed_to_user_agreement: false,
