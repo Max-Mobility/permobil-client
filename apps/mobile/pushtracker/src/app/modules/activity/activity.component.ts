@@ -1115,27 +1115,6 @@ export class ActivityComponent implements OnInit {
           }
         }
         result.unshift({
-          xAxis: ' ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
-          xAxis: '  ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
-          xAxis: '   ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
           xAxis: '    ',
           coastTime: 0,
           pushCount: 0,
@@ -1144,27 +1123,6 @@ export class ActivityComponent implements OnInit {
         });
         result.push({
           xAxis: '     ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '      ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '       ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '        ',
           coastTime: 0,
           pushCount: 0,
           driveDistance: 0,
@@ -1193,27 +1151,6 @@ export class ActivityComponent implements OnInit {
           });
         }
         result.unshift({
-          xAxis: ' ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
-          xAxis: '  ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
-          xAxis: '   ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.unshift({
           xAxis: '    ',
           coastTime: 0,
           pushCount: 0,
@@ -1222,27 +1159,6 @@ export class ActivityComponent implements OnInit {
         });
         result.push({
           xAxis: '     ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '      ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '       ',
-          coastTime: 0,
-          pushCount: 0,
-          driveDistance: 0,
-          coastDistance: 0
-        });
-        result.push({
-          xAxis: '        ',
           coastTime: 0,
           pushCount: 0,
           driveDistance: 0,
