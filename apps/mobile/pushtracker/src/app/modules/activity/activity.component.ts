@@ -17,6 +17,18 @@ import { LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
 import { DeviceBase } from '../../models';
 
+enum TAB {
+  DAY = 0,
+  WEEK = 1,
+  MONTH = 2
+}
+
+enum CHART_Y_AXIS {
+  COAST_TIME = 0,
+  PUSH_COUNT = 1,
+  DISTANCE = 2
+}
+
 @Component({
   selector: 'activity',
   moduleId: module.id,
@@ -25,13 +37,15 @@ import { DeviceBase } from '../../models';
 export class ActivityComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
   public CONFIGURATIONS = CONFIGURATIONS;
+  public TAB = TAB;
+  public CHART_Y_AXIS = CHART_Y_AXIS;
   user: PushTrackerUser;
   tabItems: SegmentedBarItem[];
-  tabSelectedIndex: number;
+  currentTab: TAB = TAB.DAY;
 
   chartTitle: string;
   chartDescription: string;
-  viewMode: ViewMode = ViewMode.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
+  chartYAxis: CHART_Y_AXIS = CHART_Y_AXIS.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
   savedTheme: string;
 
   dailyActivity: ObservableArray<any[]>;
@@ -107,10 +121,10 @@ export class ActivityComponent implements OnInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {
-    if (this._params.context.viewMode) {
-      this.viewMode = this._params.context.viewMode;
+    if (this._params.context.chartYAxis) {
+      this.chartYAxis = this._params.context.chartYAxis;
     }
-    Log.D('View mode:', this.viewMode, typeof this.viewMode);
+    Log.D('View mode:', this.chartYAxis, typeof this.chartYAxis);
 
     this.getUser();
 
@@ -125,7 +139,7 @@ export class ActivityComponent implements OnInit {
       sbi.title = element;
       this.tabItems.push(sbi);
     });
-    this.tabSelectedIndex = this._params.context.tabSelectedIndex;
+    this.currentTab = this._params.context.currentTab;
 
     if (this._params.context.currentDayInView) {
       this.currentDayInView = new Date(this._params.context.currentDayInView);
@@ -146,11 +160,11 @@ export class ActivityComponent implements OnInit {
       { leading: true, trailing: true }
     );
 
-    if (this.tabSelectedIndex === 0) {
-      Log.D('tabSelectedIndex = 0, loading daily activity...');
+    if (this.currentTab === TAB.DAY) {
+      Log.D('currentTab = 0, loading daily activity...');
       this._loadDailyActivity();
-    } else if (this.tabSelectedIndex === 1) {
-      Log.D('tabSelectedIndex = 1, loading weekly activity...');
+    } else if (this.currentTab === TAB.WEEK) {
+      Log.D('currentTab = 1, loading weekly activity...');
       this._loadWeeklyActivity();
     }
 
@@ -172,7 +186,7 @@ export class ActivityComponent implements OnInit {
     const pullRefresh = args.object;
     this.activityLoaded = false;
     this.onSelectedIndexChanged({
-      object: { selectedIndex: this.tabSelectedIndex },
+      object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
     }).then(() => {
       this.activityLoaded = true;
@@ -223,10 +237,10 @@ export class ActivityComponent implements OnInit {
   // displaying the old and new TabView selectedIndex
   async onSelectedIndexChanged(args) {
     const date = this.currentDayInView;
-    this.tabSelectedIndex = args.object.selectedIndex;
+    this.currentTab = args.object.selectedIndex;
     const forcePullFromDatabase =
       (args.options ? args.options.forcePullFromDatabase : false) || false;
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       this.chartTitle =
         this.dayNames[date.getDay()] +
         ', ' +
@@ -235,28 +249,28 @@ export class ActivityComponent implements OnInit {
         date.getDate();
       this._initDayChartTitle();
       this._debouncedLoadDailyActivity(forcePullFromDatabase);
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       this._initWeekChartTitle();
       this._debouncedLoadWeeklyActivity(forcePullFromDatabase);
-    } else if (this.tabSelectedIndex === 2) {
+    } else if (this.currentTab === TAB.MONTH) {
       this._initMonthChartTitle();
     }
   }
 
   async onPreviousTap() {
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       // day
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 1);
       this._updateWeekStartAndEnd();
       this._initDayChartTitle();
       this._debouncedLoadDailyActivity();
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       // week
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
       this._updateWeekStartAndEnd();
       this._initWeekChartTitle();
       this._debouncedLoadWeeklyActivity();
-    } else if (this.tabSelectedIndex === 2) {
+    } else if (this.currentTab === TAB.MONTH) {
       // month
       this.currentDayInView.setMonth(this.currentDayInView.getMonth() - 1);
       this._updateWeekStartAndEnd();
@@ -266,7 +280,7 @@ export class ActivityComponent implements OnInit {
   }
 
   async onNextTap() {
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       // day
       if (this.isNextDayButtonEnabled()) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 1);
@@ -274,7 +288,7 @@ export class ActivityComponent implements OnInit {
         this._initDayChartTitle();
         this._debouncedLoadDailyActivity();
       }
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       // week
       if (this.isNextWeekButtonEnabled()) {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
@@ -284,7 +298,7 @@ export class ActivityComponent implements OnInit {
         this._initWeekChartTitle();
         this._debouncedLoadWeeklyActivity();
       }
-    } else if (this.tabSelectedIndex === 2) {
+    } else if (this.currentTab === TAB.MONTH) {
       // month
       this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
       this._updateWeekStartAndEnd();
@@ -294,15 +308,15 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCoastTimeTap() {
-    this.viewMode = ViewMode.COAST_TIME; // set view mode to coast_time
+    this.chartYAxis = CHART_Y_AXIS.COAST_TIME; // set view mode to coast_time
 
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       // day
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
       this._debouncedLoadDailyActivity();
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       // week
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
@@ -312,15 +326,15 @@ export class ActivityComponent implements OnInit {
   }
 
   async onPushCountTap() {
-    this.viewMode = ViewMode.PUSH_COUNT; // set view mode for push count
+    this.chartYAxis = CHART_Y_AXIS.PUSH_COUNT; // set view mode for push count
 
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       // day
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
       this._debouncedLoadDailyActivity();
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       // week
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
@@ -330,15 +344,15 @@ export class ActivityComponent implements OnInit {
   }
 
   async onDistanceTap() {
-    this.viewMode = ViewMode.DISTANCE; // set view mode for distance
+    this.chartYAxis = CHART_Y_AXIS.DISTANCE; // set view mode for distance
 
-    if (this.tabSelectedIndex === 0) {
+    if (this.currentTab === TAB.DAY) {
       // day
       this._updateDayChartLabel();
       this._updateDailyActivityAnnotationValue();
       this._calculateDailyActivityYAxisMax();
       this._debouncedLoadDailyActivity();
-    } else if (this.tabSelectedIndex === 1) {
+    } else if (this.currentTab === TAB.WEEK) {
       // week
       this._updateWeekChartLabel();
       this._updateWeeklyActivityAnnotationValue();
@@ -356,7 +370,7 @@ export class ActivityComponent implements OnInit {
         selectedDate.getDate() + event.pointIndex - 2
       );
       this._debouncedLoadDailyActivity();
-      this.tabSelectedIndex = 0;
+      this.currentTab = TAB.DAY;
     }
   }
 
@@ -392,7 +406,7 @@ export class ActivityComponent implements OnInit {
         // If selected date is in the past or if it's today, switch to day view
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
-        this.tabSelectedIndex = 0;
+        this.currentTab = TAB.DAY;
       }
     }
   }
@@ -418,7 +432,7 @@ export class ActivityComponent implements OnInit {
       };
 
       let weeklyActivity = null;
-      if (this.viewMode === ViewMode.DISTANCE)
+      if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()]
           .weeklyActivity;
       else
@@ -429,14 +443,14 @@ export class ActivityComponent implements OnInit {
       if (weeklyActivity) days = weeklyActivity.days;
 
       if (days) {
-        if (this.viewMode === ViewMode.DISTANCE)
+        if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
           this._dailyUsageFromKinvey =
             days[getIndex(new Date(this.weekStart), this.currentDayInView)];
         else
           this._dailyActivityFromKinvey =
             days[getIndex(new Date(this.weekStart), this.currentDayInView)];
       } else {
-        if (this.viewMode === ViewMode.DISTANCE)
+        if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
           this._dailyUsageFromKinvey = {
             distance_smartdrive_drive: 0,
             distance_smartdrive_coast: 0,
@@ -453,22 +467,22 @@ export class ActivityComponent implements OnInit {
       this._formatActivityForView(0).then(result => {
         this.dailyActivity = new ObservableArray(result);
         Log.D('Created daily activity for plotting');
-        if (this.viewMode !== ViewMode.DISTANCE) {
+        if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
           if (this._dailyActivityFromKinvey) {
-            // format chart description for viewMode
-            if (this.viewMode === ViewMode.COAST_TIME) {
+            // format chart description for chartYAxis
+            if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
               this.chartDescription =
                 (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(1) +
                 ' ' + this._translateService.instant('units.s');
-            } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+            } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
               this.chartDescription =
                 (this._dailyActivityFromKinvey.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
             }
           } else {
-            // format chart description for viewMode
-            if (this.viewMode === ViewMode.COAST_TIME) {
+            // format chart description for chartYAxis
+            if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
               this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-            } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+            } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
               this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
             }
           }
@@ -506,13 +520,13 @@ export class ActivityComponent implements OnInit {
       let i = 4;
       while (i < 53) {
         const activity = this.dailyActivity.getItem(i);
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
             this.yAxisMax = activity['coastTime'];
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
-        } else if (this.viewMode === ViewMode.DISTANCE) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           if (activity['coastDistance'] > this.yAxisMax)
             this.yAxisMax = activity['coastDistance'];
         }
@@ -629,10 +643,10 @@ export class ActivityComponent implements OnInit {
     this.activityLoaded = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
-      (this.viewMode === ViewMode.DISTANCE &&
+      (this.chartYAxis === CHART_Y_AXIS.DISTANCE &&
         this.weekStart.toUTCString() in this._weeklyUsageCache) ||
-      ((this.viewMode === ViewMode.COAST_TIME ||
-        this.viewMode === ViewMode.PUSH_COUNT) &&
+      ((this.chartYAxis === CHART_Y_AXIS.COAST_TIME ||
+        this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) &&
         this.weekStart.toUTCString() in this._weeklyActivityCache);
     if (!cacheAvailable || forcePullFromDatabase) {
       if (!cacheAvailable)
@@ -640,12 +654,12 @@ export class ActivityComponent implements OnInit {
       if (forcePullFromDatabase)
         Log.D('Forcing pull from database instead of using cache');
 
-      if (this.viewMode === ViewMode.DISTANCE)
+      if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
           didLoad => {
             return this._formatActivityForView(1).then(result => {
               this.weeklyActivity = new ObservableArray(result);
-              if (this.tabSelectedIndex === 1) {
+              if (this.currentTab === TAB.WEEK) {
                 this._initWeekChartTitle();
                 this.weekStart = new Date(this._weeklyUsageFromKinvey.date);
                 this.weekEnd = new Date(this.weekStart);
@@ -658,7 +672,7 @@ export class ActivityComponent implements OnInit {
                 weeklyActivity: this._weeklyUsageFromKinvey
               };
               this._updateWeeklyActivityAnnotationValue();
-              if (this.tabSelectedIndex === 1)
+              if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
@@ -670,7 +684,7 @@ export class ActivityComponent implements OnInit {
           didLoad => {
             return this._formatActivityForView(1).then(async result => {
               this.weeklyActivity = new ObservableArray(result);
-              if (this.tabSelectedIndex === 1) {
+              if (this.currentTab === TAB.WEEK) {
                 this._initWeekChartTitle();
                 this.weekStart = new Date(this._weeklyActivityFromKinvey.date);
                 this.weekEnd = new Date(this.weekStart);
@@ -683,7 +697,7 @@ export class ActivityComponent implements OnInit {
                 weeklyActivity: this._weeklyActivityFromKinvey
               };
               this._updateWeeklyActivityAnnotationValue();
-              if (this.tabSelectedIndex === 1)
+              if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
@@ -694,21 +708,21 @@ export class ActivityComponent implements OnInit {
       // We have the data cached. Pull it up
       Log.D('Using local cache instead of pulling from database');
       let cache = null;
-      if (this.viewMode === ViewMode.DISTANCE)
+      if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
       else cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
 
       this.weeklyActivity = cache.chartData;
 
-      if (this.tabSelectedIndex === 1) {
-        // format the chart description label based on viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
+      if (this.currentTab === TAB.WEEK) {
+        // format the chart description label based on chartYAxis
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
             (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription =
             (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
-        } else if (this.viewMode === ViewMode.DISTANCE) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
@@ -730,7 +744,7 @@ export class ActivityComponent implements OnInit {
         this._updateWeeklyActivityAnnotationValue();
       }
     }
-    if (this.tabSelectedIndex === 1) this._calculateWeeklyActivityYAxisMax();
+    if (this.currentTab === TAB.WEEK) this._calculateWeeklyActivityYAxisMax();
     this._updateWeekStartAndEnd();
     this.activityLoaded = true;
   }
@@ -742,13 +756,13 @@ export class ActivityComponent implements OnInit {
       let i = 2;
       while (i < 9) {
         const activity = this.weeklyActivity.getItem(i);
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
             this.yAxisMax = activity['coastTime'];
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           if (activity['pushCount'] > this.yAxisMax)
             this.yAxisMax = activity['pushCount'];
-        } else if (this.viewMode === ViewMode.DISTANCE) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           if (activity['coastDistance'] > this.yAxisMax)
             this.yAxisMax = activity['coastDistance'];
         }
@@ -774,18 +788,18 @@ export class ActivityComponent implements OnInit {
   private async _formatActivityForView(index: number) {
     if (index === 0) {
       const activity =
-        this.viewMode === ViewMode.DISTANCE
+        this.chartYAxis === CHART_Y_AXIS.DISTANCE
           ? this._dailyUsageFromKinvey
           : this._dailyActivityFromKinvey;
 
       if (activity && activity.records) {
-        // format the chart description based on viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        // format the chart description based on chartYAxis
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
-        } else if (this.viewMode === ViewMode.DISTANCE) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
@@ -1008,16 +1022,16 @@ export class ActivityComponent implements OnInit {
       }
     } else if (index === 1) {
       const activity =
-        this.viewMode === ViewMode.DISTANCE
+        this.chartYAxis === CHART_Y_AXIS.DISTANCE
           ? this._weeklyUsageFromKinvey
           : this._weeklyActivityFromKinvey;
 
       // format chart description
       if (activity) {
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         } else {
           this.chartDescription =
@@ -1032,9 +1046,9 @@ export class ActivityComponent implements OnInit {
             ).toFixed(1) + this.distanceUnit;
         }
       } else {
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription = '0' + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription = '0' + ' ' + this._translateService.instant('units.pushes');
         } else {
           this.chartDescription = '0.0' + this.distanceUnit;
@@ -1383,20 +1397,20 @@ export class ActivityComponent implements OnInit {
 
   private async _updateDayChartLabel() {
     let activity = undefined;
-    if (this.viewMode !== ViewMode.DISTANCE) {
+    if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {
       activity = this._dailyUsageFromKinvey;
     }
 
     if (activity) {
-      // format chart description for viewMode
-      if (this.viewMode === ViewMode.COAST_TIME) {
+      // format chart description for chartYAxis
+      if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
         this.chartDescription =
           (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
         this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
-      } else if (this.viewMode === ViewMode.DISTANCE) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.chartDescription =
           (
             convertToMilesIfUnitPreferenceIsMiles(
@@ -1409,12 +1423,12 @@ export class ActivityComponent implements OnInit {
           ).toFixed(1) + this.distanceUnit;
       }
     } else {
-      // format chart description for viewMode
-      if (this.viewMode === ViewMode.COAST_TIME) {
+      // format chart description for chartYAxis
+      if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
         this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
         this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
-      } else if (this.viewMode === ViewMode.DISTANCE) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.chartDescription = (0).toFixed(1) + this.distanceUnit;
       }
     }
@@ -1422,16 +1436,16 @@ export class ActivityComponent implements OnInit {
 
   private async _updateDailyActivityAnnotationValue() {
     let activity = undefined;
-    if (this.viewMode !== ViewMode.DISTANCE) {
+    if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {
       activity = this._dailyUsageFromKinvey;
     }
     if (activity) {
-      if (this.viewMode === ViewMode.COAST_TIME) {
+      if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
         // coast time
         this.dailyActivityAnnotationValue = activity.coast_time_avg || 0;
-      } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
         // push count
         const records = activity.records || [];
         let pushCountTotal = 0;
@@ -1441,7 +1455,7 @@ export class ActivityComponent implements OnInit {
         }
         this.dailyActivityAnnotationValue =
           parseInt((pushCountTotal / records.length).toFixed(1)) || 0;
-      } else if (this.viewMode === ViewMode.DISTANCE) {
+      } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.dailyActivityAnnotationValue =
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToMiles(
@@ -1457,16 +1471,16 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateWeekChartLabel() {
-    if (this.viewMode !== ViewMode.DISTANCE) {
+    if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
         // No cache
         const activity = this._weeklyActivityFromKinvey;
 
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        // format chart description for chartYAxis
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
             (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         }
       } else {
@@ -1474,11 +1488,11 @@ export class ActivityComponent implements OnInit {
         const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
         this.weeklyActivity = cache.chartData;
 
-        // format chart description for viewMode
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        // format chart description for chartYAxis
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
             (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription =
             (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
         }
@@ -1519,16 +1533,16 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateWeeklyActivityAnnotationValue() {
-    if (this.viewMode !== ViewMode.DISTANCE) {
+    if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       if (!(this.weekStart.toUTCString() in this._weeklyActivityCache)) {
         // No cache
         const activity = this._weeklyActivityFromKinvey;
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           // coast time
           this.weeklyActivityAnnotationValue = activity
             ? activity.coast_time_avg || 0
             : 0;
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           this.weeklyActivityAnnotationValue =
             parseInt((activity.push_count / 7).toFixed(1)) || 0;
@@ -1536,12 +1550,12 @@ export class ActivityComponent implements OnInit {
       } else {
         // We are showing cached data
         const cache = this._weeklyActivityCache[this.weekStart.toUTCString()];
-        if (this.viewMode === ViewMode.COAST_TIME) {
+        if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           // coast time
           this.weeklyActivityAnnotationValue = cache
             ? cache.weeklyActivity.coast_time_avg || 0
             : 0;
-        } else if (this.viewMode === ViewMode.PUSH_COUNT) {
+        } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           this.weeklyActivityAnnotationValue =
             parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
@@ -1579,10 +1593,4 @@ export class ActivityComponent implements OnInit {
       }
     }
   }
-}
-
-enum ViewMode {
-  'COAST_TIME',
-  'PUSH_COUNT',
-  'DISTANCE'
 }

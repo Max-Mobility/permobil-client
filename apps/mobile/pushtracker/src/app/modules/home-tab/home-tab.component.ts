@@ -329,7 +329,7 @@ export class HomeTabComponent {
     this._modalService
       .showModal(ActivityComponent, {
         context: {
-          tabSelectedIndex:
+          currentTab:
           this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
             ? 0
             : 1,
@@ -1022,12 +1022,12 @@ export class HomeTabComponent {
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
     this._openActivityTabModal({
-      tabSelectedIndex:
+      currentTab:
         this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
-      viewMode: 0, // ViewMode.COAST_TIME
+      chartYAxis: 0, // ViewMode.COAST_TIME
       user: this.user
     });
   }
@@ -1038,12 +1038,12 @@ export class HomeTabComponent {
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];
     this._openActivityTabModal({
-      tabSelectedIndex:
+      currentTab:
         this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
-      viewMode: 2, // ViewMode.COAST_TIME
+      chartYAxis: 2, // ViewMode.DISTANCE
       user: this.user
     });
   }
