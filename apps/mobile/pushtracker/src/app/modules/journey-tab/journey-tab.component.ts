@@ -129,7 +129,7 @@ export class JourneyTabComponent {
   getTodayCoastDistance() {
     if (this.todayUsage) {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-        DeviceBase.caseTicksToMiles(
+        DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
             this.todayUsage.distance_smartdrive_coast_start
         ),
@@ -299,7 +299,7 @@ export class JourneyTabComponent {
       // or when the coast data is significantly more than drive
       if (
         journey.driveDistance === 0 ||
-        journey.coastDistance > journey.driveDistance * 1.3
+        journey.coastDistance > journey.driveDistance * 2.0
       ) {
         journey.journeyType = JourneyType.ROLL;
       }
@@ -308,7 +308,7 @@ export class JourneyTabComponent {
       // https://github.com/Max-Mobility/permobil-client/issues/23
       if (
         journey.driveDistance > 0 &&
-        journey.coastDistance < journey.driveDistance * 1.3
+        journey.coastDistance < journey.driveDistance * 2.0
       ) {
         journey.journeyType = JourneyType.DRIVE;
       }
@@ -705,7 +705,7 @@ export class JourneyTabComponent {
               this._journeyMap[
                 record.start_time
               ].coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToMiles(
+                DeviceBase.caseTicksToKilometers(
                   record.distance_smartdrive_coast - coastDistanceStart
                 ),
                 this.user.data.distance_unit_preference

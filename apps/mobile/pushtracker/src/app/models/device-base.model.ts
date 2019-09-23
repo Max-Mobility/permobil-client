@@ -22,6 +22,14 @@ export class DeviceBase extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
+  static motorTicksToKilometers(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714 / 1000.0;
+  }
+
+  static caseTicksToKilometers(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0 / 1000.0;
+  }
+
   public static milesToMotorTicks(miles: number): number {
     return (miles * (265.714 * 63360.0)) / (2.0 * 3.14159265358 * 3.8);
   }

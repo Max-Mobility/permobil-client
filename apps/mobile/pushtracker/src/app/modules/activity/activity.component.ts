@@ -500,7 +500,7 @@ export class ActivityComponent implements OnInit {
             this.chartDescription =
               (
                 convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.caseTicksToMiles(
+                  DeviceBase.caseTicksToKilometers(
                     this._dailyUsageFromKinvey.distance_smartdrive_coast -
                       this._dailyUsageFromKinvey.distance_smartdrive_coast_start
                   ),
@@ -739,7 +739,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToMiles(
+                DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
                     cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
@@ -821,7 +821,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToMiles(
+                DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
                     activity.distance_smartdrive_coast_start
                 ),
@@ -864,7 +864,7 @@ export class ActivityComponent implements OnInit {
                 // https://github.com/Max-Mobility/permobil-client/issues/266
                 // Distance records in DB show as zero - leading to negative distance
                 let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.caseTicksToMiles(
+                  DeviceBase.caseTicksToKilometers(
                     record.distance_smartdrive_coast - coastDistanceStart
                   ),
                   this.user.data.distance_unit_preference
@@ -872,7 +872,7 @@ export class ActivityComponent implements OnInit {
                 if (coastDistance < 0.0) coastDistance = 0.0;
 
                 let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.motorTicksToMiles(
+                  DeviceBase.motorTicksToKilometers(
                     record.distance_smartdrive_drive - driveDistanceStart
                   ),
                   this.user.data.distance_unit_preference
@@ -1060,7 +1060,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToMiles(
+                DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
                     activity.distance_smartdrive_coast_start
                 ),
@@ -1112,7 +1112,7 @@ export class ActivityComponent implements OnInit {
               pushCount: dailyActivity.push_count || 0,
               driveDistance:
                 convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.motorTicksToMiles(
+                  DeviceBase.motorTicksToKilometers(
                     dailyActivity.distance_smartdrive_drive -
                       dailyActivity.distance_smartdrive_drive_start
                   ),
@@ -1120,7 +1120,7 @@ export class ActivityComponent implements OnInit {
                 ) || 0,
               coastDistance:
                 convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.caseTicksToMiles(
+                  DeviceBase.caseTicksToKilometers(
                     dailyActivity.distance_smartdrive_coast -
                       dailyActivity.distance_smartdrive_coast_start
                   ),
@@ -1368,7 +1368,7 @@ export class ActivityComponent implements OnInit {
         this.chartDescription =
           (
             convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.caseTicksToMiles(
+              DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
                   activity.distance_smartdrive_coast_start
               ),
@@ -1414,7 +1414,7 @@ export class ActivityComponent implements OnInit {
       } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.dailyActivityAnnotationValue =
           convertToMilesIfUnitPreferenceIsMiles(
-            DeviceBase.caseTicksToMiles(
+            DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
                 activity.distance_smartdrive_coast_start
             ),
@@ -1473,7 +1473,7 @@ export class ActivityComponent implements OnInit {
           this.chartDescription =
             (
               convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToMiles(
+                DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
                     activity.distance_smartdrive_coast_start
                 ),
@@ -1490,7 +1490,7 @@ export class ActivityComponent implements OnInit {
         this.chartDescription =
           (
             convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.caseTicksToMiles(
+              DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
                   cache.weeklyActivity.distance_smartdrive_coast_start
               ),
@@ -1513,8 +1513,14 @@ export class ActivityComponent implements OnInit {
             : 0;
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
+          let numDaysOfActivity = 0;
+          for (const i in activity.days) {
+            if (activity.days[i]) numDaysOfActivity += 1;
+          }
+          Log.D('Calculating average push_count', numDaysOfActivity);
+          if (numDaysOfActivity === 0) numDaysOfActivity = 1;
           this.weeklyActivityAnnotationValue =
-            parseInt((activity.push_count / 7).toFixed(1)) || 0;
+            parseInt((activity.push_count / numDaysOfActivity).toFixed(1)) || 0;
         }
       } else {
         // We are showing cached data
@@ -1526,8 +1532,17 @@ export class ActivityComponent implements OnInit {
             : 0;
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
+          let numDaysOfActivity = 0;
+          for (const i in cache.weeklyActivity.days) {
+            if (cache.weeklyActivity.days[i]) {
+              // console.log(cache.)
+              numDaysOfActivity += 1;
+            }
+          }
+          Log.D('Calculating average push_count with cache', numDaysOfActivity);
+          if (numDaysOfActivity === 0) numDaysOfActivity = 1;
           this.weeklyActivityAnnotationValue =
-            parseInt((cache.weeklyActivity.push_count / 7).toFixed(1)) || 0;
+            parseInt((cache.weeklyActivity.push_count / numDaysOfActivity).toFixed(1)) || 0;
         }
       }
     } else {
@@ -1540,7 +1555,7 @@ export class ActivityComponent implements OnInit {
         ) {
           this.weeklyActivityAnnotationValue =
             convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.caseTicksToMiles(
+              DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
                   activity.distance_smartdrive_coast_start
               ),
@@ -1549,20 +1564,32 @@ export class ActivityComponent implements OnInit {
         } else {
           this.weeklyActivityAnnotationValue = 0;
         }
-        this.weeklyActivityAnnotationValue /= 7;
+        let numDaysOfActivity = 0;
+        for (const i in activity.days) {
+          if (activity.days[i]) numDaysOfActivity += 1;
+        }
+        Log.D('Calculating average push_count', numDaysOfActivity);
+        if (numDaysOfActivity === 0) numDaysOfActivity = 1;
+        this.weeklyActivityAnnotationValue /= numDaysOfActivity;
       } else {
         // We are showing cached data
         const cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
         this.weeklyActivity = cache.chartData;
         this.weeklyActivityAnnotationValue =
           convertToMilesIfUnitPreferenceIsMiles(
-            DeviceBase.caseTicksToMiles(
+            DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
                 cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
-        this.weeklyActivityAnnotationValue /= 7;
+        let numDaysOfActivity = 0;
+        for (const i in cache.weeklyActivity.days) {
+          if (cache.weeklyActivity.days[i]) numDaysOfActivity += 1;
+        }
+        Log.D('Calculating average push_count', numDaysOfActivity);
+        if (numDaysOfActivity === 0) numDaysOfActivity = 1;
+        this.weeklyActivityAnnotationValue /= numDaysOfActivity;
       }
     }
   }
