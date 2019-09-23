@@ -4,11 +4,11 @@
 /* these have to be outside the component class to work */
 .date-time-picker {
   @extend .DATE_TIME_PICKER_BASE;
-  background-color: $dark-grey;
+  background-color: $dark-custom-dialog-layout-black;
   color: $white;
 }
 .date-time-picker-spinners {
-  background-color: $dark-grey;
+  background-color: $dark-custom-dialog-layout-black;
   color: $white;
 }
 .date-time-picker-buttons {
