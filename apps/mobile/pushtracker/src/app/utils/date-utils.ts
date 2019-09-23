@@ -4,15 +4,14 @@ export function getTimeOfDayFromStartTime(startTime: number) {
   const minutes = date.getMinutes();
   // Morning
   if (hour < 12) return TimeOfDay.MORNING;
-  else if (hour === 12 && minutes === 0) return TimeOfDay.MORNING;
   // Afternoon
-  else if (hour === 12 && minutes > 0) return TimeOfDay.AFTERNOON;
+  else if (hour === 12 && minutes >= 0) return TimeOfDay.AFTERNOON;
   else if (hour >= 12 && hour < 17) return TimeOfDay.AFTERNOON;
-  else if (hour === 17 && minutes === 0) return TimeOfDay.AFTERNOON;
   // Evening
+  else if (hour === 17 && minutes === 0) return TimeOfDay.EVENING;
   else if (hour >= 17 && hour < 20) return TimeOfDay.EVENING;
-  else if (hour === 20 && minutes === 0) return TimeOfDay.EVENING;
   // Night
+  else if (hour === 20 && minutes === 0) return TimeOfDay.NIGHT;
   else return TimeOfDay.NIGHT;
 }
 
