@@ -54,6 +54,13 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
+class SmartDriveException extends Error {
+  constructor(...args) {
+    super(...args);
+    this.name = 'SmartDriveMX2+ Exception';
+  }
+}
+
 @JavaProxy('com.permobil.smartdrive.wearos.ResultReceiver')
 class ResultReceiver extends android.os.ResultReceiver {
   public onReceiveFunction: any = null;
@@ -486,13 +493,13 @@ export class MainViewModel extends Observable {
         if (hasBlePermission) {
           return true;
         } else {
-          throw L('failures.permissions');
+          throw new SmartDriveException(L('failures.permissions'));
         }
       }
     } else if (hasPermission(blePermission)) {
       return Promise.resolve(true);
     } else {
-      throw L('failures.permissions');
+      throw new SmartDriveException(L('failures.permissions'));
     }
   }
 
@@ -2312,7 +2319,7 @@ export class MainViewModel extends Observable {
               message: L('failures.could-not-enable-tap-sensor'),
               okButtonText: L('buttons.ok')
             });
-            throw 'Could not enable tap sensor for power assist!';
+            throw new SmartDriveException('Could not enable tap sensor for power assist!');
           } else {
             this._ringTimerId = setInterval(
               this.blinkPowerAssistRing.bind(this),
@@ -2724,11 +2731,11 @@ export class MainViewModel extends Observable {
       let ret = null;
       ret = await this.smartDrive.sendSettingsObject(this.settings);
       if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-        throw 'Send Settings bad status: ' + ret.status;
+        throw new SmartDriveException('Send Settings bad status: ' + ret.status);
       }
       ret = await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
       if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
-        throw 'Send Switch Control Settings bad status: ' + ret.status;
+        throw new SmartDriveException('Send Switch Control Settings bad status: ' + ret.status);
       }
       this.hasSentSettingsToSmartDrive = true;
     } catch (err) {
