@@ -17,10 +17,10 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { APP_THEMES, GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
-import { ListPickerSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-tab',
@@ -78,7 +78,7 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) { }
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -139,7 +139,8 @@ export class ProfileTabComponent {
   }
 
   getTranslationKeyForGenders(key) {
-    if (GENDERS[key] === GENDERS.MALE) return 'profile-tab.gender.male';
+    if (GENDERS[key] === GENDERS.MALE)
+      return 'profile-tab.gender.male';
     else if (GENDERS[key] === GENDERS.FEMALE)
       return 'profile-tab.gender.female';
     else return 'profile-tab.gender.male';
@@ -455,8 +456,36 @@ export class ProfileTabComponent {
 
     // Initialize primaryIndex and secondaryIndex from user.data.weight
     const indices = this._getWeightIndices();
-    primaryIndex = parseFloat(primaryItems[indices[0]]);
-    secondaryIndex = 10 * indices[1];
+    if (indices[0] > 0) {
+      primaryIndex = parseFloat(primaryItems[indices[0]]);
+      secondaryIndex = 10 * indices[1];
+    }
+
+    let text = '';
+    if (primaryIndex === 0 && secondaryIndex === 0) {
+      text = '0.0';
+    } else {
+      text += primaryItems[primaryIndex] || '0';
+      text += secondaryItems[secondaryIndex] || '.0';
+    }
+
+    const _validateWeightFromText = function(text) {
+      if (text || text !== '') {
+        // Attempt to parse as float
+        const newWeight = parseFloat(text);
+        // If weight is negative, discard new value
+        if (newWeight < 0.0) return;
+        if (newWeight > 0 && newWeight <= 1400) {
+          // round to the nearest 0.1
+          return Math.round(newWeight * 10) / 10;
+        }
+      }
+    };
+
+    let suffix = this._translateService.instant('units.kg');
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
+      suffix = this._translateService.instant('units.lbs');
+    }
 
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
@@ -464,22 +493,24 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        primaryItems,
-        primaryIndex,
-        secondaryItems,
-        secondaryIndex,
-        listPickerNeedsSecondary: true
+        text: text,
+        suffix: suffix
       }
     };
 
     this._bottomSheet
-      .show(ListPickerSheetComponent, options)
+      .show(TextFieldSheetComponent, options)
       .subscribe(result => {
         if (result && result.data) {
-          this._saveWeightOnChange(
-            parseFloat(primaryItems[result.data.primaryIndex]),
-            parseFloat(secondaryItems[result.data.secondaryIndex])
-          );
+          const newWeight = _validateWeightFromText(result.data.text);
+          if (newWeight) {
+            const primary = (newWeight + '').split('.')[0];
+            const secondary = '0.' + (newWeight + '').split('.')[1];
+            this._saveWeightOnChange(
+              parseFloat(primary),
+              parseFloat(secondary)
+            );
+          }
         }
         this._removeActiveDataBox();
       });
@@ -501,19 +532,10 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      primaryItems = Array.from(
-        { length: 300 },
-        (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm')
-      );
+      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
     } else {
-      primaryItems = Array.from(
-        { length: 8 },
-        (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft')
-      );
-      secondaryItems = Array.from(
-        { length: 12 },
-        (v, k) => k + ' ' + this._translateService.instant('units.in')
-      );
+      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
+      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' ' + this._translateService.instant('units.in'));
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
@@ -587,9 +609,7 @@ export class ProfileTabComponent {
             'chair_type',
             this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
           );
-          KinveyUser.update({
-            chair_type: this.chairTypes[result.data.primaryIndex]
-          });
+          KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
         }
         this._removeActiveDataBox();
       });
@@ -628,9 +648,7 @@ export class ProfileTabComponent {
             'chair_make',
             this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
           );
-          KinveyUser.update({
-            chair_make: this.chairMakes[result.data.primaryIndex]
-          });
+          KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
         }
         this._removeActiveDataBox();
       });
@@ -734,7 +752,10 @@ export class ProfileTabComponent {
     }
     const primaryIndex = Math.floor(weight);
     const secondaryIndex = parseFloat((weight % 1).toFixed(1));
-    return [primaryIndex - 2, secondaryIndex];
+    if (primaryIndex <= 0 && secondaryIndex <= 0) {
+      return [0, 0];
+    } else
+      return [primaryIndex - 2, secondaryIndex];
   }
 
   private _getHeightIndices() {
@@ -753,9 +774,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
-      this.user.data.activity_goal_coast_time +
-      ' ' +
-      this._translateService.instant('units.s');
+      this.user.data.activity_goal_coast_time + ' ' + this._translateService.instant('units.s');
   }
 
   private _initDisplayActivityGoalDistance() {
@@ -763,12 +782,9 @@ export class ProfileTabComponent {
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
-        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +
-        ' ' +
-        this._translateService.instant('units.mi');
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' ' + this._translateService.instant('units.mi');
     } else {
-      this.displayActivityGoalDistance +=
-        ' ' + this._translateService.instant('units.km');
+      this.displayActivityGoalDistance += ' ' + this._translateService.instant('units.km');
     }
   }
 
@@ -814,7 +830,8 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_type;
       const index = this.chairTypes.indexOf(englishValue);
       this.displayChairType = this.chairTypesTranslated[index];
-    } else this.displayChairType = '';
+    }
+    else this.displayChairType = '';
   }
 
   private _initDisplayChairMake() {
@@ -823,7 +840,8 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_make;
       const index = this.chairMakes.indexOf(englishValue);
       this.displayChairMake = this.chairMakesTranslated[index];
-    } else this.displayChairMake = '';
+    }
+    else this.displayChairMake = '';
   }
 
   private _initDisplayControlConfiguration() {
@@ -883,14 +901,12 @@ export class ProfileTabComponent {
 
   private _displayWeightInPounds(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.lbs');
-    else
-      return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
+    else return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
   }
 
   private _displayWeightInKilograms(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.kg');
-    else
-      return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
+    else return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
