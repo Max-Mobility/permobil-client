@@ -13,9 +13,9 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
+import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
-import { DeviceBase } from '../../models';
 
 enum TAB {
   DAY = 0,
@@ -57,7 +57,7 @@ export class ActivityComponent implements OnInit {
     this._translateService.instant('days.wednesday'),
     this._translateService.instant('days.thursday'),
     this._translateService.instant('days.friday'),
-    this._translateService.instant('days.saturday'),
+    this._translateService.instant('days.saturday')
   ];
 
   monthNames: string[] = [
@@ -363,7 +363,8 @@ export class ActivityComponent implements OnInit {
 
   async onWeekPointSelected(event) {
     if (
-      this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      this.user.data.control_configuration !==
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const selectedDate = new Date(this.weekStart);
       this.currentDayInView.setDate(
@@ -399,7 +400,8 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarDateSelected(args) {
     if (
-      this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      this.user.data.control_configuration !==
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const date: Date = args.date;
       if (date <= new Date()) {
@@ -473,17 +475,24 @@ export class ActivityComponent implements OnInit {
             if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
               this.chartDescription =
                 (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(1) +
-                ' ' + this._translateService.instant('units.s');
+                ' ' +
+                this._translateService.instant('units.s');
             } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
               this.chartDescription =
-                (this._dailyActivityFromKinvey.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+                (this._dailyActivityFromKinvey.push_count || 0) +
+                ' ' +
+                this._translateService.instant('units.pushes');
             }
           } else {
             // format chart description for chartYAxis
             if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
-              this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+              this.chartDescription =
+                (0).toFixed(1) +
+                ' ' +
+                this._translateService.instant('units.s');
             } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-              this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
+              this.chartDescription =
+                0 + ' ' + this._translateService.instant('units.pushes');
             }
           }
         } else {
@@ -718,10 +727,14 @@ export class ActivityComponent implements OnInit {
         // format the chart description label based on chartYAxis
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
-            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) +
+            ' ' +
+            this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription =
-            (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+            (cache.weeklyActivity.push_count || 0) +
+            ' ' +
+            this._translateService.instant('units.pushes');
         } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           this.chartDescription =
             (
@@ -796,9 +809,14 @@ export class ActivityComponent implements OnInit {
         // format the chart description based on chartYAxis
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+            (activity.coast_time_avg || 0).toFixed(1) +
+            ' ' +
+            this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+          this.chartDescription =
+            (activity.push_count || 0) +
+            ' ' +
+            this._translateService.instant('units.pushes');
         } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
           this.chartDescription =
             (
@@ -1030,9 +1048,14 @@ export class ActivityComponent implements OnInit {
       if (activity) {
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+            (activity.coast_time_avg || 0).toFixed(1) +
+            ' ' +
+            this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+          this.chartDescription =
+            (activity.push_count || 0) +
+            ' ' +
+            this._translateService.instant('units.pushes');
         } else {
           this.chartDescription =
             (
@@ -1047,9 +1070,11 @@ export class ActivityComponent implements OnInit {
         }
       } else {
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
-          this.chartDescription = '0' + ' ' + this._translateService.instant('units.s');
+          this.chartDescription =
+            '0' + ' ' + this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-          this.chartDescription = '0' + ' ' + this._translateService.instant('units.pushes');
+          this.chartDescription =
+            '0' + ' ' + this._translateService.instant('units.pushes');
         } else {
           this.chartDescription = '0.0' + this.distanceUnit;
         }
@@ -1074,7 +1099,7 @@ export class ActivityComponent implements OnInit {
           this._translateService.instant('days-abbreviated.wednesday'),
           this._translateService.instant('days-abbreviated.thursday'),
           this._translateService.instant('days-abbreviated.friday'),
-          this._translateService.instant('days-abbreviated.saturday'),
+          this._translateService.instant('days-abbreviated.saturday')
         ];
         for (const i in weekViewDayArray) {
           const dayInWeek = weekViewDayArray[i];
@@ -1139,7 +1164,7 @@ export class ActivityComponent implements OnInit {
           this._translateService.instant('days-abbreviated.wednesday'),
           this._translateService.instant('days-abbreviated.thursday'),
           this._translateService.instant('days-abbreviated.friday'),
-          this._translateService.instant('days-abbreviated.saturday'),
+          this._translateService.instant('days-abbreviated.saturday')
         ];
         for (const i in dayNames) {
           result.push({
@@ -1262,7 +1287,9 @@ export class ActivityComponent implements OnInit {
     // Today cell style
     const todayCellStyle = new DayCellStyle();
     todayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK ? new Color('#00c1d5') : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK
+        ? new Color('#00c1d5')
+        : this._colorWhite;
     todayCellStyle.cellTextSize = 12;
     todayCellStyle.cellTextColor = new Color('#00c1d5');
     this.monthViewStyle.todayCellStyle = todayCellStyle;
@@ -1272,13 +1299,17 @@ export class ActivityComponent implements OnInit {
     dayCellStyle.cellBackgroundColor =
       this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK
+        ? this._colorDarkGrey
+        : this._colorWhite;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
 
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
     weekendCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK
+        ? this._colorDarkGrey
+        : this._colorWhite;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
     // Selected cell style
@@ -1301,7 +1332,9 @@ export class ActivityComponent implements OnInit {
     dayNameCellStyle.cellTextColor =
       this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     dayNameCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorDarkGrey : this._colorWhite;
+      this.savedTheme === APP_THEMES.DARK
+        ? this._colorDarkGrey
+        : this._colorWhite;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
   }
 
@@ -1323,9 +1356,14 @@ export class ActivityComponent implements OnInit {
       // format chart description for chartYAxis
       if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
         this.chartDescription =
-          (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+          (activity.coast_time_avg || 0).toFixed(1) +
+          ' ' +
+          this._translateService.instant('units.s');
       } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-        this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+        this.chartDescription =
+          (activity.push_count || 0) +
+          ' ' +
+          this._translateService.instant('units.pushes');
       } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.chartDescription =
           (
@@ -1341,9 +1379,11 @@ export class ActivityComponent implements OnInit {
     } else {
       // format chart description for chartYAxis
       if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
-        this.chartDescription = (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+        this.chartDescription =
+          (0).toFixed(1) + ' ' + this._translateService.instant('units.s');
       } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-        this.chartDescription = 0 + ' ' + this._translateService.instant('units.pushes');
+        this.chartDescription =
+          0 + ' ' + this._translateService.instant('units.pushes');
       } else if (this.chartYAxis === CHART_Y_AXIS.DISTANCE) {
         this.chartDescription = (0).toFixed(1) + this.distanceUnit;
       }
@@ -1395,9 +1435,14 @@ export class ActivityComponent implements OnInit {
         // format chart description for chartYAxis
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
-            (activity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+            (activity.coast_time_avg || 0).toFixed(1) +
+            ' ' +
+            this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-          this.chartDescription = (activity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+          this.chartDescription =
+            (activity.push_count || 0) +
+            ' ' +
+            this._translateService.instant('units.pushes');
         }
       } else {
         // We are showing cached data
@@ -1407,26 +1452,34 @@ export class ActivityComponent implements OnInit {
         // format chart description for chartYAxis
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           this.chartDescription =
-            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) + ' ' + this._translateService.instant('units.s');
+            (cache.weeklyActivity.coast_time_avg || 0).toFixed(1) +
+            ' ' +
+            this._translateService.instant('units.s');
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           this.chartDescription =
-            (cache.weeklyActivity.push_count || 0) + ' ' + this._translateService.instant('units.pushes');
+            (cache.weeklyActivity.push_count || 0) +
+            ' ' +
+            this._translateService.instant('units.pushes');
         }
       }
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
+        if (
+          activity &&
+          activity.distance_smartdrive_coast &&
+          activity.distance_smartdrive_coast_start
+        ) {
           this.chartDescription =
-          (
-            convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.caseTicksToMiles(
-                activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
-              ),
-              this.user.data.distance_unit_preference
-            ) || 0
-          ).toFixed(1) + this.distanceUnit;
+            (
+              convertToMilesIfUnitPreferenceIsMiles(
+                DeviceBase.caseTicksToMiles(
+                  activity.distance_smartdrive_coast -
+                    activity.distance_smartdrive_coast_start
+                ),
+                this.user.data.distance_unit_preference
+              ) || 0
+            ).toFixed(1) + this.distanceUnit;
         } else {
           this.chartDescription = '0.0' + this.distanceUnit;
         }
@@ -1480,15 +1533,19 @@ export class ActivityComponent implements OnInit {
     } else {
       if (!(this.weekStart.toUTCString() in this._weeklyUsageCache)) {
         const activity = this._weeklyUsageFromKinvey;
-        if (activity && activity.distance_smartdrive_coast && activity.distance_smartdrive_coast_start) {
+        if (
+          activity &&
+          activity.distance_smartdrive_coast &&
+          activity.distance_smartdrive_coast_start
+        ) {
           this.weeklyActivityAnnotationValue =
-          convertToMilesIfUnitPreferenceIsMiles(
-            DeviceBase.caseTicksToMiles(
-              activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
-            ),
-            this.user.data.distance_unit_preference
-          ) || 0;
+            convertToMilesIfUnitPreferenceIsMiles(
+              DeviceBase.caseTicksToMiles(
+                activity.distance_smartdrive_coast -
+                  activity.distance_smartdrive_coast_start
+              ),
+              this.user.data.distance_unit_preference
+            ) || 0;
         } else {
           this.weeklyActivityAnnotationValue = 0;
         }

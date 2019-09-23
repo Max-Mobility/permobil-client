@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild, NgZone } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  NgZone
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -9,12 +15,26 @@ import { screen } from 'tns-core-modules/platform';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { Page, PropertyChangeData, EventData } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
-import { APP_THEMES, APP_LANGUAGES, STORAGE_KEYS, CONFIGURATIONS, HEIGHT_UNITS, WEIGHT_UNITS, DISTANCE_UNITS } from '../../enums';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils/themes-utils';
+import {
+  APP_THEMES,
+  APP_LANGUAGES,
+  STORAGE_KEYS,
+  CONFIGURATIONS,
+  HEIGHT_UNITS,
+  WEIGHT_UNITS,
+  DISTANCE_UNITS
+} from '../../enums';
+import {
+  BluetoothService,
+  LoggingService,
+  PushTrackerState,
+  PushTrackerUserService,
+  SettingsService
+} from '../../services';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 import { MockActionbarComponent } from '../shared/components';
-import { PushTracker, SmartDrive } from '~/app/models';
-const dialogs = require('tns-core-modules/ui/dialogs');
+import { PushTracker, SmartDrive } from '../../models';
+import { alert } from 'tns-core-modules/ui/dialogs';
 
 @Component({
   selector: 'profile-settings',
@@ -107,18 +127,15 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   getTranslationKeyForWeightUnit(key) {
-    if (WEIGHT_UNITS[key] === WEIGHT_UNITS.KILOGRAMS)
-      return 'units.kilograms';
-    else if (WEIGHT_UNITS[key] === WEIGHT_UNITS.POUNDS)
-      return 'units.pounds';
+    if (WEIGHT_UNITS[key] === WEIGHT_UNITS.KILOGRAMS) return 'units.kilograms';
+    else if (WEIGHT_UNITS[key] === WEIGHT_UNITS.POUNDS) return 'units.pounds';
     else return 'units.kilograms';
   }
 
   getTranslationKeyForDistanceUnit(key) {
     if (DISTANCE_UNITS[key] === DISTANCE_UNITS.KILOMETERS)
       return 'units.kilometers';
-    else if (DISTANCE_UNITS[key] === DISTANCE_UNITS.MILES)
-      return 'units.miles';
+    else if (DISTANCE_UNITS[key] === DISTANCE_UNITS.MILES) return 'units.miles';
     else return 'units.kilometers';
   }
 
@@ -137,38 +154,62 @@ export class ProfileSettingsComponent implements OnInit {
       this._translateService.instant(this.getTranslationKeyForWeightUnit(key))
     );
 
-    this.distanceUnits = Object.keys(DISTANCE_UNITS).map(key => DISTANCE_UNITS[key]);
+    this.distanceUnits = Object.keys(DISTANCE_UNITS).map(
+      key => DISTANCE_UNITS[key]
+    );
     this.distanceUnitsTranslated = Object.keys(DISTANCE_UNITS).map(key =>
       this._translateService.instant(this.getTranslationKeyForDistanceUnit(key))
     );
 
     if (this.user) {
-      let index = this.heightUnits.indexOf(this.user.data.height_unit_preference);
+      let index = this.heightUnits.indexOf(
+        this.user.data.height_unit_preference.toString()
+      );
       if (index < 0) index = 0;
       this.displayHeightUnit = this.heightUnitsTranslated[index];
 
-      index = this.weightUnits.indexOf(this.user.data.weight_unit_preference);
+      index = this.weightUnits.indexOf(
+        this.user.data.weight_unit_preference.toString()
+      );
       if (index < 0) index = 0;
       this.displayWeightUnit = this.weightUnitsTranslated[index];
 
-      index = this.distanceUnits.indexOf(this.user.data.distance_unit_preference);
+      index = this.distanceUnits.indexOf(
+        this.user.data.distance_unit_preference.toString()
+      );
       if (index < 0) index = 0;
       this.displayDistanceUnit = this.distanceUnitsTranslated[index];
     }
 
     this.screenHeight = screen.mainScreen.heightDIPs;
 
-    if (this.user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
-      const ptConnected = BluetoothService.PushTrackers.filter(pt => { return pt.connected === true; });
+    if (
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
+      const ptConnected = BluetoothService.PushTrackers.filter(pt => {
+        return pt.connected === true;
+      });
       if (ptConnected && ptConnected.length === 1) {
         const pt = ptConnected[0] as PushTracker;
         this._pt_version = PushTracker.versionByteToString(pt.version);
         this._mcu_version = PushTracker.versionByteToString(pt.mcu_version);
         this._ble_version = PushTracker.versionByteToString(pt.ble_version);
-        if (!(this._pt_version === '??' && this._mcu_version === '??' && this._ble_version === '??')) {
-          this.versionInfo = '(PT ' + this._pt_version +
-          ', SD ' + this._mcu_version +
-          ', BT ' + this._ble_version + ')';
+        if (
+          !(
+            this._pt_version === '??' &&
+            this._mcu_version === '??' &&
+            this._ble_version === '??'
+          )
+        ) {
+          this.versionInfo =
+            '(PT ' +
+            this._pt_version +
+            ', SD ' +
+            this._mcu_version +
+            ', BT ' +
+            this._ble_version +
+            ')';
           Log.D('PushTracker connected', this.versionInfo);
         }
       }
@@ -184,32 +225,50 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   async scanForSmartDrive(force: boolean = false) {
-    this.syncState = this._translateService.instant('profile-settings.scanning-for-smartdrives');
+    this.syncState = this._translateService.instant(
+      'profile-settings.scanning-for-smartdrives'
+    );
     Log.D('Scanning for SmartDrives');
     if (!force && this.smartDrive && this.smartDrive.address) {
-      this.syncState = this._translateService.instant('profile-settings.detected-a-smartdrive');
-      Log.D('Scan is not forced - Already have a SmartDrive', this.smartDrive.address);
+      this.syncState = this._translateService.instant(
+        'profile-settings.detected-a-smartdrive'
+      );
+      Log.D(
+        'Scan is not forced - Already have a SmartDrive',
+        this.smartDrive.address
+      );
       return true;
     }
-    if (this.user.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
+    if (
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE
+    ) {
       return this._bluetoothService.scanForSmartDrive(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
-          dialogs.alert('Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.');
+          alert({
+            message:
+              'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
+            okButtonText: this._translateService.instant('general.ok')
+          });
           this.syncingWithSmartDrive = false;
           return false;
-        }
-        else if (drives.length > 1) {
-          dialogs.alert('More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry');
+        } else if (drives.length > 1) {
+          alert({
+            message:
+              'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
+            okButtonText: this._translateService.instant('general.ok')
+          });
           this.syncingWithSmartDrive = false;
           return true;
-        }
-        else {
+        } else {
           drives.map(async drive => {
             this.smartDrive = drive;
             Log.D('SmartDrive detected', this.smartDrive.address);
             Log.D('Scan successful');
-            this.syncState = this._translateService.instant('profile-settings.detected-a-smartdrive');
+            this.syncState = this._translateService.instant(
+              'profile-settings.detected-a-smartdrive'
+            );
           });
           return true;
         }
@@ -220,8 +279,7 @@ export class ProfileSettingsComponent implements OnInit {
   closeModal() {
     Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
-    if (this.smartDrive)
-      this.smartDrive.disconnect();
+    if (this.smartDrive) this.smartDrive.disconnect();
   }
 
   onSliderValueChange(args: any) {
@@ -302,24 +360,36 @@ export class ProfileSettingsComponent implements OnInit {
           'height_unit_preference',
           this.heightUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ height_unit_preference: this.heightUnits[this.listPickerIndex] });
-        this.displayHeightUnit = this.heightUnitsTranslated[this.listPickerIndex];
+        KinveyUser.update({
+          height_unit_preference: this.heightUnits[this.listPickerIndex]
+        });
+        this.displayHeightUnit = this.heightUnitsTranslated[
+          this.listPickerIndex
+        ];
         break;
       case 'weight':
         this._userService.updateDataProperty(
           'weight_unit_preference',
           this.weightUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ weight_unit_preference: this.weightUnits[this.listPickerIndex] });
-        this.displayWeightUnit = this.weightUnitsTranslated[this.listPickerIndex];
+        KinveyUser.update({
+          weight_unit_preference: this.weightUnits[this.listPickerIndex]
+        });
+        this.displayWeightUnit = this.weightUnitsTranslated[
+          this.listPickerIndex
+        ];
         break;
       case 'distance':
         this._userService.updateDataProperty(
           'distance_unit_preference',
           this.distanceUnits[this.listPickerIndex]
         );
-        KinveyUser.update({ distance_unit_preference: this.distanceUnits[this.listPickerIndex] });
-        this.displayDistanceUnit = this.distanceUnitsTranslated[this.listPickerIndex];
+        KinveyUser.update({
+          distance_unit_preference: this.distanceUnits[this.listPickerIndex]
+        });
+        this.displayDistanceUnit = this.distanceUnitsTranslated[
+          this.listPickerIndex
+        ];
         break;
       case 'max-speed':
         updatedSmartDriveSettings = true;
@@ -409,7 +479,10 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.saveToFileSystem();
 
     if (this.user) {
-      if (this.user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      if (
+        this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      ) {
         // When configuration is PushTracker, commit settings changes
         // to any connected PushTracker. The PushTracker, being master,
         // will then communicate these settings changes to the
@@ -427,7 +500,9 @@ export class ProfileSettingsComponent implements OnInit {
               actionbar.updateWatchIcon({ data: PushTrackerState.connected });
             } catch (err) {
               // Show watch icon 'X'
-              actionbar.updateWatchIcon({ data: PushTrackerState.disconnected });
+              actionbar.updateWatchIcon({
+                data: PushTrackerState.disconnected
+              });
               this._logService.logException(err);
             }
           });
@@ -458,7 +533,12 @@ export class ProfileSettingsComponent implements OnInit {
     if (this._mcu_version && this._ble_version)
       if (this._mcu_version !== '' && this._ble_version !== '')
         if (this._mcu_version !== 'unknown' && this._ble_version !== 'unknown')
-          this.versionInfo = '(SD ' + this.smartDrive.mcu_version_string + ', BT ' + this.smartDrive.ble_version_string + ')';
+          this.versionInfo =
+            '(SD ' +
+            this.smartDrive.mcu_version_string +
+            ', BT ' +
+            this.smartDrive.ble_version_string +
+            ')';
   }
 
   async onSmartDriveConnect(args: any) {
@@ -469,23 +549,38 @@ export class ProfileSettingsComponent implements OnInit {
 
     Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
     if (this.smartDrive && this.smartDrive.ableToSend) {
-      this.syncState = this._translateService.instant('profile-settings.sending-settings');
+      this.syncState = this._translateService.instant(
+        'profile-settings.sending-settings'
+      );
       this._zone.run(async () => {
         try {
-          await this.smartDrive.sendSettingsObject(this.settingsService.settings);
+          await this.smartDrive.sendSettingsObject(
+            this.settingsService.settings
+          );
           await this.smartDrive.sendSwitchControlSettingsObject(
-            this.settingsService.switchControlSettings);
+            this.settingsService.switchControlSettings
+          );
           await this.smartDrive.disconnect();
-          this.syncState = this._translateService.instant('profile-settings.sync-successful');
+          this.syncState = this._translateService.instant(
+            'profile-settings.sync-successful'
+          );
           await this.sleep(3000);
           this.syncingWithSmartDrive = false;
-          Log.D('Done sync\'ing with SmartDrive');
-          Log.D('Settings successfully commited to SmartDrive', this.smartDrive.address);
+          Log.D(`Done sync'ing with SmartDrive`);
+          Log.D(
+            'Settings successfully commited to SmartDrive',
+            this.smartDrive.address
+          );
           Log.D('Syncing with SmartDrive?', this.syncingWithSmartDrive);
           this.syncSuccessful = true;
         } catch (err) {
-          this.syncState = this._translateService.instant('profile-settings.error-sending-settings');
-          Log.D('Error committing settings to SmartDrive', this.smartDrive.address);
+          this.syncState = this._translateService.instant(
+            'profile-settings.error-sending-settings'
+          );
+          Log.D(
+            'Error committing settings to SmartDrive',
+            this.smartDrive.address
+          );
           Log.D(err);
           this._logService.logException(err);
         }
@@ -525,7 +620,9 @@ export class ProfileSettingsComponent implements OnInit {
       if (!this.smartDrive) return;
       await this.smartDrive.connect();
       Log.D('Connected to SmartDrive', this.smartDrive.address);
-      this.syncState = this._translateService.instant('profile-settings.connected-a-smartdrive');
+      this.syncState = this._translateService.instant(
+        'profile-settings.connected-a-smartdrive'
+      );
       // Register for SmartDrive connected and disconnected events
       this.smartDrive.on(
         SmartDrive.smartdrive_connect_event,
@@ -606,10 +703,12 @@ export class ProfileSettingsComponent implements OnInit {
           'general.height'
         );
         this.listPickerItems = this.heightUnitsTranslated;
-        let userHeightUnitPreference = '';
+        let userHeightUnitPreference = null;
         if (this.user)
           userHeightUnitPreference = this.user.data.height_unit_preference;
-        this.listPickerIndex = this.heightUnits.indexOf(userHeightUnitPreference);
+        this.listPickerIndex = this.heightUnits.indexOf(
+          userHeightUnitPreference
+        );
         if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;
@@ -621,10 +720,12 @@ export class ProfileSettingsComponent implements OnInit {
           'general.weight'
         );
         this.listPickerItems = this.weightUnitsTranslated;
-        let userWeightUnitPreference = '';
+        let userWeightUnitPreference = null;
         if (this.user)
           userWeightUnitPreference = this.user.data.weight_unit_preference;
-        this.listPickerIndex = this.weightUnits.indexOf(userWeightUnitPreference);
+        this.listPickerIndex = this.weightUnits.indexOf(
+          userWeightUnitPreference
+        );
         if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;
@@ -636,10 +737,12 @@ export class ProfileSettingsComponent implements OnInit {
           'general.distance'
         );
         this.listPickerItems = this.distanceUnitsTranslated;
-        let userDistanceUnitPreference = '';
+        let userDistanceUnitPreference = null;
         if (this.user)
-        userDistanceUnitPreference = this.user.data.distance_unit_preference;
-        this.listPickerIndex = this.distanceUnits.indexOf(userDistanceUnitPreference);
+          userDistanceUnitPreference = this.user.data.distance_unit_preference;
+        this.listPickerIndex = this.distanceUnits.indexOf(
+          userDistanceUnitPreference
+        );
         if (this.listPickerIndex < 0) this.listPickerIndex = 0;
         this._openListPickerDialog();
         break;

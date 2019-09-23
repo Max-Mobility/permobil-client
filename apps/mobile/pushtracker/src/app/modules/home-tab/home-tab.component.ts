@@ -16,7 +16,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme, milesToKilometers, convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -142,8 +142,10 @@ export class HomeTabComponent {
         : this._translateService.instant('units.mi');
     // Welcome back ${first name} if the user is at 0 of both goals
     if (coastTimeValue === 0.0 && distanceValue === 0.0) {
-      this.todayMessage = this._translateService.instant('home-tab.welcome-back')
-        + ' ' + this.user.data.first_name;
+      this.todayMessage =
+        this._translateService.instant('home-tab.welcome-back') +
+        ' ' +
+        this.user.data.first_name;
       return;
     }
     // Off to a good start if the user is > 0 of one of the goals but < 30% of both goals
@@ -152,7 +154,9 @@ export class HomeTabComponent {
       (coastTimeValue < 0.3 * coastTimeGoal &&
         distanceValue < 0.3 * distanceGoal)
     ) {
-      this.todayMessage = this._translateService.instant('home-tab.off-to-a-good-start');
+      this.todayMessage = this._translateService.instant(
+        'home-tab.off-to-a-good-start'
+      );
       return;
     }
     // Going strong if the user is >= 30% of one of the goals but < 70% of both goals
@@ -161,7 +165,9 @@ export class HomeTabComponent {
         coastTimeValue < coastTimeGoal) ||
       (distanceValue >= 0.3 * distanceGoal && distanceValue < distanceGoal)
     ) {
-      this.todayMessage = this._translateService.instant('home-tab.going-strong');
+      this.todayMessage = this._translateService.instant(
+        'home-tab.going-strong'
+      );
       return;
     }
     // Only ${x} ${units} left if the user is >= 70% of one of the goals but < 100% of both goals
@@ -169,43 +175,55 @@ export class HomeTabComponent {
       coastTimeValue >= 0.7 * coastTimeGoal &&
       coastTimeValue < coastTimeGoal
     ) {
-      this.todayMessage = this._translateService.instant('home-tab.only') +
-        ' ' + (coastTimeGoal - coastTimeValue).toFixed(1) + ' ' +
+      this.todayMessage =
+        this._translateService.instant('home-tab.only') +
+        ' ' +
+        (coastTimeGoal - coastTimeValue).toFixed(1) +
+        ' ' +
         this._translateService.instant('home-tab.seconds-left');
       return;
     } else if (
       distanceValue >= 0.7 * distanceGoal &&
       distanceValue < distanceGoal
     ) {
-      this.todayMessage = this._translateService.instant('home-tab.only') +
-          ' ' +
-          (distanceGoal - distanceValue).toFixed(1) +
-          ' ' +
-          distanceUnit +
-          ' ' +
-          this._translateService.instant('home-tab.left');
+      this.todayMessage =
+        this._translateService.instant('home-tab.only') +
+        ' ' +
+        (distanceGoal - distanceValue).toFixed(1) +
+        ' ' +
+        distanceUnit +
+        ' ' +
+        this._translateService.instant('home-tab.left');
       return;
     }
     // Reached ${goal name} goal, way to go! if the user is >= 100% of one goal but < 100% of the other goal
     else if (coastTimeValue >= coastTimeGoal && distanceValue < distanceGoal) {
-      this.todayMessage = this._translateService.instant('home-tab.reached-coast-time-goal');
+      this.todayMessage = this._translateService.instant(
+        'home-tab.reached-coast-time-goal'
+      );
       return;
     } else if (
       distanceValue >= distanceGoal &&
       coastTimeValue < coastTimeGoal
     ) {
-      this.todayMessage = this._translateService.instant('home-tab.reached-distance-goal');
+      this.todayMessage = this._translateService.instant(
+        'home-tab.reached-distance-goal'
+      );
       return;
     }
     // Reached all your goals, you're amazing! if the user is >= 100% of both goals
     else if (distanceValue >= distanceGoal && coastTimeValue >= coastTimeGoal) {
-      this.todayMessage = this._translateService.instant('home-tab.reached-all-goals');
+      this.todayMessage = this._translateService.instant(
+        'home-tab.reached-all-goals'
+      );
       return;
     }
 
     // Something's wrong if we're here
-    this.todayMessage = this._translateService.instant('home-tab.welcome-back')
-      + ' ' + this.user.data.first_name;
+    this.todayMessage =
+      this._translateService.instant('home-tab.welcome-back') +
+      ' ' +
+      this.user.data.first_name;
   }
 
   getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
@@ -330,9 +348,10 @@ export class HomeTabComponent {
       .showModal(ActivityComponent, {
         context: {
           currentTab:
-          this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
-            ? 0
-            : 1,
+            this.user.data.control_configuration !==
+            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+              ? 0
+              : 1,
           user: this.user
         },
         fullscreen: true,
@@ -401,7 +420,9 @@ export class HomeTabComponent {
             );
             return Promise.resolve(result);
           }
-          Log.D('HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet');
+          Log.D(
+            'HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
+          );
           return Promise.resolve(this._weeklyUsageFromKinvey);
         })
         .catch(err => {
@@ -418,7 +439,8 @@ export class HomeTabComponent {
     this.loadSmartDriveUsageFromKinvey(this._weekStart).then(() => {
       this._formatUsageForView().then(result => {
         this.usageActivity = new ObservableArray(result);
-        this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
+        this.distanceGoalMessage =
+          this._translateService.instant('home-tab.travel') + ' ';
         this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
           this.user.data.activity_goal_distance,
           this.user.data.distance_unit_preference
@@ -431,29 +453,35 @@ export class HomeTabComponent {
         // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
         if (this._todaysUsage) {
           let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.caseTicksToMiles(
-              this._todaysUsage.distance_smartdrive_coast -
-                this._todaysUsage.distance_smartdrive_coast_start
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                this._todaysUsage.distance_smartdrive_coast -
+                  this._todaysUsage.distance_smartdrive_coast_start
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
           this.todayCoastDistance = coastDistance.toFixed(1);
 
           let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.motorTicksToMiles(
-              this._todaysUsage.distance_smartdrive_drive -
-                this._todaysUsage.distance_smartdrive_drive_start
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.motorTicksToMiles(
+                this._todaysUsage.distance_smartdrive_drive -
+                  this._todaysUsage.distance_smartdrive_drive_start
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           );
           if (driveDistance < 0.0) driveDistance = 0.0;
           this.todayDriveDistance = driveDistance.toFixed(1);
 
           this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.caseTicksToMiles(
-              this._todaysUsage.distance_smartdrive_coast
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                this._todaysUsage.distance_smartdrive_coast
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           ).toFixed(1);
           // Today coast distance changed, update message
@@ -480,8 +508,10 @@ export class HomeTabComponent {
         ] as any[]);
         this.distanceCirclePercentage =
           (parseFloat(this.todayCoastDistance) /
-            convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
-              this.user.data.distance_unit_preference)) *
+            convertToMilesIfUnitPreferenceIsMiles(
+              this.user.data.activity_goal_distance,
+              this.user.data.distance_unit_preference
+            )) *
           100;
         this._updateProgress();
       });
@@ -575,10 +605,14 @@ export class HomeTabComponent {
         }
 
         this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-        this.coastTimeGoalMessage = this._translateService.instant('home-tab.coast-for');
+        this.coastTimeGoalMessage = this._translateService.instant(
+          'home-tab.coast-for'
+        );
         this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
-        this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
+        this.coastTimeGoalUnit =
+          ' ' + this._translateService.instant('home-tab.seconds-per-day');
+        this.distanceGoalMessage =
+          this._translateService.instant('home-tab.travel') + ' ';
         this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
           this.user.data.activity_goal_distance,
           this.user.data.distance_unit_preference
@@ -607,9 +641,11 @@ export class HomeTabComponent {
             this.user.data.activity_goal_coast_time) *
           100;
 
-        this.coastTimeGoalMessage = this._translateService.instant('home-tab.coast-for') + ' ';
+        this.coastTimeGoalMessage =
+          this._translateService.instant('home-tab.coast-for') + ' ';
         this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
+        this.coastTimeGoalUnit =
+          ' ' + this._translateService.instant('home-tab.seconds-per-day');
         this.distanceCirclePercentageMaxValue =
           '/' +
           convertToMilesIfUnitPreferenceIsMiles(
@@ -635,10 +671,13 @@ export class HomeTabComponent {
   }
 
   private async _updateProgress() {
-    this.coastTimeGoalMessage = this._translateService.instant('home-tab.coast-for') + ' ';
+    this.coastTimeGoalMessage =
+      this._translateService.instant('home-tab.coast-for') + ' ';
     this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-    this.coastTimeGoalUnit = ' ' + this._translateService.instant('home-tab.seconds-per-day');
-    this.distanceGoalMessage = this._translateService.instant('home-tab.travel') + ' ';
+    this.coastTimeGoalUnit =
+      ' ' + this._translateService.instant('home-tab.seconds-per-day');
+    this.distanceGoalMessage =
+      this._translateService.instant('home-tab.travel') + ' ';
     this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
       this.user.data.activity_goal_distance,
       this.user.data.distance_unit_preference
@@ -649,10 +688,10 @@ export class HomeTabComponent {
         : ' ' + this._translateService.instant('home-tab.mi-per-day');
     this.distanceCirclePercentageMaxValue =
       '/' +
-      convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
-        this.user.data.distance_unit_preference).toFixed(
-        1
-      );
+      convertToMilesIfUnitPreferenceIsMiles(
+        this.user.data.activity_goal_distance,
+        this.user.data.distance_unit_preference
+      ).toFixed(1);
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
     this.goalLabelChartData = new ObservableArray([
@@ -684,8 +723,10 @@ export class HomeTabComponent {
     ] as any[]);
     this.distanceCirclePercentage =
       (parseFloat(this.todayCoastDistance) /
-        convertToMilesIfUnitPreferenceIsMiles(this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference)) *
+        convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
+        )) *
       100;
     this._updateDistancePlotYAxis();
   }
@@ -828,7 +869,9 @@ export class HomeTabComponent {
         i = i + 1;
       }
       const days = activity.days;
-      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      const dayNames: string[] = this._translateService.instant(
+        'home-tab.day-names'
+      );
       for (const i in weekViewDayArray) {
         const dayInWeek = weekViewDayArray[i];
         const dailyActivity = days[i];
@@ -856,7 +899,9 @@ export class HomeTabComponent {
       return Promise.resolve(result);
     } else {
       const result = [];
-      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      const dayNames: string[] = this._translateService.instant(
+        'home-tab.day-names'
+      );
       for (const i in dayNames) {
         result.push({
           xAxis: dayNames[parseInt(i)],
@@ -891,10 +936,12 @@ export class HomeTabComponent {
         const day = days[i];
         if (day) {
           let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.caseTicksToMiles(
-              day.distance_smartdrive_coast -
-                day.distance_smartdrive_coast_start
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                day.distance_smartdrive_coast -
+                  day.distance_smartdrive_coast_start
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
@@ -936,26 +983,32 @@ export class HomeTabComponent {
         i = i + 1;
       }
       const days = activity.days;
-      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      const dayNames: string[] = this._translateService.instant(
+        'home-tab.day-names'
+      );
       for (const i in weekViewDayArray) {
         const dayInWeek = weekViewDayArray[i];
         const dailyUsage = days[i];
         if (dailyUsage) {
           // We have daily activity for this day
           let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.caseTicksToMiles(
-              dailyUsage.distance_smartdrive_coast -
-                dailyUsage.distance_smartdrive_coast_start
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                dailyUsage.distance_smartdrive_coast -
+                  dailyUsage.distance_smartdrive_coast_start
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
 
           let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(DeviceBase.motorTicksToMiles(
-              dailyUsage.distance_smartdrive_drive -
-                dailyUsage.distance_smartdrive_drive_start
-            ) || 0),
+            milesToKilometers(
+              DeviceBase.motorTicksToMiles(
+                dailyUsage.distance_smartdrive_drive -
+                  dailyUsage.distance_smartdrive_drive_start
+              ) || 0
+            ),
             this.user.data.distance_unit_preference
           );
           if (driveDistance < 0.0) driveDistance = 0.0;
@@ -982,7 +1035,9 @@ export class HomeTabComponent {
       return result;
     } else {
       const result = [];
-      const dayNames: string[] = this._translateService.instant('home-tab.day-names');
+      const dayNames: string[] = this._translateService.instant(
+        'home-tab.day-names'
+      );
       for (const i in dayNames) {
         result.push({
           xAxis: dayNames[parseInt(i)],
@@ -1023,7 +1078,8 @@ export class HomeTabComponent {
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       currentTab:
-        this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        this.user.data.control_configuration !==
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1039,7 +1095,8 @@ export class HomeTabComponent {
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       currentTab:
-        this.user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        this.user.data.control_configuration !==
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
