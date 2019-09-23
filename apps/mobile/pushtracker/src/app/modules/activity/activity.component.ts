@@ -367,7 +367,7 @@ export class ActivityComponent implements OnInit {
     ) {
       const selectedDate = new Date(this.weekStart);
       this.currentDayInView.setDate(
-        selectedDate.getDate() + event.pointIndex - 2
+        selectedDate.getDate() + event.pointIndex - 1
       );
       this._debouncedLoadDailyActivity();
       this.currentTab = TAB.DAY;
