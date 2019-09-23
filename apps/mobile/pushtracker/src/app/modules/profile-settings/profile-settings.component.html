@@ -20,18 +20,18 @@
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
-      <StackLayout (tap)="onListPickerItemTap('height')" ripple rippleColorAlpha="0.18" row="1" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="1" class="setting-layout">
         <Label class="setting-title" [text]="'general.height' | translate"></Label>
         <Label class="setting-value" [text]="displayHeightUnit" textWrap="true"></Label>
       </StackLayout>
       // Weight
-      <StackLayout (tap)="onListPickerItemTap('weight')" ripple rippleColorAlpha="0.18" row="2" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="2" class="setting-layout">
         <Label class="setting-title" [text]="'general.weight' | translate"></Label>
         <Label class="setting-value" [text]="displayWeightUnit" textWrap="true"></Label>
       </StackLayout>
 
       // Distance
-      <StackLayout (tap)="onListPickerItemTap('distance')" ripple rippleColorAlpha="0.18" row="3" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="3" class="setting-layout">
         <Label class="setting-title" [text]="'general.distance' | translate"></Label>
         <Label class="setting-value" [text]="displayDistanceUnit" textWrap="true"></Label>
       </StackLayout>
@@ -165,12 +165,12 @@
       <Label row="14" class="category" [text]="'general.display' | translate"></Label>
 
       // Theme
-      <StackLayout (tap)="onListPickerItemTap('theme')" ripple rippleColorAlpha="0.18" row="15" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="15" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="16" class="setting-layout">
+      <StackLayout ripple rippleColorAlpha="0.18" row="16" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>
