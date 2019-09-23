@@ -588,6 +588,7 @@ export class ActivityComponent implements OnInit {
             );
             return Promise.resolve(result);
           }
+          this._weeklyActivityFromKinvey = [];
           return Promise.resolve(this._weeklyActivityFromKinvey);
         })
         .catch(err => {
@@ -636,6 +637,7 @@ export class ActivityComponent implements OnInit {
             );
             return Promise.resolve(result);
           }
+          this._weeklyActivityFromKinvey = [];
           return Promise.resolve(this._weeklyUsageFromKinvey);
         })
         .catch(err => {
