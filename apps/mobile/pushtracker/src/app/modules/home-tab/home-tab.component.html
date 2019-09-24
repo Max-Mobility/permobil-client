@@ -1,6 +1,8 @@
 <PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
   <ScrollView class="home-tab-layout" height="100%">
-    <StackLayout row="1" col="0">
+    <StackLayout
+      horizontalAlignment="center"
+      row="1" col="0">
       // Mock ActionBar
       <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
@@ -76,13 +78,15 @@
       </GridLayout>
 
       // Coast Time Chart
-      <GridLayout rows="auto, *" class="chart-layout">
+      <GridLayout rows="auto, *" columns="*"
+		  horizontalAlignment="center"
+		  class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="coastTimeGoalMessage"></Label>
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
           <Label class="title" [text]="coastTimeGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
@@ -139,13 +143,15 @@
       </GridLayout>
 
       // Distance Time Chart
-      <GridLayout rows="auto, *" class="chart-layout">
+      <GridLayout rows="auto, *" columns="*"
+		  horizontalAlignment="center"
+		  class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="distanceGoalMessage"></Label>
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
           <Label class="title" [text]="distanceGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis
