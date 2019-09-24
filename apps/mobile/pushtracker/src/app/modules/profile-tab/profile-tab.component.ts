@@ -720,9 +720,6 @@ export class ProfileTabComponent {
       }
     }
 
-    console.log(this._vcRef.element.nativeElement);
-    console.log(this._vcRef.element);
-
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: false,
