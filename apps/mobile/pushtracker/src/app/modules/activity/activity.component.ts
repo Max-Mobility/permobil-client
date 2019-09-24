@@ -14,7 +14,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek, areDatesSame } from '../../utils';
 
 enum TAB {
   DAY = 0,
@@ -1174,7 +1174,7 @@ export class ActivityComponent implements OnInit {
   private _isCurrentDayInViewThisWeek() {
     const today = new Date();
     const thisWeek = getFirstDayOfWeek(today);
-    return this._areDaysSame(thisWeek, this.weekStart);
+    return areDatesSame(thisWeek, this.weekStart);
   }
 
   isNextWeekButtonEnabled() {
@@ -1201,14 +1201,6 @@ export class ActivityComponent implements OnInit {
       ' ' +
       date.getDate();
     Log.D('Chart Title: ' + this.chartTitle);
-  }
-
-  private _areDaysSame(first: Date, second: Date) {
-    return (
-      first.getFullYear() === second.getFullYear() &&
-      first.getMonth() === second.getMonth() &&
-      first.getDate() === second.getDate()
-    );
   }
 
   private async _initWeekChartTitle() {
