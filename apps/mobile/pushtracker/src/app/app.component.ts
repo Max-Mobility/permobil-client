@@ -14,9 +14,9 @@ import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { APP_THEMES, STORAGE_KEYS } from './enums';
+import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey } from './utils';
+import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from './utils';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -51,19 +51,10 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
-      this._translateService.setDefaultLang('en');
-      this._translateService.addLangs([
-        'en',
-        'es',
-        'de',
-        'fr',
-        'ja',
-        'ko',
-        'nl',
-        'ru',
-        'sv',
-        'zh-CN'
-      ]);
+      this._translateService.setDefaultLang(APP_LANGUAGES.English);
+      this._translateService.addLangs(
+        Object.keys(APP_LANGUAGES).map(key => APP_LANGUAGES[key])
+      );
     } catch (error) {
       Log.E(error);
       this._logService.logException(error);
@@ -89,7 +80,7 @@ export class AppComponent implements OnInit {
 
     application.on(application.resumeEvent, () => {
       Log.D('Application resumed');
-      const weekStart = this._getFirstDayOfWeek(new Date());
+      const weekStart = getFirstDayOfWeek(new Date());
       this._loadWeeklyActivityFromKinvey(weekStart);
       this._loadSmartDriveUsageFromKinvey(weekStart);
     });
@@ -130,14 +121,6 @@ export class AppComponent implements OnInit {
     } else if (savedTheme === APP_THEMES.DARK) {
       enableDarkTheme();
     }
-  }
-
-  private _getFirstDayOfWeek(date) {
-    date = new Date(date);
-    const day = date.getDay();
-    if (day === 0) return date; // Sunday is the first day of the week
-    const diff = date.getDate() - day;
-    return new Date(date.setDate(diff));
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {

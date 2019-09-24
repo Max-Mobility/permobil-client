@@ -14,7 +14,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek, areDatesSame } from '../../utils';
 
 enum TAB {
   DAY = 0,
@@ -416,7 +416,7 @@ export class ActivityComponent implements OnInit {
     this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
-    this.weekStart = this._getFirstDayOfWeek(date);
+    this.weekStart = getFirstDayOfWeek(date);
     this.weekEnd = new Date(this.weekStart);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     this.minDate = new Date('01/01/1999');
@@ -1173,8 +1173,8 @@ export class ActivityComponent implements OnInit {
 
   private _isCurrentDayInViewThisWeek() {
     const today = new Date();
-    const thisWeek = this._getFirstDayOfWeek(today);
-    return this._areDaysSame(thisWeek, this.weekStart);
+    const thisWeek = getFirstDayOfWeek(today);
+    return areDatesSame(thisWeek, this.weekStart);
   }
 
   isNextWeekButtonEnabled() {
@@ -1184,7 +1184,7 @@ export class ActivityComponent implements OnInit {
   isNextMonthButtonEnabled() {
     const today = new Date();
     const month = today.getMonth();
-    const currentWeekStart = this._getFirstDayOfWeek(this.currentDayInView);
+    const currentWeekStart = getFirstDayOfWeek(this.currentDayInView);
     const currentMonth = currentWeekStart.getMonth();
     return (
       currentWeekStart.getFullYear() <= today.getFullYear() &&
@@ -1203,26 +1203,10 @@ export class ActivityComponent implements OnInit {
     Log.D('Chart Title: ' + this.chartTitle);
   }
 
-  private _areDaysSame(first: Date, second: Date) {
-    return (
-      first.getFullYear() === second.getFullYear() &&
-      first.getMonth() === second.getMonth() &&
-      first.getDate() === second.getDate()
-    );
-  }
-
-  private _getFirstDayOfWeek(date) {
-    date = new Date(date);
-    const day = date.getDay();
-    if (day === 0) return date; // Sunday is the first day of the week
-    const diff = date.getDate() - day;
-    return new Date(date.setDate(diff));
-  }
-
   private async _initWeekChartTitle() {
     const date = this.currentDayInView;
-    this.weekStart = this._getFirstDayOfWeek(date);
-    this.weekEnd = this._getFirstDayOfWeek(date);
+    this.weekStart = getFirstDayOfWeek(date);
+    this.weekEnd = getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     this.chartTitle =
       this.monthNames[date.getMonth()] +
@@ -1234,8 +1218,8 @@ export class ActivityComponent implements OnInit {
 
   private _updateWeekStartAndEnd() {
     const date = this.currentDayInView;
-    this.weekStart = this._getFirstDayOfWeek(date);
-    this.weekEnd = this._getFirstDayOfWeek(date);
+    this.weekStart = getFirstDayOfWeek(date);
+    this.weekEnd = getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
     this.enableNextWeekButton = !this._isCurrentDayInViewThisWeek();
   }
