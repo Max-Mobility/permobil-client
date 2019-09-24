@@ -364,10 +364,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentVersions['SmartDriveMCU.ota'].data
     );
     // smartdrive needs to update
-    let otaStatus = '';
     try {
       this.registerForSmartDriveEvents();
-      otaStatus = await this.smartDrive.performOTA(
+      await this.smartDrive.performOTA(
         bleFw,
         mcuFw,
         bleVersion,
