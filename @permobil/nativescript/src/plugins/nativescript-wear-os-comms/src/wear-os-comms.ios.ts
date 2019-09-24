@@ -7,7 +7,9 @@ export class WearOsComms extends Common {
   // device address
   private static pairedCompanion: string = null;
 
-  private static ServiceUUID: string = "";
+  private static ServiceUUID: string = '';
+  private static MessageCharacteristicUUID: string = '';
+  private static DataCharacteristicUUID: string = '';
 
   constructor() {
     super();
@@ -62,7 +64,30 @@ export class WearOsComms extends Common {
     return companion;
   }
 
-  public static async sendMessage(channel: string, msg: string) {
+  private static encodeData(d: any) {
+    let encoded = '';
+    if (d && d.length) {
+      if ((typeof d) === 'string') {
+        encoded = WearOsComms.encodeString(d);
+      } else {
+        for (let i=0; i < d.length; i++) {
+          encoded += '0x' + d.toString(16);
+        }
+      }
+    }
+    return encoded;
+  }
+
+  private static encodeString(s: string) {
+    // convert to hexadecimal string
+    let encoded = '';
+    for (let i=0; i < s.length; i++) {
+      encoded += '0x' + s.charCodeAt(i);
+    }
+    return encoded;
+  }
+
+  private static async send(characteristic: string, encoded: string) {
     return new Promise(async (resolve, reject) => {
       try {
         // state variables
@@ -72,9 +97,20 @@ export class WearOsComms extends Common {
         // connect to the companion
         WearOsComms._bluetooth.connect({
           UUID: companion,
-          onConnected: (peripheral: any) => {
-            // TODO: send the data to the companion
-            // TODO: disconnect from the companion
+          onConnected: async (peripheral: any) => {
+            // send the data to the companion
+            await WearOsComms._bluetooth.write({
+              peripheralUUID: companion,
+              serviceUUID: WearOsComms.ServiceUUID,
+              characteristicUUID: characteristic,
+              value: encoded
+            });
+            // update the state variables
+            didSend = true;
+            // disconnect from the companion
+            await WearOsComms._bluetooth.disconnect({
+              UUID: companion
+            });
           },
           onDisconnected: (peripheral: any) => {
             if (didSend) {
@@ -90,14 +126,15 @@ export class WearOsComms extends Common {
     });
   }
 
+  public static async sendMessage(channel: string, msg: string) {
+    // convert message to hexadecimal
+    const encoded = WearOsComms.encodeString(`${channel}/${msg}`);
+    await WearOsComms.send(WearOsComms.MessageCharacteristicUUID, encoded);
+  }
+
   public static sendData(data: any) {
-    return new Promise((resolve, reject) => {
-      try {
-        // TODO: figure out how the bluetooth data part send will work here
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    });
+    // convert message to hexadecimal
+    const encoded = WearOsComms.encodeData(data);
+    await WearOsComms.send(WearOsComms.DataCharacteristicUUID, encoded);
   }
 }
