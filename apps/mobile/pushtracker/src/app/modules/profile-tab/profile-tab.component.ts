@@ -20,6 +20,7 @@ import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GEN
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 @Component({
   selector: 'profile-tab',
@@ -213,6 +214,12 @@ export class ProfileTabComponent {
         this._zone.run(async () => {
           const logoutResult = await KinveyUser.logout();
           Log.D('logout result', logoutResult);
+          // Clean up appSettings key-value pairs that were
+          // saved in app.component.ts
+          appSettings.remove('PushTracker.WeeklyActivity');
+          appSettings.remove('SmartDrive.WeeklyUsage');
+          appSettings.remove('Kinvey.User');
+          // Reset the user service and restore to default theme
           this._userService.reset();
           enableDefaultTheme();
           // go ahead and nav to login to keep UI moving without waiting
