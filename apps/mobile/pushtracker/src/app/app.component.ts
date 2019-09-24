@@ -17,7 +17,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import * as TNSHTTP from 'tns-core-modules/http';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD } from './utils';
+import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey } from './utils';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -147,43 +147,23 @@ export class AppComponent implements OnInit {
     if (!user) return;
     let result = [];
     const date = YYYY_MM_DD(weekStartDate);
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        user._id +
-        '","data_type":"WeeklyActivity","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + user._kmd.authtoken,
-          'Content-Type': 'application/json'
+
+    const queryString = `?query={"_acl.creator":"${user._id}","data_type":"WeeklyActivity","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          appSettings.setString(
+            'PushTracker.WeeklyActivity.' + date,
+            JSON.stringify(result)
+          );
+          return Promise.resolve(true);
         }
+        return Promise.resolve(true);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            appSettings.setString(
-              'PushTracker.WeeklyActivity.' + date,
-              JSON.stringify(result)
-            );
-            return Promise.resolve(true);
-          }
-          return Promise.resolve(false);
-        })
-        .catch(err => {
-          return Promise.reject(false);
-        });
-    } catch (err) {
-      return Promise.reject(false);
-    }
+      .catch(err => {
+        return Promise.reject(false);
+      });
   }
 
   async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
@@ -193,42 +173,22 @@ export class AppComponent implements OnInit {
     if (!user) return result;
 
     const date = YYYY_MM_DD(weekStartDate);
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        user._id +
-        '","data_type":"SmartDriveWeeklyInfo","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + user._kmd.authtoken,
-          'Content-Type': 'application/json'
+
+    const queryString = `?query={"_acl.creator":"${user._id}","data_type":"SmartDriveWeeklyInfo","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          appSettings.setString(
+            'SmartDrive.WeeklyUsage.' + date,
+            JSON.stringify(result)
+          );
+          return Promise.resolve(true);
         }
+        return Promise.resolve(false);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            appSettings.setString(
-              'SmartDrive.WeeklyUsage.' + date,
-              JSON.stringify(result)
-            );
-            return Promise.resolve(true);
-          }
-          return Promise.resolve(false);
-        })
-        .catch(err => {
-          return Promise.reject(false);
-        });
-    } catch (err) {
-      return Promise.reject(false);
+      .catch(err => {
+        return Promise.reject(false);
+      });
     }
-  }
 }

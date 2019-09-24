@@ -376,7 +376,7 @@ export class HomeTabComponent {
       }
     }
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
     return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
       .then(data => {
         if (data && data.length) {
@@ -505,7 +505,7 @@ export class HomeTabComponent {
       }
     }
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity", "date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
     return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
       .then(data => {
         if (data && data.length) {
