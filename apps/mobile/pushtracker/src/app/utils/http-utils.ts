@@ -7,9 +7,7 @@ const BASE_URL = `https://baas.kinvey.com/appdata/${APP_KEY}/`;
 
 export function getJSONFromKinvey(queryString: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    console.log('querying for json from kinvey');
-
-    console.log(queryString);
+    Log.D('HTTPUtils | getJSONFromKinvey query string =', queryString);
     const kinveyActiveUser = KinveyUser.getActiveUser();
 
     TNS_HTTP.request({
@@ -23,10 +21,8 @@ export function getJSONFromKinvey(queryString: string): Promise<any> {
       }
     })
       .then(resp => {
-        console.log('got the data', resp);
+        Log.D('HTTPUtils | getJSONFromKinvey | Received data!');
         if (resp) {
-          const data = resp.content.toJSON();
-          console.log('data', data);
           resolve(resp.content.toJSON());
         }
       })

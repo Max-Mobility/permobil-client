@@ -272,7 +272,7 @@ export class HomeTabComponent {
 
     getUserDataFromKinvey()
       .then(data => {
-        console.log('refreshed user data from kinvey');
+        Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
         return Promise.resolve(true);
       })
@@ -379,7 +379,7 @@ export class HomeTabComponent {
     }
 
     const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":"${date}"}&limit=1}`;
-    getJSONFromKinvey(`SmartDriveUsage${queryString}`)
+    return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -935,6 +935,7 @@ export class HomeTabComponent {
   }
 
   private async _formatUsageForView() {
+    Log.D('HomeTab | Formatting usage for view');
     const activity = this._weeklyUsageFromKinvey;
     if (activity && activity.days) {
       const result = [];

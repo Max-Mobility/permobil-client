@@ -681,7 +681,6 @@ export class JourneyTabComponent {
             if (firstDayOfCurrentWeek && firstDayOfCurrentWeek.date &&
                 areDatesSame(this._weekStart, new Date(firstDayOfCurrentWeek.date))) {
               this.todayUsage = this._weeklyUsageFromKinvey.days[index];
-              console.log(this.todayUsage.date);
             }
           }
 
