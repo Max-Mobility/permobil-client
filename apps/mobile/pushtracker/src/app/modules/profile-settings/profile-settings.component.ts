@@ -11,7 +11,7 @@ import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { enableDarkTheme, enableDefaultTheme } from '~/app/utils';
-import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
+import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS, TIME_FORMAT } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent } from '../shared/components';
@@ -36,6 +36,9 @@ export class ProfileSettingsComponent implements OnInit {
   distanceUnits: string[] = [];
   distanceUnitsTranslated: string[] = [];
   displayDistanceUnit: string;
+  timeFormats: string[] = [];
+  timeFormatsTranslated: string[] = [];
+  displayTimeFormat: string;
   CURRENT_THEME: string = appSettings.getString(
     STORAGE_KEYS.APP_THEME,
     APP_THEMES.DEFAULT
@@ -46,12 +49,6 @@ export class ProfileSettingsComponent implements OnInit {
   syncSuccessful = false;
   syncState = '';
   versionInfo = '';
-
-  // activeSettingTitle: string = 'Setting';
-  // activeSettingDescription: string = 'Description';
-  // SLIDER_VALUE: number = 0;
-  // listPickerItems: string[];
-  // listPickerIndex: number = 0;
 
   private activeSetting: string = null;
   private _debouncedCommitSettingsFunction: any = null;
@@ -113,6 +110,11 @@ export class ProfileSettingsComponent implements OnInit {
       )
     );
 
+    this.timeFormats = Object.keys(TIME_FORMAT).map(key => TIME_FORMAT[key]);
+    this.timeFormatsTranslated = Object.keys(TIME_FORMAT).map(key =>
+      this._translateService.instant(this._getTranslationKeyForTimeFormat(key))
+    )
+
     if (this.user) {
       let index = this.heightUnits.indexOf(
         this.user.data.height_unit_preference.toString()
@@ -131,6 +133,16 @@ export class ProfileSettingsComponent implements OnInit {
       );
       if (index < 0) index = 0;
       this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+
+      if (this.user.data.time_format_preference) {
+        index = this.timeFormats.indexOf(
+          this.user.data.time_format_preference.toString()
+        );
+        if (index < 0) index = 0;
+        this.displayTimeFormat = this.timeFormatsTranslated[index];
+      } else {
+        this.displayTimeFormat = this.timeFormatsTranslated[0];
+      }
     }
 
     if (
@@ -379,7 +391,21 @@ export class ProfileSettingsComponent implements OnInit {
           listPickerNeedsSecondary: false
         };
         break;
+      case 'time format':
+        this.activeSetting = 'time format';
+        let userTimeFormatPreference = null;
+        if (this.user)
+          userTimeFormatPreference = this.user.data.time_format_preference || this.timeFormats[0];
+        primaryIndex = this.timeFormats.indexOf(userTimeFormatPreference);
+        if (primaryIndex < 0) primaryIndex = 0;
 
+        options.context = {
+          title: this._translateService.instant('general.time-format'),
+          primaryItems: this.timeFormatsTranslated,
+          primaryIndex,
+          listPickerNeedsSecondary: false
+        };
+        break;
       case 'theme':
         this.activeSetting = 'theme';
         options.context = {
@@ -497,6 +523,16 @@ export class ProfileSettingsComponent implements OnInit {
       case 'switch-control-mode':
         this.settingsService.switchControlSettings.mode =
           Device.SwitchControlSettings.Mode.Options[index];
+        break;
+      case 'time format':
+        this._userService.updateDataProperty(
+          'time_format_preference',
+          this.timeFormats[index]
+        );
+        KinveyUser.update({
+          time_format_preference: this.timeFormats[index]
+        });
+        this.displayTimeFormat = this.timeFormatsTranslated[index];
         break;
       case 'theme':
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
@@ -703,6 +739,13 @@ export class ProfileSettingsComponent implements OnInit {
       return 'units.kilometers';
     else if (DISTANCE_UNITS[key] === DISTANCE_UNITS.MILES) return 'units.miles';
     else return 'units.kilometers';
+  }
+
+  private _getTranslationKeyForTimeFormat(key) {
+    if (TIME_FORMAT[key] === TIME_FORMAT.AM_PM)
+      return 'units.time.am-pm';
+    else if (TIME_FORMAT[key] === TIME_FORMAT.MILITARY) return 'units.time.military';
+    else return 'units.time.am-pm';
   }
 
   private _sleep(ms: number) {

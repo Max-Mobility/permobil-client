@@ -172,6 +172,7 @@
     "switch-control-max-speed": "Switch Control Max Speed",
     "switch-control-mode": "Switch Control Mode",
     "tap-sensitivity": "Tap Sensitivity",
+    "time-format": "Time Format",
     "today": "Today",
     "travel": "Travel",
     "units": "Units",
@@ -316,6 +317,7 @@
   "profile-settings": {
     "language": "Language",
     "theme": "Theme",
+    "time-format": "Time Format",
     "scanning-for-smartdrives": "Scanning for SmartDrives...",
     "detected-a-smartdrive": "Detected a SmartDrive!",
     "sending-settings": "Sending settings...",
@@ -465,7 +467,11 @@
     "kilograms": "Kilograms",
     "pounds": "Pounds",
     "kilometers": "Kilometers",
-    "miles": "Miles"
+    "miles": "Miles",
+    "time": {
+      "am-pm": "AM/PM",
+      "military": "24-hour"
+    }
   },
   "user": {
     "consent-form-title": "Privacy Policy Consent Form",

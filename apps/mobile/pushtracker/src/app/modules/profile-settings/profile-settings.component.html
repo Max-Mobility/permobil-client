@@ -16,7 +16,7 @@
   ></MockActionBar>
 
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
@@ -116,13 +116,19 @@
       // Display Section
       <Label row="14" class="category" [text]="'general.display' | translate"></Label>
 
+      // Time Format
+      <StackLayout (tap)="onListPickerItemTap('time format')" ripple rippleColorAlpha="0.18" row="15" class="setting-layout">
+        <Label class="setting-title" [text]="'profile-settings.time-format' | translate"></Label>
+        <Label class="setting-value" [text]="displayTimeFormat" textWrap="true"></Label>
+      </StackLayout>
+
       // Theme
-      <StackLayout (tap)="onListPickerItemTap('theme')" ripple rippleColorAlpha="0.18" row="15" class="setting-layout">
+      <StackLayout (tap)="onListPickerItemTap('theme')" ripple rippleColorAlpha="0.18" row="16" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.theme' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="16" class="setting-layout">
+      <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="17" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>

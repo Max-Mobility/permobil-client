@@ -41,6 +41,7 @@ export class JourneyTabComponent {
   public DISTANCE_UNITS = DISTANCE_UNITS;
   journeyItems = undefined;
   savedTheme: string;
+  savedTimeFormat: string;
   user: PushTrackerUser;
   todayActivity;
   todayUsage;
@@ -76,6 +77,7 @@ export class JourneyTabComponent {
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey().then(() => {
       this.savedTheme = this.user.data.theme_preference;
+      this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
       this.initJourneyItems().then(() => {
         this._firstLoad = false;
       });
@@ -93,6 +95,7 @@ export class JourneyTabComponent {
       Log.D('User theme changed', this.savedTheme);
       if (this.savedTheme !== user.data.theme_preference) {
         this.savedTheme = user.data.theme_preference;
+        this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
         Log.D('Refreshing');
         // Theme has changed - Refresh view so icon images can update
         // to match the theme
@@ -361,8 +364,8 @@ export class JourneyTabComponent {
         let formatTime = formatAMPM;
         if (this.user) {
           // If the preference is available and saved in the DB:
-          if (this.user.data.time_format_preference) {
-            if (this.user.data.time_format_preference === TIME_FORMAT.MILITARY) {
+          if (this.savedTimeFormat) {
+            if (this.savedTimeFormat === TIME_FORMAT.MILITARY) {
               formatTime = format24Hour;
             }
           }
