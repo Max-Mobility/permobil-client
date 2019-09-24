@@ -530,7 +530,7 @@ export class JourneyTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity", "date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
     return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
       .then(data => {
         if (data && data.length) {
@@ -598,7 +598,7 @@ export class JourneyTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
     return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
       .then(data => {
         if (data && data.length) {

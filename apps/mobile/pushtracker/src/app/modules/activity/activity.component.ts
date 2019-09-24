@@ -15,7 +15,7 @@ import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getUserDataFromKinvey } from '../../utils';
 
 enum TAB {
   DAY = 0,
@@ -427,7 +427,7 @@ export class ActivityComponent implements OnInit {
     // Cache and visualize
     this._loadWeeklyActivity(forcePullFromDatabase).then(() => {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-      const getIndex = function(date1, date2) {
+      const getIndex = function (date1, date2) {
         // date1 = Week start, date2 = current date
         const timeDiff = Math.abs(date2.getTime() - date1.getTime());
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -502,7 +502,7 @@ export class ActivityComponent implements OnInit {
                 convertToMilesIfUnitPreferenceIsMiles(
                   DeviceBase.caseTicksToKilometers(
                     this._dailyUsageFromKinvey.distance_smartdrive_coast -
-                      this._dailyUsageFromKinvey.distance_smartdrive_coast_start
+                    this._dailyUsageFromKinvey.distance_smartdrive_coast_start
                   ),
                   this.user.data.distance_unit_preference
                 ) || 0
@@ -559,46 +559,27 @@ export class ActivityComponent implements OnInit {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        this.user._id +
-        '","data_type":"WeeklyActivity","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
-          'Content-Type': 'application/json'
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyActivityFromKinvey = result; // cache
+          Log.D(
+            'ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly usage'
+          );
+          return Promise.resolve(result);
         }
+        Log.D(
+          'ActivityTab | loadWeeklyActivityFromKinvey | No data for this week yet'
+        );
+        this._weeklyActivityFromKinvey = [];
+        return Promise.resolve(this._weeklyActivityFromKinvey);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            this._weeklyActivityFromKinvey = result; // cache result
-            Log.D(
-              'ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly activity'
-            );
-            return Promise.resolve(result);
-          }
-          this._weeklyActivityFromKinvey = [];
-          return Promise.resolve(this._weeklyActivityFromKinvey);
-        })
-        .catch(err => {
-          Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-          return Promise.reject([]);
-        });
-    } catch (err) {
-      Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
-      return Promise.reject([]);
-    }
+      .catch(err => {
+        Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
+        return Promise.reject([]);
+      });
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
@@ -608,46 +589,27 @@ export class ActivityComponent implements OnInit {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        this.user._id +
-        '","data_type":"SmartDriveWeeklyInfo","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/SmartDriveUsage' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
-          'Content-Type': 'application/json'
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyUsageFromKinvey = result; // cache
+          Log.D(
+            'ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
+          );
+          return Promise.resolve(result);
         }
+        Log.D(
+          'ActivityTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
+        );
+        this._weeklyUsageFromKinvey = [];
+        return Promise.resolve(this._weeklyUsageFromKinvey);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            this._weeklyUsageFromKinvey = result; // cache
-            Log.D(
-              'ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
-            );
-            return Promise.resolve(result);
-          }
-          this._weeklyUsageFromKinvey = [];
-          return Promise.resolve(this._weeklyUsageFromKinvey);
-        })
-        .catch(err => {
-          Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-          return Promise.reject([]);
-        });
-    } catch (err) {
-      Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
-      return Promise.reject([]);
-    }
+      .catch(err => {
+        Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
+        return Promise.reject([]);
+      });
   }
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
@@ -687,6 +649,7 @@ export class ActivityComponent implements OnInit {
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
+              return true;
             });
           }
         );
@@ -712,6 +675,7 @@ export class ActivityComponent implements OnInit {
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
+              return true;
             });
           }
         );
@@ -743,7 +707,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                    cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -825,7 +789,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1064,7 +1028,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1116,7 +1080,7 @@ export class ActivityComponent implements OnInit {
                 convertToMilesIfUnitPreferenceIsMiles(
                   DeviceBase.motorTicksToKilometers(
                     dailyActivity.distance_smartdrive_drive -
-                      dailyActivity.distance_smartdrive_drive_start
+                    dailyActivity.distance_smartdrive_drive_start
                   ),
                   this.user.data.distance_unit_preference
                 ) || 0,
@@ -1124,7 +1088,7 @@ export class ActivityComponent implements OnInit {
                 convertToMilesIfUnitPreferenceIsMiles(
                   DeviceBase.caseTicksToKilometers(
                     dailyActivity.distance_smartdrive_coast -
-                      dailyActivity.distance_smartdrive_coast_start
+                    dailyActivity.distance_smartdrive_coast_start
                   ),
                   this.user.data.distance_unit_preference
                 ) || 0,
@@ -1372,7 +1336,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1418,7 +1382,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+              activity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1477,7 +1441,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1494,7 +1458,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
-                  cache.weeklyActivity.distance_smartdrive_coast_start
+                cache.weeklyActivity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1570,7 +1534,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0;
@@ -1580,9 +1544,9 @@ export class ActivityComponent implements OnInit {
         let numDaysOfActivity = 0;
         if (activity.days) {
           for (const i in activity.days) {
-            if (activity.days[i])  {
+            if (activity.days[i]) {
               if (activity.days[i].records &&
-                  activity.days[i].records.length) {
+                activity.days[i].records.length) {
                 // There at least one record for this day. Include it.
                 numDaysOfActivity += 1;
               }
@@ -1600,7 +1564,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
-                cache.weeklyActivity.distance_smartdrive_coast_start
+              cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1609,7 +1573,7 @@ export class ActivityComponent implements OnInit {
           for (const i in cache.weeklyActivity.days) {
             if (cache.weeklyActivity.days[i]) {
               if (cache.weeklyActivity.days[i].records &&
-                  cache.weeklyActivity.days[i].records.length) {
+                cache.weeklyActivity.days[i].records.length) {
                 // There at least one record for this day. Include it.
                 numDaysOfActivity += 1;
               }
