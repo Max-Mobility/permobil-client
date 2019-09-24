@@ -113,7 +113,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.timeFormats = Object.keys(TIME_FORMAT).map(key => TIME_FORMAT[key]);
     this.timeFormatsTranslated = Object.keys(TIME_FORMAT).map(key =>
       this._translateService.instant(this._getTranslationKeyForTimeFormat(key))
-    )
+    );
 
     if (this.user) {
       let index = this.heightUnits.indexOf(
