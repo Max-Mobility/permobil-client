@@ -7,10 +7,6 @@ export class WearOsComms extends Common {
   // device address
   private static pairedCompanion: string = null;
 
-  private static ServiceUUID: string = '';
-  private static MessageCharacteristicUUID: string = '';
-  private static DataCharacteristicUUID: string = '';
-
   constructor() {
     super();
   }

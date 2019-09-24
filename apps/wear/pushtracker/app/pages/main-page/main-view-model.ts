@@ -28,7 +28,7 @@ import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
-import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../services';
+import { KinveyService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -192,7 +192,6 @@ export class MainViewModel extends Observable {
   /**
    * User interaction objects
    */
-  private bluetoothService: BluetoothService;
   private sqliteService: SqliteService;
   private kinveyService: KinveyService;
 
@@ -258,8 +257,7 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Sentry has been initialized.');
 
     this.sentryBreadCrumb('Creating services...');
-    const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
-    this.bluetoothService = injector.get(BluetoothService);
+    const injector = ReflectiveInjector.resolveAndCreate([SqliteService, KinveyService]);
     this.sqliteService = injector.get(SqliteService);
     this.kinveyService = injector.get(KinveyService);
     this.sentryBreadCrumb('All Services created.');
