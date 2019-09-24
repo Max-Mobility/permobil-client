@@ -1,6 +1,7 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, Log, PushTrackerUser } from '@permobil/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
@@ -9,6 +10,7 @@ import { PropertyChangeData } from 'tns-core-modules/data/observable';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
+import { enableDarkTheme, enableDefaultTheme } from '~/app/utils';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
@@ -306,6 +308,7 @@ export class ProfileSettingsComponent implements OnInit {
 
     switch (item.toLowerCase()) {
       case 'height':
+        this.activeSetting = 'height';
         let userHeightUnitPreference = null;
         let primaryIndex;
         if (this.user)
@@ -321,6 +324,7 @@ export class ProfileSettingsComponent implements OnInit {
         };
         break;
       case 'weight':
+        this.activeSetting = 'weight';
         let userWeightUnitPreference = null;
         if (this.user)
           userWeightUnitPreference = this.user.data.weight_unit_preference;
@@ -335,6 +339,7 @@ export class ProfileSettingsComponent implements OnInit {
         };
         break;
       case 'distance':
+        this.activeSetting = 'distance';
         let userDistanceUnitPreference = null;
         if (this.user)
           userDistanceUnitPreference = this.user.data.distance_unit_preference;
@@ -349,6 +354,7 @@ export class ProfileSettingsComponent implements OnInit {
         };
         break;
       case 'mode':
+        this.activeSetting = 'mode';
         const primaryItems = Device.Settings.ControlMode.Options;
         options.context = {
           title: this._translateService.instant('general.mode'),
@@ -360,6 +366,7 @@ export class ProfileSettingsComponent implements OnInit {
         };
         break;
       case 'switch-control-mode':
+        this.activeSetting = 'switch-control-mode';
         options.context = {
           title: this._translateService.instant('general.switch-control-mode'),
           primaryItems: Device.SwitchControlSettings.Mode.Options.map(o => {
@@ -374,6 +381,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
 
       case 'theme':
+        this.activeSetting = 'theme';
         options.context = {
           title: this._translateService.instant('profile-settings.theme'),
           primaryItems: Object.keys(APP_THEMES),
@@ -382,6 +390,7 @@ export class ProfileSettingsComponent implements OnInit {
         };
         break;
       case 'language':
+        this.activeSetting = 'language';
         options.context = {
           title: this._translateService.instant('profile-settings.language'),
           primaryItems: Object.keys(APP_LANGUAGES),
@@ -399,13 +408,13 @@ export class ProfileSettingsComponent implements OnInit {
       .show(ListPickerSheetComponent, options)
       .subscribe(result => {
         if (result && result.data) {
+          this._saveListPickerSettings(result.data.primaryIndex);
           // this._userService.updateDataProperty(
           //   'gender',
           //   this.genders[result.data.primaryIndex]
           // );
           // KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         }
-        // this._removeActiveDataBox();
       });
   }
 
@@ -419,142 +428,124 @@ export class ProfileSettingsComponent implements OnInit {
 
     switch (item.toLowerCase()) {
       case 'max-speed':
+        this.activeSetting = 'max-speed';
         options.context = {
           title: this._translateService.instant('general.max-speed'),
           SLIDER_VALUE: this.settingsService.settings.maxSpeed / 10
         };
         break;
       case 'acceleration':
+        this.activeSetting = 'acceleration';
         options.context = {
           title: this._translateService.instant('general.acceleration'),
           SLIDER_VALUE: this.settingsService.settings.acceleration / 10
         };
         break;
       case 'tap-sensitivity':
+        this.activeSetting = 'tap-sensitivity';
         options.context = {
           title: this._translateService.instant('general.tap-sensitivity'),
           SLIDER_VALUE: this.settingsService.settings.tapSensitivity / 10
         };
         break;
-      default:
-        break;
     }
 
     this._bottomSheet.show(SliderSheetComponent, options).subscribe(result => {
       if (result && result.data) {
-        // this._userService.updateDataProperty(
-        //   'gender',
-        //   this.genders[result.data.primaryIndex]
-        // );
-        // KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
+        this._saveSliderSetting(result);
       }
-      // this._removeActiveDataBox();
     });
   }
 
-  // private async saveSettings() {
-  //   let updatedSmartDriveSettings = false;
-  //   // save settings
-  //   switch (this.activeSetting) {
-  //     case 'height':
-  //       this._userService.updateDataProperty(
-  //         'height_unit_preference',
-  //         this.heightUnits[this.listPickerIndex]
-  //       );
-  //       KinveyUser.update({
-  //         height_unit_preference: this.heightUnits[this.listPickerIndex]
-  //       });
-  //       this.displayHeightUnit = this.heightUnitsTranslated[
-  //         this.listPickerIndex
-  //       ];
-  //       break;
-  //     case 'weight':
-  //       this._userService.updateDataProperty(
-  //         'weight_unit_preference',
-  //         this.weightUnits[this.listPickerIndex]
-  //       );
-  //       KinveyUser.update({
-  //         weight_unit_preference: this.weightUnits[this.listPickerIndex]
-  //       });
-  //       this.displayWeightUnit = this.weightUnitsTranslated[
-  //         this.listPickerIndex
-  //       ];
-  //       break;
-  //     case 'distance':
-  //       this._userService.updateDataProperty(
-  //         'distance_unit_preference',
-  //         this.distanceUnits[this.listPickerIndex]
-  //       );
-  //       KinveyUser.update({
-  //         distance_unit_preference: this.distanceUnits[this.listPickerIndex]
-  //       });
-  //       this.displayDistanceUnit = this.distanceUnitsTranslated[
-  //         this.listPickerIndex
-  //       ];
-  //       break;
-  //     case 'max-speed':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.settings.maxSpeed = this.SLIDER_VALUE * 10;
-  //       break;
-  //     case 'acceleration':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.settings.acceleration = this.SLIDER_VALUE * 10;
-  //       break;
-  //     case 'tap-sensitivity':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.settings.tapSensitivity = this.SLIDER_VALUE * 10;
-  //       break;
-  //     case 'mode':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.settings.controlMode = this.listPickerItems[
-  //         this.listPickerIndex
-  //       ];
-  //       break;
-  //     case 'switch-control-max-speed':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.switchControlSettings.maxSpeed =
-  //         this.SLIDER_VALUE * 10;
-  //       break;
-  //     case 'switch-control-mode':
-  //       updatedSmartDriveSettings = true;
-  //       this.settingsService.switchControlSettings.mode =
-  //         Device.SwitchControlSettings.Mode.Options[this.listPickerIndex];
-  //       break;
-  //     case 'theme':
-  //       this.CURRENT_THEME = this.listPickerItems[this.listPickerIndex];
-  //       if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-  //         enableDefaultTheme();
-  //       } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
-  //         enableDarkTheme();
-  //       }
-  //       this._userService.updateDataProperty(
-  //         'theme_preference',
-  //         this.CURRENT_THEME
-  //       );
-  //       KinveyUser.update({ theme_preference: this.CURRENT_THEME });
-  //       appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
-  //       // this.updateWatchIcon({});
-  //       console.log(
-  //         'brad - look into sending event to MockActionBar to update watch status styling when theme changes'
-  //       );
-  //       break;
-  //     case 'language':
-  //       this.CURRENT_LANGUAGE = this.listPickerItems[this.listPickerIndex];
-  //       this._userService.updateDataProperty(
-  //         'language_preference',
-  //         this.CURRENT_LANGUAGE
-  //       );
-  //       KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
+  private async _saveListPickerSettings(index) {
+    // save settings
+    switch (this.activeSetting) {
+      case 'height':
+        this._userService.updateDataProperty(
+          'height_unit_preference',
+          this.heightUnits[index]
+        );
+        KinveyUser.update({
+          height_unit_preference: this.heightUnits[index]
+        });
+        this.displayHeightUnit = this.heightUnitsTranslated[index];
+        break;
+      case 'weight':
+        this._userService.updateDataProperty(
+          'weight_unit_preference',
+          this.weightUnits[index]
+        );
+        KinveyUser.update({
+          weight_unit_preference: this.weightUnits[index]
+        });
+        this.displayWeightUnit = this.weightUnitsTranslated[index];
+        break;
+      case 'distance':
+        this._userService.updateDataProperty(
+          'distance_unit_preference',
+          this.distanceUnits[index]
+        );
+        KinveyUser.update({
+          distance_unit_preference: this.distanceUnits[index]
+        });
+        this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+        break;
+      case 'mode':
+        this.settingsService.settings.controlMode =
+          Device.Settings.ControlMode.Options[index];
+        break;
+      case 'switch-control-mode':
+        this.settingsService.switchControlSettings.mode =
+          Device.SwitchControlSettings.Mode.Options[index];
+        break;
+      case 'theme':
+        this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
+        if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+          enableDefaultTheme();
+        } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
+          enableDarkTheme();
+        }
+        this._userService.updateDataProperty(
+          'theme_preference',
+          this.CURRENT_THEME
+        );
+        KinveyUser.update({ theme_preference: this.CURRENT_THEME });
+        appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
+        break;
+      case 'language':
+        this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
+        this._userService.updateDataProperty(
+          'language_preference',
+          this.CURRENT_LANGUAGE
+        );
+        KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
+        const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
+        if (this._translateService.currentLang !== language)
+          this._translateService.use(language);
+        break;
+    }
+    this._debouncedCommitSettingsFunction();
+  }
 
-  //       const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
-  //       if (this._translateService.currentLang !== language)
-  //         this._translateService.use(language);
-  //       break;
-  //   }
-  //   if (updatedSmartDriveSettings) {
-  //     this._debouncedCommitSettingsFunction();
-  //   }
-  // }
+  private async _saveSliderSetting(newValue) {
+    switch (this.activeSetting) {
+      case 'max-speed':
+        this.settingsService.settings.maxSpeed = newValue * 10;
+        break;
+      case 'acceleration':
+        this.settingsService.settings.acceleration = newValue * 10;
+        break;
+      case 'tap-sensitivity':
+        this.settingsService.settings.tapSensitivity = newValue * 10;
+        break;
+      case 'switch-control-max-speed':
+        this.settingsService.switchControlSettings.maxSpeed = newValue * 10;
+        break;
+      default:
+        Log.D('no matching setting found for updating slider setting');
+        break;
+    }
+  }
 
   private async _commitSettingsChange() {
     this.syncSuccessful = false;
