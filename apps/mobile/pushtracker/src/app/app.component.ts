@@ -14,7 +14,7 @@ import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { APP_THEMES, STORAGE_KEYS } from './enums';
+import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey } from './utils';
 
@@ -51,19 +51,10 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
-      this._translateService.setDefaultLang('en');
-      this._translateService.addLangs([
-        'en',
-        'es',
-        'de',
-        'fr',
-        'ja',
-        'ko',
-        'nl',
-        'ru',
-        'sv',
-        'zh-CN'
-      ]);
+      this._translateService.setDefaultLang(APP_LANGUAGES.English);
+      this._translateService.addLangs(
+        Object.keys(APP_LANGUAGES).map(key => APP_LANGUAGES[key])
+      );
     } catch (error) {
       Log.E(error);
       this._logService.logException(error);
