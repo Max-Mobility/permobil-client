@@ -16,7 +16,7 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, GENDERS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
@@ -76,7 +76,7 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) { }
+  ) {}
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb('ProfileTabComponent loaded');
@@ -132,8 +132,7 @@ export class ProfileTabComponent {
   }
 
   getTranslationKeyForGenders(key) {
-    if (GENDERS[key] === GENDERS.MALE)
-      return 'profile-tab.gender.male';
+    if (GENDERS[key] === GENDERS.MALE) return 'profile-tab.gender.male';
     else if (GENDERS[key] === GENDERS.FEMALE)
       return 'profile-tab.gender.female';
     else return 'profile-tab.gender.male';
@@ -416,9 +415,8 @@ export class ProfileTabComponent {
         listPickerNeedsSecondary: false
       }
     };
-    this._bottomSheet
-      .show(ListPickerSheetComponent, options)
-      .subscribe(result => {
+    this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
+      result => {
         if (result && result.data) {
           this._userService.updateDataProperty(
             'gender',
@@ -427,13 +425,14 @@ export class ProfileTabComponent {
           KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         }
       },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onWeightTap(args) {
@@ -468,7 +467,7 @@ export class ProfileTabComponent {
       text += secondaryItems[secondaryIndex] || '.0';
     }
 
-    const _validateWeightFromText = function (text) {
+    const _validateWeightFromText = function(text) {
       if (text || text !== '') {
         // Attempt to parse as float
         const newWeight = parseFloat(text);
@@ -497,29 +496,28 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(TextFieldSheetComponent, options)
-      .subscribe(
-        (result) => {
-          if (result && result.data) {
-            const newWeight = _validateWeightFromText(result.data.text);
-            if (newWeight) {
-              const primary = (newWeight + '').split('.')[0];
-              const secondary = '0.' + (newWeight + '').split('.')[1];
-              this._saveWeightOnChange(
-                parseFloat(primary),
-                parseFloat(secondary)
-              );
-            }
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          const newWeight = _validateWeightFromText(result.data.text);
+          if (newWeight) {
+            const primary = (newWeight + '').split('.')[0];
+            const secondary = '0.' + (newWeight + '').split('.')[1];
+            this._saveWeightOnChange(
+              parseFloat(primary),
+              parseFloat(secondary)
+            );
           }
-        },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+        }
+      },
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onHeightTap(args) {
@@ -538,10 +536,19 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      primaryItems = Array.from({ length: 300 }, (_, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
+      primaryItems = Array.from(
+        { length: 300 },
+        (_, k) => k + 1 + ' ' + this._translateService.instant('units.cm')
+      );
     } else {
-      primaryItems = Array.from({ length: 8 }, (_, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
-      secondaryItems = Array.from({ length: 12 }, (_, k) => k + ' ' + this._translateService.instant('units.in'));
+      primaryItems = Array.from(
+        { length: 8 },
+        (_, k) => k + 1 + ' ' + this._translateService.instant('units.ft')
+      );
+      secondaryItems = Array.from(
+        { length: 12 },
+        (_, k) => k + ' ' + this._translateService.instant('units.in')
+      );
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
@@ -555,9 +562,12 @@ export class ProfileTabComponent {
       }
     }
 
+    console.log(this._vcRef.element.nativeElement);
+    console.log(this._vcRef.element);
+
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
-      dismissOnBackgroundTap: true,
+      dismissOnBackgroundTap: false,
       context: {
         title: this._translateService.instant('general.height'),
         description: this._translateService.instant('general.height-guess'),
@@ -569,9 +579,8 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(ListPickerSheetComponent, options)
-      .subscribe(result => {
+    this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
+      result => {
         if (result && result.data) {
           this._saveHeightOnChange(
             parseFloat(primaryItems[result.data.primaryIndex]),
@@ -579,13 +588,14 @@ export class ProfileTabComponent {
           );
         }
       },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onChairTypeTap(args) {
@@ -613,24 +623,26 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(ListPickerSheetComponent, options)
-      .subscribe(result => {
+    this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
+      result => {
         if (result && result.data) {
           this._userService.updateDataProperty(
             'chair_type',
             this.chairTypes[result.data.primaryIndex] // index into CHAIR_TYPE enum
           );
-          KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
+          KinveyUser.update({
+            chair_type: this.chairTypes[result.data.primaryIndex]
+          });
         }
       },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onChairMakeTap(args) {
@@ -658,24 +670,26 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(ListPickerSheetComponent, options)
-      .subscribe(result => {
+    this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
+      result => {
         if (result && result.data) {
           this._userService.updateDataProperty(
             'chair_make',
             this.chairMakes[result.data.primaryIndex] // index into CHAIR_MAKE enum
           );
-          KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
+          KinveyUser.update({
+            chair_make: this.chairMakes[result.data.primaryIndex]
+          });
         }
       },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onControlConfigTap(args) {
@@ -705,9 +719,8 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(ListPickerSheetComponent, options)
-      .subscribe(result => {
+    this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
+      result => {
         if (result && result.data) {
           this._userService.updateDataProperty(
             'control_configuration',
@@ -722,13 +735,14 @@ export class ProfileTabComponent {
           });
         }
       },
-        (error) => {
-          Log.D('error', error);
-        },
-        () => {
-          Log.D('completed');
-          this._removeActiveDataBox();
-        });
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
   }
 
   onScan(deviceName) {
@@ -784,8 +798,7 @@ export class ProfileTabComponent {
     const secondaryIndex = parseFloat((weight % 1).toFixed(1));
     if (primaryIndex <= 0 && secondaryIndex <= 0) {
       return [0, 0];
-    } else
-      return [primaryIndex - 2, secondaryIndex];
+    } else return [primaryIndex - 2, secondaryIndex];
   }
 
   private _getHeightIndices() {
@@ -804,7 +817,9 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
-      this.user.data.activity_goal_coast_time + ' ' + this._translateService.instant('units.s');
+      this.user.data.activity_goal_coast_time +
+      ' ' +
+      this._translateService.instant('units.s');
   }
 
   private _initDisplayActivityGoalDistance() {
@@ -812,9 +827,12 @@ export class ProfileTabComponent {
       this.user.data.activity_goal_distance + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
-        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) + ' ' + this._translateService.instant('units.mi');
+        (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +
+        ' ' +
+        this._translateService.instant('units.mi');
     } else {
-      this.displayActivityGoalDistance += ' ' + this._translateService.instant('units.km');
+      this.displayActivityGoalDistance +=
+        ' ' + this._translateService.instant('units.km');
     }
   }
 
@@ -860,8 +878,7 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_type;
       const index = this.chairTypes.indexOf(englishValue);
       this.displayChairType = this.chairTypesTranslated[index];
-    }
-    else this.displayChairType = '';
+    } else this.displayChairType = '';
   }
 
   private _initDisplayChairMake() {
@@ -870,8 +887,7 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.chair_make;
       const index = this.chairMakes.indexOf(englishValue);
       this.displayChairMake = this.chairMakesTranslated[index];
-    }
-    else this.displayChairMake = '';
+    } else this.displayChairMake = '';
   }
 
   private _initDisplayControlConfiguration() {
@@ -931,12 +947,14 @@ export class ProfileTabComponent {
 
   private _displayWeightInPounds(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.lbs');
-    else return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
+    else
+      return val.toFixed(1) + ' ' + this._translateService.instant('units.lbs');
   }
 
   private _displayWeightInKilograms(val: number) {
     if (!val) return 0 + ' ' + this._translateService.instant('units.kg');
-    else return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
+    else
+      return val.toFixed(1) + ' ' + this._translateService.instant('units.kg');
   }
 
   private _displayHeightInFeetInches(feet: number, inches: number) {
