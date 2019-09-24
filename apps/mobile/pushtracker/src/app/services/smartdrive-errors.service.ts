@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SmartDriveErrorsService {
-  private datastore = KinveyDataStore.collection('SmartDriveErrors');
+  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors');
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);
@@ -28,7 +28,6 @@ export class SmartDriveErrorsService {
       // saved by this user, and to get only the most recent activity
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.equalTo('date', dailyErrors.date);
-      query.equalTo('data_type', 'SmartDriveDailyErrors');
 
       // Run a .find first to get the _id of the daily activity
       {

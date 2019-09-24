@@ -14,9 +14,9 @@ export class KinveyService {
   public static api_login = '/login';
   public static api_logout = '/logout';
   public static api_error_db = '/SmartDriveErrors';
-  public static api_info_db = '/SmartDriveUsage';
+  public static api_info_db = '/DailySmartDriveUsage';
   public static api_settings_db = '/SmartDriveSettings';
-  public static api_activity_db = '/PushTrackerActivity';
+  public static api_activity_db = '/DailyPushTrackerActivity';
 
   private _auth: string = null;
   private _userId: string = null;

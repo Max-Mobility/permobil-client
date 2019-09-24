@@ -300,7 +300,6 @@ export class TabsComponent {
       _acl: { creator: this.user._id },
       coast_time_avg: coastWithout,
       coast_time_total: coastWith + coastWithout,
-      data_type: 'DailyActivity',
       date: dateFormatted(date),
       has_been_sent: false,
       push_count: pushesWithout,
@@ -348,7 +347,6 @@ export class TabsComponent {
 
     const dailyUsage = {
       _acl: { creator: this.user._id },
-      data_type: 'SmartDriveDailyInfo',
       date: dateFormatted(date),
       battery: 0,
       distance_smartdrive_coast: distance_smartdrive_coast,
@@ -400,7 +398,6 @@ export class TabsComponent {
     };
     const dailyErrors = {
       _acl: { creator: this.user._id },
-      data_type: 'SmartDriveDailyError',
       date: dateFormatted(date),
       most_recent_error: data.mostRecentError,
       num_battery_voltage_errors: data.numBatteryVoltageErrors || 0,

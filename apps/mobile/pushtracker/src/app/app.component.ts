@@ -148,8 +148,8 @@ export class AppComponent implements OnInit {
     let result = [];
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${user._id}","data_type":"WeeklyActivity","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
+    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -174,8 +174,8 @@ export class AppComponent implements OnInit {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${user._id}","data_type":"SmartDriveWeeklyInfo","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
+    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
       .then(data => {
         if (data && data.length) {
           result = data[0];

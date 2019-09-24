@@ -10,7 +10,7 @@ import { YYYY_MM_DD } from '../utils';
 
 @Injectable()
 export class SmartDriveUsageService {
-  private datastore = KinveyDataStore.collection('SmartDriveUsage');
+  private datastore = KinveyDataStore.collection('DailySmartDriveUsage');
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);
@@ -29,7 +29,6 @@ export class SmartDriveUsageService {
       // saved by this user, and to get only the most recent activity
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.equalTo('date', dailyUsage.date);
-      query.equalTo('data_type', 'SmartDriveDailyInfo');
 
       // Run a .find first to get the _id of the daily activity
       {
@@ -57,107 +56,6 @@ export class SmartDriveUsageService {
         });
       }
 
-    } catch (err) {
-      this._logService.logException(err);
-      return false;
-    }
-  }
-
-  async loadDailyActivity(date: Date): Promise<boolean> {
-    try {
-      const query = new KinveyQuery();
-
-      // configure the query to search for only activity that was
-      // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.lmt');
-      query.limit = 1;
-      query.equalTo(
-        'date',
-        YYYY_MM_DD(date)
-      );
-      query.equalTo('data_type', 'SmartDriveDailyInfo');
-
-      const stream = this.datastore.find(query);
-      return stream.toPromise().then(data => {
-        if (data && data.length) {
-          this.dailyActivity = data[0];
-          // Do something with data
-          this._usageUpdated.next(true);
-          return true;
-        }
-        this.dailyActivity = {};
-        return false;
-      });
-    } catch (err) {
-      this._logService.logException(err);
-      return false;
-    }
-  }
-
-  async loadWeeklyActivity(weekStartDate: Date): Promise<boolean> {
-    try {
-      const query = new KinveyQuery();
-
-      // configure the query to search for only activity that was
-      // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('_kmd.lmt');
-      query.limit = 1;
-      query.equalTo('data_type', 'SmartDriveWeeklyInfo');
-
-      if (weekStartDate) {
-        query.equalTo('date', YYYY_MM_DD(weekStartDate));
-        const stream = this.datastore.find(query);
-        return stream.toPromise().then(data => {
-          if (data && data.length) {
-            this.weeklyActivity = data[0];
-            // Do something with data
-            this._usageUpdated.next(true);
-            return true;
-          }
-          this.weeklyActivity = [];
-          return false;
-        });
-      }
-      this.weeklyActivity = [];
-      return false;
-    } catch (err) {
-      this._logService.logException(err);
-      return false;
-    }
-  }
-
-  async loadAllWeeklyActivityTill(weekStartDate: Date, limit: number = 1): Promise<boolean> {
-    try {
-      const query = new KinveyQuery();
-
-      // configure the query to search for only activity that was
-      // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-      query.descending('date');
-      query.equalTo('data_type', 'SmartDriveWeeklyInfo');
-
-      if (weekStartDate) {
-        const month = weekStartDate.getMonth() + 1;
-        const day = weekStartDate.getDate();
-        query.lessThanOrEqualTo('date', YYYY_MM_DD(weekStartDate));
-        query.limit = limit;
-
-        const stream = this.datastore.find(query);
-        return stream.toPromise().then(data => {
-          if (data && data.length) {
-            this.weeklyActivity = data[0];
-            // Do something with data
-            this._usageUpdated.next(true);
-            return true;
-          }
-          this.weeklyActivity = [];
-          return false;
-        });
-      }
-      this.weeklyActivity = [];
-      return false;
     } catch (err) {
       this._logService.logException(err);
       return false;

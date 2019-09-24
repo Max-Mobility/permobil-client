@@ -14,9 +14,9 @@ export class KinveyService {
   public static api_login = '/login';
   public static api_logout = '/logout';
   public static api_error_db = '/SmartDriveErrors';
-  public static api_info_db = '/SmartDriveUsage';
+  public static api_info_db = '/DailySmartDriveUsage';
   public static api_settings_db = '/SmartDriveSettings';
-  public static api_activity_db = '/PushTrackerActivity';
+  public static api_activity_db = '/DailyPushTrackerActivity';
 
   private _auth: string = null;
   private _userId: string = null;
@@ -269,7 +269,6 @@ export class KinveyService {
   async sendError(error: any, id?: string) {
     this.checkAuth();
     this.reformatForDb(error);
-    error.data_type = 'SmartDriveError';
     let response = null;
     if (id) response = await this.put(KinveyService.api_error_db, error, id);
     else response = await this.post(KinveyService.api_error_db, error);
@@ -279,7 +278,6 @@ export class KinveyService {
   async sendInfo(info: any, id?: string) {
     this.checkAuth();
     this.reformatForDb(info);
-    info.data_type = 'SmartDriveDailyInfo';
     let response = null;
     if (id) response = await this.put(KinveyService.api_info_db, info, id);
     else response = await this.post(KinveyService.api_info_db, info);
@@ -289,7 +287,6 @@ export class KinveyService {
   async sendActivity(activity: any, id?: string) {
     this.checkAuth();
     this.reformatForDb(activity);
-    activity.data_type = 'SmartDriveDailyUsage';
     let response = null;
     if (id) response = await this.put(KinveyService.api_activity_db, activity, id);
     else response = await this.post(KinveyService.api_activity_db, activity);
@@ -299,7 +296,6 @@ export class KinveyService {
   async sendSettings(settings: any, id?: string) {
     this.checkAuth();
     this.reformatForDb(settings);
-    settings.data_type = 'SmartDriveSettings';
     let response = null;
     if (id) response = await this.put(KinveyService.api_settings_db, settings, id);
     else response = await this.post(KinveyService.api_settings_db, settings);
