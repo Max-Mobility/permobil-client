@@ -11,10 +11,10 @@ import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 })
 export class TextFieldSheetComponent {
   savedTheme;
-  title: string;
-  description: string;
-  text: string = '';
-  suffix: string = '';
+  fields: Array<any> = [];
+  values: Array<string> = [];
+  title: string = '';
+  description: string = '';
 
   constructor(
     private _params: BottomSheetParams
@@ -23,8 +23,7 @@ export class TextFieldSheetComponent {
     if (data) {
       this.title = data.title;
       this.description = data.description;
-      this.text = data.text;
-      this.suffix = data.suffix;
+      this.fields = data.fields;
     }
 
     // set the theme
@@ -38,18 +37,18 @@ export class TextFieldSheetComponent {
     this._params.closeCallback();
   }
 
-  onReturnPress(args) {
+  onReturnPress(args, index) {
     // returnPress event will be triggered when user submits a value
     const textField: TextField = <TextField>args.object;
     // Gets or sets the input text.
-    this.text = textField.text;
+    this.fields[index].text = textField.text;
   }
 
   // When user selects the new data value we need to pass it back to the calling component.
   saveTextFieldValue() {
     this._params.closeCallback({
       data: {
-        text: this.text
+        fields: this.fields
       }
     });
   }

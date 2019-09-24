@@ -498,15 +498,20 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        text: text,
-        suffix: suffix
+        fields: [
+          {
+            text: text,
+            suffix: suffix,
+            keyboardType: 'number'
+          }
+        ]
       }
     };
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          const newWeight = _validateWeightFromText(result.data.text);
+          const newWeight = _validateWeightFromText(result.data.fields[0].text);
           if (newWeight) {
             const primary = (newWeight + '').split('.')[0];
             const secondary = '0.' + (newWeight + '').split('.')[1];

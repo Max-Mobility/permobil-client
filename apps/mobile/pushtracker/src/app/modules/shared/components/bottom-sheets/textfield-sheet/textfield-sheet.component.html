@@ -1,20 +1,33 @@
 <StackLayout class="bottom-sheet-layout">
   <Label class="title" [text]="title | translate" textWrap="true"></Label>
-  <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
-
+  <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'"
+    textWrap="true"></Label>
   <GridLayout rows="auto, auto" columns="auto, *, auto">
-    <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
-      <TextField
-        [text]='text'
-        secure="false"
-        (returnPress)="onReturnPress($event)"
-        keyboardType="number"
-        justifyContent="center"
-        class="textfield m-r-4">
-      </TextField>
-      <Label class="textfield-suffix" [text]='suffix'></Label>
-    </FlexboxLayout>
-    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
-    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveTextFieldValue()"></Button>
+    <StackLayout row="0" col="1" colSpan="3" padding="10" *ngFor="let field of fields; let i = index">
+      <StackLayout orientation='horizontal'>
+        <Label 
+          [visibility]="field.prefix ? 'visible' : 'collapse'"
+          width="40%" class="textfield-prefix" 
+          [text]='field.prefix'
+          verticalAlignment="center" horizontalAlignment="center"></Label>
+        <TextField
+          [marginLeft]="field.prefix ? 0 : '25%'"
+          width="50%"
+          [text]='field.text'
+          secure="false"
+          (returnPress)="onReturnPress($event, i)"
+          [keyboardType]="field.keyboardType" justifyContent="center" class="textfield m-r-4"
+          textAlignment="center" verticalAlignment="center" horizontalAlignment="center"></TextField>
+        <Label
+          [visibility]="field.suffix ? 'visible' : 'collapse'"
+          width="10%" class="textfield-suffix"
+          [text]='field.suffix'
+          verticalAlignment="center" horizontalAlignment="center"></Label>
+      </StackLayout>
+    </StackLayout>
+    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate"
+      class="cancel-btn" (tap)="closeSheet()"></Button>
+    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate"
+      class="ok-btn" (tap)="saveTextFieldValue()"></Button>
   </GridLayout>
 </StackLayout>
