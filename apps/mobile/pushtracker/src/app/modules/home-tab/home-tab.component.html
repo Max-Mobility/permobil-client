@@ -5,14 +5,35 @@
       <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
       // Activity Circles
-      <GridLayout rows="*, auto, *" columns="*, auto, *" height="240" width="100%">
+      <GridLayout rows="auto" columns="auto"
+		  horizontalAlignment="center"
+		  [height]="screenWidth * 0.6" [width]="screenWidth * 0.6">
         // Distance Circle (outer/purple)
-        <AnimatedCircle id="distanceCircle" rowSpan="3" colSpan="3" [width]="screenWidth / 1.5" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="distanceCirclePercentage"> </AnimatedCircle>
+        <AnimatedCircle id="distanceCircle"
+			horizontalAlignment="center"
+			[width]="screenWidth * 0.6"
+			[height]="screenWidth * 0.6"
+			animated="true" animateFrom="0" clockwise="true"
+			rimWidth="10" barWidth="28"
+			[progress]="distanceCirclePercentage">
+	</AnimatedCircle>
         // Coast Time Circle (inner/teal)
-        <AnimatedCircle id="coastTimeCircle" rowSpan="3" colSpan="3" [width]="screenWidth / 2" [height]="screenWidth / 2" animated="true" animateFrom="0" clockwise="true" rimWidth="10" barWidth="28" [progress]="coastTimeCirclePercentage">
+        <AnimatedCircle id="coastTimeCircle"
+			horizontalAlignment="center"
+			[width]="screenWidth * 0.5"
+			[height]="screenWidth * 0.5"
+			animated="true" animateFrom="0" clockwise="true"
+			rimWidth="10" barWidth="28"
+			[progress]="coastTimeCirclePercentage">
         </AnimatedCircle>
-        <GridLayout row="1" col="1" rows="auto, *, auto" columns="auto, *, auto" class="distance-remaining-circle" ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
-          <Label class="today-message" row="1" col="1" [text]="todayMessage" textWrap="true"></Label>
+        <GridLayout rows="*" columns="*"
+		    horizontalAlignment="center"
+		    [width]="screenWidth * 0.4"
+		    [height]="screenWidth * 0.4"
+		    [borderRadius]="screenWidth * 0.4 * 0.5"
+		    class="distance-remaining-circle"
+		    ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
+          <Label class="today-message" [text]="todayMessage" textWrap="true"></Label>
         </GridLayout>
       </GridLayout>
 
