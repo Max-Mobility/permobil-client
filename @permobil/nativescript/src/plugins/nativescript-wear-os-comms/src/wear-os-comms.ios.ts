@@ -70,7 +70,7 @@ export class WearOsComms extends Common {
       if ((typeof d) === 'string') {
         encoded = WearOsComms.encodeString(d);
       } else {
-        for (let i=0; i < d.length; i++) {
+        for (let i = 0; i < d.length; i++) {
           encoded += '0x' + d.toString(16);
         }
       }
@@ -81,7 +81,7 @@ export class WearOsComms extends Common {
   private static encodeString(s: string) {
     // convert to hexadecimal string
     let encoded = '';
-    for (let i=0; i < s.length; i++) {
+    for (let i = 0; i < s.length; i++) {
       encoded += '0x' + s.charCodeAt(i);
     }
     return encoded;
