@@ -271,6 +271,7 @@ export class HomeTabComponent {
       .then(data => {
         Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
+        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         return Promise.resolve(true);
       })
       .catch(err => {
