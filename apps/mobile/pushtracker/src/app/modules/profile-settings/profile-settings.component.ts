@@ -10,10 +10,10 @@ import { PropertyChangeData } from 'tns-core-modules/data/observable';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
-import { enableDarkTheme, enableDefaultTheme } from '~/app/utils';
-import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS, TIME_FORMAT } from '../../enums';
+import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
+import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent } from '../shared/components';
 
 @Component({
@@ -395,7 +395,8 @@ export class ProfileSettingsComponent implements OnInit {
         this.activeSetting = 'time format';
         let userTimeFormatPreference = null;
         if (this.user)
-          userTimeFormatPreference = this.user.data.time_format_preference || this.timeFormats[0];
+          userTimeFormatPreference =
+            this.user.data.time_format_preference || this.timeFormats[0];
         primaryIndex = this.timeFormats.indexOf(userTimeFormatPreference);
         if (primaryIndex < 0) primaryIndex = 0;
 
@@ -435,11 +436,6 @@ export class ProfileSettingsComponent implements OnInit {
       .subscribe(result => {
         if (result && result.data) {
           this._saveListPickerSettings(result.data.primaryIndex);
-          // this._userService.updateDataProperty(
-          //   'gender',
-          //   this.genders[result.data.primaryIndex]
-          // );
-          // KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         }
       });
   }
@@ -742,9 +738,9 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private _getTranslationKeyForTimeFormat(key) {
-    if (TIME_FORMAT[key] === TIME_FORMAT.AM_PM)
-      return 'units.time.am-pm';
-    else if (TIME_FORMAT[key] === TIME_FORMAT.MILITARY) return 'units.time.military';
+    if (TIME_FORMAT[key] === TIME_FORMAT.AM_PM) return 'units.time.am-pm';
+    else if (TIME_FORMAT[key] === TIME_FORMAT.MILITARY)
+      return 'units.time.military';
     else return 'units.time.am-pm';
   }
 
