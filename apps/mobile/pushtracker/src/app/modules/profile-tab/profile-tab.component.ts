@@ -434,13 +434,13 @@ export class ProfileTabComponent {
           KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         }
       },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onWeightTap(args) {
@@ -475,7 +475,7 @@ export class ProfileTabComponent {
       text += secondaryItems[secondaryIndex] || '.0';
     }
 
-    const _validateWeightFromText = function(text) {
+    const _validateWeightFromText = function (text) {
       if (text || text !== '') {
         // Attempt to parse as float
         const newWeight = parseFloat(text);
@@ -504,29 +504,29 @@ export class ProfileTabComponent {
       }
     };
 
-      this._bottomSheet
-          .show(TextFieldSheetComponent, options)
-          .subscribe(
-              (result) => {
-                  if (result && result.data) {
-                      const newWeight = _validateWeightFromText(result.data.text);
-                      if (newWeight) {
-                          const primary = (newWeight + '').split('.')[0];
-                          const secondary = '0.' + (newWeight + '').split('.')[1];
-                          this._saveWeightOnChange(
-                              parseFloat(primary),
-                              parseFloat(secondary)
-                          );
-                      }
-                  }
-              },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+    this._bottomSheet
+      .show(TextFieldSheetComponent, options)
+      .subscribe(
+        (result) => {
+          if (result && result.data) {
+            const newWeight = _validateWeightFromText(result.data.text);
+            if (newWeight) {
+              const primary = (newWeight + '').split('.')[0];
+              const secondary = '0.' + (newWeight + '').split('.')[1];
+              this._saveWeightOnChange(
+                parseFloat(primary),
+                parseFloat(secondary)
+              );
+            }
+          }
+        },
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onHeightTap(args) {
@@ -586,13 +586,13 @@ export class ProfileTabComponent {
           );
         }
       },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onChairTypeTap(args) {
@@ -631,13 +631,13 @@ export class ProfileTabComponent {
           KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
         }
       },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onChairMakeTap(args) {
@@ -676,13 +676,13 @@ export class ProfileTabComponent {
           KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
         }
       },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onControlConfigTap(args) {
@@ -729,13 +729,13 @@ export class ProfileTabComponent {
           });
         }
       },
-              (error) => {
-                  Log.D('error', error);
-              },
-              () => {
-                  Log.D('completed');
-                  this._removeActiveDataBox();
-              });
+        (error) => {
+          Log.D('error', error);
+        },
+        () => {
+          Log.D('completed');
+          this._removeActiveDataBox();
+        });
   }
 
   onScan(deviceName) {
