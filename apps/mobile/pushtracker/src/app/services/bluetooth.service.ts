@@ -1,7 +1,6 @@
 /// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 
 import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -421,17 +420,15 @@ export class BluetoothService extends Observable {
       name: argdata.name
     };
     if (this.isSmartDrive(peripheral)) {
-      const sd = this.getOrMakeSmartDrive(peripheral);
+      this.getOrMakeSmartDrive(peripheral);
     }
   }
 
   private onDeviceNameChange(args: any): void {
     const argdata = args.data;
-    const dev = argdata.device;
-    const name = argdata.name;
   }
 
-  private onDeviceUuidChange(args: any): void {
+  private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
     /*
           const dev = args.data.device;
@@ -584,7 +581,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(args: any): void {}
+  private onCharacteristicReadRequest(_: any): void {}
 
   // service controls
   private deleteServices() {

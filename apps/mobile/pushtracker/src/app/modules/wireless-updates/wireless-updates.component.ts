@@ -17,7 +17,6 @@ import {
   ModalDialogParams,
   ModalDialogService
 } from 'nativescript-angular/modal-dialog';
-import { RouterExtensions } from 'nativescript-angular/router';
 import { Toasty } from 'nativescript-toasty';
 import * as app from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -609,7 +608,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter(
-        (val, _, _) => {
+        (val, _1, _2) => {
           return val.connected;
         }
       );

@@ -5,7 +5,6 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { knownFolders, path } from 'tns-core-modules/file-system';
 import * as httpModule from 'tns-core-modules/http';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { LoggingService } from './logging.service';
 
 @Injectable()
 export class FirmwareService {
@@ -66,8 +65,7 @@ export class FirmwareService {
     const tasks = await Object.keys(this.firmwares).map(k => {
       return this.loadFirmwareFile(this.firmwares[k].filename);
     });
-
-    const result = await Promise.all(tasks);
+    await Promise.all(tasks);
   }
 
   get currentVersion(): string {
