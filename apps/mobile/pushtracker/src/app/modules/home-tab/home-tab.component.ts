@@ -761,24 +761,13 @@ export class HomeTabComponent {
   }
 
   private async _updateCoastTimePlotYAxis() {
-    const dateFormatted = function (date: Date) {
-      return (
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1 < 10
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-        '/' +
-        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
-      );
-    };
     this.yAxisMax = 0;
     if (this._weeklyActivityFromKinvey) {
       const days = this._weeklyActivityFromKinvey['days'];
       for (const i in days) {
         const day = days[i];
         if (day) {
-          if (day.date === dateFormatted(this._currentDayInView))
+          if (day.date === YYYY_MM_DD(this._currentDayInView))
             this._todaysActivity = day;
           if (day.coast_time_avg > this.yAxisMax)
             this.yAxisMax = day.coast_time_avg + 0.4 * day.coast_time_avg;
@@ -862,17 +851,6 @@ export class HomeTabComponent {
   }
 
   private async _updateDistancePlotYAxis() {
-    const dateFormatted = function (date: Date) {
-      return (
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1 < 10
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-        '/' +
-        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
-      );
-    };
     this.coastDistanceYAxisMax = 0;
     if (this._weeklyUsageFromKinvey) {
       const days = this._weeklyUsageFromKinvey['days'];
@@ -890,7 +868,7 @@ export class HomeTabComponent {
           );
           if (coastDistance < 0.0) coastDistance = 0.0;
 
-          if (day.date === dateFormatted(this._currentDayInView))
+          if (day.date === YYYY_MM_DD(this._currentDayInView))
             this._todaysUsage = day;
           if (coastDistance > this.coastDistanceYAxisMax)
             this.coastDistanceYAxisMax = coastDistance + 0.4 * coastDistance;

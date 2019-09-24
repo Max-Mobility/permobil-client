@@ -18,7 +18,7 @@ import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
   SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
 import { APP_LANGUAGES, APP_THEMES } from '../../enums';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils';
+import { enableDarkTheme, enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -284,23 +284,11 @@ export class TabsComponent {
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
 
-    const dateFormatted = function(date: Date) {
-      return (
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1 < 10
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-        '/' +
-        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
-      );
-    };
-
     const dailyActivity = {
       _acl: { creator: this.user._id },
       coast_time_avg: coastWithout,
       coast_time_total: coastWith + coastWithout,
-      date: dateFormatted(date),
+      date: YYYY_MM_DD(date),
       has_been_sent: false,
       push_count: pushesWithout,
       records: [],
@@ -333,21 +321,9 @@ export class TabsComponent {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
     const start_time = date.getTime();
-    const dateFormatted = function(date: Date) {
-      return (
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1 < 10
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-        '/' +
-        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
-      );
-    };
-
     const dailyUsage = {
       _acl: { creator: this.user._id },
-      date: dateFormatted(date),
+      date: YYYY_MM_DD(date),
       battery: 0,
       distance_smartdrive_coast: distance_smartdrive_coast,
       distance_smartdrive_drive: distance_smartdrive_drive,
@@ -385,20 +361,9 @@ export class TabsComponent {
     const minute = data.minute;
     const second = data.second;
     const date = new Date(year, month, day, hour, minute, second);
-    const dateFormatted = function(date: Date) {
-      return (
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1 < 10
-          ? '0' + (date.getMonth() + 1)
-          : date.getMonth() + 1) +
-        '/' +
-        (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
-      );
-    };
     const dailyErrors = {
       _acl: { creator: this.user._id },
-      date: dateFormatted(date),
+      date: YYYY_MM_DD(date),
       most_recent_error: data.mostRecentError,
       num_battery_voltage_errors: data.numBatteryVoltageErrors || 0,
       num_over_current_errors: data.numOverCurrentErrors || 0,
