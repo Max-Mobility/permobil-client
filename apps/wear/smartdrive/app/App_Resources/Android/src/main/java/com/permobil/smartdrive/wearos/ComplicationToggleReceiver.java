@@ -73,7 +73,8 @@ public class ComplicationToggleReceiver extends BroadcastReceiver {
     editor.putFloat(preferenceKey, appSharedPreferences.getFloat(dataId, 0.0f));
 
     if (unitsId != null) {
-      editor.putString(preferenceKey, appSharedPreferences.getString(unitsId, "english"));
+      String unitsKey = getPreferenceKey(provider, complicationId, unitsId);
+      editor.putString(unitsKey, appSharedPreferences.getString(unitsId, "english"));
     }
 
     // now actually tell the editor to apply the changes
