@@ -83,7 +83,7 @@ public class BatteryComplicationProviderService extends ComplicationProviderServ
                                                                        complicationId,
                                                                        DATA_ID),
                            0.0f);
-    String numberText = String.format(Locale.getDefault(), "%.0f%%", battery);
+    String numberText = String.format(Locale.getDefault(), "SD %.0f%%", battery);
 
     ComplicationData complicationData = null;
 
