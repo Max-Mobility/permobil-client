@@ -3,15 +3,15 @@
   <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%">
     <StackLayout row="1">
       <StackLayout row="0" width="80%" marginTop="20" class="configuration-choice">
-        <Image class="align-center" row="1" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+E2.png" (tap)="onConfigurationSelection($event, 'PushTracker E2 with SmartDrive')"></Image>
+        <Image class="align-center" row="1" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+E2.png" (tap)="onConfigurationSelection($event, CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE)"></Image>
         <Label class="align-center" marginBottom="10" [text]="'configuration.pushtracker-e2-with-smartdrive' | translate"></Label>
       </StackLayout>
       <StackLayout row="1" width="80%" marginTop="20" class="configuration-choice">
-        <Image class="align-center" row="0" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+PT.png" (tap)="onConfigurationSelection($event, 'PushTracker with SmartDrive')"></Image>
+        <Image class="align-center" row="0" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+PT.png" (tap)="onConfigurationSelection($event, CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE)"></Image>
         <Label class="align-center" marginBottom="10" [text]="'configuration.pushtracker-with-smartdrive' | translate"></Label>
       </StackLayout>
       <StackLayout row="2" width="80%" marginTop="20" class="configuration-choice">
-        <Image class="align-center" row="2" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+SC.png" (tap)="onConfigurationSelection($event, 'Switch Control with SmartDrive')"></Image>
+        <Image class="align-center" row="2" width="70%" stretch="aspectFit" src="~/app/assets/images/Configuration_SD+SC.png" (tap)="onConfigurationSelection($event, CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE)"></Image>
         <Label class="align-center" marginBottom="10" [text]="'configuration.switch-control-with-smartdrive' | translate"></Label>
       </StackLayout>
     </StackLayout>

@@ -4,6 +4,7 @@ import { Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Page } from 'tns-core-modules/ui/page';
 import { PushTrackerUserService } from '../../services';
+import { CONFIGURATIONS } from '../../enums';
 
 @Component({
   selector: 'configuration',
@@ -11,6 +12,7 @@ import { PushTrackerUserService } from '../../services';
   templateUrl: './configuration.component.html'
 })
 export class ConfigurationComponent implements OnInit {
+  public CONFIGURATIONS = CONFIGURATIONS;
   private _user: PushTrackerUser;
 
   constructor(
