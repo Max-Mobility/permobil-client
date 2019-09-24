@@ -433,8 +433,14 @@ export class ProfileTabComponent {
           );
           KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
         }
-        this._removeActiveDataBox();
-      });
+      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onWeightTap(args) {
@@ -498,22 +504,29 @@ export class ProfileTabComponent {
       }
     };
 
-    this._bottomSheet
-      .show(TextFieldSheetComponent, options)
-      .subscribe(result => {
-        if (result && result.data) {
-          const newWeight = _validateWeightFromText(result.data.text);
-          if (newWeight) {
-            const primary = (newWeight + '').split('.')[0];
-            const secondary = '0.' + (newWeight + '').split('.')[1];
-            this._saveWeightOnChange(
-              parseFloat(primary),
-              parseFloat(secondary)
-            );
-          }
-        }
-        this._removeActiveDataBox();
-      });
+      this._bottomSheet
+	  .show(TextFieldSheetComponent, options)
+	  .subscribe(
+	      (result) => {
+		  if (result && result.data) {
+		      const newWeight = _validateWeightFromText(result.data.text);
+		      if (newWeight) {
+			  const primary = (newWeight + '').split('.')[0];
+			  const secondary = '0.' + (newWeight + '').split('.')[1];
+			  this._saveWeightOnChange(
+			      parseFloat(primary),
+			      parseFloat(secondary)
+			  );
+		      }
+		  }
+	      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onHeightTap(args) {
@@ -572,8 +585,14 @@ export class ProfileTabComponent {
             parseFloat(secondaryItems[result.data.secondaryIndex])
           );
         }
-        this._removeActiveDataBox();
-      });
+      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onChairTypeTap(args) {
@@ -611,8 +630,14 @@ export class ProfileTabComponent {
           );
           KinveyUser.update({ chair_type: this.chairTypes[result.data.primaryIndex] });
         }
-        this._removeActiveDataBox();
-      });
+      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onChairMakeTap(args) {
@@ -650,8 +675,14 @@ export class ProfileTabComponent {
           );
           KinveyUser.update({ chair_make: this.chairMakes[result.data.primaryIndex] });
         }
-        this._removeActiveDataBox();
-      });
+      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onControlConfigTap(args) {
@@ -697,8 +728,14 @@ export class ProfileTabComponent {
             control_configuration: this.configurations[result.data.primaryIndex]
           });
         }
-        this._removeActiveDataBox();
-      });
+      },
+	      (error) => {
+		  Log.D('error', error);
+	      },
+	      () => {
+		  Log.D('completed');
+		  this._removeActiveDataBox();
+	      });
   }
 
   onScan(deviceName) {
