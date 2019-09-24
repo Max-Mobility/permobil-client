@@ -15,7 +15,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -92,7 +92,7 @@ export class HomeTabComponent {
       APP_THEMES.DEFAULT
     );
     this._currentDayInView = new Date();
-    this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
+    this._weekStart = getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
@@ -289,7 +289,7 @@ export class HomeTabComponent {
       // the app running - Update currentDayInView and weekStart to
       // account for this
       this._currentDayInView = new Date();
-      this._weekStart = this._getFirstDayOfWeek(this._currentDayInView);
+      this._weekStart = getFirstDayOfWeek(this._currentDayInView);
       this._weekEnd = new Date(this._weekStart);
       this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
@@ -749,14 +749,6 @@ export class HomeTabComponent {
     this.pointLabelStyle.textSize = 12;
     this.pointLabelStyle.textColor = new Color('White');
     this.pointLabelStyle.textFormat = '%.1f';
-  }
-
-  private _getFirstDayOfWeek(date) {
-    date = new Date(date);
-    const day = date.getDay();
-    if (day === 0) return date; // Sunday is the first day of the week
-    const diff = date.getDate() - day;
-    return new Date(date.setDate(diff));
   }
 
   private async _updateCoastTimePlotYAxis() {
