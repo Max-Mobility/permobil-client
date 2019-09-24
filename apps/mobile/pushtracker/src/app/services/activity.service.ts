@@ -5,9 +5,6 @@ import {
   User as KinveyUser
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
-import * as TNSHTTP from 'tns-core-modules/http';
-import { Log } from '@permobil/core';
-import { YYYY_MM_DD } from '../utils';
 
 @Injectable()
 export class ActivityService {
@@ -38,7 +35,7 @@ export class ActivityService {
             dailyActivity._id = id;
           }
           return this.datastore.save(dailyActivity)
-            .then((entity) => {
+            .then((_) => {
               return true;
             }).catch((error) => {
               this._logService.logException(error);
@@ -59,14 +56,6 @@ export class ActivityService {
     } else {
       return Promise.reject('no active user');
     }
-  }
-
-  private _areDaysSame(first: Date, second: Date): boolean {
-    return (
-      first.getFullYear() === second.getFullYear() &&
-      first.getMonth() === second.getMonth() &&
-      first.getDate() === second.getDate()
-    );
   }
 }
 

@@ -28,7 +28,7 @@ export class ConfigurationComponent implements OnInit {
     });
   }
 
-  onConfigurationSelection(event, selection) {
+  onConfigurationSelection(_, selection) {
     const loggedInUser = KinveyUser.getActiveUser();
     if (loggedInUser) {
       Log.D('Logged-in user', loggedInUser._id);

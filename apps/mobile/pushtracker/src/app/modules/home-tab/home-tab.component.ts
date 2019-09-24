@@ -10,7 +10,6 @@ import { ChartFontStyle, Palette, PaletteEntry, PointLabelStyle } from 'nativesc
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import * as TNSHTTP from 'tns-core-modules/http';
 import { screen } from 'tns-core-modules/platform';
 import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';

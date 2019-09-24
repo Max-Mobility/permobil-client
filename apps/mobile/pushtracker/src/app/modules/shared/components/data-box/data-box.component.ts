@@ -96,11 +96,6 @@ export class DataBoxComponent extends TextField {
         this._logService.logException(err);
         (args.object as StackLayout).className = 'data-box';
       });
-    // });
-  }
-
-  private _showListPicker(args) {
-    (args.object as StackLayout).className = 'data-box-active';
   }
 }
 

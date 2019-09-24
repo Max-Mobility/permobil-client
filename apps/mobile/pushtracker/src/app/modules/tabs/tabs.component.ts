@@ -71,7 +71,7 @@ export class TabsComponent {
     );
   }
 
-  onRootBottomNavLoaded(args) {
+  onRootBottomNavLoaded(_) {
     if (this._firstLoad) return;
 
     setTimeout(() => {
@@ -277,7 +277,6 @@ export class TabsComponent {
     const year = data.year;
     const month = data.month - 1;
     const day = data.day;
-    const pushesWith = data.pushesWith;
     const pushesWithout = data.pushesWithout;
     const coastWith = data.coastWith;
     const coastWithout = data.coastWithout;

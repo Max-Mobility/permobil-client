@@ -237,7 +237,7 @@ export class ProfileSettingsComponent implements OnInit {
     if (this.smartDrive) this.smartDrive.disconnect();
   }
 
-  onSyncSettingsWithSmartDrive(args) {
+  onSyncSettingsWithSmartDrive(_) {
     this.syncingWithSmartDrive = true;
     Log.D('Synchronizing settings with SmartDrive');
     this._scanForSmartDrive().then(async () => {
@@ -271,7 +271,7 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
-  async onRefreshTap(args) {
+  async onRefreshTap(_) {
     // Do not allow sync when scanning for SmartDrives
     this.syncingWithSmartDrive = true;
     await this._scanForSmartDrive(true);
@@ -648,7 +648,7 @@ export class ProfileSettingsComponent implements OnInit {
           this.versionInfo = `(SD ${this.smartDrive.mcu_version_string}, BT ${this.smartDrive.ble_version_string})`;
   }
 
-  private async _onSmartDriveConnect(args: any) {
+  private async _onSmartDriveConnect(_: any) {
     Log.D('SmartDrive connected', this.smartDrive.address);
     this._mcu_version = this.smartDrive.mcu_version_string;
     this._ble_version = this.smartDrive.ble_version_string;
@@ -695,7 +695,7 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  private async _onSmartDriveDisconnect(args: any) {
+  private async _onSmartDriveDisconnect(_: any) {
     Log.D('SmartDrive disconnected', this.smartDrive.address);
     // Unregister for SmartDrive connected and disconnected events
     this.smartDrive.off(

@@ -44,10 +44,6 @@ export class TNSTranslateLoader {
     });
   }
 
-  private _isLocalRequest(url: string): boolean {
-    return url.indexOf('~') === 0 || url.indexOf('/') === 0;
-  }
-
   private _currentApp(): Folder {
     return knownFolders.currentApp();
   }

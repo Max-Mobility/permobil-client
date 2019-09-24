@@ -8,14 +8,13 @@ import { CalendarMonthViewStyle, CellStyle, DayCellStyle, RadCalendar } from 'na
 import { Color } from 'tns-core-modules/color';
 import { EventData } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import * as TNSHTTP from 'tns-core-modules/http';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getUserDataFromKinvey } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey } from '../../utils';
 
 enum TAB {
   DAY = 0,
@@ -629,7 +628,7 @@ export class ActivityComponent implements OnInit {
 
       if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
-          didLoad => {
+          _ => {
             return this._formatActivityForView(1).then(result => {
               this.weeklyActivity = new ObservableArray(result);
               if (this.currentTab === TAB.WEEK) {
@@ -655,7 +654,7 @@ export class ActivityComponent implements OnInit {
         );
       else
         return this.loadWeeklyActivityFromKinvey(this.weekStart).then(
-          didLoad => {
+          _ => {
             return this._formatActivityForView(1).then(async result => {
               this.weeklyActivity = new ObservableArray(result);
               if (this.currentTab === TAB.WEEK) {
@@ -797,7 +796,6 @@ export class ActivityComponent implements OnInit {
         }
 
         const result = [];
-        const date = new Date();
         const records = activity.records;
 
         let j = 0;

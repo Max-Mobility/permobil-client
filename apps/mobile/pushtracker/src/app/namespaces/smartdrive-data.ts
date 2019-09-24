@@ -1,4 +1,4 @@
-import { knownFolders, path, Folder, File } from 'tns-core-modules/file-system';
+import { knownFolders, path, File } from 'tns-core-modules/file-system';
 import { eachDay, format, subDays } from 'date-fns';
 import { DownloadProgress } from 'nativescript-download-progress';
 

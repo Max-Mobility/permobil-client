@@ -9,7 +9,7 @@ export class AuthGuardService implements CanActivate, CanLoad {
   constructor(private router: RouterExtensions) {}
 
   canActivate(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
       const user = <PushTrackerUser>(<any>KinveyUser.getActiveUser());
       if (user) {
         resolve(true);
@@ -22,7 +22,7 @@ export class AuthGuardService implements CanActivate, CanLoad {
     });
   }
 
-  canLoad(route: Route): Promise<boolean> {
+  canLoad(_: Route): Promise<boolean> {
     // reuse same logic to activate
     return this.canActivate();
   }

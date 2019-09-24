@@ -6,7 +6,6 @@ import {
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 import { BehaviorSubject } from 'rxjs';
-import { YYYY_MM_DD } from '../utils';
 
 @Injectable()
 export class SmartDriveUsageService {
@@ -47,7 +46,7 @@ export class SmartDriveUsageService {
             dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
           }
           return this.datastore.save(dailyUsage)
-            .then((entity) => {
+            .then((_) => {
               return true;
             }).catch((error) => {
               this._logService.logException(error);

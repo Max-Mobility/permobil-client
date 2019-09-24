@@ -5,7 +5,6 @@ import { Log, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import * as appSettings from 'tns-core-modules/application-settings';
-import * as TNSHTTP from 'tns-core-modules/http';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
@@ -121,7 +120,7 @@ export class JourneyTabComponent {
     this.debouncedRefresh();
   }
 
-  async onLoadMoreItems(args: ItemEventData) {
+  async onLoadMoreItems(_: ItemEventData) {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week

@@ -14,7 +14,6 @@ import { LottieView } from 'nativescript-lottie';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import * as TNSHTTP from 'tns-core-modules/http';
 import { APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey } from './utils';
@@ -161,7 +160,7 @@ export class AppComponent implements OnInit {
         }
         return Promise.resolve(true);
       })
-      .catch(err => {
+      .catch(_ => {
         return Promise.reject(false);
       });
   }
@@ -187,7 +186,7 @@ export class AppComponent implements OnInit {
         }
         return Promise.resolve(false);
       })
-      .catch(err => {
+      .catch(_ => {
         return Promise.reject(false);
       });
     }

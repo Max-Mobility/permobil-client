@@ -96,7 +96,7 @@ export class ForgotPasswordComponent implements OnInit {
     });
 
     KinveyUser.resetPassword(this.userEmail)
-      .then(resp => {
+      .then(_ => {
         this._loadingIndicator.hide();
         alert({
           title: this._translateService.instant('general.email-sent'),

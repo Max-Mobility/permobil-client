@@ -81,7 +81,6 @@ export class SignUpComponent implements OnInit {
     private _router: RouterExtensions,
     private _modalService: ModalDialogService,
     private _translateService: TranslateService,
-    private _zone: NgZone,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
   ) {

@@ -84,7 +84,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
-    private _routerExtensions: RouterExtensions,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef
   ) {
@@ -354,7 +353,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
     Log.D('got version', version);
     // show dialog to user informing them of the version number and changes
-    const changes = Object.keys(this.currentVersions).map(
+    Object.keys(this.currentVersions).map(
       k => this.currentVersions[k].changes
     );
     const bleFw = new Uint8Array(
@@ -610,7 +609,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter(
-        (val, index, array) => {
+        (val, _, _) => {
           return val.connected;
         }
       );
@@ -665,17 +664,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const version = PushTracker.versionByteToString(ptVersion);
     Log.D('got version', version);
     // show dialog to user informing them of the version number and changes
-    const changes = Object.keys(this.currentPushTrackerVersions).map(
+    Object.keys(this.currentPushTrackerVersions).map(
       k => this.currentPushTrackerVersions[k].changes
     );
     const ptFw = new Uint8Array(
       this.currentPushTrackerVersions['PushTracker.ota'].data
     );
     // pushtracker needs to update
-    let otaStatus = '';
     try {
       this.registerForPushTrackerEvents();
-      otaStatus = await this.pushTracker.performOTA(
+      await this.pushTracker.performOTA(
         ptFw,
         ptVersion,
         300 * 1000

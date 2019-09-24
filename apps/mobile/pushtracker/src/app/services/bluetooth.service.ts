@@ -48,11 +48,9 @@ export class BluetoothService extends Observable {
 
   // private members
   private _bluetooth = new Bluetooth();
-  private PushTrackerDataCharacteristic: any = null;
   private AppService: any = null;
 
   constructor(
-    private _translateService: TranslateService,
     private _loggingService: LoggingService
   ) {
     super();
@@ -331,9 +329,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(opts: any) {}
+  discoverServices(_: any) {}
 
-  discoverCharacteristics(opts: any) {}
+  discoverCharacteristics(_: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -374,7 +372,7 @@ export class BluetoothService extends Observable {
       .then(() => {
         return this.advertise();
       })
-      .catch(err => {
+      .catch(_ => {
         this.initialized = false;
         this.advertising = false;
       });
@@ -387,7 +385,7 @@ export class BluetoothService extends Observable {
     // nothing
   }
 
-  private onAdvertiseSuccess(args: any): void {
+  private onAdvertiseSuccess(_: any): void {
     this._loggingService.logBreadCrumb('succeeded in advertising!');
     // nothing
   }

@@ -434,19 +434,19 @@ export class SmartDrive extends DeviceBase {
             this.doMCUUpdate = canDoMCUUpdate;
           }
         };
-        const otaMCUReadyHandler = data => {
+        const otaMCUReadyHandler = _ => {
           startedOTA = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got MCU OTAReady from ${this.address}`);
           this.otaState = SmartDrive.OTAState.updating_mcu;
         };
-        const otaBLEReadyHandler = data => {
+        const otaBLEReadyHandler = _ => {
           startedOTA = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got BLE OTAReady from ${this.address}`);
           this.otaState = SmartDrive.OTAState.updating_ble;
         };
-        const otaReadyHandler = data => {
+        const otaReadyHandler = _ => {
           startedOTA = true;
           this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
           console.log(`Got OTAReady from ${this.address}`);
@@ -638,7 +638,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => { });
+                ).catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -703,7 +703,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(err => { });
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -761,7 +761,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(err => { });
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -1062,7 +1062,7 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public async handleConnect(data?: any) {
+  public async handleConnect(_?: any) {
     // update state
     this.connected = true;
     this.notifying = false;
@@ -1207,8 +1207,6 @@ export class SmartDrive extends DeviceBase {
     // ms (1 hz) while connected and the motor is off
     const motorTicks = p.data('motorDistance');
     const caseTicks = p.data('caseDistance');
-    const motorMiles = SmartDrive.motorTicksToMiles(motorTicks);
-    const caseMiles = SmartDrive.caseTicksToMiles(caseTicks);
     /* Distance Info
            struct {
            uint64_t   motorDistance;  // Cumulative Drive distance in ticks.

@@ -42,7 +42,7 @@ export class FirmwareService {
     }
   };
 
-  constructor(private _logService: LoggingService) {}
+  constructor() {}
 
   static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
@@ -181,6 +181,7 @@ export class FirmwareService {
   onError(error: Response | any) {
     const body = error.json() || '';
     const err = body.error || JSON.stringify(body);
+    console.log('FirmwareService | onError', err);
   }
 
   private unpackFirmwareData(fwKey, data) {

@@ -66,7 +66,6 @@ export class ProfileTabComponent {
    */
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
-  private _userSubscription$: Subscription;
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -119,7 +118,7 @@ export class ProfileTabComponent {
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
-    this._userSubscription$ = this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(user => {
       if (!user) return;
       this.user = user;
       this._initDisplayActivityGoalCoastTime();
@@ -248,7 +247,7 @@ export class ProfileTabComponent {
       });
   }
 
-  onNameLongPress(args, nameField: string) {
+  onNameLongPress(_, nameField: string) {
     Log.D('First name long press');
 
     const opts = {
@@ -448,11 +447,11 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      primaryItems = Array.from({ length: 280 }, (v, k) => k + 1 + '');
-      secondaryItems = Array.from({ length: 9 }, (v, k) => '.' + k);
+      primaryItems = Array.from({ length: 280 }, (_, k) => k + 1 + '');
+      secondaryItems = Array.from({ length: 9 }, (_, k) => '.' + k);
     } else {
-      primaryItems = Array.from({ length: 600 }, (v, k) => k + 1 + '');
-      secondaryItems = Array.from({ length: 10 }, (v, k) => '.' + k);
+      primaryItems = Array.from({ length: 600 }, (_, k) => k + 1 + '');
+      secondaryItems = Array.from({ length: 10 }, (_, k) => '.' + k);
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.weight
@@ -540,10 +539,10 @@ export class ProfileTabComponent {
     let secondaryItems;
 
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
-      primaryItems = Array.from({ length: 300 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
+      primaryItems = Array.from({ length: 300 }, (_, k) => k + 1 + ' ' + this._translateService.instant('units.cm'));
     } else {
-      primaryItems = Array.from({ length: 8 }, (v, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
-      secondaryItems = Array.from({ length: 12 }, (v, k) => k + ' ' + this._translateService.instant('units.in'));
+      primaryItems = Array.from({ length: 8 }, (_, k) => k + 1 + ' ' + this._translateService.instant('units.ft'));
+      secondaryItems = Array.from({ length: 12 }, (_, k) => k + ' ' + this._translateService.instant('units.in'));
     }
 
     // Initialize primaryIndex and secondaryIndex from user.data.height
@@ -765,7 +764,7 @@ export class ProfileTabComponent {
       });
   }
 
-  onPushTrackerE2SerialNumberTap(args) {
+  onPushTrackerE2SerialNumberTap(_) {
     alert({
       title: this._translateService.instant(
         'profile-tab.pushtracker-e2-serial-number-dialog-title'
