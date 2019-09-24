@@ -76,11 +76,3 @@ export function YYYY_MM_DD(date: Date) {
     (month < 10 ? '0' + month : month) +
     '/' + (day < 10 ? '0' + day : day);
 }
-
-export function MM_DD_YYYY(date: Date) {
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return (month < 10 ? '0' + month : month) +
-    '/' + (day < 10 ? '0' + day : day) +
-    '/' + date.getFullYear();
-}
