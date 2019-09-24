@@ -18,7 +18,7 @@ import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms } from '../../utils';
+import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, MM_DD_YYYY } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
 @Component({
@@ -377,11 +377,7 @@ export class ProfileTabComponent {
             `User changed birthday: ${result.toDateString()}`
           );
           this._userService.updateDataProperty('dob', result);
-          const date = new Date(result);
-          const month = date.getUTCMonth() + 1;
-          const day = date.getUTCDate();
-          const year = date.getUTCFullYear();
-          const dateFormatted = month + '/' + day + '/' + year;
+          const dateFormatted = MM_DD_YYYY(new Date(result));
           Log.D('Birthday formatted', dateFormatted);
           KinveyUser.update({ dob: dateFormatted });
         }

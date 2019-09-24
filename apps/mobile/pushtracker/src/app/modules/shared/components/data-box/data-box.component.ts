@@ -12,6 +12,7 @@ import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout'
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { LoggingService } from '../../../../services';
+import { MM_DD_YYYY } from '../../../../utils';
 
 @Component({
   selector: 'DataBox',
@@ -82,11 +83,7 @@ export class DataBoxComponent extends TextField {
         (args.object as StackLayout).className = 'data-box';
 
         if (result) {
-          const date = new Date(result);
-          const month = date.getUTCMonth() + 1;
-          const day = date.getUTCDate();
-          const year = date.getUTCFullYear();
-          const dateFormatted = month + '/' + day + '/' + year;
+          const dateFormatted = MM_DD_YYYY(new Date(result));
           Log.D('Birthday formatted', dateFormatted);
           this.dataValue = dateFormatted; // set the formatted date to the Input()
           this.dataValueChange.emit(this.dataValue); // emit the updated Input value to the parent component

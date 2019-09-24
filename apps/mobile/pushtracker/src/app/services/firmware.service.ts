@@ -129,16 +129,16 @@ export class FirmwareService {
     }
   }
 
-  private deleteMetadata() {
-    try {
-      LS.removeItem(
-        FirmwareService.fsKeyPrefix + FirmwareService.fsKeyMetadata
-      );
-      return Promise.resolve();
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
+  // private deleteMetadata() {
+  //   try {
+  //     LS.removeItem(
+  //       FirmwareService.fsKeyPrefix + FirmwareService.fsKeyMetadata
+  //     );
+  //     return Promise.resolve();
+  //   } catch (err) {
+  //     return Promise.reject(err);
+  //   }
+  // }
   // END FOR STORING METADATA TO FILE SYSTEM
 
   // FOR LOADING A FW FILE FROM FS
