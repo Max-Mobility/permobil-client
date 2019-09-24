@@ -101,6 +101,9 @@
     "december": "Dec"
   },
   "general": {
+    "user-name": "User Name",
+    "first-name": "First Name",
+    "last-name": "Last Name",
     "start": "Start",
     "stop": "Stop",
     "acceleration": "Acceleration",

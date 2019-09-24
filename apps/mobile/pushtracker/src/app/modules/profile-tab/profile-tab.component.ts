@@ -252,9 +252,63 @@ export class ProfileTabComponent {
       });
   }
 
-    onEditName() {
-        Log.D('edit name press');
-    }
+  onEditName(args) {
+    Log.D('ProfileTab | Edit name pressed');
+    this._setActiveDataBox(args);
+
+    const firstName = this.user.data.first_name || '';
+    const lastName = this.user.data.last_name || '';
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.user-name'),
+        description: '', // Do we really need a description for name?
+        fields: [
+          {
+            prefix: this._translateService.instant('general.first-name'),
+            text: firstName
+          },
+          {
+            prefix: this._translateService.instant('general.last-name'),
+            text: lastName
+          }
+        ]
+      }
+    };
+
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          const firstNameField = result.data.fields[0] || '';
+          const lastNameField = result.data.fields[1] || '';
+          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
+          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
+          this._saveNameOnChange(newFirstName, newLastName);
+        }
+      },
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
+  }
+
+  private _saveNameOnChange(newFirstName: string, newLastName: string) {
+    this._userService.updateDataProperty(
+      'first_name',
+      newFirstName
+    );
+    this._userService.updateDataProperty(
+      'last_name',
+      newLastName
+    );
+    KinveyUser.update({ first_name: newFirstName, last_name: newLastName });
+  }
 
   onNameLongPress(_, nameField: string) {
     Log.D('First name long press');
@@ -500,6 +554,7 @@ export class ProfileTabComponent {
         description: this._translateService.instant('general.weight-guess'),
         fields: [
           {
+            prefix: this._translateService.instant('general.weight'),
             text: text,
             suffix: suffix,
             keyboardType: 'number'
