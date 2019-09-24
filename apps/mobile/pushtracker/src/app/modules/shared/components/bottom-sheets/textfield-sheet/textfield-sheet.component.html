@@ -7,7 +7,7 @@
     <StackLayout [row]="i" orientation='horizontal'>
       <Label [visibility]="field.prefix ? 'visible' : 'collapse'" width="30%" class="textfield-prefix"
         [text]='field.prefix' marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
-      <TextField [marginLeft]="field.prefix ? 0 : '25%'" [width]="field.suffix ? '60%' : '70%'" [text]='field.text' secure="false"
+      <TextField [width]="field.prefix ? (field.suffix ? '60%' : '70%') : (field.suffix ? '90%' : '100%')" [text]='field.text' secure="false"
         (returnPress)="onReturnPress($event, i)" [keyboardType]="field.keyboardType" justifyContent="center"
         class="textfield m-r-4" textAlignment="center" verticalAlignment="center" horizontalAlignment="center">
       </TextField>

@@ -298,6 +298,22 @@ export class ProfileTabComponent {
     );
   }
 
+  private _saveFirstNameOnChange(newFirstName: string) {
+    this._userService.updateDataProperty(
+      'first_name',
+      newFirstName
+    );
+    KinveyUser.update({ first_name: newFirstName });
+  }
+
+  private _saveLastNameOnChange(newLastName: string) {
+    this._userService.updateDataProperty(
+      'last_name',
+      newLastName
+    );
+    KinveyUser.update({ last_name: newLastName });
+  }
+
   private _saveNameOnChange(newFirstName: string, newLastName: string) {
     this._userService.updateDataProperty(
       'first_name',
@@ -453,6 +469,82 @@ export class ProfileTabComponent {
       });
   }
 
+  onFirstNameTap(args) {
+    Log.D('ProfileTab | First Name pressed');
+    this._setActiveDataBox(args);
+
+    const firstName = this.user.data.first_name || '';
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.first-name'),
+        description: '', // Do we really need a description for name?
+        fields: [
+          {
+            text: firstName
+          }
+        ]
+      }
+    };
+
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          const firstNameField = result.data.fields[0] || '';
+          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
+          this._saveFirstNameOnChange(newFirstName);
+        }
+      },
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
+  }
+
+  onLastNameTap(args) {
+    Log.D('ProfileTab | Last Name pressed');
+    this._setActiveDataBox(args);
+
+    const lastName = this.user.data.last_name || '';
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('general.last-name'),
+        description: '', // Do we really need a description for name?
+        fields: [
+          {
+            text: lastName
+          }
+        ]
+      }
+    };
+
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          const lastNameField = result.data.fields[0] || '';
+          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
+          this._saveLastNameOnChange(newLastName);
+        }
+      },
+      error => {
+        Log.D('error', error);
+      },
+      () => {
+        Log.D('completed');
+        this._removeActiveDataBox();
+      }
+    );
+  }
+
   onGenderTap(args) {
     Log.D('User tapped Gender data box');
     this._setActiveDataBox(args);
@@ -554,7 +646,6 @@ export class ProfileTabComponent {
         description: this._translateService.instant('general.weight-guess'),
         fields: [
           {
-            prefix: this._translateService.instant('general.weight'),
             text: text,
             suffix: suffix,
             keyboardType: 'number'
