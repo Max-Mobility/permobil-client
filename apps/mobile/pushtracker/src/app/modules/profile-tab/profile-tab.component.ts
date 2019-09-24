@@ -245,6 +245,10 @@ export class ProfileTabComponent {
       });
   }
 
+    onEditName() {
+	Log.D('edit name press');
+    }
+
   onNameLongPress(_, nameField: string) {
     Log.D('First name long press');
 

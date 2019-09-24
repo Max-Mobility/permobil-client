@@ -6,26 +6,33 @@
     <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" [showWatchConnectBtn]="true" (watchConnectEvent)="onWatchConnectTap()" [user]="user"></MockActionBar>
 
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
-      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *, *, *" iosOverflowSafeArea="false">
+      <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*, *, *, *" iosOverflowSafeArea="false">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
-        // User Avatar
-        <GridLayout row="1" col="0" rowspan="2" class="avatar-circle" (tap)="onAvatarTap()">
-          <Label [visibility]="!user?.data.profile_picture ? 'visible' : 'collapsed'" [text]="user?.data.first_name.charAt(0)" textWrap="true"></Label>
-          <Image [visibility]="user?.data.profile_picture ? 'visible' : 'collapsed'" [src]="user?.data.profile_picture" stretch="aspectFit"></Image>
-        </GridLayout>
 
-        // User Name
-        <StackLayout row="1" col="1" colSpan="2" orientation="horizontal">
-          <Label class="profile-name" [text]="user?.data.first_name" textWrap="true" (longPress)="onNameLongPress($event, 'first-name')"></Label>
-          <Label class="profile-name" marginLeft="4" [text]="user?.data.last_name" textWrap="true" (longPress)="onNameLongPress($event, 'last-name')"></Label>
-        </StackLayout>
+	<GridLayout columns="auto, auto" rows="auto" row="1" rowSpan="2" colSpan="4">
+          // User Avatar
+          <GridLayout class="avatar-circle" (tap)="onAvatarTap()">
+            <Label [visibility]="!user?.data.profile_picture ? 'visible' : 'collapsed'" [text]="user?.data.first_name.charAt(0)" textWrap="true"></Label>
+            <Image [visibility]="user?.data.profile_picture ? 'visible' : 'collapsed'" [src]="user?.data.profile_picture" stretch="aspectFit"></Image>
+          </GridLayout>
 
-        // Privacy Policy Button
-        <Button (tap)="onPrivacyTap()" row="1" rowSpan="2" col="3" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
-
-        // User Email
-        <Label row="2" col="1" colSpan="2" class="profile-email" [text]="user?.username" textWrap="true"></Label>
+	  <StackLayout orientation="horizontal" col="1">
+	    <StackLayout verticalAlignment="center">
+              <StackLayout col="1" orientation="horizontal">
+		// User Name
+		<Label class="profile-name" [text]="user?.data.first_name" textWrap="true"></Label>
+		<Label class="profile-name" marginLeft="4" [text]="user?.data.last_name" textWrap="true"></Label>
+              </StackLayout>
+              // User Email
+              <Label class="profile-email" [text]="user?.username" textWrap="true"></Label>
+            </StackLayout>
+	    // edit name button
+            <Button (tap)="onEditName()" class="privacy-btn" text="&#xe3c9;" ripple rippleColorAlpha="0.18"></Button>
+            // Privacy Policy Button
+            <Button (tap)="onPrivacyTap()" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
+          </StackLayout>
+	</GridLayout>
 
         // Activity Goals Label
         <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
