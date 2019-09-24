@@ -424,9 +424,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(args: any): void {
-    const argdata = args.data;
-  }
+  private onDeviceNameChange(_: any): void {}
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -524,7 +522,7 @@ export class BluetoothService extends Observable {
       name: argdata.name
     };
     if (device.address && this.isSmartDrive(device)) {
-      const sd = this.getOrMakeSmartDrive(device);
+      // const sd = this.getOrMakeSmartDrive(device);
       // sd.handleConnect();
     }
     // TODO: this event is not emitted by the android part of the bluetooth library

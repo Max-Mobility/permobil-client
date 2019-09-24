@@ -8,7 +8,7 @@ export class Packet {
   static maxSize = 18;
   // private members
   private instance: any;
-  private _bytes: any;
+  // private _bytes: any;
 
   static makeBoundData(bindingType: string, data: string) {
     return PacketBinding[bindingType][data];
@@ -24,7 +24,7 @@ export class Packet {
     this.instance = new PacketBinding.Packet();
     this.instance.newPacket();
 
-    this._bytes = bytes;
+    // this._bytes = bytes;
 
     if (bytes) {
       this.instance.processPacket(bytes);
@@ -146,13 +146,13 @@ export class Packet {
 
   parse() {}
 
-  parseData(data) {}
+  parseData(_) {}
 
-  parseCommand(command) {}
+  parseCommand(_) {}
 
-  parseError(error) {}
+  parseError(_) {}
 
-  parseOTA(ota) {}
+  parseOTA(_) {}
 }
 
 // Utility functions:
