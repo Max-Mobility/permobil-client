@@ -722,7 +722,7 @@ export class ProfileTabComponent {
 
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
-      dismissOnBackgroundTap: false,
+      dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.height'),
         description: this._translateService.instant('general.height-guess'),
