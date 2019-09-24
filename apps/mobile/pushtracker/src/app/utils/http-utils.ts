@@ -5,7 +5,7 @@ import { APP_KEY } from './kinvey-keys';
 
 const BASE_URL = `https://baas.kinvey.com/appdata/${APP_KEY}/`;
 
-export function getJSONFromKinvey(queryString: string): Promise<any> {
+export function getJSONFromKinvey(queryString: string): Promise<Array<any>> {
   return new Promise((resolve, reject) => {
     Log.D('HTTPUtils | getJSONFromKinvey query string =', queryString);
     const kinveyActiveUser = KinveyUser.getActiveUser();
