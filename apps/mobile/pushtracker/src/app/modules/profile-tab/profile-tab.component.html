@@ -33,7 +33,7 @@
               <Label class="profile-email" [text]="user?.username" textWrap="true"></Label>
             </StackLayout>
             // edit name button
-            <Button (tap)="onEditName($event)" text="&#xe3c9;" ripple rippleColorAlpha="0.18"></Button>
+            <Button (tap)="onEditName($event)" class="privacy-btn" text="&#xe3c9;" ripple rippleColorAlpha="0.18"></Button>
             // Privacy Policy Button
             <Button (tap)="onPrivacyTap()" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
           </StackLayout>
