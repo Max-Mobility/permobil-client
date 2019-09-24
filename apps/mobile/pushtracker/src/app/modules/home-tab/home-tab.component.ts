@@ -83,7 +83,7 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) {}
+  ) { }
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(`HomeTabComponent loaded`);
@@ -268,9 +268,7 @@ export class HomeTabComponent {
       }
     }
 
-    // const kinveyActiveUser = KinveyUser.getActiveUser();
-
-    getUserDataFromKinvey()
+    return getUserDataFromKinvey()
       .then(data => {
         Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
@@ -336,7 +334,7 @@ export class HomeTabComponent {
         context: {
           currentTab:
             this.user.data.control_configuration !==
-            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+              CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
               ? 0
               : 1,
           user: this.user
@@ -378,7 +376,7 @@ export class HomeTabComponent {
       }
     }
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":"${date}"}&limit=1}`;
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"SmartDriveWeeklyInfo", "date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
     return getJSONFromKinvey(`SmartDriveUsage${queryString}`)
       .then(data => {
         if (data && data.length) {
@@ -421,7 +419,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 this._todaysUsage.distance_smartdrive_coast -
-                  this._todaysUsage.distance_smartdrive_coast_start
+                this._todaysUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -433,7 +431,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 this._todaysUsage.distance_smartdrive_drive -
-                  this._todaysUsage.distance_smartdrive_drive_start
+                this._todaysUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -507,45 +505,26 @@ export class HomeTabComponent {
       }
     }
 
-    try {
-      const queryString =
-        '?query={"_acl.creator":"' +
-        this.user._id +
-        '","data_type":"WeeklyActivity","date":"' +
-        date +
-        '"}&limit=1&sort={"_kmd.lmt":-1}';
-      return TNSHTTP.request({
-        url:
-          'https://baas.kinvey.com/appdata/kid_rkoCpw8VG/PushTrackerActivity' +
-          queryString,
-        method: 'GET',
-        headers: {
-          Accept: 'application/json; charset=utf-8',
-          'Accept-Encoding': 'gzip',
-          Authorization: 'Kinvey ' + this.user._kmd.authtoken,
-          'Content-Type': 'application/json'
+    const queryString = `?query={"_acl.creator":"${this.user._id}","data_type":"WeeklyActivity", "date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`PushTrackerActivity${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._weeklyActivityFromKinvey = result; // cache
+          Log.D(
+            'HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly usage'
+          );
+          return Promise.resolve(result);
         }
+        Log.D(
+          'HomeTab | loadWeeklyActivityFromKinvey | No data for this week yet'
+        );
+        return Promise.resolve(this._weeklyActivityFromKinvey);
       })
-        .then(resp => {
-          const data = resp.content.toJSON();
-          if (data && data.length) {
-            result = data[0];
-            this._weeklyActivityFromKinvey = result; // cache result
-            Log.D(
-              'HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly activity'
-            );
-            return Promise.resolve(result);
-          }
-          return Promise.resolve(this._weeklyActivityFromKinvey);
-        })
-        .catch(err => {
-          Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
-          return Promise.reject([]);
-        });
-    } catch (err) {
-      Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
-      return Promise.reject([]);
-    }
+      .catch(err => {
+        Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
+        return Promise.reject([]);
+      });
   }
 
   private async _loadWeeklyActivity() {
@@ -782,7 +761,7 @@ export class HomeTabComponent {
   }
 
   private async _updateCoastTimePlotYAxis() {
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -883,7 +862,7 @@ export class HomeTabComponent {
   }
 
   private async _updateDistancePlotYAxis() {
-    const dateFormatted = function(date: Date) {
+    const dateFormatted = function (date: Date) {
       return (
         date.getFullYear() +
         '/' +
@@ -904,7 +883,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 day.distance_smartdrive_coast -
-                  day.distance_smartdrive_coast_start
+                day.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -961,7 +940,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
+                dailyUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -972,7 +951,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
+                dailyUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1045,7 +1024,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1062,7 +1041,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
