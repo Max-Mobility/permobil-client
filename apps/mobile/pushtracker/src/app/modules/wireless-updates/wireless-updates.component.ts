@@ -305,6 +305,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           dialogs.alert({
+            title: this._translateService.instant('wireless-updates.error'),
             message:
               this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
             okButtonText: this._translateService.instant('general.ok')
@@ -318,6 +319,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           return;
         } else if (drives.length > 1) {
           dialogs.alert({
+            title: this._translateService.instant('wireless-updates.error'),
             message:
             this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
             okButtonText: this._translateService.instant('general.ok')
@@ -612,8 +614,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       );
       if (trackers.length === 0) {
         dialogs.alert({
+          title: this._translateService.instant('wireless-updates.error'),
           message:
-            'wireless-updates.messages.no-pushtracker-detected',
+          this._translateService.instant(
+            'wireless-updates.messages.no-pushtracker-detected'
+          ),
           okButtonText: this._translateService.instant('general.ok')
         });
 
@@ -626,8 +631,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         return;
       } else if (trackers.length > 1) {
         dialogs.alert({
+          title: this._translateService.instant('wireless-updates.error'),
           message:
-            'wireless-updates.messages.more-than-one-pushtracker-connected',
+          this._translateService.instant(
+            'wireless-updates.messages.more-than-one-pushtracker-connected'
+          ),
           okButtonText: this._translateService.instant('general.ok')
         });
         this.pushTrackerCheckedForUpdates = true;

@@ -534,6 +534,7 @@
   },
   "wireless-updates": {
     "title": "Wireless Updates",
+    "error": "Error",
     "state": {
       "firmware-download-failed": "Firmware Download Failed!",
       "no-smartdrives-detected": "No SmartDrives detected!",
