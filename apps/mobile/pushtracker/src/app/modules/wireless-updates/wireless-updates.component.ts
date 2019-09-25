@@ -223,7 +223,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       const smartDriveVersions = await this.getFirmwareData();
       this.currentVersions = { ...this.currentVersions, ...smartDriveVersions };
     } catch (err) {
-      // TODO: log error
+      this._logService.logException(err);
     }
 
     const kinveyQuery = new KinveyQuery();
@@ -272,7 +272,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       try {
         files = await Promise.all(promises);
       } catch (err) {
-        // TODO: log error
+        this._logService.logException(err);
       }
 
       // Now that we have the files, write them to disk and update
@@ -284,7 +284,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       try {
         await Promise.all(promises);
       } catch (err) {
-        // TODO: log error
+        this._logService.logException(err);
       }
 
       // Now perform the SmartDrive updates if we need to
@@ -569,7 +569,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         ...pushTrackerVersions
       };
     } catch (err) {
-      // TODO: log error
+      this._logService.logException(err);
     }
 
     const kinveyQuery = new KinveyQuery();
@@ -613,7 +613,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       try {
         files = await Promise.all(promises);
       } catch (err) {
-        // TODO: log error
+        this._logService.logException(err);
       }
 
       // Now that we have the files, write them to disk and update
@@ -625,7 +625,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       try {
         await Promise.all(promises);
       } catch (err) {
-        // TODO: log error
+        this._logService.logException(err);
       }
 
       // Now perform the PushTracker updates if we need to
