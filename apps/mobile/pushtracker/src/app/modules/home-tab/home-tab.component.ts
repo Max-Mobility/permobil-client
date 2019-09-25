@@ -85,7 +85,7 @@ export class HomeTabComponent {
   ) { }
 
   onHomeTabLoaded() {
-    this._logService.logBreadCrumb(`HomeTabComponent loaded`);
+    this._logService.logBreadCrumb(`HomeTab | Loaded`);
 
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -120,7 +120,7 @@ export class HomeTabComponent {
   }
 
   onHomeTabUnloaded() {
-    Log.D('HomeTabComponent unloaded');
+    this._logService.logBreadCrumb(`HomeTab | Unloaded`);
   }
 
   // Update what is displayed in the center of the home-tab circle #263
@@ -349,7 +349,7 @@ export class HomeTabComponent {
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    Log.D('HomeTab | Loading weekly usage from Kinvey...');
+    this._logService.logBreadCrumb('HomeTab | Loading WeeklySmartDriveUsage from Kinvey');
     let result = [];
     if (!this.user) return Promise.resolve(result);
 
@@ -358,7 +358,7 @@ export class HomeTabComponent {
     if (this._firstLoad) {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
-      Log.D('HomeTab | Loading weekly usage from appSettings');
+      this._logService.logBreadCrumb('HomeTab | Loading WeeklySmartDriveUsage from appSettings');
       try {
         result = JSON.parse(
           appSettings.getString('SmartDrive.WeeklyUsage.' + date)
@@ -367,7 +367,7 @@ export class HomeTabComponent {
           return Promise.resolve(result[0]);
         }
       } catch (err) {
-        Log.E('HomeTab | Loading weekly usage from appSettings |', err);
+        this._logService.logException(err);
       }
     }
 
@@ -377,18 +377,14 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          Log.D(
-            'HomeTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
-          );
+          this._logService.logBreadCrumb('HomeTab | Successfully loaded WeeklySmartDriveUsage from Kinvey');
           return Promise.resolve(result);
         }
-        Log.D(
-          'HomeTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
-        );
+        this._logService.logBreadCrumb('HomeTab | No WeeklySmartDriveUsage data available for this week');
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        Log.D('HomeTab | loadSmartDriveUsageFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -477,8 +473,7 @@ export class HomeTabComponent {
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    Log.D('HomeTab | Loading weekly activity from Kinvey...');
-
+    this._logService.logBreadCrumb('HomeTab | Loading WeeklyPushTrackerActivity from Kinvey');
     let result = [];
     if (!this.user) return result;
 
@@ -487,13 +482,13 @@ export class HomeTabComponent {
     if (this._firstLoad) {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
-      Log.D('HomeTab | Loading weekly activity from appSettings');
+      this._logService.logBreadCrumb('HomeTab | Loading WeeklyPushTrackerActivity from appSettings');
       try {
         result = JSON.parse(
           appSettings.getString('PushTracker.WeeklyActivity.' + date)
         );
       } catch (err) {
-        Log.E('HomeTab | Loading weekly activity from appSettings |', err);
+        this._logService.logException(err);
       }
       if (result && result.length) {
         return result[0];
@@ -506,18 +501,14 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          Log.D(
-            'HomeTab | loadWeeklyActivityFromKinvey | Loaded weekly usage'
-          );
+          this._logService.logBreadCrumb('HomeTab | Successfully loaded WeeklyPushTrackerActivity from Kinvey');
           return Promise.resolve(result);
         }
-        Log.D(
-          'HomeTab | loadWeeklyActivityFromKinvey | No data for this week yet'
-        );
+        this._logService.logBreadCrumb('HomeTab | No WeeklyPushTrackerActivity data available for this week');
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        Log.D('HomeTab | loadWeeklyActivityFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }
