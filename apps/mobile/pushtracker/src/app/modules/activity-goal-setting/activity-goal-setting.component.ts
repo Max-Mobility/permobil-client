@@ -6,7 +6,6 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -146,6 +145,8 @@ export class ActivityGoalSettingComponent implements OnInit {
         activity_goal_distance: this.config.value
       });
     }
+
+    appSettings.setString('Kinvey.User', JSON.stringify(this._user));
 
     // close the modal
     this.closeModal();

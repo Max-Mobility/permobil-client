@@ -521,6 +521,8 @@ export class ProfileSettingsComponent implements OnInit {
           this._translateService.use(language);
         break;
     }
+    // Update local cache of this.user in appSettings
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
     this._debouncedCommitSettingsFunction();
     this._logService.logBreadCrumb(
       `User updated setting: ${this.activeSetting} to: ${index}`

@@ -5,6 +5,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Page } from 'tns-core-modules/ui/page';
 import { PushTrackerUserService } from '../../services';
 import { CONFIGURATIONS } from '../../enums';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 @Component({
   selector: 'configuration',
@@ -40,6 +41,7 @@ export class ConfigurationComponent implements OnInit {
       if (this._user) {
         this._user.data.control_configuration = selection;
         this.userService.updateDataProperty('control_configuration', selection);
+        appSettings.setString('Kinvey.User', JSON.stringify(this._user));
       }
     }
     this._router.navigate(['/tabs/default']);

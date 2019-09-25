@@ -250,6 +250,7 @@ export class ProfileTabComponent {
       .catch(err => {
         this._logService.logException(err);
       });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   onEditName(args) {
@@ -304,6 +305,7 @@ export class ProfileTabComponent {
       newFirstName
     );
     KinveyUser.update({ first_name: newFirstName });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveLastNameOnChange(newLastName: string) {
@@ -312,6 +314,7 @@ export class ProfileTabComponent {
       newLastName
     );
     KinveyUser.update({ last_name: newLastName });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveNameOnChange(newFirstName: string, newLastName: string) {
@@ -324,6 +327,7 @@ export class ProfileTabComponent {
       newLastName
     );
     KinveyUser.update({ first_name: newFirstName, last_name: newLastName });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   onNameLongPress(_, nameField: string) {
@@ -345,10 +349,12 @@ export class ProfileTabComponent {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
           this._userService.updateDataProperty('first_name', r.text);
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
           this._userService.updateDataProperty('last_name', r.text);
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -461,6 +467,7 @@ export class ProfileTabComponent {
           const dateFormatted = YYYY_MM_DD(new Date(result));
           Log.D('Birthday formatted', dateFormatted);
           KinveyUser.update({ dob: dateFormatted });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       })
       .catch(err => {
@@ -576,6 +583,7 @@ export class ProfileTabComponent {
             this.genders[result.data.primaryIndex]
           );
           KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -788,6 +796,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             chair_type: this.chairTypes[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -835,6 +844,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             chair_make: this.chairMakes[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -888,6 +898,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             control_configuration: this.configurations[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -1076,6 +1087,7 @@ export class ProfileTabComponent {
       );
     }
     KinveyUser.update({ weight: this.user.data.weight });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
@@ -1098,6 +1110,7 @@ export class ProfileTabComponent {
       );
     }
     KinveyUser.update({ height: this.user.data.height });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _displayWeightInPounds(val: number) {
@@ -1166,6 +1179,7 @@ export class ProfileTabComponent {
         KinveyUser.update({
           pushtracker_serial_number: this.user.data.pushtracker_serial_number
         });
+        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
       } else if (deviceType === 'smartdrive') {
         this._userService.updateDataProperty(
           'smartdrive_serial_number',
@@ -1174,6 +1188,7 @@ export class ProfileTabComponent {
         KinveyUser.update({
           smartdrive_serial_number: this.user.data.smartdrive_serial_number
         });
+        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
       }
     } catch (error) {
       this._logService.logException(error);
