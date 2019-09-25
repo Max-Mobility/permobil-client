@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { PushTrackerUser } from '@permobil/core';
 import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { CalendarMonthViewStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';

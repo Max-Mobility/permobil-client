@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from
 import { Log, PushTrackerUser } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { ToastPosition, Toasty } from 'nativescript-toasty';
+import { Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';

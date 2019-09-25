@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Page } from 'tns-core-modules/ui/page';
 import { PushTrackerUserService } from '../../services';
