@@ -439,8 +439,8 @@ export class ProfileTabComponent {
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
-        Log.D('ProfileTab | first_name TextFieldSheetComponent result', result.data);
         if (result && result.data) {
+          Log.D('ProfileTab | first_name TextFieldSheetComponent result', result.data);
           const firstNameField = result.data.fields[0] || '';
           const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
@@ -478,8 +478,8 @@ export class ProfileTabComponent {
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
-        Log.D('ProfileTab | last_name TextFieldSheetComponent result', result.data);
         if (result && result.data) {
+          Log.D('ProfileTab | last_name TextFieldSheetComponent result', result.data);
           const lastNameField = result.data.fields[0] || '';
           const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
