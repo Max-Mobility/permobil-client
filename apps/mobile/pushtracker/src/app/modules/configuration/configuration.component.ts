@@ -27,14 +27,12 @@ export class ConfigurationComponent implements OnInit {
   ngOnInit() {
     this.userService.user.subscribe(user => {
       this._user = user;
-      Log.D('User subscription. this._user =', this._user);
     });
   }
 
   onConfigurationSelection(_, selection) {
     const loggedInUser = KinveyUser.getActiveUser();
     if (loggedInUser) {
-      Log.D('Logged-in user', loggedInUser._id);
       KinveyUser.update({
         control_configuration: selection
       });

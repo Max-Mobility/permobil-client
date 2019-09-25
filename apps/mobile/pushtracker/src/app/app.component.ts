@@ -79,7 +79,6 @@ export class AppComponent implements OnInit {
     );
 
     application.on(application.resumeEvent, () => {
-      Log.D('Application resumed');
       const weekStart = getFirstDayOfWeek(new Date());
       this._loadWeeklyActivityFromKinvey(weekStart);
       this._loadSmartDriveUsageFromKinvey(weekStart);
@@ -120,7 +119,6 @@ export class AppComponent implements OnInit {
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly activity from Kinvey');
     const user = KinveyUser.getActiveUser();
     if (!user) return;
     let result = [];
@@ -145,7 +143,6 @@ export class AppComponent implements OnInit {
   }
 
   async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly usage from Kinvey');
     const user = KinveyUser.getActiveUser();
     let result = [];
     if (!user) return result;

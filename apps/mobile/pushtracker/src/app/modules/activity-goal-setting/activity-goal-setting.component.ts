@@ -59,14 +59,12 @@ export class ActivityGoalSettingComponent implements OnInit {
   }
 
   decrementConfigValue() {
-    Log.D('Decrement the config value');
     this.config.value -= 0.1;
     if (this.config.value < 0) this.config.value = 0;
     this.config.value = Math.round(this.config.value * 10) / 10;
   }
 
   incrementConfigValue() {
-    Log.D('Increment the config value');
     this.config.value += 0.1;
     this.config.value = Math.round(this.config.value * 10) / 10;
   }

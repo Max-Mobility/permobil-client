@@ -267,7 +267,6 @@ export class HomeTabComponent {
 
     return getUserDataFromKinvey()
       .then(data => {
-        Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
         this._userService.updateUser(this.user);
         appSettings.setString('Kinvey.User', JSON.stringify(this.user));
@@ -280,7 +279,6 @@ export class HomeTabComponent {
   }
 
   async refreshPlots(args) {
-    Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
     this.refreshUserFromKinvey(true).then(result => {
@@ -326,8 +324,6 @@ export class HomeTabComponent {
   }
 
   onActivityTap() {
-    Log.D('HomeTab | Opening activity component');
-    Log.D('HomeTab | Control configuration', this.user.data.control_configuration);
     this._modalService
       .showModal(ActivityComponent, {
         context: {
@@ -883,7 +879,6 @@ export class HomeTabComponent {
   }
 
   private async _formatUsageForView() {
-    Log.D('HomeTab | Formatting usage for view');
     const activity = this._weeklyUsageFromKinvey;
     if (activity && activity.days) {
       const result = [];
@@ -986,7 +981,6 @@ export class HomeTabComponent {
   }
 
   onCoastTimeBarSelected(event) {
-    Log.D('Coast time bar selected');
     if (!this._weeklyActivityFromKinvey) return;
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
@@ -1003,7 +997,6 @@ export class HomeTabComponent {
   }
 
   onDistanceBarSelected(event) {
-    Log.D('Distance bar selected');
     if (!this._weeklyUsageFromKinvey) return;
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];

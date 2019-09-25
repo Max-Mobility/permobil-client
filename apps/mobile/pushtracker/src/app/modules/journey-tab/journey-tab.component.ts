@@ -91,11 +91,9 @@ export class JourneyTabComponent {
     );
 
     this._userService.user.subscribe(user => {
-      Log.D('User theme changed', this.savedTheme);
       if (this.savedTheme !== user.data.theme_preference) {
         this.savedTheme = user.data.theme_preference;
         this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        Log.D('Refreshing');
         // Theme has changed - Refresh view so icon images can update
         // to match the theme
         this._refresh();
@@ -190,7 +188,6 @@ export class JourneyTabComponent {
 
     return getUserDataFromKinvey()
       .then(data => {
-        Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
         this._userService.updateUser(this.user);
         appSettings.setString('Kinvey.User', JSON.stringify(this.user));

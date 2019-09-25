@@ -213,7 +213,6 @@ export class ProfileTabComponent {
       if (result === signOut) {
         this._zone.run(async () => {
           const logoutResult = await KinveyUser.logout();
-          Log.D('logout result', logoutResult);
           // Clean up appSettings key-value pairs that were
           // saved in app.component.ts
           appSettings.remove('PushTracker.WeeklyActivity');
@@ -272,8 +271,6 @@ export class ProfileTabComponent {
   }
 
   onNameLongPress(_, nameField: string) {
-    Log.D('First name long press');
-
     const opts = {
       title: this._translateService.instant(`profile-tab.edit-${nameField}`),
       defaultText:
@@ -375,8 +372,6 @@ export class ProfileTabComponent {
   }
 
   onBirthDateTap(args: EventData) {
-    Log.D(`Birthday tapped`);
-
     this._setActiveDataBox(args);
 
     const dateTimePickerStyle = DateTimePickerStyle.create(
@@ -447,10 +442,9 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        Log.E('ProfileTab | first_name TextFieldSheetComponent', error);
       },
       () => {
-        Log.D('completed');
         this._removeActiveDataBox();
       }
     );
@@ -1154,7 +1148,6 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    // Log.D('user:', JSON.stringify(user, null, 2));
     Log.D('user id:', id);
     Log.D('user token:', token);
     return `Kinvey ${token}:${id}`;

@@ -16,8 +16,6 @@ export class SliderSheetComponent {
   SLIDER_VALUE;
 
   constructor(private _params: BottomSheetParams) {
-    Log.D('Slider bottom sheet params', this._params);
-
     const data = this._params.context;
 
     if (data) {
@@ -35,15 +33,6 @@ export class SliderSheetComponent {
   onSliderValueChange(args: any) {
     this.SLIDER_VALUE = Math.floor(args.object.value);
   }
-
-  //   close() {
-  //     this._params.closeCallback({
-  //       has_agreed_to_user_agreement: this.has_agreed_to_user_agreement,
-  //       has_read_privacy_policy: this.has_read_privacy_policy,
-  //       consent_to_product_development: this.consent_to_product_development,
-  //       consent_to_research: this.consent_to_research
-  //     });
-  //   }
 
   closeSliderSettingDialog() {
     this._params.closeCallback();
