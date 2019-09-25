@@ -110,7 +110,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    Log.D(`app.component OnInit`);
     const savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -119,11 +118,12 @@ export class AppComponent implements OnInit {
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
+    this._logService.logBreadCrumb('AppComponent | Loading WeeklyPushTrackerActivity from Kinvey');
     const user = KinveyUser.getActiveUser();
     if (!user) return;
     let result = [];
     const date = YYYY_MM_DD(weekStartDate);
-
+    // Query Kinvey database for weekly pushtracker activity
     const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
     return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
       .then(data => {
@@ -137,18 +137,19 @@ export class AppComponent implements OnInit {
         }
         return Promise.resolve(true);
       })
-      .catch(_ => {
+      .catch(err => {
+        this._logService.logException(err);
         return Promise.reject(false);
       });
   }
 
   async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
+    this._logService.logBreadCrumb('AppComponent | Loading WeeklySmartDriveUsage from Kinvey');
     const user = KinveyUser.getActiveUser();
     let result = [];
     if (!user) return result;
-
     const date = YYYY_MM_DD(weekStartDate);
-
+    // Query Kinvey database for weekly smartdrive usage
     const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
     return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
       .then(data => {
@@ -162,7 +163,8 @@ export class AppComponent implements OnInit {
         }
         return Promise.resolve(false);
       })
-      .catch(_ => {
+      .catch(err => {
+        this._logService.logException(err);
         return Promise.reject(false);
       });
     }
