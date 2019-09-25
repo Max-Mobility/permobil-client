@@ -253,12 +253,16 @@ export class HomeTabComponent {
         if (kinveyUserJSON) user = JSON.parse(kinveyUserJSON);
         if (user) {
           this.user = user;
-          user._id = user.data._id;
-          user._acl = user.data._acl;
-          user._kmd = user.data._kmd;
-          user.authtoken = user.data._kmd.authtoken;
-          user.username = user.data.username;
-          user.email = user.data.email;
+          if (user.data) {
+            if (user.data._id) user._id = user.data._id;
+            if (user.data._acl) user._acl = user.data._acl;
+            if (user.data._kmd) {
+              user._kmd = user.data._kmd;
+              if (user.data._kmd.authtoken) user.authtoken = user.data._kmd.authtoken;
+            }
+            if (user.data.username) user.username = user.data.username;
+            if (user.data.email) user.email = user.data.email;
+          }
           this.user = user;
           return Promise.resolve(true);
         } else Promise.reject(false);
