@@ -15,7 +15,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, applyTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -115,9 +115,7 @@ export class HomeTabComponent {
     this._userService.user.subscribe(user => {
       if (this.savedTheme !== user.data.theme_preference)
         this.savedTheme = user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-        ? enableDefaultTheme()
-        : enableDarkTheme();
+      applyTheme(this.savedTheme);
     });
   }
 
@@ -298,9 +296,7 @@ export class HomeTabComponent {
       // Check for theme changes
       if (this.savedTheme !== this.user.data.theme_preference) {
         this.savedTheme = this.user.data.theme_preference;
-        this.savedTheme === APP_THEMES.DEFAULT
-          ? enableDefaultTheme()
-          : enableDarkTheme();
+        applyTheme(this.savedTheme);
       }
 
       // Now refresh the data

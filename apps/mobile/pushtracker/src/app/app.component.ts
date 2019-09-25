@@ -16,7 +16,7 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { APP_KEY, APP_SECRET, enableDarkTheme, enableDefaultTheme, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from './utils';
+import { APP_KEY, APP_SECRET, applyTheme, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from './utils';
 
 registerElement('Gif', () => Gif);
 registerElement('Fab', () => Fab);
@@ -116,11 +116,7 @@ export class AppComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    if (savedTheme === APP_THEMES.DEFAULT) {
-      enableDefaultTheme();
-    } else if (savedTheme === APP_THEMES.DARK) {
-      enableDarkTheme();
-    }
+    applyTheme(savedTheme);
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {

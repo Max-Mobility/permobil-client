@@ -52,15 +52,6 @@ export class ActivityGoalSettingComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    /*
-    this._userService.user.subscribe(user => {
-      this._user = user;
-      this.savedTheme = this._user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-      ? enableDefaultTheme()
-      : enableDarkTheme();
-    });
-    */
   }
 
   closeModal() {

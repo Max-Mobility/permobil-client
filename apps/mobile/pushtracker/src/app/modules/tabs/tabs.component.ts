@@ -18,7 +18,7 @@ import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
   SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
 import { APP_LANGUAGES, APP_THEMES } from '../../enums';
-import { enableDarkTheme, enableDefaultTheme, YYYY_MM_DD } from '../../utils';
+import { applyTheme, YYYY_MM_DD } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -72,12 +72,7 @@ export class TabsComponent {
 
     this._userService.user.subscribe(user => {
       if (!user) return;
-
-      if (user.data.theme_preference === APP_THEMES.DEFAULT) {
-        enableDefaultTheme();
-      } else {
-        enableDarkTheme();
-      }
+      applyTheme(user.data.theme_preference);
 
       this.user = user;
       if (this.user.data.language_preference) {
