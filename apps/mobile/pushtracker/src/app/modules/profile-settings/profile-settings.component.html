@@ -57,7 +57,7 @@
       </GridLayout>
 
       // Max Speed
-      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="7" (tap)="onListPickerItemTap('max-speed')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="7" (tap)="onSliderItemTap('max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>

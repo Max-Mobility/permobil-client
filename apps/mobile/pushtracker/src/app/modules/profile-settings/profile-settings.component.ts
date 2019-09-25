@@ -470,6 +470,17 @@ export class ProfileSettingsComponent implements OnInit {
           SLIDER_VALUE: this.settingsService.settings.tapSensitivity / 10
         };
         break;
+      case 'switch-control-max-speed':
+        this.activeSetting = 'switch-control-max-speed';
+
+        options.context = {
+          title: this._translateService.instant(
+            'general.switch-control-max-speed'
+          ),
+          SLIDER_VALUE: this.settingsService.switchControlSettings.maxSpeed / 10
+        };
+
+        break;
     }
 
     this._bottomSheet.show(SliderSheetComponent, options).subscribe(result => {
