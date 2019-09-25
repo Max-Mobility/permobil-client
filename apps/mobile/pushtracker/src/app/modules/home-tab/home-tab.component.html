@@ -8,33 +8,33 @@
 
       // Activity Circles
       <GridLayout rows="auto" columns="auto"
-		  horizontalAlignment="center"
-		  [height]="screenWidth * 0.6" [width]="screenWidth * 0.6">
+                  horizontalAlignment="center"
+                  [height]="screenWidth * 0.6" [width]="screenWidth * 0.6">
         // Distance Circle (outer/purple)
         <AnimatedCircle id="distanceCircle"
-			horizontalAlignment="center"
-			[width]="screenWidth * 0.6"
-			[height]="screenWidth * 0.6"
-			animated="true" animateFrom="0" clockwise="true"
-			rimWidth="10" barWidth="28"
-			[progress]="distanceCirclePercentage">
-	</AnimatedCircle>
+                        horizontalAlignment="center"
+                        [width]="screenWidth * 0.6"
+                        [height]="screenWidth * 0.6"
+                        animated="true" animateFrom="0" clockwise="true"
+                        rimWidth="10" barWidth="28"
+                        [progress]="distanceCirclePercentage">
+        </AnimatedCircle>
         // Coast Time Circle (inner/teal)
         <AnimatedCircle id="coastTimeCircle"
-			horizontalAlignment="center"
-			[width]="screenWidth * 0.5"
-			[height]="screenWidth * 0.5"
-			animated="true" animateFrom="0" clockwise="true"
-			rimWidth="10" barWidth="28"
-			[progress]="coastTimeCirclePercentage">
+                        horizontalAlignment="center"
+                        [width]="screenWidth * 0.5"
+                        [height]="screenWidth * 0.5"
+                        animated="true" animateFrom="0" clockwise="true"
+                        rimWidth="10" barWidth="28"
+                        [progress]="coastTimeCirclePercentage">
         </AnimatedCircle>
         <GridLayout rows="*" columns="*"
-		    horizontalAlignment="center"
-		    [width]="screenWidth * 0.4"
-		    [height]="screenWidth * 0.4"
-		    [borderRadius]="screenWidth * 0.4 * 0.5"
-		    class="distance-remaining-circle"
-		    ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
+                    horizontalAlignment="center"
+                    [width]="screenWidth * 0.4"
+                    [height]="screenWidth * 0.4"
+                    [borderRadius]="screenWidth * 0.4 * 0.5"
+                    class="distance-remaining-circle"
+                    ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
           <Label class="today-message" [text]="todayMessage" textWrap="true"></Label>
         </GridLayout>
       </GridLayout>
@@ -79,8 +79,8 @@
 
       // Coast Time Chart
       <GridLayout rows="auto, *" columns="*"
-		  horizontalAlignment="center"
-		  class="chart-layout">
+                  horizontalAlignment="center"
+                  class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="coastTimeGoalMessage"></Label>
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
@@ -99,7 +99,7 @@
             tickLength="1"
             labelFitMode="Multiline"
             plotMode="OnTicks"
-          >
+            >
           </CategoricalAxis>
 
           <LinearAxis
@@ -113,10 +113,10 @@
             minumum="1"
             [majorStep]="yAxisStep"
             [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
-          ></LinearAxis>
+            ></LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" 
-            categoryProperty="xAxis" valueProperty="coastTime">
+                     categoryProperty="xAxis" valueProperty="coastTime">
           </BarSeries>
 
           <Palettes>
@@ -137,15 +137,15 @@
             strokeWidth="2"
             [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
-          >
+            >
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>
 
       // Distance Time Chart
       <GridLayout rows="auto, *" columns="*"
-		  horizontalAlignment="center"
-		  class="chart-layout">
+                  horizontalAlignment="center"
+                  class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="distanceGoalMessage"></Label>
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
@@ -165,7 +165,7 @@
             tickLength="1"
             labelFitMode="Multiline"
             plotMode="OnTicks"
-          >
+            >
           </CategoricalAxis>
 
           <LinearAxis
@@ -179,7 +179,7 @@
             minumum="0.0"
             [majorStep]="coastDistanceYAxisStep"
             [labelFormat]="coastDistanceYAxisMax === 1.0 ? '%.1f' : '%.0f'"
-          ></LinearAxis>
+            ></LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity" categoryProperty="xAxis" valueProperty="coastDistance"> </BarSeries>
 
@@ -192,7 +192,7 @@
             strokeWidth="2"
             [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
-          >
+            >
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>
