@@ -611,7 +611,7 @@ export class ProfileSettingsComponent implements OnInit {
       this.user.data.control_configuration ===
       CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE
     ) {
-      return this._bluetoothService.scanForSmartDrive(10).then(() => {
+      return this._bluetoothService.scanForSmartDriveReturnOnFirst(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           alert({

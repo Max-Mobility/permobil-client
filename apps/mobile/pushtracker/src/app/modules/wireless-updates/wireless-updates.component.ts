@@ -313,7 +313,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
-      await this._bluetoothService.scanForSmartDrive(10).then(async () => {
+      await this._bluetoothService.scanForSmartDriveReturnOnFirst(10).then(async () => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           new Toasty({
