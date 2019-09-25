@@ -10,7 +10,6 @@ import {
   Files as KinveyFiles,
   Query as KinveyQuery
 } from 'kinvey-nativescript-sdk';
-import { SnackBar } from '@nstudio/nativescript-snackbar';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
@@ -18,6 +17,7 @@ import {
   ModalDialogParams,
   ModalDialogService
 } from 'nativescript-angular/modal-dialog';
+import { confirm } from 'tns-core-modules/ui/dialogs';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
 import * as app from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -41,8 +41,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   languagePreference: string = '';
   controlConfiguration: string = '';
   screenWidth = screen.mainScreen.widthDIPs;
-
-  private snackbar = new SnackBar();
 
   /**
    * SmartDrive Wireless Updates:
@@ -840,16 +838,21 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             args.cancel = true;
 
             let closeModal = false;
-            const action = this._translateService.instant('dialogs.yes');
-            this.snackbar.action({
-              actionText: action,
-              snackText: this._translateService.instant(
+            confirm({
+              title: this._translateService.instant(
+                'ota.warnings.leaving.title'
+              ),
+              message: this._translateService.instant(
                 'ota.warnings.leaving.message'
               ),
-              hideDelay: 3500,
+              okButtonText: this._translateService.instant('dialogs.yes'),
+              cancelable: true,
+              cancelButtonText: this._translateService.instant(
+                'general.cancel'
+              )
             })
-              .then((result: any) => {
-                if (result.command === 'Action') {
+              .then((result: boolean) => {
+                if (result === true) {
                   // user wants to leave so remove the back pressed event
                   app.android.off(
                     app.AndroidApplication.activityBackPressedEvent
