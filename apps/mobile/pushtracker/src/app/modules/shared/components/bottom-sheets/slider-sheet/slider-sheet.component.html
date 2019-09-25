@@ -2,12 +2,12 @@
   <Label class="title" [text]="title | translate"></Label>
   <Label class="description" [text]="description | translate"></Label>
 
-  <StackLayout orientation="horizontal">
-    <Slider width="80%" class="slider" [value]="SLIDER_VALUE" (valueChange)="onSliderValueChange($event)" minValue="1" maxValue="10"></Slider>
-    <Label width="20%" class="slider-value" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
-  </StackLayout>
-  <StackLayout orientation="horizontal" marginTop="16" horizontalAlignment="right">
-    <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
-    <Button android:ripple android:rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
-  </StackLayout>
+  <GridLayout rows="auto, auto" columns="auto, *, auto, auto">
+    <StackLayout row="0" colSpan="4" orientation="horizontal">
+      <Slider width="80%" class="slider" [value]="SLIDER_VALUE" (valueChange)="onSliderValueChange($event)" minValue="1" maxValue="10"></Slider>
+      <Label width="20%" class="slider-value" [text]="(SLIDER_VALUE * 10).toFixed(0) + ' %'"></Label>
+    </StackLayout>
+    <Button row="1" col="2" ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSliderSettingDialog()"></Button>
+    <Button row="1" col="3" ripple rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveSliderSettingValue()"></Button>
+  </GridLayout>
 </StackLayout>

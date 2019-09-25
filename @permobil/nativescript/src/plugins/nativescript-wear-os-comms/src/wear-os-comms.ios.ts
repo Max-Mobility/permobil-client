@@ -21,10 +21,10 @@ export class WearOsComms extends Common {
     return WearOsComms.pairedCompanion !== null;
   }
 
-  public static async findAvailableCompanions(timeoutSeconds: number) {
+  public static findAvailableCompanions(timeoutSeconds: number) {
     // scan for service and pass the resolve function argument to the
     // onCompanionDiscoveredCallback
-    const promise = await new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         await WearOsComms._bluetooth.startScanning({
           serviceUUIDs: [ WearOsComms.ServiceUUID ],
@@ -52,7 +52,7 @@ export class WearOsComms extends Common {
       companion = WearOsComms.pairedCompanion;
     } else {
       // scan for the right services
-      const address = await WearOsComms.findAvailableCompanions(1);
+      const address = await WearOsComms.findAvailableCompanions(1) as string;
       if (address && address.length) {
         companion = address;
       }
@@ -128,7 +128,7 @@ export class WearOsComms extends Common {
     await WearOsComms.send(WearOsComms.MessageCharacteristicUUID, encoded);
   }
 
-  public static sendData(data: any) {
+  public static async sendData(data: any) {
     // convert message to hexadecimal
     const encoded = WearOsComms.encodeData(data);
     await WearOsComms.send(WearOsComms.DataCharacteristicUUID, encoded);
