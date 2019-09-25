@@ -329,6 +329,8 @@ export class HomeTabComponent {
   }
 
   onActivityTap() {
+    Log.D('HomeTab | Opening activity component');
+    Log.D('HomeTab | Control configuration', this.user.data.control_configuration);
     this._modalService
       .showModal(ActivityComponent, {
         context: {
