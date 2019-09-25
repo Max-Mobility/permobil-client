@@ -306,6 +306,7 @@ export class BluetoothService extends Observable {
             resolve(sd);
           }
         });
+        resolve(undefined);
       } catch (err) {
         resolve(undefined);
       }
