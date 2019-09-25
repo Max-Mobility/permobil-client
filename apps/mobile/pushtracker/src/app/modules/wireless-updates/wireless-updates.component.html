@@ -1,7 +1,7 @@
 <GridLayout rows="auto, *" class="wireless-updates-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'wireless-updates.title' | translate" 
-                 [showBackNav]="(this.pushTracker ? this.pushTracker.canBackNavigate : true) && (this.smartDrive ? this.smartDrive.canBackNavigate : true)"
+                 [showBackNav]="(pushTracker ? pushTracker.canBackNavigate : true) && (smartDrive ? smartDrive.canBackNavigate : true)"
                  [showMoreBtn]="true" (moreTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%" width="100%">

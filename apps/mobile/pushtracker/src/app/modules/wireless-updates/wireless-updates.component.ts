@@ -10,6 +10,7 @@ import {
   Files as KinveyFiles,
   Query as KinveyQuery
 } from 'kinvey-nativescript-sdk';
+import { SnackBar } from '@nstudio/nativescript-snackbar';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
@@ -17,12 +18,11 @@ import {
   ModalDialogParams,
   ModalDialogService
 } from 'nativescript-angular/modal-dialog';
-import { Toasty } from 'nativescript-toasty';
+import { Toasty, ToastDuration } from 'nativescript-toasty';
 import * as app from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { Color } from 'tns-core-modules/ui/content-view';
-import * as dialogs from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
@@ -41,6 +41,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   languagePreference: string = '';
   controlConfiguration: string = '';
   screenWidth = screen.mainScreen.widthDIPs;
+
+  private snackbar = new SnackBar();
 
   /**
    * SmartDrive Wireless Updates:
@@ -123,7 +125,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           text:
             'An unexpected error occurred. If this continues please let us know.',
           textColor: new Color('#fff000')
-        });
+        }).show();
       });
   }
 
@@ -288,7 +290,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
 
       // Now perform the SmartDrive updates if we need to
-      this.performSmartDriveWirelessUpdate();
+      if (this.smartDrive) this.smartDrive.canBackNavigate = false;
+      await this.performSmartDriveWirelessUpdate();
+      if (this.smartDrive) this.smartDrive.canBackNavigate = true;
     });
   }
 
@@ -314,11 +318,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       await this._bluetoothService.scanForSmartDrive(10).then(async () => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
-          await dialogs.alert({
-            title: this._translateService.instant('wireless-updates.error'),
-            message: this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
-            okButtonText: this._translateService.instant('general.ok')
-          });
+          new Toasty({
+            text:
+            this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
+            duration: ToastDuration.LONG
+          }).show();
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant(
             'wireless-updates.state.no-smartdrives-detected'
@@ -327,11 +331,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this.noSmartDriveDetected = true;
           return;
         } else if (drives.length > 1) {
-          await dialogs.alert({
-            title: this._translateService.instant('wireless-updates.error'),
-            message: this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
-            okButtonText: this._translateService.instant('general.ok')
-          });
+          new Toasty({
+            text:
+            this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
+            duration: ToastDuration.LONG
+          }).show();
           this.smartDriveCheckedForUpdates = true;
           this.smartDriveOtaState = this._translateService.instant(
             'wireless-updates.state.more-than-one-smartdrive-detected'
@@ -388,6 +392,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
     // smartdrive needs to update
     try {
+      this.smartDrive.canBackNavigate = false;
       this.registerForSmartDriveEvents();
       await this.smartDrive.performOTA(
         bleFw,
@@ -396,8 +401,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         mcuVersion,
         300 * 1000
       );
+      this.smartDrive.canBackNavigate = true;
     } catch (err) {
-      if (this.smartDrive) this.smartDrive.cancelOTA();
+      if (this.smartDrive) {
+        this.smartDrive.canBackNavigate = true;
+        this.smartDrive.cancelOTA();
+      }
     }
     this.unregisterForSmartDriveEvents();
   }
@@ -434,6 +443,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledOtaStatus,
       this
     );
+    this.smartDrive.canBackNavigate = true;
+    if (!this.pushTracker || !this.pushTracker.canBackNavigate)
+      this.setBackNav(true);
   }
 
   onSmartDriveOtaStatus(args: any) {
@@ -619,7 +631,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
 
       // Now perform the PushTracker updates if we need to
-      this.performPushTrackerWirelessUpdate();
+      if (this.pushTracker) this.pushTracker.canBackNavigate = false;
+      await this.performPushTrackerWirelessUpdate();
+      if (this.pushTracker) this.pushTracker.canBackNavigate = true;
     });
   }
 
@@ -646,12 +660,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
       );
       if (trackers.length === 0) {
-        await dialogs.alert({
-          title: this._translateService.instant('wireless-updates.error'),
-          message: this._translateService.instant('wireless-updates.messages.no-pushtracker-detected'),
-          okButtonText: this._translateService.instant('general.ok')
-        });
-
+        new Toasty({
+          text: this._translateService.instant('wireless-updates.messages.no-pushtracker-detected'),
+          duration: ToastDuration.LONG
+        }).show();
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.no-pushtracker-detected'
@@ -660,13 +672,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else if (trackers.length > 1) {
-        await dialogs.alert({
-          title: this._translateService.instant('wireless-updates.error'),
-          message: this._translateService.instant(
+        new Toasty({
+          text: this._translateService.instant(
             'wireless-updates.messages.more-than-one-pushtracker-connected'
           ),
-          okButtonText: this._translateService.instant('general.ok')
-        });
+          duration: ToastDuration.LONG
+        }).show();
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.more-than-one-pushtracker-detected'
@@ -714,14 +725,19 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
     // pushtracker needs to update
     try {
+      this.pushTracker.canBackNavigate = false;
       this.registerForPushTrackerEvents();
       await this.pushTracker.performOTA(
         ptFw,
         ptVersion,
         300 * 1000
       );
+      this.pushTracker.canBackNavigate = true;
     } catch (err) {
-      if (this.pushTracker) this.pushTracker.cancelOTA();
+      if (this.pushTracker) {
+        this.pushTracker.cancelOTA();
+        this.pushTracker.canBackNavigate = true;
+      }
     }
     this.unregisterForPushTrackerEvents();
   }
@@ -762,6 +778,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledPTOtaStatus,
       this
     );
+    this.pushTracker.canBackNavigate = true;
+    if (!this.smartDrive || !this.smartDrive.canBackNavigate)
+      this.setBackNav(true);
   }
 
   onPushTrackerOtaStatus(args: any) {
@@ -825,22 +844,16 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             args.cancel = true;
 
             let closeModal = false;
-            dialogs
-              .confirm({
-                title: this._translateService.instant(
-                  'ota.warnings.leaving.title'
-                ),
-                message: this._translateService.instant(
-                  'ota.warnings.leaving.message'
-                ),
-                okButtonText: this._translateService.instant('dialogs.yes'),
-                cancelable: true,
-                cancelButtonText: this._translateService.instant(
-                  'general.cancel'
-                )
-              })
-              .then((result: boolean) => {
-                if (result === true) {
+            const action = this._translateService.instant('dialogs.yes');
+            this.snackbar.action({
+              actionText: action,
+              snackText: this._translateService.instant(
+                'ota.warnings.leaving.message'
+              ),
+              hideDelay: 3500,
+            })
+              .then((result: any) => {
+                if (result.command === 'Action') {
                   // user wants to leave so remove the back pressed event
                   app.android.off(
                     app.AndroidApplication.activityBackPressedEvent
