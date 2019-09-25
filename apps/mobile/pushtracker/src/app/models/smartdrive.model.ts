@@ -513,7 +513,7 @@ export class SmartDrive extends DeviceBase {
                   value: data
                 })
                 .then((ret) => {
-                  if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+                  if (isAndroid && ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
                     throw 'bad status: ' + ret.status;
                   } else {
                     writeFirmwareTimeoutID = timer.setTimeout(() => {

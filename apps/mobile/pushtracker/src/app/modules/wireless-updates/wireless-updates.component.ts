@@ -20,7 +20,7 @@ import {
 import { Toasty } from 'nativescript-toasty';
 import * as app from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
+import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { Color } from 'tns-core-modules/ui/content-view';
 import * as dialogs from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
@@ -40,6 +40,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public CONFIGURATIONS = CONFIGURATIONS;
   languagePreference: string = '';
   controlConfiguration: string = '';
+  screenWidth = screen.mainScreen.widthDIPs;
 
   /**
    * SmartDrive Wireless Updates:
@@ -145,35 +146,44 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async getFirmwareData() {
-    const versions = JSON.parse(
-      appSettings.getString(SmartDriveData.Firmwares.TableName)
-    );
+    let versions = {};
+    try {
+      versions = JSON.parse(
+        appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
+      );
+    } catch (err) {
+    }
 
     const objs = [];
     for (const key in versions) {
       objs.push(versions[key]);
     }
+    const firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       // make the metadata
-      return mds.reduce((data, md) => {
+      mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
+        if (fname && fname.length) {
+          Log.D('loading SD firmware file:', fname);
+          const blob = SmartDriveData.Firmwares.loadFromFileSystem({
+            filename: fname
+          });
+          if (blob && blob.length) {
+            data[md[SmartDriveData.Firmwares.FirmwareName]] = {
+              version: md[SmartDriveData.Firmwares.VersionName],
+              filename: fname,
+              id: md[SmartDriveData.Firmwares.IdName],
+              changes: md[SmartDriveData.Firmwares.ChangesName],
+              data: blob
+            };
+          }
         }
         return data;
-      }, {});
+      }, firmwareData);
     }
+    return firmwareData;
   }
 
   async updateFirmwareData(f: any) {
@@ -301,13 +311,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
-      await this._bluetoothService.scanForSmartDrive(10).then(() => {
+      await this._bluetoothService.scanForSmartDrive(10).then(async () => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
-          dialogs.alert({
+          await dialogs.alert({
             title: this._translateService.instant('wireless-updates.error'),
-            message:
-              this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
+            message: this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
             okButtonText: this._translateService.instant('general.ok')
           });
           this.smartDriveCheckedForUpdates = true;
@@ -318,10 +327,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this.noSmartDriveDetected = true;
           return;
         } else if (drives.length > 1) {
-          dialogs.alert({
+          await dialogs.alert({
             title: this._translateService.instant('wireless-updates.error'),
-            message:
-            this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
+            message: this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
             okButtonText: this._translateService.instant('general.ok')
           });
           this.smartDriveCheckedForUpdates = true;
@@ -355,12 +363,29 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     Object.keys(this.currentVersions).map(
       k => this.currentVersions[k].changes
     );
-    const bleFw = new Uint8Array(
-      this.currentVersions['SmartDriveBLE.ota'].data
-    );
-    const mcuFw = new Uint8Array(
-      this.currentVersions['SmartDriveMCU.ota'].data
-    );
+    let bleFw = null;
+    let mcuFw = null;
+    if (isAndroid) {
+      bleFw = new Uint8Array(
+        this.currentVersions['SmartDriveBLE.ota'].data
+      );
+      mcuFw = new Uint8Array(
+        this.currentVersions['SmartDriveMCU.ota'].data
+      );
+    } else {
+      let len = 0;
+      let tmp = null;
+      // ble fw
+      len = this.currentVersions['SmartDriveBLE.ota'].data.length;
+      tmp = new ArrayBuffer(len);
+      this.currentVersions['SmartDriveBLE.ota'].data.getBytes(tmp);
+      bleFw = new Uint8Array(tmp);
+      // mcu fw
+      len = this.currentVersions['SmartDriveMCU.ota'].data.length;
+      tmp = new ArrayBuffer(this.currentVersions['SmartDriveMCU.ota'].data.length);
+      this.currentVersions['SmartDriveMCU.ota'].data.getBytes(tmp);
+      mcuFw = new Uint8Array(tmp);
+    }
     // smartdrive needs to update
     try {
       this.registerForSmartDriveEvents();
@@ -452,35 +477,44 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   async getPushTrackerFirmwareData() {
-    const versions = JSON.parse(
-      appSettings.getString(PushTrackerData.Firmware.TableName)
-    );
+    let versions = {};
+    try {
+      versions = JSON.parse(
+        appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
+      );
+    } catch (err) {
+    }
 
     const objs = [];
     for (const key in versions) {
       objs.push(versions[key]);
     }
+    const firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(...o));
       // make the metadata
-      return mds.reduce((data, md) => {
+      mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
-        const blob = PushTrackerData.Firmware.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[PushTrackerData.Firmware.FirmwareName]] = {
-            version: md[PushTrackerData.Firmware.VersionName],
-            filename: fname,
-            id: md[PushTrackerData.Firmware.IdName],
-            changes: md[PushTrackerData.Firmware.ChangesName],
-            data: blob
-          };
+        if (fname && fname.length) {
+          Log.D('loading PT firmware file:', fname);
+          const blob = PushTrackerData.Firmware.loadFromFileSystem({
+            filename: fname
+          });
+          if (blob && blob.length) {
+            data[md[PushTrackerData.Firmware.FirmwareName]] = {
+              version: md[PushTrackerData.Firmware.VersionName],
+              filename: fname,
+              id: md[PushTrackerData.Firmware.IdName],
+              changes: md[PushTrackerData.Firmware.ChangesName],
+              data: blob
+            };
+          }
         }
         return data;
-      }, {});
+      }, firmwareData);
     }
+    return firmwareData;
   }
 
   async updatePushTrackerFirmwareData(f: any) {
@@ -562,7 +596,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // do we need to download any firmware files?
       if (fileMetaDatas && fileMetaDatas.length) {
         // TODO: update UI
-
         // now download the files
         promises = fileMetaDatas.map(PushTrackerData.Firmware.download);
       }
@@ -613,12 +646,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
       );
       if (trackers.length === 0) {
-        dialogs.alert({
+        await dialogs.alert({
           title: this._translateService.instant('wireless-updates.error'),
-          message:
-          this._translateService.instant(
-            'wireless-updates.messages.no-pushtracker-detected'
-          ),
+          message: this._translateService.instant('wireless-updates.messages.no-pushtracker-detected'),
           okButtonText: this._translateService.instant('general.ok')
         });
 
@@ -630,10 +660,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else if (trackers.length > 1) {
-        dialogs.alert({
+        await dialogs.alert({
           title: this._translateService.instant('wireless-updates.error'),
-          message:
-          this._translateService.instant(
+          message: this._translateService.instant(
             'wireless-updates.messages.more-than-one-pushtracker-connected'
           ),
           okButtonText: this._translateService.instant('general.ok')
@@ -672,9 +701,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     Object.keys(this.currentPushTrackerVersions).map(
       k => this.currentPushTrackerVersions[k].changes
     );
-    const ptFw = new Uint8Array(
-      this.currentPushTrackerVersions['PushTracker.ota'].data
-    );
+    let ptFw = null;
+    if (isAndroid) {
+      ptFw = new Uint8Array(
+        this.currentPushTrackerVersions['PushTracker.ota'].data
+      );
+    } else {
+      const len = this.currentPushTrackerVersions['PushTracker.ota'].data.length;
+      const tmp = new ArrayBuffer(len);
+      this.currentPushTrackerVersions['PushTracker.ota'].data.getBytes(tmp);
+      ptFw = new Uint8Array(tmp);
+    }
     // pushtracker needs to update
     try {
       this.registerForPushTrackerEvents();
