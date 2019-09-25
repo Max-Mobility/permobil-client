@@ -38,8 +38,6 @@ import { APP_THEMES, CONFIGURATIONS } from '../../enums';
 export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public APP_THEMES = APP_THEMES;
   public CONFIGURATIONS = CONFIGURATIONS;
-  ptCirclePercentage: number = 83;
-  sdCirclePercentage: number = 30;
   languagePreference: string = '';
   controlConfiguration: string = '';
   screenWidth = screen.mainScreen.widthDIPs;
