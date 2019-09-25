@@ -261,7 +261,7 @@ export class HomeTabComponent {
           return Promise.resolve(true);
         } else Promise.reject(false);
       } catch (err) {
-        Log.E('refreshUserFromKinvey |', err);
+        this._logService.logException(err);
       }
     }
 
@@ -273,7 +273,7 @@ export class HomeTabComponent {
         return Promise.resolve(true);
       })
       .catch(err => {
-        Log.E(err);
+        this._logService.logException(err);
         return Promise.reject(false);
       });
   }

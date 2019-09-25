@@ -223,7 +223,6 @@ export class LoginComponent implements OnInit {
   }
 
   private _isPasswordValid(text: string): boolean {
-    console.log('pw', this.user.password);
     // validate the password
     if (!text) {
       this.passwordError = this._translateService.instant(

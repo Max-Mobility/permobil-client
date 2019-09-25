@@ -739,14 +739,6 @@ export class ActivityComponent implements OnInit {
     this.yAxisStep = this.yAxisMax / 5;
   }
 
-  private _printResult(result) {
-    console.log('Printing result [length = ' + result.length + ']');
-    // for (const i in result) {
-    //   const r = result[i];
-    //   console.log(r);
-    // }
-  }
-
   private async _formatActivityForView(index: number) {
     if (index === 0) {
       const activity =
@@ -913,7 +905,6 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
-        this._printResult(result);
         return result;
       } else {
         const result = [];
@@ -983,7 +974,6 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
-        this._printResult(result);
         return result;
       }
     } else if (index === 1) {
@@ -1101,7 +1091,6 @@ export class ActivityComponent implements OnInit {
           driveDistance: 0,
           coastDistance: 0
         });
-        this._printResult(result);
         return result;
       } else {
         const result = [];

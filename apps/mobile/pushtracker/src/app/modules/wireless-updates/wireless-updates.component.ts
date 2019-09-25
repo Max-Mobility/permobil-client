@@ -100,7 +100,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {}
 
   onMoreBtnTap() {
-    console.log('morebtn tapped in mock action bar');
+    this._logService.logBreadCrumb(WirelessUpdatesComponent,
+      'morebtn tapped in mock action bar');
     this._modalService
       .showModal(UpdatesInfoComponent, {
         context: {
