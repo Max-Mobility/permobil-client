@@ -126,6 +126,39 @@ export class BluetoothService {
     return result;
   }
 
+  scanForSmartDriveReturnOnFirst(timeout: number = 4): Promise<any> {
+    this.clearSmartDrives();
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this._bluetooth.startScanning({
+          serviceUUIDs: [SmartDrive.ServiceUUID],
+          seconds: timeout,
+          onDiscovered: (peripheral: any) => {
+            // stop scanning
+            this._bluetooth.stopScanning();
+            // get what we need for SD
+            const p = {
+              rssi: peripheral.RSSI,
+              device: peripheral.device,
+              address: peripheral.UUID,
+              name: peripheral.name
+            };
+            let sd = undefined;
+            // determine if it's a SD and get it
+            if (this.isSmartDrive(p)) {
+              sd = this.getOrMakeSmartDrive(p);
+            }
+            // now resolve
+            resolve(sd);
+          }
+        });
+        resolve(undefined);
+      } catch (err) {
+        resolve(undefined);
+      }
+    });
+  }
+
   public stopScanning(): Promise<any> {
     return this._bluetooth.stopScanning();
   }
