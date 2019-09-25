@@ -169,7 +169,9 @@ export class JourneyTabComponent {
   async refreshUserFromKinvey(forceRefresh: boolean = false) {
     if (this._firstLoad && !forceRefresh) {
       try {
-        const user = JSON.parse(appSettings.getString('Kinvey.User'));
+        const kinveyUserJSON = appSettings.getString('Kinvey.User');
+        let user = undefined;
+        if (kinveyUserJSON) user = JSON.parse(kinveyUserJSON);
         if (user) {
           this.user = user;
           user._id = user.data._id;
