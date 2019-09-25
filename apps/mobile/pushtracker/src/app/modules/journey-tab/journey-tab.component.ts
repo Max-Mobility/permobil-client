@@ -194,7 +194,7 @@ export class JourneyTabComponent {
         return Promise.resolve(true);
       })
       .catch(err => {
-        Log.E(err);
+        this._logService.logException(err);
         return Promise.reject(false);
       });
   }
