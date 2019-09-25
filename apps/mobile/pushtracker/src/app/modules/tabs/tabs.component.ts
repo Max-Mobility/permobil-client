@@ -69,21 +69,6 @@ export class TabsComponent {
         trailing: true
       }
     );
-  }
-
-  onRootBottomNavLoaded(_) {
-    if (this._firstLoad) return;
-
-    setTimeout(() => {
-      this.registerBluetoothEvents();
-    }, 5000);
-    this.registerPushTrackerEvents();
-
-    if (isAndroid) {
-      this.permissionsNeeded.push(
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
-      );
-    }
 
     this._userService.user.subscribe(user => {
       if (!user) return;
@@ -126,8 +111,23 @@ export class TabsComponent {
         }, 5000);
       }
     });
+
+  }
+
+  onRootBottomNavLoaded(_) {
+    if (this._firstLoad) return;
+
+    setTimeout(() => {
+      this.registerBluetoothEvents();
+    }, 5000);
+    this.registerPushTrackerEvents();
+
+    if (isAndroid) {
+      this.permissionsNeeded.push(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION
+      );
+    }
     this._firstLoad = true;
-    // this._settingsService.loadSettings();
   }
 
   /**
@@ -156,6 +156,23 @@ export class TabsComponent {
           z[0].className = 'tabstripitem';
           z[1].className = 'tabstripitem';
           z[2].className = 'tabstripitem-active';
+          break;
+      }
+    }
+  }
+
+  async tabViewIndexChangeWithoutJourney(args: SelectedIndexChangedEventData) {
+    const x = args.object as BottomNavigation;
+    const z = x.tabStrip.items;
+    if (args.newIndex >= 0) {
+      switch (args.newIndex) {
+        case 0:
+          z[0].className = 'tabstripitem-active';
+          z[1].className = 'tabstripitem';
+          break;
+        case 1:
+          z[0].className = 'tabstripitem';
+          z[1].className = 'tabstripitem-active';
           break;
       }
     }
