@@ -8,6 +8,8 @@ import { Bluetooth } from './android_main';
 @JavaProxy('com.nativescript.TNS_ScanCallback')
 export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
   private _owner: WeakRef<Bluetooth>;
+  onPeripheralDiscovered: (data: any) => void;
+
   constructor() {
     super();
     return global.__native(this);
@@ -118,7 +120,7 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
           .getDevice()
           .getName()}::${result.getDevice().getAddress()}`
       );
-      this._owner.get().sendEvent(Bluetooth.device_discovered_event, {
+      const payload = {
         type: 'scanResult', // TODO or use different callback functions?
         UUID: result.getDevice().getAddress(),
         name: result.getDevice().getName(),
@@ -130,7 +132,9 @@ export class TNS_ScanCallback extends android.bluetooth.le.ScanCallback {
         ),
         manufacturerId: manufacturerId,
         manufacturerData: manufacturerData
-      });
+      };
+      this._owner.get().sendEvent(Bluetooth.device_discovered_event, payload);
+      this.onPeripheralDiscovered && this.onPeripheralDiscovered(payload);
     }
   }
 }

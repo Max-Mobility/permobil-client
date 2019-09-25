@@ -9,6 +9,7 @@ import { Bluetooth } from './android_main';
 export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
   .LeScanCallback {
   private _owner: WeakRef<Bluetooth>;
+  onPeripheralDiscovered: (data: any) => void;
 
   constructor() {
     super({
@@ -63,7 +64,7 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
             CLogTypes.info,
             `---- TNS_LeScanCallback.scanCallback ---- payload: ${device.getAddress()}::${device.getName()}`
           );
-          this._owner.get().sendEvent(Bluetooth.device_discovered_event, {
+          const payload = {
             type: 'scanResult', // TODO or use different callback functions?
             device: device,
             UUID: device.getAddress(), // TODO consider renaming to id (and iOS as well)
@@ -72,7 +73,9 @@ export class TNS_LeScanCallback extends android.bluetooth.BluetoothAdapter
             state: 'disconnected',
             manufacturerId: manufacturerId,
             manufacturerData: manufacturerData
-          });
+          };
+          this._owner.get().sendEvent(Bluetooth.device_discovered_event, payload);
+          this.onPeripheralDiscovered && this.onPeripheralDiscovered(payload);
         }
       }
     });
