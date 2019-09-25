@@ -363,7 +363,7 @@ export class ProfileTabComponent {
         this._initDisplayActivityGoalDistance();
       })
       .catch(err => {
-        Log.E(err);
+        this._logService.logException(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',
@@ -443,7 +443,7 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.E('ProfileTab | first_name TextFieldSheetComponent', error);
+        this._logService.logException(error);
       },
       () => {
         this._removeActiveDataBox();
@@ -1159,7 +1159,7 @@ export class ProfileTabComponent {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
       });
     } catch (error) {
-      Log.E(error);
+      this._logService.logException(error);
     }
   }
 
@@ -1171,7 +1171,7 @@ export class ProfileTabComponent {
         }
       );
     } catch (error) {
-      Log.E(error);
+      this._logService.logException(error);
     }
   }
 }

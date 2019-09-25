@@ -117,7 +117,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         // Do anything?
       })
       .catch(err => {
-        Log.E(err);
+        this._logService.logException(err);
         new Toasty({
           text:
             'An unexpected error occurred. If this continues please let us know.',

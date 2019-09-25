@@ -182,7 +182,7 @@ export class JourneyTabComponent {
           return Promise.resolve(true);
         } else Promise.reject(false);
       } catch (err) {
-        Log.E('HomeTab | refreshUserFromKinvey |', err);
+        this._logService.logException(err);
       }
     }
 
