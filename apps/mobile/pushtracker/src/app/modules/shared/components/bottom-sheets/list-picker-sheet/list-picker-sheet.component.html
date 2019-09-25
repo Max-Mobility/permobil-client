@@ -2,8 +2,8 @@
   <Label class="title" [text]="title | translate" textWrap="true"></Label>
   <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
 
-  <GridLayout rows="auto, auto" columns="auto, *, auto">
-    <FlexboxLayout row="0" col="1" colSpan="3" flexDirection="row" alignItems="center" justifyContent="center">
+  <GridLayout rows="auto, auto" columns="auto, *, auto, auto">
+    <FlexboxLayout row="0" col="1" colSpan="4" flexDirection="row" alignItems="center" justifyContent="center" margin="4">
       <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primaryItems" [selectedIndex]="primaryIndex" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
       <ListPicker
         #secondaryPicker
@@ -15,7 +15,7 @@
         (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
       ></ListPicker>
     </FlexboxLayout>
-    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
-    <Button android:ripple android:rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+    <Button row="1" col="2" ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
+    <Button row="1" col="3" ripple rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
   </GridLayout>
 </StackLayout>
