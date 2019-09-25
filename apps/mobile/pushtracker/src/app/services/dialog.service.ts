@@ -15,7 +15,6 @@ export class DialogService {
         actions
       })
         .then(result => {
-          Log.D(`action selected: ${result}`);
           if (
             result &&
             result !== this._translateService.instant('general.cancel')

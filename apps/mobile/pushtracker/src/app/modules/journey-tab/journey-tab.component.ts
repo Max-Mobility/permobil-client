@@ -74,7 +74,7 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb('JourneyTabComponent loaded');
 
     this._page.actionBarHidden = true;
-    this.refreshUserFromKinvey().then(() => {
+    this.refreshUserFromKinvey(false).then(() => {
       this.savedTheme = this.user.data.theme_preference;
       this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
       this.initJourneyItems().then(() => {
@@ -91,11 +91,9 @@ export class JourneyTabComponent {
     );
 
     this._userService.user.subscribe(user => {
-      Log.D('User theme changed', this.savedTheme);
       if (this.savedTheme !== user.data.theme_preference) {
         this.savedTheme = user.data.theme_preference;
         this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        Log.D('Refreshing');
         // Theme has changed - Refresh view so icon images can update
         // to match the theme
         this._refresh();
@@ -168,8 +166,8 @@ export class JourneyTabComponent {
     return result;
   }
 
-  async refreshUserFromKinvey() {
-    if (this._firstLoad) {
+  async refreshUserFromKinvey(forceRefresh: boolean = false) {
+    if (this._firstLoad && !forceRefresh) {
       try {
         const user = JSON.parse(appSettings.getString('Kinvey.User'));
         if (user) {
@@ -190,8 +188,8 @@ export class JourneyTabComponent {
 
     return getUserDataFromKinvey()
       .then(data => {
-        Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
+        this._userService.updateUser(this.user);
         appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         return Promise.resolve(true);
       })
@@ -202,7 +200,7 @@ export class JourneyTabComponent {
   }
 
   private async _refresh() {
-    return this.refreshUserFromKinvey().then(() => {
+    return this.refreshUserFromKinvey(true).then(() => {
       this._noMorePushTrackerActivityDataAvailable = false;
       this._noMoreSmartDriveUsageDataAvailable = false;
       this._noMoreDataAvailable = false;

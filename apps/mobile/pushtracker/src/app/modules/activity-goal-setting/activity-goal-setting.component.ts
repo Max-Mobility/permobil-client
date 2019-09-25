@@ -6,7 +6,6 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -53,15 +52,6 @@ export class ActivityGoalSettingComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    /*
-    this._userService.user.subscribe(user => {
-      this._user = user;
-      this.savedTheme = this._user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-      ? enableDefaultTheme()
-      : enableDarkTheme();
-    });
-    */
   }
 
   closeModal() {
@@ -69,14 +59,12 @@ export class ActivityGoalSettingComponent implements OnInit {
   }
 
   decrementConfigValue() {
-    Log.D('Decrement the config value');
     this.config.value -= 0.1;
     if (this.config.value < 0) this.config.value = 0;
     this.config.value = Math.round(this.config.value * 10) / 10;
   }
 
   incrementConfigValue() {
-    Log.D('Increment the config value');
     this.config.value += 0.1;
     this.config.value = Math.round(this.config.value * 10) / 10;
   }
@@ -146,6 +134,8 @@ export class ActivityGoalSettingComponent implements OnInit {
         activity_goal_distance: this.config.value
       });
     }
+
+    appSettings.setString('Kinvey.User', JSON.stringify(this._user));
 
     // close the modal
     this.closeModal();

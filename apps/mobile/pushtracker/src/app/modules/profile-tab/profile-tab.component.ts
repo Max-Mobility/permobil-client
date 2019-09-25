@@ -213,7 +213,6 @@ export class ProfileTabComponent {
       if (result === signOut) {
         this._zone.run(async () => {
           const logoutResult = await KinveyUser.logout();
-          Log.D('logout result', logoutResult);
           // Clean up appSettings key-value pairs that were
           // saved in app.component.ts
           appSettings.remove('PushTracker.WeeklyActivity');
@@ -250,52 +249,7 @@ export class ProfileTabComponent {
       .catch(err => {
         this._logService.logException(err);
       });
-  }
-
-  onEditName(args) {
-    Log.D('ProfileTab | Edit name pressed');
-    this._setActiveDataBox(args);
-
-    const firstName = this.user.data.first_name || '';
-    const lastName = this.user.data.last_name || '';
-
-    const options: BottomSheetOptions = {
-      viewContainerRef: this._vcRef,
-      dismissOnBackgroundTap: true,
-      context: {
-        title: this._translateService.instant('general.user-name'),
-        description: '', // Do we really need a description for name?
-        fields: [
-          {
-            prefix: this._translateService.instant('general.first-name'),
-            text: firstName
-          },
-          {
-            prefix: this._translateService.instant('general.last-name'),
-            text: lastName
-          }
-        ]
-      }
-    };
-
-    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
-      result => {
-        if (result && result.data) {
-          const firstNameField = result.data.fields[0] || '';
-          const lastNameField = result.data.fields[1] || '';
-          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
-          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
-          this._saveNameOnChange(newFirstName, newLastName);
-        }
-      },
-      error => {
-        Log.D('error', error);
-      },
-      () => {
-        Log.D('completed');
-        this._removeActiveDataBox();
-      }
-    );
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveFirstNameOnChange(newFirstName: string) {
@@ -304,6 +258,7 @@ export class ProfileTabComponent {
       newFirstName
     );
     KinveyUser.update({ first_name: newFirstName });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveLastNameOnChange(newLastName: string) {
@@ -312,23 +267,10 @@ export class ProfileTabComponent {
       newLastName
     );
     KinveyUser.update({ last_name: newLastName });
-  }
-
-  private _saveNameOnChange(newFirstName: string, newLastName: string) {
-    this._userService.updateDataProperty(
-      'first_name',
-      newFirstName
-    );
-    this._userService.updateDataProperty(
-      'last_name',
-      newLastName
-    );
-    KinveyUser.update({ first_name: newFirstName, last_name: newLastName });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   onNameLongPress(_, nameField: string) {
-    Log.D('First name long press');
-
     const opts = {
       title: this._translateService.instant(`profile-tab.edit-${nameField}`),
       defaultText:
@@ -345,10 +287,12 @@ export class ProfileTabComponent {
         if (nameField === 'first-name') {
           KinveyUser.update({ first_name: r.text });
           this._userService.updateDataProperty('first_name', r.text);
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
           this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
           this._userService.updateDataProperty('last_name', r.text);
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
           this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
         }
       }
@@ -428,8 +372,6 @@ export class ProfileTabComponent {
   }
 
   onBirthDateTap(args: EventData) {
-    Log.D(`Birthday tapped`);
-
     this._setActiveDataBox(args);
 
     const dateTimePickerStyle = DateTimePickerStyle.create(
@@ -461,6 +403,7 @@ export class ProfileTabComponent {
           const dateFormatted = YYYY_MM_DD(new Date(result));
           Log.D('Birthday formatted', dateFormatted);
           KinveyUser.update({ dob: dateFormatted });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       })
       .catch(err => {
@@ -492,16 +435,16 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
+          Log.D('ProfileTab | first_name TextFieldSheetComponent result', result.data);
           const firstNameField = result.data.fields[0] || '';
           const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
         }
       },
       error => {
-        Log.D('error', error);
+        Log.E('ProfileTab | first_name TextFieldSheetComponent', error);
       },
       () => {
-        Log.D('completed');
         this._removeActiveDataBox();
       }
     );
@@ -530,6 +473,7 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
+          Log.D('ProfileTab | last_name TextFieldSheetComponent result', result.data);
           const lastNameField = result.data.fields[0] || '';
           const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
@@ -576,6 +520,7 @@ export class ProfileTabComponent {
             this.genders[result.data.primaryIndex]
           );
           KinveyUser.update({ gender: this.genders[result.data.primaryIndex] });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -788,6 +733,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             chair_type: this.chairTypes[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -835,6 +781,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             chair_make: this.chairMakes[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -888,6 +835,7 @@ export class ProfileTabComponent {
           KinveyUser.update({
             control_configuration: this.configurations[result.data.primaryIndex]
           });
+          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
       },
       error => {
@@ -1076,6 +1024,7 @@ export class ProfileTabComponent {
       );
     }
     KinveyUser.update({ weight: this.user.data.weight });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveHeightOnChange(primaryValue: number, secondaryValue: number) {
@@ -1098,6 +1047,7 @@ export class ProfileTabComponent {
       );
     }
     KinveyUser.update({ height: this.user.data.height });
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _displayWeightInPounds(val: number) {
@@ -1166,6 +1116,7 @@ export class ProfileTabComponent {
         KinveyUser.update({
           pushtracker_serial_number: this.user.data.pushtracker_serial_number
         });
+        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
       } else if (deviceType === 'smartdrive') {
         this._userService.updateDataProperty(
           'smartdrive_serial_number',
@@ -1174,6 +1125,7 @@ export class ProfileTabComponent {
         KinveyUser.update({
           smartdrive_serial_number: this.user.data.smartdrive_serial_number
         });
+        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
       }
     } catch (error) {
       this._logService.logException(error);
@@ -1196,7 +1148,6 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    // Log.D('user:', JSON.stringify(user, null, 2));
     Log.D('user id:', id);
     Log.D('user token:', token);
     return `Kinvey ${token}:${id}`;

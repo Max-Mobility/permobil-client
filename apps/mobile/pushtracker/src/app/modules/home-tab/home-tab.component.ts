@@ -15,7 +15,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, enableDarkTheme, enableDefaultTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, applyTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -96,7 +96,7 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-    this.refreshUserFromKinvey().then(() => {
+    this.refreshUserFromKinvey(false).then(() => {
       this._loadWeeklyData();
     });
 
@@ -115,9 +115,7 @@ export class HomeTabComponent {
     this._userService.user.subscribe(user => {
       if (this.savedTheme !== user.data.theme_preference)
         this.savedTheme = user.data.theme_preference;
-      this.savedTheme === APP_THEMES.DEFAULT
-        ? enableDefaultTheme()
-        : enableDarkTheme();
+      applyTheme(this.savedTheme);
     });
   }
 
@@ -247,8 +245,8 @@ export class HomeTabComponent {
     return result;
   }
 
-  async refreshUserFromKinvey() {
-    if (this._firstLoad) {
+  async refreshUserFromKinvey(forceRefresh: boolean = false) {
+    if (this._firstLoad && !forceRefresh) {
       try {
         const user = JSON.parse(appSettings.getString('Kinvey.User'));
         if (user) {
@@ -269,8 +267,8 @@ export class HomeTabComponent {
 
     return getUserDataFromKinvey()
       .then(data => {
-        Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
+        this._userService.updateUser(this.user);
         appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         return Promise.resolve(true);
       })
@@ -281,10 +279,9 @@ export class HomeTabComponent {
   }
 
   async refreshPlots(args) {
-    Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey().then(result => {
+    this.refreshUserFromKinvey(true).then(result => {
       if (!result) return;
       // The user might come back and refresh the next day, just keeping
       // the app running - Update currentDayInView and weekStart to
@@ -297,9 +294,7 @@ export class HomeTabComponent {
       // Check for theme changes
       if (this.savedTheme !== this.user.data.theme_preference) {
         this.savedTheme = this.user.data.theme_preference;
-        this.savedTheme === APP_THEMES.DEFAULT
-          ? enableDefaultTheme()
-          : enableDarkTheme();
+        applyTheme(this.savedTheme);
       }
 
       // Now refresh the data
@@ -884,7 +879,6 @@ export class HomeTabComponent {
   }
 
   private async _formatUsageForView() {
-    Log.D('HomeTab | Formatting usage for view');
     const activity = this._weeklyUsageFromKinvey;
     if (activity && activity.days) {
       const result = [];
@@ -987,7 +981,6 @@ export class HomeTabComponent {
   }
 
   onCoastTimeBarSelected(event) {
-    Log.D('Coast time bar selected');
     if (!this._weeklyActivityFromKinvey) return;
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
@@ -1004,7 +997,6 @@ export class HomeTabComponent {
   }
 
   onDistanceBarSelected(event) {
-    Log.D('Distance bar selected');
     if (!this._weeklyUsageFromKinvey) return;
     const dayIndex = event.pointIndex - 2;
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];

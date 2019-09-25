@@ -18,8 +18,6 @@ export class TextFieldSheetComponent {
   description: string = '';
 
   constructor(private _params: BottomSheetParams) {
-    Log.D('TextField bottom sheet params', this._params);
-
     const data = this._params.context;
     if (data) {
       this.title = data.title;
@@ -38,7 +36,15 @@ export class TextFieldSheetComponent {
     this._params.closeCallback();
   }
 
+  onTextChange(args, index) {
+    // returnPress event will be triggered when user submits a value
+    const textField: TextField = <TextField>args.object;
+    // Gets or sets the input text.
+    this.fields[index].text = textField.text;
+  }
+
   onReturnPress(args, index) {
+    Log.D('TextFieldSheetComponent | Return Pressed');
     // returnPress event will be triggered when user submits a value
     const textField: TextField = <TextField>args.object;
     // Gets or sets the input text.

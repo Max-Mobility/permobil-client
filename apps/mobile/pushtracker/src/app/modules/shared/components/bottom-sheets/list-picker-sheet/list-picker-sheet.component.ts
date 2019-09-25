@@ -20,10 +20,7 @@ export class ListPickerSheetComponent {
   secondaryIndex?: number;
 
   constructor(private _params: BottomSheetParams) {
-    Log.D('ListPicker bottom sheet params', this._params);
-
     const data = this._params.context;
-
     if (data) {
       this.title = data.title;
       this.description = data.description;

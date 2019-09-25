@@ -83,12 +83,9 @@ export class MockActionbarComponent {
     this._setWatchConnectIconVariables('check');
   }
 
-  onMockActionBarLoaded() {
-    // Log.D('MockActionBar loaded');
-  }
+  onMockActionBarLoaded() {}
 
   onUnloaded() {
-    // Log.D('MockActionBar unloaded');
     this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
@@ -208,7 +205,6 @@ export class MockActionbarComponent {
 
   public updateWatchIcon(event: any) {
     this._zone.run(() => {
-      // Log.D('MockActionBar - Watch Status Change:', event.data);
       const state =
         (event && event.data && event.data.state) ||
         BluetoothService.pushTrackerStatus.get('state');

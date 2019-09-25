@@ -13,7 +13,7 @@ import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
-import { enableDarkTheme, enableDefaultTheme } from '../../utils';
+import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent } from '../shared/components';
 
 @Component({
@@ -497,11 +497,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'theme':
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
-        if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-          enableDefaultTheme();
-        } else if (this.CURRENT_THEME === APP_THEMES.DARK) {
-          enableDarkTheme();
-        }
+        applyTheme(this.CURRENT_THEME);
         this._userService.updateDataProperty(
           'theme_preference',
           this.CURRENT_THEME
@@ -521,6 +517,8 @@ export class ProfileSettingsComponent implements OnInit {
           this._translateService.use(language);
         break;
     }
+    // Update local cache of this.user in appSettings
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
     this._debouncedCommitSettingsFunction();
     this._logService.logBreadCrumb(
       `User updated setting: ${this.activeSetting} to: ${index}`

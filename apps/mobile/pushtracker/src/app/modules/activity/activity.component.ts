@@ -123,8 +123,6 @@ export class ActivityComponent implements OnInit {
     if (this._params.context.chartYAxis) {
       this.chartYAxis = this._params.context.chartYAxis;
     }
-    Log.D('View mode:', this.chartYAxis, typeof this.chartYAxis);
-
     this.getUser();
 
     // init the segmented bar items
@@ -160,10 +158,8 @@ export class ActivityComponent implements OnInit {
     );
 
     if (this.currentTab === TAB.DAY) {
-      Log.D('currentTab = 0, loading daily activity...');
       this._loadDailyActivity();
     } else if (this.currentTab === TAB.WEEK) {
-      Log.D('currentTab = 1, loading weekly activity...');
       this._loadWeeklyActivity();
     }
 
@@ -467,7 +463,6 @@ export class ActivityComponent implements OnInit {
 
       this._formatActivityForView(0).then(result => {
         this.dailyActivity = new ObservableArray(result);
-        Log.D('Created daily activity for plotting');
         if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
           if (this._dailyActivityFromKinvey) {
             // format chart description for chartYAxis
@@ -521,7 +516,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private _calculateDailyActivityYAxisMax() {
-    Log.D('Calculating y-axis max');
     this.yAxisMax = 0;
     this.yAxisStep = 15;
     if (this.dailyActivity) {
@@ -547,7 +541,6 @@ export class ActivityComponent implements OnInit {
     else if (this.yAxisMax === 0) this.yAxisMax = 1.0;
     else if (this.yAxisMax <= 1.0) this.yAxisMax = 1.0;
     this.yAxisStep = this.yAxisMax / 5.0;
-    Log.D('yAxisMax =', this.yAxisMax + '; yAxisStep = ' + this.yAxisStep);
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
@@ -621,11 +614,6 @@ export class ActivityComponent implements OnInit {
         this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) &&
         this.weekStart.toUTCString() in this._weeklyActivityCache);
     if (!cacheAvailable || forcePullFromDatabase) {
-      if (!cacheAvailable)
-        Log.D('No cache available. Pulling activity from database');
-      if (forcePullFromDatabase)
-        Log.D('Forcing pull from database instead of using cache');
-
       if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
           _ => {
@@ -1200,7 +1188,6 @@ export class ActivityComponent implements OnInit {
       this.monthNames[date.getMonth()] +
       ' ' +
       date.getDate();
-    Log.D('Chart Title: ' + this.chartTitle);
   }
 
   private async _initWeekChartTitle() {
@@ -1472,7 +1459,6 @@ export class ActivityComponent implements OnInit {
               }
             }
           }
-          Log.D('Calculating average push_count', numDaysOfActivity);
           if (numDaysOfActivity === 0) numDaysOfActivity = 1;
           this.weeklyActivityAnnotationValue =
             parseInt((activity.push_count / numDaysOfActivity).toFixed(1)) || 0;
@@ -1498,7 +1484,6 @@ export class ActivityComponent implements OnInit {
               }
             }
           }
-          Log.D('Calculating average push_count with cache', numDaysOfActivity);
           if (numDaysOfActivity === 0) numDaysOfActivity = 1;
           this.weeklyActivityAnnotationValue =
             parseInt((cache.weeklyActivity.push_count / numDaysOfActivity).toFixed(1)) || 0;
@@ -1535,7 +1520,6 @@ export class ActivityComponent implements OnInit {
             }
           }
         }
-        Log.D('Calculating average push_count', numDaysOfActivity);
         if (numDaysOfActivity === 0) numDaysOfActivity = 1;
         this.weeklyActivityAnnotationValue /= numDaysOfActivity;
       } else {
@@ -1562,7 +1546,6 @@ export class ActivityComponent implements OnInit {
             }
           }
         }
-        Log.D('Calculating average push_count', numDaysOfActivity);
         if (numDaysOfActivity === 0) numDaysOfActivity = 1;
         this.weeklyActivityAnnotationValue /= numDaysOfActivity;
       }
