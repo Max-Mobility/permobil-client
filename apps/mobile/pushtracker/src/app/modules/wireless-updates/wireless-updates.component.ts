@@ -376,12 +376,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       let len = 0;
       let tmp = null;
       // ble fw
-      len = this.currentVersions['SmartDriveBLE.ota'].data.length
+      len = this.currentVersions['SmartDriveBLE.ota'].data.length;
       tmp = new ArrayBuffer(len);
       this.currentVersions['SmartDriveBLE.ota'].data.getBytes(tmp);
       bleFw = new Uint8Array(tmp);
       // mcu fw
-      len = this.currentVersions['SmartDriveMCU.ota'].data.length
+      len = this.currentVersions['SmartDriveMCU.ota'].data.length;
       tmp = new ArrayBuffer(this.currentVersions['SmartDriveMCU.ota'].data.length);
       this.currentVersions['SmartDriveMCU.ota'].data.getBytes(tmp);
       mcuFw = new Uint8Array(tmp);
@@ -705,7 +705,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.currentPushTrackerVersions['PushTracker.ota'].data
       );
     } else {
-      const len = this.currentPushTrackerVersions['PushTracker.ota'].data.length
+      const len = this.currentPushTrackerVersions['PushTracker.ota'].data.length;
       const tmp = new ArrayBuffer(len);
       this.currentPushTrackerVersions['PushTracker.ota'].data.getBytes(tmp);
       ptFw = new Uint8Array(tmp);
