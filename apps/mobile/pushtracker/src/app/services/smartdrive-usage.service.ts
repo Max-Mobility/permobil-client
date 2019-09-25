@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  DataStoreType as DataStoreType,
   DataStore as KinveyDataStore,
   Query as KinveyQuery,
   User as KinveyUser
@@ -9,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class SmartDriveUsageService {
-  private datastore = KinveyDataStore.collection('DailySmartDriveUsage');
+  private datastore = KinveyDataStore.collection('DailySmartDriveUsage', DataStoreType.Auto);
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);

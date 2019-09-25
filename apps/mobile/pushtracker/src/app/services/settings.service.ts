@@ -3,6 +3,7 @@ import { Device } from '@permobil/core';
 import * as LS from 'nativescript-localstorage';
 import { STORAGE_KEYS } from '../enums';
 import {
+  DataStoreType as DataStoreType,
   DataStore as KinveyDataStore,
   Query as KinveyQuery,
   User as KinveyUser
@@ -15,7 +16,7 @@ export class SettingsService {
   pushSettings = new Device.PushSettings();
   switchControlSettings = new Device.SwitchControlSettings();
 
-  private datastore = KinveyDataStore.collection('SmartDriveSettings');
+  private datastore = KinveyDataStore.collection('SmartDriveSettings', DataStoreType.Auto);
 
   constructor(private _logService: LoggingService) { }
 

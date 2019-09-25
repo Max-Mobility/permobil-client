@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  DataStoreType as DataStoreType,
   DataStore as KinveyDataStore,
   Query as KinveyQuery,
   User as KinveyUser
@@ -8,7 +9,7 @@ import { LoggingService } from './logging.service';
 
 @Injectable()
 export class ActivityService {
-  private datastore = KinveyDataStore.collection('DailyPushTrackerActivity');
+  private datastore = KinveyDataStore.collection('DailyPushTrackerActivity', DataStoreType.Auto);
   public dailyActivity: any;
   public weeklyActivity: any;
 
