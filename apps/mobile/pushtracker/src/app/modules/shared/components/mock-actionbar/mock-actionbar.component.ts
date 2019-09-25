@@ -94,7 +94,6 @@ export class MockActionbarComponent {
   }
 
   onWatchTap() {
-    Log.D('MockActionBar | Showing watch status in alert box');
     dialogs.alert({
       title: this._translateService.instant('profile-settings.watch-status-alert-title'),
       message: this._translateService.instant('profile-settings.watch-status-alert-message.' +

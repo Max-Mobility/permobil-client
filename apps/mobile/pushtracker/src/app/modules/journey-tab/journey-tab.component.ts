@@ -114,7 +114,7 @@ export class JourneyTabComponent {
   }
 
   onRefreshTap() {
-    Log.D('refresh tap');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refresh tap');
     this.debouncedRefresh();
   }
 
@@ -247,7 +247,7 @@ export class JourneyTabComponent {
     } else {
       // No data available
       this._noMoreDataAvailable = true;
-      Log.D('No more data available in the database', this._rollingWeekStart);
+      this._logService.logBreadCrumb(JourneyTabComponent.name, 'No more data available in the database ' + this._rollingWeekStart);
       return this.journeyItems;
     }
   }
@@ -525,7 +525,7 @@ export class JourneyTabComponent {
   }
 
   async loadWeeklyPushtrackerActivityFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly activity from Kinvey');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loading weekly activity from Kinvey');
     let result = [];
     if (!this.user) return result;
 
@@ -537,18 +537,16 @@ export class JourneyTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          Log.D(
-            'JourneyTab | loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        Log.D(
-          'JourneyTab | loadWeeklyPushtrackerActivityFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklyPushtrackerActivityFromKinvey | No data for this week yet'
         );
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        Log.D('JourneyTab | loadWeeklyPushtrackerActivityFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -593,7 +591,7 @@ export class JourneyTabComponent {
   }
 
   async loadWeeklySmartDriveUsageFromKinvey(weekStartDate: Date) {
-    Log.D('Loading weekly usage from Kinvey');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loading weekly usage from Kinvey');
     let result = [];
     if (!this.user) return result;
 
@@ -605,18 +603,16 @@ export class JourneyTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          Log.D(
-            'JourneyTab | loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        Log.D(
-          'JourneyTab | loadWeeklySmartDriveUsageFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklySmartDriveUsageFromKinvey | No data for this week yet'
         );
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        Log.D('JourneyTab | loadWeeklySmartDriveUsageFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }

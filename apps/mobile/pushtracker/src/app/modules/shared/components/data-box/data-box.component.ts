@@ -84,7 +84,6 @@ export class DataBoxComponent extends TextField {
 
         if (result) {
           const dateFormatted = YYYY_MM_DD(new Date(result));
-          Log.D('Birthday formatted', dateFormatted);
           this.dataValue = dateFormatted; // set the formatted date to the Input()
           this.dataValueChange.emit(this.dataValue); // emit the updated Input value to the parent component
         }

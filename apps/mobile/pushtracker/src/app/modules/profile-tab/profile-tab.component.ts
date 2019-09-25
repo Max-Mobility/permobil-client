@@ -191,7 +191,7 @@ export class ProfileTabComponent {
   }
 
   onWatchConnectTap() {
-    Log.D('Connecting to Watch...');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch...');
     this._sendData();
     this._sendMessage();
   }
@@ -305,7 +305,8 @@ export class ProfileTabComponent {
     config_description: string,
     key: string
   ) {
-    Log.D('user tapped config = ', config_title, args.object);
+    this._logService.logBreadCrumb(ProfileTabComponent.name,
+      `User tapped config = ${config_title} ${args.object}`);
     this._setActiveDataBox(args);
 
     let value_description: string;
@@ -356,7 +357,7 @@ export class ProfileTabComponent {
         viewContainerRef: this._vcRef
       })
       .then(result => {
-        Log.D('activity setting result', result);
+        this._logService.logBreadCrumb(ProfileTabComponent.name, `Activity setting result: ${result}`);
         this._removeActiveDataBox();
         this._initDisplayActivityGoalCoastTime();
         this._initDisplayActivityGoalDistance();
@@ -401,7 +402,7 @@ export class ProfileTabComponent {
           );
           this._userService.updateDataProperty('dob', result);
           const dateFormatted = YYYY_MM_DD(new Date(result));
-          Log.D('Birthday formatted', dateFormatted);
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `Birthday formatted: ${dateFormatted}`);
           KinveyUser.update({ dob: dateFormatted });
           appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
@@ -413,7 +414,7 @@ export class ProfileTabComponent {
   }
 
   onFirstNameTap(args) {
-    Log.D('ProfileTab | First Name pressed');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'First Name pressed');
     this._setActiveDataBox(args);
 
     const firstName = this.user.data.first_name || '';
@@ -435,7 +436,7 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          Log.D('ProfileTab | first_name TextFieldSheetComponent result', result.data);
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `first_name TextFieldSheetComponent result: ${result.data}`);
           const firstNameField = result.data.fields[0] || '';
           const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
@@ -451,7 +452,7 @@ export class ProfileTabComponent {
   }
 
   onLastNameTap(args) {
-    Log.D('ProfileTab | Last Name pressed');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Last Name pressed');
     this._setActiveDataBox(args);
 
     const lastName = this.user.data.last_name || '';
@@ -473,24 +474,24 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          Log.D('ProfileTab | last_name TextFieldSheetComponent result', result.data);
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `last_name TextFieldSheetComponent result: ${result.data}`);
           const lastNameField = result.data.fields[0] || '';
           const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'error', error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onGenderTap(args) {
-    Log.D('User tapped Gender data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Gender data box');
     this._setActiveDataBox(args);
 
     let primaryIndex;
@@ -524,17 +525,17 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onWeightTap(args) {
-    Log.D('User tapped Weight data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Weight data box');
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -614,17 +615,17 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onHeightTap(args) {
-    Log.D('User tapped Height data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Height data box');
     this._setActiveDataBox(args);
 
     const listPickerNeedsSecondary =
@@ -689,17 +690,17 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onChairTypeTap(args) {
-    Log.D('User tapped Chair Type data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Chair Type data box');
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -737,17 +738,17 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onChairMakeTap(args) {
-    Log.D('User tapped Chair Make data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Chair Make data box');
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -785,17 +786,17 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
   }
 
   onControlConfigTap(args) {
-    Log.D('User tapped Control Configuration data box');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Control Configuration data box');
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -828,9 +829,8 @@ export class ProfileTabComponent {
             'control_configuration',
             this.configurations[result.data.primaryIndex]
           );
-          Log.D(
-            'Configuration changed to',
-            this.configurations[result.data.primaryIndex]
+          this._logService.logBreadCrumb(ProfileTabComponent.name,
+            `Configuration changed to: ${this.configurations[result.data.primaryIndex]}`
           );
           KinveyUser.update({
             control_configuration: this.configurations[result.data.primaryIndex]
@@ -839,10 +839,10 @@ export class ProfileTabComponent {
         }
       },
       error => {
-        Log.D('error', error);
+        this._logService.logException(error);
       },
       () => {
-        Log.D('completed');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
     );
@@ -1148,15 +1148,15 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    Log.D('user id:', id);
-    Log.D('user token:', token);
+    this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
+    this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
     return `Kinvey ${token}:${id}`;
   }
 
   private _sendData() {
     try {
       WearOsComms.sendData(this._getSerializedAuth()).then(() => {
-        Log.D('SendData successful.');
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
       });
     } catch (error) {
       Log.E(error);
@@ -1167,7 +1167,7 @@ export class ProfileTabComponent {
     try {
       WearOsComms.sendMessage('/app-message', this._getSerializedAuth()).then(
         () => {
-          Log.D('SendData successful.');
+          this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
         }
       );
     } catch (error) {

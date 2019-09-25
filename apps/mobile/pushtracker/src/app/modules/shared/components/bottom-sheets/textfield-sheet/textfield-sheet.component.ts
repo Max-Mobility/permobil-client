@@ -44,7 +44,6 @@ export class TextFieldSheetComponent {
   }
 
   onReturnPress(args, index) {
-    Log.D('TextFieldSheetComponent | Return Pressed');
     // returnPress event will be triggered when user submits a value
     const textField: TextField = <TextField>args.object;
     // Gets or sets the input text.

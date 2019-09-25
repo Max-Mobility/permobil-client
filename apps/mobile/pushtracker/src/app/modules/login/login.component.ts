@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit {
   }
 
   async onSubmitLogin() {
-    console.dir(this.user);
     try {
       // validate the email
       const isEmailValid = this._isEmailValid(this.user.email);
@@ -81,7 +80,7 @@ export class LoginComponent implements OnInit {
         this.user.password.trim()
       );
 
-      Log.D(`Logged in user`, user);
+      this._logService.logBreadCrumb(LoginComponent.name, 'Logged in user: ' + user);
       appSettings.setString(
         STORAGE_KEYS.APP_THEME,
         user.data['theme_preference'] || APP_THEMES.DEFAULT

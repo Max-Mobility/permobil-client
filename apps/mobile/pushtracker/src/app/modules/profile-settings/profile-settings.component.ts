@@ -168,7 +168,7 @@ export class ProfileSettingsComponent implements OnInit {
           )
         ) {
           this.versionInfo = `(PT ${this._pt_version}, SD ${this._mcu_version}, BT ${this._ble_version})`;
-          Log.D('PushTracker connected', this.versionInfo);
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'PushTracker connected: ' + this.versionInfo);
         }
       }
     }
@@ -189,11 +189,11 @@ export class ProfileSettingsComponent implements OnInit {
 
   onSyncSettingsWithSmartDrive(_) {
     this.syncingWithSmartDrive = true;
-    Log.D('Synchronizing settings with SmartDrive');
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Synchronizing settings with SmartDrive');
     this._scanForSmartDrive().then(async () => {
       if (!this.smartDrive) return;
       await this.smartDrive.connect();
-      Log.D('Connected to SmartDrive', this.smartDrive.address);
+      this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Connected to SmartDrive: ' + this.smartDrive.address);
       this.syncState = this._translateService.instant(
         'profile-settings.connected-a-smartdrive'
       );
@@ -431,7 +431,7 @@ export class ProfileSettingsComponent implements OnInit {
 
     this._bottomSheet.show(SliderSheetComponent, options).subscribe(result => {
       if (result && result.data) {
-        Log.D(
+        this._logService.logBreadCrumb(ProfileSettingsComponent.name,
           `Slider setting new value ${result.data.SLIDER_VALUE} for setting: ${this.activeSetting}`
         );
         this._saveSliderSetting(result.data.SLIDER_VALUE);
@@ -535,7 +535,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.settingsService.switchControlSettings.maxSpeed = newValue * 10;
         break;
       default:
-        Log.D('no matching setting found for updating slider setting');
+        this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'no matching setting found for updating slider setting');
         break;
     }
 
@@ -562,7 +562,8 @@ export class ProfileSettingsComponent implements OnInit {
         // connected SmartDrive.
         const pts = BluetoothService.PushTrackers.filter(p => p.connected);
         if (pts && pts.length > 0) {
-          Log.D('sending to pushtrackers:', pts.map(pt => pt.address));
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+            'Sending to pushtrackers: ' + pts.map(pt => pt.address));
           actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
           await pts.map(async pt => {
             try {
@@ -580,7 +581,7 @@ export class ProfileSettingsComponent implements OnInit {
             }
           });
         } else {
-          Log.D('no pushtrackers!');
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'no pushtrackers!');
         }
       }
     }
@@ -596,13 +597,13 @@ export class ProfileSettingsComponent implements OnInit {
     this.syncState = this._translateService.instant(
       'profile-settings.scanning-for-smartdrives'
     );
-    Log.D('Scanning for SmartDrives');
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Scanning for SmartDrives');
     if (!force && this.smartDrive && this.smartDrive.address) {
       this.syncState = this._translateService.instant(
         'profile-settings.detected-a-smartdrive'
       );
-      Log.D(
-        'Scan is not forced - Already have a SmartDrive',
+      this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+        'Scan is not forced - Already have a SmartDrive: ' +
         this.smartDrive.address
       );
       return true;
@@ -632,8 +633,9 @@ export class ProfileSettingsComponent implements OnInit {
         } else {
           drives.map(async drive => {
             this.smartDrive = drive;
-            Log.D('SmartDrive detected', this.smartDrive.address);
-            Log.D('Scan successful');
+            this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+              'SmartDrive detected: ' + this.smartDrive.address);
+            this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Scan successful');
             this.syncState = this._translateService.instant(
               'profile-settings.detected-a-smartdrive'
             );
@@ -662,12 +664,14 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private async _onSmartDriveConnect(_: any) {
-    Log.D('SmartDrive connected', this.smartDrive.address);
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+      'SmartDrive connected: ' + this.smartDrive.address);
     this._mcu_version = this.smartDrive.mcu_version_string;
     this._ble_version = this.smartDrive.ble_version_string;
     this._updateSmartDriveSectionLabel();
 
-    Log.D('Able to send settings to SmartDrive?', this.smartDrive.ableToSend);
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+      'Able to send settings to SmartDrive? ' + this.smartDrive.ableToSend);
     if (this.smartDrive && this.smartDrive.ableToSend) {
       this.syncState = this._translateService.instant(
         'profile-settings.sending-settings'
@@ -686,22 +690,23 @@ export class ProfileSettingsComponent implements OnInit {
           );
           await this._sleep(3000);
           this.syncingWithSmartDrive = false;
-          Log.D(`Done sync'ing with SmartDrive`);
-          Log.D(
-            'Settings successfully commited to SmartDrive',
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name, `Done sync'ing with SmartDrive`);
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+            'Settings successfully commited to SmartDrive: ' +
             this.smartDrive.address
           );
-          Log.D('Syncing with SmartDrive?', this.syncingWithSmartDrive);
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+            'Syncing with SmartDrive? ' + this.syncingWithSmartDrive);
           this.syncSuccessful = true;
         } catch (err) {
           this.syncState = this._translateService.instant(
             'profile-settings.error-sending-settings'
           );
-          Log.D(
-            'Error committing settings to SmartDrive',
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+            'Error committing settings to SmartDrive: ' +
             this.smartDrive.address
           );
-          Log.D(err);
+          this._logService.logBreadCrumb(ProfileSettingsComponent.name, err);
           this._logService.logException(err);
         }
       });
@@ -709,7 +714,8 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private async _onSmartDriveDisconnect(_: any) {
-    Log.D('SmartDrive disconnected', this.smartDrive.address);
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+      'SmartDrive disconnected: ' + this.smartDrive.address);
     // Unregister for SmartDrive connected and disconnected events
     this.smartDrive.off(
       SmartDrive.smartdrive_connect_event,

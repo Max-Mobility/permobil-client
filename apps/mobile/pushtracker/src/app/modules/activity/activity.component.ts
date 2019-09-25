@@ -544,7 +544,7 @@ export class ActivityComponent implements OnInit {
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    Log.D('ActivityTab | Loading weekly activity from Kinvey...');
+    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly activity from Kinvey...');
 
     let result = [];
     if (!this.user) return result;
@@ -557,25 +557,23 @@ export class ActivityComponent implements OnInit {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          Log.D(
-            'ActivityTab | loadWeeklyActivityFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(ActivityComponent.name, 'loadWeeklyActivityFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        Log.D(
-          'ActivityTab | loadWeeklyActivityFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(ActivityComponent.name, 'loadWeeklyActivityFromKinvey | No data for this week yet'
         );
         this._weeklyActivityFromKinvey = [];
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        Log.D('ActivityTab | loadWeeklyActivityFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    Log.D('ActivityTab | Loading weekly usage from Kinvey...');
+    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly usage from Kinvey...');
     let result = [];
     if (!this.user) return result;
 
@@ -587,19 +585,17 @@ export class ActivityComponent implements OnInit {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          Log.D(
-            'ActivityTab | loadSmartDriveUsageFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(ActivityComponent.name, 'loadSmartDriveUsageFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        Log.D(
-          'ActivityTab | loadSmartDriveUsageFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(ActivityComponent.name, 'loadSmartDriveUsageFromKinvey | No data for this week yet'
         );
         this._weeklyUsageFromKinvey = [];
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        Log.D('ActivityTab | loadSmartDriveUsageFromKinvey |', err);
+        this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -668,7 +664,7 @@ export class ActivityComponent implements OnInit {
         );
     } else {
       // We have the data cached. Pull it up
-      Log.D('Using local cache instead of pulling from database');
+      this._logService.logBreadCrumb(ActivityComponent.name, 'Using local cache instead of pulling from database');
       let cache = null;
       if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
