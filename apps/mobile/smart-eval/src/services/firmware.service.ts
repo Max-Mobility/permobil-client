@@ -128,7 +128,7 @@ export class FirmwareService {
         return Promise.resolve();
       }
     } catch (err) {
-      return Promise.reject(`Couldn't load metadata file: ${err}`);
+      return Promise.reject(`Could not load metadata file: ${err}`);
     }
   }
 
@@ -152,10 +152,10 @@ export class FirmwareService {
         if (fwData) {
           resolve(fwData);
         } else {
-          reject(`Couldn't find fw data for ${fileName}`);
+          reject(`Could not find fw data for ${fileName}`);
         }
       } catch (err) {
-        reject(`Couldn't load firmware file ${fileName}: ${err}`);
+        reject(`Could not load firmware file ${fileName}: ${err}`);
       }
     });
   }
