@@ -248,7 +248,7 @@ export class HomeTabComponent {
   async refreshUserFromKinvey(forceRefresh: boolean = false) {
     if (this._firstLoad && !forceRefresh) {
       try {
-        const kinveyUserJSON = appSettings.getString('Kinvey.User');
+        const kinveyUserJSON = appSettings.getString('Kinvey.User', '{}');
         let user = undefined;
         if (kinveyUserJSON) user = JSON.parse(kinveyUserJSON);
         if (user) {
@@ -366,9 +366,8 @@ export class HomeTabComponent {
       // Check if there's cached activity loaded in app.component.ts
       this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklySmartDriveUsage from appSettings');
       try {
-        result = JSON.parse(
-          appSettings.getString('SmartDrive.WeeklyUsage.' + date)
-        );
+        const weeklyUsageJSON = appSettings.getString('SmartDrive.WeeklyUsage.' + date, '{}');
+        if (weeklyUsageJSON) result = JSON.parse(weeklyUsageJSON);
         if (result && result.length) {
           return Promise.resolve(result[0]);
         }
@@ -490,9 +489,8 @@ export class HomeTabComponent {
       // Check if there's cached activity loaded in app.component.ts
       this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklyPushTrackerActivity from appSettings');
       try {
-        result = JSON.parse(
-          appSettings.getString('PushTracker.WeeklyActivity.' + date)
-        );
+        const weeklyActivityJSON = appSettings.getString('PushTracker.WeeklyActivity.' + date, '{}');
+        if (weeklyActivityJSON) result = JSON.parse(weeklyActivityJSON);
       } catch (err) {
         this._logService.logException(err);
       }
