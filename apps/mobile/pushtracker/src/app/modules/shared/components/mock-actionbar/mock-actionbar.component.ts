@@ -9,6 +9,8 @@ import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
 import { BluetoothService, PushTrackerState } from '../../../../services';
+import { TranslateService } from '@ngx-translate/core';
+const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
   selector: 'MockActionBar',
@@ -47,6 +49,7 @@ export class MockActionbarComponent {
 
   constructor(
     private _bluetoothService: BluetoothService,
+    private _translateService: TranslateService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
@@ -94,10 +97,14 @@ export class MockActionbarComponent {
   }
 
   onWatchTap() {
-    new Toasty({
-      text: 'Show info about current watch status.',
-      position: ToastPosition.CENTER
-    }).show();
+    dialogs.alert({
+      title: this._translateService.instant('profile-settings.watch-status-alert-title'),
+      message: this._translateService.instant('profile-settings.watch-status-alert-message.' +
+        this._getTranslationKeyForPushTrackerStatus()),
+      okButtonText: this._translateService.instant('dialogs.ok')
+    }).then(function() {
+      console.log('Dialog closed!');
+    });
   }
 
   onWatchConnectTap() {
@@ -225,6 +232,23 @@ export class MockActionbarComponent {
           break;
       }
     });
+  }
+
+  private _getTranslationKeyForPushTrackerStatus() {
+    const state = BluetoothService.pushTrackerStatus.get('state');
+    switch (state) {
+      default:
+      case PushTrackerState.unknown:
+        return 'unknown';
+      case PushTrackerState.paired:
+        return 'paired';
+      case PushTrackerState.disconnected:
+        return 'disconnected';
+      case PushTrackerState.connected:
+        return 'connected';
+      case PushTrackerState.ready:
+        return 'ready';
+    }
   }
 
   private _setWatchIconVariables(status: string) {

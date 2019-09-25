@@ -326,7 +326,15 @@
     "sending-settings": "Sending settings...",
     "sync-successful": "Sync successful!",
     "error-sending-settings": "Error sending settings",
-    "connected-a-smartdrive": "Connected a SmartDrive"
+    "connected-a-smartdrive": "Connected a SmartDrive",
+    "watch-status-alert-title": "PushTracker Status",
+    "watch-status-alert-message": {
+      "unknown": "PushTracker status is unknown",
+      "paired": "PushTracker is paired",
+      "disconnected": "PushTracker is disconnected",
+      "connected": "PushTracker is connected",
+      "ready": "PushTracker is ready"
+    }
   },
   "profile-tab": {
     "about-you": "About You",
