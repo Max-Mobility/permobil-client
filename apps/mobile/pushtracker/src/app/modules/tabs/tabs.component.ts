@@ -16,7 +16,7 @@ import { CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { ActivityService,
   BluetoothService, PushTrackerUserService, SettingsService,
-  SmartDriveUsageService, SmartDriveErrorsService } from '../../services';
+  SmartDriveUsageService, SmartDriveErrorsService, LoggingService } from '../../services';
 import { APP_LANGUAGES, APP_THEMES } from '../../enums';
 import { applyTheme, YYYY_MM_DD } from '../../utils';
 
@@ -38,6 +38,7 @@ export class TabsComponent {
   private snackbar = new SnackBar();
 
   constructor(
+    private _logService: LoggingService,
     private _activityService: ActivityService,
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
@@ -47,6 +48,7 @@ export class TabsComponent {
     private _usageService: SmartDriveUsageService,
     private _errorsService: SmartDriveErrorsService
   ) {
+    this._logService.logBreadCrumb('TabsComponent | Constructor');
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
@@ -76,31 +78,29 @@ export class TabsComponent {
 
       this.user = user;
       if (this.user.data.language_preference) {
-        Log.D('Switching to', this.user.data.language_preference);
         const language = APP_LANGUAGES[this.user.data.language_preference];
         if (this._translateService.currentLang !== language)
           this._translateService.use(language);
       }
 
-      Log.D('Configuration: ', this.user.data.control_configuration);
       if (
         this.user &&
         this.user.data.control_configuration ===
           CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
-        Log.D('asking for permissions');
+        this._logService.logBreadCrumb('TabsComponent | Asking for Bluetooth Permission');
         setTimeout(() => {
           this.askForPermissions()
             .then(() => {
               if (!this._bluetoothService.advertising) {
-                Log.D('starting bluetoooth');
+                this._logService.logBreadCrumb('TabsComponent | Starting Bluetooth');
                 // start the bluetooth service
                 return this._bluetoothService.advertise();
               }
             })
             .catch(err => {
-              Log.E('permission or bluetooth error:', err);
+              this._logService.logException(err);
             });
           this.bluetoothAdvertised = true;
         }, 5000);
@@ -209,7 +209,6 @@ export class TabsComponent {
         reasons.push(reasoning[r]);
       });
       if (neededPermissions && neededPermissions.length > 0) {
-        // Log.D('requesting permissions!', neededPermissions);
         await alert({
           title: this._translateService.instant('permissions-request.title'),
           message: reasons.join('\n\n'),
@@ -284,7 +283,7 @@ export class TabsComponent {
   }
 
   onDailyInfoEvent(args) {
-    Log.D('daily_info_event received from Pushtracker');
+    this._logService.logBreadCrumb('TabsComponent | daily_info_event received from PushTracker');
     const data = args.data;
     const year = data.year;
     const month = data.month - 1;
@@ -310,22 +309,20 @@ export class TabsComponent {
       .saveDailyActivityFromPushTracker(dailyActivity)
       .then(result => {
         if (result)
-          Log.D(
-            'DailyActivity from PushTracker successfully saved in database'
-          );
+          this._logService.logBreadCrumb('TabsComponent | DailyInfo from PushTracker successfully saved in Kinvey');
         else
-          Log.E('Failed to saved DailyActivity from PushTracker in database');
+          this._logService.logException(new Error('TabsComponent | Failed to save DailyInfo from PushTracker in Kinvey'));
       });
 
     // Request distance information from PushTracker
     if (this.pushTracker) {
       this.pushTracker.sendPacket('Command', 'DistanceRequest');
-      Log.D('Distance data requested from PushTracker');
+      this._logService.logBreadCrumb('TabsComponent | Distance data requested from PushTracker');
     }
   }
 
   onDistanceEvent(args) {
-    Log.D('Distance event received');
+    this._logService.logBreadCrumb('TabsComponent | distance_event received from PushTracker');
     const data = args.data;
     const distance_smartdrive_drive = data.driveDistance;
     const distance_smartdrive_coast = data.coastDistance;
@@ -347,26 +344,22 @@ export class TabsComponent {
       .saveDailyUsageFromPushTracker(dailyUsage)
       .then(result => {
         if (result)
-          Log.D(
-            'SmartDriveDailyInfo from PushTracker successfully saved in database'
-          );
+          this._logService.logBreadCrumb('TabsComponent | Distance from PushTracker successfully saved in Kinvey');
         else
-          Log.E(
-            'Failed to saved SmartDriveDailyInfo from PushTracker in database'
-          );
+          this._logService.logException(new Error('TabsComponent | Failed to save Distance from PushTracker in Kinvey'));
       });
   }
 
   onErrorEvent(args) {
-    Log.D('Error event received');
     const data = args.data;
     const year = data.year;
     const month = data.month;
     const day = data.day;
     if (year === 0 && month === 0 && day === 0)  {
-      Log.D('No errors detected. Discarding error event');
       return;
     }
+
+    this._logService.logBreadCrumb('TabsComponent | error_event received from PushTracker');
 
     const hour = data.hour;
     const minute = data.minute;
@@ -390,11 +383,9 @@ export class TabsComponent {
     .saveDailyErrorsFromPushTracker(dailyErrors)
     .then(result => {
       if (result)
-        Log.D(
-          'DailyErrors from PushTracker successfully saved in database'
-        );
+        this._logService.logBreadCrumb('TabsComponent | ErrorInfo from PushTracker successfully saved in Kinvey');
       else
-        Log.E('Failed to saved DailyErrors from PushTracker in database');
+        this._logService.logException(new Error('TabsComponent | Failed to save ErrorInfo from PushTracker in Kinvey'));
     });
   }
 
@@ -422,19 +413,11 @@ export class TabsComponent {
 
   private _registerEventsForPT(pt: PushTracker) {
     pt.on(PushTracker.paired_event, () => {
-      Log.D('pt paired:', pt.address);
+      this._logService.logBreadCrumb('TabsComponent | PushTracker paired: ' + pt.address);
       this.onPushTrackerPaired({
         data: { pushtracker: pt }
       });
     });
-    /* // Don't register for connect event here - handled by the bluetoothservice pushtracker_connect
-    pt.on(PushTracker.connect_event, () => {
-      Log.D('pt connected:', pt.address);
-      this.onPushTrackerConnected({
-        data: { pushtracker: pt }
-      })
-    });
-    */
     // register for settings and push settings
     pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
     pt.on(
