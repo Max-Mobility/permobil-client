@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Log } from '@permobil/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
-import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 
 @Component({
   selector: 'textfield-sheet',
@@ -11,14 +12,14 @@ import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 })
 export class TextFieldSheetComponent {
   savedTheme;
-  fields: Array<any> = [];
-  values: Array<string> = [];
+  fields: any[] = [];
+  values: string[] = [];
   title: string = '';
   description: string = '';
 
-  constructor(
-    private _params: BottomSheetParams
-  ) {
+  constructor(private _params: BottomSheetParams) {
+    Log.D('TextField bottom sheet params', this._params);
+
     const data = this._params.context;
     if (data) {
       this.title = data.title;

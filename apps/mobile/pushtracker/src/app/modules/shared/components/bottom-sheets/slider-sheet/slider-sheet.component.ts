@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Log } from '@permobil/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
@@ -15,7 +16,7 @@ export class SliderSheetComponent {
   SLIDER_VALUE;
 
   constructor(private _params: BottomSheetParams) {
-    console.log('params', this._params);
+    Log.D('Slider bottom sheet params', this._params);
 
     const data = this._params.context;
 

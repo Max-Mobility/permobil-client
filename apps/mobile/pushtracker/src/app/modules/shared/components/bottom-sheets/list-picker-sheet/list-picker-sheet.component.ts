@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Log } from '@permobil/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
@@ -18,10 +19,8 @@ export class ListPickerSheetComponent {
   primaryIndex: number;
   secondaryIndex?: number;
 
-  constructor(
-    private _params: BottomSheetParams
-  ) {
-    console.log('params', this._params);
+  constructor(private _params: BottomSheetParams) {
+    Log.D('ListPicker bottom sheet params', this._params);
 
     const data = this._params.context;
 
