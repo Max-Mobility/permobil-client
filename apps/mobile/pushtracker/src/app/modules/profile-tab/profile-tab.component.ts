@@ -253,52 +253,6 @@ export class ProfileTabComponent {
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
-  onEditName(args) {
-    Log.D('ProfileTab | Edit name pressed');
-    this._setActiveDataBox(args);
-
-    const firstName = this.user.data.first_name || '';
-    const lastName = this.user.data.last_name || '';
-
-    const options: BottomSheetOptions = {
-      viewContainerRef: this._vcRef,
-      dismissOnBackgroundTap: true,
-      context: {
-        title: this._translateService.instant('general.user-name'),
-        description: '', // Do we really need a description for name?
-        fields: [
-          {
-            prefix: this._translateService.instant('general.first-name'),
-            text: firstName
-          },
-          {
-            prefix: this._translateService.instant('general.last-name'),
-            text: lastName
-          }
-        ]
-      }
-    };
-
-    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
-      result => {
-        if (result && result.data) {
-          const firstNameField = result.data.fields[0] || '';
-          const lastNameField = result.data.fields[1] || '';
-          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
-          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
-          this._saveNameOnChange(newFirstName, newLastName);
-        }
-      },
-      error => {
-        Log.D('error', error);
-      },
-      () => {
-        Log.D('completed');
-        this._removeActiveDataBox();
-      }
-    );
-  }
-
   private _saveFirstNameOnChange(newFirstName: string) {
     this._userService.updateDataProperty(
       'first_name',
@@ -314,19 +268,6 @@ export class ProfileTabComponent {
       newLastName
     );
     KinveyUser.update({ last_name: newLastName });
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-  }
-
-  private _saveNameOnChange(newFirstName: string, newLastName: string) {
-    this._userService.updateDataProperty(
-      'first_name',
-      newFirstName
-    );
-    this._userService.updateDataProperty(
-      'last_name',
-      newLastName
-    );
-    KinveyUser.update({ first_name: newFirstName, last_name: newLastName });
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
@@ -498,6 +439,7 @@ export class ProfileTabComponent {
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
+        Log.D('ProfileTab | first_name TextFieldSheetComponent result', result.data);
         if (result && result.data) {
           const firstNameField = result.data.fields[0] || '';
           const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
@@ -536,6 +478,7 @@ export class ProfileTabComponent {
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
+        Log.D('ProfileTab | last_name TextFieldSheetComponent result', result.data);
         if (result && result.data) {
           const lastNameField = result.data.fields[0] || '';
           const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
