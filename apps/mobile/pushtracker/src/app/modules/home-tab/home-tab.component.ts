@@ -96,7 +96,7 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-    this.refreshUserFromKinvey().then(() => {
+    this.refreshUserFromKinvey(false).then(() => {
       this._loadWeeklyData();
     });
 
@@ -247,8 +247,8 @@ export class HomeTabComponent {
     return result;
   }
 
-  async refreshUserFromKinvey() {
-    if (this._firstLoad) {
+  async refreshUserFromKinvey(forceRefresh: boolean = false) {
+    if (this._firstLoad && !forceRefresh) {
       try {
         const user = JSON.parse(appSettings.getString('Kinvey.User'));
         if (user) {
@@ -271,6 +271,7 @@ export class HomeTabComponent {
       .then(data => {
         Log.D('HomeTab | Refreshed user data from kinvey');
         this.user = this.getPushTrackerUserFromKinveyUser(data);
+        this._userService.updateUser(this.user);
         appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         return Promise.resolve(true);
       })
@@ -284,7 +285,7 @@ export class HomeTabComponent {
     Log.D('Refreshing the data on HomeTabComponent');
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey().then(result => {
+    this.refreshUserFromKinvey(true).then(result => {
       if (!result) return;
       // The user might come back and refresh the next day, just keeping
       // the app running - Update currentDayInView and weekStart to
