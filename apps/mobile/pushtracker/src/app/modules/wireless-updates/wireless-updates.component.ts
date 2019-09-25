@@ -86,7 +86,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     private _vcRef: ViewContainerRef
   ) {
     this.languagePreference = _params.context.languagePreference || 'English';
-    Log.D('Language preference', this.languagePreference);
     this.controlConfiguration = _params.context.controlConfiguration || '';
     this.savedTheme = this._params.context.savedTheme;
   }
@@ -166,7 +165,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
         if (fname && fname.length) {
-          Log.D('loading SD firmware file:', fname);
+          this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Loading SD firmware file: ${fname}`);
           const blob = SmartDriveData.Firmwares.loadFromFileSystem({
             filename: fname
           });
@@ -360,7 +359,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    Log.D('got version', version);
+    this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Got version: ${version}`);
     // show dialog to user informing them of the version number and changes
     Object.keys(this.currentVersions).map(
       k => this.currentVersions[k].changes
@@ -507,7 +506,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
         if (fname && fname.length) {
-          Log.D('loading PT firmware file:', fname);
+          this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Loading PT firmware file: ${fname}`);
           const blob = PushTrackerData.Firmware.loadFromFileSystem({
             filename: fname
           });
@@ -705,7 +704,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // this.smartDriveOtaProgress = 0;
     // get info out to tell the user
     const version = PushTracker.versionByteToString(ptVersion);
-    Log.D('got version', version);
+    this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Got version: ${version}`);
     // show dialog to user informing them of the version number and changes
     Object.keys(this.currentPushTrackerVersions).map(
       k => this.currentPushTrackerVersions[k].changes

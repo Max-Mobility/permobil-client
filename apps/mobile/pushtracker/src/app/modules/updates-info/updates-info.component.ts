@@ -44,7 +44,6 @@ export class UpdatesInfoComponent implements OnInit {
         smartDriveMCUChanges = smartDriveMCUData.changes[APP_LANGUAGES[languagePreference]];
         smartDriveMCUVersion = this.versionByteToString(smartDriveMCUData.version);
       }
-      Log.D(smartDriveMCUChanges);
 
       let smartDriveBLEChanges = [];
       let smartDriveBLEVersion = '';
@@ -52,7 +51,6 @@ export class UpdatesInfoComponent implements OnInit {
         smartDriveBLEChanges = smartDriveBLEData.changes[APP_LANGUAGES[languagePreference]];
         smartDriveBLEVersion = this.versionByteToString(smartDriveBLEData.version);
       }
-      Log.D(smartDriveBLEChanges);
 
       let pushTrackerChanges = [];
       let pushTrackerVersion = '';
@@ -60,7 +58,6 @@ export class UpdatesInfoComponent implements OnInit {
         pushTrackerChanges = pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference]];
         pushTrackerVersion = this.versionByteToString(pushTrackerOTAData.version);
       }
-      Log.D(pushTrackerChanges);
 
       if (smartDriveMCUVersion !== '') {
         const smartDriveMCUSection = { 'title': 'SmartDrive MCU v' + smartDriveMCUVersion, 'items': [] };
