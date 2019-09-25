@@ -1,3 +1,4 @@
+import { Bluetooth } from 'nativescript-bluetooth';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { Common } from './wear-os-comms.common';
 
@@ -20,7 +21,7 @@ export class WearOsComms extends Common {
       // (e.g. if the phone is ios we need to use the bluetooth)
 
       const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-        .getPhoneDeviceType(ad.getApplicationContext());
+        .getPhoneDeviceType(androidUtils.getApplicationContext());
       switch (phoneDeviceType) {
           // Paired to Android phone, use Play Store URI.
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
@@ -28,12 +29,11 @@ export class WearOsComms extends Common {
 
           // Paired to iPhone, use iTunes App Store URI
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-          Log.D('\tDEVICE_TYPE_IOS');
           needToAdvertise = true;
           break;
 
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-          Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
+          console.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
           break;
       }
 
