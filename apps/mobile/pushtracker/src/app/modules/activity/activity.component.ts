@@ -82,7 +82,7 @@ export class ActivityComponent implements OnInit {
   minDate: Date;
   maxDate: Date;
   monthViewStyle: CalendarMonthViewStyle;
-  dailyActivityAnnotationValue: number = 0;
+  dailyActivityAnnotationValue: number = 0.001;
   yAxisMax = 0;
   yAxisStep = 15;
 
@@ -91,7 +91,7 @@ export class ActivityComponent implements OnInit {
 
   // Member variabes for week view
   weeklyActivity: ObservableArray<any[]>;
-  weeklyActivityAnnotationValue: number = 0;
+  weeklyActivityAnnotationValue: number = 0.001;
   private _weeklyActivityCache = {};
   private _weeklyUsageCache = {};
   enableNextWeekButton = false;

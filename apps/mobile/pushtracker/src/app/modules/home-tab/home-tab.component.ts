@@ -37,7 +37,7 @@ export class HomeTabComponent {
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
   savedTheme: string;
-  coastTimePlotAnnotationValue: number = 1;
+  coastTimePlotAnnotationValue: number = 0.001;
   coastTimeGoalMessage: string;
   coastTimeGoalValue: string;
   coastTimeGoalUnit: string;
@@ -53,7 +53,7 @@ export class HomeTabComponent {
   todayCoastDistance: string = '0.0';
   todayDriveDistance: string = '0.0';
   todayOdometer: string = '0.0';
-  distancePlotAnnotationValue: number = 0;
+  distancePlotAnnotationValue: number = 0.001;
   distanceGoalLabelChartData: ObservableArray<any[]>;
   distancePlotPalettes: ObservableArray<Palette>;
   goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
