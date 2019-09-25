@@ -118,7 +118,7 @@ export class AppComponent implements OnInit {
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb('AppComponent | Loading WeeklyPushTrackerActivity from Kinvey');
+    this._logService.logBreadCrumb(AppComponent.name, 'Loading WeeklyPushTrackerActivity from Kinvey');
     const user = KinveyUser.getActiveUser();
     if (!user) return;
     let result = [];
@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
   }
 
   async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb('AppComponent | Loading WeeklySmartDriveUsage from Kinvey');
+    this._logService.logBreadCrumb(AppComponent.name, 'Loading WeeklySmartDriveUsage from Kinvey');
     const user = KinveyUser.getActiveUser();
     let result = [];
     if (!user) return result;

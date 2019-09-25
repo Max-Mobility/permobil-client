@@ -52,14 +52,15 @@ export class LoggingService {
   }
 
   logBreadCrumb(
+    component,
     message,
     category: LoggingCategory = LoggingCategory.Info,
     level: Level = Level.Info
   ) {
     const breadcrumb: BreadCrumb = {
-      message,
-      category,
-      level
+      message: '[' + component + '] ' + message,
+      category: category,
+      level: level
     };
     console.log('Sentry Breadcrumb: ', breadcrumb);
     console.log('---------------------------------------------------');

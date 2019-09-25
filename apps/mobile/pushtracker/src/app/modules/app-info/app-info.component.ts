@@ -18,7 +18,7 @@ export class AppInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb('app-info.component OnInit');
+    this._logService.logBreadCrumb(AppInfoComponent.name, 'OnInit');
     this.infoItems = this._translateService.instant(
       'app-info-component.sections'
     );

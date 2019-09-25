@@ -92,7 +92,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('wireless-updates.component OnInit');
+    this._logService.logBreadCrumb(WirelessUpdatesComponent.name, 'OnInit');
     this.checkForSmartDriveUpdates();
     if (this.controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE)
       this.checkForPushTrackerUpdates();

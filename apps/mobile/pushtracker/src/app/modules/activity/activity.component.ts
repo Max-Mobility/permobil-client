@@ -190,7 +190,7 @@ export class ActivityComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('activity-tab.component OnInit');
+    this._logService.logBreadCrumb(ActivityComponent.name, 'OnInit');
   }
 
   getUser() {

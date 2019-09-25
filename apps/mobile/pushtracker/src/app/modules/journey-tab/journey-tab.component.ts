@@ -71,7 +71,7 @@ export class JourneyTabComponent {
   ) { }
 
   onJourneyTabLoaded() {
-    this._logService.logBreadCrumb('JourneyTabComponent loaded');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
 
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey(false).then(() => {
@@ -103,7 +103,7 @@ export class JourneyTabComponent {
   }
 
   onJourneyTabUnloaded() {
-    this._logService.logBreadCrumb('JourneyTabComponent unloaded');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Unloaded');
   }
 
   async initJourneyItems() {
