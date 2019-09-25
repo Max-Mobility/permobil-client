@@ -46,7 +46,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('forgot-password.component ngOnInit.');
+    this._logService.logBreadCrumb(ForgotPasswordComponent.name, 'ngOnInit.');
   }
 
   goBack() {

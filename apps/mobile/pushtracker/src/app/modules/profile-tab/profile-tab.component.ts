@@ -80,7 +80,7 @@ export class ProfileTabComponent {
   ) {}
 
   onProfileTabLoaded() {
-    this._logService.logBreadCrumb('ProfileTabComponent loaded');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
 
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;
@@ -186,7 +186,7 @@ export class ProfileTabComponent {
   }
 
   onProfileTabUnloaded() {
-    this._logService.logBreadCrumb('ProfileTabComponent unloaded');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Unloaded');
     // this._userSubscription$.unsubscribe();
   }
 
@@ -288,12 +288,12 @@ export class ProfileTabComponent {
           KinveyUser.update({ first_name: r.text });
           this._userService.updateDataProperty('first_name', r.text);
           appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-          this._logService.logBreadCrumb(`User updated first name: ${r.text}`);
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `User updated first name: ${r.text}`);
         } else if (nameField === 'last-name') {
           KinveyUser.update({ last_name: r.text });
           this._userService.updateDataProperty('last_name', r.text);
           appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-          this._logService.logBreadCrumb(`User updated last name: ${r.text}`);
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `User updated last name: ${r.text}`);
         }
       }
     });
@@ -396,7 +396,7 @@ export class ProfileTabComponent {
       .then(result => {
         this._removeActiveDataBox();
         if (result) {
-          this._logService.logBreadCrumb(
+          this._logService.logBreadCrumb(ProfileTabComponent.name,
             `User changed birthday: ${result.toDateString()}`
           );
           this._userService.updateDataProperty('dob', result);

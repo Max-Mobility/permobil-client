@@ -75,7 +75,7 @@ export class ProfileSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb('profile-settings.component ngOnInit');
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
     this._page.actionBarHidden = true;
 
@@ -183,7 +183,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   closeModal() {
-    Log.D('profile-settings.component modal closed');
     this._params.closeCallback('');
     if (this.smartDrive) this.smartDrive.disconnect();
   }
@@ -262,8 +261,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onListPickerItemTap(item: string) {
-    Log.D(`User tapped: ${item}`);
-
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true
@@ -392,8 +389,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onSliderItemTap(item: string) {
-    Log.D(`User tapped: ${item}`);
-
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true
@@ -520,7 +515,7 @@ export class ProfileSettingsComponent implements OnInit {
     // Update local cache of this.user in appSettings
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
     this._debouncedCommitSettingsFunction();
-    this._logService.logBreadCrumb(
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${index}`
     );
   }
@@ -544,7 +539,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
 
-    this._logService.logBreadCrumb(
+    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${newValue}`
     );
   }
@@ -616,7 +611,7 @@ export class ProfileSettingsComponent implements OnInit {
       this.user.data.control_configuration ===
       CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE
     ) {
-      return this._bluetoothService.scanForSmartDrive(10).then(() => {
+      return this._bluetoothService.scanForSmartDriveReturnOnFirst(10).then(() => {
         const drives = BluetoothService.SmartDrives;
         if (drives.length === 0) {
           alert({

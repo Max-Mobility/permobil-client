@@ -98,7 +98,7 @@ export class SignUpComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('sign-up.component ngOnInit');
+    this._logService.logBreadCrumb(SignUpComponent.name, 'ngOnInit');
   }
 
   goBack() {
@@ -222,7 +222,7 @@ export class SignUpComponent implements OnInit {
     // // need to make sure the username is not already taken
     const userExists = await KinveyUser.exists(this.user.username);
 
-    this._logService.logBreadCrumb(`KinveyUser.exists() result: ${userExists}`);
+    this._logService.logBreadCrumb(SignUpComponent.name, `KinveyUser.exists() result: ${userExists}`);
     // if username is taken tell user and exit so they can correct
     if (userExists === true) {
       this._loadingIndicator.hide();

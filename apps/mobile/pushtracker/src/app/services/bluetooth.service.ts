@@ -69,7 +69,7 @@ export class BluetoothService extends Observable {
     // enabling `debug` will output console.logs from the bluetooth source code
     this._bluetooth.debug = false;
 
-    this._loggingService.logBreadCrumb('bluetooth.service constructor');
+    this._loggingService.logBreadCrumb(BluetoothService.name, 'Constructor');
 
     console.time('bluetooth_init');
     this.initialize()
@@ -413,12 +413,12 @@ export class BluetoothService extends Observable {
   // private functions
   // event listeners
   private onAdvertiseFailure(args: any): void {
-    this._loggingService.logBreadCrumb('failed to advertise', args);
+    this._loggingService.logBreadCrumb(BluetoothService.name, 'Failed to advertise', args);
     // nothing
   }
 
   private onAdvertiseSuccess(_: any): void {
-    this._loggingService.logBreadCrumb('succeeded in advertising!');
+    this._loggingService.logBreadCrumb(BluetoothService.name, 'Succeeded in advertising!');
     // nothing
   }
 

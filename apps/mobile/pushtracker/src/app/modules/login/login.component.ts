@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('LoginComponent ngOnInit');
+    this._logService.logBreadCrumb(LoginComponent.name, 'ngOnInit');
     // if we get to the login page, no user should be logged in
     Kinvey.User.logout();
   }
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit {
         dimBackground: true
       });
 
-      this._logService.logBreadCrumb(
+      this._logService.logBreadCrumb(LoginComponent.name,
         `Signing in ${this.user.email} - ${this.user.password}`
       );
 
@@ -103,7 +103,7 @@ export class LoginComponent implements OnInit {
 
       if (error.toString().includes('ActiveUserError')) {
         Kinvey.User.logout();
-        this._logService.logBreadCrumb(
+        this._logService.logBreadCrumb(LoginComponent.name,
           `Logged out the active user and restarted the login submit function.`
         );
         this.onSubmitLogin();

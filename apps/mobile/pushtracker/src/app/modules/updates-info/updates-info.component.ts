@@ -26,7 +26,7 @@ export class UpdatesInfoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._logService.logBreadCrumb('updates-info.component OnInit');
+    this._logService.logBreadCrumb(UpdatesInfoComponent.name, 'OnInit');
     const context = this._params.context;
     this.infoItems = [];
     const languagePreference = context['languagePreference'];

@@ -18,7 +18,7 @@ export class SupportComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb('support.component OnInit');
+    this._logService.logBreadCrumb(SupportComponent.name, 'OnInit');
     this.supportItems = this._translateService.instant(
       'support-component.faqs'
     );

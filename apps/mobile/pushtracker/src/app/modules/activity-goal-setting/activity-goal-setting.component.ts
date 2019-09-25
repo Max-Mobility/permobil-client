@@ -36,7 +36,7 @@ export class ActivityGoalSettingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._logService.logBreadCrumb('activity-goal-setting.component OnInit');
+    this._logService.logBreadCrumb(ActivityGoalSettingComponent.name, 'OnInit');
     this.config = {
       title: '',
       description: '',
@@ -112,7 +112,7 @@ export class ActivityGoalSettingComponent implements OnInit {
     const textField = (this.textField.nativeElement as TextField);
     const goalValue = textField.text;
     this._validateGoalValueFromText(goalValue);
-    this._logService.logBreadCrumb(
+    this._logService.logBreadCrumb(ActivityGoalSettingComponent.name,
       'User set activity goals: ' + this.config.key + ' ' + this.config.value
     );
 
