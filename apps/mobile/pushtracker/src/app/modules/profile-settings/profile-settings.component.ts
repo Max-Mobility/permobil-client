@@ -539,6 +539,8 @@ export class ProfileSettingsComponent implements OnInit {
         break;
     }
 
+    this._debouncedCommitSettingsFunction();
+
     this._logService.logBreadCrumb(ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${newValue}`
     );
@@ -564,19 +566,22 @@ export class ProfileSettingsComponent implements OnInit {
         if (pts && pts.length > 0) {
           this._logService.logBreadCrumb(ProfileSettingsComponent.name,
             'Sending to pushtrackers: ' + pts.map(pt => pt.address));
-          actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
+          if (actionbar)
+            actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await pt.sendSwitchControlSettingsObject(
                 this.settingsService.switchControlSettings
               );
-              actionbar.updateWatchIcon({ data: PushTrackerState.connected });
+              if (actionbar)
+                actionbar.updateWatchIcon({ data: PushTrackerState.connected });
             } catch (err) {
               // Show watch icon 'X'
-              actionbar.updateWatchIcon({
-                data: PushTrackerState.disconnected
-              });
+              if (actionbar)
+                actionbar.updateWatchIcon({
+                  data: PushTrackerState.disconnected
+                });
               this._logService.logException(err);
             }
           });
