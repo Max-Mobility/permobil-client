@@ -407,6 +407,7 @@ export class ActivityComponent implements OnInit {
         // If selected date is in the past or if it's today, switch to day view
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
+        this.activityLoaded = false;
         this.currentTab = TAB.DAY;
       }
     }
