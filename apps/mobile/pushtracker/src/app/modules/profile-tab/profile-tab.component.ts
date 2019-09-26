@@ -190,10 +190,12 @@ export class ProfileTabComponent {
     // this._userSubscription$.unsubscribe();
   }
 
-  onWatchConnectTap() {
+  async onWatchConnectTap() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
-    this._sendData();
-    this._sendMessage();
+    await this._connectCompanion();
+    await this._sendData();
+    await this._sendMessage();
+    await this._disconnectCompanion();
   }
 
   onAvatarTap() {
@@ -1154,34 +1156,61 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
     return `Kinvey ${token}:${id}`;
   }
 
-  private _sendData() {
+  private async _connectCompanion() {
+    let didConnect = false;
     try {
-      WearOsComms.sendData(this._getSerializedAuth()).then(() => {
-        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
-      })
-      .catch(err => {
-        this._logService.logException(err);
+      if (!WearOsComms.hasCompanion()) {
+        // find and save the companion
+        const address = await WearOsComms.findAvailableCompanions(5);
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'saving new companion: ' + address);
+        WearOsComms.saveCompanion(address);
+      }
+      // now connect
+      await new Promise(async (resolve, reject) => {
+        WearOsComms.registerConnectedCallback(resolve)
+        await WearOsComms.connectCompanion();
       });
+      didConnect = true;
+    } catch (err) {
+      this._logService.logException(err);
+    }
+    return didConnect;
+  }
+
+  private async _disconnectCompanion() {
+    try {
+      await WearOsComms.disconnectCompanion();
+    } catch (err) {
+      this._logService.logException(err);
+    }
+  }
+
+  private async _sendData() {
+    try {
+      const didSend = await WearOsComms.sendData(this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }
   }
 
-  private _sendMessage() {
+  private async _sendMessage() {
     try {
-      WearOsComms.sendMessage('/app-message', this._getSerializedAuth()).then(
-        () => {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
-        }
-      )
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      const didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }

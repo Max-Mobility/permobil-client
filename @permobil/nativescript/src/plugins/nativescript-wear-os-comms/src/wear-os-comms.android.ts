@@ -9,9 +9,19 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
+  private static _onMessageReceivedCallback: any = null;
+  private static _onDataReceivedCallback: any = null;
 
   constructor() {
     super();
+  }
+
+  public static registerMessageCallback(cb: any) {
+    WearOsComms._onMessageReceivedCallback = cb;
+  }
+
+  public static registerDataCallback(cb: any) {
+    WearOsComms._onDataReceivedCallback = cb;
   }
 
   public static async advertiseAsCompanion() {
@@ -20,6 +30,7 @@ export class WearOsComms extends Common {
       // check paired phone type to determine if we need to advertise
       // (e.g. if the phone is ios we need to use the bluetooth)
 
+      console.log('Determining phone type');
       const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
         .getPhoneDeviceType(androidUtils.getApplicationContext());
       switch (phoneDeviceType) {
@@ -38,13 +49,15 @@ export class WearOsComms extends Common {
       }
 
       if (needToAdvertise) {
+        console.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
         WearOsComms._bluetooth = new Bluetooth();
         // start the server
         WearOsComms._bluetooth.startGattServer();
         // create service / characteristics
         WearOsComms.createService();
-        // TODO: set up listeners for data receipt from the app
+        // set up listeners for data receipt from the app
+        WearOsComms.registerListeners();
         // advertise the added service
         await WearOsComms._bluetooth.startAdvertising({
           UUID: WearOsComms.ServiceUUID,
@@ -61,6 +74,45 @@ export class WearOsComms extends Common {
     } catch (err) {
       console.error('error advertising as companion:', err);
     }
+  }
+
+  private static onCharacteristicWriteRequest(args: any) {
+    const argdata = args.data;
+    const characteristic = argdata.characteristic;
+    const value = argdata.value;
+    const device = argdata.device;
+    if (characteristic === WearOsComms.MessageCharacteristicUUID) {
+      const splits = new String(value).split('/');
+      if (splits && splits.length === 2) {
+        const path = splits[0];
+        // recover original message in case it had '/' in it
+        const message = splits.slice(1).join('/');
+        WearOsComms._onMessageReceivedCallback &&
+          WearOsComms._onMessageReceivedCallback({ path, message, device });
+      } else {
+        console.error('invalid message received:', new String(value));
+      }
+    } else if (characteristic === WearOsComms.DataCharacteristicUUID) {
+      const data = new Uint8Array(value);
+      WearOsComms._onDataReceivedCallback &&
+        WearOsComms._onDataReceivedCallback({ data, device });
+    } else {
+      console.error('[WearOsComms] Unkown characteristic written to:', characteristic);
+    }
+  }
+
+  private static registerListeners() {
+    WearOsComms.unregisterListeners();
+    WearOsComms._bluetooth.on(
+      Bluetooth.characteristic_write_request_event,
+      WearOsComms.onCharacteristicWriteRequest
+    );
+  }
+
+  private static unregisterListeners() {
+    WearOsComms._bluetooth.off(
+      Bluetooth.characteristic_write_request_event
+    );
   }
 
   private static createService() {
@@ -130,7 +182,7 @@ export class WearOsComms extends Common {
         );
 
         r.sendMessage(channel, msg);
-        resolve();
+        resolve(true);
       } catch (error) {
         reject(error);
       }
@@ -144,7 +196,7 @@ export class WearOsComms extends Common {
           androidUtils.getApplicationContext()
         );
         l.sendData(data);
-        resolve();
+        resolve(true);
       } catch (error) {
         reject(error);
       }
