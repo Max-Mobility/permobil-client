@@ -312,6 +312,9 @@ export class TabsComponent {
           this._logService.logBreadCrumb(TabsComponent.name, 'DailyInfo from PushTracker successfully saved in Kinvey');
         else
           this._logService.logException(new Error('[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'));
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
 
     // Request distance information from PushTracker
@@ -347,6 +350,9 @@ export class TabsComponent {
           this._logService.logBreadCrumb(TabsComponent.name, 'Distance from PushTracker successfully saved in Kinvey');
         else
           this._logService.logException(new Error('[TabsComponent] Failed to save Distance from PushTracker in Kinvey'));
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
   }
 
@@ -386,6 +392,9 @@ export class TabsComponent {
         this._logService.logBreadCrumb(TabsComponent.name, 'ErrorInfo from PushTracker successfully saved in Kinvey');
       else
         this._logService.logException(new Error('[' + TabsComponent.name + '] ' + 'Failed to save ErrorInfo from PushTracker in Kinvey'));
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 

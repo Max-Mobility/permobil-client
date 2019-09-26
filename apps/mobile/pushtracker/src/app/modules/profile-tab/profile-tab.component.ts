@@ -191,7 +191,7 @@ export class ProfileTabComponent {
   }
 
   onWatchConnectTap() {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch...');
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
     this._sendData();
     this._sendMessage();
   }
@@ -227,6 +227,9 @@ export class ProfileTabComponent {
           });
         });
       }
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -296,6 +299,9 @@ export class ProfileTabComponent {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `User updated last name: ${r.text}`);
         }
       }
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -1157,6 +1163,9 @@ export class ProfileTabComponent {
     try {
       WearOsComms.sendData(this._getSerializedAuth()).then(() => {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
     } catch (error) {
       this._logService.logException(error);
@@ -1169,7 +1178,10 @@ export class ProfileTabComponent {
         () => {
           this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
         }
-      );
+      )
+      .catch(err => {
+        this._logService.logException(err);
+      });
     } catch (error) {
       this._logService.logException(error);
     }

@@ -186,6 +186,8 @@ export class ActivityComponent implements OnInit {
     }).then(() => {
       this.activityLoaded = true;
       pullRefresh.refreshing = false;
+    }).catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -511,7 +513,12 @@ export class ActivityComponent implements OnInit {
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
         this.activityLoaded = true;
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    }).catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -544,7 +551,7 @@ export class ActivityComponent implements OnInit {
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly activity from Kinvey...');
+    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly activity from Kinvey');
 
     let result = [];
     if (!this.user) return result;
@@ -573,7 +580,7 @@ export class ActivityComponent implements OnInit {
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly usage from Kinvey...');
+    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly usage from Kinvey');
     let result = [];
     if (!this.user) return result;
 
@@ -633,9 +640,16 @@ export class ActivityComponent implements OnInit {
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
               return true;
+            })
+            .catch(err => {
+              this._logService.logException(err);
+              return false;
             });
           }
-        );
+        ).catch(err => {
+          this._logService.logException(err);
+          return false;
+        });
       else
         return this.loadWeeklyActivityFromKinvey(this.weekStart).then(
           _ => {
@@ -659,9 +673,17 @@ export class ActivityComponent implements OnInit {
               this._updateWeekStartAndEnd();
               this.activityLoaded = true;
               return true;
+            })
+            .catch(err => {
+              this._logService.logException(err);
+              return false;
             });
           }
-        );
+        )
+        .catch(err => {
+          this._logService.logException(err);
+          return false;
+        });
     } else {
       // We have the data cached. Pull it up
       this._logService.logBreadCrumb(ActivityComponent.name, 'Using local cache instead of pulling from database');

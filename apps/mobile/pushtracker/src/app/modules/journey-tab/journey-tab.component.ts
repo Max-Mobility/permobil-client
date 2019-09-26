@@ -79,7 +79,13 @@ export class JourneyTabComponent {
       this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
       this.initJourneyItems().then(() => {
         this._firstLoad = false;
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
@@ -110,6 +116,9 @@ export class JourneyTabComponent {
     this._loadDataForDate(this._weekStart, true).then(result => {
       this.journeyItems = result;
       this.journeyItemsLoaded = true;
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -125,6 +134,9 @@ export class JourneyTabComponent {
     return this._loadDataForDate(this._rollingWeekStart, false).then(result => {
       this.journeyItems = result;
       this.showLoadingIndicator = false;
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -219,7 +231,13 @@ export class JourneyTabComponent {
       return this._loadDataForDate(this._weekStart, true).then(result => {
         this.journeyItems = result;
         this.journeyItemsLoaded = true;
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -235,7 +253,13 @@ export class JourneyTabComponent {
             this._noMoreSmartDriveUsageDataAvailable = !sdResult;
             return this._processJourneyMap(date, reset).then(result => {
               return result;
+            })
+            .catch(err => {
+              this._logService.logException(err);
             });
+          })
+          .catch(err => {
+            this._logService.logException(err);
           });
         } else {
           return this.journeyItems;
@@ -248,7 +272,13 @@ export class JourneyTabComponent {
         this._noMoreSmartDriveUsageDataAvailable = !result;
         return this._processJourneyMap(date, reset).then(result => {
           return result;
+        })
+        .catch(err => {
+          this._logService.logException(err);
         });
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
     } else {
       // No data available
@@ -453,6 +483,9 @@ export class JourneyTabComponent {
         });
       }
       return newJourneyItems;
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -593,6 +626,10 @@ export class JourneyTabComponent {
         }
       }
       return didLoad;
+    })
+    .catch(err => {
+      this._logService.logException(err);
+      return false;
     });
   }
 
@@ -699,6 +736,10 @@ export class JourneyTabComponent {
         }
       }
       return didLoad;
+    })
+    .catch(err => {
+      this._logService.logException(err);
+      return Promise.reject(false);
     });
   }
 }

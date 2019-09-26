@@ -98,6 +98,9 @@ export class HomeTabComponent {
 
     this.refreshUserFromKinvey(false).then(() => {
       this._loadWeeklyData();
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
 
     this._debouncedLoadWeeklyActivity = debounce(
@@ -306,7 +309,13 @@ export class HomeTabComponent {
       // Now refresh the data
       this._loadWeeklyData().then(() => {
         pullRefresh.refreshing = false;
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -473,7 +482,13 @@ export class HomeTabComponent {
             )) *
           100;
         this._updateProgress();
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -600,7 +615,13 @@ export class HomeTabComponent {
             this.user.data.activity_goal_coast_time) *
           100;
         this._updateProgress();
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 

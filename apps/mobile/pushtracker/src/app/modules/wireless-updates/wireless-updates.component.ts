@@ -291,6 +291,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       if (this.smartDrive) this.smartDrive.canBackNavigate = false;
       await this.performSmartDriveWirelessUpdate();
       if (this.smartDrive) this.smartDrive.canBackNavigate = true;
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -346,6 +349,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
             this.smartDrive = drive;
           });
         }
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
     }
 
@@ -632,6 +638,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       if (this.pushTracker) this.pushTracker.canBackNavigate = false;
       await this.performPushTrackerWirelessUpdate();
       if (this.pushTracker) this.pushTracker.canBackNavigate = true;
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -860,8 +869,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
                   closeModal = true;
                 }
               })
+              .catch(err => {
+                this._logService.logException(err);
+              })
               .then(() => {
                 if (closeModal) this.closeModal();
+              })
+              .catch(err => {
+                this._logService.logException(err);
               });
           }
         );

@@ -104,6 +104,9 @@ export class ForgotPasswordComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         }).then(() => {
           this._routerExtensions.navigate(['/login'], {});
+        })
+        .catch(err => {
+          this._logService.logException(err);
         });
       })
       .catch(err => {

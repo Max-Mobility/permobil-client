@@ -218,6 +218,9 @@ export class ProfileSettingsComponent implements OnInit {
         this._onSmartDriveDisconnect,
         this
       );
+    })
+    .catch(err => {
+      this._logService.logException(err);
     });
   }
 
@@ -647,6 +650,9 @@ export class ProfileSettingsComponent implements OnInit {
           });
           return true;
         }
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
     }
   }

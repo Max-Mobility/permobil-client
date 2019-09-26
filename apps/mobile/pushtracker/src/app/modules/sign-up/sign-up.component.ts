@@ -259,6 +259,9 @@ export class SignUpComponent implements OnInit {
           .catch(err => {
             this._logService.logException(err);
           });
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
     } catch (err) {
       this._loadingIndicator.hide();
