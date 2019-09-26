@@ -771,7 +771,6 @@ export class JourneyTabComponent {
       chartYAxis: 0, // COAST_TIME
       user: this.user
     };
-    console.log(context);
     this._modalService
       .showModal(ActivityComponent, {
         context: context,
