@@ -52,7 +52,7 @@ export class TapDetector {
    * Higher-level tap detection - not TFLite related
    */
   private static InputHistorySize = 4;
-  private static PredictionHistorySize = 1;
+  private static PredictionHistorySize = 2;
   private static InputRawHistorySize = 10;
   private static JerkHistorySize = 2;
   private inputHistory: any[] = [];
