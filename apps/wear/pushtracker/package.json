@@ -22,7 +22,7 @@
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.0.tgz",
     "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle",
     "nativescript-appavailability": "~1.3.1",
-    "nativescript-auto-fit-text": "~1.0.0",
+    "nativescript-auto-fit-text": "file:../../../forked-plugins/nativescript-auto-fit-text-1.0.0.tgz",
     "nativescript-downloader": "^2.1.4",
     "nativescript-localstorage": "~2.0.0",
     "nativescript-ng-ripple": "~3.0.0-beta.1",
