@@ -9,11 +9,21 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
+  private static _onConnectedReceivedCallback: any = null;
+  private static _onDisconnectedReceivedCallback: any = null;
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
 
   constructor() {
     super();
+  }
+
+  public static registerConnectedCallback(cb: any) {
+    WearOsComms._onConnectedReceivedCallback = cb;
+  }
+
+  public static registerDisconnectedCallback(cb: any) {
+    WearOsComms._onDisconnectedReceivedCallback = cb;
   }
 
   public static registerMessageCallback(cb: any) {
@@ -22,6 +32,23 @@ export class WearOsComms extends Common {
 
   public static registerDataCallback(cb: any) {
     WearOsComms._onDataReceivedCallback = cb;
+  }
+
+  public static findAvailableCompanions(timeout: number) {
+    // do nothing
+    return null;
+  }
+
+  public static saveCompanion(address: string) {
+    // do nothing
+  }
+
+  public static connectCompanion() {
+    // do nothing
+  }
+
+  public static disconnectCompanion() {
+    // do nothing
   }
 
   public static async advertiseAsCompanion() {
@@ -52,6 +79,7 @@ export class WearOsComms extends Common {
         console.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
         WearOsComms._bluetooth = new Bluetooth();
+        WearOsComms._bluetooth.debug = true;
         // start the server
         WearOsComms._bluetooth.startGattServer();
         // create service / characteristics
