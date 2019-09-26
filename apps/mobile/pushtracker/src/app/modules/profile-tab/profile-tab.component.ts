@@ -1172,7 +1172,7 @@ export class ProfileTabComponent {
       }
       // now connect
       await new Promise(async (resolve, reject) => {
-        WearOsComms.registerConnectedCallback(resolve)
+        WearOsComms.registerConnectedCallback(resolve);
         await WearOsComms.connectCompanion();
       });
       didConnect = true;
