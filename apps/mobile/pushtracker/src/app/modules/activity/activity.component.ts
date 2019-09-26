@@ -297,10 +297,12 @@ export class ActivityComponent implements OnInit {
       }
     } else if (this.currentTab === TAB.MONTH) {
       // month
-      this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-      this._updateWeekStartAndEnd();
-      this._calendar.navigateForward();
-      this._initMonthChartTitle();
+      if (this.isNextMonthButtonEnabled()) {
+        this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+        this._updateWeekStartAndEnd();
+        this._calendar.navigateForward();
+        this._initMonthChartTitle();
+      }
     }
   }
 
@@ -1182,8 +1184,11 @@ export class ActivityComponent implements OnInit {
     const currentWeekStart = getFirstDayOfWeek(this.currentDayInView);
     const currentMonth = currentWeekStart.getMonth();
     return (
-      currentWeekStart.getFullYear() <= today.getFullYear() &&
-      currentMonth < month
+      currentWeekStart.getFullYear() < today.getFullYear() ||
+      (
+        currentWeekStart.getFullYear() === today.getFullYear() &&
+        currentMonth < month
+      )
     );
   }
 
