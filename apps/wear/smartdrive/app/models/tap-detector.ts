@@ -5,22 +5,24 @@ import { knownFolders, path } from 'tns-core-modules/file-system';
 declare const org: any;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 250;
+  public static TapLockoutTimeMs: number = 100;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level tap detection configuration
    */
-  // private minPredictionThreshold = 0.7;
-  // private maxPredictionThreshold = 1.1;
-  private predictionThreshold: number = 0.8; // confidence
+  private minPredictionThreshold = 0.5;
+  private maxPredictionThreshold = 0.8;
+  private predictionThreshold: number = 0.5; // confidence
 
-  private minJerkThreshold = 5.0;
-  private maxJerkThreshold = 25.0;
-  private jerkThreshold: number = 5.0; // acceleration value
+  private jerkThreshold: number = 17.0; // acceleration value
+  private maxJerkThreshold: number = 30.0;
+  private minJerkThreshold: number = 17.0;
 
   private lastTapTime: number; // timestamp of last detected tap
+
+  private tapGap: boolean = true;
 
   /**
    * TensorFlow Lite related data
@@ -50,9 +52,13 @@ export class TapDetector {
    * Higher-level tap detection - not TFLite related
    */
   private static InputHistorySize = 4;
-  private static PredictionHistorySize = 2;
+  private static PredictionHistorySize = 1;
+  private static InputRawHistorySize = 10;
+  private static JerkHistorySize = 2;
   private inputHistory: any[] = [];
   private predictionHistory: number[] = [];
+  private inputRawHistory: any[] = [];
+  private jerkHistory: number[] = [];
 
   constructor() {
     try {
@@ -136,6 +142,8 @@ export class TapDetector {
   public reset() {
     this.inputHistory = [];
     this.predictionHistory = [];
+    this.inputRawHistory = [];
+    this.jerkHistory = [];
   }
 
   /**
@@ -147,9 +155,8 @@ export class TapDetector {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
     // update jerk threshold
-    this.jerkThreshold = this.maxJerkThreshold -
-      (this.maxJerkThreshold - this.minJerkThreshold) *
-      (sensitivity / 100.0);
+    this.jerkThreshold = this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) * (sensitivity / 100.0);
+    this.predictionThreshold = this.maxPredictionThreshold - (this.maxPredictionThreshold - this.minPredictionThreshold) * (sensitivity / 100.0);
   }
 
   /**
@@ -201,15 +208,11 @@ export class TapDetector {
       // we don't have enough historical data so detect no taps
       return false;
     }
-    // check that inputs were all primarily in z axis
-    const inputsWereGood = this.inputHistory.reduce((good, accel) => {
-      return good && this.tapAxisIsPrimary(accel);
-    }, true);
-    // check that input history contains >= 1 difference (jerk) above
-    // the threshold
+    // check that inputRawHistory max-min > jerkThreshold
     let minZ = null;
     let maxZ = null;
-    this.inputHistory.map(accel => {
+    let maxJerk = null;
+    this.inputRawHistory.map(accel => {
       const z = accel.z;
       if (minZ === null || z < minZ) {
         minZ = z;
@@ -219,19 +222,30 @@ export class TapDetector {
       }
     });
     const jerk = maxZ - minZ;
-    const jerkAboveThreshold = jerk > this.jerkThreshold;
+    this.updateJerkHistory(jerk);
+    this.jerkHistory.map(jerk => {
+      if (maxJerk == null || jerk > maxJerk) {
+        maxJerk = jerk;
+      }
+    })
+    const jerkAboveThreshold = maxJerk > this.jerkThreshold;
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.predictionThreshold;
     }, true);
     // combine checks to predict tap
     const predictTap =
-      jerkAboveThreshold &&
-      // inputsWereGood &&
-      predictionsWereGood;
+      jerkAboveThreshold && predictionsWereGood && this.tapGap;
     // record that there has been a tap
     if (predictTap) {
       this.lastTapTime = timestamp;
+      this.tapGap = false;
+    }
+    const gapWasGood = this.predictionHistory.reduce((good, prediction) => {
+      return good && prediction < this.predictionThreshold;
+    }, true);
+    if (this.lastTapTime !== null && gapWasGood) {
+      this.tapGap = true;
     }
     // return the prediction
     return predictTap;
@@ -269,6 +283,20 @@ export class TapDetector {
     this.predictionHistory.push(prediction);
     if (this.predictionHistory.length > TapDetector.PredictionHistorySize) {
       this.predictionHistory.shift(); // remove the oldest element
+    }
+  }
+
+  public updateRawHistory(accel: any) {
+    this.inputRawHistory.push(accel);
+    if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
+      this.inputRawHistory.shift();// remove the oldest element
+    }
+  }
+
+  private updateJerkHistory(jerk: number) {
+    this.jerkHistory.push(jerk);
+    if (this.jerkHistory.length > TapDetector.JerkHistorySize) {
+      this.jerkHistory.shift();
     }
   }
 

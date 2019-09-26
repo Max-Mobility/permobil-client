@@ -1174,6 +1174,10 @@ export class MainViewModel extends Observable {
       accel: acceleration,
       timestamp
     });
+
+    // update inputHistory with raw data
+    this.tapDetector.updateRawHistory(acceleration);
+
     // since we're now running at a higher frequency, we want to
     // average every 4 points to get a reading
     if (this._previousData.length === this._previousDataLength) {
@@ -1185,11 +1189,27 @@ export class MainViewModel extends Observable {
         total.timestamp += e.timestamp;
         return total;
       });
+
+      const max = this._previousData.reduce((element1, element2) => {
+        element1.accelx > element2.accelx ? element1.accelx : element2.accelx;
+        element1.accely > element2.accely ? element1.accely : element2.accely;
+        element1.accelz > element2.accelz ? element1.accelz : element2.accelz;
+        return element1;
+      })
+
+      const min = this._previousData.reduce((element1, element2) => {
+        element1.accel.x < element2.accel.x ? element1.accel.x : element2.accel.x;
+        element1.accel.y < element2.accel.y ? element1.accel.y : element2.accel.y;
+        element1.accel.z < element2.accel.z ? element1.accel.z : element2.accel.z;
+        return element1;
+      });
+
       const averageAccel = {
-        x: total.accel.x / this._previousDataLength,
-        y: total.accel.y / this._previousDataLength,
-        z: total.accel.z / this._previousDataLength,
+        x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
+        y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
+        z: total.accel.z >= 0 ? max.accel.z : min.accel.z,
       };
+
       const averageTimestamp = total.timestamp / this._previousDataLength;
       // reset the length of the data
       this._previousData = [];
