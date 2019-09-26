@@ -147,10 +147,10 @@ export class WearOsComms extends Common {
 
   private static async onNotify(args: any) {
     try {
-      const argdata = args.data;
-      const characteristic = argdata.characteristic;
-      const value = argdata.value;
-      const device = argdata.device;
+      console.log('[WearOsComms] onNotify:', args);
+      const characteristic = args.characteristic;
+      const value = args.value;
+      const device = args.device;
       if (characteristic === WearOsComms.MessageCharacteristicUUID) {
         const splits = new String(value).split('/');
         if (splits && splits.length === 2) {
