@@ -42,8 +42,6 @@ export class AppComponent implements OnInit {
     private _logService: LoggingService,
     private _router: RouterExtensions
   ) {
-    console.time('AppComponent_Constructor');
-
     // init sentry - DNS key is in the SmartEvalKinvey package
     Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
 
@@ -105,8 +103,6 @@ export class AppComponent implements OnInit {
     } else {
       this._router.navigate(['/login']);
     }
-
-    console.timeEnd('AppComponent_Constructor');
   }
 
   ngOnInit() {

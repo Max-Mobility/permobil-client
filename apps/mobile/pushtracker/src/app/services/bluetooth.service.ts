@@ -50,7 +50,7 @@ export class BluetoothService extends Observable {
   private AppService: any = null;
 
   constructor(
-    private _loggingService: LoggingService
+    private _logService: LoggingService
   ) {
     super();
 
@@ -69,15 +69,19 @@ export class BluetoothService extends Observable {
     // enabling `debug` will output console.logs from the bluetooth source code
     this._bluetooth.debug = false;
 
-    this._loggingService.logBreadCrumb(BluetoothService.name, 'Constructor');
+    this._logService.logBreadCrumb(BluetoothService.name, 'Constructor');
 
-    console.time('bluetooth_init');
+    // Remember when we started
+    const start = new Date().getTime();
     this.initialize()
       .then(() => {
-        console.timeEnd('bluetooth_init');
+        // Remember when we finished
+        const end = new Date().getTime();
+        this._logService.logBreadCrumb(BluetoothService.name,
+          `Bluetooth init took: ${(end - start).toFixed(2)}ms`);
       })
       .catch(err => {
-        this._loggingService.logException(err);
+        this._logService.logException(err);
       });
   }
 
@@ -237,7 +241,7 @@ export class BluetoothService extends Observable {
         await this._bluetooth.enable();
       } catch (err) {
         this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._loggingService.logException(err);
+        this._logService.logException(err);
         return;
       }
     }
@@ -261,7 +265,7 @@ export class BluetoothService extends Observable {
       })
       .catch(err => {
         this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._loggingService.logException(err);
+        this._logService.logException(err);
       });
 
     this._bluetooth.addService(this.AppService);
@@ -413,12 +417,12 @@ export class BluetoothService extends Observable {
   // private functions
   // event listeners
   private onAdvertiseFailure(args: any): void {
-    this._loggingService.logBreadCrumb(BluetoothService.name, 'Failed to advertise', args);
+    this._logService.logBreadCrumb(BluetoothService.name, 'Failed to advertise', args);
     // nothing
   }
 
   private onAdvertiseSuccess(_: any): void {
-    this._loggingService.logBreadCrumb(BluetoothService.name, 'Succeeded in advertising!');
+    this._logService.logBreadCrumb(BluetoothService.name, 'Succeeded in advertising!');
     // nothing
   }
 
