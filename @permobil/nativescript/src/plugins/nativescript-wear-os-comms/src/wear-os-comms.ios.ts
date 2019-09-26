@@ -124,6 +124,7 @@ export class WearOsComms extends Common {
 
   private static async onConnected(args: any) {
     try {
+      console.log('[WearOsComms] onConnected');
       // start notifying so we can send / receive data
       await WearOsComms.startNotifying();
       // now let people know
@@ -136,6 +137,7 @@ export class WearOsComms extends Common {
 
   private static async onDisconnected(args: any) {
     try {
+      console.log('[WearOsComms] onDisconnected');
       // stop notifying
       await WearOsComms.stopNotifying();
       // now let people know
@@ -177,6 +179,7 @@ export class WearOsComms extends Common {
   private static async startNotifying() {
     if (!WearOsComms.hasCompanion()) return;
     const companion = await WearOsComms.getCompanion();
+    console.log('[WearOsComms] startNotifying');
     await WearOsComms._bluetooth.startNotifying({
       peripheralUUID: companion,
       serviceUUID: WearOsComms.ServiceUUID,
@@ -195,6 +198,7 @@ export class WearOsComms extends Common {
     try {
       if (!WearOsComms.hasCompanion()) return;
       const companion = await WearOsComms.getCompanion();
+    console.log('[WearOsComms] stopNotifying');
       await WearOsComms._bluetooth.stopNotifying({
         peripheralUUID: companion,
         serviceUUID: WearOsComms.ServiceUUID,
