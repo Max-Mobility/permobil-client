@@ -183,7 +183,7 @@ export class JourneyTabComponent {
       try {
         const kinveyUserJSON = appSettings.getString('Kinvey.User', '{}');
         let user = undefined;
-        if (kinveyUserJSON) user = JSON.parse(kinveyUserJSON);
+        if (kinveyUserJSON !== '{}') user = JSON.parse(kinveyUserJSON);
         if (user) {
           this.user = user;
           if (user.data) {
@@ -198,7 +198,7 @@ export class JourneyTabComponent {
           }
           this.user = user;
           return Promise.resolve(true);
-        } else Promise.reject(false);
+        }
       } catch (err) {
         this._logService.logException(err);
       }
