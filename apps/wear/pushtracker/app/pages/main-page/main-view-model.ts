@@ -30,6 +30,7 @@ import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -459,6 +460,11 @@ export class MainViewModel extends Observable {
   async startActivityService() {
     try {
       await this.askForPermissions();
+      // start the wear os communications
+      WearOsComms.advertiseAsCompanion();
+      console.log('Started wear os comms!');
+      this.sentryBreadCrumb('Wear os comms started.');
+      // start the service with intent
       this.sentryBreadCrumb('Starting Activity Service.');
       console.log('Starting activity service!');
       const intent = new android.content.Intent();
