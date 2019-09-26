@@ -75,8 +75,8 @@ export class WearOsComms extends Common {
     if (!WearOsComms.hasCompanion()) throw new Error('cannot sendMessage: no companion');
     const companion = await WearOsComms.getCompanion();
     // strip leading / trailing '/' from channel
-    if (channel.charAt(0) == "/") channel = channel.substr(1);
-    if (channel.charAt(channel.length - 1) == "/") channel = channel.substr(0, channel.length - 1);
+    if (channel.charAt(0) === '/') channel = channel.substr(1);
+    if (channel.charAt(channel.length - 1) === '/') channel = channel.substr(0, channel.length - 1);
     // convert message to hexadecimal
     const encoded = WearOsComms.encodeString(`${channel}/${msg}`);
     const didWrite = await WearOsComms.write(companion, WearOsComms.MessageCharacteristicUUID, encoded);
@@ -206,7 +206,7 @@ export class WearOsComms extends Common {
         characteristicUUID: WearOsComms.DataCharacteristicUUID
       });
     } catch (err) {
-      console.error('[WearOsComms] stopNotifying error:', err)
+      console.error('[WearOsComms] stopNotifying error:', err);
     }
   }
 
