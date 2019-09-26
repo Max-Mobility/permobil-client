@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef } from '@angular/core';
+import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
@@ -16,6 +18,10 @@ import {
   convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getUserDataFromKinvey
 } from '../../utils';
 import { APP_THEMES, DISTANCE_UNITS, TIME_FORMAT } from '../../enums';
+import { ActivityComponent } from '..';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import { Toasty } from 'nativescript-toasty';
+import { Color } from 'tns-core-modules/color';
 
 enum JourneyType {
   'ROLL',
@@ -47,6 +53,7 @@ export class JourneyTabComponent {
   journeyItemsLoaded: boolean = false;
   showLoadingIndicator: boolean = false;
   debouncedRefresh: any = null;
+  throttledOpenActivityModal: any = null;
   private _today: Date;
   private _weekStart: Date;
   private _rollingWeekStart: Date;
@@ -64,6 +71,8 @@ export class JourneyTabComponent {
   private _firstLoad = true;
 
   constructor(
+    private _modalService: ModalDialogService,
+    private _vcRef: ViewContainerRef,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
@@ -93,6 +102,12 @@ export class JourneyTabComponent {
     this.debouncedRefresh = debounce(
       this._refresh.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
+      { leading: true, trailing: true }
+    );
+
+    this.throttledOpenActivityModal = throttle(
+      this._openActivityModal.bind(this),
+      2000, // 2 seconds
       { leading: true, trailing: true }
     );
 
@@ -438,6 +453,7 @@ export class JourneyTabComponent {
         newJourneyItems.push({
           journey_type: journey.journeyType,
           date: journeyDateLabel,
+          journeyDate: journeyDate,
           time: journeyTimeLabel,
           push_count:
             (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
@@ -743,4 +759,34 @@ export class JourneyTabComponent {
       return Promise.reject(false);
     });
   }
+
+  onListItemTap(args, item) {
+    this.throttledOpenActivityModal(args, item);
+  }
+
+  _openActivityModal(args, item) {
+    const context = {
+      currentTab: 0, // DAY
+      currentDayInView: new Date(item.journeyDate),
+      chartYAxis: 0, // COAST_TIME
+      user: this.user
+    };
+    console.log(context);
+    this._modalService
+      .showModal(ActivityComponent, {
+        context: context,
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        new Toasty({
+          text:
+            'An unexpected error occurred. If this continues please let us know.',
+          textColor: new Color('#fff000')
+        });
+      });
+  }
+
 }
