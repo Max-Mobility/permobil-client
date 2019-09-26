@@ -1456,7 +1456,7 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          if (activity.days) {
+          if (activity && activity.days) {
             for (const i in activity.days) {
               if (activity.days[i]) {
                 if (activity.days[i].push_count > 0) {
@@ -1481,7 +1481,7 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          if (cache.weeklyActivity.days) {
+          if (cache.weeklyActivity && cache.weeklyActivity.days) {
             for (const i in cache.weeklyActivity.days) {
               if (cache.weeklyActivity.days[i]) {
                 if (cache.weeklyActivity.days[i].push_count > 0) {
@@ -1516,7 +1516,7 @@ export class ActivityComponent implements OnInit {
           this.weeklyActivityAnnotationValue = 0;
         }
         let numDaysOfActivity = 0;
-        if (activity.days) {
+        if (activity && activity.days) {
           for (const i in activity.days) {
             if (activity.days[i]) {
               if (activity.days[i].records &&
@@ -1542,7 +1542,7 @@ export class ActivityComponent implements OnInit {
             this.user.data.distance_unit_preference
           ) || 0;
         let numDaysOfActivity = 0;
-        if (cache.weeklyActivity.days) {
+        if (cache.weeklyActivity && cache.weeklyActivity.days) {
           for (const i in cache.weeklyActivity.days) {
             if (cache.weeklyActivity.days[i]) {
               if (cache.weeklyActivity.days[i].records &&
