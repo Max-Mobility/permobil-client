@@ -771,6 +771,8 @@ export class JourneyTabComponent {
       chartYAxis: 0, // COAST_TIME
       user: this.user
     };
+    this._logService.logBreadCrumb(JourneyTabComponent.name,
+      `Journey item tapped. Opening activity modal for date: ${YYYY_MM_DD(context.currentDayInView)}`);
     this._modalService
       .showModal(ActivityComponent, {
         context: context,
