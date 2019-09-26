@@ -227,7 +227,7 @@ export class TapDetector {
       if (maxJerk == null || jerk > maxJerk) {
         maxJerk = jerk;
       }
-    })
+    });
     const jerkAboveThreshold = maxJerk > this.jerkThreshold;
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
@@ -289,7 +289,7 @@ export class TapDetector {
   public updateRawHistory(accel: any) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
-      this.inputRawHistory.shift();// remove the oldest element
+      this.inputRawHistory.shift(); // remove the oldest element
     }
   }
 
