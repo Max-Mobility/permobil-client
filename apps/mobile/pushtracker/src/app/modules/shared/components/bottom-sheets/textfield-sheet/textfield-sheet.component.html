@@ -3,9 +3,10 @@
   <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
   <StackLayout row="0" col="1" [rowSpan]="fields.length" colSpan="3" padding="10" *ngFor="let field of fields; let i = index">
     <StackLayout [row]="i" orientation="horizontal">
-      <Label [visibility]="field.prefix ? 'visible' : 'collapse'" width="30%" class="textfield-prefix" [text]="field.prefix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
+      <Label width="10%" class="textfield-prefix" [text]="field.prefix ? field.prefix : ''"
+        marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
       <TextField
-        [width]="field.prefix ? (field.suffix ? '60%' : '70%') : field.suffix ? '90%' : '100%'"
+        width="80%"
         [text]="field.text"
         secure="false"
         (returnPress)="onReturnPress($event, i)"
@@ -17,7 +18,7 @@
         horizontalAlignment="center"
       >
       </TextField>
-      <Label [visibility]="field.suffix ? 'visible' : 'collapse'" width="10%" class="textfield-suffix" [text]="field.suffix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
+      <Label width="10%" class="textfield-suffix" [text]="field.suffix ? field.suffix : ''" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
     </StackLayout>
   </StackLayout>
   <GridLayout rows="auto" columns="auto, *, auto">
