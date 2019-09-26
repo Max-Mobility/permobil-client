@@ -123,7 +123,7 @@ export class JourneyTabComponent {
   }
 
   onRefreshTap() {
-    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refresh tap');
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refresh tapped');
     this.debouncedRefresh();
   }
 
@@ -218,6 +218,7 @@ export class JourneyTabComponent {
   }
 
   private async _refresh() {
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
     return this.refreshUserFromKinvey(true).then(() => {
       this._noMorePushTrackerActivityDataAvailable = false;
       this._noMoreSmartDriveUsageDataAvailable = false;
