@@ -5,18 +5,20 @@ import { knownFolders, path } from 'tns-core-modules/file-system';
 declare const org: any;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 200;
+  public static TapLockoutTimeMs: number = 100;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level tap detection configuration
    */
-  // private minPredictionThreshold = 0.7;
-  // private maxPredictionThreshold = 1.1;
+  private minPredictionThreshold = 0.5;
+  private maxPredictionThreshold = 0.8;
   private predictionThreshold: number = 0.5; // confidence
 
   private jerkThreshold: number = 17.0; // acceleration value
+  private maxJerkThreshold: number = 30.0;
+  private minJerkThreshold: number = 17.0;
 
   private lastTapTime: number; // timestamp of last detected tap
 
@@ -153,8 +155,8 @@ export class TapDetector {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
     // update jerk threshold
-    this.jerkThreshold = this.jerkThreshold;
-    //this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) *  (sensitivity / 100.0);
+    this.jerkThreshold = this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) * (sensitivity / 100.0);
+    this.predictionThreshold = this.maxPredictionThreshold - (this.maxPredictionThreshold - this.minPredictionThreshold) * (sensitivity / 100.0);
   }
 
   /**
@@ -244,7 +246,7 @@ export class TapDetector {
     }, true);
     if (this.lastTapTime !== null && gapWasGood) {
       this.tapGap = true;
-    } 
+    }
     // return the prediction
     return predictTap;
   }
