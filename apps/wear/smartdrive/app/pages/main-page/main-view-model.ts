@@ -1195,7 +1195,7 @@ export class MainViewModel extends Observable {
         element1.accely > element2.accely ? element1.accely : element2.accely;
         element1.accelz > element2.accelz ? element1.accelz : element2.accelz;
         return element1;
-      })
+      });
 
       const min = this._previousData.reduce((element1, element2) => {
         element1.accel.x < element2.accel.x ? element1.accel.x : element2.accel.x;

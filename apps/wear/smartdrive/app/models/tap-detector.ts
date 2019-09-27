@@ -6,6 +6,7 @@ declare const org: any;
 
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
+  public MotorIsOn: boolean = false;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
@@ -16,6 +17,8 @@ export class TapDetector {
   private maxPredictionThreshold = 1.0;
   private predictionThreshold: number = 0.5; // confidence
 
+  private jerkThresholdDynamic: number = 17.0;
+  private jerkThresholdOnOffDiff: number = 10.0; // acceleration value
   private jerkThreshold: number = 17.0; // acceleration value
   private maxJerkThreshold: number = 60.0;
   private minJerkThreshold: number = 17.0;
@@ -227,8 +230,17 @@ export class TapDetector {
       if (maxJerk == null || jerk > maxJerk) {
         maxJerk = jerk;
       }
-    })
-    const jerkAboveThreshold = maxJerk > this.jerkThreshold;
+    });
+
+    if (this.MotorIsOn) { //harder to tap start and easier to tap stop the motor
+      this.jerkThresholdDynamic = this.jerkThreshold;
+    }
+    else {
+      this.jerkThresholdDynamic = this.jerkThreshold + this.jerkThresholdOnOffDiff;
+    }
+    const jerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
+
+
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.predictionThreshold;
@@ -289,7 +301,7 @@ export class TapDetector {
   public updateRawHistory(accel: any) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
-      this.inputRawHistory.shift();// remove the oldest element
+      this.inputRawHistory.shift(); // remove the oldest element
     }
   }
 
