@@ -1,8 +1,6 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" busy="true"></ActivityIndicator>
-
   <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
     <ScrollView>
       <GridLayout rows="auto, *">
