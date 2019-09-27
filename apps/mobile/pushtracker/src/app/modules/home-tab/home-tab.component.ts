@@ -54,13 +54,7 @@ export class HomeTabComponent {
   todayDriveDistance: string = '0.0';
   todayOdometer: string = '0.0';
   distancePlotAnnotationValue: number = 0.001;
-  distanceGoalLabelChartData: ObservableArray<any[]>;
-  distancePlotPalettes: ObservableArray<Palette>;
-  goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
-    { xAxis: '        ', coastTime: 5, impact: 7 }
-  ] as any[]);
   private _todaysUsage: any;
-  private pointLabelStyle: PointLabelStyle;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -82,15 +76,20 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) { }
-
-  onHomeTabLoaded() {
-    this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
-
+  ) {
     this.savedTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+    this._userService.user.subscribe(user => {
+      if (this.savedTheme !== user.data.theme_preference)
+        this.savedTheme = user.data.theme_preference;
+      applyTheme(this.savedTheme);
+    });
+  }
+
+  onHomeTabLoaded() {
+    this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
     this._currentDayInView = new Date();
     this._weekStart = getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
@@ -114,12 +113,6 @@ export class HomeTabComponent {
       this.MAX_COMMIT_INTERVAL_MS,
       { trailing: true }
     );
-
-    this._userService.user.subscribe(user => {
-      if (this.savedTheme !== user.data.theme_preference)
-        this.savedTheme = user.data.theme_preference;
-      applyTheme(this.savedTheme);
-    });
   }
 
   onHomeTabUnloaded() {
@@ -332,8 +325,6 @@ export class HomeTabComponent {
       this._debouncedLoadWeeklyUsage();
     }
     this._updateProgress();
-    this._updatePointLabelStyle();
-    this._updatePalettes();
     this.updateTodayMessage();
     this.weeklyActivityLoaded = true;
   }
@@ -464,16 +455,6 @@ export class HomeTabComponent {
           this.user.data.activity_goal_distance,
           this.user.data.distance_unit_preference
         );
-        this.distanceGoalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastDistance: convertToMilesIfUnitPreferenceIsMiles(
-              this.user.data.activity_goal_distance,
-              this.user.data.distance_unit_preference
-            ),
-            impact: 7
-          }
-        ] as any[]);
         this.distanceCirclePercentage =
           (parseFloat(this.todayCoastDistance) /
             convertToMilesIfUnitPreferenceIsMiles(
@@ -578,13 +559,6 @@ export class HomeTabComponent {
           ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
-        this.goalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastTime: this.user.data.activity_goal_coast_time,
-            impact: 7
-          }
-        ] as any[]);
         this.coastTimeCirclePercentage =
           (parseFloat(this.todayCoastTime) /
             this.user.data.activity_goal_coast_time) *
@@ -603,13 +577,6 @@ export class HomeTabComponent {
           ).toFixed(1);
         this.coastTimeCirclePercentageMaxValue =
           '/' + this.user.data.activity_goal_coast_time;
-        this.goalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastTime: this.user.data.activity_goal_coast_time,
-            impact: 7
-          }
-        ] as any[]);
         this.coastTimeCirclePercentage =
           (parseFloat(this.todayCoastTime) /
             this.user.data.activity_goal_coast_time) *
@@ -649,13 +616,6 @@ export class HomeTabComponent {
       ).toFixed(1);
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastTime: this.user.data.activity_goal_coast_time,
-        impact: 7
-      }
-    ] as any[]);
     this.coastTimeCirclePercentage =
       (parseFloat(this.todayCoastTime) /
         this.user.data.activity_goal_coast_time) *
@@ -666,16 +626,6 @@ export class HomeTabComponent {
       this.user.data.activity_goal_distance,
       this.user.data.distance_unit_preference
     );
-    this.distanceGoalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastDistance: convertToMilesIfUnitPreferenceIsMiles(
-          this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference
-        ),
-        impact: 7
-      }
-    ] as any[]);
     this.distanceCirclePercentage =
       (parseFloat(this.todayCoastDistance) /
         convertToMilesIfUnitPreferenceIsMiles(
@@ -684,83 +634,6 @@ export class HomeTabComponent {
         )) *
       100;
     this._updateDistancePlotYAxis();
-  }
-
-  private async _updatePalettes() {
-    {
-      // Distance Plot Palettes
-
-      // Coast Distance Palette
-      const coastDistancePalette = new Palette();
-      coastDistancePalette.seriesName = 'CoastDistanceUsageActivity';
-      const coastDistancePaletteEntry = new PaletteEntry();
-      coastDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
-        coastDistancePaletteEntry
-      ]);
-
-      // Drive Distance Palette
-      const driveDistancePalette = new Palette();
-      driveDistancePalette.seriesName = 'DriveDistanceUsageActivity';
-      const driveDistancePaletteEntry = new PaletteEntry();
-      driveDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      driveDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
-        driveDistancePaletteEntry
-      ]);
-
-      // CoastDistanceGoalLineSeries
-      const coastDistanceGoalPalette = new Palette();
-      coastDistanceGoalPalette.seriesName = 'CoastDistanceGoalLineSeries';
-      const coastDistanceGoalPaletteEntry = new PaletteEntry();
-      coastDistanceGoalPaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistanceGoalPaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
-        coastDistanceGoalPaletteEntry
-      ]);
-
-      this.distancePlotPalettes = new ObservableArray<Palette>([
-        coastDistancePalette,
-        driveDistancePalette,
-        coastDistanceGoalPalette
-      ]);
-    }
-  }
-
-  private async _updatePointLabelStyle() {
-    this.pointLabelStyle = new PointLabelStyle();
-    this.pointLabelStyle.margin = 10;
-    this.pointLabelStyle.fontStyle = ChartFontStyle.Bold;
-    this.pointLabelStyle.fillColor =
-      this.user.data.theme_preference === APP_THEMES.DEFAULT
-        ? new Color('#e31c79')
-        : new Color('#00c1d5');
-    this.pointLabelStyle.strokeColor =
-      this.user.data.theme_preference === APP_THEMES.DEFAULT
-        ? new Color('#e31c79')
-        : new Color('#00c1d5');
-    this.pointLabelStyle.textSize = 12;
-    this.pointLabelStyle.textColor = new Color('White');
-    this.pointLabelStyle.textFormat = '%.1f';
   }
 
   private async _updateCoastTimePlotYAxis() {
