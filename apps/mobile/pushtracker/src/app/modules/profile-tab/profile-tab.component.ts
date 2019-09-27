@@ -7,6 +7,7 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
+import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
@@ -66,6 +67,11 @@ export class ProfileTabComponent {
    */
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
+
+  /**
+   * For showing indication that we're sending data to the wear os apps
+   */
+  private _loadingIndicator = new LoadingIndicator();
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -192,12 +198,19 @@ export class ProfileTabComponent {
 
   async onWatchConnectTap() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
+    this._loadingIndicator.show({
+      message: this._translateService.instant('wearos-comms.messages.synchronizing'),
+      details: this._translateService.instant('wearos-comms.messages.synchronizing-long'),
+      dimBackground: true
+    });
+
     WearOsComms.setDebugOutput(false);
     const didConnect = await this._connectCompanion();
     if (didConnect) {
       const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
+      this._loadingIndicator.hide();
       if (sentMessage && sentData) {
         new Toasty({
           text:
@@ -216,6 +229,7 @@ export class ProfileTabComponent {
         });
       }
     } else {
+      this._loadingIndicator.hide();
       alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-connection-error.title'

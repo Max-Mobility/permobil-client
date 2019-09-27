@@ -544,7 +544,9 @@
       }
     },
     "messages": {
-      "pte2-sync-successful": "Successfully synchronized account with your PushTracker E2"
+      "pte2-sync-successful": "Successfully synchronized account with your PushTracker E2",
+      "synchronizing": "Synchronizing...",
+      "synchronizing-long": "Synchronizing account information with your PushTracker E2, please wait."
     }
   },
   "wireless-updates": {
