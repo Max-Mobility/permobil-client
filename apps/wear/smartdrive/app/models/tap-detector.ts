@@ -13,11 +13,11 @@ export class TapDetector {
    * Higher-level tap detection configuration
    */
   private minPredictionThreshold = 0.5;
-  private maxPredictionThreshold = 0.8;
+  private maxPredictionThreshold = 1.0;
   private predictionThreshold: number = 0.5; // confidence
 
   private jerkThreshold: number = 17.0; // acceleration value
-  private maxJerkThreshold: number = 30.0;
+  private maxJerkThreshold: number = 60.0;
   private minJerkThreshold: number = 17.0;
 
   private lastTapTime: number; // timestamp of last detected tap
@@ -53,8 +53,8 @@ export class TapDetector {
    */
   private static InputHistorySize = 4;
   private static PredictionHistorySize = 2;
-  private static InputRawHistorySize = 10;
-  private static JerkHistorySize = 2;
+  private static InputRawHistorySize = 6;
+  private static JerkHistorySize = 3;
   private inputHistory: any[] = [];
   private predictionHistory: number[] = [];
   private inputRawHistory: any[] = [];
