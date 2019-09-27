@@ -1,3 +1,5 @@
+import { isIOS } from 'tns-core-modules/platform';
+
 declare const global: any;
 
 export const performance = {
@@ -9,8 +11,8 @@ export const performance = {
       console.log(
         `${label ? label + ': ' : ''}${java.lang.System.nanoTime() / 1000000}`
       );
-    } else if (global.ios) {
-      console.log(`${label} ${CACurrentMediaTime()}`);
+    } else if (isIOS) {
+      console.log(`${label ? label + ': ' : ''}${CACurrentMediaTime()}`);
     }
   }
 };
