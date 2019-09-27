@@ -2,7 +2,7 @@
   <StackLayout row="0" col="1" [rowSpan]="fields.length" colSpan="3" padding="10"
     *ngFor="let field of fields; let i = index">
     <Label class="title" [text]="title | translate" textWrap="true"></Label>
-    <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'"
+    <Label marginTop="5" class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'"
       textWrap="true"></Label>
     <StackLayout [row]="i" orientation="horizontal">
       <Label width="10%" class="textfield-prefix" [text]="field.prefix ? field.prefix : ''" marginTop="10"
