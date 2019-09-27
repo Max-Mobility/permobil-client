@@ -192,6 +192,7 @@ export class ProfileTabComponent {
 
   async onWatchConnectTap() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
+    WearOsComms.setDebugOutput(false);
     await this._connectCompanion();
     await this._sendData();
     await this._sendMessage();
