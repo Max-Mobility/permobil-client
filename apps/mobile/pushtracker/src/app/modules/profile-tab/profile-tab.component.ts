@@ -434,11 +434,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.first-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: firstName
-          }
-        ]
+        text: firstName
       }
     };
 
@@ -446,8 +442,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `first_name TextFieldSheetComponent result: ${result.data}`);
-          const firstNameField = result.data.fields[0] || '';
-          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
+          const newFirstName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
         }
       },
@@ -472,11 +467,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.last-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: lastName
-          }
-        ]
+        text: lastName
       }
     };
 
@@ -484,8 +475,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `last_name TextFieldSheetComponent result: ${result.data}`);
-          const lastNameField = result.data.fields[0] || '';
-          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
+          const newLastName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
         }
       },
@@ -599,20 +589,16 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        fields: [
-          {
-            text: text,
-            suffix: suffix,
-            keyboardType: 'number'
-          }
-        ]
+        text: text,
+        suffix: suffix,
+        keyboardType: 'number'
       }
     };
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          const newWeight = _validateWeightFromText(result.data.fields[0].text);
+          const newWeight = _validateWeightFromText(result.data.text);
           if (newWeight) {
             const primary = (newWeight + '').split('.')[0];
             const secondary = '0.' + (newWeight + '').split('.')[1];
