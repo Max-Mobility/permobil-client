@@ -475,7 +475,7 @@ export class MainViewModel extends Observable {
       await this.askForPermissions();
       // start the wear os communications
       console.log('registering callbacks');
-      WearOsComms.setDebugOutput(true);
+      WearOsComms.setDebugOutput(false);
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
       console.log('advertising as companion!');
