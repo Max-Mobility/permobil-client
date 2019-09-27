@@ -1214,7 +1214,7 @@ export class MainViewModel extends Observable {
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
-      this.tapDetector.setSensitivity(this.settings.tapSensitivity);
+      this.tapDetector.setSensitivity(this.settings.tapSensitivity,this.motorOn);
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
       if (didTap) {
