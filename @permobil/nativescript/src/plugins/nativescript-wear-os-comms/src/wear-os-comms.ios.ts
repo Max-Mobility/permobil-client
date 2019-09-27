@@ -257,7 +257,7 @@ export class WearOsComms extends Common {
     const encoded = unescape(encodeURIComponent(s));
     const charList = encoded.split('');
     const uintArray = [];
-    for (var i = 0; i < charList.length; i++) {
+    for (let i = 0; i < charList.length; i++) {
       uintArray.push(charList[i].charCodeAt(0));
     }
     console.log('stringToUint:', uintArray);
