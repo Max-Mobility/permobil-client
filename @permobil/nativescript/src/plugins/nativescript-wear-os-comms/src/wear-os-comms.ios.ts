@@ -61,7 +61,7 @@ export class WearOsComms extends Common {
         onDisconnected: WearOsComms.onDisconnected
       });
     } catch (err) {
-      console.error('[WearOsComms] connect companion error:', err);
+      WearOsComms.error('connect companion error:', err);
       WearOsComms.disconnectCompanion();
     }
   }
@@ -74,7 +74,7 @@ export class WearOsComms extends Common {
         UUID: companion
       });
     } catch (err) {
-      console.error('[WearOsComms] disconnect companion error:', err);
+      WearOsComms.error('disconnect companion error:', err);
     }
   }
 
@@ -105,7 +105,7 @@ export class WearOsComms extends Common {
           serviceUUIDs: [ WearOsComms.ServiceUUID ],
           seconds: timeoutSeconds,
           onDiscovered: (peripheral: any) => {
-            console.log('found peripheral', peripheral);
+            WearOsComms.log('found peripheral', peripheral);
             WearOsComms._bluetooth.stopScanning();
             resolve(peripheral.UUID);
           },
@@ -115,7 +115,7 @@ export class WearOsComms extends Common {
         // found any devices through the callback
         resolve(null);
       } catch (err) {
-        console.error('findAvailableCompanions error:', err);
+        WearOsComms.error('findAvailableCompanions error:', err);
         // resolve with no devices found
         resolve(null);
       }
@@ -128,32 +128,32 @@ export class WearOsComms extends Common {
 
   private static async onConnected(args: any) {
     try {
-      console.log('[WearOsComms] onConnected');
+      WearOsComms.log('onConnected');
       // start notifying so we can send / receive data
       await WearOsComms.startNotifying();
       // now let people know
       WearOsComms._onConnectedCallback && WearOsComms._onConnectedCallback();
     } catch (err) {
-      console.error('[WearOsComms] onConnected error:', err);
+      WearOsComms.error('onConnected error:', err);
       await WearOsComms.disconnectCompanion();
     }
   }
 
   private static async onDisconnected(args: any) {
     try {
-      console.log('[WearOsComms] onDisconnected');
+      WearOsComms.log('onDisconnected');
       // stop notifying
       await WearOsComms.stopNotifying();
       // now let people know
       WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
     } catch (err) {
-      console.error('[WearOsComms] onDisconnected error:', err);
+      WearOsComms.error('onDisconnected error:', err);
     }
   }
 
   private static async onNotify(args: any) {
     try {
-      console.log('[WearOsComms] onNotify:', args);
+      WearOsComms.log('onNotify:', args);
       const characteristic = args.characteristic;
       const value = args.value;
       const device = args.device;
@@ -167,7 +167,7 @@ export class WearOsComms extends Common {
           WearOsComms._onMessageReceivedCallback &&
             WearOsComms._onMessageReceivedCallback({ path, message, device });
         } else {
-          console.error('invalid message received:', stringValue);
+          WearOsComms.error('invalid message received:', stringValue);
         }
       } else if (characteristic === WearOsComms.DataCharacteristicUUID) {
         const data = new Uint8Array(value);
@@ -177,14 +177,14 @@ export class WearOsComms extends Common {
         throw new Error('unkown characteristic notified!');
       }
     } catch (err) {
-      console.error('[WearOsComms] onNotify error:', err);
+      WearOsComms.error('onNotify error:', err);
     }
   }
 
   private static async startNotifying() {
     if (!WearOsComms.hasCompanion()) return;
     const companion = await WearOsComms.getCompanion();
-    console.log('[WearOsComms] startNotifying');
+    WearOsComms.log('startNotifying');
     await WearOsComms._bluetooth.startNotifying({
       peripheralUUID: companion,
       serviceUUID: WearOsComms.ServiceUUID,
@@ -203,7 +203,7 @@ export class WearOsComms extends Common {
     try {
       if (!WearOsComms.hasCompanion()) return;
       const companion = await WearOsComms.getCompanion();
-    console.log('[WearOsComms] stopNotifying');
+    WearOsComms.log('stopNotifying');
       await WearOsComms._bluetooth.stopNotifying({
         peripheralUUID: companion,
         serviceUUID: WearOsComms.ServiceUUID,
@@ -215,7 +215,7 @@ export class WearOsComms extends Common {
         characteristicUUID: WearOsComms.DataCharacteristicUUID
       });
     } catch (err) {
-      console.error('[WearOsComms] stopNotifying error:', err);
+      WearOsComms.error('stopNotifying error:', err);
     }
   }
 
@@ -249,7 +249,7 @@ export class WearOsComms extends Common {
         }
       }
     }
-    console.log('encoded: "' + encoded + '"');
+    WearOsComms.log('encoded: "' + encoded + '"');
     return encoded;
   }
 
@@ -260,7 +260,7 @@ export class WearOsComms extends Common {
     for (let i = 0; i < charList.length; i++) {
       uintArray.push(charList[i].charCodeAt(0));
     }
-    console.log('stringToUint:', uintArray);
+    WearOsComms.log('stringToUint:', uintArray);
     return new Uint8Array(uintArray);
   }
 
@@ -276,7 +276,7 @@ export class WearOsComms extends Common {
       // remove the last ','
       encoded = encoded.slice(0, -1);
     }
-    console.log('encoded: "' + encoded + '"');
+    WearOsComms.log('encoded: "' + encoded + '"');
     return encoded;
     */
   }
@@ -284,7 +284,7 @@ export class WearOsComms extends Common {
   private static async write(address: string, characteristic: string, value: any) {
     let didWrite = false;
     try {
-      console.log('[WearOsComms] sending\n',
+      WearOsComms.log('sending\n',
                   '\taddress:', address,
                   '\tcharacteristic:', characteristic,
                   '\tvalue:', value
@@ -298,8 +298,17 @@ export class WearOsComms extends Common {
       });
       didWrite = true;
     } catch (err) {
-      console.error('[WearOsComms] error writing', err);
+      WearOsComms.error('error writing', err);
     }
     return didWrite;
+  }
+
+  private static log(...args) {
+    if (WearOsComms._debugOutputEnabled)
+      console.log('[ WearOsComms ]', ...args);
+  }
+
+  private static error(...args) {
+    console.error('[ WearOsComms ]', ...args);
   }
 }
