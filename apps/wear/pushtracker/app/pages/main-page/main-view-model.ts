@@ -460,7 +460,7 @@ export class MainViewModel extends Observable {
   async onMessageReceived(data: { path: string, message: string, device: any }) {
     console.log('on message received:', data);
     alert({
-      title: "MESSAGE",
+      title: 'MESSAGE',
       message: `${data.path}\n\n${data.message}`,
       okButtonText: 'OK'
     });
