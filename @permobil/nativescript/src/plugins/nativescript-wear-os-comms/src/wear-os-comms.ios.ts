@@ -81,11 +81,8 @@ export class WearOsComms extends Common {
   public static async sendMessage(channel: string, msg: string) {
     if (!WearOsComms.hasCompanion()) throw new Error('cannot sendMessage: no companion');
     const companion = await WearOsComms.getCompanion();
-    // strip leading / trailing '/' from channel
-    if (channel.charAt(0) === '/') channel = channel.substr(1);
-    if (channel.charAt(channel.length - 1) === '/') channel = channel.substr(0, channel.length - 1);
     // convert message to hexadecimal
-    const encoded = WearOsComms.encodeString(`${channel}/${msg}`);
+    const encoded = WearOsComms.encodeString(`${channel}${WearOsComms.MessageDelimeter}${msg}`);
     const didWrite = await WearOsComms.write(companion, WearOsComms.MessageCharacteristicUUID, encoded);
     return didWrite;
   }
@@ -161,15 +158,16 @@ export class WearOsComms extends Common {
       const value = args.value;
       const device = args.device;
       if (characteristic === WearOsComms.MessageCharacteristicUUID) {
-        const splits = new String(value).split('/');
-        if (splits && splits.length === 2) {
+        const stringValue = String.fromCharCode.apply(null, value);
+        const splits = stringValue.split(WearOsComms.MessageDelimeter);
+        if (splits && splits.length > 1) {
           const path = splits[0];
-          // recover original message in case it had '/' in it
-          const message = splits.slice(1).join('/');
+          // recover original message in case it had delimeters in it
+          const message = splits.slice(1).join(WearOsComms.MessageDelimeter);
           WearOsComms._onMessageReceivedCallback &&
             WearOsComms._onMessageReceivedCallback({ path, message, device });
         } else {
-          console.error('invalid message received:', new String(value));
+          console.error('invalid message received:', stringValue);
         }
       } else if (characteristic === WearOsComms.DataCharacteristicUUID) {
         const data = new Uint8Array(value);
@@ -236,11 +234,12 @@ export class WearOsComms extends Common {
   }
 
   private static encodeData(d: any) {
-    let encoded = '';
+    let encoded = null;
     if (d && d.length) {
       if ((typeof d) === 'string') {
         encoded = WearOsComms.encodeString(d);
       } else {
+        encoded = '';
         for (let i = 0; i < d.length; i++) {
           encoded += '0x' + d.toString(16) + ',';
         }
@@ -250,10 +249,24 @@ export class WearOsComms extends Common {
         }
       }
     }
+    console.log('encoded: "' + encoded + '"');
     return encoded;
   }
 
+  private static stringToUint(s: string) {
+    const encoded = unescape(encodeURIComponent(s));
+    const charList = encoded.split('');
+    const uintArray = [];
+    for (var i = 0; i < charList.length; i++) {
+      uintArray.push(charList[i].charCodeAt(0));
+    }
+    console.log('stringToUint:', uintArray);
+    return new Uint8Array(uintArray);
+  }
+
   private static encodeString(s: string) {
+    return WearOsComms.stringToUint(s);
+    /*
     // convert to hexadecimal string
     let encoded = '';
     for (let i = 0; i < s.length; i++) {
@@ -263,7 +276,9 @@ export class WearOsComms extends Common {
       // remove the last ','
       encoded = encoded.slice(0, -1);
     }
+    console.log('encoded: "' + encoded + '"');
     return encoded;
+    */
   }
 
   private static async write(address: string, characteristic: string, value: any) {

@@ -114,28 +114,36 @@ export class WearOsComms extends Common {
 
   private static onCharacteristicWriteRequest(args: any) {
     const argdata = args.data;
-    const characteristic = argdata.characteristic.getUUID().toString().toLowerCase();
+    const characteristic = argdata.characteristic.getUuid().toString().toLowerCase();
     console.log('[WearOsComms] onCharacteristicWriteRequest for', characteristic);
     const value = argdata.value;
     const device = argdata.device;
     if (characteristic === WearOsComms.MessageCharacteristicUUID.toLowerCase()) {
-      const splits = new String(value).split('/');
-      if (splits && splits.length === 2) {
+      const stringValue = WearOsComms.uintToString(argdata.value);
+      console.log('[WearOsComms] stringValue:', stringValue);
+      const splits = stringValue.split(WearOsComms.MessageDelimeter);
+      console.log('[WearOsComms] splits:', splits);
+      if (splits && splits.length > 1) {
         const path = splits[0];
-        // recover original message in case it had '/' in it
-        const message = splits.slice(1).join('/');
+        // recover original message in case it had any delimeters in it
+        const message = splits.slice(1).join(WearOsComms.MessageDelimeter);
         WearOsComms._onMessageReceivedCallback &&
           WearOsComms._onMessageReceivedCallback({ path, message, device });
       } else {
-        console.error('invalid message received:', new String(value));
+        console.error('invalid message received:', stringValue);
       }
     } else if (characteristic === WearOsComms.DataCharacteristicUUID.toLowerCase()) {
-      const data = new Uint8Array(value);
       WearOsComms._onDataReceivedCallback &&
-        WearOsComms._onDataReceivedCallback({ data, device });
+        WearOsComms._onDataReceivedCallback({ data: value, device });
     } else {
       console.error('[WearOsComms] Unknown characteristic written to:', characteristic);
     }
+  }
+
+  private static uintToString(uintArray: any) {
+    var encodedString = String.fromCharCode.apply(null, uintArray),
+    decodedString = decodeURIComponent(escape(encodedString));
+    return decodedString;
   }
 
   private static registerListeners() {
