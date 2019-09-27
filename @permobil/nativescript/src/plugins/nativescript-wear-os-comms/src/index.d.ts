@@ -25,7 +25,8 @@ export declare class WearOsComms extends Common {
    */
   static findAvailableCompanions(timeoutSeconds: number): Promise<string>;
   static hasCompanion(): boolean;
+  static clearCompanion();
   static saveCompanion(address: string);
-  static connectCompanion();
+  static connectCompanion(timeout: number = 10000);
   static disconnectCompanion();
 }

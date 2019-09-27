@@ -211,11 +211,11 @@ export class ProfileTabComponent {
     WearOsComms.setDebugOutput(false);
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-      const sentData = await this._sendData();
+      // const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       this._loadingIndicator.hide();
-      if (sentMessage && sentData) {
+      if (sentMessage) { // && sentData) {
         new Toasty({
           text:
           this._translateService.instant('wearos-comms.messages.pte2-sync-successful'),
@@ -1208,12 +1208,11 @@ export class ProfileTabComponent {
         WearOsComms.saveCompanion(address);
       }
       // now connect
-      await new Promise(async (resolve, reject) => {
-        WearOsComms.registerConnectedCallback(resolve);
-        await WearOsComms.connectCompanion();
-      });
-      didConnect = true;
+      didConnect = await WearOsComms.connectCompanion(10000);
     } catch (err) {
+      console.error('error connecting:', err);
+      // clear out the companion so we can search again
+      WearOsComms.clearCompanion();
       this._logService.logException(err);
     }
     return didConnect;

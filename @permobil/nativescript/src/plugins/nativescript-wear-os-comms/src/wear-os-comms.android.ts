@@ -52,7 +52,11 @@ export class WearOsComms extends Common {
     // do nothing
   }
 
-  public static connectCompanion() {
+  public static clearCompanion() {
+    // do nothing
+  }
+
+  public static connectCompanion(timeout: number = 10000) {
     // we don't do anything here but we should let people know that
     // we've "connected" in case they are waiting on the callback to
     // resolve / continue execution;

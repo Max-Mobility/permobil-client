@@ -40,36 +40,56 @@ export class WearOsComms extends Common {
     WearOsComms._onDisconnectedCallback = cb;
   }
 
+  public static clearCompanion() {
+    WearOsComms.pairedCompanion = null;
+  }
+
   public static saveCompanion(address: string) {
-    if (address !== null) {
+    if (address && address.length) {
       WearOsComms.pairedCompanion = address;
+    } else {
+      WearOsComms.pairedCompanion = null;
     }
   }
 
   public static hasCompanion() {
-    return WearOsComms.pairedCompanion !== null;
+    const hasCompanion = WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length;
+    WearOsComms.log('hasCompanion:', hasCompanion);
+    return hasCompanion;
   }
 
-  public static async connectCompanion() {
-    if (!WearOsComms.hasCompanion()) return;
+  public static async connectCompanion(timeout: number = 10000) {
+    if (!WearOsComms.hasCompanion()) return false;
     const companion = await WearOsComms.getCompanion();
-    try {
-      // connect to the companion
-      await WearOsComms._bluetooth.connect({
+    // connect to the companion
+    const didConnect = await new Promise((resolve, reject) => {
+      const tid = setTimeout(() => {
+        WearOsComms.error('timeout connecting to:', companion);
+        reject(new Error('Connect timeout!'));
+      }, timeout);
+      WearOsComms.log('connecting to:', companion);
+      WearOsComms._bluetooth.connect({
         UUID: companion,
-        onConnected: WearOsComms.onConnected,
-        onDisconnected: WearOsComms.onDisconnected
+        onConnected: () => {
+          clearTimeout(tid);
+          WearOsComms.onConnected()
+          resolve(true);
+        },
+        onDisconnected: () => {
+          WearOsComms.onDisconnected()
+          clearTimeout(tid);
+          reject(new Error('Could not connect'));
+        }
       });
-    } catch (err) {
-      WearOsComms.error('connect companion error:', err);
-      WearOsComms.disconnectCompanion();
-    }
+    });
+    return didConnect;
   }
 
   public static async disconnectCompanion() {
     if (!WearOsComms.hasCompanion()) return;
     const companion = await WearOsComms.getCompanion();
     try {
+      // await WearOsComms.stopNotifying();
       await WearOsComms._bluetooth.disconnect({
         UUID: companion
       });
@@ -126,7 +146,7 @@ export class WearOsComms extends Common {
    * Private helper methods:
    */
 
-  private static async onConnected(args: any) {
+  private static async onConnected() {
     try {
       WearOsComms.log('onConnected');
       // start notifying so we can send / receive data
@@ -139,11 +159,9 @@ export class WearOsComms extends Common {
     }
   }
 
-  private static async onDisconnected(args: any) {
+  private static async onDisconnected() {
     try {
       WearOsComms.log('onDisconnected');
-      // stop notifying
-      await WearOsComms.stopNotifying();
       // now let people know
       WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
     } catch (err) {
@@ -203,7 +221,7 @@ export class WearOsComms extends Common {
     try {
       if (!WearOsComms.hasCompanion()) return;
       const companion = await WearOsComms.getCompanion();
-    WearOsComms.log('stopNotifying');
+      WearOsComms.log('stopNotifying');
       await WearOsComms._bluetooth.stopNotifying({
         peripheralUUID: companion,
         serviceUUID: WearOsComms.ServiceUUID,
@@ -270,11 +288,11 @@ export class WearOsComms extends Common {
     // convert to hexadecimal string
     let encoded = '';
     for (let i = 0; i < s.length; i++) {
-      encoded += '0x' + s.charCodeAt(i) + ',';
+    encoded += '0x' + s.charCodeAt(i) + ',';
     }
     if (encoded.endsWith(',')) {
-      // remove the last ','
-      encoded = encoded.slice(0, -1);
+    // remove the last ','
+    encoded = encoded.slice(0, -1);
     }
     WearOsComms.log('encoded: "' + encoded + '"');
     return encoded;
@@ -285,10 +303,10 @@ export class WearOsComms extends Common {
     let didWrite = false;
     try {
       WearOsComms.log('sending\n',
-                  '\taddress:', address,
-                  '\tcharacteristic:', characteristic,
-                  '\tvalue:', value
-                 );
+                      '\taddress:', address,
+                      '\tcharacteristic:', characteristic,
+                      '\tvalue:', value
+                     );
       // send the data to the companion
       await WearOsComms._bluetooth.write({
         peripheralUUID: address,
