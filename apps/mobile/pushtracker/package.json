@@ -3,6 +3,9 @@
     "id": {
       "android": "com.permobil.pushtracker",
       "ios": "com.max-mobility.PushTracker"
+    },
+    "tns-android": {
+      "version": "6.1.2"
     }
   },
   "dependencies": {
