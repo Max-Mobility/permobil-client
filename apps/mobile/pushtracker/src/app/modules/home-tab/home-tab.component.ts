@@ -35,7 +35,7 @@ export class HomeTabComponent {
   todayPushCount: string = '0.0';
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
-  savedTheme: string;
+  CURRENT_THEME: string;
   coastTimePlotAnnotationValue: number = 0.001;
   coastTimeGoalMessage: string;
   coastTimeGoalValue: string;
@@ -75,11 +75,16 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) {}
+  ) {
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+  }
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
-    this.savedTheme = appSettings.getString(
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );

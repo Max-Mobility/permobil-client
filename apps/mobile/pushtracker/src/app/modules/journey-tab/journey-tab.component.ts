@@ -45,7 +45,7 @@ export class JourneyTabComponent {
   public APP_THEMES = APP_THEMES;
   public DISTANCE_UNITS = DISTANCE_UNITS;
   journeyItems = undefined;
-  savedTheme: string;
+  CURRENT_THEME: string;
   savedTimeFormat: string;
   user: PushTrackerUser;
   todayActivity;
@@ -81,7 +81,7 @@ export class JourneyTabComponent {
 
   onJourneyTabLoaded() {
 
-    this.savedTheme = appSettings.getString(
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
@@ -470,7 +470,7 @@ export class JourneyTabComponent {
             getJourneyTypeString(journey.journeyType),
           duration: 0,
           icon_small:
-            this.savedTheme === APP_THEMES.DEFAULT
+            this.CURRENT_THEME === APP_THEMES.DEFAULT
               ? imageFromResource(
                 journey.journeyType === JourneyType.ROLL
                   ? 'roll_black'
@@ -482,7 +482,7 @@ export class JourneyTabComponent {
                   : 'smartdrive_material_white_45'
               ),
           icon_large:
-            this.savedTheme === APP_THEMES.DEFAULT
+            this.CURRENT_THEME === APP_THEMES.DEFAULT
               ? imageFromResource(
                 journey.journeyType === JourneyType.ROLL
                   ? 'roll_white'

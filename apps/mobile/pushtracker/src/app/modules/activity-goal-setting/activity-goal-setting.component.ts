@@ -22,7 +22,7 @@ export class ActivityGoalSettingComponent implements OnInit {
     value_description: string;
   };
 
-  savedTheme: string;
+  CURRENT_THEME: string;
 
   private _user: PushTrackerUser;
 
@@ -48,7 +48,7 @@ export class ActivityGoalSettingComponent implements OnInit {
     // in this._params.context - So we're not bothering to run this text through the translate
     // service here. https://github.com/Max-Mobility/permobil-client/issues/280
     Object.assign(this.config, this._params.context);
-    this.savedTheme = appSettings.getString(
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );

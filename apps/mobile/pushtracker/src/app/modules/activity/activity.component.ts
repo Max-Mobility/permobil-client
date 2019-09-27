@@ -46,7 +46,7 @@ export class ActivityComponent implements OnInit {
   chartTitle: string;
   chartDescription: string;
   chartYAxis: CHART_Y_AXIS = CHART_Y_AXIS.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
-  savedTheme: string;
+  CURRENT_THEME: string;
 
   dailyActivity: ObservableArray<any[]>;
 
@@ -121,7 +121,7 @@ export class ActivityComponent implements OnInit {
     private _params: ModalDialogParams
   ) {
 
-    this.savedTheme = appSettings.getString(
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
@@ -1228,12 +1228,12 @@ export class ActivityComponent implements OnInit {
     this.monthViewStyle.showWeekNumbers = false;
     this.monthViewStyle.showDayNames = true;
     this.monthViewStyle.backgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
 
     // Today cell style
     const todayCellStyle = new DayCellStyle();
     todayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? new Color('#00c1d5')
         : this._colorWhite;
     todayCellStyle.cellTextSize = 12;
@@ -1243,9 +1243,9 @@ export class ActivityComponent implements OnInit {
     // Day cell style
     const dayCellStyle = new DayCellStyle();
     dayCellStyle.cellBackgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
@@ -1253,7 +1253,7 @@ export class ActivityComponent implements OnInit {
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
     weekendCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
@@ -1267,18 +1267,18 @@ export class ActivityComponent implements OnInit {
     // Week number cell style
     const weekNumberCellStyle = new CellStyle();
     weekNumberCellStyle.cellTextColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     weekNumberCellStyle.cellBorderColor = this._colorWhite;
     this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
 
     // Day name cell style
     const dayNameCellStyle = new CellStyle();
     dayNameCellStyle.cellBackgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayNameCellStyle.cellTextColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     dayNameCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;

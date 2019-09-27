@@ -106,11 +106,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const savedTheme = appSettings.getString(
+    const CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    applyTheme(savedTheme);
+    applyTheme(CURRENT_THEME);
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {

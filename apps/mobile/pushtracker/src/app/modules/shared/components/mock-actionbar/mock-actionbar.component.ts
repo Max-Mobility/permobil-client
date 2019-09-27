@@ -120,7 +120,7 @@ export class MockActionbarComponent {
         context: {
           languagePreference: this.languagePreference,
           controlConfiguration: this.controlConfiguration,
-          savedTheme: this.CURRENT_THEME
+          CURRENT_THEME: this.CURRENT_THEME
         },
         fullscreen: true,
         animated: true,

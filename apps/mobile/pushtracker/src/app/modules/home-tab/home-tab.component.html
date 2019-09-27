@@ -1,5 +1,5 @@
 <PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)"
-  [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
+  [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout horizontalAlignment="center" row="1" col="0">
       // Mock ActionBar
@@ -78,13 +78,13 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false"
             horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'" lineHidden="true" tickHidden="false"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'" lineHidden="true" tickHidden="false"
             majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline"
             plotMode="OnTicks">
           </CategoricalAxis>
 
           <LinearAxis tkCartesianVerticalAxis id="vAxis"
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'" horizontalLocation="Right"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'" horizontalLocation="Right"
             labelMargin="10" lineHidden="true" [maximum]="yAxisMax" minumum="1" [majorStep]="yAxisStep"
             [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"></LinearAxis>
 
@@ -95,19 +95,19 @@
           <Palettes>
             <Palette tkCartesianPalette seriesName="WeeklyActivity">
               <PaletteEntry tkCartesianPaletteEntry
-                [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
             <Palette tkCartesianPalette seriesName="WeeklyActivity" seriesState="Selected">
               <PaletteEntry tkCartesianPaletteEntry
-                [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
           </Palettes>
 
           <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
             [value]="coastTimePlotAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
-            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" strokeDashPattern="3, 3">
+            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" strokeDashPattern="3, 3">
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>
@@ -125,13 +125,13 @@
             horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'" lineHidden="true" tickHidden="false"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'" lineHidden="true" tickHidden="false"
             majorTickInterval="1" labelSize="12" labelMargin="20" tickLength="1" labelFitMode="Multiline"
             plotMode="OnTicks">
           </CategoricalAxis>
 
           <LinearAxis tkCartesianVerticalAxis id="vAxis"
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'" horizontalLocation="Right"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'" horizontalLocation="Right"
             labelMargin="10" lineHidden="true" [maximum]="coastDistanceYAxisMax" minumum="0.0"
             [majorStep]="coastDistanceYAxisStep" [labelFormat]="coastDistanceYAxisMax === 1.0 ? '%.1f' : '%.0f'">
           </LinearAxis>
@@ -142,19 +142,19 @@
           <Palettes>
             <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity">
               <PaletteEntry tkCartesianPaletteEntry
-                [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
             <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity" seriesState="Selected">
               <PaletteEntry tkCartesianPaletteEntry
-                [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
           </Palettes>
 
           <ChartGridLineAnnotation tkCartesianAnnotations axisId="vAxis" hidden="false"
             [value]="distancePlotAnnotationValue" zPosition="AboveSeries" strokeWidth="2"
-            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" strokeDashPattern="3, 3">
+            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" strokeDashPattern="3, 3">
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>
