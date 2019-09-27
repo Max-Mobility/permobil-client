@@ -61,7 +61,7 @@ export class WearOsComms extends Common {
         onDisconnected: WearOsComms.onDisconnected
       });
     } catch (err) {
-      console.error('[WearOsComms] connect companion error:', err);
+      WearOsComms.error('connect companion error:', err);
       WearOsComms.disconnectCompanion();
     }
   }
@@ -74,18 +74,15 @@ export class WearOsComms extends Common {
         UUID: companion
       });
     } catch (err) {
-      console.error('[WearOsComms] disconnect companion error:', err);
+      WearOsComms.error('disconnect companion error:', err);
     }
   }
 
   public static async sendMessage(channel: string, msg: string) {
     if (!WearOsComms.hasCompanion()) throw new Error('cannot sendMessage: no companion');
     const companion = await WearOsComms.getCompanion();
-    // strip leading / trailing '/' from channel
-    if (channel.charAt(0) === '/') channel = channel.substr(1);
-    if (channel.charAt(channel.length - 1) === '/') channel = channel.substr(0, channel.length - 1);
     // convert message to hexadecimal
-    const encoded = WearOsComms.encodeString(`${channel}/${msg}`);
+    const encoded = WearOsComms.encodeString(`${channel}${WearOsComms.MessageDelimeter}${msg}`);
     const didWrite = await WearOsComms.write(companion, WearOsComms.MessageCharacteristicUUID, encoded);
     return didWrite;
   }
@@ -108,7 +105,7 @@ export class WearOsComms extends Common {
           serviceUUIDs: [ WearOsComms.ServiceUUID ],
           seconds: timeoutSeconds,
           onDiscovered: (peripheral: any) => {
-            console.log('found peripheral', peripheral);
+            WearOsComms.log('found peripheral', peripheral);
             WearOsComms._bluetooth.stopScanning();
             resolve(peripheral.UUID);
           },
@@ -118,7 +115,7 @@ export class WearOsComms extends Common {
         // found any devices through the callback
         resolve(null);
       } catch (err) {
-        console.error('findAvailableCompanions error:', err);
+        WearOsComms.error('findAvailableCompanions error:', err);
         // resolve with no devices found
         resolve(null);
       }
@@ -131,45 +128,46 @@ export class WearOsComms extends Common {
 
   private static async onConnected(args: any) {
     try {
-      console.log('[WearOsComms] onConnected');
+      WearOsComms.log('onConnected');
       // start notifying so we can send / receive data
       await WearOsComms.startNotifying();
       // now let people know
       WearOsComms._onConnectedCallback && WearOsComms._onConnectedCallback();
     } catch (err) {
-      console.error('[WearOsComms] onConnected error:', err);
+      WearOsComms.error('onConnected error:', err);
       await WearOsComms.disconnectCompanion();
     }
   }
 
   private static async onDisconnected(args: any) {
     try {
-      console.log('[WearOsComms] onDisconnected');
+      WearOsComms.log('onDisconnected');
       // stop notifying
       await WearOsComms.stopNotifying();
       // now let people know
       WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
     } catch (err) {
-      console.error('[WearOsComms] onDisconnected error:', err);
+      WearOsComms.error('onDisconnected error:', err);
     }
   }
 
   private static async onNotify(args: any) {
     try {
-      console.log('[WearOsComms] onNotify:', args);
+      WearOsComms.log('onNotify:', args);
       const characteristic = args.characteristic;
       const value = args.value;
       const device = args.device;
       if (characteristic === WearOsComms.MessageCharacteristicUUID) {
-        const splits = new String(value).split('/');
-        if (splits && splits.length === 2) {
+        const stringValue = String.fromCharCode.apply(null, value);
+        const splits = stringValue.split(WearOsComms.MessageDelimeter);
+        if (splits && splits.length > 1) {
           const path = splits[0];
-          // recover original message in case it had '/' in it
-          const message = splits.slice(1).join('/');
+          // recover original message in case it had delimeters in it
+          const message = splits.slice(1).join(WearOsComms.MessageDelimeter);
           WearOsComms._onMessageReceivedCallback &&
             WearOsComms._onMessageReceivedCallback({ path, message, device });
         } else {
-          console.error('invalid message received:', new String(value));
+          WearOsComms.error('invalid message received:', stringValue);
         }
       } else if (characteristic === WearOsComms.DataCharacteristicUUID) {
         const data = new Uint8Array(value);
@@ -179,14 +177,14 @@ export class WearOsComms extends Common {
         throw new Error('unkown characteristic notified!');
       }
     } catch (err) {
-      console.error('[WearOsComms] onNotify error:', err);
+      WearOsComms.error('onNotify error:', err);
     }
   }
 
   private static async startNotifying() {
     if (!WearOsComms.hasCompanion()) return;
     const companion = await WearOsComms.getCompanion();
-    console.log('[WearOsComms] startNotifying');
+    WearOsComms.log('startNotifying');
     await WearOsComms._bluetooth.startNotifying({
       peripheralUUID: companion,
       serviceUUID: WearOsComms.ServiceUUID,
@@ -205,7 +203,7 @@ export class WearOsComms extends Common {
     try {
       if (!WearOsComms.hasCompanion()) return;
       const companion = await WearOsComms.getCompanion();
-    console.log('[WearOsComms] stopNotifying');
+    WearOsComms.log('stopNotifying');
       await WearOsComms._bluetooth.stopNotifying({
         peripheralUUID: companion,
         serviceUUID: WearOsComms.ServiceUUID,
@@ -217,7 +215,7 @@ export class WearOsComms extends Common {
         characteristicUUID: WearOsComms.DataCharacteristicUUID
       });
     } catch (err) {
-      console.error('[WearOsComms] stopNotifying error:', err);
+      WearOsComms.error('stopNotifying error:', err);
     }
   }
 
@@ -236,11 +234,12 @@ export class WearOsComms extends Common {
   }
 
   private static encodeData(d: any) {
-    let encoded = '';
+    let encoded = null;
     if (d && d.length) {
       if ((typeof d) === 'string') {
         encoded = WearOsComms.encodeString(d);
       } else {
+        encoded = '';
         for (let i = 0; i < d.length; i++) {
           encoded += '0x' + d.toString(16) + ',';
         }
@@ -250,10 +249,24 @@ export class WearOsComms extends Common {
         }
       }
     }
+    WearOsComms.log('encoded: "' + encoded + '"');
     return encoded;
   }
 
+  private static stringToUint(s: string) {
+    const encoded = unescape(encodeURIComponent(s));
+    const charList = encoded.split('');
+    const uintArray = [];
+    for (let i = 0; i < charList.length; i++) {
+      uintArray.push(charList[i].charCodeAt(0));
+    }
+    WearOsComms.log('stringToUint:', uintArray);
+    return new Uint8Array(uintArray);
+  }
+
   private static encodeString(s: string) {
+    return WearOsComms.stringToUint(s);
+    /*
     // convert to hexadecimal string
     let encoded = '';
     for (let i = 0; i < s.length; i++) {
@@ -263,13 +276,15 @@ export class WearOsComms extends Common {
       // remove the last ','
       encoded = encoded.slice(0, -1);
     }
+    WearOsComms.log('encoded: "' + encoded + '"');
     return encoded;
+    */
   }
 
   private static async write(address: string, characteristic: string, value: any) {
     let didWrite = false;
     try {
-      console.log('[WearOsComms] sending\n',
+      WearOsComms.log('sending\n',
                   '\taddress:', address,
                   '\tcharacteristic:', characteristic,
                   '\tvalue:', value
@@ -283,8 +298,17 @@ export class WearOsComms extends Common {
       });
       didWrite = true;
     } catch (err) {
-      console.error('[WearOsComms] error writing', err);
+      WearOsComms.error('error writing', err);
     }
     return didWrite;
+  }
+
+  private static log(...args) {
+    if (WearOsComms._debugOutputEnabled)
+      console.log('[ WearOsComms ]', ...args);
+  }
+
+  private static error(...args) {
+    console.error('[ WearOsComms ]', ...args);
   }
 }

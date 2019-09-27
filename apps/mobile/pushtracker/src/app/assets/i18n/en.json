@@ -532,6 +532,23 @@
     ],
     "title": "Firmware Updates"
   },
+  "wearos-comms": {
+    "errors": {
+      "pte2-send-error": {
+        "message": "Could not send data to your PushTracker E2 - please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Synchronizing Account"
+      },
+      "pte2-connection-error": {
+        "message": "Could not find / connect to your PushTracker E2 - please ensure your phone and PushTracker E2 are both on with their bluetooth enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Connecting to PushTracker E2"
+      }
+    },
+    "messages": {
+      "pte2-sync-successful": "Successfully synchronized account with your PushTracker E2",
+      "synchronizing": "Synchronizing...",
+      "synchronizing-long": "Synchronizing account information with your PushTracker E2, please wait."
+    }
+  },
   "wireless-updates": {
     "title": "Wireless Updates",
     "error": "Error",

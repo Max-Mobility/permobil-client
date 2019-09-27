@@ -10,6 +10,9 @@
 		"dismiss": "Dismiss",
 		"ok": "OK"
 	},
+  "busy": {
+    "synchronizing": "Synchronizing..."
+  },
 	"charts": {
 		"coast": {
 			"title": "Daily Coast Time (s)"
@@ -153,5 +156,11 @@
 			"english": "mph",
 			"metric": "kph"
 		}
-	}
+	},
+  "wearos-comms": {
+    "errors": {
+      "bad-data": "Invalid data received from PushTracker mobile app - please check your connection and try again.",
+      "bad-authorization": "Invalid account authorization data received from PushTracker mobile app - please ensure your account information is up to date and you have a network connecction to the backend."
+    }
+  }
 }
