@@ -82,8 +82,7 @@ export class HomeTabComponent {
       APP_THEMES.DEFAULT
     );
     this._userService.user.subscribe(user => {
-      if (this.savedTheme !== user.data.theme_preference)
-        this.savedTheme = user.data.theme_preference;
+      this.savedTheme = user.data.theme_preference;
       applyTheme(this.savedTheme);
     });
   }
