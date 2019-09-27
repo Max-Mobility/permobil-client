@@ -1,21 +1,22 @@
 <StackLayout class="bottom-sheet-layout">
-  <Label class="title" [text]="title | translate" textWrap="true"></Label>
-  <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
-
+  <StackLayout row="0" col="1" colSpan="4" alignItems="center" justifyContent="center" padding="10">
+    <Label class="title" [text]="title | translate" textWrap="true"></Label>
+    <Label marginTop="10" class="description" [text]="description | translate"
+      [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
+    <StackLayout marginTop="10" orientation="horizontal">
+      <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'"
+        [items]="primaryItems" [selectedIndex]="primaryIndex"
+        (selectedIndexChange)="primaryIndexChanged(primaryPicker)">
+      </ListPicker>
+      <ListPicker #secondaryPicker class="listpicker m-l-4" [width]="listPickerNeedsSecondary ? '45%' : '0%'"
+        [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'" [items]="secondaryItems"
+        [selectedIndex]="secondaryIndex" (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"></ListPicker>
+    </StackLayout>
+  </StackLayout>
   <GridLayout rows="auto, auto" columns="auto, *, auto, auto">
-    <FlexboxLayout row="0" col="1" colSpan="4" flexDirection="row" alignItems="center" justifyContent="center" margin="4">
-      <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primaryItems" [selectedIndex]="primaryIndex" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"></ListPicker>
-      <ListPicker
-        #secondaryPicker
-        class="listpicker m-l-4"
-        [width]="listPickerNeedsSecondary ? '45%' : '0%'"
-        [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'"
-        [items]="secondaryItems"
-        [selectedIndex]="secondaryIndex"
-        (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
-      ></ListPicker>
-    </FlexboxLayout>
-    <Button row="1" col="2" ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
-    <Button row="1" col="3" ripple rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveListPickerValue()"></Button>
+    <Button row="1" col="2" ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn"
+      (tap)="closeSheet()"></Button>
+    <Button row="1" col="3" ripple rippleColorAlpha="0.18" [text]="'general.ok' | translate" class="ok-btn"
+      (tap)="saveListPickerValue()"></Button>
   </GridLayout>
 </StackLayout>

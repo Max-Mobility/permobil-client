@@ -190,10 +190,13 @@ export class ProfileTabComponent {
     // this._userSubscription$.unsubscribe();
   }
 
-  onWatchConnectTap() {
+  async onWatchConnectTap() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
-    this._sendData();
-    this._sendMessage();
+    WearOsComms.setDebugOutput(true);
+    await this._connectCompanion();
+    await this._sendData();
+    await this._sendMessage();
+    await this._disconnectCompanion();
   }
 
   onAvatarTap() {
@@ -431,11 +434,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.first-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: firstName
-          }
-        ]
+        text: firstName
       }
     };
 
@@ -443,8 +442,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `first_name TextFieldSheetComponent result: ${result.data}`);
-          const firstNameField = result.data.fields[0] || '';
-          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
+          const newFirstName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
         }
       },
@@ -469,11 +467,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.last-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: lastName
-          }
-        ]
+        text: lastName
       }
     };
 
@@ -481,8 +475,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `last_name TextFieldSheetComponent result: ${result.data}`);
-          const lastNameField = result.data.fields[0] || '';
-          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
+          const newLastName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
         }
       },
@@ -596,20 +589,16 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        fields: [
-          {
-            text: text,
-            suffix: suffix,
-            keyboardType: 'number'
-          }
-        ]
+        text: text,
+        suffix: suffix,
+        keyboardType: 'number'
       }
     };
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          const newWeight = _validateWeightFromText(result.data.fields[0].text);
+          const newWeight = _validateWeightFromText(result.data.text);
           if (newWeight) {
             const primary = (newWeight + '').split('.')[0];
             const secondary = '0.' + (newWeight + '').split('.')[1];
@@ -1154,34 +1143,61 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
     return `Kinvey ${token}:${id}`;
   }
 
-  private _sendData() {
+  private async _connectCompanion() {
+    let didConnect = false;
     try {
-      WearOsComms.sendData(this._getSerializedAuth()).then(() => {
-        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
-      })
-      .catch(err => {
-        this._logService.logException(err);
+      if (!WearOsComms.hasCompanion()) {
+        // find and save the companion
+        const address = await WearOsComms.findAvailableCompanions(5);
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'saving new companion: ' + address);
+        WearOsComms.saveCompanion(address);
+      }
+      // now connect
+      await new Promise(async (resolve, reject) => {
+        WearOsComms.registerConnectedCallback(resolve);
+        await WearOsComms.connectCompanion();
       });
+      didConnect = true;
+    } catch (err) {
+      this._logService.logException(err);
+    }
+    return didConnect;
+  }
+
+  private async _disconnectCompanion() {
+    try {
+      await WearOsComms.disconnectCompanion();
+    } catch (err) {
+      this._logService.logException(err);
+    }
+  }
+
+  private async _sendData() {
+    try {
+      const didSend = await WearOsComms.sendData(this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }
   }
 
-  private _sendMessage() {
+  private async _sendMessage() {
     try {
-      WearOsComms.sendMessage('/app-message', this._getSerializedAuth()).then(
-        () => {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
-        }
-      )
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      const didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }

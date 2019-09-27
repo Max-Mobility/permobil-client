@@ -101,7 +101,6 @@ export class ActivityComponent implements OnInit {
   private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
-  activityLoaded: boolean = false;
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
@@ -179,12 +178,10 @@ export class ActivityComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
-    this.activityLoaded = false;
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
     }).then(() => {
-      this.activityLoaded = true;
       pullRefresh.refreshing = false;
     }).catch(err => {
       this._logService.logException(err);
@@ -297,10 +294,12 @@ export class ActivityComponent implements OnInit {
       }
     } else if (this.currentTab === TAB.MONTH) {
       // month
-      this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-      this._updateWeekStartAndEnd();
-      this._calendar.navigateForward();
-      this._initMonthChartTitle();
+      if (this.isNextMonthButtonEnabled()) {
+        this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+        this._updateWeekStartAndEnd();
+        this._calendar.navigateForward();
+        this._initMonthChartTitle();
+      }
     }
   }
 
@@ -373,6 +372,8 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCalendarLoaded(args) {
+    this._logService.logBreadCrumb(ActivityComponent.name,
+      'Calendar Loaded');
     const calendar = args.object as RadCalendar;
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
@@ -411,7 +412,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _loadDailyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
     this.weekStart = getFirstDayOfWeek(date);
@@ -512,7 +512,6 @@ export class ActivityComponent implements OnInit {
         this._updateDailyActivityAnnotationValue();
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
-        this.activityLoaded = true;
       })
       .catch(err => {
         this._logService.logException(err);
@@ -608,7 +607,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
       (this.chartYAxis === CHART_Y_AXIS.DISTANCE &&
@@ -638,7 +636,6 @@ export class ActivityComponent implements OnInit {
               if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
-              this.activityLoaded = true;
               return true;
             })
             .catch(err => {
@@ -671,7 +668,6 @@ export class ActivityComponent implements OnInit {
               if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
-              this.activityLoaded = true;
               return true;
             })
             .catch(err => {
@@ -730,7 +726,6 @@ export class ActivityComponent implements OnInit {
     }
     if (this.currentTab === TAB.WEEK) this._calculateWeeklyActivityYAxisMax();
     this._updateWeekStartAndEnd();
-    this.activityLoaded = true;
   }
 
   private _calculateWeeklyActivityYAxisMax() {
@@ -1182,8 +1177,11 @@ export class ActivityComponent implements OnInit {
     const currentWeekStart = getFirstDayOfWeek(this.currentDayInView);
     const currentMonth = currentWeekStart.getMonth();
     return (
-      currentWeekStart.getFullYear() <= today.getFullYear() &&
-      currentMonth < month
+      currentWeekStart.getFullYear() < today.getFullYear() ||
+      (
+        currentWeekStart.getFullYear() === today.getFullYear() &&
+        currentMonth < month
+      )
     );
   }
 

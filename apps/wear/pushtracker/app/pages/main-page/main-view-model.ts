@@ -457,13 +457,35 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Service Data Update registered.');
   }
 
+  async onMessageReceived(data: { path: string, message: string, device: any }) {
+    console.log('on message received:', data);
+    alert({
+      title: 'MESSAGE',
+      message: `${data.path}\n\n${data.message}`,
+      okButtonText: 'OK'
+    });
+  }
+
+  async onDataReceived(data: { data: any, device: any }) {
+    console.log('on data received:', data);
+  }
+
   async startActivityService() {
     try {
       await this.askForPermissions();
       // start the wear os communications
+      console.log('registering callbacks');
+      WearOsComms.setDebugOutput(true);
+      WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
+      WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
+      console.log('advertising as companion!');
       WearOsComms.advertiseAsCompanion();
       console.log('Started wear os comms!');
       this.sentryBreadCrumb('Wear os comms started.');
+    } catch (err) {
+      console.error('could not advertise as companion');
+    }
+    try {
       // start the service with intent
       this.sentryBreadCrumb('Starting Activity Service.');
       console.log('Starting activity service!');
