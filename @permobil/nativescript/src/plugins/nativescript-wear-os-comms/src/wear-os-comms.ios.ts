@@ -72,11 +72,11 @@ export class WearOsComms extends Common {
         UUID: companion,
         onConnected: () => {
           clearTimeout(tid);
-          WearOsComms.onConnected()
+          WearOsComms.onConnected();
           resolve(true);
         },
         onDisconnected: () => {
-          WearOsComms.onDisconnected()
+          WearOsComms.onDisconnected();
           clearTimeout(tid);
           reject(new Error('Could not connect'));
         }
