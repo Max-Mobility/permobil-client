@@ -52,7 +52,7 @@ export class TextFieldSheetComponent {
           this.textField.nativeElement.android.length()
         );
       }
-    }, 200);
+    }, 100);
   }
 
   closeSheet() {
