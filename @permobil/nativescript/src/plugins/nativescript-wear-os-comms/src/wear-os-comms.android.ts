@@ -9,8 +9,8 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
-  private static _onConnectedReceivedCallback: any = null;
-  private static _onDisconnectedReceivedCallback: any = null;
+  private static _onConnectedCallback: any = null;
+  private static _onDisconnectedCallback: any = null;
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
 
@@ -21,11 +21,11 @@ export class WearOsComms extends Common {
   }
 
   public static registerConnectedCallback(cb: any) {
-    WearOsComms._onConnectedReceivedCallback = cb;
+    WearOsComms._onConnectedCallback = cb;
   }
 
   public static registerDisconnectedCallback(cb: any) {
-    WearOsComms._onDisconnectedReceivedCallback = cb;
+    WearOsComms._onDisconnectedCallback = cb;
   }
 
   public static registerMessageCallback(cb: any) {
