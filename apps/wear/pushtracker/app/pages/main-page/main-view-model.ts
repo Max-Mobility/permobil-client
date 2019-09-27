@@ -459,6 +459,11 @@ export class MainViewModel extends Observable {
 
   async onMessageReceived(data: { path: string, message: string, device: any }) {
     console.log('on message received:', data);
+    alert({
+      title: "MESSAGE",
+      message: `${data.path}\n\n${data.message}`,
+      okButtonText: 'OK'
+    });
   }
 
   async onDataReceived(data: { data: any, device: any }) {
@@ -470,6 +475,7 @@ export class MainViewModel extends Observable {
       await this.askForPermissions();
       // start the wear os communications
       console.log('registering callbacks');
+      WearOsComms.setDebugOutput(true);
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
       console.log('advertising as companion!');

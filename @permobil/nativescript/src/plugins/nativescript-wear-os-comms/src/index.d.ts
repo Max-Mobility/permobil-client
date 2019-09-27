@@ -2,6 +2,8 @@ import { Common } from './wear-os-comms.common';
 export declare class WearOsComms extends Common {
   constructor();
 
+  static setDebugOutput(enabled: boolean): void;
+
   /**
    * Bi-directional
    */

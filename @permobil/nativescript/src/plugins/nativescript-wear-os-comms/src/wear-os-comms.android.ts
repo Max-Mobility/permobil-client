@@ -14,6 +14,8 @@ export class WearOsComms extends Common {
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
 
+  private static _debugOutputEnabled = false;
+
   constructor() {
     super();
   }
@@ -51,6 +53,12 @@ export class WearOsComms extends Common {
     // do nothing
   }
 
+  public static setDebugOutput(enabled: boolean) {
+    WearOsComms._debugOutputEnabled = enabled;
+    if (WearOsComms._bluetooth)
+      WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
+  }
+
   public static async advertiseAsCompanion() {
     try {
       let needToAdvertise = false;
@@ -79,7 +87,7 @@ export class WearOsComms extends Common {
         console.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
         WearOsComms._bluetooth = new Bluetooth();
-        WearOsComms._bluetooth.debug = true;
+        WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
         // start the server
         WearOsComms._bluetooth.startGattServer();
         // create service / characteristics
@@ -106,10 +114,11 @@ export class WearOsComms extends Common {
 
   private static onCharacteristicWriteRequest(args: any) {
     const argdata = args.data;
-    const characteristic = argdata.characteristic;
+    const characteristic = argdata.characteristic.getUUID().toString().toLowerCase();
+    console.log('[WearOsComms] onCharacteristicWriteRequest for', characteristic);
     const value = argdata.value;
     const device = argdata.device;
-    if (characteristic === WearOsComms.MessageCharacteristicUUID) {
+    if (characteristic === WearOsComms.MessageCharacteristicUUID.toLowerCase()) {
       const splits = new String(value).split('/');
       if (splits && splits.length === 2) {
         const path = splits[0];
@@ -120,12 +129,12 @@ export class WearOsComms extends Common {
       } else {
         console.error('invalid message received:', new String(value));
       }
-    } else if (characteristic === WearOsComms.DataCharacteristicUUID) {
+    } else if (characteristic === WearOsComms.DataCharacteristicUUID.toLowerCase()) {
       const data = new Uint8Array(value);
       WearOsComms._onDataReceivedCallback &&
         WearOsComms._onDataReceivedCallback({ data, device });
     } else {
-      console.error('[WearOsComms] Unkown characteristic written to:', characteristic);
+      console.error('[WearOsComms] Unknown characteristic written to:', characteristic);
     }
   }
 
@@ -144,7 +153,6 @@ export class WearOsComms extends Common {
   }
 
   private static createService() {
-    // TODO: flesh out!
     if (WearOsComms._bluetooth.offersService(WearOsComms.ServiceUUID)) {
       console.log(`Bluetooth already offers ${WearOsComms.ServiceUUID}`);
       return;

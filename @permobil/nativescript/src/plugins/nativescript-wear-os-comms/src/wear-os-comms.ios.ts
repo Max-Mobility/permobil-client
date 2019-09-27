@@ -13,8 +13,15 @@ export class WearOsComms extends Common {
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
 
+  private static _debugOutputEnabled = false;
+
   constructor() {
     super();
+  }
+
+  public static setDebugOutput(enabled: boolean) {
+    WearOsComms._debugOutputEnabled = enabled;
+    WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
   }
 
   public static registerMessageCallback(cb: any) {
