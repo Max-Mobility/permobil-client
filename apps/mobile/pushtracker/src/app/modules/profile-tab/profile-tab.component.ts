@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
@@ -19,8 +19,9 @@ import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent, MockActionbarComponent } from '../shared/components';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 
 @Component({
   selector: 'profile-tab',
@@ -66,6 +67,9 @@ export class ProfileTabComponent {
    */
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
+
+  @ViewChild('mockActionBar', {static: false})
+  mockActionBar: ElementRef;
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -129,6 +133,23 @@ export class ProfileTabComponent {
       this._initDisplayChairType();
       this._initDisplayChairMake();
       this._initDisplayControlConfiguration();
+      {
+        this._logService.logBreadCrumb(ProfileTabComponent.name,
+          'Updating mockactionbar watch icon');
+        // Update MockActionBar
+        this._zone.run(async () => {
+          this.mockActionBar['CURRENT_THEME'] = this.user.data.theme_preference;
+          this.mockActionBar['watchIconString'] =
+            this.mockActionBar['CURRENT_THEME'] === APP_THEMES.DEFAULT
+              ? 'watch_question_black'
+              : 'watch_question_white';
+          this.mockActionBar['watchIcon'] = 
+            imageFromResource(this.mockActionBar['watchIconString']);
+          // console.log('Current theme', this.mockActionBar['CURRENT_THEME']);
+          // console.log('Watch icon', this.mockActionBar['watchIcon']);
+          // console.log('Watch icon string', this.mockActionBar['watchIconString']);
+        });
+      }
     });
   }
 

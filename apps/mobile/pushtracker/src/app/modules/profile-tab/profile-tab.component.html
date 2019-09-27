@@ -4,7 +4,7 @@
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
-    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true"
+    <MockActionBar #mockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true"
       [showWatchConnectBtn]="true" (watchConnectEvent)="onWatchConnectTap()" [user]="user"></MockActionBar>
 
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
