@@ -21,7 +21,7 @@ export class TextFieldSheetComponent {
   suffix: string = '';
   keyboardType;
 
-  @ViewChild("textField", { static: false })
+  @ViewChild('textField', { static: false })
   textField: ElementRef;
 
   constructor(private _params: BottomSheetParams) {
