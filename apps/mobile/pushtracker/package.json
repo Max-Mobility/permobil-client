@@ -62,7 +62,7 @@
     "nativescript-ui-chart": "~6.0.0",
     "nativescript-ui-listview": "~7.0.5",
     "reflect-metadata": "~0.1.12",
-    "rxjs": "~6.5.2",
+    "rxjs": "~6.5.3",
     "tns-core-modules": "~6.1.1",
     "zone.js": "~0.9.1"
   },
