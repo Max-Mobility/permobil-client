@@ -17,7 +17,7 @@ import {
   getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
   convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getUserDataFromKinvey
 } from '../../utils';
-import { APP_THEMES, DISTANCE_UNITS, TIME_FORMAT } from '../../enums';
+import { APP_THEMES, DISTANCE_UNITS, TIME_FORMAT, STORAGE_KEYS } from '../../enums';
 import { ActivityComponent } from '..';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
@@ -80,11 +80,16 @@ export class JourneyTabComponent {
   ) { }
 
   onJourneyTabLoaded() {
+
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
 
     this._page.actionBarHidden = true;
     this.refreshUserFromKinvey(false).then(() => {
-      this.savedTheme = this.user.data.theme_preference;
       this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
       this.initJourneyItems().then(() => {
         this._firstLoad = false;
@@ -110,17 +115,6 @@ export class JourneyTabComponent {
       2000, // 2 seconds
       { leading: true, trailing: true }
     );
-
-    this._userService.user.subscribe(user => {
-      if (this.savedTheme !== user.data.theme_preference) {
-        this.savedTheme = user.data.theme_preference;
-        this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        // Theme has changed - Refresh view so icon images can update
-        // to match the theme
-        this._refresh();
-      }
-    });
-
   }
 
   onJourneyTabUnloaded() {

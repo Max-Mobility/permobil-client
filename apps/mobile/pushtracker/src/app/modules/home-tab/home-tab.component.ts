@@ -84,12 +84,6 @@ export class HomeTabComponent {
       APP_THEMES.DEFAULT
     );
 
-    // REMOVING THE APPLYTHEME here for iOS navigation performance fixes
-    // this._userService.user.subscribe(user => {
-    //   this.savedTheme = user.data.theme_preference;
-    //   applyTheme(this.savedTheme);
-    // });
-
     this._currentDayInView = new Date();
     this._weekStart = getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
@@ -296,12 +290,6 @@ export class HomeTabComponent {
         this._weekEnd = new Date(this._weekStart);
         this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-        // Check for theme changes
-        if (this.savedTheme !== this.user.data.theme_preference) {
-          this.savedTheme = this.user.data.theme_preference;
-          applyTheme(this.savedTheme);
-        }
-
         // Now refresh the data
         this._loadWeeklyData()
           .then(() => {
@@ -319,7 +307,6 @@ export class HomeTabComponent {
   private async _loadWeeklyData() {
     this.weeklyActivityLoaded = false;
 
-    this.savedTheme = this.user.data.theme_preference;
     if (this._firstLoad) {
       this._loadWeeklyActivity();
       this._loadSmartDriveUsage();

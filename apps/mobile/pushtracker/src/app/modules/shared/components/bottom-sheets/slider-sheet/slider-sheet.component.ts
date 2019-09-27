@@ -10,7 +10,6 @@ import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
   templateUrl: 'slider-sheet.component.html'
 })
 export class SliderSheetComponent {
-  savedTheme;
   title: string;
   description: string;
   SLIDER_VALUE;
@@ -23,11 +22,6 @@ export class SliderSheetComponent {
       this.description = data.description;
       this.SLIDER_VALUE = data.SLIDER_VALUE;
     }
-    // set the theme
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
   }
 
   onSliderValueChange(args: any) {

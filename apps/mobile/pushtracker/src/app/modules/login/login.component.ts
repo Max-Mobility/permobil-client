@@ -86,10 +86,8 @@ export class LoginComponent implements OnInit {
       );
       appSettings.setString(
         STORAGE_KEYS.APP_THEME,
-        user.data['theme_preference'] || APP_THEMES.DEFAULT
+        APP_THEMES.DEFAULT
       );
-
-      applyTheme(user.data['theme_preference']);
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory

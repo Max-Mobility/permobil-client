@@ -180,7 +180,6 @@ export class ProfileSettingsComponent implements OnInit {
   getUser() {
     this.user = this._params.context.user;
     if (this.user && this.user.data) {
-      this.CURRENT_THEME = this.user.data.theme_preference;
       this.CURRENT_LANGUAGE = this.user.data.language_preference || 'English';
     }
   }

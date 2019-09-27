@@ -12,7 +12,6 @@ import { isAndroid } from 'tns-core-modules/platform';
   templateUrl: 'textfield-sheet.component.html'
 })
 export class TextFieldSheetComponent {
-  savedTheme;
   values: string[] = [];
   title: string = '';
   description: string = '';
@@ -34,12 +33,6 @@ export class TextFieldSheetComponent {
       this.suffix = data.suffix || '';
       this.keyboardType = data.keyboardType;
     }
-
-    // set the theme
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
   }
 
   ngAfterViewInit(): void {

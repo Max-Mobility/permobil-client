@@ -52,7 +52,6 @@ export class SignUpComponent implements OnInit {
     weight: 0,
     weight_unit_preference: WEIGHT_UNITS.POUNDS,
     distance_unit_preference: DISTANCE_UNITS.MILES,
-    theme_preference: APP_THEMES.DEFAULT,
     time_format_preference: TIME_FORMAT.AM_PM,
     activity_goal_distance: 5,
     activity_goal_coast_time: 5,

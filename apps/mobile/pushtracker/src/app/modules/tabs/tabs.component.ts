@@ -71,7 +71,6 @@ export class TabsComponent {
 
     this._userService.user.subscribe(user => {
       if (!user) return;
-      // applyTheme(user.data.theme_preference);
 
       this.user = user;
       if (this.user.data.language_preference) {

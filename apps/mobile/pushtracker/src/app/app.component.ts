@@ -96,7 +96,7 @@ export class AppComponent implements OnInit {
     if (user) {
       appSettings.setString(
         STORAGE_KEYS.APP_THEME,
-        user.data.theme_preference || APP_THEMES.DEFAULT
+        APP_THEMES.DEFAULT
       );
       appSettings.setString('Kinvey.User', JSON.stringify(user));
       this._router.navigate(['/tabs/default']);

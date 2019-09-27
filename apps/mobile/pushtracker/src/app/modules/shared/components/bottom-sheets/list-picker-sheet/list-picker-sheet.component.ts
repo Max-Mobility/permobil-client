@@ -10,7 +10,6 @@ import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
   templateUrl: 'list-picker-sheet.component.html'
 })
 export class ListPickerSheetComponent {
-  savedTheme;
   title: string;
   description: string;
   primaryItems: any[];
@@ -32,11 +31,6 @@ export class ListPickerSheetComponent {
         ? data.listPickerNeedsSecondary
         : false;
     }
-    // set the theme
-    this.savedTheme = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
   }
 
   primaryIndexChanged(picker) {

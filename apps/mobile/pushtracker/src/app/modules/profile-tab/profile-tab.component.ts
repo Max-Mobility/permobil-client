@@ -139,23 +139,6 @@ export class ProfileTabComponent {
       this._initDisplayChairType();
       this._initDisplayChairMake();
       this._initDisplayControlConfiguration();
-      {
-        this._logService.logBreadCrumb(ProfileTabComponent.name,
-          'Updating mockactionbar watch icon');
-        // Update MockActionBar
-        this._zone.run(async () => {
-          this.mockActionBar['CURRENT_THEME'] = this.user.data.theme_preference;
-          this.mockActionBar['watchIconString'] =
-            this.mockActionBar['CURRENT_THEME'] === APP_THEMES.DEFAULT
-              ? 'watch_question_black'
-              : 'watch_question_white';
-          this.mockActionBar['watchIcon'] =
-            imageFromResource(this.mockActionBar['watchIconString']);
-          // console.log('Current theme', this.mockActionBar['CURRENT_THEME']);
-          // console.log('Watch icon', this.mockActionBar['watchIcon']);
-          // console.log('Watch icon string', this.mockActionBar['watchIconString']);
-        });
-      }
     });
   }
 

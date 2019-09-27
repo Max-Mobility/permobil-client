@@ -11,10 +11,11 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek, areDatesSame } from '../../utils';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 enum TAB {
   DAY = 0,
@@ -119,6 +120,12 @@ export class ActivityComponent implements OnInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {
+
+    this.savedTheme = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
     if (this._params.context.chartYAxis) {
       this.chartYAxis = this._params.context.chartYAxis;
     }
@@ -198,7 +205,6 @@ export class ActivityComponent implements OnInit {
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' ' + this._translateService.instant('units.km')
         : ' ' + this._translateService.instant('units.mi');
-    this.savedTheme = this.user.data.theme_preference;
   }
 
   /**
