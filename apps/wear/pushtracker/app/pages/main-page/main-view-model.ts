@@ -458,46 +458,105 @@ export class MainViewModel extends Observable {
   }
 
   async onMessageReceived(data: { path: string, message: string, device: any }) {
-    console.log('on message received:', data);
-    alert({
-      title: 'MESSAGE',
-      message: `${data.path}\n\n${data.message}`,
-      okButtonText: 'OK'
-    });
+    Log.D('on message received:', data.path, data.message);
+    this.isBusy = true;
+    const splits = data.message.split(':');
+    if (splits.length <= 1) {
+      this.isBusy = false;
+      // we got bad data
+      alert({
+        title: L('failures.title'),
+        message: L('wearos-comms.errors.bad-data'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
+    const userId = splits[0];
+    // join them in case the token had ':' in it
+    const token = splits.slice(1).join(':');
+    Log.D('Got auth', userId, token);
+    // now save it to datastore for service to use
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const editor = sharedPreferences.edit();
+    editor.putString(
+      prefix + com.permobil.pushtracker.Datastore.USER_ID_KEY,
+      userId
+    );
+    editor.putString(
+      prefix + com.permobil.pushtracker.Datastore.AUTHORIZATION_KEY,
+      token
+    );
+    editor.commit();
+    try {
+      const contentResolver = ad
+        .getApplicationContext()
+        .getContentResolver();
+      // write token to content provider for smartdrive wear
+      const tokenValue = new android.content.ContentValues();
+      tokenValue.put('data', token);
+      contentResolver
+        .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
+
+      // write user id to content provider for smartdrive wear
+      const userValue = new android.content.ContentValues();
+      userValue.put('data', userId);
+      contentResolver
+        .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
+    } catch (err) {
+      Log.E('Could not set content values for authorization:', err);
+    }
+    // now actually check the authorization that we were provided
+    const validAuth = await this.updateAuthorization();
+    this.isBusy = false;
+    if (validAuth) {
+      // if we got here then we have valid authorization!
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+      );
+    } else {
+      await alert({
+        title: L('failures.title'),
+        message: L('wearos-comms.errors.bad-authorization'),
+        okButtonText: L('buttons.ok')
+      });
+    }
   }
 
   async onDataReceived(data: { data: any, device: any }) {
-    console.log('on data received:', data);
+    Log.D('on data received:', data);
   }
 
   async startActivityService() {
     try {
       await this.askForPermissions();
       // start the wear os communications
-      console.log('registering callbacks');
+      Log.D('registering callbacks');
       WearOsComms.setDebugOutput(false);
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
-      console.log('advertising as companion!');
+      Log.D('advertising as companion!');
       WearOsComms.advertiseAsCompanion();
-      console.log('Started wear os comms!');
+      Log.D('Started wear os comms!');
       this.sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
-      console.error('could not advertise as companion');
+      Log.E('could not advertise as companion');
     }
     try {
       // start the service with intent
       this.sentryBreadCrumb('Starting Activity Service.');
-      console.log('Starting activity service!');
+      Log.D('Starting activity service!');
       const intent = new android.content.Intent();
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
-      console.log('Started activity service!');
+      Log.D('Started activity service!');
       this.sentryBreadCrumb('Activity Service started.');
     } catch (err) {
-      console.error('could not start activity service:', err);
+      Log.E('could not start activity service:', err);
       setTimeout(this.startActivityService.bind(this), 5000);
     }
   }

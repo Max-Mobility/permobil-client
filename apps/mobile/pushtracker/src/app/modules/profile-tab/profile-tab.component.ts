@@ -9,9 +9,9 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
-import { Toasty } from 'nativescript-toasty';
+import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { Color } from 'tns-core-modules/color';
-import { screen } from 'tns-core-modules/platform';
+import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
@@ -193,10 +193,39 @@ export class ProfileTabComponent {
   async onWatchConnectTap() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
     WearOsComms.setDebugOutput(false);
-    await this._connectCompanion();
-    await this._sendData();
-    await this._sendMessage();
-    await this._disconnectCompanion();
+    const didConnect = await this._connectCompanion();
+    if (didConnect) {
+      const sentData = await this._sendData();
+      const sentMessage = await this._sendMessage();
+      await this._disconnectCompanion();
+      if (sentMessage && sentData) {
+        new Toasty({
+          text:
+          this._translateService.instant('wearos-comms.messages.pte2-sync-successful'),
+          duration: ToastDuration.LONG
+        }).show();
+      } else {
+        alert({
+          title: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.title'
+          ),
+          message: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.message'
+          ),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+      }
+    } else {
+      alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.pte2-connection-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.pte2-connection-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    }
   }
 
   onAvatarTap() {
@@ -1145,10 +1174,13 @@ export class ProfileTabComponent {
     const token = user._kmd.authtoken;
     // this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
     // this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
-    return `Kinvey ${token}:${id}`;
+    return `${id}:Kinvey ${token}`;
   }
 
   private async _connectCompanion() {
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually find a companion
     let didConnect = false;
     try {
       if (!WearOsComms.hasCompanion()) {
@@ -1170,6 +1202,9 @@ export class ProfileTabComponent {
   }
 
   private async _disconnectCompanion() {
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually disconnect from the companion
     try {
       await WearOsComms.disconnectCompanion();
     } catch (err) {
@@ -1178,8 +1213,9 @@ export class ProfileTabComponent {
   }
 
   private async _sendData() {
+    let didSend = false;
     try {
-      const didSend = await WearOsComms.sendData(this._getSerializedAuth());
+      didSend = await WearOsComms.sendData(this._getSerializedAuth());
       if (didSend) {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
       } else {
@@ -1188,11 +1224,13 @@ export class ProfileTabComponent {
     } catch (error) {
       this._logService.logException(error);
     }
+    return didSend;
   }
 
   private async _sendMessage() {
+    let didSend = false;
     try {
-      const didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
+      didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
       if (didSend) {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
       } else {
@@ -1201,5 +1239,6 @@ export class ProfileTabComponent {
     } catch (error) {
       this._logService.logException(error);
     }
+    return didSend;
   }
 }
