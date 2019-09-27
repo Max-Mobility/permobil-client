@@ -134,6 +134,7 @@ export class JourneyTabComponent {
     })
     .catch(err => {
       this._logService.logException(err);
+      this.journeyItemsLoaded = true;
     });
   }
 
@@ -250,6 +251,7 @@ export class JourneyTabComponent {
       })
       .catch(err => {
         this._logService.logException(err);
+        this.journeyItemsLoaded = true;
       });
     })
     .catch(err => {
