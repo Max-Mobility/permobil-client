@@ -7,8 +7,8 @@ export declare class WearOsComms extends Common {
   /**
    * Bi-directional
    */
-  static sendMessage(channel: string, msg: string): Promise<unknown>;
-  static sendData(data: any): Promise<unknown>;
+  static sendMessage(channel: string, msg: string): Promise<boolean>;
+  static sendData(data: any): Promise<boolean>;
 
   static registerConnectedCallback(cb: any): void;
   static registerDisconnectedCallback(cb: any): void;

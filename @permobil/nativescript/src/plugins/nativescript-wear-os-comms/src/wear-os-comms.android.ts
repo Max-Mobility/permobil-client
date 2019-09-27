@@ -9,8 +9,8 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
-  private static _onConnectedReceivedCallback: any = null;
-  private static _onDisconnectedReceivedCallback: any = null;
+  private static _onConnectedCallback: any = null;
+  private static _onDisconnectedCallback: any = null;
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
 
@@ -21,11 +21,11 @@ export class WearOsComms extends Common {
   }
 
   public static registerConnectedCallback(cb: any) {
-    WearOsComms._onConnectedReceivedCallback = cb;
+    WearOsComms._onConnectedCallback = cb;
   }
 
   public static registerDisconnectedCallback(cb: any) {
-    WearOsComms._onDisconnectedReceivedCallback = cb;
+    WearOsComms._onDisconnectedCallback = cb;
   }
 
   public static registerMessageCallback(cb: any) {
@@ -34,6 +34,13 @@ export class WearOsComms extends Common {
 
   public static registerDataCallback(cb: any) {
     WearOsComms._onDataReceivedCallback = cb;
+  }
+
+  public static hasCompanion() {
+    // TODO: try to determine if there is a wear os watch paired -
+    // look through DataLayerService to determine if it's something we
+    // can figure out
+    return true;
   }
 
   public static findAvailableCompanions(timeout: number) {
@@ -46,26 +53,23 @@ export class WearOsComms extends Common {
   }
 
   public static connectCompanion() {
-    // do nothing
+    // we don't do anything here but we should let people know that
+    // we've "connected" in case they are waiting on the callback to
+    // resolve / continue execution;
+    WearOsComms._onConnectedCallback && WearOsComms._onConnectedCallback();
   }
 
   public static disconnectCompanion() {
-    // do nothing
+    // we don't do anything here but we should let people know that
+    // we've "disconnected" in case they are waiting on the callback to
+    // resolve / continue execution;
+    WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
   }
 
   public static setDebugOutput(enabled: boolean) {
     WearOsComms._debugOutputEnabled = enabled;
     if (WearOsComms._bluetooth)
       WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
-  }
-
-  private static log(...args) {
-    if (WearOsComms._debugOutputEnabled)
-      console.log('[ WearOsComms ]', ...args);
-  }
-
-  private static error(...args) {
-    console.error('[ WearOsComms ]', ...args);
   }
 
   public static async advertiseAsCompanion() {
@@ -254,5 +258,14 @@ export class WearOsComms extends Common {
         reject(error);
       }
     });
+  }
+
+  private static log(...args) {
+    if (WearOsComms._debugOutputEnabled)
+      console.log('[ WearOsComms ]', ...args);
+  }
+
+  private static error(...args) {
+    console.error('[ WearOsComms ]', ...args);
   }
 }
