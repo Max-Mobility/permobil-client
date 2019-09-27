@@ -71,7 +71,7 @@ export class ProfileTabComponent {
 
   @ViewChild('mockActionBar', {static: false})
   mockActionBar: ElementRef;
-  
+
   /**
    * For showing indication that we're sending data to the wear os apps
    */
@@ -149,7 +149,7 @@ export class ProfileTabComponent {
             this.mockActionBar['CURRENT_THEME'] === APP_THEMES.DEFAULT
               ? 'watch_question_black'
               : 'watch_question_white';
-          this.mockActionBar['watchIcon'] = 
+          this.mockActionBar['watchIcon'] =
             imageFromResource(this.mockActionBar['watchIconString']);
           // console.log('Current theme', this.mockActionBar['CURRENT_THEME']);
           // console.log('Watch icon', this.mockActionBar['watchIcon']);
