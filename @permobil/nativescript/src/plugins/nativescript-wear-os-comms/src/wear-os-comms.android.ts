@@ -107,6 +107,8 @@ export class WearOsComms extends Common {
         WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
         // start the server
         WearOsComms._bluetooth.startGattServer();
+        // clear out any existing services
+        WearOsComms.deleteService();
         // create service / characteristics
         WearOsComms.createService();
         // set up listeners for data receipt from the app
@@ -175,6 +177,11 @@ export class WearOsComms extends Common {
     WearOsComms._bluetooth.off(
       Bluetooth.characteristic_write_request_event
     );
+  }
+
+  private static deleteService() {
+    WearOsComms._bluetooth.clearServices();
+    WearOsComms._companionService = null;
   }
 
   private static createService() {
