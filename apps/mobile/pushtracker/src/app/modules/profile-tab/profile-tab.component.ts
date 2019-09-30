@@ -17,7 +17,7 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent, E2StatusButtonComponent } from '../shared/components';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -78,6 +78,7 @@ export class ProfileTabComponent {
 
   constructor(
     private _userService: PushTrackerUserService,
+    private _themeService: ThemeService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
@@ -86,21 +87,22 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
-
-  onProfileTabLoaded() {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
-
-    // get current app style theme from app-settings on device
+  ) {
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    if (this.e2StatusButton) {
-      this.e2StatusButton.CURRENT_THEME = this.CURRENT_THEME;
-      this.e2StatusButton.updateWatchIcon();
-    }
+    this._themeService.theme.subscribe(theme => {
+      this.CURRENT_THEME = theme;
+      if (this.e2StatusButton) {
+        this.e2StatusButton.CURRENT_THEME = this.CURRENT_THEME;
+        this.e2StatusButton.updateWatchIcon();
+      }
+    });
+  }
 
+  onProfileTabLoaded() {
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
