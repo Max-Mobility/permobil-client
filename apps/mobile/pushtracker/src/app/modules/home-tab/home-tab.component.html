@@ -101,7 +101,7 @@
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
           <Label class="title" [text]="coastTimeGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" width="92%" horizontalAlignment="center" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
@@ -162,7 +162,7 @@
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
           <Label class="title" [text]="distanceGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastDistanceChart" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" width="92%" horizontalAlignment="center" id="homeTabWeeklyCoastDistanceChart" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis
