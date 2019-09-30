@@ -1,19 +1,27 @@
 <StackLayout class="bottom-sheet-layout" [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#ffffff' : '#202125'">
-  <StackLayout row="0" col="1" colSpan="4" alignItems="center" justifyContent="center" padding="10">
-    <Label class="title" [text]="title | translate" textWrap="true"></Label>
-    <Label marginTop="10" class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
-    <StackLayout marginTop="10" orientation="horizontal">
-      <ListPicker #primaryPicker class="listpicker m-r-4" [width]="listPickerNeedsSecondary ? '45%' : '90%'" [items]="primaryItems" [selectedIndex]="primaryIndex" (selectedIndexChange)="primaryIndexChanged(primaryPicker)"> </ListPicker>
-      <ListPicker
-        #secondaryPicker
-        class="listpicker m-l-4"
-        [width]="listPickerNeedsSecondary ? '45%' : '0%'"
-        [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'"
-        [items]="secondaryItems"
-        [selectedIndex]="secondaryIndex"
-        (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
-      ></ListPicker>
-    </StackLayout>
+  <Label class="title" [text]="title | translate" textWrap="true"></Label>
+  <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
+  <StackLayout orientation="horizontal" horizontalAlignment="center" width="100%">
+    <ListPicker
+      #primaryPicker
+      class="listpicker m-r-4"
+      horizontalAlignment="center"
+      [width]="listPickerNeedsSecondary ? '45%' : '90%'"
+      [items]="primaryItems"
+      [selectedIndex]="primaryIndex"
+      (selectedIndexChange)="primaryIndexChanged(primaryPicker)"
+    >
+    </ListPicker>
+    <ListPicker
+      #secondaryPicker
+      class="listpicker m-l-4"
+      horizontalAlignment="center"
+      [width]="listPickerNeedsSecondary ? '45%' : '0%'"
+      [visibility]="listPickerNeedsSecondary ? 'visible' : 'collapsed'"
+      [items]="secondaryItems"
+      [selectedIndex]="secondaryIndex"
+      (selectedIndexChange)="secondaryIndexChanged(secondaryPicker)"
+    ></ListPicker>
   </StackLayout>
   <GridLayout rows="auto, auto" columns="auto, *, auto, auto">
     <Button row="1" col="2" ripple rippleColorAlpha="0.18" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
