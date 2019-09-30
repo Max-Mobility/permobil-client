@@ -164,6 +164,9 @@
               android:label="@string/device_admin"
               android:description="@string/device_admin_description"
               android:permission="android.permission.BIND_DEVICE_ADMIN">
+      <meta-data
+          android:name="com.permobil.smartdrive.wearos.device_admin"
+          android:resource="@xml/device_policies"/>
       <intent-filter>
         <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
       </intent-filter>
