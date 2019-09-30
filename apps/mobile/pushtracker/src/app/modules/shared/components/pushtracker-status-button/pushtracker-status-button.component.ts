@@ -13,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
-  selector: 'PushTrackerStatusButton',
+  selector: 'pushtracker-status-button',
   moduleId: module.id,
   templateUrl: 'pushtracker-status-button.component.html'
 })
@@ -64,7 +64,7 @@ export class PushTrackerStatusButtonComponent {
     });
   }
 
-  onWatchTap() {
+  onTap() {
     dialogs.alert({
       title: this._translateService.instant('profile-settings.watch-status-alert-title'),
       message: this._translateService.instant('profile-settings.watch-status-alert-message.' +

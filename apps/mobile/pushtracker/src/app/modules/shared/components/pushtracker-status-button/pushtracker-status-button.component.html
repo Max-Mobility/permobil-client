@@ -1,18 +1,23 @@
-<StackLayout orientation="horizontal">
-  <GridLayout order="1" height="44" width="44" borderRadius="22" 
-    (tap)="onWatchTap()" class="watch-status-btn-layout">
+<StackLayout orientation="horizontal" class="pushtracker-status-btn-layout" marginRight="10"
+  (tap)="onTap()" ripple>
+  // PushTracker Icon
+  <GridLayout columns="auto" order="1" height="44" borderRadius="22">
     <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
   </GridLayout>
+  // Bluetooth Symbol
+  <Label horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#xe1a7;"></Label>
+
   // PushTrackerState = unknown
   <Label *ngIf="state === PushTrackerState.unknown"
-    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
-    text="&#x3F;"></Label>
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#63;"></Label>
   // PushTrackerState = connected
   <Label *ngIf="state === PushTrackerState.connected"
-    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
-    text="&#x2713;"></Label>
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#x2713;"></Label>
   // PushTrackerState = disconnected
   <Label *ngIf="state === PushTrackerState.disconnected"
-    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
-    text="&#x78;"></Label>
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#10007;"></Label>
 </StackLayout>

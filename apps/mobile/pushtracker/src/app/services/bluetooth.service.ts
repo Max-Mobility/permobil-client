@@ -14,6 +14,7 @@ import { LoggingService } from './logging.service';
 export enum PushTrackerState {
   unknown,
   paired,
+  busy,
   disconnected,
   connected,
   ready
