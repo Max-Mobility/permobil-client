@@ -531,8 +531,8 @@ export class ActivityComponent implements OnInit {
     this.yAxisMax = 0;
     this.yAxisStep = 15;
     if (this.dailyActivity) {
-      let i = 4;
-      while (i < 53) {
+      let i = 0;
+      while (i < this.dailyActivity.length) {
         const activity = this.dailyActivity.getItem(i);
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
@@ -738,8 +738,8 @@ export class ActivityComponent implements OnInit {
     this.yAxisMax = 0;
     this.yAxisStep = 0;
     if (this.weeklyActivity) {
-      let i = 2;
-      while (i < 9) {
+      let i = 0;
+      while (i < this.weeklyActivity.length) {
         const activity = this.weeklyActivity.getItem(i);
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
