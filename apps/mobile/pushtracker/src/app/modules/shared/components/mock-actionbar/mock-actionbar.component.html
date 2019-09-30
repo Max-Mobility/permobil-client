@@ -3,7 +3,7 @@
   <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
   <FlexboxLayout col="3" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">
     <ng-content col="2">
-  </ng-content>
+    </ng-content>
     <GridLayout order="2" height="44" width="44" borderRadius="22" [visibility]="showWatchConnectBtn ? 'visible' : 'collapse'" (tap)="onWatchConnectTap()" ripple class="action-item-btn">
       <Image [src]="watchConnectIcon" stretch="aspectFit" class="watch-status-btn"></Image>
     </GridLayout>
