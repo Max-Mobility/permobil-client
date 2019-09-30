@@ -366,9 +366,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) {}
+  discoverServices(_: any) { }
 
-  discoverCharacteristics(_: any) {}
+  discoverCharacteristics(_: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -462,7 +462,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void {}
+  private onDeviceNameChange(_: any): void { }
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -503,23 +503,6 @@ export class BluetoothService extends Observable {
 
     switch (connection_state) {
       case ConnectionState.connected:
-        // NOTE : need to figure out the iOS piece for this
-        // since this is android method for the device - could
-        // be something we move into the bluetooth layer
-
-        // TODO: move this into the bluetooth layer!
-        if (isAndroid) {
-          device.device.fetchUuidsWithSdp();
-        }
-
-        // TODO: use BluetoothGatt to get the service (by UUID 1800)
-
-        // TODO: use the returned service to get the characteristic
-        //       (by UUID 2a00)
-
-        // TODO: use the returned characteristic to call
-        //       'getStringValue()' to read the characteristic to get
-        //       the name
         if (this.isPushTracker(device)) {
           const pt = this.getOrMakePushTracker(device);
           pt.handleConnect();
@@ -617,7 +600,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void {}
+  private onCharacteristicReadRequest(_: any): void { }
 
   // service controls
   private deleteServices() {
@@ -848,6 +831,7 @@ export class BluetoothService extends Observable {
   private isPushTracker(dev: any): boolean {
     const UUIDs = (dev && dev.UUIDs) || [];
     const name = dev && dev.name;
+    const isKnownDevice: boolean = !!this.getPushTracker(dev.address);
     const hasUUID = UUIDs.reduce(
       (a, e) => a || e.toUpperCase() === PushTracker.ServiceUUID.toUpperCase(),
       false
@@ -855,7 +839,7 @@ export class BluetoothService extends Observable {
     const isPT =
       (name && name.includes('PushTracker')) ||
       (name && name.includes('Bluegiga')) ||
-      hasUUID;
+      hasUUID || isKnownDevice;
     return isPT;
   }
 
