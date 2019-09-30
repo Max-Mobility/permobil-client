@@ -158,7 +158,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 40 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 10 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -1080,6 +1080,7 @@ export class MainViewModel extends Observable {
     return validAuth;
   }
 
+
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
@@ -1211,10 +1212,13 @@ export class MainViewModel extends Observable {
       };
 
       const averageTimestamp = total.timestamp / this._previousDataLength;
+      if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
+        Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
+      }
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
-      this.tapDetector.setSensitivity(this.settings.tapSensitivity,this.motorOn);
+      this.tapDetector.setSensitivity(this.settings.tapSensitivity, this.motorOn);
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
       if (didTap) {

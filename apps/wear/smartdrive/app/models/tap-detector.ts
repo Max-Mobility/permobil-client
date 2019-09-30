@@ -162,14 +162,14 @@ export class TapDetector {
     this.jerkThreshold = this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) * (sensitivity / 100.0);
     this.predictionThreshold = this.maxPredictionThreshold - (this.maxPredictionThreshold - this.minPredictionThreshold) * (sensitivity / 100.0);
 
-    //harder to tap start and easier to tap stop the motor
+    // harder to tap start and easier to tap stop the motor
     if (!motorOn) {
       this.jerkThresholdDynamic = this.jerkThreshold;
       this.predictionThresholdDynamic = this.predictionThreshold;
     }
     else {
       this.jerkThresholdDynamic = this.jerkThreshold - this.jerkThresholdOnOffDiff;
-      this.predictionThresholdDynamic=this.predictionThreshold - this.predictionThresholdOnOffDiff;
+      this.predictionThresholdDynamic = this.predictionThreshold - this.predictionThresholdOnOffDiff;
     }
 
   }
@@ -260,7 +260,7 @@ export class TapDetector {
     }, true);
     const mustTap = maxJerk > this.maxJerkThreshold && predictionsOvermin;
     // record that there has been a tap
-    const realTap=predictTap || mustTap;
+    const realTap = predictTap || mustTap;
     if (realTap) {
       this.lastTapTime = timestamp;
       this.tapGap = false;
