@@ -585,7 +585,7 @@ export class ProfileSettingsComponent implements OnInit {
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
           if (this.ptStatusButton)
-            this.ptStatusButton.state = PushTrackerState.unknown;
+            this.ptStatusButton.state = PushTrackerState.busy;
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
@@ -599,6 +599,8 @@ export class ProfileSettingsComponent implements OnInit {
               this._logService.logException(err);
             }
           });
+          // now that all PTs have had their settings updated, we probably want to update the icon
+          this.ptStatusButton.state = PushTrackerState.connected;
         } else {
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.disconnected;
