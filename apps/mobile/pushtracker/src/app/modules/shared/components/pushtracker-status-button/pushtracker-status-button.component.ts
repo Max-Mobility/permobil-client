@@ -100,6 +100,6 @@ export class PushTrackerStatusButtonComponent {
   }
 }
 
-registerElement('PushTrackerStatusButton', () => {
+registerElement('pushtracker-status-button', () => {
   return ContentView;
 });

@@ -7,7 +7,6 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
-import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
@@ -17,10 +16,10 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent, MockActionbarComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent, E2StatusButtonComponent } from '../shared/components';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 
@@ -69,16 +68,14 @@ export class ProfileTabComponent {
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
 
-  @ViewChild('mockActionBar', {static: false})
-  mockActionBar: ElementRef;
-
-  /**
-   * For showing indication that we're sending data to the wear os apps
-   */
-  private _loadingIndicator = new LoadingIndicator();
+  CURRENT_THEME: string = appSettings.getString(
+    STORAGE_KEYS.APP_THEME,
+    APP_THEMES.DEFAULT
+  );
 
   constructor(
     private _userService: PushTrackerUserService,
+    private _themeService: ThemeService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
@@ -87,11 +84,18 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) {
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+    this._themeService.theme.subscribe(theme => {
+      this.CURRENT_THEME = theme;
+    });
+  }
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
-
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
@@ -198,52 +202,6 @@ export class ProfileTabComponent {
   onProfileTabUnloaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Unloaded');
     // this._userSubscription$.unsubscribe();
-  }
-
-  async onWatchConnectTap() {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
-    this._loadingIndicator.show({
-      message: this._translateService.instant('wearos-comms.messages.synchronizing'),
-      details: this._translateService.instant('wearos-comms.messages.synchronizing-long'),
-      dimBackground: true
-    });
-
-    WearOsComms.setDebugOutput(false);
-    const didConnect = await this._connectCompanion();
-    if (didConnect) {
-      // const sentData = await this._sendData();
-      const sentMessage = await this._sendMessage();
-      await this._disconnectCompanion();
-      this._loadingIndicator.hide();
-      if (sentMessage) { // && sentData) {
-        new Toasty({
-          text:
-          this._translateService.instant('wearos-comms.messages.pte2-sync-successful'),
-          duration: ToastDuration.LONG
-        }).show();
-      } else {
-        alert({
-          title: this._translateService.instant(
-            'wearos-comms.errors.pte2-send-error.title'
-          ),
-          message: this._translateService.instant(
-            'wearos-comms.errors.pte2-send-error.message'
-          ),
-          okButtonText: this._translateService.instant('profile-tab.ok')
-        });
-      }
-    } else {
-      this._loadingIndicator.hide();
-      alert({
-        title: this._translateService.instant(
-          'wearos-comms.errors.pte2-connection-error.title'
-        ),
-        message: this._translateService.instant(
-          'wearos-comms.errors.pte2-connection-error.message'
-        ),
-        okButtonText: this._translateService.instant('profile-tab.ok')
-      });
-    }
   }
 
   onAvatarTap() {

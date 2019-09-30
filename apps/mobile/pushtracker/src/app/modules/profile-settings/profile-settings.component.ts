@@ -12,7 +12,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
+import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent, PushTrackerStatusButtonComponent } from '../shared/components';
 
@@ -67,6 +67,7 @@ export class ProfileSettingsComponent implements OnInit {
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService,
+    private _themeService: ThemeService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
     private _zone: NgZone,
@@ -507,6 +508,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
         applyTheme(this.CURRENT_THEME);
         appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
+        this._themeService.updateTheme(this.CURRENT_THEME);
         // Update PushTracker watch icon color
         if (this.ptStatusButton) {
           this.ptStatusButton.CURRENT_THEME = this.CURRENT_THEME;
