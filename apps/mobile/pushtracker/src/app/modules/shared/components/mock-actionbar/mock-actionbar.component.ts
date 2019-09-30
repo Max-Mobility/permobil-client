@@ -87,7 +87,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -108,7 +108,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -129,7 +129,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -150,7 +150,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
