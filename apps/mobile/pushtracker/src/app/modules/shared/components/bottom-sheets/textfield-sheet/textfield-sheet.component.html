@@ -1,23 +1,28 @@
-<StackLayout class="bottom-sheet-layout">
+<StackLayout class="bottom-sheet-layout" [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#ffffff' : '#202125'">
   <StackLayout row="0" col="1" colSpan="3" padding="10">
     <Label class="title" [text]="title | translate" textWrap="true"></Label>
-    <Label marginTop="10" class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'"
-      textWrap="true"></Label>
+    <Label marginTop="10" class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
     <StackLayout marginTop="10" orientation="horizontal">
-      <Label width="10%" class="textfield-prefix" [text]="prefix" marginTop="10"
-        verticalAlignment="center" horizontalAlignment="center"></Label>
-      <TextField #textField width="80%" [text]="text" secure="false" (returnPress)="onReturnPress($event)"
-        [keyboardType]="keyboardType" justifyContent="center" class="textfield m-r-4" textAlignment="center"
-        verticalAlignment="center" horizontalAlignment="center">
+      <Label width="10%" class="textfield-prefix" [text]="prefix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
+      <TextField
+        #textField
+        width="80%"
+        [text]="text"
+        secure="false"
+        (returnPress)="onReturnPress($event)"
+        [keyboardType]="keyboardType"
+        justifyContent="center"
+        class="textfield m-r-4"
+        textAlignment="center"
+        verticalAlignment="center"
+        horizontalAlignment="center"
+      >
       </TextField>
-      <Label width="10%" class="textfield-suffix" [text]="suffix" marginTop="10"
-        verticalAlignment="center" horizontalAlignment="center"></Label>
+      <Label width="10%" class="textfield-suffix" [text]="suffix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
     </StackLayout>
   </StackLayout>
   <GridLayout rows="auto" columns="auto, *, auto">
-    <Button ripple rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn"
-      (tap)="closeSheet()"></Button>
-    <Button ripple rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn"
-      (tap)="saveTextFieldValue()"></Button>
+    <Button ripple rippleColorAlpha="0.18" row="1" col="1" [text]="'general.cancel' | translate" class="cancel-btn" (tap)="closeSheet()"></Button>
+    <Button ripple rippleColorAlpha="0.18" row="1" col="2" [text]="'general.ok' | translate" class="ok-btn" (tap)="saveTextFieldValue()"></Button>
   </GridLayout>
 </StackLayout>

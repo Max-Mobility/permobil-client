@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Log } from '@permobil/core';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
@@ -10,11 +9,18 @@ import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
   templateUrl: 'slider-sheet.component.html'
 })
 export class SliderSheetComponent {
+  CURRENT_THEME: string;
+  APP_THEMES = APP_THEMES;
   title: string;
   description: string;
   SLIDER_VALUE;
 
   constructor(private _params: BottomSheetParams) {
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
     const data = this._params.context;
 
     if (data) {
