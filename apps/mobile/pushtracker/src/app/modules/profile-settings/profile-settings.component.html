@@ -13,7 +13,7 @@
     [controlConfiguration]="user.data.control_configuration"
     [languagePreference]="user.data.language_preference"
   >
-    <WatchStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></WatchStatusButton>
+    <PushTrackerStatusButton #ptStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></PushTrackerStatusButton>
   </MockActionBar>
 
   <ScrollView row="1" height="100%">

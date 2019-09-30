@@ -13,14 +13,15 @@ import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
-  selector: 'WatchStatusButton',
+  selector: 'PushTrackerStatusButton',
   moduleId: module.id,
-  templateUrl: 'watch-status-button.component.html'
+  templateUrl: 'pushtracker-status-button.component.html'
 })
-export class WatchStatusButtonComponent {
+export class PushTrackerStatusButtonComponent {
   icon: ImageSource;
   iconString: string;
   CURRENT_THEME: string;
+  updateWatchIcon;
 
   constructor(
     private _bluetoothService: BluetoothService,
@@ -33,10 +34,12 @@ export class WatchStatusButtonComponent {
       APP_THEMES.DEFAULT
     );
 
+    this.updateWatchIcon = this._updateWatchIcon;
+
     // set up the status watcher for the pushtracker state
     this._bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
-      this.updateWatchIcon,
+      this._updateWatchIcon,
       this
     );
 
@@ -46,7 +49,7 @@ export class WatchStatusButtonComponent {
         : 'watch_question_white';
 
     this.icon = imageFromResource(this.iconString);
-    this.updateWatchIcon({});
+    this._updateWatchIcon({});
   }
 
   onWatchTap() {
@@ -58,7 +61,7 @@ export class WatchStatusButtonComponent {
     });
   }
 
-  public updateWatchIcon(event: any) {
+  private _updateWatchIcon(event: any) {
     this._zone.run(() => {
       const state =
         (event && event.data && event.data.state) ||
@@ -112,6 +115,6 @@ export class WatchStatusButtonComponent {
   }
 }
 
-registerElement('WatchStatusButton', () => {
+registerElement('PushTrackerStatusButton', () => {
   return ContentView;
 });

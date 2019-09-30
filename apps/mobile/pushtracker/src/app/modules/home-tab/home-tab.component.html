@@ -4,7 +4,7 @@
     <StackLayout horizontalAlignment="center" row="1" col="0">
       // Mock ActionBar
       <MockActionBar [showBackNav]="false" [showInfoBtn]="true">
-        <WatchStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></WatchStatusButton>
+        <PushTrackerStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></PushTrackerStatusButton>
       </MockActionBar>
 
       // Activity Circles
