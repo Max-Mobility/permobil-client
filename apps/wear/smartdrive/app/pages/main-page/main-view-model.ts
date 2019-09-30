@@ -2158,6 +2158,8 @@ export class MainViewModel extends Observable {
       'power-assist.estimated-range'
     )} (${this.distanceUnits})`;
     if (this.settings.units === 'Metric') {
+      // update estimated speed display
+      this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
       // update estimated range display
       this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
         1
