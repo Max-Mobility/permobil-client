@@ -8,7 +8,7 @@ import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-import { BluetoothService, PushTrackerState } from '../../../../services/bluetooth.service';
+import { PushTrackerState } from '../../../../services/bluetooth.service';
 import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
@@ -19,14 +19,14 @@ const dialogs = require('tns-core-modules/ui/dialogs');
 })
 export class PushTrackerStatusButtonComponent {
   public PushTrackerState = PushTrackerState;
-  public state: PushTrackerState = PushTrackerState.connected;
+  public APP_THEMES = APP_THEMES;
+  public state: PushTrackerState = PushTrackerState.busy;
   public icon: ImageSource;
   public iconString: string;
   public CURRENT_THEME: string;
   public updateWatchIcon;
 
   constructor(
-    private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
@@ -35,20 +35,11 @@ export class PushTrackerStatusButtonComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-
     this.updateWatchIcon = this._updateWatchIcon;
-
-    // set up the status watcher for the pushtracker state
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_status_changed,
-      this._updateWatchIcon,
-      this
-    );
-
     this.iconString =
       this.CURRENT_THEME === APP_THEMES.DEFAULT
-        ? 'watch_question_black'
-        : 'watch_question_white';
+        ? 'og_band_black'
+        : 'og_band_white';
 
     this.icon = imageFromResource(this.iconString);
     this._updateWatchIcon();
@@ -74,13 +65,12 @@ export class PushTrackerStatusButtonComponent {
   }
 
   private _getTranslationKeyForPushTrackerStatus() {
-    const state =
-      (this.state) ||
-      BluetoothService.pushTrackerStatus.get('state');
-    switch (state) {
+    switch (this.state) {
       default:
       case PushTrackerState.unknown:
         return 'unknown';
+      case PushTrackerState.busy:
+        return 'busy';
       case PushTrackerState.paired:
         return 'paired';
       case PushTrackerState.disconnected:
