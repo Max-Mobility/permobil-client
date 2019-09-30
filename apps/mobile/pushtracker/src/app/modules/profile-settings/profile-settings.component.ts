@@ -185,7 +185,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   closeModal() {
-    this._params.closeCallback('');
+    this._params.closeCallback(this.CURRENT_THEME); // return the current theme to calling component
     if (this.smartDrive) this.smartDrive.disconnect();
   }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef, ViewChild } from '@angular/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -10,6 +10,7 @@ import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
 import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
+import { E2StatusButtonComponent } from '../../../shared/components';
 
 @Component({
   selector: 'MockActionBar',
@@ -55,6 +56,12 @@ export class MockActionbarComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+  }
+
+  onLoaded(args) {}
+
+  onUnloaded(args) {
+
   }
 
   onNavBtnTap() {
@@ -123,8 +130,10 @@ export class MockActionbarComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => {
-        // this.onUnloaded();
+      .then((currentTheme) => {
+        if (currentTheme !== this.CURRENT_THEME) {
+          // Theme changed in profile settings
+        }
       })
       .catch(err => {
         Log.E(err);
