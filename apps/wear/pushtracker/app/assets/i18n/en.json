@@ -104,6 +104,7 @@
 			"title": "Coast Goal",
 			"units": "s"
 		},
+    "install-smartdrive": "Install SmartDrive MX2+ WearOS App",
 		"connect-pushtracker": "Connect PushTracker Mobile App",
 		"distancegoal": {
 			"description": "",

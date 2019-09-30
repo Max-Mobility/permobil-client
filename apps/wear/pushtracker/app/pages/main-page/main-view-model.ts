@@ -106,6 +106,11 @@ export class MainViewModel extends Observable {
   @Prop() distanceUnits: string = '';
 
   /**
+   * For showing button to install SD.W app
+   */
+  @Prop() isSmartDriveAppInstalled: boolean = false;
+
+  /**
    * For showing busy status
    */
   @Prop() isBusy: boolean = false;
@@ -306,7 +311,17 @@ export class MainViewModel extends Observable {
     // register for time updates
     this.registerForTimeUpdates();
 
+    // determine if the smartdrive app is installed
+    this.isSmartDriveAppInstalled =
+      this.checkPackageInstalled('com.permobil.smartdrive.wearos');
+
     setTimeout(this.startActivityService.bind(this), 5000);
+  }
+
+  private ANDROID_MARKET_SMARTDRIVE_URI =
+    'market://details?id=com.permobil.smartdrive.wearos';
+  onInstallSmartDriveTap() {
+    this.openInPlayStore(this.ANDROID_MARKET_SMARTDRIVE_URI);
   }
 
   async initSqliteTables() {
@@ -1174,6 +1189,30 @@ export class MainViewModel extends Observable {
     // disabling swipeable to make it easier to tap the cancel button
     // without starting the swipe behavior
     (this.changeSettingsLayout as any).swipeable = false;
+  }
+
+  /**
+   * SmartDrive Associated App Functions
+   */
+  checkPackageInstalled(packageName: string) {
+    let found = true;
+    try {
+      application.android.context.getPackageManager()
+        .getPackageInfo(packageName, 0);
+    } catch (err) {
+      found = false;
+    }
+    return found;
+  }
+
+  openInPlayStore(uri: string) {
+    const intent =
+      new android.content.Intent(android.content.Intent.ACTION_VIEW)
+        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+        .addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+        .setData(android.net.Uri.parse(uri));
+    application.android.foregroundActivity.startActivity(intent);
   }
 
   /**
