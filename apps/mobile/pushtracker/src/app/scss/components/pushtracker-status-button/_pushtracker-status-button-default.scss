@@ -1,0 +1,9 @@
+@import '../../variables';
+@import 'pushtracker-status-button-base';
+
+.pushtracker-status-btn-layout {
+  @extend .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE;
+  .pushtracker-state-icon {
+    font-size: 20;
+  }
+}
