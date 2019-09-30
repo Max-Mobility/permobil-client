@@ -599,6 +599,8 @@ export class ProfileSettingsComponent implements OnInit {
               this._logService.logException(err);
             }
           });
+          // now that all PTs have had their settings updated, we probably want to update the icon
+          this.ptStatusButton.state = PushTrackerState.connected;
         } else {
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.disconnected;
