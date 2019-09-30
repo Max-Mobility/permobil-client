@@ -8,7 +8,7 @@ import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-import { PushTrackerState } from '../../../../services/bluetooth.service';
+import { BluetoothService, PushTrackerState } from '../../../../services/bluetooth.service';
 import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
@@ -27,6 +27,7 @@ export class PushTrackerStatusButtonComponent {
   public updateWatchIcon;
 
   constructor(
+    private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
@@ -42,6 +43,23 @@ export class PushTrackerStatusButtonComponent {
         : 'og_band_white';
 
     this.icon = imageFromResource(this.iconString);
+
+    // set up the status watcher for the pushtracker state
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_status_changed,
+      this._updateWatchState,
+      this
+    );
+
+    this._updateWatchIcon();
+  }
+
+  onUnloaded() {
+    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
+  }
+
+  private _updateWatchState() {
+    this.state = BluetoothService.pushTrackerStatus.get('state');
     this._updateWatchIcon();
   }
 

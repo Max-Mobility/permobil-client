@@ -1,5 +1,5 @@
 <StackLayout orientation="horizontal" class="pushtracker-status-btn-layout"
-  (tap)="onTap()" ripple>
+  (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
   // PushTracker Icon
   <GridLayout columns="auto" order="1" height="44" borderRadius="22">
     <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
@@ -12,8 +12,8 @@
   <Label *ngIf="state === PushTrackerState.unknown"
     horizontalAlignment="center" verticalAlignment="middle"
     class="material-icon pushtracker-state-icon" text="&#63;"></Label>
-  // PushTrackerState = connected
-  <Label *ngIf="state === PushTrackerState.connected"
+  // PushTrackerState = connected || ready
+  <Label *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready"
     horizontalAlignment="center" verticalAlignment="middle"
     class="material-icon pushtracker-state-icon" text="&#x2713;"></Label>
   // PushTrackerState = disconnected
