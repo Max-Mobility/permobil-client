@@ -1029,12 +1029,12 @@ export class MainViewModel extends Observable {
         .getContentResolver();
       const authCursor = contentResolver
         .query(
-          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_URI,
+          com.permobil.pushtracker.AuthorizationHandler.AUTHORIZATION_URI,
           null, null, null, null);
       if (authCursor && authCursor.moveToFirst()) {
         // there is data
         const token = authCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_DATA_INDEX
+          com.permobil.pushtracker.AuthorizationHandler.AUTHORIZATION_DATA_INDEX
         );
         authCursor.close();
         // Log.D('Got token:', token);
@@ -1047,12 +1047,12 @@ export class MainViewModel extends Observable {
       }
       const idCursor = contentResolver
         .query(
-          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_URI,
+          com.permobil.pushtracker.AuthorizationHandler.USER_ID_URI,
           null, null, null, null);
       if (idCursor && idCursor.moveToFirst()) {
         // there is data
         const uid = idCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_DATA_INDEX
+          com.permobil.pushtracker.AuthorizationHandler.USER_ID_DATA_INDEX
         );
         idCursor.close();
         // Log.D('Got uid:', uid);

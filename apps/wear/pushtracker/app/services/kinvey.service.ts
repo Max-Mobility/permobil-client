@@ -36,10 +36,17 @@ export class KinveyService {
     }
   }
 
-  private wasInvalidCredentials(statusCode: number) {
+  public wasGoodStatus(statusCode: number) {
+    return statusCode === 200 ||
+      statusCode === 201 ||
+      (statusCode >= 200 && statusCode < 300);
+  }
+
+  public wasInvalidCredentials(statusCode: number) {
     return statusCode === 400 ||
       statusCode === 401 ||
-      statusCode === 422;
+      statusCode === 422 ||
+      (statusCode >= 400 && statusCode < 500);
   }
 
   private handleBadStatus(statusCode: number) {
@@ -51,7 +58,7 @@ export class KinveyService {
 
   private handleResponse(response: any) {
     const statusCode = response && response.statusCode;
-    if (statusCode !== 200) {
+    if (!this.wasGoodStatus(statusCode)) {
       this.handleBadStatus(statusCode);
       throw response;
     }
