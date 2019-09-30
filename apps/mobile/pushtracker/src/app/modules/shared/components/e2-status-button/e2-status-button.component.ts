@@ -26,6 +26,7 @@ export class E2StatusButtonComponent {
   public CURRENT_THEME: string;
   public iconString: string;
   public icon: ImageSource;
+  public updateWatchIcon;
   /**
    * For showing indication that we're sending data to the wear os apps
    */
@@ -41,7 +42,8 @@ export class E2StatusButtonComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    this._setWatchConnectIconVariables('check');
+    this.updateWatchIcon = this._updateWatchIcon;
+    this.updateWatchIcon();
   }
 
   onUnloaded() {
@@ -94,7 +96,7 @@ export class E2StatusButtonComponent {
     }
   }
 
-  private _setWatchConnectIconVariables(status: string) {
+  private _updateWatchIcon() {
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
       this.iconString = 'pte2_black';
     else

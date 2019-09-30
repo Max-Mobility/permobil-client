@@ -16,10 +16,10 @@ import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent, MockActionbarComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent, E2StatusButtonComponent } from '../shared/components';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 
@@ -68,8 +68,13 @@ export class ProfileTabComponent {
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
 
-  @ViewChild('mockActionBar', {static: false})
-  mockActionBar: ElementRef;
+  CURRENT_THEME: string = appSettings.getString(
+    STORAGE_KEYS.APP_THEME,
+    APP_THEMES.DEFAULT
+  );
+
+  @ViewChild('e2StatusButton', { static: false })
+  e2StatusButton: E2StatusButtonComponent;
 
   constructor(
     private _userService: PushTrackerUserService,
@@ -85,6 +90,16 @@ export class ProfileTabComponent {
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
+
+    // get current app style theme from app-settings on device
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+    if (this.e2StatusButton) {
+      this.e2StatusButton.CURRENT_THEME = this.CURRENT_THEME;
+      this.e2StatusButton.updateWatchIcon();
+    }
 
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;

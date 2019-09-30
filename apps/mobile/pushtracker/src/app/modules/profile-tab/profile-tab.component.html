@@ -4,7 +4,7 @@
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
-    <MockActionBar #mockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" [user]="user">
+    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" [user]="user">
       <e2-status-button #e2StatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></e2-status-button>
     </MockActionBar>
 
