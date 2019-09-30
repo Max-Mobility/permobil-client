@@ -159,5 +159,16 @@
     <receiver android:name="com.permobil.smartdrive.wearos.ComplicationToggleReceiver" />
     <!-- end for receiving complications -->
 
+    <!-- for receiving device admin / controlling system updates -->
+    <receiver android:name="com.permobil.smartdrive.wearos.DeviceAdminReceiver"
+              android:label="@string/device_admin"
+              android:description="@string/device_admin_description"
+              android:permission="android.permission.BIND_DEVICE_ADMIN">
+      <intent-filter>
+        <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+      </intent-filter>
+    </receiver>
+    <!-- end for receiving device admin / controlling system updates -->
+
   </application>
 </manifest>

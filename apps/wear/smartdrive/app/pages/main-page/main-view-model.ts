@@ -61,6 +61,43 @@ class SmartDriveException extends Error {
   }
 }
 
+function getPnedingSystemUpdate() {
+  /**
+   * https://developer.android.com/reference/android/app/admin/DevicePolicyManager.html#getPendingSystemUpdate(android.content.ComponentName)
+   */
+}
+
+@JavaProxy('com.permobil.smartdrive.wearos.DeviceAdminReceiver')
+class DeviceAdminReceiver extends android.app.admin.DeviceAdminReceiver {
+  // public onReceiveFunction: any = null;
+  constructor() {
+    super();
+    return global.__native(this);
+  }
+
+  onEnabled(context: android.content.Context, intent: android.content.Intent) {
+    Log.D('DeviceAdminReceiver::onEnabled');
+  }
+
+  /**
+   * Called when there is a system update pending:
+   * https://developer.android.com/reference/android/app/admin/DeviceAdminReceiver.html#onSystemUpdatePending(android.content.Context,%20android.content.Intent,%20long)
+   */
+  onSystemUpdatePending(
+    context: android.content.Context,
+    intent: android.content.Intent,
+    receivedTime: number
+  ) {
+    Log.D('DeviceAdminReceiver::onSystemUpdatePending');
+    // receivedTime === -1 if no pending update is available
+    /*
+    if (this.onReceiveFunction)
+      this.onReceiveFunction(resultCode, resultData);
+    */
+    Log.D('system update pending!', context, intent, receivedTime);
+  }
+}
+
 @JavaProxy('com.permobil.smartdrive.wearos.ResultReceiver')
 class ResultReceiver extends android.os.ResultReceiver {
   public onReceiveFunction: any = null;
@@ -239,6 +276,8 @@ export class MainViewModel extends Observable {
   // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
 
+  private dpm: android.app.admin.DevicePolicyManager;
+
   // permissions for the app
   private permissionsNeeded = [
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -263,6 +302,50 @@ export class MainViewModel extends Observable {
     }
   }
 
+  /**
+   * Admin related functions
+   */
+  initAdminServices() {
+    this.dpm = application.android.context.getSystemService(
+      android.content.Context.DEVICE_POLICY_SERVICE
+    );
+  }
+
+  isActiveAdmin() {
+    return this.dpm.isAdminActive(
+      new android.content.ComponentName(
+        ad.getApplicationContext(),
+        application.android.foregroundActivity.getClass()
+      )
+    );
+  }
+
+  requestDeviceAdmin() {
+    Log.D('requesting device admin');
+    try {
+      const intent = new android.content.Intent(
+        android.app.admin.DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN
+      );
+      intent.putExtra(
+        android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+        new android.content.ComponentName(
+          ad.getApplicationContext(),
+          application.android.foregroundActivity.getClass()
+        )
+      );
+      intent.putExtra(
+        android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+        "WE NEED TO CONTROL DEVICE UPDATES"
+      );
+      application.android.foregroundActivity.startActivityForResult(
+        intent,
+        777
+      );
+    } catch (err) {
+      Log.E('could not request admin:', err);
+    }
+  }
+
   constructor() {
     super();
     this._sentryBreadCrumb('Main-View-Model constructor.');
@@ -270,6 +353,8 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
+    // configure admin management
+    this.initAdminServices();
     // determine inset padding
     // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
@@ -2137,6 +2222,27 @@ export class MainViewModel extends Observable {
   @Prop() displayDebug: boolean = false;
   toggleDebug() {
     // this.displayDebug = !this.displayDebug;
+    try {
+      const isAdmin = this.isActiveAdmin();
+      Log.D('is admin:', isAdmin);
+      // ask for admin permissions
+      this.requestDeviceAdmin();
+      // now try to get the update
+      Log.D('getting update');
+      const systemUpdateInfo = this.dpm.getPendingSystemUpdate(
+        new android.content.ComponentName(
+          ad.getApplicationContext(),
+          application.android.foregroundActivity.getClass()
+        )
+      );
+      Log.D('got system update info:', systemUpdateInfo);
+      if (systemUpdateInfo !== null) {
+        const hasPendingUpdate = systemUpdateInfo.getReceivedTime() !== -1;
+        Log.D('hasPendingUpdate', hasPendingUpdate);
+      }
+    } catch (err) {
+      Log.E('could not get pending system update:', err);
+    }
   }
 
   toggleRssiDisplay() {

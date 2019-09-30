@@ -6,4 +6,6 @@
     <string name="complications_provider_service_label_range">Estimated Range</string>
     <string name="complications_provider_service_label_drive">Drive Distance</string>
     <string name="complications_provider_service_label_coast">Coast Distance</string>
+    <string name="device_admin">Manage Updates</string>
+    <string name="device_admin_description">Allow SmartDrive MX2+ to manage system updates.</string>
 </resources>
