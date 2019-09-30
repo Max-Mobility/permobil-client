@@ -60,9 +60,7 @@ export class MockActionbarComponent {
 
   onLoaded(args) {}
 
-  onUnloaded(args) {
-
-  }
+  onUnloaded(args) {}
 
   onNavBtnTap() {
     this.navTapEvent.emit();
@@ -89,7 +87,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        // Do nothing
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -110,7 +108,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        // this.onUnloaded();
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -130,10 +128,8 @@ export class MockActionbarComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then((currentTheme) => {
-        if (currentTheme !== this.CURRENT_THEME) {
-          // Theme changed in profile settings
-        }
+      .then(() => {
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -154,7 +150,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        // this.onUnloaded();
+        this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
