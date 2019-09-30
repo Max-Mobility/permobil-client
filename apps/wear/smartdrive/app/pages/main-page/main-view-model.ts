@@ -299,6 +299,13 @@ export class MainViewModel extends Observable {
    */
   private mDeviceAdminReceiver = new DeviceAdminReceiver();
 
+  getAdminComponentName() {
+    return new android.content.ComponentName(
+      ad.getApplicationContext(),
+      DeviceAdminReceiver.class
+    )
+  }
+
   initAdminServices() {
     this.mDeviceAdminReceiver.onSystemUpdate = this.onSystemUpdate.bind(this);
 
@@ -309,7 +316,7 @@ export class MainViewModel extends Observable {
 
   isActiveAdmin() {
     return this.dpm.isAdminActive(
-      this.mDeviceAdministrator
+      this.getAdminComponentName()
     );
   }
 
@@ -321,7 +328,7 @@ export class MainViewModel extends Observable {
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-        this.mDeviceAdminReceiver
+        this.getAdminComponentName()
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION,
@@ -343,7 +350,7 @@ export class MainViewModel extends Observable {
       // now check for updates
       Log.D('checking for update info');
       const systemUpdateInfo = this.dpm.getPendingSystemUpdate(
-        this.mDeviceAdminReceiver
+        this.getAdminComponentName()
       );
       Log.D('got system update info:', systemUpdateInfo);
       if (systemUpdateInfo !== null) {
@@ -373,7 +380,7 @@ export class MainViewModel extends Observable {
         startTime, endTime
       );
       this.dpm.setSystemUpdatePolicy(
-        this.mDeviceAdminReceiver,
+        this.getAdminComponentName(),
         sup
       );
       Log.D('set system update policy!');
