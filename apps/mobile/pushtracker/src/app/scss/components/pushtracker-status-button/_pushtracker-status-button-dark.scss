@@ -4,7 +4,4 @@
 .pushtracker-status-btn-layout {
   @extend .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE;
   background-color: $black;
-  .pushtracker-state-icon {
-    font-size: 20;
-  }
 }

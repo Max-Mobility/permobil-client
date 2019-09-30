@@ -73,9 +73,6 @@ export class ProfileTabComponent {
     APP_THEMES.DEFAULT
   );
 
-  @ViewChild('e2StatusButton', { static: false })
-  e2StatusButton: E2StatusButtonComponent;
-
   constructor(
     private _userService: PushTrackerUserService,
     private _themeService: ThemeService,
@@ -94,10 +91,6 @@ export class ProfileTabComponent {
     );
     this._themeService.theme.subscribe(theme => {
       this.CURRENT_THEME = theme;
-      if (this.e2StatusButton) {
-        this.e2StatusButton.CURRENT_THEME = this.CURRENT_THEME;
-        this.e2StatusButton.updateWatchIcon();
-      }
     });
   }
 

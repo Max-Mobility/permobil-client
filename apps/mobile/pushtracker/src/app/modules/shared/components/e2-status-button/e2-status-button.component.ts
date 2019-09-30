@@ -9,7 +9,7 @@ import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { TranslateService } from '@ngx-translate/core';
-import { LoggingService, BluetoothService } from '../../../../services';
+import { LoggingService, BluetoothService, ThemeService } from '../../../../services';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -33,6 +33,7 @@ export class E2StatusButtonComponent {
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
+    private _themeService: ThemeService,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _vcRef: ViewContainerRef,
@@ -43,6 +44,10 @@ export class E2StatusButtonComponent {
       APP_THEMES.DEFAULT
     );
     this.updateWatchIcon = this._updateWatchIcon;
+    this._themeService.theme.subscribe(theme => {
+      this.CURRENT_THEME = theme;
+      this.updateWatchIcon();
+    });
     this.updateWatchIcon();
   }
 
