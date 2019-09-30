@@ -303,7 +303,7 @@ export class MainViewModel extends Observable {
     return new android.content.ComponentName(
       ad.getApplicationContext(),
       DeviceAdminReceiver.class
-    )
+    );
   }
 
   initAdminServices() {
