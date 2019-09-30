@@ -61,12 +61,6 @@ class SmartDriveException extends Error {
   }
 }
 
-function getPnedingSystemUpdate() {
-  /**
-   * https://developer.android.com/reference/android/app/admin/DevicePolicyManager.html#getPendingSystemUpdate(android.content.ComponentName)
-   */
-}
-
 @JavaProxy('com.permobil.smartdrive.wearos.DeviceAdminReceiver')
 class DeviceAdminReceiver extends android.app.admin.DeviceAdminReceiver {
   public onSystemUpdate: any = null;
@@ -303,10 +297,10 @@ export class MainViewModel extends Observable {
   /**
    * Admin related functions
    */
-  // private mDeviceAdminReceiver = new DeviceAdminReceiver();
+  private mDeviceAdminReceiver = new DeviceAdminReceiver();
 
   initAdminServices() {
-    // this.mDeviceAdminReceiver.onSystemUpdate = this.onSystemUpdate.bind(this);
+    this.mDeviceAdminReceiver.onSystemUpdate = this.onSystemUpdate.bind(this);
 
     this.dpm = application.android.context.getSystemService(
       android.content.Context.DEVICE_POLICY_SERVICE
@@ -315,11 +309,7 @@ export class MainViewModel extends Observable {
 
   isActiveAdmin() {
     return this.dpm.isAdminActive(
-      // application.android.foregroundActivity.getComponentName()
-      new android.content.ComponentName(
-        ad.getApplicationContext(),
-        DeviceAdminReceiver.class
-      )
+      this.mDeviceAdministrator
     );
   }
 
@@ -331,11 +321,7 @@ export class MainViewModel extends Observable {
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-        // application.android.foregroundActivity.getComponentName()
-        new android.content.ComponentName(
-          ad.getApplicationContext(),
-          DeviceAdminReceiver.class
-        )
+        this.mDeviceAdminReceiver
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION,
@@ -357,11 +343,7 @@ export class MainViewModel extends Observable {
       // now check for updates
       Log.D('checking for update info');
       const systemUpdateInfo = this.dpm.getPendingSystemUpdate(
-        new android.content.ComponentName(
-          ad.getApplicationContext(),
-          // application.android.foregroundActivity.getClass()
-          DeviceAdminReceiver.class
-        )
+        this.mDeviceAdminReceiver
       );
       Log.D('got system update info:', systemUpdateInfo);
       if (systemUpdateInfo !== null) {
@@ -391,11 +373,7 @@ export class MainViewModel extends Observable {
         startTime, endTime
       );
       this.dpm.setSystemUpdatePolicy(
-        // application.android.foregroundActivity.getComponentName(),
-        new android.content.ComponentName(
-          ad.getApplicationContext(),
-          DeviceAdminReceiver.class
-        ),
+        this.mDeviceAdminReceiver,
         sup
       );
       Log.D('set system update policy!');
