@@ -581,22 +581,14 @@ export class ProfileSettingsComponent implements OnInit {
             ProfileSettingsComponent.name,
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
-          if (actionbar)
-            actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await pt.sendSwitchControlSettingsObject(
                 this.settingsService.switchControlSettings
               );
-              if (actionbar)
-                actionbar.updateWatchIcon({ data: PushTrackerState.connected });
             } catch (err) {
               // Show watch icon 'X'
-              if (actionbar)
-                actionbar.updateWatchIcon({
-                  data: PushTrackerState.disconnected
-                });
               this._logService.logException(err);
             }
           });

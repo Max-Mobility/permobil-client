@@ -24,6 +24,7 @@ import { applyTheme, convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, g
 export class HomeTabComponent {
   APP_THEMES = APP_THEMES;
   DISTANCE_UNITS = DISTANCE_UNITS;
+  CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;

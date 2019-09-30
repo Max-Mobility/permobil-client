@@ -32,7 +32,6 @@ export class MockActionbarComponent {
   @Output() refreshTapEvent = new EventEmitter();
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
-  @Input() showWatchBtn = false;
   @Input() languagePreference: string = 'English';
   @Input() controlConfiguration: string = '';
   @Input() showWatchConnectBtn = false;
@@ -44,8 +43,6 @@ export class MockActionbarComponent {
   watchConnectIcon: ImageSource;
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
-  watchIconString: string;
-  watchIcon: ImageSource;
 
   constructor(
     private _bluetoothService: BluetoothService,
@@ -65,21 +62,6 @@ export class MockActionbarComponent {
       APP_THEMES.DEFAULT
     );
 
-    this.watchIconString =
-      this.CURRENT_THEME === APP_THEMES.DEFAULT
-        ? 'watch_question_black'
-        : 'watch_question_white';
-
-    this.watchIcon = imageFromResource(this.watchIconString);
-
-    // set up the status watcher for the pushtracker state
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_status_changed,
-      this.updateWatchIcon,
-      this
-    );
-
-    this.updateWatchIcon({});
     this._setWatchConnectIconVariables('check');
   }
 
@@ -91,15 +73,6 @@ export class MockActionbarComponent {
 
   onNavBtnTap() {
     this.navTapEvent.emit();
-  }
-
-  onWatchTap() {
-    dialogs.alert({
-      title: this._translateService.instant('profile-settings.watch-status-alert-title'),
-      message: this._translateService.instant('profile-settings.watch-status-alert-message.' +
-        this._getTranslationKeyForPushTrackerStatus()),
-      okButtonText: this._translateService.instant('dialogs.ok')
-    });
   }
 
   onWatchConnectTap() {
@@ -200,59 +173,6 @@ export class MockActionbarComponent {
           textColor: new Color('#fff000')
         });
       });
-  }
-
-  public updateWatchIcon(event: any) {
-    this._zone.run(() => {
-      const state =
-        (event && event.data && event.data.state) ||
-        BluetoothService.pushTrackerStatus.get('state');
-      switch (state) {
-        default:
-        case PushTrackerState.unknown:
-          this._setWatchIconVariables('question');
-          break;
-        case PushTrackerState.paired:
-          this._setWatchIconVariables('empty');
-          break;
-        case PushTrackerState.disconnected:
-          this._setWatchIconVariables('x');
-          break;
-        case PushTrackerState.connected:
-          this._setWatchIconVariables('check');
-          break;
-        case PushTrackerState.ready:
-          this._setWatchIconVariables('check');
-          break;
-      }
-    });
-  }
-
-  private _getTranslationKeyForPushTrackerStatus() {
-    const state = BluetoothService.pushTrackerStatus.get('state');
-    switch (state) {
-      default:
-      case PushTrackerState.unknown:
-        return 'unknown';
-      case PushTrackerState.paired:
-        return 'paired';
-      case PushTrackerState.disconnected:
-        return 'disconnected';
-      case PushTrackerState.connected:
-        return 'connected';
-      case PushTrackerState.ready:
-        return 'ready';
-    }
-  }
-
-  private _setWatchIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchIconString = `watch_${status}_black`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    } else {
-      this.watchIconString = `watch_${status}_white`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    }
   }
 
   private _setWatchConnectIconVariables(status: string) {
