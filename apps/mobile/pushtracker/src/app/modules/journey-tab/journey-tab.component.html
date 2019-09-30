@@ -23,13 +23,30 @@
           <StackLayout row="0" col="3" class="violet-circle" horizontalAlignment="right" verticalAlignment="center">
             <Label text="&#xe5cc;"></Label>
           </StackLayout>
-          <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5" 
-            [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))" textWrap="true"></Label>
+          <Label
+            row="0"
+            col="4"
+            class="journey-item"
+            marginTop="5"
+            marginRight="10"
+            marginLeft="-5"
+            [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))"
+            textWrap="true"
+          ></Label>
         </GridLayout>
 
         <StackLayout width="95%" marginTop="5" marginBottom="5" row="2" class="hr-light"></StackLayout>
 
-        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (loadMoreItems)="onLoadMoreItems($event)" class="list-group" *ngIf="journeyItemsLoaded">
+        <ListView
+          row="3"
+          colSpan="4"
+          height="100%"
+          [items]="journeyItems"
+          (loadMoreItems)="onLoadMoreItems($event)"
+          class="list-group"
+          [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
+          *ngIf="journeyItemsLoaded"
+        >
           <ng-template let-item="item" let-odd="odd" let-even="even">
             <GridLayout rows="*, *" columns="*, auto" (tap)="onListItemTap($event, item)">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
@@ -42,8 +59,18 @@
                 <Label
                   row="1"
                   col="0"
-                  [text]="item.coast_time + ' ' + ('units.s' | translate) + '   •   ' + item.push_count + item.push_count_unit + '   •   ' + item.coast_distance + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 
-                    ('units.km' | translate) : ('units.mi' | translate))"
+                  [text]="
+                    item.coast_time +
+                    ' ' +
+                    ('units.s' | translate) +
+                    '   •   ' +
+                    item.push_count +
+                    item.push_count_unit +
+                    '   •   ' +
+                    item.coast_distance +
+                    ' ' +
+                    (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))
+                  "
                   class="journey-item"
                 ></Label>
                 // Date - Today, Yesterday or Some Date

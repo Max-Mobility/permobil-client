@@ -1,27 +1,22 @@
 import { Component, ViewContainerRef } from '@angular/core';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
+import { Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { Color } from 'tns-core-modules/color';
 import { fromResource as imageFromResource } from 'tns-core-modules/image-source';
 import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
+import { ActivityComponent } from '..';
+import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS, TIME_FORMAT } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import {
-  areDatesSame, formatAMPM, format24Hour,
-  getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString,
-  convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getUserDataFromKinvey
-} from '../../utils';
-import { APP_THEMES, DISTANCE_UNITS, TIME_FORMAT, STORAGE_KEYS } from '../../enums';
-import { ActivityComponent } from '..';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { Toasty } from 'nativescript-toasty';
-import { Color } from 'tns-core-modules/color';
+import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getJSONFromKinvey, getTimeOfDayFromStartTime, getTimeOfDayString, getUserDataFromKinvey, YYYY_MM_DD } from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -77,30 +72,33 @@ export class JourneyTabComponent {
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService
-  ) { }
+  ) {}
 
   onJourneyTabLoaded() {
+    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
 
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
 
-    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
-
     this._page.actionBarHidden = true;
-    this.refreshUserFromKinvey(false).then(() => {
-      this.savedTimeFormat = this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-      this.initJourneyItems().then(() => {
-        this._firstLoad = false;
+
+    this.refreshUserFromKinvey(false)
+      .then(() => {
+        this.savedTimeFormat =
+          this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
+        this.initJourneyItems()
+          .then(() => {
+            this._firstLoad = false;
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
       .catch(err => {
         this._logService.logException(err);
       });
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
     this._rollingWeekStart = new Date(this._weekStart);
@@ -122,14 +120,15 @@ export class JourneyTabComponent {
   }
 
   async initJourneyItems() {
-    this._loadDataForDate(this._weekStart, true).then(result => {
-      this.journeyItems = result;
-      this.journeyItemsLoaded = true;
-    })
-    .catch(err => {
-      this._logService.logException(err);
-      this.journeyItemsLoaded = true;
-    });
+    this._loadDataForDate(this._weekStart, true)
+      .then(result => {
+        this.journeyItems = result;
+        this.journeyItemsLoaded = true;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        this.journeyItemsLoaded = true;
+      });
   }
 
   onRefreshTap() {
@@ -141,13 +140,14 @@ export class JourneyTabComponent {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
-    return this._loadDataForDate(this._rollingWeekStart, false).then(result => {
-      this.journeyItems = result;
-      this.showLoadingIndicator = false;
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+    return this._loadDataForDate(this._rollingWeekStart, false)
+      .then(result => {
+        this.journeyItems = result;
+        this.showLoadingIndicator = false;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   getTodayCoastDistance() {
@@ -155,7 +155,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-          this.todayUsage.distance_smartdrive_coast_start
+            this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -201,7 +201,8 @@ export class JourneyTabComponent {
             if (user.data._acl) user._acl = user.data._acl;
             if (user.data._kmd) {
               user._kmd = user.data._kmd;
-              if (user.data._kmd.authtoken) user.authtoken = user.data._kmd.authtoken;
+              if (user.data._kmd.authtoken)
+                user.authtoken = user.data._kmd.authtoken;
             }
             if (user.data.username) user.username = user.data.username;
             if (user.data.email) user.email = user.data.email;
@@ -229,28 +230,30 @@ export class JourneyTabComponent {
 
   private async _refresh() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
-    return this.refreshUserFromKinvey(true).then(() => {
-      this._noMorePushTrackerActivityDataAvailable = false;
-      this._noMoreSmartDriveUsageDataAvailable = false;
-      this._noMoreDataAvailable = false;
-      this.journeyItemsLoaded = false;
-      this._today = new Date();
-      this._weekStart = getFirstDayOfWeek(this._today);
-      this._rollingWeekStart = new Date(this._weekStart);
-      this._journeyMap = {};
-      this.journeyItems = undefined;
-      return this._loadDataForDate(this._weekStart, true).then(result => {
-        this.journeyItems = result;
-        this.journeyItemsLoaded = true;
+    return this.refreshUserFromKinvey(true)
+      .then(() => {
+        this._noMorePushTrackerActivityDataAvailable = false;
+        this._noMoreSmartDriveUsageDataAvailable = false;
+        this._noMoreDataAvailable = false;
+        this.journeyItemsLoaded = false;
+        this._today = new Date();
+        this._weekStart = getFirstDayOfWeek(this._today);
+        this._rollingWeekStart = new Date(this._weekStart);
+        this._journeyMap = {};
+        this.journeyItems = undefined;
+        return this._loadDataForDate(this._weekStart, true)
+          .then(result => {
+            this.journeyItems = result;
+            this.journeyItemsLoaded = true;
+          })
+          .catch(err => {
+            this._logService.logException(err);
+            this.journeyItemsLoaded = true;
+          });
       })
       .catch(err => {
         this._logService.logException(err);
-        this.journeyItemsLoaded = true;
       });
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   private async _loadDataForDate(date: Date, reset: boolean = false) {
@@ -261,18 +264,20 @@ export class JourneyTabComponent {
 
         // Check if there's any more SmartDrive WeeklyInfo usage data available to load
         if (!this._noMoreSmartDriveUsageDataAvailable) {
-          return this._loadWeeklySmartDriveUsage(date).then(sdResult => {
-            this._noMoreSmartDriveUsageDataAvailable = !sdResult;
-            return this._processJourneyMap(date, reset).then(result => {
-              return result;
+          return this._loadWeeklySmartDriveUsage(date)
+            .then(sdResult => {
+              this._noMoreSmartDriveUsageDataAvailable = !sdResult;
+              return this._processJourneyMap(date, reset)
+                .then(result => {
+                  return result;
+                })
+                .catch(err => {
+                  this._logService.logException(err);
+                });
             })
             .catch(err => {
               this._logService.logException(err);
             });
-          })
-          .catch(err => {
-            this._logService.logException(err);
-          });
         } else {
           return this.journeyItems;
         }
@@ -280,22 +285,27 @@ export class JourneyTabComponent {
     } else if (!this._noMoreSmartDriveUsageDataAvailable) {
       // No PushTracker activity data available
       // Just check SmartDrive WeeklyInfo usage data
-      return this._loadWeeklySmartDriveUsage(date).then(result => {
-        this._noMoreSmartDriveUsageDataAvailable = !result;
-        return this._processJourneyMap(date, reset).then(result => {
-          return result;
+      return this._loadWeeklySmartDriveUsage(date)
+        .then(result => {
+          this._noMoreSmartDriveUsageDataAvailable = !result;
+          return this._processJourneyMap(date, reset)
+            .then(result => {
+              return result;
+            })
+            .catch(err => {
+              this._logService.logException(err);
+            });
         })
         .catch(err => {
           this._logService.logException(err);
         });
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
     } else {
       // No data available
       this._noMoreDataAvailable = true;
-      this._logService.logBreadCrumb(JourneyTabComponent.name, 'No more data available in the database ' + this._rollingWeekStart);
+      this._logService.logBreadCrumb(
+        JourneyTabComponent.name,
+        'No more data available in the database ' + this._rollingWeekStart
+      );
       return this.journeyItems;
     }
   }
@@ -317,15 +327,17 @@ export class JourneyTabComponent {
       })
       .sort()
       .reverse()
-      .forEach(function (key) {
+      .forEach(function(key) {
         orderedJourneyMap[key] = self._journeyMap[key];
       });
 
     if (reset) this.journeyItems = [];
 
     const getJourneyTypeString = (journeyType: JourneyType) => {
-      if (journeyType === JourneyType.ROLL) return this._translateService.instant('journey-tab.roll');
-      else if (journeyType === JourneyType.DRIVE) return this._translateService.instant('journey-tab.drive');
+      if (journeyType === JourneyType.ROLL)
+        return this._translateService.instant('journey-tab.roll');
+      else if (journeyType === JourneyType.DRIVE)
+        return this._translateService.instant('journey-tab.drive');
     };
 
     for (const key in orderedJourneyMap) {
@@ -354,152 +366,163 @@ export class JourneyTabComponent {
 
     // Identify and group journey items
     // before creating ListView items
-    return this._mergeJourneyItems(orderedJourneyMap).then(result => {
-      orderedJourneyMap = result;
-      const newJourneyItems = this.journeyItems;
-      for (const key in orderedJourneyMap) {
-        const journey = orderedJourneyMap[key];
-        let journeyDateLabel = '';
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const journeyDate = new Date(parseInt(key));
-        if (areDatesSame(journeyDate, today)) {
-          journeyDateLabel = this._translateService.instant('journey-tab.today');
-        } else if (areDatesSame(journeyDate, yesterday)) {
-          journeyDateLabel = this._translateService.instant('journey-tab.yesterday');
-        } else {
-          const dayNames: string[] = [
-            this._translateService.instant('days-abbreviated.sunday'),
-            this._translateService.instant('days-abbreviated.monday'),
-            this._translateService.instant('days-abbreviated.tuesday'),
-            this._translateService.instant('days-abbreviated.wednesday'),
-            this._translateService.instant('days-abbreviated.thursday'),
-            this._translateService.instant('days-abbreviated.friday'),
-            this._translateService.instant('days-abbreviated.saturday'),
-          ];
-          const monthNamesAbbreviated = [
-            this._translateService.instant('months-abbreviated.january'),
-            this._translateService.instant('months-abbreviated.february'),
-            this._translateService.instant('months-abbreviated.march'),
-            this._translateService.instant('months-abbreviated.april'),
-            this._translateService.instant('months-abbreviated.may'),
-            this._translateService.instant('months-abbreviated.june'),
-            this._translateService.instant('months-abbreviated.july'),
-            this._translateService.instant('months-abbreviated.august'),
-            this._translateService.instant('months-abbreviated.september'),
-            this._translateService.instant('months-abbreviated.october'),
-            this._translateService.instant('months-abbreviated.november'),
-            this._translateService.instant('months-abbreviated.december')
-          ];
-          journeyDateLabel =
-            dayNames[journeyDate.getDay()] +
-            ', ' +
-            monthNamesAbbreviated[journeyDate.getMonth()] +
-            ' ' +
-            journeyDate.getDate();
-        }
+    return this._mergeJourneyItems(orderedJourneyMap)
+      .then(result => {
+        orderedJourneyMap = result;
+        const newJourneyItems = this.journeyItems;
+        for (const key in orderedJourneyMap) {
+          const journey = orderedJourneyMap[key];
+          let journeyDateLabel = '';
+          const today = new Date();
+          const yesterday = new Date();
+          yesterday.setDate(yesterday.getDate() - 1);
+          const journeyDate = new Date(parseInt(key));
+          if (areDatesSame(journeyDate, today)) {
+            journeyDateLabel = this._translateService.instant(
+              'journey-tab.today'
+            );
+          } else if (areDatesSame(journeyDate, yesterday)) {
+            journeyDateLabel = this._translateService.instant(
+              'journey-tab.yesterday'
+            );
+          } else {
+            const dayNames: string[] = [
+              this._translateService.instant('days-abbreviated.sunday'),
+              this._translateService.instant('days-abbreviated.monday'),
+              this._translateService.instant('days-abbreviated.tuesday'),
+              this._translateService.instant('days-abbreviated.wednesday'),
+              this._translateService.instant('days-abbreviated.thursday'),
+              this._translateService.instant('days-abbreviated.friday'),
+              this._translateService.instant('days-abbreviated.saturday')
+            ];
+            const monthNamesAbbreviated = [
+              this._translateService.instant('months-abbreviated.january'),
+              this._translateService.instant('months-abbreviated.february'),
+              this._translateService.instant('months-abbreviated.march'),
+              this._translateService.instant('months-abbreviated.april'),
+              this._translateService.instant('months-abbreviated.may'),
+              this._translateService.instant('months-abbreviated.june'),
+              this._translateService.instant('months-abbreviated.july'),
+              this._translateService.instant('months-abbreviated.august'),
+              this._translateService.instant('months-abbreviated.september'),
+              this._translateService.instant('months-abbreviated.october'),
+              this._translateService.instant('months-abbreviated.november'),
+              this._translateService.instant('months-abbreviated.december')
+            ];
+            journeyDateLabel =
+              dayNames[journeyDate.getDay()] +
+              ', ' +
+              monthNamesAbbreviated[journeyDate.getMonth()] +
+              ' ' +
+              journeyDate.getDate();
+          }
 
-        if (!journeyDateLabel) {
-          journeyDateLabel = journeyDate + '';
-        }
+          if (!journeyDateLabel) {
+            journeyDateLabel = journeyDate + '';
+          }
 
-        // Setup time format function based on user preference
-        // default is AM/PM
-        // https://github.com/Max-Mobility/permobil-client/issues/327
-        let formatTime = formatAMPM;
-        if (this.user) {
-          // If the preference is available and saved in the DB:
-          if (this.savedTimeFormat) {
-            if (this.savedTimeFormat === TIME_FORMAT.MILITARY) {
-              formatTime = format24Hour;
+          // Setup time format function based on user preference
+          // default is AM/PM
+          // https://github.com/Max-Mobility/permobil-client/issues/327
+          let formatTime = formatAMPM;
+          if (this.user) {
+            // If the preference is available and saved in the DB:
+            if (this.savedTimeFormat) {
+              if (this.savedTimeFormat === TIME_FORMAT.MILITARY) {
+                formatTime = format24Hour;
+              }
             }
           }
-        }
 
-        let journeyTimeLabel = '';
-        if (journey.mergedTimes && journey.mergedTimes.length) {
-          const lastTimeMerged = new Date(
-            parseInt(journey.mergedTimes.sort()[journey.mergedTimes.length - 1])
-          );
-          // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
-          journeyTimeLabel += formatTime(lastTimeMerged);
-          journeyDate.setMinutes(journeyDate.getMinutes() + 30);
-          journeyTimeLabel += ' - ' + formatTime(journeyDate);
-        } else {
-          journeyTimeLabel = formatTime(journeyDate);
-          const thirtyMinsLater = new Date(journeyDate);
-          thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
-          journeyTimeLabel += ' - ' + formatTime(thirtyMinsLater);
-        }
-
-        // Selectively hide list items in Journey tab #249
-        // https://github.com/Max-Mobility/permobil-client/issues/249
-        // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
-        if (!journey.coastTime || journey.coastTime === 0) {
-          if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
-        }
-        // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
-        else if (journey.coastTime) {
-          if (journey.coastTime < 0.05) {
-            continue;
+          let journeyTimeLabel = '';
+          if (journey.mergedTimes && journey.mergedTimes.length) {
+            const lastTimeMerged = new Date(
+              parseInt(
+                journey.mergedTimes.sort()[journey.mergedTimes.length - 1]
+              )
+            );
+            // lastTimeMerged.setMinutes(lastTimeMerged.getMinutes() + 30);
+            journeyTimeLabel += formatTime(lastTimeMerged);
+            journeyDate.setMinutes(journeyDate.getMinutes() + 30);
+            journeyTimeLabel += ' - ' + formatTime(journeyDate);
+          } else {
+            journeyTimeLabel = formatTime(journeyDate);
+            const thirtyMinsLater = new Date(journeyDate);
+            thirtyMinsLater.setMinutes(thirtyMinsLater.getMinutes() + 30);
+            journeyTimeLabel += ' - ' + formatTime(thirtyMinsLater);
           }
-        }
 
-        newJourneyItems.push({
-          journey_type: journey.journeyType,
-          date: journeyDateLabel,
-          journeyDate: journeyDate,
-          time: journeyTimeLabel,
-          push_count:
-            (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
-          push_count_unit: ' ' + this._translateService.instant('units.pushes'),
-          coast_time:
-            (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') || '0.0',
-          coast_distance:
-            (journey.coastDistance
-              ? journey.coastDistance.toFixed(2)
-              : '0.00') || '0.00',
-          drive_distance:
-            (journey.driveDistance
-              ? journey.driveDistance.toFixed(2)
-              : '0.00') || '0.00',
-          description:
-            this._translateService.instant('journey-tab.' + getTimeOfDayString(journey.timeOfDay)) +
-            ' ' +
-            getJourneyTypeString(journey.journeyType),
-          duration: 0,
-          icon_small:
-            this.CURRENT_THEME === APP_THEMES.DEFAULT
-              ? imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_black'
-                  : 'smartdrive_material_black_45'
-              )
-              : imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              ),
-          icon_large:
-            this.CURRENT_THEME === APP_THEMES.DEFAULT
-              ? imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              )
-              : imageFromResource(
-                journey.journeyType === JourneyType.ROLL
-                  ? 'roll_white'
-                  : 'smartdrive_material_white_45'
-              )
-        });
-      }
-      return newJourneyItems;
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+          // Selectively hide list items in Journey tab #249
+          // https://github.com/Max-Mobility/permobil-client/issues/249
+          // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
+          if (!journey.coastTime || journey.coastTime === 0) {
+            if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
+          }
+          // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
+          else if (journey.coastTime) {
+            if (journey.coastTime < 0.05) {
+              continue;
+            }
+          }
+
+          newJourneyItems.push({
+            journey_type: journey.journeyType,
+            date: journeyDateLabel,
+            journeyDate: journeyDate,
+            time: journeyTimeLabel,
+            push_count:
+              (journey.pushCount ? journey.pushCount.toFixed() : '0') || '0',
+            push_count_unit:
+              ' ' + this._translateService.instant('units.pushes'),
+            coast_time:
+              (journey.coastTime ? journey.coastTime.toFixed(1) : '0.0') ||
+              '0.0',
+            coast_distance:
+              (journey.coastDistance
+                ? journey.coastDistance.toFixed(2)
+                : '0.00') || '0.00',
+            drive_distance:
+              (journey.driveDistance
+                ? journey.driveDistance.toFixed(2)
+                : '0.00') || '0.00',
+            description:
+              this._translateService.instant(
+                'journey-tab.' + getTimeOfDayString(journey.timeOfDay)
+              ) +
+              ' ' +
+              getJourneyTypeString(journey.journeyType),
+            duration: 0,
+            icon_small:
+              this.CURRENT_THEME === APP_THEMES.DEFAULT
+                ? imageFromResource(
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_black'
+                      : 'smartdrive_material_black_45'
+                  )
+                : imageFromResource(
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_white'
+                      : 'smartdrive_material_white_45'
+                  ),
+            icon_large:
+              this.CURRENT_THEME === APP_THEMES.DEFAULT
+                ? imageFromResource(
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_white'
+                      : 'smartdrive_material_white_45'
+                  )
+                : imageFromResource(
+                    journey.journeyType === JourneyType.ROLL
+                      ? 'roll_white'
+                      : 'smartdrive_material_white_45'
+                  )
+          });
+        }
+        return newJourneyItems;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   private async _mergeJourneyItems(orderedJourneyMap: Object) {
@@ -508,8 +531,8 @@ export class JourneyTabComponent {
       journeyList.push({ startTime: key, stats: orderedJourneyMap[key] });
     }
 
-    const arrayRemove = function (arr, value) {
-      return arr.filter(function (ele) {
+    const arrayRemove = function(arr, value) {
+      return arr.filter(function(ele) {
         return ele !== value;
       });
     };
@@ -545,13 +568,13 @@ export class JourneyTabComponent {
                 1);
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
-              second.stats.coastDistance || 0;
+                second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance =
               (journeyList[firstIndex].stats.driveDistance || 0) +
-              second.stats.driveDistance || 0;
+                second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount =
               (journeyList[firstIndex].stats.pushCount || 0) +
-              second.stats.pushCount || 0;
+                second.stats.pushCount || 0;
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
@@ -577,7 +600,10 @@ export class JourneyTabComponent {
   }
 
   async loadWeeklyPushtrackerActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loading weekly activity from Kinvey');
+    this._logService.logBreadCrumb(
+      JourneyTabComponent.name,
+      'Loading weekly activity from Kinvey'
+    );
     let result = [];
     if (!this.user) return result;
 
@@ -589,11 +615,15 @@ export class JourneyTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(
+            JourneyTabComponent.name,
+            'loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklyPushtrackerActivityFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'loadWeeklyPushtrackerActivityFromKinvey | No data for this week yet'
         );
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
@@ -604,50 +634,54 @@ export class JourneyTabComponent {
   }
 
   private async _loadWeeklyPushtrackerActivity(date: Date) {
-    return this.loadWeeklyPushtrackerActivityFromKinvey(date).then(didLoad => {
-      if (didLoad) {
-        for (const i in this._weeklyActivityFromKinvey.days) {
-          if (areDatesSame(this._weekStart, date)) {
-            const index = getDayOfWeek(new Date());
-            this.todayActivity = this._weeklyActivityFromKinvey.days[index];
-          }
+    return this.loadWeeklyPushtrackerActivityFromKinvey(date)
+      .then(didLoad => {
+        if (didLoad) {
+          for (const i in this._weeklyActivityFromKinvey.days) {
+            if (areDatesSame(this._weekStart, date)) {
+              const index = getDayOfWeek(new Date());
+              this.todayActivity = this._weeklyActivityFromKinvey.days[index];
+            }
 
-          const dailyActivity = this._weeklyActivityFromKinvey.days[i];
-          if (dailyActivity) {
-            // There's activity for today. Update journey list with coast_time/push_count info
-            // Assume that activity.records is an ordered list
-            // For each record, get time of day. Build a list of objects, each object looking like:
-            // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-            //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-            //               }
-            for (const i in dailyActivity.records) {
-              const record = dailyActivity.records[i];
-              if (!this._journeyMap[record.start_time]) {
-                this._journeyMap[record.start_time] = new JourneyItem();
-                this._journeyMap[
-                  record.start_time
-                ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+            const dailyActivity = this._weeklyActivityFromKinvey.days[i];
+            if (dailyActivity) {
+              // There's activity for today. Update journey list with coast_time/push_count info
+              // Assume that activity.records is an ordered list
+              // For each record, get time of day. Build a list of objects, each object looking like:
+              // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+              //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+              //               }
+              for (const i in dailyActivity.records) {
+                const record = dailyActivity.records[i];
+                if (!this._journeyMap[record.start_time]) {
+                  this._journeyMap[record.start_time] = new JourneyItem();
+                  this._journeyMap[
+                    record.start_time
+                  ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+                }
+                this._journeyMap[record.start_time].coastTime =
+                  record.coast_time_avg || 0;
+                this._journeyMap[record.start_time].coastTimeTotal =
+                  record.coast_time_total || 0;
+                this._journeyMap[record.start_time].pushCount =
+                  record.push_count || 0;
               }
-              this._journeyMap[record.start_time].coastTime =
-                record.coast_time_avg || 0;
-              this._journeyMap[record.start_time].coastTimeTotal =
-                record.coast_time_total || 0;
-              this._journeyMap[record.start_time].pushCount =
-                record.push_count || 0;
             }
           }
         }
-      }
-      return didLoad;
-    })
-    .catch(err => {
-      this._logService.logException(err);
-      return false;
-    });
+        return didLoad;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        return false;
+      });
   }
 
   async loadWeeklySmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loading weekly usage from Kinvey');
+    this._logService.logBreadCrumb(
+      JourneyTabComponent.name,
+      'Loading weekly usage from Kinvey'
+    );
     let result = [];
     if (!this.user) return result;
 
@@ -659,11 +693,15 @@ export class JourneyTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(
+            JourneyTabComponent.name,
+            'loadWeeklySmartDriveUsageFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'loadWeeklySmartDriveUsageFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(
+          JourneyTabComponent.name,
+          'loadWeeklySmartDriveUsageFromKinvey | No data for this week yet'
         );
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
@@ -674,86 +712,97 @@ export class JourneyTabComponent {
   }
 
   private async _loadWeeklySmartDriveUsage(date: Date) {
-    return this.loadWeeklySmartDriveUsageFromKinvey(date).then(didLoad => {
-      if (didLoad) {
-        for (const i in this._weeklyUsageFromKinvey.days) {
-          if (areDatesSame(this._weekStart, date)) {
-            const index = getDayOfWeek(new Date());
-            const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
-            if (firstDayOfCurrentWeek && firstDayOfCurrentWeek.date &&
-              areDatesSame(this._weekStart, new Date(firstDayOfCurrentWeek.date))) {
-              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
-            }
-          }
-
-          const dailyUsage = this._weeklyUsageFromKinvey.days[i];
-          if (dailyUsage) {
-            // There's usage information for today. Update journey list with distance info
-
-            // Assume that usage.records is an ordered list
-            // For each record, get time of day. Build a list of objects, each object looking like:
-            // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
-            //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
-            //               }
-            let coastDistanceStart = 0;
-            let driveDistanceStart = 0;
-            for (const i in dailyUsage.records) {
-              const record = dailyUsage.records[i];
-
-              if (parseInt(i) === 0) {
-                coastDistanceStart = dailyUsage.distance_smartdrive_coast_start;
-                driveDistanceStart = dailyUsage.distance_smartdrive_drive_start;
-              } else {
-                coastDistanceStart =
-                  dailyUsage.records[parseInt(i) - 1].distance_smartdrive_coast;
-                driveDistanceStart =
-                  dailyUsage.records[parseInt(i) - 1].distance_smartdrive_drive;
+    return this.loadWeeklySmartDriveUsageFromKinvey(date)
+      .then(didLoad => {
+        if (didLoad) {
+          for (const i in this._weeklyUsageFromKinvey.days) {
+            if (areDatesSame(this._weekStart, date)) {
+              const index = getDayOfWeek(new Date());
+              const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
+              if (
+                firstDayOfCurrentWeek &&
+                firstDayOfCurrentWeek.date &&
+                areDatesSame(
+                  this._weekStart,
+                  new Date(firstDayOfCurrentWeek.date)
+                )
+              ) {
+                this.todayUsage = this._weeklyUsageFromKinvey.days[index];
               }
+            }
 
-              if (!this._journeyMap[record.start_time]) {
-                this._journeyMap[record.start_time] = new JourneyItem();
+            const dailyUsage = this._weeklyUsageFromKinvey.days[i];
+            if (dailyUsage) {
+              // There's usage information for today. Update journey list with distance info
+
+              // Assume that usage.records is an ordered list
+              // For each record, get time of day. Build a list of objects, each object looking like:
+              // start_time : { timeOfDay: 'MORNING', journeyType: <roll | drive>, coastTime: <value>,
+              //                pushCount: <value>, coastDistance: <value>, driveDistance: <value>
+              //               }
+              let coastDistanceStart = 0;
+              let driveDistanceStart = 0;
+              for (const i in dailyUsage.records) {
+                const record = dailyUsage.records[i];
+
+                if (parseInt(i) === 0) {
+                  coastDistanceStart =
+                    dailyUsage.distance_smartdrive_coast_start;
+                  driveDistanceStart =
+                    dailyUsage.distance_smartdrive_drive_start;
+                } else {
+                  coastDistanceStart =
+                    dailyUsage.records[parseInt(i) - 1]
+                      .distance_smartdrive_coast;
+                  driveDistanceStart =
+                    dailyUsage.records[parseInt(i) - 1]
+                      .distance_smartdrive_drive;
+                }
+
+                if (!this._journeyMap[record.start_time]) {
+                  this._journeyMap[record.start_time] = new JourneyItem();
+                  this._journeyMap[
+                    record.start_time
+                  ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+                }
                 this._journeyMap[
                   record.start_time
-                ].timeOfDay = getTimeOfDayFromStartTime(record.start_time);
+                ].coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+                  DeviceBase.caseTicksToKilometers(
+                    record.distance_smartdrive_coast - coastDistanceStart
+                  ),
+                  this.user.data.distance_unit_preference
+                );
+                // https://github.com/Max-Mobility/permobil-client/issues/266
+                if (this._journeyMap[record.start_time].coastDistance < 0.0)
+                  this._journeyMap[record.start_time].coastDistance = 0.0;
+
+                this._journeyMap[
+                  record.start_time
+                ].driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+                  DeviceBase.motorTicksToMiles(
+                    record.distance_smartdrive_drive - driveDistanceStart
+                  ),
+                  this.user.data.distance_unit_preference
+                );
+                // https://github.com/Max-Mobility/permobil-client/issues/266
+                if (this._journeyMap[record.start_time].driveDistance < 0.0)
+                  this._journeyMap[record.start_time].driveDistance = 0.0;
+
+                if (this._journeyMap[record.start_time].coastDistance < 0)
+                  this._journeyMap[record.start_time].coastDistance = 0;
+                if (this._journeyMap[record.start_time].driveDistance < 0)
+                  this._journeyMap[record.start_time].driveDistance = 0;
               }
-              this._journeyMap[
-                record.start_time
-              ].coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.caseTicksToKilometers(
-                  record.distance_smartdrive_coast - coastDistanceStart
-                ),
-                this.user.data.distance_unit_preference
-              );
-              // https://github.com/Max-Mobility/permobil-client/issues/266
-              if (this._journeyMap[record.start_time].coastDistance < 0.0)
-                this._journeyMap[record.start_time].coastDistance = 0.0;
-
-              this._journeyMap[
-                record.start_time
-              ].driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-                DeviceBase.motorTicksToMiles(
-                  record.distance_smartdrive_drive - driveDistanceStart
-                ),
-                this.user.data.distance_unit_preference
-              );
-              // https://github.com/Max-Mobility/permobil-client/issues/266
-              if (this._journeyMap[record.start_time].driveDistance < 0.0)
-                this._journeyMap[record.start_time].driveDistance = 0.0;
-
-              if (this._journeyMap[record.start_time].coastDistance < 0)
-                this._journeyMap[record.start_time].coastDistance = 0;
-              if (this._journeyMap[record.start_time].driveDistance < 0)
-                this._journeyMap[record.start_time].driveDistance = 0;
             }
           }
         }
-      }
-      return didLoad;
-    })
-    .catch(err => {
-      this._logService.logException(err);
-      return Promise.reject(false);
-    });
+        return didLoad;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        return Promise.reject(false);
+      });
   }
 
   onListItemTap(args, item) {
@@ -767,8 +816,12 @@ export class JourneyTabComponent {
       chartYAxis: 0, // COAST_TIME
       user: this.user
     };
-    this._logService.logBreadCrumb(JourneyTabComponent.name,
-      `Journey item tapped. Opening activity modal for date: ${YYYY_MM_DD(context.currentDayInView)}`);
+    this._logService.logBreadCrumb(
+      JourneyTabComponent.name,
+      `Journey item tapped. Opening activity modal for date: ${YYYY_MM_DD(
+        context.currentDayInView
+      )}`
+    );
     this._modalService
       .showModal(ActivityComponent, {
         context: context,
@@ -785,5 +838,4 @@ export class JourneyTabComponent {
         });
       });
   }
-
 }
