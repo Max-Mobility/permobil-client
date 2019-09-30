@@ -69,7 +69,7 @@ function getPnedingSystemUpdate() {
 
 @JavaProxy('com.permobil.smartdrive.wearos.DeviceAdminReceiver')
 class DeviceAdminReceiver extends android.app.admin.DeviceAdminReceiver {
-  // public onReceiveFunction: any = null;
+  public onSystemUpdate: any = null;
   constructor() {
     super();
     return global.__native(this);
@@ -90,11 +90,9 @@ class DeviceAdminReceiver extends android.app.admin.DeviceAdminReceiver {
   ) {
     Log.D('DeviceAdminReceiver::onSystemUpdatePending');
     // receivedTime === -1 if no pending update is available
-    /*
-    if (this.onReceiveFunction)
-      this.onReceiveFunction(resultCode, resultData);
-    */
     Log.D('system update pending!', context, intent, receivedTime);
+    if (this.onSystemUpdate)
+      this.onSystemUpdate(context, intent, receivedTime);
   }
 }
 
@@ -305,7 +303,11 @@ export class MainViewModel extends Observable {
   /**
    * Admin related functions
    */
+  // private mDeviceAdminReceiver = new DeviceAdminReceiver();
+
   initAdminServices() {
+    // this.mDeviceAdminReceiver.onSystemUpdate = this.onSystemUpdate.bind(this);
+
     this.dpm = application.android.context.getSystemService(
       android.content.Context.DEVICE_POLICY_SERVICE
     );
@@ -313,9 +315,10 @@ export class MainViewModel extends Observable {
 
   isActiveAdmin() {
     return this.dpm.isAdminActive(
+      // application.android.foregroundActivity.getComponentName()
       new android.content.ComponentName(
         ad.getApplicationContext(),
-        application.android.foregroundActivity.getClass()
+        DeviceAdminReceiver.class
       )
     );
   }
@@ -328,9 +331,10 @@ export class MainViewModel extends Observable {
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+        // application.android.foregroundActivity.getComponentName()
         new android.content.ComponentName(
           ad.getApplicationContext(),
-          application.android.foregroundActivity.getClass()
+          DeviceAdminReceiver.class
         )
       );
       intent.putExtra(
@@ -345,6 +349,73 @@ export class MainViewModel extends Observable {
       Log.E('could not request admin:', err);
     }
   }
+
+  getUpdateInfo() {
+    try {
+      // ask for admin permissions
+      this.requestDeviceAdmin();
+      // now check for updates
+      Log.D('checking for update info');
+      const systemUpdateInfo = this.dpm.getPendingSystemUpdate(
+        new android.content.ComponentName(
+          ad.getApplicationContext(),
+          // application.android.foregroundActivity.getClass()
+          DeviceAdminReceiver.class
+        )
+      );
+      Log.D('got system update info:', systemUpdateInfo);
+      if (systemUpdateInfo !== null) {
+        const recvTime = systemUpdateInfo.getReceivedTime();
+        const hasPendingUpdate = recvTime !== -1;
+        Log.D('hasPendingUpdate', hasPendingUpdate);
+        const firstAvailable = new Date(recvTime);
+        Log.D('firstAvailable', firstAvailable);
+      } else {
+        // systemUpdateInfo will be null if the system is up to date
+        // according to
+        // https://developer.android.com/work/dpc/system-updates#check-updates
+        Log.D('System is up to date!');
+      }
+      Log.D('checking for system update policy');
+      const systemUpdatePolicy = this.dpm.getSystemUpdatePolicy();
+      Log.D('got system update policy:', systemUpdatePolicy);
+      if (systemUpdatePolicy !== null) {
+        Log.D('system update policy type', systemUpdatePolicy.getPolicyType());
+        Log.D('system update policy', systemUpdatePolicy.toString());
+      }
+      Log.D('setting system update policy');
+      // start time and end time are in minutes from midnight [0, 1440)
+      const startTime = 60;
+      const endTime = 5 * 60;
+      const sup = android.app.admin.SystemUpdatePolicy.createWindowedInstallPolicy(
+        startTime, endTime
+      );
+      this.dpm.setSystemUpdatePolicy(
+        // application.android.foregroundActivity.getComponentName(),
+        new android.content.ComponentName(
+          ad.getApplicationContext(),
+          DeviceAdminReceiver.class
+        ),
+        sup
+      );
+      Log.D('set system update policy!');
+    } catch (err) {
+      Log.E('could not get pending system update:', err);
+    }
+  }
+
+  onSystemUpdate(
+    context: android.content.Context,
+    intent: android.content.Intent,
+    receivedTime: number
+  ) {
+    if (receivedTime !== -1) {
+      Log.D('Got pending system update, available from:', new Date(receivedTime));
+    } else {
+      Log.D('Pending system update, unknown received time!');
+    }
+  }
+
 
   constructor() {
     super();
@@ -2222,27 +2293,7 @@ export class MainViewModel extends Observable {
   @Prop() displayDebug: boolean = false;
   toggleDebug() {
     // this.displayDebug = !this.displayDebug;
-    try {
-      const isAdmin = this.isActiveAdmin();
-      Log.D('is admin:', isAdmin);
-      // ask for admin permissions
-      this.requestDeviceAdmin();
-      // now try to get the update
-      Log.D('getting update');
-      const systemUpdateInfo = this.dpm.getPendingSystemUpdate(
-        new android.content.ComponentName(
-          ad.getApplicationContext(),
-          application.android.foregroundActivity.getClass()
-        )
-      );
-      Log.D('got system update info:', systemUpdateInfo);
-      if (systemUpdateInfo !== null) {
-        const hasPendingUpdate = systemUpdateInfo.getReceivedTime() !== -1;
-        Log.D('hasPendingUpdate', hasPendingUpdate);
-      }
-    } catch (err) {
-      Log.E('could not get pending system update:', err);
-    }
+    this.getUpdateInfo();
   }
 
   toggleRssiDisplay() {
