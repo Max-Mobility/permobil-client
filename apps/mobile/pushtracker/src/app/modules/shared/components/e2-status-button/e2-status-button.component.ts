@@ -25,7 +25,6 @@ export class E2StatusButtonComponent {
   public CURRENT_THEME: string;
   public iconString: string;
   public icon: ImageSource;
-  
   /**
    * For showing indication that we're sending data to the wear os apps
    */
