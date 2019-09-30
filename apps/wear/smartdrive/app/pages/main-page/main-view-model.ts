@@ -335,7 +335,7 @@ export class MainViewModel extends Observable {
       );
       intent.putExtra(
         android.app.admin.DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-        "WE NEED TO CONTROL DEVICE UPDATES"
+        'WE NEED TO CONTROL DEVICE UPDATES'
       );
       application.android.foregroundActivity.startActivityForResult(
         intent,
