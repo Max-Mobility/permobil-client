@@ -34,11 +34,12 @@ export class MockActionbarComponent {
   @Input() languagePreference: string = 'English';
   @Input() controlConfiguration: string = '';
 
+  @Input() user: PushTrackerUser;
+
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
 
   constructor(
-    private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
@@ -58,10 +59,6 @@ export class MockActionbarComponent {
 
   onNavBtnTap() {
     this.navTapEvent.emit();
-  }
-
-  onWatchConnectTap() {
-    this.watchConnectEvent.emit();
   }
 
   onRefreshTap() {
@@ -85,7 +82,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        // Do nothing
       })
       .catch(err => {
         Log.E(err);
@@ -106,7 +103,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        // this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -127,7 +124,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        // this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
@@ -148,7 +145,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        // this.onUnloaded();
       })
       .catch(err => {
         Log.E(err);
