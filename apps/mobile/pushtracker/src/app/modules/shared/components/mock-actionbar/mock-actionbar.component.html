@@ -1,12 +1,9 @@
 <GridLayout (loaded)="onMockActionBarLoaded()" (unloaded)="onUnloaded()" rows="*" columns="50, *, auto, auto" class="action-bar">
   <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="action-item-btn"></Button>
   <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
-  <ng-content col="2"></ng-content>
   <FlexboxLayout col="3" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">
-    <GridLayout order="1" height="44" width="44" borderRadius="22" [visibility]="showWatchBtn ? 'visible' : 'collapse'" (tap)="onWatchTap()" class="action-item-btn">
-      <Image [src]="watchIcon" stretch="aspectFit" class="watch-status-btn"></Image>
-    </GridLayout>
-
+    <ng-content col="2">
+    </ng-content>
     <GridLayout order="2" height="44" width="44" borderRadius="22" [visibility]="showWatchConnectBtn ? 'visible' : 'collapse'" (tap)="onWatchConnectTap()" ripple class="action-item-btn">
       <Image [src]="watchConnectIcon" stretch="aspectFit" class="watch-status-btn"></Image>
     </GridLayout>

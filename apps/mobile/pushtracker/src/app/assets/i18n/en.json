@@ -330,6 +330,7 @@
     "watch-status-alert-title": "PushTracker Status",
     "watch-status-alert-message": {
       "unknown": "PushTracker status is unknown",
+      "busy": "PushTracker is busy",
       "paired": "PushTracker is paired",
       "disconnected": "PushTracker is disconnected",
       "connected": "PushTracker is connected",

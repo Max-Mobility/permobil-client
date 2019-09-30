@@ -14,7 +14,7 @@ import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
 import { applyTheme } from '../../utils';
-import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent, PushTrackerStatusButtonComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-settings',
@@ -22,8 +22,8 @@ import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent 
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
-  @ViewChild('mockActionBar', { static: false })
-  mockActionBar: ElementRef;
+  @ViewChild('ptStatusButton', { static: false })
+  ptStatusButton: PushTrackerStatusButtonComponent;
 
   APP_THEMES = APP_THEMES;
   CONFIGURATIONS = CONFIGURATIONS;
@@ -507,6 +507,11 @@ export class ProfileSettingsComponent implements OnInit {
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
         applyTheme(this.CURRENT_THEME);
         appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
+        // Update PushTracker watch icon color
+        if (this.ptStatusButton) {
+          this.ptStatusButton.CURRENT_THEME = this.CURRENT_THEME;
+          this.ptStatusButton.updateWatchIcon();
+        }
         break;
       case 'language':
         this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
@@ -522,7 +527,8 @@ export class ProfileSettingsComponent implements OnInit {
     }
     // Update local cache of this.user in appSettings
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-    this._debouncedCommitSettingsFunction();
+    if (this.activeSetting !== 'theme')
+      this._debouncedCommitSettingsFunction();
     this._logService.logBreadCrumb(
       ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${index}`
@@ -561,9 +567,6 @@ export class ProfileSettingsComponent implements OnInit {
 
   private async _commitSettingsChange() {
     this.syncSuccessful = false;
-    const actionbar = this.mockActionBar
-      .nativeElement as MockActionbarComponent;
-
     this.settingsService.saveToFileSystem();
 
     if (this.user) {
@@ -581,26 +584,24 @@ export class ProfileSettingsComponent implements OnInit {
             ProfileSettingsComponent.name,
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
-          if (actionbar)
-            actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
+          if (this.ptStatusButton)
+            this.ptStatusButton.state = PushTrackerState.unknown;
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await pt.sendSwitchControlSettingsObject(
                 this.settingsService.switchControlSettings
               );
-              if (actionbar)
-                actionbar.updateWatchIcon({ data: PushTrackerState.connected });
+              if (this.ptStatusButton)
+                this.ptStatusButton.state = PushTrackerState.connected;
             } catch (err) {
               // Show watch icon 'X'
-              if (actionbar)
-                actionbar.updateWatchIcon({
-                  data: PushTrackerState.disconnected
-                });
               this._logService.logException(err);
             }
           });
         } else {
+          if (this.ptStatusButton)
+            this.ptStatusButton.state = PushTrackerState.disconnected;
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'no pushtrackers!'

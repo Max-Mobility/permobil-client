@@ -1,0 +1,33 @@
+<StackLayout orientation="horizontal" class="pushtracker-status-btn-layout"
+  (tap)="onTap()" ripple>
+  // PushTracker Icon
+  <GridLayout columns="auto" order="1" height="44" borderRadius="22">
+    <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
+  </GridLayout>
+  // Bluetooth Symbol
+  <Label horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#xe1a7;"></Label>
+
+  // PushTrackerState = unknown
+  <Label *ngIf="state === PushTrackerState.unknown"
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#63;"></Label>
+  // PushTrackerState = connected
+  <Label *ngIf="state === PushTrackerState.connected"
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#x2713;"></Label>
+  // PushTrackerState = disconnected
+  <Label *ngIf="state === PushTrackerState.disconnected"
+    horizontalAlignment="center" verticalAlignment="middle"
+    class="material-icon pushtracker-state-icon" text="&#10007;"></Label>
+  // PushTrackerState = busy
+  <ActivityIndicator
+    marginLeft="-10"
+    height="22"
+    verticalAlignment="middle"
+    horizontalAlignment="left"
+    *ngIf="state === PushTrackerState.busy"
+    [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+    busy="true"
+  ></ActivityIndicator>
+</StackLayout>
