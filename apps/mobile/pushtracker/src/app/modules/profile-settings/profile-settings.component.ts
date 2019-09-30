@@ -585,7 +585,7 @@ export class ProfileSettingsComponent implements OnInit {
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
           if (this.ptStatusButton)
-            this.ptStatusButton.state = PushTrackerState.unknown;
+            this.ptStatusButton.state = PushTrackerState.busy;
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
