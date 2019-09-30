@@ -20,7 +20,7 @@ const dialogs = require('tns-core-modules/ui/dialogs');
 export class PushTrackerStatusButtonComponent {
   public PushTrackerState = PushTrackerState;
   public APP_THEMES = APP_THEMES;
-  public state: PushTrackerState = PushTrackerState.unknown;
+  public state: PushTrackerState;
   public icon: ImageSource;
   public iconString: string;
   public CURRENT_THEME: string;
@@ -43,14 +43,13 @@ export class PushTrackerStatusButtonComponent {
         : 'og_band_white';
 
     this.icon = imageFromResource(this.iconString);
-
     // set up the status watcher for the pushtracker state
     this._bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
       this._updateWatchState,
       this
     );
-
+    this.state = BluetoothService.pushTrackerStatus.get('state');
     this._updateWatchIcon();
   }
 
