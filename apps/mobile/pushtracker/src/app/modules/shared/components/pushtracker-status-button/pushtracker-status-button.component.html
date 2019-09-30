@@ -1,4 +1,18 @@
-<GridLayout order="1" height="44" width="44" borderRadius="22" 
-  (tap)="onWatchTap()" class="watch-status-btn-layout">
-  <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
-</GridLayout>
+<StackLayout orientation="horizontal">
+  <GridLayout order="1" height="44" width="44" borderRadius="22" 
+    (tap)="onWatchTap()" class="watch-status-btn-layout">
+    <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
+  </GridLayout>
+  // PushTrackerState = unknown
+  <Label *ngIf="state === PushTrackerState.unknown"
+    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
+    text="&#x3F;"></Label>
+  // PushTrackerState = connected
+  <Label *ngIf="state === PushTrackerState.connected"
+    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
+    text="&#x2713;"></Label>
+  // PushTrackerState = disconnected
+  <Label *ngIf="state === PushTrackerState.disconnected"
+    marginLeft="-10" horizontalAlignment="center" verticalAlignment="middle"
+    text="&#x78;"></Label>
+</StackLayout>

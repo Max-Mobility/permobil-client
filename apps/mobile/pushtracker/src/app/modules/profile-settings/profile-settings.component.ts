@@ -510,7 +510,7 @@ export class ProfileSettingsComponent implements OnInit {
         // Update PushTracker watch icon color
         if (this.ptStatusButton) {
           this.ptStatusButton.CURRENT_THEME = this.CURRENT_THEME;
-          this.ptStatusButton.updateWatchIcon({});
+          this.ptStatusButton.updateWatchIcon();
         }
         break;
       case 'language':
@@ -584,7 +584,7 @@ export class ProfileSettingsComponent implements OnInit {
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
           if (this.ptStatusButton)
-            this.ptStatusButton.updateWatchIcon({ data: PushTrackerState.unknown });
+            this.ptStatusButton.state = PushTrackerState.unknown;
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
@@ -592,7 +592,7 @@ export class ProfileSettingsComponent implements OnInit {
                 this.settingsService.switchControlSettings
               );
               if (this.ptStatusButton)
-                this.ptStatusButton.updateWatchIcon({ data: PushTrackerState.connected });
+                this.ptStatusButton.state = PushTrackerState.connected;
             } catch (err) {
               // Show watch icon 'X'
               this._logService.logException(err);
@@ -600,7 +600,7 @@ export class ProfileSettingsComponent implements OnInit {
           });
         } else {
           if (this.ptStatusButton)
-            this.ptStatusButton.updateWatchIcon({ data: PushTrackerState.disconnected });
+            this.ptStatusButton.state = PushTrackerState.disconnected;
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'no pushtrackers!'
