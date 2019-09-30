@@ -3,9 +3,7 @@
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout horizontalAlignment="center" row="1" col="0">
       // Mock ActionBar
-      <MockActionBar [showBackNav]="false" [showInfoBtn]="true">
-        <PushTrackerStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></PushTrackerStatusButton>
-      </MockActionBar>
+      <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
       // Activity Circles
       <GridLayout rows="auto" columns="auto" horizontalAlignment="center" [height]="screenWidth * 0.6"
