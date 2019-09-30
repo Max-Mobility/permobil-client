@@ -20,7 +20,7 @@ const dialogs = require('tns-core-modules/ui/dialogs');
 export class PushTrackerStatusButtonComponent {
   public PushTrackerState = PushTrackerState;
   public APP_THEMES = APP_THEMES;
-  public state: PushTrackerState = PushTrackerState.busy;
+  public state: PushTrackerState = PushTrackerState.unknown;
   public icon: ImageSource;
   public iconString: string;
   public CURRENT_THEME: string;
