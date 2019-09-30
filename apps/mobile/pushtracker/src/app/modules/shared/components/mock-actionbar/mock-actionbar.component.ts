@@ -8,7 +8,6 @@ import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-import { BluetoothService, PushTrackerState } from '../../../../services';
 import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
 
@@ -34,13 +33,7 @@ export class MockActionbarComponent {
   @Output() moreTapEvent = new EventEmitter();
   @Input() languagePreference: string = 'English';
   @Input() controlConfiguration: string = '';
-  @Input() showWatchConnectBtn = false;
-  @Output() watchConnectEvent = new EventEmitter();
 
-  @Input() user: PushTrackerUser;
-
-  watchConnectIconString: string;
-  watchConnectIcon: ImageSource;
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
 
@@ -61,14 +54,6 @@ export class MockActionbarComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-
-    this._setWatchConnectIconVariables('check');
-  }
-
-  onMockActionBarLoaded() {}
-
-  onUnloaded() {
-    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
   }
 
   onNavBtnTap() {
@@ -173,16 +158,6 @@ export class MockActionbarComponent {
           textColor: new Color('#fff000')
         });
       });
-  }
-
-  private _setWatchConnectIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchConnectIconString = `watch_${status}_black`;
-      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
-    } else {
-      this.watchConnectIconString = `watch_${status}_white`;
-      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
-    }
   }
 }
 
