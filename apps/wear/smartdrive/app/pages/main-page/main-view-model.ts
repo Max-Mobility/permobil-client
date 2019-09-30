@@ -3145,7 +3145,8 @@ export class MainViewModel extends Observable {
       });
       // Log.D('saving data', data);
       const serialized = JSON.stringify(data);
-      // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
+      // there is only ever one record in this table, so we always
+      // insert - the db will perform upsert for us.
       const values = new android.content.ContentValues();
       values.put('data', serialized);
       const uri = ad
