@@ -24,7 +24,6 @@ import { EventData, fromObject, Observable } from 'tns-core-modules/data/observa
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
@@ -279,7 +278,6 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
-    const fontScale = androidConfig.fontScale; // floating point
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
@@ -345,7 +343,6 @@ export class MainViewModel extends Observable {
       0
     );
     const versionName = packageInfo.versionName;
-    const versionCode = packageInfo.versionCode;
     this.appVersion = versionName;
 
     // make throttled save function - not called more than once every 10 seconds
@@ -476,7 +473,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        const permissions = await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
         appSettings.setString(
@@ -923,7 +920,7 @@ export class MainViewModel extends Observable {
   registerForBatteryUpdates() {
     // register for watch battery updates
     const batteryReceiverCallback = (
-      androidContext: android.content.Context,
+      _: android.content.Context,
       intent: android.content.Intent
     ) => {
       // get the info from the event
@@ -969,7 +966,7 @@ export class MainViewModel extends Observable {
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
-    const timeReceiverCallback = (androidContext, intent) => {
+    const timeReceiverCallback = (_1, _2) => {
       try {
         this.updateTimeDisplay();
         this._sentryBreadCrumb('timeReceiverCallback');
@@ -2442,7 +2439,7 @@ export class MainViewModel extends Observable {
    * APP, AND FOR OPENING THE APP STORE OR APP
    */
 
-  onResultData(resultCode: number, resultData: android.os.Bundle) {
+  onResultData(resultCode: number, _: android.os.Bundle) {
     Log.D('onResultData:', resultCode);
     if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
       Log.D('result ok!');
@@ -2611,7 +2608,7 @@ export class MainViewModel extends Observable {
           return false;
         }
         // await a promise here to ensure that the radio is back on!
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, _) => {
           setTimeout(resolve, 500);
         });
         await promise;
@@ -2826,7 +2823,6 @@ export class MainViewModel extends Observable {
 
   private _rssi = 0;
   private rssiIntervalId = null;
-  private RSSI_INTERVAL_MS = 500;
   readSmartDriveSignalStrength() {
     if (this.smartDrive && this.smartDrive.connected) {
       this._bluetoothService

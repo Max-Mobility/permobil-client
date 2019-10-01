@@ -1,6 +1,5 @@
 import { Log } from '@permobil/core';
 import { android as androidApp } from 'tns-core-modules/application';
-import { knownFolders, path } from 'tns-core-modules/file-system';
 
 declare const org: any;
 
@@ -273,27 +272,6 @@ export class TapDetector {
     }
     // return the prediction
     return realTap;
-  }
-
-  private tapAxisIsPrimary(accel: any) {
-    const a = {
-      x: Math.abs(accel.x),
-      y: Math.abs(accel.y),
-      z: Math.abs(accel.z)
-    };
-    const max = Math.max(
-      a.z,
-      Math.max(a.x, a.y)
-    );
-    const xPercent = a.x / max;
-    const yPercent = a.y / max;
-    const zPercent = a.z / max;
-    const outOfAxisThreshold = 0.5;
-    return (
-      zPercent > 0.9 &&
-      xPercent < outOfAxisThreshold &&
-      yPercent < outOfAxisThreshold
-    );
   }
 
   private updateHistory(accel: any) {
