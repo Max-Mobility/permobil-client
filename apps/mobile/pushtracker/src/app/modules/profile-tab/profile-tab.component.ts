@@ -45,6 +45,7 @@ export class ProfileTabComponent {
   configurations: Array<string> = [];
   configurationsTranslated: Array<string> = [];
   displayControlConfiguration: string;
+  displayControlConfigurationImage: ImageSource;
 
   genders: Array<String> = [];
   gendersTranslated: Array<string> = [];
@@ -91,6 +92,8 @@ export class ProfileTabComponent {
     );
     this._themeService.theme.subscribe(theme => {
       this.CURRENT_THEME = theme;
+      // Update the displayed control configuration icon on theme change 
+      this._initDisplayControlConfiguration();
     });
   }
 
@@ -999,7 +1002,25 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.control_configuration;
       const index = this.configurations.indexOf(englishValue);
       this.displayControlConfiguration = this.configurationsTranslated[index];
+      this.displayControlConfigurationImage = this._getControlConfigurationImage(englishValue);
     }
+  }
+
+  private _getControlConfigurationImage(configuration) {
+    let result = '';
+    if (configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
+      result = 'switchcontrol';
+    } else if (configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      result = 'og_band';
+    } else if (configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
+      result = 'pte2';
+    }
+    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+      result += '_black';
+    } else {
+      result += '_white';
+    }
+    return imageFromResource(result);
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
