@@ -45,19 +45,19 @@ export class TapDetector {
   /**
    * TFLite model input / output configuration
    */
-  private static StateSize = 128;
-  private static Input_StateIndex = 0;
-  private static Input_InputIndex = 1;
-  private static Output_StateIndex = 0;
-  private static Output_PredictionIndex = 1;
+  private static StateSize: number = 128;
+  private static Input_StateIndex: number = 0;
+  private static Input_InputIndex: number = 1;
+  private static Output_StateIndex: number = 0;
+  private static Output_PredictionIndex: number = 1;
 
   /**
    * Higher-level tap detection - not TFLite related
    */
-  private static InputHistorySize = 4;
-  private static PredictionHistorySize = 2;
-  private static InputRawHistorySize = 6;
-  private static JerkHistorySize = 2;
+  private static InputHistorySize: number = 4;
+  private static PredictionHistorySize: number = 2;
+  private static InputRawHistorySize: number = 6;
+  private static JerkHistorySize: number = 2;
   private inputHistory: any[] = [];
   private predictionHistory: number[] = [];
   private inputRawHistory: any[] = [];
