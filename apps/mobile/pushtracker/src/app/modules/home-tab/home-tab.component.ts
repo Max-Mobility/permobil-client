@@ -398,6 +398,20 @@ export class HomeTabComponent {
           HomeTabComponent.name,
           '' + 'No WeeklySmartDriveUsage data available for this week'
         );
+        // There's no data for this week
+        // Reset weekly usage object
+        this._weeklyUsageFromKinvey = {
+          '_acl': this._weeklyUsageFromKinvey._acl,
+          '_kmd': this._weeklyUsageFromKinvey._kmd,
+          'date': date,
+          'start_time': weekStartDate.getTime(),
+          'battery': 0,
+          'distance_smartdrive_coast_start': 0,
+          'distance_smartdrive_drive_start': 0,
+          'distance_smartdrive_coast': 0,
+          'distance_smartdrive_drive': 0,
+          'days': [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
@@ -535,6 +549,20 @@ export class HomeTabComponent {
           HomeTabComponent.name,
           '' + 'No WeeklyPushTrackerActivity data available for this week'
         );
+        // There's no data for this week
+        // Reset weekly activity object
+        this._weeklyActivityFromKinvey = {
+          '_acl': this._weeklyActivityFromKinvey._acl,
+          '_kmd': this._weeklyActivityFromKinvey._kmd,
+          'date': date,
+          'start_time': weekStartDate.getTime(),
+          'coast_time_avg': 0,
+          'coast_time_total': 0,
+          'distance_watch': 0,
+          'heart_rate': 0,
+          'push_count': 0,
+          'days': [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
