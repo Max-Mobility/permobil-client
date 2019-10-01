@@ -3079,6 +3079,12 @@ export class MainViewModel extends Observable {
           newEntry
         );
       }
+      // update the estimated range (doesn't use weekly usage info -
+      // since that may not have any data, so it internally pulls the
+      // most recent 7 records (which contain real data
+      await this.updateEstimatedRange();
+      // now actually update the display of the speed / estimated range
+      this.updateSpeedDisplay();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('Failed saving usage:', err);
