@@ -2414,6 +2414,10 @@ export class MainViewModel extends Observable {
       );
     }
 
+    // now that we've disabled power assist - make sure the charts
+    // update with the latest data from the smartdrive
+    this.updateChartData();
+
     return Promise.resolve();
   }
 
@@ -3075,7 +3079,6 @@ export class MainViewModel extends Observable {
           newEntry
         );
       }
-      this.updateChartData();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('Failed saving usage:', err);
