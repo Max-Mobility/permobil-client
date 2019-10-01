@@ -14,7 +14,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { applyTheme, convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -76,12 +76,7 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) {
-    this.CURRENT_THEME = appSettings.getString(
-      STORAGE_KEYS.APP_THEME,
-      APP_THEMES.DEFAULT
-    );
-  }
+  ) {}
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
@@ -401,14 +396,14 @@ export class HomeTabComponent {
         // There's no data for this week
         // Reset weekly usage object
         this._weeklyUsageFromKinvey = {
-          'date': date,
-          'start_time': weekStartDate.getTime(),
-          'battery': 0,
-          'distance_smartdrive_coast_start': 0,
-          'distance_smartdrive_drive_start': 0,
-          'distance_smartdrive_coast': 0,
-          'distance_smartdrive_drive': 0,
-          'days': [null, null, null, null, null, null, null]
+          date: date,
+          start_time: weekStartDate.getTime(),
+          battery: 0,
+          distance_smartdrive_coast_start: 0,
+          distance_smartdrive_drive_start: 0,
+          distance_smartdrive_coast: 0,
+          distance_smartdrive_drive: 0,
+          days: [null, null, null, null, null, null, null]
         };
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
@@ -550,14 +545,14 @@ export class HomeTabComponent {
         // There's no data for this week
         // Reset weekly activity object
         this._weeklyActivityFromKinvey = {
-          'date': date,
-          'start_time': weekStartDate.getTime(),
-          'coast_time_avg': 0,
-          'coast_time_total': 0,
-          'distance_watch': 0,
-          'heart_rate': 0,
-          'push_count': 0,
-          'days': [null, null, null, null, null, null, null]
+          date: date,
+          start_time: weekStartDate.getTime(),
+          coast_time_avg: 0,
+          coast_time_total: 0,
+          distance_watch: 0,
+          heart_rate: 0,
+          push_count: 0,
+          days: [null, null, null, null, null, null, null]
         };
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
