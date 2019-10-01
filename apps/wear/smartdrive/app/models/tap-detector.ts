@@ -3,6 +3,12 @@ import { android as androidApp } from 'tns-core-modules/application';
 
 declare const org: any;
 
+export interface Acceleration {
+  x: number;
+  y: number;
+  z: number;
+}
+
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
 
@@ -58,9 +64,9 @@ export class TapDetector {
   private static PredictionHistorySize: number = 2;
   private static InputRawHistorySize: number = 6;
   private static JerkHistorySize: number = 2;
-  private inputHistory: any[] = [];
+  private inputHistory: Array<Acceleration> = [];
   private predictionHistory: number[] = [];
-  private inputRawHistory: any[] = [];
+  private inputRawHistory: Array<Acceleration> = [];
   private jerkHistory: number[] = [];
 
   constructor() {
@@ -176,7 +182,7 @@ export class TapDetector {
   /**
    * Main inference Function for detecting tap
    */
-  public detectTap(acceleration: any, timestamp: number) {
+  public detectTap(acceleration: Acceleration, timestamp: number) {
     try {
       const inputData = [
         acceleration.x,
@@ -274,7 +280,7 @@ export class TapDetector {
     return realTap;
   }
 
-  private updateHistory(accel: any) {
+  private updateHistory(accel: Acceleration) {
     this.inputHistory.push(accel);
     if (this.inputHistory.length > TapDetector.InputHistorySize) {
       this.inputHistory.shift(); // remove the oldest element
@@ -288,7 +294,7 @@ export class TapDetector {
     }
   }
 
-  public updateRawHistory(accel: any) {
+  public updateRawHistory(accel: Acceleration) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
       this.inputRawHistory.shift(); // remove the oldest element

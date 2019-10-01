@@ -28,7 +28,7 @@ import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
-import { SmartDrive, TapDetector } from '../../models';
+import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
@@ -1202,7 +1202,7 @@ export class MainViewModel extends Observable {
         return element1;
       });
 
-      const averageAccel = {
+      const averageAccel: Acceleration = {
         x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
         y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
         z: total.accel.z >= 0 ? max.accel.z : min.accel.z,
