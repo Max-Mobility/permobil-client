@@ -92,7 +92,7 @@ export class ProfileTabComponent {
     );
     this._themeService.theme.subscribe(theme => {
       this.CURRENT_THEME = theme;
-      // Update the displayed control configuration icon on theme change 
+      // Update the displayed control configuration icon on theme change
       this._initDisplayControlConfiguration();
     });
   }
