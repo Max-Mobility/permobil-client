@@ -369,6 +369,7 @@ export class ActivityComponent implements OnInit {
       CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const selectedDate = new Date(this.weekStart);
+      this.currentDayInView = new Date(selectedDate);
       this.currentDayInView.setDate(
         selectedDate.getDate() + event.pointIndex - 1
       );
@@ -1206,11 +1207,15 @@ export class ActivityComponent implements OnInit {
     this.weekStart = getFirstDayOfWeek(date);
     this.weekEnd = getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+    const weekStartMonth = this.weekStart.getMonth();
+    const weekEndMonth = this.weekEnd.getMonth();
     this.chartTitle =
-      this.monthNames[date.getMonth()] +
+      this.monthNames[weekStartMonth] +
       ' ' +
       this.weekStart.getDate() +
       ' — ' +
+      (weekStartMonth !== weekEndMonth ?
+        this.monthNames[weekEndMonth] + ' ' : '') +
       this.weekEnd.getDate();
   }
 

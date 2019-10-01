@@ -86,10 +86,10 @@
         // push count data
         <Label row="0" col="0" class="detail-value" [text]="todayPushCount"></Label>
         <Label textWrap="true" row="1" col="0" class="detail-description" [text]="'general.pushes-today' | translate"></Label>
-        // coast time data
+        // drive distance data
         <Label row="0" col="2" class="detail-value" [text]="todayDriveDistance"></Label>
         <Label textWrap="true" row="1" col="2" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.km-today' : 'general.miles-today') | translate"></Label>
-        // distance data
+        // odometer data
         <Label row="0" col="4" class="detail-value" [text]="todayOdometer"></Label>
         <Label textWrap="true" row="1" col="4" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.odometer-km' : 'general.odometer') | translate"></Label>
       </GridLayout>
