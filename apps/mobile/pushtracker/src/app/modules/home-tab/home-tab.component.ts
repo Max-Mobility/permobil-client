@@ -399,19 +399,17 @@ export class HomeTabComponent {
           '' + 'No WeeklySmartDriveUsage data available for this week'
         );
         // There's no data for this week
-        // // Reset weekly usage object
-        // this._weeklyUsageFromKinvey = {
-        //   '_acl': this._weeklyUsageFromKinvey._acl,
-        //   '_kmd': this._weeklyUsageFromKinvey._kmd,
-        //   'date': date,
-        //   'start_time': weekStartDate.getTime(),
-        //   'battery': 0,
-        //   'distance_smartdrive_coast_start': 0,
-        //   'distance_smartdrive_drive_start': 0,
-        //   'distance_smartdrive_coast': 0,
-        //   'distance_smartdrive_drive': 0,
-        //   'days': [null, null, null, null, null, null, null]
-        // };
+        // Reset weekly usage object
+        this._weeklyUsageFromKinvey = {
+          'date': date,
+          'start_time': weekStartDate.getTime(),
+          'battery': 0,
+          'distance_smartdrive_coast_start': 0,
+          'distance_smartdrive_drive_start': 0,
+          'distance_smartdrive_coast': 0,
+          'distance_smartdrive_drive': 0,
+          'days': [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
@@ -550,19 +548,17 @@ export class HomeTabComponent {
           '' + 'No WeeklyPushTrackerActivity data available for this week'
         );
         // There's no data for this week
-        // // Reset weekly activity object
-        // this._weeklyActivityFromKinvey = {
-        //   '_acl': this._weeklyActivityFromKinvey._acl,
-        //   '_kmd': this._weeklyActivityFromKinvey._kmd,
-        //   'date': date,
-        //   'start_time': weekStartDate.getTime(),
-        //   'coast_time_avg': 0,
-        //   'coast_time_total': 0,
-        //   'distance_watch': 0,
-        //   'heart_rate': 0,
-        //   'push_count': 0,
-        //   'days': [null, null, null, null, null, null, null]
-        // };
+        // Reset weekly activity object
+        this._weeklyActivityFromKinvey = {
+          'date': date,
+          'start_time': weekStartDate.getTime(),
+          'coast_time_avg': 0,
+          'coast_time_total': 0,
+          'distance_watch': 0,
+          'heart_rate': 0,
+          'push_count': 0,
+          'days': [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
@@ -701,6 +697,10 @@ export class HomeTabComponent {
 
   private async _updateCoastTimePlotYAxis() {
     this.yAxisMax = 0;
+    // Set today's activity to null
+    // If today's activity is available in this._weeklyActivityFromKinvey, 
+    // then it will be set below
+    this._todaysActivity = null; 
     if (this._weeklyActivityFromKinvey) {
       const days = this._weeklyActivityFromKinvey['days'];
       for (const i in days) {
@@ -791,6 +791,10 @@ export class HomeTabComponent {
 
   private async _updateDistancePlotYAxis() {
     this.coastDistanceYAxisMax = 0;
+    // Set today's usage to null
+    // If today's usage is available in this._weeklyUsageFromKinvey, 
+    // then it will be set below
+    this._todaysUsage = null; 
     if (this._weeklyUsageFromKinvey) {
       const days = this._weeklyUsageFromKinvey['days'];
       for (const i in days) {
