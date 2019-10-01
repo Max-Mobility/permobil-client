@@ -49,7 +49,7 @@
           *ngIf="journeyItemsLoaded"
         >
           <ng-template let-item="item" let-odd="odd" let-even="even">
-            <GridLayout rows="*, *" columns="*, auto" (tap)="onListItemTap($event, item)" marginBottom="6">
+            <GridLayout ripple rows="*, *" columns="*, auto" (tap)="onListItemTap($event, item)" marginBottom="6">
               <Label row="0" [text]="item.description" class="journey-item-label"></Label>
               <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
                 // Image and Time
