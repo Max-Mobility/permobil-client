@@ -1,10 +1,8 @@
-<StackLayout orientation="horizontal" class="e2-status-btn-layout"
-  (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
-  // PushTracker E2 Icon
-  <GridLayout columns="auto" order="1" height="44" borderRadius="22">
-    <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
-  </GridLayout>
+<!-- <GridLayout rows="*" columns="*" class="e2-status-btn-layout" (unloaded)="onUnloaded()"> -->
+// PushTracker E2 Icon
+<GridLayout rows="*" columns="*, auto" class="e2-status-btn-layout" (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
+  <Image col="0" [src]="icon" stretch="aspectFit"></Image>
   // Bluetooth Symbol
-  <Label horizontalAlignment="center" verticalAlignment="middle"
-    class="material-icon e2-state-icon" text="&#xe1a7;"></Label>
-</StackLayout>
+  <Label col="1" text="&#xe1a7;"></Label>
+</GridLayout>
+<!-- </GridLayout> -->
