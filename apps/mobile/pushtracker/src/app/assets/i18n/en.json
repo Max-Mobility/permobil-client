@@ -453,7 +453,38 @@
     "switch-control-with-smartdrive": "Switch Control with SmartDrive"
   },
   "device-setup": {
-    "title": "Device Setup"
+    "title": "Device Setup",
+    "previous": "Prev",
+    "next": "Next",
+    "done": "Done",
+    "slides": {
+      "pushtracker-with-smartdrive": [
+        {
+          "Image": "~/app/assets/images/gifs/PT-ON-OFF.gif",
+          "Label": "Powering PushTracker",
+          "Bullets": [
+            "Press either button on the PushTracker to power on.",
+            "Press and hold the left raised button for 3 seconds to enter sleep mode 'zzz' and power off the PushTracker."
+          ]
+        },
+        {
+          "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+          "Label": "Pair PushTracker with Mobile",
+          "Bullets": [
+            "....",
+            "...."
+          ]
+        },
+        {
+          "Image": "~/app/assets/images/gifs/PT-APP-CONNECT1.gif",
+          "Label": "Connect PushTracker with Mobile",
+          "Bullets": [
+            "....",
+            "...."
+          ]
+        }
+      ]
+    }
   },
   "settings-different": {
     "title": "App and PushTracker Settings Differ",

@@ -1,3 +1,31 @@
 <GridLayout rows="auto, *" marginTop="20" class="device-setup-layout">
-  <Label row="0" col="1" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
+    <Label row="0" col="1" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
+    <GridLayout row="1" col="0" rows="auto, *, *" cols="*" marginTop="20">
+        <StackLayout (loaded)="onTopSlideLoaded($event)" class="topSlide" row="0" width="100%" orientation="horizontal"
+            horizontalAlignment="center">
+            // only shows when the slide.Image is a gif
+            <Gif (loaded)="onGifLoaded($event)" *ngIf="isGif(slides[slideIndex].Image)"
+                [src]="slides[slideIndex].Image"></Gif>
+            // show only when not a gif
+            <image *ngIf="!isGif(slides[slideIndex].Image)" [src]="slides[slideIndex].Image" stretch="aspectFit">
+            </image>
+        </StackLayout>
+        <ScrollView row="1" class="lowerSlide" height="55%">
+            <StackLayout>
+                <label [text]="slides[slideIndex].Label" class="slideLowerLabel" textWrap="true"></label>
+                <label *ngFor="let bullet of slides[slideIndex].Bullets" [text]="bullet" class="bullet"
+                    textWrap="true"></label>
+            </StackLayout>
+        </ScrollView>
+        <StackLayout row="2" width="50%" orientation="horizontal" horizontalAlignment="left">
+            <button *ngIf="slideIndex > 0" horizontalAlignment="left" class="permobil-ocean-btn" width="50%" height="30%"
+                [text]="'device-setup.previous' | translate" (tap)="onPreviousTap($event)"></button>
+        </StackLayout>
+        <StackLayout row="2" width="50%" orientation="horizontal" horizontalAlignment="right">
+            <button *ngIf="slideIndex < (slides.length - 1)" horizontalAlignment="right" class="permobil-ocean-btn" height="30%"
+                width="50%" [text]="'device-setup.next' | translate" (tap)="onNextTap($event)"></button>
+            <button *ngIf="slideIndex === (slides.length - 1)" horizontalAlignment="right" class="permobil-ocean-btn" height="30%"
+                width="50%" [text]="'device-setup.done' | translate" (tap)="onDoneTap($event)"></button>
+        </StackLayout>
+    </GridLayout>
 </GridLayout>
