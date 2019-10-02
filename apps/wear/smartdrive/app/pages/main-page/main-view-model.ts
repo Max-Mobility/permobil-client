@@ -1202,7 +1202,7 @@ export class MainViewModel extends Observable {
         return element1;
       });
 
-      const averageAccel: Acceleration = {
+      const signedMaxAccel: Acceleration = {
         x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
         y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
         z: total.accel.z >= 0 ? max.accel.z : min.accel.z,
