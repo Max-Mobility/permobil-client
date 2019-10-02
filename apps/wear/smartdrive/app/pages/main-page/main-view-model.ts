@@ -894,6 +894,7 @@ export class MainViewModel extends Observable {
   onAppSuspend() {
     this._sentryBreadCrumb('*** appSuspend ***');
     this.fullStop();
+    this.updateComplications();
   }
 
   onAppExit() {
@@ -918,6 +919,23 @@ export class MainViewModel extends Observable {
     }
     Log.D('App uncaught error');
     this.fullStop();
+  }
+
+  updateComplications() {
+    try {
+      const context = ad
+        .getApplicationContext();
+      com.permobil.smartdrive.wearos.BatteryComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.DriveComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.RangeComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.CoastComplicationProviderService
+        .forceUpdate(context);
+    } catch (err) {
+      Log.E('could not update complications', err);
+    }
   }
 
   registerForBatteryUpdates() {
