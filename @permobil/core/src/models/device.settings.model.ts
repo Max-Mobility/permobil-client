@@ -48,7 +48,7 @@ export namespace Device {
       units: Settings.Units.English,
       acceleration: 30,
       maxSpeed: 70,
-      tapSensitivity: 100,
+      tapSensitivity: 70,
     };
 
     // public members
