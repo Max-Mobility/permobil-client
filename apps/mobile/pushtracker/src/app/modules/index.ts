@@ -43,6 +43,7 @@ export * from './activity';
 export * from './activity-goal-setting';
 export * from './app-info';
 export * from './configuration';
+export * from './device-setup';
 export * from './forgot-password';
 export * from './home-tab';
 export * from './journey-tab';

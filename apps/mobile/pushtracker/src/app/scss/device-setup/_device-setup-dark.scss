@@ -1,0 +1,17 @@
+@import '../variables';
+@import 'device-setup-base';
+
+.device-setup-layout {
+  @extend .DEVICE_SETUP_LAYOUT_BASE;
+
+  GridLayout,
+  StackLayout,
+  ScrollView {
+    background-color: $black;
+  }
+
+  .page-title {
+    @extend .PAGE_TITLE_BASE;
+    color: $white;
+  }
+}
