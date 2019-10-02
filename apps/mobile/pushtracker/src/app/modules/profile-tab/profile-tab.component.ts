@@ -930,7 +930,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
-      this.user.data.activity_goal_distance + '';
+      (this.user.data.activity_goal_distance).toFixed(1) + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
         (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +

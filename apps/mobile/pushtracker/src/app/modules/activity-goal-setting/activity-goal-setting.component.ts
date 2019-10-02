@@ -4,8 +4,9 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { APP_THEMES, STORAGE_KEYS } from '../../enums';
+import { APP_THEMES, STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
+import { milesToKilometers } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -129,6 +130,13 @@ export class ActivityGoalSettingComponent implements OnInit {
         activity_goal_coast_time: this.config.value
       });
     } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
+
+      if (this._user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
+        // User input is in miles
+        // Convert to kilometers before saving in DB
+        this.config.value = milesToKilometers(this.config.value);
+      }
+
       this._userService.updateDataProperty(
         'activity_goal_distance',
         this.config.value
