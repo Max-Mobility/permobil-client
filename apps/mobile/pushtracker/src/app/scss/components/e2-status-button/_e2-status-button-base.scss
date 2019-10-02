@@ -2,6 +2,22 @@
 @import '../../global';
 
 .E2_STATUS_BUTTON_LAYOUT_BASE {
-    height: 100%;
-    width: 100%;
+  height: 50;
+  width: 50;
+  border-radius: 25;
+  margin: 0 2 0 2;
+  padding: 0 2 0 2;
+  vertical-align: bottom;
+
+  image {
+    height: 30;
+    width: 30;
+  }
+
+  label {
+    font-size: 20;
+    font-family: $material-icon;
+    vertical-align: center;
+    vertical-align: center;
+  }
 }

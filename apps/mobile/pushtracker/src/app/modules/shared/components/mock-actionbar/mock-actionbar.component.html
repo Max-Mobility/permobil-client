@@ -1,14 +1,13 @@
-<GridLayout (loaded)="onLoaded($event)" (unloaded)="onUnloaded($event)" rows="*" columns="50, *, auto, auto" class="action-bar">
+<GridLayout (loaded)="onLoaded($event)" (unloaded)="onUnloaded($event)" rows="*" columns="50, *, auto" class="action-bar">
   <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="action-item-btn"></Button>
   <Label col="1" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
-  <FlexboxLayout col="3" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">
-    <ng-content col="2">
-    </ng-content>
-    <Button order="3" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" (tap)="onSupportTap()" ripple class="action-item-btn"></Button>
-    <Button order="4" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" (tap)="onSettingsTap()" ripple class="action-item-btn"></Button>
-    <Button order="5" text="&#xe5d5;" [visibility]="showRefreshBtn ? 'visible' : 'collapse'" (tap)="onRefreshTap()" ripple class="action-item-btn"></Button>
-    <Button order="6" text="&#xe88f;" [visibility]="showInfoBtn ? 'visible' : 'collapse'" (tap)="onInfoTap()" ripple class="action-item-btn"></Button>
-    <Button order="7" text="&#xe62a;" [visibility]="showUpdateBtn ? 'visible' : 'collapse'" (tap)="onUpdateTap()" ripple class="action-item-btn"></Button>
-    <Button order="8" text="&#xe5d4;" [visibility]="showMoreBtn ? 'visible' : 'collapse'" (tap)="onMoreTap()" ripple class="action-item-btn"></Button>
+  <FlexboxLayout col="2" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">
+    <ng-content order="1"></ng-content>
+    <Button order="2" text="&#xe8fd;" [visibility]="showSupportBtn ? 'visible' : 'collapse'" (tap)="onSupportTap()" ripple class="action-item-btn"></Button>
+    <Button order="3" text="&#xe8b8;" [visibility]="showSettingsBtn ? 'visible' : 'collapse'" (tap)="onSettingsTap()" ripple class="action-item-btn"></Button>
+    <Button order="4" text="&#xe5d5;" [visibility]="showRefreshBtn ? 'visible' : 'collapse'" (tap)="onRefreshTap()" ripple class="action-item-btn"></Button>
+    <Button order="5" text="&#xe88f;" [visibility]="showInfoBtn ? 'visible' : 'collapse'" (tap)="onInfoTap()" ripple class="action-item-btn"></Button>
+    <Button order="6" text="&#xe62a;" [visibility]="showUpdateBtn ? 'visible' : 'collapse'" (tap)="onUpdateTap()" ripple class="action-item-btn"></Button>
+    <Button order="7" text="&#xe5d4;" [visibility]="showMoreBtn ? 'visible' : 'collapse'" (tap)="onMoreTap()" ripple class="action-item-btn"></Button>
   </FlexboxLayout>
 </GridLayout>
