@@ -9,6 +9,8 @@ export interface Acceleration {
   z: number;
 }
 
+type TimeStamp = number;
+
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
   public static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
@@ -30,7 +32,7 @@ export class TapDetector {
   private maxJerkThreshold: number = 60.0;
   private minJerkThreshold: number = 30.0;
 
-  private lastTapTime: number; // timestamp of last detected tap
+  private lastTapTime: TimeStamp; // timestamp of last detected tap
 
   private tapGap: boolean = true;
 
@@ -183,7 +185,7 @@ export class TapDetector {
    * Main inference Function for detecting tap
    * @return result [boolean]: true if there was a tap
    */
-  public detectTap(acceleration: Acceleration, timestamp: number) {
+  public detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
     try {
       // vectorize the input
       const inputData = [ acceleration.x, acceleration.y, acceleration.z ];
@@ -219,7 +221,7 @@ export class TapDetector {
    * Determines (based on input and prediction histories) whether
    * there was a tap.
    */
-  private didTap(timestamp: number) {
+  private didTap(timestamp: TimeStamp) {
     // Block high frequency tapping
     if (this.lastTapTime && (timestamp - this.lastTapTime) < TapDetector.TapLockoutTimeNs) {
       return false;
