@@ -11,6 +11,7 @@ export interface Acceleration {
 
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
+  public static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
@@ -176,31 +177,40 @@ export class TapDetector {
       this.jerkThresholdDynamic = this.jerkThreshold - this.jerkThresholdOnOffDiff;
       this.predictionThresholdDynamic = this.predictionThreshold - this.predictionThresholdOnOffDiff;
     }
-
   }
 
   /**
    * Main inference Function for detecting tap
+   * @return result [boolean]: true if there was a tap
    */
   public detectTap(acceleration: Acceleration, timestamp: number) {
     try {
+      // vectorize the input
       const inputData = [
         acceleration.x,
         acceleration.y,
         acceleration.z
       ];
+
       // update the input history
+      // remove the oldest element if history length > InputHistorySize
       this.updateHistory(acceleration);
+
       // copy the data into the input array
       this.inputData[0][0] = inputData[0];
       this.inputData[0][1] = inputData[1];
       this.inputData[0][2] = inputData[2];
+
       // run the inference
       this.tflite.runForMultipleInputsOutputs(this.tapDetectorInput, this.tapDetectorOutput);
+
       // get the prediction
       const prediction = this.parsedPrediction[0][0];
+
       // update the prediction history
+      // remove the oldest element if history.length > PredictionHistorySize
       this.updatePredictions(prediction);
+
       // determine if there was a tap
       return this.didTap(timestamp);
     } catch (e) {
@@ -214,50 +224,33 @@ export class TapDetector {
    * there was a tap.
    */
   private didTap(timestamp: number) {
-    // block high frequency tapping
-    if (this.lastTapTime !== null) {
-      const timeDiffNs = timestamp - this.lastTapTime;
-      const timeDiffThreshold = TapDetector.TapLockoutTimeMs * 1000 * 1000; // convert to ns
-      if (timeDiffNs < timeDiffThreshold) {
-        return false;
-      }
-    }
-    // time was good - now determine if the inputs / predictions were good
-    if (this.inputHistory.length < TapDetector.InputHistorySize ||
-      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
-      // we don't have enough historical data so detect no taps
+    // Block high frequency tapping
+    if (this.lastTapTime && (timestamp - this.lastTapTime) < TapDetector.TapLockoutTimeNs) {
       return false;
     }
-    // check that inputRawHistory max-min > jerkThresholdDynamic
-    let minZ = null;
-    let maxZ = null;
-    let maxJerk = null;
-    this.inputRawHistory.map(accel => {
-      const z = accel.z;
-      if (minZ === null || z < minZ) {
-        minZ = z;
-      }
-      if (maxZ === null || z > maxZ) {
-        maxZ = z;
-      }
-    });
+
+    // Check if we have enough historical data
+    if (this.inputHistory.length < TapDetector.InputHistorySize ||
+      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
+      // we don't have enough historical data so return false
+      // not enough historical data to reliably detect a tap
+      return false;
+    }
+
+    // Check that inputRawHistory max-min > jerkThresholdDynamic
+    const minZ = this.inputRawHistory.reduce((min, accel) => accel.z < min ? accel.z : min, this.inputRawHistory[0].z);
+    const maxZ = this.inputRawHistory.reduce((max, accel) => accel.z > max ? accel.z : max, this.inputRawHistory[0].z);
     const jerk = maxZ - minZ;
     this.updateJerkHistory(jerk);
-    this.jerkHistory.map(jerk => {
-      if (maxJerk == null || jerk > maxJerk) {
-        maxJerk = jerk;
-      }
-    });
-
-    const jerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
+    const maxJerk = this.jerkHistory.reduce((max, jerk) => jerk > max ? jerk : max, this.jerkHistory[0]);
+    const isJerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
 
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.predictionThresholdDynamic;
     }, true);
     // combine checks to predict tap
-    const predictTap =
-      jerkAboveThreshold && predictionsWereGood && this.tapGap;
+    const predictTap = isJerkAboveThreshold && predictionsWereGood && this.tapGap;
 
     // exceptions
     const predictionsOvermin = this.predictionHistory.reduce((good, prediction) => {
