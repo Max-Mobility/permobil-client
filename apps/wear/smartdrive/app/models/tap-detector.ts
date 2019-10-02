@@ -208,7 +208,7 @@ export class TapDetector {
       this.updatePredictions(prediction);
 
       // determine if there was a tap
-      return this.didTap(timestamp);
+      return this.didTap(timestamp) || false; // didTap is capable of returning undefined
     } catch (e) {
       Log.E('could not detect tap:', e);
       return false;
