@@ -29,7 +29,7 @@ export class TapDetector {
   private jerkThresholdDynamic: number = 30.0; // calculated tap jerk threshold
   private jerkThresholdOnOffDiff: number = 10.0; // tap jerk threshold difference when motor on/off
   private jerkThreshold: number = 30.0; // tap jerk threshold value
-  private maxJerkThreshold: number = 60.0;
+  private maxJerkThreshold: number = 70.0;
   private minJerkThreshold: number = 30.0;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
