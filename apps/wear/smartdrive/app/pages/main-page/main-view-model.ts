@@ -1209,15 +1209,15 @@ export class MainViewModel extends Observable {
       };
 
       const averageTimestamp = total.timestamp / this._previousDataLength;
-      if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
-        Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
-      }
+      // if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
+      //   Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
+      // }
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
       this.tapDetector.setSensitivity(this.settings.tapSensitivity, this.motorOn);
       // now run the tap detector
-      const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
+      const didTap = this.tapDetector.detectTap(signedMaxAccel, averageTimestamp);
       if (didTap) {
         // user has met threshold for tapping
         this.handleTap(/* averageTimestamp */);

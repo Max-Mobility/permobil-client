@@ -5,7 +5,7 @@ function _exists(o, k): boolean {
   return o[k] !== undefined && o[k] !== null && o[k] !== NaN;
 }
 
-const enableMultithreading: boolean = true;
+const enableMultithreading: boolean = false;
 
 @Injectable()
 export class SqliteService {
