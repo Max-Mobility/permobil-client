@@ -36,6 +36,9 @@ export class ActivityGoalSettingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this._userService.user.subscribe(user => {
+      this._user = user;
+    });
     this._logService.logBreadCrumb(ActivityGoalSettingComponent.name, 'OnInit');
     this.config = {
       title: '',
