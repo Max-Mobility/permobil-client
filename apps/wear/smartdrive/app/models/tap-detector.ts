@@ -66,9 +66,9 @@ export class TapDetector {
   private static InputRawHistorySize: number = 6;
   private static JerkHistorySize: number = 2;
   private inputHistory: Array<Acceleration> = [];
-  private predictionHistory: number[] = [];
+  private predictionHistory: Array<number> = [];
   private inputRawHistory: Array<Acceleration> = [];
-  private jerkHistory: number[] = [];
+  private jerkHistory: Array<number> = [];
 
   constructor() {
     try {
@@ -186,11 +186,7 @@ export class TapDetector {
   public detectTap(acceleration: Acceleration, timestamp: number) {
     try {
       // vectorize the input
-      const inputData = [
-        acceleration.x,
-        acceleration.y,
-        acceleration.z
-      ];
+      const inputData = [ acceleration.x, acceleration.y, acceleration.z ];
 
       // update the input history
       // remove the oldest element if history length > InputHistorySize
@@ -249,6 +245,7 @@ export class TapDetector {
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.predictionThresholdDynamic;
     }, true);
+
     // combine checks to predict tap
     const predictTap = isJerkAboveThreshold && predictionsWereGood && this.tapGap;
 
@@ -256,7 +253,8 @@ export class TapDetector {
     const predictionsOvermin = this.predictionHistory.reduce((good, prediction) => {
       return good && prediction > this.minPredictionThreshold;
     }, true);
-    const mustTap = maxJerk > this.maxJerkThreshold && predictionsOvermin;
+    const mustTap = (maxJerk > this.maxJerkThreshold) && predictionsOvermin;
+
     // record that there has been a tap
     const realTap = predictTap || mustTap;
     if (realTap) {
