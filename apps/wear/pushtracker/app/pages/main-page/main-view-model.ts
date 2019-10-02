@@ -547,6 +547,20 @@ export class MainViewModel extends Observable {
   async startActivityService() {
     try {
       await this.askForPermissions();
+      // init wear os comms which will be needed for communications
+      // between the service and the phone / backend
+      this.initWearOsComms();
+      // sending an intent to the service will start it if it is not
+      // already running
+      this.sendIntentToService();
+    } catch (err) {
+      // permissions weren't granted - so try again later
+      setTimeout(this.startActivityService.bind(this), 10000);
+    }
+  }
+
+  async initWearOsComms() {
+    try {
       // start the wear os communications
       Log.D('registering callbacks');
       WearOsComms.setDebugOutput(false);
@@ -557,22 +571,22 @@ export class MainViewModel extends Observable {
       Log.D('Started wear os comms!');
       this.sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
+      Sentry.captureException(err);
       Log.E('could not advertise as companion');
     }
+  }
+
+  async sendIntentToService() {
     try {
-      // start the service with intent
-      this.sentryBreadCrumb('Starting Activity Service.');
-      Log.D('Starting activity service!');
+      this.sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
-      Log.D('Started activity service!');
       this.sentryBreadCrumb('Activity Service started.');
     } catch (err) {
-      Log.E('could not start activity service:', err);
-      setTimeout(this.startActivityService.bind(this), 5000);
+      Sentry.captureException(err);
     }
   }
 
@@ -925,6 +939,9 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // send an intent to the service - if it is already running this
+    // will trigger a push to the server of the data
+    this.sendIntentToService();
     // if we got here then we have valid authorization!
     this.showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION

@@ -1098,6 +1098,20 @@ export class MainViewModel extends Observable {
     return validAuth;
   }
 
+  isNetworkAvailable() {
+    let isAvailable = false;
+    try {
+      const networkManager = application.android.context.getSystemService(
+        android.content.Context.CONNECTIVITY_SERVICE
+      );
+      const networkInfo = networkManager.getActiveNetworkInfo();
+      isAvailable = networkInfo !== null && networkInfo.isConnected();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+    return isAvailable;
+  }
+
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
@@ -1105,6 +1119,10 @@ export class MainViewModel extends Observable {
     }
     if (this._kinveyService === undefined) {
       // if this has gotten called before kinvey service has been fully set up
+      return;
+    }
+    if (!this.isNetworkAvailable()) {
+      Log.D('No network available!');
       return;
     }
     if (!this._kinveyService.hasAuth()) {
@@ -2558,6 +2576,8 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // try to send the data to synchronize
+    this.onNetworkAvailable();
     // if we got here then we have valid authorization!
     this.showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
