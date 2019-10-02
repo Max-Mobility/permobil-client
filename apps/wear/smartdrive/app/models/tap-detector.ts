@@ -23,11 +23,11 @@ export class TapDetector {
   private minPredictionThreshold: number = 0.5;
   private maxPredictionThreshold: number = 1.0;
   private predictionThreshold: number = 0.5; // tap prediction confidence
-  private predictionThresholdOnOffDiff: number = 0.2; // predition confidence difference when motor on/off 
+  private predictionThresholdOnOffDiff: number = 0.2; // predition confidence difference when motor on/off
   private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
 
-  private jerkThresholdDynamic: number = 30.0; //caluculated tap jerk threshold
-  private jerkThresholdOnOffDiff: number = 10.0; //tap jerk threshold difference when motor on/off
+  private jerkThresholdDynamic: number = 30.0; // calculated tap jerk threshold
+  private jerkThresholdOnOffDiff: number = 10.0; // tap jerk threshold difference when motor on/off
   private jerkThreshold: number = 30.0; // tap jerk threshold value
   private maxJerkThreshold: number = 60.0;
   private minJerkThreshold: number = 30.0;
