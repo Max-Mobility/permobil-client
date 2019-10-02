@@ -1,7 +1,6 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { Log } from '@permobil/core';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
@@ -71,7 +70,8 @@ export class LoginComponent implements OnInit {
         dimBackground: true
       });
 
-      this._logService.logBreadCrumb(LoginComponent.name,
+      this._logService.logBreadCrumb(
+        LoginComponent.name,
         `Signing in ${this.user.email} - ${this.user.password}`
       );
 
@@ -80,13 +80,14 @@ export class LoginComponent implements OnInit {
         this.user.password.trim()
       );
 
-      this._logService.logBreadCrumb(LoginComponent.name, 'Logged in user: ' + user);
+      this._logService.logBreadCrumb(
+        LoginComponent.name,
+        'Logged in user: ' + user
+      );
       appSettings.setString(
         STORAGE_KEYS.APP_THEME,
-        user.data['theme_preference'] || APP_THEMES.DEFAULT
+        APP_THEMES.DEFAULT
       );
-
-      applyTheme(user.data['theme_preference']);
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory
@@ -102,7 +103,8 @@ export class LoginComponent implements OnInit {
 
       if (error.toString().includes('ActiveUserError')) {
         Kinvey.User.logout();
-        this._logService.logBreadCrumb(LoginComponent.name,
+        this._logService.logBreadCrumb(
+          LoginComponent.name,
           `Logged out the active user and restarted the login submit function.`
         );
         this.onSubmitLogin();

@@ -11,10 +11,11 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
-import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek, areDatesSame } from '../../utils';
+import * as appSettings from 'tns-core-modules/application-settings';
 
 enum TAB {
   DAY = 0,
@@ -45,7 +46,7 @@ export class ActivityComponent implements OnInit {
   chartTitle: string;
   chartDescription: string;
   chartYAxis: CHART_Y_AXIS = CHART_Y_AXIS.COAST_TIME; // 0 = Coast Time is plotted, 1 = Push Count is plotted
-  savedTheme: string;
+  CURRENT_THEME: string;
 
   dailyActivity: ObservableArray<any[]>;
 
@@ -101,7 +102,6 @@ export class ActivityComponent implements OnInit {
   private _colorBlack = new Color('#000');
   private _colorDarkGrey = new Color('#727377');
 
-  activityLoaded: boolean = false;
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
   private _debouncedLoadWeeklyActivity: any = null;
@@ -120,6 +120,12 @@ export class ActivityComponent implements OnInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {
+
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+
     if (this._params.context.chartYAxis) {
       this.chartYAxis = this._params.context.chartYAxis;
     }
@@ -179,12 +185,10 @@ export class ActivityComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
-    this.activityLoaded = false;
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
     }).then(() => {
-      this.activityLoaded = true;
       pullRefresh.refreshing = false;
     }).catch(err => {
       this._logService.logException(err);
@@ -201,7 +205,6 @@ export class ActivityComponent implements OnInit {
       this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
         ? ' ' + this._translateService.instant('units.km')
         : ' ' + this._translateService.instant('units.mi');
-    this.savedTheme = this.user.data.theme_preference;
   }
 
   /**
@@ -297,10 +300,12 @@ export class ActivityComponent implements OnInit {
       }
     } else if (this.currentTab === TAB.MONTH) {
       // month
-      this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
-      this._updateWeekStartAndEnd();
-      this._calendar.navigateForward();
-      this._initMonthChartTitle();
+      if (this.isNextMonthButtonEnabled()) {
+        this.currentDayInView.setMonth(this.currentDayInView.getMonth() + 1);
+        this._updateWeekStartAndEnd();
+        this._calendar.navigateForward();
+        this._initMonthChartTitle();
+      }
     }
   }
 
@@ -364,6 +369,7 @@ export class ActivityComponent implements OnInit {
       CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const selectedDate = new Date(this.weekStart);
+      this.currentDayInView = new Date(selectedDate);
       this.currentDayInView.setDate(
         selectedDate.getDate() + event.pointIndex - 1
       );
@@ -373,6 +379,8 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCalendarLoaded(args) {
+    this._logService.logBreadCrumb(ActivityComponent.name,
+      'Calendar Loaded');
     const calendar = args.object as RadCalendar;
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
@@ -411,7 +419,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _loadDailyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // load weekly activity
     const date = this.currentDayInView;
     this.weekStart = getFirstDayOfWeek(date);
@@ -512,7 +519,6 @@ export class ActivityComponent implements OnInit {
         this._updateDailyActivityAnnotationValue();
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
-        this.activityLoaded = true;
       })
       .catch(err => {
         this._logService.logException(err);
@@ -526,8 +532,8 @@ export class ActivityComponent implements OnInit {
     this.yAxisMax = 0;
     this.yAxisStep = 15;
     if (this.dailyActivity) {
-      let i = 4;
-      while (i < 53) {
+      let i = 0;
+      while (i < this.dailyActivity.length) {
         const activity = this.dailyActivity.getItem(i);
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
@@ -608,7 +614,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _loadWeeklyActivity(forcePullFromDatabase: boolean = false) {
-    this.activityLoaded = false;
     // Check if data is available in daily activity cache first
     const cacheAvailable =
       (this.chartYAxis === CHART_Y_AXIS.DISTANCE &&
@@ -638,7 +643,6 @@ export class ActivityComponent implements OnInit {
               if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
-              this.activityLoaded = true;
               return true;
             })
             .catch(err => {
@@ -671,7 +675,6 @@ export class ActivityComponent implements OnInit {
               if (this.currentTab === TAB.WEEK)
                 this._calculateWeeklyActivityYAxisMax();
               this._updateWeekStartAndEnd();
-              this.activityLoaded = true;
               return true;
             })
             .catch(err => {
@@ -730,15 +733,14 @@ export class ActivityComponent implements OnInit {
     }
     if (this.currentTab === TAB.WEEK) this._calculateWeeklyActivityYAxisMax();
     this._updateWeekStartAndEnd();
-    this.activityLoaded = true;
   }
 
   private _calculateWeeklyActivityYAxisMax() {
     this.yAxisMax = 0;
     this.yAxisStep = 0;
     if (this.weeklyActivity) {
-      let i = 2;
-      while (i < 9) {
+      let i = 0;
+      while (i < this.weeklyActivity.length) {
         const activity = this.weeklyActivity.getItem(i);
         if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
           if (activity['coastTime'] > this.yAxisMax)
@@ -1182,8 +1184,11 @@ export class ActivityComponent implements OnInit {
     const currentWeekStart = getFirstDayOfWeek(this.currentDayInView);
     const currentMonth = currentWeekStart.getMonth();
     return (
-      currentWeekStart.getFullYear() <= today.getFullYear() &&
-      currentMonth < month
+      currentWeekStart.getFullYear() < today.getFullYear() ||
+      (
+        currentWeekStart.getFullYear() === today.getFullYear() &&
+        currentMonth < month
+      )
     );
   }
 
@@ -1202,11 +1207,15 @@ export class ActivityComponent implements OnInit {
     this.weekStart = getFirstDayOfWeek(date);
     this.weekEnd = getFirstDayOfWeek(date);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+    const weekStartMonth = this.weekStart.getMonth();
+    const weekEndMonth = this.weekEnd.getMonth();
     this.chartTitle =
-      this.monthNames[date.getMonth()] +
+      this.monthNames[weekStartMonth] +
       ' ' +
       this.weekStart.getDate() +
       ' — ' +
+      (weekStartMonth !== weekEndMonth ?
+        this.monthNames[weekEndMonth] + ' ' : '') +
       this.weekEnd.getDate();
   }
 
@@ -1224,12 +1233,12 @@ export class ActivityComponent implements OnInit {
     this.monthViewStyle.showWeekNumbers = false;
     this.monthViewStyle.showDayNames = true;
     this.monthViewStyle.backgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
 
     // Today cell style
     const todayCellStyle = new DayCellStyle();
     todayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? new Color('#00c1d5')
         : this._colorWhite;
     todayCellStyle.cellTextSize = 12;
@@ -1239,9 +1248,9 @@ export class ActivityComponent implements OnInit {
     // Day cell style
     const dayCellStyle = new DayCellStyle();
     dayCellStyle.cellBackgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
@@ -1249,7 +1258,7 @@ export class ActivityComponent implements OnInit {
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
     weekendCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
@@ -1263,18 +1272,18 @@ export class ActivityComponent implements OnInit {
     // Week number cell style
     const weekNumberCellStyle = new CellStyle();
     weekNumberCellStyle.cellTextColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     weekNumberCellStyle.cellBorderColor = this._colorWhite;
     this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
 
     // Day name cell style
     const dayNameCellStyle = new CellStyle();
     dayNameCellStyle.cellBackgroundColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
     dayNameCellStyle.cellTextColor =
-      this.savedTheme === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
     dayNameCellStyle.cellBorderColor =
-      this.savedTheme === APP_THEMES.DARK
+      this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorDarkGrey
         : this._colorWhite;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
@@ -1456,7 +1465,7 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          if (activity.days) {
+          if (activity && activity.days) {
             for (const i in activity.days) {
               if (activity.days[i]) {
                 if (activity.days[i].push_count > 0) {
@@ -1481,7 +1490,7 @@ export class ActivityComponent implements OnInit {
         } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
           // push count
           let numDaysOfActivity = 0;
-          if (cache.weeklyActivity.days) {
+          if (cache.weeklyActivity && cache.weeklyActivity.days) {
             for (const i in cache.weeklyActivity.days) {
               if (cache.weeklyActivity.days[i]) {
                 if (cache.weeklyActivity.days[i].push_count > 0) {
@@ -1516,7 +1525,7 @@ export class ActivityComponent implements OnInit {
           this.weeklyActivityAnnotationValue = 0;
         }
         let numDaysOfActivity = 0;
-        if (activity.days) {
+        if (activity && activity.days) {
           for (const i in activity.days) {
             if (activity.days[i]) {
               if (activity.days[i].records &&
@@ -1542,7 +1551,7 @@ export class ActivityComponent implements OnInit {
             this.user.data.distance_unit_preference
           ) || 0;
         let numDaysOfActivity = 0;
-        if (cache.weeklyActivity.days) {
+        if (cache.weeklyActivity && cache.weeklyActivity.days) {
           for (const i in cache.weeklyActivity.days) {
             if (cache.weeklyActivity.days[i]) {
               if (cache.weeklyActivity.days[i].records &&

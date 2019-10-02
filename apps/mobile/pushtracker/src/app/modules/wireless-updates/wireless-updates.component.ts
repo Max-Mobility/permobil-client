@@ -74,7 +74,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public noPushTrackerDetected = false;
   private _throttledPTOtaAction: any = null;
   private _throttledPTOtaStatus: any = null;
-  savedTheme: string;
+  CURRENT_THEME: string;
 
   constructor(
     private _page: Page,
@@ -87,7 +87,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ) {
     this.languagePreference = _params.context.languagePreference || 'English';
     this.controlConfiguration = _params.context.controlConfiguration || '';
-    this.savedTheme = this._params.context.savedTheme;
+    this.CURRENT_THEME = this._params.context.CURRENT_THEME;
   }
 
   ngOnInit() {

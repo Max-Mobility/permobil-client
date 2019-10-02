@@ -891,6 +891,7 @@ export class MainViewModel extends Observable {
   onAppSuspend() {
     this._sentryBreadCrumb('*** appSuspend ***');
     this.fullStop();
+    this.updateComplications();
   }
 
   onAppExit() {
@@ -915,6 +916,23 @@ export class MainViewModel extends Observable {
     }
     Log.D('App uncaught error');
     this.fullStop();
+  }
+
+  updateComplications() {
+    try {
+      const context = ad
+        .getApplicationContext();
+      com.permobil.smartdrive.wearos.BatteryComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.DriveComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.RangeComplicationProviderService
+        .forceUpdate(context);
+      com.permobil.smartdrive.wearos.CoastComplicationProviderService
+        .forceUpdate(context);
+    } catch (err) {
+      Log.E('could not update complications', err);
+    }
   }
 
   registerForBatteryUpdates() {
@@ -1026,12 +1044,12 @@ export class MainViewModel extends Observable {
         .getContentResolver();
       const authCursor = contentResolver
         .query(
-          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_URI,
+          com.permobil.pushtracker.AuthorizationHandler.AUTHORIZATION_URI,
           null, null, null, null);
       if (authCursor && authCursor.moveToFirst()) {
         // there is data
         const token = authCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.AUTHORIZATION_DATA_INDEX
+          com.permobil.pushtracker.AuthorizationHandler.AUTHORIZATION_DATA_INDEX
         );
         authCursor.close();
         // Log.D('Got token:', token);
@@ -1044,12 +1062,12 @@ export class MainViewModel extends Observable {
       }
       const idCursor = contentResolver
         .query(
-          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_URI,
+          com.permobil.pushtracker.AuthorizationHandler.USER_ID_URI,
           null, null, null, null);
       if (idCursor && idCursor.moveToFirst()) {
         // there is data
         const uid = idCursor.getString(
-          com.permobil.smartdrive.wearos.DatabaseHandler.USER_ID_DATA_INDEX
+          com.permobil.pushtracker.AuthorizationHandler.USER_ID_DATA_INDEX
         );
         idCursor.close();
         // Log.D('Got uid:', uid);
@@ -1077,6 +1095,19 @@ export class MainViewModel extends Observable {
     return validAuth;
   }
 
+  isNetworkAvailable() {
+    let isAvailable = false;
+    try {
+      const networkManager = application.android.context.getSystemService(
+        android.content.Context.CONNECTIVITY_SERVICE
+      );
+      const networkInfo = networkManager.getActiveNetworkInfo();
+      isAvailable = networkInfo !== null && networkInfo.isConnected();
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+    return isAvailable;
+  }
 
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
@@ -1085,6 +1116,10 @@ export class MainViewModel extends Observable {
     }
     if (this._kinveyService === undefined) {
       // if this has gotten called before kinvey service has been fully set up
+      return;
+    }
+    if (!this.isNetworkAvailable()) {
+      Log.D('No network available!');
       return;
     }
     if (!this._kinveyService.hasAuth()) {
@@ -2159,6 +2194,8 @@ export class MainViewModel extends Observable {
       'power-assist.estimated-range'
     )} (${this.distanceUnits})`;
     if (this.settings.units === 'Metric') {
+      // update estimated speed display
+      this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
       // update estimated range display
       this.estimatedDistanceDisplay = (this.estimatedDistance * 1.609).toFixed(
         1
@@ -2543,6 +2580,8 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // try to send the data to synchronize
+    this.onNetworkAvailable();
     // if we got here then we have valid authorization!
     this.showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
@@ -3152,7 +3191,8 @@ export class MainViewModel extends Observable {
       });
       // Log.D('saving data', data);
       const serialized = JSON.stringify(data);
-      // there is only ever one record in this table, so we always insert - the db will perform upsert for us.
+      // there is only ever one record in this table, so we always
+      // insert - the db will perform upsert for us.
       const values = new android.content.ContentValues();
       values.put('data', serialized);
       const uri = ad

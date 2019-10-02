@@ -94,10 +94,6 @@ export class AppComponent implements OnInit {
     // if user is logged in, go to default tabs route, else go to login
     const user = <PushTrackerUser>(<any>Kinvey.User.getActiveUser());
     if (user) {
-      appSettings.setString(
-        STORAGE_KEYS.APP_THEME,
-        user.data.theme_preference || APP_THEMES.DEFAULT
-      );
       appSettings.setString('Kinvey.User', JSON.stringify(user));
       this._router.navigate(['/tabs/default']);
     } else {
@@ -106,11 +102,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    const savedTheme = appSettings.getString(
+    const CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-    applyTheme(savedTheme);
+    applyTheme(CURRENT_THEME);
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {

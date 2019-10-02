@@ -5,7 +5,6 @@
     row="0"
     #mockActionBar
     [title]="'settings-component.title' | translate"
-    [showWatchBtn]="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"
     [showUpdateBtn]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"
     [showBackNav]="true"
     (navTapEvent)="closeModal()"
@@ -13,7 +12,9 @@
     (refreshTapEvent)="onRefreshTap($event)"
     [controlConfiguration]="user.data.control_configuration"
     [languagePreference]="user.data.language_preference"
-  ></MockActionBar>
+  >
+    <pushtracker-status-button #ptStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></pushtracker-status-button>
+  </MockActionBar>
 
   <ScrollView row="1" height="100%">
     <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">

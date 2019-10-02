@@ -12,7 +12,7 @@
                    *ngIf="controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
         <Label class="update-label" row="0" text="PushTracker"></Label>
         <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
-                           *ngIf="!pushTrackerCheckedForUpdates" busy="true" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
+                           *ngIf="!pushTrackerCheckedForUpdates" busy="true" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
         <GridLayout rows="*" columns="*" *ngIf="pushTrackerCheckedForUpdates"
                     horizontalAlignment="center" verticalAlignment="center">
           <AnimatedCircle [class]="pushTrackerOtaProgress < 100 ? 'update-circle' : 'update-circle-green'"
@@ -43,7 +43,7 @@
                    horizontalAlignment="center" verticalAlignment="center">
         <Label class="update-label" row="0" text="SmartDrive"></Label>
         <ActivityIndicator row="0" marginTop="50" horizontalAlignment="center" height="20%" width="20%" marginRight="10"
-                           *ngIf="!smartDriveCheckedForUpdates" busy="true" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
+                           *ngIf="!smartDriveCheckedForUpdates" busy="true" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></ActivityIndicator>
         <GridLayout rows="*" columns="*" *ngIf="smartDriveCheckedForUpdates"
                     horizontalAlignment="center" verticalAlignment="center">
           <AnimatedCircle [class]="smartDriveOtaProgress < 100 ? 'update-circle' : 'update-circle-green'"

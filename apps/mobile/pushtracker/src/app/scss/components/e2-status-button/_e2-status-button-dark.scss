@@ -1,0 +1,7 @@
+@import '../../variables';
+@import 'e2-status-button-base';
+
+.e2-status-btn-layout {
+  @extend .E2_STATUS_BUTTON_LAYOUT_BASE;
+  background-color: $black;
+}

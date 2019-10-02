@@ -12,9 +12,9 @@ import { Page } from 'tns-core-modules/ui/page';
 import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService } from '../../services';
+import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { applyTheme } from '../../utils';
-import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent, PushTrackerStatusButtonComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-settings',
@@ -22,8 +22,8 @@ import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent 
   templateUrl: 'profile-settings.component.html'
 })
 export class ProfileSettingsComponent implements OnInit {
-  @ViewChild('mockActionBar', { static: false })
-  mockActionBar: ElementRef;
+  @ViewChild('ptStatusButton', { static: false })
+  ptStatusButton: PushTrackerStatusButtonComponent;
 
   APP_THEMES = APP_THEMES;
   CONFIGURATIONS = CONFIGURATIONS;
@@ -67,6 +67,7 @@ export class ProfileSettingsComponent implements OnInit {
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService,
+    private _themeService: ThemeService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
     private _zone: NgZone,
@@ -168,7 +169,10 @@ export class ProfileSettingsComponent implements OnInit {
           )
         ) {
           this.versionInfo = `(PT ${this._pt_version}, SD ${this._mcu_version}, BT ${this._ble_version})`;
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'PushTracker connected: ' + this.versionInfo);
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'PushTracker connected: ' + this.versionInfo
+          );
         }
       }
     }
@@ -177,7 +181,6 @@ export class ProfileSettingsComponent implements OnInit {
   getUser() {
     this.user = this._params.context.user;
     if (this.user && this.user.data) {
-      this.CURRENT_THEME = this.user.data.theme_preference;
       this.CURRENT_LANGUAGE = this.user.data.language_preference || 'English';
     }
   }
@@ -189,39 +192,46 @@ export class ProfileSettingsComponent implements OnInit {
 
   onSyncSettingsWithSmartDrive(_) {
     this.syncingWithSmartDrive = true;
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Synchronizing settings with SmartDrive');
-    this._scanForSmartDrive().then(async () => {
-      if (!this.smartDrive) return;
-      await this.smartDrive.connect();
-      this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Connected to SmartDrive: ' + this.smartDrive.address);
-      this.syncState = this._translateService.instant(
-        'profile-settings.connected-a-smartdrive'
-      );
-      // Register for SmartDrive connected and disconnected events
-      this.smartDrive.on(
-        SmartDrive.smartdrive_connect_event,
-        this._onSmartDriveConnect,
-        this
-      );
-      this.smartDrive.on(
-        SmartDrive.smartdrive_ble_version_event,
-        this._onSmartDriveBleVersion,
-        this
-      );
-      this.smartDrive.on(
-        SmartDrive.smartdrive_mcu_version_event,
-        this._onSmartDriveMcuVersion,
-        this
-      );
-      this.smartDrive.on(
-        SmartDrive.smartdrive_disconnect_event,
-        this._onSmartDriveDisconnect,
-        this
-      );
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'Synchronizing settings with SmartDrive'
+    );
+    this._scanForSmartDrive()
+      .then(async () => {
+        if (!this.smartDrive) return;
+        await this.smartDrive.connect();
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'Connected to SmartDrive: ' + this.smartDrive.address
+        );
+        this.syncState = this._translateService.instant(
+          'profile-settings.connected-a-smartdrive'
+        );
+        // Register for SmartDrive connected and disconnected events
+        this.smartDrive.on(
+          SmartDrive.smartdrive_connect_event,
+          this._onSmartDriveConnect,
+          this
+        );
+        this.smartDrive.on(
+          SmartDrive.smartdrive_ble_version_event,
+          this._onSmartDriveBleVersion,
+          this
+        );
+        this.smartDrive.on(
+          SmartDrive.smartdrive_mcu_version_event,
+          this._onSmartDriveMcuVersion,
+          this
+        );
+        this.smartDrive.on(
+          SmartDrive.smartdrive_disconnect_event,
+          this._onSmartDriveDisconnect,
+          this
+        );
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   async onRefreshTap(_) {
@@ -434,7 +444,8 @@ export class ProfileSettingsComponent implements OnInit {
 
     this._bottomSheet.show(SliderSheetComponent, options).subscribe(result => {
       if (result && result.data) {
-        this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
           `Slider setting new value ${result.data.SLIDER_VALUE} for setting: ${this.activeSetting}`
         );
         this._saveSliderSetting(result.data.SLIDER_VALUE);
@@ -496,12 +507,13 @@ export class ProfileSettingsComponent implements OnInit {
       case 'theme':
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
         applyTheme(this.CURRENT_THEME);
-        this._userService.updateDataProperty(
-          'theme_preference',
-          this.CURRENT_THEME
-        );
-        KinveyUser.update({ theme_preference: this.CURRENT_THEME });
         appSettings.setString(STORAGE_KEYS.APP_THEME, this.CURRENT_THEME);
+        this._themeService.updateTheme(this.CURRENT_THEME);
+        // Update PushTracker watch icon color
+        if (this.ptStatusButton) {
+          this.ptStatusButton.CURRENT_THEME = this.CURRENT_THEME;
+          this.ptStatusButton.updateWatchIcon();
+        }
         break;
       case 'language':
         this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
@@ -517,8 +529,10 @@ export class ProfileSettingsComponent implements OnInit {
     }
     // Update local cache of this.user in appSettings
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-    this._debouncedCommitSettingsFunction();
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+    if (this.activeSetting !== 'theme')
+      this._debouncedCommitSettingsFunction();
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${index}`
     );
   }
@@ -538,22 +552,23 @@ export class ProfileSettingsComponent implements OnInit {
         this.settingsService.switchControlSettings.maxSpeed = newValue * 10;
         break;
       default:
-        this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'no matching setting found for updating slider setting');
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'no matching setting found for updating slider setting'
+        );
         break;
     }
 
     this._debouncedCommitSettingsFunction();
 
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${newValue}`
     );
   }
 
   private async _commitSettingsChange() {
     this.syncSuccessful = false;
-    const actionbar = this.mockActionBar
-      .nativeElement as MockActionbarComponent;
-
     this.settingsService.saveToFileSystem();
 
     if (this.user) {
@@ -567,29 +582,34 @@ export class ProfileSettingsComponent implements OnInit {
         // connected SmartDrive.
         const pts = BluetoothService.PushTrackers.filter(p => p.connected);
         if (pts && pts.length > 0) {
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-            'Sending to pushtrackers: ' + pts.map(pt => pt.address));
-          if (actionbar)
-            actionbar.updateWatchIcon({ data: PushTrackerState.unknown });
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Sending to pushtrackers: ' + pts.map(pt => pt.address)
+          );
+          if (this.ptStatusButton)
+            this.ptStatusButton.state = PushTrackerState.busy;
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await pt.sendSwitchControlSettingsObject(
                 this.settingsService.switchControlSettings
               );
-              if (actionbar)
-                actionbar.updateWatchIcon({ data: PushTrackerState.connected });
+              if (this.ptStatusButton)
+                this.ptStatusButton.state = PushTrackerState.connected;
             } catch (err) {
               // Show watch icon 'X'
-              if (actionbar)
-                actionbar.updateWatchIcon({
-                  data: PushTrackerState.disconnected
-                });
               this._logService.logException(err);
             }
           });
+          // now that all PTs have had their settings updated, we probably want to update the icon
+          this.ptStatusButton.state = PushTrackerState.connected;
         } else {
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'no pushtrackers!');
+          if (this.ptStatusButton)
+            this.ptStatusButton.state = PushTrackerState.disconnected;
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'no pushtrackers!'
+          );
         }
       }
     }
@@ -605,14 +625,18 @@ export class ProfileSettingsComponent implements OnInit {
     this.syncState = this._translateService.instant(
       'profile-settings.scanning-for-smartdrives'
     );
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Scanning for SmartDrives');
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'Scanning for SmartDrives'
+    );
     if (!force && this.smartDrive && this.smartDrive.address) {
       this.syncState = this._translateService.instant(
         'profile-settings.detected-a-smartdrive'
       );
-      this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
         'Scan is not forced - Already have a SmartDrive: ' +
-        this.smartDrive.address
+          this.smartDrive.address
       );
       return true;
     }
@@ -620,40 +644,47 @@ export class ProfileSettingsComponent implements OnInit {
       this.user.data.control_configuration ===
       CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE
     ) {
-      return this._bluetoothService.scanForSmartDriveReturnOnFirst(10).then(() => {
-        const drives = BluetoothService.SmartDrives;
-        if (drives.length === 0) {
-          alert({
-            message:
-              'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
-            okButtonText: this._translateService.instant('general.ok')
-          });
-          this.syncingWithSmartDrive = false;
-          return false;
-        } else if (drives.length > 1) {
-          alert({
-            message:
-              'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
-            okButtonText: this._translateService.instant('general.ok')
-          });
-          this.syncingWithSmartDrive = false;
-          return true;
-        } else {
-          drives.map(async drive => {
-            this.smartDrive = drive;
-            this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-              'SmartDrive detected: ' + this.smartDrive.address);
-            this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'Scan successful');
-            this.syncState = this._translateService.instant(
-              'profile-settings.detected-a-smartdrive'
-            );
-          });
-          return true;
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      return this._bluetoothService
+        .scanForSmartDriveReturnOnFirst(10)
+        .then(() => {
+          const drives = BluetoothService.SmartDrives;
+          if (drives.length === 0) {
+            alert({
+              message:
+                'Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.',
+              okButtonText: this._translateService.instant('general.ok')
+            });
+            this.syncingWithSmartDrive = false;
+            return false;
+          } else if (drives.length > 1) {
+            alert({
+              message:
+                'More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry',
+              okButtonText: this._translateService.instant('general.ok')
+            });
+            this.syncingWithSmartDrive = false;
+            return true;
+          } else {
+            drives.map(async drive => {
+              this.smartDrive = drive;
+              this._logService.logBreadCrumb(
+                ProfileSettingsComponent.name,
+                'SmartDrive detected: ' + this.smartDrive.address
+              );
+              this._logService.logBreadCrumb(
+                ProfileSettingsComponent.name,
+                'Scan successful'
+              );
+              this.syncState = this._translateService.instant(
+                'profile-settings.detected-a-smartdrive'
+              );
+            });
+            return true;
+          }
+        })
+        .catch(err => {
+          this._logService.logException(err);
+        });
     }
   }
 
@@ -675,14 +706,18 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private async _onSmartDriveConnect(_: any) {
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-      'SmartDrive connected: ' + this.smartDrive.address);
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'SmartDrive connected: ' + this.smartDrive.address
+    );
     this._mcu_version = this.smartDrive.mcu_version_string;
     this._ble_version = this.smartDrive.ble_version_string;
     this._updateSmartDriveSectionLabel();
 
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-      'Able to send settings to SmartDrive? ' + this.smartDrive.ableToSend);
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'Able to send settings to SmartDrive? ' + this.smartDrive.ableToSend
+    );
     if (this.smartDrive && this.smartDrive.ableToSend) {
       this.syncState = this._translateService.instant(
         'profile-settings.sending-settings'
@@ -701,21 +736,28 @@ export class ProfileSettingsComponent implements OnInit {
           );
           await this._sleep(3000);
           this.syncingWithSmartDrive = false;
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name, `Done sync'ing with SmartDrive`);
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-            'Settings successfully commited to SmartDrive: ' +
-            this.smartDrive.address
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            `Done sync'ing with SmartDrive`
           );
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-            'Syncing with SmartDrive? ' + this.syncingWithSmartDrive);
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Settings successfully commited to SmartDrive: ' +
+              this.smartDrive.address
+          );
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Syncing with SmartDrive? ' + this.syncingWithSmartDrive
+          );
           this.syncSuccessful = true;
         } catch (err) {
           this.syncState = this._translateService.instant(
             'profile-settings.error-sending-settings'
           );
-          this._logService.logBreadCrumb(ProfileSettingsComponent.name,
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
             'Error committing settings to SmartDrive: ' +
-            this.smartDrive.address
+              this.smartDrive.address
           );
           this._logService.logBreadCrumb(ProfileSettingsComponent.name, err);
           this._logService.logException(err);
@@ -725,8 +767,10 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private async _onSmartDriveDisconnect(_: any) {
-    this._logService.logBreadCrumb(ProfileSettingsComponent.name,
-      'SmartDrive disconnected: ' + this.smartDrive.address);
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'SmartDrive disconnected: ' + this.smartDrive.address
+    );
     // Unregister for SmartDrive connected and disconnected events
     this.smartDrive.off(
       SmartDrive.smartdrive_connect_event,

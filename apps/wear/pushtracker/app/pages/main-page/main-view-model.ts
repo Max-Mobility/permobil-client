@@ -106,6 +106,11 @@ export class MainViewModel extends Observable {
   @Prop() distanceUnits: string = '';
 
   /**
+   * For showing button to install SD.W app
+   */
+  @Prop() isSmartDriveAppInstalled: boolean = false;
+
+  /**
    * For showing busy status
    */
   @Prop() isBusy: boolean = false;
@@ -306,7 +311,17 @@ export class MainViewModel extends Observable {
     // register for time updates
     this.registerForTimeUpdates();
 
+    // determine if the smartdrive app is installed
+    this.isSmartDriveAppInstalled =
+      this.checkPackageInstalled('com.permobil.smartdrive.wearos');
+
     setTimeout(this.startActivityService.bind(this), 5000);
+  }
+
+  private ANDROID_MARKET_SMARTDRIVE_URI =
+    'market://details?id=com.permobil.smartdrive.wearos';
+  onInstallSmartDriveTap() {
+    this.openInPlayStore(this.ANDROID_MARKET_SMARTDRIVE_URI);
   }
 
   async initSqliteTables() {
@@ -457,26 +472,124 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Service Data Update registered.');
   }
 
+  async onMessageReceived(data: { path: string, message: string, device: any }) {
+    Log.D('on message received:', data.path, data.message);
+    this.isBusy = true;
+    const splits = data.message.split(':');
+    if (splits.length <= 1) {
+      this.isBusy = false;
+      // we got bad data
+      alert({
+        title: L('failures.title'),
+        message: L('wearos-comms.errors.bad-data'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
+    const userId = splits[0];
+    // join them in case the token had ':' in it
+    const token = splits.slice(1).join(':');
+    Log.D('Got auth', userId, token);
+    // now save it to datastore for service to use
+    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
+    const sharedPreferences = ad
+      .getApplicationContext()
+      .getSharedPreferences('prefs.db', 0);
+    const editor = sharedPreferences.edit();
+    editor.putString(
+      prefix + com.permobil.pushtracker.Datastore.USER_ID_KEY,
+      userId
+    );
+    editor.putString(
+      prefix + com.permobil.pushtracker.Datastore.AUTHORIZATION_KEY,
+      token
+    );
+    editor.commit();
+    try {
+      const contentResolver = ad
+        .getApplicationContext()
+        .getContentResolver();
+      // write token to content provider for smartdrive wear
+      const tokenValue = new android.content.ContentValues();
+      tokenValue.put('data', token);
+      contentResolver
+        .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
+
+      // write user id to content provider for smartdrive wear
+      const userValue = new android.content.ContentValues();
+      userValue.put('data', userId);
+      contentResolver
+        .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
+    } catch (err) {
+      Log.E('Could not set content values for authorization:', err);
+    }
+    // now actually check the authorization that we were provided
+    const validAuth = await this.updateAuthorization();
+    this.isBusy = false;
+    if (validAuth) {
+      // if we got here then we have valid authorization!
+      this.showConfirmation(
+        android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+      );
+    } else {
+      await alert({
+        title: L('failures.title'),
+        message: L('wearos-comms.errors.bad-authorization'),
+        okButtonText: L('buttons.ok')
+      });
+    }
+  }
+
+  async onDataReceived(data: { data: any, device: any }) {
+    Log.D('on data received:', data);
+  }
+
   async startActivityService() {
     try {
       await this.askForPermissions();
+      // init wear os comms which will be needed for communications
+      // between the service and the phone / backend
+      this.initWearOsComms();
+      // sending an intent to the service will start it if it is not
+      // already running
+      this.sendIntentToService();
+      // now that we're sure everything is running, try to pull data
+      // from the server
+      setTimeout(this.updateUserData.bind(this), 1000);
+    } catch (err) {
+      // permissions weren't granted - so try again later
+      setTimeout(this.startActivityService.bind(this), 10000);
+    }
+  }
+
+  async initWearOsComms() {
+    try {
       // start the wear os communications
+      Log.D('registering callbacks');
+      WearOsComms.setDebugOutput(false);
+      WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
+      WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
+      Log.D('advertising as companion!');
       WearOsComms.advertiseAsCompanion();
-      console.log('Started wear os comms!');
+      Log.D('Started wear os comms!');
       this.sentryBreadCrumb('Wear os comms started.');
-      // start the service with intent
-      this.sentryBreadCrumb('Starting Activity Service.');
-      console.log('Starting activity service!');
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('could not advertise as companion');
+    }
+  }
+
+  async sendIntentToService() {
+    try {
+      this.sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
-      console.log('Started activity service!');
       this.sentryBreadCrumb('Activity Service started.');
     } catch (err) {
-      console.error('could not start activity service:', err);
-      setTimeout(this.startActivityService.bind(this), 5000);
+      Sentry.captureException(err);
     }
   }
 
@@ -829,6 +942,9 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // send an intent to the service - if it is already running this
+    // will trigger a push to the server of the data
+    this.sendIntentToService();
     // if we got here then we have valid authorization!
     this.showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
@@ -1093,6 +1209,30 @@ export class MainViewModel extends Observable {
     // disabling swipeable to make it easier to tap the cancel button
     // without starting the swipe behavior
     (this.changeSettingsLayout as any).swipeable = false;
+  }
+
+  /**
+   * SmartDrive Associated App Functions
+   */
+  checkPackageInstalled(packageName: string) {
+    let found = true;
+    try {
+      application.android.context.getPackageManager()
+        .getPackageInfo(packageName, 0);
+    } catch (err) {
+      found = false;
+    }
+    return found;
+  }
+
+  openInPlayStore(uri: string) {
+    const intent =
+      new android.content.Intent(android.content.Intent.ACTION_VIEW)
+        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+        .addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+        .setData(android.net.Uri.parse(uri));
+    application.android.foregroundActivity.startActivity(intent);
   }
 
   /**

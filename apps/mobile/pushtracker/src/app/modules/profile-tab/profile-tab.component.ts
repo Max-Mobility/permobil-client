@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
@@ -9,18 +9,19 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
-import { Toasty } from 'nativescript-toasty';
+import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { Color } from 'tns-core-modules/color';
-import { screen } from 'tns-core-modules/platform';
+import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
-import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import { ListPickerSheetComponent, TextFieldSheetComponent, E2StatusButtonComponent } from '../shared/components';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
 
 @Component({
   selector: 'profile-tab',
@@ -44,6 +45,7 @@ export class ProfileTabComponent {
   configurations: Array<string> = [];
   configurationsTranslated: Array<string> = [];
   displayControlConfiguration: string;
+  displayControlConfigurationImage: ImageSource;
 
   genders: Array<String> = [];
   gendersTranslated: Array<string> = [];
@@ -67,8 +69,14 @@ export class ProfileTabComponent {
   screenHeight: number;
   private _barcodeScanner: BarcodeScanner;
 
+  CURRENT_THEME: string = appSettings.getString(
+    STORAGE_KEYS.APP_THEME,
+    APP_THEMES.DEFAULT
+  );
+
   constructor(
     private _userService: PushTrackerUserService,
+    private _themeService: ThemeService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
@@ -77,11 +85,20 @@ export class ProfileTabComponent {
     private _modalService: ModalDialogService,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) {
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
+    this._themeService.theme.subscribe(theme => {
+      this.CURRENT_THEME = theme;
+      // Update the displayed control configuration icon on theme change
+      this._initDisplayControlConfiguration();
+    });
+  }
 
   onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
-
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
@@ -188,12 +205,6 @@ export class ProfileTabComponent {
   onProfileTabUnloaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Unloaded');
     // this._userSubscription$.unsubscribe();
-  }
-
-  onWatchConnectTap() {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Connecting to Watch');
-    this._sendData();
-    this._sendMessage();
   }
 
   onAvatarTap() {
@@ -431,11 +442,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.first-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: firstName
-          }
-        ]
+        text: firstName
       }
     };
 
@@ -443,8 +450,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `first_name TextFieldSheetComponent result: ${result.data}`);
-          const firstNameField = result.data.fields[0] || '';
-          const newFirstName = firstNameField.text.replace(/[^A-Za-z]/g, '');
+          const newFirstName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveFirstNameOnChange(newFirstName);
         }
       },
@@ -469,11 +475,7 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.last-name'),
         description: '', // Do we really need a description for name?
-        fields: [
-          {
-            text: lastName
-          }
-        ]
+        text: lastName
       }
     };
 
@@ -481,8 +483,7 @@ export class ProfileTabComponent {
       result => {
         if (result && result.data) {
           this._logService.logBreadCrumb(ProfileTabComponent.name, `last_name TextFieldSheetComponent result: ${result.data}`);
-          const lastNameField = result.data.fields[0] || '';
-          const newLastName = lastNameField.text.replace(/[^A-Za-z]/g, '');
+          const newLastName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
           this._saveLastNameOnChange(newLastName);
         }
       },
@@ -596,20 +597,16 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant('general.weight'),
         description: this._translateService.instant('general.weight-guess'),
-        fields: [
-          {
-            text: text,
-            suffix: suffix,
-            keyboardType: 'number'
-          }
-        ]
+        text: text,
+        suffix: suffix,
+        keyboardType: 'number'
       }
     };
 
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          const newWeight = _validateWeightFromText(result.data.fields[0].text);
+          const newWeight = _validateWeightFromText(result.data.text);
           if (newWeight) {
             const primary = (newWeight + '').split('.')[0];
             const secondary = '0.' + (newWeight + '').split('.')[1];
@@ -933,7 +930,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
-      this.user.data.activity_goal_distance + '';
+      (this.user.data.activity_goal_distance).toFixed(1) + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
         (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +
@@ -1005,7 +1002,25 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.control_configuration;
       const index = this.configurations.indexOf(englishValue);
       this.displayControlConfiguration = this.configurationsTranslated[index];
+      this.displayControlConfigurationImage = this._getControlConfigurationImage(englishValue);
     }
+  }
+
+  private _getControlConfigurationImage(configuration) {
+    let result = '';
+    if (configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
+      result = 'switchcontrol';
+    } else if (configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      result = 'og_band';
+    } else if (configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
+      result = 'pte2';
+    }
+    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
+      result += '_black';
+    } else {
+      result += '_white';
+    }
+    return imageFromResource(result);
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
@@ -1154,36 +1169,72 @@ export class ProfileTabComponent {
     const user = KinveyUser.getActiveUser();
     const id = user._id;
     const token = user._kmd.authtoken;
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
-    this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
-    return `Kinvey ${token}:${id}`;
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user id: ${id}`);
+    // this._logService.logBreadCrumb(ProfileTabComponent.name, `user token: ${token}`);
+    return `${id}:Kinvey ${token}`;
   }
 
-  private _sendData() {
+  private async _connectCompanion() {
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually find a companion
+    let didConnect = false;
     try {
-      WearOsComms.sendData(this._getSerializedAuth()).then(() => {
+      if (!WearOsComms.hasCompanion()) {
+        // find and save the companion
+        const address = await WearOsComms.findAvailableCompanions(5);
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'saving new companion: ' + address);
+        WearOsComms.saveCompanion(address);
+      }
+      // now connect
+      didConnect = await WearOsComms.connectCompanion(10000);
+    } catch (err) {
+      console.error('error connecting:', err);
+      // clear out the companion so we can search again
+      WearOsComms.clearCompanion();
+      this._logService.logException(err);
+    }
+    return didConnect;
+  }
+
+  private async _disconnectCompanion() {
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually disconnect from the companion
+    try {
+      await WearOsComms.disconnectCompanion();
+    } catch (err) {
+      this._logService.logException(err);
+    }
+  }
+
+  private async _sendData() {
+    let didSend = false;
+    try {
+      didSend = await WearOsComms.sendData(this._getSerializedAuth());
+      if (didSend) {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData successful.');
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendData unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }
+    return didSend;
   }
 
-  private _sendMessage() {
+  private async _sendMessage() {
+    let didSend = false;
     try {
-      WearOsComms.sendMessage('/app-message', this._getSerializedAuth()).then(
-        () => {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
-        }
-      )
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage successful.');
+      } else {
+        this._logService.logBreadCrumb(ProfileTabComponent.name, 'SendMessage unsuccessful.');
+      }
     } catch (error) {
       this._logService.logException(error);
     }
+    return didSend;
   }
 }

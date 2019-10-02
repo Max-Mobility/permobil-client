@@ -270,6 +270,10 @@ public class ActivityService
       } else {
         stopMyService();
       }
+    } else {
+      // we got an intent to start but are already running - they're
+      // asking us to synchronize data with the server
+      mHandler.post(mPushTask);
     }
 
     // START_STICKY is used for services that are explicitly started

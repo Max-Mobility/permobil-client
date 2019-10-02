@@ -4,8 +4,9 @@
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
-    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true"
-      [showWatchConnectBtn]="true" (watchConnectEvent)="onWatchConnectTap()" [user]="user"></MockActionBar>
+    <MockActionBar row="0" [showBackNav]="false" [showSettingsBtn]="true" [showSupportBtn]="true" [user]="user">
+      <e2-status-button #e2StatusButton id="e2StatusButton" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></e2-status-button>
+    </MockActionBar>
 
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*, *, *, *" iosOverflowSafeArea="false">
@@ -143,9 +144,10 @@
         // Control Configuration
         <StackLayout row="12" col="0" colSpan="4" class="data-box" (tap)="onControlConfigTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.control-configuration' | translate"></Label>
-          <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="displayControlConfiguration" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+          <GridLayout rows="*" columns="auto, *, auto">
+            <Image col="0" class="data-box-icon" [src]="displayControlConfigurationImage" stretch="aspectFit"></Image>
+            <Label col="1" class="data-box-value" [text]="displayControlConfiguration" textWrap="true"></Label>
+            <Label col="2" class="data-box-arrow" text="&#xe5c5;"></Label>
           </GridLayout>
         </StackLayout>
 

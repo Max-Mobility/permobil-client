@@ -18,12 +18,14 @@ package com.permobil.smartdrive.wearos;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Icon;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationManager;
 import android.support.wearable.complications.ComplicationProviderService;
 import android.support.wearable.complications.ComplicationText;
+import android.support.wearable.complications.ProviderUpdateRequester;
 import android.util.Log;
 
 import com.permobil.smartdrive.wearos.ComplicationToggleReceiver;
@@ -38,6 +40,18 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
   private static final String TAG = "RangeComplicationProvider";
   private static final String DATA_ID = "sd.estimated_range";
   private static final String UNITS_ID = "sd.units";
+
+  public static void forceUpdate(Context context) {
+    ComponentName componentName = new ComponentName(
+                                                    context,
+                                                    RangeComplicationProviderService.class
+                                                    );
+    ProviderUpdateRequester pur = new ProviderUpdateRequester(
+                                                              context,
+                                                              componentName
+                                                              );
+    pur.requestUpdateAll();
+  }
 
   /*
    * Called when a complication has been activated. The method is for any one-time

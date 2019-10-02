@@ -1,9 +1,7 @@
 <GridLayout rows="auto, *" class="activity-tab-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'activity-tab-component.title' | translate" [showBackNav]="true" (navTapEvent)="closeModal()"></MockActionBar>
-  <ActivityIndicator row="0" horizontalAlignment="right" height="5%" width="5%" marginRight="10" *ngIf="!activityLoaded" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" busy="true"></ActivityIndicator>
-
-  <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
+  <PullToRefresh row="1" (refresh)="refreshPlots($event)" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
     <ScrollView>
       <GridLayout rows="auto, *">
         <GridLayout row="1" rows="auto, auto, auto, auto, auto" columns="*" height="100%">
@@ -11,7 +9,7 @@
             row="0"
             [items]="tabItems"
             [selectedIndex]="currentTab"
-            [selectedBackgroundColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+            [selectedBackgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             (loaded)="segmentedBarLoaded($event)"
             (selectedIndexChange)="onSelectedIndexChanged($event)"
             class="m-5"
@@ -39,17 +37,16 @@
 
           // Day
           <StackLayout row="2" [visibility]="currentTab === TAB.DAY ? 'visible' : 'collapsed'">
-            <RadCartesianChart allowAnimations="true" height="250" width="90%" [visibility]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapse'">
+            <RadCartesianChart allowAnimations="true" height="250" width="92%" horizontalAlignment="center" [visibility]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE ? 'visible' : 'collapse'">
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
-                *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
-                [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'white' : 'black'"
+                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 lineHidden="true"
                 tickHidden="false"
                 majorTickInterval="4"
                 labelSize="12"
-                labelMargin="20"
+                labelMargin="28"
                 tickLength="7"
                 plotMode="OnTicks"
               >
@@ -57,9 +54,10 @@
               <LinearAxis
                 id="vAxis"
                 tkCartesianVerticalAxis
-                [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'white' : 'black'"
+                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 horizontalLocation="Right"
-                labelMargin="10"
+                labelSize="12"
+                labelMargin="20"
                 lineHidden="true"
                 [maximum]="yAxisMax"
                 minumum="1"
@@ -75,9 +73,16 @@
                 [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"
               >
               </BarSeries>
-              <Palette tkCartesianPalette seriesName="DailyActivity">
-                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-              </Palette>
+
+              <Palettes>
+                <Palette tkCartesianPalette seriesName="DailyActivity">
+                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                </Palette>
+                <Palette tkCartesianPalette seriesName="DailyActivity" seriesState="Selected">
+                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                </Palette>
+              </Palettes>
+
               <ChartGridLineAnnotation
                 #dailyActivityAnnotation
                 tkCartesianAnnotations
@@ -86,7 +91,7 @@
                 [value]="dailyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>
@@ -95,12 +100,11 @@
 
           // Week
           <StackLayout row="2" [visibility]="currentTab === TAB.WEEK ? 'visible' : 'collapsed'">
-            <RadCartesianChart height="250" width="90%" allowAnimations="true" pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
+            <RadCartesianChart height="250" width="92%" horizontalAlignment="center" allowAnimations="true" pointSelectionMode="Single" (pointSelected)="onWeekPointSelected($event)">
               <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
               <CategoricalAxis
-                *ngIf="activityLoaded"
                 tkCartesianHorizontalAxis
-                [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'white' : 'black'"
+                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 lineHidden="true"
                 tickHidden="false"
                 majorTickInterval="1"
@@ -114,7 +118,7 @@
               <LinearAxis
                 id="vAxis"
                 tkCartesianVerticalAxis
-                [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'white' : 'black'"
+                [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'white' : 'black'"
                 horizontalLocation="Right"
                 labelMargin="10"
                 lineHidden="true"
@@ -131,9 +135,14 @@
                 [valueProperty]="chartYAxis === CHART_Y_AXIS.COAST_TIME ? 'coastTime' : chartYAxis === CHART_Y_AXIS.PUSH_COUNT ? 'pushCount' : 'coastDistance'"
               >
               </BarSeries>
-              <Palette tkCartesianPalette seriesName="WeeklyActivity">
-                <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
-              </Palette>
+              <Palettes>
+                <Palette tkCartesianPalette seriesName="WeeklyActivity">
+                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                </Palette>
+                <Palette tkCartesianPalette seriesName="WeeklyActivity" seriesState="Selected">
+                  <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+                </Palette>
+              </Palettes>
               <ChartGridLineAnnotation
                 #weeklyActivityAnnotation
                 tkCartesianAnnotations
@@ -142,7 +151,7 @@
                 [value]="weeklyActivityAnnotationValue"
                 zPosition="AboveSeries"
                 strokeWidth="1"
-                [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
                 strokeDashPattern="3, 3"
               >
               </ChartGridLineAnnotation>
