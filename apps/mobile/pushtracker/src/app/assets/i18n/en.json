@@ -452,6 +452,9 @@
     "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
     "switch-control-with-smartdrive": "Switch Control with SmartDrive"
   },
+  "device-setup": {
+    "title": "Device Setup"
+  },
   "settings-different": {
     "title": "App and PushTracker Settings Differ",
     "message": "Please select from the options below how to resolve differences between the settings."

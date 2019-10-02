@@ -2,6 +2,7 @@ import { ActivityComponent } from './activity';
 import { ActivityGoalSettingComponent } from './activity-goal-setting';
 import { AppInfoComponent } from './app-info';
 import { ConfigurationComponent } from './configuration';
+import { DeviceSetupComponent } from './device-setup';
 import { ForgotPasswordComponent } from './forgot-password';
 import { LoginComponent } from './login';
 import { PrivacyPolicyComponent } from './privacy-policy';
@@ -34,6 +35,7 @@ export const COMPONENTS = [
   ProfileSettingsComponent,
   PrivacyPolicyComponent,
   ConfigurationComponent,
+  DeviceSetupComponent,
   UpdatesInfoComponent
 ];
 

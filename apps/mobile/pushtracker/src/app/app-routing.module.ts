@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 import { NativeScriptRouterModule } from 'nativescript-angular/router';
-import { ConfigurationComponent, ForgotPasswordComponent, LoginComponent, SignUpComponent } from './modules';
+import { ConfigurationComponent, DeviceSetupComponent, ForgotPasswordComponent, LoginComponent, SignUpComponent } from './modules';
 import { AuthGuardService } from './services';
 
 const routes: Routes = [
@@ -17,6 +17,10 @@ const routes: Routes = [
   {
     path: 'configuration',
     component: ConfigurationComponent
+  },
+  {
+    path: 'device-setup',
+    component: DeviceSetupComponent
   },
   {
     path: 'forgot-password',
