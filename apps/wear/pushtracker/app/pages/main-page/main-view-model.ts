@@ -553,6 +553,9 @@ export class MainViewModel extends Observable {
       // sending an intent to the service will start it if it is not
       // already running
       this.sendIntentToService();
+      // now that we're sure everything is running, try to pull data
+      // from the server
+      setTimeout(this.updateUserData.bind(this), 1000);
     } catch (err) {
       // permissions weren't granted - so try again later
       setTimeout(this.startActivityService.bind(this), 10000);
