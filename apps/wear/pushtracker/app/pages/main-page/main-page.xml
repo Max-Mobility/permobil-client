@@ -166,6 +166,12 @@
                 <Label row="0" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" />
               </GridLayout>
             </RL:Ripple>
+            <RL:Ripple rippleColor="#ddd" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}">
+              <GridLayout rows="*" columns="15, *" id="installSmartDrive" tap="{{ onInstallSmartDriveTap }}">
+                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="0" col="1" text="{{ L('settings.install-smartdrive') }}" class="settings-label" textWrap="true" />
+              </GridLayout>
+            </RL:Ripple>
           </StackLayout>
         </wol:WearOsLayout>
       </StackLayout>

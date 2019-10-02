@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef, ViewChild } from '@angular/core';
 import { Log, PushTrackerUser } from '@permobil/core';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
@@ -8,9 +8,9 @@ import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules
 import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-import { BluetoothService, PushTrackerState } from '../../../../services';
 import { TranslateService } from '@ngx-translate/core';
 const dialogs = require('tns-core-modules/ui/dialogs');
+import { E2StatusButtonComponent } from '../../../shared/components';
 
 @Component({
   selector: 'MockActionBar',
@@ -32,23 +32,15 @@ export class MockActionbarComponent {
   @Output() refreshTapEvent = new EventEmitter();
   @Input() showMoreBtn = false;
   @Output() moreTapEvent = new EventEmitter();
-  @Input() showWatchBtn = false;
   @Input() languagePreference: string = 'English';
   @Input() controlConfiguration: string = '';
-  @Input() showWatchConnectBtn = false;
-  @Output() watchConnectEvent = new EventEmitter();
 
   @Input() user: PushTrackerUser;
 
-  watchConnectIconString: string;
-  watchConnectIcon: ImageSource;
   navIcon; // this sets the font icon in the UI based on the value of backNavIcon
   CURRENT_THEME: string;
-  watchIconString: string;
-  watchIcon: ImageSource;
 
   constructor(
-    private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
@@ -64,46 +56,14 @@ export class MockActionbarComponent {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-
-    this.watchIconString =
-      this.CURRENT_THEME === APP_THEMES.DEFAULT
-        ? 'watch_question_black'
-        : 'watch_question_white';
-
-    this.watchIcon = imageFromResource(this.watchIconString);
-
-    // set up the status watcher for the pushtracker state
-    this._bluetoothService.on(
-      BluetoothService.pushtracker_status_changed,
-      this.updateWatchIcon,
-      this
-    );
-
-    this.updateWatchIcon({});
-    this._setWatchConnectIconVariables('check');
   }
 
-  onMockActionBarLoaded() {}
+  onLoaded(args) {}
 
-  onUnloaded() {
-    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
-  }
+  onUnloaded(args) {}
 
   onNavBtnTap() {
     this.navTapEvent.emit();
-  }
-
-  onWatchTap() {
-    dialogs.alert({
-      title: this._translateService.instant('profile-settings.watch-status-alert-title'),
-      message: this._translateService.instant('profile-settings.watch-status-alert-message.' +
-        this._getTranslationKeyForPushTrackerStatus()),
-      okButtonText: this._translateService.instant('dialogs.ok')
-    });
-  }
-
-  onWatchConnectTap() {
-    this.watchConnectEvent.emit();
   }
 
   onRefreshTap() {
@@ -120,14 +80,14 @@ export class MockActionbarComponent {
         context: {
           languagePreference: this.languagePreference,
           controlConfiguration: this.controlConfiguration,
-          savedTheme: this.CURRENT_THEME
+          CURRENT_THEME: this.CURRENT_THEME
         },
         fullscreen: true,
         animated: true,
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -148,7 +108,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -169,7 +129,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -190,7 +150,7 @@ export class MockActionbarComponent {
         viewContainerRef: this._vcRef
       })
       .then(() => {
-        this.onUnloaded();
+        this.onUnloaded({});
       })
       .catch(err => {
         Log.E(err);
@@ -200,69 +160,6 @@ export class MockActionbarComponent {
           textColor: new Color('#fff000')
         });
       });
-  }
-
-  public updateWatchIcon(event: any) {
-    this._zone.run(() => {
-      const state =
-        (event && event.data && event.data.state) ||
-        BluetoothService.pushTrackerStatus.get('state');
-      switch (state) {
-        default:
-        case PushTrackerState.unknown:
-          this._setWatchIconVariables('question');
-          break;
-        case PushTrackerState.paired:
-          this._setWatchIconVariables('empty');
-          break;
-        case PushTrackerState.disconnected:
-          this._setWatchIconVariables('x');
-          break;
-        case PushTrackerState.connected:
-          this._setWatchIconVariables('check');
-          break;
-        case PushTrackerState.ready:
-          this._setWatchIconVariables('check');
-          break;
-      }
-    });
-  }
-
-  private _getTranslationKeyForPushTrackerStatus() {
-    const state = BluetoothService.pushTrackerStatus.get('state');
-    switch (state) {
-      default:
-      case PushTrackerState.unknown:
-        return 'unknown';
-      case PushTrackerState.paired:
-        return 'paired';
-      case PushTrackerState.disconnected:
-        return 'disconnected';
-      case PushTrackerState.connected:
-        return 'connected';
-      case PushTrackerState.ready:
-        return 'ready';
-    }
-  }
-
-  private _setWatchIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchIconString = `watch_${status}_black`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    } else {
-      this.watchIconString = `watch_${status}_white`;
-      this.watchIcon = imageFromResource(this.watchIconString);
-    }
-  }
-
-  private _setWatchConnectIconVariables(status: string) {
-    if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {
-      this.watchConnectIconString = `watch_${status}_black`;
-      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
-    } else {
-      this.watchConnectIconString = `watch_${status}_white`;
-      this.watchConnectIcon = imageFromResource(this.watchConnectIconString);
-    }
   }
 }
 

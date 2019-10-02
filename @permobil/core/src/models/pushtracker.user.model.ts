@@ -34,7 +34,6 @@ export interface PushTrackerUser {
     distance_unit_preference: string;
     // Display preferences
     time_format_preference: string;
-    theme_preference: string;
     language_preference: string;
     // serial number
     smartdrive_serial_number: string;

@@ -29,20 +29,20 @@ export class ActivityService {
 
       // Run a .find first to get the _id of the daily activity
       {
-        const stream = this.datastore.find(query);
-        return stream.toPromise().then(data => {
-          if (data && data.length) {
-            const id = data[0]._id;
-            dailyActivity._id = id;
-          }
-          return this.datastore.save(dailyActivity)
-            .then((_) => {
-              return true;
-            }).catch((error) => {
-              this._logService.logException(error);
-              return false;
-            });
-        });
+        return this.datastore.find(query)
+          .then(data => {
+            if (data && data.length) {
+              const id = data[0]._id;
+              dailyActivity._id = id;
+            }
+            return this.datastore.save(dailyActivity)
+              .then((_) => {
+                return true;
+              }).catch((error) => {
+                this._logService.logException(error);
+                return false;
+              });
+          });
       }
 
     } catch (err) {

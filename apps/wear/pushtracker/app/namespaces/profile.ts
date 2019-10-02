@@ -99,6 +99,20 @@ export namespace Profile {
       return increment;
     }
 
+    getDistanceIncrement(): number {
+      let increment = 0;
+      switch (this.units) {
+        case 'english':
+          increment = 0.1; // 0.1 miles in miles
+          break;
+        case 'metric':
+        default:
+          increment = 0.06215; // 0.1 kilometers in miles
+          break;
+      }
+      return increment;
+    }
+
     getWeightIncrement(): number {
       let increment = 0;
       switch (this.units) {
@@ -130,10 +144,10 @@ export namespace Profile {
           this.coastGoal = Math.min(this.coastGoal + increment, 500);
           break;
         case 'distancegoal':
-          this.distanceGoal = Math.min(this.distanceGoal + increment, 500);
+          this.distanceGoal = Math.min(this.distanceGoal + this.getDistanceIncrement(), 500);
           break;
         case 'height':
-          this.height = Math.min(this.height + this.getHeightIncrement(), 2.5);
+          this.height = Math.min(this.height + this.getHeightIncrement(), 3.0);
           break;
         case 'weight':
           this.weight = Math.min(this.weight + this.getWeightIncrement(), 400);
@@ -146,7 +160,7 @@ export namespace Profile {
       }
     }
 
-    decrease(key: string, increment: number = 0.5): void {
+    decrease(key: string, increment: number = 0.1): void {
       let index = 0;
       switch (key) {
         case 'chairmake':
@@ -163,7 +177,7 @@ export namespace Profile {
           this.coastGoal = Math.max(this.coastGoal - increment, 0);
           break;
         case 'distancegoal':
-          this.distanceGoal = Math.max(this.distanceGoal - increment, 0);
+          this.distanceGoal = Math.max(this.distanceGoal - this.getDistanceIncrement(), 0);
           break;
         case 'height':
           this.height = Math.max(this.height - this.getHeightIncrement(), 0);

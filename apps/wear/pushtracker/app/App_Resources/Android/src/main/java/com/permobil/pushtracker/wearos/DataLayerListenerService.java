@@ -101,8 +101,8 @@ public class DataLayerListenerService extends WearableListenerService {
       Log.e(TAG, "Error, bad auth received!");
       return;
     }
-    token = parts[0];
-    userId = parts[1];
+    userId = parts[0];
+    token = parts[1];
     Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
 
     // Log.d(TAG, "Starting Service from app message!");

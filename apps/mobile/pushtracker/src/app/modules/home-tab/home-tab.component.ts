@@ -6,7 +6,6 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
-import { ChartFontStyle, Palette, PaletteEntry, PointLabelStyle } from 'nativescript-ui-chart';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
@@ -15,7 +14,7 @@ import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, applyTheme, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD, getFirstDayOfWeek } from '../../utils';
+import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -23,8 +22,9 @@ import { convertToMilesIfUnitPreferenceIsMiles, applyTheme, getJSONFromKinvey, g
   templateUrl: './home-tab.component.html'
 })
 export class HomeTabComponent {
-  public APP_THEMES = APP_THEMES;
-  public DISTANCE_UNITS = DISTANCE_UNITS;
+  APP_THEMES = APP_THEMES;
+  DISTANCE_UNITS = DISTANCE_UNITS;
+  CONFIGURATIONS = CONFIGURATIONS;
   user: PushTrackerUser;
   screenWidth = screen.mainScreen.widthDIPs;
   distanceCirclePercentage: number = 0;
@@ -36,7 +36,7 @@ export class HomeTabComponent {
   todayPushCount: string = '0.0';
   yAxisMax: number = 10;
   yAxisStep: number = 2.5;
-  savedTheme: string;
+  CURRENT_THEME: string;
   coastTimePlotAnnotationValue: number = 0.001;
   coastTimeGoalMessage: string;
   coastTimeGoalValue: string;
@@ -54,13 +54,7 @@ export class HomeTabComponent {
   todayDriveDistance: string = '0.0';
   todayOdometer: string = '0.0';
   distancePlotAnnotationValue: number = 0.001;
-  distanceGoalLabelChartData: ObservableArray<any[]>;
-  distancePlotPalettes: ObservableArray<Palette>;
-  goalLabelChartData: ObservableArray<any[]> = new ObservableArray([
-    { xAxis: '        ', coastTime: 5, impact: 7 }
-  ] as any[]);
   private _todaysUsage: any;
-  private pointLabelStyle: PointLabelStyle;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
   private _currentDayInView: Date;
   private _weekStart: Date;
@@ -82,26 +76,27 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) { }
+  ) {}
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
-
-    this.savedTheme = appSettings.getString(
+    this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+
     this._currentDayInView = new Date();
     this._weekStart = getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-    this.refreshUserFromKinvey(false).then(() => {
-      this._loadWeeklyData();
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+    this.refreshUserFromKinvey(false)
+      .then(() => {
+        this._loadWeeklyData();
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
 
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
@@ -114,12 +109,6 @@ export class HomeTabComponent {
       this.MAX_COMMIT_INTERVAL_MS,
       { trailing: true }
     );
-
-    this._userService.user.subscribe(user => {
-      if (this.savedTheme !== user.data.theme_preference)
-        this.savedTheme = user.data.theme_preference;
-      applyTheme(this.savedTheme);
-    });
   }
 
   onHomeTabUnloaded() {
@@ -261,7 +250,8 @@ export class HomeTabComponent {
             if (user.data._acl) user._acl = user.data._acl;
             if (user.data._kmd) {
               user._kmd = user.data._kmd;
-              if (user.data._kmd.authtoken) user.authtoken = user.data._kmd.authtoken;
+              if (user.data._kmd.authtoken)
+                user.authtoken = user.data._kmd.authtoken;
             }
             if (user.data.username) user.username = user.data.username;
             if (user.data.email) user.email = user.data.email;
@@ -290,39 +280,34 @@ export class HomeTabComponent {
   async refreshPlots(args) {
     const pullRefresh = args.object;
     this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey(true).then(result => {
-      if (!result) return;
-      // The user might come back and refresh the next day, just keeping
-      // the app running - Update currentDayInView and weekStart to
-      // account for this
-      this._currentDayInView = new Date();
-      this._weekStart = getFirstDayOfWeek(this._currentDayInView);
-      this._weekEnd = new Date(this._weekStart);
-      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    this.refreshUserFromKinvey(true)
+      .then(result => {
+        if (!result) return;
+        // The user might come back and refresh the next day, just keeping
+        // the app running - Update currentDayInView and weekStart to
+        // account for this
+        this._currentDayInView = new Date();
+        this._weekStart = getFirstDayOfWeek(this._currentDayInView);
+        this._weekEnd = new Date(this._weekStart);
+        this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-      // Check for theme changes
-      if (this.savedTheme !== this.user.data.theme_preference) {
-        this.savedTheme = this.user.data.theme_preference;
-        applyTheme(this.savedTheme);
-      }
-
-      // Now refresh the data
-      this._loadWeeklyData().then(() => {
-        pullRefresh.refreshing = false;
+        // Now refresh the data
+        this._loadWeeklyData()
+          .then(() => {
+            pullRefresh.refreshing = false;
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
       .catch(err => {
         this._logService.logException(err);
       });
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   private async _loadWeeklyData() {
     this.weeklyActivityLoaded = false;
 
-    this.savedTheme = this.user.data.theme_preference;
     if (this._firstLoad) {
       this._loadWeeklyActivity();
       this._loadSmartDriveUsage();
@@ -332,8 +317,6 @@ export class HomeTabComponent {
       this._debouncedLoadWeeklyUsage();
     }
     this._updateProgress();
-    this._updatePointLabelStyle();
-    this._updatePalettes();
     this.updateTodayMessage();
     this.weeklyActivityLoaded = true;
   }
@@ -344,7 +327,7 @@ export class HomeTabComponent {
         context: {
           currentTab:
             this.user.data.control_configuration !==
-              CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
               ? 0
               : 1,
           user: this.user
@@ -364,7 +347,10 @@ export class HomeTabComponent {
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklySmartDriveUsage from Kinvey');
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      '' + 'Loading WeeklySmartDriveUsage from Kinvey'
+    );
     let result = [];
     if (!this.user) return Promise.resolve(result);
 
@@ -373,9 +359,15 @@ export class HomeTabComponent {
     if (this._firstLoad) {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
-      this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklySmartDriveUsage from appSettings');
+      this._logService.logBreadCrumb(
+        HomeTabComponent.name,
+        '' + 'Loading WeeklySmartDriveUsage from appSettings'
+      );
       try {
-        const weeklyUsageJSON = appSettings.getString('SmartDrive.WeeklyUsage.' + date, '{}');
+        const weeklyUsageJSON = appSettings.getString(
+          'SmartDrive.WeeklyUsage.' + date,
+          '{}'
+        );
         if (weeklyUsageJSON) result = JSON.parse(weeklyUsageJSON);
         if (result && result.length) {
           return Promise.resolve(result[0]);
@@ -391,10 +383,28 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Successfully loaded WeeklySmartDriveUsage from Kinvey');
+          this._logService.logBreadCrumb(
+            HomeTabComponent.name,
+            '' + 'Successfully loaded WeeklySmartDriveUsage from Kinvey'
+          );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'No WeeklySmartDriveUsage data available for this week');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          '' + 'No WeeklySmartDriveUsage data available for this week'
+        );
+        // There's no data for this week
+        // Reset weekly usage object
+        this._weeklyUsageFromKinvey = {
+          date: date,
+          start_time: weekStartDate.getTime(),
+          battery: 0,
+          distance_smartdrive_coast_start: 0,
+          distance_smartdrive_drive_start: 0,
+          distance_smartdrive_coast: 0,
+          distance_smartdrive_drive: 0,
+          days: [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
@@ -404,96 +414,92 @@ export class HomeTabComponent {
   }
 
   private async _loadSmartDriveUsage() {
-    this.loadSmartDriveUsageFromKinvey(this._weekStart).then(() => {
-      this._formatUsageForView().then(result => {
-        this.usageActivity = new ObservableArray(result);
-        this.distanceGoalMessage =
-          this._translateService.instant('home-tab.travel') + ' ';
-        this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
-          this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference
-        ).toFixed(1);
-        this.distanceGoalUnit =
-          this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-            ? ' ' + this._translateService.instant('home-tab.km-per-day')
-            : ' ' + this._translateService.instant('home-tab.mi-per-day');
-        this._updateDistancePlotYAxis(); // sets this._todaysUsage
-        // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-        if (this._todaysUsage) {
-          let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(
-              DeviceBase.caseTicksToMiles(
-                this._todaysUsage.distance_smartdrive_coast -
-                this._todaysUsage.distance_smartdrive_coast_start
-              ) || 0
-            ),
-            this.user.data.distance_unit_preference
-          );
-          if (coastDistance < 0.0) coastDistance = 0.0;
-          this.todayCoastDistance = coastDistance.toFixed(1);
-
-          let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(
-              DeviceBase.motorTicksToMiles(
-                this._todaysUsage.distance_smartdrive_drive -
-                this._todaysUsage.distance_smartdrive_drive_start
-              ) || 0
-            ),
-            this.user.data.distance_unit_preference
-          );
-          if (driveDistance < 0.0) driveDistance = 0.0;
-          this.todayDriveDistance = driveDistance.toFixed(1);
-
-          this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(
-              DeviceBase.caseTicksToMiles(
-                this._todaysUsage.distance_smartdrive_coast
-              ) || 0
-            ),
-            this.user.data.distance_unit_preference
-          ).toFixed(1);
-          // Today coast distance changed, update message
-          this.updateTodayMessage();
-        } else {
-          this.todayCoastDistance = (0).toFixed(1);
-          this.todayDriveDistance = (0).toFixed();
-          this.todayOdometer = (0).toFixed();
-        }
-
-        this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
-          this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference
-        );
-        this.distanceGoalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastDistance: convertToMilesIfUnitPreferenceIsMiles(
+    this.loadSmartDriveUsageFromKinvey(this._weekStart)
+      .then(() => {
+        this._formatUsageForView()
+          .then(result => {
+            this.usageActivity = new ObservableArray(result);
+            this.distanceGoalMessage =
+              this._translateService.instant('home-tab.travel') + ' ';
+            this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
               this.user.data.activity_goal_distance,
               this.user.data.distance_unit_preference
-            ),
-            impact: 7
-          }
-        ] as any[]);
-        this.distanceCirclePercentage =
-          (parseFloat(this.todayCoastDistance) /
-            convertToMilesIfUnitPreferenceIsMiles(
+            ).toFixed(1);
+            this.distanceGoalUnit =
+              this.user.data.distance_unit_preference ===
+              DISTANCE_UNITS.KILOMETERS
+                ? ' ' + this._translateService.instant('home-tab.km-per-day')
+                : ' ' + this._translateService.instant('home-tab.mi-per-day');
+            this._updateDistancePlotYAxis(); // sets this._todaysUsage
+            // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+            if (this._todaysUsage) {
+              let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+                milesToKilometers(
+                  DeviceBase.caseTicksToMiles(
+                    this._todaysUsage.distance_smartdrive_coast -
+                      this._todaysUsage.distance_smartdrive_coast_start
+                  ) || 0
+                ),
+                this.user.data.distance_unit_preference
+              );
+              if (coastDistance < 0.0) coastDistance = 0.0;
+              this.todayCoastDistance = coastDistance.toFixed(1);
+
+              let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+                milesToKilometers(
+                  DeviceBase.motorTicksToMiles(
+                    this._todaysUsage.distance_smartdrive_drive -
+                      this._todaysUsage.distance_smartdrive_drive_start
+                  ) || 0
+                ),
+                this.user.data.distance_unit_preference
+              );
+              if (driveDistance < 0.0) driveDistance = 0.0;
+              this.todayDriveDistance = driveDistance.toFixed(1);
+
+              this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
+                milesToKilometers(
+                  DeviceBase.caseTicksToMiles(
+                    this._todaysUsage.distance_smartdrive_coast
+                  ) || 0
+                ),
+                this.user.data.distance_unit_preference
+              ).toFixed(1);
+              // Today coast distance changed, update message
+              this.updateTodayMessage();
+            } else {
+              this.todayCoastDistance = (0).toFixed(1);
+              this.todayDriveDistance = (0).toFixed();
+              this.todayOdometer = (0).toFixed();
+            }
+
+            this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
               this.user.data.activity_goal_distance,
               this.user.data.distance_unit_preference
-            )) *
-          100;
-        this._updateProgress();
+            );
+            this.distanceCirclePercentage =
+              (parseFloat(this.todayCoastDistance) /
+                convertToMilesIfUnitPreferenceIsMiles(
+                  this.user.data.activity_goal_distance,
+                  this.user.data.distance_unit_preference
+                )) *
+              100;
+            this._updateProgress();
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
       .catch(err => {
         this._logService.logException(err);
       });
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklyPushTrackerActivity from Kinvey');
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      '' + 'Loading WeeklyPushTrackerActivity from Kinvey'
+    );
     let result = [];
     if (!this.user) return result;
 
@@ -502,9 +508,15 @@ export class HomeTabComponent {
     if (this._firstLoad) {
       // First load of the home tab
       // Check if there's cached activity loaded in app.component.ts
-      this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Loading WeeklyPushTrackerActivity from appSettings');
+      this._logService.logBreadCrumb(
+        HomeTabComponent.name,
+        '' + 'Loading WeeklyPushTrackerActivity from appSettings'
+      );
       try {
-        const weeklyActivityJSON = appSettings.getString('PushTracker.WeeklyActivity.' + date, '{}');
+        const weeklyActivityJSON = appSettings.getString(
+          'PushTracker.WeeklyActivity.' + date,
+          '{}'
+        );
         if (weeklyActivityJSON) result = JSON.parse(weeklyActivityJSON);
       } catch (err) {
         this._logService.logException(err);
@@ -520,10 +532,28 @@ export class HomeTabComponent {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'Successfully loaded WeeklyPushTrackerActivity from Kinvey');
+          this._logService.logBreadCrumb(
+            HomeTabComponent.name,
+            '' + 'Successfully loaded WeeklyPushTrackerActivity from Kinvey'
+          );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(HomeTabComponent.name, '' + 'No WeeklyPushTrackerActivity data available for this week');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          '' + 'No WeeklyPushTrackerActivity data available for this week'
+        );
+        // There's no data for this week
+        // Reset weekly activity object
+        this._weeklyActivityFromKinvey = {
+          date: date,
+          start_time: weekStartDate.getTime(),
+          coast_time_avg: 0,
+          coast_time_total: 0,
+          distance_watch: 0,
+          heart_rate: 0,
+          push_count: 0,
+          days: [null, null, null, null, null, null, null]
+        };
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
@@ -533,96 +563,87 @@ export class HomeTabComponent {
   }
 
   private async _loadWeeklyActivity() {
-    this.loadWeeklyActivityFromKinvey(this._weekStart).then(() => {
-      this._formatActivityForView().then(result => {
-        this.weeklyActivity = new ObservableArray(result);
-        this._updateCoastTimePlotYAxis();
+    this.loadWeeklyActivityFromKinvey(this._weekStart)
+      .then(() => {
+        this._formatActivityForView()
+          .then(result => {
+            this.weeklyActivity = new ObservableArray(result);
+            this._updateCoastTimePlotYAxis();
 
-        // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-        if (this._todaysActivity) {
-          this.todayCoastTime = (
-            this._todaysActivity.coast_time_avg || 0
-          ).toFixed(1);
-          this.todayPushCount = (
-            this._todaysActivity.push_count || 0
-          ).toFixed();
-          // Today coast time changed, update message
-          this.updateTodayMessage();
-        } else {
-          this.todayCoastTime = (0).toFixed(1);
-          this.todayPushCount = (0).toFixed();
-        }
+            // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+            if (this._todaysActivity) {
+              this.todayCoastTime = (
+                this._todaysActivity.coast_time_avg || 0
+              ).toFixed(1);
+              this.todayPushCount = (
+                this._todaysActivity.push_count || 0
+              ).toFixed();
+              // Today coast time changed, update message
+              this.updateTodayMessage();
+            } else {
+              this.todayCoastTime = (0).toFixed(1);
+              this.todayPushCount = (0).toFixed();
+            }
 
-        this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
-        this.coastTimeGoalMessage = this._translateService.instant(
-          'home-tab.coast-for'
-        );
-        this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit =
-          ' ' + this._translateService.instant('home-tab.seconds-per-day');
-        this.distanceGoalMessage =
-          this._translateService.instant('home-tab.travel') + ' ';
-        this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
-          this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference
-        ).toFixed(1);
-        this.distanceGoalUnit =
-          this.user.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS
-            ? ' ' + this._translateService.instant('home-tab.km-per-day')
-            : ' ' + this._translateService.instant('home-tab.mi-per-day');
-        this.distanceCirclePercentageMaxValue =
-          '/' +
-          convertToMilesIfUnitPreferenceIsMiles(
-            this.user.data.activity_goal_distance,
-            this.user.data.distance_unit_preference
-          ).toFixed(1);
-        this.coastTimeCirclePercentageMaxValue =
-          '/' + this.user.data.activity_goal_coast_time;
-        this.goalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastTime: this.user.data.activity_goal_coast_time,
-            impact: 7
-          }
-        ] as any[]);
-        this.coastTimeCirclePercentage =
-          (parseFloat(this.todayCoastTime) /
-            this.user.data.activity_goal_coast_time) *
-          100;
+            this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
+            this.coastTimeGoalMessage = this._translateService.instant(
+              'home-tab.coast-for'
+            );
+            this.coastTimeGoalValue =
+              this.user.data.activity_goal_coast_time + '';
+            this.coastTimeGoalUnit =
+              ' ' + this._translateService.instant('home-tab.seconds-per-day');
+            this.distanceGoalMessage =
+              this._translateService.instant('home-tab.travel') + ' ';
+            this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+              this.user.data.activity_goal_distance,
+              this.user.data.distance_unit_preference
+            ).toFixed(1);
+            this.distanceGoalUnit =
+              this.user.data.distance_unit_preference ===
+              DISTANCE_UNITS.KILOMETERS
+                ? ' ' + this._translateService.instant('home-tab.km-per-day')
+                : ' ' + this._translateService.instant('home-tab.mi-per-day');
+            this.distanceCirclePercentageMaxValue =
+              '/' +
+              convertToMilesIfUnitPreferenceIsMiles(
+                this.user.data.activity_goal_distance,
+                this.user.data.distance_unit_preference
+              ).toFixed(1);
+            this.coastTimeCirclePercentageMaxValue =
+              '/' + this.user.data.activity_goal_coast_time;
+            this.coastTimeCirclePercentage =
+              (parseFloat(this.todayCoastTime) /
+                this.user.data.activity_goal_coast_time) *
+              100;
 
-        this.coastTimeGoalMessage =
-          this._translateService.instant('home-tab.coast-for') + ' ';
-        this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
-        this.coastTimeGoalUnit =
-          ' ' + this._translateService.instant('home-tab.seconds-per-day');
-        this.distanceCirclePercentageMaxValue =
-          '/' +
-          convertToMilesIfUnitPreferenceIsMiles(
-            this.user.data.activity_goal_distance,
-            this.user.data.distance_unit_preference
-          ).toFixed(1);
-        this.coastTimeCirclePercentageMaxValue =
-          '/' + this.user.data.activity_goal_coast_time;
-        this.goalLabelChartData = new ObservableArray([
-          {
-            xAxis: '        ',
-            coastTime: this.user.data.activity_goal_coast_time,
-            impact: 7
-          }
-        ] as any[]);
-        this.coastTimeCirclePercentage =
-          (parseFloat(this.todayCoastTime) /
-            this.user.data.activity_goal_coast_time) *
-          100;
-        this._updateProgress();
+            this.coastTimeGoalMessage =
+              this._translateService.instant('home-tab.coast-for') + ' ';
+            this.coastTimeGoalValue =
+              this.user.data.activity_goal_coast_time + '';
+            this.coastTimeGoalUnit =
+              ' ' + this._translateService.instant('home-tab.seconds-per-day');
+            this.distanceCirclePercentageMaxValue =
+              '/' +
+              convertToMilesIfUnitPreferenceIsMiles(
+                this.user.data.activity_goal_distance,
+                this.user.data.distance_unit_preference
+              ).toFixed(1);
+            this.coastTimeCirclePercentageMaxValue =
+              '/' + this.user.data.activity_goal_coast_time;
+            this.coastTimeCirclePercentage =
+              (parseFloat(this.todayCoastTime) /
+                this.user.data.activity_goal_coast_time) *
+              100;
+            this._updateProgress();
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
       .catch(err => {
         this._logService.logException(err);
       });
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   private async _updateProgress() {
@@ -649,13 +670,6 @@ export class HomeTabComponent {
       ).toFixed(1);
     this.coastTimeCirclePercentageMaxValue =
       '/' + this.user.data.activity_goal_coast_time;
-    this.goalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastTime: this.user.data.activity_goal_coast_time,
-        impact: 7
-      }
-    ] as any[]);
     this.coastTimeCirclePercentage =
       (parseFloat(this.todayCoastTime) /
         this.user.data.activity_goal_coast_time) *
@@ -666,16 +680,6 @@ export class HomeTabComponent {
       this.user.data.activity_goal_distance,
       this.user.data.distance_unit_preference
     );
-    this.distanceGoalLabelChartData = new ObservableArray([
-      {
-        xAxis: '        ',
-        coastDistance: convertToMilesIfUnitPreferenceIsMiles(
-          this.user.data.activity_goal_distance,
-          this.user.data.distance_unit_preference
-        ),
-        impact: 7
-      }
-    ] as any[]);
     this.distanceCirclePercentage =
       (parseFloat(this.todayCoastDistance) /
         convertToMilesIfUnitPreferenceIsMiles(
@@ -686,85 +690,12 @@ export class HomeTabComponent {
     this._updateDistancePlotYAxis();
   }
 
-  private async _updatePalettes() {
-    {
-      // Distance Plot Palettes
-
-      // Coast Distance Palette
-      const coastDistancePalette = new Palette();
-      coastDistancePalette.seriesName = 'CoastDistanceUsageActivity';
-      const coastDistancePaletteEntry = new PaletteEntry();
-      coastDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistancePalette.entries = new ObservableArray<PaletteEntry>([
-        coastDistancePaletteEntry
-      ]);
-
-      // Drive Distance Palette
-      const driveDistancePalette = new Palette();
-      driveDistancePalette.seriesName = 'DriveDistanceUsageActivity';
-      const driveDistancePaletteEntry = new PaletteEntry();
-      driveDistancePaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      driveDistancePaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      driveDistancePalette.entries = new ObservableArray<PaletteEntry>([
-        driveDistancePaletteEntry
-      ]);
-
-      // CoastDistanceGoalLineSeries
-      const coastDistanceGoalPalette = new Palette();
-      coastDistanceGoalPalette.seriesName = 'CoastDistanceGoalLineSeries';
-      const coastDistanceGoalPaletteEntry = new PaletteEntry();
-      coastDistanceGoalPaletteEntry.fillColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistanceGoalPaletteEntry.strokeColor =
-        this.user.data.theme_preference === APP_THEMES.DEFAULT
-          ? new Color('#0067a6')
-          : new Color('#89d4e3');
-      coastDistanceGoalPalette.entries = new ObservableArray<PaletteEntry>([
-        coastDistanceGoalPaletteEntry
-      ]);
-
-      this.distancePlotPalettes = new ObservableArray<Palette>([
-        coastDistancePalette,
-        driveDistancePalette,
-        coastDistanceGoalPalette
-      ]);
-    }
-  }
-
-  private async _updatePointLabelStyle() {
-    this.pointLabelStyle = new PointLabelStyle();
-    this.pointLabelStyle.margin = 10;
-    this.pointLabelStyle.fontStyle = ChartFontStyle.Bold;
-    this.pointLabelStyle.fillColor =
-      this.user.data.theme_preference === APP_THEMES.DEFAULT
-        ? new Color('#e31c79')
-        : new Color('#00c1d5');
-    this.pointLabelStyle.strokeColor =
-      this.user.data.theme_preference === APP_THEMES.DEFAULT
-        ? new Color('#e31c79')
-        : new Color('#00c1d5');
-    this.pointLabelStyle.textSize = 12;
-    this.pointLabelStyle.textColor = new Color('White');
-    this.pointLabelStyle.textFormat = '%.1f';
-  }
-
   private async _updateCoastTimePlotYAxis() {
     this.yAxisMax = 0;
+    // Set today's activity to null
+    // If today's activity is available in this._weeklyActivityFromKinvey,
+    // then it will be set below
+    this._todaysActivity = null;
     if (this._weeklyActivityFromKinvey) {
       const days = this._weeklyActivityFromKinvey['days'];
       for (const i in days) {
@@ -855,6 +786,10 @@ export class HomeTabComponent {
 
   private async _updateDistancePlotYAxis() {
     this.coastDistanceYAxisMax = 0;
+    // Set today's usage to null
+    // If today's usage is available in this._weeklyUsageFromKinvey,
+    // then it will be set below
+    this._todaysUsage = null;
     if (this._weeklyUsageFromKinvey) {
       const days = this._weeklyUsageFromKinvey['days'];
       for (const i in days) {
@@ -864,7 +799,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 day.distance_smartdrive_coast -
-                day.distance_smartdrive_coast_start
+                  day.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -920,7 +855,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
-                dailyUsage.distance_smartdrive_coast_start
+                  dailyUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -931,7 +866,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
-                dailyUsage.distance_smartdrive_drive_start
+                  dailyUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1003,7 +938,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1019,7 +954,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,

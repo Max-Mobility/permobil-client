@@ -11,6 +11,7 @@ import { PushTrackerUserService } from './pushtracker.user.service';
 import { SettingsService } from './settings.service';
 import { SmartDriveUsageService } from './smartdrive-usage.service';
 import { SmartDriveErrorsService } from './smartdrive-errors.service';
+import { ThemeService } from './theme.service';
 
 export const PROVIDERS: any[] = [
   LoggingService,
@@ -25,7 +26,8 @@ export const PROVIDERS: any[] = [
   ActivityService,
   PushTrackerUserService,
   SmartDriveUsageService,
-  SmartDriveErrorsService
+  SmartDriveErrorsService,
+  ThemeService
 ];
 
 export * from './activity.service';
@@ -41,4 +43,4 @@ export * from './pushtracker.user.service';
 export * from './settings.service';
 export * from './smartdrive-usage.service';
 export * from './smartdrive-errors.service';
-
+export * from './theme.service';

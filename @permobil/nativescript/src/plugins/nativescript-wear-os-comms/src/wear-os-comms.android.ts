@@ -9,9 +9,71 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
+  private static _onConnectedCallback: any = null;
+  private static _onDisconnectedCallback: any = null;
+  private static _onMessageReceivedCallback: any = null;
+  private static _onDataReceivedCallback: any = null;
+
+  private static _debugOutputEnabled = false;
 
   constructor() {
     super();
+  }
+
+  public static registerConnectedCallback(cb: any) {
+    WearOsComms._onConnectedCallback = cb;
+  }
+
+  public static registerDisconnectedCallback(cb: any) {
+    WearOsComms._onDisconnectedCallback = cb;
+  }
+
+  public static registerMessageCallback(cb: any) {
+    WearOsComms._onMessageReceivedCallback = cb;
+  }
+
+  public static registerDataCallback(cb: any) {
+    WearOsComms._onDataReceivedCallback = cb;
+  }
+
+  public static hasCompanion() {
+    // TODO: try to determine if there is a wear os watch paired -
+    // look through DataLayerService to determine if it's something we
+    // can figure out
+    return true;
+  }
+
+  public static findAvailableCompanions(timeout: number) {
+    // do nothing
+    return null;
+  }
+
+  public static saveCompanion(address: string) {
+    // do nothing
+  }
+
+  public static clearCompanion() {
+    // do nothing
+  }
+
+  public static connectCompanion(timeout: number = 10000) {
+    // we don't do anything here but we should let people know that
+    // we've "connected" in case they are waiting on the callback to
+    // resolve / continue execution;
+    WearOsComms._onConnectedCallback && WearOsComms._onConnectedCallback();
+  }
+
+  public static disconnectCompanion() {
+    // we don't do anything here but we should let people know that
+    // we've "disconnected" in case they are waiting on the callback to
+    // resolve / continue execution;
+    WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
+  }
+
+  public static setDebugOutput(enabled: boolean) {
+    WearOsComms._debugOutputEnabled = enabled;
+    if (WearOsComms._bluetooth)
+      WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
   }
 
   public static async advertiseAsCompanion() {
@@ -20,6 +82,7 @@ export class WearOsComms extends Common {
       // check paired phone type to determine if we need to advertise
       // (e.g. if the phone is ios we need to use the bluetooth)
 
+      WearOsComms.log('Determining phone type');
       const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
         .getPhoneDeviceType(androidUtils.getApplicationContext());
       switch (phoneDeviceType) {
@@ -33,18 +96,23 @@ export class WearOsComms extends Common {
           break;
 
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-          console.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
+          WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
           break;
       }
 
       if (needToAdvertise) {
+        WearOsComms.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
         WearOsComms._bluetooth = new Bluetooth();
+        WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
         // start the server
         WearOsComms._bluetooth.startGattServer();
+        // clear out any existing services
+        WearOsComms.deleteService();
         // create service / characteristics
         WearOsComms.createService();
-        // TODO: set up listeners for data receipt from the app
+        // set up listeners for data receipt from the app
+        WearOsComms.registerListeners();
         // advertise the added service
         await WearOsComms._bluetooth.startAdvertising({
           UUID: WearOsComms.ServiceUUID,
@@ -59,17 +127,69 @@ export class WearOsComms extends Common {
         WearOsComms._bluetooth.addService(WearOsComms._companionService);
       }
     } catch (err) {
-      console.error('error advertising as companion:', err);
+      WearOsComms.error('error advertising as companion:', err);
     }
   }
 
+  private static onCharacteristicWriteRequest(args: any) {
+    const argdata = args.data;
+    const characteristic = argdata.characteristic.getUuid().toString().toLowerCase();
+    WearOsComms.log('onCharacteristicWriteRequest for', characteristic);
+    const value = argdata.value;
+    const device = argdata.device;
+    if (characteristic === WearOsComms.MessageCharacteristicUUID.toLowerCase()) {
+      const stringValue = WearOsComms.uintToString(argdata.value);
+      WearOsComms.log('stringValue:', stringValue);
+      const splits = stringValue.split(WearOsComms.MessageDelimeter);
+      WearOsComms.log('splits:', splits);
+      if (splits && splits.length > 1) {
+        const path = splits[0];
+        // recover original message in case it had any delimeters in it
+        const message = splits.slice(1).join(WearOsComms.MessageDelimeter);
+        WearOsComms._onMessageReceivedCallback &&
+          WearOsComms._onMessageReceivedCallback({ path, message, device });
+      } else {
+        WearOsComms.error('invalid message received:', stringValue);
+      }
+    } else if (characteristic === WearOsComms.DataCharacteristicUUID.toLowerCase()) {
+      WearOsComms._onDataReceivedCallback &&
+        WearOsComms._onDataReceivedCallback({ data: value, device });
+    } else {
+      WearOsComms.error('Unknown characteristic written to:', characteristic);
+    }
+  }
+
+  private static uintToString(uintArray: any) {
+    var encodedString = String.fromCharCode.apply(null, uintArray),
+    decodedString = decodeURIComponent(escape(encodedString));
+    return decodedString;
+  }
+
+  private static registerListeners() {
+    WearOsComms.unregisterListeners();
+    WearOsComms._bluetooth.on(
+      Bluetooth.characteristic_write_request_event,
+      WearOsComms.onCharacteristicWriteRequest
+    );
+  }
+
+  private static unregisterListeners() {
+    WearOsComms._bluetooth.off(
+      Bluetooth.characteristic_write_request_event
+    );
+  }
+
+  private static deleteService() {
+    WearOsComms._bluetooth.clearServices();
+    WearOsComms._companionService = null;
+  }
+
   private static createService() {
-    // TODO: flesh out!
     if (WearOsComms._bluetooth.offersService(WearOsComms.ServiceUUID)) {
-      console.log(`Bluetooth already offers ${WearOsComms.ServiceUUID}`);
+      WearOsComms.log(`Bluetooth already offers ${WearOsComms.ServiceUUID}`);
       return;
     }
-    console.log('making service');
+    WearOsComms.log('making service');
 
     // make the service
     WearOsComms._companionService = WearOsComms._bluetooth.makeService({
@@ -84,13 +204,13 @@ export class WearOsComms extends Common {
       WearOsComms.MessageCharacteristicUUID,
       WearOsComms.DataCharacteristicUUID,
     ].map(cuuid => {
-      // console.log('Making characteristic: ' + cuuid);
+      // WearOsComms.log('Making characteristic: ' + cuuid);
       //  defaults props are set READ/WRITE/NOTIFY, perms are set to READ/WRITE
       const c = WearOsComms._bluetooth.makeCharacteristic({
         UUID: cuuid
       });
 
-      // console.log('making descriptors');
+      // WearOsComms.log('making descriptors');
       const descriptors = descriptorUUIDs.map(duuid => {
         //  defaults perms are set to READ/WRITE
         const d = WearOsComms._bluetooth.makeDescriptor({
@@ -98,7 +218,7 @@ export class WearOsComms extends Common {
         });
 
         d.setValue(new Array<any>([0x00, 0x00]));
-        // console.log('Making descriptor: ' + duuid);
+        // WearOsComms.log('Making descriptor: ' + duuid);
         return d;
       });
 
@@ -118,7 +238,7 @@ export class WearOsComms extends Common {
 
       return c;
     });
-    console.log('Adding characteristics to service!');
+    WearOsComms.log('Adding characteristics to service!');
     characteristics.map(c => WearOsComms._companionService.addCharacteristic(c));
   }
 
@@ -130,7 +250,7 @@ export class WearOsComms extends Common {
         );
 
         r.sendMessage(channel, msg);
-        resolve();
+        resolve(true);
       } catch (error) {
         reject(error);
       }
@@ -144,10 +264,19 @@ export class WearOsComms extends Common {
           androidUtils.getApplicationContext()
         );
         l.sendData(data);
-        resolve();
+        resolve(true);
       } catch (error) {
         reject(error);
       }
     });
+  }
+
+  private static log(...args) {
+    if (WearOsComms._debugOutputEnabled)
+      console.log('[ WearOsComms ]', ...args);
+  }
+
+  private static error(...args) {
+    console.error('[ WearOsComms ]', ...args);
   }
 }

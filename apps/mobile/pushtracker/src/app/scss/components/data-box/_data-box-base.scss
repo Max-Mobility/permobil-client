@@ -33,6 +33,12 @@
       vertical-align: center;
     }
 
+    > .data-box-icon {
+      height: 30;
+      margin-left: 10;
+      width: 25;
+    }
+
     > .data-box-arrow {
       font-size: 30;
       font-family: $material-icon;

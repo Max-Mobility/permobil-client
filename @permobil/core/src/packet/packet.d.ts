@@ -1,7 +1,6 @@
 export declare class Packet {
     static maxSize: number;
     private instance;
-    private _bytes;
     static makeBoundData(bindingType: string, data: string): any;
     constructor(bytes?: any);
     initialize(bytes?: any): void;
@@ -17,10 +16,10 @@ export declare class Packet {
     data(key: string, value?: any): any;
     getPayload(): void;
     parse(): void;
-    parseData(data: any): void;
-    parseCommand(command: any): void;
-    parseError(error: any): void;
-    parseOTA(ota: any): void;
+    parseData(_: any): void;
+    parseCommand(_: any): void;
+    parseError(_: any): void;
+    parseOTA(_: any): void;
 }
 export declare function bindingTypeToString(bindingType: any, bindingValue: any): any;
 export declare function decimalToHex(d: any): string;

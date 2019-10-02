@@ -1,40 +1,57 @@
-<PullToRefresh (loaded)="onHomeTabLoaded()" (unloaded)="onHomeTabUnloaded()" (refresh)="refreshPlots($event)" [color]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'">
+<PullToRefresh
+  (loaded)="onHomeTabLoaded()"
+  (unloaded)="onHomeTabUnloaded()"
+  (refresh)="refreshPlots($event)"
+  [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
+  [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+>
   <ScrollView class="home-tab-layout" height="100%">
-    <StackLayout
-      horizontalAlignment="center"
-      row="1" col="0">
+    <StackLayout horizontalAlignment="center" row="1" col="0">
       // Mock ActionBar
       <MockActionBar [showBackNav]="false" [showInfoBtn]="true"></MockActionBar>
 
       // Activity Circles
-      <GridLayout rows="auto" columns="auto"
-                  horizontalAlignment="center"
-                  [height]="screenWidth * 0.6" [width]="screenWidth * 0.6">
+      <GridLayout rows="auto" columns="auto" horizontalAlignment="center" [height]="screenWidth * 0.6" [width]="screenWidth * 0.6">
         // Distance Circle (outer/purple)
-        <AnimatedCircle id="distanceCircle"
-                        horizontalAlignment="center"
-                        [width]="screenWidth * 0.6"
-                        [height]="screenWidth * 0.6"
-                        animated="true" animateFrom="0" clockwise="true"
-                        rimWidth="10" barWidth="28"
-                        [progress]="distanceCirclePercentage">
+        <AnimatedCircle
+          id="distanceCircle"
+          horizontalAlignment="center"
+          [width]="screenWidth * 0.6"
+          [height]="screenWidth * 0.6"
+          animated="true"
+          animateFrom="0"
+          clockwise="true"
+          rimWidth="10"
+          barWidth="28"
+          [progress]="distanceCirclePercentage"
+        >
         </AnimatedCircle>
         // Coast Time Circle (inner/teal)
-        <AnimatedCircle id="coastTimeCircle"
-                        horizontalAlignment="center"
-                        [width]="screenWidth * 0.5"
-                        [height]="screenWidth * 0.5"
-                        animated="true" animateFrom="0" clockwise="true"
-                        rimWidth="10" barWidth="28"
-                        [progress]="coastTimeCirclePercentage">
+        <AnimatedCircle
+          id="coastTimeCircle"
+          horizontalAlignment="center"
+          [width]="screenWidth * 0.5"
+          [height]="screenWidth * 0.5"
+          animated="true"
+          animateFrom="0"
+          clockwise="true"
+          rimWidth="10"
+          barWidth="28"
+          [progress]="coastTimeCirclePercentage"
+        >
         </AnimatedCircle>
-        <GridLayout rows="*" columns="*"
-                    horizontalAlignment="center"
-                    [width]="screenWidth * 0.4"
-                    [height]="screenWidth * 0.4"
-                    [borderRadius]="screenWidth * 0.4 * 0.5"
-                    class="distance-remaining-circle"
-                    ripple rippleColorAlpha="0.18" (tap)="onActivityTap()">
+        <GridLayout
+          rows="*"
+          columns="*"
+          horizontalAlignment="center"
+          [width]="screenWidth * 0.4"
+          [height]="screenWidth * 0.4"
+          [borderRadius]="screenWidth * 0.4 * 0.5"
+          class="distance-remaining-circle"
+          ripple
+          rippleColorAlpha="0.18"
+          (tap)="onActivityTap()"
+        >
           <Label class="today-message" [text]="todayMessage" textWrap="true"></Label>
         </GridLayout>
       </GridLayout>
@@ -69,28 +86,26 @@
         // push count data
         <Label row="0" col="0" class="detail-value" [text]="todayPushCount"></Label>
         <Label textWrap="true" row="1" col="0" class="detail-description" [text]="'general.pushes-today' | translate"></Label>
-        // coast time data
+        // drive distance data
         <Label row="0" col="2" class="detail-value" [text]="todayDriveDistance"></Label>
         <Label textWrap="true" row="1" col="2" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.km-today' : 'general.miles-today') | translate"></Label>
-        // distance data
+        // odometer data
         <Label row="0" col="4" class="detail-value" [text]="todayOdometer"></Label>
         <Label textWrap="true" row="1" col="4" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.odometer-km' : 'general.odometer') | translate"></Label>
       </GridLayout>
 
       // Coast Time Chart
-      <GridLayout rows="auto, *" columns="*"
-                  horizontalAlignment="center"
-                  class="chart-layout">
+      <GridLayout rows="auto, *" columns="*" horizontalAlignment="center" class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="coastTimeGoalMessage"></Label>
           <Label class="goal-value" [text]="coastTimeGoalValue"></Label>
           <Label class="title" [text]="coastTimeGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" width="92%" horizontalAlignment="center" id="homeTabWeeklyCoastTimeChart" pointSelectionMode="Single" (pointSelected)="onCoastTimeBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -99,13 +114,13 @@
             tickLength="1"
             labelFitMode="Multiline"
             plotMode="OnTicks"
-            >
+          >
           </CategoricalAxis>
 
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -113,18 +128,16 @@
             minumum="1"
             [majorStep]="yAxisStep"
             [labelFormat]="yAxisMax === 1.0 ? '%.1f' : '%.0f'"
-            ></LinearAxis>
+          ></LinearAxis>
 
-          <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" 
-                     categoryProperty="xAxis" valueProperty="coastTime">
-          </BarSeries>
+          <BarSeries tkCartesianSeries [items]="weeklyActivity" seriesName="WeeklyActivity" categoryProperty="xAxis" valueProperty="coastTime"> </BarSeries>
 
           <Palettes>
             <Palette tkCartesianPalette seriesName="WeeklyActivity">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
-            <Palette tkCartesianPalette seriesName="GoalLineSeries">
-              <PaletteEntry tkCartesianPaletteEntry [fillColor]="savedTheme === APP_THEMES.DEFAULT ? '#e31c79' : '#89d4e3'" [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#e31c79' : '#89d4e3'"></PaletteEntry>
+            <Palette tkCartesianPalette seriesName="WeeklyActivity" seriesState="Selected">
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
             </Palette>
           </Palettes>
 
@@ -135,28 +148,26 @@
             [value]="coastTimePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
-            >
+          >
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>
 
       // Distance Time Chart
-      <GridLayout rows="auto, *" columns="*"
-                  horizontalAlignment="center"
-                  class="chart-layout">
+      <GridLayout rows="auto, *" columns="*" horizontalAlignment="center" class="chart-layout">
         <FlexboxLayout width="80%" horizontalAlignment="center" flexWrap="wrap" alignContent="flex-start">
           <Label class="title" [text]="distanceGoalMessage"></Label>
           <Label class="goal-value" [text]="distanceGoalValue"></Label>
           <Label class="title" [text]="distanceGoalUnit"></Label>
         </FlexboxLayout>
-        <RadCartesianChart row="1" [height]="screenWidth * 0.5" id="homeTabWeeklyCoastDistanceChart" [palettes]="distancePlotPalettes" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
+        <RadCartesianChart row="1" [height]="screenWidth * 0.5" width="92%" horizontalAlignment="center" id="homeTabWeeklyCoastDistanceChart" pointSelectionMode="Single" (pointSelected)="onDistanceBarSelected($event)">
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
 
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -165,13 +176,13 @@
             tickLength="1"
             labelFitMode="Multiline"
             plotMode="OnTicks"
-            >
+          >
           </CategoricalAxis>
 
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="savedTheme == APP_THEMES.DARK ? 'White' : 'Black'"
+            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
@@ -179,9 +190,19 @@
             minumum="0.0"
             [majorStep]="coastDistanceYAxisStep"
             [labelFormat]="coastDistanceYAxisMax === 1.0 ? '%.1f' : '%.0f'"
-            ></LinearAxis>
+          >
+          </LinearAxis>
 
           <BarSeries tkCartesianSeries [items]="usageActivity" seriesName="CoastDistanceUsageActivity" categoryProperty="xAxis" valueProperty="coastDistance"> </BarSeries>
+
+          <Palettes>
+            <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity">
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+            </Palette>
+            <Palette tkCartesianPalette seriesName="CoastDistanceUsageActivity" seriesState="Selected">
+              <PaletteEntry tkCartesianPaletteEntry [fillColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"></PaletteEntry>
+            </Palette>
+          </Palettes>
 
           <ChartGridLineAnnotation
             tkCartesianAnnotations
@@ -190,9 +211,9 @@
             [value]="distancePlotAnnotationValue"
             zPosition="AboveSeries"
             strokeWidth="2"
-            [strokeColor]="savedTheme === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+            [strokeColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             strokeDashPattern="3, 3"
-            >
+          >
           </ChartGridLineAnnotation>
         </RadCartesianChart>
       </GridLayout>

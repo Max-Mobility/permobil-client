@@ -12,13 +12,10 @@ import { BottomNavigation } from 'tns-core-modules/ui/bottom-navigation';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
-import { CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
+import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { ActivityService,
-  BluetoothService, PushTrackerUserService, SettingsService,
-  SmartDriveUsageService, SmartDriveErrorsService, LoggingService } from '../../services';
-import { APP_LANGUAGES } from '../../enums';
-import { applyTheme, YYYY_MM_DD } from '../../utils';
+import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
+import { YYYY_MM_DD } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -74,7 +71,6 @@ export class TabsComponent {
 
     this._userService.user.subscribe(user => {
       if (!user) return;
-      applyTheme(user.data.theme_preference);
 
       this.user = user;
       if (this.user.data.language_preference) {
