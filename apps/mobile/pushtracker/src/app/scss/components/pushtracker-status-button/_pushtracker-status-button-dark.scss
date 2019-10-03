@@ -4,4 +4,5 @@
 .pushtracker-status-btn-layout {
   @extend .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE;
   background-color: $black;
+  color: $white;
 }

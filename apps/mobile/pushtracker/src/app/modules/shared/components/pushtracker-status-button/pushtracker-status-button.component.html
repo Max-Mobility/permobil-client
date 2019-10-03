@@ -1,33 +1,15 @@
-<StackLayout orientation="horizontal" class="pushtracker-status-btn-layout"
-  (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
+<GridLayout rows="*" columns="*, auto" class="pushtracker-status-btn-layout" (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
   // PushTracker Icon
-  <GridLayout columns="auto" order="1" height="44" borderRadius="22">
-    <Image [src]="icon" stretch="aspectFit" class="watch-status-btn"></Image>
+  <GridLayout col="0" height="36" width="26" verticalAlignment="center">
+    <Image [src]="icon" height="100%" stretch="aspectFit"></Image>
   </GridLayout>
-  // Bluetooth Symbol
-  <Label horizontalAlignment="center" verticalAlignment="middle"
-    class="material-icon pushtracker-state-icon" text="&#xe1a7;"></Label>
 
   // PushTrackerState = unknown
-  <Label *ngIf="state === PushTrackerState.unknown"
-    horizontalAlignment="center" verticalAlignment="middle"
-    class="material-icon pushtracker-state-icon" text="&#63;"></Label>
+  <Label col="1" *ngIf="state === PushTrackerState.unknown" [text]="unknownIconText"></Label>
   // PushTrackerState = connected || ready
-  <Label *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready"
-    horizontalAlignment="center" verticalAlignment="middle"
-    class="material-icon pushtracker-state-icon" text="&#x2713;"></Label>
+  <Label col="1" *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready" [text]="connectedIconText"></Label>
   // PushTrackerState = disconnected
-  <Label *ngIf="state === PushTrackerState.disconnected"
-    horizontalAlignment="center" verticalAlignment="middle"
-    class="material-icon pushtracker-state-icon" text="&#10007;"></Label>
+  <Label col="1" *ngIf="state === PushTrackerState.disconnected" [text]="disconnectedIconText"></Label>
   // PushTrackerState = busy
-  <ActivityIndicator
-    marginLeft="-10"
-    height="22"
-    verticalAlignment="middle"
-    horizontalAlignment="left"
-    *ngIf="state === PushTrackerState.busy"
-    [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-    busy="true"
-  ></ActivityIndicator>
-</StackLayout>
+  <ActivityIndicator col="1" *ngIf="state === PushTrackerState.busy" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" busy="true"></ActivityIndicator>
+</GridLayout>
