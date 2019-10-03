@@ -36,7 +36,9 @@ export class DeviceSetupComponent implements OnInit {
 
   // Done button
   public paired: boolean = false;
-  public statusMessage: string = this._translateService.instant('device-setup.waiting-for-pairing-request');
+  public statusMessage: string = this._translateService.instant(
+    'device-setup.waiting-for-pairing-request'
+  );
   public showDoneButton: boolean = false;
   public doneButtonText: string = this._translateService.instant(
     'device-setup.finish'
@@ -252,7 +254,9 @@ export class DeviceSetupComponent implements OnInit {
         trackers.map(tracker => {
           this.pushTracker = tracker;
           this.paired = true;
-          this.statusMessage = this._translateService.instant('device-setup.pairing');
+          this.statusMessage = this._translateService.instant(
+            'device-setup.pairing'
+          );
           this.pushTracker.on(
             PushTracker.daily_info_event,
             this.onPushTrackerDailyInfoEvent,
@@ -270,7 +274,9 @@ export class DeviceSetupComponent implements OnInit {
       }
     } else {
       this.paired = true;
-      this.statusMessage = this._translateService.instant('device-setup.pairing');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.pairing'
+      );
       this.pushTracker.on(
         PushTracker.daily_info_event,
         this.onPushTrackerDailyInfoEvent,
@@ -285,7 +291,9 @@ export class DeviceSetupComponent implements OnInit {
       'PushTracker daily_info_event received!'
     );
     this.paired = true;
-    this.statusMessage = this._translateService.instant('device-setup.connection-successful');
+    this.statusMessage = this._translateService.instant(
+      'device-setup.connection-successful'
+    );
     // We just received a daily info event
     // Our connection with the OG PushTracker is solid
     this._zone.run(() => {
@@ -298,14 +306,18 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker disconnected!'
     );
-    
+
     if (this.pushTracker && this.pushTracker.ableToSend && this.paired) {
       // We were able to send and got disconnected
       this.paired = false;
-      this.statusMessage = this._translateService.instant('device-setup.waiting-for-pairing-request');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.waiting-for-pairing-request'
+      );
       this.pushTracker = null;
     } else if (!this.pushTracker && !this.paired) {
-      this.statusMessage = this._translateService.instant('device-setup.pairing');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.pairing'
+      );
     }
 
     this._zone.run(() => {
