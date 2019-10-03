@@ -23,7 +23,8 @@ export declare class WearOsComms extends Common {
   /**
    * For phones
    */
-  static findAvailableCompanions(timeoutSeconds: number): Promise<string>;
+  static findAvailableCompanion(timeoutSeconds: number): Promise<any>;
+  static findAvailableCompanions(timeoutSeconds: number): Promise<any[]>;
   static hasCompanion(): boolean;
   static clearCompanion();
   static saveCompanion(address: string);

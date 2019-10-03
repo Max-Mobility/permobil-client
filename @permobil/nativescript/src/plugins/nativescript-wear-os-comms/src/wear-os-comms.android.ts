@@ -48,6 +48,11 @@ export class WearOsComms extends Common {
     return null;
   }
 
+  public static findAvailableCompanion(timeout: number) {
+    // do nothing
+    return null;
+  }
+
   public static saveCompanion(address: string) {
     // do nothing
   }

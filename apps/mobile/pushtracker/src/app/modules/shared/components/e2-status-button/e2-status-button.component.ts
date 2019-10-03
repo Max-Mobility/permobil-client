@@ -130,7 +130,8 @@ export class E2StatusButtonComponent {
     try {
       if (!WearOsComms.hasCompanion()) {
         // find and save the companion
-        const address = await WearOsComms.findAvailableCompanions(5);
+        const companion = await WearOsComms.findAvailableCompanion(5);
+        const address = companion.UUID;
         this._logService.logBreadCrumb(
           E2StatusButtonComponent.name,
           'saving new companion: ' + address

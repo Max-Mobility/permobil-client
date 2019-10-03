@@ -3,5 +3,7 @@ export class Common {
   public static MessageCharacteristicUUID: string = 'f733bcab-767f-4b75-8aea-33e6a56fc87a';
   public static DataCharacteristicUUID: string = 'f733bcab-767f-4b75-8aea-33e6a56fc88a';
 
+  public static APP_SETTINGS_COMPANION_KEY: string = 'wear-os-comms.companion';
+
   public static MessageDelimeter: string = '::::::';
 }

@@ -707,6 +707,26 @@ export class Bluetooth extends BluetoothCommon {
     });
   }
 
+  findPeripheralsWithIdentifiers(UUIDs): CBPeripheral[] {
+    const peripherals = [];
+    const periArray = this._centralManager.retrievePeripheralsWithIdentifiers(UUIDs);
+    for (let i = 0; i < periArray.count; i++) {
+      const peripheral = periArray.objectAtIndex(i);
+      peripherals.push(peripheral);
+    }
+    return peripherals;
+  }
+
+  findConnectedPeripheralsWithServices(services): CBPeripheral[] {
+    const peripherals = [];
+    const periArray = this._centralManager.retrieveConnectedPeripheralsWithServices(services);
+    for (let i = 0; i < periArray.count; i++) {
+      const peripheral = periArray.objectAtIndex(i);
+      peripherals.push(peripheral);
+    }
+    return peripherals;
+  }
+
   findPeripheral(UUID): CBPeripheral {
     // for (let i = 0; i < this._peripheralArray.count; i++) {
     //   const peripheral = this._peripheralArray.objectAtIndex(i);
@@ -719,6 +739,10 @@ export class Bluetooth extends BluetoothCommon {
       if (UUID === peripheral.identifier.UUIDString) {
         return peripheral;
       }
+    }
+    const retrievedArray = this._centralManager.retrievePeripheralsWithIdentifiers([UUID]);
+    if (retrievedArray.count === 1) {
+      return retrievedArray.objectAtIndex(0);
     }
     return null;
   }
@@ -783,7 +807,7 @@ export class Bluetooth extends BluetoothCommon {
             () => {
               reject('Write timed out!');
             },
-            10000
+            arg.timeout || 10000
           );
 
         wrapper.peripheral.writeValueForCharacteristicType(
