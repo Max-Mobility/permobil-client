@@ -299,11 +299,17 @@ export class DeviceSetupComponent implements OnInit {
       'PushTracker disconnected!'
     );
 
-    if (this.pushTracker && this.pushTracker.ableToSend) {
+    console.log('Disconnecting');
+    console.log(this.pushTracker);
+    console.log(this.paired);
+
+    if (this.pushTracker && this.pushTracker.ableToSend && this.paired) {
       // We were able to send and got disconnected
       this.paired = false;
       this.statusMessage = this._translateService.instant('device-setup.waiting-for-pairing-request');
       this.pushTracker = null;
+    } else if (!this.pushTracker && !this.paired) {
+      this.statusMessage = this._translateService.instant('device-setup.pairing');
     }
 
     this._zone.run(() => {
