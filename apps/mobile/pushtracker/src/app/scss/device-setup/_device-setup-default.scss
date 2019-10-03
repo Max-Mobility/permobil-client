@@ -22,6 +22,7 @@
     font-size: 25;
     margin: 20, 0, 10, 15;
     color: $black;
+    font-weight: bold;
   }
   
   .slideLowerLabel_2 {
@@ -72,6 +73,11 @@
   
   .permobil-ocean-btn {
     background-color: $permobil-primary;
+    color: $white;
+  }
+
+  .permobil-grey-btn {
+    background-color: $dark-custom-dialog-layout-black;
     color: $white;
   }
 

@@ -17,17 +17,20 @@
                     textWrap="true">
                 </label>
                 <GridLayout row="1" col="0" rows="*" cols="*" marginTop="20">
-                    <StackLayout *ngIf="slides.length" row="0" width="50%" orientation="horizontal"
+                    <StackLayout marginLeft="10" *ngIf="slides.length" row="0" width="50%" orientation="horizontal"
                         horizontalAlignment="left">
                         <button *ngIf="slideIndex > 0" horizontalAlignment="left" class="permobil-ocean-btn" width="50%"
                             height="30%" [text]="'device-setup.previous' | translate"
                             (tap)="onPreviousTap($event)"></button>
+                        <button *ngIf="!showDoneButton" horizontalAlignment="left" class="permobil-grey-btn" width="70%"
+                            height="30%" [text]="'device-setup.do-later' | translate"
+                            (tap)="onSkipTap($event)"></button>
                     </StackLayout>
-                    <StackLayout row="0" width="50%" orientation="horizontal" horizontalAlignment="right">
+                    <StackLayout marginRight="10" row="0" width="50%" orientation="horizontal" horizontalAlignment="right">
                         <button *ngIf="slides.length && slideIndex < (slides.length - 1)" horizontalAlignment="right"
                             class="permobil-ocean-btn" height="30%" width="50%" [text]="'device-setup.next' | translate"
                             (tap)="onNextTap($event)"></button>
-                        <button *ngIf="!slides.length || slideIndex === (slides.length - 1)" horizontalAlignment="right"
+                        <button *ngIf="showDoneButton" horizontalAlignment="right"
                             class="permobil-ocean-btn" height="30%" width="50%" [text]="'device-setup.done' | translate"
                             (tap)="onDoneTap($event)"></button>
                     </StackLayout>

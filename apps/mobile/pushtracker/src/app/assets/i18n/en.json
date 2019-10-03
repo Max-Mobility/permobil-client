@@ -457,6 +457,8 @@
     "previous": "Prev",
     "next": "Next",
     "done": "Done",
+    "skip": "Skip for now",
+    "do-later": "Do this later",
     "slides": {
       "pushtracker-with-smartdrive": [
         {
@@ -467,14 +469,6 @@
             "Press and hold the right raised button for 3 seconds to enter the settings menu",
             "Press the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button",
             "Press the left raised button to pair with mobile. The PushTracker will attempt to pair with your mobile device. Accept the pairing request on your mobile."
-          ]
-        },
-        {
-          "Image": "~/app/assets/images/gifs/PT-APP-CONNECT1.gif",
-          "Label": "Connect PushTracker with Mobile",
-          "Bullets": [
-            "....",
-            "...."
           ]
         }
       ]
