@@ -77,3 +77,8 @@
 .data-box-value {
   color: $permobil-sky;
 }
+
+.device-setup-btn {
+  @extend .DEVICE_SETUP_BUTTON;
+  color: $white;
+}

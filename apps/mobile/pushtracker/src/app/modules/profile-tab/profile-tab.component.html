@@ -51,7 +51,7 @@
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="1" class="data-box-arrow" text="&#xe254;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -61,7 +61,7 @@
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="1" class="data-box-arrow" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -152,8 +152,12 @@
         </StackLayout>
 
         // Device Serial Numbers
-        <Label row="13" col="0" colSpan="4" class="section-label"
+        <Label row="13" col="0" colSpan="3" class="section-label"
           [text]="'profile-tab.device-serial-numbers' | translate"></Label>
+        <Label row="13" col="3" horizontalAlignment="right" verticalAlignment="middle"
+          class="material-icon device-setup-btn" (tap)="onDeviceSetupTap($event)"
+          text="&#xe0de;"></Label>
+
 
         // Horizontal Line
         <StackLayout row="14" col="0" colspan="4" class="hr"></StackLayout>

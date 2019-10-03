@@ -68,3 +68,8 @@
     }
   }
 }
+
+.device-setup-btn {
+  @extend .DEVICE_SETUP_BUTTON;
+  color: $black;
+}

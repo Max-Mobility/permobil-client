@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PushTracker } from '../../models';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 
 @Component({
   selector: 'device-setup',
@@ -40,7 +41,8 @@ export class DeviceSetupComponent implements OnInit {
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _page: Page,
-    private _zone: NgZone
+    private _zone: NgZone,
+    @Optional() private _params: ModalDialogParams
   ) {
     this._page.actionBarHidden = true;
   }
@@ -128,26 +130,20 @@ export class DeviceSetupComponent implements OnInit {
     args.object.width = screen.mainScreen.heightDIPs * 0.35;
   }
 
-  onPreviousTap(args) {
-    if (!this.slides) return;
-    if (this.slideIndex > 0) this.slideIndex -= 1;
-  }
-
-  onNextTap(args) {
-    if (!this.slides) return;
-    if (this.slideIndex < this.slides.length) this.slideIndex += 1;
+  closeModal() {
+    this._params.closeCallback('');
   }
 
   onDoneTap(args) {
-    this.onNextTap(args);
-    if (this.slideIndex === this.slides.length) {
-      // Done with device setup
+    if (this._params && this._params.context && this._params.context.modal) {
+      this.closeModal();
+    } else {
       this._router.navigate(['/tabs/default']);
     }
   }
 
   onSkipTap(args) {
-    this._router.navigate(['/tabs/default']);
+    this.onDoneTap(args);
   }
 
   private async askForPermissions() {

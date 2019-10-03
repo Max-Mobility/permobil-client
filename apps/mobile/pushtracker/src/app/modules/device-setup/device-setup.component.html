@@ -11,7 +11,7 @@
         marginRight="15"
     ></ActivityIndicator>
     <GridLayout row="1" col="0" rows="auto, auto" cols="*" marginTop="20">
-        <StackLayout *ngIf="slides.length && slides[slideIndex].Image" (loaded)="onTopSlideLoaded($event)"
+        <StackLayout *ngIf="slides.length && slides[slideIndex] && slides[slideIndex].Image" (loaded)="onTopSlideLoaded($event)"
             class="topSlide" row="0" width="100%" orientation="horizontal" horizontalAlignment="center">
             // only shows when the slide.Image is a gif
             <Gif (loaded)="onGifLoaded($event)" *ngIf="isGif(slides[slideIndex].Image)"
