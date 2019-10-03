@@ -298,11 +298,7 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker disconnected!'
     );
-
-    console.log('Disconnecting');
-    console.log(this.pushTracker);
-    console.log(this.paired);
-
+    
     if (this.pushTracker && this.pushTracker.ableToSend && this.paired) {
       // We were able to send and got disconnected
       this.paired = false;
