@@ -459,14 +459,14 @@
     "done": "Done",
     "skip": "Skip for now",
     "do-later": "Do this later",
+    "finish": "Finish", 
     "slides": {
       "pushtracker-with-smartdrive": [
         {
           "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
-          "Label": "Pair PushTracker with Mobile",
+          "Label": "Connect PushTracker",
           "Bullets": [
-            "Press either button on the PushTracker to power on the device",
-            "Press and hold the right raised button for 3 seconds to enter the settings menu",
+            "Press either button on the PushTracker to power on the device. Press and hold the right raised button for 3 seconds to enter the settings menu.",
             "Press the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button",
             "Press the left raised button to pair with mobile. The PushTracker will attempt to pair with your mobile device. Accept the pairing request on your mobile."
           ]
@@ -586,7 +586,9 @@
       "no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
       "more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
       "no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
-      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry"
+      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry",
+      "pushtracker-connected": "PushTracker connected!",
+      "pushtracker-disconnected": "PushTracker disconnected!"
     }
   }
 }

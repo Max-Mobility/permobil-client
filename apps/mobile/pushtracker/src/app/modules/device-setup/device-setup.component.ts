@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
@@ -9,7 +9,7 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { TranslateService } from '@ngx-translate/core';
-import { PushTracker } from '../../models'; 
+import { PushTracker } from '../../models';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 
@@ -27,7 +27,11 @@ export class DeviceSetupComponent implements OnInit {
   // permissions for the bluetooth service
   private permissionsNeeded = [];
   public pushTracker: PushTracker;
+
+  // Done button
   public showDoneButton: boolean = false;
+  public doneButtonText: string = this._translateService.instant('device-setup.finish');
+  public doLaterButtonText: string = this._translateService.instant('device-setup.do-later');
 
   constructor(
     private _router: Router,
@@ -35,7 +39,8 @@ export class DeviceSetupComponent implements OnInit {
     private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _logService: LoggingService,
-    private _page: Page
+    private _page: Page,
+    private _zone: NgZone
   ) {
     this._page.actionBarHidden = true;
   }
@@ -77,6 +82,11 @@ export class DeviceSetupComponent implements OnInit {
         this._bluetoothService.on(
             BluetoothService.pushtracker_connected,
             this.onPushTrackerConnected,
+            this
+        );
+        this._bluetoothService.on(
+            BluetoothService.pushtracker_disconnected,
+            this.onPushTrackerDisconnected,
             this
         );
       }
@@ -226,15 +236,32 @@ export class DeviceSetupComponent implements OnInit {
         trackers.map(tracker => {
           this.pushTracker = tracker;
         });
+        new Toasty({
+          text: this._translateService.instant('wireless-updates.messages.pushtracker-connected'),
+          duration: ToastDuration.LONG
+        }).show();
         this._logService.logBreadCrumb(DeviceSetupComponent.name,
           'PushTracker successfully connected!');
-        this.showDoneButton = true;
+        this._zone.run(() => {
+          this.showDoneButton = true;
+        });
+        this._logService.logBreadCrumb(DeviceSetupComponent.name,
+          'Set showDoneButton to true');
       }
-    } else {
-      this._logService.logBreadCrumb(DeviceSetupComponent.name,
-        'PushTracker already connected!');
-      this.showDoneButton = true;
     }
   }
 
+  onPushTrackerDisconnected() {
+    this._logService.logBreadCrumb(DeviceSetupComponent.name,
+      'PushTracker disconnected!');
+    this.pushTracker = null;
+    this._zone.run(() => {
+      this.showDoneButton = false;
+    });
+    new Toasty({
+        text: this._translateService.instant('wireless-updates.messages.pushtracker-disconnected'),
+        duration: ToastDuration.LONG
+    }).show();
+    return;
+  }
 }
