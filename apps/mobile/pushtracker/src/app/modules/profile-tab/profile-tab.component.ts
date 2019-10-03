@@ -865,6 +865,47 @@ export class ProfileTabComponent {
       });
   }
 
+  onEditSerialNumber(deviceName) {
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Edit SmartDrive serial number pressed');
+    // this._setActiveDataBox(args);
+
+    const validDevices =
+      deviceName === 'pushtracker'
+        ? ['pushtracker', 'wristband']
+        : ['smartdrive'];
+
+    let serialNumber = '';
+    if (deviceName === 'smartdrive')
+      serialNumber = this.user.data.smartdrive_serial_number || '';
+    else 
+      serialNumber = this.user.data.pushtracker_serial_number || '';
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('profile-tab.smartdrive-serial-number'),
+        description: '',
+        text: serialNumber
+      }
+    };
+
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `Serial number TextFieldSheetComponent result: ${result.data.text}`);
+          this._handleSerial(result.data.text, validDevices);
+        }
+      },
+      error => {
+        this._logService.logException(error);
+      },
+      () => {
+        // this._removeActiveDataBox();
+      }
+    );    
+  }
+
   onScan(deviceName) {
     this._barcodeScanner
       .scan({
