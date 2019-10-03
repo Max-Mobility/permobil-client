@@ -1,16 +1,5 @@
 <GridLayout rows="auto, *" class="device-setup-layout">
     <Label row="0" col="1" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
-    <ActivityIndicator
-        row="0"
-        height="7%"
-        width="7%"
-        verticalAlignment="center"
-        horizontalAlignment="right"
-        *ngIf="!showDoneButton && slides.length"
-        color="#0067a6"
-        busy="true"
-        marginRight="15"
-    ></ActivityIndicator>
     <GridLayout row="1" col="0" rows="auto, auto" cols="*" paddingTop="20">
         <StackLayout *ngIf="slides.length && slides[slideIndex] && slides[slideIndex].Image" (loaded)="onTopSlideLoaded($event)"
             class="topSlide" row="0" width="100%" orientation="horizontal" horizontalAlignment="center">
@@ -27,7 +16,29 @@
                 <label *ngFor="let bullet of slides[slideIndex].Bullets" [text]="bullet" class="bullet"
                     textWrap="true">
                 </label>
-                <StackLayout row="0" width="50%" orientation="horizontal" horizontalAlignment="center">
+                <StackLayout row="0" horizontalAlignment="center">
+                    <StackLayout orientation="horizontal">
+                        <LottieView
+                          height="50"
+                          width="75"
+                          verticalAlignment="center"
+                          horizontalAlignment="center"
+                          [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
+                          loop="true" autoPlay="true" *ngIf="!showDoneButton && slides.length"></LottieView>
+                        <LottieView
+                          height="50"
+                          width="50"
+                          verticalAlignment="center"
+                          horizontalAlignment="center"
+                          src="success.json"
+                          loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
+                        <Label
+                            [marginLeft]="showDoneButton ? 0 : -20"
+                            verticalAlignment="center"
+                            horizontalAlignment="center"
+                            class="device-setup-status-label"
+                            [text]="statusMessage"></Label>
+                    </StackLayout>
                     <button horizontalAlignment="center"
                         [class]="showDoneButton ? 'permobil-green-btn' : 'permobil-grey-button'"
                         height="30%" [text]="showDoneButton ? doneButtonText : doLaterButtonText"

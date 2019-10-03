@@ -8,7 +8,7 @@ import {
   BluetoothService,
   LoggingService
 } from '../../services';
-import { CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
+import { CONFIGURATIONS, STORAGE_KEYS, APP_THEMES } from '../../enums';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
@@ -24,6 +24,7 @@ import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
   templateUrl: './device-setup.component.html'
 })
 export class DeviceSetupComponent implements OnInit {
+  public APP_THEMES = APP_THEMES;
   public CONFIGURATIONS = CONFIGURATIONS;
   private _user: PushTrackerUser;
   slides = [];
@@ -34,6 +35,8 @@ export class DeviceSetupComponent implements OnInit {
   public pushTracker: PushTracker;
 
   // Done button
+  public paired: boolean = false;
+  public statusMessage: string = this._translateService.instant('device-setup.waiting-for-pairing-request');
   public showDoneButton: boolean = false;
   public doneButtonText: string = this._translateService.instant(
     'device-setup.finish'
@@ -41,6 +44,8 @@ export class DeviceSetupComponent implements OnInit {
   public doLaterButtonText: string = this._translateService.instant(
     'device-setup.do-later'
   );
+
+  CURRENT_THEME: string;
 
   constructor(
     private _router: Router,
@@ -53,6 +58,10 @@ export class DeviceSetupComponent implements OnInit {
     @Optional() private _params: ModalDialogParams
   ) {
     this._page.actionBarHidden = true;
+    this.CURRENT_THEME = appSettings.getString(
+      STORAGE_KEYS.APP_THEME,
+      APP_THEMES.DEFAULT
+    );
   }
 
   ngOnInit() {
@@ -79,7 +88,7 @@ export class DeviceSetupComponent implements OnInit {
         );
 
         // Check for already connected PushTrackers
-        this.checkIfPushTrackerAlreadyConnected();
+        this.onPushTrackerConnected();
 
         if (!this.pushTracker && !this.bluetoothAdvertised) {
           this._logService.logBreadCrumb(
@@ -105,7 +114,7 @@ export class DeviceSetupComponent implements OnInit {
 
         this._bluetoothService.on(
           BluetoothService.pushtracker_connected,
-          this.checkIfPushTrackerAlreadyConnected,
+          this.onPushTrackerConnected,
           this
         );
 
@@ -230,38 +239,25 @@ export class DeviceSetupComponent implements OnInit {
     }
   }
 
-  checkIfPushTrackerAlreadyConnected() {
+  onPushTrackerConnected() {
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
         return val.connected;
       });
       if (trackers.length === 0) {
-        new Toasty({
-          text: this._translateService.instant(
-            'wireless-updates.messages.no-pushtracker-detected'
-          ),
-          duration: ToastDuration.LONG
-        }).show();
         return;
       } else if (trackers.length > 1) {
-        new Toasty({
-          text: this._translateService.instant(
-            'wireless-updates.messages.more-than-one-pushtracker-connected'
-          ),
-          duration: ToastDuration.LONG
-        }).show();
         return;
       } else {
         trackers.map(tracker => {
           this.pushTracker = tracker;
+          this.paired = true;
+          this.statusMessage = this._translateService.instant('device-setup.pairing');
           this.pushTracker.on(
             PushTracker.daily_info_event,
             this.onPushTrackerDailyInfoEvent,
             this
           );
-        //   if (this.pushTracker.ableToSend) {
-        //     this.onPushTrackerDailyInfoEvent();
-        //   }
         });
         this._logService.logBreadCrumb(
           DeviceSetupComponent.name,
@@ -273,6 +269,8 @@ export class DeviceSetupComponent implements OnInit {
         );
       }
     } else {
+      this.paired = true;
+      this.statusMessage = this._translateService.instant('device-setup.pairing');
       this.pushTracker.on(
         PushTracker.daily_info_event,
         this.onPushTrackerDailyInfoEvent,
@@ -286,6 +284,8 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker daily_info_event received!'
     );
+    this.paired = true;
+    this.statusMessage = this._translateService.instant('device-setup.connection-successful');
     // We just received a daily info event
     // Our connection with the OG PushTracker is solid
     this._zone.run(() => {
@@ -298,7 +298,14 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker disconnected!'
     );
-    this.pushTracker = null;
+
+    if (this.pushTracker && this.pushTracker.ableToSend) {
+      // We were able to send and got disconnected
+      this.paired = false;
+      this.statusMessage = this._translateService.instant('device-setup.waiting-for-pairing-request');
+      this.pushTracker = null;
+    }
+
     this._zone.run(() => {
       this.showDoneButton = false;
     });

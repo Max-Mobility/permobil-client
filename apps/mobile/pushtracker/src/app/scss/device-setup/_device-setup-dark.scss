@@ -88,4 +88,9 @@
     color: $white;
   }
 
+  .device-setup-status-label {
+    @extend .DEVICE_SETUP_STATUS_LABEL;
+    color: $white;
+  }
+
 }
