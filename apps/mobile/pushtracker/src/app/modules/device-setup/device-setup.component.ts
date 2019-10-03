@@ -259,6 +259,9 @@ export class DeviceSetupComponent implements OnInit {
             this.onPushTrackerDailyInfoEvent,
             this
           );
+        //   if (this.pushTracker.ableToSend) {
+        //     this.onPushTrackerDailyInfoEvent();
+        //   }
         });
         this._logService.logBreadCrumb(
           DeviceSetupComponent.name,
@@ -283,12 +286,6 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker daily_info_event received!'
     );
-    new Toasty({
-        text: this._translateService.instant(
-        'wireless-updates.messages.pushtracker-connected'
-        ),
-        duration: ToastDuration.LONG
-    }).show();
     // We just received a daily info event
     // Our connection with the OG PushTracker is solid
     this._zone.run(() => {
