@@ -323,10 +323,10 @@
     "time-format": "Time Format",
     "scanning-for-smartdrives": "Scanning for SmartDrives...",
     "detected-a-smartdrive": "Detected a SmartDrive!",
-    "sending-settings": "Sending settings...",
-    "sync-successful": "Sync successful!",
+    "sending-settings": "Sending SmartDrive settings...",
+    "sync-successful": "Updated SmartDrive settings!",
     "error-sending-settings": "Error sending settings",
-    "connected-a-smartdrive": "Connected a SmartDrive",
+    "connected-a-smartdrive": "Connected with SmartDrive",
     "watch-status-alert-title": "PushTracker Status",
     "watch-status-alert-message": {
       "unknown": "PushTracker status is unknown",

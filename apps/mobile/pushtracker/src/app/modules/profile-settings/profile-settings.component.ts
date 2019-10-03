@@ -734,6 +734,7 @@ export class ProfileSettingsComponent implements OnInit {
           this.syncState = this._translateService.instant(
             'profile-settings.sync-successful'
           );
+          this.syncSuccessful = true;
           await this._sleep(3000);
           this.syncingWithSmartDrive = false;
           this._logService.logBreadCrumb(
@@ -749,7 +750,6 @@ export class ProfileSettingsComponent implements OnInit {
             ProfileSettingsComponent.name,
             'Syncing with SmartDrive? ' + this.syncingWithSmartDrive
           );
-          this.syncSuccessful = true;
         } catch (err) {
           this.syncState = this._translateService.instant(
             'profile-settings.error-sending-settings'
