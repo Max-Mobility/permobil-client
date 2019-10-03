@@ -3,7 +3,11 @@ import { Router } from '@angular/router';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { Page } from 'tns-core-modules/ui/page';
-import { PushTrackerUserService, BluetoothService, LoggingService } from '../../services';
+import {
+  PushTrackerUserService,
+  BluetoothService,
+  LoggingService
+} from '../../services';
 import { CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -31,8 +35,12 @@ export class DeviceSetupComponent implements OnInit {
 
   // Done button
   public showDoneButton: boolean = false;
-  public doneButtonText: string = this._translateService.instant('device-setup.finish');
-  public doLaterButtonText: string = this._translateService.instant('device-setup.do-later');
+  public doneButtonText: string = this._translateService.instant(
+    'device-setup.finish'
+  );
+  public doLaterButtonText: string = this._translateService.instant(
+    'device-setup.do-later'
+  );
 
   constructor(
     private _router: Router,
@@ -53,7 +61,8 @@ export class DeviceSetupComponent implements OnInit {
 
       if (
         this._user &&
-        this._user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+        this._user.data.control_configuration ===
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
       }
@@ -70,34 +79,40 @@ export class DeviceSetupComponent implements OnInit {
         );
 
         // Check for already connected PushTrackers
-        this.onPushTrackerConnected();
+        this.checkIfPushTrackerAlreadyConnected();
 
         if (!this.pushTracker && !this.bluetoothAdvertised) {
-            this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Asking for Bluetooth Permission');
-            this.askForPermissions()
+          this._logService.logBreadCrumb(
+            DeviceSetupComponent.name,
+            'Asking for Bluetooth Permission'
+          );
+          this.askForPermissions()
             .then(() => {
-            if (!this._bluetoothService.advertising) {
-                this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Starting Bluetooth');
+              if (!this._bluetoothService.advertising) {
+                this._logService.logBreadCrumb(
+                  DeviceSetupComponent.name,
+                  'Starting Bluetooth'
+                );
                 // start the bluetooth service
                 return this._bluetoothService.advertise();
-            }
+              }
             })
             .catch(err => {
-                this._logService.logException(err);
+              this._logService.logException(err);
             });
-            this.bluetoothAdvertised = true;
+          this.bluetoothAdvertised = true;
         }
 
-        // set up the status watcher for the pushtracker state
         this._bluetoothService.on(
-            BluetoothService.pushtracker_connected,
-            this.onPushTrackerConnected,
-            this
+          BluetoothService.pushtracker_connected,
+          this.checkIfPushTrackerAlreadyConnected,
+          this
         );
+
         this._bluetoothService.on(
-            BluetoothService.pushtracker_disconnected,
-            this.onPushTrackerDisconnected,
-            this
+          BluetoothService.pushtracker_disconnected,
+          this.onPushTrackerDisconnected,
+          this
         );
       }
     });
@@ -215,16 +230,16 @@ export class DeviceSetupComponent implements OnInit {
     }
   }
 
-  onPushTrackerConnected() {
+  checkIfPushTrackerAlreadyConnected() {
     if (!this.pushTracker) {
-      const trackers = BluetoothService.PushTrackers.filter(
-        (val, _1, _2) => {
-          return val.connected;
-        }
-      );
+      const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
+        return val.connected;
+      });
       if (trackers.length === 0) {
         new Toasty({
-          text: this._translateService.instant('wireless-updates.messages.no-pushtracker-detected'),
+          text: this._translateService.instant(
+            'wireless-updates.messages.no-pushtracker-detected'
+          ),
           duration: ToastDuration.LONG
         }).show();
         return;
@@ -239,33 +254,57 @@ export class DeviceSetupComponent implements OnInit {
       } else {
         trackers.map(tracker => {
           this.pushTracker = tracker;
+          this.pushTracker.on(
+            PushTracker.daily_info_event,
+            this.onPushTrackerDailyInfoEvent,
+            this
+          );
         });
-        new Toasty({
-          text: this._translateService.instant('wireless-updates.messages.pushtracker-connected'),
-          duration: ToastDuration.LONG
-        }).show();
-        this._logService.logBreadCrumb(DeviceSetupComponent.name,
-          'PushTracker successfully connected!');
-        this._zone.run(() => {
-          this.showDoneButton = true;
-        });
-        this._logService.logBreadCrumb(DeviceSetupComponent.name,
-          'Set showDoneButton to true');
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'PushTracker successfully connected!'
+        );
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'Set showDoneButton to true'
+        );
       }
+    } else {
+      this.pushTracker.on(
+        PushTracker.daily_info_event,
+        this.onPushTrackerDailyInfoEvent,
+        this
+      );
     }
   }
 
+  onPushTrackerDailyInfoEvent() {
+    this._logService.logBreadCrumb(
+      DeviceSetupComponent.name,
+      'PushTracker daily_info_event received!'
+    );
+    new Toasty({
+        text: this._translateService.instant(
+        'wireless-updates.messages.pushtracker-connected'
+        ),
+        duration: ToastDuration.LONG
+    }).show();
+    // We just received a daily info event
+    // Our connection with the OG PushTracker is solid
+    this._zone.run(() => {
+      this.showDoneButton = true;
+    });
+  }
+
   onPushTrackerDisconnected() {
-    this._logService.logBreadCrumb(DeviceSetupComponent.name,
-      'PushTracker disconnected!');
+    this._logService.logBreadCrumb(
+      DeviceSetupComponent.name,
+      'PushTracker disconnected!'
+    );
     this.pushTracker = null;
     this._zone.run(() => {
       this.showDoneButton = false;
     });
-    new Toasty({
-        text: this._translateService.instant('wireless-updates.messages.pushtracker-disconnected'),
-        duration: ToastDuration.LONG
-    }).show();
     return;
   }
 }
