@@ -903,7 +903,7 @@ export class ProfileTabComponent {
       () => {
         // this._removeActiveDataBox();
       }
-    );  
+    ); 
   }
 
   onScan(deviceName) {
