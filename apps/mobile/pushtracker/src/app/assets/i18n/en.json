@@ -460,19 +460,13 @@
     "slides": {
       "pushtracker-with-smartdrive": [
         {
-          "Image": "~/app/assets/images/gifs/PT-ON-OFF.gif",
-          "Label": "Powering PushTracker",
-          "Bullets": [
-            "Press either button on the PushTracker to power on.",
-            "Press and hold the left raised button for 3 seconds to enter sleep mode 'zzz' and power off the PushTracker."
-          ]
-        },
-        {
           "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
           "Label": "Pair PushTracker with Mobile",
           "Bullets": [
-            "....",
-            "...."
+            "Press either button on the PushTracker to power on the device",
+            "Press and hold the right raised button for 3 seconds to enter the settings menu",
+            "Press the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button",
+            "Press the left raised button to pair with mobile. The PushTracker will attempt to pair with your mobile device. Accept the pairing request on your mobile."
           ]
         },
         {

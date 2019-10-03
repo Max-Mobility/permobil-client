@@ -87,7 +87,7 @@ export class DeviceSetupComponent implements OnInit {
 
   onNextTap(args) {
     if (!this.slides) return;
-    this.slideIndex += 1;
+    if (this.slideIndex < this.slides.length) this.slideIndex += 1;
   }
 
   onDoneTap(args) {
