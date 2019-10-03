@@ -56,23 +56,11 @@ export class DeviceSetupComponent implements OnInit {
         this._user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
-        this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Asking for Bluetooth Permission');
-        this.askForPermissions()
-        .then(() => {
-          if (!this._bluetoothService.advertising) {
-            this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Starting Bluetooth');
-            // start the bluetooth service
-            return this._bluetoothService.advertise();
-          }
-        })
-        .catch(err => {
-            this._logService.logException(err);
-        });
-        this.bluetoothAdvertised = true;
       }
 
       if (
         !this.slides.length &&
+        this._user &&
         this._user.data.control_configuration ===
           CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
@@ -80,6 +68,26 @@ export class DeviceSetupComponent implements OnInit {
         this.slides = this._translateService.instant(
           'device-setup.slides.pushtracker-with-smartdrive'
         );
+
+        // Check for already connected PushTrackers
+        this.onPushTrackerConnected();
+
+        if (!this.pushTracker && !this.bluetoothAdvertised) {
+            this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Asking for Bluetooth Permission');
+            this.askForPermissions()
+            .then(() => {
+            if (!this._bluetoothService.advertising) {
+                this._logService.logBreadCrumb(DeviceSetupComponent.name, 'Starting Bluetooth');
+                // start the bluetooth service
+                return this._bluetoothService.advertise();
+            }
+            })
+            .catch(err => {
+                this._logService.logException(err);
+            });
+            this.bluetoothAdvertised = true;
+        }
+
         // set up the status watcher for the pushtracker state
         this._bluetoothService.on(
             BluetoothService.pushtracker_connected,

@@ -862,7 +862,7 @@ export class ProfileTabComponent {
       .then(() => {})
       .catch(err => {
         this._logService.logException(err);
-      });    
+      });
   }
 
   onScan(deviceName) {
