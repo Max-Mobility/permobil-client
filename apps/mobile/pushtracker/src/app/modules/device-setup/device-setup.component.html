@@ -1,6 +1,7 @@
-<GridLayout rows="auto, *" marginTop="20" class="device-setup-layout">
+<GridLayout rows="auto, *" class="device-setup-layout">
     <Label row="0" col="1" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
-    <ActivityIndicator row="0"
+    <ActivityIndicator
+        row="0"
         height="7%"
         width="7%"
         verticalAlignment="center"
@@ -10,7 +11,7 @@
         busy="true"
         marginRight="15"
     ></ActivityIndicator>
-    <GridLayout row="1" col="0" rows="auto, auto" cols="*" marginTop="20">
+    <GridLayout row="1" col="0" rows="auto, auto" cols="*" paddingTop="20">
         <StackLayout *ngIf="slides.length && slides[slideIndex] && slides[slideIndex].Image" (loaded)="onTopSlideLoaded($event)"
             class="topSlide" row="0" width="100%" orientation="horizontal" horizontalAlignment="center">
             // only shows when the slide.Image is a gif
