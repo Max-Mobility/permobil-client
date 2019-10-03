@@ -877,7 +877,7 @@ export class ProfileTabComponent {
     let serialNumber = '';
     if (deviceName === 'smartdrive')
       serialNumber = this.user.data.smartdrive_serial_number || '';
-    else 
+    else
       serialNumber = this.user.data.pushtracker_serial_number || '';
 
     const options: BottomSheetOptions = {
@@ -903,7 +903,7 @@ export class ProfileTabComponent {
       () => {
         // this._removeActiveDataBox();
       }
-    );    
+    );  
   }
 
   onScan(deviceName) {
