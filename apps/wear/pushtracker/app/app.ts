@@ -1,4 +1,5 @@
-﻿import { getDefaultLang, L, load, Prop, use } from '@permobil/nativescript';
+﻿import 'reflect-metadata';
+import { getDefaultLang, L, load, Prop, use } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 

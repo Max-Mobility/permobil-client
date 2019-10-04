@@ -97,6 +97,18 @@ export class Bluetooth extends BluetoothCommon {
   disconnect(options: DisconnectOptions): Promise<any>;
 
   /**
+   * iOS Only currently.
+   * @param UUIDs string[]
+   */
+  findPeripheralsWithIdentifiers(UUIDs: string[]): any[];
+
+  /**
+   * iOS Only currently.
+   * @param services string[]
+   */
+  findConnectedPeripheralsWithServices(services: string[]): any[];
+
+  /**
    * Android Only currently.
    * @param peripheralUUID
    */
@@ -262,6 +274,7 @@ export interface ReadOptions extends CRUDOptions { }
 
 export interface WriteOptions extends CRUDOptions {
   value: any;
+  timeout?: number;
 }
 
 // tslint:disable-next-line:no-empty-interface

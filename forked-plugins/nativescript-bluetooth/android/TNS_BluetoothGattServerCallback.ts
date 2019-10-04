@@ -48,6 +48,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       return;
     }
 
+    if (owner.gattServer) {
+      const respData = Array.create('byte', 1);
+      respData[0] = 0x00;
+      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
+    }
+
     // console.log('char read request gattserver', owner.gattServer);
     owner.sendEvent(Bluetooth.characteristic_read_request_event, {
       device: getDevice(device),
@@ -55,12 +61,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       offset,
       characteristic
     });
-
-    if (owner.gattServer) {
-      const respData = Array.create('byte', 1);
-      respData[0] = 0x01;
-      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
-    }
   }
 
   /**
@@ -97,6 +97,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       return;
     }
 
+    if (owner.gattServer) {
+      const respData = Array.create('byte', 1);
+      respData[0] = 0x00;
+      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
+    }
+
     // console.log('char write request gattserver', owner.gattServer);
     owner.sendEvent(Bluetooth.characteristic_write_request_event, {
       device: getDevice(device),
@@ -107,11 +113,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       offset,
       value
     });
-    if (owner.gattServer) {
-      const respData = Array.create('byte', 1);
-      respData[0] = 0x01;
-      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
-    }
   }
 
   /**
@@ -181,6 +182,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       return;
     }
 
+    if (owner.gattServer) {
+      const respData = Array.create('byte', 1);
+      respData[0] = 0x00;
+      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
+    }
+
     // console.log('desc read gattserver', owner.gattServer);
     owner.sendEvent(Bluetooth.descriptor_read_request_event, {
       device: getDevice(device),
@@ -190,11 +197,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     });
 
     // owner._onDescriptorReadRequestCallback(device, requestId, offset, descriptor);
-    if (owner.gattServer) {
-      const respData = Array.create('byte', 1);
-      respData[0] = 0x01;
-      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
-    }
   }
 
   /**
@@ -232,6 +234,12 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       return;
     }
 
+    if (owner.gattServer) {
+      const respData = Array.create('byte', 1);
+      respData[0] = 0x00;
+      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
+    }
+
     // console.log('desc write gattserver', owner.gattServer);
     owner.sendEvent(Bluetooth.descriptor_write_request_event, {
       device: getDevice(device),
@@ -242,11 +250,6 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
       offset,
       value
     });
-    if (owner.gattServer) {
-      const respData = Array.create('byte', 1);
-      respData[0] = 0x01;
-      owner.gattServer.sendResponse(device, requestId, 0, offset, respData);
-    }
   }
 
   /**
@@ -284,7 +287,7 @@ export class TNS_BluetoothGattServerCallback extends android.bluetooth
     // console.log('execute write gattserver', owner.gattServer);
     if (owner.gattServer) {
       const respData = Array.create('byte', 1);
-      respData[0] = 0x01;
+      respData[0] = 0x00;
       owner.gattServer.sendResponse(device, requestId, 0, 0, respData);
     }
   }

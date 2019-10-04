@@ -1,6 +1,8 @@
 import { Bluetooth } from 'nativescript-bluetooth';
 import { Common } from './wear-os-comms.common';
 
+import * as appSettings from 'tns-core-modules/application-settings';
+
 export class WearOsComms extends Common {
   private static _bluetooth: Bluetooth = new Bluetooth();
 
@@ -42,44 +44,76 @@ export class WearOsComms extends Common {
 
   public static clearCompanion() {
     WearOsComms.pairedCompanion = null;
+    // save to the file system
+    appSettings.setString(
+      WearOsComms.APP_SETTINGS_COMPANION_KEY,
+      ''
+    );
   }
 
   public static saveCompanion(address: string) {
     if (address && address.length) {
       WearOsComms.pairedCompanion = address;
+      // save to the file system
+      appSettings.setString(
+        WearOsComms.APP_SETTINGS_COMPANION_KEY,
+        WearOsComms.pairedCompanion
+      );
     } else {
-      WearOsComms.pairedCompanion = null;
+      WearOsComms.clearCompanion();
     }
   }
 
   public static hasCompanion() {
-    const hasCompanion = WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length;
+    let hasCompanion = WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length && true;
+    if (!hasCompanion) {
+      try {
+        // try to load from the file system
+        WearOsComms.pairedCompanion = appSettings.getString(
+          WearOsComms.APP_SETTINGS_COMPANION_KEY,
+          ''
+        );
+        WearOsComms.log('loaded companion from app settings:', WearOsComms.pairedCompanion);
+        hasCompanion = WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length && true;
+      } catch (err) {
+        WearOsComms.error('could not load companion from app settings:', err);
+      }
+    }
     WearOsComms.log('hasCompanion:', hasCompanion);
     return hasCompanion;
   }
 
   public static async connectCompanion(timeout: number = 10000) {
     if (!WearOsComms.hasCompanion()) return false;
-    const companion = await WearOsComms.getCompanion();
+    const savedAddress = await WearOsComms.getCompanion();
     // connect to the companion
-    const didConnect = await new Promise((resolve, reject) => {
+    const didConnect = await new Promise(async (resolve, reject) => {
+      const companion = await WearOsComms.scanForCompanion(savedAddress, 5) as any;
+      if (companion === null) {
+        reject(new Error(`could not find companion: ${savedAddress}`));
+        return;
+      }
+      WearOsComms.log('found previously saved companion:', companion);
       const tid = setTimeout(() => {
         WearOsComms.error('timeout connecting to:', companion);
         reject(new Error('Connect timeout!'));
       }, timeout);
       WearOsComms.log('connecting to:', companion);
-      WearOsComms._bluetooth.connect({
-        UUID: companion,
+      await WearOsComms._bluetooth.connect({
+        UUID: companion.identifier.UUIDString,
         onConnected: () => {
           clearTimeout(tid);
           WearOsComms.onConnected();
           resolve(true);
         },
         onDisconnected: () => {
-          WearOsComms.onDisconnected();
+          // WearOsComms.onDisconnected();
           clearTimeout(tid);
-          reject(new Error('Could not connect'));
+          // reject(new Error('Could not connect - disconnected event fired'));
         }
+      }).catch((err) => {
+        clearTimeout(tid);
+        reject(err);
       });
     });
     return didConnect;
@@ -121,13 +155,39 @@ export class WearOsComms extends Common {
     // onCompanionDiscoveredCallback
     return new Promise(async (resolve, reject) => {
       try {
+        const companions = [];
+        await WearOsComms._bluetooth.startScanning({
+          serviceUUIDs: [ WearOsComms.ServiceUUID ],
+          seconds: timeoutSeconds,
+          onDiscovered: (peripheral: any) => {
+            WearOsComms.log('found peripheral', peripheral);
+            companions.push(peripheral.device);
+          },
+          skipPermissionCheck: false
+        });
+        // resolve here if we've gotten through scanning and have not
+        // found any devices through the callback
+        resolve(companions);
+      } catch (err) {
+        WearOsComms.error('findAvailableCompanions error:', err);
+        // resolve with no devices found
+        resolve(null);
+      }
+    });
+  }
+
+  public static findAvailableCompanion(timeoutSeconds: number) {
+    // scan for service and pass the resolve function argument to the
+    // onCompanionDiscoveredCallback
+    return new Promise(async (resolve, reject) => {
+      try {
         await WearOsComms._bluetooth.startScanning({
           serviceUUIDs: [ WearOsComms.ServiceUUID ],
           seconds: timeoutSeconds,
           onDiscovered: (peripheral: any) => {
             WearOsComms.log('found peripheral', peripheral);
             WearOsComms._bluetooth.stopScanning();
-            resolve(peripheral.UUID);
+            resolve(peripheral.device);
           },
           skipPermissionCheck: false
         });
@@ -135,7 +195,36 @@ export class WearOsComms extends Common {
         // found any devices through the callback
         resolve(null);
       } catch (err) {
-        WearOsComms.error('findAvailableCompanions error:', err);
+        WearOsComms.error('findAvailableCompanion error:', err);
+        // resolve with no devices found
+        resolve(null);
+      }
+    });
+  }
+
+  private static scanForCompanion(companionUUID: string, timeoutSeconds: number): any {
+    // scan for service and pass the resolve function argument to the
+    // onCompanionDiscoveredCallback
+    return new Promise(async (resolve, reject) => {
+      try {
+        await WearOsComms._bluetooth.startScanning({
+          serviceUUIDs: [ WearOsComms.ServiceUUID ],
+          seconds: timeoutSeconds,
+          onDiscovered: (peripheral: any) => {
+            WearOsComms.log('scan for companion found peripheral', peripheral);
+            if (peripheral.UUID === companionUUID) {
+              WearOsComms.log('found saved peripheral', peripheral);
+              WearOsComms._bluetooth.stopScanning();
+              resolve(peripheral.device);
+            }
+          },
+          skipPermissionCheck: false
+        });
+        // resolve here if we've gotten through scanning and have not
+        // found any devices through the callback
+        resolve(null);
+      } catch (err) {
+        WearOsComms.error('findAvailableCompanion error:', err);
         // resolve with no devices found
         resolve(null);
       }

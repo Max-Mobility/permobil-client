@@ -19,11 +19,13 @@ export declare class WearOsComms extends Common {
    * For wearable devices
    */
   static advertiseAsCompanion();
+  static stopAdvertisingAsCompanion();
 
   /**
    * For phones
    */
-  static findAvailableCompanions(timeoutSeconds: number): Promise<string>;
+  static findAvailableCompanion(timeoutSeconds: number): Promise<any>;
+  static findAvailableCompanions(timeoutSeconds: number): Promise<any[]>;
   static hasCompanion(): boolean;
   static clearCompanion();
   static saveCompanion(address: string);
