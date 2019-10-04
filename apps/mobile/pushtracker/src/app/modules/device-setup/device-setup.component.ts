@@ -11,6 +11,7 @@ import {
 import { CONFIGURATIONS, STORAGE_KEYS, APP_THEMES } from '../../enums';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { action, alert } from "tns-core-modules/ui/dialogs";
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTracker } from '../../models';
@@ -18,6 +19,9 @@ import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+
+// TODO: activity indicator for E2 on ios (during scanning /
+// connection / etc.)
 
 @Component({
   selector: 'device-setup',
@@ -27,12 +31,15 @@ import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 export class DeviceSetupComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
   public CONFIGURATIONS = CONFIGURATIONS;
-  private _user: PushTrackerUser;
+  public user: PushTrackerUser;
   slide = undefined;
   bluetoothAdvertised = false;
   // permissions for the bluetooth service
   private permissionsNeeded = [];
   public pushTracker: PushTracker;
+
+  // e2 things
+  public hasPairedE2: boolean = false;
 
   // Done button
   public paired: boolean = false;
@@ -68,12 +75,12 @@ export class DeviceSetupComponent implements OnInit {
 
   ngOnInit() {
     this._userService.user.subscribe(user => {
-      this._user = user;
+      this.user = user;
 
       if (
         !this.slide &&
-        this._user &&
-        this._user.data.control_configuration ===
+        this.user &&
+        this.user.data.control_configuration ===
           CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
@@ -121,8 +128,8 @@ export class DeviceSetupComponent implements OnInit {
 
       if (
         !this.slide &&
-        this._user &&
-        this._user.data.control_configuration ===
+        this.user &&
+        this.user.data.control_configuration ===
           CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         this._onPushTrackerE2();
@@ -333,14 +340,73 @@ export class DeviceSetupComponent implements OnInit {
       'device-setup.pushtracker-e2-with-smartdrive'
     );
     WearOsComms.setDebugOutput(false);
+    this.hasPairedE2 = WearOsComms.hasCompanion();
+    if (this.hasPairedE2) {
+      this.statusMessage = this._translateService.instant(
+        'device-setup.e2.found-pairing-info'
+      );
+    } else {
+      this.pairPushTrackerE2();
+    }
+  }
+
+  public async pairPushTrackerE2() {
+    // reset paired so that the ui updates properly
+    this.hasPairedE2 = false;
+    this.showDoneButton = false;
+    // find possible companions for pairing
+    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
+    const possiblePeripherals = await this._getListOfCompanions();
+    if (possiblePeripherals.length === 0) {
+      // we don't have any peripherals, let them know to keep things correctly
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.pte2-scan-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.pte2-scan-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      setTimeout(this._onPushTrackerE2.bind(this), 2000);
+      return;
+    }
+    // ask user which companion is theirs
+    const actions = possiblePeripherals.map(p => p.name);
+    const result = await action({
+      message: this._translateService.instant('device-setup.e2.select-device'),
+      cancelButtonText: this._translateService.instant('dialogs.cancel'),
+      actions: actions
+    });
+    const selection = possiblePeripherals.filter(p => p.name === result);
+    if (selection.length === 0) {
+      // TODO: we should let the user know they should do this instead
+      // of hitting cancel...
+      await alert({
+        title: this._translateService.instant('device-setup.e2.must-select-error.title'),
+        message: this._translateService.instant('device-setup.e2.must-select-error.message'),
+        okButtonText: this._translateService.instant('dialogs.ok')
+      });
+      setTimeout(this._onPushTrackerE2.bind(this), 2000);
+      return;
+    }
+    const name = selection[0].name;
+    const address = selection[0].identifier.UUIDString;
+    this._logService.logBreadCrumb(DeviceSetupComponent.name, `selected: ${address}`);
+    // TODO: we should save the name / address to app settings for later
+    // save that as the companion
+    WearOsComms.saveCompanion(address);
+    // try connecting and sending information
+    this.statusMessage = this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
     if (didConnect) {
       console.log('didConnect', didConnect);
-      const sentData = await this._sendData();
+      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
+      // const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       if (sentMessage) {
-        // && sentData) {
+        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
         new Toasty({
           text: this._translateService.instant(
             'wearos-comms.messages.pte2-sync-successful'
@@ -358,8 +424,9 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
       }
+      this.showDoneButton = true;
     } else {
-      alert({
+      await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-connection-error.title'
         ),
@@ -368,6 +435,7 @@ export class DeviceSetupComponent implements OnInit {
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
+      setTimeout(this._onPushTrackerE2.bind(this), 2000);
     }
   }
 
@@ -381,6 +449,17 @@ export class DeviceSetupComponent implements OnInit {
     return `${id}:Kinvey ${token}`;
   }
 
+  private async _getListOfCompanions() {
+    let companions = [];
+    try {
+      // wait for 5 seconds while scanning and finding watches
+      companions = await WearOsComms.findAvailableCompanions(5);
+    } catch (err) {
+      this._logService.logException(err);
+    }
+    return companions;
+  }
+
   private async _connectCompanion() {
     // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
     if (isAndroid) return true;
@@ -388,15 +467,11 @@ export class DeviceSetupComponent implements OnInit {
     let didConnect = false;
     try {
       if (!WearOsComms.hasCompanion()) {
-        // find and save the companion
-        const address = await WearOsComms.findAvailableCompanions(5);
-        this._logService.logBreadCrumb(
-          DeviceSetupComponent.name,
-          'saving new companion: ' + address
-        );
-        WearOsComms.saveCompanion(address);
+        // TODO: more status here?
+        return didConnect;
       }
       // now connect
+      this._logService.logBreadCrumb(DeviceSetupComponent.name, `connecting to companion`);
       didConnect = await WearOsComms.connectCompanion(10000);
     } catch (err) {
       console.error('error connecting:', err);

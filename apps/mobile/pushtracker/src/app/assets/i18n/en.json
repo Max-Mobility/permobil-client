@@ -455,6 +455,19 @@
   "device-setup": {
     "title": "Device Setup",
     "previous": "Prev",
+    "e2": {
+      "repair": "Pair a new PushTracker E2",
+      "scanning": "Scanning for PushTracker E2...",
+      "select-device": "Select PushTracker E2",
+      "found-pairing-info": "Found pairing info for PushTracker E2",
+      "must-select-error": {
+        "title": "Pairing Notice",
+        "message": "You must select a PushTracker E2 for pairing for the PushTracker Mobile app to access and view your activity data."
+      },
+      "connecting": "Connecting to\n",
+      "sending-authorization": "Sending authorization to\n",
+      "authorization-sent": "Authorization sent to\n"
+    },
     "next": "Next",
     "done": "Done",
     "skip": "Skip for now",

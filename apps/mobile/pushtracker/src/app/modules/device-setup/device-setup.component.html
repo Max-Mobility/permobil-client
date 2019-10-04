@@ -34,9 +34,17 @@
                             [marginLeft]="showDoneButton ? 0 : -20"
                             verticalAlignment="center"
                             horizontalAlignment="center"
-                            class="device-setup-status-label"
+                          class="device-setup-status-label"
+                          textWrap="true"
                             [text]="statusMessage"></Label>
                     </StackLayout>
+                    <button *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"
+                            horizontalAlignment="center"
+                            class="permobil-green-btn"
+                            height="30%" [text]="'device-setup.e2.repair' | translate"
+                            [visibility]="hasPairedE2 ? 'visible':'collapsed'"
+                            (tap)="pairPushTrackerE2()">
+                    </button>
                     <button horizontalAlignment="center"
                         [class]="showDoneButton ? 'permobil-green-btn' : 'permobil-grey-button'"
                         height="30%" [text]="showDoneButton ? doneButtonText : doLaterButtonText"

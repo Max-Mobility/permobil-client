@@ -108,28 +108,30 @@ export class WearOsComms extends Common {
       if (needToAdvertise) {
         WearOsComms.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
-        WearOsComms._bluetooth = new Bluetooth();
-        WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
-        // start the server
-        WearOsComms._bluetooth.startGattServer();
-        // clear out any existing services
-        WearOsComms.deleteService();
-        // create service / characteristics
-        WearOsComms.createService();
-        // set up listeners for data receipt from the app
-        WearOsComms.registerListeners();
-        // advertise the added service
-        await WearOsComms._bluetooth.startAdvertising({
-          UUID: WearOsComms.ServiceUUID,
-          settings: {
-            connectable: true
-          },
-          data: {
-            includeDeviceName: true
-          }
-        });
-        // now add the service to the bluetooth
-        WearOsComms._bluetooth.addService(WearOsComms._companionService);
+        if (WearOsComms._bluetooth === null) {
+          WearOsComms._bluetooth = new Bluetooth();
+          WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
+          // start the server
+          WearOsComms._bluetooth.startGattServer();
+          // clear out any existing services
+          WearOsComms.deleteService();
+          // create service / characteristics
+          WearOsComms.createService();
+          // set up listeners for data receipt from the app
+          WearOsComms.registerListeners();
+          // advertise the added service
+          await WearOsComms._bluetooth.startAdvertising({
+            UUID: WearOsComms.ServiceUUID,
+            settings: {
+              connectable: true
+            },
+            data: {
+              includeDeviceName: true
+            }
+          });
+          // now add the service to the bluetooth
+          WearOsComms._bluetooth.addService(WearOsComms._companionService);
+        }
       }
     } catch (err) {
       WearOsComms.error('error advertising as companion:', err);
