@@ -14,8 +14,9 @@
     loop="false" autoPlay="true"></LottieView>
 
   // PushTracker is disconnected or state unknown - Show loading
-  <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="12" height="12" marginLeft="24"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'loading_black.json' : 'loading_white.json'"
+  <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="44" height="40" marginLeft="24"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'cross_white.json' : 'cross_black.json'"
     *ngIf="state === PushTrackerState.unknown || state === PushTrackerState.disconnected"
-    loop="true" autoPlay="true"></LottieView>
+    class="cross-lottie"
+    loop="false" autoPlay="true"></LottieView>
 </GridLayout>
