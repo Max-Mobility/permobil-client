@@ -66,14 +66,14 @@ export class E2StatusButtonComponent {
     });
 
     WearOsComms.setDebugOutput(false);
+    // TODO: set status display to busy
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-      // const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       this._loadingIndicator.hide();
       if (sentMessage) {
-        // && sentData) {
+        // TODO: set status display to check
         new Toasty({
           text: this._translateService.instant(
             'wearos-comms.messages.pte2-sync-successful'
@@ -81,6 +81,7 @@ export class E2StatusButtonComponent {
           duration: ToastDuration.LONG
         }).show();
       } else {
+        // TODO: set status display to 'x'
         alert({
           title: this._translateService.instant(
             'wearos-comms.errors.pte2-send-error.title'
@@ -92,6 +93,7 @@ export class E2StatusButtonComponent {
         });
       }
     } else {
+      // TODO: set status display to 'x'
       this._loadingIndicator.hide();
       alert({
         title: this._translateService.instant(
