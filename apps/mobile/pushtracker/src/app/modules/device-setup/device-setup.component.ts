@@ -330,44 +330,44 @@ export class DeviceSetupComponent implements OnInit {
   private async _onPushTrackerE2() {
     // PushTracker E2/ WearOS configuration
     this.slide = this._translateService.instant(
-        'device-setup.pushtracker-e2-with-smartdrive'
+      'device-setup.pushtracker-e2-with-smartdrive'
     );
     WearOsComms.setDebugOutput(false);
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-        console.log('didConnect', didConnect);
-    // const sentData = await this._sendData();
-    //   const sentMessage = await this._sendMessage();
-    //   await this._disconnectCompanion();
-    //   if (sentMessage) {
-    //     // && sentData) {
-    //     new Toasty({
-    //       text: this._translateService.instant(
-    //         'wearos-comms.messages.pte2-sync-successful'
-    //       ),
-    //       duration: ToastDuration.LONG
-    //     }).show();
-    //   } else {
-    //     alert({
-    //       title: this._translateService.instant(
-    //         'wearos-comms.errors.pte2-send-error.title'
-    //       ),
-    //       message: this._translateService.instant(
-    //         'wearos-comms.errors.pte2-send-error.message'
-    //       ),
-    //       okButtonText: this._translateService.instant('profile-tab.ok')
-    //     });
-    //   }
-    } else {
+      console.log('didConnect', didConnect);
+      const sentData = await this._sendData();
+      const sentMessage = await this._sendMessage();
+      await this._disconnectCompanion();
+      if (sentMessage) {
+        // && sentData) {
+        new Toasty({
+          text: this._translateService.instant(
+            'wearos-comms.messages.pte2-sync-successful'
+          ),
+          duration: ToastDuration.LONG
+        }).show();
+      } else {
         alert({
+          title: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.title'
+          ),
+          message: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.message'
+          ),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+      }
+    } else {
+      alert({
         title: this._translateService.instant(
-            'wearos-comms.errors.pte2-connection-error.title'
+          'wearos-comms.errors.pte2-connection-error.title'
         ),
         message: this._translateService.instant(
-            'wearos-comms.errors.pte2-connection-error.message'
+          'wearos-comms.errors.pte2-connection-error.message'
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
-        });
+      });
     }
   }
 
@@ -382,13 +382,11 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   private async _connectCompanion() {
-    console.log('Connecting with companion');
     // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
     if (isAndroid) return true;
     // if we're iOS we have to actually find a companion
     let didConnect = false;
     try {
-      console.log('has companion?', WearOsComms.hasCompanion());
       if (!WearOsComms.hasCompanion()) {
         // find and save the companion
         const address = await WearOsComms.findAvailableCompanions(5);
