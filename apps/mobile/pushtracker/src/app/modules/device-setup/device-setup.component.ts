@@ -27,8 +27,7 @@ export class DeviceSetupComponent implements OnInit {
   public APP_THEMES = APP_THEMES;
   public CONFIGURATIONS = CONFIGURATIONS;
   private _user: PushTrackerUser;
-  slides = [];
-  slideIndex: number = 0;
+  slide = undefined;
   bluetoothAdvertised = false;
   // permissions for the bluetooth service
   private permissionsNeeded = [];
@@ -79,14 +78,14 @@ export class DeviceSetupComponent implements OnInit {
       }
 
       if (
-        !this.slides.length &&
+        !this.slide &&
         this._user &&
         this._user.data.control_configuration ===
           CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
-        this.slides = this._translateService.instant(
-          'device-setup.slides.pushtracker-with-smartdrive'
+        this.slide = this._translateService.instant(
+          'device-setup.pushtracker-with-smartdrive.slide'
         );
 
         // Check for already connected PushTrackers
