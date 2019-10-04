@@ -17,6 +17,7 @@ import { PushTracker } from '../../models';
 import { Toasty, ToastDuration } from 'nativescript-toasty';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 
 @Component({
   selector: 'device-setup',
@@ -70,14 +71,6 @@ export class DeviceSetupComponent implements OnInit {
       this._user = user;
 
       if (
-        this._user &&
-        this._user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
-        !this.bluetoothAdvertised
-      ) {
-      }
-
-      if (
         !this.slide &&
         this._user &&
         this._user.data.control_configuration ===
@@ -124,6 +117,15 @@ export class DeviceSetupComponent implements OnInit {
           this.onPushTrackerDisconnected,
           this
         );
+      }
+
+      if (
+        !this.slide &&
+        this._user &&
+        this._user.data.control_configuration ===
+          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+      ) {
+        this._onPushTrackerE2();
       }
     });
   }
@@ -323,5 +325,143 @@ export class DeviceSetupComponent implements OnInit {
       this.showDoneButton = false;
     });
     return;
+  }
+
+  private async _onPushTrackerE2() {
+    // PushTracker E2/ WearOS configuration
+    this.slide = this._translateService.instant(
+        'device-setup.pushtracker-e2-with-smartdrive'
+    );
+    WearOsComms.setDebugOutput(false);
+    const didConnect = await this._connectCompanion();
+    if (didConnect) {
+        console.log('didConnect', didConnect);
+    // const sentData = await this._sendData();
+    //   const sentMessage = await this._sendMessage();
+    //   await this._disconnectCompanion();
+    //   if (sentMessage) {
+    //     // && sentData) {
+    //     new Toasty({
+    //       text: this._translateService.instant(
+    //         'wearos-comms.messages.pte2-sync-successful'
+    //       ),
+    //       duration: ToastDuration.LONG
+    //     }).show();
+    //   } else {
+    //     alert({
+    //       title: this._translateService.instant(
+    //         'wearos-comms.errors.pte2-send-error.title'
+    //       ),
+    //       message: this._translateService.instant(
+    //         'wearos-comms.errors.pte2-send-error.message'
+    //       ),
+    //       okButtonText: this._translateService.instant('profile-tab.ok')
+    //     });
+    //   }
+    } else {
+        alert({
+        title: this._translateService.instant(
+            'wearos-comms.errors.pte2-connection-error.title'
+        ),
+        message: this._translateService.instant(
+            'wearos-comms.errors.pte2-connection-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+    }
+  }
+
+  private _getSerializedAuth() {
+    // get user
+    const user = KinveyUser.getActiveUser();
+    const id = user._id;
+    const token = user._kmd.authtoken;
+    // this._logService.logBreadCrumb(DeviceSetupComponent.name, `user id: ${id}`);
+    // this._logService.logBreadCrumb(DeviceSetupComponent.name, `user token: ${token}`);
+    return `${id}:Kinvey ${token}`;
+  }
+
+  private async _connectCompanion() {
+    console.log('Connecting with companion');
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually find a companion
+    let didConnect = false;
+    try {
+      console.log('has companion?', WearOsComms.hasCompanion());
+      if (!WearOsComms.hasCompanion()) {
+        // find and save the companion
+        const address = await WearOsComms.findAvailableCompanions(5);
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'saving new companion: ' + address
+        );
+        WearOsComms.saveCompanion(address);
+      }
+      // now connect
+      didConnect = await WearOsComms.connectCompanion(10000);
+    } catch (err) {
+      console.error('error connecting:', err);
+      // clear out the companion so we can search again
+      WearOsComms.clearCompanion();
+      this._logService.logException(err);
+    }
+    return didConnect;
+  }
+
+  private async _disconnectCompanion() {
+    // if we're Android we rely on WearOS Messaging, so we cannot manage connection state
+    if (isAndroid) return true;
+    // if we're iOS we have to actually disconnect from the companion
+    try {
+      await WearOsComms.disconnectCompanion();
+    } catch (err) {
+      this._logService.logException(err);
+    }
+  }
+
+  private async _sendData() {
+    let didSend = false;
+    try {
+      didSend = await WearOsComms.sendData(this._getSerializedAuth());
+      if (didSend) {
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'SendData successful.'
+        );
+      } else {
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'SendData unsuccessful.'
+        );
+      }
+    } catch (error) {
+      this._logService.logException(error);
+    }
+    return didSend;
+  }
+
+  private async _sendMessage() {
+    let didSend = false;
+    try {
+      didSend = await WearOsComms.sendMessage(
+        '/app-message',
+        this._getSerializedAuth()
+      );
+      if (didSend) {
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'SendMessage successful.'
+        );
+      } else {
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'SendMessage unsuccessful.'
+        );
+      }
+    } catch (error) {
+      this._logService.logException(error);
+    }
+    return didSend;
   }
 }

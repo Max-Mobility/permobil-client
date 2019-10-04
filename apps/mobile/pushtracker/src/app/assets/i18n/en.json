@@ -467,6 +467,11 @@
       "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
       "Label": "Pair & Connect PushTracker",
       "Text": "Press either button on the PushTracker to power on the device. Press and hold the right raised button for 3 seconds to enter the settings menu.\n\nPress the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button.\n\nPress the left raised button to pair with mobile."
+    },
+    "pushtracker-e2-with-smartdrive": {
+      "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Connect PushTracker E2",
+      "Text": "Foooooooooooo."
     }
   },
   "settings-different": {
