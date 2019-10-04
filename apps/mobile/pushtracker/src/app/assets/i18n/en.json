@@ -570,6 +570,10 @@
   },
   "wearos-comms": {
     "errors": {
+      "pte2-scan-error": {
+        "message": "Could not find any PushTracker E2 devices. please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Scanning for PushTracker E2"
+      },
       "pte2-send-error": {
         "message": "Could not send data to your PushTracker E2 - please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
         "title": "Error Synchronizing Account"

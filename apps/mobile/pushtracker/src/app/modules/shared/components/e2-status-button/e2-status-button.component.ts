@@ -3,6 +3,7 @@ import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -12,6 +13,7 @@ import { ContentView } from 'tns-core-modules/ui/content-view';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { LoggingService, ThemeService } from '../../../../services';
+import { DeviceSetupComponent } from '../../..';
 
 @Component({
   selector: 'e2-status-button',
@@ -32,6 +34,7 @@ export class E2StatusButtonComponent {
   constructor(
     private _themeService: ThemeService,
     private _logService: LoggingService,
+    private _modalService: ModalDialogService,
     private _translateService: TranslateService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
@@ -51,10 +54,13 @@ export class E2StatusButtonComponent {
   onUnloaded() {}
 
   async onTap() {
-    this._logService.logBreadCrumb(
-      E2StatusButtonComponent.name,
-      'Connecting to Watch'
-    );
+    WearOsComms.setDebugOutput(false);
+    if (!WearOsComms.hasCompanion()) {
+      // open the device configuration page
+      this._showDeviceSetup();
+      return;
+    }
+
     this._loadingIndicator.show({
       message: this._translateService.instant(
         'wearos-comms.messages.synchronizing'
@@ -65,7 +71,11 @@ export class E2StatusButtonComponent {
       dimBackground: true
     });
 
-    WearOsComms.setDebugOutput(false);
+    this._logService.logBreadCrumb(
+      E2StatusButtonComponent.name,
+      'Connecting to Watch'
+    );
+
     // TODO: set status display to busy
     const didConnect = await this._connectCompanion();
     if (didConnect) {
@@ -107,6 +117,20 @@ export class E2StatusButtonComponent {
     }
   }
 
+  private _showDeviceSetup() {
+    this._modalService
+      .showModal(DeviceSetupComponent, {
+        context: { modal: true },
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .then(() => {})
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
   private _updateWatchIcon() {
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
       this.iconString = 'pte2_black';
@@ -130,16 +154,14 @@ export class E2StatusButtonComponent {
     // if we're iOS we have to actually find a companion
     let didConnect = false;
     try {
-      if (!WearOsComms.hasCompanion()) {
-        // TODO: open the device configuration page
-        return didConnect;
-      }
       // now connect
       didConnect = await WearOsComms.connectCompanion(10000);
     } catch (err) {
+      /*
       console.error('error connecting:', err);
       // clear out the companion so we can search again
       WearOsComms.clearCompanion();
+      */
       this._logService.logException(err);
     }
     return didConnect;

@@ -354,6 +354,8 @@ export class DeviceSetupComponent implements OnInit {
     // reset paired so that the ui updates properly
     this.hasPairedE2 = false;
     this.showDoneButton = false;
+    // clear out the companion to make sure we don't save it accidentally
+    WearOsComms.clearCompanion();
     // find possible companions for pairing
     this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
     const possiblePeripherals = await this._getListOfCompanions();
@@ -368,7 +370,6 @@ export class DeviceSetupComponent implements OnInit {
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
-      setTimeout(this._onPushTrackerE2.bind(this), 2000);
       return;
     }
     // ask user which companion is theirs
@@ -380,14 +381,11 @@ export class DeviceSetupComponent implements OnInit {
     });
     const selection = possiblePeripherals.filter(p => p.name === result);
     if (selection.length === 0) {
-      // TODO: we should let the user know they should do this instead
-      // of hitting cancel...
       await alert({
         title: this._translateService.instant('device-setup.e2.must-select-error.title'),
         message: this._translateService.instant('device-setup.e2.must-select-error.message'),
         okButtonText: this._translateService.instant('dialogs.ok')
       });
-      setTimeout(this._onPushTrackerE2.bind(this), 2000);
       return;
     }
     const name = selection[0].name;
@@ -402,7 +400,6 @@ export class DeviceSetupComponent implements OnInit {
     if (didConnect) {
       console.log('didConnect', didConnect);
       this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
-      // const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       if (sentMessage) {
@@ -435,7 +432,6 @@ export class DeviceSetupComponent implements OnInit {
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
-      setTimeout(this._onPushTrackerE2.bind(this), 2000);
     }
   }
 
