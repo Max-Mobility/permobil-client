@@ -111,6 +111,8 @@ export class WearOsComms extends Common {
         if (WearOsComms._bluetooth === null) {
           WearOsComms._bluetooth = new Bluetooth();
           WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
+          // make sure to clear out any old state
+          await WearOsComms.stopAdvertisingAsCompanion();
           // start the server
           WearOsComms._bluetooth.startGattServer();
           // clear out any existing services
