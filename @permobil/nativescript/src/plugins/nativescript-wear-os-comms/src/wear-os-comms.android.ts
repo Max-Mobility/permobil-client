@@ -136,6 +136,18 @@ export class WearOsComms extends Common {
     }
   }
 
+  public static async stopAdvertisingAsCompanion() {
+    try {
+      if (WearOsComms._bluetooth) {
+        await WearOsComms._bluetooth.stopAdvertising();
+        await WearOsComms.deleteService();
+        await WearOsComms._bluetooth.stopGattServer();
+      }
+    } catch (err) {
+      WearOsComms.error('error stopping advertising as companion:', err);
+    }
+  }
+
   private static onCharacteristicWriteRequest(args: any) {
     const argdata = args.data;
     const characteristic = argdata.characteristic.getUuid().toString().toLowerCase();
@@ -221,7 +233,6 @@ export class WearOsComms extends Common {
         const d = WearOsComms._bluetooth.makeDescriptor({
           UUID: duuid
         });
-
         d.setValue(new Array<any>([0x00, 0x00]));
         // WearOsComms.log('Making descriptor: ' + duuid);
         return d;

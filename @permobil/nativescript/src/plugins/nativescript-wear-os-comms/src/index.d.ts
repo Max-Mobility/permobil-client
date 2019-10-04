@@ -19,6 +19,7 @@ export declare class WearOsComms extends Common {
    * For wearable devices
    */
   static advertiseAsCompanion();
+  static stopAdvertisingAsCompanion();
 
   /**
    * For phones

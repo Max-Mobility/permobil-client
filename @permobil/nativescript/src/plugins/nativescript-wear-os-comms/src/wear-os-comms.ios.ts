@@ -67,25 +67,6 @@ export class WearOsComms extends Common {
   public static hasCompanion() {
     let hasCompanion = WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length && true;
     if (!hasCompanion) {
-      // try to find a currently connected peripheral that has the
-      // right services
-      try {
-        const peripherals = WearOsComms._bluetooth.findConnectedPeripheralsWithServices(
-          [ WearOsComms.ServiceUUID ]
-        );
-        if (peripherals && peripherals.length === 1) {
-          // save the peripheral
-          WearOsComms.saveCompanion(peripherals[0].UUID);
-          // update the variable
-          hasCompanion = true;
-        } else {
-          WearOsComms.error('Connected peripherals length:', peripherals && peripherals.length, peripherals);
-        }
-      } catch (err) {
-        WearOsComms.error('could not find connected peripheral:', err);
-      }
-    }
-    if (!hasCompanion) {
       try {
         // try to load from the file system
         WearOsComms.pairedCompanion = appSettings.getString(
@@ -98,52 +79,43 @@ export class WearOsComms extends Common {
         WearOsComms.error('could not load companion from app settings:', err);
       }
     }
-    if (hasCompanion) {
-      const companions = WearOsComms._bluetooth
-        .findPeripheralsWithIdentifiers([WearOsComms.ServiceUUID]); // WearOsComms.pairedCompanion]);
-      if (companions && companions.length === 1) {
-        WearOsComms.log('found companion!');
-      } else {
-        WearOsComms.error('could not find companion:', companions && companions.length, companions);
-      }
-    }
     WearOsComms.log('hasCompanion:', hasCompanion);
     return hasCompanion;
   }
 
   public static async connectCompanion(timeout: number = 10000) {
     if (!WearOsComms.hasCompanion()) return false;
-    const companion = await WearOsComms.getCompanion();
+    const savedAddress = await WearOsComms.getCompanion();
     // connect to the companion
-    let didConnect = false;
-    try {
-      didConnect = await new Promise((resolve, reject) => {
-        const tid = setTimeout(() => {
-          WearOsComms.error('timeout connecting to:', companion);
-          reject(new Error('Connect timeout!'));
-        }, timeout);
-        WearOsComms.log('connecting to:', companion);
-        try {
-          WearOsComms._bluetooth.connect({
-            UUID: companion,
-            onConnected: () => {
-              clearTimeout(tid);
-              WearOsComms.onConnected();
-              resolve(true);
-            },
-            onDisconnected: () => {
-              WearOsComms.onDisconnected();
-              clearTimeout(tid);
-              reject(new Error('Could not connect'));
-            }
-          });
-        } catch (err) {
-          reject(new Error(err));
+    const didConnect = await new Promise(async (resolve, reject) => {
+      const companion = await WearOsComms.scanForCompanion(savedAddress, 5) as any;
+      if (companion === null) {
+        reject(new Error(`could not find companion: ${savedAddress}`));
+        return;
+      }
+      WearOsComms.log('found previously saved companion:', companion);
+      const tid = setTimeout(() => {
+        WearOsComms.error('timeout connecting to:', companion);
+        reject(new Error('Connect timeout!'));
+      }, timeout);
+      WearOsComms.log('connecting to:', companion);
+      await WearOsComms._bluetooth.connect({
+        UUID: companion.identifier.UUIDString,
+        onConnected: () => {
+          clearTimeout(tid);
+          WearOsComms.onConnected();
+          resolve(true);
+        },
+        onDisconnected: () => {
+          // WearOsComms.onDisconnected();
+          clearTimeout(tid);
+          // reject(new Error('Could not connect - disconnected event fired'));
         }
+      }).catch((err) => {
+        clearTimeout(tid);
+        reject(err);
       });
-    } catch (err) {
-      WearOsComms.error('could not connect:', err);
-    }
+    });
     return didConnect;
   }
 
@@ -189,7 +161,7 @@ export class WearOsComms extends Common {
           seconds: timeoutSeconds,
           onDiscovered: (peripheral: any) => {
             WearOsComms.log('found peripheral', peripheral);
-            companions.push(peripheral);
+            companions.push(peripheral.device);
           },
           skipPermissionCheck: false
         });
@@ -215,7 +187,36 @@ export class WearOsComms extends Common {
           onDiscovered: (peripheral: any) => {
             WearOsComms.log('found peripheral', peripheral);
             WearOsComms._bluetooth.stopScanning();
-            resolve(peripheral);
+            resolve(peripheral.device);
+          },
+          skipPermissionCheck: false
+        });
+        // resolve here if we've gotten through scanning and have not
+        // found any devices through the callback
+        resolve(null);
+      } catch (err) {
+        WearOsComms.error('findAvailableCompanion error:', err);
+        // resolve with no devices found
+        resolve(null);
+      }
+    });
+  }
+
+  private static scanForCompanion(companionUUID: string, timeoutSeconds: number): any {
+    // scan for service and pass the resolve function argument to the
+    // onCompanionDiscoveredCallback
+    return new Promise(async (resolve, reject) => {
+      try {
+        await WearOsComms._bluetooth.startScanning({
+          serviceUUIDs: [ WearOsComms.ServiceUUID ],
+          seconds: timeoutSeconds,
+          onDiscovered: (peripheral: any) => {
+            WearOsComms.log('scan for companion found peripheral', peripheral);
+            if (peripheral.UUID === companionUUID) {
+              WearOsComms.log('found saved peripheral', peripheral);
+              WearOsComms._bluetooth.stopScanning();
+              resolve(peripheral.device);
+            }
           },
           skipPermissionCheck: false
         });
@@ -238,7 +239,7 @@ export class WearOsComms extends Common {
     try {
       WearOsComms.log('onConnected');
       // start notifying so we can send / receive data
-      // await WearOsComms.startNotifying();
+      await WearOsComms.startNotifying();
       // now let people know
       WearOsComms._onConnectedCallback && WearOsComms._onConnectedCallback();
     } catch (err) {
