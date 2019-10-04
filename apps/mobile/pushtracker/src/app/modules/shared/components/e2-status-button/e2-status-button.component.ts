@@ -131,12 +131,15 @@ export class E2StatusButtonComponent {
       if (!WearOsComms.hasCompanion()) {
         // find and save the companion
         const companion = await WearOsComms.findAvailableCompanion(5);
-        const address = companion.UUID;
-        this._logService.logBreadCrumb(
-          E2StatusButtonComponent.name,
-          'saving new companion: ' + address
-        );
-        WearOsComms.saveCompanion(address);
+        if (companion !== null) {
+          const address = (companion.identifier && companion.identifier.UUIDString) ||
+            (companion.UUID);
+          this._logService.logBreadCrumb(
+            E2StatusButtonComponent.name,
+            'saving new companion: ' + address
+          );
+          WearOsComms.saveCompanion(address);
+        }
       }
       // now connect
       didConnect = await WearOsComms.connectCompanion(10000);

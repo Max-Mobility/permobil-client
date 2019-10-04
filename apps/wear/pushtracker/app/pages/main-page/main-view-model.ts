@@ -728,6 +728,7 @@ export class MainViewModel extends Observable {
     application.on('exitAmbient', this.onExitAmbient.bind(this));
 
     // Activity lifecycle event handlers
+    application.on(application.exitEvent, this.onAppExit.bind(this));
     application.on(application.lowMemoryEvent, this.onAppLowMemory.bind(this));
     application.on(
       application.uncaughtErrorEvent,
@@ -751,6 +752,11 @@ export class MainViewModel extends Observable {
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
     this.applyTheme();
+  }
+
+  async onAppExit(args?: any) {
+    this.sentryBreadCrumb('*** appExit ***');
+    await WearOsComms.stopAdvertisingAsCompanion();
   }
 
   onAppLowMemory(args?: any) {
