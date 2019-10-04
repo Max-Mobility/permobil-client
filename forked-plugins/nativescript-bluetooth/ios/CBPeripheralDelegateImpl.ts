@@ -73,7 +73,7 @@ export class CBPeripheralDelegateImpl extends NSObject
       CLog(
         CLogTypes.error,
         `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- no services found - disconnecting!`
-      )
+      );
       this._owner.get().disconnect({
         UUID: peripheral.identifier.UUIDString
       });
