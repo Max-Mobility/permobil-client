@@ -11,7 +11,7 @@ import {
 import { CONFIGURATIONS, STORAGE_KEYS, APP_THEMES } from '../../enums';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { action, alert } from "tns-core-modules/ui/dialogs";
+import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTracker } from '../../models';
