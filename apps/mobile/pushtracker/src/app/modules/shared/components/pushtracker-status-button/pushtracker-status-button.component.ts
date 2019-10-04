@@ -1,16 +1,12 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { Component, NgZone } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { registerElement } from 'nativescript-angular/element-registry';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { Color, ContentView } from 'tns-core-modules/ui/content-view';
+import { ContentView } from 'tns-core-modules/ui/content-view';
+import { alert } from 'tns-core-modules/ui/dialogs';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
 import { BluetoothService, PushTrackerState } from '../../../../services/bluetooth.service';
-import { TranslateService } from '@ngx-translate/core';
-const dialogs = require('tns-core-modules/ui/dialogs');
 
 @Component({
   selector: 'pushtracker-status-button',
@@ -18,18 +14,27 @@ const dialogs = require('tns-core-modules/ui/dialogs');
   templateUrl: 'pushtracker-status-button.component.html'
 })
 export class PushTrackerStatusButtonComponent {
-  public PushTrackerState = PushTrackerState;
-  public APP_THEMES = APP_THEMES;
-  public state: PushTrackerState;
-  public icon: ImageSource;
-  public iconString: string;
-  public CURRENT_THEME: string;
-  public updateWatchIcon;
+  unknownIconText: string = `${String.fromCharCode(
+    0xe1a7
+  )}${String.fromCharCode(0xe8fd)}`;
+  connectedIconText: string = `${String.fromCharCode(
+    0xe1a7
+  )}${String.fromCharCode(0x2713)}`;
+  disconnectedIconText: string = `${String.fromCharCode(
+    0xe1a7
+  )}${String.fromCharCode(0x10007)}`;
+
+  PushTrackerState = PushTrackerState;
+  APP_THEMES = APP_THEMES;
+  state: PushTrackerState;
+  icon: ImageSource;
+  iconString: string;
+  CURRENT_THEME: string;
+  updateWatchIcon;
 
   constructor(
     private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
-    private _vcRef: ViewContainerRef,
     private _zone: NgZone
   ) {
     this.CURRENT_THEME = appSettings.getString(
@@ -66,17 +71,20 @@ export class PushTrackerStatusButtonComponent {
     this._zone.run(() => {
       if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
         this.iconString = 'og_band_black';
-      else
-        this.iconString = 'og_band_white';
+      else this.iconString = 'og_band_white';
       this.icon = imageFromResource(this.iconString);
     });
   }
 
   onTap() {
-    dialogs.alert({
-      title: this._translateService.instant('profile-settings.watch-status-alert-title'),
-      message: this._translateService.instant('profile-settings.watch-status-alert-message.' +
-        this._getTranslationKeyForPushTrackerStatus()),
+    alert({
+      title: this._translateService.instant(
+        'profile-settings.watch-status-alert-title'
+      ),
+      message: this._translateService.instant(
+        'profile-settings.watch-status-alert-message.' +
+          this._getTranslationKeyForPushTrackerStatus()
+      ),
       okButtonText: this._translateService.instant('dialogs.ok')
     });
   }

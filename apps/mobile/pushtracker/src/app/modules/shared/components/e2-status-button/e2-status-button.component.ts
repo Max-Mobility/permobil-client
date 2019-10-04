@@ -1,20 +1,17 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Log, PushTrackerUser } from '@permobil/core';
-import { registerElement } from 'nativescript-angular/element-registry';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { Toasty, ToastDuration } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { Color, ContentView } from 'tns-core-modules/ui/content-view';
-import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { TranslateService } from '@ngx-translate/core';
-import { LoggingService, BluetoothService, ThemeService } from '../../../../services';
-import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-
-const dialogs = require('tns-core-modules/ui/dialogs');
+import { registerElement } from 'nativescript-angular/element-registry';
+import { ToastDuration, Toasty } from 'nativescript-toasty';
+import * as appSettings from 'tns-core-modules/application-settings';
+import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
+import { isAndroid } from 'tns-core-modules/platform';
+import { ContentView } from 'tns-core-modules/ui/content-view';
+import { alert } from 'tns-core-modules/ui/dialogs';
+import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
+import { LoggingService, ThemeService } from '../../../../services';
 
 @Component({
   selector: 'e2-status-button',
@@ -51,15 +48,20 @@ export class E2StatusButtonComponent {
     this.updateWatchIcon();
   }
 
-  onUnloaded() {
-
-  }
+  onUnloaded() {}
 
   async onTap() {
-    this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'Connecting to Watch');
+    this._logService.logBreadCrumb(
+      E2StatusButtonComponent.name,
+      'Connecting to Watch'
+    );
     this._loadingIndicator.show({
-      message: this._translateService.instant('wearos-comms.messages.synchronizing'),
-      details: this._translateService.instant('wearos-comms.messages.synchronizing-long'),
+      message: this._translateService.instant(
+        'wearos-comms.messages.synchronizing'
+      ),
+      details: this._translateService.instant(
+        'wearos-comms.messages.synchronizing-long'
+      ),
       dimBackground: true
     });
 
@@ -70,10 +72,12 @@ export class E2StatusButtonComponent {
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       this._loadingIndicator.hide();
-      if (sentMessage) { // && sentData) {
+      if (sentMessage) {
+        // && sentData) {
         new Toasty({
-          text:
-          this._translateService.instant('wearos-comms.messages.pte2-sync-successful'),
+          text: this._translateService.instant(
+            'wearos-comms.messages.pte2-sync-successful'
+          ),
           duration: ToastDuration.LONG
         }).show();
       } else {
@@ -104,12 +108,11 @@ export class E2StatusButtonComponent {
   private _updateWatchIcon() {
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
       this.iconString = 'pte2_black';
-    else
-      this.iconString = 'pte2_white';
+    else this.iconString = 'pte2_white';
     this.icon = imageFromResource(this.iconString);
   }
 
-    private _getSerializedAuth() {
+  private _getSerializedAuth() {
     // get user
     const user = KinveyUser.getActiveUser();
     const id = user._id;
@@ -128,7 +131,10 @@ export class E2StatusButtonComponent {
       if (!WearOsComms.hasCompanion()) {
         // find and save the companion
         const address = await WearOsComms.findAvailableCompanions(5);
-        this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'saving new companion: ' + address);
+        this._logService.logBreadCrumb(
+          E2StatusButtonComponent.name,
+          'saving new companion: ' + address
+        );
         WearOsComms.saveCompanion(address);
       }
       // now connect
@@ -158,9 +164,15 @@ export class E2StatusButtonComponent {
     try {
       didSend = await WearOsComms.sendData(this._getSerializedAuth());
       if (didSend) {
-        this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'SendData successful.');
+        this._logService.logBreadCrumb(
+          E2StatusButtonComponent.name,
+          'SendData successful.'
+        );
       } else {
-        this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'SendData unsuccessful.');
+        this._logService.logBreadCrumb(
+          E2StatusButtonComponent.name,
+          'SendData unsuccessful.'
+        );
       }
     } catch (error) {
       this._logService.logException(error);
@@ -171,18 +183,26 @@ export class E2StatusButtonComponent {
   private async _sendMessage() {
     let didSend = false;
     try {
-      didSend = await WearOsComms.sendMessage('/app-message', this._getSerializedAuth());
+      didSend = await WearOsComms.sendMessage(
+        '/app-message',
+        this._getSerializedAuth()
+      );
       if (didSend) {
-        this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'SendMessage successful.');
+        this._logService.logBreadCrumb(
+          E2StatusButtonComponent.name,
+          'SendMessage successful.'
+        );
       } else {
-        this._logService.logBreadCrumb(E2StatusButtonComponent.name, 'SendMessage unsuccessful.');
+        this._logService.logBreadCrumb(
+          E2StatusButtonComponent.name,
+          'SendMessage unsuccessful.'
+        );
       }
     } catch (error) {
       this._logService.logException(error);
     }
     return didSend;
   }
-
 }
 
 registerElement('e2-status-button', () => {

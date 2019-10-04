@@ -405,8 +405,8 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarDateSelected(args) {
     if (
-      this.user.data.control_configuration !==
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
     ) {
       const date: Date = args.date;
       if (date <= new Date()) {
@@ -414,6 +414,20 @@ export class ActivityComponent implements OnInit {
         this.currentDayInView.setMonth(date.getMonth());
         this.currentDayInView.setDate(date.getDate());
         this.currentTab = TAB.DAY;
+      }
+    } else if (
+      this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
+      const date: Date = args.date;
+      if (date <= new Date()) {
+        // If selected date is in the past or if it's today, switch to week view
+        this.weekStart = getFirstDayOfWeek(date);
+        this.weekEnd = new Date(this.weekStart);
+        this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+        this.currentDayInView.setMonth(date.getMonth());
+        this.currentDayInView.setDate(date.getDate());
+        this.currentTab = TAB.WEEK;
       }
     }
   }

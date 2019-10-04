@@ -24,12 +24,11 @@ import { EventData, fromObject, Observable } from 'tns-core-modules/data/observa
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
-import { SmartDrive, TapDetector } from '../../models';
+import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
@@ -158,7 +157,7 @@ export class MainViewModel extends Observable {
   tapTimeoutId: any = null;
   // Sensor listener config:
   SENSOR_DELAY_US: number = 10 * 1000;
-  MAX_REPORTING_INTERVAL_US: number = 100 * 1000;
+  MAX_REPORTING_INTERVAL_US: number = 10 * 1000;
   // Estimated range min / max factors
   minRangeFactor: number = 2.0 / 100.0; // never estimate less than 2 mi per full charge
   maxRangeFactor: number = 12.0 / 100.0; // never estimate more than 12 mi per full charge
@@ -279,7 +278,6 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
-    const fontScale = androidConfig.fontScale; // floating point
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
@@ -345,7 +343,6 @@ export class MainViewModel extends Observable {
       0
     );
     const versionName = packageInfo.versionName;
-    const versionCode = packageInfo.versionCode;
     this.appVersion = versionName;
 
     // make throttled save function - not called more than once every 10 seconds
@@ -476,7 +473,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        const permissions = await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
         appSettings.setString(
@@ -941,7 +938,7 @@ export class MainViewModel extends Observable {
   registerForBatteryUpdates() {
     // register for watch battery updates
     const batteryReceiverCallback = (
-      androidContext: android.content.Context,
+      _: android.content.Context,
       intent: android.content.Intent
     ) => {
       // get the info from the event
@@ -987,7 +984,7 @@ export class MainViewModel extends Observable {
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
-    const timeReceiverCallback = (androidContext, intent) => {
+    const timeReceiverCallback = (_1, _2) => {
       try {
         this.updateTimeDisplay();
         this._sentryBreadCrumb('timeReceiverCallback');
@@ -1240,19 +1237,22 @@ export class MainViewModel extends Observable {
         return element1;
       });
 
-      const averageAccel = {
+      const signedMaxAccel: Acceleration = {
         x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
         y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
         z: total.accel.z >= 0 ? max.accel.z : min.accel.z,
       };
 
       const averageTimestamp = total.timestamp / this._previousDataLength;
+      // if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
+      //   Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
+      // }
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
-      this.tapDetector.setSensitivity(this.settings.tapSensitivity);
+      this.tapDetector.setSensitivity(this.settings.tapSensitivity, this.motorOn);
       // now run the tap detector
-      const didTap = this.tapDetector.detectTap(averageAccel, averageTimestamp);
+      const didTap = this.tapDetector.detectTap(signedMaxAccel, averageTimestamp);
       if (didTap) {
         // user has met threshold for tapping
         this.handleTap(/* averageTimestamp */);
@@ -2448,6 +2448,10 @@ export class MainViewModel extends Observable {
       );
     }
 
+    // now that we've disabled power assist - make sure the charts
+    // update with the latest data from the smartdrive
+    this.updateChartData();
+
     return Promise.resolve();
   }
 
@@ -2472,7 +2476,7 @@ export class MainViewModel extends Observable {
    * APP, AND FOR OPENING THE APP STORE OR APP
    */
 
-  onResultData(resultCode: number, resultData: android.os.Bundle) {
+  onResultData(resultCode: number, _: android.os.Bundle) {
     Log.D('onResultData:', resultCode);
     if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
       Log.D('result ok!');
@@ -2643,7 +2647,7 @@ export class MainViewModel extends Observable {
           return false;
         }
         // await a promise here to ensure that the radio is back on!
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, _) => {
           setTimeout(resolve, 500);
         });
         await promise;
@@ -2858,7 +2862,6 @@ export class MainViewModel extends Observable {
 
   private _rssi = 0;
   private rssiIntervalId = null;
-  private RSSI_INTERVAL_MS = 500;
   readSmartDriveSignalStrength() {
     if (this.smartDrive && this.smartDrive.connected) {
       this._bluetoothService
@@ -3111,7 +3114,12 @@ export class MainViewModel extends Observable {
           newEntry
         );
       }
-      this.updateChartData();
+      // update the estimated range (doesn't use weekly usage info -
+      // since that may not have any data, so it internally pulls the
+      // most recent 7 records (which contain real data
+      await this.updateEstimatedRange();
+      // now actually update the display of the speed / estimated range
+      this.updateSpeedDisplay();
     } catch (err) {
       Sentry.captureException(err);
       Log.E('Failed saving usage:', err);

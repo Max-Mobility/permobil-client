@@ -1,36 +1,27 @@
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
+import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
-import clamp from 'lodash/clamp';
-import differenceBy from 'lodash/differenceBy';
-import flatten from 'lodash/flatten';
 import last from 'lodash/last';
-import once from 'lodash/once';
-import throttle from 'lodash/throttle';
-import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
-import { showSuccess } from 'nativescript-wear-os/packages/dialogs';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { Color } from 'tns-core-modules/color';
 import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
-import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { ItemEventData } from 'tns-core-modules/ui/list-view';
-import { Page, View } from 'tns-core-modules/ui/page';
+import { alert } from 'tns-core-modules/ui/dialogs';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
+import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
-import { KinveyService, SERVICES, SqliteService } from '../../services';
+import { ResultReceiver } from '../../result-receiver';
+import { KinveyService, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
-import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -55,33 +46,6 @@ declare const com: any;
 
 let debug: boolean = false;
 
-@JavaProxy('com.permobil.pushtracker.DataBroadcastReceiver')
-class DataBroadcastReceiver extends android.content.BroadcastReceiver {
-  public onReceiveFunction: any = null;
-  constructor() {
-    super();
-    return global.__native(this);
-  }
-  onReceive(androidContext: android.content.Context,
-    intent: android.content.Intent) {
-    if (this.onReceiveFunction)
-      this.onReceiveFunction(androidContext, intent);
-  }
-}
-
-@JavaProxy('com.permobil.pushtracker.ResultReceiver')
-class ResultReceiver extends android.os.ResultReceiver {
-  public onReceiveFunction: any = null;
-  constructor(handler: android.os.Handler) {
-    super(handler);
-    return global.__native(this);
-  }
-  onReceiveResult(resultCode: number, resultData: android.os.Bundle) {
-    if (this.onReceiveFunction)
-      this.onReceiveFunction(resultCode, resultData);
-  }
-}
-
 export class MainViewModel extends Observable {
   /**
    * Goal progress data.
@@ -89,15 +53,20 @@ export class MainViewModel extends Observable {
    *   * CurrentValue: {R} actual daily number used for text display
    *   * Value: {R} actual goal number used for text display
    */
-  @Prop() distanceGoalValue: number = debug ? ((Math.random() * 10.0) + 2.0) : 0;
-  @Prop() distanceGoalCurrentValue: number = debug ? Math.random() * this.distanceGoalValue : 0;
+  @Prop() distanceGoalValue: number = debug ? Math.random() * 10.0 + 2.0 : 0;
+  @Prop() distanceGoalCurrentValue: number = debug
+    ? Math.random() * this.distanceGoalValue
+    : 0;
   @Prop() distanceGoalCurrentProgress: number =
     (this.distanceGoalCurrentValue / this.distanceGoalValue) * 100.0;
-  @Prop() distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
+  @Prop()
+  distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
   @Prop() distanceGoalValueDisplay = this.distanceGoalValue.toFixed(1);
 
-  @Prop() coastGoalValue: number = debug ? ((Math.random() * 10) + 2.0) : 0;
-  @Prop() coastGoalCurrentValue: number = debug ? Math.random() * this.coastGoalValue : 0;
+  @Prop() coastGoalValue: number = debug ? Math.random() * 10 + 2.0 : 0;
+  @Prop() coastGoalCurrentValue: number = debug
+    ? Math.random() * this.coastGoalValue
+    : 0;
   @Prop() coastGoalCurrentProgress: number =
     (this.coastGoalCurrentValue / this.coastGoalValue) * 100.0;
   @Prop() coastGoalCurrentValueDisplay = this.coastGoalCurrentValue.toFixed(1);
@@ -225,8 +194,7 @@ export class MainViewModel extends Observable {
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * screenWidth);
       // if the height !== width then there is a chin!
-      if (screenWidth !== screenHeight &&
-        screenWidth > screenHeight) {
+      if (screenWidth !== screenHeight && screenWidth > screenHeight) {
         this.chinSize = screenWidth - screenHeight;
       }
     }
@@ -263,7 +231,10 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('Sentry has been initialized.');
 
     this.sentryBreadCrumb('Creating services...');
-    const injector = ReflectiveInjector.resolveAndCreate([SqliteService, KinveyService]);
+    const injector = ReflectiveInjector.resolveAndCreate([
+      SqliteService,
+      KinveyService
+    ]);
     this.sqliteService = injector.get(SqliteService);
     this.kinveyService = injector.get(KinveyService);
     this.sentryBreadCrumb('All Services created.');
@@ -312,8 +283,9 @@ export class MainViewModel extends Observable {
     this.registerForTimeUpdates();
 
     // determine if the smartdrive app is installed
-    this.isSmartDriveAppInstalled =
-      this.checkPackageInstalled('com.permobil.smartdrive.wearos');
+    this.isSmartDriveAppInstalled = this.checkPackageInstalled(
+      'com.permobil.smartdrive.wearos'
+    );
 
     setTimeout(this.startActivityService.bind(this), 5000);
   }
@@ -362,7 +334,11 @@ export class MainViewModel extends Observable {
         .getContentResolver()
         .query(
           com.permobil.pushtracker.SmartDriveUsageProvider.USAGE_URI,
-          null, null, null, null);
+          null,
+          null,
+          null,
+          null
+        );
       if (cursor && cursor.moveToFirst()) {
         // there is data
         const serialized = cursor.getString(
@@ -427,10 +403,12 @@ export class MainViewModel extends Observable {
   debugTap() {
     debug = !debug;
     if (debug) {
-      this.currentPushCount = ((Math.random() * 2000) + 1000);
-      this.distanceGoalValue = ((Math.random() * 10.0) + 2.0);
-      this.distanceGoalCurrentValue = debug ? Math.random() * this.distanceGoalValue : 0;
-      this.coastGoalValue = ((Math.random() * 10) + 2.0);
+      this.currentPushCount = Math.random() * 2000 + 1000;
+      this.distanceGoalValue = Math.random() * 10.0 + 2.0;
+      this.distanceGoalCurrentValue = debug
+        ? Math.random() * this.distanceGoalValue
+        : 0;
+      this.coastGoalValue = Math.random() * 10 + 2.0;
       this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
     } else {
       this.loadCurrentActivityData();
@@ -459,20 +437,23 @@ export class MainViewModel extends Observable {
   registerForServiceDataUpdates() {
     this.sentryBreadCrumb('Registering for service data updates.');
     this.serviceDataReceiver.onReceiveFunction = this.onServiceData.bind(this);
-    const context = ad
-      .getApplicationContext();
-    androidx.localbroadcastmanager.content.LocalBroadcastManager
-      .getInstance(context)
-      .registerReceiver(
-        this.serviceDataReceiver,
-        new android.content.IntentFilter(
-          com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
-        )
-      );
+    const context = ad.getApplicationContext();
+    androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
+      context
+    ).registerReceiver(
+      this.serviceDataReceiver,
+      new android.content.IntentFilter(
+        com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
+      )
+    );
     this.sentryBreadCrumb('Service Data Update registered.');
   }
 
-  async onMessageReceived(data: { path: string, message: string, device: any }) {
+  async onMessageReceived(data: {
+    path: string;
+    message: string;
+    device: any;
+  }) {
     Log.D('on message received:', data.path, data.message);
     this.isBusy = true;
     const splits = data.message.split(':');
@@ -506,20 +487,22 @@ export class MainViewModel extends Observable {
     );
     editor.commit();
     try {
-      const contentResolver = ad
-        .getApplicationContext()
-        .getContentResolver();
+      const contentResolver = ad.getApplicationContext().getContentResolver();
       // write token to content provider for smartdrive wear
       const tokenValue = new android.content.ContentValues();
       tokenValue.put('data', token);
-      contentResolver
-        .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
+      contentResolver.insert(
+        com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI,
+        tokenValue
+      );
 
       // write user id to content provider for smartdrive wear
       const userValue = new android.content.ContentValues();
       userValue.put('data', userId);
-      contentResolver
-        .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
+      contentResolver.insert(
+        com.permobil.pushtracker.DatabaseHandler.USER_ID_URI,
+        userValue
+      );
     } catch (err) {
       Log.E('Could not set content values for authorization:', err);
     }
@@ -540,7 +523,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async onDataReceived(data: { data: any, device: any }) {
+  async onDataReceived(data: { data: any; device: any }) {
     Log.D('on data received:', data);
   }
 
@@ -613,7 +596,10 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        const permissions = await requestPermissions(neededPermissions, () => { });
+        const permissions = await requestPermissions(
+          neededPermissions,
+          () => {}
+        );
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
         // save it to datastore for service to use
@@ -667,14 +653,16 @@ export class MainViewModel extends Observable {
     this.enabledLayout.set(layoutName, true);
   }
 
-  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener({
-    onApplyWindowInsets: function(view, insets) {
-      this.chinSize = insets.getSystemWindowInsetBottom();
-      Log.D('chinSize', this.chinSize);
-      view.onApplyWindowInsets(insets);
-      return insets;
+  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener(
+    {
+      onApplyWindowInsets: function(view, insets) {
+        this.chinSize = insets.getSystemWindowInsetBottom();
+        Log.D('chinSize', this.chinSize);
+        view.onApplyWindowInsets(insets);
+        return insets;
+      }
     }
-  });
+  );
 
   async onMainPageLoaded(args: any) {
     this.sentryBreadCrumb('onMainPageLoaded');
@@ -791,7 +779,7 @@ export class MainViewModel extends Observable {
       Log.D('requesting user data');
       // now request user data
       this.isBusy = true;
-      const userData = await this.kinveyService.getUserData() as any;
+      const userData = (await this.kinveyService.getUserData()) as any;
       Log.D('userInfo', JSON.stringify(userData, null, 2));
       // pull the data out of the user structure
       this.settings.fromUser(userData);
@@ -864,9 +852,14 @@ export class MainViewModel extends Observable {
 
   onResultData(resultCode: number, resultData: android.os.Bundle) {
     Log.D('onResultData:', resultCode);
-    if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
+    if (
+      resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK
+    ) {
       Log.D('result ok!');
-    } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
+    } else if (
+      resultCode ===
+      com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED
+    ) {
       Log.D('result failed!');
     } else {
       Log.E('Unexpected result ' + resultCode);
@@ -884,25 +877,27 @@ export class MainViewModel extends Observable {
   openAppOnPhone() {
     Log.D('openAppInStoreOnPhone()');
     try {
-
       this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
 
-      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-        .getPhoneDeviceType(ad.getApplicationContext());
+      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
+        ad.getApplicationContext()
+      );
       switch (phoneDeviceType) {
         // Paired to Android phone, use Play Store URI.
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
           Log.D('\tDEVICE_TYPE_ANDROID');
           // Create Remote Intent to open Play Store listing of app on remote device.
-          const intentAndroid =
-            new android.content.Intent(android.content.Intent.ACTION_VIEW)
-              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-              .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
+          const intentAndroid = new android.content.Intent(
+            android.content.Intent.ACTION_VIEW
+          )
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
 
           com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
             ad.getApplicationContext(),
             intentAndroid,
-            this.mResultReceiver);
+            this.mResultReceiver
+          );
           break;
 
         // Paired to iPhone, use iTunes App Store URI
@@ -910,24 +905,28 @@ export class MainViewModel extends Observable {
           Log.D('\tDEVICE_TYPE_IOS');
 
           // Create Remote Intent to open App Store listing of app on iPhone.
-          const intentIOS =
-            new android.content.Intent(android.content.Intent.ACTION_VIEW)
-              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-              .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
+          const intentIOS = new android.content.Intent(
+            android.content.Intent.ACTION_VIEW
+          )
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
 
           com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
             ad.getApplicationContext(),
             intentIOS,
-            this.mResultReceiver);
+            this.mResultReceiver
+          );
           break;
 
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
+        case android.support.wearable.phone.PhoneDeviceType
+          .DEVICE_TYPE_ERROR_UNKNOWN:
           Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
           break;
       }
       // now show the open on phone activity
       this.showConfirmation(
-        android.support.wearable.activity.ConfirmationActivity.OPEN_ON_PHONE_ANIMATION
+        android.support.wearable.activity.ConfirmationActivity
+          .OPEN_ON_PHONE_ANIMATION
       );
     } catch (err) {
       Log.E('Error opening on phone:', err);
@@ -961,12 +960,15 @@ export class MainViewModel extends Observable {
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
-      android.support.wearable.activity.ConfirmationActivity.EXTRA_ANIMATION_TYPE,
-      animationType);
+      android.support.wearable.activity.ConfirmationActivity
+        .EXTRA_ANIMATION_TYPE,
+      animationType
+    );
     if (message !== undefined) {
       intent.putExtra(
         android.support.wearable.activity.ConfirmationActivity.EXTRA_MESSAGE,
-        message);
+        message
+      );
     }
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -999,7 +1001,7 @@ export class MainViewModel extends Observable {
   async updateChartData() {
     // Log.D('Updating Chart Data / Display');
     try {
-      let activityData = await this.getActivityInfoFromDatabase(7) as any[];
+      let activityData = (await this.getActivityInfoFromDatabase(7)) as any[];
       // we've asked for one more day than needed so that we can
       // compute distance differences
       const oldest = activityData[0];
@@ -1011,8 +1013,7 @@ export class MainViewModel extends Observable {
       activityData = activityData.slice(1);
       // update coast data
       const maxCoast = activityData.reduce((max, obj) => {
-        return obj.coast_time_avg > max ?
-          obj.coast_time_avg : max;
+        return obj.coast_time_avg > max ? obj.coast_time_avg : max;
       }, 0);
       const coastData = activityData.map(e => {
         return {
@@ -1048,7 +1049,8 @@ export class MainViewModel extends Observable {
   }
 
   onSettingsInfoItemTap(args: EventData) {
-    const messageKey = 'settings.' + this.activeSettingToChange + '.description';
+    const messageKey =
+      'settings.' + this.activeSettingToChange + '.description';
     const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
     alert({
       title: L('settings.information'),
@@ -1082,7 +1084,9 @@ export class MainViewModel extends Observable {
     switch (this.activeSettingToChange) {
       case 'coastgoal':
         this.changeSettingKeyValue =
-          this.tempSettings.coastGoal.toFixed(1) + ' ' + L('settings.coastgoal.units');
+          this.tempSettings.coastGoal.toFixed(1) +
+          ' ' +
+          L('settings.coastgoal.units');
         break;
       case 'distancegoal':
         value = this.tempSettings.distanceGoal;
@@ -1090,7 +1094,8 @@ export class MainViewModel extends Observable {
           value *= 1.609;
         }
         this.changeSettingKeyValue = value.toFixed(1) + ' ';
-        translationKey = 'settings.distancegoal.units.' + this.tempSettings.units;
+        translationKey =
+          'settings.distancegoal.units.' + this.tempSettings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
       case 'height':
@@ -1154,12 +1159,18 @@ export class MainViewModel extends Observable {
     // always compute progress prior to conversion of units
     this.distanceGoalCurrentProgress =
       (this.distanceGoalCurrentValue / this.distanceGoalValue) * 100.0;
-    this.distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
+    this.distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(
+      1
+    );
     this.distanceGoalValueDisplay = this.distanceGoalValue.toFixed(1);
     // update the distance displays in case they are metric
     if (this.settings.units === 'metric') {
-      this.distanceGoalCurrentValueDisplay = (this.distanceGoalCurrentValue * 1.609).toFixed(1);
-      this.distanceGoalValueDisplay = (this.distanceGoalValue * 1.609).toFixed(1);
+      this.distanceGoalCurrentValueDisplay = (
+        this.distanceGoalCurrentValue * 1.609
+      ).toFixed(1);
+      this.distanceGoalValueDisplay = (this.distanceGoalValue * 1.609).toFixed(
+        1
+      );
     }
     // coast goal display
     this.coastGoalValue = this.settings.coastGoal;
@@ -1171,8 +1182,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() {
-  }
+  updateSpeedDisplay() {}
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1217,7 +1227,8 @@ export class MainViewModel extends Observable {
   checkPackageInstalled(packageName: string) {
     let found = true;
     try {
-      application.android.context.getPackageManager()
+      application.android.context
+        .getPackageManager()
         .getPackageInfo(packageName, 0);
     } catch (err) {
       found = false;
@@ -1226,12 +1237,15 @@ export class MainViewModel extends Observable {
   }
 
   openInPlayStore(uri: string) {
-    const intent =
-      new android.content.Intent(android.content.Intent.ACTION_VIEW)
-        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-        .addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-        .setData(android.net.Uri.parse(uri));
+    const intent = new android.content.Intent(
+      android.content.Intent.ACTION_VIEW
+    )
+      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+      .addFlags(
+        android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+      )
+      .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);
   }
 
@@ -1279,7 +1293,7 @@ export class MainViewModel extends Observable {
       // https://support.kinvey.com/support/tickets/6897
       Log.D('requesting user data');
       // now request user data
-      const userData = await this.kinveyService.getUserData() as any;
+      const userData = (await this.kinveyService.getUserData()) as any;
       const values = this.settings.toUser();
       Object.keys(values).map(k => {
         userData[k] = values[k];
@@ -1315,9 +1329,7 @@ export class MainViewModel extends Observable {
   }
 
   loadSettings() {
-    this.settings.copy(
-      LS.getItem('com.permobil.pushtracker.profile.settings')
-    );
+    this.settings.copy(LS.getItem('com.permobil.pushtracker.profile.settings'));
     this.hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
 
@@ -1357,8 +1369,10 @@ export class MainViewModel extends Observable {
    */
   async getTodaysActivityInfoFromDatabase() {
     try {
-      const e = await this.sqliteService
-        .getLast(DailyActivity.Info.TableName, DailyActivity.Info.IdName);
+      const e = await this.sqliteService.getLast(
+        DailyActivity.Info.TableName,
+        DailyActivity.Info.IdName
+      );
       const date = new Date((e && e[1]) || null);
       if (e && e[1] && isToday(date)) {
         // @ts-ignore
@@ -1460,13 +1474,14 @@ export class MainViewModel extends Observable {
       // Mobile app
       Log.D('No authorization found in app settings!');
       try {
-        const contentResolver = ad
-          .getApplicationContext()
-          .getContentResolver();
-        const authCursor = contentResolver
-          .query(
-            com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI,
-            null, null, null, null);
+        const contentResolver = ad.getApplicationContext().getContentResolver();
+        const authCursor = contentResolver.query(
+          com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI,
+          null,
+          null,
+          null,
+          null
+        );
         if (authCursor && authCursor.moveToFirst()) {
           // there is data
           const token = authCursor.getString(
@@ -1481,10 +1496,13 @@ export class MainViewModel extends Observable {
         } else {
           Log.E('Could not get authCursor to move to first:', authCursor);
         }
-        const idCursor = contentResolver
-          .query(
-            com.permobil.pushtracker.DatabaseHandler.USER_ID_URI,
-            null, null, null, null);
+        const idCursor = contentResolver.query(
+          com.permobil.pushtracker.DatabaseHandler.USER_ID_URI,
+          null,
+          null,
+          null,
+          null
+        );
         if (idCursor && idCursor.moveToFirst()) {
           // there is data
           const uid = idCursor.getString(

@@ -1,26 +1,38 @@
 import { Log } from '@permobil/core';
 import { android as androidApp } from 'tns-core-modules/application';
-import { knownFolders, path } from 'tns-core-modules/file-system';
 
 declare const org: any;
 
+export interface Acceleration {
+  x: number;
+  y: number;
+  z: number;
+}
+
+type TimeStamp = number;
+
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
+  public static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
    * Higher-level tap detection configuration
    */
-  private minPredictionThreshold = 0.5;
-  private maxPredictionThreshold = 0.8;
-  private predictionThreshold: number = 0.5; // confidence
+  private minPredictionThreshold: number = 0.5;
+  private maxPredictionThreshold: number = 1.0;
+  private predictionThreshold: number = 0.5; // tap prediction confidence
+  private predictionThresholdOnOffDiff: number = 0.2; // prediction confidence difference when motor on/off
+  private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
 
-  private jerkThreshold: number = 17.0; // acceleration value
-  private maxJerkThreshold: number = 30.0;
-  private minJerkThreshold: number = 17.0;
+  private jerkThresholdDynamic: number = 30.0; // calculated tap jerk threshold
+  private jerkThresholdOnOffDiff: number = 10.0; // tap jerk threshold difference when motor on/off
+  private jerkThreshold: number = 30.0; // tap jerk threshold value
+  private maxJerkThreshold: number = 70.0;
+  private minJerkThreshold: number = 30.0;
 
-  private lastTapTime: number; // timestamp of last detected tap
+  private lastTapTime: TimeStamp; // timestamp of last detected tap
 
   private tapGap: boolean = true;
 
@@ -42,23 +54,23 @@ export class TapDetector {
   /**
    * TFLite model input / output configuration
    */
-  private static StateSize = 128;
-  private static Input_StateIndex = 0;
-  private static Input_InputIndex = 1;
-  private static Output_StateIndex = 0;
-  private static Output_PredictionIndex = 1;
+  private static StateSize: number = 128;
+  private static Input_StateIndex: number = 0;
+  private static Input_InputIndex: number = 1;
+  private static Output_StateIndex: number = 0;
+  private static Output_PredictionIndex: number = 1;
 
   /**
    * Higher-level tap detection - not TFLite related
    */
-  private static InputHistorySize = 4;
-  private static PredictionHistorySize = 1;
-  private static InputRawHistorySize = 10;
-  private static JerkHistorySize = 2;
-  private inputHistory: any[] = [];
-  private predictionHistory: number[] = [];
-  private inputRawHistory: any[] = [];
-  private jerkHistory: number[] = [];
+  private static InputHistorySize: number = 4;
+  private static PredictionHistorySize: number = 2;
+  private static InputRawHistorySize: number = 6;
+  private static JerkHistorySize: number = 2;
+  private inputHistory: Array<Acceleration> = [];
+  private predictionHistory: Array<number> = [];
+  private inputRawHistory: Array<Acceleration> = [];
+  private jerkHistory: Array<number> = [];
 
   constructor() {
     try {
@@ -151,38 +163,54 @@ export class TapDetector {
    *
    * @param sensitivity [number]: [0-100] percent sensitivity.
    */
-  public setSensitivity(sensitivity: number) {
+  public setSensitivity(sensitivity: number, motorOn: boolean) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
     // update jerk threshold
     this.jerkThreshold = this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) * (sensitivity / 100.0);
     this.predictionThreshold = this.maxPredictionThreshold - (this.maxPredictionThreshold - this.minPredictionThreshold) * (sensitivity / 100.0);
+
+    // harder to tap start and easier to tap stop the motor
+    if (!motorOn) {
+      this.jerkThresholdDynamic = this.jerkThreshold;
+      this.predictionThresholdDynamic = this.predictionThreshold;
+    }
+    else {
+      this.jerkThresholdDynamic = this.jerkThreshold - this.jerkThresholdOnOffDiff;
+      this.predictionThresholdDynamic = this.predictionThreshold - this.predictionThresholdOnOffDiff;
+    }
   }
 
   /**
    * Main inference Function for detecting tap
+   * @return result [boolean]: true if there was a tap
    */
-  public detectTap(acceleration: any, timestamp: number) {
+  public detectTap(acceleration: Acceleration, timestamp: TimeStamp) {
     try {
-      const inputData = [
-        acceleration.x,
-        acceleration.y,
-        acceleration.z
-      ];
+      // vectorize the input
+      const inputData = [acceleration.x, acceleration.y, acceleration.z];
+
       // update the input history
+      // remove the oldest element if history length > InputHistorySize
       this.updateHistory(acceleration);
+
       // copy the data into the input array
       this.inputData[0][0] = inputData[0];
       this.inputData[0][1] = inputData[1];
       this.inputData[0][2] = inputData[2];
+
       // run the inference
       this.tflite.runForMultipleInputsOutputs(this.tapDetectorInput, this.tapDetectorOutput);
+
       // get the prediction
       const prediction = this.parsedPrediction[0][0];
+
       // update the prediction history
+      // remove the oldest element if history.length > PredictionHistorySize
       this.updatePredictions(prediction);
+
       // determine if there was a tap
-      return this.didTap(timestamp);
+      return this.didTap(timestamp) || false; // didTap is capable of returning undefined
     } catch (e) {
       Log.E('could not detect tap:', e);
       return false;
@@ -193,86 +221,59 @@ export class TapDetector {
    * Determines (based on input and prediction histories) whether
    * there was a tap.
    */
-  private didTap(timestamp: number) {
-    // block high frequency tapping
-    if (this.lastTapTime !== null) {
-      const timeDiffNs = timestamp - this.lastTapTime;
-      const timeDiffThreshold = TapDetector.TapLockoutTimeMs * 1000 * 1000; // convert to ns
-      if (timeDiffNs < timeDiffThreshold) {
-        return false;
-      }
-    }
-    // time was good - now determine if the inputs / predictions were good
-    if (this.inputHistory.length < TapDetector.InputHistorySize ||
-      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
-      // we don't have enough historical data so detect no taps
+  private didTap(timestamp: TimeStamp) {
+    // Block high frequency tapping
+    if (this.lastTapTime && (timestamp - this.lastTapTime) < TapDetector.TapLockoutTimeNs) {
       return false;
     }
-    // check that inputRawHistory max-min > jerkThreshold
-    let minZ = null;
-    let maxZ = null;
-    let maxJerk = null;
-    this.inputRawHistory.map(accel => {
-      const z = accel.z;
-      if (minZ === null || z < minZ) {
-        minZ = z;
-      }
-      if (maxZ === null || z > maxZ) {
-        maxZ = z;
-      }
-    });
+
+    // Check if we have enough historical data
+    if (this.inputHistory.length < TapDetector.InputHistorySize ||
+      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
+      // we don't have enough historical data so return false
+      // not enough historical data to reliably detect a tap
+      return false;
+    }
+
+    // Check that inputRawHistory max-min > jerkThresholdDynamic
+    const minZ = this.inputRawHistory.reduce((min, accel) => accel.z < min ? accel.z : min, this.inputRawHistory[0].z);
+    const maxZ = this.inputRawHistory.reduce((max, accel) => accel.z > max ? accel.z : max, this.inputRawHistory[0].z);
     const jerk = maxZ - minZ;
     this.updateJerkHistory(jerk);
-    this.jerkHistory.map(jerk => {
-      if (maxJerk == null || jerk > maxJerk) {
-        maxJerk = jerk;
-      }
-    });
-    const jerkAboveThreshold = maxJerk > this.jerkThreshold;
+    const maxJerk = this.jerkHistory.reduce((max, jerk) => jerk > max ? jerk : max, this.jerkHistory[0]);
+    const isJerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
+
     // check that the prediction(s) were all above the threshold
     const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
-      return good && prediction > this.predictionThreshold;
+      return good && prediction > this.predictionThresholdDynamic;
     }, true);
+
     // combine checks to predict tap
-    const predictTap =
-      jerkAboveThreshold && predictionsWereGood && this.tapGap;
+    const predictTap = isJerkAboveThreshold && predictionsWereGood && this.tapGap;
+
+    // exceptions
+    const predictionsOvermin = this.predictionHistory.reduce((good, prediction) => {
+      return good && prediction > this.minPredictionThreshold;
+    }, true);
+    const mustTap = (maxJerk > this.maxJerkThreshold) && predictionsOvermin;
+
     // record that there has been a tap
-    if (predictTap) {
+    const realTap = predictTap || mustTap;
+    if (realTap) {
       this.lastTapTime = timestamp;
       this.tapGap = false;
     }
     const gapWasGood = this.predictionHistory.reduce((good, prediction) => {
-      return good && prediction < this.predictionThreshold;
+      return good && prediction < this.predictionThresholdDynamic;
     }, true);
     if (this.lastTapTime !== null && gapWasGood) {
       this.tapGap = true;
     }
     // return the prediction
-    return predictTap;
+    return realTap;
   }
 
-  private tapAxisIsPrimary(accel: any) {
-    const a = {
-      x: Math.abs(accel.x),
-      y: Math.abs(accel.y),
-      z: Math.abs(accel.z)
-    };
-    const max = Math.max(
-      a.z,
-      Math.max(a.x, a.y)
-    );
-    const xPercent = a.x / max;
-    const yPercent = a.y / max;
-    const zPercent = a.z / max;
-    const outOfAxisThreshold = 0.5;
-    return (
-      zPercent > 0.9 &&
-      xPercent < outOfAxisThreshold &&
-      yPercent < outOfAxisThreshold
-    );
-  }
-
-  private updateHistory(accel: any) {
+  private updateHistory(accel: Acceleration) {
     this.inputHistory.push(accel);
     if (this.inputHistory.length > TapDetector.InputHistorySize) {
       this.inputHistory.shift(); // remove the oldest element
@@ -286,7 +287,7 @@ export class TapDetector {
     }
   }
 
-  public updateRawHistory(accel: any) {
+  public updateRawHistory(accel: Acceleration) {
     this.inputRawHistory.push(accel);
     if (this.inputRawHistory.length > TapDetector.InputRawHistorySize) {
       this.inputRawHistory.shift(); // remove the oldest element

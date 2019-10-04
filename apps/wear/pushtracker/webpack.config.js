@@ -42,7 +42,9 @@ module.exports = env => {
       __dirname,
       'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
     ),
-    resolve(__dirname, 'app/main-activity')
+    resolve(__dirname, 'app/main-activity'),
+    resolve(__dirname, 'app/result-receiver'),
+    resolve(__dirname, 'app/data-broadcast-receiver')
   ];
 
   const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
