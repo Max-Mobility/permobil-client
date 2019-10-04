@@ -58,19 +58,23 @@ export class CBCentralManagerDelegateImpl extends NSObject
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: ${peripheral}`
     );
 
+    const owner = this._owner.get();
+    if (!owner) {
+      CLog(
+        CLogTypes.error,
+        '----- CBCentralManagerDelegateImpl didConnectPeripheral: error - no owner!'
+      );
+      return;
+    }
+
     // find the peri in the array and attach the delegate to that
-    const peri = this._owner
-      .get()
+    const peri = owner
       .findPeripheral(peripheral.identifier.UUIDString);
     CLog(
       CLogTypes.info,
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: cached perio: ${peri}`
     );
 
-    const owner = this._owner.get();
-    if (!owner) {
-      return;
-    }
     const cb = owner._connectCallbacks[peripheral.identifier.UUIDString];
     const delegate = CBPeripheralDelegateImpl.new().initWithCallback(
       this._owner,

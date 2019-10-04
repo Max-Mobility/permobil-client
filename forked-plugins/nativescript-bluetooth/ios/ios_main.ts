@@ -666,7 +666,7 @@ export class Bluetooth extends BluetoothCommon {
           if (peripheral.state !== CBPeripheralState.Disconnected) {
             this._centralManager.cancelPeripheralConnection(peripheral);
             peripheral.delegate = null;
-            // TODO remove from the peripheralArray as well
+            this.removePeripheral(peripheral);
           }
           resolve();
         }
@@ -710,8 +710,20 @@ export class Bluetooth extends BluetoothCommon {
   findPeripheralsWithIdentifiers(UUIDs): CBPeripheral[] {
     const peripherals = [];
     const periArray = this._centralManager.retrievePeripheralsWithIdentifiers(UUIDs);
+    CLog(
+      CLogTypes.info,
+      `Bluetooth.findPeripheralsWithIdentifiers ---- periArray: ${
+periArray
+}, ${periArray.count}`
+    );
     for (let i = 0; i < periArray.count; i++) {
       const peripheral = periArray.objectAtIndex(i);
+      CLog(
+        CLogTypes.info,
+        `Bluetooth.findPeripheralsWithIdentifiers ---- peripheral UUID: ${
+peripheral.identifier.UUIDString
+}`
+      );
       peripherals.push(peripheral);
     }
     return peripherals;
@@ -720,8 +732,20 @@ export class Bluetooth extends BluetoothCommon {
   findConnectedPeripheralsWithServices(services): CBPeripheral[] {
     const peripherals = [];
     const periArray = this._centralManager.retrieveConnectedPeripheralsWithServices(services);
+    CLog(
+      CLogTypes.info,
+      `Bluetooth.findConnectedPeripheralsWithServices ---- periArray: ${
+periArray
+}, ${periArray.count}`
+    );
     for (let i = 0; i < periArray.count; i++) {
       const peripheral = periArray.objectAtIndex(i);
+      CLog(
+        CLogTypes.info,
+        `Bluetooth.findConnectedPeripheralsWithServices ---- peripheral UUID: ${
+peripheral.identifier.UUIDString
+}`
+      );
       peripherals.push(peripheral);
     }
     return peripherals;
@@ -740,9 +764,9 @@ export class Bluetooth extends BluetoothCommon {
         return peripheral;
       }
     }
-    const retrievedArray = this._centralManager.retrievePeripheralsWithIdentifiers([UUID]);
-    if (retrievedArray.count === 1) {
-      return retrievedArray.objectAtIndex(0);
+    const peripherals = this.findPeripheralsWithIdentifiers([UUID]);
+    if (peripherals && peripherals.length === 1) {
+      return peripherals[0];
     }
     return null;
   }

@@ -69,8 +69,22 @@ export class CBPeripheralDelegateImpl extends NSObject
     );
     // map native services to a JS object
     this._services = [];
+    if (peripheral.services.count === 0) {
+      CLog(
+        CLogTypes.error,
+        `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- no services found - disconnecting!`
+      )
+      this._owner.get().disconnect({
+        UUID: peripheral.identifier.UUIDString
+      });
+      return;
+    }
     for (let i = 0; i < peripheral.services.count; i++) {
       const service = peripheral.services.objectAtIndex(i);
+      CLog(
+        CLogTypes.info,
+        `CBPeripheralDelegateImpl.peripheralDidDiscoverServices ---- service: ${service.UUID.UUIDString}`
+      );
       this._services.push({
         UUID: service.UUID.UUIDString,
         name: service.UUID
