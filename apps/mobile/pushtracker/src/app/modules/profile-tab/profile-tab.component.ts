@@ -867,7 +867,6 @@ export class ProfileTabComponent {
 
   onEditSerialNumber(deviceName) {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Edit SmartDrive serial number pressed');
-    // this._setActiveDataBox(args);
 
     const validDevices =
       deviceName === 'pushtracker'
@@ -900,9 +899,7 @@ export class ProfileTabComponent {
       error => {
         this._logService.logException(error);
       },
-      () => {
-        // this._removeActiveDataBox();
-      }
+      () => {}
     );
   }
 
