@@ -666,7 +666,7 @@ export class Bluetooth extends BluetoothCommon {
           if (peripheral.state !== CBPeripheralState.Disconnected) {
             this._centralManager.cancelPeripheralConnection(peripheral);
             peripheral.delegate = null;
-            // TODO remove from the peripheralArray as well
+            this.removePeripheral(peripheral);
           }
           resolve();
         }
@@ -707,6 +707,50 @@ export class Bluetooth extends BluetoothCommon {
     });
   }
 
+  findPeripheralsWithIdentifiers(UUIDs): CBPeripheral[] {
+    const peripherals = [];
+    const periArray = this._centralManager.retrievePeripheralsWithIdentifiers(UUIDs);
+    CLog(
+      CLogTypes.info,
+      `Bluetooth.findPeripheralsWithIdentifiers ---- periArray: ${
+periArray
+}, ${periArray.count}`
+    );
+    for (let i = 0; i < periArray.count; i++) {
+      const peripheral = periArray.objectAtIndex(i);
+      CLog(
+        CLogTypes.info,
+        `Bluetooth.findPeripheralsWithIdentifiers ---- peripheral UUID: ${
+peripheral.identifier.UUIDString
+}`
+      );
+      peripherals.push(peripheral);
+    }
+    return peripherals;
+  }
+
+  findConnectedPeripheralsWithServices(services): CBPeripheral[] {
+    const peripherals = [];
+    const periArray = this._centralManager.retrieveConnectedPeripheralsWithServices(services);
+    CLog(
+      CLogTypes.info,
+      `Bluetooth.findConnectedPeripheralsWithServices ---- periArray: ${
+periArray
+}, ${periArray.count}`
+    );
+    for (let i = 0; i < periArray.count; i++) {
+      const peripheral = periArray.objectAtIndex(i);
+      CLog(
+        CLogTypes.info,
+        `Bluetooth.findConnectedPeripheralsWithServices ---- peripheral UUID: ${
+peripheral.identifier.UUIDString
+}`
+      );
+      peripherals.push(peripheral);
+    }
+    return peripherals;
+  }
+
   findPeripheral(UUID): CBPeripheral {
     // for (let i = 0; i < this._peripheralArray.count; i++) {
     //   const peripheral = this._peripheralArray.objectAtIndex(i);
@@ -719,6 +763,10 @@ export class Bluetooth extends BluetoothCommon {
       if (UUID === peripheral.identifier.UUIDString) {
         return peripheral;
       }
+    }
+    const peripherals = this.findPeripheralsWithIdentifiers([UUID]);
+    if (peripherals && peripherals.length === 1) {
+      return peripherals[0];
     }
     return null;
   }
@@ -783,7 +831,7 @@ export class Bluetooth extends BluetoothCommon {
             () => {
               reject('Write timed out!');
             },
-            10000
+            arg.timeout || 10000
           );
 
         wrapper.peripheral.writeValueForCharacteristicType(

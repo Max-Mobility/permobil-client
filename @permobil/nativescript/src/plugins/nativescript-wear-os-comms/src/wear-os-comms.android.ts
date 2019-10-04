@@ -48,6 +48,11 @@ export class WearOsComms extends Common {
     return null;
   }
 
+  public static findAvailableCompanion(timeout: number) {
+    // do nothing
+    return null;
+  }
+
   public static saveCompanion(address: string) {
     // do nothing
   }
@@ -128,6 +133,18 @@ export class WearOsComms extends Common {
       }
     } catch (err) {
       WearOsComms.error('error advertising as companion:', err);
+    }
+  }
+
+  public static async stopAdvertisingAsCompanion() {
+    try {
+      if (WearOsComms._bluetooth) {
+        await WearOsComms._bluetooth.stopAdvertising();
+        await WearOsComms.deleteService();
+        await WearOsComms._bluetooth.stopGattServer();
+      }
+    } catch (err) {
+      WearOsComms.error('error stopping advertising as companion:', err);
     }
   }
 
@@ -216,7 +233,6 @@ export class WearOsComms extends Common {
         const d = WearOsComms._bluetooth.makeDescriptor({
           UUID: duuid
         });
-
         d.setValue(new Array<any>([0x00, 0x00]));
         // WearOsComms.log('Making descriptor: ' + duuid);
         return d;
