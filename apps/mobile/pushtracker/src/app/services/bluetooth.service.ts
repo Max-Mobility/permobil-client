@@ -804,11 +804,22 @@ export class BluetoothService extends Observable {
       }
       d = arr;
     }
+    BluetoothService.pushTrackerStatus.set('state', PushTrackerState.busy);
+    this.sendEvent(BluetoothService.pushtracker_status_changed, { state: PushTrackerState.busy });
     return this._bluetooth.notifyCentrals(
       d,
       PushTracker.DataCharacteristic,
       devices
-    );
+    ).then((args) => {
+      BluetoothService.pushTrackerStatus.set('state', PushTrackerState.connected);
+      this.sendEvent(BluetoothService.pushtracker_status_changed, { state: PushTrackerState.connected });
+      return args;
+    })
+    .catch((err) => {
+      BluetoothService.pushTrackerStatus.set('state', PushTrackerState.disconnected);
+      this.sendEvent(BluetoothService.pushtracker_status_changed, { state: PushTrackerState.disconnected });
+      throw err;
+    });
   }
 
   getPushTracker(address: string) {
