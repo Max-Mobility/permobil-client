@@ -85,7 +85,7 @@ export class DeviceSetupComponent implements OnInit {
       ) {
         // OG PushTracker configuration
         this.slide = this._translateService.instant(
-          'device-setup.pushtracker-with-smartdrive.slide'
+          'device-setup.pushtracker-with-smartdrive'
         );
 
         // Check for already connected PushTrackers
