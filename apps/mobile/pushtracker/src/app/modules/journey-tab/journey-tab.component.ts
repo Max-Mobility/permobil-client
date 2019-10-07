@@ -123,6 +123,12 @@ export class JourneyTabComponent {
     this._loadDataForDate(this._weekStart, true)
       .then(result => {
         this.journeyItems = result;
+        if (result.length === 0) {
+          // force loading of more data if we have none on iOS
+          return this.onLoadMoreItems();
+        }
+      })
+      .then(result => {
         this.journeyItemsLoaded = true;
       })
       .catch(err => {
@@ -136,7 +142,7 @@ export class JourneyTabComponent {
     this.debouncedRefresh();
   }
 
-  async onLoadMoreItems(_: ItemEventData) {
+  async onLoadMoreItems(_?: ItemEventData) {
     if (this._noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
@@ -244,6 +250,12 @@ export class JourneyTabComponent {
         return this._loadDataForDate(this._weekStart, true)
           .then(result => {
             this.journeyItems = result;
+            if (result.length === 0) {
+              // force loading of more data if we have none on iOS
+              return this.onLoadMoreItems();
+            }
+          })
+          .then(result => {
             this.journeyItemsLoaded = true;
           })
           .catch(err => {

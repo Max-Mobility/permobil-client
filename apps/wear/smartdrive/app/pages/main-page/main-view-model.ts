@@ -2354,6 +2354,8 @@ export class MainViewModel extends Observable {
         if (!didEnsure) {
           return false;
         }
+        // vibrate for enabling power assist
+        this._vibrator.vibrate(200);
         // now actually set up power assist
         clearInterval(this.chargingWorkTimeoutId);
         this.chargingWorkTimeoutId = null;
@@ -2364,8 +2366,6 @@ export class MainViewModel extends Observable {
         this.updatePowerAssistRing();
         const didConnect = await this.connectToSavedSmartDrive();
         if (didConnect) {
-          // vibrate for enabling power assist
-          this._vibrator.vibrate(200); // vibrate for 250 ms
           // make sure to clear out any previous tapping state
           this.stopTaps();
           // enable the tap sensor
@@ -2426,6 +2426,9 @@ export class MainViewModel extends Observable {
     this.disableTapSensor();
     this.releaseCPU();
     this.powerAssistState = PowerAssist.State.Inactive;
+
+    // vibrate twice
+    this._vibrator.vibrate([0, 200, 50, 200]);
 
     // update UI
     if (this._ringTimerId) {
