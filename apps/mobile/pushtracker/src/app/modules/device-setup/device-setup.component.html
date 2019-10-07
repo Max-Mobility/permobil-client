@@ -30,7 +30,7 @@
 
     <StackLayout class="hr-light" row="2"></StackLayout>
 
-    <ScrollView *ngIf="slide" row="3" class="lowerSlide" height="45%">
+    <ScrollView *ngIf="slide" row="3" class="lowerSlide" height="45%" marginBottom="50">
       <StackLayout>
         <StackLayout orientation="horizontal">
           <Label textWrap="true"
@@ -54,7 +54,7 @@
         <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"
                [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
         <StackLayout row="0" horizontalAlignment="center">
-          <StackLayout orientation="horizontal" width="80%">
+          <StackLayout orientation="horizontal" width="80%" marginBottom="10">
             <LottieView
               height="50"
               width="75"
