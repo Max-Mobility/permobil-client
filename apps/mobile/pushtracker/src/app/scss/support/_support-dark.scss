@@ -1,0 +1,28 @@
+@import '../variables';
+@import 'support-base';
+
+.support-layout {
+  @extend .SUPPORT_LAYOUT_BASE;
+  background-color: $black;
+
+  .faq-list {
+    @extend .FAQ_LIST_BASE;
+    background-color: $black;
+    color: $white;
+
+    .item-icon {
+      @extend .ITEM_ICON_BASE;
+      color: $permobil-cousteau;
+    }
+
+    .faq-question {
+      @extend .FAQ_QUESTION_BASE;
+      color: #fff;
+    }
+
+    .faq-answer {
+      @extend .FAQ_ANSWER_BASE;
+      color: $white;
+    }
+  }
+}
