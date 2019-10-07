@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { Component, Input, NgZone, ViewContainerRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
@@ -31,6 +31,8 @@ export class E2StatusButtonComponent {
    */
   private _loadingIndicator = new LoadingIndicator();
 
+  @Input() allowUserInteraction = true;
+
   constructor(
     private _themeService: ThemeService,
     private _logService: LoggingService,
@@ -54,6 +56,8 @@ export class E2StatusButtonComponent {
   onUnloaded() {}
 
   async onTap() {
+    if (!this.allowUserInteraction) return;
+
     WearOsComms.setDebugOutput(false);
     if (!WearOsComms.hasCompanion()) {
       // open the device configuration page

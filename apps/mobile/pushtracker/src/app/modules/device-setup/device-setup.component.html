@@ -23,7 +23,7 @@
 
         <ScrollView *ngIf="slide" row="3" class="lowerSlide" height="45%">
             <StackLayout>
-                <StackLayout orientation="horizontal" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
+                <StackLayout orientation="horizontal">
                     <Label textWrap="true"
                       class="bullet-next-to-lottie"
                       width="80%"
@@ -32,6 +32,11 @@
                       marginLeft="-5"
                       *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
                     </pushtracker-status-button>
+                    <e2-status-button
+                      [allowUserInteraction]="false"
+                      marginLeft="-5"
+                      *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
+                    </e2-status-button>
                 </StackLayout>
                 <label [text]="slide['Text']" class="bullet" textWrap="true"></label>
                 <StackLayout row="0" horizontalAlignment="center">
