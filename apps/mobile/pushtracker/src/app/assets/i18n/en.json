@@ -485,7 +485,8 @@
     "pushtracker-e2-with-smartdrive": {
       "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
       "Label": "Connect PushTracker E2",
-      "Text": "Foooooooooooo.",
+      "AndroidText": "Foooooooooooo.",
+      "IOSText": "Baaaaaaaaaaaar.",
       "IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button in the Profile page."
     }
   },
