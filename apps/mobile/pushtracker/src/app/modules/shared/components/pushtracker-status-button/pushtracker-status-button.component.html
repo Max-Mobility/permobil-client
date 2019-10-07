@@ -9,13 +9,13 @@
 
   // PushTracker is connected or ready - Show check mark
   <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="20" height="20" marginLeft="26"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'success_white_check.json' : 'success_black_check.json'"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'success_black.json' : 'success_white.json'"
     *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready"
     loop="false" autoPlay="true"></LottieView>
 
   // PushTracker is busy, disconnected or state unknown - Show loading
   <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="44" height="40" marginLeft="24"
-    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'cross_white.json' : 'cross_black.json'"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'failure_black.json' : 'failure_white.json'"
     *ngIf="state === PushTrackerState.unknown || state === PushTrackerState.busy || state === PushTrackerState.disconnected"
     class="cross-lottie"
     loop="false" autoPlay="true"></LottieView>
