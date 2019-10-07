@@ -133,6 +133,10 @@ export class DeviceSetupComponent implements OnInit {
           CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         this._onPushTrackerE2();
+        if (isAndroid) {
+          this.showDoneButton = true;
+          this.statusMessage = this._translateService.instant('wearos-comms.messages.pte2-sync-successful');
+        }
       }
     });
   }
