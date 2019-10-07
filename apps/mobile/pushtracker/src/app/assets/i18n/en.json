@@ -485,9 +485,9 @@
     "pushtracker-e2-with-smartdrive": {
       "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
       "Label": "Connect PushTracker E2",
-      "AndroidText": "Foooooooooooo.",
-      "IOSText": "",
-      "IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button in the Profile page."
+      "AndroidText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed and have granted it the required permissions.\n\nThe PushTracker E2 setup and pairing is performed by the WearOS app on your phone for now - in the future we will have the ability to help with this process.\n\nIf you have trouble connecting to or communicating with the PushTracker WearOS or SmartDrive MX2+ WearOS apps on your PushTracker E2, please ensure that the bluetooth radios on both your PushTracker E2 and your Android phone are enabled and your PushTracker E2 is successfully paired and connected to your WearOS app on your phone.",
+      "IOSText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed, open, and have granted it the required permissions on your E2.  Please ensure that bluetooth is enabled on both your E2 and your iPhone.",
+      "IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button at the top of the 'Profile' page."
     }
   },
   "settings-different": {
