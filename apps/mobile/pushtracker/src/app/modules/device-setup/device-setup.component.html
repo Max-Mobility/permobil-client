@@ -1,8 +1,10 @@
 <GridLayout rows="auto, *" class="device-setup-layout">
     <Label row="0" col="1" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
-    <GridLayout row="1" col="0" rows="auto, auto, auto" cols="*" paddingTop="20">
+    <GridLayout row="1" col="0" rows="auto, auto, auto, auto" cols="*" paddingTop="20">
+
+        // Main Lottie
         <StackLayout *ngIf="slide && slide['Image']" (loaded)="onTopSlideLoaded($event)"
-            class="topSlide" row="0" width="100%" orientation="horizontal" horizontalAlignment="center">
+            class="topSlide" row="0" width="100%" height="40%" orientation="horizontal" horizontalAlignment="center">
             // only shows when the slide.Image is a gif
             <Gif (loaded)="onGifLoaded($event)" *ngIf="isGif(slide['Image'])"
                 [src]="slide['Image']"></Gif>
@@ -10,11 +12,16 @@
             <image *ngIf="!isGif(slide['Image'])" [src]="slide['Image']" stretch="aspectFit">
             </image>
         </StackLayout>
+
+        // Bullets Title
         <StackLayout *ngIf="slide && slide['Image']"
             row="1" width="100%" horizontalAlignment="center">
             <label [text]="slide['Label']" class="slideLowerLabel" textWrap="true"></label>
         </StackLayout>
-        <ScrollView *ngIf="slide" row="2" class="lowerSlide" height="45%">
+
+        <StackLayout class="hr-light" row="2"></StackLayout>
+
+        <ScrollView *ngIf="slide" row="3" class="lowerSlide" height="45%">
             <StackLayout>
                 <StackLayout orientation="horizontal" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
                     <Label textWrap="true"
