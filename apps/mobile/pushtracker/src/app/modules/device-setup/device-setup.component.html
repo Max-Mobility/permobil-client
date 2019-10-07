@@ -43,7 +43,7 @@
                 <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"
                   [text]="slide['Text']" class="bullet" textWrap="true"></label>
                 <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" 
-                  [text]="isAndroid ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
+                  [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
                 <StackLayout row="0" horizontalAlignment="center">
                     <StackLayout orientation="horizontal" width="80%">
                         <LottieView
