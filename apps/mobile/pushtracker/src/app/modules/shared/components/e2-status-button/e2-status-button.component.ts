@@ -1,8 +1,9 @@
-import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { Component, Input, NgZone, ViewContainerRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -12,6 +13,7 @@ import { ContentView } from 'tns-core-modules/ui/content-view';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { LoggingService, ThemeService } from '../../../../services';
+import { DeviceSetupComponent } from '../../..';
 
 @Component({
   selector: 'e2-status-button',
@@ -29,9 +31,12 @@ export class E2StatusButtonComponent {
    */
   private _loadingIndicator = new LoadingIndicator();
 
+  @Input() allowUserInteraction = true;
+
   constructor(
     private _themeService: ThemeService,
     private _logService: LoggingService,
+    private _modalService: ModalDialogService,
     private _translateService: TranslateService,
     private _vcRef: ViewContainerRef,
     private _zone: NgZone
@@ -51,10 +56,15 @@ export class E2StatusButtonComponent {
   onUnloaded() {}
 
   async onTap() {
-    this._logService.logBreadCrumb(
-      E2StatusButtonComponent.name,
-      'Connecting to Watch'
-    );
+    if (!this.allowUserInteraction) return;
+
+    WearOsComms.setDebugOutput(false);
+    if (!WearOsComms.hasCompanion()) {
+      // open the device configuration page
+      this._showDeviceSetup();
+      return;
+    }
+
     this._loadingIndicator.show({
       message: this._translateService.instant(
         'wearos-comms.messages.synchronizing'
@@ -65,15 +75,19 @@ export class E2StatusButtonComponent {
       dimBackground: true
     });
 
-    WearOsComms.setDebugOutput(false);
+    this._logService.logBreadCrumb(
+      E2StatusButtonComponent.name,
+      'Connecting to Watch'
+    );
+
+    // TODO: set status display to busy
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-      // const sentData = await this._sendData();
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       this._loadingIndicator.hide();
       if (sentMessage) {
-        // && sentData) {
+        // TODO: set status display to check
         new Toasty({
           text: this._translateService.instant(
             'wearos-comms.messages.pte2-sync-successful'
@@ -81,6 +95,7 @@ export class E2StatusButtonComponent {
           duration: ToastDuration.LONG
         }).show();
       } else {
+        // TODO: set status display to 'x'
         alert({
           title: this._translateService.instant(
             'wearos-comms.errors.pte2-send-error.title'
@@ -92,6 +107,7 @@ export class E2StatusButtonComponent {
         });
       }
     } else {
+      // TODO: set status display to 'x'
       this._loadingIndicator.hide();
       alert({
         title: this._translateService.instant(
@@ -103,6 +119,20 @@ export class E2StatusButtonComponent {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
     }
+  }
+
+  private _showDeviceSetup() {
+    this._modalService
+      .showModal(DeviceSetupComponent, {
+        context: { modal: true },
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .then(() => {})
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   private _updateWatchIcon() {
@@ -128,25 +158,14 @@ export class E2StatusButtonComponent {
     // if we're iOS we have to actually find a companion
     let didConnect = false;
     try {
-      if (!WearOsComms.hasCompanion()) {
-        // find and save the companion
-        const companion = await WearOsComms.findAvailableCompanion(5);
-        if (companion !== null) {
-          const address = (companion.identifier && companion.identifier.UUIDString) ||
-            (companion.UUID);
-          this._logService.logBreadCrumb(
-            E2StatusButtonComponent.name,
-            'saving new companion: ' + address
-          );
-          WearOsComms.saveCompanion(address);
-        }
-      }
       // now connect
       didConnect = await WearOsComms.connectCompanion(10000);
     } catch (err) {
+      /*
       console.error('error connecting:', err);
       // clear out the companion so we can search again
       WearOsComms.clearCompanion();
+      */
       this._logService.logException(err);
     }
     return didConnect;

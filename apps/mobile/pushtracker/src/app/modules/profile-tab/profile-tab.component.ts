@@ -15,7 +15,7 @@ import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
-import { ActivityGoalSettingComponent, PrivacyPolicyComponent } from '..';
+import { ActivityGoalSettingComponent, PrivacyPolicyComponent, DeviceSetupComponent } from '..';
 import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
@@ -848,6 +848,58 @@ export class ProfileTabComponent {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
         this._removeActiveDataBox();
       }
+    );
+  }
+
+  onDeviceSetupTap(args) {
+    this._modalService
+      .showModal(DeviceSetupComponent, {
+        context: { modal: true },
+        fullscreen: true,
+        animated: true,
+        viewContainerRef: this._vcRef
+      })
+      .then(() => {})
+      .catch(err => {
+        this._logService.logException(err);
+      });
+  }
+
+  onEditSerialNumber(deviceName) {
+    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Edit SmartDrive serial number pressed');
+
+    const validDevices =
+      deviceName === 'pushtracker'
+        ? ['pushtracker', 'wristband']
+        : ['smartdrive'];
+
+    let serialNumber = '';
+    if (deviceName === 'smartdrive')
+      serialNumber = this.user.data.smartdrive_serial_number || '';
+    else
+      serialNumber = this.user.data.pushtracker_serial_number || '';
+
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('profile-tab.smartdrive-serial-number'),
+        description: '',
+        text: serialNumber
+      }
+    };
+
+    this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
+      result => {
+        if (result && result.data) {
+          this._logService.logBreadCrumb(ProfileTabComponent.name, `Serial number TextFieldSheetComponent result: ${result.data.text}`);
+          this._handleSerial(result.data.text, validDevices);
+        }
+      },
+      error => {
+        this._logService.logException(error);
+      },
+      () => {}
     );
   }
 

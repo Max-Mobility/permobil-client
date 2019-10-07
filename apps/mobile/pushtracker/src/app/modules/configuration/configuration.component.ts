@@ -42,6 +42,6 @@ export class ConfigurationComponent implements OnInit {
         appSettings.setString('Kinvey.User', JSON.stringify(this._user));
       }
     }
-    this._router.navigate(['/tabs/default']);
+    this._router.navigate(['/device-setup']);
   }
 }

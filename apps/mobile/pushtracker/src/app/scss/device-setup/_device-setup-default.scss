@@ -1,0 +1,103 @@
+@import '../variables';
+@import 'device-setup-base';
+
+.device-setup-layout {
+  @extend .DEVICE_SETUP_LAYOUT_BASE;
+
+  GridLayout,
+  StackLayout,
+  ScrollView {
+    background-color: $white;
+  }
+
+  .page-title {
+    @extend .PAGE_TITLE_BASE;
+    color: $black;
+  }
+
+  .slideLowerLabel {
+    text-align: center;
+    // width: 100%;
+    font-family: $os-Light;
+    font-size: 25;
+    margin: 20, 0, 10, 15;
+    color: $black;
+    font-weight: bold;
+  }
+  
+  .slideLowerLabel_2 {
+    text-align: left;
+    width: 100%;
+    font-family: $os-Light;
+    font-size: 25;
+    // margin-top: 15;
+    color: $black;
+  }
+  .slideDescription {
+    color: $black;
+    font-family: $os-SemiBold;
+    font-size: 15;
+    text-align: left;
+    margin: 20, 15, 10, 15;
+  }
+  
+  .slide-indicator-inactive {
+    background-color: $white;
+    opacity: 0.4;
+    width: 10;
+    height: 10;
+    margin-left: 2.5;
+    margin-right: 2.5;
+    margin-top: 0;
+    border-radius: 5;
+  }
+  
+  .slide-indicator-active {
+    background-color: $white;
+    opacity: 0.9;
+    width: 10;
+    height: 10;
+    margin-left: 2.5;
+    margin-right: 2.5;
+    margin-top: 0;
+    border-radius: 5;
+  }
+  
+  .bullet {
+    color: $black;
+    font-family: $os-Light;
+    font-size: 13;
+    text-align: left;
+    margin: 10, 20, 10, 15;
+  }
+
+  .bullet-next-to-lottie {
+    color: $black;
+    font-family: $os-Light;
+    font-size: 13;
+    text-align: left;
+    margin: 10, 0, 10, 15;
+    padding: 0;
+  }
+  
+  .permobil-ocean-btn {
+    background-color: $permobil-primary;
+    color: $white;
+  }
+
+  .permobil-grey-btn {
+    background-color: $dark-custom-dialog-layout-black;
+    color: $white;
+  }
+
+  .permobil-green-btn {
+    background-color: $permobil-success;
+    color: $white;
+  }
+
+  .device-setup-status-label {
+    @extend .DEVICE_SETUP_STATUS_LABEL;
+    color: $black;
+  }
+
+}

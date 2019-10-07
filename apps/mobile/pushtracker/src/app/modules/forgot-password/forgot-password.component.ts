@@ -95,6 +95,8 @@ export class ForgotPasswordComponent implements OnInit {
       dimBackground: true
     });
 
+    this.userEmail = this.userEmail.trim().toLowerCase();
+
     KinveyUser.resetPassword(this.userEmail)
       .then(_ => {
         this._loadingIndicator.hide();

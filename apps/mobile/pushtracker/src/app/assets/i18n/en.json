@@ -323,10 +323,10 @@
     "time-format": "Time Format",
     "scanning-for-smartdrives": "Scanning for SmartDrives...",
     "detected-a-smartdrive": "Detected a SmartDrive!",
-    "sending-settings": "Sending settings...",
-    "sync-successful": "Sync successful!",
+    "sending-settings": "Sending SmartDrive settings...",
+    "sync-successful": "Updated SmartDrive settings!",
     "error-sending-settings": "Error sending settings",
-    "connected-a-smartdrive": "Connected a SmartDrive",
+    "connected-a-smartdrive": "Connected with SmartDrive",
     "watch-status-alert-title": "PushTracker Status",
     "watch-status-alert-message": {
       "unknown": "PushTracker status is unknown",
@@ -452,6 +452,50 @@
     "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
     "switch-control-with-smartdrive": "Switch Control with SmartDrive"
   },
+  "device-setup": {
+    "title": "Device Setup",
+    "previous": "Prev",
+    "e2": {
+      "repair": "Pair a new PushTracker E2",
+      "scanning": "Scanning for PushTracker E2...",
+      "select-device": "Select PushTracker E2",
+      "found-pairing-info": "Found pairing info for PushTracker E2",
+      "must-select-error": {
+        "title": "Pairing Notice",
+        "message": "You must select a PushTracker E2 for pairing for the PushTracker Mobile app to access and view your activity data."
+      },
+      "connecting": "Connecting to\n",
+      "sending-authorization": "Sending authorization to\n",
+      "authorization-sent": "Authorization sent to\n",
+      "failures": {
+        "connect": "Could not connect to\n",
+        "sending": "Could not send authorization to:\n",
+        "scanning": "Could not find PushTracker E2."
+      }
+    },
+    "next": "Next",
+    "done": "Done",
+    "skip": "Skip for now",
+    "retry": "Retry",
+    "do-later": "Do this later",
+    "finish": "Finish",
+    "waiting-for-pairing-request": "Waiting for Pairing Request...",
+    "pairing": "Paired! Waiting for Connection...",
+    "connection-successful": "Connection successful!",
+    "pushtracker-with-smartdrive": {
+      "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Pair & Connect PushTracker",
+      "Text": "Press either button on the PushTracker to power on the device. Press and hold the right raised button for 3 seconds to enter the settings menu.\n\nPress the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button.\n\nPress the left raised button to pair with mobile.",
+      "IconText": "The PushTracker Status button shows the PushTracker connection status. You can find this button in the Profile settings page."
+    },
+    "pushtracker-e2-with-smartdrive": {
+      "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Connect PushTracker E2",
+      "AndroidText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed and have granted it the required permissions.\n\nThe PushTracker E2 setup and pairing is performed by the WearOS app on your phone for now - in the future we will have the ability to help with this process.\n\nIf you have trouble connecting to or communicating with the PushTracker WearOS or SmartDrive MX2+ WearOS apps on your PushTracker E2, please ensure that the bluetooth radios on both your PushTracker E2 and your Android phone are enabled and your PushTracker E2 is successfully paired and connected to your WearOS app on your phone.",
+      "IOSText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed, open, and have granted it the required permissions on your E2.  Please ensure that bluetooth is enabled on both your E2 and your iPhone.",
+      "IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button at the top of the 'Profile' page."
+    }
+  },
   "settings-different": {
     "title": "App and PushTracker Settings Differ",
     "message": "Please select from the options below how to resolve differences between the settings."
@@ -535,6 +579,10 @@
   },
   "wearos-comms": {
     "errors": {
+      "pte2-scan-error": {
+        "message": "Could not find any PushTracker E2 devices. please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Scanning for PushTracker E2"
+      },
       "pte2-send-error": {
         "message": "Could not send data to your PushTracker E2 - please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
         "title": "Error Synchronizing Account"
@@ -564,7 +612,9 @@
       "no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
       "more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
       "no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
-      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry"
+      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry",
+      "pushtracker-connected": "PushTracker connected!",
+      "pushtracker-disconnected": "PushTracker disconnected!"
     }
   }
 }

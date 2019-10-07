@@ -51,7 +51,7 @@
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="1" class="data-box-arrow" text="&#xe254;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -61,7 +61,7 @@
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="1" class="data-box-arrow" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -152,8 +152,13 @@
         </StackLayout>
 
         // Device Serial Numbers
-        <Label row="13" col="0" colSpan="4" class="section-label"
+        <Label row="13" col="0" colSpan="3" class="section-label"
           [text]="'profile-tab.device-serial-numbers' | translate"></Label>
+        <Label *ngIf="user?.data.control_configuration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"
+          row="13" col="3" horizontalAlignment="right" verticalAlignment="middle"
+          class="material-icon device-setup-btn" (tap)="onDeviceSetupTap($event)"
+          text="&#xe0de;"></Label>
+
 
         // Horizontal Line
         <StackLayout row="14" col="0" colspan="4" class="hr"></StackLayout>
@@ -161,11 +166,11 @@
         // SmartDrive Serial Number
         <StackLayout row="15" col="0"
           [colSpan]="user?.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE ? 4 : 2"
-          class="data-box" (tap)="onScan('smartdrive')">
+          class="data-box">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true" (tap)="onEditSerialNumber('smartdrive')"></Label>
+            <Label col="1" class="data-box-arrow" fontSize="20" paddingRight="5" text="&#xe412;" (tap)="onScan('smartdrive')"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -174,11 +179,11 @@
         reading the
         OGPT qr code
         <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="15"
-          col="2" colSpan="2" class="data-box" (tap)="onScan('pushtracker')">
+          col="2" colSpan="2" class="data-box">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
-            <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true" (tap)="onEditSerialNumber('pushtracker')"></Label>
+            <Label col="1" class="data-box-arrow" fontSize="20" paddingRight="5" text="&#xe412;" (tap)="onScan('pushtracker')"></Label>
           </GridLayout>
         </StackLayout>
 

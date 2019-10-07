@@ -1,15 +1,22 @@
-<GridLayout rows="*" columns="*, auto" class="pushtracker-status-btn-layout" (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
-  // PushTracker Icon
-  <GridLayout col="0" height="36" width="26" verticalAlignment="center">
-    <Image [src]="icon" height="100%" stretch="aspectFit"></Image>
-  </GridLayout>
+<GridLayout rows="*" cols="auto, *" class="pushtracker-status-btn-layout" (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
+  <Image row="0" col="0" width="22" height="30" [src]="icon" stretch="aspectFit"></Image>
 
-  // PushTrackerState = unknown
-  <Label col="1" *ngIf="state === PushTrackerState.unknown" [text]="unknownIconText"></Label>
-  // PushTrackerState = connected || ready
-  <Label col="1" *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready" [text]="connectedIconText"></Label>
-  // PushTrackerState = disconnected
-  <Label col="1" *ngIf="state === PushTrackerState.disconnected" [text]="disconnectedIconText"></Label>
-  // PushTrackerState = busy
-  <ActivityIndicator col="1" *ngIf="state === PushTrackerState.busy" [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" busy="true"></ActivityIndicator>
+  // PushTracker is paired - Show bluetooth symbol
+  <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="80" height="80" marginLeft="22"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_black.json' : 'bluetooth_white.json'"
+    *ngIf="state === PushTrackerState.paired"
+    loop="true" autoPlay="true"></LottieView>
+
+  // PushTracker is connected or ready - Show check mark
+  <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="15" height="15" marginLeft="30"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'success_black.json' : 'success_white.json'"
+    *ngIf="state === PushTrackerState.connected || state === PushTrackerState.ready"
+    loop="false" autoPlay="true"></LottieView>
+
+  // PushTracker is busy, disconnected or state unknown - Show loading
+  <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center" width="15" height="15" marginLeft="30"
+    [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'failure_black.json' : 'failure_white.json'"
+    *ngIf="state === PushTrackerState.unknown || state === PushTrackerState.busy || state === PushTrackerState.disconnected"
+    class="cross-lottie"
+    loop="false" autoPlay="true"></LottieView>
 </GridLayout>

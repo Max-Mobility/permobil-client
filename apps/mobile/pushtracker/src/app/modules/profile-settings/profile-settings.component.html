@@ -1,19 +1,16 @@
 // profile settings layout
-<GridLayout rows="auto, *" columns="*" [class]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
+<GridLayout rows="auto, *" columns="*"
+  [class]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'profile-settings-layout-default' : 'profile-settings-layout-dark'">
   // Mock ActionBar
-  <MockActionBar
-    row="0"
-    #mockActionBar
-    [title]="'settings-component.title' | translate"
+  <MockActionBar row="0" #mockActionBar [title]="'settings-component.title' | translate"
     [showUpdateBtn]="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"
-    [showBackNav]="true"
-    (navTapEvent)="closeModal()"
+    [showBackNav]="true" (navTapEvent)="closeModal()"
     [showRefreshBtn]="user.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE && !syncingWithSmartDrive ? true : false"
-    (refreshTapEvent)="onRefreshTap($event)"
-    [controlConfiguration]="user.data.control_configuration"
-    [languagePreference]="user.data.language_preference"
-  >
-    <pushtracker-status-button #ptStatusButton *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></pushtracker-status-button>
+    (refreshTapEvent)="onRefreshTap($event)" [controlConfiguration]="user.data.control_configuration"
+    [languagePreference]="user.data.language_preference">
+    <pushtracker-status-button #ptStatusButton
+      *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
+    </pushtracker-status-button>
   </MockActionBar>
 
   <ScrollView row="1" height="100%">
@@ -32,85 +29,102 @@
       </StackLayout>
 
       // Distance
-      <StackLayout (tap)="onListPickerItemTap('distance')" ripple rippleColorAlpha="0.18" row="3" class="setting-layout">
+      <StackLayout (tap)="onListPickerItemTap('distance')" ripple rippleColorAlpha="0.18" row="3"
+        class="setting-layout">
         <Label class="setting-title" [text]="'general.distance' | translate"></Label>
         <Label class="setting-value" [text]="displayDistanceUnit" textWrap="true"></Label>
       </StackLayout>
 
       // Smart Drive Section
-      <StackLayout row="4" orientation="horizontal" *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
+      <StackLayout row="4" orientation="horizontal"
+        *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
         <Label class="category" [text]="'general.smartdrive' | translate"></Label>
         <Label marginLeft="-10" class="version-info" [text]="versionInfo"></Label>
       </StackLayout>
 
       // EZ-ON
-      <GridLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="5" rows="auto, auto" columns="*, auto" class="setting-layout">
+      <GridLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="5"
+        rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.ez-on' | translate"></Label>
-        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
-        <Label row="1" col="0" colSpan="2" class="setting-value" [text]="(settingsService.settings.ezOn ? 'general.enabled' : 'general.disabled') | translate" textWrap="true"></Label>
+        <Switch row="0" rowSpan="2" col="1" [checked]="settingsService.settings.ezOn" class="inactive-setting-switch"
+          (checkedChange)="onSettingsChecked($event, 'ez-on')"></Switch>
+        <Label row="1" col="0" colSpan="2" class="setting-value"
+          [text]="(settingsService.settings.ezOn ? 'general.enabled' : 'general.disabled') | translate"
+          textWrap="true"></Label>
       </GridLayout>
 
       // Power Assist Beep
-      <GridLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" row="6" rows="auto, auto" columns="*, auto" class="setting-layout">
+      <GridLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" row="6"
+        rows="auto, auto" columns="*, auto" class="setting-layout">
         <Label row="0" col="0" class="setting-title" [text]="'general.power-assist-beep' | translate"></Label>
-        <Switch row="0" rowSpan="2" col="1" [checked]="!settingsService.settings.disablePowerAssistBeep" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'power-assist-beep')"></Switch>
-        <Label row="1" col="0" colSpan="2" class="setting-value" [text]="(settingsService.settings.disablePowerAssistBeep ? 'general.disabled' : 'general.enabled') | translate" textWrap="true"></Label>
+        <Switch row="0" rowSpan="2" col="1" [checked]="!settingsService.settings.disablePowerAssistBeep"
+          class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'power-assist-beep')"></Switch>
+        <Label row="1" col="0" colSpan="2" class="setting-value"
+          [text]="(settingsService.settings.disablePowerAssistBeep ? 'general.disabled' : 'general.enabled') | translate"
+          textWrap="true"></Label>
       </GridLayout>
 
       // Max Speed
-      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="7" (tap)="onSliderItemTap('max-speed')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="7" (tap)="onSliderItemTap('max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.max-speed' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.maxSpeed + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Acceleration
-      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="8" (tap)="onSliderItemTap('acceleration')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="8" (tap)="onSliderItemTap('acceleration')" class="setting-layout">
         <Label class="setting-title" [text]="'general.acceleration' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.acceleration + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Tap sensitivity
-      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="9" (tap)="onSliderItemTap('tap-sensitivity')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="9" (tap)="onSliderItemTap('tap-sensitivity')" class="setting-layout">
         <Label class="setting-title" [text]="'general.tap-sensitivity' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.tapSensitivity + ' %'" textWrap="true"></Label>
       </StackLayout>
 
       // Mode
-      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="10" (tap)="onListPickerItemTap('mode')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="10" (tap)="onListPickerItemTap('mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.mode' | translate"></Label>
         <Label class="setting-value" [text]="settingsService.settings.controlMode" textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Max Speed
-      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="11" (tap)="onSliderItemTap('switch-control-max-speed')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="11" (tap)="onSliderItemTap('switch-control-max-speed')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-max-speed' | translate"></Label>
-        <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'" textWrap="true"></Label>
+        <Label class="setting-value" [text]="settingsService.switchControlSettings.maxSpeed + ' %'"
+          textWrap="true"></Label>
       </StackLayout>
 
       // Switch Control Mode
-      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple rippleColorAlpha="0.18" row="12" (tap)="onListPickerItemTap('switch-control-mode')" class="setting-layout">
+      <StackLayout *ngIf="user.data.control_configuration !== CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" ripple
+        rippleColorAlpha="0.18" row="12" (tap)="onListPickerItemTap('switch-control-mode')" class="setting-layout">
         <Label class="setting-title" [text]="'general.switch-control-mode' | translate"></Label>
-        <Label class="setting-value" [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate" textWrap="true"></Label>
+        <Label class="setting-value"
+          [text]="'sd.switch-settings.mode.' + settingsService.switchControlSettings.mode.toLowerCase() | translate"
+          textWrap="true"></Label>
       </StackLayout>
 
-      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE" row="13" marginTop="10">
+      <StackLayout *ngIf="user.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE" row="13"
+        marginTop="10">
         <StackLayout>
-          <GridLayout width="100%" columns="auto, *" *ngIf="syncingWithSmartDrive">
-            <ActivityIndicator
-              row="0"
-              col="0"
-              horizontalAlignment="right"
-              height="10%"
-              width="10%"
-              *ngIf="syncingWithSmartDrive"
-              marginLeft="30"
-              marginRight="-30"
-              busy="true"
-              [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
-            ></ActivityIndicator>
-            <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status" row="0" col="1" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
+          <GridLayout width="80%" horizontalAlignment="center" columns="auto, auto" *ngIf="syncingWithSmartDrive">
+            <StackLayout orientation="horizontal" horizontalAlignment="center">
+              <LottieView height="50" width="75" verticalAlignment="center" horizontalAlignment="center"
+                [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
+                loop="true" autoPlay="true" *ngIf="!syncSuccessful"></LottieView>
+              <LottieView height="50" width="50" verticalAlignment="center" horizontalAlignment="center"
+                src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
+              <Label [marginLeft]="!syncSuccessful ? -20 : 0" horizontalAlignment="center"
+                verticalAlignment="center" class="sync-status" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
+            </StackLayout>
           </GridLayout>
-          <Button (tap)="onSyncSettingsWithSmartDrive($event)" *ngIf="!syncingWithSmartDrive && !syncSuccessful" class="sync-button" width="70%" [text]="'settings-component.sync-button' | translate"></Button>
+          <Button (tap)="onSyncSettingsWithSmartDrive($event)" *ngIf="!syncingWithSmartDrive && !syncSuccessful"
+            class="sync-button" width="70%" [text]="'settings-component.sync-button' | translate"></Button>
         </StackLayout>
       </StackLayout>
 
@@ -118,7 +132,8 @@
       <Label row="14" class="category" [text]="'general.display' | translate"></Label>
 
       // Time Format
-      <StackLayout (tap)="onListPickerItemTap('time format')" ripple rippleColorAlpha="0.18" row="15" class="setting-layout">
+      <StackLayout (tap)="onListPickerItemTap('time format')" ripple rippleColorAlpha="0.18" row="15"
+        class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.time-format' | translate"></Label>
         <Label class="setting-value" [text]="displayTimeFormat" textWrap="true"></Label>
       </StackLayout>
@@ -129,7 +144,8 @@
         <Label class="setting-value" [text]="CURRENT_THEME" textWrap="true"></Label>
       </StackLayout>
       // Language
-      <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="17" class="setting-layout">
+      <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="17"
+        class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
       </StackLayout>

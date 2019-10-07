@@ -2,29 +2,10 @@
 @import '../../global';
 
 .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE {
-  height: 50;
-  width: 50;
-  border-radius: 25;
-  margin: 0 2 0 2;
-  padding: 0 2 0 2;
-  vertical-align: bottom;
+    height: 44;
+    width: 44;
+}
 
-  image {
-    margin: 2;
-    vertical-align: center;
-  }
-
-  label {
-    font-size: 17;
-    font-family: $material-icon;
-    vertical-align: center;
-    text-align: center;
-  }
-
-  ActivityIndicator {
-    height: 26;
-    width: 26;
-    vertical-align: center;
-    horizontal-align: center;
-  }
+.cross-lottie {
+  transform: rotate(90deg);
 }

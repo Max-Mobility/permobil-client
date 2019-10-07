@@ -1,0 +1,23 @@
+@import '../variables';
+
+.DEVICE_SETUP_LAYOUT_BASE {
+  height: 100%;
+  width: 100%;
+
+  .PAGE_TITLE_BASE {
+    font-size: 36;
+    font-family: $os;
+    color: $black;
+    padding-left: 10;
+    padding-top: 5;
+    vertical-align: center;
+  }
+
+  .DEVICE_SETUP_STATUS_LABEL {
+    color: $black;
+  }
+
+  .pushtracker-status-label {
+    font-size: 12;
+  }
+}
