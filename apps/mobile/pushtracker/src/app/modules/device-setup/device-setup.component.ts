@@ -53,6 +53,10 @@ export class DeviceSetupComponent implements OnInit {
   public doLaterButtonText: string = this._translateService.instant(
     'device-setup.do-later'
   );
+  public showFailure: boolean = false;
+  public failureButtonText: string = this._translateService.instant(
+    'device-setup.retry'
+  );
 
   CURRENT_THEME: string;
 
@@ -339,6 +343,7 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   private async _onPushTrackerE2() {
+    this.showFailure = false;
     // PushTracker E2/ WearOS configuration
     this.slide = this._translateService.instant(
       'device-setup.pushtracker-e2-with-smartdrive'
@@ -355,13 +360,15 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   public async pairPushTrackerE2() {
+    // update display
+    this.showFailure = false;
+    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
     // reset paired so that the ui updates properly
     this.hasPairedE2 = false;
     this.showDoneButton = false;
     // clear out the companion to make sure we don't save it accidentally
     WearOsComms.clearCompanion();
     // find possible companions for pairing
-    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
     const possiblePeripherals = await this._getListOfCompanions();
     if (possiblePeripherals.length === 0) {
       // we don't have any peripherals, let them know to keep things correctly
@@ -374,6 +381,7 @@ export class DeviceSetupComponent implements OnInit {
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
+      this.showFailure = true;
       return;
     }
     // ask user which companion is theirs
@@ -390,6 +398,7 @@ export class DeviceSetupComponent implements OnInit {
         message: this._translateService.instant('device-setup.e2.must-select-error.message'),
         okButtonText: this._translateService.instant('dialogs.ok')
       });
+      this.showFailure = true;
       return;
     }
     const name = selection[0].name;
@@ -414,6 +423,7 @@ export class DeviceSetupComponent implements OnInit {
           ),
           duration: ToastDuration.LONG
         }).show();
+        this.showDoneButton = true;
       } else {
         alert({
           title: this._translateService.instant(
@@ -424,8 +434,10 @@ export class DeviceSetupComponent implements OnInit {
           ),
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
+        this.showFailure = true;
+        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
+        return
       }
-      this.showDoneButton = true;
     } else {
       await alert({
         title: this._translateService.instant(
@@ -436,6 +448,8 @@ export class DeviceSetupComponent implements OnInit {
         ),
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.connect') + `${name}`;
     }
   }
 

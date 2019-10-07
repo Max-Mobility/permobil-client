@@ -466,11 +466,17 @@
       },
       "connecting": "Connecting to\n",
       "sending-authorization": "Sending authorization to\n",
-      "authorization-sent": "Authorization sent to\n"
+      "authorization-sent": "Authorization sent to\n",
+      "failures": {
+        "connect": "Could not connect to\n",
+        "sending": "Could not send authorization to:\n",
+        "scanning": "Could not find PushTracker E2."
+      }
     },
     "next": "Next",
     "done": "Done",
     "skip": "Skip for now",
+    "retry": "Retry",
     "do-later": "Do this later",
     "finish": "Finish",
     "waiting-for-pairing-request": "Waiting for Pairing Request...",
