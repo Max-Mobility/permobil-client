@@ -29,10 +29,12 @@
                       width="80%"
                       [text]="slide['IconText']"></Label>
                     <pushtracker-status-button
+                      verticalAlignment="middle"
                       marginLeft="-5"
                       *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
                     </pushtracker-status-button>
                     <e2-status-button
+                      verticalAlignment="middle"
                       [allowUserInteraction]="false"
                       marginLeft="-5"
                       *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
