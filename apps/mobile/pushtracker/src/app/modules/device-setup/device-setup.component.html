@@ -5,12 +5,20 @@
         // Main Lottie
         <StackLayout *ngIf="slide && slide['Image']" (loaded)="onTopSlideLoaded($event)"
             class="topSlide" row="0" width="100%" height="40%" orientation="horizontal" horizontalAlignment="center">
-            // only shows when the slide.Image is a gif
-            <Gif (loaded)="onGifLoaded($event)" *ngIf="isGif(slide['Image'])"
-                [src]="slide['Image']"></Gif>
-            // show only when not a gif
-            <image *ngIf="!isGif(slide['Image'])" [src]="slide['Image']" stretch="aspectFit">
-            </image>
+            <LottieView
+                verticalAlignment="center"
+                horizontalAlignment="center"
+                src="PushTracker_E2.json"
+                loop="true"
+                autoPlay="true"
+                *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
+            <LottieView
+                verticalAlignment="center"
+                horizontalAlignment="center"
+                src="PushTracker.json"
+                loop="true"
+                autoPlay="true"
+                *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"></LottieView>
         </StackLayout>
 
         // Bullets Title
