@@ -436,7 +436,7 @@ export class DeviceSetupComponent implements OnInit {
         });
         this.showFailure = true;
         this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
-        return
+        return;
       }
     } else {
       await alert({
