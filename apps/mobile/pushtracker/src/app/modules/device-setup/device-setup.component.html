@@ -36,7 +36,7 @@
                 <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"
                     [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet"
                     textWrap="true"></label>
-                <StackLayout row="0" horizontalAlignment="center">
+                <StackLayout row="0" horizontalAlignment="center" marginBottom="10">
                     <StackLayout orientation="horizontal" width="80%" marginBottom="10">
                         <LottieView height="50" width="75" verticalAlignment="center" horizontalAlignment="center"
                             [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
@@ -63,6 +63,7 @@
                         [text]="doneButtonText" (tap)="onDoneTap($event)">
                     </button>
                     <button horizontalAlignment="center" *ngIf="!showDoneButton" class="permobil-grey-button"
+                            marginTop="5"
                         height="30%" [text]="doLaterButtonText" (tap)="onSkipTap($event)">
                     </button>
                 </StackLayout>
