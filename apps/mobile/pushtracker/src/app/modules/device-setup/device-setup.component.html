@@ -45,7 +45,7 @@
                 <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" 
                   [text]="isAndroid ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
                 <StackLayout row="0" horizontalAlignment="center">
-                    <StackLayout orientation="horizontal">
+                    <StackLayout orientation="horizontal" width="80%">
                         <LottieView
                           height="50"
                           width="75"
@@ -54,18 +54,18 @@
                           [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
                           loop="true" autoPlay="true" *ngIf="!showDoneButton && slide"></LottieView>
                         <LottieView
-                          height="50"
-                          width="50"
+                          height="25"
+                          width="25"
                           verticalAlignment="center"
                           horizontalAlignment="center"
                           src="success_green.json"
                           loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
                         <Label
-                            [marginLeft]="showDoneButton ? 0 : -20"
+                            [marginLeft]="showDoneButton ? 10 : -20"
                             verticalAlignment="center"
                             horizontalAlignment="center"
-                          class="device-setup-status-label"
-                          textWrap="true"
+                            class="device-setup-status-label"
+                            textWrap="true"
                             [text]="statusMessage"></Label>
                     </StackLayout>
 
