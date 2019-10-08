@@ -53,9 +53,9 @@ export class JourneyTabComponent {
   private _weekStart: Date;
   private _rollingWeekStart: Date;
   private _journeyMap = {};
-  private _noMorePushTrackerActivityDataAvailable = false;
-  private _noMoreSmartDriveUsageDataAvailable = false;
-  private _noMoreDataAvailable = false;
+  public noMorePushTrackerActivityDataAvailable = false;
+  public noMoreSmartDriveUsageDataAvailable = false;
+  public noMoreDataAvailable = false;
 
   public static api_base = PushTrackerKinveyKeys.HOST_URL;
   public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
@@ -143,7 +143,7 @@ export class JourneyTabComponent {
   }
 
   async onLoadMoreItems(_?: ItemEventData) {
-    if (this._noMoreDataAvailable) return;
+    if (this.noMoreDataAvailable) return;
     this.showLoadingIndicator = true;
     this._rollingWeekStart.setDate(this._rollingWeekStart.getDate() - 7); // go to previous week
     return this._loadDataForDate(this._rollingWeekStart, false)
@@ -238,9 +238,9 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
     return this.refreshUserFromKinvey(true)
       .then(() => {
-        this._noMorePushTrackerActivityDataAvailable = false;
-        this._noMoreSmartDriveUsageDataAvailable = false;
-        this._noMoreDataAvailable = false;
+        this.noMorePushTrackerActivityDataAvailable = false;
+        this.noMoreSmartDriveUsageDataAvailable = false;
+        this.noMoreDataAvailable = false;
         this.journeyItemsLoaded = false;
         this._today = new Date();
         this._weekStart = getFirstDayOfWeek(this._today);
@@ -270,15 +270,12 @@ export class JourneyTabComponent {
 
   private async _loadDataForDate(date: Date, reset: boolean = false) {
     // Check if there's any more PushTracker WeeklyActivity available to load
-    if (!this._noMorePushTrackerActivityDataAvailable) {
+    if (!this.noMorePushTrackerActivityDataAvailable) {
       return this._loadWeeklyPushtrackerActivity(date).then(ptResult => {
-        this._noMorePushTrackerActivityDataAvailable = !ptResult;
-
         // Check if there's any more SmartDrive WeeklyInfo usage data available to load
-        if (!this._noMoreSmartDriveUsageDataAvailable) {
+        if (!this.noMoreSmartDriveUsageDataAvailable) {
           return this._loadWeeklySmartDriveUsage(date)
             .then(sdResult => {
-              this._noMoreSmartDriveUsageDataAvailable = !sdResult;
               return this._processJourneyMap(date, reset)
                 .then(result => {
                   return result;
@@ -294,12 +291,11 @@ export class JourneyTabComponent {
           return this.journeyItems;
         }
       });
-    } else if (!this._noMoreSmartDriveUsageDataAvailable) {
+    } else if (!this.noMoreSmartDriveUsageDataAvailable) {
       // No PushTracker activity data available
       // Just check SmartDrive WeeklyInfo usage data
       return this._loadWeeklySmartDriveUsage(date)
         .then(result => {
-          this._noMoreSmartDriveUsageDataAvailable = !result;
           return this._processJourneyMap(date, reset)
             .then(result => {
               return result;
@@ -313,7 +309,7 @@ export class JourneyTabComponent {
         });
     } else {
       // No data available
-      this._noMoreDataAvailable = true;
+      this.noMoreDataAvailable = true;
       this._logService.logBreadCrumb(
         JourneyTabComponent.name,
         'No more data available in the database ' + this._rollingWeekStart
@@ -633,6 +629,7 @@ export class JourneyTabComponent {
           );
           return Promise.resolve(result);
         }
+        this.noMorePushTrackerActivityDataAvailable = true;
         this._logService.logBreadCrumb(
           JourneyTabComponent.name,
           'loadWeeklyPushtrackerActivityFromKinvey | No data for this week yet'
@@ -711,6 +708,7 @@ export class JourneyTabComponent {
           );
           return Promise.resolve(result);
         }
+        this.noMoreSmartDriveUsageDataAvailable = true;
         this._logService.logBreadCrumb(
           JourneyTabComponent.name,
           'loadWeeklySmartDriveUsageFromKinvey | No data for this week yet'

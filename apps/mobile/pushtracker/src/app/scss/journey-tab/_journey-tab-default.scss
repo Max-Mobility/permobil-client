@@ -92,4 +92,9 @@
     background-color: $dark-grey;
   }
 
+  .no-more-data {
+    @extend .NO_MORE_DATA_LABEL;
+    color: $grey;
+  }
+
 }

@@ -5,7 +5,7 @@
     <MockActionBar row="0" [showBackNav]="false" [showRefreshBtn]="true" (refreshTapEvent)="onRefreshTap()"></MockActionBar>
 
     <ScrollView row="1" col="0" padding="10">
-      <GridLayout height="100%" width="100%" rows="auto, auto, auto, *" columns="auto, *, *, *">
+      <GridLayout height="100%" width="100%" rows="auto, auto, auto, *, auto" columns="auto, *, *, *">
         // Page Title
         <Label row="0" col="0" colSpan="4" class="page-title" [text]="'journey-tab.title' | translate" textWrap="true" marginBottom="30"></Label>
 
@@ -83,6 +83,9 @@
             </GridLayout>
           </ng-template>
         </ListView>
+        <Label row="4" class="no-more-data"
+          [text]="journeyItems.length ? ('journey-tab.no-more-data' | translate) : ('journey-tab.no-data-available' | translate)"
+          *ngIf="noMoreSmartDriveUsageDataAvailable && noMorePushTrackerActivityDataAvailable"></Label>
 
         <ActivityIndicator
           height="10%"
