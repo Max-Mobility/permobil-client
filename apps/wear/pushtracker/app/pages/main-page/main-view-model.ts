@@ -187,6 +187,8 @@ export class MainViewModel extends Observable {
     super();
     this.sentryBreadCrumb('Main-View-Model constructor.');
 
+    console.log('listener service:', com.permobil.pushtracker.MessageListener);
+
     // determine inset padding
     const androidConfig = ad
       .getApplicationContext()
