@@ -36,11 +36,13 @@
 
   <StackLayout width="95%" marginTop="5" marginBottom="5" class="hr-light"></StackLayout>
 
-  <Label class="no-more-data" 
+  <Label class="no-more-data"
+         height="100%"
     [text]="'journey-tab.no-data-available' | translate"
-    *ngIf="noMoreSmartDriveUsageDataAvailable && noMorePushTrackerActivityDataAvailable && journeyItems.length === 0"></Label>
+         *ngIf="journeyItems?.length === 0"
+         ></Label>
 
-  <ScrollView height="100%">
+  <ScrollView height="100%" *ngIf="journeyItems?.length">
     <ListView [items]="journeyItems" (loadMoreItems)="onLoadMoreItems($event)" class="list-group"
       [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
       [separatorColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'" *ngIf="journeyItemsLoaded">
@@ -77,7 +79,7 @@
               </Image>
             </GridLayout>
           </GridLayout>
-          <Label class="no-more-data" 
+          <Label class="no-more-data"
             [text]="journeyItems.length ? ('journey-tab.no-more-data' | translate) : ('journey-tab.no-data-available' | translate)"
             *ngIf="noMoreSmartDriveUsageDataAvailable && noMorePushTrackerActivityDataAvailable && item === journeyItems[journeyItems.length - 1]"></Label>
         </StackLayout>
