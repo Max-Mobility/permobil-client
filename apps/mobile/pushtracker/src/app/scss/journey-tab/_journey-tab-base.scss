@@ -20,4 +20,18 @@
     text-align: center;
   }
 
+  .ACTION_ITEM_BTN_BASE {
+    button {
+      @extend .btn-transparent;
+    }
+    padding: 4;
+    margin: 2;
+    font-family: $material-icon;
+    font-size: 30;
+    vertical-align: center;
+    height: 44;
+    width: 44;
+    border-radius: 22;
+  }
+
 }
