@@ -33,7 +33,7 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 
 /** Listens to DataItems and Messages from the local node. */
-public class DataLayerListenerService extends WearableListenerService {
+public class MessageListener extends WearableListenerService {
 
   private static final String TAG = "DataLayerService";
 

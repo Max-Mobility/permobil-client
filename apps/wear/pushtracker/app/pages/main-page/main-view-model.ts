@@ -86,6 +86,13 @@ export class MainViewModel extends Observable {
   @Prop() busyText: string = L('busy.synchronizing');
 
   /**
+   *
+   */
+  @Prop() hasUserData: boolean = false;
+  @Prop() userEmail: string = '---';
+  @Prop() userName: string = '---';
+
+  /**
    * Settings
    */
   @Prop() settings: Profile.Settings = new Profile.Settings();
@@ -179,6 +186,8 @@ export class MainViewModel extends Observable {
   constructor() {
     super();
     this.sentryBreadCrumb('Main-View-Model constructor.');
+
+    console.log('listener service:', com.permobil.pushtracker.MessageListener);
 
     // determine inset padding
     const androidConfig = ad
@@ -598,7 +607,7 @@ export class MainViewModel extends Observable {
       try {
         const permissions = await requestPermissions(
           neededPermissions,
-          () => {}
+          () => { }
         );
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
@@ -787,6 +796,10 @@ export class MainViewModel extends Observable {
       this.isBusy = true;
       const userData = (await this.kinveyService.getUserData()) as any;
       Log.D('userInfo', JSON.stringify(userData, null, 2));
+      // save stuff for display
+      this.hasUserData = true;
+      this.userName = `${userData.first_name} ${userData.last_name}`;
+      this.userEmail = userData.username;
       // pull the data out of the user structure
       this.settings.fromUser(userData);
       this.saveSettings();
@@ -1188,7 +1201,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() {}
+  updateSpeedDisplay() { }
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1249,7 +1262,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);
