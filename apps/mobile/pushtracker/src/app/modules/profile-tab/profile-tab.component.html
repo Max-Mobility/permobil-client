@@ -145,10 +145,11 @@
         // Device Serial Numbers
         <Label row="13" col="0" colSpan="3" class="section-label"
           [text]="'profile-tab.device-serial-numbers' | translate"></Label>
-        <Label *ngIf="user?.data.control_configuration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"
+        <Button *ngIf="user?.data.control_configuration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"
           row="13" col="3" horizontalAlignment="right" verticalAlignment="middle"
+               ripple rippleColorAlpha="0.18"
           class="material-icon device-setup-btn" (tap)="onDeviceSetupTap($event)"
-          text="&#xe0de;"></Label>
+          text="&#xe0de;"></Button>
 
 
         // Horizontal Line
