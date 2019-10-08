@@ -187,8 +187,6 @@ export class MainViewModel extends Observable {
     super();
     this.sentryBreadCrumb('Main-View-Model constructor.');
 
-    console.log('listener service:', com.permobil.pushtracker.MessageListener);
-
     // determine inset padding
     const androidConfig = ad
       .getApplicationContext()
@@ -798,7 +796,7 @@ export class MainViewModel extends Observable {
       Log.D('userInfo', JSON.stringify(userData, null, 2));
       // save stuff for display
       this.hasUserData = true;
-      this.userName = `${userData.first_name} ${userData.last_name}`;
+      this.userName = `${userData.first_name}\n${userData.last_name}`;
       this.userEmail = userData.username;
       // pull the data out of the user structure
       this.settings.fromUser(userData);
