@@ -72,7 +72,8 @@ export class WearOsComms extends Common {
     // we don't do anything here but we should let people know that
     // we've "disconnected" in case they are waiting on the callback to
     // resolve / continue execution;
-    WearOsComms._onDisconnectedCallback && WearOsComms._onDisconnectedCallback();
+    WearOsComms._onDisconnectedCallback &&
+      WearOsComms._onDisconnectedCallback();
   }
 
   public static setDebugOutput(enabled: boolean) {
@@ -88,19 +89,21 @@ export class WearOsComms extends Common {
       // (e.g. if the phone is ios we need to use the bluetooth)
 
       WearOsComms.log('Determining phone type');
-      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-        .getPhoneDeviceType(androidUtils.getApplicationContext());
+      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
+        androidUtils.getApplicationContext()
+      );
       switch (phoneDeviceType) {
-          // Paired to Android phone, use Play Store URI.
+        // Paired to Android phone, use Play Store URI.
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
           break;
 
-          // Paired to iPhone, use iTunes App Store URI
+        // Paired to iPhone, use iTunes App Store URI
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
           needToAdvertise = true;
           break;
 
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
+        case android.support.wearable.phone.PhoneDeviceType
+          .DEVICE_TYPE_ERROR_UNKNOWN:
           WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
           break;
       }
@@ -154,11 +157,16 @@ export class WearOsComms extends Common {
 
   private static onCharacteristicWriteRequest(args: any) {
     const argdata = args.data;
-    const characteristic = argdata.characteristic.getUuid().toString().toLowerCase();
+    const characteristic = argdata.characteristic
+      .getUuid()
+      .toString()
+      .toLowerCase();
     WearOsComms.log('onCharacteristicWriteRequest for', characteristic);
     const value = argdata.value;
     const device = argdata.device;
-    if (characteristic === WearOsComms.MessageCharacteristicUUID.toLowerCase()) {
+    if (
+      characteristic === WearOsComms.MessageCharacteristicUUID.toLowerCase()
+    ) {
       const stringValue = WearOsComms.uintToString(argdata.value);
       WearOsComms.log('stringValue:', stringValue);
       const splits = stringValue.split(WearOsComms.MessageDelimeter);
@@ -172,7 +180,9 @@ export class WearOsComms extends Common {
       } else {
         WearOsComms.error('invalid message received:', stringValue);
       }
-    } else if (characteristic === WearOsComms.DataCharacteristicUUID.toLowerCase()) {
+    } else if (
+      characteristic === WearOsComms.DataCharacteristicUUID.toLowerCase()
+    ) {
       WearOsComms._onDataReceivedCallback &&
         WearOsComms._onDataReceivedCallback({ data: value, device });
     } else {
@@ -181,8 +191,8 @@ export class WearOsComms extends Common {
   }
 
   private static uintToString(uintArray: any) {
-    var encodedString = String.fromCharCode.apply(null, uintArray),
-    decodedString = decodeURIComponent(escape(encodedString));
+    const encodedString = String.fromCharCode.apply(null, uintArray);
+    const decodedString = decodeURIComponent(escape(encodedString));
     return decodedString;
   }
 
@@ -195,9 +205,7 @@ export class WearOsComms extends Common {
   }
 
   private static unregisterListeners() {
-    WearOsComms._bluetooth.off(
-      Bluetooth.characteristic_write_request_event
-    );
+    WearOsComms._bluetooth.off(Bluetooth.characteristic_write_request_event);
   }
 
   private static deleteService() {
@@ -223,7 +231,7 @@ export class WearOsComms extends Common {
     // make the characteristics
     const characteristics = [
       WearOsComms.MessageCharacteristicUUID,
-      WearOsComms.DataCharacteristicUUID,
+      WearOsComms.DataCharacteristicUUID
     ].map(cuuid => {
       // WearOsComms.log('Making characteristic: ' + cuuid);
       //  defaults props are set READ/WRITE/NOTIFY, perms are set to READ/WRITE
@@ -259,7 +267,9 @@ export class WearOsComms extends Common {
       return c;
     });
     WearOsComms.log('Adding characteristics to service!');
-    characteristics.map(c => WearOsComms._companionService.addCharacteristic(c));
+    characteristics.map(c =>
+      WearOsComms._companionService.addCharacteristic(c)
+    );
   }
 
   public static sendMessage(channel: string, msg: string) {
