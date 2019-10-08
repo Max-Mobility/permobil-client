@@ -470,6 +470,7 @@
       "sending-authorization": "Sending authorization to\n",
       "authorization-sent": "Authorization sent to\n",
       "failures": {
+        "bluetooth": "Bluetooth failure.",
         "connect": "Could not connect to\n",
         "sending": "Could not send authorization to:\n",
         "scanning": "Could not find PushTracker E2."
@@ -581,6 +582,10 @@
   },
   "wearos-comms": {
     "errors": {
+      "bluetooth-error": {
+        "message": "Could not search for PushTracker E2 devices - please ensure bluetooth is enabled on your phone and that you have given the PushTracker app location / bluetooth permissions.",
+        "title": "Bluetooth Error"
+      },
       "pte2-scan-error": {
         "message": "Could not find any PushTracker E2 devices. please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
         "title": "Error Scanning for PushTracker E2"

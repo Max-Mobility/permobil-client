@@ -370,6 +370,21 @@ export class DeviceSetupComponent implements OnInit {
     WearOsComms.clearCompanion();
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
+    if (possiblePeripherals === null || possiblePeripherals === undefined) {
+      // we don't have any peripherals, let them know to keep things correctly
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.bluetooth-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.bluetooth-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.bluetooth');
+      return;
+    }
     if (possiblePeripherals.length === 0) {
       // we don't have any peripherals, let them know to keep things correctly
       await alert({
