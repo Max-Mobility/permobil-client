@@ -51,7 +51,7 @@
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe254;"></Label>
+            <Label col="1" class="data-box-edit" text="&#xe254;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -61,7 +61,7 @@
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe3c9;"></Label>
+            <Label col="1" class="data-box-edit" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -76,6 +76,7 @@
           <Label class="data-box-label" [text]="'general.first-name' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.first_name" textWrap="true"></Label>
+            <Label col="1" class="data-box-edit" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -84,6 +85,7 @@
           <Label class="data-box-label" [text]="'general.last-name' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.last_name" textWrap="true"></Label>
+            <Label col="1" class="data-box-edit" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
@@ -110,7 +112,7 @@
           <Label class="data-box-label" [text]="'general.weight' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayWeight" textWrap="true"></Label>
-            <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
+            <Label col="1" class="data-box-edit" text="&#xe3c9;"></Label>
           </GridLayout>
         </StackLayout>
 
