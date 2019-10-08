@@ -397,6 +397,7 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
       this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
       return;
     }
     // ask user which companion is theirs
@@ -414,6 +415,7 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('dialogs.ok')
       });
       this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-selected');
       return;
     }
     const name = selection[0].name;

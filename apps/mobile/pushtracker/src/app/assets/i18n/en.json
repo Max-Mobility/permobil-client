@@ -473,7 +473,9 @@
         "bluetooth": "Bluetooth failure.",
         "connect": "Could not connect to\n",
         "sending": "Could not send authorization to:\n",
-        "scanning": "Could not find PushTracker E2."
+        "scanning": "Could not find PushTracker E2.",
+        "none-found": "No PushTracker E2s found.",
+        "none-selected": "No PushTracker E2s selected for pairing."
       }
     },
     "next": "Next",
