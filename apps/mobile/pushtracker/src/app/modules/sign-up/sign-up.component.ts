@@ -43,6 +43,7 @@ export class SignUpComponent implements OnInit {
   user = {
     username: '',
     password: '',
+    email: '',
     first_name: '',
     last_name: '',
     dob: '',
@@ -212,6 +213,7 @@ export class SignUpComponent implements OnInit {
     this.user.first_name = this.user.first_name.trim();
     this.user.last_name = this.user.last_name.trim();
     this.user.username = this.user.username.trim().toLowerCase();
+    this.user.email = this.user.username;
     this.user.password = this.user.password.trim();
     this.user.has_agreed_to_user_agreement = has_agreed_to_user_agreement;
     this.user.has_read_privacy_policy = has_read_privacy_policy;
