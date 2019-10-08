@@ -1,89 +1,89 @@
 // Journey Tab Layout
-<GridLayout (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()" rows="*" columns="*"
-  class="journey-tab-layout">
+<StackLayout (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()"
+             class="journey-tab-layout">
   // main journey-tab layout
-  <GridLayout row="0" col="0" rows="auto, *" columns="*">
-    <!-- <MockActionBar row="0" [showBackNav]="false" [showRefreshBtn]="true" (refreshTapEvent)="onRefreshTap()"></MockActionBar> -->
-    <ScrollView row="1" col="0" padding="10">
-      <GridLayout height="100%" width="100%" rows="auto, auto, auto, *, auto" columns="auto, *, *, *">
-        // Page Title and Refresh Button
-        <GridLayout orientation="horizontal" row="0" col="0" colSpan="4" class="action-bar" marginBottom="20"
-          rows="auto" cols="auto, auto">
-          <Label class="page-title" row="0" col="0" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
-          <Button text="&#xe5d5;" row="0" col="1" horizontalAlignment="right" (tap)="onRefreshTap()" ripple
+  // Page Title and Refresh Button
+  <GridLayout width="100%" orientation="horizontal" class="action-bar" marginBottom="20"
+              rows="auto" cols="*, auto">
+    <Label class="page-title" row="0" col="0" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
+    <ActivityIndicator height="22" width="22"
+                       row="0" col="1"
+                       class="action-item-btn"
+                       verticalAlignment="center" horizontalAlignment="right"
+                       marginRight="15"
+                       *ngIf="!journeyItemsLoaded || showLoadingIndicator"
+                       [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
+                       busy="true"></ActivityIndicator>
+
+    <Button text="&#xe5d5;" row="0" col="1"
+            verticalAlignment="center" horizontalAlignment="right" (tap)="onRefreshTap()" ripple
             *ngIf="journeyItemsLoaded && !showLoadingIndicator"
             class="material-icon action-item-btn"></Button>
-        </GridLayout>
-
-        <GridLayout row="1" col="0" width="100%" columns="*, auto, auto, auto, auto">
-          // Today Label
-          <Label row="0" col="0" class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
-
-          // Coast Time
-          <StackLayout row="0" col="1" class="cousteau-circle" horizontalAlignment="right" verticalAlignment="center">
-            <Label text="&#xe5cc;"></Label>
-          </StackLayout>
-          <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
-            [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' ' + ('units.s' | translate)"
-            textWrap="true"></Label>
-
-          // Coast Distance
-          <StackLayout row="0" col="3" class="violet-circle" horizontalAlignment="right" verticalAlignment="center">
-            <Label text="&#xe5cc;"></Label>
-          </StackLayout>
-          <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
-            [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))"
-            textWrap="true"></Label>
-        </GridLayout>
-
-        <StackLayout width="95%" marginTop="5" marginBottom="5" row="2" class="hr-light"></StackLayout>
-
-        <ListView row="3" colSpan="4" height="100%" [items]="journeyItems" (loadMoreItems)="onLoadMoreItems($event)"
-          class="list-group" [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
-          [separatorColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'" *ngIf="journeyItemsLoaded">
-          <ng-template let-item="item" let-odd="odd" let-even="even">
-            <GridLayout ripple rows="*, *" columns="*, auto" (tap)="onListItemTap($event, item)" marginBottom="6">
-              <Label row="0" [text]="item.description" class="journey-item-label"></Label>
-              <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
-                // Image and Time
-                <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
-                  [src]="item.icon_small" stretch="aspectFit"></Image>
-                <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
-                  verticalAlignemnt="center" marginTop="5"></Label>
-
-                // Coast Time and Coast Distance
-                <Label row="1" col="0" [text]="
-                    item.coast_time +
-                    ' ' +
-                    ('units.s' | translate) +
-                    '   •   ' +
-                    item.push_count +
-                    item.push_count_unit +
-                    '   •   ' +
-                    item.coast_distance +
-                    ' ' +
-                    (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))
-                  " class="journey-item"></Label>
-                // Date - Today, Yesterday or Some Date
-                <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
-
-                // Image and Time
-                <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" marginRight="10"
-                  verticalAlignment="top" [src]="item.icon_large" stretch="aspectFit" class="journey-type-image">
-                </Image>
-              </GridLayout>
-            </GridLayout>
-          </ng-template>
-        </ListView>
-        <Label row="4" class="no-more-data"
-          [text]="journeyItems.length ? ('journey-tab.no-more-data' | translate) : ('journey-tab.no-data-available' | translate)"
-          *ngIf="noMoreSmartDriveUsageDataAvailable && noMorePushTrackerActivityDataAvailable"></Label>
-
-        <ActivityIndicator height="22" width="22" verticalAlignment="center" horizontalAlignment="right"
-          *ngIf="!journeyItemsLoaded || showLoadingIndicator"
-          [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'" busy="true" marginRight="20"
-          marginTop="-20"></ActivityIndicator>
-      </GridLayout>
-    </ScrollView>
   </GridLayout>
-</GridLayout>
+
+  <GridLayout width="100%" rows="auto" columns="*, auto, auto, auto, auto">
+    // Today Label
+    <Label row="0" col="0" class="journey-today" [text]="'journey-tab.today' | translate" textWrap="true"></Label>
+
+    // Coast Time
+    <StackLayout row="0" col="1" class="cousteau-circle" horizontalAlignment="right" verticalAlignment="center">
+      <Label text="&#xe5cc;"></Label>
+    </StackLayout>
+    <Label row="0" col="2" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
+           [text]="(todayActivity ? todayActivity.coast_time_avg.toFixed(1) : 0) + ' ' + ('units.s' | translate)"
+           textWrap="true"></Label>
+
+    // Coast Distance
+    <StackLayout row="0" col="3" class="violet-circle" horizontalAlignment="right" verticalAlignment="center">
+      <Label text="&#xe5cc;"></Label>
+    </StackLayout>
+    <Label row="0" col="4" class="journey-item" marginTop="5" marginRight="10" marginLeft="-5"
+           [text]="getTodayCoastDistance() + ' ' + (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))"
+           textWrap="true"></Label>
+  </GridLayout>
+
+  <StackLayout width="95%" marginTop="5" marginBottom="5" class="hr-light"></StackLayout>
+
+  <ScrollView>
+  <ListView [items]="journeyItems" (loadMoreItems)="onLoadMoreItems($event)"
+            class="list-group" [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
+            [separatorColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'" *ngIf="journeyItemsLoaded">
+    <ng-template let-item="item" let-odd="odd" let-even="even">
+      <GridLayout ripple rows="*, *" columns="*, auto" (tap)="onListItemTap($event, item)" marginBottom="6">
+        <Label row="0" [text]="item.description" class="journey-item-label"></Label>
+        <GridLayout row="1" rows="*, *, *" columns="*" width="100%">
+          // Image and Time
+          <Image row="0" col="0" width="20" horizontalAlignment="left" marginLeft="10" verticalAlignment="center"
+                 [src]="item.icon_small" stretch="aspectFit"></Image>
+          <Label row="0" col="1" marginLeft="30" [text]="item.time" class="journey-item"
+                 verticalAlignemnt="center" marginTop="5"></Label>
+
+          // Coast Time and Coast Distance
+          <Label row="1" col="0" [text]="
+                                         item.coast_time +
+                                         ' ' +
+                                         ('units.s' | translate) +
+                                         '   •   ' +
+                                         item.push_count +
+                                         item.push_count_unit +
+                                         '   •   ' +
+                                         item.coast_distance +
+                                         ' ' +
+                                         (user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? ('units.km' | translate) : ('units.mi' | translate))
+                                         " class="journey-item"></Label>
+          // Date - Today, Yesterday or Some Date
+          <Label row="2" col="0" [text]="item.date" class="journey-item-date"></Label>
+
+          // Image and Time
+          <Image row="0" col="1" rowSpan="3" width="50" horizontalAlignment="right" marginRight="10"
+                 verticalAlignment="top" [src]="item.icon_large" stretch="aspectFit" class="journey-type-image">
+          </Image>
+        </GridLayout>
+      </GridLayout>
+    </ng-template>
+  </ListView>
+  </ScrollView>
+  <Label class="no-more-data"
+         [text]="journeyItems.length ? ('journey-tab.no-more-data' | translate) : ('journey-tab.no-data-available' | translate)"
+         *ngIf="noMoreSmartDriveUsageDataAvailable && noMorePushTrackerActivityDataAvailable"></Label>
+</StackLayout>
