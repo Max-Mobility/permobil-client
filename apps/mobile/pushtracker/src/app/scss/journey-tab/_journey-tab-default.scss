@@ -97,4 +97,10 @@
     color: $grey;
   }
 
+  .action-item-btn {
+    @extend .ACTION_BAR_BUTTON_BASE;
+    background-color: $white;
+    color: #3c4043;
+  }
+
 }
