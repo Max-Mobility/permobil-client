@@ -99,11 +99,33 @@ public class MessageListener extends WearableListenerService {
     String[] parts = message.split(":", 0);
     if (parts.length != 2) {
       Log.e(TAG, "Error, bad auth received!");
-      return;
+    } else {
+      userId = parts[0];
+      token = parts[1];
+      Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
+
+      // write token to app settings for pushtracker wear
+      datastore.setAuthorization(token);
+
+      // write user id to app settings for pushtracker wear
+      datastore.setUserId(userId);
+
+      try {
+        // write token to content provider for smartdrive wear
+        ContentValues tokenValue = new ContentValues();
+        tokenValue.put("data", token);
+        getContentResolver()
+          .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
+
+        // write user id to content provider for smartdrive wear
+        ContentValues userValue = new ContentValues();
+        userValue.put("data", userId);
+        getContentResolver()
+          .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
+      } catch (Exception e) {
+        Log.e(TAG, "Could not set content values for authorization: " + e.getMessage());
+      }
     }
-    userId = parts[0];
-    token = parts[1];
-    Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
 
     // Log.d(TAG, "Starting Service from app message!");
     // startService();
@@ -114,26 +136,5 @@ public class MessageListener extends WearableListenerService {
     // Log.d(TAG, "Opening com.permobil.smartdrive.wearos.MainActivity from app message!");
     // openApp("com.permobil.smartdrive.wearos.MainActivity");
 
-    // write token to app settings for pushtracker wear
-    datastore.setAuthorization(token);
-
-    // write user id to app settings for pushtracker wear
-    datastore.setUserId(userId);
-
-    try {
-      // write token to content provider for smartdrive wear
-      ContentValues tokenValue = new ContentValues();
-      tokenValue.put("data", token);
-      getContentResolver()
-        .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
-
-      // write user id to content provider for smartdrive wear
-      ContentValues userValue = new ContentValues();
-      userValue.put("data", userId);
-      getContentResolver()
-        .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
-    } catch (Exception e) {
-      Log.e(TAG, "Could not set content values for authorization: " + e.getMessage());
-    }
   }
 }
