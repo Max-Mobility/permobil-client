@@ -332,6 +332,23 @@
                   <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
+              // user name
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.user-name') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ userName }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              // user email
+              <RL:Ripple rippleColor="#ddd">
+                <GridLayout rows="auto, auto" columns="15, *">
+                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                  <Label row="0" col="1" text="{{ L('about.user-email') }}" class="settings-label" textWrap="true" />
+                  <Label row="1" col="1" text="{{ userEmail }}" class="settings-label" textWrap="true" />
+                </GridLayout>
+              </RL:Ripple>
+              // serial number
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
@@ -339,6 +356,7 @@
                   <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
+              // app version
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
@@ -346,6 +364,7 @@
                   <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
+              // database
               <RL:Ripple rippleColor="#ddd">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />

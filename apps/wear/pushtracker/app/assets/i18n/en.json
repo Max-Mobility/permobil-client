@@ -3,7 +3,9 @@
 		"database": "Database ID",
 		"title": "Information",
 		"version": "App Version",
-		"watch-serial-number": "TicWatch Serial Number"
+		"watch-serial-number": "TicWatch Serial Number",
+    "user-email": "Email",
+    "user-name": "Name"
 	},
 	"buttons": {
 		"back": "Back",
