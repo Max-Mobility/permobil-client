@@ -21,6 +21,12 @@ export class WearOsComms extends Common {
 
   private static _debugOutputEnabled = false;
 
+  public static RemoteCapability: string = null;
+
+  // FOR STATE STORAGE:
+  private static _nodesConnected: any = []; // all connected nodes
+  private static _nodesWithApp: any = []; // all connected nodes with app
+
   constructor() {
     super();
   }
@@ -66,7 +72,12 @@ export class WearOsComms extends Common {
 
     const nodesWithoutApp = [];
     // get all connected nodes
-    // determine which ones have the app
+    WearOsComms._nodesConnected.map(n => {
+      // determine which ones have the app
+      if (WearOsComms._nodesWithApp.indexOf(n) !== -1) {
+        nodesWithoutApp.push(n);
+      }
+    });
     WearOsComms.log('Number of nodes without app: ' + nodesWithoutApp.length);
     // create the intent
     const intent =
@@ -155,9 +166,35 @@ export class WearOsComms extends Common {
         onComplete: function(task: any) {
           if (task.isSuccessful()) {
             WearOsComms.log('Node request succeeded');
+            WearOsComms._nodesConnected = task.getResult().toArray();
             resolve(task.getResult());
           } else {
             WearOsComms.error('Node request failed to return any results');
+            reject(new Error('Could not find any wear devices!'));
+          }
+        }
+      }));
+    });
+  }
+
+  private static async findDeviceWithApp(appCapability: string) {
+    return new Promise((resolve, reject) => {
+      WearOsComms.log('findAllWearDevices()');
+      const context = ad.getApplicationContext();
+      const capabilityTaskList = com.google.android.gms.wearable.Wearable
+        .getCapabilityClient(context)
+        .getCapability(appCapability, com.google.android.gms.wearable.CapabilityClient.FILTER_ALL);
+      capabilityTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
+        onComplete: function(task: any) {
+          if (task.isSuccessful()) {
+            WearOsComms.log('Capability request succeeded');
+            const capabilityInfo = task.getResult();
+            const nodesWithApp = capabilityInfo.getNodes();
+            WearOsComms.log('Capable Nodes:', nodesWithApp);
+            WearOsComms._nodesWithApp = nodesWithApp.toArray();
+            resolve(task.getResult());
+          } else {
+            WearOsComms.error('Capability request failed to return any results');
             reject(new Error('Could not find any wear devices!'));
           }
         }
