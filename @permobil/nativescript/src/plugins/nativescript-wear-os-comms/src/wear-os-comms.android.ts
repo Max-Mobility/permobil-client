@@ -169,7 +169,9 @@ export class WearOsComms extends Common {
       let tid = null;
       if (timeout !== undefined && timeout > 0) {
         tid = setTimeout(() => {
-          reject(new Error('Timed out searching for connected devices'));
+          WearOsComms.error('Timed out searching for connected devices');
+          WearOsComms._nodesConnected = [];
+          resolve([]);
         }, timeout);
       }
       nodeTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
@@ -178,19 +180,21 @@ export class WearOsComms extends Common {
           if (task.isSuccessful()) {
             WearOsComms.log('Node request succeeded');
             WearOsComms._nodesConnected = task.getResult().toArray();
-            resolve(task.getResult());
+            resolve(WearOsComms._nodesConnected);
           } else {
             WearOsComms.error('Node request failed to return any results');
-            reject(new Error('Could not find any wear devices!'));
+            WearOsComms._nodesConnected = [];
+            resolve([]);
+            //reject(new Error('Could not find any wear devices!'));
           }
         }
       }));
     });
   }
 
-  private static async findDeviceWithApp(appCapability: string) {
+  private static async findDevicesWithApp(appCapability: string) {
     return new Promise((resolve, reject) => {
-      WearOsComms.log('findAllWearDevices()');
+      WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
       const capabilityTaskList = com.google.android.gms.wearable.Wearable
         .getCapabilityClient(context)
@@ -206,7 +210,9 @@ export class WearOsComms extends Common {
             resolve(task.getResult());
           } else {
             WearOsComms.error('Capability request failed to return any results');
-            reject(new Error('Could not find any wear devices!'));
+            WearOsComms._nodesWithApp = [];
+            resolve([]);
+            //reject(new Error('Could not find any wear devices!'));
           }
         }
       }));
