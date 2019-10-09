@@ -59,9 +59,9 @@ export class WearOsComms extends Common {
       WearOsComms.log('result ok!');
     } else if (
       resultCode ===
-        com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED
+      com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED
     ) {
-      WearOsComms.log('result failed!');
+      WearOsComms.error('result failed!');
     } else {
       WearOsComms.error('Unexpected result ' + resultCode);
     }
@@ -78,16 +78,20 @@ export class WearOsComms extends Common {
     // get all connected nodes
     WearOsComms._nodesConnected.map(n => {
       // determine which ones have the app
-      if (WearOsComms._nodesWithApp.indexOf(n) !== -1) {
+      if (WearOsComms._nodesWithApp.indexOf(n) === -1) {
+        // nodes with app did not contain this node, so push!
         nodesWithoutApp.push(n);
       }
     });
     WearOsComms.log('Number of nodes without app: ' + nodesWithoutApp.length);
+    if (nodesWithoutApp.length === 0) {
+      WearOsComms.error('No nodes found without app!');
+    }
     // create the intent
     const intent =
       new android.content.Intent(android.content.Intent.ACTION_VIEW)
-      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-      .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
+        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+        .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
     // now iterate through the nodes without the app and open it in the play store
     nodesWithoutApp.map(n => {
       com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
@@ -114,7 +118,7 @@ export class WearOsComms extends Common {
         ad.getApplicationContext()
       );
       switch (phoneDeviceType) {
-          // Paired to Android phone, use Play Store URI.
+        // Paired to Android phone, use Play Store URI.
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
           WearOsComms.log('\tDEVICE_TYPE_ANDROID');
           // Create Remote Intent to open Play Store listing of app on remote device.
@@ -131,7 +135,7 @@ export class WearOsComms extends Common {
           );
           break;
 
-          // Paired to iPhone, use iTunes App Store URI
+        // Paired to iPhone, use iTunes App Store URI
         case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
           WearOsComms.log('\tDEVICE_TYPE_IOS');
 
@@ -150,7 +154,7 @@ export class WearOsComms extends Common {
           break;
 
         case android.support.wearable.phone.PhoneDeviceType
-            .DEVICE_TYPE_ERROR_UNKNOWN:
+          .DEVICE_TYPE_ERROR_UNKNOWN:
           WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
           break;
       }
@@ -179,7 +183,11 @@ export class WearOsComms extends Common {
           if (tid !== null) clearTimeout(tid);
           if (task.isSuccessful()) {
             WearOsComms.log('Node request succeeded');
-            WearOsComms._nodesConnected = task.getResult().toArray();
+            const nodeArray = task.getResult().toArray();
+            WearOsComms._nodesConnected = [];
+            for (let i = 0; i < nodeArray.length; i++) {
+              WearOsComms._nodesConnected.push(nodeArray[i]);
+            }
             resolve(WearOsComms._nodesConnected);
           } else {
             WearOsComms.error('Node request failed to return any results');
@@ -204,9 +212,12 @@ export class WearOsComms extends Common {
           if (task.isSuccessful()) {
             WearOsComms.log('Capability request succeeded');
             const capabilityInfo = task.getResult();
-            const nodesWithApp = capabilityInfo.getNodes();
-            WearOsComms.log('Capable Nodes:', nodesWithApp);
-            WearOsComms._nodesWithApp = nodesWithApp.toArray();
+            const nodeArray = capabilityInfo.getNodes().toArray();
+            WearOsComms.log('Capable Nodes:', nodeArray);
+            WearOsComms._nodesWithApp = []
+            for (let i = 0; i < nodeArray.length; i++) {
+              WearOsComms._nodesWithApp.push(nodeArray[i]);
+            }
             resolve(task.getResult());
           } else {
             WearOsComms.error('Capability request failed to return any results');
