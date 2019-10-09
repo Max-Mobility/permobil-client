@@ -11,6 +11,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import { Gif } from 'nativescript-gif';
 import { LottieView } from 'nativescript-lottie';
+import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 import { Sentry } from 'nativescript-sentry';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -102,6 +103,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    handleOpenURL((appURL: AppURL) => {
+      console.log('Got the following appURL', appURL);
+    });
     const CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -159,5 +163,5 @@ export class AppComponent implements OnInit {
         this._logService.logException(err);
         return Promise.reject(false);
       });
-    }
+  }
 }
