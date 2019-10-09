@@ -889,7 +889,7 @@ export class MainViewModel extends Observable {
             android.content.Intent.ACTION_VIEW
           )
             .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse("permobil://pushtracker"));
+            .setData(android.net.Uri.parse('permobil://pushtracker'));
 
           com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
             ad.getApplicationContext(),
