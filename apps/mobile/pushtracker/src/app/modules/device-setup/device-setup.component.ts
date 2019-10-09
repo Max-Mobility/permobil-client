@@ -379,7 +379,7 @@ export class DeviceSetupComponent implements OnInit {
     // installed - if so, save them and show success
     const capabilityInfo = await WearOsComms.findDevicesWithApp(this.CAPABILITY_WEAR_APP);
     const nodesWithApp = capabilityInfo.getNodes().toArray();
-    if (nodesWithApp?.length >= 1) {
+    if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
       const name = node.getDisplayName();
       // send data to remote apps
@@ -418,7 +418,7 @@ export class DeviceSetupComponent implements OnInit {
     // if there are not companion devices connected, inform the
     // user they need to set up a PushTracker E2 with the WearOS app
     // to pair it to their phone.
-    if (!(nodesConnected?.length)) {
+    if (nodesConnected.length === 0) {
       await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-not-setup.title'
