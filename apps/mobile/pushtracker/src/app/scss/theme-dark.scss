@@ -45,30 +45,12 @@ RadListView {
   vertical-align: center;
 }
 
-.text-middle {
-  vertical-align: center;
-}
-
-.bold {
-  font-weight: bold;
-  font-family: $os-SemiBold;
-}
-
-.very-bold {
-  font-weight: 700;
-  font-family: $os-SemiBold;
-}
-
 .btn-transparent {
   background-color: transparent;
   border-color: transparent;
   border-width: 1;
   android-elevation: 0;
   android-dynamic-elevation-offset: 0;
-}
-
-.text-white {
-  color: $white;
 }
 
 .hr {

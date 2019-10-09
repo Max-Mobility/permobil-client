@@ -8,14 +8,8 @@
 .PAGE_TITLE_BASE {
   font-size: 36;
   font-family: $os;
-  color: $black;
   padding-left: 10;
-  padding-top: 5;
-  vertical-align: center;
-}
-
-.DEVICE_SETUP_STATUS_LABEL {
-  color: $black;
+  margin-left: 5;
 }
 
 .pushtracker-status-label {

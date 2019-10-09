@@ -1,5 +1,4 @@
-import { Component, NgZone, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
-import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
@@ -9,19 +8,19 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
-import { Toasty, ToastDuration } from 'nativescript-toasty';
+import { Toasty } from 'nativescript-toasty';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
-import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
+import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
+import { screen } from 'tns-core-modules/platform';
 import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { EventData, Page } from 'tns-core-modules/ui/page';
-import { ActivityGoalSettingComponent, PrivacyPolicyComponent, DeviceSetupComponent } from '..';
-import { APP_THEMES, STORAGE_KEYS, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, WEIGHT_UNITS } from '../../enums';
+import { ActivityGoalSettingComponent, DeviceSetupComponent, PrivacyPolicyComponent } from '..';
+import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent, E2StatusButtonComponent } from '../shared/components';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
+import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-tab',
@@ -213,35 +212,36 @@ export class ProfileTabComponent {
       title: '',
       cancelButtonText: this._translateService.instant('general.cancel'),
       actions: [signOut]
-    }).then(result => {
-      if (
-        !result ||
-        result === this._translateService.instant('general.cancel')
-      ) {
-        return;
-      }
-
-      if (result === signOut) {
-        this._zone.run(async () => {
-          const logoutResult = await KinveyUser.logout();
-          // Clean up appSettings key-value pairs that were
-          // saved in app.component.ts
-          appSettings.remove('PushTracker.WeeklyActivity');
-          appSettings.remove('SmartDrive.WeeklyUsage');
-          appSettings.remove('Kinvey.User');
-          // Reset the user service and restore to default theme
-          this._userService.reset();
-          enableDefaultTheme();
-          // go ahead and nav to login to keep UI moving without waiting
-          this._routerExtensions.navigate(['/login'], {
-            clearHistory: true
-          });
-        });
-      }
     })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+      .then(result => {
+        if (
+          !result ||
+          result === this._translateService.instant('general.cancel')
+        ) {
+          return;
+        }
+
+        if (result === signOut) {
+          this._zone.run(async () => {
+            const logoutResult = await KinveyUser.logout();
+            // Clean up appSettings key-value pairs that were
+            // saved in app.component.ts
+            appSettings.remove('PushTracker.WeeklyActivity');
+            appSettings.remove('SmartDrive.WeeklyUsage');
+            appSettings.remove('Kinvey.User');
+            // Reset the user service and restore to default theme
+            this._userService.reset();
+            enableDefaultTheme();
+            // go ahead and nav to login to keep UI moving without waiting
+            this._routerExtensions.navigate(['/login'], {
+              clearHistory: true
+            });
+          });
+        }
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   onPrivacyTap() {
@@ -267,19 +267,13 @@ export class ProfileTabComponent {
   }
 
   private _saveFirstNameOnChange(newFirstName: string) {
-    this._userService.updateDataProperty(
-      'first_name',
-      newFirstName
-    );
+    this._userService.updateDataProperty('first_name', newFirstName);
     KinveyUser.update({ first_name: newFirstName });
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveLastNameOnChange(newLastName: string) {
-    this._userService.updateDataProperty(
-      'last_name',
-      newLastName
-    );
+    this._userService.updateDataProperty('last_name', newLastName);
     KinveyUser.update({ last_name: newLastName });
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
@@ -296,24 +290,31 @@ export class ProfileTabComponent {
       okButtonText: this._translateService.instant('general.ok')
     } as PromptOptions;
 
-    prompt(opts).then(r => {
-      if (r.result === true) {
-        if (nameField === 'first-name') {
-          KinveyUser.update({ first_name: r.text });
-          this._userService.updateDataProperty('first_name', r.text);
-          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `User updated first name: ${r.text}`);
-        } else if (nameField === 'last-name') {
-          KinveyUser.update({ last_name: r.text });
-          this._userService.updateDataProperty('last_name', r.text);
-          appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `User updated last name: ${r.text}`);
+    prompt(opts)
+      .then(r => {
+        if (r.result === true) {
+          if (nameField === 'first-name') {
+            KinveyUser.update({ first_name: r.text });
+            this._userService.updateDataProperty('first_name', r.text);
+            appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+            this._logService.logBreadCrumb(
+              ProfileTabComponent.name,
+              `User updated first name: ${r.text}`
+            );
+          } else if (nameField === 'last-name') {
+            KinveyUser.update({ last_name: r.text });
+            this._userService.updateDataProperty('last_name', r.text);
+            appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+            this._logService.logBreadCrumb(
+              ProfileTabComponent.name,
+              `User updated last name: ${r.text}`
+            );
+          }
         }
-      }
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   async onActivityGoalTap(
@@ -322,8 +323,10 @@ export class ProfileTabComponent {
     config_description: string,
     key: string
   ) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name,
-      `User tapped config = ${config_title} ${args.object}`);
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      `User tapped config = ${config_title} ${args.object}`
+    );
     this._setActiveDataBox(args);
 
     let value_description: string;
@@ -374,7 +377,10 @@ export class ProfileTabComponent {
         viewContainerRef: this._vcRef
       })
       .then(result => {
-        this._logService.logBreadCrumb(ProfileTabComponent.name, `Activity setting result: ${result}`);
+        this._logService.logBreadCrumb(
+          ProfileTabComponent.name,
+          `Activity setting result: ${result}`
+        );
         this._removeActiveDataBox();
         this._initDisplayActivityGoalCoastTime();
         this._initDisplayActivityGoalDistance();
@@ -414,12 +420,16 @@ export class ProfileTabComponent {
       .then(result => {
         this._removeActiveDataBox();
         if (result) {
-          this._logService.logBreadCrumb(ProfileTabComponent.name,
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
             `User changed birthday: ${result.toDateString()}`
           );
           this._userService.updateDataProperty('dob', result);
           const dateFormatted = YYYY_MM_DD(new Date(result));
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `Birthday formatted: ${dateFormatted}`);
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
+            `Birthday formatted: ${dateFormatted}`
+          );
           KinveyUser.update({ dob: dateFormatted });
           appSettings.setString('Kinvey.User', JSON.stringify(this.user));
         }
@@ -431,7 +441,10 @@ export class ProfileTabComponent {
   }
 
   onFirstNameTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'First Name pressed');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'First Name pressed'
+    );
     this._setActiveDataBox(args);
 
     const firstName = this.user.data.first_name || '';
@@ -449,8 +462,14 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `first_name TextFieldSheetComponent result: ${result.data}`);
-          const newFirstName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
+            `first_name TextFieldSheetComponent result: ${result.data}`
+          );
+          const newFirstName = (result.data.text || '').replace(
+            /[^A-Za-z]/g,
+            ''
+          );
           this._saveFirstNameOnChange(newFirstName);
         }
       },
@@ -464,7 +483,10 @@ export class ProfileTabComponent {
   }
 
   onLastNameTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Last Name pressed');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'Last Name pressed'
+    );
     this._setActiveDataBox(args);
 
     const lastName = this.user.data.last_name || '';
@@ -482,13 +504,23 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `last_name TextFieldSheetComponent result: ${result.data}`);
-          const newLastName = (result.data.text || '').replace(/[^A-Za-z]/g, '');
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
+            `last_name TextFieldSheetComponent result: ${result.data}`
+          );
+          const newLastName = (result.data.text || '').replace(
+            /[^A-Za-z]/g,
+            ''
+          );
           this._saveLastNameOnChange(newLastName);
         }
       },
       error => {
-        this._logService.logBreadCrumb(ProfileTabComponent.name, 'error', error);
+        this._logService.logBreadCrumb(
+          ProfileTabComponent.name,
+          'error',
+          error
+        );
       },
       () => {
         this._logService.logBreadCrumb(ProfileTabComponent.name, 'completed');
@@ -498,7 +530,10 @@ export class ProfileTabComponent {
   }
 
   onGenderTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Gender data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Gender data box'
+    );
     this._setActiveDataBox(args);
 
     let primaryIndex;
@@ -542,7 +577,10 @@ export class ProfileTabComponent {
   }
 
   onWeightTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Weight data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Weight data box'
+    );
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -628,7 +666,10 @@ export class ProfileTabComponent {
   }
 
   onHeightTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Height data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Height data box'
+    );
     this._setActiveDataBox(args);
 
     const listPickerNeedsSecondary =
@@ -703,7 +744,10 @@ export class ProfileTabComponent {
   }
 
   onChairTypeTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Chair Type data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Chair Type data box'
+    );
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -751,7 +795,10 @@ export class ProfileTabComponent {
   }
 
   onChairMakeTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Chair Make data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Chair Make data box'
+    );
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -799,7 +846,10 @@ export class ProfileTabComponent {
   }
 
   onControlConfigTap(args) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'User tapped Control Configuration data box');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'User tapped Control Configuration data box'
+    );
     this._setActiveDataBox(args);
 
     let primaryIndex = 0;
@@ -832,8 +882,11 @@ export class ProfileTabComponent {
             'control_configuration',
             this.configurations[result.data.primaryIndex]
           );
-          this._logService.logBreadCrumb(ProfileTabComponent.name,
-            `Configuration changed to: ${this.configurations[result.data.primaryIndex]}`
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
+            `Configuration changed to: ${
+              this.configurations[result.data.primaryIndex]
+            }`
           );
           KinveyUser.update({
             control_configuration: this.configurations[result.data.primaryIndex]
@@ -866,7 +919,10 @@ export class ProfileTabComponent {
   }
 
   onEditSerialNumber(deviceName) {
-    this._logService.logBreadCrumb(ProfileTabComponent.name, 'Edit SmartDrive serial number pressed');
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
+      'Edit SmartDrive serial number pressed'
+    );
 
     const validDevices =
       deviceName === 'pushtracker'
@@ -876,14 +932,15 @@ export class ProfileTabComponent {
     let serialNumber = '';
     if (deviceName === 'smartdrive')
       serialNumber = this.user.data.smartdrive_serial_number || '';
-    else
-      serialNumber = this.user.data.pushtracker_serial_number || '';
+    else serialNumber = this.user.data.pushtracker_serial_number || '';
 
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true,
       context: {
-        title: this._translateService.instant('profile-tab.smartdrive-serial-number'),
+        title: this._translateService.instant(
+          'profile-tab.smartdrive-serial-number'
+        ),
         description: '',
         text: serialNumber
       }
@@ -892,7 +949,10 @@ export class ProfileTabComponent {
     this._bottomSheet.show(TextFieldSheetComponent, options).subscribe(
       result => {
         if (result && result.data) {
-          this._logService.logBreadCrumb(ProfileTabComponent.name, `Serial number TextFieldSheetComponent result: ${result.data.text}`);
+          this._logService.logBreadCrumb(
+            ProfileTabComponent.name,
+            `Serial number TextFieldSheetComponent result: ${result.data.text}`
+          );
           this._handleSerial(result.data.text, validDevices);
         }
       },
@@ -982,7 +1042,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalDistance() {
     this.displayActivityGoalDistance =
-      (this.user.data.activity_goal_distance).toFixed(1) + '';
+      this.user.data.activity_goal_distance.toFixed(1) + '';
     if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
       this.displayActivityGoalDistance =
         (this.user.data.activity_goal_distance * 0.621371).toFixed(1) +
@@ -1054,7 +1114,9 @@ export class ProfileTabComponent {
       const englishValue = this.user.data.control_configuration;
       const index = this.configurations.indexOf(englishValue);
       this.displayControlConfiguration = this.configurationsTranslated[index];
-      this.displayControlConfigurationImage = this._getControlConfigurationImage(englishValue);
+      this.displayControlConfigurationImage = this._getControlConfigurationImage(
+        englishValue
+      );
     }
   }
 
@@ -1064,7 +1126,9 @@ export class ProfileTabComponent {
       result = 'switchcontrol';
     } else if (configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
       result = 'og_band';
-    } else if (configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
+    } else if (
+      configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+    ) {
       result = 'pte2';
     }
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT) {

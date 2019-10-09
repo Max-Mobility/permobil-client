@@ -24,7 +24,7 @@
     color: $black;
     font-weight: bold;
   }
-  
+
   .slideLowerLabel_2 {
     text-align: left;
     width: 100%;
@@ -40,7 +40,7 @@
     text-align: left;
     margin: 20, 15, 10, 15;
   }
-  
+
   .slide-indicator-inactive {
     background-color: $white;
     opacity: 0.4;
@@ -51,7 +51,7 @@
     margin-top: 0;
     border-radius: 5;
   }
-  
+
   .slide-indicator-active {
     background-color: $white;
     opacity: 0.9;
@@ -62,7 +62,7 @@
     margin-top: 0;
     border-radius: 5;
   }
-  
+
   .bullet {
     color: $black;
     font-family: $os-Light;
@@ -79,16 +79,6 @@
     margin: 10, 0, 10, 15;
     padding: 0;
   }
-  
-  .permobil-ocean-btn {
-    background-color: $permobil-primary;
-    color: $white;
-  }
-
-  .permobil-grey-btn {
-    background-color: $dark-custom-dialog-layout-black;
-    color: $white;
-  }
 
   .permobil-green-btn {
     background-color: $permobil-success;
@@ -96,8 +86,6 @@
   }
 
   .device-setup-status-label {
-    @extend .DEVICE_SETUP_STATUS_LABEL;
     color: $black;
   }
-
 }
