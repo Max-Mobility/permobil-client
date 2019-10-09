@@ -1,6 +1,5 @@
 // profile tab layout
-<GridLayout (loaded)="onProfileTabLoaded()" (unloaded)="onProfileTabUnloaded()" rows="*, auto, *" columns="*"
-  class="profile-tab-layout">
+<GridLayout (loaded)="onProfileTabLoaded()" (unloaded)="onProfileTabUnloaded()" rows="*, auto, *" columns="*" class="profile-tab-layout">
   // main profile-tab layout
   <GridLayout row="0" rowSpan="3" col="0" rows="auto, *, auto" columns="*">
     // Mock ActionBar
@@ -11,43 +10,33 @@
     <ScrollView row="1" rowSpan="2" col="0" padding="10" height="100%" width="100%" iosOverflowSafeArea="false">
       <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*, *, *, *" iosOverflowSafeArea="false">
         // Page Title
-        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate"
-          textWrap="true"></Label>
+        <Label row="0" col="0" colSpan="4" class="page-title" [text]="'profile-tab.title' | translate" textWrap="true"></Label>
 
-        <GridLayout columns="auto, auto" rows="auto" row="1" rowSpan="2" colSpan="4">
+        <GridLayout columns="auto, *" rows="auto" row="1" rowSpan="2" colSpan="4">
           // User Avatar
           <GridLayout class="avatar-circle" (tap)="onAvatarTap()">
-            <Label [visibility]="!user?.data.profile_picture ? 'visible' : 'collapsed'"
-              [text]="user?.data.first_name.charAt(0)" textWrap="true"></Label>
-            <Image [visibility]="user?.data.profile_picture ? 'visible' : 'collapsed'"
-              [src]="user?.data.profile_picture" stretch="aspectFit"></Image>
+            <Label [visibility]="!user?.data.profile_picture ? 'visible' : 'collapsed'" [text]="user?.data.first_name.charAt(0)" textWrap="true"></Label>
+            <Image [visibility]="user?.data.profile_picture ? 'visible' : 'collapsed'" [src]="user?.data.profile_picture" stretch="aspectFit"></Image>
           </GridLayout>
 
-          <StackLayout orientation="horizontal" col="1">
-            <StackLayout verticalAlignment="center">
-              <StackLayout col="1" orientation="horizontal">
-                // User Name
-                <Label class="profile-name" [text]="user?.data.first_name" textWrap="true"></Label>
-                <Label class="profile-name" marginLeft="4" [text]="user?.data.last_name" textWrap="true"></Label>
-              </StackLayout>
-              // User Email
-              <Label class="profile-email" [text]="user?.username" textWrap="true"></Label>
-            </StackLayout>
+          <GridLayout col="1" rows="*, *" columns="*, auto" verticalAlignment="center">
+            // User Name
+            <Label row="0" col="0" class="profile-name" [text]="user?.data.first_name + ' ' + user?.data.last_name" textWrap="true"></Label>
+            // User Email
+            <Label row="1" col="0" class="profile-email" [text]="user?.username" textWrap="true"></Label>
             // Privacy Policy Button
-            <Button (tap)="onPrivacyTap()" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
-          </StackLayout>
+            <Button rowSpan="2" col="1" (tap)="onPrivacyTap()" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
+          </GridLayout>
         </GridLayout>
 
         // Activity Goals Label
-        <label col="0" row="3" colSpan="4" class="section-label"
-          [text]="'profile-tab.activity-goals' | translate"></label>
+        <label col="0" row="3" colSpan="4" class="section-label" [text]="'profile-tab.activity-goals' | translate"></label>
 
         // Horizontal Line
         <StackLayout row="4" col="0" colspan="4" class="hr"></StackLayout>
 
         // Coast Time
-        <StackLayout row="5" col="0" colSpan="2" class="data-box"
-          (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL')">
+        <StackLayout row="5" col="0" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'coast-time', 'coast-time-description', 'COAST_TIME_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.coast-time' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalCoastTime" textWrap="true"></Label>
@@ -55,8 +44,7 @@
         </StackLayout>
 
         // Distance
-        <StackLayout row="5" col="2" colSpan="2" class="data-box"
-          (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL')">
+        <StackLayout row="5" col="2" colSpan="2" class="data-box" (tap)="onActivityGoalTap($event, 'distance', 'distance-description', 'DISTANCE_ACTIVITY_GOAL')">
           <Label class="data-box-label" [text]="'general.distance' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="displayActivityGoalDistance" textWrap="true"></Label>
@@ -143,21 +131,25 @@
         </StackLayout>
 
         // Device Serial Numbers
-        <Label row="13" col="0" colSpan="3" class="section-label"
-          [text]="'profile-tab.device-serial-numbers' | translate"></Label>
-        <Button *ngIf="user?.data.control_configuration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"
-          row="13" col="3" horizontalAlignment="right" verticalAlignment="middle"
-               ripple rippleColorAlpha="0.18"
-          class="device-setup-btn" (tap)="onDeviceSetupTap($event)"
-          text="&#xe0de;"></Button>
+        <Label row="13" col="0" colSpan="3" class="section-label" [text]="'profile-tab.device-serial-numbers' | translate"></Label>
+        <Button
+          *ngIf="user?.data.control_configuration !== CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE"
+          row="13"
+          col="3"
+          horizontalAlignment="right"
+          verticalAlignment="center"
+          ripple
+          rippleColorAlpha="0.18"
+          class="device-setup-btn"
+          (tap)="onDeviceSetupTap($event)"
+          text="&#xe0de;"
+        ></Button>
 
         // Horizontal Line
         <StackLayout row="14" col="0" colspan="4" class="hr"></StackLayout>
 
         // SmartDrive Serial Number
-        <StackLayout row="15" col="0"
-          [colSpan]="user?.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE ? 4 : 2"
-          class="data-box">
+        <StackLayout row="15" col="0" [colSpan]="user?.data.control_configuration === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE ? 4 : 2" class="data-box">
           <Label class="data-box-label" [text]="'profile-tab.smartdrive' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.smartdrive_serial_number" textWrap="true" (tap)="onEditSerialNumber('smartdrive')"></Label>
@@ -165,12 +157,9 @@
           </GridLayout>
         </StackLayout>
 
-        // Pushtracker Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has
-        PushTracker then we show the current PushTracker serial number // field that includes the QR code reader for
-        reading the
+        // Pushtracker Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker then we show the current PushTracker serial number // field that includes the QR code reader for reading the
         OGPT qr code
-        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="15"
-          col="2" colSpan="2" class="data-box">
+        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" row="15" col="2" colSpan="2" class="data-box">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true" (tap)="onEditSerialNumber('pushtracker')"></Label>
@@ -178,13 +167,9 @@
           </GridLayout>
         </StackLayout>
 
-        // Pushtracker E2 Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has
-        PushTracker E2 then we show a read-only PushTracker E2 serial number field // which shows the serial number
-        saved with
-        the user account (comes from the wear apps). // If the user presses on the field, then we show a dialog
-        indicating that the // serial number comes from the wear os apps.
-        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" row="15"
-          col="2" colSpan="2" class="data-box" (tap)="onPushTrackerE2SerialNumberTap($event)">
+        // Pushtracker E2 Serial Number // https://github.com/Max-Mobility/permobil-client/issues/279 // If the user has PushTracker E2 then we show a read-only PushTracker E2 serial number field // which shows the serial number saved with
+        the user account (comes from the wear apps). // If the user presses on the field, then we show a dialog indicating that the // serial number comes from the wear os apps.
+        <StackLayout *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" row="15" col="2" colSpan="2" class="data-box" (tap)="onPushTrackerE2SerialNumberTap($event)">
           <Label class="data-box-label" [text]="'profile-tab.pushtracker-e2' | translate"></Label>
           <GridLayout rows="*" columns="*, auto">
             <Label col="0" class="data-box-value" [text]="user?.data.pushtracker_serial_number" textWrap="true"></Label>
