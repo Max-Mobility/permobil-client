@@ -3,32 +3,32 @@
 .SUPPORT_LAYOUT_BASE {
   height: 100%;
   width: 100%;
+}
 
-  .FAQ_LIST_BASE {
-    height: 100%;
-    width: 100%;
-    separator-color: transparent;
-  }
+.FAQ_LIST_BASE {
+  height: 100%;
+  width: 100%;
+  separator-color: transparent;
+}
 
-  .ITEM_ICON_BASE {
-    @extend .btn-transparent;
+.ITEM_ICON_BASE {
+  @extend .btn-transparent;
 
-    font-size: 22;
-    font-family: $material-icon;
-    vertical-align: center;
-    horizontal-align: center;
-  }
+  font-size: 22;
+  font-family: $material-icon;
+  vertical-align: center;
+  horizontal-align: center;
+}
 
-  .FAQ_QUESTION_BASE {
-    font-size: 18;
-    font-weight: bold;
-    font-family: $os;
-    margin: 2 5 5 5;
-  }
+.FAQ_QUESTION_BASE {
+  font-size: 18;
+  font-weight: bold;
+  font-family: $os;
+  margin: 2 5 5 5;
+}
 
-  .FAQ_ANSWER_BASE {
-    font-size: 14;
-    font-family: $os;
-    margin: 2 5 5 20;
-  }
+.FAQ_ANSWER_BASE {
+  font-size: 14;
+  font-family: $os;
+  margin: 2 5 5 20;
 }

@@ -3,35 +3,34 @@
 .JOURNEY_TAB_LAYOUT_BASE {
   height: 100%;
   width: 100%;
+}
 
-  .PAGE_TITLE_BASE {
-    font-size: 36;
-    font-family: $os;
-    color: $black;
-    padding-left: 10;
-    margin-left: 5;
+.PAGE_TITLE_BASE {
+  font-size: 36;
+  font-family: $os;
+  color: $black;
+  padding-left: 10;
+  margin-left: 5;
+}
+
+.NO_MORE_DATA_LABEL {
+  margin: 10;
+  font-size: 20;
+  font-family: $os;
+  color: $black;
+  text-align: center;
+}
+
+.ACTION_ITEM_BTN_BASE {
+  button {
+    @extend .btn-transparent;
   }
-
-  .NO_MORE_DATA_LABEL {
-    margin: 10;
-    font-size: 20;
-    font-family: $os;
-    color: $black;
-    text-align: center;
-  }
-
-  .ACTION_ITEM_BTN_BASE {
-    button {
-      @extend .btn-transparent;
-    }
-    padding: 4;
-    margin: 2;
-    font-family: $material-icon;
-    font-size: 30;
-    vertical-align: center;
-    height: 44;
-    width: 44;
-    border-radius: 22;
-  }
-
+  padding: 4;
+  margin: 2;
+  font-family: $material-icon;
+  font-size: 30;
+  vertical-align: center;
+  height: 44;
+  width: 44;
+  border-radius: 22;
 }

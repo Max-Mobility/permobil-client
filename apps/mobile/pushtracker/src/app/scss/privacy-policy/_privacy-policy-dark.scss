@@ -2,7 +2,7 @@
 @import 'privacy-policy-base';
 
 .privacy-policy-layout {
-  @extend .APP_INFO_LAYOUT_BASE;
+  @extend .PRIVACY_POLICY_LAYOUT_BASE;
 
   GridLayout,
   ScrollView {

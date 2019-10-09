@@ -1,16 +1,14 @@
 // Import the theme’s variables. If you’re using a color scheme
 // other than “light”, switch the path to the alternative scheme,
 // for example '~nativescript-theme-core/scss/dark'.
-@import '~nativescript-theme-core/scss/light';
+// @import '~nativescript-theme-core/scss/light';
 
-/**** Fonts *****/
 $material-icon: 'MaterialIcons-Regular', MaterialIcons-Regular, 'Material Icons',
   Material Icons;
 $os: 'OpenSans-Regular', 'OpenSans', 'Open Sans', Open Sans;
 $os-Light: 'OpenSans-Light', 'OpenSans Light';
 $os-SemiBold: 'OpenSans-SemiBold', 'Open Sans SemiBold';
 $os-SemiBold-Italic: 'OpenSans-SemiBoldItalic', 'Open Sans SemiBold Italic';
-/**************/
 
 // Permobil Colors
 $permobil-hero: #004f7e !default;
@@ -21,9 +19,6 @@ $permobil-sky: #89d4e3;
 $permobil-charcoal: #413642 !default;
 $permobil-steel: #a7a9a2 !default;
 $permobil-titan: #dcddde !default;
-$blue-50: rgba($permobil-hero, 0.5) !default;
-$blue-20: rgba($permobil-hero, 0.2) !default;
-$blue-10: rgba($permobil-hero, 0.1) !default;
 
 // Permobil Accents
 $permobil-yellow: #fbff22 !default;
@@ -36,42 +31,19 @@ $permobil-cousteau-dark: #008d9d;
 $permobil-violet: #753bbd;
 $permobil-violet-light: #9c84be;
 $permobil-violet-dark: #502980;
-$permobil-success: #00A73C;
+$permobil-success: #00a73c;
 
 // Text colors
-$text-color-light: #fff;
-$text-color-dark: lighten($black, 10);
 $white: #fff;
 $black: #202125;
-$red: #ff0000;
-$green: #66ff66;
 $light-grey: #d3d3d3;
 $grey: rgb(177, 177, 177);
 $dark-grey: #727377;
-
-// Neon colors
-$neon-teal: #4deeea;
-$neon-green: #74ee15;
-$neon-yellow: #ffe700;
-$neon-pink: #f000ff;
-$neon-purple-light: #c4a6fc;
-$neon-purple: #5900ff;
-$neon-blue: #001eff;
-
-// Material Dark Theme
-// https://material.io/design/color/dark-theme.html
-$material-purple: #BB86FC;
-$material-purple-dark: rgb(75, 25, 136);
-$material-teal: #03DAC5;
-$material-error-red: #CF6679;
-
-// colors
-$success-green: #4BB543;
+$success-green: #4bb543;
 $inactive-grey: #666769;
 $error-red: #dd4646;
 
 // components and specific UI
-
 $light-custom-dialog-layout-shadow: rgba(0, 0, 0, 0.65);
 $dark-custom-dialog-layout-shadow: rgba(13, 13, 13, 0.75);
 $dark-custom-dialog-layout-black: rgba(54, 54, 54, 1);

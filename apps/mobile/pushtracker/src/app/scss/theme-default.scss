@@ -28,6 +28,49 @@
 @import './components/e2-status-button/e2-status-button-default';
 @import './components/mock-action-bar/mock-action-bar-default';
 
+ListView {
+  height: 100%;
+}
+
+RadListView {
+  height: 100%;
+}
+
+.material-icon {
+  font-family: $material-icon;
+}
+
+.align-center {
+  horizontal-align: center;
+  vertical-align: center;
+}
+
+.text-middle {
+  vertical-align: center;
+}
+
+.bold {
+  font-weight: bold;
+  font-family: $os-SemiBold;
+}
+
+.very-bold {
+  font-weight: 700;
+  font-family: $os-SemiBold;
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 1;
+  android-elevation: 0;
+  android-dynamic-elevation-offset: 0;
+}
+
+.text-white {
+  color: $white;
+}
+
 .hr {
   height: 1;
   width: 100%;

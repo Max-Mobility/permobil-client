@@ -4,138 +4,138 @@
   height: 100%;
   width: 100%;
   padding: 10;
+}
 
-  .INFO_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    font-family: $material-icon;
-    text-align: center;
+.INFO_BTN_BASE {
+  @extend .btn-transparent;
+  height: 50;
+  width: 50;
+  border-radius: 25;
+  font-size: 30;
+  font-family: $material-icon;
+  text-align: center;
+  horizontal-align: center;
+  vertical-align: center;
+  margin: 4;
+}
+
+.DISTANCE_REMAINING_CIRCLE_BASE {
+  font-size: 16;
+  horizontal-align: center;
+  vertical-align: center;
+  android-elevation: 10;
+
+  label {
     horizontal-align: center;
     vertical-align: center;
-    margin: 4;
+  }
+}
+
+.PERCENTAGE_DATA_LAYOUT_BASE {
+  padding: 10 5 20 5;
+
+  .value {
+    font-family: $os-SemiBold;
+    font-size: 20;
+    font-weight: bold;
+    vertical-align: bottom;
+    horizontal-align: center;
   }
 
-  .DISTANCE_REMAINING_CIRCLE_BASE {
+  .max-value {
+    font-family: $os-Light;
     font-size: 16;
-    horizontal-align: center;
-    vertical-align: center;
-    android-elevation: 10;
-
-    label {
-      horizontal-align: center;
-      vertical-align: center;
-    }
+    vertical-align: bottom;
+    horizontal-align: left;
   }
 
-  .PERCENTAGE_DATA_LAYOUT_BASE {
-    padding: 10 5 20 5;
-
-    .value {
-      font-family: $os-SemiBold;
-      font-size: 20;
-      font-weight: bold;
-      vertical-align: bottom;
-      horizontal-align: center;
-    }
-
-    .max-value {
-      font-family: $os-Light;
-      font-size: 16;
-      vertical-align: bottom;
-      horizontal-align: left;
-    }
-
-    .description {
-      font-family: $os;
-      font-size: 14;
-      vertical-align: top;
-      horizontal-align: left;
-    }
+  .description {
+    font-family: $os;
+    font-size: 14;
+    vertical-align: top;
+    horizontal-align: left;
   }
+}
 
-  .cousteau-circle {
-    background-color: #bad4ee;
-    color: $permobil-primary;
-    height: 30;
-    width: 30;
-    border-radius: 20;
-    margin: 6;
+.cousteau-circle {
+  background-color: #bad4ee;
+  color: $permobil-primary;
+  height: 30;
+  width: 30;
+  border-radius: 20;
+  margin: 6;
+  text-align: center;
+  vertical-align: center;
+  horizontal-align: center;
+  android-elevation: 10;
+
+  label {
+    font-family: $material-icon;
+    font-size: 20;
     text-align: center;
     vertical-align: center;
     horizontal-align: center;
-    android-elevation: 10;
-
-    label {
-      font-family: $material-icon;
-      font-size: 20;
-      text-align: center;
-      vertical-align: center;
-      horizontal-align: center;
-      font-weight: bold;
-    }
+    font-weight: bold;
   }
+}
 
-  .violet-circle {
-    background-color: #cbb3ec;
-    color: $permobil-violet;
-    height: 30;
-    width: 30;
-    border-radius: 20;
-    margin: 6;
+.violet-circle {
+  background-color: #cbb3ec;
+  color: $permobil-violet;
+  height: 30;
+  width: 30;
+  border-radius: 20;
+  margin: 6;
+  text-align: center;
+  vertical-align: center;
+  horizontal-align: center;
+  android-elevation: 10;
+
+  > label {
+    font-family: $material-icon;
+    font-size: 20;
     text-align: center;
     vertical-align: center;
     horizontal-align: center;
-    android-elevation: 10;
-
-    > label {
-      font-family: $material-icon;
-      font-size: 20;
-      text-align: center;
-      vertical-align: center;
-      horizontal-align: center;
-      font-weight: bold;
-    }
+    font-weight: bold;
   }
+}
 
-  .DETAIL_DATA_BASE {
-    padding: 10 15 30 15;
-    margin: 0 10 0 10;
+.DETAIL_DATA_BASE {
+  padding: 10 15 30 15;
+  margin: 0 10 0 10;
+  horizontal-align: center;
+  vertical-align: center;
+
+  label {
+    text-align: center;
     horizontal-align: center;
     vertical-align: center;
-
-    label {
-      text-align: center;
-      horizontal-align: center;
-      vertical-align: center;
-    }
-
-    .detail-value {
-      font-size: 16;
-      font-family: $os;
-      font-weight: bold;
-    }
-
-    .detail-description {
-      font-size: 10;
-      font-family: $os;
-    }
   }
 
-  .CHART_LAYOUT_BASE {
-    padding: 5;
-    margin: 5;
-    width: 90%;
-    margin: 20 2 2 2;
+  .detail-value {
+    font-size: 16;
+    font-family: $os;
+    font-weight: bold;
+  }
 
-    .title {
-      font-family: $os;
-      font-size: 14;
-      font-weight: bold;
-      vertical-align: center;
-      horizontal-align: center;
-    }
+  .detail-description {
+    font-size: 10;
+    font-family: $os;
+  }
+}
+
+.CHART_LAYOUT_BASE {
+  padding: 5;
+  margin: 5;
+  width: 90%;
+  margin: 20 2 2 2;
+
+  .title {
+    font-family: $os;
+    font-size: 14;
+    font-weight: bold;
+    vertical-align: center;
+    horizontal-align: center;
   }
 }
