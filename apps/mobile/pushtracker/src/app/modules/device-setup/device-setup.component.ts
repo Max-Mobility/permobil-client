@@ -138,15 +138,6 @@ export class DeviceSetupComponent implements OnInit {
     return isAndroid;
   }
 
-  /**
-   * Loaded event for the stacklayout that is the top part of the carousel slide
-   * Setting the size based on the screen height to avoid stretching the gifs
-   * @param args
-   */
-  onTopSlideLoaded(args) {
-    // args.object.height = screen.mainScreen.heightDIPs * 0.35;
-  }
-
   async pairPushTrackerE2() {
     if (isAndroid) {
       await this._pairPushTrackerE2Android();
