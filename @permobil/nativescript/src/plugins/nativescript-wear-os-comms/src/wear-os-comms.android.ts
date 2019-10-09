@@ -1,6 +1,8 @@
 import { Bluetooth } from 'nativescript-bluetooth';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { ResultReceiver } from './result-receiver.android';
 import { Common } from './wear-os-comms.common';
+import { ad } from 'tns-core-modules/utils/utils';
 
 declare const com: any;
 
@@ -13,6 +15,9 @@ export class WearOsComms extends Common {
   private static _onDisconnectedCallback: any = null;
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
+  private static _mResultReceiver = new ResultReceiver(new android.os.Handler());
+
+  private static _playStorePrefix = 'market://details?id=';
 
   private static _debugOutputEnabled = false;
 
@@ -36,6 +41,130 @@ export class WearOsComms extends Common {
     WearOsComms._onDataReceivedCallback = cb;
   }
 
+  private static onResultData(resultCode: number, resultData: android.os.Bundle) {
+    WearOsComms.log('onResultData:', resultCode);
+    if (
+      resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK
+    ) {
+      WearOsComms.log('result ok!');
+    } else if (
+      resultCode ===
+        com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED
+    ) {
+      WearOsComms.log('result failed!');
+    } else {
+      WearOsComms.error('Unexpected result ' + resultCode);
+    }
+  }
+
+  /**
+   * Note: appUri should be the package name
+   */
+  public static openAppInPlayStoreOnWatch(appUri: string) {
+    WearOsComms.log('openAppInPlayStoreOnWatch()');
+    WearOsComms._mResultReceiver.onReceiveFunction = WearOsComms.onResultData;
+
+    const nodesWithoutApp = [];
+    // get all connected nodes
+    // determine which ones have the app
+    WearOsComms.log('Number of nodes without app: ' + nodesWithoutApp.length);
+    // create the intent
+    const intent =
+      new android.content.Intent(android.content.Intent.ACTION_VIEW)
+      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+      .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
+    // now iterate through the nodes without the app and open it in the play store
+    nodesWithoutApp.map(n => {
+      com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+        ad.getApplicationContext(),
+        intent,
+        WearOsComms._mResultReceiver,
+        n.getId());
+    });
+  }
+
+  /**
+   * Note: appUri should be the package name (if the remote device is
+   * android), or the full uri to the app store for the app if the
+   * remote device is iOS)
+   */
+  public static openAppInStoreOnPhone(appUri: string) {
+    WearOsComms.log('openAppInStoreOnPhone()');
+    const androidUri = WearOsComms._playStorePrefix + appUri;
+    const iosUri = appUri;
+    try {
+      WearOsComms._mResultReceiver.onReceiveFunction = WearOsComms.onResultData;
+
+      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
+        ad.getApplicationContext()
+      );
+      switch (phoneDeviceType) {
+          // Paired to Android phone, use Play Store URI.
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+          WearOsComms.log('\tDEVICE_TYPE_ANDROID');
+          // Create Remote Intent to open Play Store listing of app on remote device.
+          const intentAndroid = new android.content.Intent(
+            android.content.Intent.ACTION_VIEW
+          )
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(androidUri));
+
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentAndroid,
+            WearOsComms._mResultReceiver
+          );
+          break;
+
+          // Paired to iPhone, use iTunes App Store URI
+        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+          WearOsComms.log('\tDEVICE_TYPE_IOS');
+
+          // Create Remote Intent to open App Store listing of app on iPhone.
+          const intentIOS = new android.content.Intent(
+            android.content.Intent.ACTION_VIEW
+          )
+            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+            .setData(android.net.Uri.parse(iosUri));
+
+          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+            ad.getApplicationContext(),
+            intentIOS,
+            WearOsComms._mResultReceiver
+          );
+          break;
+
+        case android.support.wearable.phone.PhoneDeviceType
+            .DEVICE_TYPE_ERROR_UNKNOWN:
+          WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
+          break;
+      }
+    } catch (err) {
+      WearOsComms.error('Error opening on phone:', err);
+    }
+  }
+
+  private static async findAllWearDevices(timeout: number) {
+    return new Promise((resolve, reject) => {
+      WearOsComms.log('findAllWearDevices()');
+      const context = ad.getApplicationContext();
+      const nodeTaskList = com.google.android.gms.wearable.Wearable
+        .getNodeClient(context)
+        .getConnectedNodes();
+      nodeTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
+        onComplete: function(task: any) {
+          if (task.isSuccessful()) {
+            WearOsComms.log('Node request succeeded');
+            resolve(task.getResult());
+          } else {
+            WearOsComms.error('Node request failed to return any results');
+            reject(new Error('Could not find any wear devices!'));
+          }
+        }
+      }));
+    });
+  }
+
   public static hasCompanion() {
     // TODO: try to determine if there is a wear os watch paired -
     // look through DataLayerService to determine if it's something we
@@ -43,12 +172,12 @@ export class WearOsComms extends Common {
     return true;
   }
 
-  public static findAvailableCompanions(timeout: number) {
+  public static async findAvailableCompanions(timeout: number) {
     // do nothing
     return null;
   }
 
-  public static findAvailableCompanion(timeout: number) {
+  public static async findAvailableCompanion(timeout: number) {
     // do nothing
     return null;
   }
