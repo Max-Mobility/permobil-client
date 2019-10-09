@@ -159,7 +159,7 @@ export class WearOsComms extends Common {
     }
   }
 
-  private static async findDevicesConnected(timeout: number) {
+  private static async findDevicesConnected(timeout?: number) {
     return new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
@@ -167,7 +167,7 @@ export class WearOsComms extends Common {
         .getNodeClient(context)
         .getConnectedNodes();
       let tid = null;
-      if (timeout > 0) {
+      if (timeout !== undefined && timeout > 0) {
         tid = setTimeout(() => {
           reject(new Error('Timed out searching for connected devices'));
         }, timeout);
