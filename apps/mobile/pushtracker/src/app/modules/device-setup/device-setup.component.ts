@@ -60,6 +60,8 @@ export class DeviceSetupComponent implements OnInit {
 
   CURRENT_THEME: string;
 
+  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
+
   constructor(
     private _router: Router,
     private _userService: PushTrackerUserService,
@@ -360,6 +362,14 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   public async pairPushTrackerE2() {
+    if (isAndroid) {
+      await this._pairPushTrackerE2Android();
+    } else {
+      await this._pairPushTrackerE2IOS();
+    }
+  }
+
+  private async _pairPushTrackerE2Android() {
     // update display
     this.showFailure = false;
     this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
@@ -371,7 +381,7 @@ export class DeviceSetupComponent implements OnInit {
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
     if (possiblePeripherals === null || possiblePeripherals === undefined) {
-      // we don't have any peripherals, let them know to keep things correctly
+      // search failed, let them know
       await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.bluetooth-error.title'
@@ -386,7 +396,118 @@ export class DeviceSetupComponent implements OnInit {
       return;
     }
     if (possiblePeripherals.length === 0) {
-      // we don't have any peripherals, let them know to keep things correctly
+      // we don't have any peripherals, let them know
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.pte2-scan-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.pte2-scan-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
+      return;
+    }
+    // ask user which companion is theirs
+    const actions = possiblePeripherals.map(p => p.name);
+    const result = await action({
+      message: this._translateService.instant('device-setup.e2.select-device'),
+      cancelButtonText: this._translateService.instant('dialogs.cancel'),
+      actions: actions
+    });
+    const selection = possiblePeripherals.filter(p => p.name === result);
+    if (selection.length === 0) {
+      await alert({
+        title: this._translateService.instant('device-setup.e2.must-select-error.title'),
+        message: this._translateService.instant('device-setup.e2.must-select-error.message'),
+        okButtonText: this._translateService.instant('dialogs.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-selected');
+      return;
+    }
+    const name = selection[0].name;
+    const address = selection[0].identifier.UUIDString;
+    this._logService.logBreadCrumb(DeviceSetupComponent.name, `selected: ${address}`);
+    // TODO: we should save the name / address to app settings for later
+    // save that as the companion
+    WearOsComms.saveCompanion(address);
+    // try connecting and sending information
+    this.statusMessage = this._translateService.instant('device-setup.e2.connecting') + `${name}`;
+    const didConnect = await this._connectCompanion();
+    if (didConnect) {
+      console.log('didConnect', didConnect);
+      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
+      const sentMessage = await this._sendMessage();
+      await this._disconnectCompanion();
+      if (sentMessage) {
+        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
+        new Toasty({
+          text: this._translateService.instant(
+            'wearos-comms.messages.pte2-sync-successful'
+          ),
+          duration: ToastDuration.LONG
+        }).show();
+        this.showDoneButton = true;
+      } else {
+        alert({
+          title: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.title'
+          ),
+          message: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.message'
+          ),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+        this.showFailure = true;
+        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
+        return;
+      }
+    } else {
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.pte2-connection-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.pte2-connection-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.connect') + `${name}`;
+    }
+  }
+
+  private async _pairPushTrackerE2IOS() {
+    // update display
+    this.showFailure = false;
+    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
+    // reset paired so that the ui updates properly
+    this.hasPairedE2 = false;
+    this.showDoneButton = false;
+    // clear out the companion to make sure we don't save it accidentally
+    WearOsComms.clearCompanion();
+    // find possible companions for pairing
+    const possiblePeripherals = await this._getListOfCompanions();
+    if (possiblePeripherals === null || possiblePeripherals === undefined) {
+      // search failed, let them know
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.bluetooth-error.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.bluetooth-error.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.bluetooth');
+      return;
+    }
+    if (possiblePeripherals.length === 0) {
+      // we don't have any peripherals, let them know to
       await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-scan-error.title'
