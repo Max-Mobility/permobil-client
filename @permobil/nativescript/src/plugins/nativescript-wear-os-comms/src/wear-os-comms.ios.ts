@@ -145,7 +145,15 @@ export class WearOsComms extends Common {
     // do nothing
   }
 
-  public static async openAppInStoreOnPhone(appUri: string) {
+  public static phoneIsAndroid() {
+    return false;
+  }
+
+  public static phoneIsIos() {
+    return true;
+  }
+
+  public static async openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
     // do nothing
   }
 

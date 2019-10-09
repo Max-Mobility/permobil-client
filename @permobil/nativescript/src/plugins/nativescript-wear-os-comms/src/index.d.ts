@@ -24,7 +24,9 @@ export declare class WearOsComms extends Common {
    */
   static advertiseAsCompanion();
   static stopAdvertisingAsCompanion();
-  static openAppInStoreOnPhone(appUri: string);
+  static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string);
+  static phoneIsAndroid(): boolean;
+  static phoneIsIos(): boolean;
 
   /**
    * For phones

@@ -19,7 +19,6 @@ import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
-import { ResultReceiver } from '../../result-receiver';
 import { KinveyService, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 
@@ -869,79 +868,40 @@ export class MainViewModel extends Observable {
    * APP, AND FOR OPENING THE APP STORE OR APP
    */
 
-  onResultData(resultCode: number, resultData: android.os.Bundle) {
-    Log.D('onResultData:', resultCode);
-    if (
-      resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK
-    ) {
-      Log.D('result ok!');
-    } else if (
-      resultCode ===
-      com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED
-    ) {
-      Log.D('result failed!');
-    } else {
-      Log.E('Unexpected result ' + resultCode);
-    }
-  }
-
-  private ANDROID_MARKET_APP_URI =
-    'market://details?id=com.permobil.pushtracker';
-  // 'market://details?id=com.iconfactory.smartdrive';
-  private APP_STORE_APP_URI =
+  private PHONE_ANDROID_PACKAGE_NAME =
+    'com.permobil.pushtracker';
+  private PHONE_IOS_APP_STORE_URI =
     'https://itunes.apple.com/us/app/pushtracker/id1121427802';
 
-  private mResultReceiver = new ResultReceiver(new android.os.Handler());
-
-  openAppOnPhone() {
-    Log.D('openAppInStoreOnPhone()');
+  async openAppOnPhone() {
+    Log.D('openAppOnPhone()');
     try {
-      this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
-
-      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
-        ad.getApplicationContext()
-      );
-      switch (phoneDeviceType) {
-        // Paired to Android phone, use Play Store URI.
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-          Log.D('\tDEVICE_TYPE_ANDROID');
-          // Create Remote Intent to open Play Store listing of app on remote device.
-          const intentAndroid = new android.content.Intent(
-            android.content.Intent.ACTION_VIEW
-          )
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
-
-          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
-            intentAndroid,
-            this.mResultReceiver
+      this.isBusy = true;
+      if (WearOsComms.phoneIsAndroid()) {
+        // see if the paired phone has the companion app
+        const devicesWithApp = await WearOsComms.findDevicesWithApp(
+          this.CAPABILITY_PHONE_APP
+        );
+        if (devicesWithApp.length !== 0) {
+          this.isBusy = false;
+          // TODO: try opening our app on the phone
+          // now show the open on phone activity
+          this.showConfirmation(
+            android.support.wearable.activity.ConfirmationActivity
+              .OPEN_ON_PHONE_ANIMATION
           );
-          break;
-
-        // Paired to iPhone, use iTunes App Store URI
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-          Log.D('\tDEVICE_TYPE_IOS');
-
-          // Create Remote Intent to open App Store listing of app on iPhone.
-          const intentIOS = new android.content.Intent(
-            android.content.Intent.ACTION_VIEW
-          )
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
-
-          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
-            intentIOS,
-            this.mResultReceiver
-          );
-          break;
-
-        case android.support.wearable.phone.PhoneDeviceType
-          .DEVICE_TYPE_ERROR_UNKNOWN:
-          Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
-          break;
+          // return - we don't need to do anything else
+          return;
+        }
       }
+      // we couldn't open the app on the phone (either it's not
+      // installed or the paired phone is ios), so open the app in the
+      // proper store
+      await WearOsComms.openAppInStoreOnPhone(
+        this.PHONE_ANDROID_PACKAGE_NAME,
+        this.PHONE_IOS_APP_STORE_URI
+      );
+      this.isBusy = false;
       // now show the open on phone activity
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity

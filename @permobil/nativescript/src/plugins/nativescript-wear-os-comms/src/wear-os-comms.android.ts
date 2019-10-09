@@ -102,15 +102,48 @@ export class WearOsComms extends Common {
     });
   }
 
-  /**
-   * Note: appUri should be the package name (if the remote device is
-   * android), or the full uri to the app store for the app if the
-   * remote device is iOS)
-   */
-  public static openAppInStoreOnPhone(appUri: string) {
+  public static phoneIsIos() {
+    let isIos = false;
+    const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
+      ad.getApplicationContext()
+    );
+    switch (phoneDeviceType) {
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+        break;
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+        isIos = true;
+        break;
+      case android.support.wearable.phone.PhoneDeviceType
+        .DEVICE_TYPE_ERROR_UNKNOWN:
+        WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
+        break;
+    }
+    return isIos;
+  }
+
+  public static phoneIsAndroid() {
+    let isAndroid = false;
+    const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
+      ad.getApplicationContext()
+    );
+    switch (phoneDeviceType) {
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
+        isAndroid = true;
+        break;
+      case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
+        break;
+      case android.support.wearable.phone.PhoneDeviceType
+        .DEVICE_TYPE_ERROR_UNKNOWN:
+        WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
+        break;
+    }
+    return isAndroid;
+  }
+
+  public static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
     WearOsComms.log('openAppInStoreOnPhone()');
-    const androidUri = WearOsComms._playStorePrefix + appUri;
-    const iosUri = appUri;
+    const androidUri = WearOsComms._playStorePrefix + androidPackageName;
+    const iosUri = iosAppStoreUri;
     try {
       WearOsComms._mResultReceiver.onReceiveFunction = WearOsComms.onResultData;
 
