@@ -60,6 +60,8 @@ export class DeviceSetupComponent implements OnInit {
 
   CURRENT_THEME: string;
 
+  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
+
   constructor(
     private _router: Router,
     private _userService: PushTrackerUserService,
@@ -360,6 +362,42 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   public async pairPushTrackerE2() {
+    if (isAndroid) {
+      await this._pairPushTrackerE2Android();
+    } else {
+      await this._pairPushTrackerE2IOS();
+    }
+  }
+
+  private async _pairPushTrackerE2Android() {
+    // update display
+    this.showFailure = false;
+    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
+    // reset paired so that the ui updates properly
+    this.hasPairedE2 = false;
+    this.showDoneButton = false;
+    // clear out the companion to make sure we don't save it accidentally
+    WearOsComms.clearCompanion();
+
+    // TODO: see if there are any companion devices with the app
+    // installed - if so, save them and show success
+
+    // TODO: if there are no companion devices with the app installed,
+    // see if there are any companion devices connected
+
+    // TODO: if there are not companion devices connected, inform the
+    // user they need to set up a PushTracker E2 with the WearOS app
+    // to pair it to their phone.
+
+    // TODO: if there are companion devices connected, open the
+    // pushtracker app in the play store on the watch
+
+    // TODO: potentially wait here for the user to install the app -
+    // or should we just inform them that we've opened the play store
+    // and they'll need to install, run, and retry?
+  }
+
+  private async _pairPushTrackerE2IOS() {
     // update display
     this.showFailure = false;
     this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
@@ -371,7 +409,7 @@ export class DeviceSetupComponent implements OnInit {
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
     if (possiblePeripherals === null || possiblePeripherals === undefined) {
-      // we don't have any peripherals, let them know to keep things correctly
+      // search failed, let them know
       await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.bluetooth-error.title'
@@ -386,7 +424,7 @@ export class DeviceSetupComponent implements OnInit {
       return;
     }
     if (possiblePeripherals.length === 0) {
-      // we don't have any peripherals, let them know to keep things correctly
+      // we don't have any peripherals, let them know to
       await alert({
         title: this._translateService.instant(
           'wearos-comms.errors.pte2-scan-error.title'

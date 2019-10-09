@@ -1,12 +1,16 @@
 import { Bluetooth } from 'nativescript-bluetooth';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { ResultReceiver } from './result-receiver.android';
 import { Common } from './wear-os-comms.common';
 import { ad } from 'tns-core-modules/utils/utils';
+import * as appSettings from 'tns-core-modules/application-settings';
+import { ResultReceiver } from './result-receiver.android';
 
 declare const com: any;
 
 export class WearOsComms extends Common {
+  // device address
+  private static pairedCompanion: string = null;
+
   // this will only be used for advertising the service if the watch's
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
@@ -155,15 +159,22 @@ export class WearOsComms extends Common {
     }
   }
 
-  private static async findAllWearDevices(timeout: number) {
+  private static async findDevicesConnected(timeout: number) {
     return new Promise((resolve, reject) => {
-      WearOsComms.log('findAllWearDevices()');
+      WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
       const nodeTaskList = com.google.android.gms.wearable.Wearable
         .getNodeClient(context)
         .getConnectedNodes();
+      let tid = null;
+      if (timeout > 0) {
+        tid = setTimeout(() => {
+          reject(new Error('Timed out searching for connected devices'));
+        }, timeout);
+      }
       nodeTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
         onComplete: function(task: any) {
+          if (tid !== null) clearTimeout(tid);
           if (task.isSuccessful()) {
             WearOsComms.log('Node request succeeded');
             WearOsComms._nodesConnected = task.getResult().toArray();
@@ -203,10 +214,29 @@ export class WearOsComms extends Common {
   }
 
   public static hasCompanion() {
-    // TODO: try to determine if there is a wear os watch paired -
-    // look through DataLayerService to determine if it's something we
-    // can figure out
-    return true;
+    let hasCompanion =
+      WearOsComms.pairedCompanion && WearOsComms.pairedCompanion.length && true;
+    if (!hasCompanion) {
+      try {
+        // try to load from the file system
+        WearOsComms.pairedCompanion = appSettings.getString(
+          WearOsComms.APP_SETTINGS_COMPANION_KEY,
+          ''
+        );
+        WearOsComms.log(
+          'loaded companion from app settings:',
+          WearOsComms.pairedCompanion
+        );
+        hasCompanion =
+          WearOsComms.pairedCompanion &&
+          WearOsComms.pairedCompanion.length &&
+          true;
+      } catch (err) {
+        WearOsComms.error('could not load companion from app settings:', err);
+      }
+    }
+    WearOsComms.log('hasCompanion:', hasCompanion);
+    return hasCompanion;
   }
 
   public static async findAvailableCompanions(timeout: number) {
@@ -220,11 +250,23 @@ export class WearOsComms extends Common {
   }
 
   public static saveCompanion(address: string) {
-    // do nothing
+    if (address && address.length) {
+      WearOsComms.pairedCompanion = address;
+      // save to the file system
+      appSettings.setString(
+        WearOsComms.APP_SETTINGS_COMPANION_KEY,
+        WearOsComms.pairedCompanion
+      );
+    } else {
+      WearOsComms.clearCompanion();
+    }
   }
 
   public static clearCompanion() {
     // do nothing
+    WearOsComms.pairedCompanion = null;
+    // save to the file system
+    appSettings.setString(WearOsComms.APP_SETTINGS_COMPANION_KEY, '');
   }
 
   public static connectCompanion(timeout: number = 10000) {

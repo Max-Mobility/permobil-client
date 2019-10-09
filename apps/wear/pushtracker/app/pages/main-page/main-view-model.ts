@@ -78,6 +78,8 @@ export class MainViewModel extends Observable {
    * For showing button to install SD.W app
    */
   @Prop() isSmartDriveAppInstalled: boolean = false;
+  private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
+
 
   /**
    * For showing busy status
@@ -86,7 +88,7 @@ export class MainViewModel extends Observable {
   @Prop() busyText: string = L('busy.synchronizing');
 
   /**
-   *
+   * User display data
    */
   @Prop() hasUserData: boolean = false;
   @Prop() userEmail: string = '---';
