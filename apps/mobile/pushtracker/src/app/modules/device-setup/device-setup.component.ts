@@ -87,7 +87,7 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
         this.slide = this._translateService.instant(
@@ -136,7 +136,7 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         this._onPushTrackerE2();
       }
@@ -223,8 +223,8 @@ export class DeviceSetupComponent implements OnInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -236,7 +236,7 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -382,6 +382,8 @@ export class DeviceSetupComponent implements OnInit {
     if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
       const name = node.getDisplayName();
+      // save companion
+      WearOsComms.saveCompanion(name);
       // send data to remote apps
       this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
       const sentMessage = await this._sendMessage();
