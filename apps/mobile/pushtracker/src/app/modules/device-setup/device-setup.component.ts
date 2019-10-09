@@ -139,10 +139,6 @@ export class DeviceSetupComponent implements OnInit {
           CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         this._onPushTrackerE2();
-        if (isAndroid) {
-          this.showDoneButton = true;
-          this.statusMessage = this._translateService.instant('wearos-comms.messages.pte2-sync-successful');
-        }
       }
     });
   }
@@ -379,22 +375,82 @@ export class DeviceSetupComponent implements OnInit {
     // clear out the companion to make sure we don't save it accidentally
     WearOsComms.clearCompanion();
 
-    // TODO: see if there are any companion devices with the app
+    // see if there are any companion devices with the app
     // installed - if so, save them and show success
+    const capabilityInfo = await WearOsComms.findDevicesWithApp(this.CAPABILITY_WEAR_APP);
+    const nodesWithApp = capabilityInfo.getNodes().toArray();
+    if (nodesWithApp?.length >= 1) {
+      const node = nodesWithApp[0];
+      const name = node.getDisplayName();
+      // send data to remote apps
+      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
+      const sentMessage = await this._sendMessage();
+      // await this._disconnectCompanion();
+      if (sentMessage) {
+        new Toasty({
+          text: this._translateService.instant(
+            'wearos-comms.messages.pte2-sync-successful'
+          ),
+          duration: ToastDuration.LONG
+        }).show();
+        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
+        this.showDoneButton = true;
+      } else {
+        alert({
+          title: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.title'
+          ),
+          message: this._translateService.instant(
+            'wearos-comms.errors.pte2-send-error.message'
+          ),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+        this.showFailure = true;
+        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
+      }
+      return;
+    }
 
-    // TODO: if there are no companion devices with the app installed,
+    // if there are no companion devices with the app installed,
     // see if there are any companion devices connected
+    const nodesConnected = await WearOsComms.findDevicesConnected(10000);
 
-    // TODO: if there are not companion devices connected, inform the
+    // if there are not companion devices connected, inform the
     // user they need to set up a PushTracker E2 with the WearOS app
     // to pair it to their phone.
+    if (!(nodesConnected?.length)) {
+      await alert({
+        title: this._translateService.instant(
+          'wearos-comms.errors.pte2-not-setup.title'
+        ),
+        message: this._translateService.instant(
+          'wearos-comms.errors.pte2-not-setup.message'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+      this.showFailure = true;
+      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
+      return;
+    }
 
-    // TODO: if there are companion devices connected, open the
+    // if there are companion devices connected, open the
     // pushtracker app in the play store on the watch
+    await WearOsComms.openAppInPlayStoreOnWatch('com.permobil.pushtracker');
 
-    // TODO: potentially wait here for the user to install the app -
+    // potentially wait here for the user to install the app -
     // or should we just inform them that we've opened the play store
     // and they'll need to install, run, and retry?
+    await alert({
+      title: this._translateService.instant(
+        'wearos-comms.errors.pte2-not-installed.title'
+      ),
+      message: this._translateService.instant(
+        'wearos-comms.errors.pte2-not-installed.message'
+      ),
+      okButtonText: this._translateService.instant('profile-tab.ok')
+    });
+    this.showFailure = true;
+    this.statusMessage = this._translateService.instant('device-setup.e2.failures.app-not-installed');
   }
 
   private async _pairPushTrackerE2IOS() {
@@ -471,13 +527,13 @@ export class DeviceSetupComponent implements OnInit {
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       if (sentMessage) {
-        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
         new Toasty({
           text: this._translateService.instant(
             'wearos-comms.messages.pte2-sync-successful'
           ),
           duration: ToastDuration.LONG
         }).show();
+        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
         this.showDoneButton = true;
       } else {
         alert({
