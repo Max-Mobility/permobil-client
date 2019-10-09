@@ -3,49 +3,49 @@
 .APP_INFO_LAYOUT_BASE {
   height: 100%;
   width: 100%;
+}
 
-  .CLOSE_BTN_BASE {
-    @extend .btn-transparent;
-    height: 50;
-    width: 50;
-    border-radius: 25;
-    font-size: 30;
-    padding: 4;
-    font-family: $material-icon;
-    horizontal-align: left;
-    vertical-align: center;
-  }
+.CLOSE_BTN_BASE {
+  @extend .btn-transparent;
+  height: 50;
+  width: 50;
+  border-radius: 25;
+  font-size: 30;
+  padding: 4;
+  font-family: $material-icon;
+  horizontal-align: left;
+  vertical-align: center;
+}
 
-  .MORE_BTN_BASE {
-    @extend .btn-transparent;
-    padding: 4;
-    font-size: 30;
-    font-family: $material-icon;
-    horizontal-align: right;
-    vertical-align: center;
-  }
+.MORE_BTN_BASE {
+  @extend .btn-transparent;
+  padding: 4;
+  font-size: 30;
+  font-family: $material-icon;
+  horizontal-align: right;
+  vertical-align: center;
+}
 
-  .TITLE_BASE {
-    font-size: 26;
-    font-family: $os;
-    font-weight: bold;
-    text-align: center;
-    horizontal-align: center;
-    vertical-align: center;
-  }
+.TITLE_BASE {
+  font-size: 26;
+  font-family: $os;
+  font-weight: bold;
+  text-align: center;
+  horizontal-align: center;
+  vertical-align: center;
+}
 
-  .SECTION_TITLE_BASE {
-    font-size: 18;
-    font-family: $os;
-    font-weight: bold;
-    text-align: center;
-    horizontal-align: center;
-    margin: 10 0 10 0;
-  }
+.SECTION_TITLE_BASE {
+  font-size: 18;
+  font-family: $os;
+  font-weight: bold;
+  text-align: center;
+  horizontal-align: center;
+  margin: 10 0 10 0;
+}
 
-  .SECTION_TEXT_BASE {
-    font-size: 14;
-    font-family: $os-Light;
-    margin: 10 0 30 0;
-  }
+.SECTION_TEXT_BASE {
+  font-size: 14;
+  font-family: $os-Light;
+  margin: 10 0 30 0;
 }

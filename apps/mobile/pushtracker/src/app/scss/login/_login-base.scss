@@ -4,28 +4,28 @@
   height: 100%;
   width: 100%;
   padding: 10;
+}
 
-  .LOGIN_FORM_BASE {
-    color: $white;
-    border-radius: 4;
-    vertical-align: center;
-  }
+.LOGIN_FORM_BASE {
+  color: $white;
+  border-radius: 4;
+  vertical-align: center;
+}
 
-  .SUBMIT_BTN_BASE {
-    margin: 8 25 8 25;
-  }
+.SUBMIT_BTN_BASE {
+  margin: 8 25 8 25;
+}
 
-  .FORGOT_PW_BTN_BASE {
-    @extend .btn-transparent;
+.FORGOT_PW_BTN_BASE {
+  @extend .btn-transparent;
 
-    margin: 12 20 12 20;
-    horizontal-align: left;
-  }
+  margin: 12 20 12 20;
+  horizontal-align: left;
+}
 
-  .REGISTER_BTN_BASE {
-    @extend .btn-transparent;
+.REGISTER_BTN_BASE {
+  @extend .btn-transparent;
 
-    margin: 12 20 12 20;
-    horizontal-align: left;
-  }
+  margin: 12 20 12 20;
+  horizontal-align: left;
 }
