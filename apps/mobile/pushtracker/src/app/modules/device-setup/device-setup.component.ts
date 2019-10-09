@@ -1,24 +1,20 @@
-import { Component, OnInit, NgZone, Optional } from '@angular/core';
+import { Component, NgZone, OnInit, Optional } from '@angular/core';
 import { Router } from '@angular/router';
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { Page } from 'tns-core-modules/ui/page';
-import {
-  PushTrackerUserService,
-  BluetoothService,
-  LoggingService
-} from '../../services';
-import { CONFIGURATIONS, STORAGE_KEYS, APP_THEMES } from '../../enums';
+import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { ToastDuration, Toasty } from 'nativescript-toasty';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { isAndroid } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
-import { TranslateService } from '@ngx-translate/core';
+import { Page } from 'tns-core-modules/ui/page';
+import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { Toasty, ToastDuration } from 'nativescript-toasty';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { BluetoothService, LoggingService, PushTrackerUserService } from '../../services';
 
 // TODO: activity indicator for E2 on ios (during scanning /
 // connection / etc.)
@@ -29,39 +25,34 @@ import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
   templateUrl: './device-setup.component.html'
 })
 export class DeviceSetupComponent implements OnInit {
-  public APP_THEMES = APP_THEMES;
-  public CONFIGURATIONS = CONFIGURATIONS;
-  public user: PushTrackerUser;
+  APP_THEMES = APP_THEMES;
+  CONFIGURATIONS = CONFIGURATIONS;
+  CURRENT_THEME: string;
+  user: PushTrackerUser;
   slide = undefined;
   bluetoothAdvertised = false;
-  // permissions for the bluetooth service
-  private permissionsNeeded = [];
-  public pushTracker: PushTracker;
-
-  // e2 things
-  public hasPairedE2: boolean = false;
-
+  pushTracker: PushTracker;
   // Done button
-  public paired: boolean = false;
-  public statusMessage: string = this._translateService.instant(
+  paired: boolean = false;
+  statusMessage: string = this._translateService.instant(
     'device-setup.waiting-for-pairing-request'
   );
-  public showDoneButton: boolean = false;
-  public doneButtonText: string = this._translateService.instant(
+  showDoneButton: boolean = false;
+  doneButtonText: string = this._translateService.instant(
     'device-setup.finish'
   );
-  public doLaterButtonText: string = this._translateService.instant(
+  doLaterButtonText: string = this._translateService.instant(
     'device-setup.do-later'
   );
-  public showFailure: boolean = false;
-  public failureButtonText: string = this._translateService.instant(
+  showFailure: boolean = false;
+  failureButtonText: string = this._translateService.instant(
     'device-setup.retry'
   );
-
-  CURRENT_THEME: string;
-
+  // e2 things
+  hasPairedE2: boolean = false;
+  // permissions for the bluetooth service
+  private permissionsNeeded = [];
   private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
-
   constructor(
     private _router: Router,
     private _userService: PushTrackerUserService,
@@ -87,7 +78,7 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
         this.slide = this._translateService.instant(
@@ -102,7 +93,7 @@ export class DeviceSetupComponent implements OnInit {
             DeviceSetupComponent.name,
             'Asking for Bluetooth Permission'
           );
-          this.askForPermissions()
+          this._askForPermissions()
             .then(() => {
               if (!this._bluetoothService.advertising) {
                 this._logService.logBreadCrumb(
@@ -136,27 +127,15 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         this._onPushTrackerE2();
       }
     });
   }
 
-  isIOS(): boolean {
-    return isIOS;
-  }
-
   isAndroid(): boolean {
     return isAndroid;
-  }
-
-  isGif(value: string) {
-    if (value.endsWith('.gif')) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   /**
@@ -165,36 +144,30 @@ export class DeviceSetupComponent implements OnInit {
    * @param args
    */
   onTopSlideLoaded(args) {
-    args.object.height = screen.mainScreen.heightDIPs * 0.35;
+    // args.object.height = screen.mainScreen.heightDIPs * 0.35;
   }
 
-  /**
-   * Loaded event for the Gifs in the carousel items
-   * Setting the size based on the screen height to avoid stretching the gifs
-   * @param args
-   */
-  onGifLoaded(args) {
-    args.object.height = screen.mainScreen.heightDIPs * 0.35;
-    args.object.width = screen.mainScreen.heightDIPs * 0.35;
-  }
-
-  closeModal() {
-    this._params.closeCallback('');
+  async pairPushTrackerE2() {
+    if (isAndroid) {
+      await this._pairPushTrackerE2Android();
+    } else {
+      await this._pairPushTrackerE2IOS();
+    }
   }
 
   onDoneTap(args) {
     if (this._params && this._params.context && this._params.context.modal) {
-      this.closeModal();
+      this._params.closeCallback('');
     } else {
       this._router.navigate(['/tabs/default']);
     }
   }
 
-  onSkipTap(args) {
+  onDoLaterTap(args) {
     this.onDoneTap(args);
   }
 
-  private async askForPermissions() {
+  private async _askForPermissions() {
     if (isAndroid) {
       // determine if we have shown the permissions request
       const hasShownRequest =
@@ -223,8 +196,8 @@ export class DeviceSetupComponent implements OnInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -236,7 +209,7 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -255,7 +228,7 @@ export class DeviceSetupComponent implements OnInit {
     }
   }
 
-  onPushTrackerConnected() {
+  private onPushTrackerConnected() {
     if (!this.pushTracker) {
       const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
         return val.connected;
@@ -299,7 +272,7 @@ export class DeviceSetupComponent implements OnInit {
     }
   }
 
-  onPushTrackerDailyInfoEvent() {
+  private onPushTrackerDailyInfoEvent() {
     this._logService.logBreadCrumb(
       DeviceSetupComponent.name,
       'PushTracker daily_info_event received!'
@@ -315,7 +288,7 @@ export class DeviceSetupComponent implements OnInit {
     });
   }
 
-  onPushTrackerDisconnected() {
+  private onPushTrackerDisconnected() {
     this._logService.logBreadCrumb(
       DeviceSetupComponent.name,
       'PushTracker disconnected!'
@@ -357,18 +330,12 @@ export class DeviceSetupComponent implements OnInit {
     }
   }
 
-  public async pairPushTrackerE2() {
-    if (isAndroid) {
-      await this._pairPushTrackerE2Android();
-    } else {
-      await this._pairPushTrackerE2IOS();
-    }
-  }
-
   private async _pairPushTrackerE2Android() {
     // update display
     this.showFailure = false;
-    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
+    this.statusMessage = this._translateService.instant(
+      'device-setup.e2.scanning'
+    );
     // reset paired so that the ui updates properly
     this.hasPairedE2 = false;
     this.showDoneButton = false;
@@ -377,7 +344,9 @@ export class DeviceSetupComponent implements OnInit {
 
     // see if there are any companion devices with the app
     // installed - if so, save them and show success
-    const capabilityInfo = await WearOsComms.findDevicesWithApp(this.CAPABILITY_WEAR_APP);
+    const capabilityInfo = await WearOsComms.findDevicesWithApp(
+      this.CAPABILITY_WEAR_APP
+    );
     const nodesWithApp = capabilityInfo.getNodes().toArray();
     if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
@@ -385,7 +354,10 @@ export class DeviceSetupComponent implements OnInit {
       // save companion
       WearOsComms.saveCompanion(name);
       // send data to remote apps
-      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
+      this.statusMessage =
+        this._translateService.instant(
+          'device-setup.e2.sending-authorization'
+        ) + `${name}`;
       const sentMessage = await this._sendMessage();
       // await this._disconnectCompanion();
       if (sentMessage) {
@@ -395,7 +367,9 @@ export class DeviceSetupComponent implements OnInit {
           ),
           duration: ToastDuration.LONG
         }).show();
-        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
+        this.statusMessage =
+          this._translateService.instant('device-setup.e2.authorization-sent') +
+          `${name}`;
         this.showDoneButton = true;
       } else {
         alert({
@@ -408,7 +382,9 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
         this.showFailure = true;
-        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
+        this.statusMessage =
+          this._translateService.instant('device-setup.e2.failures.sending') +
+          `${name}`;
       }
       return;
     }
@@ -431,7 +407,9 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
       this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.e2.failures.none-found'
+      );
       return;
     }
 
@@ -452,13 +430,17 @@ export class DeviceSetupComponent implements OnInit {
       okButtonText: this._translateService.instant('profile-tab.ok')
     });
     this.showFailure = true;
-    this.statusMessage = this._translateService.instant('device-setup.e2.failures.app-not-installed');
+    this.statusMessage = this._translateService.instant(
+      'device-setup.e2.failures.app-not-installed'
+    );
   }
 
   private async _pairPushTrackerE2IOS() {
     // update display
     this.showFailure = false;
-    this.statusMessage = this._translateService.instant('device-setup.e2.scanning');
+    this.statusMessage = this._translateService.instant(
+      'device-setup.e2.scanning'
+    );
     // reset paired so that the ui updates properly
     this.hasPairedE2 = false;
     this.showDoneButton = false;
@@ -478,7 +460,9 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
       this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.bluetooth');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.e2.failures.bluetooth'
+      );
       return;
     }
     if (possiblePeripherals.length === 0) {
@@ -493,7 +477,9 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
       this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.e2.failures.none-found'
+      );
       return;
     }
     // ask user which companion is theirs
@@ -506,26 +492,39 @@ export class DeviceSetupComponent implements OnInit {
     const selection = possiblePeripherals.filter(p => p.name === result);
     if (selection.length === 0) {
       await alert({
-        title: this._translateService.instant('device-setup.e2.must-select-error.title'),
-        message: this._translateService.instant('device-setup.e2.must-select-error.message'),
+        title: this._translateService.instant(
+          'device-setup.e2.must-select-error.title'
+        ),
+        message: this._translateService.instant(
+          'device-setup.e2.must-select-error.message'
+        ),
         okButtonText: this._translateService.instant('dialogs.ok')
       });
       this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-selected');
+      this.statusMessage = this._translateService.instant(
+        'device-setup.e2.failures.none-selected'
+      );
       return;
     }
     const name = selection[0].name;
     const address = selection[0].identifier.UUIDString;
-    this._logService.logBreadCrumb(DeviceSetupComponent.name, `selected: ${address}`);
+    this._logService.logBreadCrumb(
+      DeviceSetupComponent.name,
+      `selected: ${address}`
+    );
     // TODO: we should save the name / address to app settings for later
     // save that as the companion
     WearOsComms.saveCompanion(address);
     // try connecting and sending information
-    this.statusMessage = this._translateService.instant('device-setup.e2.connecting') + `${name}`;
+    this.statusMessage =
+      this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
     if (didConnect) {
       console.log('didConnect', didConnect);
-      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
+      this.statusMessage =
+        this._translateService.instant(
+          'device-setup.e2.sending-authorization'
+        ) + `${name}`;
       const sentMessage = await this._sendMessage();
       await this._disconnectCompanion();
       if (sentMessage) {
@@ -535,7 +534,9 @@ export class DeviceSetupComponent implements OnInit {
           ),
           duration: ToastDuration.LONG
         }).show();
-        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
+        this.statusMessage =
+          this._translateService.instant('device-setup.e2.authorization-sent') +
+          `${name}`;
         this.showDoneButton = true;
       } else {
         alert({
@@ -548,7 +549,9 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
         this.showFailure = true;
-        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
+        this.statusMessage =
+          this._translateService.instant('device-setup.e2.failures.sending') +
+          `${name}`;
         return;
       }
     } else {
@@ -562,7 +565,9 @@ export class DeviceSetupComponent implements OnInit {
         okButtonText: this._translateService.instant('profile-tab.ok')
       });
       this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.connect') + `${name}`;
+      this.statusMessage =
+        this._translateService.instant('device-setup.e2.failures.connect') +
+        `${name}`;
     }
   }
 
@@ -598,7 +603,10 @@ export class DeviceSetupComponent implements OnInit {
         return didConnect;
       }
       // now connect
-      this._logService.logBreadCrumb(DeviceSetupComponent.name, `connecting to companion`);
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        `connecting to companion`
+      );
       didConnect = await WearOsComms.connectCompanion(10000);
     } catch (err) {
       console.error('error connecting:', err);

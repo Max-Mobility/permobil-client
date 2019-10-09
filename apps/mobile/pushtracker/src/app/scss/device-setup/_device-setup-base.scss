@@ -10,6 +10,22 @@
   font-family: $os;
   padding-left: 10;
   margin-left: 5;
+  margin-bottom: 20;
+}
+
+.BULLET_BASE {
+  font-family: $os-Light;
+  font-size: 13;
+  text-align: left;
+  margin: 10, 20, 10, 15;
+}
+
+.BULLET_NEXT_TO_LOTTIE_BASE {
+  font-family: $os-Light;
+  font-size: 13;
+  text-align: left;
+  margin: 10, 0, 10, 15;
+  padding: 0;
 }
 
 .pushtracker-status-label {

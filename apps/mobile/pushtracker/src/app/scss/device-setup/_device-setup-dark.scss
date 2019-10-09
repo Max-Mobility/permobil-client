@@ -5,12 +5,6 @@
   @extend .DEVICE_SETUP_LAYOUT_BASE;
   background-color: $black;
 
-  GridLayout,
-  StackLayout,
-  ScrollView {
-    background-color: $black;
-  }
-
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: $white;
@@ -66,24 +60,22 @@
   }
 
   .bullet {
+    @extend .BULLET_BASE;
     color: $white;
-    font-family: $os-Light;
-    font-size: 13;
-    text-align: left;
-    margin: 10, 20, 10, 15;
   }
 
   .bullet-next-to-lottie {
+    @extend .BULLET_NEXT_TO_LOTTIE_BASE;
     color: $white;
-    font-family: $os-Light;
-    font-size: 13;
-    text-align: left;
-    margin: 10, 0, 10, 15;
-    padding: 0;
   }
 
   .permobil-green-btn {
     background-color: $permobil-success;
+    color: $white;
+  }
+
+  .permobil-grey-btn {
+    background-color: $permobil-steel;
     color: $white;
   }
 

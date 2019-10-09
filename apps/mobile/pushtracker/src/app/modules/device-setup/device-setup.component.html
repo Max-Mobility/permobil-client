@@ -1,60 +1,58 @@
-<StackLayout class="device-setup-layout">
-  <GridLayout rows="auto, *" columns="*" height="100%">
-    <Label row="0" col="0" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
-    <GridLayout row="1" col="0" rows="auto, auto, auto, auto" columns="*">
-      // Main Lottie
-      <StackLayout *ngIf="slide && slide['Image']" (loaded)="onTopSlideLoaded($event)" class="topSlide" row="0" width="100%" height="40%" orientation="horizontal" horizontalAlignment="center">
-        <LottieView class="align-center" src="PushTracker_E2.json" loop="true" autoPlay="true" width="100%" height="100%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
-        <LottieView class="align-center" src="PushTracker.json" loop="true" width="100%" height="100%" autoPlay="true" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </LottieView>
-      </StackLayout>
+<GridLayout rows="auto, *" columns="*" height="100%" class="device-setup-layout">
+  <Label row="0" col="0" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
+  <GridLayout row="1" col="0" rows="auto, auto, auto, auto" columns="*">
+    // Main Lottie
+    <StackLayout row="0" width="100%" height="40%" orientation="horizontal" horizontalAlignment="center" *ngIf="slide && slide['Image']" (loaded)="onTopSlideLoaded($event)">
+      <LottieView class="align-center" src="PushTracker_E2.json" loop="true" autoPlay="true" width="100%" height="100%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
+      <LottieView class="align-center" src="PushTracker.json" loop="true" width="100%" height="100%" autoPlay="true" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </LottieView>
+    </StackLayout>
 
-      // Bullets Title
-      <StackLayout *ngIf="slide && slide['Image']" row="1" width="100%" horizontalAlignment="center">
-        <label [text]="slide['Label']" class="slideLowerLabel" textWrap="true"></label>
-      </StackLayout>
+    // Bullets Title
+    <StackLayout *ngIf="slide && slide['Image']" row="1" width="100%" horizontalAlignment="center">
+      <label [text]="slide['Label']" class="slideLowerLabel" textWrap="true"></label>
+    </StackLayout>
 
-      <Label class="hr" row="2"></Label>
+    <Label class="hr" row="2"></Label>
 
-      <ScrollView *ngIf="slide" row="3" class="lowerSlide" height="45%" marginBottom="50">
-        <StackLayout>
-          <StackLayout orientation="horizontal">
-            <Label textWrap="true" class="bullet-next-to-lottie" width="80%" [text]="slide['IconText']"></Label>
-            <pushtracker-status-button verticalAlignment="middle" marginLeft="-5" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </pushtracker-status-button>
-            <e2-status-button verticalAlignment="middle" [allowUserInteraction]="false" marginLeft="-5" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"> </e2-status-button>
-          </StackLayout>
-          <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" [text]="slide['Text']" class="bullet" textWrap="true"></label>
-          <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
-          <StackLayout row="0" horizontalAlignment="center" marginBottom="10">
-            <StackLayout horizontalAlignment="center" orientation="horizontal" width="80%" marginBottom="10">
-              <LottieView
-                height="50"
-                width="75"
-                class="align-center"
-                [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
-                loop="true"
-                autoPlay="true"
-                *ngIf="!showDoneButton && !showFailure && slide"
-              ></LottieView>
-              <LottieView height="25" width="25" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
-              <LottieView height="25" width="25" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
-              <Label [marginLeft]="showDoneButton || showFailure ? 10 : -20" class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
-            </StackLayout>
-
-            <button
-              *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE && !isAndroid()"
-              horizontalAlignment="center"
-              class="permobil-green-btn"
-              height="30%"
-              [text]="'device-setup.e2.repair' | translate"
-              [visibility]="hasPairedE2 ? 'visible' : 'collapsed'"
-              (tap)="pairPushTrackerE2()"
-            ></button>
-            <button horizontalAlignment="center" *ngIf="showFailure" class="permobil-green-btn" height="30%" [text]="failureButtonText" (tap)="pairPushTrackerE2()"></button>
-            <button horizontalAlignment="center" *ngIf="showDoneButton" class="permobil-green-btn" height="30%" [text]="doneButtonText" (tap)="onDoneTap($event)"></button>
-            <button horizontalAlignment="center" *ngIf="!showDoneButton" class="permobil-grey-button" marginTop="5" height="30%" [text]="doLaterButtonText" (tap)="onSkipTap($event)"></button>
-          </StackLayout>
+    <ScrollView *ngIf="slide" row="3" height="40%" marginBottom="50">
+      <StackLayout>
+        <StackLayout orientation="horizontal">
+          <Label textWrap="true" class="bullet-next-to-lottie" width="80%" [text]="slide['IconText']"></Label>
+          <pushtracker-status-button verticalAlignment="middle" marginLeft="-5" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </pushtracker-status-button>
+          <e2-status-button verticalAlignment="middle" [allowUserInteraction]="false" marginLeft="-5" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"> </e2-status-button>
         </StackLayout>
-      </ScrollView>
-    </GridLayout>
+        <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" [text]="slide['Text']" class="bullet" textWrap="true"></label>
+        <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
+        <StackLayout row="0" horizontalAlignment="center" marginBottom="10">
+          <StackLayout horizontalAlignment="center" orientation="horizontal" width="80%" marginBottom="10">
+            <LottieView
+              height="50"
+              width="75"
+              class="align-center"
+              [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
+              loop="true"
+              autoPlay="true"
+              *ngIf="!showDoneButton && !showFailure && slide"
+            ></LottieView>
+            <LottieView height="25" width="25" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
+            <LottieView height="25" width="25" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
+            <Label [marginLeft]="showDoneButton || showFailure ? 10 : -20" class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
+          </StackLayout>
+
+          <button
+            *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE && !isAndroid()"
+            horizontalAlignment="center"
+            class="permobil-green-btn"
+            height="30%"
+            [text]="'device-setup.e2.repair' | translate"
+            [visibility]="hasPairedE2 ? 'visible' : 'collapsed'"
+            (tap)="pairPushTrackerE2()"
+          ></button>
+          <button horizontalAlignment="center" *ngIf="showFailure" class="permobil-green-btn" height="30%" [text]="failureButtonText" (tap)="pairPushTrackerE2()"></button>
+          <button horizontalAlignment="center" *ngIf="showDoneButton" class="permobil-green-btn" height="30%" [text]="doneButtonText" (tap)="onDoneTap($event)"></button>
+          <button horizontalAlignment="center" *ngIf="!showDoneButton" class="permobil-grey-btn" marginTop="5" height="30%" [text]="doLaterButtonText" (tap)="onDoLaterTap($event)"></button>
+        </StackLayout>
+      </StackLayout>
+    </ScrollView>
   </GridLayout>
-</StackLayout>
+</GridLayout>
