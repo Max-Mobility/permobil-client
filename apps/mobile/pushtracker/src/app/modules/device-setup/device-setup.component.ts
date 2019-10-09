@@ -378,106 +378,23 @@ export class DeviceSetupComponent implements OnInit {
     this.showDoneButton = false;
     // clear out the companion to make sure we don't save it accidentally
     WearOsComms.clearCompanion();
-    // find possible companions for pairing
-    const possiblePeripherals = await this._getListOfCompanions();
-    if (possiblePeripherals === null || possiblePeripherals === undefined) {
-      // search failed, let them know
-      await alert({
-        title: this._translateService.instant(
-          'wearos-comms.errors.bluetooth-error.title'
-        ),
-        message: this._translateService.instant(
-          'wearos-comms.errors.bluetooth-error.message'
-        ),
-        okButtonText: this._translateService.instant('profile-tab.ok')
-      });
-      this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.bluetooth');
-      return;
-    }
-    if (possiblePeripherals.length === 0) {
-      // we don't have any peripherals, let them know
-      await alert({
-        title: this._translateService.instant(
-          'wearos-comms.errors.pte2-scan-error.title'
-        ),
-        message: this._translateService.instant(
-          'wearos-comms.errors.pte2-scan-error.message'
-        ),
-        okButtonText: this._translateService.instant('profile-tab.ok')
-      });
-      this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-found');
-      return;
-    }
-    // ask user which companion is theirs
-    const actions = possiblePeripherals.map(p => p.name);
-    const result = await action({
-      message: this._translateService.instant('device-setup.e2.select-device'),
-      cancelButtonText: this._translateService.instant('dialogs.cancel'),
-      actions: actions
-    });
-    const selection = possiblePeripherals.filter(p => p.name === result);
-    if (selection.length === 0) {
-      await alert({
-        title: this._translateService.instant('device-setup.e2.must-select-error.title'),
-        message: this._translateService.instant('device-setup.e2.must-select-error.message'),
-        okButtonText: this._translateService.instant('dialogs.ok')
-      });
-      this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.none-selected');
-      return;
-    }
-    const name = selection[0].name;
-    const address = selection[0].identifier.UUIDString;
-    this._logService.logBreadCrumb(DeviceSetupComponent.name, `selected: ${address}`);
-    // TODO: we should save the name / address to app settings for later
-    // save that as the companion
-    WearOsComms.saveCompanion(address);
-    // try connecting and sending information
-    this.statusMessage = this._translateService.instant('device-setup.e2.connecting') + `${name}`;
-    const didConnect = await this._connectCompanion();
-    if (didConnect) {
-      console.log('didConnect', didConnect);
-      this.statusMessage = this._translateService.instant('device-setup.e2.sending-authorization') + `${name}`;
-      const sentMessage = await this._sendMessage();
-      await this._disconnectCompanion();
-      if (sentMessage) {
-        this.statusMessage = this._translateService.instant('device-setup.e2.authorization-sent') + `${name}`;
-        new Toasty({
-          text: this._translateService.instant(
-            'wearos-comms.messages.pte2-sync-successful'
-          ),
-          duration: ToastDuration.LONG
-        }).show();
-        this.showDoneButton = true;
-      } else {
-        alert({
-          title: this._translateService.instant(
-            'wearos-comms.errors.pte2-send-error.title'
-          ),
-          message: this._translateService.instant(
-            'wearos-comms.errors.pte2-send-error.message'
-          ),
-          okButtonText: this._translateService.instant('profile-tab.ok')
-        });
-        this.showFailure = true;
-        this.statusMessage = this._translateService.instant('device-setup.e2.failures.sending') + `${name}`;
-        return;
-      }
-    } else {
-      await alert({
-        title: this._translateService.instant(
-          'wearos-comms.errors.pte2-connection-error.title'
-        ),
-        message: this._translateService.instant(
-          'wearos-comms.errors.pte2-connection-error.message'
-        ),
-        okButtonText: this._translateService.instant('profile-tab.ok')
-      });
-      this.showFailure = true;
-      this.statusMessage = this._translateService.instant('device-setup.e2.failures.connect') + `${name}`;
-    }
+
+    // TODO: see if there are any companion devices with the app
+    // installed - if so, save them and show success
+
+    // TODO: if there are no companion devices with the app installed,
+    // see if there are any companion devices connected
+
+    // TODO: if there are not companion devices connected, inform the
+    // user they need to set up a PushTracker E2 with the WearOS app
+    // to pair it to their phone.
+
+    // TODO: if there are companion devices connected, open the
+    // pushtracker app in the play store on the watch
+
+    // TODO: potentially wait here for the user to install the app -
+    // or should we just inform them that we've opened the play store
+    // and they'll need to install, run, and retry?
   }
 
   private async _pairPushTrackerE2IOS() {
