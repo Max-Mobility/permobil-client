@@ -141,6 +141,24 @@ export class WearOsComms extends Common {
     }
   }
 
+  public static async openAppInPlayStoreOnWatch(appUri: string) {
+    // do nothing
+  }
+
+  public static async openAppInStoreOnPhone(appUri: string) {
+    // do nothing
+  }
+
+  public static async findDevicesWithApp(appCapability: string) {
+    // return empty list
+    return [];
+  }
+
+  public static async findDevicesConnected(timeout?: number) {
+    // return empty list
+    return [];
+  }
+
   public static async sendMessage(channel: string, msg: string) {
     if (!WearOsComms.hasCompanion())
       throw new Error('cannot sendMessage: no companion');
