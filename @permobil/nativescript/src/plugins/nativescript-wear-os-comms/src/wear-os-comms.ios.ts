@@ -161,6 +161,10 @@ export class WearOsComms extends Common {
     // do nothing
   }
 
+  public static async listenForCapability(appCapability: string) {
+    // do nothing
+  }
+
   public static async findDevicesWithApp(appCapability: string) {
     // return empty list
     return [];

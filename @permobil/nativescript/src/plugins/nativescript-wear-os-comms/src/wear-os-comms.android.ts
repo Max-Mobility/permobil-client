@@ -4,6 +4,23 @@ import { ad, ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { ResultReceiver } from './result-receiver.android';
 import { Common } from './wear-os-comms.common';
 
+@JavaProxy('com.permobil.WearOsComms.CapabilityListener')
+@Interfaces([
+  com.google.android.gms.wearable.CapabilityClient.OnCapabilityChangedListener
+])
+class CapabilityListener extends androidx.fragment.app.FragmentActivity
+  implements
+  com.google.android.gms.wearable.CapabilityClient.OnCapabilityChangedListener {
+  public callback: any = null;
+  constructor() {
+    super();
+  }
+
+  public onCapabilityChanged(capabilityInfo: com.google.android.gms.wearable.CapabilityInfo) {
+    this.callback && this.callback(capabilityInfo);
+  }
+}
+
 export class WearOsComms extends Common {
   // device address
   private static pairedCompanion: string = null;
@@ -25,6 +42,7 @@ export class WearOsComms extends Common {
   private static _debugOutputEnabled = false;
 
   public static RemoteCapability: string = null;
+  private static _mCapabilityListener = new CapabilityListener();
 
   // FOR STATE STORAGE:
   private static _nodesConnected: any = []; // all connected nodes
@@ -216,6 +234,36 @@ export class WearOsComms extends Common {
     } catch (err) {
       WearOsComms.error('Error opening on phone:', err);
     }
+  }
+
+  private static onCapabilityChanged(capabilityInfo: com.google.android.gms.wearable.CapabilityInfo) {
+    // update the nodes that have the app
+    const nodeArray = capabilityInfo.getNodes().toArray();
+    WearOsComms.log('Capable Nodes:', nodeArray);
+    WearOsComms._nodesWithApp = []
+    for (let i = 0; i < nodeArray.length; i++) {
+      WearOsComms._nodesWithApp.push(nodeArray[i]);
+    }
+    // update the list of connected devices
+    WearOsComms.findDevicesConnected();
+  }
+
+  private static async listenForCapability(appCapability: string) {
+    const context = ad.getApplicationContext();
+    const capabilityClient = com.google.android.gms.wearable.Wearable
+      .getCapabilityClient(context);
+    // make sure we set up the callback so we can update our data
+    WearOsComms._mCapabilityListener.callback = WearOsComms.onCapabilityChanged;
+    // remove any listeners we may have had
+    capabilityClient.removeListener(
+      WearOsComms._mCapabilityListener,
+      appCapability
+    );
+    // register our capabilitylistener
+    capabilityClient.addListener(
+      WearOsComms._mCapabilityListener,
+      appCapability
+    );
   }
 
   private static async findDevicesConnected(timeout?: number) {

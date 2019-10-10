@@ -16,6 +16,7 @@ export declare class WearOsComms extends Common {
   static registerDataCallback(cb: any): void;
 
   // android only
+  static listenForCapability(appCapability: string);
   static findDevicesConnected(timeout?: number): Promise<any>;
   static findDevicesWithApp(appCapability: string): Promise<any>;
 
