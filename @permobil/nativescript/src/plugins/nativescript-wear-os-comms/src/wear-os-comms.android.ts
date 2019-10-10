@@ -4,8 +4,6 @@ import { ad, ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { ResultReceiver } from './result-receiver.android';
 import { Common } from './wear-os-comms.common';
 
-declare const com: any;
-
 export class WearOsComms extends Common {
   // device address
   private static pairedCompanion: string = null;

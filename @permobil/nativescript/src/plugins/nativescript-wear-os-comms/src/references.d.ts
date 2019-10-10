@@ -4,3 +4,4 @@
 /// <reference path="./typings/androidx-wear-1.0.0.d.ts" />
 /// <reference path="./typings/play-services-wearable.d.ts" />
 /// <reference path="./typings/tasks.d.ts" />
+/// <reference path="./typings/max-mobility-wearmessage.d.ts" />
