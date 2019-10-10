@@ -1,9 +1,8 @@
 import { Bluetooth } from 'nativescript-bluetooth';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { Common } from './wear-os-comms.common';
-import { ad } from 'tns-core-modules/utils/utils';
 import * as appSettings from 'tns-core-modules/application-settings';
+import { ad, ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { ResultReceiver } from './result-receiver.android';
+import { Common } from './wear-os-comms.common';
 
 declare const com: any;
 
@@ -19,7 +18,9 @@ export class WearOsComms extends Common {
   private static _onDisconnectedCallback: any = null;
   private static _onMessageReceivedCallback: any = null;
   private static _onDataReceivedCallback: any = null;
-  private static _mResultReceiver = new ResultReceiver(new android.os.Handler());
+  private static _mResultReceiver = new ResultReceiver(
+    new android.os.Handler()
+  );
 
   private static _playStorePrefix = 'market://details?id=';
 
@@ -51,7 +52,10 @@ export class WearOsComms extends Common {
     WearOsComms._onDataReceivedCallback = cb;
   }
 
-  private static onResultData(resultCode: number, resultData: android.os.Bundle) {
+  private static onResultData(
+    resultCode: number,
+    resultData: android.os.Bundle
+  ) {
     WearOsComms.log('onResultData:', resultCode);
     if (
       resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK
@@ -88,17 +92,19 @@ export class WearOsComms extends Common {
       WearOsComms.error('No nodes found without app!');
     }
     // create the intent
-    const intent =
-      new android.content.Intent(android.content.Intent.ACTION_VIEW)
-        .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-        .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
+    const intent = new android.content.Intent(
+      android.content.Intent.ACTION_VIEW
+    )
+      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+      .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
     // now iterate through the nodes without the app and open it in the play store
     nodesWithoutApp.map(n => {
       com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
         ad.getApplicationContext(),
         intent,
         WearOsComms._mResultReceiver,
-        n.getId());
+        n.getId()
+      );
     });
   }
 
@@ -155,7 +161,10 @@ export class WearOsComms extends Common {
     );
   }
 
-  public static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
+  public static openAppInStoreOnPhone(
+    androidPackageName: string,
+    iosAppStoreUri: string
+  ) {
     WearOsComms.log('openAppInStoreOnPhone()');
     const androidUri = WearOsComms._playStorePrefix + androidPackageName;
     const iosUri = iosAppStoreUri;
@@ -215,9 +224,9 @@ export class WearOsComms extends Common {
     return new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
-      const nodeTaskList = com.google.android.gms.wearable.Wearable
-        .getNodeClient(context)
-        .getConnectedNodes();
+      const nodeTaskList = com.google.android.gms.wearable.Wearable.getNodeClient(
+        context
+      ).getConnectedNodes();
       let tid = null;
       if (timeout !== undefined && timeout > 0) {
         tid = setTimeout(() => {
@@ -226,25 +235,27 @@ export class WearOsComms extends Common {
           resolve([]);
         }, timeout);
       }
-      nodeTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
-        onComplete: function(task: any) {
-          if (tid !== null) clearTimeout(tid);
-          if (task.isSuccessful()) {
-            WearOsComms.log('Node request succeeded');
-            const nodeArray = task.getResult().toArray();
-            WearOsComms._nodesConnected = [];
-            for (let i = 0; i < nodeArray.length; i++) {
-              WearOsComms._nodesConnected.push(nodeArray[i]);
+      nodeTaskList.addOnCompleteListener(
+        new com.google.android.gms.tasks.OnCompleteListener({
+          onComplete: function(task: any) {
+            if (tid !== null) clearTimeout(tid);
+            if (task.isSuccessful()) {
+              WearOsComms.log('Node request succeeded');
+              const nodeArray = task.getResult().toArray();
+              WearOsComms._nodesConnected = [];
+              for (let i = 0; i < nodeArray.length; i++) {
+                WearOsComms._nodesConnected.push(nodeArray[i]);
+              }
+              resolve(WearOsComms._nodesConnected);
+            } else {
+              WearOsComms.error('Node request failed to return any results');
+              WearOsComms._nodesConnected = [];
+              resolve([]);
+              // reject(new Error('Could not find any wear devices!'));
             }
-            resolve(WearOsComms._nodesConnected);
-          } else {
-            WearOsComms.error('Node request failed to return any results');
-            WearOsComms._nodesConnected = [];
-            resolve([]);
-            //reject(new Error('Could not find any wear devices!'));
           }
-        }
-      }));
+        })
+      );
     });
   }
 
@@ -252,29 +263,36 @@ export class WearOsComms extends Common {
     return new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
-      const capabilityTaskList = com.google.android.gms.wearable.Wearable
-        .getCapabilityClient(context)
-        .getCapability(appCapability, com.google.android.gms.wearable.CapabilityClient.FILTER_ALL);
-      capabilityTaskList.addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener({
-        onComplete: function(task: any) {
-          if (task.isSuccessful()) {
-            WearOsComms.log('Capability request succeeded');
-            const capabilityInfo = task.getResult();
-            const nodeArray = capabilityInfo.getNodes().toArray();
-            WearOsComms.log('Capable Nodes:', nodeArray);
-            WearOsComms._nodesWithApp = []
-            for (let i = 0; i < nodeArray.length; i++) {
-              WearOsComms._nodesWithApp.push(nodeArray[i]);
+      const capabilityTaskList = com.google.android.gms.wearable.Wearable.getCapabilityClient(
+        context
+      ).getCapability(
+        appCapability,
+        com.google.android.gms.wearable.CapabilityClient.FILTER_ALL
+      );
+      capabilityTaskList.addOnCompleteListener(
+        new com.google.android.gms.tasks.OnCompleteListener({
+          onComplete: function(task: any) {
+            if (task.isSuccessful()) {
+              WearOsComms.log('Capability request succeeded');
+              const capabilityInfo = task.getResult();
+              const nodeArray = capabilityInfo.getNodes().toArray();
+              WearOsComms.log('Capable Nodes:', nodeArray);
+              WearOsComms._nodesWithApp = [];
+              for (let i = 0; i < nodeArray.length; i++) {
+                WearOsComms._nodesWithApp.push(nodeArray[i]);
+              }
+              resolve(task.getResult());
+            } else {
+              WearOsComms.error(
+                'Capability request failed to return any results'
+              );
+              WearOsComms._nodesWithApp = [];
+              resolve([]);
+              // reject(new Error('Could not find any wear devices!'));
             }
-            resolve(task.getResult());
-          } else {
-            WearOsComms.error('Capability request failed to return any results');
-            WearOsComms._nodesWithApp = [];
-            resolve([]);
-            //reject(new Error('Could not find any wear devices!'));
           }
-        }
-      }));
+        })
+      );
     });
   }
 
