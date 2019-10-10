@@ -27,6 +27,7 @@ export declare class WearOsComms extends Common {
   static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string);
   static phoneIsAndroid(): boolean;
   static phoneIsIos(): boolean;
+  static sendUriToPhone(uri: string);
 
   /**
    * For phones

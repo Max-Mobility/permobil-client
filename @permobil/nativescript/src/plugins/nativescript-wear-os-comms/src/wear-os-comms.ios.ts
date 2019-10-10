@@ -153,6 +153,10 @@ export class WearOsComms extends Common {
     return true;
   }
 
+  public static async sendUriToPhone(uri: string) {
+    // do nothing
+  }
+
   public static async openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
     // do nothing
   }

@@ -140,6 +140,21 @@ export class WearOsComms extends Common {
     return isAndroid;
   }
 
+  public static sendUriToPhone(uri: string) {
+    // Create Remote Intent to open app on remote device.
+    const intent = new android.content.Intent(
+      android.content.Intent.ACTION_VIEW
+    )
+      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+      .setData(android.net.Uri.parse(uri));
+
+    com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
+      ad.getApplicationContext(),
+      intent,
+      WearOsComms._mResultReceiver
+    );
+  }
+
   public static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
     WearOsComms.log('openAppInStoreOnPhone()');
     const androidUri = WearOsComms._playStorePrefix + androidPackageName;
