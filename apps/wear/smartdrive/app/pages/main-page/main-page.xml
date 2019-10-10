@@ -157,7 +157,7 @@
       <pager:PagerItem>
         <box:BoxInsetLayout>
           <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
-            <ui:AutoFitText row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title" textWrap="true"/>
+            <ui:AutoFitText height="15" row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title" textWrap="true"/>
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Battery Usage Bar Chart
@@ -167,7 +167,7 @@
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="battery-line" />
+                  <Label height="{{ value }}" class="battery-line"/>
                   <Label row="1" text="{{ day }}" class="line-label" />
                 </GridLayout>
               </Repeater.itemTemplate>
@@ -181,7 +181,7 @@
         <box:BoxInsetLayout>
           <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
             // Chart Title
-            <ui:AutoFitText row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
+            <ui:AutoFitText height="15" row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
@@ -191,7 +191,7 @@
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="distance-line" />
+                  <Label height="{{ value }}" class="distance-line"/>
                   <Label row="1" text="{{ day }}" class="line-label" />
                 </GridLayout>
               </Repeater.itemTemplate>
