@@ -236,6 +236,57 @@ export class WearOsComms extends Common {
     }
   }
 
+  public static async initWatch(watchCapability: string, phoneCapability: string) {
+    if (WearOsComms.phoneIsAndroid()) {
+      await WearOsComms.advertiseCapability(watchCapability);
+      await WearOsComms.listenForCapability(phoneCapability);
+    } else {
+      await WearOsComms.advertiseAsCompanion();
+    }
+  }
+
+  public static async stopWatch() {
+    if (WearOsComms.phoneIsIos()) {
+      await WearOsComms.stopAdvertisingAsCompanion();
+    } else {
+      // TODO: should we remove the capability?
+    }
+  }
+
+  public static async initPhone(watchCapability: string, phoneCapability: string) {
+    await WearOsComms.advertiseCapability(phoneCapability);
+    await WearOsComms.listenForCapability(watchCapability);
+  }
+
+  public static async stopPhone() {
+    // TODO: should we remove the capability?
+  }
+
+  private static async advertiseCapability(appCapability: string) {
+    return new Promise((resolve, reject) => {
+      WearOsComms.log('findDevicesConnected()');
+      const context = ad.getApplicationContext();
+      const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
+        context
+      ).addLocalCapability(appCapability);
+      capabilityTask.addOnCompleteListener(
+        new com.google.android.gms.tasks.OnCompleteListener({
+          onComplete: function(task: any) {
+            if (task.isSuccessful()) {
+              WearOsComms.log('Add Capability request succeeded');
+              resolve();
+            } else {
+              WearOsComms.error(
+                'Add Capability request failed'
+              );
+              reject(new Error('Could not add capability:' + appCapability));
+            }
+          }
+        })
+      );
+    });
+  }
+
   private static onCapabilityChanged(capabilityInfo: com.google.android.gms.wearable.CapabilityInfo) {
     // update the nodes that have the app
     const nodeArray = capabilityInfo.getNodes().toArray();
@@ -419,33 +470,9 @@ export class WearOsComms extends Common {
       WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
   }
 
-  public static async advertiseAsCompanion() {
+  private static async advertiseAsCompanion() {
     try {
-      let needToAdvertise = false;
-      // check paired phone type to determine if we need to advertise
-      // (e.g. if the phone is ios we need to use the bluetooth)
-
-      WearOsComms.log('Determining phone type');
-      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType.getPhoneDeviceType(
-        androidUtils.getApplicationContext()
-      );
-      switch (phoneDeviceType) {
-        // Paired to Android phone, use Play Store URI.
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-          break;
-
-        // Paired to iPhone, use iTunes App Store URI
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-          needToAdvertise = true;
-          break;
-
-        case android.support.wearable.phone.PhoneDeviceType
-          .DEVICE_TYPE_ERROR_UNKNOWN:
-          WearOsComms.error('\tDEVICE_TYPE_ERROR_UNKNOWN');
-          break;
-      }
-
-      if (needToAdvertise) {
+      if (WearOsComms.phoneIsIos()) {
         WearOsComms.log('Advertising since we are paired with an iPhone');
         // create the bluetooth object
         if (WearOsComms._bluetooth === null) {
@@ -480,7 +507,7 @@ export class WearOsComms extends Common {
     }
   }
 
-  public static async stopAdvertisingAsCompanion() {
+  private static async stopAdvertisingAsCompanion() {
     try {
       if (WearOsComms._bluetooth) {
         await WearOsComms._bluetooth.stopAdvertising();

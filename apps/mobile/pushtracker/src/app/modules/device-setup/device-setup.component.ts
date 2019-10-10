@@ -53,6 +53,7 @@ export class DeviceSetupComponent implements OnInit {
   // permissions for the bluetooth service
   private permissionsNeeded = [];
   private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
+  private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
   constructor(
     private _router: Router,
     private _userService: PushTrackerUserService,
@@ -129,6 +130,12 @@ export class DeviceSetupComponent implements OnInit {
         this.user.data.control_configuration ===
         CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
+        // E2 Configuration
+        WearOsComms.initPhone(
+          this.CAPABILITY_WEAR_APP,
+          this.CAPABILITY_PHONE_APP
+        );
+        // start looking for E2
         this._onPushTrackerE2();
       }
     });

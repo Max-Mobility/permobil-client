@@ -77,6 +77,7 @@ export class MainViewModel extends Observable {
    * For showing button to install SD.W app
    */
   @Prop() isSmartDriveAppInstalled: boolean = false;
+  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
 
@@ -560,9 +561,11 @@ export class MainViewModel extends Observable {
       WearOsComms.setDebugOutput(false);
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
-      Log.D('advertising as companion!');
-      WearOsComms.advertiseAsCompanion();
-      Log.D('Started wear os comms!');
+      Log.D('initializing wear os comms!');
+      WearOsComms.initWatch(
+        this.CAPABILITY_WEAR_APP,
+        this.CAPABILITY_PHONE_APP
+      );
       this.sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
       Sentry.captureException(err);
@@ -752,7 +755,7 @@ export class MainViewModel extends Observable {
 
   async onAppExit(args?: any) {
     this.sentryBreadCrumb('*** appExit ***');
-    await WearOsComms.stopAdvertisingAsCompanion();
+    await WearOsComms.stopWatch();
   }
 
   onAppLowMemory(args?: any) {
