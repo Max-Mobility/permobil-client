@@ -264,7 +264,7 @@ export class WearOsComms extends Common {
 
   private static async advertiseCapability(appCapability: string) {
     return new Promise((resolve, reject) => {
-      WearOsComms.log('findDevicesConnected()');
+      WearOsComms.log('advertiseCapability()');
       const context = ad.getApplicationContext();
       const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
         context
@@ -317,7 +317,7 @@ export class WearOsComms extends Common {
     );
   }
 
-  private static async findDevicesConnected(timeout?: number) {
+  private static async findDevicesConnected(timeout?: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
@@ -390,6 +390,62 @@ export class WearOsComms extends Common {
           }
         })
       );
+    });
+  }
+
+  public static async sendMessage(channel: string, msg: string) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const context = androidUtils.getApplicationContext();
+        const nodes = await WearOsComms.findDevicesConnected();
+        if (nodes.length === 0) {
+          reject(new Error('No devices connected!'));
+          return;
+        }
+        const messageClient = com.google.android.gms.wearable.Wearable.getMessageClient(context);
+        const promises = await nodes.map(node => {
+          return new Promise((resolve, reject) => {
+            try {
+              const sendMessageTask = messageClient
+                .sendMessage(node, channel, new java.lang.String(msg).getBytes());
+              sendMessageTask.addOnCompleteListener(
+                new com.google.android.gms.tasks.OnCompleteListener({
+                  onComplete: function(task: any) {
+                    if (task.isSuccessful()) {
+                      resolve(true);
+                    } else {
+                      resolve(false);
+                    }
+                  }
+                })
+              );
+            } catch (err) {
+              reject(err);
+            }
+          });
+        });
+        const allResolved = await Promise.all(promises);
+        const allSucceeded = allResolved.reduce((all, one) => {
+          return all && one;
+        }, true);
+        resolve(allSucceeded);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  public static sendData(data: any) {
+    return new Promise((resolve, reject) => {
+      try {
+        const l = new com.github.maxmobility.wearmessage.Data(
+          androidUtils.getApplicationContext()
+        );
+        l.sendData(data);
+        resolve(true);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
@@ -634,35 +690,6 @@ export class WearOsComms extends Common {
     characteristics.map(c =>
       WearOsComms._companionService.addCharacteristic(c)
     );
-  }
-
-  public static sendMessage(channel: string, msg: string) {
-    return new Promise((resolve, reject) => {
-      try {
-        const r = new com.github.maxmobility.wearmessage.Message(
-          androidUtils.getApplicationContext()
-        );
-
-        r.sendMessage(channel, msg);
-        resolve(true);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  public static sendData(data: any) {
-    return new Promise((resolve, reject) => {
-      try {
-        const l = new com.github.maxmobility.wearmessage.Data(
-          androidUtils.getApplicationContext()
-        );
-        l.sendData(data);
-        resolve(true);
-      } catch (error) {
-        reject(error);
-      }
-    });
   }
 
   private static log(...args) {
