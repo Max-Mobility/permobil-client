@@ -104,6 +104,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     handleOpenURL((appURL: AppURL) => {
+      // TODO: we should send the authorization to the watch here - we
+      // were (probably) opened because the watch requested it
       console.log('Got the following appURL', appURL);
     });
     const CURRENT_THEME = appSettings.getString(
