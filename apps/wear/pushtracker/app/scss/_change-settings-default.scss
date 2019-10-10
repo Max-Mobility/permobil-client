@@ -1,6 +1,6 @@
 @import 'variables';
 
-/** Change Settings Page **/
+// Change Settings Page
 #changeSettingsPage {
   margin: 4;
 
@@ -37,15 +37,15 @@
 
     .changeSettingsTitle {
       color: $white;
-        width: 90%;
+      width: 90%;
       text-align: $center;
       horizontal-align: $center;
       vertical-align: $center;
     }
 
     .changeSettingsValue {
-        color: $white;
-        width: 70%;
+      color: $white;
+      width: 70%;
       font-weight: bold;
       text-align: $center;
       horizontal-align: $center;
