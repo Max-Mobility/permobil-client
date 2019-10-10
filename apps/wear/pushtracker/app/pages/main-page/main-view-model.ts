@@ -885,17 +885,7 @@ export class MainViewModel extends Observable {
         if (devicesWithApp.length !== 0) {
           this.isBusy = false;
           // Create Remote Intent to open app on remote device.
-          const intentAndroid = new android.content.Intent(
-            android.content.Intent.ACTION_VIEW
-          )
-            .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-            .setData(android.net.Uri.parse('permobil://pushtracker'));
-
-          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
-            intentAndroid,
-            WearOsComms._mResultReceiver
-          );
+          await WearOsComms.sendUriToPhone('permobil://pushtracker');
           // now show the open on phone activity
           this.showConfirmation(
             android.support.wearable.activity.ConfirmationActivity

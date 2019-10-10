@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc1.tgz",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.2.1",

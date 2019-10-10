@@ -1,4 +1,5 @@
 import { Log, Device } from '@permobil/core';
+import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
@@ -57,19 +58,6 @@ class SmartDriveException extends Error {
   constructor(...args) {
     super(...args);
     this.name = 'SmartDriveMX2+ Exception';
-  }
-}
-
-@JavaProxy('com.permobil.smartdrive.wearos.ResultReceiver')
-class ResultReceiver extends android.os.ResultReceiver {
-  public onReceiveFunction: any = null;
-  constructor(handler: android.os.Handler) {
-    super(handler);
-    return global.__native(this);
-  }
-  onReceiveResult(resultCode: number, resultData: android.os.Bundle) {
-    if (this.onReceiveFunction)
-      this.onReceiveFunction(resultCode, resultData);
   }
 }
 
@@ -199,6 +187,11 @@ export class MainViewModel extends Observable {
   @Prop() watchSerialNumber: string = '---';
   @Prop() appVersion: string = '---';
   @Prop() databaseId: string = KinveyService.api_app_key;
+
+  /**
+   * For seeing if phone app is installed on paired android phone
+   */
+  private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
   /**
    * SmartDrive Data / state management
@@ -2478,24 +2471,10 @@ export class MainViewModel extends Observable {
    * FOR COMMUNICATING WITH PHONE AND DETERMINING IF THE PHONE HAS THE
    * APP, AND FOR OPENING THE APP STORE OR APP
    */
-
-  onResultData(resultCode: number, _: android.os.Bundle) {
-    Log.D('onResultData:', resultCode);
-    if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_OK) {
-      Log.D('result ok!');
-    } else if (resultCode === com.google.android.wearable.intent.RemoteIntent.RESULT_FAILED) {
-      Log.D('result failed!');
-    } else {
-      Log.E('Unexpected result ' + resultCode);
-    }
-  }
-
-  private ANDROID_MARKET_APP_URI =
-    'market://details?id=com.permobil.pushtracker';
-  private APP_STORE_APP_URI =
+  private PHONE_ANDROID_PACKAGE_NAME =
+    'com.permobil.pushtracker';
+  private PHONE_IOS_APP_STORE_URI =
     'https://itunes.apple.com/us/app/pushtracker/id1121427802';
-
-  private mResultReceiver = new ResultReceiver(new android.os.Handler());
 
   checkPackageInstalled(packageName: string) {
     let found = true;
@@ -2508,60 +2487,44 @@ export class MainViewModel extends Observable {
     return found;
   }
 
-  openInPlayStore(uri: string) {
+  openInPlayStore(packageName: string) {
+    const playStorePrefix = 'market://details?id=';
     const intent =
       new android.content.Intent(android.content.Intent.ACTION_VIEW)
         .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
         .addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
           android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-        .setData(android.net.Uri.parse(uri));
+        .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
   }
 
-  openAppOnPhone() {
+  async openAppOnPhone() {
     Log.D('openAppInStoreOnPhone()');
     try {
-
-      this.mResultReceiver.onReceiveFunction = this.onResultData.bind(this);
-
-      const phoneDeviceType = android.support.wearable.phone.PhoneDeviceType
-        .getPhoneDeviceType(ad.getApplicationContext());
-      switch (phoneDeviceType) {
-        // Paired to Android phone, use Play Store URI.
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ANDROID:
-          Log.D('\tDEVICE_TYPE_ANDROID');
-          // Create Remote Intent to open Play Store listing of app on remote device.
-          const intentAndroid =
-            new android.content.Intent(android.content.Intent.ACTION_VIEW)
-              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-              .setData(android.net.Uri.parse(this.ANDROID_MARKET_APP_URI));
-
-          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
-            intentAndroid,
-            this.mResultReceiver);
-          break;
-
-        // Paired to iPhone, use iTunes App Store URI
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_IOS:
-          Log.D('\tDEVICE_TYPE_IOS');
-
-          // Create Remote Intent to open App Store listing of app on iPhone.
-          const intentIOS =
-            new android.content.Intent(android.content.Intent.ACTION_VIEW)
-              .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-              .setData(android.net.Uri.parse(this.APP_STORE_APP_URI));
-
-          com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
-            ad.getApplicationContext(),
-            intentIOS,
-            this.mResultReceiver);
-          break;
-
-        case android.support.wearable.phone.PhoneDeviceType.DEVICE_TYPE_ERROR_UNKNOWN:
-          Log.E('\tDEVICE_TYPE_ERROR_UNKNOWN');
-          break;
+      if (WearOsComms.phoneIsAndroid()) {
+        // see if the paired phone has the companion app
+        const devicesWithApp = await WearOsComms.findDevicesWithApp(
+          this.CAPABILITY_PHONE_APP
+        );
+        if (devicesWithApp.length !== 0) {
+          // Create Remote Intent to open app on remote device.
+          await WearOsComms.sendUriToPhone('permobil://pushtracker');
+          // now show the open on phone activity
+          this.showConfirmation(
+            android.support.wearable.activity.ConfirmationActivity
+              .OPEN_ON_PHONE_ANIMATION
+          );
+          // return - we don't need to do anything else
+          return;
+        }
       }
+      // we couldn't open the app on the phone (either it's not
+      // installed or the paired phone is ios), so open the app in the
+      // proper store
+      await WearOsComms.openAppInStoreOnPhone(
+        this.PHONE_ANDROID_PACKAGE_NAME,
+        this.PHONE_IOS_APP_STORE_URI
+      );
       // now show the open on phone activity
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.OPEN_ON_PHONE_ANIMATION
@@ -2573,7 +2536,7 @@ export class MainViewModel extends Observable {
 
   async onConnectPushTrackerTap() {
     if (!this.checkPackageInstalled('com.permobil.pushtracker')) {
-      this.openInPlayStore(this.ANDROID_MARKET_APP_URI);
+      this.openInPlayStore('com.permobil.pushtracker');
       return;
     }
     if (!this._kinveyService.hasAuth()) {
