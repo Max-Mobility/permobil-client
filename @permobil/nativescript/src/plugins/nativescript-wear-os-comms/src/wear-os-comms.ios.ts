@@ -141,6 +141,22 @@ export class WearOsComms extends Common {
     }
   }
 
+  public static initWatch(watchCapability: string, phoneCapability: string) {
+    // do nothing - we have no ios watch
+  }
+
+  public static stopWatch() {
+    // do nothing
+  }
+
+  public static initPhone(watchCapability: string, phoneCapability: string) {
+    // do nothing - we just use bluetooth scanning later
+  }
+
+  public static stopPhone() {
+    // do nothing
+  }
+
   public static async openAppInPlayStoreOnWatch(appUri: string) {
     // do nothing
   }
@@ -158,10 +174,6 @@ export class WearOsComms extends Common {
   }
 
   public static async openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
-    // do nothing
-  }
-
-  public static async listenForCapability(appCapability: string) {
     // do nothing
   }
 

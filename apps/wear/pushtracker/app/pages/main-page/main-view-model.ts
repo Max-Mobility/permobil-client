@@ -77,6 +77,7 @@ export class MainViewModel extends Observable {
    * For showing button to install SD.W app
    */
   @Prop() isSmartDriveAppInstalled: boolean = false;
+  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
 
@@ -560,9 +561,11 @@ export class MainViewModel extends Observable {
       WearOsComms.setDebugOutput(false);
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
-      Log.D('advertising as companion!');
-      WearOsComms.advertiseAsCompanion();
-      Log.D('Started wear os comms!');
+      Log.D('initializing wear os comms!');
+      WearOsComms.initWatch(
+        this.CAPABILITY_WEAR_APP,
+        this.CAPABILITY_PHONE_APP
+      );
       this.sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
       Sentry.captureException(err);
@@ -752,7 +755,7 @@ export class MainViewModel extends Observable {
 
   async onAppExit(args?: any) {
     this.sentryBreadCrumb('*** appExit ***');
-    await WearOsComms.stopAdvertisingAsCompanion();
+    await WearOsComms.stopWatch();
   }
 
   onAppLowMemory(args?: any) {
@@ -886,22 +889,33 @@ export class MainViewModel extends Observable {
           this.isBusy = false;
           // Create Remote Intent to open app on remote device.
           await WearOsComms.sendUriToPhone('permobil://pushtracker');
-          // now show the open on phone activity
-          this.showConfirmation(
-            android.support.wearable.activity.ConfirmationActivity
-              .OPEN_ON_PHONE_ANIMATION
+        } else {
+          // we couldn't open the app on the phone so open the app in
+          // the play store
+          await WearOsComms.openAppInStoreOnPhone(
+            this.PHONE_ANDROID_PACKAGE_NAME,
+            this.PHONE_IOS_APP_STORE_URI
           );
-          // return - we don't need to do anything else
-          return;
+        }
+      } else {
+        // we are paired to an iphone
+
+        // NOTE: THE FOLLOWING IF CLAUSE WILL ALWAYS RETURN FALSE
+        // BECAUSE THIS FUNCTION IS ONLY CALLED UNDER THE CONDITION
+        // THAT WE DO NOT HAVE AUTH
+        if (this.kinveyService && this.kinveyService.hasAuth()) {
+          // we've received authorization from the app before, so the
+          // app must have been installed - try opening it
+          await WearOsComms.sendUriToPhone('permobil://pushtracker');
+        } else {
+          // never received any information - so the app is likely not
+          // installed, open it in the app store
+          await WearOsComms.openAppInStoreOnPhone(
+            this.PHONE_ANDROID_PACKAGE_NAME,
+            this.PHONE_IOS_APP_STORE_URI
+          );
         }
       }
-      // we couldn't open the app on the phone (either it's not
-      // installed or the paired phone is ios), so open the app in the
-      // proper store
-      await WearOsComms.openAppInStoreOnPhone(
-        this.PHONE_ANDROID_PACKAGE_NAME,
-        this.PHONE_IOS_APP_STORE_URI
-      );
       this.isBusy = false;
       // now show the open on phone activity
       this.showConfirmation(

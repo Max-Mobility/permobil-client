@@ -16,15 +16,14 @@ export declare class WearOsComms extends Common {
   static registerDataCallback(cb: any): void;
 
   // android only
-  static listenForCapability(appCapability: string);
   static findDevicesConnected(timeout?: number): Promise<any>;
   static findDevicesWithApp(appCapability: string): Promise<any>;
 
   /**
    * For wearable devices
    */
-  static advertiseAsCompanion();
-  static stopAdvertisingAsCompanion();
+  static initWatch(watchCapability: string, phoneCapability: string);
+  static stopWatch();
   static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string);
   static phoneIsAndroid(): boolean;
   static phoneIsIos(): boolean;
@@ -33,11 +32,14 @@ export declare class WearOsComms extends Common {
   /**
    * For phones
    */
+  static initPhone(watchCapability: string, phoneCapability: string);
+  static stopPhone();
   static findAvailableCompanion(timeoutSeconds: number): Promise<any>;
   static findAvailableCompanions(timeoutSeconds: number): Promise<any[]>;
   static hasCompanion(): boolean;
   static clearCompanion();
   static saveCompanion(address: string);
+  // ios only
   static connectCompanion(timeout: number = 10000);
   static disconnectCompanion();
   // android only
