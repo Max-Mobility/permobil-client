@@ -433,12 +433,13 @@ export class WearOsComms extends Common {
           reject(new Error('No devices connected!'));
           return;
         }
-        const messageClient = com.google.android.gms.wearable.Wearable.getMessageClient(context);
         const promises = await nodes.map(node => {
           return new Promise((resolve, reject) => {
             try {
-              const sendMessageTask = messageClient
-                .sendMessage(node, channel, new java.lang.String(msg).getBytes());
+              const data = new java.lang.String(msg).getBytes()
+              const sendMessageTask = com.google.android.gms.wearable.Wearable
+                .getMessageClient(context)
+                .sendMessage(node.getId(), channel, data);
               sendMessageTask.addOnCompleteListener(
                 new com.google.android.gms.tasks.OnCompleteListener({
                   onComplete: function(task: any) {

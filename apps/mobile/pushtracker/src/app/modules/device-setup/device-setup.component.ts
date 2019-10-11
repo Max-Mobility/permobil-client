@@ -77,9 +77,9 @@ export class DeviceSetupComponent implements OnInit {
 
       if (
         !this.slide &&
-          this.user &&
-          this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        this.user &&
+        this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
         this.slide = this._translateService.instant(
@@ -126,9 +126,9 @@ export class DeviceSetupComponent implements OnInit {
 
       if (
         !this.slide &&
-          this.user &&
-          this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+        this.user &&
+        this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         // PushTracker E2/ WearOS configuration
         this.slide = this._translateService.instant(
@@ -669,6 +669,7 @@ export class DeviceSetupComponent implements OnInit {
         );
       }
     } catch (error) {
+      // means no devices are connected
       this._logService.logException(error);
     }
     return didSend;
