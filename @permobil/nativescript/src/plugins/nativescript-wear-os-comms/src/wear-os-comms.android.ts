@@ -435,7 +435,7 @@ export class WearOsComms extends Common {
         }
         const messageClient = com.google.android.gms.wearable.Wearable
           .getMessageClient(context);
-        const promises = await nodes.map(node => {
+        const promises = nodes.map(node => {
           return new Promise((resolve, reject) => {
             try {
               const data = new java.lang.String(msg).getBytes()
