@@ -72,7 +72,7 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(async user => {
       this.user = user;
 
       if (
@@ -130,11 +130,18 @@ export class DeviceSetupComponent implements OnInit {
         this.user.data.control_configuration ===
         CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
-        // E2 Configuration
-        WearOsComms.initPhone(
-          this.CAPABILITY_WEAR_APP,
-          this.CAPABILITY_PHONE_APP
+        // PushTracker E2/ WearOS configuration
+        this.slide = this._translateService.instant(
+          'device-setup.pushtracker-e2-with-smartdrive'
         );
+        try {
+          await WearOsComms.initPhone(
+            this.CAPABILITY_WEAR_APP,
+            this.CAPABILITY_PHONE_APP
+          );
+        } catch (err) {
+          console.error('error initializing phone:', err);
+        }
         // start looking for E2
         this._onPushTrackerE2();
       }
@@ -313,10 +320,6 @@ export class DeviceSetupComponent implements OnInit {
 
   private async _onPushTrackerE2() {
     this.showFailure = false;
-    // PushTracker E2/ WearOS configuration
-    this.slide = this._translateService.instant(
-      'device-setup.pushtracker-e2-with-smartdrive'
-    );
     WearOsComms.setDebugOutput(false);
     this.hasPairedE2 = WearOsComms.hasCompanion();
     if (this.hasPairedE2) {
@@ -342,10 +345,9 @@ export class DeviceSetupComponent implements OnInit {
 
     // see if there are any companion devices with the app
     // installed - if so, save them and show success
-    const capabilityInfo = await WearOsComms.findDevicesWithApp(
+    const nodesWithApp = await WearOsComms.findDevicesWithApp(
       this.CAPABILITY_WEAR_APP
     );
-    const nodesWithApp = capabilityInfo.getNodes().toArray();
     if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
       const name = node.getDisplayName();
@@ -667,6 +669,7 @@ export class DeviceSetupComponent implements OnInit {
         );
       }
     } catch (error) {
+      // means no devices are connected
       this._logService.logException(error);
     }
     return didSend;

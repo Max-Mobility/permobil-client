@@ -1,6 +1,6 @@
 <GridLayout rows="auto, *" columns="*" height="100%" class="device-setup-layout">
   <Label row="0" col="0" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
-  <GridLayout row="1" col="0" rows="auto, auto, auto, *, 20" columns="*">
+  <GridLayout row="1" col="0" rows="auto, auto, auto, *" columns="*">
     // Main Lottie
     <LottieView row="0" src="PushTracker_E2.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>
     <LottieView row="0" src="PushTracker.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </LottieView>
@@ -11,7 +11,7 @@
     <Label class="hr" row="2"></Label>
 
     <ScrollView *ngIf="slide" row="3">
-      <StackLayout>
+      <StackLayout paddingBottom="20">
         <StackLayout orientation="horizontal">
           <Label textWrap="true" class="bullet-next-to-lottie" width="80%" [text]="slide['IconText']"></Label>
           <pushtracker-status-button verticalAlignment="middle" marginLeft="-5" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE"> </pushtracker-status-button>
@@ -19,7 +19,7 @@
         </StackLayout>
         <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE" [text]="slide['Text']" class="bullet" textWrap="true"></label>
         <label *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE" [text]="isAndroid() ? slide['AndroidText'] : slide['IOSText']" class="bullet" textWrap="true"></label>
-        <StackLayout row="0" horizontalAlignment="center" marginBottom="10">
+        <StackLayout row="0" horizontalAlignment="center">
           <StackLayout horizontalAlignment="center" orientation="horizontal" width="80%" marginBottom="10">
             <LottieView
               height="50"

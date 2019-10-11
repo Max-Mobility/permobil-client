@@ -238,6 +238,7 @@ export class WearOsComms extends Common {
 
   public static async initWatch(watchCapability: string, phoneCapability: string) {
     if (WearOsComms.phoneIsAndroid()) {
+      await WearOsComms.removeCapability(watchCapability);
       await WearOsComms.advertiseCapability(watchCapability);
       await WearOsComms.listenForCapability(phoneCapability);
     } else {
@@ -254,6 +255,7 @@ export class WearOsComms extends Common {
   }
 
   public static async initPhone(watchCapability: string, phoneCapability: string) {
+    await WearOsComms.removeCapability(phoneCapability);
     await WearOsComms.advertiseCapability(phoneCapability);
     await WearOsComms.listenForCapability(watchCapability);
   }
@@ -262,9 +264,35 @@ export class WearOsComms extends Common {
     // TODO: should we remove the capability?
   }
 
+  private static async removeCapability(appCapability: string) {
+    await new Promise((resolve, reject) => {
+      WearOsComms.log('removeCapability()');
+      const context = ad.getApplicationContext();
+      const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
+        context
+      ).removeLocalCapability(appCapability);
+      capabilityTask.addOnCompleteListener(
+        new com.google.android.gms.tasks.OnCompleteListener({
+          onComplete: function(task: any) {
+            if (task.isSuccessful()) {
+              WearOsComms.log('Remove Capability request succeeded');
+              resolve();
+            } else {
+              WearOsComms.error(
+                'Remove Capability request failed'
+              );
+              reject(new Error('Could not remove capability:' + appCapability));
+            }
+          }
+        })
+      );
+    });
+    return;
+  }
+
   private static async advertiseCapability(appCapability: string) {
-    return new Promise((resolve, reject) => {
-      WearOsComms.log('findDevicesConnected()');
+    await new Promise((resolve, reject) => {
+      WearOsComms.log('advertiseCapability()');
       const context = ad.getApplicationContext();
       const capabilityTask = com.google.android.gms.wearable.Wearable.getCapabilityClient(
         context
@@ -285,6 +313,7 @@ export class WearOsComms extends Common {
         })
       );
     });
+    return;
   }
 
   private static onCapabilityChanged(capabilityInfo: com.google.android.gms.wearable.CapabilityInfo) {
@@ -317,8 +346,8 @@ export class WearOsComms extends Common {
     );
   }
 
-  private static async findDevicesConnected(timeout?: number) {
-    return new Promise((resolve, reject) => {
+  private static async findDevicesConnected(timeout?: number): Promise<any[]> {
+    const devices = await new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
       const nodeTaskList = com.google.android.gms.wearable.Wearable.getNodeClient(
@@ -354,10 +383,11 @@ export class WearOsComms extends Common {
         })
       );
     });
+    return devices as any[];
   }
 
-  private static async findDevicesWithApp(appCapability: string) {
-    return new Promise((resolve, reject) => {
+  private static async findDevicesWithApp(appCapability: string): Promise<any[]> {
+    const devices = await new Promise((resolve, reject) => {
       WearOsComms.log('findDevicesConnected()');
       const context = ad.getApplicationContext();
       const capabilityTaskList = com.google.android.gms.wearable.Wearable.getCapabilityClient(
@@ -378,7 +408,7 @@ export class WearOsComms extends Common {
               for (let i = 0; i < nodeArray.length; i++) {
                 WearOsComms._nodesWithApp.push(nodeArray[i]);
               }
-              resolve(task.getResult());
+              resolve(WearOsComms._nodesWithApp);
             } else {
               WearOsComms.error(
                 'Capability request failed to return any results'
@@ -391,6 +421,85 @@ export class WearOsComms extends Common {
         })
       );
     });
+    return devices as any[];
+  }
+
+  public static async sendMessage(channel: string, msg: string) {
+    const didSend = await new Promise(async (resolve, reject) => {
+      try {
+        const context = androidUtils.getApplicationContext();
+        const nodes = await WearOsComms.findDevicesConnected();
+        if (nodes.length === 0) {
+          reject(new Error('No devices connected!'));
+          return;
+        }
+        const messageClient = com.google.android.gms.wearable.Wearable
+          .getMessageClient(context);
+        const promises = nodes.map(node => {
+          return new Promise((resolve, reject) => {
+            try {
+              const data = new java.lang.String(msg).getBytes()
+              const sendMessageTask = messageClient
+                .sendMessage(node.getId(), channel, data);
+              sendMessageTask.addOnCompleteListener(
+                new com.google.android.gms.tasks.OnCompleteListener({
+                  onComplete: function(task: any) {
+                    if (task.isSuccessful()) {
+                      resolve(true);
+                    } else {
+                      resolve(false);
+                    }
+                  }
+                })
+              );
+            } catch (err) {
+              reject(err);
+            }
+          });
+        });
+        const allResolved = await Promise.all(promises);
+        const allSucceeded = allResolved.reduce((all, one) => {
+          return all && one;
+        }, true);
+        resolve(allSucceeded);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    return didSend;
+  }
+
+  public static async sendData(data: any) {
+    const didSend = await new Promise(async (resolve, reject) => {
+      try {
+        WearOsComms.log('Data to be sent:', data);
+        const context = androidUtils.getApplicationContext();
+        const dataMap = com.google.android.gms.wearable.PutDataMapRequest.create(WearOsComms.DATA_PATH);
+        // TODO: what about non-string data?
+        dataMap.getDataMap().putString(WearOsComms.DATA_KEY, data);
+        dataMap.getDataMap().putLong(WearOsComms.TIME_KEY, new Date().getTime());
+        const request = dataMap.asPutDataRequest();
+        request.setUrgent();
+
+        const dataClient = com.google.android.gms.wearable.Wearable.getDataClient(context);
+        const dataItemTask = dataClient
+          .putDataItem(request);
+        dataItemTask.addOnCompleteListener(
+          new com.google.android.gms.tasks.OnCompleteListener({
+            onComplete: function(task: any) {
+              if (task.isSuccessful()) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            }
+          })
+        );
+      } catch (error) {
+        reject(error);
+      }
+    });
+    return didSend;
   }
 
   public static hasCompanion() {
@@ -634,35 +743,6 @@ export class WearOsComms extends Common {
     characteristics.map(c =>
       WearOsComms._companionService.addCharacteristic(c)
     );
-  }
-
-  public static sendMessage(channel: string, msg: string) {
-    return new Promise((resolve, reject) => {
-      try {
-        const r = new com.github.maxmobility.wearmessage.Message(
-          androidUtils.getApplicationContext()
-        );
-
-        r.sendMessage(channel, msg);
-        resolve(true);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  public static sendData(data: any) {
-    return new Promise((resolve, reject) => {
-      try {
-        const l = new com.github.maxmobility.wearmessage.Data(
-          androidUtils.getApplicationContext()
-        );
-        l.sendData(data);
-        resolve(true);
-      } catch (error) {
-        reject(error);
-      }
-    });
   }
 
   private static log(...args) {

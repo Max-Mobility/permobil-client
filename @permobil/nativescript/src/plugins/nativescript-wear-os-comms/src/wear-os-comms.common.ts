@@ -12,4 +12,9 @@ export class Common {
 
   // messages are defined by ${path}${delimeter}${message}
   public static MessageDelimeter: string = '::::::';
+
+  // data is sent as a map with 'data' -> data and 'time' -> time entries
+  public static DATA_KEY: string = 'data';
+  public static TIME_KEY: string = 'time';
+  public static DATA_PATH: string = '/user-data';
 }
