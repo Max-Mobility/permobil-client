@@ -15,7 +15,7 @@
             </nac:AnimatedCircle>
             <!-- translateY="-50" width="{{ screenWidth }}" height="{{ screenHeight }}" width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}" width="100%" height="100%" width="90%" height="90%" -->
             // Coast Goal Circle
-                                                                                                                                    <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+                                                                                                                                                                                                                                                                                                                        <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -102,36 +102,18 @@
 
         // Menu Page
         <wol:WearOsLayout marginBottom="{{ insetPadding }}">
-          <StackLayout height="100%">
-            <GridLayout rows="*, *" columns="*">
-              <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
-              <Label text="" row="1" col="0" class="hr-blue" />
-            </GridLayout>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" tap="{{ onProfileTap }}">
-                <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label col="1" text="{{ L('menu.profile') }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
-                <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd">
-              <GridLayout rows="*" columns="15, *" id="connectPushTracker" tap="{{ onConnectPushTrackerTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-            <RL:Ripple rippleColor="#ddd" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}">
-              <GridLayout rows="*" columns="15, *" id="installSmartDrive" tap="{{ onInstallSmartDriveTap }}">
-                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                <Label row="0" col="1" text="{{ L('settings.install-smartdrive') }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </RL:Ripple>
-          </StackLayout>
+          <GridLayout rows="*, *, *, *, *, *" columns="auto, *" height="100%" width="100%">
+            <Label row="0" colSpan="2" text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+            <Label row="1" colSpan="2" class="hr-blue" />
+            <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="2" col="1" text="{{ L('menu.profile') }}" tap="{{ onProfileTap }}" class="settings-label" textWrap="true" />
+            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="3" col="1" text="{{ L('menu.about') }}" tap="{{ onAboutTap }}" class="settings-label" textWrap="true" />
+            <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="4" col="1" text="{{ L('settings.connect-pushtracker') }}" id="connectPushTracker" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" />
+            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+            <Label row="5" col="1" text="{{ L('settings.install-smartdrive') }}" id="installSmartDrive" tap="{{ onInstallSmartDriveTap }}" class="settings-label" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+          </GridLayout>
         </wol:WearOsLayout>
       </StackLayout>
     </ScrollView>
