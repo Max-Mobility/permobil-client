@@ -282,7 +282,7 @@ export class MainViewModel extends Observable {
       0
     );
     this.wearVersion = packageInfo.versionName;
-    const latestWearVersion = '2.28.0'
+    const latestWearVersion = '2.28.0';
     this.wearIsUpToDate = this.wearVersion >= latestWearVersion;
 
     const buildMessage = `
