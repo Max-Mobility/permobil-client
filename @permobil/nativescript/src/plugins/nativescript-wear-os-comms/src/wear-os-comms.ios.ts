@@ -141,15 +141,15 @@ export class WearOsComms extends Common {
     }
   }
 
-  public static initWatch(watchCapability: string, phoneCapability: string) {
+  public static initWatch(watchCapability?: string, phoneCapability?: string) {
     // do nothing - we have no ios watch
   }
 
   public static stopWatch() {
-    // do nothing
+    // do nothing - we have no ios watch
   }
 
-  public static initPhone(watchCapability: string, phoneCapability: string) {
+  public static initPhone(watchCapability?: string, phoneCapability?: string) {
     // do nothing - we just use bluetooth scanning later
   }
 

@@ -561,10 +561,7 @@ export class MainViewModel extends Observable {
       WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
       WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
       Log.D('initializing wear os comms!');
-      WearOsComms.initWatch(
-        this.CAPABILITY_WEAR_APP,
-        this.CAPABILITY_PHONE_APP
-      );
+      WearOsComms.initWatch();
       this.sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
       Sentry.captureException(err);
@@ -608,7 +605,7 @@ export class MainViewModel extends Observable {
       try {
         const permissions = await requestPermissions(
           neededPermissions,
-          () => {}
+          () => { }
         );
         // now that we have permissions go ahead and save the serial number
         this.watchSerialNumber = android.os.Build.getSerial();
@@ -1174,7 +1171,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() {}
+  updateSpeedDisplay() { }
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1235,7 +1232,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);

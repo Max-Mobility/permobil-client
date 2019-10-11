@@ -135,10 +135,7 @@ export class DeviceSetupComponent implements OnInit {
           'device-setup.pushtracker-e2-with-smartdrive'
         );
         try {
-          await WearOsComms.initPhone(
-            this.CAPABILITY_WEAR_APP,
-            this.CAPABILITY_PHONE_APP
-          );
+          await WearOsComms.initPhone();
         } catch (err) {
           console.error('error initializing phone:', err);
         }

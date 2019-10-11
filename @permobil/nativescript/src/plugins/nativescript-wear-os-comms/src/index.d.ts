@@ -22,7 +22,7 @@ export declare class WearOsComms extends Common {
   /**
    * For wearable devices
    */
-  static initWatch(watchCapability: string, phoneCapability: string);
+  static initWatch(watchCapability?: string, phoneCapability?: string);
   static stopWatch();
   static openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string);
   static phoneIsAndroid(): boolean;
@@ -32,7 +32,7 @@ export declare class WearOsComms extends Common {
   /**
    * For phones
    */
-  static initPhone(watchCapability: string, phoneCapability: string);
+  static initPhone(watchCapability?: string, phoneCapability?: string);
   static stopPhone();
   static findAvailableCompanion(timeoutSeconds: number): Promise<any>;
   static findAvailableCompanions(timeoutSeconds: number): Promise<any[]>;

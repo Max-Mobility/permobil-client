@@ -236,11 +236,23 @@ export class WearOsComms extends Common {
     }
   }
 
-  public static async initWatch(watchCapability: string, phoneCapability: string) {
+  public static async initWatch(watchCapability?: string, phoneCapability?: string) {
     if (WearOsComms.phoneIsAndroid()) {
-      await WearOsComms.removeCapability(watchCapability);
-      await WearOsComms.advertiseCapability(watchCapability);
-      await WearOsComms.listenForCapability(phoneCapability);
+      try {
+        // this should always throw, we're just keeping the code here
+        // for now. it will throw because you cannot remove
+        // capabilities which haven't been added, and you can't add
+        // capabilities which are in the manifest
+        if (watchCapability) {
+          await WearOsComms.removeCapability(watchCapability);
+          await WearOsComms.advertiseCapability(watchCapability);
+        }
+        if (phoneCapability) {
+          await WearOsComms.listenForCapability(phoneCapability);
+        }
+      } catch (err) {
+        WearOsComms.error('initWatch error:', err);
+      }
     } else {
       await WearOsComms.advertiseAsCompanion();
     }
@@ -254,10 +266,18 @@ export class WearOsComms extends Common {
     }
   }
 
-  public static async initPhone(watchCapability: string, phoneCapability: string) {
-    await WearOsComms.removeCapability(phoneCapability);
-    await WearOsComms.advertiseCapability(phoneCapability);
-    await WearOsComms.listenForCapability(watchCapability);
+  public static async initPhone(watchCapability?: string, phoneCapability?: string) {
+    try {
+      if (phoneCapability) {
+        await WearOsComms.removeCapability(phoneCapability);
+        await WearOsComms.advertiseCapability(phoneCapability);
+      }
+      if (watchCapability) {
+        await WearOsComms.listenForCapability(watchCapability);
+      }
+    } catch (err) {
+      WearOsComms.error('initPhone error:', err);
+    }
   }
 
   public static async stopPhone() {
