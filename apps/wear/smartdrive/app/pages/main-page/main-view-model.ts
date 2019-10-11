@@ -231,6 +231,15 @@ export class MainViewModel extends Observable {
   // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
 
+  // os version info
+  private wearIsUpToDate: boolean = false;
+  private wearVersion: string = null;
+  private buildDisplay: string = null;
+  private osVersionRelease: string = null;
+  private osVersionSdkInt: number = null;
+  private productBrand: string = null;
+  private productDevice: string = null;
+
   // permissions for the app
   private permissionsNeeded = [
     android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -258,6 +267,34 @@ export class MainViewModel extends Observable {
   constructor() {
     super();
     this._sentryBreadCrumb('Main-View-Model constructor.');
+    // log the build version
+    this.buildDisplay = android.os.Build.DISPLAY;
+
+    this.osVersionRelease = android.os.Build.VERSION.RELEASE;
+    this.osVersionSdkInt = android.os.Build.VERSION.SDK_INT;
+
+    this.productBrand = android.os.Build.BRAND;
+    this.productDevice = android.os.Build.DEVICE;
+
+    const packageManager = application.android.context.getPackageManager();
+    const packageInfo = packageManager.getPackageInfo(
+      'com.google.android.wearable.app',
+      0
+    );
+    this.wearVersion = packageInfo.versionName;
+    const latestWearVersion = '2.28.0'
+    this.wearIsUpToDate = this.wearVersion >= latestWearVersion;
+
+    const buildMessage = `
+    Android OS Build Version: ${this.osVersionRelease} - ${this.osVersionSdkInt}
+    Build Display:            ${this.buildDisplay}
+    Product Brand:            ${this.productBrand} - ${this.productDevice}
+    Android Wear Os Version:  ${this.wearVersion}
+    Wear OS is up to date:    ${this.wearIsUpToDate} (vs. ${latestWearVersion})
+    `;
+
+    Log.D(buildMessage);
+    this._sentryBreadCrumb(buildMessage);
     // handle application lifecycle events
     this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
