@@ -15,7 +15,7 @@
             </nac:AnimatedCircle>
             <!-- translateY="-50" width="{{ screenWidth }}" height="{{ screenHeight }}" width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}" width="100%" height="100%" width="90%" height="90%" -->
             // Coast Goal Circle
-                                                                                                                                                                                                                                                                                                                        <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -178,60 +178,41 @@
     // About "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout loaded="{{ onAboutLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
       <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
-        <StackLayout height="100%">
-          <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
-          <Label text="" row="1" col="0" class="hr-blue" />
-          <ScrollView height="100%" id="aboutScrollView">
-            <StackLayout paddingBottom="{{ insetPadding }}">
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              // user name
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.user-name') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ userName }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              // user email
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.user-email') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ userEmail }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              // serial number
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              // app version
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              // database
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="auto, auto" columns="15, *">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
-                  <Label row="1" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-            </StackLayout>
-          </ScrollView>
-        </StackLayout>
+        <ScrollView height="100%" id="aboutScrollView">
+          <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+            <Label row="0" colSpan="2" text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
+            <Label row="1" colSpan="2" class="hr-blue" />
+            // back icon
+            <Label row="2" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
+            <Label row="2" col="1" text="{{ L('buttons.back') }}" tap="{{ previousLayout }}" class="settings-label" textWrap="true" />
+
+            // user name
+            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="3" col="1" text="{{ L('about.user-name') }}" class="settings-label" textWrap="true" />
+            <Label row="4" col="1" text="{{ userName }}" class="settings-label" textWrap="true" />
+
+            // user email
+            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="5" col="1" text="{{ L('about.user-email') }}" class="settings-label" textWrap="true" />
+            <Label row="6" col="1" text="{{ userEmail }}" class="settings-label" textWrap="true" />
+
+            // serial number
+            <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="7" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />
+            <Label row="8" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" />
+
+            // app version
+            <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="9" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
+            <Label row="10" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+
+            // database
+            <Label row="11" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="11" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
+            <Label row="12" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+
+          </GridLayout>
+        </ScrollView>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
