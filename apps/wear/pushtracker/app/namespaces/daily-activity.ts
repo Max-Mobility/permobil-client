@@ -3,8 +3,7 @@ import { eachDay, format, subDays } from 'date-fns';
 declare const com: any;
 
 export namespace DailyActivity {
-  export class Record extends com.permobil.pushtracker.DailyActivity {
-  }
+  export class Record extends com.permobil.pushtracker.DailyActivity {}
 
   export namespace Info {
     export const TableName =
@@ -18,7 +17,8 @@ export namespace DailyActivity {
     export const UuidName =
       com.permobil.pushtracker.DatabaseHandler.KEY_UUID || 'uuid';
     export const HasBeenSentName =
-      com.permobil.pushtracker.DatabaseHandler.KEY_HAS_BEEN_SENT || 'has_been_sent';
+      com.permobil.pushtracker.DatabaseHandler.KEY_HAS_BEEN_SENT ||
+      'has_been_sent';
     export const Fields = [
       { name: DataName, type: 'TEXT' },
       { name: DateName, type: 'TEXT' },

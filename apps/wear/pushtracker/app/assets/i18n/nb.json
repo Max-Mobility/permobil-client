@@ -1,154 +1,154 @@
 {
-	"about": {
-		"database": "Database ID",
-		"title": "informasjon",
-		"version": "App Versjon",
-		"watch-serial-number": "TicWatch serienummer"
-	},
-	"buttons": {
-		"back": "Tilbake",
-		"dismiss": "Avskjedige",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "Daglig kysttid (er)"
-		},
-		"distance": {
-			"title": "Daglig avstand reist"
-		}
-	},
-	"failures": {
-		"connect": "Kunne ikke koble til",
-		"must-wear-watch": "Du må bruke enheten til å kontrollere SmartDrive.",
-		"permissions": "Nødvendige tillatelser ble ikke gitt!",
-		"saving-activity": "Kunne ikke lagre aktivitet",
-		"scan": "Kunne ikke skanne",
-		"title": "Failure"
-	},
-	"goals": {
-		"coast": {
-			"units": "sekunder"
-		},
-		"distance": {
-			"english": "miles",
-			"metric": "KILOMETER"
-		}
-	},
-	"information": "informasjon",
-	"languages": {
-		"da": "dansk",
-		"de": "tysk",
-		"en": "engelsk",
-		"es": "spansk",
-		"fr": "fransk",
-		"it": "italiensk",
-		"ja": "japansk",
-		"ko": "Korean",
-		"nb": "Norsk (bokmål)",
-		"nl": "nederlandsk",
-		"nn": "Norsk (nynorsk)",
-		"zh": "Tradisjonell kinesisk)"
-	},
-	"menu": {
-		"about": "Handle om",
-		"profile": "profil",
-		"title": "Meny"
-	},
-	"permissions-reasons": {
-		"coarse-location": "For å kontrollere SmartDrive ved hjelp av Bluetooth trenger vi ACCESS_COARSE_LOCATION-tillatelse.",
-		"phone-state": "For å lese serienummeret til enheten (for garanti / støtte) trenger vi READ_PHONE_STATE-tillatelsen."
-	},
-	"permissions-request": {
-		"title": "Tillatelsesforespørsel"
-	},
-	"profile": "profil",
-	"pushes": {
-		"units": "skyver"
-	},
-	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "Stol Make",
-			"values": {
-				"colours": "farger",
-				"invacare": "Invacare / Küschall",
-				"karman": "Karman",
-				"ki": "Ki",
-				"motion-composites": "Bevegelseskompositter",
-				"other": "Annen",
-				"panthera": "Panthera",
-				"quickie": "Quickie / Sopur / RGK",
-				"tilite": "TiLite",
-				"top-end": "Toppslutt"
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "Stoltype",
-			"values": {
-				"folding": "Sammenleggbar ramme",
-				"other": "Annen",
-				"pediatric": "Pedatric",
-				"rigid": "Stiv ramme"
-			}
-		},
-		"coastgoal": {
-			"description": "",
-			"title": "Kystmål",
-			"units": "s"
-		},
-		"connect-pushtracker": "Koble PushTracker mobilapp",
-		"distancegoal": {
-			"description": "",
-			"title": "Avstandsmål",
-			"units": {
-				"english": "mi",
-				"metric": "km"
-			}
-		},
-		"edit-profile": "Rediger profil",
-		"height": {
-			"description": "",
-			"title": "Høyde"
-		},
-		"information": "informasjon",
-		"title": "innstillinger",
-		"units": {
-			"description": "",
-			"title": "enheter",
-			"values": {
-				"english": "engelsk",
-				"metric": "Metric"
-			}
-		},
-		"watchrequired": {
-			"description": "Når det er aktivert, må smarturet være på håndleddet for å oppdage aktivitet.",
-			"title": "Se etter håndleddet",
-			"values": {
-				"disabled": "Funksjonshemmet",
-				"enabled": "aktivert"
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "vekt",
-			"units": {
-				"english": "lb",
-				"metric": "kg"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "engelsk",
-		"metric": "Metric",
-		"speed": {
-			"english": "mph",
-			"metric": "kph"
-		}
-	}
+  "about": {
+    "database": "Database ID",
+    "title": "informasjon",
+    "version": "App Versjon",
+    "watch-serial-number": "TicWatch serienummer"
+  },
+  "buttons": {
+    "back": "Tilbake",
+    "dismiss": "Avskjedige",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "Daglig kysttid (er)"
+    },
+    "distance": {
+      "title": "Daglig avstand reist"
+    }
+  },
+  "failures": {
+    "connect": "Kunne ikke koble til",
+    "must-wear-watch": "Du må bruke enheten til å kontrollere SmartDrive.",
+    "permissions": "Nødvendige tillatelser ble ikke gitt!",
+    "saving-activity": "Kunne ikke lagre aktivitet",
+    "scan": "Kunne ikke skanne",
+    "title": "Failure"
+  },
+  "goals": {
+    "coast": {
+      "units": "sekunder"
+    },
+    "distance": {
+      "english": "miles",
+      "metric": "KILOMETER"
+    }
+  },
+  "information": "informasjon",
+  "languages": {
+    "da": "dansk",
+    "de": "tysk",
+    "en": "engelsk",
+    "es": "spansk",
+    "fr": "fransk",
+    "it": "italiensk",
+    "ja": "japansk",
+    "ko": "Korean",
+    "nb": "Norsk (bokmål)",
+    "nl": "nederlandsk",
+    "nn": "Norsk (nynorsk)",
+    "zh": "Tradisjonell kinesisk)"
+  },
+  "menu": {
+    "about": "Handle om",
+    "profile": "profil",
+    "title": "Meny"
+  },
+  "permissions-reasons": {
+    "coarse-location": "For å kontrollere SmartDrive ved hjelp av Bluetooth trenger vi ACCESS_COARSE_LOCATION-tillatelse.",
+    "phone-state": "For å lese serienummeret til enheten (for garanti / støtte) trenger vi READ_PHONE_STATE-tillatelsen."
+  },
+  "permissions-request": {
+    "title": "Tillatelsesforespørsel"
+  },
+  "profile": "profil",
+  "pushes": {
+    "units": "skyver"
+  },
+  "settings": {
+    "chairmake": {
+      "description": "",
+      "title": "Stol Make",
+      "values": {
+        "colours": "farger",
+        "invacare": "Invacare / Küschall",
+        "karman": "Karman",
+        "ki": "Ki",
+        "motion-composites": "Bevegelseskompositter",
+        "other": "Annen",
+        "panthera": "Panthera",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "Toppslutt"
+      }
+    },
+    "chairtype": {
+      "description": "",
+      "title": "Stoltype",
+      "values": {
+        "folding": "Sammenleggbar ramme",
+        "other": "Annen",
+        "pediatric": "Pedatric",
+        "rigid": "Stiv ramme"
+      }
+    },
+    "coastgoal": {
+      "description": "",
+      "title": "Kystmål",
+      "units": "s"
+    },
+    "connect-pushtracker": "Koble PushTracker mobilapp",
+    "distancegoal": {
+      "description": "",
+      "title": "Avstandsmål",
+      "units": {
+        "english": "mi",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "Rediger profil",
+    "height": {
+      "description": "",
+      "title": "Høyde"
+    },
+    "information": "informasjon",
+    "title": "innstillinger",
+    "units": {
+      "description": "",
+      "title": "enheter",
+      "values": {
+        "english": "engelsk",
+        "metric": "Metric"
+      }
+    },
+    "watchrequired": {
+      "description": "Når det er aktivert, må smarturet være på håndleddet for å oppdage aktivitet.",
+      "title": "Se etter håndleddet",
+      "values": {
+        "disabled": "Funksjonshemmet",
+        "enabled": "aktivert"
+      }
+    },
+    "weight": {
+      "description": "",
+      "title": "vekt",
+      "units": {
+        "english": "lb",
+        "metric": "kg"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "engelsk",
+    "metric": "Metric",
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  }
 }

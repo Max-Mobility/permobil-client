@@ -1,154 +1,154 @@
 {
-	"about": {
-		"database": "データベースID",
-		"title": "情報",
-		"version": "アプリのバージョン",
-		"watch-serial-number": "TicWatchのシリアル番号"
-	},
-	"buttons": {
-		"back": "バック",
-		"dismiss": "やめる",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "毎日の海岸時間（秒）"
-		},
-		"distance": {
-			"title": "走行距離"
-		}
-	},
-	"failures": {
-		"connect": "に接続できませんでした",
-		"must-wear-watch": "あなたはあなたのSmartDriveを制御するために装置を身に着けていなければならない。",
-		"permissions": "必要な権限が付与されていません。",
-		"saving-activity": "アクティビティの保存に失敗しました",
-		"scan": "スキャンできませんでした",
-		"title": "失敗"
-	},
-	"goals": {
-		"coast": {
-			"units": "秒"
-		},
-		"distance": {
-			"english": "マイル",
-			"metric": "キロメートル"
-		}
-	},
-	"information": "情報",
-	"languages": {
-		"da": "デンマーク語",
-		"de": "ドイツ人",
-		"en": "英語",
-		"es": "スペイン語",
-		"fr": "フランス語",
-		"it": "イタリアの",
-		"ja": "日本人",
-		"ko": "韓国語",
-		"nb": "ノルウェー語（Bokmål）",
-		"nl": "オランダの",
-		"nn": "ノルウェー語（ニーノシュク）",
-		"zh": "中国の伝統的な）"
-	},
-	"menu": {
-		"about": "約",
-		"profile": "プロフィール",
-		"title": "メニュー"
-	},
-	"permissions-reasons": {
-		"coarse-location": "Bluetoothを使用してSmartDriveを制御するには、ACCESS_COARSE_LOCATION権限が必要です。",
-		"phone-state": "（保証/サポート目的で）お客様のデバイスのシリアル番号を読み取るには、READ_PHONE_STATE権限が必要です。"
-	},
-	"permissions-request": {
-		"title": "権限リクエスト"
-	},
-	"profile": "プロフィール",
-	"pushes": {
-		"units": "押す"
-	},
-	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "チェアメーク",
-			"values": {
-				"colours": "色",
-				"invacare": "Invacare /Küschall",
-				"karman": "カルマン",
-				"ki": "気",
-				"motion-composites": "モーションコンポジット",
-				"other": "その他",
-				"panthera": "パンテーラ",
-				"quickie": "Quickie / Sopur / RGK",
-				"tilite": "TiLite",
-				"top-end": "先端"
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "椅子の種類",
-			"values": {
-				"folding": "折りたたみフレーム",
-				"other": "その他",
-				"pediatric": "小児科",
-				"rigid": "リジッドフレーム"
-			}
-		},
-		"coastgoal": {
-			"description": "",
-			"title": "コーストゴール",
-			"units": "S"
-		},
-		"connect-pushtracker": "PushTrackerモバイルアプリを接続",
-		"distancegoal": {
-			"description": "",
-			"title": "距離目標",
-			"units": {
-				"english": "ミ",
-				"metric": "km"
-			}
-		},
-		"edit-profile": "プロファイル編集",
-		"height": {
-			"description": "",
-			"title": "高さ"
-		},
-		"information": "情報",
-		"title": "設定",
-		"units": {
-			"description": "",
-			"title": "単位",
-			"values": {
-				"english": "英語",
-				"metric": "メトリック"
-			}
-		},
-		"watchrequired": {
-			"description": "有効にした場合、アクティビティを検出するにはスマートウォッチを手首に装着する必要があります。",
-			"title": "手首をチェック",
-			"values": {
-				"disabled": "無効",
-				"enabled": "有効"
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "重量",
-			"units": {
-				"english": "ポンド",
-				"metric": "kg"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "ミ",
-			"metric": "km"
-		},
-		"english": "英語",
-		"metric": "メトリック",
-		"speed": {
-			"english": "時速",
-			"metric": "時速"
-		}
-	}
+  "about": {
+    "database": "データベースID",
+    "title": "情報",
+    "version": "アプリのバージョン",
+    "watch-serial-number": "TicWatchのシリアル番号"
+  },
+  "buttons": {
+    "back": "バック",
+    "dismiss": "やめる",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "毎日の海岸時間（秒）"
+    },
+    "distance": {
+      "title": "走行距離"
+    }
+  },
+  "failures": {
+    "connect": "に接続できませんでした",
+    "must-wear-watch": "あなたはあなたのSmartDriveを制御するために装置を身に着けていなければならない。",
+    "permissions": "必要な権限が付与されていません。",
+    "saving-activity": "アクティビティの保存に失敗しました",
+    "scan": "スキャンできませんでした",
+    "title": "失敗"
+  },
+  "goals": {
+    "coast": {
+      "units": "秒"
+    },
+    "distance": {
+      "english": "マイル",
+      "metric": "キロメートル"
+    }
+  },
+  "information": "情報",
+  "languages": {
+    "da": "デンマーク語",
+    "de": "ドイツ人",
+    "en": "英語",
+    "es": "スペイン語",
+    "fr": "フランス語",
+    "it": "イタリアの",
+    "ja": "日本人",
+    "ko": "韓国語",
+    "nb": "ノルウェー語（Bokmål）",
+    "nl": "オランダの",
+    "nn": "ノルウェー語（ニーノシュク）",
+    "zh": "中国の伝統的な）"
+  },
+  "menu": {
+    "about": "約",
+    "profile": "プロフィール",
+    "title": "メニュー"
+  },
+  "permissions-reasons": {
+    "coarse-location": "Bluetoothを使用してSmartDriveを制御するには、ACCESS_COARSE_LOCATION権限が必要です。",
+    "phone-state": "（保証/サポート目的で）お客様のデバイスのシリアル番号を読み取るには、READ_PHONE_STATE権限が必要です。"
+  },
+  "permissions-request": {
+    "title": "権限リクエスト"
+  },
+  "profile": "プロフィール",
+  "pushes": {
+    "units": "押す"
+  },
+  "settings": {
+    "chairmake": {
+      "description": "",
+      "title": "チェアメーク",
+      "values": {
+        "colours": "色",
+        "invacare": "Invacare /Küschall",
+        "karman": "カルマン",
+        "ki": "気",
+        "motion-composites": "モーションコンポジット",
+        "other": "その他",
+        "panthera": "パンテーラ",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "先端"
+      }
+    },
+    "chairtype": {
+      "description": "",
+      "title": "椅子の種類",
+      "values": {
+        "folding": "折りたたみフレーム",
+        "other": "その他",
+        "pediatric": "小児科",
+        "rigid": "リジッドフレーム"
+      }
+    },
+    "coastgoal": {
+      "description": "",
+      "title": "コーストゴール",
+      "units": "S"
+    },
+    "connect-pushtracker": "PushTrackerモバイルアプリを接続",
+    "distancegoal": {
+      "description": "",
+      "title": "距離目標",
+      "units": {
+        "english": "ミ",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "プロファイル編集",
+    "height": {
+      "description": "",
+      "title": "高さ"
+    },
+    "information": "情報",
+    "title": "設定",
+    "units": {
+      "description": "",
+      "title": "単位",
+      "values": {
+        "english": "英語",
+        "metric": "メトリック"
+      }
+    },
+    "watchrequired": {
+      "description": "有効にした場合、アクティビティを検出するにはスマートウォッチを手首に装着する必要があります。",
+      "title": "手首をチェック",
+      "values": {
+        "disabled": "無効",
+        "enabled": "有効"
+      }
+    },
+    "weight": {
+      "description": "",
+      "title": "重量",
+      "units": {
+        "english": "ポンド",
+        "metric": "kg"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "ミ",
+      "metric": "km"
+    },
+    "english": "英語",
+    "metric": "メトリック",
+    "speed": {
+      "english": "時速",
+      "metric": "時速"
+    }
+  }
 }

@@ -1,154 +1,154 @@
 {
-	"about": {
-		"database": "데이터베이스 ID",
-		"title": "정보",
-		"version": "앱 버전",
-		"watch-serial-number": "TicWatch 일련 번호"
-	},
-	"buttons": {
-		"back": "뒤로",
-		"dismiss": "버리다",
-		"ok": "승인"
-	},
-	"charts": {
-		"coast": {
-			"title": "일일 해안 시간"
-		},
-		"distance": {
-			"title": "일일 이동 거리"
-		}
-	},
-	"failures": {
-		"connect": "에 연결할 수 없습니다.",
-		"must-wear-watch": "SmartDrive를 제어하려면 장치를 착용해야합니다.",
-		"permissions": "필요한 권한이 부여되지 않았습니다!",
-		"saving-activity": "활동 저장 실패",
-		"scan": "스캔 할 수 없습니다.",
-		"title": "실패"
-	},
-	"goals": {
-		"coast": {
-			"units": "초"
-		},
-		"distance": {
-			"english": "마일",
-			"metric": "킬로미터"
-		}
-	},
-	"information": "정보",
-	"languages": {
-		"da": "덴마크 말",
-		"de": "독일 사람",
-		"en": "영어",
-		"es": "스페인 사람",
-		"fr": "프랑스 국민",
-		"it": "이탈리아 사람",
-		"ja": "일본어",
-		"ko": "한국어",
-		"nb": "노르웨이어 (보크 몰)",
-		"nl": "네덜란드 사람",
-		"nn": "노르웨이어 (니 노르 스크)",
-		"zh": "중국 전통)"
-	},
-	"menu": {
-		"about": "약",
-		"profile": "윤곽",
-		"title": "메뉴"
-	},
-	"permissions-reasons": {
-		"coarse-location": "블루투스를 사용하여 SmartDrive를 제어하려면 ACCESS_COARSE_LOCATION 권한이 필요합니다.",
-		"phone-state": "기기 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다."
-	},
-	"permissions-request": {
-		"title": "권한 요청"
-	},
-	"profile": "윤곽",
-	"pushes": {
-		"units": "푸시"
-	},
-	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "의자 제작",
-			"values": {
-				"colours": "그림 물감",
-				"invacare": "Invacare / Küschall",
-				"karman": "카르 만",
-				"ki": "기",
-				"motion-composites": "모션 합성",
-				"other": "다른",
-				"panthera": "표범 속",
-				"quickie": "Quickie / Sopur / RGK",
-				"tilite": "TiLite",
-				"top-end": "상단 끝"
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "의자 형",
-			"values": {
-				"folding": "접이식 프레임",
-				"other": "다른",
-				"pediatric": "소아과",
-				"rigid": "리지드 프레임"
-			}
-		},
-		"coastgoal": {
-			"description": "",
-			"title": "해안 목표",
-			"units": "에스"
-		},
-		"connect-pushtracker": "PushTracker 모바일 앱 연결",
-		"distancegoal": {
-			"description": "",
-			"title": "거리 목표",
-			"units": {
-				"english": "미",
-				"metric": "km"
-			}
-		},
-		"edit-profile": "프로필 편집",
-		"height": {
-			"description": "",
-			"title": "신장"
-		},
-		"information": "정보",
-		"title": "설정",
-		"units": {
-			"description": "",
-			"title": "단위",
-			"values": {
-				"english": "영어",
-				"metric": "미터법"
-			}
-		},
-		"watchrequired": {
-			"description": "활성화되면 스마트 워치가 손목에 있어야 활동을 감지 할 수 있습니다.",
-			"title": "손목 확인",
-			"values": {
-				"disabled": "장애인",
-				"enabled": "사용"
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "무게",
-			"units": {
-				"english": "파운드",
-				"metric": "킬로그램"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "미",
-			"metric": "km"
-		},
-		"english": "영어",
-		"metric": "미터법",
-		"speed": {
-			"english": "MPH",
-			"metric": "kph"
-		}
-	}
+  "about": {
+    "database": "데이터베이스 ID",
+    "title": "정보",
+    "version": "앱 버전",
+    "watch-serial-number": "TicWatch 일련 번호"
+  },
+  "buttons": {
+    "back": "뒤로",
+    "dismiss": "버리다",
+    "ok": "승인"
+  },
+  "charts": {
+    "coast": {
+      "title": "일일 해안 시간"
+    },
+    "distance": {
+      "title": "일일 이동 거리"
+    }
+  },
+  "failures": {
+    "connect": "에 연결할 수 없습니다.",
+    "must-wear-watch": "SmartDrive를 제어하려면 장치를 착용해야합니다.",
+    "permissions": "필요한 권한이 부여되지 않았습니다!",
+    "saving-activity": "활동 저장 실패",
+    "scan": "스캔 할 수 없습니다.",
+    "title": "실패"
+  },
+  "goals": {
+    "coast": {
+      "units": "초"
+    },
+    "distance": {
+      "english": "마일",
+      "metric": "킬로미터"
+    }
+  },
+  "information": "정보",
+  "languages": {
+    "da": "덴마크 말",
+    "de": "독일 사람",
+    "en": "영어",
+    "es": "스페인 사람",
+    "fr": "프랑스 국민",
+    "it": "이탈리아 사람",
+    "ja": "일본어",
+    "ko": "한국어",
+    "nb": "노르웨이어 (보크 몰)",
+    "nl": "네덜란드 사람",
+    "nn": "노르웨이어 (니 노르 스크)",
+    "zh": "중국 전통)"
+  },
+  "menu": {
+    "about": "약",
+    "profile": "윤곽",
+    "title": "메뉴"
+  },
+  "permissions-reasons": {
+    "coarse-location": "블루투스를 사용하여 SmartDrive를 제어하려면 ACCESS_COARSE_LOCATION 권한이 필요합니다.",
+    "phone-state": "기기 일련 번호 (보증 / 지원 목적)를 읽으려면 READ_PHONE_STATE 권한이 필요합니다."
+  },
+  "permissions-request": {
+    "title": "권한 요청"
+  },
+  "profile": "윤곽",
+  "pushes": {
+    "units": "푸시"
+  },
+  "settings": {
+    "chairmake": {
+      "description": "",
+      "title": "의자 제작",
+      "values": {
+        "colours": "그림 물감",
+        "invacare": "Invacare / Küschall",
+        "karman": "카르 만",
+        "ki": "기",
+        "motion-composites": "모션 합성",
+        "other": "다른",
+        "panthera": "표범 속",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "상단 끝"
+      }
+    },
+    "chairtype": {
+      "description": "",
+      "title": "의자 형",
+      "values": {
+        "folding": "접이식 프레임",
+        "other": "다른",
+        "pediatric": "소아과",
+        "rigid": "리지드 프레임"
+      }
+    },
+    "coastgoal": {
+      "description": "",
+      "title": "해안 목표",
+      "units": "에스"
+    },
+    "connect-pushtracker": "PushTracker 모바일 앱 연결",
+    "distancegoal": {
+      "description": "",
+      "title": "거리 목표",
+      "units": {
+        "english": "미",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "프로필 편집",
+    "height": {
+      "description": "",
+      "title": "신장"
+    },
+    "information": "정보",
+    "title": "설정",
+    "units": {
+      "description": "",
+      "title": "단위",
+      "values": {
+        "english": "영어",
+        "metric": "미터법"
+      }
+    },
+    "watchrequired": {
+      "description": "활성화되면 스마트 워치가 손목에 있어야 활동을 감지 할 수 있습니다.",
+      "title": "손목 확인",
+      "values": {
+        "disabled": "장애인",
+        "enabled": "사용"
+      }
+    },
+    "weight": {
+      "description": "",
+      "title": "무게",
+      "units": {
+        "english": "파운드",
+        "metric": "킬로그램"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "미",
+      "metric": "km"
+    },
+    "english": "영어",
+    "metric": "미터법",
+    "speed": {
+      "english": "MPH",
+      "metric": "kph"
+    }
+  }
 }

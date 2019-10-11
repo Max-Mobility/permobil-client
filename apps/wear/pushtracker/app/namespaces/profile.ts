@@ -23,36 +23,36 @@ export namespace Profile {
       'top-end',
       'other'
     ];
-    static Translations: string[] = ChairMake.Options.map(o => 'settings.chairmake.values.' + o);
+    static Translations: string[] = ChairMake.Options.map(
+      o => 'settings.chairmake.values.' + o
+    );
     static Default: string = 'tilite';
   }
 
   export class ChairType {
-    static Options: string[] = [
-      'rigid',
-      'folding',
-      'pediatric',
-      'other'
-    ];
-    static Translations: string[] = ChairType.Options.map(o => 'settings.chairtype.values.' + o);
+    static Options: string[] = ['rigid', 'folding', 'pediatric', 'other'];
+    static Translations: string[] = ChairType.Options.map(
+      o => 'settings.chairtype.values.' + o
+    );
     static Default: string = 'rigid';
   }
 
   export class Units {
     static Options: string[] = ['english', 'metric'];
-    static Translations: string[] = Units.Options.map(o => 'settings.units.values.' + o);
+    static Translations: string[] = Units.Options.map(
+      o => 'settings.units.values.' + o
+    );
     static Default: string = 'english';
   }
 
   export class Settings extends Observable {
-
     public static Defaults = {
       chairMake: Profile.ChairMake.Default,
       chairType: Profile.ChairType.Default,
-      coastGoal: 10.0,     // seconds
-      distanceGoal: 5.0,   // miles
-      height: 1.778,       // meters
-      weight: 80,          // kg
+      coastGoal: 10.0, // seconds
+      distanceGoal: 5.0, // miles
+      height: 1.778, // meters
+      weight: 80, // kg
       units: Profile.Units.Default
     };
 
@@ -144,7 +144,10 @@ export namespace Profile {
           this.coastGoal = Math.min(this.coastGoal + increment, 500);
           break;
         case 'distancegoal':
-          this.distanceGoal = Math.min(this.distanceGoal + this.getDistanceIncrement(), 500);
+          this.distanceGoal = Math.min(
+            this.distanceGoal + this.getDistanceIncrement(),
+            500
+          );
           break;
         case 'height':
           this.height = Math.min(this.height + this.getHeightIncrement(), 3.0);
@@ -177,7 +180,10 @@ export namespace Profile {
           this.coastGoal = Math.max(this.coastGoal - increment, 0);
           break;
         case 'distancegoal':
-          this.distanceGoal = Math.max(this.distanceGoal - this.getDistanceIncrement(), 0);
+          this.distanceGoal = Math.max(
+            this.distanceGoal - this.getDistanceIncrement(),
+            0
+          );
           break;
         case 'height':
           this.height = Math.max(this.height - this.getHeightIncrement(), 0);
@@ -194,10 +200,8 @@ export namespace Profile {
     }
 
     fromUser(obj: any) {
-      if (obj && obj.height)
-        this.height = obj.height / 100.0;
-      if (obj && obj.weight)
-        this.weight = obj.weight;
+      if (obj && obj.height) this.height = obj.height / 100.0;
+      if (obj && obj.weight) this.weight = obj.weight;
       if (obj && obj.activity_goal_distance)
         this.distanceGoal = obj.activity_goal_distance / 1.609;
       if (obj && obj.activity_goal_coast_time)
@@ -214,11 +218,10 @@ export namespace Profile {
     }
 
     toObj(): any {
-      return Object.keys(Profile.Settings.Defaults)
-        .reduce((obj, key) => {
-          obj[key] = this[key];
-          return obj;
-        }, {});
+      return Object.keys(Profile.Settings.Defaults).reduce((obj, key) => {
+        obj[key] = this[key];
+        return obj;
+      }, {});
     }
 
     copyKey(key: string, other: any) {
@@ -231,15 +234,13 @@ export namespace Profile {
 
     copy(s: any) {
       // from a settings class exactly like this
-      Object.keys(Profile.Settings.Defaults)
-        .map(k => this.copyKey(k, s));
+      Object.keys(Profile.Settings.Defaults).map(k => this.copyKey(k, s));
     }
 
     diff(s: any): boolean {
-      return Object.keys(Profile.Settings.Defaults)
-        .reduce((equal, key) => {
-          return equal && this[key] === s[key];
-        }, true);
+      return Object.keys(Profile.Settings.Defaults).reduce((equal, key) => {
+        return equal && this[key] === s[key];
+      }, true);
     }
   }
 }

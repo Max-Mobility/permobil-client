@@ -1,14 +1,10 @@
 import { View } from 'tns-core-modules/ui/core/view';
 
-
-
 export function promiseSerial(tasks) {
   return tasks.reduce((promiseChain, currentTask) => {
     return promiseChain.then(chainResults =>
-                             currentTask.then(currentResult =>
-                                              [ ...chainResults, currentResult ]
-                                             )
-                            );
+      currentTask.then(currentResult => [...chainResults, currentResult])
+    );
   }, Promise.resolve([]));
   /*
   return funcs.reduce((promise, func) => {

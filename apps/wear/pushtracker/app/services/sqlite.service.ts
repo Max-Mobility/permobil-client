@@ -41,7 +41,7 @@ export class SqliteService {
       .then((db: any) => {
         db.close();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('could not close db:', err);
       });
   }
@@ -58,10 +58,8 @@ export class SqliteService {
           `${keyString.join(', ')})`;
         return db.execSQL(dbCreationString);
       })
-      .catch((err) => {
-        const msg =
-          'Could not make table: ' +
-          tableName + ': error - ' + err;
+      .catch(err => {
+        const msg = 'Could not make table: ' + tableName + ': error - ' + err;
         console.error(msg);
         return Promise.reject(msg);
       });
@@ -141,8 +139,9 @@ export class SqliteService {
 
   public getLast(tableName: string, idName: string) {
     return this.db.then(db => {
-      return db
-        .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`);
+      return db.get(
+        `SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`
+      );
     });
   }
 

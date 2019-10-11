@@ -1,165 +1,165 @@
 {
-	"about": {
-		"database": "Database ID",
-		"title": "Information",
-		"version": "App Version",
-		"watch-serial-number": "TicWatch Serial Number",
+  "about": {
+    "database": "Database ID",
+    "title": "Information",
+    "version": "App Version",
+    "watch-serial-number": "TicWatch Serial Number",
     "user-email": "Email",
     "user-name": "Name"
-	},
-	"buttons": {
-		"back": "Back",
-		"dismiss": "Dismiss",
-		"ok": "OK"
-	},
+  },
+  "buttons": {
+    "back": "Back",
+    "dismiss": "Dismiss",
+    "ok": "OK"
+  },
   "busy": {
     "synchronizing": "Synchronizing..."
   },
-	"charts": {
-		"coast": {
-			"title": "Daily Coast Time (s)"
-		},
-		"distance": {
-			"title": "Daily Distance Traveled"
-		}
-	},
-	"failures": {
-		"connect": "Could not connect to",
-		"must-wear-watch": "You must wear the device to control your SmartDrive.",
-		"permissions": "Required permissions were not granted!",
-		"saving-activity": "Failed saving activity",
-		"scan": "Could not scan",
-		"title": "Failure",
+  "charts": {
+    "coast": {
+      "title": "Daily Coast Time (s)"
+    },
+    "distance": {
+      "title": "Daily Distance Traveled"
+    }
+  },
+  "failures": {
+    "connect": "Could not connect to",
+    "must-wear-watch": "You must wear the device to control your SmartDrive.",
+    "permissions": "Required permissions were not granted!",
+    "saving-activity": "Failed saving activity",
+    "scan": "Could not scan",
+    "title": "Failure",
     "not-fully-initialize": "PushTracker has not finished initializing.",
     "not-connected-to-mobile": "Could not authenticate with server, please re-connect with PushTracker mobile app.",
     "could-not-update-profile": "Could not update user profile on the server"
-	},
-	"goals": {
-		"coast": {
-			"units": "seconds"
-		},
-		"distance": {
-			"english": "miles",
-			"metric": "kilometers"
-		}
-	},
-	"information": "Information",
-	"languages": {
-		"da": "Danish",
-		"de": "German",
-		"en": "English",
-		"es": "Spanish",
-		"fr": "French",
-		"it": "Italian",
-		"ja": "Japanese",
-		"ko": "Korean",
-		"nb": "Norwegian (Bokmål)",
-		"nl": "Dutch",
-		"nn": "Norwegian (Nynorsk)",
-		"zh": "Chinese (Traditional)"
-	},
-	"menu": {
-		"about": "About",
-		"profile": "Profile",
-		"title": "Menu"
-	},
-	"permissions-reasons": {
-		"coarse-location": "To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
-		"phone-state": "To read your device serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
-	},
-	"permissions-request": {
-		"title": "Permissions Request"
-	},
-	"profile": "Profile",
-	"pushes": {
-		"units": "pushes"
-	},
-	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "Chair Make",
-			"values": {
-				"colours": "Colours",
-				"invacare": "Invacare / Küschall",
-				"karman": "Karman",
-				"ki": "Ki",
-				"motion-composites": "Motion Composites",
-				"other": "Other",
-				"panthera": "Panthera",
-				"quickie": "Quickie / Sopur / RGK",
-				"tilite": "TiLite",
-				"top-end": "Top End"
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "Chair Type",
-			"values": {
-				"folding": "Folding Frame",
-				"other": "Other",
-				"pediatric": "Pedatric",
-				"rigid": "Rigid Frame"
-			}
-		},
-		"coastgoal": {
-			"description": "",
-			"title": "Coast Goal",
-			"units": "s"
-		},
+  },
+  "goals": {
+    "coast": {
+      "units": "seconds"
+    },
+    "distance": {
+      "english": "miles",
+      "metric": "kilometers"
+    }
+  },
+  "information": "Information",
+  "languages": {
+    "da": "Danish",
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nb": "Norwegian (Bokmål)",
+    "nl": "Dutch",
+    "nn": "Norwegian (Nynorsk)",
+    "zh": "Chinese (Traditional)"
+  },
+  "menu": {
+    "about": "About",
+    "profile": "Profile",
+    "title": "Menu"
+  },
+  "permissions-reasons": {
+    "coarse-location": "To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
+    "phone-state": "To read your device serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
+  },
+  "permissions-request": {
+    "title": "Permissions Request"
+  },
+  "profile": "Profile",
+  "pushes": {
+    "units": "pushes"
+  },
+  "settings": {
+    "chairmake": {
+      "description": "",
+      "title": "Chair Make",
+      "values": {
+        "colours": "Colours",
+        "invacare": "Invacare / Küschall",
+        "karman": "Karman",
+        "ki": "Ki",
+        "motion-composites": "Motion Composites",
+        "other": "Other",
+        "panthera": "Panthera",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "Top End"
+      }
+    },
+    "chairtype": {
+      "description": "",
+      "title": "Chair Type",
+      "values": {
+        "folding": "Folding Frame",
+        "other": "Other",
+        "pediatric": "Pedatric",
+        "rigid": "Rigid Frame"
+      }
+    },
+    "coastgoal": {
+      "description": "",
+      "title": "Coast Goal",
+      "units": "s"
+    },
     "install-smartdrive": "Install SmartDrive MX2+ WearOS App",
-		"connect-pushtracker": "Connect PushTracker Mobile App",
-		"distancegoal": {
-			"description": "",
-			"title": "Distance Goal",
-			"units": {
-				"english": "mi",
-				"metric": "km"
-			}
-		},
-		"edit-profile": "Edit Profile",
-		"height": {
-			"description": "",
-			"title": "Height"
-		},
-		"information": "Information",
-		"title": "Settings",
-		"units": {
-			"description": "",
-			"title": "Units",
-			"values": {
-				"english": "English",
-				"metric": "Metric"
-			}
-		},
-		"watchrequired": {
-			"description": "When enabled, the smartwatch must be on the wrist to detect activity.",
-			"title": "Check for Wrist",
-			"values": {
-				"disabled": "Disabled",
-				"enabled": "Enabled"
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "Weight",
-			"units": {
-				"english": "lb",
-				"metric": "kg"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "mi",
-			"metric": "km"
-		},
-		"english": "English",
-		"metric": "Metric",
-		"speed": {
-			"english": "mph",
-			"metric": "kph"
-		}
-	},
+    "connect-pushtracker": "Connect PushTracker Mobile App",
+    "distancegoal": {
+      "description": "",
+      "title": "Distance Goal",
+      "units": {
+        "english": "mi",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "Edit Profile",
+    "height": {
+      "description": "",
+      "title": "Height"
+    },
+    "information": "Information",
+    "title": "Settings",
+    "units": {
+      "description": "",
+      "title": "Units",
+      "values": {
+        "english": "English",
+        "metric": "Metric"
+      }
+    },
+    "watchrequired": {
+      "description": "When enabled, the smartwatch must be on the wrist to detect activity.",
+      "title": "Check for Wrist",
+      "values": {
+        "disabled": "Disabled",
+        "enabled": "Enabled"
+      }
+    },
+    "weight": {
+      "description": "",
+      "title": "Weight",
+      "units": {
+        "english": "lb",
+        "metric": "kg"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "mi",
+      "metric": "km"
+    },
+    "english": "English",
+    "metric": "Metric",
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  },
   "wearos-comms": {
     "errors": {
       "bad-data": "Invalid data received from PushTracker mobile app - please check your connection and try again.",

@@ -1,86 +1,44 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-      xmlns:nac="nativescript-animated-circle"
-      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-      xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
-      xmlns:RL="nativescript-ng-ripple/ripple-view"
-      xmlns:ui="nativescript-auto-fit-text"
-      loaded="onMainPageLoaded"
-      navigatingTo="navigatingTo"
-      marginBottom="{{ chinSize / 2 }}"
-      actionBarHidden="true">
-  <GridLayout
-      rows="*" columns="*">
-    <ScrollView
-        visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+  xmlns:nac="nativescript-animated-circle" 
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
+  xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" 
+  xmlns:RL="nativescript-ng-ripple/ripple-view" 
+  xmlns:ui="nativescript-auto-fit-text" loaded="onMainPageLoaded" navigatingTo="navigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  <GridLayout rows="*" columns="*">
+    <ScrollView visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
       <StackLayout>
         // Goal Overview
         <wol:WearOsLayout disableInsetConstraint="true">
-          <GridLayout
-              width="100%" height="100%"
-              rows="auto" columns="*">
+          <GridLayout width="100%" height="100%" rows="auto" columns="*">
             // Distance Goal Circle
-            <nac:AnimatedCircle
-                row="0" col="0"
-                width="300" height="300"
-                class="distanceCircle"
-                animated="true" animateFrom="0" clockwise="true"
-                rimWidth="2" barWidth="8"
-                progress="{{ distanceGoalCurrentProgress }}">
+            <nac:AnimatedCircle row="0" col="0" width="300" height="300" class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ distanceGoalCurrentProgress }}">
             </nac:AnimatedCircle>
-            <!--
-                translateY="-50"
-                width="{{ screenWidth }}" height="{{ screenHeight }}"
-                width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}"
-                width="100%" height="100%"
-                width="90%" height="90%"
+            <!-- translateY="-50" width="{{ screenWidth }}" height="{{ screenHeight }}" width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}" width="100%" height="100%" width="90%" height="90%"
             -->
             // Coast Goal Circle
-            <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
-            <nac:AnimatedCircle
-                row="0" col="0"
-                class="coastCircle"
-                width="200" height="200"
-                animated="true" animateFrom="0" clockwise="true"
-                rimWidth="2" barWidth="8"
-                progress="{{ coastGoalCurrentProgress }}">
+                        <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+            <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
-            <GridLayout
-                height="70%" width="70%"
-                rows="*, auto" columns="*"
-                tap="{{ debugTap }}">
+            <GridLayout height="70%" width="70%" rows="*, auto" columns="*" tap="{{ debugTap }}">
               <GridLayout row="0" rows="*" columns="*, *">
                 <StackLayout col="0">
                   // distance
-                  <Label class="center-label-base ionicon distance-goal-color compact fs34"
-                         text="&#xf125;" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs26 bold"
-                         text="{{ distanceGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs14"
-                         text="{{ distanceUnits }}" />
+                  <Label class="center-label-base ionicon distance-goal-color compact fs34" text="&#xf125;" />
+                  <Label textWrap="true" class="center-label-base compact fs26 bold" text="{{ distanceGoalCurrentValueDisplay }}" />
+                  <Label textWrap="true" class="center-label-base compact fs14" text="{{ distanceUnits }}" />
                 </StackLayout>
                 <StackLayout col="1">
                   // coast
-                  <Label class="center-label-base ionicon coast-goal-color compact fs34"
-                         text="&#xf125; &#xf125;" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs26 bold"
-                         text="{{ coastGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true"
-                         class="center-label-base compact fs14"
-                         text="{{ L('goals.coast.units') }}" />
+                  <Label class="center-label-base ionicon coast-goal-color compact fs34" text="&#xf125; &#xf125;" />
+                  <Label textWrap="true" class="center-label-base compact fs26 bold" text="{{ coastGoalCurrentValueDisplay }}" />
+                  <Label textWrap="true" class="center-label-base compact fs14" text="{{ L('goals.coast.units') }}" />
                 </StackLayout>
               </GridLayout>
               <StackLayout row="1" verticalAlignment="bottom">
                 // pushes
-                <Label textWrap="true"
-                       class="center-label-base compact fs18 bold"
-                       text="{{ currentPushCountDisplay }}" />
-                <Label textWrap="true"
-                       class="center-label-base compact fs14"
-                       text="{{ L('pushes.units') }}" />
+                <Label textWrap="true" class="center-label-base compact fs18 bold" text="{{ currentPushCountDisplay }}" />
+                <Label textWrap="true" class="center-label-base compact fs14" text="{{ L('pushes.units') }}" />
               </StackLayout>
             </GridLayout>
           </GridLayout>
@@ -89,23 +47,18 @@
         // Distance Chart
         <wol:WearOsLayout>
           <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
-            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}"
-                   class="chart-title" textWrap="true" />
+            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
-            <Label text="{{ distanceChartMaxValue }}"
-                   row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
+            <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Usage Bar Chart
-            <Repeater row="2" colSpan="2" verticalAlignment="bottom"
-                      items="{{ distanceChartData }}">
+            <Repeater row="2" colSpan="2" verticalAlignment="bottom" items="{{ distanceChartData }}">
               <Repeater.itemsLayout>
                 <FlexboxLayout justifyContent="space-between" flexDirection="row" />
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="distance-line"
-                         visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
-                  <Label height="100" class="distance-line" backgroundColor="black"
-                         visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
+                  <Label height="{{ value }}" class="distance-line" visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
+                  <Label height="100" class="distance-line" backgroundColor="black" visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
                   <Label row="1" text="{{ day }}" class="line-label" />
                 </GridLayout>
               </Repeater.itemTemplate>
@@ -117,23 +70,18 @@
         <wol:WearOsLayout>
           <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
             // Chart Title
-            <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}"
-                   class="chart-title" textWrap="true" />
+            <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
-            <Label text="{{ coastChartMaxValue }}" row="1" col="1"
-                   class="chart-max-value" padding="0 0 0 5"/>
+            <Label text="{{ coastChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
-            <Repeater row="2" colSpan="2"
-                      items="{{ coastChartData }}">
+            <Repeater row="2" colSpan="2" items="{{ coastChartData }}">
               <Repeater.itemsLayout>
                 <FlexboxLayout justifyContent="space-between" flexDirection="row" />
               </Repeater.itemsLayout>
               <Repeater.itemTemplate>
                 <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="coast-line"
-                         visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
-                  <Label height="100" class="coast-line" backgroundColor="black"
-                         visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
+                  <Label height="{{ value }}" class="coast-line" visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
+                  <Label height="100" class="coast-line" backgroundColor="black" visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
                   <Label row="1" text="{{ day }}" class="line-label" />
                 </GridLayout>
               </Repeater.itemTemplate>
@@ -178,13 +126,8 @@
     </ScrollView>
 
     // Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}"
-                            class="page" translateX="500"
-                            visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout
-          disableInsetConstraint="true"
-          loaded="{{ customWOLInsetLoaded }}"
-          height="100%" width="100%">
+    <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
@@ -233,13 +176,8 @@
     </sdl:SwipeDismissLayout>
 
     // Edit Profile Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout loaded="{{ onProfileLayoutLoaded }}"
-                            class="page" translateX="500"
-                            visibility="{{ enabledLayout.profile, enabledLayout.profile ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout
-          disableInsetConstraint="true"
-          loaded="{{ customWOLInsetLoaded }}"
-          height="100%" width="100%">
+    <sdl:SwipeDismissLayout loaded="{{ onProfileLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.profile, enabledLayout.profile ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('profile') }}" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
@@ -270,11 +208,7 @@
     </sdl:SwipeDismissLayout>
 
     // Change Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout height="100%" width="100%"
-                            id="changeSettingsPage"
-                            loaded="{{ onChangeSettingsLayoutLoaded }}"
-                            class="page" translateX="500"
-                            visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
+    <sdl:SwipeDismissLayout height="100%" width="100%" id="changeSettingsPage" loaded="{{ onChangeSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
       <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">
         // Increase the config value
         <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
@@ -288,15 +222,10 @@
             <Label text="&#xf404;" fontSize="42" />
           </StackLayout>
         </RL:Ripple>
-        <StackLayout row="1" col="1" class="value-circle"
-                     tap="{{ onSettingsInfoItemTap }}">
-          <Label text="{{ changeSettingKeyValue }}"
-                 class="changeSettingsValue" textWrap="true" />
-          <Label text="{{ changeSettingKeyString }}"
-                 textWrap="true"
-                 class="changeSettingsTitle no-margin"/>
-          <Label text="&#xf149;"
-                 class="ionicon center-label-base bold fs16 compact"/>
+        <StackLayout row="1" col="1" class="value-circle" tap="{{ onSettingsInfoItemTap }}">
+          <Label text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="true" />
+          <Label text="{{ changeSettingKeyString }}" textWrap="true" class="changeSettingsTitle no-margin"/>
+          <Label text="&#xf149;" class="ionicon center-label-base bold fs16 compact"/>
         </StackLayout>
         // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
@@ -314,13 +243,8 @@
     </sdl:SwipeDismissLayout>
 
     // About "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout loaded="{{ onAboutLayoutLoaded }}"
-                            class="page" translateX="500"
-                            visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout
-          disableInsetConstraint="true"
-          loaded="{{ customWOLInsetLoaded }}"
-          height="100%" width="100%">
+    <sdl:SwipeDismissLayout loaded="{{ onAboutLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.about, enabledLayout.about ? 'visible':'collapsed' }}">
+      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
         <StackLayout height="100%">
           <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
           <Label text="" row="1" col="0" class="hr-blue" />
@@ -379,9 +303,7 @@
     </sdl:SwipeDismissLayout>
 
     <StackLayout background="black" width="100%" height="100%" visibility="{{ isBusy ? 'visible':'collapsed' }}">
-      <ActivityIndicator busy="{{ isBusy }}"
-                         color="#006ea4"
-                         width="50%" height="50%"/>
+      <ActivityIndicator busy="{{ isBusy }}" color="#006ea4" width="50%" height="50%"/>
       <Label class="center-label-base fs20" text="{{ busyText }}" textWrap="true"/>
     </StackLayout>
 

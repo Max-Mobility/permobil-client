@@ -1,154 +1,154 @@
 {
-	"about": {
-		"database": "Datenbank-ID",
-		"title": "Information",
-		"version": "App Version",
-		"watch-serial-number": "TicWatch Seriennummer"
-	},
-	"buttons": {
-		"back": "Zurück",
-		"dismiss": "entlassen",
-		"ok": "OK"
-	},
-	"charts": {
-		"coast": {
-			"title": "Tägliche Küstenzeit (en)"
-		},
-		"distance": {
-			"title": "Tägliche zurückgelegte Strecke"
-		}
-	},
-	"failures": {
-		"connect": "Verbindung zu konnte nicht hergestellt werden",
-		"must-wear-watch": "Sie müssen das Gerät tragen, um Ihr SmartDrive zu steuern.",
-		"permissions": "Erforderliche Berechtigungen wurden nicht erteilt!",
-		"saving-activity": "Speichern der Aktivität fehlgeschlagen",
-		"scan": "Konnte nicht scannen",
-		"title": "Fehler"
-	},
-	"goals": {
-		"coast": {
-			"units": "Sekunden"
-		},
-		"distance": {
-			"english": "Meilen",
-			"metric": "Kilometer"
-		}
-	},
-	"information": "Information",
-	"languages": {
-		"da": "dänisch",
-		"de": "Deutsche",
-		"en": "Englisch",
-		"es": "Spanisch",
-		"fr": "Französisch",
-		"it": "Italienisch",
-		"ja": "Japanisch",
-		"ko": "Koreanisch",
-		"nb": "Norwegisch (Bokmål)",
-		"nl": "Niederländisch",
-		"nn": "Norwegisch (Nynorsk)",
-		"zh": "Chinesische Tradition)"
-	},
-	"menu": {
-		"about": "Über",
-		"profile": "Profil",
-		"title": "Speisekarte"
-	},
-	"permissions-reasons": {
-		"coarse-location": "Zur Steuerung Ihres SmartDrive über Bluetooth benötigen wir die Berechtigung ACCESS_COARSE_LOCATION.",
-		"phone-state": "Zum Lesen der Seriennummer Ihres Geräts (für Garantie- / Supportzwecke) benötigen wir die READ_PHONE_STATE-Berechtigung."
-	},
-	"permissions-request": {
-		"title": "Berechtigungsanfrage"
-	},
-	"profile": "Profil",
-	"pushes": {
-		"units": "drückt"
-	},
-	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "Stuhl machen",
-			"values": {
-				"colours": "Farben",
-				"invacare": "Invacare / Küschall",
-				"karman": "Karman",
-				"ki": "Ki",
-				"motion-composites": "Bewegungszusammensetzungen",
-				"other": "andere",
-				"panthera": "Panthera",
-				"quickie": "Quickie / Sopur / RGK",
-				"tilite": "TiLite",
-				"top-end": "Das obere Ende"
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "Stuhlart",
-			"values": {
-				"folding": "Klapprahmen",
-				"other": "andere",
-				"pediatric": "Pedatric",
-				"rigid": "Steifer Rahmen"
-			}
-		},
-		"coastgoal": {
-			"description": "",
-			"title": "Coast Goal",
-			"units": "s"
-		},
-		"connect-pushtracker": "Verbinden Sie die PushTracker Mobile App",
-		"distancegoal": {
-			"description": "",
-			"title": "Entfernungsziel",
-			"units": {
-				"english": "Mi",
-				"metric": "km"
-			}
-		},
-		"edit-profile": "Profil bearbeiten",
-		"height": {
-			"description": "",
-			"title": "Höhe"
-		},
-		"information": "Information",
-		"title": "die Einstellungen",
-		"units": {
-			"description": "",
-			"title": "Einheiten",
-			"values": {
-				"english": "Englisch",
-				"metric": "Metrisch"
-			}
-		},
-		"watchrequired": {
-			"description": "Wenn diese Funktion aktiviert ist, muss sich die Smartwatch am Handgelenk befinden, um Aktivitäten zu erkennen.",
-			"title": "Auf Handgelenk prüfen",
-			"values": {
-				"disabled": "Deaktiviert",
-				"enabled": "aktiviert"
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "Gewicht",
-			"units": {
-				"english": "Pfund",
-				"metric": "kg"
-			}
-		}
-	},
-	"units": {
-		"distance": {
-			"english": "Mi",
-			"metric": "km"
-		},
-		"english": "Englisch",
-		"metric": "Metrisch",
-		"speed": {
-			"english": "mph",
-			"metric": "kph"
-		}
-	}
+  "about": {
+    "database": "Datenbank-ID",
+    "title": "Information",
+    "version": "App Version",
+    "watch-serial-number": "TicWatch Seriennummer"
+  },
+  "buttons": {
+    "back": "Zurück",
+    "dismiss": "entlassen",
+    "ok": "OK"
+  },
+  "charts": {
+    "coast": {
+      "title": "Tägliche Küstenzeit (en)"
+    },
+    "distance": {
+      "title": "Tägliche zurückgelegte Strecke"
+    }
+  },
+  "failures": {
+    "connect": "Verbindung zu konnte nicht hergestellt werden",
+    "must-wear-watch": "Sie müssen das Gerät tragen, um Ihr SmartDrive zu steuern.",
+    "permissions": "Erforderliche Berechtigungen wurden nicht erteilt!",
+    "saving-activity": "Speichern der Aktivität fehlgeschlagen",
+    "scan": "Konnte nicht scannen",
+    "title": "Fehler"
+  },
+  "goals": {
+    "coast": {
+      "units": "Sekunden"
+    },
+    "distance": {
+      "english": "Meilen",
+      "metric": "Kilometer"
+    }
+  },
+  "information": "Information",
+  "languages": {
+    "da": "dänisch",
+    "de": "Deutsche",
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "it": "Italienisch",
+    "ja": "Japanisch",
+    "ko": "Koreanisch",
+    "nb": "Norwegisch (Bokmål)",
+    "nl": "Niederländisch",
+    "nn": "Norwegisch (Nynorsk)",
+    "zh": "Chinesische Tradition)"
+  },
+  "menu": {
+    "about": "Über",
+    "profile": "Profil",
+    "title": "Speisekarte"
+  },
+  "permissions-reasons": {
+    "coarse-location": "Zur Steuerung Ihres SmartDrive über Bluetooth benötigen wir die Berechtigung ACCESS_COARSE_LOCATION.",
+    "phone-state": "Zum Lesen der Seriennummer Ihres Geräts (für Garantie- / Supportzwecke) benötigen wir die READ_PHONE_STATE-Berechtigung."
+  },
+  "permissions-request": {
+    "title": "Berechtigungsanfrage"
+  },
+  "profile": "Profil",
+  "pushes": {
+    "units": "drückt"
+  },
+  "settings": {
+    "chairmake": {
+      "description": "",
+      "title": "Stuhl machen",
+      "values": {
+        "colours": "Farben",
+        "invacare": "Invacare / Küschall",
+        "karman": "Karman",
+        "ki": "Ki",
+        "motion-composites": "Bewegungszusammensetzungen",
+        "other": "andere",
+        "panthera": "Panthera",
+        "quickie": "Quickie / Sopur / RGK",
+        "tilite": "TiLite",
+        "top-end": "Das obere Ende"
+      }
+    },
+    "chairtype": {
+      "description": "",
+      "title": "Stuhlart",
+      "values": {
+        "folding": "Klapprahmen",
+        "other": "andere",
+        "pediatric": "Pedatric",
+        "rigid": "Steifer Rahmen"
+      }
+    },
+    "coastgoal": {
+      "description": "",
+      "title": "Coast Goal",
+      "units": "s"
+    },
+    "connect-pushtracker": "Verbinden Sie die PushTracker Mobile App",
+    "distancegoal": {
+      "description": "",
+      "title": "Entfernungsziel",
+      "units": {
+        "english": "Mi",
+        "metric": "km"
+      }
+    },
+    "edit-profile": "Profil bearbeiten",
+    "height": {
+      "description": "",
+      "title": "Höhe"
+    },
+    "information": "Information",
+    "title": "die Einstellungen",
+    "units": {
+      "description": "",
+      "title": "Einheiten",
+      "values": {
+        "english": "Englisch",
+        "metric": "Metrisch"
+      }
+    },
+    "watchrequired": {
+      "description": "Wenn diese Funktion aktiviert ist, muss sich die Smartwatch am Handgelenk befinden, um Aktivitäten zu erkennen.",
+      "title": "Auf Handgelenk prüfen",
+      "values": {
+        "disabled": "Deaktiviert",
+        "enabled": "aktiviert"
+      }
+    },
+    "weight": {
+      "description": "",
+      "title": "Gewicht",
+      "units": {
+        "english": "Pfund",
+        "metric": "kg"
+      }
+    }
+  },
+  "units": {
+    "distance": {
+      "english": "Mi",
+      "metric": "km"
+    },
+    "english": "Englisch",
+    "metric": "Metrisch",
+    "speed": {
+      "english": "mph",
+      "metric": "kph"
+    }
+  }
 }
