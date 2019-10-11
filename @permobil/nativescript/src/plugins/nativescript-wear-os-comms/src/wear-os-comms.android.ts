@@ -436,13 +436,31 @@ export class WearOsComms extends Common {
   }
 
   public static sendData(data: any) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        const l = new com.github.maxmobility.wearmessage.Data(
-          androidUtils.getApplicationContext()
+        WearOsComms.log('Data to be sent:', data);
+        const context = androidUtils.getApplicationContext();
+        const dataMap = com.google.android.gms.wearable.PutDataMapRequest.create(WearOsComms.DATA_PATH);
+        // TODO: what about non-string data?
+        dataMap.getDataMap().putString(WearOsComms.DATA_KEY, data);
+        dataMap.getDataMap().putLong(WearOsComms.TIME_KEY, new Date().getTime());
+        const request = dataMap.asPutDataRequest();
+        request.setUrgent();
+
+        const dataClient = com.google.android.gms.wearable.Wearable.getDataClient(context);
+        const dataItemTask = dataClient
+          .putDataItem(request);
+        dataItemTask.addOnCompleteListener(
+          new com.google.android.gms.tasks.OnCompleteListener({
+            onComplete: function(task: any) {
+              if (task.isSuccessful()) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            }
+          })
         );
-        l.sendData(data);
-        resolve(true);
       } catch (error) {
         reject(error);
       }
