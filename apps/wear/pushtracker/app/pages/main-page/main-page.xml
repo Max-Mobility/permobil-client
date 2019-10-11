@@ -15,7 +15,7 @@
             </nac:AnimatedCircle>
             <!-- translateY="-50" width="{{ screenWidth }}" height="{{ screenHeight }}" width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}" width="100%" height="100%" width="90%" height="90%" -->
             // Coast Goal Circle
-                                                                                                                                                                                                                                                                                                                        <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+                                                                                                                                                            <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -31,26 +31,6 @@
               // pushes
               <Label row="3" col="1" textWrap="true" class="center-label-base compact fs18 bold" verticalAlignment="bottom" text="{{ currentPushCountDisplay }}" />
               <Label row="4" col="1" textWrap="true" class="center-label-base compact fs14" verticalAlignment="bottom" text="{{ L('pushes.units') }}" />
-
-              <!-- <GridLayout row="0" rows="*" columns="*, *">
-                <StackLayout col="0">
-                  // distance
-                  <Label class="center-label-base ionicon distance-goal-color compact fs34" text="&#xf125;" />
-                  <Label textWrap="true" class="center-label-base compact fs26 bold" text="{{ distanceGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true" class="center-label-base compact fs14" text="{{ distanceUnits }}" />
-                </StackLayout>
-                <StackLayout col="1">
-                  // coast
-                  <Label class="center-label-base ionicon coast-goal-color compact fs34" text="&#xf125; &#xf125;" />
-                  <Label textWrap="true" class="center-label-base compact fs26 bold" text="{{ coastGoalCurrentValueDisplay }}" />
-                  <Label textWrap="true" class="center-label-base compact fs14" text="{{ L('goals.coast.units') }}" />
-                </StackLayout>
-              </GridLayout>
-              <StackLayout row="1" verticalAlignment="bottom">
-                // pushes
-                <Label textWrap="true" class="center-label-base compact fs18 bold" text="{{ currentPushCountDisplay }}" />
-                <Label textWrap="true" class="center-label-base compact fs14" text="{{ L('pushes.units') }}" />
-              </StackLayout> -->
             </GridLayout>
           </GridLayout>
         </wol:WearOsLayout>
@@ -120,51 +100,25 @@
 
     // Settings Layout "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
-        <StackLayout height="100%">
-          <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
-          <Label text="" row="1" col="0" class="hr-blue" />
-          <ScrollView height="100%" id="settingsScrollView">
-            <StackLayout paddingBottom="{{ insetPadding }}">
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="editProfile" tap="{{ onEditProfileTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.edit-profile') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="distanceGoal" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.distancegoal.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="coastGoal" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.coastgoal.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.units.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="watchrequired" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.watchrequired.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-            </StackLayout>
-          </ScrollView>
-        </StackLayout>
+      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}">
+        <ScrollView id="settingsScrollView">
+          <GridLayout rows="*, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+            <Label row="0" colSpan="2" text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
+            <Label row="1" colSpan="2" class="hr-blue" />
+            <Label row="2" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
+            <Label row="2" col="1" text="{{ L('buttons.back') }}" tap="{{ previousLayout }}" class="settings-label" textWrap="true" />
+            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="3" col="1" text="{{ L('settings.edit-profile') }}" id="editProfile" tap="{{ onEditProfileTap }}" class="settings-label" textWrap="true" />
+            <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="4" col="1" text="{{ L('settings.distancegoal.title') }}" id="distanceGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="5" col="1" text="{{ L('settings.coastgoal.title') }}" id="coastGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+            <Label row="6" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="6" col="1" text="{{ L('settings.units.title') }}" id="units" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+            <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="7" col="1" text="{{ L('settings.watchrequired.title') }}" id="watchrequired" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+          </GridLayout>
+        </ScrollView>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
 
