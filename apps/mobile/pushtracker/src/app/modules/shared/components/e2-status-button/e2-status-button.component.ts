@@ -53,7 +53,7 @@ export class E2StatusButtonComponent {
     this.updateWatchIcon();
   }
 
-  onUnloaded() {}
+  onUnloaded() { }
 
   async onTap() {
     if (!this.allowUserInteraction) return;
@@ -65,15 +65,17 @@ export class E2StatusButtonComponent {
       return;
     }
 
-    this._loadingIndicator.show({
-      message: this._translateService.instant(
-        'wearos-comms.messages.synchronizing'
-      ),
-      details: this._translateService.instant(
-        'wearos-comms.messages.synchronizing-long'
-      ),
-      dimBackground: true
-    });
+    if (!isAndroid) {
+      this._loadingIndicator.show({
+        message: this._translateService.instant(
+          'wearos-comms.messages.synchronizing'
+        ),
+        details: this._translateService.instant(
+          'wearos-comms.messages.synchronizing-long'
+        ),
+        dimBackground: true
+      });
+    }
 
     this._logService.logBreadCrumb(
       E2StatusButtonComponent.name,
@@ -129,7 +131,7 @@ export class E2StatusButtonComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => {})
+      .then(() => { })
       .catch(err => {
         this._logService.logException(err);
       });
