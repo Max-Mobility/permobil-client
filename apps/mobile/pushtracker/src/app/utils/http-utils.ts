@@ -17,8 +17,7 @@ export function getJSONFromKinvey(queryString: string): Promise<Array<any>> {
         Authorization: `Kinvey ${kinveyActiveUser._kmd.authtoken}`,
         'Accept-Encoding': 'gzip',
         'Content-Type': 'application/json'
-      },
-      timeout: 3000
+      }
     })
       .then(resp => {
         if (resp) {
