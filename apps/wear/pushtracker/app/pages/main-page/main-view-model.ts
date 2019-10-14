@@ -21,7 +21,13 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import {
+  getSerialNumber,
+  saveSerialNumber,
+  loadSerialNumber,
+  hideOffScreenLayout,
+  showOffScreenLayout
+} from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -163,10 +169,8 @@ export class MainViewModel extends Observable {
   private kinveyService: KinveyService;
 
   // permissions for the app
-  private permissionsNeeded = [
-    android.Manifest.permission.READ_PHONE_STATE,
-    android.Manifest.permission.ACCESS_FINE_LOCATION
-  ];
+  private permissionsNeeded: any[] = [];
+  private permissionsReasons: string[] = [];
 
   constructor() {
     super();
@@ -198,6 +202,23 @@ export class MainViewModel extends Observable {
     this.sentryBreadCrumb('App event handlers registered.');
 
     this.registerForServiceDataUpdates();
+
+    // configure the needed permissions
+    this.permissionsNeeded = [];
+    if (WearOsComms.phoneIsIos()) {
+      this.permissionsNeeded.push(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION
+      );
+      this.permissionsReasons.push(
+        L('permissions-reasons.coarse-location')
+      );
+    }
+    this.permissionsNeeded.push(
+      android.Manifest.permission.READ_PHONE_STATE
+    );
+    this.permissionsReasons.push(
+      L('permissions-reasons.phone-state')
+    );
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -234,14 +255,7 @@ export class MainViewModel extends Observable {
     // initialize data storage for usage, errors, settings
     this.initSqliteTables();
     //  // load serial number from settings / memory
-    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
-      .getApplicationContext()
-      .getSharedPreferences('prefs.db', 0);
-    const savedSerial = sharedPreferences.getString(
-      prefix + com.permobil.pushtracker.Datastore.WATCH_SERIAL_NUMBER_KEY,
-      ''
-    );
+    const savedSerial = loadSerialNumber();
     if (savedSerial && savedSerial.length) {
       this.kinveyService.watch_serial_number = savedSerial;
     }
@@ -565,10 +579,7 @@ export class MainViewModel extends Observable {
     const neededPermissions = this.permissionsNeeded.filter(
       p => !hasPermission(p)
     );
-    const reasons = [
-      L('permissions-reasons.phone-state'),
-      L('permissions-reasons.coarse-location')
-    ].join('\n\n');
+    const reasons = this.permissionsReasons.join('\n\n');
     if (neededPermissions && neededPermissions.length > 0) {
       // Log.D('requesting permissions!', neededPermissions);
       await alert({
@@ -577,24 +588,12 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        const permissions = await requestPermissions(
+        await requestPermissions(
           neededPermissions,
-          () => {}
+          () => { }
         );
         // now that we have permissions go ahead and save the serial number
-        const watchSerialNumber = android.os.Build.getSerial();
-        // save it to datastore for service to use
-        const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-        const sharedPreferences = ad
-          .getApplicationContext()
-          .getSharedPreferences('prefs.db', 0);
-        const editor = sharedPreferences.edit();
-        editor.putString(
-          prefix + com.permobil.pushtracker.Datastore.WATCH_SERIAL_NUMBER_KEY,
-          watchSerialNumber
-        );
-        editor.commit();
-        this.kinveyService.watch_serial_number = watchSerialNumber;
+        this.updateSerialNumber();
         // and return true letting the caller know we got the permissions
         return true;
       } catch (err) {
@@ -604,6 +603,12 @@ export class MainViewModel extends Observable {
     } else {
       return true;
     }
+  }
+
+  updateSerialNumber() {
+    const watchSerialNumber = getSerialNumber();
+    saveSerialNumber(watchSerialNumber);
+    this.kinveyService.watch_serial_number = watchSerialNumber;
   }
 
   previousLayout() {
@@ -1140,7 +1145,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() {}
+  updateSpeedDisplay() { }
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1201,7 +1206,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);

@@ -1,14 +1,22 @@
 import { Log } from '@permobil/core';
+import { L } from '@permobil/nativescript';
 import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { alert } from 'tns-core-modules/ui/dialogs';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { KinveyService } from '../../../services';
+import {
+  getSerialNumber,
+  saveSerialNumber,
+} from '../../../utils';
 
 let closeCallback;
 let page: Page;
 let wearOsLayout: WearOsLayout;
+let kinveyService: KinveyService;
 
 // values for UI databinding via bindingContext
 const data = {
@@ -21,15 +29,35 @@ const data = {
   userEmail: '---'
 };
 
-export function onCloseTap(args) {
+export function onCloseTap(_: any) {
   closeCallback();
+}
+
+export async function onSerialNumberTap(_: any) {
+  Log.D('about-page onSerialNumberTap');
+  const p = android.Manifest.permission.READ_PHONE_STATE;
+  if (!hasPermission(p)) {
+    await alert({
+      title: L('permissions-request.title'),
+      message: L('permissions-reasons.phone-state'),
+      okButtonText: L('buttons.ok')
+    });
+    try {
+      await requestPermissions([p], () => { });
+      const watchSerialNumber = getSerialNumber();
+      saveSerialNumber(watchSerialNumber);
+      kinveyService.watch_serial_number = watchSerialNumber;
+    } catch (err) {
+    }
+  } else {
+  }
 }
 
 export async function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
   page = args.object as Page;
 
-  const kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as KinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the device serial number

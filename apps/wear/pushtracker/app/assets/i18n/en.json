@@ -64,7 +64,8 @@
     "title": "Menu"
   },
   "permissions-reasons": {
-    "coarse-location": "To control your SmartDrive using bluetooth we need ACCESS_COARSE_LOCATION permission.",
+    "fine-location": "To measure distance using your SmartWatch GPS need ACCESS_FINE_LOCATION permission.",
+    "coarse-location": "To communicate to the PushTracker mobile app on your iPhone using bluetooth we need ACCESS_COARSE_LOCATION permission.",
     "phone-state": "To read your device serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
   },
   "permissions-request": {
