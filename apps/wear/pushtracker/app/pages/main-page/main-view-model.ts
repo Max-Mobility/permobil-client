@@ -14,6 +14,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
+import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
@@ -87,13 +88,6 @@ export class MainViewModel extends Observable {
   @Prop() busyText: string = L('busy.synchronizing');
 
   /**
-   * User display data
-   */
-  @Prop() hasUserData: boolean = false;
-  @Prop() userEmail: string = '---';
-  @Prop() userName: string = '---';
-
-  /**
    * Settings
    */
   @Prop() settings: Profile.Settings = new Profile.Settings();
@@ -125,7 +119,6 @@ export class MainViewModel extends Observable {
    */
   private previousLayouts: string[] = [];
   private layouts = {
-    about: false,
     changeSettings: false,
     main: true,
     profile: false,
@@ -135,10 +128,8 @@ export class MainViewModel extends Observable {
   private settingsLayout: SwipeDismissLayout;
   private profileLayout: SwipeDismissLayout;
   private changeSettingsLayout: SwipeDismissLayout;
-  private aboutLayout: SwipeDismissLayout;
   private settingsScrollView: ScrollView;
   private profileScrollView: ScrollView;
-  private aboutScrollView: ScrollView;
 
   /**
    * Settings UI:
@@ -161,13 +152,6 @@ export class MainViewModel extends Observable {
 
   // used to update the chart display when the date changes
   private lastChartDay = null;
-
-  /**
-   * Information for About page
-   */
-  @Prop() watchSerialNumber: string = '---';
-  @Prop() appVersion: string = '---';
-  @Prop() databaseId: string = KinveyService.api_app_key;
 
   // Used for doing work while charing
   private CHARGING_WORK_PERIOD_MS = 30 * 1000;
@@ -249,8 +233,7 @@ export class MainViewModel extends Observable {
 
     // initialize data storage for usage, errors, settings
     this.initSqliteTables();
-
-    // load serial number from settings / memory
+    //  // load serial number from settings / memory
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
@@ -260,17 +243,8 @@ export class MainViewModel extends Observable {
       ''
     );
     if (savedSerial && savedSerial.length) {
-      this.watchSerialNumber = savedSerial;
-      this.kinveyService.watch_serial_number = this.watchSerialNumber;
+      this.kinveyService.watch_serial_number = savedSerial;
     }
-    const packageManager = application.android.context.getPackageManager();
-    const packageInfo = packageManager.getPackageInfo(
-      application.android.context.getPackageName(),
-      0
-    );
-    const versionName = packageInfo.versionName;
-    const versionCode = packageInfo.versionCode;
-    this.appVersion = versionName;
 
     // register for time updates
     this.registerForTimeUpdates();
@@ -605,10 +579,10 @@ export class MainViewModel extends Observable {
       try {
         const permissions = await requestPermissions(
           neededPermissions,
-          () => { }
+          () => {}
         );
         // now that we have permissions go ahead and save the serial number
-        this.watchSerialNumber = android.os.Build.getSerial();
+        const watchSerialNumber = android.os.Build.getSerial();
         // save it to datastore for service to use
         const prefix = com.permobil.pushtracker.Datastore.PREFIX;
         const sharedPreferences = ad
@@ -617,10 +591,10 @@ export class MainViewModel extends Observable {
         const editor = sharedPreferences.edit();
         editor.putString(
           prefix + com.permobil.pushtracker.Datastore.WATCH_SERIAL_NUMBER_KEY,
-          this.watchSerialNumber
+          watchSerialNumber
         );
         editor.commit();
-        this.kinveyService.watch_serial_number = this.watchSerialNumber;
+        this.kinveyService.watch_serial_number = watchSerialNumber;
         // and return true letting the caller know we got the permissions
         return true;
       } catch (err) {
@@ -788,38 +762,46 @@ export class MainViewModel extends Observable {
         return;
       }
     }
-    try {
-      Log.D('requesting user data');
-      // now request user data
-      this.isBusy = true;
-      const userData = (await this.kinveyService.getUserData()) as any;
-      Log.D('userInfo', JSON.stringify(userData, null, 2));
-      // save stuff for display
-      this.hasUserData = true;
-      this.userName = `${userData.first_name}\n${userData.last_name}`;
-      this.userEmail = userData.username;
-      // pull the data out of the user structure
-      this.settings.fromUser(userData);
-      this.saveSettings();
-      // now update any display that needs settings:
-      this.updateDisplay();
-      this.isBusy = false;
-    } catch (err) {
-      this.isBusy = false;
-      Log.E('could not get user data:', err);
-    }
+    // try {
+    //   Log.D('requesting user data');
+    //   // now request user data
+    //   this.isBusy = true;
+    //   const userData = (await this.kinveyService.getUserData()) as any;
+    //   Log.D('userInfo', JSON.stringify(userData, null, 2));
+    //   // save stuff for display
+    //   this.hasUserData = true;
+    //   this.userName = `${userData.first_name}\n${userData.last_name}`;
+    //   this.userEmail = userData.username;
+    //   // pull the data out of the user structure
+    //   this.settings.fromUser(userData);
+    //   this.saveSettings();
+    //   // now update any display that needs settings:
+    //   this.updateDisplay();
+    //   this.isBusy = false;
+    // } catch (err) {
+    //   this.isBusy = false;
+    //   Log.E('could not get user data:', err);
+    // }
   }
 
   /**
    * Main Menu Button Tap Handlers
    */
-  onAboutTap() {
-    if (this.aboutScrollView) {
-      // reset to to the top when entering the page
-      this.aboutScrollView.scrollToVerticalOffset(0, true);
-    }
-    showOffScreenLayout(this.aboutLayout);
-    this.enableLayout('about');
+  onAboutTap(args) {
+    const aboutPage = 'pages/modals/about/about';
+    const btn = args.object;
+    const option: ShowModalOptions = {
+      context: {
+        kinveyService: this.kinveyService
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+
+    btn.showModal(aboutPage, option);
   }
 
   /**
@@ -845,19 +827,6 @@ export class MainViewModel extends Observable {
     this.profileLayout.on(SwipeDismissLayout.dimissedEvent, args => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this.profileLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
-  }
-
-  onAboutLayoutLoaded(args) {
-    // show the chart
-    this.aboutLayout = args.object as SwipeDismissLayout;
-    this.aboutScrollView = this.aboutLayout.getViewById(
-      'aboutScrollView'
-    ) as ScrollView;
-    this.aboutLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this.aboutLayout, { x: 500, y: 0 });
       this.previousLayout();
     });
   }
@@ -1171,7 +1140,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() { }
+  updateSpeedDisplay() {}
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1232,7 +1201,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);
