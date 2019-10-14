@@ -543,7 +543,7 @@
                   <Label row="1" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
                 </GridLayout>
               </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
+              <RL:Ripple rippleColor="#ddd" tap="{{ onSerialNumberTapped }}">
                 <GridLayout rows="auto, auto" columns="15, *">
                   <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                   <Label row="0" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" />

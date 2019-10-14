@@ -503,29 +503,58 @@ export class MainViewModel extends Observable {
       try {
         await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
-        this.watchSerialNumber = android.os.Build.getSerial();
-        appSettings.setString(
-          DataKeys.WATCH_SERIAL_NUMBER,
-          this.watchSerialNumber
-        );
-        this._kinveyService.watch_serial_number = this.watchSerialNumber;
-        // and return true letting the caller know we got the permissions
-        return true;
+        this.updateSerialNumber();
       } catch (permissionsObj) {
-        const hasBlePermission =
-          permissionsObj[blePermission] ||
-          hasPermission(blePermission);
-        if (hasBlePermission) {
-          return true;
-        } else {
-          throw new SmartDriveException(L('failures.permissions'));
-        }
+        // we were not given all permissions
       }
-    } else if (hasPermission(blePermission)) {
-      return Promise.resolve(true);
+    }
+    if (hasPermission(blePermission)) {
+      return true;
     } else {
       throw new SmartDriveException(L('failures.permissions'));
     }
+  }
+
+  async onSerialNumberTapped() {
+    // determine if we have shown the permissions request
+    const hasShownRequest = appSettings.getBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
+    ) || false;
+    const p = android.Manifest.permission.READ_PHONE_STATE;
+    const needPermission = !hasPermission(p) &&
+      (application.android.foregroundActivity.shouldShowRequestPermissionRationale(p) ||
+        !hasShownRequest);
+    // update the has-shown-request
+    appSettings.setBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST,
+      true
+    );
+    if (needPermission) {
+      await alert({
+        title: L('permissions-request.title'),
+        message: L('permissions-reasons.phone-state'),
+        okButtonText: L('buttons.ok')
+      });
+      try {
+        await requestPermissions([p], () => { });
+      } catch (permissionsObj) {
+        // could not get the permission
+      }
+    } else {
+      throw new SmartDriveException(L('failures.permissions'));
+    }
+    this.updateSerialNumber();
+  }
+
+  updateSerialNumber() {
+    const serialNumberPermission = android.Manifest.permission.READ_PHONE_STATE;
+    if (!hasPermission(serialNumberPermission)) return;
+    this.watchSerialNumber = android.os.Build.getSerial();
+    appSettings.setString(
+      DataKeys.WATCH_SERIAL_NUMBER,
+      this.watchSerialNumber
+    );
+    this._kinveyService.watch_serial_number = this.watchSerialNumber;
   }
 
   previousLayout() {
@@ -3168,22 +3197,26 @@ export class MainViewModel extends Observable {
 
   async getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
-    let coastDistance = 0;
-    let driveDistance = 0;
+    // have to start at 1 so that they're valid
+    let coastDistance = 1;
+    let driveDistance = 1;
     const usageInfo = dates.map(d => {
       if (this._showDebugChartData) {
         const battery = Math.random() * 50 + 30;
         const mileDiff = (battery * (Math.random() * 2.0 + 6.0)) / 100.0;
-        driveDistance += SmartDrive.milesToMotorTicks(mileDiff);
-        coastDistance += SmartDrive.milesToCaseTicks(mileDiff);
-        return SmartDriveData.Info.newInfo(null, d, battery, driveDistance, coastDistance);
+        const newDrive = driveDistance + SmartDrive.milesToMotorTicks(mileDiff);
+        const newCoast = coastDistance + SmartDrive.milesToCaseTicks(mileDiff);
+        const info = SmartDriveData.Info.newInfo(null, d, battery,
+          newDrive, newCoast,
+          driveDistance, coastDistance);
+        driveDistance = newDrive;
+        coastDistance = newCoast;
+        return info;
       } else {
         return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
       }
     });
-    // will get one more than we need since getPastDates() returns
-    // (numDays + 1) elements in the array
-    return this.getRecentInfoFromDatabase(numDays + 1)
+    return this.getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
         objs.map((o: any) => {
           // @ts-ignore
