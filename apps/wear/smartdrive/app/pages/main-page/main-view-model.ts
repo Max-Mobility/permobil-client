@@ -266,7 +266,12 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-    this._sentryBreadCrumb('Main-View-Model constructor.');
+    // init sentry - DNS key for permobil-wear Sentry project
+    Sentry.init(
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    );
+    this._sentryBreadCrumb('Sentry has been initialized.');
+
     // log the build version
     this.buildDisplay = android.os.Build.DISPLAY;
 
@@ -342,13 +347,6 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('WakeLock has been initialized.');
 
     this._sentryBreadCrumb('Initializing Sentry...');
-    console.time('Sentry_Init');
-    // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
-    console.timeEnd('Sentry_Init');
-    this._sentryBreadCrumb('Sentry has been initialized.');
 
     this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
@@ -505,29 +503,58 @@ export class MainViewModel extends Observable {
       try {
         await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
-        this.watchSerialNumber = android.os.Build.getSerial();
-        appSettings.setString(
-          DataKeys.WATCH_SERIAL_NUMBER,
-          this.watchSerialNumber
-        );
-        this._kinveyService.watch_serial_number = this.watchSerialNumber;
-        // and return true letting the caller know we got the permissions
-        return true;
+        this.updateSerialNumber();
       } catch (permissionsObj) {
-        const hasBlePermission =
-          permissionsObj[blePermission] ||
-          hasPermission(blePermission);
-        if (hasBlePermission) {
-          return true;
-        } else {
-          throw new SmartDriveException(L('failures.permissions'));
-        }
+        // we were not given all permissions
       }
-    } else if (hasPermission(blePermission)) {
-      return Promise.resolve(true);
+    }
+    if (hasPermission(blePermission)) {
+      return true;
     } else {
       throw new SmartDriveException(L('failures.permissions'));
     }
+  }
+
+  async onSerialNumberTapped() {
+    // determine if we have shown the permissions request
+    const hasShownRequest = appSettings.getBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST
+    ) || false;
+    const p = android.Manifest.permission.READ_PHONE_STATE;
+    const needPermission = !hasPermission(p) &&
+      (application.android.foregroundActivity.shouldShowRequestPermissionRationale(p) ||
+        !hasShownRequest);
+    // update the has-shown-request
+    appSettings.setBoolean(
+      DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST,
+      true
+    );
+    if (needPermission) {
+      await alert({
+        title: L('permissions-request.title'),
+        message: L('permissions-reasons.phone-state'),
+        okButtonText: L('buttons.ok')
+      });
+      try {
+        await requestPermissions([p], () => { });
+      } catch (permissionsObj) {
+        // could not get the permission
+      }
+    } else {
+      throw new SmartDriveException(L('failures.permissions'));
+    }
+    this.updateSerialNumber();
+  }
+
+  updateSerialNumber() {
+    const serialNumberPermission = android.Manifest.permission.READ_PHONE_STATE;
+    if (!hasPermission(serialNumberPermission)) return;
+    this.watchSerialNumber = android.os.Build.getSerial();
+    appSettings.setString(
+      DataKeys.WATCH_SERIAL_NUMBER,
+      this.watchSerialNumber
+    );
+    this._kinveyService.watch_serial_number = this.watchSerialNumber;
   }
 
   previousLayout() {
@@ -1959,31 +1986,23 @@ export class MainViewModel extends Observable {
 
   async updateDistanceChart(sdData: any[]) {
     try {
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      // update distance data
-      let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
-      const distanceData = sdData.slice(1).map(e => {
-        let diff = 0;
-        const dist = e[SmartDriveData.Info.DriveDistanceName];
-        if (dist > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestDist > 0) {
-            diff = dist - oldestDist;
+      let maxDist = 0;
+      const distanceData = sdData.map(e => {
+        let dist = 0;
+        const start = e[SmartDriveData.Info.DriveDistanceStartName];
+        const end = e[SmartDriveData.Info.DriveDistanceName];
+        if (end > start && start > 0) {
+          dist = end - start;
+          dist = SmartDrive.motorTicksToMiles(dist);
+          if (dist > maxDist) {
+            maxDist = dist;
           }
-          oldestDist = Math.max(dist, oldestDist);
-          diff = SmartDrive.motorTicksToMiles(diff);
         }
         return {
           day: this._format(new Date(e.date), 'dd'),
-          value: diff
+          value: dist
         };
       });
-      const maxDist = distanceData.reduce((max, obj) => {
-        return obj.value > max ? obj.value : max;
-      }, 0.0);
       distanceData.map(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
       });
@@ -2010,18 +2029,14 @@ export class MainViewModel extends Observable {
       // set the range factor to be default (half way between the min/max)
       let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
       if (sdData && sdData.length) {
-        let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
         sdData.map(e => {
-          const dist = e[SmartDriveData.Info.DriveDistanceName];
-          if (dist > 0) {
-            // make sure we only compute diffs between valid distances
-            if (oldestDist > 0) {
-              const diff = dist - oldestDist;
-              // used for range computation
-              sumDistance += diff;
-              sumBattery += e[SmartDriveData.Info.BatteryName];
-            }
-            oldestDist = Math.max(dist, oldestDist);
+          const start = e[SmartDriveData.Info.DriveDistanceStartName];
+          const end = e[SmartDriveData.Info.DriveDistanceName];
+          if (end > start && start > 0) {
+            const diff = end - start;
+            // used for range computation
+            sumDistance += diff;
+            sumBattery += e[SmartDriveData.Info.BatteryName];
           }
         });
       }
@@ -2048,11 +2063,11 @@ export class MainViewModel extends Observable {
   async updateChartData() {
     try {
       // this._sentryBreadCrumb('Updating Chart Data / Display');
-      const sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      const sdData = await this.getUsageInfoFromDatabase(6) as any[];
       // keep track of the most recent day so we know when to update
       this._lastChartDay = new Date(last(sdData).date);
       // now update the charts
-      await this.updateBatteryChart(sdData.slice(1));
+      await this.updateBatteryChart(sdData);
       await this.updateDistanceChart(sdData);
       await this.updateSharedUsageInfo(sdData);
       // update the estimated range (doesn't use weekly usage info -
@@ -3071,30 +3086,12 @@ export class MainViewModel extends Observable {
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
       }
-      const infos = await this.getRecentInfoFromDatabase(1);
-      // this._sentryBreadCrumb('recent infos', infos);
-      if (!infos || !infos.length) {
-        // record the data if we have it
-        if (driveDistance > 0 && coastDistance > 0) {
-          // make the first entry for computing distance differences
-          const firstEntry = SmartDriveData.Info.newInfo(
-            undefined,
-            subDays(new Date(), 1),
-            0,
-            driveDistance,
-            coastDistance
-          );
-          await this._sqliteService.insertIntoTable(
-            SmartDriveData.Info.TableName,
-            firstEntry
-          );
-        }
-      }
       const u = await this.getTodaysUsageInfoFromDatabase();
       if (u[SmartDriveData.Info.IdName]) {
         // there was a record, so we need to update it. we add the
-        // already used battery plus the amount of new battery
-        // that has been used
+        // already used battery plus the amount of new battery that
+        // has been used. we directly overwrite the distance and
+        // update the records
         const updates = SmartDriveData.Info.updateInfo(args, u);
         await this._sqliteService.updateInTable(
           SmartDriveData.Info.TableName,
@@ -3151,36 +3148,23 @@ export class MainViewModel extends Observable {
     try {
       // aggregate the data
       const data = {};
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      // update distance data
-      let oldestDrive = oldest[SmartDriveData.Info.DriveDistanceName];
-      let oldestTotal = oldest[SmartDriveData.Info.CoastDistanceName];
-      sdData.slice(1).map(e => {
+      sdData.map(e => {
         // record the date
+        const driveStart = e[SmartDriveData.Info.DriveDistanceStartName];
+        const totalStart = e[SmartDriveData.Info.CoastDistanceStartName];
         const drive = e[SmartDriveData.Info.DriveDistanceName];
         const total = e[SmartDriveData.Info.CoastDistanceName];
         // determine drive ditance
         let driveDiff = 0;
-        if (drive > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestDrive > 0) {
-            driveDiff = drive - oldestDrive;
-          }
-          oldestDrive = Math.max(drive, oldestDrive);
+        if (drive > driveStart && driveStart > 0) {
+          driveDiff = drive - driveStart;
           // we only save it in miles
           driveDiff = SmartDrive.motorTicksToMiles(driveDiff);
         }
         // determine total distance
         let totalDiff = 0;
-        if (total > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestTotal > 0) {
-            totalDiff = total - oldestTotal;
-          }
-          oldestTotal = Math.max(total, oldestTotal);
+        if (total > totalStart && totalStart > 0) {
+          totalDiff = total - totalStart;
           // we only save it in miles
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
@@ -3213,22 +3197,26 @@ export class MainViewModel extends Observable {
 
   async getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
-    let coastDistance = 0;
-    let driveDistance = 0;
+    // have to start at 1 so that they're valid
+    let coastDistance = 1;
+    let driveDistance = 1;
     const usageInfo = dates.map(d => {
       if (this._showDebugChartData) {
         const battery = Math.random() * 50 + 30;
         const mileDiff = (battery * (Math.random() * 2.0 + 6.0)) / 100.0;
-        driveDistance += SmartDrive.milesToMotorTicks(mileDiff);
-        coastDistance += SmartDrive.milesToCaseTicks(mileDiff);
-        return SmartDriveData.Info.newInfo(null, d, battery, driveDistance, coastDistance);
+        const newDrive = driveDistance + SmartDrive.milesToMotorTicks(mileDiff);
+        const newCoast = coastDistance + SmartDrive.milesToCaseTicks(mileDiff);
+        const info = SmartDriveData.Info.newInfo(null, d, battery,
+          newDrive, newCoast,
+          driveDistance, coastDistance);
+        driveDistance = newDrive;
+        coastDistance = newCoast;
+        return info;
       } else {
         return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
       }
     });
-    // will get one more than we need since getPastDates() returns
-    // (numDays + 1) elements in the array
-    return this.getRecentInfoFromDatabase(numDays + 1)
+    return this.getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
         objs.map((o: any) => {
           // @ts-ignore

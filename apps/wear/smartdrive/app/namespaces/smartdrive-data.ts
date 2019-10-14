@@ -168,7 +168,9 @@ export namespace SmartDriveData {
       date: any,
       battery: number,
       drive: number,
-      coast: number
+      coast: number,
+      driveStart?: number,
+      coastStart?: number
     ) {
       return {
         [SmartDriveData.Info.IdName]: id,
@@ -177,8 +179,8 @@ export namespace SmartDriveData {
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
-        [SmartDriveData.Info.DriveDistanceStartName]: +drive,
-        [SmartDriveData.Info.CoastDistanceStartName]: +coast,
+        [SmartDriveData.Info.DriveDistanceStartName]: +(driveStart || drive),
+        [SmartDriveData.Info.CoastDistanceStartName]: +(coastStart || coast),
         [SmartDriveData.Info.RecordsName]: '[]',
         [SmartDriveData.Info.UuidName]: java.util.UUID.randomUUID().toString(),
         [SmartDriveData.Info.HasBeenSentName]: 0
