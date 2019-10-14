@@ -149,6 +149,10 @@ export class JourneyTabComponent {
     return this._loadDataForDate(this._rollingWeekStart, false)
       .then(result => {
         this.journeyItems = result;
+        if (result.length === 0) {
+          // force loading of more data if we have none on iOS
+          return this.onLoadMoreItems();
+        }
         this.showLoadingIndicator = false;
       })
       .catch(err => {
@@ -616,7 +620,6 @@ export class JourneyTabComponent {
     if (!this.user) return result;
 
     const date = YYYY_MM_DD(weekStartDate);
-
     const queryString = `?query={"_acl.creator":"${this.user._id}","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
     return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
       .then(data => {
@@ -625,7 +628,7 @@ export class JourneyTabComponent {
           this._weeklyActivityFromKinvey = result; // cache
           this._logService.logBreadCrumb(
             JourneyTabComponent.name,
-            'loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly usage'
+            'loadWeeklyPushtrackerActivityFromKinvey | Loaded weekly activity'
           );
           return Promise.resolve(result);
         }
