@@ -266,7 +266,12 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-    this._sentryBreadCrumb('Main-View-Model constructor.');
+    // init sentry - DNS key for permobil-wear Sentry project
+    Sentry.init(
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    );
+    this._sentryBreadCrumb('Sentry has been initialized.');
+
     // log the build version
     this.buildDisplay = android.os.Build.DISPLAY;
 
@@ -342,13 +347,6 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('WakeLock has been initialized.');
 
     this._sentryBreadCrumb('Initializing Sentry...');
-    console.time('Sentry_Init');
-    // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
-    console.timeEnd('Sentry_Init');
-    this._sentryBreadCrumb('Sentry has been initialized.');
 
     this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
