@@ -1959,31 +1959,23 @@ export class MainViewModel extends Observable {
 
   async updateDistanceChart(sdData: any[]) {
     try {
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      // update distance data
-      let oldestDist = oldest[SmartDriveData.Info.DriveDistanceName];
-      const distanceData = sdData.slice(1).map(e => {
-        let diff = 0;
-        const dist = e[SmartDriveData.Info.DriveDistanceName];
-        if (dist > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestDist > 0) {
-            diff = dist - oldestDist;
+      let maxDist = 0;
+      const distanceData = sdData.map(e => {
+        let dist = 0;
+        const start = e[SmartDriveData.Info.DriveDistanceStartName];
+        const end = e[SmartDriveData.Info.DriveDistanceName];
+        if (end > start && start > 0) {
+          dist = end - start;
+          dist = SmartDrive.motorTicksToMiles(dist);
+          if (dist > maxDist) {
+            maxDist = dist;
           }
-          oldestDist = Math.max(dist, oldestDist);
-          diff = SmartDrive.motorTicksToMiles(diff);
         }
         return {
           day: this._format(new Date(e.date), 'dd'),
-          value: diff
+          value: dist
         };
       });
-      const maxDist = distanceData.reduce((max, obj) => {
-        return obj.value > max ? obj.value : max;
-      }, 0.0);
       distanceData.map(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
       });
@@ -2010,18 +2002,14 @@ export class MainViewModel extends Observable {
       // set the range factor to be default (half way between the min/max)
       let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
       if (sdData && sdData.length) {
-        let oldestDist = sdData[0][SmartDriveData.Info.DriveDistanceName];
         sdData.map(e => {
-          const dist = e[SmartDriveData.Info.DriveDistanceName];
-          if (dist > 0) {
-            // make sure we only compute diffs between valid distances
-            if (oldestDist > 0) {
-              const diff = dist - oldestDist;
-              // used for range computation
-              sumDistance += diff;
-              sumBattery += e[SmartDriveData.Info.BatteryName];
-            }
-            oldestDist = Math.max(dist, oldestDist);
+          const start = e[SmartDriveData.Info.DriveDistanceStartName];
+          const end = e[SmartDriveData.Info.DriveDistanceName];
+          if (end > start && start > 0) {
+            const diff = end - start;
+            // used for range computation
+            sumDistance += diff;
+            sumBattery += e[SmartDriveData.Info.BatteryName];
           }
         });
       }
@@ -2048,11 +2036,11 @@ export class MainViewModel extends Observable {
   async updateChartData() {
     try {
       // this._sentryBreadCrumb('Updating Chart Data / Display');
-      const sdData = await this.getUsageInfoFromDatabase(7) as any[];
+      const sdData = await this.getUsageInfoFromDatabase(6) as any[];
       // keep track of the most recent day so we know when to update
       this._lastChartDay = new Date(last(sdData).date);
       // now update the charts
-      await this.updateBatteryChart(sdData.slice(1));
+      await this.updateBatteryChart(sdData);
       await this.updateDistanceChart(sdData);
       await this.updateSharedUsageInfo(sdData);
       // update the estimated range (doesn't use weekly usage info -
@@ -3071,30 +3059,12 @@ export class MainViewModel extends Observable {
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
       }
-      const infos = await this.getRecentInfoFromDatabase(1);
-      // this._sentryBreadCrumb('recent infos', infos);
-      if (!infos || !infos.length) {
-        // record the data if we have it
-        if (driveDistance > 0 && coastDistance > 0) {
-          // make the first entry for computing distance differences
-          const firstEntry = SmartDriveData.Info.newInfo(
-            undefined,
-            subDays(new Date(), 1),
-            0,
-            driveDistance,
-            coastDistance
-          );
-          await this._sqliteService.insertIntoTable(
-            SmartDriveData.Info.TableName,
-            firstEntry
-          );
-        }
-      }
       const u = await this.getTodaysUsageInfoFromDatabase();
       if (u[SmartDriveData.Info.IdName]) {
         // there was a record, so we need to update it. we add the
-        // already used battery plus the amount of new battery
-        // that has been used
+        // already used battery plus the amount of new battery that
+        // has been used. we directly overwrite the distance and
+        // update the records
         const updates = SmartDriveData.Info.updateInfo(args, u);
         await this._sqliteService.updateInTable(
           SmartDriveData.Info.TableName,
@@ -3151,36 +3121,23 @@ export class MainViewModel extends Observable {
     try {
       // aggregate the data
       const data = {};
-      // we've asked for one more day than needed so that we can
-      // compute distance differences, keep a reference to the first
-      // before we remove it below with the call to slice()
-      const oldest = sdData[0];
-      // update distance data
-      let oldestDrive = oldest[SmartDriveData.Info.DriveDistanceName];
-      let oldestTotal = oldest[SmartDriveData.Info.CoastDistanceName];
-      sdData.slice(1).map(e => {
+      sdData.map(e => {
         // record the date
+        const driveStart = e[SmartDriveData.Info.DriveDistanceStartName];
+        const totalStart = e[SmartDriveData.Info.CoastDistanceStartName];
         const drive = e[SmartDriveData.Info.DriveDistanceName];
         const total = e[SmartDriveData.Info.CoastDistanceName];
         // determine drive ditance
         let driveDiff = 0;
-        if (drive > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestDrive > 0) {
-            driveDiff = drive - oldestDrive;
-          }
-          oldestDrive = Math.max(drive, oldestDrive);
+        if (drive > driveStart && driveStart > 0) {
+          driveDiff = drive - driveStart;
           // we only save it in miles
           driveDiff = SmartDrive.motorTicksToMiles(driveDiff);
         }
         // determine total distance
         let totalDiff = 0;
-        if (total > 0) {
-          // make sure we only compute diffs between valid distances
-          if (oldestTotal > 0) {
-            totalDiff = total - oldestTotal;
-          }
-          oldestTotal = Math.max(total, oldestTotal);
+        if (total > totalStart && totalStart > 0) {
+          totalDiff = total - totalStart;
           // we only save it in miles
           totalDiff = SmartDrive.caseTicksToMiles(totalDiff);
         }
