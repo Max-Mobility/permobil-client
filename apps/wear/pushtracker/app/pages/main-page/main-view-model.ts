@@ -14,20 +14,13 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
-import { ScrollView } from 'tns-core-modules/ui/scroll-view';
+import { ShowModalOptions, View } from 'tns-core-modules/ui/page/page';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import {
-  getSerialNumber,
-  saveSerialNumber,
-  loadSerialNumber,
-  hideOffScreenLayout,
-  showOffScreenLayout
-} from '../../utils';
+import { getSerialNumber, hideOffScreenLayout, loadSerialNumber, saveSerialNumber, showOffScreenLayout } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -126,16 +119,10 @@ export class MainViewModel extends Observable {
   private previousLayouts: string[] = [];
   private layouts = {
     changeSettings: false,
-    main: true,
-    profile: false,
-    settings: false
+    main: true
   };
   @Prop() enabledLayout = fromObject(this.layouts);
-  private settingsLayout: SwipeDismissLayout;
-  private profileLayout: SwipeDismissLayout;
   private changeSettingsLayout: SwipeDismissLayout;
-  private settingsScrollView: ScrollView;
-  private profileScrollView: ScrollView;
 
   /**
    * Settings UI:
@@ -209,25 +196,10 @@ export class MainViewModel extends Observable {
       this.permissionsNeeded.push(
         android.Manifest.permission.ACCESS_COARSE_LOCATION
       );
-      this.permissionsReasons.push(
-        L('permissions-reasons.coarse-location')
-      );
+      this.permissionsReasons.push(L('permissions-reasons.coarse-location'));
     }
-    this.permissionsNeeded.push(
-      android.Manifest.permission.READ_PHONE_STATE
-    );
-    this.permissionsReasons.push(
-      L('permissions-reasons.phone-state')
-    );
-  }
-
-  customWOLInsetLoaded(args: EventData) {
-    (args.object as any).nativeView.setPadding(
-      this.insetPadding,
-      this.insetPadding,
-      this.insetPadding,
-      0
-    );
+    this.permissionsNeeded.push(android.Manifest.permission.READ_PHONE_STATE);
+    this.permissionsReasons.push(L('permissions-reasons.phone-state'));
   }
 
   async init() {
@@ -588,10 +560,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(
-          neededPermissions,
-          () => { }
-        );
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -794,7 +763,7 @@ export class MainViewModel extends Observable {
    */
   onAboutTap(args) {
     const aboutPage = 'pages/modals/about/about';
-    const btn = args.object;
+    const btn = args.object as View;
     const option: ShowModalOptions = {
       context: {
         kinveyService: this.kinveyService
@@ -807,33 +776,6 @@ export class MainViewModel extends Observable {
     };
 
     btn.showModal(aboutPage, option);
-  }
-
-  /**
-   * Setings page handlers
-   */
-  onSettingsLayoutLoaded(args) {
-    this.settingsLayout = args.object as SwipeDismissLayout;
-    this.settingsScrollView = this.settingsLayout.getViewById(
-      'settingsScrollView'
-    ) as ScrollView;
-    this.settingsLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this.settingsLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
-  }
-
-  onProfileLayoutLoaded(args) {
-    this.profileLayout = args.object as SwipeDismissLayout;
-    this.profileScrollView = this.profileLayout.getViewById(
-      'profileScrollView'
-    ) as ScrollView;
-    this.profileLayout.on(SwipeDismissLayout.dimissedEvent, args => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this.profileLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
   }
 
   /**
@@ -992,23 +934,23 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onProfileTap() {
-    this.updateUserData();
-    if (this.settingsScrollView) {
-      // reset to to the top when entering the page
-      this.settingsScrollView.scrollToVerticalOffset(0, true);
-    }
-    showOffScreenLayout(this.settingsLayout);
-    this.enableLayout('settings');
-  }
+  onSettingsTap(args) {
+    this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
 
-  onEditProfileTap() {
-    if (this.profileScrollView) {
-      // reset to to the top when entering the page
-      this.profileScrollView.scrollToVerticalOffset(0, true);
-    }
-    showOffScreenLayout(this.profileLayout);
-    this.enableLayout('profile');
+    const settingsPage = 'pages/modals/settings/settings';
+    const btn = args.object as View;
+    const option: ShowModalOptions = {
+      context: {
+        kinveyService: this.kinveyService
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+
+    btn.showModal(settingsPage, option);
   }
 
   onSettingsInfoItemTap(args: EventData) {
@@ -1145,7 +1087,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() { }
+  updateSpeedDisplay() {}
 
   onConfirmChangesTap() {
     hideOffScreenLayout(this.changeSettingsLayout, {
@@ -1206,7 +1148,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(uri));
     application.android.foregroundActivity.startActivity(intent);
