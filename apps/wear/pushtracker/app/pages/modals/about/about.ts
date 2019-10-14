@@ -17,8 +17,8 @@ const data = {
   watchSerialNumber: '---',
   appVersion: KinveyService.api_app_key,
   databaseId: '---',
-  userName: '',
-  userEmail: ''
+  userName: '---',
+  userEmail: '---'
 };
 
 export function onCloseTap(args) {
