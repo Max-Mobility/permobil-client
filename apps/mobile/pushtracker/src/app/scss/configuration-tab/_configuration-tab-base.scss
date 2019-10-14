@@ -14,12 +14,6 @@
   vertical-align: center;
 }
 
-.CHART_TITLE_BASE {
-  font-size: 16;
-  font-family: $os;
-  color: $black;
-}
-
 .CLOSE_BTN_BASE {
   @extend .btn-transparent;
   height: 50;
