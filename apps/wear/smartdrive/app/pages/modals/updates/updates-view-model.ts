@@ -32,9 +32,9 @@ import { ReflectiveInjector } from 'injection-js';
 import { Pager } from 'nativescript-pager';
 import * as LS from 'nativescript-localstorage';
 
-let closeCallback;
-let page: Page;
-let wearOsLayout: WearOsLayout;
+const closeCallback;
+const page: Page;
+const wearOsLayout: WearOsLayout;
 
 class SmartDriveException extends Error {
   constructor(...args) {
