@@ -125,7 +125,7 @@ export class MainViewModel extends Observable {
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
-  
+
   /**
    *
    * SmartDrive Related Data
