@@ -1,0 +1,32 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:wol="nativescript-wear-os/packages/wear-os-layout" xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" shownModally="onShownModally" actionBarHidden="true">
+    <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
+        <GridLayout height="100%" rows="auto, auto, *" colums="*">
+            <Label row="0" text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />
+            <Label row="1" text="" class="hr-blue" />
+            <ListView row="2" items="{{ errorHistoryData }}" itemTemplateSelector="key" loadMoreItems="{{ onLoadMoreErrors }}">
+                <ListView.itemTemplates>
+                    <template key="back">
+                        <GridLayout rows="auto, auto" columns="15, *" tap="{{ onTap }}">
+                            <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+                            <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
+                        </GridLayout>
+                    </template>
+                    <template key="error">
+                        <GridLayout rows="auto, auto" columns="15, *">
+                            <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                            <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
+                            <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
+                        </GridLayout>
+                    </template>
+                    <template key="last">
+                        <GridLayout rows="auto, auto" columns="15, *" marginBottom="{{ insetPadding }}">
+                            <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                            <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
+                            <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
+                        </GridLayout>
+                    </template>
+                </ListView.itemTemplates>
+            </ListView>
+        </GridLayout>
+    </wol:WearOsLayout>
+</Page>

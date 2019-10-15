@@ -33,6 +33,7 @@ import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 
 const ambientTheme = require('../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../scss/theme-default.css').toString();
@@ -1457,13 +1458,24 @@ export class MainViewModel extends Observable {
   /**
    * Main Menu Button Tap Handlers
    */
-  onAboutTap() {
-    if (this.aboutScrollView) {
-      // reset to to the top when entering the page
-      this.aboutScrollView.scrollToVerticalOffset(0, true);
-    }
-    showOffScreenLayout(this._aboutLayout);
-    this.enableLayout('about');
+  onAboutTap(args) {
+    const aboutPage = 'pages/modals/about/about';
+    const btn = args.object;
+    const option: ShowModalOptions = {
+      context: {
+        kinveyService: this._kinveyService,
+        sqliteService: this._sqliteService,
+        bleVersion: this.bleVersion,
+        mcuVersion: this.mcuVersion,
+        errorHistoryData: this.errorHistoryData
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+    btn.showModal(aboutPage, option);
   }
 
   onTrainingTap() {
@@ -1947,19 +1959,6 @@ export class MainViewModel extends Observable {
     this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, () => {
       // hide the offscreen layout when dismissed
       hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
-  }
-
-  onAboutLayoutLoaded(args: EventData) {
-    // show the chart
-    this._aboutLayout = args.object as SwipeDismissLayout;
-    this.aboutScrollView = this._aboutLayout.getViewById(
-      'aboutScrollView'
-    ) as ScrollView;
-    this._aboutLayout.on(SwipeDismissLayout.dimissedEvent, () => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._aboutLayout, { x: 500, y: 0 });
       this.previousLayout();
     });
   }
