@@ -45,7 +45,7 @@ class SmartDriveException extends Error {
 
 export class UpdatesViewModel extends Observable {
   @Prop() updateProgressCircle: AnimatedCircle;
-  @Prop() updateProgressText: string = '';
+  @Prop() updateProgressText: string = 'Foo';
   @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
@@ -425,6 +425,7 @@ export class UpdatesViewModel extends Observable {
     // have the most up to date firmware files and download them
     // if we don't
     const mds = response;
+    Log.D('mds', mds);
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
@@ -447,6 +448,7 @@ export class UpdatesViewModel extends Observable {
     });
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
+    Log.D(fileMetaDatas);
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
       // update progress text
