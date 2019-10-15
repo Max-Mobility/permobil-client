@@ -1,4 +1,3 @@
-
 import { Log } from '@permobil/core';
 import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
