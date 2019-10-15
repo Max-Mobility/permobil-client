@@ -104,7 +104,6 @@ export class MainViewModel extends Observable {
   private layouts = {
     about: false,
     changeSettings: false,
-    errorHistory: false,
     main: true,
     scanning: false,
     settings: false,
@@ -115,7 +114,6 @@ export class MainViewModel extends Observable {
   private _powerAssistView: View;
   private _settingsLayout: SwipeDismissLayout;
   private _changeSettingsLayout: SwipeDismissLayout;
-  private _errorHistoryLayout: SwipeDismissLayout;
   private _aboutLayout: SwipeDismissLayout;
   private _updatesLayout: SwipeDismissLayout;
   private _scanningLayout: SwipeDismissLayout;
@@ -172,11 +170,6 @@ export class MainViewModel extends Observable {
   @Prop() distanceChartData: any[];
   @Prop() distanceChartMaxValue: string;
   @Prop() distanceUnits: string = 'mi';
-
-  /**
-   * Data to bind to the Error History repeater
-   */
-  @Prop() errorHistoryData = new ObservableArray();
 
   /**
    * SmartDrive data display so we don't directly bind to the
@@ -1466,8 +1459,7 @@ export class MainViewModel extends Observable {
         kinveyService: this._kinveyService,
         sqliteService: this._sqliteService,
         bleVersion: this.bleVersion,
-        mcuVersion: this.mcuVersion,
-        errorHistoryData: this.errorHistoryData
+        mcuVersion: this.mcuVersion
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
@@ -1888,64 +1880,6 @@ export class MainViewModel extends Observable {
     if (doCancelOta && this.smartDrive) {
       this.smartDrive.cancelOTA();
     }
-  }
-
-  /**
-   * Error History Page Handlers
-   */
-
-  // TODO: add tap listener for each error showing what to do
-  onErrorHistoryLayoutLoaded(args: EventData) {
-    // show the chart
-    this._errorHistoryLayout = args.object as SwipeDismissLayout;
-    this._errorHistoryLayout.on(SwipeDismissLayout.dimissedEvent, () => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._errorHistoryLayout, { x: 500, y: 0 });
-      this.previousLayout();
-      // clear the error history data when it's not being displayed to save on memory
-      this.errorHistoryData.splice(0, this.errorHistoryData.length);
-    });
-  }
-
-  selectErrorTemplate(item, index, items) {
-    if (item.isBack) return 'back';
-    else if (index === (items.length - 1)) return 'last';
-    else return 'error';
-  }
-
-  async onLoadMoreErrors() {
-    let recents = await this.getRecentErrors(10, this.errorHistoryData.length);
-    // add the back button as the first element - should only load once
-    if (this.errorHistoryData.length === 0) {
-      this.errorHistoryData.push({
-        code: L('buttons.back'),
-        onTap: this.previousLayout.bind(this),
-        isBack: true
-      });
-    }
-    // determine the unique errors that we have
-    recents = differenceBy(recents, this.errorHistoryData.slice(), 'uuid');
-    if (recents && recents.length) {
-      // now add the recent data
-      this.errorHistoryData.push(...recents);
-    } else if (this.errorHistoryData.length === 1) {
-      // or add the 'no errors' message
-      this.errorHistoryData.push({
-        code: L('error-history.no-errors'),
-        insetPadding: this.insetPadding,
-        isBack: false
-      });
-    }
-  }
-
-  showErrorHistory() {
-    // clear out any pre-loaded data
-    this.errorHistoryData.splice(0, this.errorHistoryData.length);
-    // load the error data
-    this.onLoadMoreErrors();
-    // show the layout
-    showOffScreenLayout(this._errorHistoryLayout);
-    this.enableLayout('errorHistory');
   }
 
   /**
