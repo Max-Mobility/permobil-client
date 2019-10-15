@@ -1520,11 +1520,23 @@ export class MainViewModel extends Observable {
   /**
    * Updates Page Handlers
    */
-  onUpdatesTap() {
+  onUpdatesTap(args) {
     if (this.smartDrive) {
-      showOffScreenLayout(this._updatesLayout);
-      this.enableLayout('updates');
-      this.checkForUpdates();
+      // showOffScreenLayout(this._updatesLayout);
+      // this.enableLayout('updates');
+      // this.checkForUpdates();
+      const updatesPage = 'pages/modals/updates/updates-page';
+      const btn = args.object;
+      const option: ShowModalOptions = {
+        context: {},
+        closeCallback: () => {
+          // we dont do anything with the about to return anything
+        },
+        animated: false,
+        fullscreen: true
+      };
+      btn.showModal(updatesPage, option);
+
     } else {
       alert({
         title: L('failures.title'),
