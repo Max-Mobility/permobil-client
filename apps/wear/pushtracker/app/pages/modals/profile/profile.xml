@@ -15,7 +15,6 @@
                 </GridLayout>
             </ScrollView>
         </StackLayout>
-
     </wol:WearOsLayout>
 </Page>
 

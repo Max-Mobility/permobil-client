@@ -1,4 +1,5 @@
 import { Log } from '@permobil/core';
+import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
@@ -40,9 +41,9 @@ export function onChangeSettingsItemTap(args) {
 
   // // copy the current settings into temporary store
   // this.tempSettings.copy(this.settings);
-  // this.activeSettingToChange = tappedId.toLowerCase();
-  // const translationKey = 'settings.' + this.activeSettingToChange + '.title';
-  // this.changeSettingKeyString = L(translationKey);
+  const activeSettingToChange = tappedId.toLowerCase();
+  const translationKey = 'settings.' + this.activeSettingToChange + '.title';
+  const changeSettingKeyString = L(translationKey);
   // this.updateSettingsChangeDisplay();
 
   // showOffScreenLayout(this.changeSettingsLayout).then(() => {

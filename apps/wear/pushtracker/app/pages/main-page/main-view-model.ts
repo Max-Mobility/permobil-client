@@ -11,7 +11,7 @@ import * as themes from 'nativescript-themes';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
+import { Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { ShowModalOptions, View } from 'tns-core-modules/ui/page/page';
@@ -20,7 +20,7 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import { getSerialNumber, hideOffScreenLayout, loadSerialNumber, saveSerialNumber, showOffScreenLayout } from '../../utils';
+import { getSerialNumber, loadSerialNumber, saveSerialNumber } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -90,7 +90,6 @@ export class MainViewModel extends Observable {
    * Settings
    */
   @Prop() settings: Profile.Settings = new Profile.Settings();
-  @Prop() tempSettings: Profile.Settings = new Profile.Settings();
   @Prop() hasSentSettings: boolean = false;
 
   /**
@@ -100,9 +99,6 @@ export class MainViewModel extends Observable {
   @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
   @Prop() currentHighStressActivityCount: number = 0;
 
-  // for managing the inset of the layouts ourselves
-  @Prop() screenWidth: number = 200;
-  @Prop() screenHeight: number = 200;
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
 
@@ -118,18 +114,9 @@ export class MainViewModel extends Observable {
    */
   private previousLayouts: string[] = [];
   private layouts = {
-    changeSettings: false,
     main: true
   };
-  @Prop() enabledLayout = fromObject(this.layouts);
   private changeSettingsLayout: SwipeDismissLayout;
-
-  /**
-   * Settings UI:
-   */
-  @Prop() activeSettingToChange = ' ';
-  @Prop() changeSettingKeyString = ' ';
-  @Prop() changeSettingKeyValue: any = ' ';
 
   /**
    * Data to bind to the Distance Chart repeater.
@@ -159,9 +146,24 @@ export class MainViewModel extends Observable {
   private permissionsNeeded: any[] = [];
   private permissionsReasons: string[] = [];
 
+  /**
+   * FOR COMMUNICATING WITH PHONE AND DETERMINING IF THE PHONE HAS THE
+   * APP, AND FOR OPENING THE APP STORE OR APP
+   */
+
+  private PHONE_ANDROID_PACKAGE_NAME = 'com.permobil.pushtracker';
+  private PHONE_IOS_APP_STORE_URI =
+    'https://itunes.apple.com/us/app/pushtracker/id1121427802';
+  private ANDROID_MARKET_SMARTDRIVE_URI =
+    'market://details?id=com.permobil.smartdrive.wearos';
+
+  private serviceDataReceiver = new DataBroadcastReceiver();
+
+  private hasAppliedTheme: boolean = false;
+
   constructor() {
     super();
-    this.sentryBreadCrumb('Main-View-Model constructor.');
+    this._sentryBreadCrumb('Main-View-Model constructor.');
 
     // determine inset padding
     const androidConfig = ad
@@ -184,11 +186,11 @@ export class MainViewModel extends Observable {
     Log.D('chinSize:', this.chinSize);
 
     // handle application lifecycle events
-    this.sentryBreadCrumb('Registering app event handlers.');
-    this.registerAppEventHandlers();
-    this.sentryBreadCrumb('App event handlers registered.');
+    this._sentryBreadCrumb('Registering app event handlers.');
+    this._registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
 
-    this.registerForServiceDataUpdates();
+    this._registerForServiceDataUpdates();
 
     // configure the needed permissions
     this.permissionsNeeded = [];
@@ -202,10 +204,119 @@ export class MainViewModel extends Observable {
     this.permissionsReasons.push(L('permissions-reasons.phone-state'));
   }
 
-  async init() {
-    this.sentryBreadCrumb('Main-View-Model init.');
+  async onMainPageLoaded(args: any) {
+    this._sentryBreadCrumb('onMainPageLoaded');
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this._applyTheme('ambient');
+        } else {
+          this._applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
+    // now init the ui
+    try {
+      await this._init();
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('activity init error:', err);
+    }
+  }
 
-    this.sentryBreadCrumb('Initializing Sentry...');
+  onInstallSmartDriveTap() {
+    const intent = new android.content.Intent(
+      android.content.Intent.ACTION_VIEW
+    )
+      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
+      .addFlags(
+        android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+      )
+      .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
+    application.android.foregroundActivity.startActivity(intent);
+  }
+
+  onSettingsTap(args) {
+    this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
+
+    const settingsPage = 'pages/modals/settings/settings';
+    const btn = args.object as View;
+    const option: ShowModalOptions = {
+      context: {
+        kinveyService: this.kinveyService,
+        disableWearCheck: this.disableWearCheck
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+
+    btn.showModal(settingsPage, option);
+  }
+
+  /**
+   * Main Menu Button Tap Handlers
+   */
+  onAboutTap(args) {
+    const aboutPage = 'pages/modals/about/about';
+    const btn = args.object as View;
+    const option: ShowModalOptions = {
+      context: {
+        kinveyService: this.kinveyService
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+
+    btn.showModal(aboutPage, option);
+  }
+
+  debugTap() {
+    debug = !debug;
+    if (debug) {
+      this.currentPushCount = Math.random() * 2000 + 1000;
+      this.distanceGoalValue = Math.random() * 10.0 + 2.0;
+      this.distanceGoalCurrentValue = debug
+        ? Math.random() * this.distanceGoalValue
+        : 0;
+      this.coastGoalValue = Math.random() * 10 + 2.0;
+      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
+    } else {
+      this._loadCurrentActivityData();
+    }
+    this._updateDisplay();
+  }
+
+  async onConnectPushTrackerTap() {
+    if (!this.kinveyService.hasAuth()) {
+      const validAuth = await this._updateAuthorization();
+      if (!validAuth) {
+        this._openAppOnPhone();
+        return;
+      }
+    }
+    // send an intent to the service - if it is already running this
+    // will trigger a push to the server of the data
+    this._sendIntentToService();
+    // if we got here then we have valid authorization!
+    this._showConfirmation(
+      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
+    );
+  }
+
+  private async _init() {
+    this._sentryBreadCrumb('Main-View-Model _init.');
+
     console.time('Sentry_Init');
     // init sentry - DNS key for permobil-wear Sentry project
     Sentry.init(
@@ -213,59 +324,49 @@ export class MainViewModel extends Observable {
       // 'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1485857'
     );
     console.timeEnd('Sentry_Init');
-    this.sentryBreadCrumb('Sentry has been initialized.');
 
-    this.sentryBreadCrumb('Creating services...');
+    this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([
       SqliteService,
       KinveyService
     ]);
     this.sqliteService = injector.get(SqliteService);
     this.kinveyService = injector.get(KinveyService);
-    this.sentryBreadCrumb('All Services created.');
+    this._sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings
-    this.initSqliteTables();
+    this._initSqliteTables();
     //  // load serial number from settings / memory
     const savedSerial = loadSerialNumber();
     if (savedSerial && savedSerial.length) {
       this.kinveyService.watch_serial_number = savedSerial;
     }
 
-    // register for time updates
-    this.registerForTimeUpdates();
-
     // load settings from memory
-    this.sentryBreadCrumb('Loading settings.');
-    this.loadSettings();
-    this.sentryBreadCrumb('Settings loaded.');
+    this._sentryBreadCrumb('Loading settings.');
+    this._loadSettings();
+    this._sentryBreadCrumb('Settings loaded.');
 
     // load activity data
-    this.loadCurrentActivityData();
+    this._loadCurrentActivityData();
 
-    this.sentryBreadCrumb('Updating display.');
-    this.updateDisplay();
-    this.sentryBreadCrumb('Display updated.');
+    this._sentryBreadCrumb('Updating display.');
+    this._updateDisplay();
+    this._sentryBreadCrumb('Display updated.');
 
     // register for time updates
-    this.registerForTimeUpdates();
+    this._registerForTimeUpdates();
 
     // determine if the smartdrive app is installed
-    this.isSmartDriveAppInstalled = this.checkPackageInstalled(
+    this.isSmartDriveAppInstalled = this._checkPackageInstalled(
       'com.permobil.smartdrive.wearos'
     );
 
-    setTimeout(this.startActivityService.bind(this), 5000);
+    setTimeout(this._startActivityService.bind(this), 5000);
   }
 
-  private ANDROID_MARKET_SMARTDRIVE_URI =
-    'market://details?id=com.permobil.smartdrive.wearos';
-  onInstallSmartDriveTap() {
-    this.openInPlayStore(this.ANDROID_MARKET_SMARTDRIVE_URI);
-  }
-
-  async initSqliteTables() {
-    this.sentryBreadCrumb('Initializing SQLite...');
+  private async _initSqliteTables() {
+    this._sentryBreadCrumb('Initializing SQLite...');
     try {
       console.time('SQLite_Init');
       // create / load tables for activity data
@@ -278,14 +379,14 @@ export class MainViewModel extends Observable {
       ];
       await Promise.all(sqlitePromises);
       console.timeEnd('SQLite_Init');
-      this.sentryBreadCrumb('SQLite has been initialized.');
+      this._sentryBreadCrumb('SQLite has been initialized.');
     } catch (err) {
       // Sentry.captureException(err);
       Log.E('Could not make table:', err);
     }
   }
 
-  loadSmartDriveData() {
+  private _loadSmartDriveData() {
     const plottedDates = DailyActivity.Info.getPastDates(6);
     let distanceData = plottedDates.map(d => {
       return {
@@ -353,7 +454,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  loadCurrentActivityData() {
+  private _loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
     const sharedPreferences = ad
       .getApplicationContext()
@@ -368,23 +469,7 @@ export class MainViewModel extends Observable {
     );
   }
 
-  debugTap() {
-    debug = !debug;
-    if (debug) {
-      this.currentPushCount = Math.random() * 2000 + 1000;
-      this.distanceGoalValue = Math.random() * 10.0 + 2.0;
-      this.distanceGoalCurrentValue = debug
-        ? Math.random() * this.distanceGoalValue
-        : 0;
-      this.coastGoalValue = Math.random() * 10 + 2.0;
-      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
-    } else {
-      this.loadCurrentActivityData();
-    }
-    this.updateDisplay();
-  }
-
-  onServiceData(context, intent) {
+  private _onServiceData(context, intent) {
     // get the info from the event
     const pushes = intent.getIntExtra(
       com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_PUSHES,
@@ -397,14 +482,12 @@ export class MainViewModel extends Observable {
     Log.D('Got service data', pushes, coast);
     this.currentPushCount = pushes;
     this.coastGoalCurrentValue = coast;
-    this.updateDisplay();
+    this._updateDisplay();
   }
 
-  private serviceDataReceiver = new DataBroadcastReceiver();
-
-  registerForServiceDataUpdates() {
-    this.sentryBreadCrumb('Registering for service data updates.');
-    this.serviceDataReceiver.onReceiveFunction = this.onServiceData.bind(this);
+  private _registerForServiceDataUpdates() {
+    this._sentryBreadCrumb('Registering for service data updates.');
+    this.serviceDataReceiver.onReceiveFunction = this._onServiceData.bind(this);
     const context = ad.getApplicationContext();
     androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
       context
@@ -414,10 +497,10 @@ export class MainViewModel extends Observable {
         com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
       )
     );
-    this.sentryBreadCrumb('Service Data Update registered.');
+    this._sentryBreadCrumb('Service Data Update registered.');
   }
 
-  async onMessageReceived(data: {
+  private async _onMessageReceived(data: {
     path: string;
     message: string;
     device: any;
@@ -475,11 +558,11 @@ export class MainViewModel extends Observable {
       Log.E('Could not set content values for authorization:', err);
     }
     // now actually check the authorization that we were provided
-    const validAuth = await this.updateAuthorization();
+    const validAuth = await this._updateAuthorization();
     this.isBusy = false;
     if (validAuth) {
       // if we got here then we have valid authorization!
-      this.showConfirmation(
+      this._showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
       );
     } else {
@@ -491,59 +574,59 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async onDataReceived(data: { data: any; device: any }) {
+  private async _onDataReceived(data: { data: any; device: any }) {
     Log.D('on data received:', data);
   }
 
-  async startActivityService() {
+  private async _startActivityService() {
     try {
-      await this.askForPermissions();
+      await this._askForPermissions();
       // init wear os comms which will be needed for communications
       // between the service and the phone / backend
-      this.initWearOsComms();
+      this._initWearOsComms();
       // sending an intent to the service will start it if it is not
       // already running
-      this.sendIntentToService();
+      this._sendIntentToService();
       // now that we're sure everything is running, try to pull data
       // from the server
       setTimeout(this.updateUserData.bind(this), 1000);
     } catch (err) {
       // permissions weren't granted - so try again later
-      setTimeout(this.startActivityService.bind(this), 10000);
+      setTimeout(this._startActivityService.bind(this), 10000);
     }
   }
 
-  async initWearOsComms() {
+  private async _initWearOsComms() {
     try {
       // start the wear os communications
       Log.D('registering callbacks');
       WearOsComms.setDebugOutput(false);
-      WearOsComms.registerMessageCallback(this.onMessageReceived.bind(this));
-      WearOsComms.registerDataCallback(this.onDataReceived.bind(this));
+      WearOsComms.registerMessageCallback(this._onMessageReceived.bind(this));
+      WearOsComms.registerDataCallback(this._onDataReceived.bind(this));
       Log.D('initializing wear os comms!');
       WearOsComms.initWatch();
-      this.sentryBreadCrumb('Wear os comms started.');
+      this._sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('could not advertise as companion');
     }
   }
 
-  async sendIntentToService() {
+  private async _sendIntentToService() {
     try {
-      this.sentryBreadCrumb('Sending intent to Activity Service.');
+      this._sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
-      this.sentryBreadCrumb('Activity Service started.');
+      this._sentryBreadCrumb('Activity Service started.');
     } catch (err) {
       Sentry.captureException(err);
     }
   }
 
-  async askForPermissions() {
+  private async _askForPermissions() {
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
@@ -562,7 +645,7 @@ export class MainViewModel extends Observable {
       try {
         await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
-        this.updateSerialNumber();
+        this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
         return true;
       } catch (err) {
@@ -574,79 +657,15 @@ export class MainViewModel extends Observable {
     }
   }
 
-  updateSerialNumber() {
+  private _updateSerialNumber() {
     const watchSerialNumber = getSerialNumber();
     saveSerialNumber(watchSerialNumber);
     this.kinveyService.watch_serial_number = watchSerialNumber;
   }
 
-  previousLayout() {
-    // get the most recent layout and remove it from the list
-    const layoutName = this.previousLayouts.pop();
-    if (layoutName) {
-      Object.keys(this.layouts)
-        .filter(k => k !== layoutName)
-        .map(k => {
-          this.enabledLayout.set(k, false);
-        });
-      this.enabledLayout.set(layoutName, true);
-    } else {
-      // if there is no previous - go back to the main screen
-      this.enabledLayout.set('main', true);
-    }
-  }
-
-  enableLayout(layoutName: string) {
-    Object.keys(this.layouts)
-      .filter(k => k !== layoutName)
-      .map(k => {
-        if (this.enabledLayout.get(k)) {
-          this.previousLayouts.push(k);
-        }
-        this.enabledLayout.set(k, false);
-      });
-    this.enabledLayout.set(layoutName, true);
-  }
-
-  private windowInsetsListener = new android.view.View.OnApplyWindowInsetsListener(
-    {
-      onApplyWindowInsets: function(view, insets) {
-        this.chinSize = insets.getSystemWindowInsetBottom();
-        Log.D('chinSize', this.chinSize);
-        view.onApplyWindowInsets(insets);
-        return insets;
-      }
-    }
-  );
-
-  async onMainPageLoaded(args: any) {
-    this.sentryBreadCrumb('onMainPageLoaded');
-    try {
-      if (!this.hasAppliedTheme) {
-        // apply theme
-        if (this.isAmbient) {
-          this.applyTheme('ambient');
-        } else {
-          this.applyTheme('default');
-        }
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('theme on startup error:', err);
-    }
-    // now init the ui
-    try {
-      await this.init();
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('activity init error:', err);
-    }
-  }
-
-  private hasAppliedTheme: boolean = false;
-  applyTheme(theme?: string) {
+  private _applyTheme(theme?: string) {
     // apply theme
-    this.sentryBreadCrumb('applying theme');
+    this._sentryBreadCrumb('applying theme');
     this.hasAppliedTheme = true;
     try {
       if (theme === 'ambient' || this.isAmbient) {
@@ -658,13 +677,13 @@ export class MainViewModel extends Observable {
       // Sentry.captureException(err);
       Log.E('apply theme error:', err);
     }
-    this.sentryBreadCrumb('theme applied');
+    this._sentryBreadCrumb('theme applied');
   }
 
   /**
    * Application lifecycle event handlers
    */
-  registerAppEventHandlers() {
+  private _registerAppEventHandlers() {
     // handle ambient mode callbacks
     application.on('enterAmbient', this.onEnterAmbient.bind(this));
     application.on('updateAmbient', this.onUpdateAmbient.bind(this));
@@ -679,35 +698,35 @@ export class MainViewModel extends Observable {
     );
   }
 
-  onEnterAmbient() {
-    this.sentryBreadCrumb('*** enterAmbient ***');
+  private onEnterAmbient() {
+    this._sentryBreadCrumb('*** enterAmbient ***');
     this.isAmbient = true;
     Log.D('*** enterAmbient ***');
-    this.applyTheme();
+    this._applyTheme();
   }
 
-  onUpdateAmbient() {
+  private onUpdateAmbient() {
     this.isAmbient = true;
   }
 
-  onExitAmbient() {
-    this.sentryBreadCrumb('*** exitAmbient ***');
+  private onExitAmbient() {
+    this._sentryBreadCrumb('*** exitAmbient ***');
     this.isAmbient = false;
     Log.D('*** exitAmbient ***');
-    this.applyTheme();
+    this._applyTheme();
   }
 
-  async onAppExit(args?: any) {
-    this.sentryBreadCrumb('*** appExit ***');
+  private async onAppExit(args?: any) {
+    this._sentryBreadCrumb('*** appExit ***');
     await WearOsComms.stopWatch();
   }
 
-  onAppLowMemory(args?: any) {
-    this.sentryBreadCrumb('*** appLowMemory ***');
+  private onAppLowMemory(args?: any) {
+    this._sentryBreadCrumb('*** appLowMemory ***');
     Log.D('App low memory', args.android);
   }
 
-  onAppUncaughtError(args?: application.UnhandledErrorEventData) {
+  private onAppUncaughtError(args?: application.UnhandledErrorEventData) {
     if (args) {
       Sentry.captureException(args.error, {
         tags: {
@@ -718,20 +737,20 @@ export class MainViewModel extends Observable {
     Log.D('App uncaught error');
   }
 
-  format(d: Date, fmt: string) {
+  private format(d: Date, fmt: string) {
     return format(d, fmt, {
       locale: dateLocales[getDefaultLang()] || dateLocales['en']
     });
   }
 
-  async updateUserData() {
+  private async updateUserData() {
     // make sure kinvey service is initialized
     if (this.kinveyService === undefined) {
       return;
     }
     // make sure the kinvey service has authentication (or get it)
     if (!this.kinveyService.hasAuth()) {
-      const validAuth = await this.updateAuthorization();
+      const validAuth = await this._updateAuthorization();
       if (!validAuth) {
         return;
       }
@@ -748,9 +767,9 @@ export class MainViewModel extends Observable {
     //   this.userEmail = userData.username;
     //   // pull the data out of the user structure
     //   this.settings.fromUser(userData);
-    //   this.saveSettings();
+    //   this._saveSettings();
     //   // now update any display that needs settings:
-    //   this.updateDisplay();
+    //   this._updateDisplay();
     //   this.isBusy = false;
     // } catch (err) {
     //   this.isBusy = false;
@@ -758,36 +777,7 @@ export class MainViewModel extends Observable {
     // }
   }
 
-  /**
-   * Main Menu Button Tap Handlers
-   */
-  onAboutTap(args) {
-    const aboutPage = 'pages/modals/about/about';
-    const btn = args.object as View;
-    const option: ShowModalOptions = {
-      context: {
-        kinveyService: this.kinveyService
-      },
-      closeCallback: () => {
-        // we dont do anything with the about to return anything
-      },
-      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
-      fullscreen: true
-    };
-
-    btn.showModal(aboutPage, option);
-  }
-
-  /**
-   * FOR COMMUNICATING WITH PHONE AND DETERMINING IF THE PHONE HAS THE
-   * APP, AND FOR OPENING THE APP STORE OR APP
-   */
-
-  private PHONE_ANDROID_PACKAGE_NAME = 'com.permobil.pushtracker';
-  private PHONE_IOS_APP_STORE_URI =
-    'https://itunes.apple.com/us/app/pushtracker/id1121427802';
-
-  async openAppOnPhone() {
+  private async _openAppOnPhone() {
     Log.D('openAppOnPhone()');
     try {
       this.isBusy = true;
@@ -829,7 +819,7 @@ export class MainViewModel extends Observable {
       }
       this.isBusy = false;
       // now show the open on phone activity
-      this.showConfirmation(
+      this._showConfirmation(
         android.support.wearable.activity.ConfirmationActivity
           .OPEN_ON_PHONE_ANIMATION
       );
@@ -838,28 +828,11 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async onConnectPushTrackerTap() {
-    if (!this.kinveyService.hasAuth()) {
-      const validAuth = await this.updateAuthorization();
-      if (!validAuth) {
-        this.openAppOnPhone();
-        return;
-      }
-    }
-    // send an intent to the service - if it is already running this
-    // will trigger a push to the server of the data
-    this.sendIntentToService();
-    // if we got here then we have valid authorization!
-    this.showConfirmation(
-      android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
-    );
-  }
-
   /**
    * END FOR COMMUNICATIONS WITH PHONE
    */
 
-  async showConfirmation(animationType: number, message?: string) {
+  private async _showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
       ad.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
@@ -880,14 +853,14 @@ export class MainViewModel extends Observable {
     application.android.foregroundActivity.overridePendingTransition(0, 0);
   }
 
-  registerForTimeUpdates() {
+  private _registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     const timeReceiverCallback = (androidContext, intent) => {
       try {
-        this.sentryBreadCrumb('timeReceiverCallback');
+        this._sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this.lastChartDay)) {
-          this.updateDisplay();
+          this._updateDisplay();
         }
       } catch (error) {
         // Sentry.captureException(error);
@@ -903,10 +876,10 @@ export class MainViewModel extends Observable {
     );
   }
 
-  async updateChartData() {
+  private async _updateChartData() {
     // Log.D('Updating Chart Data / Display');
     try {
-      let activityData = (await this.getActivityInfoFromDatabase(7)) as any[];
+      let activityData = (await this._getActivityInfoFromDatabase(7)) as any[];
       // we've asked for one more day than needed so that we can
       // compute distance differences
       const oldest = activityData[0];
@@ -934,131 +907,77 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onSettingsTap(args) {
-    this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
+  // updateSettingsChangeDisplay() {
+  //   let translationKey = '';
+  //   let value = null;
+  //   switch (this.activeSettingToChange) {
+  //     case 'coastgoal':
+  //       this.changeSettingKeyValue =
+  //         this.tempSettings.coastGoal.toFixed(1) +
+  //         ' ' +
+  //         L('settings.coastgoal.units');
+  //       break;
+  //     case 'distancegoal':
+  //       value = this.tempSettings.distanceGoal;
+  //       if (this.tempSettings.units === 'metric') {
+  //         value *= 1.609;
+  //       }
+  //       this.changeSettingKeyValue = value.toFixed(1) + ' ';
+  //       translationKey =
+  //         'settings.distancegoal.units.' + this.tempSettings.units;
+  //       this.changeSettingKeyValue += L(translationKey);
+  //       break;
+  //     case 'height':
+  //       this.changeSettingKeyValue = this.tempSettings.getHeightDisplay();
+  //       break;
+  //     case 'units':
+  //       translationKey =
+  //         'settings.units.values.' + this.tempSettings.units.toLowerCase();
+  //       this.changeSettingKeyValue = L(translationKey);
+  //       return;
+  //     case 'weight':
+  //       value = this.tempSettings.weight;
+  //       if (this.tempSettings.units === 'english') {
+  //         value *= 2.20462;
+  //       }
+  //       this.changeSettingKeyValue = Math.round(value) + ' ';
+  //       translationKey = 'settings.weight.units.' + this.tempSettings.units;
+  //       this.changeSettingKeyValue += L(translationKey);
+  //       break;
+  //     case 'watchrequired':
+  //       if (this.disableWearCheck) {
+  //         this.changeSettingKeyValue = L(
+  //           'settings.watchrequired.values.disabled'
+  //         );
+  //       } else {
+  //         this.changeSettingKeyValue = L(
+  //           'settings.watchrequired.values.enabled'
+  //         );
+  //       }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
 
-    const settingsPage = 'pages/modals/settings/settings';
-    const btn = args.object as View;
-    const option: ShowModalOptions = {
-      context: {
-        kinveyService: this.kinveyService
-      },
-      closeCallback: () => {
-        // we dont do anything with the about to return anything
-      },
-      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
-      fullscreen: true
-    };
-
-    btn.showModal(settingsPage, option);
-  }
-
-  onSettingsInfoItemTap(args: EventData) {
-    const messageKey =
-      'settings.' + this.activeSettingToChange + '.description';
-    const message = this.changeSettingKeyString + ':\n\n' + L(messageKey);
-    alert({
-      title: L('settings.information'),
-      message: message,
-      okButtonText: L('buttons.ok')
-    });
-  }
-
-  onChangeSettingsItemTap(args) {
-    // copy the current settings into temporary store
-    this.tempSettings.copy(this.settings);
-    const tappedId = args.object.id as string;
-    this.activeSettingToChange = tappedId.toLowerCase();
-    const translationKey = 'settings.' + this.activeSettingToChange + '.title';
-    this.changeSettingKeyString = L(translationKey);
-    this.updateSettingsChangeDisplay();
-
-    showOffScreenLayout(this.changeSettingsLayout).then(() => {
-      // TODO: this is a hack to force the layout to update for
-      // showing the auto-size text view
-      const prevVal = this.changeSettingKeyValue;
-      this.changeSettingKeyValue = '  ';
-      this.changeSettingKeyValue = prevVal;
-    });
-    this.enableLayout('changeSettings');
-  }
-
-  updateSettingsChangeDisplay() {
-    let translationKey = '';
-    let value = null;
-    switch (this.activeSettingToChange) {
-      case 'coastgoal':
-        this.changeSettingKeyValue =
-          this.tempSettings.coastGoal.toFixed(1) +
-          ' ' +
-          L('settings.coastgoal.units');
-        break;
-      case 'distancegoal':
-        value = this.tempSettings.distanceGoal;
-        if (this.tempSettings.units === 'metric') {
-          value *= 1.609;
-        }
-        this.changeSettingKeyValue = value.toFixed(1) + ' ';
-        translationKey =
-          'settings.distancegoal.units.' + this.tempSettings.units;
-        this.changeSettingKeyValue += L(translationKey);
-        break;
-      case 'height':
-        this.changeSettingKeyValue = this.tempSettings.getHeightDisplay();
-        break;
-      case 'units':
-        translationKey =
-          'settings.units.values.' + this.tempSettings.units.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        return;
-      case 'weight':
-        value = this.tempSettings.weight;
-        if (this.tempSettings.units === 'english') {
-          value *= 2.20462;
-        }
-        this.changeSettingKeyValue = Math.round(value) + ' ';
-        translationKey = 'settings.weight.units.' + this.tempSettings.units;
-        this.changeSettingKeyValue += L(translationKey);
-        break;
-      case 'watchrequired':
-        if (this.disableWearCheck) {
-          this.changeSettingKeyValue = L(
-            'settings.watchrequired.values.disabled'
-          );
-        } else {
-          this.changeSettingKeyValue = L(
-            'settings.watchrequired.values.enabled'
-          );
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  onCancelChangesTap() {
-    hideOffScreenLayout(this.changeSettingsLayout, { x: 500, y: 0 });
-    this.previousLayout();
-  }
-
-  updateDisplay() {
+  private _updateDisplay() {
     try {
       // load the distance from the smartdrive app
-      this.loadSmartDriveData();
+      this._loadSmartDriveData();
       // update the goal displays
-      this.updateGoalDisplay();
+      this._updateGoalDisplay();
       // update distance units
       this.distanceUnits = L(
         'goals.distance.' + this.settings.units.toLowerCase()
       );
-      this.updateChartData();
+      this._updateChartData();
     } catch (err) {
       // Sentry.captureException(err);
       Log.E('Could not update display', err);
     }
   }
 
-  updateGoalDisplay() {
+  private _updateGoalDisplay() {
     // distance goal display
     this.distanceGoalValue = this.settings.distanceGoal; // always in miles
     // always compute progress prior to conversion of units
@@ -1087,49 +1006,12 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  updateSpeedDisplay() {}
-
-  onConfirmChangesTap() {
-    hideOffScreenLayout(this.changeSettingsLayout, {
-      x: 500,
-      y: 0
-    });
-    this.previousLayout();
-    // SAVE THE VALUE to local data for the setting user has selected
-    this.settings.copy(this.tempSettings);
-    this.saveSettings();
-    this.sendSettings();
-    // now update any display that needs settings:
-    this.updateDisplay();
-  }
-
-  onIncreaseSettingsTap() {
-    this.tempSettings.increase(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'watchrequired') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this.updateSettingsChangeDisplay();
-  }
-
-  onDecreaseSettingsTap() {
-    this.tempSettings.decrease(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'watchrequired') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this.updateSettingsChangeDisplay();
-  }
-
-  onChangeSettingsLayoutLoaded(args) {
-    this.changeSettingsLayout = args.object as SwipeDismissLayout;
-    // disabling swipeable to make it easier to tap the cancel button
-    // without starting the swipe behavior
-    (this.changeSettingsLayout as any).swipeable = false;
-  }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions
    */
-  checkPackageInstalled(packageName: string) {
+  private _checkPackageInstalled(packageName: string) {
     let found = true;
     try {
       application.android.context
@@ -1141,99 +1023,7 @@ export class MainViewModel extends Observable {
     return found;
   }
 
-  openInPlayStore(uri: string) {
-    const intent = new android.content.Intent(
-      android.content.Intent.ACTION_VIEW
-    )
-      .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
-      .addFlags(
-        android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
-      )
-      .setData(android.net.Uri.parse(uri));
-    application.android.foregroundActivity.startActivity(intent);
-  }
-
-  /**
-   * user / Profile / Settings saving / loading
-   */
-  async sendSettings() {
-    // make sure kinvey service is initialized
-    if (this.kinveyService === undefined) {
-      alert({
-        title: L('failures.title'),
-        message: L('failures.not-fully-initialized'),
-        okButtonText: L('buttons.ok')
-      });
-      /*
-      this.showConfirmation(
-        android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
-        L('failures.not-fully-initialized')
-      );
-      */
-      return;
-    }
-    // make sure the kinvey service has authentication (or get it)
-    if (!this.kinveyService.hasAuth()) {
-      const validAuth = await this.updateAuthorization();
-      if (!validAuth) {
-        alert({
-          title: L('failures.title'),
-          message: L('failures.not-connected-to-mobile'),
-          okButtonText: L('buttons.ok')
-        });
-        /*
-        this.showConfirmation(
-          android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
-          L('failures.not-connected-to-mobile')
-        );
-        */
-        return;
-      }
-    }
-    try {
-      this.isBusy = true;
-      // TODO: waiting on the resolution of this to not have to get
-      // the user data again
-      // https://support.kinvey.com/support/tickets/6897
-      Log.D('requesting user data');
-      // now request user data
-      const userData = (await this.kinveyService.getUserData()) as any;
-      const values = this.settings.toUser();
-      Object.keys(values).map(k => {
-        userData[k] = values[k];
-      });
-      // don't want to do anything to these
-      delete userData._acl;
-      delete userData._kmd;
-
-      const response = await this.kinveyService.updateUser(userData);
-      const statusCode = response && response.statusCode;
-      if (statusCode !== 200) {
-        throw response;
-      }
-      this.isBusy = false;
-      this.showConfirmation(
-        android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
-      );
-    } catch (err) {
-      this.isBusy = false;
-      Log.E('could not save to database:', err);
-      alert({
-        title: L('failures.title'),
-        message: L('failures.could-not-update-profile') + `:\n\n${err}`,
-        okButtonText: L('buttons.ok')
-      });
-      /*
-      this.showConfirmation(
-        android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION,
-        L('failures.could-not-update-profile') + `: ${err}`
-      );
-      */
-    }
-  }
-
-  loadSettings() {
+  private _loadSettings() {
     this.settings.copy(LS.getItem('com.permobil.pushtracker.profile.settings'));
     this.hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
@@ -1248,31 +1038,10 @@ export class MainViewModel extends Observable {
     );
   }
 
-  saveSettings() {
-    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
-      .getApplicationContext()
-      .getSharedPreferences('prefs.db', 0);
-    const editor = sharedPreferences.edit();
-    editor.putBoolean(
-      prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
-      this.disableWearCheck
-    );
-    editor.commit();
-    appSettings.setBoolean(
-      DataKeys.PROFILE_SETTINGS_DIRTY_FLAG,
-      this.hasSentSettings
-    );
-    LS.setItemObject(
-      'com.permobil.pushtracker.profile.settings',
-      this.settings.toObj()
-    );
-  }
-
   /*
    * DATABASE FUNCTIONS
    */
-  async getTodaysActivityInfoFromDatabase() {
+  private async getTodaysActivityInfoFromDatabase() {
     try {
       const e = await this.sqliteService.getLast(
         DailyActivity.Info.TableName,
@@ -1292,7 +1061,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  async getActivityInfoFromDatabase(numDays: number) {
+  private async _getActivityInfoFromDatabase(numDays: number) {
     const dates = DailyActivity.Info.getPastDates(numDays);
     const activityInfo = dates.map((d: Date) => {
       if (debug) {
@@ -1305,7 +1074,7 @@ export class MainViewModel extends Observable {
       }
     });
     try {
-      const objs = await this.getRecentInfoFromDatabase(numDays + 1);
+      const objs = await this._getRecentInfoFromDatabase(numDays + 1);
       objs.map((o: any) => {
         // @ts-ignore
         const obj = DailyActivity.Info.loadInfo(...o);
@@ -1326,7 +1095,7 @@ export class MainViewModel extends Observable {
     return activityInfo;
   }
 
-  async getRecentInfoFromDatabase(numRecentEntries: number) {
+  private async _getRecentInfoFromDatabase(numRecentEntries: number) {
     let recentInfo = [];
     try {
       recentInfo = await this.sqliteService.getAll({
@@ -1341,18 +1110,10 @@ export class MainViewModel extends Observable {
     return recentInfo;
   }
 
-  public motorTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
-  }
-
-  public caseTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
-  }
-
   /**
    * Network Functions
    */
-  async updateAuthorization() {
+  private async _updateAuthorization() {
     // check the content provider here to see if the user has
     // sync-ed up with the pushtracker mobile app
     let authorization = null;
@@ -1435,7 +1196,7 @@ export class MainViewModel extends Observable {
     return validAuth;
   }
 
-  private sentryBreadCrumb(message: string) {
+  private _sentryBreadCrumb(message: string) {
     Sentry.captureBreadcrumb({
       message,
       category: 'info',

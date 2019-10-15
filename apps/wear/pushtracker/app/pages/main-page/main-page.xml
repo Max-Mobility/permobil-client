@@ -1,11 +1,8 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" 
   xmlns:nac="nativescript-animated-circle" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
-  xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" 
-  xmlns:RL="nativescript-ng-ripple/ripple-view" 
-  xmlns:ui="nativescript-auto-fit-text" loaded="onMainPageLoaded" navigatingTo="navigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" loaded="onMainPageLoaded" navigatingTo="navigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
-    <ScrollView visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
+    <ScrollView>
       <StackLayout>
         // Goal Overview
         <wol:WearOsLayout disableInsetConstraint="true">
@@ -13,9 +10,7 @@
             // Distance Goal Circle
             <nac:AnimatedCircle row="0" col="0" width="300" height="300" class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ distanceGoalCurrentProgress }}">
             </nac:AnimatedCircle>
-            <!-- translateY="-50" width="{{ screenWidth }}" height="{{ screenHeight }}" width="{{ screenWidth / 2 }}" height="{{ screenHeight / 2 }}" width="100%" height="100%" width="90%" height="90%" -->
-            // Coast Goal Circle
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+            // Coast Goal Circle                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -80,7 +75,7 @@
           </GridLayout>
         </wol:WearOsLayout>
 
-        // Menu Page
+        // Menu Items
         <wol:WearOsLayout marginBottom="{{ insetPadding }}">
           <GridLayout rows="*, *, *, *, *, *" columns="auto, *" height="100%" width="100%">
             <Label row="0" colSpan="2" text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
@@ -98,72 +93,10 @@
       </StackLayout>
     </ScrollView>
 
-    // Settings Layout "Page" -- need to wrap this in a component
-                                <!-- <sdl:SwipeDismissLayout loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}">
-        <ScrollView id="settingsScrollView">
-          <GridLayout rows="*, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
-            <Label row="0" colSpan="2" text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
-            <Label row="1" colSpan="2" class="hr-blue" />
-            <Label row="2" col="0" text="&#xf107;" class="back-icon" textWrap="true" />
-            <Label row="2" col="1" text="{{ L('buttons.back') }}" tap="{{ previousLayout }}" class="settings-label" textWrap="true" />
-            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="3" col="1" text="{{ L('settings.edit-profile') }}" id="editProfile" tap="{{ onEditProfileTap }}" class="settings-label" textWrap="true" />
-            <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="4" col="1" text="{{ L('settings.distancegoal.title') }}" id="distanceGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
-            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="5" col="1" text="{{ L('settings.coastgoal.title') }}" id="coastGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
-            <Label row="6" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="6" col="1" text="{{ L('settings.units.title') }}" id="units" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
-            <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="7" col="1" text="{{ L('settings.watchrequired.title') }}" id="watchrequired" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
-          </GridLayout>
-        </ScrollView>
-      </wol:WearOsLayout>
-    </sdl:SwipeDismissLayout> -->
-
-  
-
-    // Change Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout height="100%" width="100%" id="changeSettingsPage" loaded="{{ onChangeSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
-      <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">
-        // Increase the config value
-        <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
-          <StackLayout tap="{{ onIncreaseSettingsTap }}">
-            <Label text="&#xf126;" fontSize="36" />
-          </StackLayout>
-        </RL:Ripple>
-        // Cancel Button - closes the layout
-        <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
-          <StackLayout tap="{{ onCancelChangesTap }}">
-            <Label text="&#xf404;" fontSize="42" />
-          </StackLayout>
-        </RL:Ripple>
-        <StackLayout row="1" col="1" class="value-circle" tap="{{ onSettingsInfoItemTap }}">
-          <Label text="{{ changeSettingKeyValue }}" class="changeSettingsValue" textWrap="true" />
-          <Label text="{{ changeSettingKeyString }}" textWrap="true" class="changeSettingsTitle no-margin"/>
-          <Label text="&#xf149;" class="ionicon center-label-base bold fs16 compact"/>
-        </StackLayout>
-        // Confirm button - will save the changes
-        <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
-          <StackLayout tap="{{ onConfirmChangesTap }}">
-            <Label text="&#xf3fd;" fontSize="42" />
-          </StackLayout>
-        </RL:Ripple>
-        // Decrease the config value
-        <RL:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
-          <StackLayout tap="{{ onDecreaseSettingsTap }}">
-            <Label text="&#xf123;" fontSize="36" />
-          </StackLayout>
-        </RL:Ripple>
-      </GridLayout>
-    </sdl:SwipeDismissLayout>
-
-    <StackLayout background="black" width="100%" height="100%" visibility="{{ isBusy ? 'visible':'collapsed' }}">
-      <ActivityIndicator busy="{{ isBusy }}" color="#006ea4" width="50%" height="50%"/>
-      <Label class="center-label-base fs20" text="{{ busyText }}" textWrap="true"/>
-    </StackLayout>
+    <GridLayout rows="auto, *, auto" columns="*" backgroundColor="#000" width="100%" height="100%" verticalAlignment="center" visibility="{{ isBusy ? 'visible':'collapsed' }}">
+      <ActivityIndicator row="1" busy="{{ isBusy }}" color="#006ea4" verticalAlignment="center" horizontalAlignment="center" />
+      <Label row="2" class="center-label-base fs20" text="{{ busyText }}" textWrap="true" verticalAlignment="center" horizontalAlignment="center" />
+    </GridLayout>
 
   </GridLayout>
-
 </Page>
