@@ -417,7 +417,7 @@ export class ActivityComponent implements OnInit {
       }
     } else if (
       this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       const date: Date = args.date;
       if (date <= new Date()) {
@@ -445,7 +445,7 @@ export class ActivityComponent implements OnInit {
     // Cache and visualize
     this._loadWeeklyActivity(forcePullFromDatabase).then(() => {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-      const getIndex = function (date1, date2) {
+      const getIndex = function(date1, date2) {
         // date1 = Week start, date2 = current date
         const timeDiff = Math.abs(date2.getTime() - date1.getTime());
         return Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -534,9 +534,9 @@ export class ActivityComponent implements OnInit {
         this._calculateDailyActivityYAxisMax();
         this._updateWeekStartAndEnd();
       })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+        .catch(err => {
+          this._logService.logException(err);
+        });
     }).catch(err => {
       this._logService.logException(err);
     });
@@ -659,10 +659,10 @@ export class ActivityComponent implements OnInit {
               this._updateWeekStartAndEnd();
               return true;
             })
-            .catch(err => {
-              this._logService.logException(err);
-              return false;
-            });
+              .catch(err => {
+                this._logService.logException(err);
+                return false;
+              });
           }
         ).catch(err => {
           this._logService.logException(err);
@@ -691,16 +691,16 @@ export class ActivityComponent implements OnInit {
               this._updateWeekStartAndEnd();
               return true;
             })
-            .catch(err => {
-              this._logService.logException(err);
-              return false;
-            });
+              .catch(err => {
+                this._logService.logException(err);
+                return false;
+              });
           }
         )
-        .catch(err => {
-          this._logService.logException(err);
-          return false;
-        });
+          .catch(err => {
+            this._logService.logException(err);
+            return false;
+          });
     } else {
       // We have the data cached. Pull it up
       this._logService.logBreadCrumb(ActivityComponent.name, 'Using local cache instead of pulling from database');
@@ -1082,26 +1082,34 @@ export class ActivityComponent implements OnInit {
           const dailyActivity = days[i];
           if (dailyActivity) {
             // We have daily activity for this day
+
+            // Check if coast distance is negative
+            // https://github.com/Max-Mobility/permobil-client/issues/426
+            // Smartdrive changed during the week - so the distance
+            // reported can go negative
+            let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+              DeviceBase.motorTicksToKilometers(
+                dailyActivity.distance_smartdrive_drive -
+                dailyActivity.distance_smartdrive_drive_start
+              ),
+              this.user.data.distance_unit_preference
+            ) || 0;
+            if (driveDistance < 0.0) driveDistance = 0.0;
+            let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+              DeviceBase.caseTicksToKilometers(
+                dailyActivity.distance_smartdrive_coast -
+                dailyActivity.distance_smartdrive_coast_start
+              ),
+              this.user.data.distance_unit_preference
+            ) || 0;
+            if (coastDistance < 0.0) coastDistance = 0.0;
+            // now push the data
             result.push({
               xAxis: dayNames[parseInt(i)],
               coastTime: dailyActivity.coast_time_avg || 0,
               pushCount: dailyActivity.push_count || 0,
-              driveDistance:
-                convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.motorTicksToKilometers(
-                    dailyActivity.distance_smartdrive_drive -
-                    dailyActivity.distance_smartdrive_drive_start
-                  ),
-                  this.user.data.distance_unit_preference
-                ) || 0,
-              coastDistance:
-                convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.caseTicksToKilometers(
-                    dailyActivity.distance_smartdrive_coast -
-                    dailyActivity.distance_smartdrive_coast_start
-                  ),
-                  this.user.data.distance_unit_preference
-                ) || 0,
+              driveDistance: driveDistance,
+              coastDistance: coastDistance,
               date: dayInWeek
             });
           } else {
