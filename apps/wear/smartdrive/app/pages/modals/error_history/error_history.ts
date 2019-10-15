@@ -130,6 +130,9 @@ async function onLoadMoreErrors() {
   if (recents && recents.length) {
     // now add the recent data
     data.errorHistoryData.push(...recents);
+    data.errorHistoryData.map(error => error.key = 'error');
+    data.errorHistoryData[0].key = 'back';
+    data.errorHistoryData[data.errorHistoryData.length - 1].key = 'last';
   } else if (data.errorHistoryData.length === 1) {
     // or add the 'no errors' message
     data.errorHistoryData.push({

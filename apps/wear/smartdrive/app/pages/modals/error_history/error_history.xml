@@ -19,10 +19,10 @@
                         </GridLayout>
                     </template>
                     <template key="last">
-                        <GridLayout rows="auto, auto" columns="15, *" marginBottom="{{ insetPadding }}">
+                        <GridLayout rows="auto, auto" columns="15, *">
                             <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                             <Label row="0" col="1" text="{{ code }}" class="settings-label" textWrap="true" />
-                            <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" />
+                            <Label row="1" col="1" text="{{ time || ' ' }}" class="settings-label" textWrap="true" marginBottom="{{ insetPadding }}"/>
                         </GridLayout>
                     </template>
                 </ListView.itemTemplates>
