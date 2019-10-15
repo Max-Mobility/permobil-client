@@ -109,17 +109,14 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
 }
 
 export function selectErrorTemplate(item, index, items) {
-  console.log('Select error template pls', item, index, items);
   if (item.isBack) return 'back';
   else if (index === items.length - 1) return 'last';
   else return 'error';
 }
 
 async function onLoadMoreErrors() {
-  console.log("Loading more errors");
   let recents = await getRecentErrors(10, data.errorHistoryData.length);
   // add the back button as the first element - should only load once
-  console.log(data.errorHistoryData.length);
   if (data.errorHistoryData.length === 0) {
     data.errorHistoryData.push({
       code: L('buttons.back'),
@@ -127,7 +124,6 @@ async function onLoadMoreErrors() {
       isBack: true,
       key: 'back'
     });
-    console.log(data.errorHistoryData);
   }
   // determine the unique errors that we have
   recents = differenceBy(recents, data.errorHistoryData.slice(), 'uuid');
@@ -142,7 +138,6 @@ async function onLoadMoreErrors() {
       isBack: false,
       key: 'last'
     });
-    console.log(data.errorHistoryData);
   }
 }
 
