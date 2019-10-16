@@ -1517,7 +1517,6 @@ export class MainViewModel extends Observable {
         fullscreen: true
       };
       btn.showModal(updatesPage, option);
-
     } else {
       alert({
         title: L('failures.title'),
@@ -1525,21 +1524,6 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
     }
-  }
-
-  /**
-   * Setings page handlers
-   */
-  onSettingsLayoutLoaded(args: EventData) {
-    this._settingsLayout = args.object as SwipeDismissLayout;
-    this.settingsScrollView = this._settingsLayout.getViewById(
-      'settingsScrollView'
-    ) as ScrollView;
-    this._settingsLayout.on(SwipeDismissLayout.dimissedEvent, () => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._settingsLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
   }
 
   async updateBatteryChart(sdData: any[]) {
@@ -1659,13 +1643,18 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onSettingsTap() {
-    if (this.settingsScrollView) {
-      // reset to to the top when entering the page
-      this.settingsScrollView.scrollToVerticalOffset(0, true);
-    }
-    showOffScreenLayout(this._settingsLayout);
-    this.enableLayout('settings');
+  onSettingsTap(args) {
+      const settingsPage = 'pages/modals/settings/settings-page';
+      const btn = args.object;
+      const option: ShowModalOptions = {
+        context: {},
+        closeCallback: () => {
+          // we dont do anything with the about to return anything
+        },
+        animated: false,
+        fullscreen: true
+      };
+      btn.showModal(settingsPage, option);
   }
 
   onSettingsInfoItemTap() {

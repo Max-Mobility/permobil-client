@@ -104,18 +104,18 @@
         "awaiting-connection": "Waiting for Connection",
         "awaiting-mcu-ready": "Waiting on SD",
         "awaiting-versions": "Waiting for Versions",
-        "canceled": "Canceled updates",
-        "canceling": "Canceling updates",
+        "canceled": "Canceled",
+        "canceling": "Canceling",
         "comm-failure": "Communications Error - SmartDrive reboot required",
-        "complete": "Completed updates",
-        "failed": "Failed to update",
-        "not-started": "Not Started OTA",
+        "complete": "Complete",
+        "failed": "Failed",
+        "not-started": "Not Started",
         "rebooting-ble": "Rebooting BT",
         "rebooting-mcu": "Rebooting SD",
-        "timeout": "Timeout during updates",
+        "timeout": "Timeout",
         "updating-ble": "Updating BT",
         "updating-mcu": "Updating SD",
-        "verifying": "Verifying updates"
+        "verifying": "Verifying"
       }
     }
   },

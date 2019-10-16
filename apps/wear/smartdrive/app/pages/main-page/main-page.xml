@@ -247,89 +247,6 @@
       </pager:PagerItem>
     </pager:Pager>
 
-    // Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout row="0" rowSpan="2" col="0" loaded="{{ onSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.settings, enabledLayout.settings ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout
-          disableInsetConstraint="true"
-          loaded="{{ customWOLInsetLoaded }}"
-          height="100%" width="100%">
-        <StackLayout height="100%">
-          <Label text="{{ L('settings.title') }}" class="chart-title" textWrap="true" />
-          <Label text="" class="hr-blue" />
-          <ScrollView height="100%" id="settingsScrollView">
-            <StackLayout paddingBottom="{{ insetPadding }}">
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" tap="{{ previousLayout }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="maxSpeed" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.max-speed') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="acceleration" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.acceleration') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="tapSensitivity" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.tap-sensitivity') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="powerAssistBuzzer" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.power-assist-buzzer') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="controlMode" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.control-mode') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="units" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.units') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="switchControlMode" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('switch-control.mode') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="switchControlSpeed" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('switch-control.max-speed') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="wearCheck" tap="{{ onChangeSettingsItemTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.watch-required.title') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-              <RL:Ripple rippleColor="#ddd">
-                <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
-                  <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
-                </GridLayout>
-              </RL:Ripple>
-            </StackLayout>
-          </ScrollView>
-        </StackLayout>
-      </wol:WearOsLayout>
-    </sdl:SwipeDismissLayout>
-
     // Scanning "Page" -- need to wrap this in a component
     <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onScanningLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.scanning, enabledLayout.scanning ? 'visible':'collapsed' }}">
       <wol:WearOsLayout
@@ -362,46 +279,6 @@
         </GridLayout>
       </wol:WearOsLayout>
     </sdl:SwipeDismissLayout>
-
-    // Settings Layout "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout id="changeSettingsPage" row="0" rowSpan="2" col="0" height="100%" width="100%" loaded="{{ onChangeSettingsLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.changeSettings, enabledLayout.changeSettings ? 'visible':'collapsed' }}">
-      <GridLayout rows="auto, *, auto" columns="auto, *, auto" width="100%" height="100%">
-        // Increase the config value
-        <RL:Ripple row="0" col="1" rippleColor="#ddd" class="increase-btn">
-          <StackLayout tap="{{ onIncreaseSettingsTap }}">
-            <Label text="&#xf126;" fontSize="36" />
-          </StackLayout>
-        </RL:Ripple>
-        // Cancel Button - closes the layout
-        <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
-          <StackLayout tap="{{ onCancelChangesTap }}">
-            <Label text="&#xf404;" fontSize="42" />
-          </StackLayout>
-        </RL:Ripple>
-        <StackLayout row="1" col="1" class="value-circle"
-                     tap="{{ onSettingsInfoItemTap }}">
-          <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
-          <Label text="{{ changeSettingKeyString }}"
-                 textWrap="true"
-                 class="changeSettingsTitle no-margin"/>
-          <Label text="&#xf149;"
-                 class="bullet-list-icon bold fs16 no-margin no-padding"/>
-        </StackLayout>
-        // Confirm button - will save the changes
-        <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
-          <StackLayout tap="{{ onConfirmChangesTap }}">
-            <Label text="&#xf3fd;" fontSize="42" />
-          </StackLayout>
-        </RL:Ripple>
-        // Decrease the config value
-        <RL:Ripple row="2" col="1" rippleColor="#ddd" class="decrease-btn">
-          <StackLayout tap="{{ onDecreaseSettingsTap }}">
-            <Label text="&#xf123;" fontSize="36" />
-          </StackLayout>
-        </RL:Ripple>
-      </GridLayout>
-    </sdl:SwipeDismissLayout>
-
   </GridLayout>
 
 </Page>
