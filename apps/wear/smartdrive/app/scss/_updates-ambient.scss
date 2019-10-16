@@ -50,6 +50,15 @@ $update-progress-spinner-color: #B9B9B9;
   background-color: $black;
 }
 
+.action-back {
+  @extend .updates-btn;
+  height: 25%;
+  color: $ambient-white;
+  background-color: $black;
+  margin: 5 0 0 0;
+  padding: 0;
+}
+
 .currentTime {
   color: $ambient-white;
   font-size: 18;

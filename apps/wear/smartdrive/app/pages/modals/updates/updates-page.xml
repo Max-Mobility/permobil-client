@@ -14,8 +14,8 @@
                             <Label row="1" col="1" class="topValueDescription" textWrap="true" text="{{ L('updates.status') }}" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}" />
                             <Label row="2" col="1" class="topValue" horizontalAlignment="center" text="{{ smartDriveOtaState }}" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}" />
                             <StackLayout row="3" col="1" visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-                                   <Label row="3" col="1" class="centerMessage" text="{{ updateProgressText }}" />
-                                   <Button width="50%" row="3" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" ></Button>
+                                   <Label class="centerMessage" text="{{ updateProgressText }}" />
+                                   <Button text="{{ L('buttons.back') }}" tap="onCloseTap" class="action-back" ></Button>
                             </StackLayout>
                             <ListView row="3" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
                                    <ListView.itemTemplate>

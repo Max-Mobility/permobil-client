@@ -70,6 +70,15 @@ $retry-color: #00a73c;
   background-color: $cancel-color;
 }
 
+.action-back {
+  @extend .updates-btn;
+  height: 25%;
+  color: $white;
+  background-color: $cancel-color;
+  margin: 5 0 0 0;
+  padding: 0;
+}
+
 .action-force {
     @extend .updates-btn;
   color: $white;
