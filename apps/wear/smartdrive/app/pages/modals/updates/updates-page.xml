@@ -2,6 +2,7 @@
        xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
        xmlns:nac="nativescript-animated-circle"
        xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
+       xmlns:ui="nativescript-auto-fit-text"
        shownModally="onShownModally" 
        actionBarHidden="true" 
        loaded="onUpdatesPageLoaded">
@@ -11,12 +12,9 @@
                      <nac:AnimatedCircle id="updateProgressCircle" row="1" col="1" loaded="{{ onUpdateProgressCircleLoaded }}" class="updateProgressCircle" width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveOtaProgress }}"></nac:AnimatedCircle>
                      <GridLayout row="1" col="1" width="95%" height="95%" rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
                             // NOTE: I altered the order of the description / display
-                            <Label row="1" col="1" class="topValueDescription" textWrap="true" text="{{ L('updates.status') }}" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}" />
-                            <Label row="2" col="1" class="topValue" horizontalAlignment="center" text="{{ smartDriveOtaState }}" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'hidden' }}" />
-                            <StackLayout row="3" col="1" visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
-                                   <Label class="centerMessage" text="{{ updateProgressText }}" />
-                                   <Button text="{{ L('buttons.back') }}" tap="onCloseTap" class="action-back" ></Button>
-                            </StackLayout>
+                            <Label row="1" col="1" class="topValueDescription" textWrap="true" text="{{ L('updates.status') }}" />
+                            <ui:AutoFitText row="2" col="1" class="topValue" horizontalAlignment="center" text="{{ smartDriveOtaState }}" textAlignment="center" />
+                            <!-- <Button row="3" col="1" visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}" text="{{ L('buttons.back') }}" tap="onCloseTap" class="action-back" ></Button> -->
                             <ListView row="3" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
                                    <ListView.itemTemplate>
                                           <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}" />
