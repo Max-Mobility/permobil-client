@@ -1,4 +1,10 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:wol="nativescript-wear-os/packages/wear-os-layout" xmlns:nac="nativescript-animated-circle" xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" shownModally="onShownModally" actionBarHidden="true" loaded="onUpdatesPageLoaded" navigatingTo="navigatingTo">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+       xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+       xmlns:nac="nativescript-animated-circle"
+       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
+       shownModally="onShownModally" 
+       actionBarHidden="true" 
+       loaded="onUpdatesPageLoaded">
        <wol:WearOsLayout disableInsetConstraint="true" height="100%" width="100%">
               <GridLayout rows="*" columns="*" height="100%" width="100%">
                      // SmartDrive Update Progress Circle

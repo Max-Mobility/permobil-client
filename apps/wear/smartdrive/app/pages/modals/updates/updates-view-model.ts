@@ -33,7 +33,7 @@ import { Pager } from 'nativescript-pager';
 import * as LS from 'nativescript-localstorage';
 
 const closeCallback;
-const page: Page;
+let page: Page;
 const wearOsLayout: WearOsLayout;
 
 class SmartDriveException extends Error {
