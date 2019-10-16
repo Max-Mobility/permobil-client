@@ -57,7 +57,6 @@ const dateLocales = {
   zh: require('date-fns/locale/zh_cn')
 };
 
-
 class SmartDriveException extends Error {
   constructor(...args) {
     super(...args);
@@ -343,6 +342,11 @@ export class UpdatesViewModel extends Observable {
       leading: true,
       trailing: false
     });
+    this.smartDrive.on(
+      SmartDrive.smartdrive_ota_status_event,
+      this.onSmartDriveOtaStatus,
+      this
+    );
   }
 
   unregisterForSmartDriveEvents() {
@@ -884,7 +888,7 @@ export class UpdatesViewModel extends Observable {
     });
   }
 
-    onNewDay() {
+  onNewDay() {
     if (this.smartDrive) {
       // it's a new day, reset smartdrive battery to 0
       this.smartDrive.battery = 0;
