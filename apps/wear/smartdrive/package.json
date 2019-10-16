@@ -22,7 +22,7 @@
     "nativescript-android-sensors": "~1.5.0",
     "nativescript-animated-circle": "file:../../../forked-plugins/nativescript-animated-circle",
     "nativescript-appavailability": "~1.3.1",
-    "nativescript-auto-fit-text": "file:../../../forked-plugins/nativescript-auto-fit-text-1.0.0.tgz",
+    "nativescript-auto-fit-text": "file:../../../forked-plugins/nativescript-auto-fit-text-1.0.1.tgz",
     "nativescript-bluetooth": "file:../../../forked-plugins/nativescript-bluetooth",
     "nativescript-download-progress": "~1.2.0",
     "nativescript-localstorage": "~2.0.0",
