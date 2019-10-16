@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import debounce from 'lodash/debounce';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { CalendarMonthViewStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';
+import { CalendarMonthViewStyle, CalendarFontStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';
 import { Color } from 'tns-core-modules/color';
 import { EventData } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
@@ -100,7 +100,10 @@ export class ActivityComponent implements OnInit {
   // Colors
   private _colorWhite = new Color('#fff');
   private _colorBlack = new Color('#000');
+  private _colorBlackCss = new Color('#202125');
+  private _colorGrey = new Color('#b1b1b1');
   private _colorDarkGrey = new Color('#727377');
+  private _colorPermobilCousteau = new Color('#00c1d5');
 
   private distanceUnit: string;
   private _debouncedLoadDailyActivity: any = null;
@@ -254,6 +257,7 @@ export class ActivityComponent implements OnInit {
       this._debouncedLoadWeeklyActivity(forcePullFromDatabase);
     } else if (this.currentTab === TAB.MONTH) {
       this._initMonthChartTitle();
+      // this._initMonthViewStyle();
     }
   }
 
@@ -1250,64 +1254,57 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthViewStyle() {
+    const pageColor =
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlackCss : this._colorWhite;
+    const textColor =
+      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+
     this.monthViewStyle = new CalendarMonthViewStyle();
     this.monthViewStyle.showTitle = false;
     this.monthViewStyle.showWeekNumbers = false;
     this.monthViewStyle.showDayNames = true;
-    this.monthViewStyle.backgroundColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
+    this.monthViewStyle.backgroundColor = pageColor;
 
     // Today cell style
     const todayCellStyle = new DayCellStyle();
-    todayCellStyle.cellBorderColor =
-      this.CURRENT_THEME === APP_THEMES.DARK
-        ? new Color('#00c1d5')
-        : this._colorWhite;
-    todayCellStyle.cellTextSize = 12;
-    todayCellStyle.cellTextColor = new Color('#00c1d5');
+    // make the border / text blue to make it easy to find today
+    todayCellStyle.cellBorderColor = this._colorPermobilCousteau;
+    // todayCellStyle.cellTextSize = 18;
+    todayCellStyle.cellTextColor = this._colorPermobilCousteau;
     this.monthViewStyle.todayCellStyle = todayCellStyle;
 
     // Day cell style
     const dayCellStyle = new DayCellStyle();
-    dayCellStyle.cellBackgroundColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
-    dayCellStyle.cellBorderColor =
-      this.CURRENT_THEME === APP_THEMES.DARK
-        ? this._colorDarkGrey
-        : this._colorWhite;
+    dayCellStyle.cellBackgroundColor = pageColor;
+    dayCellStyle.cellBorderColor = pageColor;
+    dayCellStyle.cellTextColor = textColor;
     this.monthViewStyle.dayCellStyle = dayCellStyle;
 
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
-    weekendCellStyle.cellBorderColor =
-      this.CURRENT_THEME === APP_THEMES.DARK
-        ? this._colorDarkGrey
-        : this._colorWhite;
+    weekendCellStyle.cellBorderColor = pageColor;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
     // Selected cell style
     const selectedDayCellStyle = new DayCellStyle();
-    selectedDayCellStyle.cellBackgroundColor = new Color('#00c1d5');
+    selectedDayCellStyle.cellBackgroundColor = pageColor;
+    // always white since selection is dark grey filled circle
     selectedDayCellStyle.cellTextColor = this._colorWhite;
+    selectedDayCellStyle.cellTextSize = 20;
+    selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
 
     // Week number cell style
     const weekNumberCellStyle = new CellStyle();
-    weekNumberCellStyle.cellTextColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+    weekNumberCellStyle.cellTextColor = textColor;
     weekNumberCellStyle.cellBorderColor = this._colorWhite;
     this.monthViewStyle.weekNumberCellStyle = weekNumberCellStyle;
 
     // Day name cell style
     const dayNameCellStyle = new CellStyle();
-    dayNameCellStyle.cellBackgroundColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlack : this._colorWhite;
-    dayNameCellStyle.cellTextColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
-    dayNameCellStyle.cellBorderColor =
-      this.CURRENT_THEME === APP_THEMES.DARK
-        ? this._colorDarkGrey
-        : this._colorWhite;
+    dayNameCellStyle.cellBackgroundColor = pageColor;
+    dayNameCellStyle.cellBorderColor = pageColor;
+    dayNameCellStyle.cellTextColor = textColor;
     this.monthViewStyle.dayNameCellStyle = dayNameCellStyle;
   }
 
