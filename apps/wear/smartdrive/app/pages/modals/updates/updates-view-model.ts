@@ -39,7 +39,7 @@ import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ad } from 'tns-core-modules/utils/utils';
 
 const closeCallback;
-let page: Page;
+const page: Page;
 const wearOsLayout: WearOsLayout;
 
 const dateLocales = {

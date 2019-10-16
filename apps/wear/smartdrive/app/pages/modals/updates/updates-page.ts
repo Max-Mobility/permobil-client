@@ -6,7 +6,7 @@ const vm = new UpdatesViewModel();
 
 export function onShownModally(args: ShownModallyData) {
   console.log('updates-page onShownModally');
-  let page = args.object as Page;
+  const page = args.object as Page;
   page.bindingContext = vm;
 }
 
