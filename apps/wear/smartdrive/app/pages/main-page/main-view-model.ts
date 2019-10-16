@@ -1654,7 +1654,7 @@ export class MainViewModel extends Observable {
         animated: false,
         fullscreen: true
       };
-      btn.showModal(settingsPage, option); 
+      btn.showModal(settingsPage, option);
   }
 
   onSettingsInfoItemTap() {

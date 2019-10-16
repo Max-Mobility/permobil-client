@@ -8,7 +8,7 @@ import { Log } from '@permobil/core';
 
 const vm = new ChangeSettingsViewModel();
 let closeCallback;
-let wearOsLayout: WearOsLayout;
+const wearOsLayout: WearOsLayout;
 let page: Page;
 
 export function onShownModally(args: ShownModallyData) {

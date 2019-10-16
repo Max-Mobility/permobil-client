@@ -12,7 +12,7 @@ export class SettingsViewModel extends Observable {
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
-  @Prop() disableWearCheck: boolean = 
+  @Prop() disableWearCheck: boolean =
     appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
   private settings = new Device.Settings();
   private tempSettings = new Device.Settings();
