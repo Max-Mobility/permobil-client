@@ -1,6 +1,10 @@
 import { Log } from '@permobil/core';
 import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
-import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
+import {
+  EventData,
+  fromObject,
+  Observable
+} from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
@@ -31,10 +35,28 @@ import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { ReflectiveInjector } from 'injection-js';
 import { Pager } from 'nativescript-pager';
 import * as LS from 'nativescript-localstorage';
+import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
+import { ad } from 'tns-core-modules/utils/utils';
 
 const closeCallback;
 let page: Page;
 const wearOsLayout: WearOsLayout;
+
+const dateLocales = {
+  da: require('date-fns/locale/da'),
+  de: require('date-fns/locale/de'),
+  en: require('date-fns/locale/en'),
+  es: require('date-fns/locale/es'),
+  fr: require('date-fns/locale/fr'),
+  it: require('date-fns/locale/it'),
+  ja: require('date-fns/locale/ja'),
+  ko: require('date-fns/locale/ko'),
+  nb: require('date-fns/locale/nb'),
+  nl: require('date-fns/locale/nl'),
+  nn: require('date-fns/locale/nb'),
+  zh: require('date-fns/locale/zh_cn')
+};
+
 
 class SmartDriveException extends Error {
   constructor(...args) {
@@ -58,6 +80,12 @@ export class UpdatesViewModel extends Observable {
   @Prop() powerAssistActive: boolean = false;
   @Prop() motorOn = false;
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
+
+  // time display
+  @Prop() currentTime: string = '';
+  @Prop() currentTimeMeridiem: string = '';
+  @Prop() currentDay: string = '';
+  @Prop() currentYear: string = '';
 
   // permissions for the app
   private permissionsNeeded = [
@@ -103,6 +131,10 @@ export class UpdatesViewModel extends Observable {
     this._sqliteService = injector.get(SqliteService);
     this._kinveyService = injector.get(KinveyService);
     this._sentryBreadCrumb('All Services created.');
+
+    this._sentryBreadCrumb('Registering for time updates.');
+    this.registerForTimeUpdates();
+    this._sentryBreadCrumb('Time updates registered.');
 
     // load savedSmartDriveAddress from settings / memory
     const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
@@ -342,7 +374,8 @@ export class UpdatesViewModel extends Observable {
       this.smartDrive.fromObject(savedSd);
     }
     // update the displayed smartdrive data
-    this.smartDriveCurrentBatteryPercentage = (this.smartDrive && this.smartDrive.battery) || 0;
+    this.smartDriveCurrentBatteryPercentage =
+      (this.smartDrive && this.smartDrive.battery) || 0;
   }
 
   saveSmartDriveStateToLS() {
@@ -849,5 +882,60 @@ export class UpdatesViewModel extends Observable {
       category: 'info',
       level: Level.Info
     });
+  }
+
+    onNewDay() {
+    if (this.smartDrive) {
+      // it's a new day, reset smartdrive battery to 0
+      this.smartDrive.battery = 0;
+      // update displayed battery percentage
+      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
+      // and save it
+      this.saveSmartDriveStateToLS();
+    }
+  }
+
+  registerForTimeUpdates() {
+    // monitor the clock / system time for display and logging:
+    this.updateTimeDisplay();
+    const timeReceiverCallback = (_1, _2) => {
+      try {
+        this.updateTimeDisplay();
+        this._sentryBreadCrumb('timeReceiverCallback');
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    };
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIME_TICK,
+      timeReceiverCallback
+    );
+    application.android.registerBroadcastReceiver(
+      android.content.Intent.ACTION_TIMEZONE_CHANGED,
+      timeReceiverCallback
+    );
+  }
+
+  _format(d: Date, fmt: string) {
+    return format(d, fmt, {
+      locale: dateLocales[getDefaultLang()] || dateLocales['en']
+    });
+  }
+
+  updateTimeDisplay() {
+    const now = new Date();
+    const context = ad.getApplicationContext();
+    const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
+      context
+    );
+    if (is24HourFormat) {
+      this.currentTime = this._format(now, 'HH:mm');
+      this.currentTimeMeridiem = ''; // in 24 hour format we don't need AM/PM
+    } else {
+      this.currentTime = this._format(now, 'h:mm');
+      this.currentTimeMeridiem = this._format(now, 'A');
+    }
+    this.currentDay = this._format(now, 'ddd MMM D');
+    this.currentYear = this._format(now, 'YYYY');
   }
 }
