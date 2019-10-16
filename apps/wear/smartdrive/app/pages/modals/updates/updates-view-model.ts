@@ -642,17 +642,6 @@ export class UpdatesViewModel extends Observable {
     const bleVersion = this.currentVersions['SmartDriveBLE.ota'].version;
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
-    console.log(bleVersion, mcuVersion);
-
-    if (
-      this.smartDrive.isMcuUpToDate(mcuVersion) &&
-      this.smartDrive.isBleUpToDate(bleVersion)
-    ) {
-      // smartdrive is already up to date
-      // console.log('Stopping updates');
-      // this.stopUpdates(L('updates.up-to-date'));
-      // return;
-    }
     // the smartdrive is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
     this.smartDriveOtaProgress = 0;
