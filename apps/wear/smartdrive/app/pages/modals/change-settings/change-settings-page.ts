@@ -32,7 +32,11 @@ export function onChangeSettingsPageLoaded(args: EventData) {
 }
 
 export function onCloseTap(args) {
-  closeCallback();
+  closeCallback(false, vm.tempSettings, vm.tempSwitchControlSettings);
+}
+
+export function onConfirmTap(args) {
+  closeCallback(true, vm.tempSettings, vm.tempSwitchControlSettings);
 }
 
 function configureLayout() {

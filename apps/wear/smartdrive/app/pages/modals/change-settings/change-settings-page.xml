@@ -28,7 +28,7 @@
             </StackLayout>
             // Confirm button - will save the changes
             <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">
-                <StackLayout tap="{{ onConfirmChangesTap }}">
+                <StackLayout tap="onConfirmTap">
                     <Label text="&#xf3fd;" fontSize="42" />
                 </StackLayout>
             </RL:Ripple>

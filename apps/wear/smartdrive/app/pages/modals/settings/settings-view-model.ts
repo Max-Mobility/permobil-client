@@ -4,6 +4,7 @@ import { L, Prop } from '@permobil/nativescript';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { DataKeys } from '../../../enums';
+import * as LS from 'nativescript-localstorage';
 
 export class SettingsViewModel extends Observable {
   /**
@@ -18,6 +19,7 @@ export class SettingsViewModel extends Observable {
   private tempSettings = new Device.Settings();
   private switchControlSettings = new Device.SwitchControlSettings();
   private tempSwitchControlSettings = new Device.SwitchControlSettings();
+  private hasSentSettings: boolean = false;
 
   async onSettingsPageLoaded(args: EventData) {
 
@@ -73,8 +75,21 @@ export class SettingsViewModel extends Observable {
             settings: this.settings,
             switchControlSettings: this.switchControlSettings
         },
-        closeCallback: () => {
-        // we dont do anything with the about to return anything
+        closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings) => {
+            if (confirmedByUser) {
+                this.settings.copy(tempSettings);
+                this.switchControlSettings.copy(tempSwitchControlSettings);
+                this.hasSentSettings = false;
+                this.saveSettings();
+                // // now update any display that needs settings:
+                // this.updateSettingsDisplay();
+                // warning / indication to the user that they've updated their settings
+                alert({
+                    title: L('warnings.saved-settings.title'),
+                    message: L('warnings.saved-settings.message'),
+                    okButtonText: L('buttons.ok')
+                });
+            }
         },
         animated: false,
         fullscreen: true
@@ -137,4 +152,32 @@ export class SettingsViewModel extends Observable {
         break;
     }
   }
+
+  saveSettings() {
+    // make sure to save the units setting for the complications
+    appSettings.setString(
+      DataKeys.SD_UNITS,
+      this.settings.units.toLowerCase()
+    );
+    // save state and local settings
+    appSettings.setBoolean(
+      DataKeys.SD_SETTINGS_DIRTY_FLAG,
+      this.hasSentSettings
+    );
+    appSettings.setBoolean(
+      DataKeys.REQUIRE_WATCH_BEING_WORN,
+      this.disableWearCheck
+    );
+    // now save the actual device settings objects
+    LS.setItemObject(
+      'com.permobil.smartdrive.wearos.smartdrive.settings',
+      this.settings.toObj()
+    );
+    LS.setItemObject(
+      'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
+      this.switchControlSettings.toObj()
+    );
+  }
+
+
 }

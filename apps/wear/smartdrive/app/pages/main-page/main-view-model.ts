@@ -1650,6 +1650,8 @@ export class MainViewModel extends Observable {
         context: {},
         closeCallback: () => {
           // we dont do anything with the about to return anything
+          // now update any display that needs settings:
+          this.updateSettingsDisplay();
         },
         animated: false,
         fullscreen: true
