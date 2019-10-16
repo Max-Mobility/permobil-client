@@ -472,7 +472,7 @@ export class UpdatesViewModel extends Observable {
     );
 
     // Allow to close modal when there are no OTA actions available
-    if (this.smartDriveOtaActions.length == 0) {
+    if (this.smartDriveOtaActions.length === 0) {
       this.smartDriveOtaActions.splice(
         0,
         this.smartDriveOtaActions.length,
@@ -491,8 +491,8 @@ export class UpdatesViewModel extends Observable {
     //
     // Exception: When the only OTA action available is 'Cancel'
     // Then, let the user press cancel and then show 'Close' to close the modal
-    if (this.smartDriveOtaActions.length == 1) {
-      let action = this.smartDriveOtaActions.getItem(0);
+    if (this.smartDriveOtaActions.length === 1) {
+      const action = this.smartDriveOtaActions.getItem(0);
       if (action['class'] && action['action'] !== 'ota.action.cancel') {
         this.smartDriveOtaActions.splice(
           0,
@@ -649,9 +649,9 @@ export class UpdatesViewModel extends Observable {
       this.smartDrive.isBleUpToDate(bleVersion)
     ) {
       // smartdrive is already up to date
-      console.log('Stopping updates');
-      //this.stopUpdates(L('updates.up-to-date'));
-      //return;
+      // console.log('Stopping updates');
+      // this.stopUpdates(L('updates.up-to-date'));
+      // return;
     }
     // the smartdrive is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
