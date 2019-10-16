@@ -6,7 +6,7 @@ import {
   Observable
 } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
+import { Page, ShownModallyData, View } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import {
   BluetoothService,
@@ -37,8 +37,10 @@ import { Pager } from 'nativescript-pager';
 import * as LS from 'nativescript-localstorage';
 import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ad } from 'tns-core-modules/utils/utils';
+import * as themes from 'nativescript-themes';
+const ambientTheme = require('../../../scss/theme-ambient.css').toString();
+const defaultTheme = require('../../../scss/theme-default.css').toString();
 
-const closeCallback;
 const page: Page;
 const wearOsLayout: WearOsLayout;
 
@@ -79,6 +81,7 @@ export class UpdatesViewModel extends Observable {
   @Prop() powerAssistActive: boolean = false;
   @Prop() motorOn = false;
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
+  @Prop() isAmbient: boolean = false;
 
   // time display
   @Prop() currentTime: string = '';
@@ -152,19 +155,19 @@ export class UpdatesViewModel extends Observable {
 
   async onUpdatesPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onUpdatesPageLoaded');
-    // try {
-    //   if (!this.hasAppliedTheme) {
-    //     // apply theme
-    //     if (this.isAmbient) {
-    //       this.applyTheme('ambient');
-    //     } else {
-    //       this.applyTheme('default');
-    //     }
-    //   }
-    // } catch (err) {
-    //   Sentry.captureException(err);
-    //   Log.E('theme on startup error:', err);
-    // }
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this.applyTheme('ambient');
+        } else {
+          this.applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
     // now init the ui
     try {
       await this.init();
@@ -192,6 +195,52 @@ export class UpdatesViewModel extends Observable {
       Log.E('onUpdatesPageLoaded::error:', err);
     }
   }
+
+  private hasAppliedTheme: boolean = false;
+  applyTheme(theme?: string) {
+    this.hasAppliedTheme = true;
+    // apply theme
+    this._sentryBreadCrumb('applying theme');
+    try {
+      if (theme === 'ambient' || this.isAmbient) {
+        // Log.D('applying ambient theme');
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+        // this.showAmbientTime();
+      } else {
+        // Log.D('applying default theme');
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+        // this.showMainDisplay();
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply theme error:', err);
+    }
+    this._sentryBreadCrumb('theme applied');
+    this.applyStyle();
+  }
+
+  applyStyle() {
+    this._sentryBreadCrumb('applying style');
+    try {
+      if (this.pager) {
+        try {
+          const children = this.pager._childrenViews;
+          for (let i = 0; i < children.size; i++) {
+            const child = children.get(i) as View;
+            child._onCssStateChange();
+          }
+        } catch (err) {
+          Sentry.captureException(err);
+          Log.E('apply style error:', err);
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply style error:', err);
+    }
+    this._sentryBreadCrumb('style applied');
+  }
+
 
   maintainCPU() {
     this.wakeLock.acquire();
