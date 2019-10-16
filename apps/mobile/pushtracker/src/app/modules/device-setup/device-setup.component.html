@@ -1,5 +1,5 @@
 <GridLayout rows="auto, *" columns="*" height="100%" class="device-setup-layout">
-  <Label row="0" col="0" [text]="'device-setup.title' | translate" class="page-title" textWrap="true"></Label>
+  <Label row="0" col="0" [text]="'device-setup.title' | translate" class="device-setup-title" textWrap="true"></Label>
   <GridLayout row="1" col="0" rows="auto, auto, auto, *" columns="*">
     // Main Lottie
     <LottieView row="0" src="PushTracker_E2.json" class="align-center" loop="true" autoPlay="true" width="100%" height="40%" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE"></LottieView>

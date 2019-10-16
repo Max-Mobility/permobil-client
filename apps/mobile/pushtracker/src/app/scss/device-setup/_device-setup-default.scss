@@ -5,8 +5,8 @@
   @extend .DEVICE_SETUP_LAYOUT_BASE;
   background-color: $white;
 
-  .page-title {
-    @extend .PAGE_TITLE_BASE;
+  .device-setup-title {
+    @extend .DEVICE_SETUP_TITLE_BASE;
     color: $black;
   }
 
