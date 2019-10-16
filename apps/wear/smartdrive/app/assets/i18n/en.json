@@ -95,7 +95,8 @@
       "pause": "Pause",
       "resume": "Resume",
       "retry": "Retry",
-      "start": "Start"
+      "start": "Start",
+      "close": "Close"
     },
     "sd": {
       "state": {
@@ -103,18 +104,18 @@
         "awaiting-connection": "Waiting for Connection",
         "awaiting-mcu-ready": "Waiting on SD",
         "awaiting-versions": "Waiting for Versions",
-        "canceled": "Canceled",
-        "canceling": "Canceling",
+        "canceled": "Canceled updates",
+        "canceling": "Canceling updates",
         "comm-failure": "Communications Error - SmartDrive reboot required",
-        "complete": "Complete",
-        "failed": "Failed",
-        "not-started": "Not Started",
+        "complete": "Completed updates",
+        "failed": "Failed to update",
+        "not-started": "Not Started OTA",
         "rebooting-ble": "Rebooting BT",
         "rebooting-mcu": "Rebooting SD",
-        "timeout": "Timeout",
+        "timeout": "Timeout during updates",
         "updating-ble": "Updating BT",
         "updating-mcu": "Updating SD",
-        "verifying": "Verifying"
+        "verifying": "Verifying updates"
       }
     }
   },
@@ -205,6 +206,7 @@
     "canceled": "SmartDrive updates canceled.",
     "changes": "Summary of Changes",
     "checking-for-updates": "Checking for updates...",
+    "initializing": "Initializing updates",
     "communications-failed": "Communications with the SmartDrive have failed, please reboot your SmartDrive.",
     "connecting-to-smartdrive": "Connecting to SmartDrive...",
     "downloading-new-firmwares": "Downloading new updates data...",

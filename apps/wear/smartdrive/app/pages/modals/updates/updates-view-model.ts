@@ -112,6 +112,8 @@ export class UpdatesViewModel extends Observable {
   private initialized: boolean = false;
   private wakeLock: any = null;
 
+  closeCallback;
+
   async init() {
     this._sentryBreadCrumb('Updates-View-Model init.');
     if (this.initialized) {
@@ -241,7 +243,6 @@ export class UpdatesViewModel extends Observable {
     this._sentryBreadCrumb('style applied');
   }
 
-
   maintainCPU() {
     this.wakeLock.acquire();
   }
@@ -330,7 +331,7 @@ export class UpdatesViewModel extends Observable {
         resolve(true);
         return;
       } else {
-        this.updateProgressText = L('updates.connecting-to-smartdrive');
+        this.smartDriveOtaState = L('updates.connecting-to-smartdrive');
         // we've not talked to this SD before, so we should connect
         // and get its version info
         const remove = () => {
@@ -469,6 +470,44 @@ export class UpdatesViewModel extends Observable {
       this.smartDriveOtaActions.length,
       ...actions
     );
+
+    // Allow to close modal when there are no OTA actions available
+    if (this.smartDriveOtaActions.length == 0) {
+      this.smartDriveOtaActions.splice(
+        0,
+        this.smartDriveOtaActions.length,
+        ...actions,
+        {
+          label: L('ota.action.back'),
+          func: this.closeCallback.bind(this),
+          action: 'ota.action.close',
+          class: 'action-close'
+        }
+      );
+    }
+
+    // When there is one OTA action available, e.g., 'Start',
+    // then allow to close modal.
+    //
+    // Exception: When the only OTA action available is 'Cancel'
+    // Then, let the user press cancel and then show 'Close' to close the modal
+    if (this.smartDriveOtaActions.length == 1) {
+      let action = this.smartDriveOtaActions.getItem(0);
+      if (action['class'] && action['action'] !== 'ota.action.cancel') {
+        this.smartDriveOtaActions.splice(
+          0,
+          this.smartDriveOtaActions.length,
+          ...actions,
+          {
+            label: L('ota.action.close'),
+            func: this.closeCallback.bind(this),
+            action: 'ota.action.close',
+            class: 'action-close'
+          }
+        );
+      }
+    }
+
     this.smartDriveOtaState = state;
   }
 
@@ -478,9 +517,9 @@ export class UpdatesViewModel extends Observable {
     Log.D('Checking for updates');
     // update display of update progress
     this.smartDriveOtaProgress = 0;
-    this.updateProgressText = L('updates.checking-for-updates');
+    this.smartDriveOtaState = L('updates.checking-for-updates');
     // some state variables for the update
-    this.isUpdatingSmartDrive = false;
+    this.isUpdatingSmartDrive = true;
     // @ts-ignore
     this.updateProgressCircle.spin();
     try {
@@ -538,7 +577,7 @@ export class UpdatesViewModel extends Observable {
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
       // update progress text
-      this.updateProgressText = L('updates.downloading-new-firmwares');
+      this.smartDriveOtaState = L('updates.downloading-new-firmwares');
       // reset ota progress to 0 to show downloading progress
       this.smartDriveOtaProgress = 0;
       // update progress circle
@@ -596,7 +635,7 @@ export class UpdatesViewModel extends Observable {
 
   async performSmartDriveWirelessUpdate() {
     Log.D('Performing SmartDrive Wireless Update');
-    this.updateProgressText = '';
+    this.smartDriveOtaState = L('updates.initializing');
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
     // do we need to update? - check against smartdrive version
@@ -611,8 +650,8 @@ export class UpdatesViewModel extends Observable {
     ) {
       // smartdrive is already up to date
       console.log('Stopping updates');
-      this.stopUpdates(L('updates.up-to-date'));
-      return;
+      //this.stopUpdates(L('updates.up-to-date'));
+      //return;
     }
     // the smartdrive is not up to date, so we need to update it.
     // reset the ota progress to 0 (since downloaing may have used it)
@@ -711,6 +750,15 @@ export class UpdatesViewModel extends Observable {
   }
 
   updateError(err: any, msg: string, alertMsg?: string) {
+    // TODO: Show 'CLOSE/BACK' button to close this modal
+    if (this.closeCallback) {
+      this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+        label: L('ota.action.close'),
+        func: this.closeCallback.bind(this),
+        action: 'ota.action.close',
+        class: 'action-close'
+      });
+    }
     Sentry.captureException(err);
     Log.E(msg);
     if (alertMsg !== undefined) {

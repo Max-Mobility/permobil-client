@@ -64,6 +64,7 @@ $retry-color: #00a73c;
   background-color: $resume-color;
 }
 
+.action-close,
 .action-cancel {
     @extend .updates-btn;
   color: $white;

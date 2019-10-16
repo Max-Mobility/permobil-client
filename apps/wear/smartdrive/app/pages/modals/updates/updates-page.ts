@@ -9,6 +9,7 @@ export function onShownModally(args: ShownModallyData) {
   console.log('updates-page onShownModally');
   const page = args.object as Page;
   closeCallback = args.closeCallback;
+  vm.closeCallback = onCloseTap;
   page.bindingContext = vm;
 }
 
