@@ -1,4 +1,5 @@
 import { Log } from '@permobil/core';
+import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
@@ -10,6 +11,7 @@ let closeCallback;
 let page: Page;
 let wearOsLayout: WearOsLayout;
 let kinveyService: KinveyService;
+let disableWearCheck: boolean;
 
 // values for UI databinding via bindingContext
 const data = {
@@ -26,6 +28,7 @@ export function onShownModally(args: ShownModallyData) {
   Log.D('settings onShownModally');
   page = args.object as Page;
   kinveyService = args.context.kinveyService as KinveyService;
+  disableWearCheck = args.context.disableWearCheck;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   page.bindingContext = fromObject(data);
@@ -56,20 +59,29 @@ export function onChangeSettingsItemTap(args) {
   Log.D('onChangeSettingsItemTap', tappedId);
 
   // // copy the current settings into temporary store
-  // this.tempSettings.copy(this.settings);
-  // this.activeSettingToChange = tappedId.toLowerCase();
-  // const translationKey = 'settings.' + this.activeSettingToChange + '.title';
-  // this.changeSettingKeyString = L(translationKey);
-  // this.updateSettingsChangeDisplay();
+  // tempSettings.copy(settings);
+  const activeSettingToChange = tappedId.toLowerCase();
+  const translationKey = 'settings.' + activeSettingToChange + '.title';
+  const changeSettingKeyString = L(translationKey);
+  // updateSettingsChangeDisplay();
 
-  // showOffScreenLayout(this.changeSettingsLayout).then(() => {
-  //   // TODO: this is a hack to force the layout to update for
-  //   // showing the auto-size text view
-  //   const prevVal = this.changeSettingKeyValue;
-  //   this.changeSettingKeyValue = '  ';
-  //   this.changeSettingKeyValue = prevVal;
-  // });
-  // this.enableLayout('changeSettings');
+  const changeSettingsPage = 'pages/modals/change-settings/change-settings';
+  const btn = args.object as View;
+  const option: ShowModalOptions = {
+    context: {
+      kinveyService,
+      activeSettingToChange,
+      changeSettingKeyString,
+      disableWearCheck
+    },
+    closeCallback: () => {
+      // we dont do anything with the about to return anything
+    },
+    animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+    fullscreen: true
+  };
+
+  btn.showModal(changeSettingsPage, option);
 }
 
 function configureLayout(layout: WearOsLayout) {
