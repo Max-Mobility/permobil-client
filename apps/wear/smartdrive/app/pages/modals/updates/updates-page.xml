@@ -12,9 +12,8 @@
                      <nac:AnimatedCircle id="updateProgressCircle" row="1" col="1" loaded="{{ onUpdateProgressCircleLoaded }}" class="updateProgressCircle" width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveOtaProgress }}"></nac:AnimatedCircle>
                      <GridLayout row="1" col="1" width="95%" height="95%" rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
                             // NOTE: I altered the order of the description / display
-                            <Label row="1" col="1" class="topValueDescription" textWrap="true" text="{{ L('updates.status') }}" />
-                            <ui:AutoFitText row="2" col="1" class="topValue" horizontalAlignment="center" text="{{ smartDriveOtaState }}" textAlignment="center" />
-                            <!-- <Button row="3" col="1" visibility="{{ !isUpdatingSmartDrive ? 'visible' : 'collapsed' }}" text="{{ L('buttons.back') }}" tap="onCloseTap" class="action-back" ></Button> -->
+                            <ui:AutoFitText class="topValue" row="1" rowSpan="2" col="1" height="20%" width="100%"
+                                   verticalAlignment="center" horizontalAlignment="center" text="{{ smartDriveOtaState }}" textAlignment="center" />
                             <ListView row="3" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
                                    <ListView.itemTemplate>
                                           <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}" />

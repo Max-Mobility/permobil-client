@@ -440,16 +440,16 @@ export class UpdatesViewModel extends Observable {
   }
 
   onSmartDriveOtaStatus(args: any) {
-    let canSwipeDismiss = true;
+    // let canSwipeDismiss = true;
     // get the current progress of the update
     const progress = args.data.progress;
     // translate the state
     const state = L(args.data.state); // .replace('ota.sd.state.', '');
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
-      if (a.includes('cancel')) {
-        canSwipeDismiss = false;
-      }
+      // if (a.includes('cancel')) {
+      //   canSwipeDismiss = false;
+      // }
       const actionClass = 'action-' + last(a.split('.')) + ' compact';
       // translate the label
       const actionLabel = L(a); // .replace('ota.action.', '');
@@ -765,6 +765,12 @@ export class UpdatesViewModel extends Observable {
 
     if (doCancelOta && this.smartDrive) {
       this.smartDrive.cancelOTA();
+      this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+        label: L('ota.action.close'),
+        func: this.closeCallback.bind(this),
+        action: 'ota.action.close',
+        class: 'action-close'
+      });
     }
   }
 
