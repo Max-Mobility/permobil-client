@@ -1,6 +1,7 @@
-﻿import 'reflect-metadata';
-import { getDefaultLang, L, load, Prop, use } from '@permobil/nativescript';
+﻿import { Log } from '@permobil/core';
+import { getDefaultLang, load, use } from '@permobil/nativescript';
 import { Sentry } from 'nativescript-sentry';
+import 'reflect-metadata';
 import * as application from 'tns-core-modules/application';
 
 console.time('App_Start_Time');
@@ -14,12 +15,15 @@ console.timeEnd('load language files');
 // setup application level events
 application.on(
   application.uncaughtErrorEvent,
-  (args: application.UnhandledErrorEventData) => {
-    Sentry.captureException(args.error, {
-      tags: {
-        type: 'uncaughtErrorEvent'
-      }
-    });
+  (args?: application.UnhandledErrorEventData) => {
+    if (args) {
+      Sentry.captureException(args.error, {
+        tags: {
+          type: 'uncaughtErrorEvent'
+        }
+      });
+    }
+    Log.D('App uncaught error');
   }
 );
 
