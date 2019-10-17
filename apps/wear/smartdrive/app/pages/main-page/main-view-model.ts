@@ -245,6 +245,10 @@ export class MainViewModel extends Observable {
     }
   }
 
+  get disableWearCheck() {
+    return this._settingsService.disableWearCheck;
+  }
+
   constructor() {
     super();
     // init sentry - DNS key for permobil-wear Sentry project
