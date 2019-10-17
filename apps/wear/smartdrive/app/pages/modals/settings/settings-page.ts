@@ -15,6 +15,8 @@ export function onShownModally(args: ShownModallyData) {
   console.log('settings-page onShownModally');
   page = args.object as Page;
   closeCallback = args.closeCallback;
+  vm.settingsService = args.context.settingsService;
+  vm.settingsService.loadSettings();
   page.bindingContext = vm;
   wearOsLayout = page.getViewById('wearOsLayout');
   configureLayout(wearOsLayout);
@@ -25,6 +27,7 @@ export function onSettingsPageLoaded(args: EventData) {
 }
 
 export function onCloseTap(args) {
+  console.log('Closing settings modal');
   closeCallback();
 }
 

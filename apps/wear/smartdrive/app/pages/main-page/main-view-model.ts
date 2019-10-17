@@ -1637,7 +1637,9 @@ export class MainViewModel extends Observable {
       const settingsPage = 'pages/modals/settings/settings-page';
       const btn = args.object;
       const option: ShowModalOptions = {
-        context: {},
+        context: {
+          settingsService: this._settingsService
+        },
         closeCallback: () => {
           // we dont do anything with the about to return anything
           // now update any display that needs settings:
@@ -1737,6 +1739,8 @@ export class MainViewModel extends Observable {
   async enablePowerAssist() {
     this._sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
+    console.log('this.settingsService_disableWearCheck: ',
+      this._settingsService.disableWearCheck);
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       alert({
         title: L('failures.title'),

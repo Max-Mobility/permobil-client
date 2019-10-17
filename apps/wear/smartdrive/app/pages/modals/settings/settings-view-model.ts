@@ -17,18 +17,16 @@ export class SettingsViewModel extends Observable {
   @Prop() changeSettingKeyValue: any = ' ';
   private tempSettings = new Device.Settings();
   private tempSwitchControlSettings = new Device.SwitchControlSettings();
-  private _settingsService: SettingsService;
+  settingsService: SettingsService;
 
   async onSettingsPageLoaded(args: EventData) {
-    const injector = ReflectiveInjector.resolveAndCreate([SettingsService]);
-    this._settingsService = injector.get(SettingsService);
-    this._settingsService.loadSettings();
+    // this.settingsService.loadSettings();
   }
 
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
-    this.tempSettings.copy(this._settingsService.settings);
-    this.tempSwitchControlSettings.copy(this._settingsService.switchControlSettings);
+    this.tempSettings.copy(this.settingsService.settings);
+    this.tempSwitchControlSettings.copy(this.settingsService.switchControlSettings);
     const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
@@ -70,17 +68,17 @@ export class SettingsViewModel extends Observable {
             activeSettingToChange: this.activeSettingToChange,
             changeSettingKeyString: this.changeSettingKeyString,
             changeSettingKeyValue: this.changeSettingKeyValue,
-            disableWearCheck: this._settingsService.disableWearCheck,
-            settings: this._settingsService.settings,
-            switchControlSettings: this._settingsService.switchControlSettings
+            disableWearCheck: this.settingsService.disableWearCheck,
+            settings: this.settingsService.settings,
+            switchControlSettings: this.settingsService.switchControlSettings
         },
         closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings, disableWearCheck) => {
             if (confirmedByUser) {
-                this._settingsService.settings.copy(tempSettings);
-                this._settingsService.switchControlSettings.copy(tempSwitchControlSettings);
-                this._settingsService.disableWearCheck = disableWearCheck;
-                this._settingsService.hasSentSettings = false;
-                this._settingsService.saveSettings();
+                this.settingsService.settings.copy(tempSettings);
+                this.settingsService.switchControlSettings.copy(tempSwitchControlSettings);
+                this.settingsService.disableWearCheck = disableWearCheck;
+                this.settingsService.hasSentSettings = false;
+                this.settingsService.saveSettings();
                 // // now update any display that needs settings:
                 // this.updateSettingsDisplay();
                 // warning / indication to the user that they've updated their settings
@@ -138,7 +136,7 @@ export class SettingsViewModel extends Observable {
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
         return;
       case 'wearcheck':
-        if (this._settingsService.disableWearCheck) {
+        if (this.settingsService.disableWearCheck) {
           this.changeSettingKeyValue = L(
             'settings.watch-required.values.disabled'
           );
