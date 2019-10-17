@@ -3,10 +3,8 @@
     xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
     shownModally="onShownModally"
     actionBarHidden="true">
-    <wol:WearOsLayout id="wearOsLayout" height="90%" width="100%" verticalAlignment="center">
-        <GridLayout rows="auto, *, auto" columns="*" backgroundColor="#000" width="100%" height="100%" verticalAlignment="center">
-            <ActivityIndicator row="1" busy="true" color="#006ea4" verticalAlignment="center" horizontalAlignment="center" />
-            <Label row="2" class="center-label-base fs20" text="{{ scanningText }}" textWrap="true" verticalAlignment="center" horizontalAlignment="center" />
-        </GridLayout>
-    </wol:WearOsLayout>
+    <GridLayout rows="auto, auto" columns="*" backgroundColor="#000" width="100%" height="100%" verticalAlignment="center">
+        <ActivityIndicator row="0" busy="true" color="#006ea4" width="50%" height="50%" verticalAlignment="center" horizontalAlignment="center" />
+        <Label row="1" class="center-label-base fs20" text="{{ scanningText }}" textWrap="true" verticalAlignment="center" horizontalAlignment="center" />
+    </GridLayout>
 </Page>
