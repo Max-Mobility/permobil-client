@@ -1,12 +1,15 @@
-import { Log } from '@permobil/core';
+import { Log, Device } from '@permobil/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
+import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
+import differenceBy from 'lodash/differenceBy';
+import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
@@ -19,15 +22,17 @@ import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
 import { EventData, fromObject, Observable } from 'tns-core-modules/data/observable';
+import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
+import { ScrollView } from 'tns-core-modules/ui/scroll-view';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
-import { hideOffScreenLayout } from '../../utils';
+import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 
 const ambientTheme = require('../../scss/theme-ambient.css').toString();
@@ -106,6 +111,10 @@ export class MainViewModel extends Observable {
   @Prop() enabledLayout = fromObject(this.layouts);
   private _ambientTimeView: View;
   private _powerAssistView: View;
+  private _settingsLayout: SwipeDismissLayout;
+  private _changeSettingsLayout: SwipeDismissLayout;
+  private _aboutLayout: SwipeDismissLayout;
+  private _updatesLayout: SwipeDismissLayout;
   private _scanningLayout: SwipeDismissLayout;
 
   private _mainPage;
@@ -188,13 +197,15 @@ export class MainViewModel extends Observable {
   private initialized: boolean = false;
   private wakeLock: any = null;
   private pager: Pager;
-  private scanningProgressCircle: AnimatedCircle;
+  private settingsScrollView: ScrollView;
+  private aboutScrollView: ScrollView;
   private _vibrator: Vibrate = new Vibrate();
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
   private _kinveyService: KinveyService;
   private _settingsService: SettingsService;
+  private _debouncedOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
 
@@ -593,11 +604,6 @@ export class MainViewModel extends Observable {
       const page = args.object as Page;
       this._mainPage = page;
       this.pager = page.getViewById('pager') as Pager;
-      // get references to scanning and update circles to control
-      // their spin state
-      this.scanningProgressCircle = page.getViewById(
-        'scanningProgressCircle'
-      ) as AnimatedCircle;
     } catch (err) {
       Sentry.captureException(err);
       Log.E('onMainPageLoaded::error:', err);
@@ -688,6 +694,11 @@ export class MainViewModel extends Observable {
   registerForSmartDriveEvents() {
     this.unregisterForSmartDriveEvents();
     // set up ota action handler
+    // debounced function to keep people from pressing it too frequently
+    this._debouncedOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
+      leading: true,
+      trailing: false
+    });
     // register for event handlers
     // set the event listeners for mcu_version_event and smartdrive_distance_event
     this.smartDrive.on(
@@ -1482,6 +1493,9 @@ export class MainViewModel extends Observable {
    */
   onUpdatesTap(args) {
     if (this.smartDrive) {
+      // showOffScreenLayout(this._updatesLayout);
+      // this.enableLayout('updates');
+      // this.checkForUpdates();
       const updatesPage = 'pages/modals/updates/updates-page';
       const btn = args.object;
       const option: ShowModalOptions = {
@@ -2027,7 +2041,6 @@ export class MainViewModel extends Observable {
       this.showScanning();
       // scan for smartdrives
       // @ts-ignore
-      this.scanningProgressCircle.spin();
       await this._bluetoothService.scanForSmartDrives(3);
       this.hideScanning();
       this._sentryBreadCrumb(`Discovered ${BluetoothService.SmartDrives.length} SmartDrives`);
@@ -2177,6 +2190,12 @@ export class MainViewModel extends Observable {
       clearInterval(this.rssiIntervalId);
       this.rssiIntervalId = null;
     }
+    /*
+    this.rssiIntervalId = setInterval(
+      this.readSmartDriveSignalStrength.bind(this),
+      this.RSSI_INTERVAL_MS
+    );
+    */
   }
 
   async onSmartDriveDisconnect() {
@@ -2606,7 +2625,6 @@ export class MainViewModel extends Observable {
    * Network Functions
    */
   async sendSettingsToServer() {
-    Log.D('Sending SmartDrive settings to server');
     if (!this._settingsService.hasSentSettings && this._kinveyService.hasAuth()) {
       const settingsObj = {
         settings: this._settingsService.settings.toObj(),
@@ -2618,7 +2636,6 @@ export class MainViewModel extends Observable {
         const id = r['_id'];
         if (id) {
           this._settingsService.hasSentSettings = true;
-          Log.D('Settings sent!');
           appSettings.setBoolean(
             DataKeys.SD_SETTINGS_DIRTY_FLAG,
             this._settingsService.hasSentSettings
