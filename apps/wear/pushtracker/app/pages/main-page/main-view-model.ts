@@ -194,7 +194,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -211,7 +211,8 @@ export class MainViewModel extends Observable {
         disableWearCheck: this.disableWearCheck
       },
       closeCallback: () => {
-        // we dont do anything with the about to return anything
+        // now we need to update the display since goals / units may have changed
+        this._updateDisplay();
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
@@ -640,7 +641,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -866,6 +867,8 @@ export class MainViewModel extends Observable {
 
   private _updateDisplay() {
     try {
+      // load the settings to make sure goals and such are updated
+      this._loadSettings();
       // load the distance from the smartdrive app
       this._loadSmartDriveData();
       // update the goal displays
@@ -910,7 +913,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions
@@ -928,7 +931,8 @@ export class MainViewModel extends Observable {
   }
 
   private _loadSettings() {
-    this.settings.copy(LS.getItem('com.permobil.pushtracker.profile.settings'));
+    const savedSettings = LS.getItem('com.permobil.pushtracker.profile.settings');
+    this.settings.copy(savedSettings);
     this.hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
 

@@ -38,9 +38,7 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the device serial number
-  data.watchSerialNumber = android.os.Build.getSerial()
-    ? android.os.Build.getSerial()
-    : '---';
+  data.watchSerialNumber = getSerialNumber() || '---';
 
   // get the app version
   const ctx = androidUtils.getApplicationContext();
@@ -84,11 +82,11 @@ export async function onSerialNumberTap(_: any) {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => {});
+      await requestPermissions([p], () => { });
       const watchSerialNumber = getSerialNumber();
       saveSerialNumber(watchSerialNumber);
       kinveyService.watch_serial_number = watchSerialNumber;
-    } catch (err) {}
+    } catch (err) { }
   } else {
   }
 }
