@@ -127,7 +127,7 @@ export namespace Profile {
       return increment;
     }
 
-    increase(key: string, increment: number = 0.5): void {
+    increase(key: string, increment: number = 0.1): void {
       let index = 0;
       switch (key) {
         case 'chairmake':
