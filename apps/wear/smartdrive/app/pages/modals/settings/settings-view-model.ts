@@ -15,16 +15,14 @@ export class SettingsViewModel extends Observable {
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
-  @Prop() disableWearCheck: boolean =
-    appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
   private tempSettings = new Device.Settings();
   private tempSwitchControlSettings = new Device.SwitchControlSettings();
-  private hasSentSettings: boolean = false;
   private _settingsService: SettingsService;
 
   async onSettingsPageLoaded(args: EventData) {
     const injector = ReflectiveInjector.resolveAndCreate([SettingsService]);
     this._settingsService = injector.get(SettingsService);
+    this._settingsService.loadSettings();
   }
 
   onChangeSettingsItemTap(args) {
@@ -65,7 +63,6 @@ export class SettingsViewModel extends Observable {
         break;
     }
     this.updateSettingsChangeDisplay();
-    console.log(this.activeSettingToChange, this.changeSettingKeyString, this.changeSettingKeyValue);
     const changeSettingsPage = 'pages/modals/change-settings/change-settings-page';
     const btn = args.object;
     const option: ShowModalOptions = {
@@ -73,16 +70,17 @@ export class SettingsViewModel extends Observable {
             activeSettingToChange: this.activeSettingToChange,
             changeSettingKeyString: this.changeSettingKeyString,
             changeSettingKeyValue: this.changeSettingKeyValue,
-            disableWearCheck: this.disableWearCheck,
+            disableWearCheck: this._settingsService.disableWearCheck,
             settings: this._settingsService.settings,
             switchControlSettings: this._settingsService.switchControlSettings
         },
-        closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings) => {
+        closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings, disableWearCheck) => {
             if (confirmedByUser) {
                 this._settingsService.settings.copy(tempSettings);
                 this._settingsService.switchControlSettings.copy(tempSwitchControlSettings);
-                this.hasSentSettings = false;
-                this.saveSettings();
+                this._settingsService.disableWearCheck = disableWearCheck;
+                this._settingsService.hasSentSettings = false;
+                this._settingsService.saveSettings();
                 // // now update any display that needs settings:
                 // this.updateSettingsDisplay();
                 // warning / indication to the user that they've updated their settings
@@ -97,21 +95,6 @@ export class SettingsViewModel extends Observable {
         fullscreen: true
     };
     btn.showModal(changeSettingsPage, option);
-  }
-
-  loadSettings() {
-    this._settingsService.settings.copy(
-      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
-    );
-    this._settingsService.switchControlSettings.copy(
-      LS.getItem(
-        'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
-      )
-    );
-    this.hasSentSettings =
-      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
-    this.disableWearCheck =
-      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
   }
 
   updateSettingsChangeDisplay() {
@@ -155,7 +138,7 @@ export class SettingsViewModel extends Observable {
         this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
         return;
       case 'wearcheck':
-        if (this.disableWearCheck) {
+        if (this._settingsService.disableWearCheck) {
           this.changeSettingKeyValue = L(
             'settings.watch-required.values.disabled'
           );
@@ -169,32 +152,4 @@ export class SettingsViewModel extends Observable {
         break;
     }
   }
-
-  saveSettings() {
-    // make sure to save the units setting for the complications
-    appSettings.setString(
-      DataKeys.SD_UNITS,
-      this._settingsService.settings.units.toLowerCase()
-    );
-    // save state and local settings
-    appSettings.setBoolean(
-      DataKeys.SD_SETTINGS_DIRTY_FLAG,
-      this.hasSentSettings
-    );
-    appSettings.setBoolean(
-      DataKeys.REQUIRE_WATCH_BEING_WORN,
-      this.disableWearCheck
-    );
-    // now save the actual device settings objects
-    LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.settings',
-      this._settingsService.settings.toObj()
-    );
-    LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
-      this._settingsService.switchControlSettings.toObj()
-    );
-  }
-
-
 }

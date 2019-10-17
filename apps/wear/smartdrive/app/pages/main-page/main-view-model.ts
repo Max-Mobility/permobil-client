@@ -95,7 +95,6 @@ export class MainViewModel extends Observable {
   @Prop() hasTapped = false;
   @Prop() motorOn = false;
   @Prop() isTraining: boolean = false;
-  @Prop() disableWearCheck: boolean = false;
 
   /**
    * Layout Management
@@ -182,11 +181,6 @@ export class MainViewModel extends Observable {
    * SmartDrive Data / state management
    */
   public smartDrive: SmartDrive;
-  private settings = new Device.Settings();
-  private tempSettings = new Device.Settings();
-  private switchControlSettings = new Device.SwitchControlSettings();
-  private tempSwitchControlSettings = new Device.SwitchControlSettings();
-  private hasSentSettings: boolean = false;
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
@@ -403,7 +397,7 @@ export class MainViewModel extends Observable {
 
     // load settings from memory
     this._sentryBreadCrumb('Loading settings.');
-    this.loadSettings();
+    this._settingsService.loadSettings();
     this._sentryBreadCrumb('Settings loaded.');
 
     this._sentryBreadCrumb('Updating settings display.');
@@ -1207,7 +1201,7 @@ export class MainViewModel extends Observable {
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
         this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
-        if (!this.disableWearCheck) {
+        if (!this._settingsService.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             this._sentryBreadCrumb('Watch not being worn - disabling power assist!');
             // disable power assist if the watch is taken off!
@@ -1233,7 +1227,7 @@ export class MainViewModel extends Observable {
       return;
     }
     // ignore tapping if we're not on the users wrist
-    if (!this.watchBeingWorn && !this.disableWearCheck) {
+    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       return;
     }
     // add the data to our accel history
@@ -1454,7 +1448,7 @@ export class MainViewModel extends Observable {
   }
 
   onTrainingTap() {
-    if (!this.watchBeingWorn && !this.disableWearCheck) {
+    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -1661,126 +1655,6 @@ export class MainViewModel extends Observable {
       btn.showModal(settingsPage, option);
   }
 
-  onSettingsInfoItemTap() {
-    const messageKey = 'settings.description.' + this.activeSettingToChange;
-    const message = this.changeSettingKeyString + '\n\n' + L(messageKey);
-    alert({
-      title: L('settings.information'),
-      message: message,
-      okButtonText: L('buttons.ok')
-    });
-  }
-
-  onChangeSettingsItemTap(args: EventData) {
-    // copy the current settings into temporary store
-    this.tempSettings.copy(this._settingsService.settings);
-    this.tempSwitchControlSettings.copy(this._settingsService.switchControlSettings);
-    const tappedId = (args.object as any).id as string;
-    this.activeSettingToChange = tappedId.toLowerCase();
-    switch (this.activeSettingToChange) {
-      case 'maxspeed':
-        this.changeSettingKeyString = L('settings.max-speed');
-        break;
-      case 'acceleration':
-        this.changeSettingKeyString = L('settings.acceleration');
-        break;
-      case 'tapsensitivity':
-        this.changeSettingKeyString = L('settings.tap-sensitivity');
-        break;
-      case 'powerassistbuzzer':
-        this.changeSettingKeyString = L('settings.power-assist-buzzer');
-        break;
-      case 'controlmode':
-        this.changeSettingKeyString = L('settings.control-mode');
-        break;
-      case 'units':
-        this.changeSettingKeyString = L('settings.units');
-        break;
-      case 'switchcontrolmode':
-        this.changeSettingKeyString = L('switch-control.mode');
-        break;
-      case 'switchcontrolspeed':
-        this.changeSettingKeyString = L('switch-control.max-speed');
-        break;
-      case 'wearcheck':
-        this.changeSettingKeyString = L('settings.watch-required.title');
-        break;
-      default:
-        break;
-    }
-    this.updateSettingsChangeDisplay();
-
-    showOffScreenLayout(this._changeSettingsLayout).then(() => {
-      // TODO: this is a hack to force the layout to update for
-      // showing the auto-size text view
-      const prevVal = this.changeSettingKeyValue;
-      this.changeSettingKeyValue = '  ';
-      this.changeSettingKeyValue = prevVal;
-    });
-    this.enableLayout('changeSettings');
-  }
-
-  updateSettingsChangeDisplay() {
-    let translationKey = '';
-    switch (this.activeSettingToChange) {
-      case 'maxspeed':
-        this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
-        break;
-      case 'acceleration':
-        this.changeSettingKeyValue = `${this.tempSettings.acceleration} %`;
-        break;
-      case 'tapsensitivity':
-        this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
-        break;
-      case 'powerassistbuzzer':
-        if (this.tempSettings.disablePowerAssistBeep) {
-          this.changeSettingKeyValue = L(
-            'sd.settings.power-assist-buzzer.disabled'
-          );
-        } else {
-          this.changeSettingKeyValue = L(
-            'sd.settings.power-assist-buzzer.enabled'
-          );
-        }
-        break;
-      case 'controlmode':
-        this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
-        return;
-      case 'units':
-        translationKey =
-          'sd.settings.units.' + this.tempSettings.units.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        return;
-      case 'switchcontrolmode':
-        translationKey =
-          'sd.switch-settings.mode.' +
-          this.tempSwitchControlSettings.mode.toLowerCase();
-        this.changeSettingKeyValue = L(translationKey);
-        return;
-      case 'switchcontrolspeed':
-        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
-        return;
-      case 'wearcheck':
-        if (this.disableWearCheck) {
-          this.changeSettingKeyValue = L(
-            'settings.watch-required.values.disabled'
-          );
-        } else {
-          this.changeSettingKeyValue = L(
-            'settings.watch-required.values.enabled'
-          );
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  onCancelChangesTap() {
-    hideOffScreenLayout(this._changeSettingsLayout, { x: 500, y: 0 });
-    this.previousLayout();
-  }
-
   updateSettingsDisplay() {
     this.updateSpeedDisplay();
     this.updateChartData();
@@ -1827,47 +1701,6 @@ export class MainViewModel extends Observable {
    * Smart Drive Interaction and Data Management
    */
 
-  loadSettings() {
-    this._settingsService.settings.copy(
-      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
-    );
-    this._settingsService.switchControlSettings.copy(
-      LS.getItem(
-        'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
-      )
-    );
-    this.hasSentSettings =
-      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
-    this.disableWearCheck =
-      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
-  }
-
-  saveSettings() {
-    // make sure to save the units setting for the complications
-    appSettings.setString(
-      DataKeys.SD_UNITS,
-      this._settingsService.settings.units.toLowerCase()
-    );
-    // save state and local settings
-    appSettings.setBoolean(
-      DataKeys.SD_SETTINGS_DIRTY_FLAG,
-      this.hasSentSettings
-    );
-    appSettings.setBoolean(
-      DataKeys.REQUIRE_WATCH_BEING_WORN,
-      this.disableWearCheck
-    );
-    // now save the actual device settings objects
-    LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.settings',
-      this._settingsService.settings.toObj()
-    );
-    LS.setItemObject(
-      'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
-      this._settingsService.switchControlSettings.toObj()
-    );
-  }
-
   updatePowerAssistRing(color?: any) {
     if (color) {
       this.powerAssistRingColor = color;
@@ -1910,7 +1743,7 @@ export class MainViewModel extends Observable {
   async enablePowerAssist() {
     this._sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
-    if (!this.watchBeingWorn && !this.disableWearCheck) {
+    if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
@@ -2799,7 +2632,7 @@ export class MainViewModel extends Observable {
    * Network Functions
    */
   async sendSettingsToServer() {
-    if (!this.hasSentSettings && this._kinveyService.hasAuth()) {
+    if (!this._settingsService.hasSentSettings && this._kinveyService.hasAuth()) {
       const settingsObj = {
         settings: this._settingsService.settings.toObj(),
         switchControlSettings: this._settingsService.switchControlSettings.toObj()
@@ -2809,10 +2642,10 @@ export class MainViewModel extends Observable {
           .sendSettings(settingsObj);
         const id = r['_id'];
         if (id) {
-          this.hasSentSettings = true;
+          this._settingsService.hasSentSettings = true;
           appSettings.setBoolean(
             DataKeys.SD_SETTINGS_DIRTY_FLAG,
-            this.hasSentSettings
+            this._settingsService.hasSentSettings
           );
         } else {
           Log.E('no id returned by kinvey!', r);

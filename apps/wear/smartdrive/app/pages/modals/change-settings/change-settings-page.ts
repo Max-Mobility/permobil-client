@@ -32,11 +32,11 @@ export function onChangeSettingsPageLoaded(args: EventData) {
 }
 
 export function onCloseTap(args) {
-  closeCallback(false, vm.tempSettings, vm.tempSwitchControlSettings);
+  closeCallback(false, vm.tempSettings, vm.tempSwitchControlSettings, vm.disableWearCheck);
 }
 
 export function onConfirmTap(args) {
-  closeCallback(true, vm.tempSettings, vm.tempSwitchControlSettings);
+  closeCallback(true, vm.tempSettings, vm.tempSwitchControlSettings, vm.disableWearCheck);
 }
 
 function configureLayout() {
