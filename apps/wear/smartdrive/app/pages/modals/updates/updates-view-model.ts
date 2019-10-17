@@ -765,13 +765,13 @@ export class UpdatesViewModel extends Observable {
 
     if (doCancelOta && this.smartDrive) {
       this.smartDrive.cancelOTA();
-      this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-        label: L('ota.action.close'),
-        func: this.closeCallback.bind(this),
-        action: 'ota.action.close',
-        class: 'action-close'
-      });
     }
+    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+      label: L('ota.action.close'),
+      func: this.closeCallback.bind(this),
+      action: 'ota.action.close',
+      class: 'action-close'
+    });
   }
 
   async ensureBluetoothCapabilities() {
