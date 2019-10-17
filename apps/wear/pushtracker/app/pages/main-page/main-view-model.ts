@@ -132,10 +132,8 @@ export class MainViewModel extends Observable {
 
   // used to update the chart display when the date changes
   private lastChartDay = null;
-
   // Used for doing work while charing
   private CHARGING_WORK_PERIOD_MS = 30 * 1000;
-
   /**
    * User interaction objects
    */
@@ -150,61 +148,20 @@ export class MainViewModel extends Observable {
    * FOR COMMUNICATING WITH PHONE AND DETERMINING IF THE PHONE HAS THE
    * APP, AND FOR OPENING THE APP STORE OR APP
    */
-
   private PHONE_ANDROID_PACKAGE_NAME = 'com.permobil.pushtracker';
   private PHONE_IOS_APP_STORE_URI =
     'https://itunes.apple.com/us/app/pushtracker/id1121427802';
   private ANDROID_MARKET_SMARTDRIVE_URI =
     'market://details?id=com.permobil.smartdrive.wearos';
-
   private serviceDataReceiver = new DataBroadcastReceiver();
-
   private hasAppliedTheme: boolean = false;
 
   constructor() {
     super();
     this._sentryBreadCrumb('Main-View-Model constructor.');
-
-    // determine inset padding
-    const androidConfig = ad
-      .getApplicationContext()
-      .getResources()
-      .getConfiguration();
-    const isCircleWatch = androidConfig.isScreenRound();
-    const screenWidth = screen.mainScreen.widthPixels;
-    const screenHeight = screen.mainScreen.heightPixels;
-    // this.screenWidth = screen.mainScreen.widthPixels;
-    // this.screenHeight = screen.mainScreen.heightPixels;
-    Log.D('WxH', screenWidth, screenHeight);
-    if (isCircleWatch) {
-      this.insetPadding = Math.round(0.146467 * screenWidth);
-      // if the height !== width then there is a chin!
-      if (screenWidth !== screenHeight && screenWidth > screenHeight) {
-        this.chinSize = screenWidth - screenHeight;
-      }
-    }
-    Log.D('chinSize:', this.chinSize);
-
-    // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
-    this._registerAppEventHandlers();
-    this._sentryBreadCrumb('App event handlers registered.');
-
-    this._registerForServiceDataUpdates();
-
-    // configure the needed permissions
-    this.permissionsNeeded = [];
-    if (WearOsComms.phoneIsIos()) {
-      this.permissionsNeeded.push(
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
-      );
-      this.permissionsReasons.push(L('permissions-reasons.coarse-location'));
-    }
-    this.permissionsNeeded.push(android.Manifest.permission.READ_PHONE_STATE);
-    this.permissionsReasons.push(L('permissions-reasons.phone-state'));
   }
 
-  async onMainPageLoaded(args: any) {
+  async onMainPageLoaded() {
     this._sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
@@ -221,7 +178,9 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      await this._init();
+      this._init().then(() => {
+        Log.D('init finished in the main-view-model');
+      });
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -316,6 +275,44 @@ export class MainViewModel extends Observable {
 
   private async _init() {
     this._sentryBreadCrumb('Main-View-Model _init.');
+
+    // determine inset padding
+    const androidConfig = ad
+      .getApplicationContext()
+      .getResources()
+      .getConfiguration();
+    const isCircleWatch = androidConfig.isScreenRound();
+    const screenWidth = screen.mainScreen.widthPixels;
+    const screenHeight = screen.mainScreen.heightPixels;
+    // this.screenWidth = screen.mainScreen.widthPixels;
+    // this.screenHeight = screen.mainScreen.heightPixels;
+    Log.D('WxH', screenWidth, screenHeight);
+    if (isCircleWatch) {
+      this.insetPadding = Math.round(0.146467 * screenWidth);
+      // if the height !== width then there is a chin!
+      if (screenWidth !== screenHeight && screenWidth > screenHeight) {
+        this.chinSize = screenWidth - screenHeight;
+      }
+    }
+    Log.D('chinSize:', this.chinSize);
+
+    // handle application lifecycle events
+    this._sentryBreadCrumb('Registering app event handlers.');
+    this._registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
+
+    this._registerForServiceDataUpdates();
+
+    // configure the needed permissions
+    this.permissionsNeeded = [];
+    if (WearOsComms.phoneIsIos()) {
+      this.permissionsNeeded.push(
+        android.Manifest.permission.ACCESS_COARSE_LOCATION
+      );
+      this.permissionsReasons.push(L('permissions-reasons.coarse-location'));
+    }
+    this.permissionsNeeded.push(android.Manifest.permission.READ_PHONE_STATE);
+    this.permissionsReasons.push(L('permissions-reasons.phone-state'));
 
     console.time('Sentry_Init');
     // init sentry - DNS key for permobil-wear Sentry project
@@ -685,56 +682,49 @@ export class MainViewModel extends Observable {
    */
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
-    application.on('enterAmbient', this.onEnterAmbient.bind(this));
-    application.on('updateAmbient', this.onUpdateAmbient.bind(this));
-    application.on('exitAmbient', this.onExitAmbient.bind(this));
+    application.on('enterAmbient', () => {
+      this._sentryBreadCrumb('*** enterAmbient ***');
+      this.isAmbient = true;
+      Log.D('*** enterAmbient ***');
+      this._applyTheme();
+    });
+
+    application.on('updateAmbient', () => {
+      this.isAmbient = true;
+    });
+
+    application.on('exitAmbient', () => {
+      this._sentryBreadCrumb('*** exitAmbient ***');
+      this.isAmbient = false;
+      Log.D('*** exitAmbient ***');
+      this._applyTheme();
+    });
 
     // Activity lifecycle event handlers
-    application.on(application.exitEvent, this.onAppExit.bind(this));
-    application.on(application.lowMemoryEvent, this.onAppLowMemory.bind(this));
+    application.on(application.exitEvent, async () => {
+      this._sentryBreadCrumb('*** appExit ***');
+      await WearOsComms.stopWatch();
+    });
+    application.on(
+      application.lowMemoryEvent,
+      (args: application.ApplicationEventData) => {
+        this._sentryBreadCrumb('*** appLowMemory ***');
+        Log.D('App low memory', args.android);
+      }
+    );
     application.on(
       application.uncaughtErrorEvent,
-      this.onAppUncaughtError.bind(this)
-    );
-  }
-
-  private onEnterAmbient() {
-    this._sentryBreadCrumb('*** enterAmbient ***');
-    this.isAmbient = true;
-    Log.D('*** enterAmbient ***');
-    this._applyTheme();
-  }
-
-  private onUpdateAmbient() {
-    this.isAmbient = true;
-  }
-
-  private onExitAmbient() {
-    this._sentryBreadCrumb('*** exitAmbient ***');
-    this.isAmbient = false;
-    Log.D('*** exitAmbient ***');
-    this._applyTheme();
-  }
-
-  private async onAppExit(args?: any) {
-    this._sentryBreadCrumb('*** appExit ***');
-    await WearOsComms.stopWatch();
-  }
-
-  private onAppLowMemory(args?: any) {
-    this._sentryBreadCrumb('*** appLowMemory ***');
-    Log.D('App low memory', args.android);
-  }
-
-  private onAppUncaughtError(args?: application.UnhandledErrorEventData) {
-    if (args) {
-      Sentry.captureException(args.error, {
-        tags: {
-          type: 'uncaughtErrorEvent'
+      (args?: application.UnhandledErrorEventData) => {
+        if (args) {
+          Sentry.captureException(args.error, {
+            tags: {
+              type: 'uncaughtErrorEvent'
+            }
+          });
         }
-      });
-    }
-    Log.D('App uncaught error');
+        Log.D('App uncaught error');
+      }
+    );
   }
 
   private format(d: Date, fmt: string) {
@@ -755,26 +745,6 @@ export class MainViewModel extends Observable {
         return;
       }
     }
-    // try {
-    //   Log.D('requesting user data');
-    //   // now request user data
-    //   this.isBusy = true;
-    //   const userData = (await this.kinveyService.getUserData()) as any;
-    //   Log.D('userInfo', JSON.stringify(userData, null, 2));
-    //   // save stuff for display
-    //   this.hasUserData = true;
-    //   this.userName = `${userData.first_name}\n${userData.last_name}`;
-    //   this.userEmail = userData.username;
-    //   // pull the data out of the user structure
-    //   this.settings.fromUser(userData);
-    //   this._saveSettings();
-    //   // now update any display that needs settings:
-    //   this._updateDisplay();
-    //   this.isBusy = false;
-    // } catch (err) {
-    //   this.isBusy = false;
-    //   Log.E('could not get user data:', err);
-    // }
   }
 
   private async _openAppOnPhone() {
@@ -906,59 +876,6 @@ export class MainViewModel extends Observable {
       // Sentry.captureException(err);
     }
   }
-
-  // updateSettingsChangeDisplay() {
-  //   let translationKey = '';
-  //   let value = null;
-  //   switch (this.activeSettingToChange) {
-  //     case 'coastgoal':
-  //       this.changeSettingKeyValue =
-  //         this.tempSettings.coastGoal.toFixed(1) +
-  //         ' ' +
-  //         L('settings.coastgoal.units');
-  //       break;
-  //     case 'distancegoal':
-  //       value = this.tempSettings.distanceGoal;
-  //       if (this.tempSettings.units === 'metric') {
-  //         value *= 1.609;
-  //       }
-  //       this.changeSettingKeyValue = value.toFixed(1) + ' ';
-  //       translationKey =
-  //         'settings.distancegoal.units.' + this.tempSettings.units;
-  //       this.changeSettingKeyValue += L(translationKey);
-  //       break;
-  //     case 'height':
-  //       this.changeSettingKeyValue = this.tempSettings.getHeightDisplay();
-  //       break;
-  //     case 'units':
-  //       translationKey =
-  //         'settings.units.values.' + this.tempSettings.units.toLowerCase();
-  //       this.changeSettingKeyValue = L(translationKey);
-  //       return;
-  //     case 'weight':
-  //       value = this.tempSettings.weight;
-  //       if (this.tempSettings.units === 'english') {
-  //         value *= 2.20462;
-  //       }
-  //       this.changeSettingKeyValue = Math.round(value) + ' ';
-  //       translationKey = 'settings.weight.units.' + this.tempSettings.units;
-  //       this.changeSettingKeyValue += L(translationKey);
-  //       break;
-  //     case 'watchrequired':
-  //       if (this.disableWearCheck) {
-  //         this.changeSettingKeyValue = L(
-  //           'settings.watchrequired.values.disabled'
-  //         );
-  //       } else {
-  //         this.changeSettingKeyValue = L(
-  //           'settings.watchrequired.values.enabled'
-  //         );
-  //       }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
 
   private _updateDisplay() {
     try {
