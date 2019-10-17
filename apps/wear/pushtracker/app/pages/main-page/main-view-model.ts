@@ -712,19 +712,6 @@ export class MainViewModel extends Observable {
         Log.D('App low memory', args.android);
       }
     );
-    application.on(
-      application.uncaughtErrorEvent,
-      (args?: application.UnhandledErrorEventData) => {
-        if (args) {
-          Sentry.captureException(args.error, {
-            tags: {
-              type: 'uncaughtErrorEvent'
-            }
-          });
-        }
-        Log.D('App uncaught error');
-      }
-    );
   }
 
   private format(d: Date, fmt: string) {
