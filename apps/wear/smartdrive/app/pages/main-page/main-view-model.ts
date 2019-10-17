@@ -31,7 +31,7 @@ import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SqliteService } from '../../services';
+import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 
@@ -209,6 +209,7 @@ export class MainViewModel extends Observable {
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
   private _kinveyService: KinveyService;
+  private _settingsService: SettingsService;
   private _debouncedOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
@@ -339,6 +340,7 @@ export class MainViewModel extends Observable {
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
     this._kinveyService = injector.get(KinveyService);
+    this._settingsService = injector.get(SettingsService);
     this._sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings
@@ -1282,7 +1284,7 @@ export class MainViewModel extends Observable {
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
-      this.tapDetector.setSensitivity(this.settings.tapSensitivity, this.motorOn);
+      this.tapDetector.setSensitivity(this._settingsService.settings.tapSensitivity, this.motorOn);
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(signedMaxAccel, averageTimestamp);
       if (didTap) {
@@ -1569,7 +1571,7 @@ export class MainViewModel extends Observable {
         data.value = (100.0 * data.value) / (maxDist || 1);
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
-      if (this.settings.units === 'Metric') {
+      if (this._settingsService.settings.units === 'Metric') {
         this.distanceChartMaxValue = (maxDist * 1.609).toFixed(1);
       } else {
         this.distanceChartMaxValue = maxDist.toFixed(1);
@@ -1671,8 +1673,8 @@ export class MainViewModel extends Observable {
 
   onChangeSettingsItemTap(args: EventData) {
     // copy the current settings into temporary store
-    this.tempSettings.copy(this.settings);
-    this.tempSwitchControlSettings.copy(this.switchControlSettings);
+    this.tempSettings.copy(this._settingsService.settings);
+    this.tempSwitchControlSettings.copy(this._settingsService.switchControlSettings);
     const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
@@ -1796,9 +1798,9 @@ export class MainViewModel extends Observable {
   updateSpeedDisplay() {
     // update distance units
     this.distanceUnits = L(
-      'units.distance.' + this.settings.units.toLowerCase()
+      'units.distance.' + this._settingsService.settings.units.toLowerCase()
     );
-    const speedUnits = L('units.speed.' + this.settings.units.toLowerCase());
+    const speedUnits = L('units.speed.' + this._settingsService.settings.units.toLowerCase());
     // update speed display
     this.currentSpeedDisplay = this.currentSpeed.toFixed(1);
     this.currentSpeedDescription = `${L('power-assist.speed')} (${speedUnits})`;
@@ -1807,7 +1809,7 @@ export class MainViewModel extends Observable {
     this.estimatedDistanceDescription = `${L(
       'power-assist.estimated-range'
     )} (${this.distanceUnits})`;
-    if (this.settings.units === 'Metric') {
+    if (this._settingsService.settings.units === 'Metric') {
       // update estimated speed display
       this.currentSpeedDisplay = (this.currentSpeed * 1.609).toFixed(1);
       // update estimated range display
@@ -1828,8 +1830,8 @@ export class MainViewModel extends Observable {
     });
     this.previousLayout();
     // SAVE THE VALUE to local data for the setting user has selected
-    this.settings.copy(this.tempSettings);
-    this.switchControlSettings.copy(this.tempSwitchControlSettings);
+    this._settingsService.settings.copy(this.tempSettings);
+    this._settingsService.switchControlSettings.copy(this.tempSwitchControlSettings);
     this.hasSentSettings = false;
     this.saveSettings();
     // now update any display that needs settings:
@@ -1872,10 +1874,10 @@ export class MainViewModel extends Observable {
    */
 
   loadSettings() {
-    this.settings.copy(
+    this._settingsService.settings.copy(
       LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
     );
-    this.switchControlSettings.copy(
+    this._settingsService.switchControlSettings.copy(
       LS.getItem(
         'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
       )
@@ -1890,7 +1892,7 @@ export class MainViewModel extends Observable {
     // make sure to save the units setting for the complications
     appSettings.setString(
       DataKeys.SD_UNITS,
-      this.settings.units.toLowerCase()
+      this._settingsService.settings.units.toLowerCase()
     );
     // save state and local settings
     appSettings.setBoolean(
@@ -1904,11 +1906,11 @@ export class MainViewModel extends Observable {
     // now save the actual device settings objects
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.settings',
-      this.settings.toObj()
+      this._settingsService.settings.toObj()
     );
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
-      this.switchControlSettings.toObj()
+      this._settingsService.switchControlSettings.toObj()
     );
   }
 
@@ -2380,11 +2382,11 @@ export class MainViewModel extends Observable {
     // send the current settings to the SD
     try {
       let ret = null;
-      ret = await this.smartDrive.sendSettingsObject(this.settings);
+      ret = await this.smartDrive.sendSettingsObject(this._settingsService.settings);
       if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
         throw new SmartDriveException('Send Settings bad status: ' + ret.status);
       }
-      ret = await this.smartDrive.sendSwitchControlSettingsObject(this.switchControlSettings);
+      ret = await this.smartDrive.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
       if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
         throw new SmartDriveException('Send Switch Control Settings bad status: ' + ret.status);
       }
@@ -2530,7 +2532,7 @@ export class MainViewModel extends Observable {
       // make sure to save the units setting as well
       appSettings.setString(
         DataKeys.SD_UNITS,
-        this.settings.units.toLowerCase()
+        this._settingsService.settings.units.toLowerCase()
       );
     }
   }
@@ -2845,8 +2847,8 @@ export class MainViewModel extends Observable {
   async sendSettingsToServer() {
     if (!this.hasSentSettings && this._kinveyService.hasAuth()) {
       const settingsObj = {
-        settings: this.settings.toObj(),
-        switchControlSettings: this.switchControlSettings.toObj()
+        settings: this._settingsService.settings.toObj(),
+        switchControlSettings: this._settingsService.switchControlSettings.toObj()
       };
       try {
         const r = await this._kinveyService

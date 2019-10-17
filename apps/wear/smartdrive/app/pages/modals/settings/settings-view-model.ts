@@ -5,6 +5,8 @@ import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { DataKeys } from '../../../enums';
 import * as LS from 'nativescript-localstorage';
+import { SettingsService } from '../../../services';
+import { ReflectiveInjector } from 'injection-js';
 
 export class SettingsViewModel extends Observable {
   /**
@@ -15,20 +17,20 @@ export class SettingsViewModel extends Observable {
   @Prop() changeSettingKeyValue: any = ' ';
   @Prop() disableWearCheck: boolean =
     appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
-  private settings = new Device.Settings();
   private tempSettings = new Device.Settings();
-  private switchControlSettings = new Device.SwitchControlSettings();
   private tempSwitchControlSettings = new Device.SwitchControlSettings();
   private hasSentSettings: boolean = false;
+  private _settingsService: SettingsService;
 
   async onSettingsPageLoaded(args: EventData) {
-
+    const injector = ReflectiveInjector.resolveAndCreate([SettingsService]);
+    this._settingsService = injector.get(SettingsService);
   }
 
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
-    this.tempSettings.copy(this.settings);
-    this.tempSwitchControlSettings.copy(this.switchControlSettings);
+    this.tempSettings.copy(this._settingsService.settings);
+    this.tempSwitchControlSettings.copy(this._settingsService.switchControlSettings);
     const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
@@ -72,13 +74,13 @@ export class SettingsViewModel extends Observable {
             changeSettingKeyString: this.changeSettingKeyString,
             changeSettingKeyValue: this.changeSettingKeyValue,
             disableWearCheck: this.disableWearCheck,
-            settings: this.settings,
-            switchControlSettings: this.switchControlSettings
+            settings: this._settingsService.settings,
+            switchControlSettings: this._settingsService.switchControlSettings
         },
         closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings) => {
             if (confirmedByUser) {
-                this.settings.copy(tempSettings);
-                this.switchControlSettings.copy(tempSwitchControlSettings);
+                this._settingsService.settings.copy(tempSettings);
+                this._settingsService.switchControlSettings.copy(tempSwitchControlSettings);
                 this.hasSentSettings = false;
                 this.saveSettings();
                 // // now update any display that needs settings:
@@ -157,7 +159,7 @@ export class SettingsViewModel extends Observable {
     // make sure to save the units setting for the complications
     appSettings.setString(
       DataKeys.SD_UNITS,
-      this.settings.units.toLowerCase()
+      this._settingsService.settings.units.toLowerCase()
     );
     // save state and local settings
     appSettings.setBoolean(
@@ -171,11 +173,11 @@ export class SettingsViewModel extends Observable {
     // now save the actual device settings objects
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.settings',
-      this.settings.toObj()
+      this._settingsService.settings.toObj()
     );
     LS.setItemObject(
       'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings',
-      this.switchControlSettings.toObj()
+      this._settingsService.switchControlSettings.toObj()
     );
   }
 
