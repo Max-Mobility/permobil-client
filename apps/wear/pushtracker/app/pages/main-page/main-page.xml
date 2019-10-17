@@ -1,6 +1,6 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" 
   xmlns:nac="nativescript-animated-circle" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" loaded="onMainPageLoaded" navigatingTo="navigatingTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" navigatedTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
     <ScrollView>
       <StackLayout>
@@ -10,7 +10,7 @@
             // Distance Goal Circle
             <nac:AnimatedCircle row="0" col="0" width="300" height="300" class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ distanceGoalCurrentProgress }}">
             </nac:AnimatedCircle>
-            // Coast Goal Circle                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+            // Coast Goal Circle                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -93,9 +93,9 @@
       </StackLayout>
     </ScrollView>
 
-    <GridLayout rows="auto, *, auto" columns="*" backgroundColor="#000" width="100%" height="100%" verticalAlignment="center" visibility="{{ isBusy ? 'visible':'collapsed' }}">
-      <ActivityIndicator row="1" busy="{{ isBusy }}" color="#006ea4" verticalAlignment="center" horizontalAlignment="center" />
-      <Label row="2" class="center-label-base fs20" text="{{ busyText }}" textWrap="true" verticalAlignment="center" horizontalAlignment="center" />
+    <GridLayout rows="*, *" columns="*" backgroundColor="#000" width="100%" height="100%" verticalAlignment="center" visibility="{{ isBusy ? 'visible':'collapsed' }}">
+      <ActivityIndicator row="0" busy="{{ isBusy }}" color="#006ea4" verticalAlignment="center" horizontalAlignment="center" />
+      <Label row="1" class="center-label-base fs20" text="{{ busyText }}" textWrap="true" verticalAlignment="center" horizontalAlignment="center" />
     </GridLayout>
 
   </GridLayout>
