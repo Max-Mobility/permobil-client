@@ -15,6 +15,7 @@ export function onShownModally(args: ShownModallyData) {
   console.log('settings-page onShownModally');
   page = args.object as Page;
   closeCallback = args.closeCallback;
+  vm.loadSettings();
   page.bindingContext = vm;
   wearOsLayout = page.getViewById('wearOsLayout');
   configureLayout(wearOsLayout);

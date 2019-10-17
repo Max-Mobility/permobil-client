@@ -1823,52 +1823,6 @@ export class MainViewModel extends Observable {
     }
   }
 
-  onConfirmChangesTap() {
-    hideOffScreenLayout(this._changeSettingsLayout, {
-      x: 500,
-      y: 0
-    });
-    this.previousLayout();
-    // SAVE THE VALUE to local data for the setting user has selected
-    this._settingsService.settings.copy(this.tempSettings);
-    this._settingsService.switchControlSettings.copy(this.tempSwitchControlSettings);
-    this.hasSentSettings = false;
-    this.saveSettings();
-    // now update any display that needs settings:
-    this.updateSettingsDisplay();
-    // warning / indication to the user that they've updated their settings
-    alert({
-      title: L('warnings.saved-settings.title'),
-      message: L('warnings.saved-settings.message'),
-      okButtonText: L('buttons.ok')
-    });
-  }
-
-  onIncreaseSettingsTap() {
-    this.tempSettings.increase(this.activeSettingToChange);
-    this.tempSwitchControlSettings.increase(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this.updateSettingsChangeDisplay();
-  }
-
-  onDecreaseSettingsTap() {
-    this.tempSettings.decrease(this.activeSettingToChange);
-    this.tempSwitchControlSettings.decrease(this.activeSettingToChange);
-    if (this.activeSettingToChange === 'wearcheck') {
-      this.disableWearCheck = !this.disableWearCheck;
-    }
-    this.updateSettingsChangeDisplay();
-  }
-
-  onChangeSettingsLayoutLoaded(args: EventData) {
-    this._changeSettingsLayout = args.object as SwipeDismissLayout;
-    // disabling swipeable to make it easier to tap the cancel button
-    // without starting the swipe behavior
-    (this._changeSettingsLayout as any).swipeable = false;
-  }
-
   /**
    * Smart Drive Interaction and Data Management
    */

@@ -99,6 +99,21 @@ export class SettingsViewModel extends Observable {
     btn.showModal(changeSettingsPage, option);
   }
 
+  loadSettings() {
+    this._settingsService.settings.copy(
+      LS.getItem('com.permobil.smartdrive.wearos.smartdrive.settings')
+    );
+    this._settingsService.switchControlSettings.copy(
+      LS.getItem(
+        'com.permobil.smartdrive.wearos.smartdrive.switch-control-settings'
+      )
+    );
+    this.hasSentSettings =
+      appSettings.getBoolean(DataKeys.SD_SETTINGS_DIRTY_FLAG) || false;
+    this.disableWearCheck =
+      appSettings.getBoolean(DataKeys.REQUIRE_WATCH_BEING_WORN) || false;
+  }
+
   updateSettingsChangeDisplay() {
     let translationKey = '';
     switch (this.activeSettingToChange) {
