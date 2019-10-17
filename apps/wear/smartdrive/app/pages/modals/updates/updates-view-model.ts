@@ -679,6 +679,17 @@ export class UpdatesViewModel extends Observable {
         mcuVersion,
         300 * 1000
       );
+      Log.D('"' + otaStatus + '" ' + typeof otaStatus);
+      if (otaStatus === 'updates.canceled') {
+        if (this.closeCallback) {
+          this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+            label: L('ota.action.close'),
+            func: this.closeCallback.bind(this),
+            action: 'ota.action.close',
+            class: 'action-close'
+          });
+        }
+      }
     } catch (err) {
       return this.updateError(err, L('updates.failed'), `${err}`);
     }

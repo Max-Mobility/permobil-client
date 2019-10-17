@@ -14,7 +14,7 @@
                             // NOTE: I altered the order of the description / display
                             <ui:AutoFitText class="topValue" row="1" rowSpan="2" col="1" height="20%" width="100%"
                                    verticalAlignment="center" horizontalAlignment="center" text="{{ smartDriveOtaState }}" textAlignment="center" />
-                            <ListView row="3" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact" visibility="{{ isUpdatingSmartDrive ? 'visible' : 'collapsed' }}">
+                            <ListView row="3" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact">
                                    <ListView.itemTemplate>
                                           <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}" />
                                    </ListView.itemTemplate>
