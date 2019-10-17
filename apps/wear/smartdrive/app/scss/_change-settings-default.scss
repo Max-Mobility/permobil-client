@@ -1,8 +1,7 @@
 @import 'variables';
 
-// /** Change Settings Page **/
-// #changeSettingsPage {
-//   margin: 4;
+/** Change Settings Page **/
+.change-settings-page {
 
   .increase-btn {
     @extend .circle-image-btn;
@@ -52,4 +51,4 @@
       vertical-align: $center;
     }
   }
-// }
+}
