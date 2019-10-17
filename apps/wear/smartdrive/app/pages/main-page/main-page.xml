@@ -209,7 +209,7 @@
             <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
             <Label text="" class="hr-blue" />
             <ScrollView height="100%">
-              <GridLayout rows="*,*,*,*,*,*" columns="*">
+              <GridLayout rows="*,*,*,*,*,*,*" columns="*">
                 <RL:Ripple row="1" rippleColor="#ddd">
                   <GridLayout rows="*" columns="15, *" tap="{{ onSettingsTap }}">
                     <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
@@ -217,24 +217,30 @@
                   </GridLayout>
                 </RL:Ripple>
                 <RL:Ripple row="2" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onUpdatesTap }}">
-                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="3" rippleColor="#ddd">
                   <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
                     <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                     <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
                   </GridLayout>
                 </RL:Ripple>
-                <RL:Ripple row="4" rippleColor="#ddd">
+                <RL:Ripple row="3" rippleColor="#ddd">
                   <GridLayout rows="*" columns="15, *" tap="{{ onTrainingTap }}">
                     <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                     <Label col="1" text="{{ L('menu.training') }}" class="settings-label" textWrap="true" />
                   </GridLayout>
                 </RL:Ripple>
-                <RL:Ripple row="5" rippleColor="#ddd" marginBottom="{{ insetPadding }}">
+                <RL:Ripple row="4" rippleColor="#ddd">
+                  <GridLayout rows="*" columns="15, *" tap="{{ onUpdatesTap }}">
+                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" />
+                  </GridLayout>
+                </RL:Ripple>
+                <RL:Ripple row="5" rippleColor="#ddd">
+                  <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
+                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                    <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
+                  </GridLayout>
+                </RL:Ripple>
+                <RL:Ripple row="6" rippleColor="#ddd" marginBottom="{{ insetPadding }}">
                   <GridLayout rows="*" columns="15, *" tap="{{ onConnectPushTrackerTap }}">
                     <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                     <Label row="0" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" />
