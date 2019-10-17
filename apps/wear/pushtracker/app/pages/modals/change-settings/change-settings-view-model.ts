@@ -21,7 +21,6 @@ export class ChangeSettingsViewModel extends Observable {
   private _isBusy = false;
   private _closeCallback;
   private _hasSentSettings = false;
-  private _tempSettings = new Profile.Settings();
   private _settings = new Profile.Settings();
 
   constructor(private _kinveyService: KinveyService, data) {
@@ -37,7 +36,7 @@ export class ChangeSettingsViewModel extends Observable {
   }
 
   onDecreaseSettingsTap() {
-    this._tempSettings.decrease(this.activeSettingToChange);
+    this._settings.decrease(this.activeSettingToChange);
     if (this.activeSettingToChange === 'watchrequired') {
       this._disableWearCheck = !this._disableWearCheck;
     }
@@ -45,7 +44,7 @@ export class ChangeSettingsViewModel extends Observable {
   }
 
   onIncreaseSettingsTap() {
-    this._tempSettings.increase(this.activeSettingToChange);
+    this._settings.increase(this.activeSettingToChange);
     if (this.activeSettingToChange === 'watchrequired') {
       this._disableWearCheck = !this._disableWearCheck;
     }
@@ -54,7 +53,6 @@ export class ChangeSettingsViewModel extends Observable {
 
   onConfirmChangesTap() {
     // SAVE THE VALUE to local data for the setting user has selected
-    this._settings.copy(this._tempSettings);
     this.saveSettings();
     this.sendSettings();
     //   // now update any display that needs settings:
@@ -74,8 +72,9 @@ export class ChangeSettingsViewModel extends Observable {
   }
 
   private loadSettings() {
+    const savedSettings = LS.getItem('com.permobil.pushtracker.profile.settings');
     this._settings.copy(
-      LS.getItem('com.permobil.pushtracker.profile.settings')
+      savedSettings
     );
     this._hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
@@ -96,35 +95,35 @@ export class ChangeSettingsViewModel extends Observable {
     switch (this.activeSettingToChange) {
       case 'coastgoal':
         this.changeSettingKeyValue =
-          this._tempSettings.coastGoal.toFixed(1) +
+          this._settings.coastGoal.toFixed(1) +
           ' ' +
           L('settings.coastgoal.units');
         break;
       case 'distancegoal':
-        value = this._tempSettings.distanceGoal;
-        if (this._tempSettings.units === 'metric') {
+        value = this._settings.distanceGoal;
+        if (this._settings.units === 'metric') {
           value *= 1.609;
         }
         this.changeSettingKeyValue = value.toFixed(1) + ' ';
         translationKey =
-          'settings.distancegoal.units.' + this._tempSettings.units;
+          'settings.distancegoal.units.' + this._settings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
       case 'height':
-        this.changeSettingKeyValue = this._tempSettings.getHeightDisplay();
+        this.changeSettingKeyValue = this._settings.getHeightDisplay();
         break;
       case 'units':
         translationKey =
-          'settings.units.values.' + this._tempSettings.units.toLowerCase();
+          'settings.units.values.' + this._settings.units.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'weight':
-        value = this._tempSettings.weight;
-        if (this._tempSettings.units === 'english') {
+        value = this._settings.weight;
+        if (this._settings.units === 'english') {
           value *= 2.20462;
         }
         this.changeSettingKeyValue = Math.round(value) + ' ';
-        translationKey = 'settings.weight.units.' + this._tempSettings.units;
+        translationKey = 'settings.weight.units.' + this._settings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
       case 'watchrequired':
@@ -156,7 +155,7 @@ export class ChangeSettingsViewModel extends Observable {
     editor.apply();
     appSettings.setBoolean(
       DataKeys.PROFILE_SETTINGS_DIRTY_FLAG,
-      this._hasSentSettings
+      false
     );
     LS.setItemObject(
       'com.permobil.pushtracker.profile.settings',
