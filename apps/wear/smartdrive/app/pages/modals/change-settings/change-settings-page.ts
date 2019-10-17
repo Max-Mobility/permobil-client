@@ -3,12 +3,11 @@ import { ChangeSettingsViewModel } from './change-settings-view-model';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
+import { SwipeDismissLayout } from 'nativescript-wear-os';
 import { Log } from '@permobil/core';
 
 const vm = new ChangeSettingsViewModel();
 let closeCallback;
-const wearOsLayout: WearOsLayout;
 let page: Page;
 
 export function onShownModally(args: ShownModallyData) {

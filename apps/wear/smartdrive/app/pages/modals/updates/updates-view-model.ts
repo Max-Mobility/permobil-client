@@ -41,9 +41,6 @@ import * as themes from 'nativescript-themes';
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
 
-const page: Page;
-const wearOsLayout: WearOsLayout;
-
 const dateLocales = {
   da: require('date-fns/locale/da'),
   de: require('date-fns/locale/de'),
@@ -309,7 +306,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
