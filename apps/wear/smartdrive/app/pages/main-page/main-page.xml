@@ -200,6 +200,7 @@
         </box:BoxInsetLayout>
       </pager:PagerItem>
 
+      // Menu Items
       <pager:PagerItem>
         <wol:WearOsLayout
             disableInsetConstraint="true"
@@ -253,38 +254,6 @@
       </pager:PagerItem>
     </pager:Pager>
 
-    // Scanning "Page" -- need to wrap this in a component
-    <sdl:SwipeDismissLayout height="100%" width="100%" row="0" rowSpan="2" col="0" loaded="{{ onScanningLayoutLoaded }}" class="page" translateX="500" visibility="{{ enabledLayout.scanning, enabledLayout.scanning ? 'visible':'collapsed' }}">
-      <wol:WearOsLayout
-          height="100%" width="100%" disableInsetConstraint="true">
-        <GridLayout rows="*" columns="*" height="100%" width="100%">
-          // SmartDrive Update Progress Circle
-          <nac:AnimatedCircle id="scanningProgressCircle"
-                              row="1" col="1"
-                              loaded="{{ onScanningProgressCircleLoaded }}"
-                              class="updateProgressCircle"
-                              width="100%" height="100%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8">
-          </nac:AnimatedCircle>
-          <GridLayout
-              row="1" col="1"
-              width="95%" height="95%"
-              rows="15, auto, auto, *, auto, auto, 15"
-              columns="30, *, 30"
-              class="circleDetails">
-            <Label row="1" col="1" class="topValue" text=" "/>
-            <Label row="2" col="1" class="topValueDescription" text=" "/>
-            <Label row="3" col="1" class="centerMessage"
-                   text="{{ L('settings.scanning') }}"/>
-            <Label row="4" col="1" class="currentTime"
-                   text="{{ currentTime }}" textWrap="true" />
-            <Label row="5" col="1" class="currentTimeMeridiem"
-                   text="{{ currentTimeMeridiem }}" textWrap="true" />
-          </GridLayout>
-        </GridLayout>
-      </wol:WearOsLayout>
-    </sdl:SwipeDismissLayout>
   </GridLayout>
 
 </Page>
