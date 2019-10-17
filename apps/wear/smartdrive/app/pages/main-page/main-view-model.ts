@@ -117,6 +117,9 @@ export class MainViewModel extends Observable {
   private _updatesLayout: SwipeDismissLayout;
   private _scanningLayout: SwipeDismissLayout;
 
+  private _mainPage;
+  private _scanningModal: string = 'pages/modals/scanning/scanning';
+  private _scanningView;
 
   /**
    * SmartDrive Settings UI:
@@ -601,6 +604,7 @@ export class MainViewModel extends Observable {
       // store reference to pageer so that we can control what page
       // it's on programatically
       const page = args.object as Page;
+      this._mainPage = page;
       this.pager = page.getViewById('pager') as Pager;
       // get references to scanning and update circles to control
       // their spin state
@@ -1862,19 +1866,19 @@ export class MainViewModel extends Observable {
   }
 
   showScanning() {
-    showOffScreenLayout(this._scanningLayout);
-    // disable swipe close of the updates layout
-    (this._scanningLayout as any).swipeable = false;
-    this.enableLayout('scanning');
+    const option: ShowModalOptions = {
+      context: {},
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+    this._scanningView = this._mainPage.showModal(this._scanningModal, option);
   }
 
   hideScanning() {
-    // re-enable swipe close of the updates layout
-    (this._scanningLayout as any).swipeable = true;
-    hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-    this.previousLayout();
-    // @ts-ignore
-    this.scanningProgressCircle.stopSpinning();
+    this._scanningView.closeModal();
   }
 
   /**
