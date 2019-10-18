@@ -5,7 +5,6 @@
       xmlns:pager="nativescript-pager"
       xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
-      xmlns:RL="nativescript-ng-ripple/ripple-view"
       xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
@@ -210,43 +209,25 @@
             <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
             <Label text="" class="hr-blue" />
             <ScrollView height="100%">
-              <GridLayout rows="*,*,*,*,*,*,*" columns="*">
-                <RL:Ripple row="1" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onSettingsTap }}">
-                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="2" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onAboutTap }}">
-                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="3" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onTrainingTap }}">
-                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label col="1" text="{{ L('menu.training') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="4" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onUpdatesTap }}">
-                    <Label col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="5" rippleColor="#ddd">
-                  <GridLayout rows="*" columns="15, *" id="pairSmartDrive" tap="{{ onPairingTap }}">
-                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label row="0" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
-                <RL:Ripple row="6" rippleColor="#ddd" marginBottom="{{ insetPadding }}">
-                  <GridLayout rows="*" columns="15, *" tap="{{ onConnectPushTrackerTap }}">
-                    <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                    <Label row="0" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" />
-                  </GridLayout>
-                </RL:Ripple>
+              <GridLayout rows="*, *, *, *, *, *" columns="auto, *">
+                // Settings
+                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="0" col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" tap="{{ onSettingsTap }}" />
+                // About
+                <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="1" col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" tap="{{ onAboutTap }}"/>
+                // Training
+                <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="2" col="1" text="{{ L('menu.training') }}" class="settings-label" textWrap="true" tap="{{ onTrainingTap }}" />
+                // Updates
+                <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="3" col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" tap="{{ onUpdatesTap }}" />
+                // Pair SmartDrive
+                <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="4" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
+                // Connect PushTracker
+                <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"  marginBottom="{{ insetPadding }}" />
+                <Label row="5" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
               </GridLayout>
             </ScrollView>
           </StackLayout>
