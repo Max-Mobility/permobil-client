@@ -168,9 +168,6 @@ export class MainViewModel extends Observable {
    * SmartDrive data display so we don't directly bind to the
    * SmartDrive itself (since it may be null)
    */
-  @Prop() mcuVersion: string = '---';
-  @Prop() bleVersion: string = '---';
-  @Prop() sdSerialNumber: string = '---';
   @Prop() watchSerialNumber: string = '---';
   @Prop() appVersion: string = '---';
   @Prop() databaseId: string = KinveyService.api_app_key;
@@ -1476,8 +1473,8 @@ export class MainViewModel extends Observable {
       context: {
         kinveyService: this._kinveyService,
         sqliteService: this._sqliteService,
-        bleVersion: this.bleVersion,
-        mcuVersion: this.mcuVersion
+        bleVersion: (this.smartDrive ? this.smartDrive.ble_version_string : ''),
+        mcuVersion: (this.smartDrive ? this.smartDrive.mcu_version_string : '')
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
@@ -2371,10 +2368,6 @@ export class MainViewModel extends Observable {
   async onSmartDriveVersion() {
     // this._sentryBreadCrumb('onSmartDriveVersion event');
     // const mcuVersion = args.data.mcu;
-
-    // update version displays
-    this.mcuVersion = this.smartDrive.mcu_version_string;
-    this.bleVersion = this.smartDrive.ble_version_string;
 
     // save the updated SmartDrive version info
     appSettings.setNumber(DataKeys.SD_VERSION_MCU, this.smartDrive.mcu_version);
