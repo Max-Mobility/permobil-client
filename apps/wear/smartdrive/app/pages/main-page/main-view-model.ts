@@ -1390,48 +1390,60 @@ export class MainViewModel extends Observable {
   /**
    * Sensor Management
    */
+  private _bodySensorEnabled: boolean = false;
   enableBodySensor(): boolean {
     try {
-      return this._sensorService.startDeviceSensor(
-        android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
-        this.SENSOR_DELAY_US,
-        this.MAX_REPORTING_INTERVAL_US
-      );
+      if (!this._bodySensorEnabled) {
+        this._bodySensorEnabled = this._sensorService.startDeviceSensor(
+          android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT,
+          this.SENSOR_DELAY_US,
+          this.MAX_REPORTING_INTERVAL_US
+        );
+      }
     } catch (err) {
+      this._bodySensorEnabled = false;
       Sentry.captureException(err);
       // Log.E('Error starting the body sensor', err);
-      return false;
+      // setTimeout(this.enableBodySensor.bind(this), 500);
     }
+    return this._bodySensorEnabled;
   }
 
+  private _tapSensorEnabled: boolean = false;
   enableTapSensor(): boolean {
     try {
-      return this._sensorService.startDeviceSensor(
-        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
-        this.SENSOR_DELAY_US,
-        this.MAX_REPORTING_INTERVAL_US
+      if (!this._tapSensorEnabled) {
+        this._tapSensorEnabled = this._sensorService.startDeviceSensor(
+          android.hardware.Sensor.TYPE_LINEAR_ACCELERATION,
+          this.SENSOR_DELAY_US,
+          this.MAX_REPORTING_INTERVAL_US
+        );
+      }
+    } catch (err) {
+      this._tapSensorEnabled = false;
+      Sentry.captureException(err);
+      // Log.E('Error starting the tap sensor', err);
+    }
+    return this._tapSensorEnabled;
+  }
+
+  disableTapSensor() {
+    try {
+      this._tapSensorEnabled = false;
+      this._sensorService.stopDeviceSensor(
+        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
       );
     } catch (err) {
       Sentry.captureException(err);
-      // Log.E('Error starting the tap sensor', err);
-      return false;
+      // Log.E('Error disabling the tap sensor:', err);
     }
   }
 
   disableAllSensors() {
     try {
+      this._bodySensorEnabled = false;
+      this._tapSensorEnabled = false;
       this._sensorService.stopAllDeviceSensors();
-    } catch (err) {
-      Sentry.captureException(err);
-      // Log.E('Error disabling the device sensors:', err);
-    }
-  }
-
-  disableTapSensor() {
-    try {
-      this._sensorService.stopDeviceSensor(
-        android.hardware.Sensor.TYPE_LINEAR_ACCELERATION
-      );
     } catch (err) {
       Sentry.captureException(err);
       // Log.E('Error disabling the device sensors:', err);
