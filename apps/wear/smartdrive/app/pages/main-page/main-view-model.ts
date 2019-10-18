@@ -1121,6 +1121,32 @@ export class MainViewModel extends Observable {
     return validAuth;
   }
 
+  private _wifiWasEnabled = false;
+  disableWifi() {
+    try {
+      const wifiManager = application.android.context.getSystemService(
+        android.content.Context.WIFI_SERVICE
+      );
+      this._wifiWasEnabled = wifiManager.isWifiEnabled();
+      wifiManager.setWifiEnabled(false);
+    } catch (err) {
+      Log.E('error disabling wifi:', err);
+      Sentry.captureException(err);
+    }
+  }
+
+  enableWifi() {
+    try {
+      const wifiManager = application.android.context.getSystemService(
+        android.content.Context.WIFI_SERVICE
+      );
+      wifiManager.setWifiEnabled(this._wifiWasEnabled);
+    } catch (err) {
+      Log.E('error enabling wifi:', err);
+      Sentry.captureException(err);
+    }
+  }
+
   isNetworkAvailable() {
     let isAvailable = false;
     try {
@@ -1638,21 +1664,21 @@ export class MainViewModel extends Observable {
   }
 
   onSettingsTap(args) {
-      const settingsPage = 'pages/modals/settings/settings-page';
-      const btn = args.object;
-      const option: ShowModalOptions = {
-        context: {
-          settingsService: this._settingsService
-        },
-        closeCallback: () => {
-          // we dont do anything with the about to return anything
-          // now update any display that needs settings:
-          this.updateSettingsDisplay();
-        },
-        animated: false,
-        fullscreen: true
-      };
-      btn.showModal(settingsPage, option);
+    const settingsPage = 'pages/modals/settings/settings-page';
+    const btn = args.object;
+    const option: ShowModalOptions = {
+      context: {
+        settingsService: this._settingsService
+      },
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+        // now update any display that needs settings:
+        this.updateSettingsDisplay();
+      },
+      animated: false,
+      fullscreen: true
+    };
+    btn.showModal(settingsPage, option);
   }
 
   updateSettingsDisplay() {
@@ -1763,6 +1789,7 @@ export class MainViewModel extends Observable {
         clearInterval(this.chargingWorkTimeoutId);
         this.chargingWorkTimeoutId = null;
         this.tapDetector.reset();
+        this.disableWifi();
         this.maintainCPU();
         this.powerAssistState = PowerAssist.State.Disconnected;
         this.powerAssistActive = true;
@@ -1828,6 +1855,7 @@ export class MainViewModel extends Observable {
     // decrease energy consumption
     this.disableTapSensor();
     this.releaseCPU();
+    this.enableWifi();
     this.powerAssistState = PowerAssist.State.Inactive;
 
     // vibrate twice
