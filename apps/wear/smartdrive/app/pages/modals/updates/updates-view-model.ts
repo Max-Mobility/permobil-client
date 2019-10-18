@@ -541,7 +541,10 @@ export class UpdatesViewModel extends Observable {
       // this._kinveyService.hasAuth()
       response = await this._kinveyService.getFile(undefined, query);
     } catch (err) {
-      return this.updateError(err, L('updates.errors.getting'), `${err}`);
+      const errorMessage = `
+      ${L('updates.errors.connection-failure')}\n\n${err}
+      `;
+      return this.updateError(err, L('updates.errors.getting'), errorMessage);
     }
     // Now that we have the metadata, check to see if we already
     // have the most up to date firmware files and download them
@@ -601,7 +604,10 @@ export class UpdatesViewModel extends Observable {
           files.push(f);
         }
       } catch (err) {
-        return this.updateError(err, L('updates.errors.downloading'), `${err}`);
+        const errorMessage = `
+        ${L('updates.errors.connection-failure')}\n\n${err}
+        `;
+        return this.updateError(err, L('updates.errors.downloading'), errorMessage);
       }
     }
     // Now that we have the files, write them to disk and update

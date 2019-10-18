@@ -211,6 +211,7 @@
     "connecting-to-smartdrive": "Connecting to SmartDrive...",
     "downloading-new-firmwares": "Downloading new updates data...",
     "errors": {
+      "connection-failure": "Connection to backend failed, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.\n\nError:",
       "connecting": "Error connecting to SmartDrive.",
       "downloading": "Error downloading updates.",
       "getting": "Error searching for updates.",
