@@ -56,6 +56,9 @@ export class ActivityGoalSettingComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+    if (this.config.value && typeof this.config.value === 'number') {
+      this.config.value = parseFloat(this.config.value.toFixed(1));
+    } 
   }
 
   closeModal() {
