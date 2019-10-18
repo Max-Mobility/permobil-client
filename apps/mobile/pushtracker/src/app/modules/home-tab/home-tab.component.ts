@@ -611,7 +611,7 @@ export class HomeTabComponent {
                 this.user.data.distance_unit_preference
               ).toFixed(1);
             this.coastTimeCirclePercentageMaxValue =
-              '/' + this.user.data.activity_goal_coast_time;
+              '/' + (this.user.data.activity_goal_coast_time).toFixed(1);
             this.coastTimeCirclePercentage =
               (parseFloat(this.todayCoastTime) /
                 this.user.data.activity_goal_coast_time) *
@@ -630,7 +630,7 @@ export class HomeTabComponent {
                 this.user.data.distance_unit_preference
               ).toFixed(1);
             this.coastTimeCirclePercentageMaxValue =
-              '/' + this.user.data.activity_goal_coast_time;
+              '/' + (this.user.data.activity_goal_coast_time).toFixed(1);
             this.coastTimeCirclePercentage =
               (parseFloat(this.todayCoastTime) /
                 this.user.data.activity_goal_coast_time) *
@@ -669,7 +669,7 @@ export class HomeTabComponent {
         this.user.data.distance_unit_preference
       ).toFixed(1);
     this.coastTimeCirclePercentageMaxValue =
-      '/' + this.user.data.activity_goal_coast_time;
+      '/' + (this.user.data.activity_goal_coast_time).toFixed(1);
     this.coastTimeCirclePercentage =
       (parseFloat(this.todayCoastTime) /
         this.user.data.activity_goal_coast_time) *
