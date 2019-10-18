@@ -22,7 +22,6 @@ export class ChangeSettingsViewModel extends Observable {
     if (this.activeSettingToChange === 'wearcheck') {
       this.disableWearCheck = !this.disableWearCheck;
     }
-    console.log('this.disableWearCheck: ', this.disableWearCheck);
     this.updateSettingsChangeDisplay();
   }
 
@@ -32,7 +31,6 @@ export class ChangeSettingsViewModel extends Observable {
     if (this.activeSettingToChange === 'wearcheck') {
       this.disableWearCheck = !this.disableWearCheck;
     }
-    console.log('this.disableWearCheck: ', this.disableWearCheck);
     this.updateSettingsChangeDisplay();
   }
 

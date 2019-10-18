@@ -1743,8 +1743,6 @@ export class MainViewModel extends Observable {
   async enablePowerAssist() {
     this._sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
-    console.log('this.settingsService_disableWearCheck: ',
-      this._settingsService.disableWearCheck);
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       alert({
         title: L('failures.title'),
