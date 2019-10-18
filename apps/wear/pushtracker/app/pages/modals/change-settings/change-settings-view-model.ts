@@ -6,6 +6,8 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { Page } from 'tns-core-modules/ui/page';
+import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
 import { KinveyService } from '../../../services';
@@ -17,13 +19,16 @@ export class ChangeSettingsViewModel extends Observable {
   @Prop() changeSettingKeyString;
   @Prop() changeSettingKeyValue;
 
+  // for showing busy status
+  private _synchronizingModal: string = 'pages/modals/synchronizing/synchronizing';
+  private _synchronizingView;
+
   private _disableWearCheck = false;
-  private _isBusy = false;
   private _closeCallback;
   private _hasSentSettings = false;
   private _settings = new Profile.Settings();
 
-  constructor(private _kinveyService: KinveyService, data) {
+  constructor(private _mainPage: Page, private _kinveyService: KinveyService, data) {
     super();
     this.loadSettings();
 
@@ -163,6 +168,22 @@ export class ChangeSettingsViewModel extends Observable {
     );
   }
 
+  showSynchronizing() {
+    const option: ShowModalOptions = {
+      context: {},
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+    this._synchronizingView = this._mainPage.showModal(this._synchronizingModal, option);
+  }
+
+  hideSynchronizing() {
+    this._synchronizingView.closeModal();
+  }
+
   private async sendSettings() {
     console.time('sendSettings');
 
@@ -188,7 +209,7 @@ export class ChangeSettingsViewModel extends Observable {
       }
     }
     try {
-      this._isBusy = true;
+      this.showSynchronizing();
       // TODO: waiting on the resolution of this to not have to get
       // the user data again
       // https://support.kinvey.com/support/tickets/6897
@@ -203,17 +224,13 @@ export class ChangeSettingsViewModel extends Observable {
       delete userData._acl;
       delete userData._kmd;
 
-      const response = await this._kinveyService.updateUser(userData);
-      const statusCode = response && response.statusCode;
-      if (statusCode !== 200) {
-        throw response;
-      }
-      this._isBusy = false;
+      await this._kinveyService.updateUser(userData);
+      this.hideSynchronizing();
       this.showConfirmation(
         android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
       );
     } catch (err) {
-      this._isBusy = false;
+      this.hideSynchronizing();
       Log.E('could not save to database:', err);
       alert({
         title: L('failures.title'),

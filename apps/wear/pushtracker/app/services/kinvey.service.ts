@@ -62,6 +62,7 @@ export class KinveyService {
   private handleResponse(response: any) {
     const statusCode = response && response.statusCode;
     if (!this.wasGoodStatus(statusCode)) {
+      console.error('KinveyService bad statuscode:', statusCode);
       this.handleBadStatus(statusCode);
       throw response;
     }

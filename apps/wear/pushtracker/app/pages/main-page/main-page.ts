@@ -8,5 +8,5 @@ export function onNavigatedTo(args: EventData) {
   const vm = new MainViewModel();
 
   page.bindingContext = vm;
-  vm.onMainPageLoaded();
+  vm.onMainPageLoaded(args);
 }
