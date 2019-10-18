@@ -1117,6 +1117,11 @@ export class MainViewModel extends Observable {
     const validAuth = await this._kinveyService.setAuth(authorization, userId);
     if (!validAuth) {
       Log.E('Have invalid authorization!');
+    } else {
+      // set sentry context
+      Sentry.setContextUser({
+        id: userId
+      });
     }
     return validAuth;
   }

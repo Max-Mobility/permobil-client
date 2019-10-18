@@ -763,8 +763,16 @@ export class MainViewModel extends Observable {
       // save stuff for display
       const userName = `${userData.first_name}\n${userData.last_name}`;
       const userEmail = userData.username;
+      const userId = userData._id;
+      // set the info for display
       appSettings.setString(DataKeys.USER_NAME, userName);
       appSettings.setString(DataKeys.USER_EMAIL, userEmail);
+      // set the info for sentry
+      Sentry.setContextUser({
+        id: userId,
+        email: userEmail,
+        username: userEmail
+      });
       // pull the data out of the user structure
       this.settings.fromUser(userData);
       this._saveSettings();
