@@ -1,12 +1,17 @@
-import { View } from 'tns-core-modules/ui/core/view';
-import { ad } from 'tns-core-modules/utils/utils';
+import { Log } from '@permobil/core';
 import { hasPermission } from 'nativescript-permissions';
+import * as themes from 'nativescript-themes';
+import { ad } from 'tns-core-modules/utils/utils';
+import { sentryBreadCrumb } from '.';
 
 declare const com: any;
 
+const ambientTheme = require('../scss/theme-ambient.scss').toString();
+const defaultTheme = require('../scss/theme-default.scss').toString();
+const retroTheme = require('../scss/theme-retro.scss').toString();
+
 export function getSerialNumber() {
-  if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE))
-    return null;
+  if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) return null;
   return android.os.Build.getSerial();
 }
 
@@ -36,51 +41,20 @@ export function loadSerialNumber() {
   return savedSerial;
 }
 
-export function hideOffScreenLayout(
-  view: View,
-  position: { x: number; y: number }
-) {
-  return new Promise((resolve, reject) => {
-    if (view) {
-      view.visibility = 'collapse';
-      view
-        .animate({
-          target: view,
-          duration: 300,
-          translate: {
-            x: position.x,
-            y: position.y
-          }
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
+export function applyTheme(theme?: string) {
+  // apply theme
+  sentryBreadCrumb('applying theme');
+  // hasAppliedTheme = true;
+  try {
+    // if (theme === 'ambient' || this.isAmbient) {
+    if (theme === 'ambient') {
+      themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+    } else {
+      themes.applyThemeCss(defaultTheme, 'theme-default.scss');
     }
-  });
-}
-
-export function showOffScreenLayout(view: View) {
-  return new Promise((resolve, reject) => {
-    if (view) {
-      view.visibility = 'visible';
-      view
-        .animate({
-          target: view,
-          duration: 300,
-          translate: {
-            x: 0,
-            y: 0
-          }
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
-    }
-  });
+  } catch (err) {
+    // Sentry.captureException(err);
+    Log.E('apply theme error:', err);
+  }
+  sentryBreadCrumb('theme applied');
 }
