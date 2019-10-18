@@ -7,7 +7,9 @@ import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { KinveyService } from '../../../services';
+import { DataKeys } from '../../../enums';
 import { getSerialNumber, saveSerialNumber } from '../../../utils';
 
 let closeCallback;
@@ -58,18 +60,12 @@ export function onShownModally(args: ShownModallyData) {
   wearOsLayout = page.getViewById('wearOsLayout');
   configureLayout(wearOsLayout);
 
-  // get the user data and then update the bindingContext data
-  // doing this after the bindingContext is set since it can take a second to fetch this data
-  kinveyService.getUserData().then(userData => {
-    Log.D('userInfo', userData);
-    if (userData) {
-      page.bindingContext.set(
-        'userName',
-        `${userData.first_name}\n${userData.last_name}`
-      );
-      page.bindingContext.set('userEmail', userData.username);
-    }
-  });
+  // load user name / email from appsettings
+  const userName = appSettings.getString(DataKeys.USER_NAME, '---');
+  const userEmail = appSettings.getString(DataKeys.USER_EMAIL, '---');
+  // now set the binding context
+  page.bindingContext.set('userName', userName);
+  page.bindingContext.set('userEmail', userEmail);
 }
 
 export async function onSerialNumberTap(_: any) {

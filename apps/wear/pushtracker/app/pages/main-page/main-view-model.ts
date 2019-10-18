@@ -11,10 +11,10 @@ import * as themes from 'nativescript-themes';
 import { SwipeDismissLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { Observable } from 'tns-core-modules/data/observable';
+import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { ShowModalOptions, View } from 'tns-core-modules/ui/page/page';
+import { Page, ShowModalOptions, View } from 'tns-core-modules/ui/page/page';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
@@ -80,17 +80,14 @@ export class MainViewModel extends Observable {
   private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
-  /**
-   * For showing busy status
-   */
-  @Prop() isBusy: boolean = false;
-  @Prop() busyText: string = L('busy.synchronizing');
+  private _mainPage;
+  private _synchronizingModal: string = 'pages/modals/synchronizing/synchronizing';
+  private _synchronizingView;
 
   /**
    * Settings
    */
   @Prop() settings: Profile.Settings = new Profile.Settings();
-  @Prop() hasSentSettings: boolean = false;
 
   /**
    * Activity Related Data
@@ -107,7 +104,6 @@ export class MainViewModel extends Observable {
 
   // state variables
   @Prop() isAmbient: boolean = false;
-  @Prop() disableWearCheck: boolean = false;
 
   /**
    * Layout Management
@@ -161,7 +157,7 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('Main-View-Model constructor.');
   }
 
-  async onMainPageLoaded() {
+  async onMainPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
@@ -185,6 +181,15 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
+    try {
+      // store reference to pageer so that we can control what page
+      // it's on programatically
+      const page = args.object as Page;
+      this._mainPage = page;
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('onMainPageLoaded::error:', err);
+    }
   }
 
   onInstallSmartDriveTap() {
@@ -200,15 +205,14 @@ export class MainViewModel extends Observable {
     application.android.foregroundActivity.startActivity(intent);
   }
 
-  onSettingsTap(args) {
-    this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
+  async onSettingsTap(args) {
+    await this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
 
     const settingsPage = 'pages/modals/settings/settings';
     const btn = args.object as View;
     const option: ShowModalOptions = {
       context: {
-        kinveyService: this.kinveyService,
-        disableWearCheck: this.disableWearCheck
+        kinveyService: this.kinveyService
       },
       closeCallback: () => {
         // now we need to update the display since goals / units may have changed
@@ -504,10 +508,10 @@ export class MainViewModel extends Observable {
     device: any;
   }) {
     Log.D('on message received:', data.path, data.message);
-    this.isBusy = true;
+    this.showSynchronizing();
     const splits = data.message.split(':');
     if (splits.length <= 1) {
-      this.isBusy = false;
+      this.hideSynchronizing();
       // we got bad data
       alert({
         title: L('failures.title'),
@@ -557,7 +561,7 @@ export class MainViewModel extends Observable {
     }
     // now actually check the authorization that we were provided
     const validAuth = await this._updateAuthorization();
-    this.isBusy = false;
+    this.hideSynchronizing();
     if (validAuth) {
       // if we got here then we have valid authorization!
       this._showConfirmation(
@@ -721,6 +725,22 @@ export class MainViewModel extends Observable {
     });
   }
 
+  showSynchronizing() {
+    const option: ShowModalOptions = {
+      context: {},
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
+      fullscreen: true
+    };
+    this._synchronizingView = this._mainPage.showModal(this._synchronizingModal, option);
+  }
+
+  hideSynchronizing() {
+    this._synchronizingView.closeModal();
+  }
+
   private async updateUserData() {
     // make sure kinvey service is initialized
     if (this.kinveyService === undefined) {
@@ -733,19 +753,41 @@ export class MainViewModel extends Observable {
         return;
       }
     }
+    // now actually update the user data
+    try {
+      Log.D('requesting user data');
+      // now request user data
+      this.showSynchronizing();
+      const userData = (await this.kinveyService.getUserData()) as any;
+      // Log.D('userInfo', JSON.stringify(userData, null, 2));
+      // save stuff for display
+      const userName = `${userData.first_name}\n${userData.last_name}`;
+      const userEmail = userData.username;
+      appSettings.setString(DataKeys.USER_NAME, userName);
+      appSettings.setString(DataKeys.USER_EMAIL, userEmail);
+      // pull the data out of the user structure
+      this.settings.fromUser(userData);
+      this._saveSettings();
+      // now update any display that needs settings:
+      this._updateDisplay();
+      this.hideSynchronizing();
+    } catch (err) {
+      this.hideSynchronizing();
+      Log.E('could not get user data:', err);
+    }
   }
 
   private async _openAppOnPhone() {
     Log.D('openAppOnPhone()');
     try {
-      this.isBusy = true;
+      this.showSynchronizing();
       if (WearOsComms.phoneIsAndroid()) {
         // see if the paired phone has the companion app
         const devicesWithApp = await WearOsComms.findDevicesWithApp(
           this.CAPABILITY_PHONE_APP
         );
         if (devicesWithApp.length !== 0) {
-          this.isBusy = false;
+          this.hideSynchronizing();
           // Create Remote Intent to open app on remote device.
           await WearOsComms.sendUriToPhone('permobil://pushtracker');
         } else {
@@ -775,7 +817,7 @@ export class MainViewModel extends Observable {
           );
         }
       }
-      this.isBusy = false;
+      this.hideSynchronizing();
       // now show the open on phone activity
       this._showConfirmation(
         android.support.wearable.activity.ConfirmationActivity
@@ -930,20 +972,18 @@ export class MainViewModel extends Observable {
     return found;
   }
 
-  private _loadSettings() {
-    const savedSettings = LS.getItem('com.permobil.pushtracker.profile.settings');
-    this.settings.copy(savedSettings);
-    this.hasSentSettings =
-      appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
-
-    const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
-      .getApplicationContext()
-      .getSharedPreferences('prefs.db', 0);
-    this.disableWearCheck = sharedPreferences.getBoolean(
-      prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
-      false
+  private _saveSettings() {
+    LS.setItemObject(
+      'com.permobil.pushtracker.profile.settings',
+      this.settings.toObj()
     );
+  }
+
+  private _loadSettings() {
+    const savedSettings = LS.getItem(
+      'com.permobil.pushtracker.profile.settings'
+    );
+    this.settings.copy(savedSettings);
   }
 
   /*

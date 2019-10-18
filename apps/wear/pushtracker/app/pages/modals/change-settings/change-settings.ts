@@ -25,7 +25,7 @@ export function onShownModally(args: ShownModallyData) {
     closeCallback: closeCallback
   };
 
-  page.bindingContext = new ChangeSettingsViewModel(kinveyService, data);
+  page.bindingContext = new ChangeSettingsViewModel(page, kinveyService, data);
 }
 
 export function onCancelChangesTap() {
