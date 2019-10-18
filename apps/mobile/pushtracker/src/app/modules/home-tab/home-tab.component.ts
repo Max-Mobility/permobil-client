@@ -759,9 +759,7 @@ export class HomeTabComponent {
           });
         }
       }
-      result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
       result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
       result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
       return Promise.resolve(result);
     } else {
@@ -776,9 +774,7 @@ export class HomeTabComponent {
           pushCount: 0
         });
       }
-      result.unshift({ xAxis: ' ', coastTime: 0, pushCount: 0 });
       result.unshift({ xAxis: '  ', coastTime: 0, pushCount: 0 });
-      result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
       result.push({ xAxis: '        ', coastTime: 0, pushCount: 0 });
       return Promise.resolve(result);
     }
@@ -888,9 +884,7 @@ export class HomeTabComponent {
           });
         }
       }
-      result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
       result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
       result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
       return result;
     } else {
@@ -905,9 +899,7 @@ export class HomeTabComponent {
           driveDistance: 0
         });
       }
-      result.unshift({ xAxis: ' ', coastDistance: 0, driveDistance: 0 });
       result.unshift({ xAxis: '  ', coastDistance: 0, driveDistance: 0 });
-      result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
       result.push({ xAxis: '        ', coastDistance: 0, driveDistance: 0 });
       return result;
     }
