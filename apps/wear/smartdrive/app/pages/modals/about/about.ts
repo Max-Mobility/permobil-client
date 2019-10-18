@@ -137,4 +137,5 @@ function configureLayout(layout: WearOsLayout) {
 
   page.bindingContext.set('insetPadding', data.insetPadding);
   page.bindingContext.set('chinSize', data.chinSize);
+  page.bindingContext.set('onCloseTap', onCloseTap);
 }

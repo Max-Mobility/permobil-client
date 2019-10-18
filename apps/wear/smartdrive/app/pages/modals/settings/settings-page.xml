@@ -9,7 +9,7 @@
       <Label text="" class="hr-blue" />
       <ScrollView height="100%" id="settingsScrollView">
         <StackLayout paddingBottom="{{ insetPadding }}">
-            <GridLayout rows="*" columns="15, *" tap="onCloseTap">
+            <GridLayout rows="*" columns="15, *" tap="{{ onCloseTap }}">
               <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
               <Label row="0" col="1" text="{{ L('buttons.back') }}" class="settings-label" textWrap="true" />
             </GridLayout>

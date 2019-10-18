@@ -15,7 +15,7 @@
             </RL:Ripple>
             // Cancel Button - closes the layout
             <RL:Ripple row="1" col="0" rippleColor="#ddd" class="cancel-btn">
-                <StackLayout tap="onCloseTap">
+                <StackLayout tap="{{ onCloseTap }}">
                     <Label text="&#xf404;" fontSize="42" />
                 </StackLayout>
             </RL:Ripple>

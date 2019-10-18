@@ -60,4 +60,5 @@ function configureLayout() {
   }
   page.bindingContext.set('insetPadding', insetPadding);
   page.bindingContext.set('chinSize', chinSize);
+  page.bindingContext.set('onCloseTap', onCloseTap);
 }
