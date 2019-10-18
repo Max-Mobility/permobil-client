@@ -590,7 +590,7 @@ export class HomeTabComponent {
               'home-tab.coast-for'
             );
             this.coastTimeGoalValue =
-              this.user.data.activity_goal_coast_time + '';
+              (this.user.data.activity_goal_coast_time).toFixed(1) + '';
             this.coastTimeGoalUnit =
               ' ' + this._translateService.instant('home-tab.seconds-per-day');
             this.distanceGoalMessage =
@@ -620,7 +620,7 @@ export class HomeTabComponent {
             this.coastTimeGoalMessage =
               this._translateService.instant('home-tab.coast-for') + ' ';
             this.coastTimeGoalValue =
-              this.user.data.activity_goal_coast_time + '';
+              (this.user.data.activity_goal_coast_time).toFixed(1) + '';
             this.coastTimeGoalUnit =
               ' ' + this._translateService.instant('home-tab.seconds-per-day');
             this.distanceCirclePercentageMaxValue =
@@ -649,7 +649,7 @@ export class HomeTabComponent {
   private async _updateProgress() {
     this.coastTimeGoalMessage =
       this._translateService.instant('home-tab.coast-for') + ' ';
-    this.coastTimeGoalValue = this.user.data.activity_goal_coast_time + '';
+    this.coastTimeGoalValue = (this.user.data.activity_goal_coast_time).toFixed(1) + '';
     this.coastTimeGoalUnit =
       ' ' + this._translateService.instant('home-tab.seconds-per-day');
     this.distanceGoalMessage =
