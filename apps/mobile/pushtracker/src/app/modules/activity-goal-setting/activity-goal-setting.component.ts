@@ -58,7 +58,7 @@ export class ActivityGoalSettingComponent implements OnInit {
     );
     if (this.config.value && typeof this.config.value === 'number') {
       this.config.value = parseFloat(this.config.value.toFixed(1));
-    } 
+    }
   }
 
   closeModal() {
