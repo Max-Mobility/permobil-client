@@ -25,16 +25,12 @@ $update-progress-spinner-color: #B9B9B9;
   margin: 2 0 2 0;
 }
 
-.topValue {
-  color: $ambient-white;
+.update-status-label {
+  color: $white;
   font-size: 18;
-}
-
-.topValueDescription {
-  color: $ambient-white;
-  font-size: 10;
+  vertical-align: bottom;
+  text-align: $center;
   horizontal-align: $center;
-  vertical-align: top;
 }
 
 .action-start,
