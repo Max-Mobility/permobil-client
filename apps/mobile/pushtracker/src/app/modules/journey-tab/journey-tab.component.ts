@@ -328,6 +328,7 @@ export class JourneyTabComponent {
     const self = this;
 
     const start = date;
+    start.setHours(0, 0, 0, 0);
     const end = new Date(start);
     end.setDate(end.getDate() + 7);
     const startTime = start.getTime();
