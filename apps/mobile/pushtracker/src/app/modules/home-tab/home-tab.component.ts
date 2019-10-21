@@ -925,7 +925,7 @@ export class HomeTabComponent {
 
   onCoastTimeBarSelected(event) {
     if (!this._weeklyActivityFromKinvey) return;
-    const dayIndex = event.pointIndex - 2;
+    const dayIndex = event.pointIndex - 1;
     const dailyActivity = this._weeklyActivityFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       currentTab:
@@ -941,7 +941,7 @@ export class HomeTabComponent {
 
   onDistanceBarSelected(event) {
     if (!this._weeklyUsageFromKinvey) return;
-    const dayIndex = event.pointIndex - 2;
+    const dayIndex = event.pointIndex - 1;
     const dailyActivity = this._weeklyUsageFromKinvey.days[dayIndex];
     this._openActivityTabModal({
       currentTab:
