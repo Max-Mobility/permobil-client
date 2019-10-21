@@ -329,13 +329,13 @@ export class JourneyTabComponent {
 
     const start = date;
     const end = new Date(start);
-    end.setDate(end.getDate() + 6);
+    end.setDate(end.getDate() + 7);
     const startTime = start.getTime();
     const endTime = end.getTime();
 
     Object.keys(this._journeyMap)
       .filter(key => {
-        return parseInt(key) >= startTime && parseInt(key) <= endTime;
+        return parseInt(key) >= startTime && parseInt(key) < endTime;
       })
       .sort()
       .reverse()
