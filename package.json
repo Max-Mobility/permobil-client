@@ -85,7 +85,7 @@
     "pt.w.a": "cd apps/wear/pushtracker && tns run android",
     "pt.w.a.nohmr": "cd apps/wear/pushtracker && tns run android --no-hmr --env.hiddenSourceMap",
     "pt.w.a.report": "cd apps/wear/pushtracker && tns run android --env.report",
-    "pt.w.android.release": "node ./apps/wear/pushtracker/tools/android-release.js",
+    "pt.w.android.release": "cd apps/wear/pushtracker/tools && node ./android-release.js",
     "pt.w.android.layouts": "adb shell dumpsys gfxinfo com.permobil.pushtracker.wearos > layout-profile.txt",
     "pt.w.android.framestats": "adb shell dumpsys gfxinfo com.permobil.pushtracker.wearos framestats > framestats.txt",
     "//************************** end PushTracker Wear": "***************************"
