@@ -30,7 +30,7 @@
     "saving-activity": "Failed saving activity",
     "scan": "Could not scan",
     "title": "Notice",
-    "not-fully-initialize": "PushTracker has not finished initializing.",
+    "not-fully-initialized": "PushTracker is still initializing the connection to the server, your settings will be sent at a later time.",
     "no-auth-for-saving": "To (optionally) save your settings to the server, you should connect your PushTracker WearOS app to your PushTracker mobile app. To do so, please follow the instructions in the 'Device Setup' page of the PushTracker mobile app.",
     "not-connected-to-mobile": "Could not authenticate with server, please re-connect with PushTracker mobile app.",
     "could-not-update-profile": "Could not update user profile on the server"
