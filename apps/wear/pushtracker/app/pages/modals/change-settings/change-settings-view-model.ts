@@ -202,7 +202,7 @@ export class ChangeSettingsViewModel extends Observable {
       if (!validAuth) {
         alert({
           title: L('failures.title'),
-          message: L('failures.not-connected-to-mobile'),
+          message: L('failures.no-auth-for-saving'),
           okButtonText: L('buttons.ok')
         });
         return;
