@@ -24,7 +24,10 @@ export class SettingsViewModel extends Observable {
     const profilePage = 'pages/modals/profile/profile';
     const btn = args.object as View;
     const options: ShowModalOptions = {
-      context: {},
+      context: {
+        kinveyService: this._kinveyService,
+        disableWearCheck: this._disableWearCheck
+      },
       closeCallback: () => {
         // we dont do anything with the about to return anything
       },
