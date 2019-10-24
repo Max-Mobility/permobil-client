@@ -21,10 +21,10 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
   public class Record {
-    String data;
-    String date;
-    String id;
-    boolean has_been_sent;
+    String data = null;
+    String date = null;
+    String id = null;
+    boolean has_been_sent = false;
   }
 
   public static final String CONTENT_AUTHORITY = "com.permobil.pushtracker.data";

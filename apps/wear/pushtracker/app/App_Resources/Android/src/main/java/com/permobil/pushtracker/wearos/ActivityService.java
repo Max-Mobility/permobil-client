@@ -72,6 +72,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import io.sentry.Sentry;
+import io.sentry.event.BreadcrumbBuilder;
 
 import com.permobil.pushtracker.DailyActivity;
 
@@ -362,7 +363,12 @@ public class ActivityService
     Log.d(TAG, "PushDataToKinvey()");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
-    if (numUnsent == 0 || mKinveyAuthorization == null) {
+    if (numUnsent == 0) {
+      // we have no data, simply return from this function
+      return;
+    }
+    // make sure we have authorization before trying to send
+    if (mKinveyAuthorization == null) {
       String token = datastore.getAuthorization();
       if (token == null || token.isEmpty()) {
         // we have still not gotten the token, so don't send anything
@@ -377,43 +383,51 @@ public class ActivityService
       Log.d(TAG, "Pushing Data");
       // get the oldest unsent record
       DatabaseHandler.Record r = db.getRecord(true);
-      RequestBody body =
-        RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data);
-      Call<DailyActivity> serviceCall = mKinveyApiService.sendData(
-                                                                   mKinveyAuthorization,
-                                                                   body,
-                                                                   r.id
-                                                                   );
-      serviceCall.enqueue(new Callback<DailyActivity>() {
-          @Override
-          public void onResponse(Call<DailyActivity> call, Response<DailyActivity> response) {
-            if (response.isSuccessful()) {
-              DailyActivity item = response.body();
-              Log.d(TAG, "item sent: " + item._id);
-              // TODO: currently we don't delete any entries,
-              // do we want to change that?
-              // db.deleteRecord(item._id);
+      if (r != null && r.data != null) {
+        RequestBody body =
+          RequestBody.create(okhttp3.MediaType.parse("application/json; charset=utf-8"), r.data);
+        Call<DailyActivity> serviceCall = mKinveyApiService.sendData(
+                                                                     mKinveyAuthorization,
+                                                                     body,
+                                                                     r.id
+                                                                     );
+        serviceCall.enqueue(new Callback<DailyActivity>() {
+            @Override
+            public void onResponse(Call<DailyActivity> call, Response<DailyActivity> response) {
+              if (response.isSuccessful()) {
+                DailyActivity item = response.body();
+                Log.d(TAG, "item sent: " + item._id);
+                // TODO: currently we don't delete any entries,
+                // do we want to change that?
+                // db.deleteRecord(item._id);
 
-              // update the has_been_sent field for that
-              // activity
-              db.markRecordAsSent(item._id);
-              synchronized (currentActivity) {
-                if (item._id.equals(currentActivity._id)) {
-                  currentActivity.has_been_sent = true;
+                // update the has_been_sent field for that
+                // activity
+                db.markRecordAsSent(item._id);
+                synchronized (currentActivity) {
+                  if (item._id.equals(currentActivity._id)) {
+                    currentActivity.has_been_sent = true;
+                  }
                 }
+              } else {
+                Log.e(TAG, "send data not successful - " +
+                      response.code() + ": " +
+                      response.message());
               }
-            } else {
-              Log.e(TAG, "send data not successful - " +
-                    response.code() + ": " +
-                    response.message());
             }
-          }
-          @Override
-          public void onFailure(Call<DailyActivity> call, Throwable t) {
-            Log.e(TAG, "Failed to send: " + t.getMessage());
-            Sentry.capture(t);
-          }
-        });
+            @Override
+            public void onFailure(Call<DailyActivity> call, Throwable t) {
+              Log.e(TAG, "Failed to send: " + t.getMessage());
+              Sentry.capture(t);
+            }
+          });
+      } else {
+        String message = "Attempt to push invalid data to kinvey! Record: " + r;
+        Log.w(TAG, message);
+        Sentry.record(
+                      new BreadcrumbBuilder().setMessage(message).build()
+                      );
+      }
     } catch (Exception e) {
       Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
       Sentry.capture(e);

@@ -865,9 +865,10 @@ export class MainViewModel extends Observable {
     // monitor the clock / system time for display and logging:
     const timeReceiverCallback = (androidContext, intent) => {
       try {
-        this._sentryBreadCrumb('timeReceiverCallback');
+        // this._sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this.lastChartDay)) {
+          this._sentryBreadCrumb('timereceiver - updating display for new day');
           this._updateDisplay();
         }
       } catch (error) {
