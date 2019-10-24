@@ -11,14 +11,13 @@ import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/an
 import { NativeScriptMaterialBottomSheetModule } from 'nativescript-material-bottomsheet/angular';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { NativeScriptUICalendarModule } from 'nativescript-ui-calendar/angular';
-import { NativeScriptUIListViewModule } from 'nativescript-ui-listview/angular';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { COMPONENTS, ENTRY_COMPONENTS } from './modules';
 import { SharedModule } from './modules/shared/shared.module';
 import { PROVIDERS } from './services';
 import { TNSTranslateLoader } from './utils';
-import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 export function createBarcodeScanner() {
   return new BarcodeScanner();
@@ -35,7 +34,6 @@ export function createTranslateLoader() {
     NativeScriptCommonModule,
     NativeScriptModule,
     NativeScriptHttpClientModule,
-    NativeScriptUIListViewModule,
     NativeScriptFormsModule,
     NativeScriptDateTimePickerModule,
     NativeScriptUICalendarModule,
