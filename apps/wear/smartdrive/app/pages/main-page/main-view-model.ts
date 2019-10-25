@@ -17,7 +17,6 @@ import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
-import { SwipeDismissLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
@@ -32,7 +31,7 @@ import { DataKeys } from '../../enums';
 import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
-import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import { isNetworkAvailable } from '../../utils';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 
 const ambientTheme = require('../../scss/theme-ambient.css').toString();
@@ -99,23 +98,8 @@ export class MainViewModel extends Observable {
   /**
    * Layout Management
    */
-  private previousLayouts: string[] = [];
-  private layouts = {
-    about: false,
-    changeSettings: false,
-    main: true,
-    scanning: false,
-    settings: false,
-    updates: false
-  };
-  @Prop() enabledLayout = fromObject(this.layouts);
   private _ambientTimeView: View;
   private _powerAssistView: View;
-  private _settingsLayout: SwipeDismissLayout;
-  private _changeSettingsLayout: SwipeDismissLayout;
-  private _aboutLayout: SwipeDismissLayout;
-  private _updatesLayout: SwipeDismissLayout;
-  private _scanningLayout: SwipeDismissLayout;
 
   private _mainPage;
   private _scanningModal: string = 'pages/modals/scanning/scanning';
@@ -539,34 +523,6 @@ export class MainViewModel extends Observable {
       this.watchSerialNumber
     );
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
-  }
-
-  previousLayout() {
-    // get the most recent layout and remove it from the list
-    const layoutName = this.previousLayouts.pop();
-    if (layoutName) {
-      Object.keys(this.layouts)
-        .filter(k => k !== layoutName)
-        .map(k => {
-          this.enabledLayout.set(k, false);
-        });
-      this.enabledLayout.set(layoutName, true);
-    } else {
-      // if there is no previous - go back to the main screen
-      this.enabledLayout.set('main', true);
-    }
-  }
-
-  enableLayout(layoutName: string) {
-    Object.keys(this.layouts)
-      .filter(k => k !== layoutName)
-      .map(k => {
-        if (this.enabledLayout.get(k)) {
-          this.previousLayouts.push(k);
-        }
-        this.enabledLayout.set(k, false);
-      });
-    this.enabledLayout.set(layoutName, true);
   }
 
   async onAmbientTimeViewLoaded(args: EventData) {
@@ -1150,20 +1106,6 @@ export class MainViewModel extends Observable {
     }
   }
 
-  isNetworkAvailable() {
-    let isAvailable = false;
-    try {
-      const networkManager = application.android.context.getSystemService(
-        android.content.Context.CONNECTIVITY_SERVICE
-      );
-      const networkInfo = networkManager.getActiveNetworkInfo();
-      isAvailable = networkInfo !== null && networkInfo.isConnected();
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-    return isAvailable;
-  }
-
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
@@ -1173,7 +1115,7 @@ export class MainViewModel extends Observable {
       // if this has gotten called before kinvey service has been fully set up
       return;
     }
-    if (!this.isNetworkAvailable()) {
+    if (!isNetworkAvailable()) {
       Log.D('No network available!');
       return;
     }
@@ -1522,25 +1464,10 @@ export class MainViewModel extends Observable {
   }
 
   /**
-   * Scanning Page Handlers
-   */
-  onScanningLayoutLoaded(args: EventData) {
-    this._scanningLayout = args.object as SwipeDismissLayout;
-    this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, () => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
-  }
-
-  /**
    * Updates Page Handlers
    */
   onUpdatesTap(args) {
     if (this.smartDrive) {
-      // showOffScreenLayout(this._updatesLayout);
-      // this.enableLayout('updates');
-      // this.checkForUpdates();
       const updatesPage = 'pages/modals/updates/updates-page';
       const btn = args.object;
       const option: ShowModalOptions = {

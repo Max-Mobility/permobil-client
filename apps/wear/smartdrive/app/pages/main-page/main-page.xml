@@ -3,7 +3,6 @@
       xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
       xmlns:lv="nativescript-wear-os/packages/listview"
       xmlns:pager="nativescript-pager"
-      xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:ui="nativescript-auto-fit-text"
       loaded="onMainPageLoaded"
@@ -16,8 +15,7 @@
                  height="100%" width="100%"
                  col="0" row="0" rowSpan="2"
                  transformer="none" pagesCount="4" showNativePageIndicator="false"
-                 disableSwipe="{{ powerAssistActive || isTraining }}"
-                 visibility="{{ enabledLayout.main, enabledLayout.main ? 'visible':'collapsed' }}">
+                 disableSwipe="{{ powerAssistActive || isTraining }}">
       // Activate Power Assist Screen
       <pager:PagerItem>
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">

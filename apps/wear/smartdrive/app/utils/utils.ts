@@ -1,8 +1,20 @@
 import { View } from 'tns-core-modules/ui/core/view';
+import * as application from 'tns-core-modules/application';
 import { ad } from 'tns-core-modules/utils/utils';
 import { hasPermission } from 'nativescript-permissions';
 
 declare const com: any;
+
+export function isNetworkAvailable() {
+  let isAvailable = false;
+  const networkManager = application.android.context.getSystemService(
+    android.content.Context.CONNECTIVITY_SERVICE
+  );
+  const networkInfo = networkManager.getActiveNetworkInfo();
+  isAvailable = networkInfo !== null && networkInfo.isConnected();
+  return isAvailable;
+}
+
 
 export function getSerialNumber() {
   if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE))
