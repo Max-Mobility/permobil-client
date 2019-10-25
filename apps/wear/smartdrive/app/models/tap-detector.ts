@@ -162,13 +162,31 @@ export class TapDetector {
    * Update tap detector tap sensitivity threshold
    *
    * @param sensitivity [number]: [0-100] percent sensitivity.
+   * @param motorOn [boolean]: increase sensitivity from setting if
+   *                           motor is on.
+   * @param systemUpToDate [boolean]: modify sensitivity range (to be
+   *                                  more sensitive) if system is not
+   *                                  up to date
    */
-  public setSensitivity(sensitivity: number, motorOn: boolean) {
+  public setSensitivity(sensitivity: number, motorOn: boolean, systemUpToDate: boolean) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
+
+    let _maxJerk = this.maxJerkThreshold;
+    let _minJerk = this.minJerkThreshold;
+    let _maxPrediction = this.maxPredictionThreshold;
+    let _minPrediction = this.minPredictionThreshold;
+    // update jerk range if system is not up to date
+    if (!systemUpToDate) {
+      _maxJerk = this.maxJerkThreshold / 2.0;
+      _minJerk = this.minJerkThreshold / 2.0;
+    }
+
+    const scaleFactor = sensitivity / 100.0;
     // update jerk threshold
-    this.jerkThreshold = this.maxJerkThreshold - (this.maxJerkThreshold - this.minJerkThreshold) * (sensitivity / 100.0);
-    this.predictionThreshold = this.maxPredictionThreshold - (this.maxPredictionThreshold - this.minPredictionThreshold) * (sensitivity / 100.0);
+    this.jerkThreshold = _maxJerk - (_maxJerk - _minJerk) * scaleFactor;
+    // update prediction threshold
+    this.predictionThreshold = _maxPrediction - (_maxPrediction - _minPrediction) * scaleFactor;
 
     // harder to tap start and easier to tap stop the motor
     if (!motorOn) {

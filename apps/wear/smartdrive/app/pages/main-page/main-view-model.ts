@@ -559,7 +559,6 @@ export class MainViewModel extends Observable {
 
   async onMainPageLoaded(args: EventData) {
     this._mainPage = args.object as Page;
-    this.pager = this._mainPage.getViewById('pager') as Pager;
   }
 
   showAmbientTime() {
@@ -601,13 +600,13 @@ export class MainViewModel extends Observable {
     this._sentryBreadCrumb('applying theme');
     try {
       if (theme === 'ambient' || this.isAmbient) {
+        this.showAmbientTime();
         // Log.D('applying ambient theme');
         themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-        this.showAmbientTime();
       } else {
+        this.showMainDisplay();
         // Log.D('applying default theme');
         themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-        this.showMainDisplay();
       }
     } catch (err) {
       Sentry.captureException(err);
@@ -1136,15 +1135,16 @@ export class MainViewModel extends Observable {
     try {
       this.onNetworkAvailable();
     } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Error sending data to server', err);
+      this._sentryBreadCrumb('Error sending data to server: ' + err);
     }
   }
 
   /**
    * View Loaded event handlers
    */
-  onPagerLoaded() { }
+  async onPagerLoaded(args: EventData) {
+    this.pager = args.object as Pager;
+  }
 
   /**
    * Sensor Data Handlers
@@ -1241,7 +1241,11 @@ export class MainViewModel extends Observable {
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
-      this.tapDetector.setSensitivity(this._settingsService.settings.tapSensitivity, this.motorOn);
+      this.tapDetector.setSensitivity(
+        this._settingsService.settings.tapSensitivity,
+        this.motorOn,
+        this.systemIsUpToDate
+      );
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(signedMaxAccel, averageTimestamp);
       if (didTap) {
