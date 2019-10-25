@@ -1,26 +1,23 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd"
-       xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-       xmlns:nac="nativescript-animated-circle"
-       xmlns:ui="nativescript-auto-fit-text"
-       shownModally="onShownModally"
-       actionBarHidden="true"
-       loaded="onUpdatesPageLoaded">
-       <wol:WearOsLayout disableInsetConstraint="true" height="100%" width="100%">
-              <GridLayout rows="*" columns="*" height="100%" width="100%">
-                     // SmartDrive Update Progress Circle
-                     <nac:AnimatedCircle id="updateProgressCircle" row="1" col="1" loaded="{{ onUpdateProgressCircleLoaded }}" class="updateProgressCircle" width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveOtaProgress }}"></nac:AnimatedCircle>
-                     <GridLayout row="1" col="1" width="95%" height="95%" rows="15, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
-                            // NOTE: I altered the order of the description / display
-                            <Label class="update-status-label" row="1" col="1" height="20%" width="100%" textWrap="true"
-                                   text="{{ smartDriveOtaState }}" />
-                            <ListView row="2" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact">
-                                   <ListView.itemTemplate>
-                                          <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}" />
-                                   </ListView.itemTemplate>
-                            </ListView>
-                            <Label row="3" col="1" class="currentTime" text="{{ currentTime }}" textWrap="true" />
-                            <Label row="4" col="1" class="currentTimeMeridiem" text="{{ currentTimeMeridiem }}" textWrap="true" />
-                     </GridLayout>
-              </GridLayout>
-       </wol:WearOsLayout>
+      xmlns:nac="nativescript-animated-circle"
+      xmlns:ui="nativescript-auto-fit-text"
+      shownModally="onShownModally"
+      actionBarHidden="true"
+      loaded="onUpdatesPageLoaded">
+  <GridLayout rows="*" columns="*" height="100%" width="100%">
+    // SmartDrive Update Progress Circle
+    <nac:AnimatedCircle id="updateProgressCircle" row="1" col="1" loaded="{{ onUpdateProgressCircleLoaded }}" class="updateProgressCircle" width="100%" height="100%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveOtaProgress }}"></nac:AnimatedCircle>
+    <GridLayout row="1" col="1" width="95%" height="95%" rows="15, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails">
+      // NOTE: I altered the order of the description / display
+      <Label class="update-status-label" row="1" col="1" height="20%" width="100%" textWrap="true"
+             text="{{ smartDriveOtaState }}" />
+      <ListView row="2" col="1" items="{{ smartDriveOtaActions }}" verticalAlignment="center" class="compact">
+        <ListView.itemTemplate>
+          <Button text="{{ label }}" tap="{{ func }}" class="{{ class }}" />
+        </ListView.itemTemplate>
+      </ListView>
+      <Label row="3" col="1" class="currentTime" text="{{ currentTime }}" textWrap="true" />
+      <Label row="4" col="1" class="currentTimeMeridiem" text="{{ currentTimeMeridiem }}" textWrap="true" />
+    </GridLayout>
+  </GridLayout>
 </Page>
