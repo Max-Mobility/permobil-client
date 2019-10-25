@@ -282,10 +282,6 @@ export class MainViewModel extends Observable {
 
     Log.D(buildMessage);
     this._sentryBreadCrumb(buildMessage);
-    // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
-    this.registerAppEventHandlers();
-    this._sentryBreadCrumb('App event handlers registered.');
     // determine inset padding
     // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
@@ -355,6 +351,11 @@ export class MainViewModel extends Observable {
     );
     const versionName = packageInfo.versionName;
     this.appVersion = versionName;
+
+    // handle application lifecycle events
+    this._sentryBreadCrumb('Registering app event handlers.');
+    this.registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
 
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
