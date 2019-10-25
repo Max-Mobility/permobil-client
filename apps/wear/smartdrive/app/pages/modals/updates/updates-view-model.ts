@@ -154,6 +154,12 @@ export class UpdatesViewModel extends Observable {
 
   async onUpdatesPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onUpdatesPageLoaded');
+    // clear out ota actions
+    this.smartDriveOtaActions.splice(
+      0,
+      this.smartDriveOtaActions.length
+    );
+
     try {
       if (!this.hasAppliedTheme) {
         // apply theme
