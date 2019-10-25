@@ -1496,6 +1496,7 @@ export class MainViewModel extends Observable {
       }, 0);
       const batteryData = sdData.map(e => {
         let value = (e.battery * 100.0) / (maxBattery || 1);
+        // @ts-ignore
         if (value) value += '%';
         return {
           day: this._format(new Date(e.date), 'dd'),
@@ -1531,6 +1532,7 @@ export class MainViewModel extends Observable {
       });
       distanceData.map(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
+        // @ts-ignore
         if (data.value) data.value += '%';
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);
