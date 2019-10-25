@@ -194,6 +194,7 @@ export class MainViewModel extends Observable {
   private chargingWorkTimeoutId: any = null;
 
   // os version info
+  private systemIsUpToDate: boolean = false;
   private wearIsUpToDate: boolean = false;
   private wearVersion: string = null;
   private buildDisplay: string = null;
@@ -247,6 +248,11 @@ export class MainViewModel extends Observable {
 
   logVersions() {
     this.buildDisplay = android.os.Build.DISPLAY;
+    const latestBuildDateCode = '190618';
+    const latestBuildDisplay = 'PWDR.190618.001.A1';
+    const currentBuildDateCode = this.buildDisplay.split('.')[1];
+    this.systemIsUpToDate = this.buildDisplay === latestBuildDisplay ||
+      currentBuildDateCode >= latestBuildDateCode;
 
     this.osVersionRelease = android.os.Build.VERSION.RELEASE;
     this.osVersionSdkInt = android.os.Build.VERSION.SDK_INT;
@@ -266,6 +272,7 @@ export class MainViewModel extends Observable {
     const buildMessage = `
     Android OS Build Version: ${this.osVersionRelease} - ${this.osVersionSdkInt}
     Build Display:            ${this.buildDisplay}
+    System is up to date:     ${this.systemIsUpToDate} (vs. ${latestBuildDisplay})
     Product Brand:            ${this.productBrand} - ${this.productDevice}
     Android Wear Os Version:  ${this.wearVersion}
     Wear OS is up to date:    ${this.wearIsUpToDate} (vs. ${latestWearVersion})
