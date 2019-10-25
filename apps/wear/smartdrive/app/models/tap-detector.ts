@@ -174,8 +174,8 @@ export class TapDetector {
 
     let _maxJerk = this.maxJerkThreshold;
     let _minJerk = this.minJerkThreshold;
-    let _maxPrediction = this.maxPredictionThreshold;
-    let _minPrediction = this.minPredictionThreshold;
+    const _maxPrediction = this.maxPredictionThreshold;
+    const _minPrediction = this.minPredictionThreshold;
     // update jerk range if system is not up to date
     if (!systemUpToDate) {
       _maxJerk = this.maxJerkThreshold / 2.0;
