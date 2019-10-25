@@ -29,7 +29,6 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -39,14 +38,11 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableListenerService;
 
 import android.app.Notification.Builder;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.net.SocketTimeoutException;
 
 import java.nio.MappedByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -81,8 +77,8 @@ import com.permobil.pushtracker.DailyActivity;
 //        * GPS
 
 public class ActivityService
-  extends WearableListenerService implements SensorEventListener,
-                                             LocationListener {
+  extends Service implements SensorEventListener,
+                             LocationListener {
 
   private static final String TAG = "PermobilActivityService";
 
@@ -114,7 +110,6 @@ public class ActivityService
   private static final float LOCATION_SPEED_THRESHOLD_MAX_MPS = 4.0f; // ~= 9.0 miles per hour
 
   private BroadcastReceiver timeReceiver = null;
-  private BroadcastReceiver batteryReceiver = null;
   private Location mLastKnownLocation = null;
   private LocationManager mLocationManager;
   private SensorManager mSensorManager;
@@ -148,13 +143,11 @@ public class ActivityService
   public ActivityService() {
   }
 
-  /*
   @Override
   public IBinder onBind(Intent intent) {
     // TODO: Return the communication channel to the service.
     throw new UnsupportedOperationException("Not yet implemented");
   }
-  */
 
   @Override
   public void onCreate() {
@@ -196,8 +189,8 @@ public class ActivityService
                                  currentActivity.distance_watch);
             }
           } catch (Exception e) {
+            breadcrumb("Exception sending data: " + e.getMessage());
             Sentry.capture(e);
-            Log.e(TAG, "Exception sending data: " + e.getMessage());
             // post to the push runnable to try again
             mHandler.removeCallbacks(mSendTask);
             mHandler.postDelayed(mSendTask, SEND_DATA_PERIOD_MS);
@@ -210,8 +203,8 @@ public class ActivityService
           try {
             PushDataToKinvey();
           } catch (Exception e) {
+            breadcrumb("Exception pushing data: " + e.getMessage());
             Sentry.capture(e);
-            Log.e(TAG, "Exception pushing data: " + e.getMessage());
             // post to the push runnable to try again
             mHandler.removeCallbacks(mPushTask);
             mHandler.postDelayed(mPushTask, PUSH_DATA_PERIOD_MS);
@@ -241,9 +234,6 @@ public class ActivityService
     // for keeping track of the days
     this.setupTimeReceiver();
 
-    // for getting notified when we're on the charger (to send data)
-    this.setupBatteryReceiver();
-
     this.initSensors();
     this.registerAllSensors();
 
@@ -259,12 +249,12 @@ public class ActivityService
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(TAG, "onStartCommand()");
-    Log.d(TAG, "isServiceRunning: " + isServiceRunning);
+    breadcrumb("onStartCommand()");
+    breadcrumb("isServiceRunning: " + isServiceRunning);
     if (!isServiceRunning) {
       // Set the user in the current context.
       // Sentry.getContext().setUser(new UserBuilder().setId(userIdentifier).build());
-      Log.d(TAG, "[intent - flags - startId]: " + intent + " - " + flags + " - " + startId);
+      // breadcrumb("[intent - flags - startId]: " + intent + " - " + flags + " - " + startId);
       if (intent != null &&
           Objects.requireNonNull(intent.getAction()).equals(Constants.ACTION_START_SERVICE)) {
         startServiceWithNotification();
@@ -274,6 +264,7 @@ public class ActivityService
     } else {
       // we got an intent to start but are already running - they're
       // asking us to synchronize data with the server
+      breadcrumb("onStartCommand - service already running, sending data to server");
       mHandler.post(mPushTask);
     }
 
@@ -282,50 +273,11 @@ public class ActivityService
     return START_STICKY;
   }
 
-  @Override
-  public void onDataChanged(DataEventBuffer dataEvents) {
-    Log.d(TAG, "onDataChanged: " + dataEvents);
-  }
-
-  @Override
-  public void onMessageReceived(MessageEvent messageEvent) {
-    Log.d(TAG, "onMessageReceived: " + messageEvent);
-    Log.d(TAG, "Message Path: " + messageEvent.getData().toString());
-    String message = new String(messageEvent.getData());
-    Log.d(TAG, "Message: " + message);
-
-    String token = "";
-    String userId = "";
-    // get authorization (parse into token / user id from string or
-    // depending on path) - right now we're just parsing a string of
-    // the form: "${auth token}:${user id}", but we should send them
-    // to different paths in case the auth token can have ':' in it...
-    String[] parts = message.split(":", 0);
-    if (parts.length != 2) {
-      Log.e(TAG, "Error, bad auth received!");
-      return;
-    }
-    token = parts[0];
-    userId = parts[1];
-    Log.d(TAG, "Got auth: '" + token + "' and user id: '" + userId + "'");
-
-    // write token to content provider for smartdrive wear
-    ContentValues tokenValue = new ContentValues();
-    tokenValue.put("data", token);
-    getContentResolver()
-      .insert(com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI, tokenValue);
-
-    // write token to app settings for pushtracker wear
-    datastore.setAuthorization(token);
-
-    // write user id to content provider for smartdrive wear
-    ContentValues userValue = new ContentValues();
-    userValue.put("data", userId);
-    getContentResolver()
-      .insert(com.permobil.pushtracker.DatabaseHandler.USER_ID_URI, userValue);
-
-    // write user id to app settings for pushtracker wear
-    datastore.setUserId(userId);
+  private void breadcrumb(String message) {
+    Log.d(TAG, message);
+    Sentry.record(
+                  new BreadcrumbBuilder().setMessage(TAG + "::" + message).build()
+                  );
   }
 
   private void loadFromDatabase() {
@@ -359,8 +311,8 @@ public class ActivityService
     }
   }
 
-  private void PushDataToKinvey() throws Exception {
-    Log.d(TAG, "PushDataToKinvey()");
+  private void PushDataToKinvey() {
+    breadcrumb("PushDataToKinvey()");
     // Check if the SQLite table has any records pending to be pushed
     long numUnsent = db.countUnsentEntries();
     if (numUnsent == 0) {
@@ -373,14 +325,15 @@ public class ActivityService
       if (token == null || token.isEmpty()) {
         // we have still not gotten the token, so don't send anything
         // to the database
-        throw new Exception("No authorization token provided for kinvey");
+        breadcrumb("No authorization token provided for kinvey");
+        return;
       }
       // we have gotten the token, save it so we can use it!
       mKinveyAuthorization = token;
     }
     // we have data to send - so send it!
     try {
-      Log.d(TAG, "Pushing Data");
+      breadcrumb("Pushing Data");
       // get the oldest unsent record
       DatabaseHandler.Record r = db.getRecord(true);
       if (r != null && r.data != null) {
@@ -410,67 +363,27 @@ public class ActivityService
                   }
                 }
               } else {
-                Log.e(TAG, "send data not successful - " +
-                      response.code() + ": " +
-                      response.message());
+                breadcrumb("send data not successful - " +
+                           response.code() + ": " +
+                           response.message());
               }
             }
             @Override
             public void onFailure(Call<DailyActivity> call, Throwable t) {
-              Log.e(TAG, "Failed to send: " + t.getMessage());
+              breadcrumb("Failed to send: " + t.getMessage());
               Sentry.capture(t);
             }
           });
       } else {
         String message = "Attempt to push invalid data to kinvey! Record: " + r;
-        Log.w(TAG, message);
-        Sentry.record(
-                      new BreadcrumbBuilder().setMessage(message).build()
-                      );
+        breadcrumb(message);
       }
+    } catch (SocketTimeoutException e) {
+      breadcrumb("Timeout pushing to kinvey:" + e.getMessage());
     } catch (Exception e) {
-      Log.e(TAG, "Exception pushing to kinvey:" + e.getMessage());
+      breadcrumb("Unknown exception pushing to kinvey:" + e.getMessage());
       Sentry.capture(e);
     }
-  }
-
-  public boolean isPlugged() {
-    Context context = getApplicationContext();
-    boolean isPlugged;
-    Intent intent = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-    int plugged = 0;
-    if (intent != null) {
-      plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-    }
-    isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
-    isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-    return isPlugged;
-  }
-
-  void setupBatteryReceiver() {
-    if (this.batteryReceiver != null) {
-      this.unregisterReceiver(this.batteryReceiver);
-      this.batteryReceiver = null;
-    }
-    this.batteryReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-          // Log.d(TAG, "BatteryReceiver::onReceive()");
-          int plugged = 0;
-          if (intent != null) {
-            plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-          }
-          boolean isPlugged =
-            plugged == BatteryManager.BATTERY_PLUGGED_AC ||
-            plugged == BatteryManager.BATTERY_PLUGGED_USB ||
-            plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-        }
-      };
-    // register battery receiver
-    Log.d(TAG, "registering battery receiver");
-    IntentFilter batteryFilter = new IntentFilter();
-    batteryFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-    this.registerReceiver(this.batteryReceiver, batteryFilter);
   }
 
   void setupTimeReceiver() {
@@ -493,6 +406,7 @@ public class ActivityService
             // Log.d(TAG, "Checking '" + nowString + "' == '" + currentDate +"': " + sameDate);
             // determine if it's a new day
             if (!sameDate) {
+              breadcrumb("timeReceiver::onReceive() - new day!");
               // reset values to zero
               currentActivity = new DailyActivity();
               // make sure to set the serial number
@@ -509,7 +423,7 @@ public class ActivityService
         }
       };
     // register time receiver
-    Log.d(TAG, "registering time receiver");
+    breadcrumb("registering time receiver");
     IntentFilter timeFilter = new IntentFilter();
     timeFilter.addAction(Intent.ACTION_TIME_TICK);
     timeFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
@@ -532,7 +446,7 @@ public class ActivityService
   }
 
   private void registerAllSensors() {
-    Log.d(TAG, "registerAllSensors()");
+    breadcrumb("registerAllSensors()");
     // register the body sensor so we get events when the user
     // wears the watch and takes it off
     this.registerBodySensor(SENSOR_DELAY_US, SENSOR_REPORTING_LATENCY_US);
@@ -753,7 +667,7 @@ public class ActivityService
   }
 
   private void initSensors() {
-    Log.d(TAG, "initSensors()");
+    breadcrumb("initSensors()");
     mSensorManager = (SensorManager) getApplicationContext().getSystemService(SENSOR_SERVICE);
   }
 
@@ -803,7 +717,7 @@ public class ActivityService
   }
 
   private void unregisterDeviceSensors() {
-    Log.d(TAG, "unregisterDeviceSensors()");
+    breadcrumb("unregisterDeviceSensors()");
     unregisterBodySensor();
     unregisterAccelerometer();
     unregisterGravity();
@@ -819,6 +733,7 @@ public class ActivityService
   }
 
   private void registerAlarm() {
+    breadcrumb("registerAlarm()");
     // create calendar object to set the start time (for use with RTC
     // alarm type)
     Calendar calendar = Calendar.getInstance();
@@ -843,19 +758,13 @@ public class ActivityService
   @Override
   public void onDestroy() {
     super.onDestroy();
-    Log.d(TAG, "onDestroy()...");
+    breadcrumb("onDestroy()");
 
     try {
       // unregister time receiver
       if (this.timeReceiver != null) {
         this.unregisterReceiver(this.timeReceiver);
         this.timeReceiver = null;
-      }
-
-      // unregister battery receiver
-      if (this.batteryReceiver != null) {
-        this.unregisterReceiver(this.batteryReceiver);
-        this.batteryReceiver = null;
       }
 
       // remove sensor listeners
@@ -869,7 +778,6 @@ public class ActivityService
       mHandlerThread.quitSafely();
     } catch (Exception e) {
       Sentry.capture(e);
-      Log.e(TAG, "onDestroy() Exception: " + e);
     }
 
     isServiceRunning = false;
@@ -893,6 +801,7 @@ public class ActivityService
 
   private void startServiceWithNotification() {
     if (isServiceRunning) return;
+    breadcrumb("startServiceWithNotification()");
     isServiceRunning = true;
 
     // register alarm to ensure service is always running
@@ -945,6 +854,7 @@ public class ActivityService
       // "delete all" command
       Notification.FLAG_NO_CLEAR;
     startForeground(NOTIFICATION_ID, notification);
+    breadcrumb("started forground notification");
   }
 
   private void stopMyService() {
