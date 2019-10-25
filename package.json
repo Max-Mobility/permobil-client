@@ -72,7 +72,7 @@
     "sd.w.setup": "npm run setup.sd.wear",
     "sd.w.brad": "cd apps/wear/smartdrive && tns run android --device 8606X91120272",
     "sd.w.a": "cd apps/wear/smartdrive && tns run android",
-    "pt.w.a.nohmr": "cd apps/wear/smartdrive && tns run android --no-hmr --env.hiddenSourceMap",
+    "sd.w.a.nohmr": "cd apps/wear/smartdrive && tns run android --no-hmr --env.hiddenSourceMap",
     "sd.w.a.report": "cd apps/wear/smartdrive && tns run android  --env.report",
     "sd.w.android.release": "node ./apps/wear/smartdrive/tools/android-release.js",
     "sd.w.android.layouts": "adb shell dumpsys gfxinfo com.permobil.smartdrive.wearos > layout-profile.txt",
