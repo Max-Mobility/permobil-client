@@ -17,7 +17,6 @@ import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
-import { SwipeDismissLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { Color } from 'tns-core-modules/color';
@@ -32,7 +31,7 @@ import { DataKeys } from '../../enums';
 import { SmartDrive, Acceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
-import { hideOffScreenLayout, showOffScreenLayout } from '../../utils';
+import { isNetworkAvailable } from '../../utils';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 
 const ambientTheme = require('../../scss/theme-ambient.css').toString();
@@ -99,23 +98,8 @@ export class MainViewModel extends Observable {
   /**
    * Layout Management
    */
-  private previousLayouts: string[] = [];
-  private layouts = {
-    about: false,
-    changeSettings: false,
-    main: true,
-    scanning: false,
-    settings: false,
-    updates: false
-  };
-  @Prop() enabledLayout = fromObject(this.layouts);
   private _ambientTimeView: View;
   private _powerAssistView: View;
-  private _settingsLayout: SwipeDismissLayout;
-  private _changeSettingsLayout: SwipeDismissLayout;
-  private _aboutLayout: SwipeDismissLayout;
-  private _updatesLayout: SwipeDismissLayout;
-  private _scanningLayout: SwipeDismissLayout;
 
   private _mainPage;
   private _scanningModal: string = 'pages/modals/scanning/scanning';
@@ -248,13 +232,20 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-    // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
-    this._sentryBreadCrumb('Sentry has been initialized.');
+    // determine inset padding
+    this.setupInsetChin();
+  }
 
-    // log the build version
+  customWOLInsetLoaded(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      this.insetPadding,
+      this.insetPadding,
+      0
+    );
+  }
+
+  logVersions() {
     this.buildDisplay = android.os.Build.DISPLAY;
 
     this.osVersionRelease = android.os.Build.VERSION.RELEASE;
@@ -282,11 +273,9 @@ export class MainViewModel extends Observable {
 
     Log.D(buildMessage);
     this._sentryBreadCrumb(buildMessage);
-    // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
-    this.registerAppEventHandlers();
-    this._sentryBreadCrumb('App event handlers registered.');
-    // determine inset padding
+  }
+
+  setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
       .getApplicationContext()
@@ -302,33 +291,26 @@ export class MainViewModel extends Observable {
         this.chinSize = widthPixels - heightPixels;
       }
     }
-    Log.D('chinsize:', this.chinSize);
-  }
-
-  customWOLInsetLoaded(args: EventData) {
-    (args.object as any).nativeView.setPadding(
-      this.insetPadding,
-      this.insetPadding,
-      this.insetPadding,
-      0
-    );
+    // Log.D('chinsize:', this.chinSize);
   }
 
   async init() {
-    this._sentryBreadCrumb('Main-View-Model init.');
     if (this.initialized) {
       this._sentryBreadCrumb('Already initialized.');
       return;
     }
 
-    this._sentryBreadCrumb('Main-View-Model constructor.');
-    this._sentryBreadCrumb('Initializing WakeLock...');
-    console.time('Init_SmartDriveWakeLock');
-    this.wakeLock = this.SmartDriveWakeLock;
-    console.timeEnd('Init_SmartDriveWakeLock');
-    this._sentryBreadCrumb('WakeLock has been initialized.');
+    // init sentry - DNS key for permobil-wear Sentry project
+    Sentry.init(
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    );
+    this._sentryBreadCrumb('Sentry has been initialized.');
 
-    this._sentryBreadCrumb('Initializing Sentry...');
+    // log the build version
+    this.logVersions();
+
+    this.wakeLock = this.SmartDriveWakeLock;
+    this._sentryBreadCrumb('WakeLock has been initialized.');
 
     this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
@@ -356,6 +338,10 @@ export class MainViewModel extends Observable {
     const versionName = packageInfo.versionName;
     this.appVersion = versionName;
 
+    // handle application lifecycle events
+    this.registerAppEventHandlers();
+    this._sentryBreadCrumb('App event handlers registered.');
+
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
       this.saveSmartDriveData,
@@ -364,10 +350,8 @@ export class MainViewModel extends Observable {
     );
 
     // regiter for system updates related to battery / time UI
-    this._sentryBreadCrumb('Registering for battery updates.');
     this.registerForBatteryUpdates();
     this._sentryBreadCrumb('Battery updates registered.');
-    this._sentryBreadCrumb('Registering for time updates.');
     this.registerForTimeUpdates();
     this._sentryBreadCrumb('Time updates registered.');
 
@@ -376,13 +360,9 @@ export class MainViewModel extends Observable {
       SensorService.SensorChanged,
       this.handleSensorData.bind(this)
     );
-    this._sentryBreadCrumb('Creating new TapDetector');
-    console.time('new_tap_detector');
     this.tapDetector = new TapDetector();
-    console.timeEnd('new_tap_detector');
-    this._sentryBreadCrumb('New TapDetector created.');
+    this._sentryBreadCrumb('TapDetector created.');
 
-    this._sentryBreadCrumb('Enabling body sensor.');
     this.enableBodySensor();
     this._sentryBreadCrumb('Body sensor enabled.');
 
@@ -398,11 +378,9 @@ export class MainViewModel extends Observable {
     }
 
     // load settings from memory
-    this._sentryBreadCrumb('Loading settings.');
     this._settingsService.loadSettings();
     this._sentryBreadCrumb('Settings loaded.');
 
-    this._sentryBreadCrumb('Updating settings display.');
     this.updateSettingsDisplay();
     this._sentryBreadCrumb('Settings display updated.');
 
@@ -540,34 +518,6 @@ export class MainViewModel extends Observable {
     this._kinveyService.watch_serial_number = this.watchSerialNumber;
   }
 
-  previousLayout() {
-    // get the most recent layout and remove it from the list
-    const layoutName = this.previousLayouts.pop();
-    if (layoutName) {
-      Object.keys(this.layouts)
-        .filter(k => k !== layoutName)
-        .map(k => {
-          this.enabledLayout.set(k, false);
-        });
-      this.enabledLayout.set(layoutName, true);
-    } else {
-      // if there is no previous - go back to the main screen
-      this.enabledLayout.set('main', true);
-    }
-  }
-
-  enableLayout(layoutName: string) {
-    Object.keys(this.layouts)
-      .filter(k => k !== layoutName)
-      .map(k => {
-        if (this.enabledLayout.get(k)) {
-          this.previousLayouts.push(k);
-        }
-        this.enabledLayout.set(k, false);
-      });
-    this.enabledLayout.set(layoutName, true);
-  }
-
   async onAmbientTimeViewLoaded(args: EventData) {
     this._ambientTimeView = args.object as View;
   }
@@ -576,8 +526,8 @@ export class MainViewModel extends Observable {
     this._powerAssistView = args.object as View;
   }
 
-  async onMainPageLoaded(args: EventData) {
-    this._sentryBreadCrumb('onMainPageLoaded');
+  async onNavigatedTo(args: EventData) {
+    this._sentryBreadCrumb('onNavigatedTo');
     try {
       if (!this.hasAppliedTheme) {
         // apply theme
@@ -598,17 +548,11 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // get child references
-    try {
-      // store reference to pageer so that we can control what page
-      // it's on programatically
-      const page = args.object as Page;
-      this._mainPage = page;
-      this.pager = page.getViewById('pager') as Pager;
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('onMainPageLoaded::error:', err);
-    }
+  }
+
+  async onMainPageLoaded(args: EventData) {
+    this._mainPage = args.object as Page;
+    this.pager = this._mainPage.getViewById('pager') as Pager;
   }
 
   showAmbientTime() {
@@ -1149,20 +1093,6 @@ export class MainViewModel extends Observable {
     }
   }
 
-  isNetworkAvailable() {
-    let isAvailable = false;
-    try {
-      const networkManager = application.android.context.getSystemService(
-        android.content.Context.CONNECTIVITY_SERVICE
-      );
-      const networkInfo = networkManager.getActiveNetworkInfo();
-      isAvailable = networkInfo !== null && networkInfo.isConnected();
-    } catch (err) {
-      Sentry.captureException(err);
-    }
-    return isAvailable;
-  }
-
   async onNetworkAvailable() {
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
@@ -1172,7 +1102,7 @@ export class MainViewModel extends Observable {
       // if this has gotten called before kinvey service has been fully set up
       return;
     }
-    if (!this.isNetworkAvailable()) {
+    if (!isNetworkAvailable()) {
       Log.D('No network available!');
       return;
     }
@@ -1521,43 +1451,37 @@ export class MainViewModel extends Observable {
   }
 
   /**
-   * Scanning Page Handlers
-   */
-  onScanningLayoutLoaded(args: EventData) {
-    this._scanningLayout = args.object as SwipeDismissLayout;
-    this._scanningLayout.on(SwipeDismissLayout.dimissedEvent, () => {
-      // hide the offscreen layout when dismissed
-      hideOffScreenLayout(this._scanningLayout, { x: 500, y: 0 });
-      this.previousLayout();
-    });
-  }
-
-  /**
    * Updates Page Handlers
    */
   onUpdatesTap(args) {
-    if (this.smartDrive) {
-      // showOffScreenLayout(this._updatesLayout);
-      // this.enableLayout('updates');
-      // this.checkForUpdates();
-      const updatesPage = 'pages/modals/updates/updates-page';
-      const btn = args.object;
-      const option: ShowModalOptions = {
-        context: {},
-        closeCallback: () => {
-          // we dont do anything with the about to return anything
-        },
-        animated: false,
-        fullscreen: true
-      };
-      btn.showModal(updatesPage, option);
-    } else {
+    if (!this.smartDrive) {
       alert({
         title: L('failures.title'),
         message: L('failures.no-smartdrive-paired'),
         okButtonText: L('buttons.ok')
       });
+      return;
     }
+    if (!isNetworkAvailable()) {
+      alert({
+        title: L('failures.title'),
+        message: L('failures.no-network'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
+    // we have a smartdrive and a network, now check for updates
+    const updatesPage = 'pages/modals/updates/updates-page';
+    const btn = args.object;
+    const option: ShowModalOptions = {
+      context: {},
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false,
+      fullscreen: true
+    };
+    btn.showModal(updatesPage, option);
   }
 
   async updateBatteryChart(sdData: any[]) {
@@ -1568,6 +1492,7 @@ export class MainViewModel extends Observable {
       }, 0);
       const batteryData = sdData.map(e => {
         let value = (e.battery * 100.0) / (maxBattery || 1);
+        // @ts-ignore
         if (value) value += '%';
         return {
           day: this._format(new Date(e.date), 'dd'),
@@ -1603,6 +1528,7 @@ export class MainViewModel extends Observable {
       });
       distanceData.map(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
+        // @ts-ignore
         if (data.value) data.value += '%';
       });
       // this._sentryBreadCrumb('Highest Distance Value:', maxDist);

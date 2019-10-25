@@ -10,6 +10,10 @@ export function navigatingTo(args: EventData) {
   page.bindingContext = vm;
 }
 
+export function navigatedTo(args: EventData) {
+  vm.onNavigatedTo(args);
+}
+
 export function onMainPageLoaded(args: EventData) {
   vm.onMainPageLoaded(args);
 }

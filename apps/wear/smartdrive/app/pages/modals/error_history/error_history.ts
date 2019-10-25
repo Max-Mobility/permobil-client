@@ -1,5 +1,5 @@
 import { Log } from '@permobil/core';
-import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
+import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
@@ -61,14 +61,6 @@ export async function onShownModally(args: ShownModallyData) {
   showErrorHistory();
 }
 
-export function swipeLayoutLoaded(args) {
-  const sl = args.object as SwipeDismissLayout;
-  sl.on(SwipeDismissLayout.dimissedEvent, args => {
-    Log.D('swipe layout dismissed');
-    closeCallback();
-  });
-}
-
 function formatDate(d: Date, fmt: string) {
   return format(d, fmt, {
     locale: dateLocales[getDefaultLang()] || dateLocales['en']
@@ -96,7 +88,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
           uuid: r && r[4],
           insetPadding: data.insetPadding,
           isBack: false,
-          onTap: () => {},
+          onTap: () => { },
           key: 'error'
         };
       });

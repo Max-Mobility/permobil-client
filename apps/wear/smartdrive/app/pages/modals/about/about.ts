@@ -1,5 +1,5 @@
 import { Log } from '@permobil/core';
-import { SwipeDismissLayout, WearOsLayout } from 'nativescript-wear-os';
+import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
@@ -98,14 +98,6 @@ export async function onShownModally(args: ShownModallyData) {
       );
       page.bindingContext.set('userEmail', userData.username);
     }
-  });
-}
-
-export function swipeLayoutLoaded(args) {
-  const sl = args.object as SwipeDismissLayout;
-  sl.on(SwipeDismissLayout.dimissedEvent, args => {
-    Log.D('swipe layout dismissed');
-    closeCallback();
   });
 }
 

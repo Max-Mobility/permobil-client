@@ -371,15 +371,13 @@ public class ActivityService
             @Override
             public void onFailure(Call<DailyActivity> call, Throwable t) {
               breadcrumb("Failed to send: " + t.getMessage());
-              Sentry.capture(t);
+              // Sentry.capture(t);
             }
           });
       } else {
         String message = "Attempt to push invalid data to kinvey! Record: " + r;
         breadcrumb(message);
       }
-    } catch (SocketTimeoutException e) {
-      breadcrumb("Timeout pushing to kinvey:" + e.getMessage());
     } catch (Exception e) {
       breadcrumb("Unknown exception pushing to kinvey:" + e.getMessage());
       Sentry.capture(e);
