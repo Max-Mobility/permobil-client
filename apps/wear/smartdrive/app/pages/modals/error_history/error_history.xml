@@ -1,4 +1,4 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:wol="nativescript-wear-os/packages/wear-os-layout" xmlns:sdl="nativescript-wear-os/packages/swipe-dismiss-layout" shownModally="onShownModally" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
     <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
         <GridLayout height="100%" rows="auto, auto, *" colums="*">
             <Label row="0" text="{{ L('error-history.title') }}" class="chart-title" textWrap="true" />

@@ -1,6 +1,5 @@
 <Page
     xmlns="http://schemas.nativescript.org/tns.xsd"
-    xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
     xmlns:ui="nativescript-auto-fit-text"
     xmlns:RL="nativescript-ng-ripple/ripple-view"
     class="change-settings-page"
