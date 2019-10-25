@@ -1467,25 +1467,34 @@ export class MainViewModel extends Observable {
    * Updates Page Handlers
    */
   onUpdatesTap(args) {
-    if (this.smartDrive) {
-      const updatesPage = 'pages/modals/updates/updates-page';
-      const btn = args.object;
-      const option: ShowModalOptions = {
-        context: {},
-        closeCallback: () => {
-          // we dont do anything with the about to return anything
-        },
-        animated: false,
-        fullscreen: true
-      };
-      btn.showModal(updatesPage, option);
-    } else {
+    if (!this.smartDrive) {
       alert({
         title: L('failures.title'),
         message: L('failures.no-smartdrive-paired'),
         okButtonText: L('buttons.ok')
       });
+      return;
     }
+    if (!isNetworkAvailable()) {
+      alert({
+        title: L('failures.title'),
+        message: L('failures.no-network'),
+        okButtonText: L('buttons.ok')
+      });
+      return;
+    }
+    // we have a smartdrive and a network, now check for updates
+    const updatesPage = 'pages/modals/updates/updates-page';
+    const btn = args.object;
+    const option: ShowModalOptions = {
+      context: {},
+      closeCallback: () => {
+        // we dont do anything with the about to return anything
+      },
+      animated: false,
+      fullscreen: true
+    };
+    btn.showModal(updatesPage, option);
   }
 
   async updateBatteryChart(sdData: any[]) {

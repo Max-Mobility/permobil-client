@@ -149,7 +149,7 @@ export class UpdatesViewModel extends Observable {
     }
 
     this.initialized = true;
-    Log.D('Initialized Updates View Model');
+    this._sentryBreadCrumb('Initialized Updates View Model');
   }
 
   async onUpdatesPageLoaded(args: EventData) {
@@ -164,15 +164,15 @@ export class UpdatesViewModel extends Observable {
         }
       }
     } catch (err) {
-      Sentry.captureException(err);
       Log.E('theme on startup error:', err);
+      Sentry.captureException(err);
     }
     // now init the ui
     try {
       await this.init();
     } catch (err) {
+      this._sentryBreadCrumb('updates init error: ' + err);
       Sentry.captureException(err);
-      Log.E('updates init error:', err);
     }
     // get child references
     try {
@@ -185,13 +185,13 @@ export class UpdatesViewModel extends Observable {
         'updateProgressCircle'
       ) as AnimatedCircle;
     } catch (err) {
+      this._sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
       Sentry.captureException(err);
-      Log.E('onUpdatesPageLoaded::error:', err);
     }
     try {
       this.checkForUpdates();
     } catch (err) {
-      Log.E('onUpdatesPageLoaded::error:', err);
+      this._sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
     }
   }
 
@@ -211,8 +211,8 @@ export class UpdatesViewModel extends Observable {
         // this.showMainDisplay();
       }
     } catch (err) {
-      Sentry.captureException(err);
       Log.E('apply theme error:', err);
+      Sentry.captureException(err);
     }
     this._sentryBreadCrumb('theme applied');
     this.applyStyle();
@@ -229,13 +229,13 @@ export class UpdatesViewModel extends Observable {
             child._onCssStateChange();
           }
         } catch (err) {
-          Sentry.captureException(err);
           Log.E('apply style error:', err);
+          Sentry.captureException(err);
         }
       }
     } catch (err) {
-      Sentry.captureException(err);
       Log.E('apply style error:', err);
+      Sentry.captureException(err);
     }
     this._sentryBreadCrumb('style applied');
   }
@@ -267,7 +267,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   async askForPermissions() {
-    // Log.D('asking for permissions');
+    // this._sentryBreadCrumb('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest =
       appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
@@ -299,7 +299,7 @@ export class UpdatesViewModel extends Observable {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
-      // this._sentryBreadCrumb('requesting permissions!', neededPermissions);
+      // this._sentryBreadCrumb('requesting permissions: ' + neededPermissions);
       await alert({
         title: L('permissions-request.title'),
         message: reasons.join('\n\n'),
@@ -511,7 +511,7 @@ export class UpdatesViewModel extends Observable {
   // TODO: don't use ':' with the errors - use [...] instead.
   private currentVersions = {};
   async checkForUpdates() {
-    Log.D('Checking for updates');
+    this._sentryBreadCrumb('Checking for updates');
     // update display of update progress
     this.smartDriveOtaProgress = 0;
     this.smartDriveOtaState = L('updates.checking-for-updates');
@@ -550,7 +550,7 @@ export class UpdatesViewModel extends Observable {
     // have the most up to date firmware files and download them
     // if we don't
     const mds = response;
-    Log.D('mds', mds);
+    this._sentryBreadCrumb('mds: ' + mds);
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
@@ -573,7 +573,7 @@ export class UpdatesViewModel extends Observable {
     });
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
-    Log.D(fileMetaDatas);
+    this._sentryBreadCrumb(fileMetaDatas);
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
       // update progress text
@@ -637,7 +637,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   async performSmartDriveWirelessUpdate() {
-    Log.D('Performing SmartDrive Wireless Update');
+    this._sentryBreadCrumb('Performing SmartDrive Wireless Update');
     this.smartDriveOtaState = L('updates.initializing');
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
@@ -652,7 +652,7 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    Log.D('got version', version);
+    this._sentryBreadCrumb('got version: ' + version);
     // show dialog to user informing them of the version number and changes
     const changes = Object.keys(this.currentVersions).map(
       k => this.currentVersions[k].changes
@@ -685,7 +685,7 @@ export class UpdatesViewModel extends Observable {
         mcuVersion,
         300 * 1000
       );
-      Log.D('"' + otaStatus + '" ' + typeof otaStatus);
+      this._sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
         if (this.closeCallback) {
           this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
@@ -762,8 +762,8 @@ export class UpdatesViewModel extends Observable {
         class: 'action-close'
       });
     }
+    this._sentryBreadCrumb(msg);
     Sentry.captureException(err);
-    Log.E(msg);
     if (alertMsg !== undefined) {
       alert({
         title: L('updates.failed'),
@@ -796,10 +796,10 @@ export class UpdatesViewModel extends Observable {
       // ensure we have the permissions
       await this.askForPermissions();
       // ensure bluetooth radio is enabled
-      // Log.D('checking radio is enabled');
+      // this._sentryBreadCrumb('checking radio is enabled');
       const radioEnabled = await this._bluetoothService.radioEnabled();
       if (!radioEnabled) {
-        Log.D('radio is not enabled!');
+        this._sentryBreadCrumb('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
         const didEnable = await this._bluetoothService.enableRadio();
         if (!didEnable) {
@@ -881,9 +881,9 @@ export class UpdatesViewModel extends Observable {
         return false;
       }
     } catch (err) {
+      this._sentryBreadCrumb('could not scan ' + err);
       Sentry.captureException(err);
       // this.hideScanning();
-      Log.E('could not scan', err);
       alert({
         title: L('failures.title'),
         message: `${L('failures.scan')}\n\n${err}`,
@@ -900,7 +900,7 @@ export class UpdatesViewModel extends Observable {
     try {
       const didEnsure = await this.ensureBluetoothCapabilities();
       if (!didEnsure) {
-        Log.E('could not ensure bluetooth capabilities!');
+        this._sentryBreadCrumb('could not ensure bluetooth capabilities!');
         return false;
       }
       await this.smartDrive.connect();
@@ -953,7 +953,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   async getFirmwareData() {
-    Log.D('Getting firmware data');
+    this._sentryBreadCrumb('Getting firmware data');
     try {
       const objs = await this._sqliteService.getAll({
         tableName: SmartDriveData.Firmwares.TableName
@@ -979,14 +979,14 @@ export class UpdatesViewModel extends Observable {
         return data;
       }, {});
     } catch (err) {
+      this._sentryBreadCrumb('Could not get firmware metadata: ' + err);
       Sentry.captureException(err);
-      Log.E('Could not get firmware metadata:', err);
       return {};
     }
   }
 
   private _sentryBreadCrumb(message: string) {
-    // Log.D(message);
+    Log.D(message);
     Sentry.captureBreadcrumb({
       message,
       category: 'info',
