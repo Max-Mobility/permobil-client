@@ -569,9 +569,11 @@ export class UpdatesViewModel extends Observable {
     });
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
-    this._sentryBreadCrumb(fileMetaDatas);
+    this._sentryBreadCrumb('Got file metadatas, length: ' +
+      (fileMetaDatas && fileMetaDatas.length));
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
+      this._sentryBreadCrumb('downloading firmwares');
       // update progress text
       this.smartDriveOtaState = L('updates.downloading-new-firmwares');
       // reset ota progress to 0 to show downloading progress
@@ -610,6 +612,7 @@ export class UpdatesViewModel extends Observable {
     // our local metadata
     promises = [];
     if (files && files.length) {
+      this._sentryBreadCrumb('updating firmware data');
       promises = files.filter(f => f).map(this.updateFirmwareData.bind(this));
     }
     try {
@@ -620,9 +623,10 @@ export class UpdatesViewModel extends Observable {
     // Now let's connect to the SD to make sure that we get it's
     // version information
     try {
+      this._sentryBreadCrumb('getting smartdrive version');
       await this.getSmartDriveVersion();
     } catch (err) {
-      console.log('Connecting to smartdrive failed', err);
+      this._sentryBreadCrumb('Connecting to smartdrive failed');
       return this.updateError(err, L('updates.errors.connecting'), err);
     }
     // Now perform the SmartDrive updates if we need to
