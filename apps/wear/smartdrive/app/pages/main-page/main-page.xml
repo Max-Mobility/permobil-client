@@ -5,8 +5,9 @@
       xmlns:pager="nativescript-pager"
       xmlns:box="nativescript-wear-os/packages/box-inset-layout"
       xmlns:ui="nativescript-auto-fit-text"
-      loaded="onMainPageLoaded"
       navigatingTo="navigatingTo"
+      loaded="onMainPageLoaded"
+      navigatedTo="navigatedTo"
       marginBottom="{{ chinSize / 2 }}"
       actionBarHidden="true">
   <GridLayout rows="*, *" columns="*">

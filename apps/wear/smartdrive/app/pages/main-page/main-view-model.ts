@@ -232,13 +232,20 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-    // init sentry - DNS key for permobil-wear Sentry project
-    Sentry.init(
-      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
-    );
-    this._sentryBreadCrumb('Sentry has been initialized.');
+    // determine inset padding
+    this.setupInsetChin();
+  }
 
-    // log the build version
+  customWOLInsetLoaded(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      this.insetPadding,
+      this.insetPadding,
+      0
+    );
+  }
+
+  logVersions() {
     this.buildDisplay = android.os.Build.DISPLAY;
 
     this.osVersionRelease = android.os.Build.VERSION.RELEASE;
@@ -266,7 +273,9 @@ export class MainViewModel extends Observable {
 
     Log.D(buildMessage);
     this._sentryBreadCrumb(buildMessage);
-    // determine inset padding
+  }
+
+  setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
     const androidConfig = ad
       .getApplicationContext()
@@ -282,33 +291,26 @@ export class MainViewModel extends Observable {
         this.chinSize = widthPixels - heightPixels;
       }
     }
-    Log.D('chinsize:', this.chinSize);
-  }
-
-  customWOLInsetLoaded(args: EventData) {
-    (args.object as any).nativeView.setPadding(
-      this.insetPadding,
-      this.insetPadding,
-      this.insetPadding,
-      0
-    );
+    // Log.D('chinsize:', this.chinSize);
   }
 
   async init() {
-    this._sentryBreadCrumb('Main-View-Model init.');
     if (this.initialized) {
       this._sentryBreadCrumb('Already initialized.');
       return;
     }
 
-    this._sentryBreadCrumb('Main-View-Model constructor.');
-    this._sentryBreadCrumb('Initializing WakeLock...');
-    console.time('Init_SmartDriveWakeLock');
-    this.wakeLock = this.SmartDriveWakeLock;
-    console.timeEnd('Init_SmartDriveWakeLock');
-    this._sentryBreadCrumb('WakeLock has been initialized.');
+    // init sentry - DNS key for permobil-wear Sentry project
+    Sentry.init(
+      'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
+    );
+    this._sentryBreadCrumb('Sentry has been initialized.');
 
-    this._sentryBreadCrumb('Initializing Sentry...');
+    // log the build version
+    this.logVersions();
+
+    this.wakeLock = this.SmartDriveWakeLock;
+    this._sentryBreadCrumb('WakeLock has been initialized.');
 
     this._sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
@@ -337,7 +339,6 @@ export class MainViewModel extends Observable {
     this.appVersion = versionName;
 
     // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
     this.registerAppEventHandlers();
     this._sentryBreadCrumb('App event handlers registered.');
 
@@ -349,10 +350,8 @@ export class MainViewModel extends Observable {
     );
 
     // regiter for system updates related to battery / time UI
-    this._sentryBreadCrumb('Registering for battery updates.');
     this.registerForBatteryUpdates();
     this._sentryBreadCrumb('Battery updates registered.');
-    this._sentryBreadCrumb('Registering for time updates.');
     this.registerForTimeUpdates();
     this._sentryBreadCrumb('Time updates registered.');
 
@@ -361,13 +360,9 @@ export class MainViewModel extends Observable {
       SensorService.SensorChanged,
       this.handleSensorData.bind(this)
     );
-    this._sentryBreadCrumb('Creating new TapDetector');
-    console.time('new_tap_detector');
     this.tapDetector = new TapDetector();
-    console.timeEnd('new_tap_detector');
-    this._sentryBreadCrumb('New TapDetector created.');
+    this._sentryBreadCrumb('TapDetector created.');
 
-    this._sentryBreadCrumb('Enabling body sensor.');
     this.enableBodySensor();
     this._sentryBreadCrumb('Body sensor enabled.');
 
@@ -383,11 +378,9 @@ export class MainViewModel extends Observable {
     }
 
     // load settings from memory
-    this._sentryBreadCrumb('Loading settings.');
     this._settingsService.loadSettings();
     this._sentryBreadCrumb('Settings loaded.');
 
-    this._sentryBreadCrumb('Updating settings display.');
     this.updateSettingsDisplay();
     this._sentryBreadCrumb('Settings display updated.');
 
@@ -533,8 +526,8 @@ export class MainViewModel extends Observable {
     this._powerAssistView = args.object as View;
   }
 
-  async onMainPageLoaded(args: EventData) {
-    this._sentryBreadCrumb('onMainPageLoaded');
+  async onNavigatedTo(args: EventData) {
+    this._sentryBreadCrumb('onNavigatedTo');
     try {
       if (!this.hasAppliedTheme) {
         // apply theme
@@ -555,17 +548,11 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // get child references
-    try {
-      // store reference to pageer so that we can control what page
-      // it's on programatically
-      const page = args.object as Page;
-      this._mainPage = page;
-      this.pager = page.getViewById('pager') as Pager;
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('onMainPageLoaded::error:', err);
-    }
+  }
+
+  async onMainPageLoaded(args: EventData) {
+    this._mainPage = args.object as Page;
+    this.pager = this._mainPage.getViewById('pager') as Pager;
   }
 
   showAmbientTime() {
