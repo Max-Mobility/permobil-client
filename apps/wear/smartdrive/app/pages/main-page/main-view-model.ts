@@ -30,6 +30,8 @@ import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../.
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+  TapDetector
+} from '../../models';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -190,11 +192,7 @@ export class MainViewModel extends Observable {
 
   constructor() {
     super();
-    setTimeout(() => {
-      console.time('delay_init');
-      this._init();
-      console.timeEnd('delay_init');
-    }, 300);
+    sentryBreadCrumb('Main-View-Model constructor.');
     // determine inset padding
     this._setupInsetChin();
   }
@@ -222,6 +220,41 @@ export class MainViewModel extends Observable {
   }
 
   // #region "Public Functions"
+
+  onMainPageLoaded(args: EventData) {
+    sentryBreadCrumb('onMainPageLoaded');
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this._applyTheme('ambient');
+        } else {
+          this._applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('theme on startup error:', err);
+    }
+    // now init the ui
+    try {
+      this._init().then(() => {
+        Log.D('init finished in the main-view-model');
+      });
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('activity init error:', err);
+    }
+    // try {
+    //   // store reference to pageer so that we can control what page
+    //   // it's on programatically
+    //   const page = args.object as Page;
+    //   this._mainPage = page;
+    // } catch (err) {
+    //   Sentry.captureException(err);
+    //   Log.E('onMainPageLoaded::error:', err);
+    // }
+  }
 
   toggleDebug() {
     // this.displayDebug = !this.displayDebug;
@@ -278,7 +311,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -308,7 +341,6 @@ export class MainViewModel extends Observable {
    */
 
   onSettingsTap(args) {
-    const settingsPage = 'pages/modals/settings/settings-page';
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {
@@ -323,11 +355,10 @@ export class MainViewModel extends Observable {
       animated: false,
       fullscreen: true
     };
-    btn.showModal(settingsPage, option);
+    btn.showModal('pages/modals/settings/settings-page', option);
   }
 
   onAboutTap(args) {
-    const aboutPage = 'pages/modals/about/about';
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {
@@ -342,7 +373,7 @@ export class MainViewModel extends Observable {
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-    btn.showModal(aboutPage, option);
+    btn.showModal('pages/modals/about/about', option);
   }
 
   onTrainingTap() {
@@ -398,7 +429,6 @@ export class MainViewModel extends Observable {
       return;
     }
     // we have a smartdrive and a network, now check for updates
-    const updatesPage = 'pages/modals/updates/updates-page';
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {},
@@ -408,7 +438,7 @@ export class MainViewModel extends Observable {
       animated: false,
       fullscreen: true
     };
-    btn.showModal(updatesPage, option);
+    btn.showModal('pages/modals/updates/updates-page', option);
   }
 
   async enablePowerAssist() {
@@ -744,7 +774,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -770,14 +800,16 @@ export class MainViewModel extends Observable {
     if (this._powerAssistView) {
       this._powerAssistView.animate({
         opacity: 0,
-        scale: { x: 0.5, y: 0.5 }
+        scale: { x: 0.5, y: 0.5 },
+        duration: 200
       });
     }
     if (this._ambientTimeView) {
       this._ambientTimeView.animate({
         translate: { x: 0, y: 0 },
         opacity: 1,
-        scale: { x: 1, y: 1 }
+        scale: { x: 1, y: 1 },
+        duration: 200
       });
     }
   }
@@ -787,13 +819,15 @@ export class MainViewModel extends Observable {
       this._ambientTimeView.animate({
         translate: { x: 0, y: screen.mainScreen.heightPixels },
         opacity: 0,
-        scale: { x: 0.5, y: 0.5 }
+        scale: { x: 0.5, y: 0.5 },
+        duration: 200
       });
     }
     if (this._powerAssistView) {
       this._powerAssistView.animate({
         opacity: 1,
-        scale: { x: 1, y: 1 }
+        scale: { x: 1, y: 1 },
+        duration: 200
       });
     }
   }
@@ -806,11 +840,11 @@ export class MainViewModel extends Observable {
       if (theme === 'ambient' || this.isAmbient) {
         this._showAmbientTime();
         Log.D('applying ambient theme');
-        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.css');
       } else {
         this._showMainDisplay();
         Log.D('applying default theme');
-        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+        themes.applyThemeCss(defaultTheme, 'theme-default.css');
       }
     } catch (err) {
       Sentry.captureException(err);
@@ -1823,7 +1857,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1888,7 +1922,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2310,7 +2344,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => { }
+            onTap: () => {}
           };
         });
       }

@@ -75,8 +75,6 @@ export async function onShownModally(args: ShownModallyData) {
   // get the database id
   data.databaseId = KinveyService.api_app_key;
 
-  Log.D('data', data);
-
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;
 
