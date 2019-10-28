@@ -3,7 +3,7 @@
   xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
   xmlns:pager="nativescript-pager" 
   xmlns:box="nativescript-wear-os/packages/box-inset-layout" 
-  xmlns:ui="nativescript-auto-fit-text" loaded="onPageLoaded" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  xmlns:ui="nativescript-auto-fit-text" navigatingTo="onPageLoaded" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
 
     <pager:Pager id="pager" loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}">
