@@ -1,43 +1,28 @@
 import { Log } from '@permobil/core';
-import { WearOsLayout } from 'nativescript-wear-os';
-import {
-  EventData,
-  fromObject,
-  Observable
-} from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { Page, ShownModallyData, View } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import {
-  BluetoothService,
-  KinveyService,
-  SqliteService,
-  SERVICES
-} from '../../../services';
-import { getSerialNumber, saveSerialNumber } from '../../../utils';
-import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { Level, Sentry } from 'nativescript-sentry';
+import { format } from 'date-fns';
+import { ReflectiveInjector } from 'injection-js';
+import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
-import once from 'lodash/once';
 import throttle from 'lodash/throttle';
-import debounce from 'lodash/debounce';
 import { AnimatedCircle } from 'nativescript-animated-circle';
-import { PowerAssist, SmartDriveData } from '../../../namespaces';
-import { SmartDrive, Acceleration, TapDetector } from '../../../models';
-import { DataKeys } from '../../../enums';
+import * as LS from 'nativescript-localstorage';
+import { Pager } from 'nativescript-pager';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { Level, Sentry } from 'nativescript-sentry';
+import * as themes from 'nativescript-themes';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
+import { EventData, Observable } from 'tns-core-modules/data/observable';
+import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { ReflectiveInjector } from 'injection-js';
-import { Pager } from 'nativescript-pager';
-import * as LS from 'nativescript-localstorage';
-import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
+import { Page, View } from 'tns-core-modules/ui/page';
 import { ad } from 'tns-core-modules/utils/utils';
-import * as themes from 'nativescript-themes';
+import { DataKeys } from '../../../enums';
+import { SmartDrive } from '../../../models';
+import { SmartDriveData } from '../../../namespaces';
+import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../../services';
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
 
@@ -155,10 +140,7 @@ export class UpdatesViewModel extends Observable {
   async onUpdatesPageLoaded(args: EventData) {
     this._sentryBreadCrumb('onUpdatesPageLoaded');
     // clear out ota actions
-    this.smartDriveOtaActions.splice(
-      0,
-      this.smartDriveOtaActions.length
-    );
+    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
 
     try {
       if (!this.hasAppliedTheme) {
@@ -312,7 +294,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -575,8 +557,9 @@ export class UpdatesViewModel extends Observable {
     });
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
-    this._sentryBreadCrumb('Got file metadatas, length: ' +
-      (fileMetaDatas && fileMetaDatas.length));
+    this._sentryBreadCrumb(
+      'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
+    );
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
       this._sentryBreadCrumb('downloading firmwares');
@@ -611,7 +594,11 @@ export class UpdatesViewModel extends Observable {
         const errorMessage = `
         ${L('updates.errors.connection-failure')}\n\n${err}
         `;
-        return this.updateError(err, L('updates.errors.downloading'), errorMessage);
+        return this.updateError(
+          err,
+          L('updates.errors.downloading'),
+          errorMessage
+        );
       }
     }
     // Now that we have the files, write them to disk and update
@@ -694,12 +681,16 @@ export class UpdatesViewModel extends Observable {
       this._sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
         if (this.closeCallback) {
-          this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-            label: L('ota.action.close'),
-            func: this.closeCallback.bind(this),
-            action: 'ota.action.close',
-            class: 'action-close'
-          });
+          this.smartDriveOtaActions.splice(
+            0,
+            this.smartDriveOtaActions.length,
+            {
+              label: L('ota.action.close'),
+              func: this.closeCallback.bind(this),
+              action: 'ota.action.close',
+              class: 'action-close'
+            }
+          );
         }
       }
     } catch (err) {

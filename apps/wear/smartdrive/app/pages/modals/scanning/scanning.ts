@@ -1,7 +1,7 @@
 import { Log } from '@permobil/core';
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { L } from '@permobil/nativescript';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
+import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 
 // values for UI databinding via bindingContext
 const data = {

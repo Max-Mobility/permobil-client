@@ -1,12 +1,8 @@
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { Log, Device } from '@permobil/core';
+import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
+import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { DataKeys } from '../../../enums';
-import * as LS from 'nativescript-localstorage';
 import { SettingsService } from '../../../services';
-import { ReflectiveInjector } from 'injection-js';
 
 export class SettingsViewModel extends Observable {
   /**
@@ -26,7 +22,9 @@ export class SettingsViewModel extends Observable {
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
     this.tempSettings.copy(this.settingsService.settings);
-    this.tempSwitchControlSettings.copy(this.settingsService.switchControlSettings);
+    this.tempSwitchControlSettings.copy(
+      this.settingsService.switchControlSettings
+    );
     const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
@@ -61,36 +59,44 @@ export class SettingsViewModel extends Observable {
         break;
     }
     this.updateSettingsChangeDisplay();
-    const changeSettingsPage = 'pages/modals/change-settings/change-settings-page';
+    const changeSettingsPage =
+      'pages/modals/change-settings/change-settings-page';
     const btn = args.object;
     const option: ShowModalOptions = {
-        context: {
-            activeSettingToChange: this.activeSettingToChange,
-            changeSettingKeyString: this.changeSettingKeyString,
-            changeSettingKeyValue: this.changeSettingKeyValue,
-            disableWearCheck: this.settingsService.disableWearCheck,
-            settings: this.settingsService.settings,
-            switchControlSettings: this.settingsService.switchControlSettings
-        },
-        closeCallback: (confirmedByUser, tempSettings, tempSwitchControlSettings, disableWearCheck) => {
-            if (confirmedByUser) {
-                this.settingsService.settings.copy(tempSettings);
-                this.settingsService.switchControlSettings.copy(tempSwitchControlSettings);
-                this.settingsService.disableWearCheck = disableWearCheck;
-                this.settingsService.hasSentSettings = false;
-                this.settingsService.saveSettings();
-                // // now update any display that needs settings:
-                // this.updateSettingsDisplay();
-                // warning / indication to the user that they've updated their settings
-                alert({
-                    title: L('warnings.saved-settings.title'),
-                    message: L('warnings.saved-settings.message'),
-                    okButtonText: L('buttons.ok')
-                });
-            }
-        },
-        animated: false,
-        fullscreen: true
+      context: {
+        activeSettingToChange: this.activeSettingToChange,
+        changeSettingKeyString: this.changeSettingKeyString,
+        changeSettingKeyValue: this.changeSettingKeyValue,
+        disableWearCheck: this.settingsService.disableWearCheck,
+        settings: this.settingsService.settings,
+        switchControlSettings: this.settingsService.switchControlSettings
+      },
+      closeCallback: (
+        confirmedByUser,
+        tempSettings,
+        tempSwitchControlSettings,
+        disableWearCheck
+      ) => {
+        if (confirmedByUser) {
+          this.settingsService.settings.copy(tempSettings);
+          this.settingsService.switchControlSettings.copy(
+            tempSwitchControlSettings
+          );
+          this.settingsService.disableWearCheck = disableWearCheck;
+          this.settingsService.hasSentSettings = false;
+          this.settingsService.saveSettings();
+          // // now update any display that needs settings:
+          // this.updateSettingsDisplay();
+          // warning / indication to the user that they've updated their settings
+          alert({
+            title: L('warnings.saved-settings.title'),
+            message: L('warnings.saved-settings.message'),
+            okButtonText: L('buttons.ok')
+          });
+        }
+      },
+      animated: false,
+      fullscreen: true
     };
     btn.showModal(changeSettingsPage, option);
   }

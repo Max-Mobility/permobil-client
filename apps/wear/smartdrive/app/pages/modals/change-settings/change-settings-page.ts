@@ -1,9 +1,9 @@
+import { Log } from '@permobil/core';
 import { EventData } from 'tns-core-modules/data/observable';
-import { ChangeSettingsViewModel } from './change-settings-view-model';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { Log } from '@permobil/core';
+import { ChangeSettingsViewModel } from './change-settings-view-model';
 
 const vm = new ChangeSettingsViewModel();
 let closeCallback;
@@ -30,11 +30,21 @@ export function onChangeSettingsPageLoaded(args: EventData) {
 }
 
 export function onCloseTap(args) {
-  closeCallback(false, vm.tempSettings, vm.tempSwitchControlSettings, vm.disableWearCheck);
+  closeCallback(
+    false,
+    vm.tempSettings,
+    vm.tempSwitchControlSettings,
+    vm.disableWearCheck
+  );
 }
 
 export function onConfirmTap(args) {
-  closeCallback(true, vm.tempSettings, vm.tempSwitchControlSettings, vm.disableWearCheck);
+  closeCallback(
+    true,
+    vm.tempSettings,
+    vm.tempSwitchControlSettings,
+    vm.disableWearCheck
+  );
 }
 
 function configureLayout() {

@@ -1,16 +1,15 @@
 import { Log } from '@permobil/core';
+import { getDefaultLang, L } from '@permobil/nativescript';
+import { format } from 'date-fns';
+import differenceBy from 'lodash/differenceBy';
+import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { KinveyService, SqliteService } from '../../../services';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { PowerAssist, SmartDriveData } from '../../../namespaces';
-import { getDefaultLang, L, Prop } from '@permobil/nativescript';
-import { Level, Sentry } from 'nativescript-sentry';
-import differenceBy from 'lodash/differenceBy';
-import { closestIndexTo, format, isSameDay, isToday, subDays } from 'date-fns';
+import { SmartDriveData } from '../../../namespaces';
+import { SqliteService } from '../../../services';
 
 let closeCallback;
 let page: Page;
@@ -88,7 +87,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
           uuid: r && r[4],
           insetPadding: data.insetPadding,
           isBack: false,
-          onTap: () => { },
+          onTap: () => {},
           key: 'error'
         };
       });
@@ -122,7 +121,7 @@ async function onLoadMoreErrors() {
   if (recents && recents.length) {
     // now add the recent data
     data.errorHistoryData.push(...recents);
-    data.errorHistoryData.map(error => error.key = 'error');
+    data.errorHistoryData.map(error => (error.key = 'error'));
     data.errorHistoryData[0].key = 'back';
     data.errorHistoryData[data.errorHistoryData.length - 1].key = 'last';
   } else if (data.errorHistoryData.length === 1) {

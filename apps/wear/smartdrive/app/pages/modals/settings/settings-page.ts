@@ -1,10 +1,10 @@
+import { Log } from '@permobil/core';
+import { WearOsLayout } from 'nativescript-wear-os';
 import { EventData } from 'tns-core-modules/data/observable';
-import { SettingsViewModel } from './settings-view-model';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { WearOsLayout } from 'nativescript-wear-os';
-import { Log } from '@permobil/core';
+import { SettingsViewModel } from './settings-view-model';
 
 const vm = new SettingsViewModel();
 let closeCallback;
@@ -52,12 +52,7 @@ function configureLayout(layout: WearOsLayout) {
       chinSize = screenWidth - screenHeight;
     }
   }
-  layout.nativeView.setPadding(
-    insetPadding,
-    insetPadding,
-    insetPadding,
-    0
-  );
+  layout.nativeView.setPadding(insetPadding, insetPadding, insetPadding, 0);
 
   page.bindingContext.set('insetPadding', insetPadding);
   page.bindingContext.set('chinSize', chinSize);

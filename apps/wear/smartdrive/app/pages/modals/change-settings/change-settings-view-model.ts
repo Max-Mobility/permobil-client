@@ -1,6 +1,6 @@
-import { EventData, Observable } from 'tns-core-modules/data/observable';
+import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
-import { Log, Device } from '@permobil/core';
+import { EventData, Observable } from 'tns-core-modules/data/observable';
 
 export class ChangeSettingsViewModel extends Observable {
   @Prop() tempSettings = new Device.Settings();
@@ -13,8 +13,7 @@ export class ChangeSettingsViewModel extends Observable {
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
 
-  async onChangeSettingsPageLoaded(args: EventData) {
-  }
+  async onChangeSettingsPageLoaded(args: EventData) {}
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);

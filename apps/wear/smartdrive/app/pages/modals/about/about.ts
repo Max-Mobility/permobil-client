@@ -3,14 +3,10 @@ import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { KinveyService, SqliteService } from '../../../services';
-import {
-  getSerialNumber,
-  saveSerialNumber,
-} from '../../../utils';
 import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
+import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { KinveyService } from '../../../services';
+import { getSerialNumber } from '../../../utils';
 
 let closeCallback;
 let page: Page;
