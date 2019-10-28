@@ -1,143 +1,51 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-      xmlns:nac="nativescript-animated-circle"
-      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-      xmlns:lv="nativescript-wear-os/packages/listview"
-      xmlns:pager="nativescript-pager"
-      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
-      xmlns:ui="nativescript-auto-fit-text"
-      navigatingTo="navigatingTo"
-      loaded="onMainPageLoaded"
-      navigatedTo="navigatedTo"
-      marginBottom="{{ chinSize / 2 }}"
-      actionBarHidden="true">
-  <GridLayout rows="*, *" columns="*">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+  xmlns:nac="nativescript-animated-circle" 
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
+  xmlns:pager="nativescript-pager" 
+  xmlns:box="nativescript-wear-os/packages/box-inset-layout" 
+  xmlns:ui="nativescript-auto-fit-text" navigatedTo="navigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+  <GridLayout rows="*" columns="*">
 
-    <pager:Pager id="pager" loaded="{{ onPagerLoaded }}" orientation="vertical"
-                 height="100%" width="100%"
-                 col="0" row="0" rowSpan="2"
-                 transformer="none" pagesCount="4" showNativePageIndicator="false"
-                 disableSwipe="{{ powerAssistActive || isTraining }}">
+    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}">
       // Activate Power Assist Screen
       <pager:PagerItem>
         <GridLayout rows="32, auto, *" columns="*, auto, *" height="100%" width="100%">
           // Power Assist Circle
-          <nac:AnimatedCircle id="powerAssistCircle"
-                              rowSpan="3" colSpan="3"
-                              class="powerAssistCircle"
-                              width="100%" height="100%"
-                              animated="true" animateFrom="0"
-                              rimColor="{{ powerAssistRingColor }}"
-                              barColor="{{ powerAssistRingColor }}"
-                              clockwise="true" rimWidth="12" progress="100"
-                              visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
+          <nac:AnimatedCircle id="powerAssistCircle" rowSpan="3" colSpan="3" class="powerAssistCircle" width="100%" height="100%" animated="true" animateFrom="0" rimColor="{{ powerAssistRingColor }}" barColor="{{ powerAssistRingColor }}" clockwise="true" rimWidth="12" progress="100" visibility="{{ ((powerAssistActive || isTraining) && !hasTapped) ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
           // Tap indication circle
-          <nac:AnimatedCircle id="tapCircle"
-                              rowSpan="3" colSpan="3"
-                              class="tapCircle"
-                              width="100%" height="100%"
-                              rimWidth="12" progress="100"
-                              animated="true" animateFrom="0"
-                              visibility="{{ hasTapped ? 'visible':'collapsed' }}">
+          <nac:AnimatedCircle id="tapCircle" rowSpan="3" colSpan="3" class="tapCircle" width="100%" height="100%" rimWidth="12" progress="100" animated="true" animateFrom="0" visibility="{{ hasTapped ? 'visible':'collapsed' }}">
           </nac:AnimatedCircle>
           // SmartDrive Battery Circle
-          <nac:AnimatedCircle id="smartDriveBatteryCircle"
-                              rowSpan="3" colSpan="3"
-                              class="sdBatteryCircle"
-                              width="90%" height="90%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8"
-                              progress="{{ smartDriveCurrentBatteryPercentage }}">
+          <nac:AnimatedCircle id="smartDriveBatteryCircle" rowSpan="3" colSpan="3" class="sdBatteryCircle" width="90%" height="90%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ smartDriveCurrentBatteryPercentage }}">
           </nac:AnimatedCircle>
           // Watch Battery Circle
-          <nac:AnimatedCircle id="watchBatteryCircle"
-                              rowSpan="3" colSpan="3"
-                              class="watchBatteryCircle"
-                              width="84%" height="84%"
-                              animated="true" animateFrom="0" clockwise="true"
-                              rimWidth="2" barWidth="8"
-                              progress="{{ watchCurrentBatteryPercentage }}">
+          <nac:AnimatedCircle id="watchBatteryCircle" rowSpan="3" colSpan="3" class="watchBatteryCircle" width="84%" height="84%" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ watchCurrentBatteryPercentage }}">
           </nac:AnimatedCircle>
           // ambient time display
-          <StackLayout id="ambientTimeDisplay"
-                       rowSpan="3" colSpan="3"
-                       loaded="onAmbientTimeViewLoaded"
-                       verticalAlignment="center"
-                       width="100%" height="100%"
-                       class="circleDetails"
-                       visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
-            <Label class="center-label-base ambient-show fs24 bold" textWrap="true"
-                   textAlignment="center"
-                   text="{{ currentTime + (currentTimeMeridiem ? (' ' + currentTimeMeridiem) : '') }}"
-                   />
-            <Label class="center-label-base ambient-show fs16" textWrap="true"
-                   textAlignment="center"
-                   text="{{ currentDay + ' ' + currentYear }}"/>
+          <StackLayout id="ambientTimeDisplay" rowSpan="3" colSpan="3" loaded="{{ onAmbientTimeViewLoaded }}" verticalAlignment="center" width="100%" height="100%" class="circleDetails" visibility="{{ isAmbient, isAmbient ? 'visible':'collapsed' }}">
+            <Label class="center-label-base ambient-show fs24 bold" textWrap="true" textAlignment="center" text="{{ currentTime + (currentTimeMeridiem ? (' ' + currentTimeMeridiem) : '') }}" />
+            <Label class="center-label-base ambient-show fs16" textWrap="true" textAlignment="center" text="{{ currentDay + ' ' + currentYear }}"/>
           </StackLayout>
           // power assist controls / info display
-          <GridLayout id="powerAssistGridLayout"
-                      rowSpan="3" colSpan="3"
-                      width="90%" height="90%"
-                      loaded="onPowerAssistViewLoaded"
-                      rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30"
-                      class="circleDetails"
-                      visibility="{{ isAmbient, isAmbient ? 'collapsed':'visible'}}">
-            <StackLayout row="1" col="1" rowSpan="2"
-                         padding="0 0 5 0"
-                         tap="{{ toggleDebug }}"
-                         visibility="{{ !motorOn ? 'visible':'collapsed' }}">
-              <Label class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ estimatedDistanceDisplay }}"/>
-              <ui:AutoFitText class="topValueDescription"
-                     text="{{ estimatedDistanceDescription }}"/>
+          <GridLayout id="powerAssistGridLayout" rowSpan="3" colSpan="3" width="90%" height="90%" loaded="{{ onPowerAssistViewLoaded}}" rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails" visibility="{{ isAmbient, isAmbient ? 'collapsed':'visible'}}">
+            <StackLayout row="1" col="1" rowSpan="2" padding="0 0 5 0" tap="{{ toggleDebug }}" visibility="{{ !motorOn ? 'visible':'collapsed' }}">
+              <Label class="topValue" horizontalAlignment="center" textWrap="true" text="{{ estimatedDistanceDisplay }}"/>
+              <ui:AutoFitText class="topValueDescription" text="{{ estimatedDistanceDescription }}"/>
             </StackLayout>
-            <StackLayout row="1" col="1" rowSpan="2"
-                         tap="{{ toggleDebug }}"
-                         padding="0 0 5 0"
-                         visibility="{{ motorOn ? 'visible':'collapsed' }}">
-              <Label class="topValue" horizontalAlignment="center" textWrap="true"
-                     text="{{ currentSpeedDisplay }}"/>
-              <ui:AutoFitText class="topValueDescription"
-                     text="{{ currentSpeedDescription }}"/>
+            <StackLayout row="1" col="1" rowSpan="2" tap="{{ toggleDebug }}" padding="0 0 5 0" visibility="{{ motorOn ? 'visible':'collapsed' }}">
+              <Label class="topValue" horizontalAlignment="center" textWrap="true" text="{{ currentSpeedDisplay }}"/>
+              <ui:AutoFitText class="topValueDescription" text="{{ currentSpeedDescription }}"/>
             </StackLayout>
-            <Button row="3" col="1"
-                    class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}"
-                    height="100%"
-                    width="100%"
-                    margin="20" padding="0"
-                    text="{{ L('power-assist.activate') }}"
-                    tap="{{ enablePowerAssist }}"
-                    visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
-            <Button row="3" col="1" class="powerAssist-active"
-                    text="{{ L('power-assist.deactivate') }}"
-                    tap="{{ disablePowerAssist }}"
-                    height="100%"
-                    width="100%"
-                    margin="20" padding="0"
-                    visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
-            <Button row="3" col="1" class="powerAssist-active"
-                    height="100%"
-                    width="100%"
-                    margin="20" padding="0"
-                    text="{{ L('power-assist.stop') }}"
-                    tap="{{ stopSmartDrive }}"
-                    visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
-            <Button row="3" col="1" class="powerAssist-training"
-                    height="100%"
-                    width="100%"
-                    margin="20" padding="0"
-                    text="{{ L('power-assist.exit-training') }}"
-                    tap="{{ onExitTrainingModeTap }}"
-                    visibility="{{ isTraining ? 'visible':'collapsed' }}" />
-            <StackLayout row="4" col="1" rowSpan="2"
-                         tap="{{ toggleTimeDisplay }}"
-                         visibility="{{ displayTime ? 'visible':'collapsed' }}">
+            <Button row="3" col="1" class="{{ (disableWearCheck || watchBeingWorn) ? 'powerAssist-deactive':'powerAssist-disabled' }}" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.activate') }}" tap="{{ enablePowerAssist }}" visibility="{{ (!powerAssistActive && !isTraining) ? 'visible':'collapsed' }}"/>
+            <Button row="3" col="1" class="powerAssist-active" text="{{ L('power-assist.deactivate') }}" tap="{{ disablePowerAssist }}" height="100%" width="100%" margin="20" padding="0" visibility="{{ (powerAssistActive && !motorOn) ? 'visible':'collapsed' }}"/>
+            <Button row="3" col="1" class="powerAssist-active" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.stop') }}" tap="{{ stopSmartDrive }}" visibility="{{ motorOn ? 'visible':'collapsed' }}"/>
+            <Button row="3" col="1" class="powerAssist-training" height="100%" width="100%" margin="20" padding="0" text="{{ L('power-assist.exit-training') }}" tap="{{ onExitTrainingModeTap }}" visibility="{{ isTraining ? 'visible':'collapsed' }}" />
+            <StackLayout row="4" col="1" rowSpan="2" tap="{{ toggleTimeDisplay }}" visibility="{{ displayTime ? 'visible':'collapsed' }}">
               <Label class="currentTime" text="{{ currentTime }}" textWrap="true"/>
               <Label class="currentTimeMeridiem" text="{{ currentTimeMeridiem }}" textWrap="true"/>
             </StackLayout>
-            <StackLayout row="4" col="1" rowSpan="2"
-                         tap="{{ toggleTimeDisplay }}"
-                         visibility="{{ !displayTime ? 'visible':'collapsed' }}">
+            <StackLayout row="4" col="1" rowSpan="2" tap="{{ toggleTimeDisplay }}" visibility="{{ !displayTime ? 'visible':'collapsed' }}">
               <Label class="currentTime" text="{{ currentDay }}" textWrap="true"/>
               <Label class="currentTimeMeridiem" text="{{ currentYear }}" textWrap="true"/>
             </StackLayout>
@@ -159,8 +67,7 @@
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Battery Usage Bar Chart
-            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *"
-                        row="2" colSpan="2" width="100%" class="chart-stack">
+            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
               <Label col="0" height="{{ batteryChartData[0].value }}" class="battery-line"/>
               <Label col="0" row="1" text="{{ batteryChartData[0].day }}" class="line-label" />
               <Label col="1" height="{{ batteryChartData[1].value }}" class="battery-line"/>
@@ -189,8 +96,7 @@
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
-            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *"
-                        row="2" colSpan="2" width="100%" class="chart-stack">
+            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
               <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line"/>
               <Label col="0" row="1" text="{{ distanceChartData[0].day }}" class="line-label" />
               <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line"/>
@@ -212,10 +118,7 @@
 
       // Menu Items
       <pager:PagerItem>
-        <wol:WearOsLayout
-            disableInsetConstraint="true"
-            loaded="{{ customWOLInsetLoaded }}"
-            height="100%" width="100%">
+        <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
           <StackLayout height="100%">
             <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
             <Label text="" class="hr-blue" />
@@ -237,7 +140,7 @@
                 <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="4" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
                 // Connect PushTracker
-                <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true"  marginBottom="{{ insetPadding }}" />
+                <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
                 <Label row="5" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
               </GridLayout>
             </ScrollView>
