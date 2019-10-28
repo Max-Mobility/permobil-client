@@ -31,6 +31,7 @@ export class TapDetector {
   private jerkThreshold: number = 30.0; // tap jerk threshold value
   private maxJerkThreshold: number = 70.0;
   private minJerkThreshold: number = 30.0;
+  private systemVersionJerkFactor: number = 2.5;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
 
@@ -178,8 +179,8 @@ export class TapDetector {
     const _minPrediction = this.minPredictionThreshold;
     // update jerk range if system is not up to date
     if (!systemUpToDate) {
-      _maxJerk = this.maxJerkThreshold / 2.0;
-      _minJerk = this.minJerkThreshold / 2.0;
+      _maxJerk = this.maxJerkThreshold / this.systemVersionJerkFactor;
+      _minJerk = this.minJerkThreshold / this.systemVersionJerkFactor;
     }
 
     const scaleFactor = sensitivity / 100.0;

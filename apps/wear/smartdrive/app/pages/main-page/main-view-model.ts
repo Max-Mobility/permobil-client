@@ -278,7 +278,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -744,7 +744,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -951,6 +951,15 @@ export class MainViewModel extends Observable {
     }
   }
 
+  private _fullStop() {
+    if (this.powerAssistActive) {
+      this.disablePowerAssist();
+    }
+    if (this.isTraining) {
+      this.onExitTrainingModeTap();
+    }
+  }
+
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
@@ -960,12 +969,7 @@ export class MainViewModel extends Observable {
       // and use the keepAlive() function by full-palming the screen
       // or going underwater - so we have to handle the cases that
       // power assist is active or training mode is active.
-      if (this.powerAssistActive) {
-        this.disablePowerAssist();
-      }
-      if (this.isTraining) {
-        this.onExitTrainingModeTap();
-      }
+      this._fullStop();
 
       this._applyTheme();
     });
@@ -1024,7 +1028,7 @@ export class MainViewModel extends Observable {
         if (this._isActivityThis(args.activity)) {
           sentryBreadCrumb('*** activityStopped ***');
           // similar to the app suspend / exit event.
-          this.disablePowerAssist();
+          this._fullStop();
         }
       }
     );
@@ -1040,13 +1044,13 @@ export class MainViewModel extends Observable {
 
     application.on(application.suspendEvent, () => {
       sentryBreadCrumb('*** appSuspend ***');
-      this.disablePowerAssist();
+      this._fullStop();
       this._updateComplications();
     });
 
     application.on(application.exitEvent, () => {
       sentryBreadCrumb('*** appExit ***');
-      this.disablePowerAssist();
+      this._fullStop();
     });
 
     application.on(application.lowMemoryEvent, () => {
@@ -1819,7 +1823,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1884,7 +1888,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2306,7 +2310,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }
