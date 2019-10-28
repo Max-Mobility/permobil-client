@@ -309,7 +309,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -772,7 +772,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1807,7 +1807,11 @@ export class MainViewModel extends Observable {
     }
   }
 
+  private _scanningView = null;
   private _showScanning() {
+    // make sure we hide it if we were already showing it
+    this._hideScanning();
+    // now show it
     const option: ShowModalOptions = {
       context: {},
       closeCallback: () => {
@@ -1816,16 +1820,17 @@ export class MainViewModel extends Observable {
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-    // this._scanningView = topmost().currentPage.showModal(
-    //   this._scanningModal,
-    //   option
-    // );
-    topmost().currentPage.showModal('pages/modals/scanning/scanning', option);
+    this._scanningView = topmost().currentPage.showModal(
+      'pages/modals/scanning/scanning',
+      option
+    );
   }
 
   private _hideScanning() {
-    topmost().currentPage.closeModal();
-    // this._scanningView.closeModal();
+    if (this._scanningView !== null) {
+      this._scanningView.closeModal();
+    }
+    this._scanningView = null;
   }
 
   private _format(d: Date, fmt: string) {
@@ -1855,7 +1860,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1920,7 +1925,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2342,7 +2347,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }
