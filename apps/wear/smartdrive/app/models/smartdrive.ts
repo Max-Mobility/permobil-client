@@ -1,13 +1,5 @@
-import {
-  bindingTypeToString,
-  ISmartDriveEvents,
-  Device,
-  Packet,
-  SD_OTA_State
-} from '@permobil/core';
+import { bindingTypeToString, Device, ISmartDriveEvents, Packet, SD_OTA_State } from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
-import { Color } from 'tns-core-modules/color';
-import { Observable } from 'tns-core-modules/data/observable';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
@@ -50,16 +42,12 @@ export class SmartDrive extends DeviceBase {
     'smartdrive_ota_ready_ble_event';
   public static smartdrive_ota_ready_mcu_event =
     'smartdrive_ota_ready_mcu_event';
-  public static smartdrive_ota_status_event =
-    'smartdrive_ota_status_event';  // sends state, actions, progress
-  public static smartdrive_ota_started_event =
-    'smartdrive_ota_started_event';
-  public static smartdrive_ota_canceled_event =
-    'smartdrive_ota_canceled_event';
+  public static smartdrive_ota_status_event = 'smartdrive_ota_status_event'; // sends state, actions, progress
+  public static smartdrive_ota_started_event = 'smartdrive_ota_started_event';
+  public static smartdrive_ota_canceled_event = 'smartdrive_ota_canceled_event';
   public static smartdrive_ota_completed_event =
     'smartdrive_ota_completed_event';
-  public static smartdrive_ota_failed_event =
-    'smartdrive_ota_failed_event';
+  public static smartdrive_ota_failed_event = 'smartdrive_ota_failed_event';
 
   // NON STATIC:
   public events: ISmartDriveEvents;
@@ -248,9 +236,11 @@ export class SmartDrive extends DeviceBase {
     // wait to get mcu version
     // check versions
     return new Promise((resolve, reject) => {
-      if ((!bleFirmware && bleFWVersion) ||
+      if (
+        (!bleFirmware && bleFWVersion) ||
         (!mcuFirmware && mcuFWVersion) ||
-        (!mcuFWVersion && !bleFWVersion)) {
+        (!mcuFWVersion && !bleFWVersion)
+      ) {
         const msg = `Bad version (${bleFWVersion}, ${mcuFWVersion}), or firmware (${bleFirmware}, ${mcuFirmware})!`;
         reject(msg);
       } else {
@@ -262,8 +252,10 @@ export class SmartDrive extends DeviceBase {
         let haveMCUVersion = false;
         let haveBLEVersion = false;
 
-        const canDoMCUUpdate = (mcuFWVersion && mcuFirmware && mcuFirmware.length > 0);
-        const canDoBLEUpdate = (bleFWVersion && bleFirmware && bleFirmware.length > 0);
+        const canDoMCUUpdate =
+          mcuFWVersion && mcuFirmware && mcuFirmware.length > 0;
+        const canDoBLEUpdate =
+          bleFWVersion && bleFirmware && bleFirmware.length > 0;
         this.doBLEUpdate = false;
         this.doMCUUpdate = false;
 
@@ -365,8 +357,7 @@ export class SmartDrive extends DeviceBase {
           this.setOtaActions(['ota.action.cancel']);
           this.otaStartTime = new Date();
           // connect to the smartdrive
-          if (!this.connected)
-            this.connect();
+          if (!this.connected) this.connect();
           this.otaState = SmartDrive.OTAState.awaiting_versions;
           // start the timeout timer
           if (otaTimeoutID) {
@@ -513,14 +504,21 @@ export class SmartDrive extends DeviceBase {
                   characteristicUUID: characteristic,
                   value: data
                 })
-                .then((ret) => {
-                  if (ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS) {
+                .then(ret => {
+                  if (
+                    ret.status !== android.bluetooth.BluetoothGatt.GATT_SUCCESS
+                  ) {
                     throw 'bad status: ' + ret.status;
                   } else {
                     writeFirmwareTimeoutID = timer.setTimeout(() => {
                       // this.ableToSend = true;
                       index += payloadSize;
-                      writeFirmwareSector(device, fw, characteristic, nextState);
+                      writeFirmwareSector(
+                        device,
+                        fw,
+                        characteristic,
+                        nextState
+                      );
                     }, 0);
                   }
                 })
@@ -637,7 +635,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(err => { });
+                ).catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -654,8 +652,8 @@ export class SmartDrive extends DeviceBase {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                  ? SmartDrive.OTAState.rebooting_mcu
-                  : SmartDrive.OTAState.complete;
+                ? SmartDrive.OTAState.rebooting_mcu
+                : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -705,7 +703,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -766,7 +764,7 @@ export class SmartDrive extends DeviceBase {
                   .then(() => {
                     // this.ableToSend = true;
                   })
-                  .catch(err => { });
+                  .catch(err => {});
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -789,7 +787,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => { });
+                ).catch(() => {});
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -912,8 +910,14 @@ export class SmartDrive extends DeviceBase {
     );
   }
 
-  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
-    const switchControlSettings = super.sendSwitchControlSettings(mode, max_speed);
+  public sendSwitchControlSettings(
+    mode: string,
+    max_speed: number
+  ): Promise<any> {
+    const switchControlSettings = super.sendSwitchControlSettings(
+      mode,
+      max_speed
+    );
     return this.sendPacket(
       'Command',
       'SetSwitchControlSettings',
@@ -1075,8 +1079,7 @@ export class SmartDrive extends DeviceBase {
     // now that we're connected, subscribe to the characteristics
     try {
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   public async handleDisconnect() {
@@ -1088,8 +1091,7 @@ export class SmartDrive extends DeviceBase {
       // now that we're disconnected - make sure we unsubscribe to the characteristics
       await this.stopNotifyCharacteristics(SmartDrive.Characteristics);
       this.sendEvent(SmartDrive.smartdrive_disconnect_event);
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   public handleNotify(args: any) {

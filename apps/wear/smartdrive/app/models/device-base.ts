@@ -22,11 +22,11 @@ export class DeviceBase extends Observable {
   }
 
   public static milesToMotorTicks(miles: number): number {
-    return miles * (265.714 * 63360.0) / (2.0 * 3.14159265358 * 3.8);
+    return (miles * (265.714 * 63360.0)) / (2.0 * 3.14159265358 * 3.8);
   }
 
   public static milesToCaseTicks(miles: number): number {
-    return miles * (36.0 * 63360.0) / (2.0 * 3.14159265358 * 3.8);
+    return (miles * (36.0 * 63360.0)) / (2.0 * 3.14159265358 * 3.8);
   }
 
   public static versionStringToByte(version: string): number {
@@ -89,10 +89,8 @@ export class DeviceBase extends Observable {
   }
 
   public setOtaActions(actions?: string[]) {
-    if (actions)
-      this.otaActions.splice(0, this.otaActions.length, ...actions);
-    else
-      this.otaActions.splice(0, this.otaActions.length);
+    if (actions) this.otaActions.splice(0, this.otaActions.length, ...actions);
+    else this.otaActions.splice(0, this.otaActions.length);
   }
 
   public sendSettings(
@@ -131,7 +129,10 @@ export class DeviceBase extends Observable {
     return settings;
   }
 
-  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
+  public sendSwitchControlSettings(
+    mode: string,
+    max_speed: number
+  ): Promise<any> {
     const p = new Packet();
     const settings = p.data('switchControlSettings');
     // convert mode
