@@ -1,36 +1,35 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-    xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-    shownModally="onShownModally" actionBarHidden="true">
-    <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" height="100%" width="100%">
-        <StackLayout height="100%">
-            <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
-            <Label text="" class="hr-blue" />
-            <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
-              <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
-                  <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
-                  <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="{{ onCloseTap }}" class="settings-label" textWrap="true" />
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" shownModally="onShownModally" actionBarHidden="true">
+  <wol:WearOsLayout id="wearOsLayout" disableInsetConstraint="true" height="100%" width="100%">
+    <StackLayout height="100%">
+      <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
+      <Label text="" class="hr-blue" />
+      <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
+        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+          <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
+          <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="{{ onCloseTap }}" class="settings-label" textWrap="true" />
 
-                  <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="1" col="1" text="{{ L('settings.error-history') }}" tap="onShowErrorHistory" class="settings-label" textWrap="true" />
+          <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="1" col="1" text="{{ L('settings.error-history') }}" tap="onShowErrorHistory" class="settings-label" textWrap="true" />
 
-                  <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="3" col="1" text="{{ L('about.sd-mcu-version') }}" class="settings-label" textWrap="true" />
-                  <Label row="4" col="1" text="{{ mcuVersion }}" class="settings-label" textWrap="true" />
+          <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="3" col="1" text="{{ L('about.sd-mcu-version') }}" class="settings-label" textWrap="true" />
+          <Label row="4" col="1" text="{{ mcuVersion }}" class="settings-label" textWrap="true" />
 
-                  <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="5" col="1" text="{{ L('about.sd-ble-version') }}" class="settings-label" textWrap="true" />
-                  <Label row="6" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
-                  <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="7" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
-                  <Label row="8" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
-                  <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="9" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
-                  <Label row="10" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
-                  <Label row="11" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-                  <Label row="11" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
-                  <Label row="12" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
-              </GridLayout>
-            </ScrollView>
-          </StackLayout>
-    </wol:WearOsLayout>
+          <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="5" col="1" text="{{ L('about.sd-ble-version') }}" class="settings-label" textWrap="true" />
+          <Label row="6" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
+          <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="7" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
+          <Label row="8" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
+          <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="9" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
+          <Label row="10" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+          <Label row="11" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="11" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
+          <Label row="12" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+        </GridLayout>
+      </ScrollView>
+    </StackLayout>
+  </wol:WearOsLayout>
 </Page>

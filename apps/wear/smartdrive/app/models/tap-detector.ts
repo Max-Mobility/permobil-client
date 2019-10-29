@@ -13,7 +13,8 @@ type TimeStamp = number;
 
 export class TapDetector {
   public static TapLockoutTimeMs: number = 100;
-  public static TapLockoutTimeNs: number = TapDetector.TapLockoutTimeMs * 1000 * 1000;
+  public static TapLockoutTimeNs: number =
+    TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
@@ -43,7 +44,10 @@ export class TapDetector {
   private tflite: any = null;
   private tfliteModel: java.nio.MappedByteBuffer = null;
   private tapDetectorInput = null;
-  private tapDetectorOutput: java.util.Map<java.lang.Integer, java.lang.Object> = null;
+  private tapDetectorOutput: java.util.Map<
+    java.lang.Integer,
+    java.lang.Object
+  > = null;
 
   /**
    * Actual inputs / outputs for the TFLite model
@@ -99,7 +103,10 @@ export class TapDetector {
       outputElements[0] = new java.lang.Float('0.0');
       this.parsedPrediction[0] = outputElements;
       // initialize the memory for the output
-      this.tapDetectorOutput = new java.util.HashMap<java.lang.Integer, java.lang.Object>();
+      this.tapDetectorOutput = new java.util.HashMap<
+        java.lang.Integer,
+        java.lang.Object
+      >();
       this.tapDetectorOutput.put(
         new java.lang.Integer(TapDetector.Output_PredictionIndex),
         this.parsedPrediction
@@ -126,8 +133,13 @@ export class TapDetector {
         const inputShape = Array.from(this.tflite.getInputTensor(i).shape());
         const dataType = this.tflite.getInputTensor(i).dataType();
         if (inputShapes[i] !== inputShape[1]) {
-          Log.E(`TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' + inputShapes[i] + ' but got ' + inputShape[1]);
+          Log.E(
+            `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
+              '  Expected shape of ' +
+              inputShapes[i] +
+              ' but got ' +
+              inputShape[1]
+          );
         }
       }
       const outputCount = this.tflite.getOutputTensorCount();
@@ -139,8 +151,13 @@ export class TapDetector {
         const outputShape = Array.from(this.tflite.getOutputTensor(i).shape());
         const dataType = this.tflite.getOutputTensor(i).dataType();
         if (outputShapes[i] !== outputShape[1]) {
-          Log.E(`TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' + outputShapes[i] + ' but got ' + outputShape[1]);
+          Log.E(
+            `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
+              '  Expected shape of ' +
+              outputShapes[i] +
+              ' but got ' +
+              outputShape[1]
+          );
         }
       }
       Log.D('TapDetector initialized');
@@ -169,7 +186,11 @@ export class TapDetector {
    *                                  more sensitive) if system is not
    *                                  up to date
    */
-  public setSensitivity(sensitivity: number, motorOn: boolean, systemUpToDate: boolean) {
+  public setSensitivity(
+    sensitivity: number,
+    motorOn: boolean,
+    systemUpToDate: boolean
+  ) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
@@ -187,16 +208,18 @@ export class TapDetector {
     // update jerk threshold
     this.jerkThreshold = _maxJerk - (_maxJerk - _minJerk) * scaleFactor;
     // update prediction threshold
-    this.predictionThreshold = _maxPrediction - (_maxPrediction - _minPrediction) * scaleFactor;
+    this.predictionThreshold =
+      _maxPrediction - (_maxPrediction - _minPrediction) * scaleFactor;
 
     // harder to tap start and easier to tap stop the motor
     if (!motorOn) {
       this.jerkThresholdDynamic = this.jerkThreshold;
       this.predictionThresholdDynamic = this.predictionThreshold;
-    }
-    else {
-      this.jerkThresholdDynamic = this.jerkThreshold - this.jerkThresholdOnOffDiff;
-      this.predictionThresholdDynamic = this.predictionThreshold - this.predictionThresholdOnOffDiff;
+    } else {
+      this.jerkThresholdDynamic =
+        this.jerkThreshold - this.jerkThresholdOnOffDiff;
+      this.predictionThresholdDynamic =
+        this.predictionThreshold - this.predictionThresholdOnOffDiff;
     }
   }
 
@@ -219,7 +242,10 @@ export class TapDetector {
       this.inputData[0][2] = inputData[2];
 
       // run the inference
-      this.tflite.runForMultipleInputsOutputs(this.tapDetectorInput, this.tapDetectorOutput);
+      this.tflite.runForMultipleInputsOutputs(
+        this.tapDetectorInput,
+        this.tapDetectorOutput
+      );
 
       // get the prediction
       const prediction = this.parsedPrediction[0][0];
@@ -242,39 +268,60 @@ export class TapDetector {
    */
   private didTap(timestamp: TimeStamp) {
     // Block high frequency tapping
-    if (this.lastTapTime && (timestamp - this.lastTapTime) < TapDetector.TapLockoutTimeNs) {
+    if (
+      this.lastTapTime &&
+      timestamp - this.lastTapTime < TapDetector.TapLockoutTimeNs
+    ) {
       return false;
     }
 
     // Check if we have enough historical data
-    if (this.inputHistory.length < TapDetector.InputHistorySize ||
-      this.predictionHistory.length < TapDetector.PredictionHistorySize) {
+    if (
+      this.inputHistory.length < TapDetector.InputHistorySize ||
+      this.predictionHistory.length < TapDetector.PredictionHistorySize
+    ) {
       // we don't have enough historical data so return false
       // not enough historical data to reliably detect a tap
       return false;
     }
 
     // Check that inputRawHistory max-min > jerkThresholdDynamic
-    const minZ = this.inputRawHistory.reduce((min, accel) => accel.z < min ? accel.z : min, this.inputRawHistory[0].z);
-    const maxZ = this.inputRawHistory.reduce((max, accel) => accel.z > max ? accel.z : max, this.inputRawHistory[0].z);
+    const minZ = this.inputRawHistory.reduce(
+      (min, accel) => (accel.z < min ? accel.z : min),
+      this.inputRawHistory[0].z
+    );
+    const maxZ = this.inputRawHistory.reduce(
+      (max, accel) => (accel.z > max ? accel.z : max),
+      this.inputRawHistory[0].z
+    );
     const jerk = maxZ - minZ;
     this.updateJerkHistory(jerk);
-    const maxJerk = this.jerkHistory.reduce((max, jerk) => jerk > max ? jerk : max, this.jerkHistory[0]);
+    const maxJerk = this.jerkHistory.reduce(
+      (max, jerk) => (jerk > max ? jerk : max),
+      this.jerkHistory[0]
+    );
     const isJerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
 
     // check that the prediction(s) were all above the threshold
-    const predictionsWereGood = this.predictionHistory.reduce((good, prediction) => {
-      return good && prediction > this.predictionThresholdDynamic;
-    }, true);
+    const predictionsWereGood = this.predictionHistory.reduce(
+      (good, prediction) => {
+        return good && prediction > this.predictionThresholdDynamic;
+      },
+      true
+    );
 
     // combine checks to predict tap
-    const predictTap = isJerkAboveThreshold && predictionsWereGood && this.tapGap;
+    const predictTap =
+      isJerkAboveThreshold && predictionsWereGood && this.tapGap;
 
     // exceptions
-    const predictionsOvermin = this.predictionHistory.reduce((good, prediction) => {
-      return good && prediction > this.minPredictionThreshold;
-    }, true);
-    const mustTap = (maxJerk > this.maxJerkThreshold) && predictionsOvermin;
+    const predictionsOvermin = this.predictionHistory.reduce(
+      (good, prediction) => {
+        return good && prediction > this.minPredictionThreshold;
+      },
+      true
+    );
+    const mustTap = maxJerk > this.maxJerkThreshold && predictionsOvermin;
 
     // record that there has been a tap
     const realTap = predictTap || mustTap;
@@ -325,7 +372,9 @@ export class TapDetector {
    */
   private loadModelFile() {
     const activity = androidApp.foregroundActivity || androidApp.startActivity;
-    const fileDescriptor = activity.getAssets().openFd(this.tapDetectorModelFileName);
+    const fileDescriptor = activity
+      .getAssets()
+      .openFd(this.tapDetectorModelFileName);
     const inputStream = new java.io.FileInputStream(
       fileDescriptor.getFileDescriptor()
     );

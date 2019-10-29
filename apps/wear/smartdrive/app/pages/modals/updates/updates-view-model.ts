@@ -20,7 +20,7 @@ import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page, View } from 'tns-core-modules/ui/page';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../../enums';
-import { SmartDrive } from '../../../models';
+import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
 import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../../services';
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -40,13 +40,6 @@ const dateLocales = {
   nn: require('date-fns/locale/nb'),
   zh: require('date-fns/locale/zh_cn')
 };
-
-class SmartDriveException extends Error {
-  constructor(...args) {
-    super(...args);
-    this.name = 'SmartDriveMX2+ Exception';
-  }
-}
 
 export class UpdatesViewModel extends Observable {
   @Prop() updateProgressCircle: AnimatedCircle;

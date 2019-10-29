@@ -1,7 +1,7 @@
-import { View } from 'tns-core-modules/ui/core/view';
-import * as application from 'tns-core-modules/application';
-import { ad } from 'tns-core-modules/utils/utils';
 import { hasPermission } from 'nativescript-permissions';
+import * as application from 'tns-core-modules/application';
+import { View } from 'tns-core-modules/ui/core/view';
+import { ad } from 'tns-core-modules/utils/utils';
 
 declare const com: any;
 
@@ -15,10 +15,8 @@ export function isNetworkAvailable() {
   return isAvailable;
 }
 
-
 export function getSerialNumber() {
-  if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE))
-    return null;
+  if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) return null;
   return android.os.Build.getSerial();
 }
 
