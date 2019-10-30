@@ -70,9 +70,19 @@ export class TabsComponent {
     );
 
     this._userService.user.subscribe(user => {
-      if (!user) return;
+      if (!user) {
+        // TODO: we should probably logout here since we don't have a
+        // valid user
+        return;
+      }
 
       this.user = user;
+      const config = this.user.data.control_configuration;
+      if (!Object.values(CONFIGURATIONS).includes(config)) {
+        // the user does not have a valid configuration - set one
+        this.user.data.control_configuration = CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE;
+      }
+
       if (this.user.data.language_preference) {
         const language = APP_LANGUAGES[this.user.data.language_preference];
         if (this._translateService.currentLang !== language)
@@ -82,7 +92,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
         this._logService.logBreadCrumb(TabsComponent.name, 'Asking for Bluetooth Permission');
@@ -198,8 +208,8 @@ export class TabsComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -211,7 +221,7 @@ export class TabsComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -357,7 +367,7 @@ export class TabsComponent {
     const year = data.year;
     const month = data.month;
     const day = data.day;
-    if (year === 0 && month === 0 && day === 0)  {
+    if (year === 0 && month === 0 && day === 0) {
       return;
     }
 
@@ -382,16 +392,16 @@ export class TabsComponent {
 
     // Write code to push to SmartDriveErrors collection
     this._errorsService
-    .saveDailyErrorsFromPushTracker(dailyErrors)
-    .then(result => {
-      if (result)
-        this._logService.logBreadCrumb(TabsComponent.name, 'ErrorInfo from PushTracker successfully saved in Kinvey');
-      else
-        this._logService.logException(new Error('[' + TabsComponent.name + '] ' + 'Failed to save ErrorInfo from PushTracker in Kinvey'));
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
+      .saveDailyErrorsFromPushTracker(dailyErrors)
+      .then(result => {
+        if (result)
+          this._logService.logBreadCrumb(TabsComponent.name, 'ErrorInfo from PushTracker successfully saved in Kinvey');
+        else
+          this._logService.logException(new Error('[' + TabsComponent.name + '] ' + 'Failed to save ErrorInfo from PushTracker in Kinvey'));
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   private onPushTrackerDisconnected(args: any) {
