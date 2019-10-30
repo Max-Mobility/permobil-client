@@ -11,11 +11,13 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { BottomNavigation } from 'tns-core-modules/ui/bottom-navigation';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { RouterExtensions } from 'nativescript-angular/router';
 import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
-import { YYYY_MM_DD } from '../../utils';
+import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
 @Component({
   moduleId: module.id,
@@ -40,6 +42,7 @@ export class TabsComponent {
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
     private _bluetoothService: BluetoothService,
+    private _routerExtensions: RouterExtensions,
     private _page: Page,
     private _userService: PushTrackerUserService,
     private _usageService: SmartDriveUsageService,
@@ -71,16 +74,33 @@ export class TabsComponent {
 
     this._userService.user.subscribe(user => {
       if (!user) {
-        // TODO: we should probably logout here since we don't have a
-        // valid user
+        // we should probably logout here since we don't have a valid
+        // user
+        KinveyUser.logout();
+        // Clean up appSettings key-value pairs that were
+        // saved in app.component.ts
+        appSettings.remove('PushTracker.WeeklyActivity');
+        appSettings.remove('SmartDrive.WeeklyUsage');
+        appSettings.remove('Kinvey.User');
+        // Reset the user service and restore to default theme
+        this._userService.reset();
+        enableDefaultTheme();
+        // go ahead and nav to login to keep UI moving without waiting
+        this._routerExtensions.navigate(['/login'], {
+          clearHistory: true
+        });
         return;
       }
 
       this.user = user;
       const config = this.user.data.control_configuration;
       if (!Object.values(CONFIGURATIONS).includes(config)) {
-        // the user does not have a valid configuration - set one
-        this.user.data.control_configuration = CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE;
+        // the user does not have a valid configuration - route to the
+        // configuration page so they can set one
+        this._routerExtensions.navigate(['configuration'], {
+          clearHistory: true
+        });
+        return;
       }
 
       if (this.user.data.language_preference) {
