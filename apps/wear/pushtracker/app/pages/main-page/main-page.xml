@@ -1,10 +1,15 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
-  xmlns:nac="nativescript-animated-circle" 
-  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" navigatedTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+      xmlns:nac="nativescript-animated-circle"
+      xmlns:pager="nativescript-pager"
+      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
+      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
+      xmlns:ui="nativescript-auto-fit-text"
+      navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
-    <ScrollView>
-      <StackLayout>
-        // Goal Overview
+    <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}">
+
+      // Goal Overview
+      <pager:PagerItem>
         <wol:WearOsLayout disableInsetConstraint="true">
           <GridLayout width="100%" height="100%" rows="auto" columns="*">
             // Distance Goal Circle
@@ -30,69 +35,89 @@
             </GridLayout>
           </GridLayout>
         </wol:WearOsLayout>
+      </pager:PagerItem>
 
-        // Distance Chart
-        <wol:WearOsLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
-            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
-            <Label text="" row="1" col="0" class="hr-blue" />
-            <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
-            // Distance Usage Bar Chart
-            <Repeater row="2" colSpan="2" verticalAlignment="bottom" items="{{ distanceChartData }}">
-              <Repeater.itemsLayout>
-                <FlexboxLayout justifyContent="space-between" flexDirection="row" />
-              </Repeater.itemsLayout>
-              <Repeater.itemTemplate>
-                <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="distance-line" visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
-                  <Label height="100" class="distance-line" backgroundColor="black" visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
-                  <Label row="1" text="{{ day }}" class="line-label" />
-                </GridLayout>
-              </Repeater.itemTemplate>
-            </Repeater>
-          </GridLayout>
-        </wol:WearOsLayout>
-
-        // Coast Chart
-        <wol:WearOsLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto">
-            // Chart Title
-            <Label row="0" colSpan="8" text="{{ L('charts.coast.title') }}" class="chart-title" textWrap="true" />
+      // Coast Time Chart
+      <pager:PagerItem>
+        <box:BoxInsetLayout>
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+            <ui:AutoFitText height="15" row="0" colSpan="2" text="{{ L('charts.coast.title') }}" class="chart-title" textWrap="true"/>
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ coastChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
-            // Distance Traveled Bar Chart
-            <Repeater row="2" colSpan="2" items="{{ coastChartData }}">
-              <Repeater.itemsLayout>
-                <FlexboxLayout justifyContent="space-between" flexDirection="row" />
-              </Repeater.itemsLayout>
-              <Repeater.itemTemplate>
-                <GridLayout rows="*, auto" columns="auto" class="chart-stack">
-                  <Label height="{{ value }}" class="coast-line" visibility="{{ value > 0 ? 'visible':'collapsed' }}"/>
-                  <Label height="100" class="coast-line" backgroundColor="black" visibility="{{ value > 0 ? 'collapsed':'visible' }}"/>
-                  <Label row="1" text="{{ day }}" class="line-label" />
-                </GridLayout>
-              </Repeater.itemTemplate>
-            </Repeater>
+            // Coast Usage Bar Chart
+            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
+              <Label col="0" height="{{ coastChartData[0].value }}" class="coast-line"/>
+              <Label col="0" row="1" text="{{ coastChartData[0].day }}" class="line-label" />
+              <Label col="1" height="{{ coastChartData[1].value }}" class="coast-line"/>
+              <Label col="1" row="1" text="{{ coastChartData[1].day }}" class="line-label" />
+              <Label col="2" height="{{ coastChartData[2].value }}" class="coast-line"/>
+              <Label col="2" row="1" text="{{ coastChartData[2].day }}" class="line-label" />
+              <Label col="3" height="{{ coastChartData[3].value }}" class="coast-line"/>
+              <Label col="3" row="1" text="{{ coastChartData[3].day }}" class="line-label" />
+              <Label col="4" height="{{ coastChartData[4].value }}" class="coast-line"/>
+              <Label col="4" row="1" text="{{ coastChartData[4].day }}" class="line-label" />
+              <Label col="5" height="{{ coastChartData[5].value }}" class="coast-line"/>
+              <Label col="5" row="1" text="{{ coastChartData[5].day }}" class="line-label" />
+              <Label col="6" height="{{ coastChartData[6].value }}" class="coast-line"/>
+              <Label col="6" row="1" text="{{ coastChartData[6].day }}" class="line-label" />
+            </GridLayout>
           </GridLayout>
-        </wol:WearOsLayout>
+        </box:BoxInsetLayout>
+      </pager:PagerItem>
 
-        // Menu Items
-        <wol:WearOsLayout marginBottom="{{ insetPadding }}">
-          <GridLayout rows="*, *, *, *, *, *" columns="auto, *" height="100%" width="100%">
-            <Label row="0" colSpan="2" text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
-            <Label row="1" colSpan="2" class="hr-blue" />
-            <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="2" col="1" text="{{ L('settings.title') }}" tap="{{ onSettingsTap }}" class="settings-label" textWrap="true" />
-            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="3" col="1" text="{{ L('menu.about') }}" tap="{{ onAboutTap }}" class="settings-label" textWrap="true" />
-            <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-            <Label row="4" col="1" text="{{ L('settings.connect-pushtracker') }}" id="connectPushTracker" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" />
-            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
-            <Label row="5" col="1" text="{{ L('settings.install-smartdrive') }}" id="installSmartDrive" tap="{{ onInstallSmartDriveTap }}" class="settings-label" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+      // Distance Traveled Chart
+      <pager:PagerItem>
+        <box:BoxInsetLayout>
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+            // Chart Title
+            <ui:AutoFitText height="15" row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
+            <Label text="" row="1" col="0" class="hr-blue" />
+            <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
+            // Distance Traveled Bar Chart
+            <GridLayout rows="*, auto" columns="*, *, *, *, *, *, *" row="2" colSpan="2" width="100%" class="chart-stack">
+              <Label col="0" height="{{ distanceChartData[0].value }}" class="distance-line"/>
+              <Label col="0" row="1" text="{{ distanceChartData[0].day }}" class="line-label" />
+              <Label col="1" height="{{ distanceChartData[1].value }}" class="distance-line"/>
+              <Label col="1" row="1" text="{{ distanceChartData[1].day }}" class="line-label" />
+              <Label col="2" height="{{ distanceChartData[2].value }}" class="distance-line"/>
+              <Label col="2" row="1" text="{{ distanceChartData[2].day }}" class="line-label" />
+              <Label col="3" height="{{ distanceChartData[3].value }}" class="distance-line"/>
+              <Label col="3" row="1" text="{{ distanceChartData[3].day }}" class="line-label" />
+              <Label col="4" height="{{ distanceChartData[4].value }}" class="distance-line"/>
+              <Label col="4" row="1" text="{{ distanceChartData[4].day }}" class="line-label" />
+              <Label col="5" height="{{ distanceChartData[5].value }}" class="distance-line"/>
+              <Label col="5" row="1" text="{{ distanceChartData[5].day }}" class="line-label" />
+              <Label col="6" height="{{ distanceChartData[6].value }}" class="distance-line"/>
+              <Label col="6" row="1" text="{{ distanceChartData[6].day }}" class="line-label" />
+            </GridLayout>
           </GridLayout>
+        </box:BoxInsetLayout>
+      </pager:PagerItem>
+
+      // Menu Items
+      <pager:PagerItem>
+        <wol:WearOsLayout disableInsetConstraint="true" loaded="{{ customWOLInsetLoaded }}" height="100%" width="100%">
+          <StackLayout height="100%">
+            <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
+            <Label class="hr-blue" />
+            <ScrollView height="100%">
+              <GridLayout rows="*, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+                <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="0" col="1" text="{{ L('settings.title') }}" tap="{{ onSettingsTap }}" class="settings-label" textWrap="true" />
+                <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="1" col="1" text="{{ L('menu.about') }}" tap="{{ onAboutTap }}" class="settings-label" textWrap="true" />
+                <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+                <Label row="2" col="1" text="{{ L('settings.connect-pushtracker') }}" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" />
+                <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+                <Label row="3" col="1" text="{{ L('settings.install-smartdrive') }}" tap="{{ onInstallSmartDriveTap }}" class="settings-label"
+                       textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+              </GridLayout>
+            </ScrollView>
+          </StackLayout>
         </wol:WearOsLayout>
-      </StackLayout>
-    </ScrollView>
+      </pager:PagerItem>
+
+    </pager:Pager>
 
   </GridLayout>
 </Page>

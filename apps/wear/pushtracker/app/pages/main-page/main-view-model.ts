@@ -5,6 +5,7 @@ import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import last from 'lodash/last';
 import * as LS from 'nativescript-localstorage';
+import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Level, Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -14,7 +15,7 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page, ShowModalOptions, View } from 'tns-core-modules/ui/page/page';
+import { Page, ShowModalOptions, View, ViewBase } from 'tns-core-modules/ui/page/page';
 import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
@@ -52,20 +53,16 @@ export class MainViewModel extends Observable {
    *   * CurrentValue: {R} actual daily number used for text display
    *   * Value: {R} actual goal number used for text display
    */
-  @Prop() distanceGoalValue: number = debug ? Math.random() * 10.0 + 2.0 : 0;
-  @Prop() distanceGoalCurrentValue: number = debug
-    ? Math.random() * this.distanceGoalValue
-    : 0;
+  @Prop() distanceGoalValue: number = 0;
+  @Prop() distanceGoalCurrentValue: number = 0;
   @Prop() distanceGoalCurrentProgress: number =
     (this.distanceGoalCurrentValue / this.distanceGoalValue) * 100.0;
   @Prop()
   distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
   @Prop() distanceGoalValueDisplay = this.distanceGoalValue.toFixed(1);
 
-  @Prop() coastGoalValue: number = debug ? Math.random() * 10 + 2.0 : 0;
-  @Prop() coastGoalCurrentValue: number = debug
-    ? Math.random() * this.coastGoalValue
-    : 0;
+  @Prop() coastGoalValue: number = 0;
+  @Prop() coastGoalCurrentValue: number = 0;
   @Prop() coastGoalCurrentProgress: number =
     (this.coastGoalCurrentValue / this.coastGoalValue) * 100.0;
   @Prop() coastGoalCurrentValueDisplay = this.coastGoalCurrentValue.toFixed(1);
@@ -80,9 +77,10 @@ export class MainViewModel extends Observable {
   private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
-  private _mainPage;
+  private pager: Pager = null;
+  private _mainPage: ViewBase = null;
   private _synchronizingModal: string = 'pages/modals/synchronizing/synchronizing';
-  private _synchronizingView;
+  private _synchronizingView: ViewBase = null;
 
   /**
    * Settings
@@ -92,10 +90,13 @@ export class MainViewModel extends Observable {
   /**
    * Activity Related Data
    */
-  @Prop() currentPushCount: number = debug ? Math.random() * 10000 : 0;
+  @Prop() currentPushCount: number = 0;
   @Prop() currentPushCountDisplay = this.currentPushCount.toFixed(0);
   @Prop() currentHighStressActivityCount: number = 0;
 
+  /**
+   * Layout related data
+   */
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
 
@@ -104,15 +105,6 @@ export class MainViewModel extends Observable {
 
   // state variables
   @Prop() isAmbient: boolean = false;
-
-  /**
-   * Layout Management
-   */
-  private previousLayouts: string[] = [];
-  private layouts = {
-    main: true
-  };
-  private changeSettingsLayout: SwipeDismissLayout;
 
   /**
    * Data to bind to the Distance Chart repeater.
@@ -155,6 +147,7 @@ export class MainViewModel extends Observable {
   constructor() {
     super();
     this._sentryBreadCrumb('Main-View-Model constructor.');
+    this._setupInsetChin();
   }
 
   async onMainPageLoaded(args: EventData) {
@@ -190,6 +183,19 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('onMainPageLoaded::error:', err);
     }
+  }
+
+  onPagerLoaded(args: EventData) {
+    this.pager = args.object as Pager;
+  }
+
+  customWOLInsetLoaded(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      this.insetPadding,
+      this.insetPadding,
+      0
+    );
   }
 
   onInstallSmartDriveTap() {
@@ -280,26 +286,6 @@ export class MainViewModel extends Observable {
 
   private async _init() {
     this._sentryBreadCrumb('Main-View-Model _init.');
-
-    // determine inset padding
-    const androidConfig = ad
-      .getApplicationContext()
-      .getResources()
-      .getConfiguration();
-    const isCircleWatch = androidConfig.isScreenRound();
-    const screenWidth = screen.mainScreen.widthPixels;
-    const screenHeight = screen.mainScreen.heightPixels;
-    // this.screenWidth = screen.mainScreen.widthPixels;
-    // this.screenHeight = screen.mainScreen.heightPixels;
-    Log.D('WxH', screenWidth, screenHeight);
-    if (isCircleWatch) {
-      this.insetPadding = Math.round(0.146467 * screenWidth);
-      // if the height !== width then there is a chin!
-      if (screenWidth !== screenHeight && screenWidth > screenHeight) {
-        this.chinSize = screenWidth - screenHeight;
-      }
-    }
-    Log.D('chinSize:', this.chinSize);
 
     // handle application lifecycle events
     this._sentryBreadCrumb('Registering app event handlers.');
@@ -432,6 +418,8 @@ export class MainViewModel extends Observable {
           if (data[dateKey] !== undefined && data[dateKey].total > 0) {
             // for now we're using total
             value = (100.0 * data[dateKey].total) / maxDist;
+            // @ts-ignore
+            if (value) value += '%';
           }
           return {
             day: this.format(date, 'dd'),
@@ -680,6 +668,29 @@ export class MainViewModel extends Observable {
       Log.E('apply theme error:', err);
     }
     this._sentryBreadCrumb('theme applied');
+    this._applyStyle();
+  }
+
+  private _applyStyle() {
+    this._sentryBreadCrumb('applying style');
+    try {
+      if (this.pager) {
+        try {
+          const children = this.pager._childrenViews;
+          for (let i = 0; i < children.size; i++) {
+            const child = children.get(i) as View;
+            child._onCssStateChange();
+          }
+        } catch (err) {
+          Sentry.captureException(err);
+          Log.E('apply style error:', err);
+        }
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      Log.E('apply style error:', err);
+    }
+    this._sentryBreadCrumb('style applied');
   }
 
   /**
@@ -903,9 +914,12 @@ export class MainViewModel extends Observable {
         return obj.coast_time_avg > max ? obj.coast_time_avg : max;
       }, 0);
       const coastData = activityData.map(e => {
+        let value = (e.coast_time_avg * 100.0) / (maxCoast || 1);
+        // @ts-ignore
+        if (value) value += '%';
         return {
           day: this.format(new Date(e.date), 'dd'),
-          value: (e.coast_time_avg * 100.0) / (maxCoast || 1)
+          value: value
         };
       });
       // Log.D('Highest Coast Value:', maxCoast);
@@ -1151,6 +1165,25 @@ export class MainViewModel extends Observable {
     // now set the authorization and see if it's valid
     const validAuth = await this.kinveyService.setAuth(authorization, userId);
     return validAuth;
+  }
+
+  private _setupInsetChin() {
+    // https://developer.android.com/reference/android/content/res/Configuration.htm
+    const androidConfig = ad
+      .getApplicationContext()
+      .getResources()
+      .getConfiguration();
+    const isCircleWatch = androidConfig.isScreenRound();
+    const widthPixels = screen.mainScreen.widthPixels;
+    const heightPixels = screen.mainScreen.heightPixels;
+    if (isCircleWatch) {
+      this.insetPadding = Math.round(0.146467 * widthPixels);
+      // if the height !== width then there is a chin!
+      if (widthPixels !== heightPixels && widthPixels > heightPixels) {
+        this.chinSize = widthPixels - heightPixels;
+      }
+    }
+    // Log.D('chinsize:', this.chinSize);
   }
 
   private _sentryBreadCrumb(message: string) {
