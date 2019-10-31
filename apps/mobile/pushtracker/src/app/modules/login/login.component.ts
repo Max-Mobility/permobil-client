@@ -10,9 +10,9 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
-import { Animation, AnimationDefinition } from "tns-core-modules/ui/animation";
-import { View } from "tns-core-modules/ui/core/view";
-import { PercentLength } from "tns-core-modules/ui/styling/style-properties";
+import { Animation, AnimationDefinition } from 'tns-core-modules/ui/animation';
+import { View } from 'tns-core-modules/ui/core/view';
+import { PercentLength } from 'tns-core-modules/ui/styling/style-properties';
 import { LottieView } from 'nativescript-lottie';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
@@ -64,20 +64,20 @@ export class LoginComponent implements OnInit {
   }
 
   onLottieFinished() {
-    let definitions = new Array<AnimationDefinition>();
-    let a1: AnimationDefinition = {
+    const definitions = new Array<AnimationDefinition>();
+    const a1: AnimationDefinition = {
       target: this._lottieView,
       height: 200,
       duration: 1000
     };
-    let a2: AnimationDefinition = {
+    const a2: AnimationDefinition = {
       target: this._contentView,
       opacity: 1,
       scale: { x: 1, y: 1 },
       duration: 1000
     };
     definitions.push(a1, a2);
-    let animationSet = new Animation(definitions);
+    const animationSet = new Animation(definitions);
     this._contentView.height = this._contentHeight;
     animationSet.play();
   }
