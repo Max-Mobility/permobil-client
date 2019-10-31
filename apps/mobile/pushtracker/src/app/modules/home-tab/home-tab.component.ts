@@ -52,7 +52,10 @@ export class HomeTabComponent {
   todayMessage: string = '';
   todayCoastDistance: string = '0.0';
   todayDriveDistance: string = '0.0';
-  todayOdometer: string = '0.0';
+  weekCoastDistance: string = '0.0';
+  weekDriveDistance: string = '0.0';
+  driveOdometer: string = '0.0';
+  coastOdometer: string = '0.0';
   distancePlotAnnotationValue: number = 0.001;
   private _todaysUsage: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
@@ -465,29 +468,6 @@ export class HomeTabComponent {
           this.todayDriveDistance = (0).toFixed();
         }
 
-        // get this week's usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
-        let weekOdometer = result.reduce((odom, e) => {
-          const dist = e.distance_smartdrive_coast;
-          if (dist > odom) return dist;
-          else return odom;
-        }, 0);
-        if (weekOdometer === 0) {
-          // get last usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
-          const latest = await this.loadLatestSmartDriveUsageFromKinvey() as any;
-          weekOdometer = (latest && latest.distance_smartdrive_coast) || 0;
-        }
-        if (weekOdometer === 0) this.todayOdometer = (0).toFixed();
-        else {
-          this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
-            milesToKilometers(
-              DeviceBase.caseTicksToMiles(
-                weekOdometer
-              ) || 0
-            ),
-            this.user.data.distance_unit_preference
-          ).toFixed(1);
-        }
-
         this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
           this.user.data.activity_goal_distance,
           this.user.data.distance_unit_preference
@@ -819,6 +799,7 @@ export class HomeTabComponent {
   private async _formatActivityForView() {
     const activity = this._weeklyActivityFromKinvey;
     if (activity && activity.days) {
+
       const result = [];
       const date = new Date(activity.date);
       const weekViewDayArray = [];
@@ -922,6 +903,69 @@ export class HomeTabComponent {
   private async _formatUsageForView() {
     const activity = this._weeklyUsageFromKinvey;
     if (activity && activity.days) {
+      // update weekly odometers
+      const weekDriveStart = activity.distance_smartdrive_drive_start || 0;
+      const weekCoastStart = activity.distance_smartdrive_coast_start || 0;
+      const weekDriveEnd = activity.distance_smartdrive_drive || 0;
+      const weekCoastEnd = activity.distance_smartdrive_coast || 0;
+      let driveDistance = weekDriveEnd - weekDriveStart;
+      let coastDistance = weekCoastEnd - weekCoastStart;
+      // format drive distance
+      driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+        milesToKilometers(
+          DeviceBase.motorTicksToMiles(
+            driveDistance
+          ) || 0
+        ),
+        this.user.data.distance_unit_preference
+      );
+      if (driveDistance < 0.0) driveDistance = 0.0;
+      this.weekDriveDistance = driveDistance.toFixed(1);
+      // format coast distance
+      coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+        milesToKilometers(
+          DeviceBase.caseTicksToMiles(
+            coastDistance
+          ) || 0
+        ),
+        this.user.data.distance_unit_preference
+      );
+      if (coastDistance < 0.0) coastDistance = 0.0;
+      this.weekCoastDistance = coastDistance.toFixed(1);
+
+      // get this week's usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
+      let coastTotal = weekCoastEnd;
+      let driveTotal = weekDriveEnd;
+      if (coastTotal === 0) {
+        // get last usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
+        const latest = await this.loadLatestSmartDriveUsageFromKinvey() as any;
+        coastTotal = (latest && latest.distance_smartdrive_coast) || 0;
+        driveTotal = (latest && latest.distance_smartdrive_drive) || 0;
+      }
+      if (coastTotal === 0) this.coastOdometer = (0).toFixed();
+      else {
+        this.coastOdometer = convertToMilesIfUnitPreferenceIsMiles(
+          milesToKilometers(
+            DeviceBase.caseTicksToMiles(
+              coastTotal
+            ) || 0
+          ),
+          this.user.data.distance_unit_preference
+        ).toFixed(1);
+      }
+      if (driveTotal === 0) this.driveOdometer = (0).toFixed();
+      else {
+        this.driveOdometer = convertToMilesIfUnitPreferenceIsMiles(
+          milesToKilometers(
+            DeviceBase.motorTicksToMiles(
+              driveTotal
+            ) || 0
+          ),
+          this.user.data.distance_unit_preference
+        ).toFixed(1);
+      }
+
+      // now get format for plots
       const result = [];
       const date = new Date(activity.date);
       const weekViewDayArray = [];

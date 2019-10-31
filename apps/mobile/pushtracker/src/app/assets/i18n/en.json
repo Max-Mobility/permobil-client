@@ -186,7 +186,11 @@
     "odometer": "miles total",
     "odometer-km": "kilometers total",
     "miles-today": "miles today",
-    "km-today": "kilometers today"
+    "km-today": "kilometers today",
+    "miles-driven-today": "miles driven today",
+    "km-driven-today": "kilometers driven today",
+    "miles-this-week": "miles this week",
+    "km-this-week": "kilometers this week"
   },
   "home-tab": {
     "kilometers-to-go": "kilometers to go",
