@@ -1,13 +1,18 @@
 <ScrollView class="login-layout">
-  <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
-  <PreviousNextView>
-    <GridLayout rows="auto, *, auto" columns="*">
-      <GridLayout row="1" rows="auto, *, *, *" columns="*" class="login-form">
-        <Image row="0" class="align-center" margin="40" src="res://permobil_blue" stretch="aspectFit"></Image>
+
+  <GridLayout rows="auto, *", columns="*">
+    <LottieView row="0" src="PermobilLogo.json" height="100%" width="100%" class="align-center" loop="false" autoPlay="false"
+                (loaded)="lottieViewLoaded($event)"></LottieView>
+
+    <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
+    <PreviousNextView row="1">
+      <GridLayout row="1" rows="*, *, *, auto" columns="*" class="login-form"
+                  opacity="0"
+                  (loaded)="contentLoaded($event)">
 
         // Email
         <MaxTextBox
-          row="1"
+          row="0"
           [(text)]="user.email"
           [error]="emailError"
           [label]="'general.email' | translate"
@@ -17,11 +22,11 @@
           keyboardType="email"
           autocorrect="false"
           autocapitalizationType="none"
-        ></MaxTextBox>
+          ></MaxTextBox>
 
         // Password
         <MaxTextBox
-          row="2"
+          row="1"
           [(text)]="user.password"
           [error]="passwordError"
           [label]="'general.password' | translate"
@@ -30,14 +35,15 @@
           returnKeyType="done"
           autocorrect="false"
           autocapitalizationType="none"
-        ></MaxTextBox>
+          ></MaxTextBox>
 
-        <Button row="3" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
+        <Button row="2" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
+
+        <GridLayout row="3" rows="*" columns="auto, *, auto">
+          <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="forgot-pw-btn"></Button>
+          <Button col="2" [text]="'sign-up.title' | translate" (tap)="navToSignUp()" class="register-btn"></Button>
+        </GridLayout>
       </GridLayout>
-      <GridLayout row="2" rows="*" columns="auto, *, auto">
-        <Button col="0" [text]="'general.forgot-password' | translate" (tap)="navToForgotPassword()" class="forgot-pw-btn"></Button>
-        <Button col="2" [text]="'sign-up.title' | translate" (tap)="navToSignUp()" class="register-btn"></Button>
-      </GridLayout>
-    </GridLayout>
-  </PreviousNextView>
+    </PreviousNextView>
+  </GridLayout>
 </ScrollView>

@@ -10,9 +10,12 @@ import * as appSettings from 'tns-core-modules/application-settings';
 import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
+import { Animation, AnimationDefinition } from "tns-core-modules/ui/animation";
+import { View } from "tns-core-modules/ui/core/view";
+import { PercentLength } from "tns-core-modules/ui/styling/style-properties";
+import { LottieView } from 'nativescript-lottie';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
-import { applyTheme } from '../../utils';
 
 @Component({
   selector: 'login',
@@ -24,6 +27,9 @@ export class LoginComponent implements OnInit {
   passwordError = '';
   emailError = '';
 
+  private _contentHeight: PercentLength;
+  private _contentView: View;
+  private _lottieView: LottieView;
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
@@ -42,6 +48,38 @@ export class LoginComponent implements OnInit {
     this._logService.logBreadCrumb(LoginComponent.name, 'ngOnInit');
     // if we get to the login page, no user should be logged in
     Kinvey.User.logout();
+  }
+
+  contentLoaded(event) {
+    this._contentView = <View>event.object;
+    this._contentHeight = this._contentView.height;
+    this._contentView.height = 0;
+    this._contentView.scaleY = 0;
+  }
+
+  lottieViewLoaded(event) {
+    this._lottieView = <LottieView>event.object;
+    this._lottieView.completionBlock = this.onLottieFinished.bind(this);
+    this._lottieView.playAnimationFromProgressToProgress(0.1, 0.5);
+  }
+
+  onLottieFinished() {
+    let definitions = new Array<AnimationDefinition>();
+    let a1: AnimationDefinition = {
+      target: this._lottieView,
+      height: 200,
+      duration: 1000
+    };
+    let a2: AnimationDefinition = {
+      target: this._contentView,
+      opacity: 1,
+      scale: { x: 1, y: 1 },
+      duration: 1000
+    };
+    definitions.push(a1, a2);
+    let animationSet = new Animation(definitions);
+    this._contentView.height = this._contentHeight;
+    animationSet.play();
   }
 
   navToForgotPassword() {
