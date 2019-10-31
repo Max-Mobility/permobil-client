@@ -113,9 +113,12 @@ export class LoginComponent implements OnInit {
 
       this._logService.logBreadCrumb(
         LoginComponent.name,
-        `Signing in ${this.user.email} - ${this.user.password}`
+        `Signing in ${this.user.email}`
       );
 
+      // make sure no user is logged in
+      await Kinvey.User.logout();
+      // now login
       const user = await Kinvey.User.login(
         this.user.email.trim().toLowerCase(),
         this.user.password.trim()
@@ -123,7 +126,7 @@ export class LoginComponent implements OnInit {
 
       this._logService.logBreadCrumb(
         LoginComponent.name,
-        'Logged in user: ' + user
+        'Logged in user: ' + user.email
       );
       appSettings.setString(
         STORAGE_KEYS.APP_THEME,

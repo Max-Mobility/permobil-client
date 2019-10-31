@@ -223,7 +223,7 @@ export class ProfileTabComponent {
 
         if (result === signOut) {
           this._zone.run(async () => {
-            const logoutResult = await KinveyUser.logout();
+            KinveyUser.logout();
             // Clean up appSettings key-value pairs that were
             // saved in app.component.ts
             appSettings.remove('PushTracker.WeeklyActivity');
@@ -885,7 +885,7 @@ export class ProfileTabComponent {
           this._logService.logBreadCrumb(
             ProfileTabComponent.name,
             `Configuration changed to: ${
-              this.configurations[result.data.primaryIndex]
+            this.configurations[result.data.primaryIndex]
             }`
           );
           KinveyUser.update({
@@ -912,7 +912,7 @@ export class ProfileTabComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => {})
+      .then(() => { })
       .catch(err => {
         this._logService.logException(err);
       });
@@ -959,7 +959,7 @@ export class ProfileTabComponent {
       error => {
         this._logService.logException(error);
       },
-      () => {}
+      () => { }
     );
   }
 
