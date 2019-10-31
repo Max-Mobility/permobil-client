@@ -72,11 +72,11 @@ export class TabsComponent {
       }
     );
 
-    this._userService.user.subscribe(user => {
+    this._userService.user.subscribe(async user => {
       if (!user) {
         // we should probably logout here since we don't have a valid
         // user
-        KinveyUser.logout();
+        await KinveyUser.logout();
         // Clean up appSettings key-value pairs that were
         // saved in app.component.ts
         appSettings.remove('PushTracker.WeeklyActivity');
