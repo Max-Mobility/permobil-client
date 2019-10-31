@@ -12,7 +12,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { Animation, AnimationDefinition } from 'tns-core-modules/ui/animation';
 import { View } from 'tns-core-modules/ui/core/view';
-import { PercentLength, LengthPercentUnit } from 'tns-core-modules/ui/styling/style-properties';
+import { PercentLength } from 'tns-core-modules/ui/styling/style-properties';
 import { LottieView } from 'nativescript-lottie';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
