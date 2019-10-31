@@ -76,7 +76,7 @@ export class HomeTabComponent {
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _userService: PushTrackerUserService
-  ) {}
+  ) { }
 
   onHomeTabLoaded() {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
@@ -327,7 +327,7 @@ export class HomeTabComponent {
         context: {
           currentTab:
             this.user.data.control_configuration !==
-            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+              CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
               ? 0
               : 1,
           user: this.user
@@ -416,82 +416,175 @@ export class HomeTabComponent {
   private async _loadSmartDriveUsage() {
     this.loadSmartDriveUsageFromKinvey(this._weekStart)
       .then(() => {
-        this._formatUsageForView()
-          .then(result => {
-            this.usageActivity = new ObservableArray(result);
-            this.distanceGoalMessage =
-              this._translateService.instant('home-tab.travel') + ' ';
-            this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+        return this._formatUsageForView();
+      })
+      .then(async result => {
+        this.usageActivity = new ObservableArray(result);
+        this.distanceGoalMessage =
+          this._translateService.instant('home-tab.travel') + ' ';
+        this.distanceGoalValue = convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
+        ).toFixed(1);
+        this.distanceGoalUnit =
+          this.user.data.distance_unit_preference ===
+            DISTANCE_UNITS.KILOMETERS
+            ? ' ' + this._translateService.instant('home-tab.km-per-day')
+            : ' ' + this._translateService.instant('home-tab.mi-per-day');
+        this._updateDistancePlotYAxis(); // sets this._todaysUsage
+        // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
+        if (this._todaysUsage) {
+          let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                this._todaysUsage.distance_smartdrive_coast -
+                this._todaysUsage.distance_smartdrive_coast_start
+              ) || 0
+            ),
+            this.user.data.distance_unit_preference
+          );
+          if (coastDistance < 0.0) coastDistance = 0.0;
+          this.todayCoastDistance = coastDistance.toFixed(1);
+
+          let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
+            milesToKilometers(
+              DeviceBase.motorTicksToMiles(
+                this._todaysUsage.distance_smartdrive_drive -
+                this._todaysUsage.distance_smartdrive_drive_start
+              ) || 0
+            ),
+            this.user.data.distance_unit_preference
+          );
+          if (driveDistance < 0.0) driveDistance = 0.0;
+          this.todayDriveDistance = driveDistance.toFixed(1);
+
+          // Today coast distance changed, update message
+          this.updateTodayMessage();
+        } else {
+          this.todayCoastDistance = (0).toFixed(1);
+          this.todayDriveDistance = (0).toFixed();
+        }
+
+        // get this week's usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
+        let weekOdometer = result.reduce((odom, e) => {
+          const dist = e.distance_smartdrive_coast;
+          if (dist > odom) return dist;
+          else return odom;
+        }, 0);
+        if (weekOdometer === 0) {
+          // get last usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
+          const latest = await this.loadLatestSmartDriveUsageFromKinvey() as any;
+          weekOdometer = (latest && latest.distance_smartdrive_coast) || 0;
+        }
+        if (weekOdometer === 0) this.todayOdometer = (0).toFixed();
+        else {
+          this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
+            milesToKilometers(
+              DeviceBase.caseTicksToMiles(
+                weekOdometer
+              ) || 0
+            ),
+            this.user.data.distance_unit_preference
+          ).toFixed(1);
+        }
+
+        this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
+          this.user.data.activity_goal_distance,
+          this.user.data.distance_unit_preference
+        );
+        this.distanceCirclePercentage =
+          (parseFloat(this.todayCoastDistance) /
+            convertToMilesIfUnitPreferenceIsMiles(
               this.user.data.activity_goal_distance,
               this.user.data.distance_unit_preference
-            ).toFixed(1);
-            this.distanceGoalUnit =
-              this.user.data.distance_unit_preference ===
-              DISTANCE_UNITS.KILOMETERS
-                ? ' ' + this._translateService.instant('home-tab.km-per-day')
-                : ' ' + this._translateService.instant('home-tab.mi-per-day');
-            this._updateDistancePlotYAxis(); // sets this._todaysUsage
-            // guard against undefined --- https://github.com/Max-Mobility/permobil-client/issues/190
-            if (this._todaysUsage) {
-              let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-                milesToKilometers(
-                  DeviceBase.caseTicksToMiles(
-                    this._todaysUsage.distance_smartdrive_coast -
-                      this._todaysUsage.distance_smartdrive_coast_start
-                  ) || 0
-                ),
-                this.user.data.distance_unit_preference
-              );
-              if (coastDistance < 0.0) coastDistance = 0.0;
-              this.todayCoastDistance = coastDistance.toFixed(1);
-
-              let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-                milesToKilometers(
-                  DeviceBase.motorTicksToMiles(
-                    this._todaysUsage.distance_smartdrive_drive -
-                      this._todaysUsage.distance_smartdrive_drive_start
-                  ) || 0
-                ),
-                this.user.data.distance_unit_preference
-              );
-              if (driveDistance < 0.0) driveDistance = 0.0;
-              this.todayDriveDistance = driveDistance.toFixed(1);
-
-              this.todayOdometer = convertToMilesIfUnitPreferenceIsMiles(
-                milesToKilometers(
-                  DeviceBase.caseTicksToMiles(
-                    this._todaysUsage.distance_smartdrive_coast
-                  ) || 0
-                ),
-                this.user.data.distance_unit_preference
-              ).toFixed(1);
-              // Today coast distance changed, update message
-              this.updateTodayMessage();
-            } else {
-              this.todayCoastDistance = (0).toFixed(1);
-              this.todayDriveDistance = (0).toFixed();
-              this.todayOdometer = (0).toFixed();
-            }
-
-            this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
-              this.user.data.activity_goal_distance,
-              this.user.data.distance_unit_preference
-            );
-            this.distanceCirclePercentage =
-              (parseFloat(this.todayCoastDistance) /
-                convertToMilesIfUnitPreferenceIsMiles(
-                  this.user.data.activity_goal_distance,
-                  this.user.data.distance_unit_preference
-                )) *
-              100;
-            this._updateProgress();
-          })
-          .catch(err => {
-            this._logService.logException(err);
-          });
+            )) *
+          100;
+        this._updateProgress();
       })
       .catch(err => {
         this._logService.logException(err);
+      });
+  }
+
+  async loadLatestSmartDriveUsageFromKinvey() {
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      '' + 'Loading Latest WeeklySmartDriveUsage from Kinvey'
+    );
+    let result = {} as any;
+    if (!this.user) return Promise.resolve(result);
+
+    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._logService.logBreadCrumb(
+            HomeTabComponent.name,
+            '' + 'Successfully loaded WeeklySmartDriveUsage from Kinvey for date ' + result.date
+          );
+          return Promise.resolve(result);
+        }
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          '' + 'No WeeklySmartDriveUsage data available for this week'
+        );
+        // There's no data for this week
+        // Reset weekly usage object
+        this._weeklyUsageFromKinvey = {
+          battery: 0,
+          distance_smartdrive_coast_start: 0,
+          distance_smartdrive_drive_start: 0,
+          distance_smartdrive_coast: 0,
+          distance_smartdrive_drive: 0,
+          days: [null, null, null, null, null, null, null]
+        };
+        return Promise.resolve(this._weeklyUsageFromKinvey);
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        return Promise.reject({});
+      });
+  }
+
+  async loadLatestWeeklyActivityFromKinvey() {
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      '' + 'Loading Latest WeeklyPushTrackerActivity from Kinvey'
+    );
+    let result = {} as any;
+    if (!this.user) return result;
+
+    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
+    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+      .then(data => {
+        if (data && data.length) {
+          result = data[0];
+          this._logService.logBreadCrumb(
+            HomeTabComponent.name,
+            '' + 'Successfully loaded latest WeeklyPushTrackerActivity from Kinvey - for ' + result.date
+          );
+          return Promise.resolve(result);
+        }
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          '' + 'No WeeklyPushTrackerActivity data available at all'
+        );
+        // There's no data for this week
+        // Reset weekly activity object
+        const activity = {
+          coast_time_avg: 0,
+          coast_time_total: 0,
+          distance_watch: 0,
+          heart_rate: 0,
+          push_count: 0,
+          days: [null, null, null, null, null, null, null]
+        };
+        return Promise.resolve(activity);
+      })
+      .catch(err => {
+        this._logService.logException(err);
+        return Promise.reject({});
       });
   }
 
@@ -601,7 +694,7 @@ export class HomeTabComponent {
             ).toFixed(1);
             this.distanceGoalUnit =
               this.user.data.distance_unit_preference ===
-              DISTANCE_UNITS.KILOMETERS
+                DISTANCE_UNITS.KILOMETERS
                 ? ' ' + this._translateService.instant('home-tab.km-per-day')
                 : ' ' + this._translateService.instant('home-tab.mi-per-day');
             this.distanceCirclePercentageMaxValue =
@@ -796,7 +889,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 day.distance_smartdrive_coast -
-                  day.distance_smartdrive_coast_start
+                day.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -852,7 +945,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
+                dailyUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -863,7 +956,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
+                dailyUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -931,7 +1024,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -947,7 +1040,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
