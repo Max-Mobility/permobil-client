@@ -1,12 +1,11 @@
 <ScrollView class="login-layout">
-
-  <GridLayout rows="auto, *", columns="*">
-    <LottieView row="0" src="PermobilLogo.json" height="100%" width="100%" class="align-center" loop="false" autoPlay="false"
+  <StackLayout>
+    <LottieView src="PermobilLogo.json" height="200" width="100%" class="align-center" loop="false" autoPlay="false"
                 (loaded)="lottieViewLoaded($event)"></LottieView>
 
     <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
-    <PreviousNextView row="1">
-      <GridLayout row="1" rows="*, *, *, auto" columns="*" class="login-form"
+    <PreviousNextView>
+      <GridLayout row="1" rows="*, *, *, *" columns="*" class="login-form"
                   opacity="0"
                   (loaded)="contentLoaded($event)">
 
@@ -45,5 +44,5 @@
         </GridLayout>
       </GridLayout>
     </PreviousNextView>
-  </GridLayout>
+  </StackLayout>
 </ScrollView>

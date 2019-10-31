@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
     this._lottieView.playAnimationFromProgressToProgress(0.1, 0.4);
   }
 
-  onLottieFinished() {
+  async onLottieFinished() {
     const definitions = new Array<AnimationDefinition>();
     const a1: AnimationDefinition = {
       target: this._lottieView,
@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit {
       scale: { x: 1, y: 1 },
       duration: 500
     };
-    definitions.push(a1, a2);
+    definitions.push(a2);
     const animationSet = new Animation(definitions);
     this._contentView.height = this._contentHeight;
     animationSet.play();
