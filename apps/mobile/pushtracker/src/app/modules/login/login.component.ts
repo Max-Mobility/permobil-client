@@ -12,7 +12,7 @@ import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import { Animation, AnimationDefinition } from 'tns-core-modules/ui/animation';
 import { View } from 'tns-core-modules/ui/core/view';
-import { PercentLength } from 'tns-core-modules/ui/styling/style-properties';
+import { PercentLength, LengthPercentUnit } from 'tns-core-modules/ui/styling/style-properties';
 import { LottieView } from 'nativescript-lottie';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
@@ -55,12 +55,15 @@ export class LoginComponent implements OnInit {
     this._contentHeight = this._contentView.height;
     this._contentView.height = 0;
     this._contentView.scaleY = 0;
+    this._contentView.opacity = 0;
   }
 
   lottieViewLoaded(event) {
     this._lottieView = <LottieView>event.object;
+    this._lottieView.cancelAnimation();
     this._lottieView.completionBlock = this.onLottieFinished.bind(this);
-    this._lottieView.playAnimationFromProgressToProgress(0.1, 0.5);
+    this._lottieView.speed = 1.5;
+    this._lottieView.playAnimationFromProgressToProgress(0.1, 0.4);
   }
 
   onLottieFinished() {
@@ -68,13 +71,13 @@ export class LoginComponent implements OnInit {
     const a1: AnimationDefinition = {
       target: this._lottieView,
       height: 200,
-      duration: 1000
+      duration: 500
     };
     const a2: AnimationDefinition = {
       target: this._contentView,
       opacity: 1,
       scale: { x: 1, y: 1 },
-      duration: 1000
+      duration: 500
     };
     definitions.push(a1, a2);
     const animationSet = new Animation(definitions);
