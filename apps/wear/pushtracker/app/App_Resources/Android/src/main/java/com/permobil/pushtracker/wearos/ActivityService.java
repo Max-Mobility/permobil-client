@@ -564,11 +564,9 @@ public class ActivityService
   }
 
   private boolean hasData = false;
-  private long numValidData=0;
   private float[] activityDetectorData = new float[ActivityDetector.InputSize];
   private long lastCheckTimeMs = 0;
   private static long WEAR_CHECK_TIME_MS = 1000;
-  private long sum_prediction = 0;
 
   @Override
   public void onSensorChanged(SensorEvent event) {
@@ -591,14 +589,6 @@ public class ActivityService
       // use the data to detect activities
       ActivityDetector.Detection detection =
         activityDetector.detectActivity(activityDetectorData, event.timestamp);
-      numValidData++;
-      //if (numValidData%50==0)
-      //{
-       // Log.e(TAG,"numOfValidData:"+numValidData+" time:"+event.timestamp);
-       // Log.e(TAG,"numAcc:"+numAccl+"; numGrav: "+numGrav);
-      //}
-      // currentActivity.distance_watch = numValidData / 25.0f;
-
       boolean hasNewActivity = handleDetection(detection);
       // reset the data
       clearDetectorInputs();
@@ -631,7 +621,6 @@ public class ActivityService
 
   private long numGrav = 0;
   private long numAccl = 0;
-  //private long numOfpairs =0;
   private static final long LOG_TIME_MS = 1000;
   private long lastLogTimeMs = 0;
   private List<float[]> mAccList = new ArrayList<float[]>();
@@ -641,14 +630,13 @@ public class ActivityService
   void updateDetectorInputs(SensorEvent event) {
     int sensorType = event.sensor.getType();
     float[] sensorValue = new float[3];
-    if(event.values.length==3){
-      sensorValue[0]=event.values[0];
-      sensorValue[1]=event.values[1];
-      sensorValue[2]=event.values[2];
+    if (event.values.length == 3) {
+      sensorValue[0] = event.values[0];
+      sensorValue[1] = event.values[1];
+      sensorValue[2] = event.values[2];
     }
     if (sensorType == Sensor.TYPE_LINEAR_ACCELERATION) {
       numAccl++;
-    
       mAccList.add(sensorValue);
     } else if (sensorType == Sensor.TYPE_GRAVITY) {
       numGrav++;
@@ -660,30 +648,9 @@ public class ActivityService
         activityDetectorData[i + ActivityDetector.InputAcclOffset] = mAccList.get(0)[i];
         activityDetectorData[i + ActivityDetector.InputGravOffset] = mGravList.get(0)[i];
       }
-      // numOfpairs++;
-      // if(numOfpairs%25==0)
-      // {
-      //   if (mAccList.size()>10)
-      //   {
-      //     Log.e(TAG,
-      //     "AccList:" + mAccList.get(0)[0] + " " + mAccList.get(1)[0] + " "+ mAccList.get(2)[0] + " "
-      //                + mAccList.get(3)[0] + " "+ mAccList.get(4)[0] + " "+ mAccList.get(5)[0] + " "
-      //                + mAccList.get(6)[0] + " "+ mAccList.get(7)[0] + " "+ mAccList.get(8)[0] + " "
-      //                + mAccList.get(9)[0]);
-      //   }
-      //   if (mGravList.size()>10)
-      //   {
-      //     Log.e(TAG,
-      //     "GravList:" + mGravList.get(0)[0] + " " + mGravList.get(1)[0] + " "+ mGravList.get(2)[0] + " "
-      //                + mGravList.get(3)[0] + " "+ mGravList.get(4)[0] + " "+ mGravList.get(5)[0] + " "
-      //                + mGravList.get(6)[0] + " "+ mGravList.get(7)[0] + " "+ mGravList.get(8)[0] + " "
-      //                + mGravList.get(9)[0]);
-      //   }
-      // }
       hasData = true;
       mAccList.remove(0);
       mGravList.remove(0);
-
     }
 
   }
