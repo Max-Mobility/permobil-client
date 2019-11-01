@@ -1,28 +1,28 @@
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { format } from 'date-fns';
-import { ReflectiveInjector } from 'injection-js';
 import debounce from 'lodash/debounce';
 import flatten from 'lodash/flatten';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
 import { AnimatedCircle } from 'nativescript-animated-circle';
 import * as LS from 'nativescript-localstorage';
-import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { Level, Sentry } from 'nativescript-sentry';
+import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { Page, View } from 'tns-core-modules/ui/page';
-import { ad } from 'tns-core-modules/utils/utils';
+import { Page } from 'tns-core-modules/ui/page';
+import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
-import { BluetoothService, KinveyService, SERVICES, SqliteService } from '../../../services';
+import { BluetoothService, KinveyService, SqliteService } from '../../../services';
+import { sentryBreadCrumb } from '../../../utils';
+
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
 const defaultTheme = require('../../../scss/theme-default.css').toString();
 
@@ -44,25 +44,21 @@ const dateLocales = {
 export class UpdatesViewModel extends Observable {
   @Prop() updateProgressCircle: AnimatedCircle;
   @Prop() updateProgressText: string = 'Foo';
-  @Prop() isUpdatingSmartDrive: boolean = false;
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
   @Prop() smartDriveOtaActions = new ObservableArray();
-  @Prop() savedSmartDriveAddress: string = null;
-  @Prop() debouncedOtaAction: any;
   @Prop() watchSerialNumber: string = '---';
-
-  // state variables
-  @Prop() powerAssistActive: boolean = false;
-  @Prop() motorOn = false;
-  @Prop() smartDriveCurrentBatteryPercentage: number = 0;
-  @Prop() isAmbient: boolean = false;
 
   // time display
   @Prop() currentTime: string = '';
   @Prop() currentTimeMeridiem: string = '';
-  @Prop() currentDay: string = '';
-  @Prop() currentYear: string = '';
+
+  // state variables
+  private powerAssistActive: boolean = false;
+  private motorOn = false;
+  private smartDriveCurrentBatteryPercentage: number = 0;
+  private isAmbient: boolean = false;
+  private isUpdatingSmartDrive: boolean = false;
 
   // permissions for the app
   private permissionsNeeded = [
@@ -70,163 +66,28 @@ export class UpdatesViewModel extends Observable {
     android.Manifest.permission.READ_PHONE_STATE
   ];
 
-  // Services
-  private _bluetoothService: BluetoothService;
-  private _sqliteService: SqliteService;
-  private _kinveyService: KinveyService;
-
   // Debounced OTA action
   private _debouncedOtaAction: any = null;
 
   /**
    * SmartDrive Data / state management
    */
-  private pager: Pager;
-  public smartDrive: SmartDrive;
+  private smartDrive: SmartDrive;
   private _savedSmartDriveAddress: string = null;
   private initialized: boolean = false;
   private wakeLock: any = null;
-
-  closeCallback;
-
-  async init() {
-    this._sentryBreadCrumb('Updates-View-Model init.');
-    if (this.initialized) {
-      this._sentryBreadCrumb('Already initialized.');
-      return;
-    }
-
-    this._sentryBreadCrumb('Initializing WakeLock...');
-    console.time('Init_SmartDriveWakeLock');
-    this.wakeLock = this.SmartDriveWakeLock;
-    console.timeEnd('Init_SmartDriveWakeLock');
-    this._sentryBreadCrumb('WakeLock has been initialized.');
-
-    this._sentryBreadCrumb('Initializing Sentry...');
-
-    this._sentryBreadCrumb('Creating services...');
-    const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
-    this._bluetoothService = injector.get(BluetoothService);
-    this._sqliteService = injector.get(SqliteService);
-    this._kinveyService = injector.get(KinveyService);
-    this._sentryBreadCrumb('All Services created.');
-
-    this._sentryBreadCrumb('Registering for time updates.');
-    this.registerForTimeUpdates();
-    this._sentryBreadCrumb('Time updates registered.');
-
-    // load savedSmartDriveAddress from settings / memory
-    const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
-    if (savedSDAddr && savedSDAddr.length) {
-      this.updateSmartDrive(savedSDAddr);
-    }
-
-    // load serialized smartdrive data
-    if (this.smartDrive) {
-      this.loadSmartDriveStateFromLS();
-    }
-
-    this.initialized = true;
-    this._sentryBreadCrumb('Initialized Updates View Model');
-  }
-
-  async onUpdatesPageLoaded(args: EventData) {
-    this._sentryBreadCrumb('onUpdatesPageLoaded');
-    // clear out ota actions
-    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
-
-    try {
-      if (!this.hasAppliedTheme) {
-        // apply theme
-        if (this.isAmbient) {
-          this.applyTheme('ambient');
-        } else {
-          this.applyTheme('default');
-        }
-      }
-    } catch (err) {
-      Log.E('theme on startup error:', err);
-      Sentry.captureException(err);
-    }
-    // now init the ui
-    try {
-      await this.init();
-    } catch (err) {
-      this._sentryBreadCrumb('updates init error: ' + err);
-      Sentry.captureException(err);
-    }
-    // get child references
-    try {
-      // store reference to pageer so that we can control what page
-      // it's on programatically
-      const page = args.object as Page;
-      this.pager = page.getViewById('pager') as Pager;
-      // get references to update circle to control spin state
-      this.updateProgressCircle = page.getViewById(
-        'updateProgressCircle'
-      ) as AnimatedCircle;
-    } catch (err) {
-      this._sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-      Sentry.captureException(err);
-    }
-    try {
-      this.checkForUpdates();
-    } catch (err) {
-      this._sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
-    }
-  }
-
+  private closeCallback;
+  private _updatesPage: Page;
   private hasAppliedTheme: boolean = false;
-  applyTheme(theme?: string) {
-    this.hasAppliedTheme = true;
-    // apply theme
-    this._sentryBreadCrumb('applying theme');
-    try {
-      if (theme === 'ambient' || this.isAmbient) {
-        // Log.D('applying ambient theme');
-        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-        // this.showAmbientTime();
-      } else {
-        // Log.D('applying default theme');
-        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-        // this.showMainDisplay();
-      }
-    } catch (err) {
-      Log.E('apply theme error:', err);
-      Sentry.captureException(err);
-    }
-    this._sentryBreadCrumb('theme applied');
-    this.applyStyle();
-  }
 
-  applyStyle() {
-    this._sentryBreadCrumb('applying style');
-    try {
-      if (this.pager) {
-        try {
-          const children = this.pager._childrenViews;
-          for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as View;
-            child._onCssStateChange();
-          }
-        } catch (err) {
-          Log.E('apply style error:', err);
-          Sentry.captureException(err);
-        }
-      }
-    } catch (err) {
-      Log.E('apply style error:', err);
-      Sentry.captureException(err);
-    }
-    this._sentryBreadCrumb('style applied');
-  }
-
-  maintainCPU() {
-    this.wakeLock.acquire();
-  }
-
-  releaseCPU() {
-    if (this.wakeLock && this.wakeLock.isHeld()) this.wakeLock.release();
+  constructor(
+    page: Page,
+    private _bluetoothService: BluetoothService,
+    private _kinveyService: KinveyService,
+    private _sqliteService: SqliteService
+  ) {
+    super();
+    this._updatesPage = page;
   }
 
   get SmartDriveWakeLock() {
@@ -247,8 +108,111 @@ export class UpdatesViewModel extends Observable {
     }
   }
 
+  async init() {
+    sentryBreadCrumb('Updates-View-Model init.');
+    if (this.initialized) {
+      sentryBreadCrumb('Already initialized.');
+      return;
+    }
+
+    sentryBreadCrumb('Initializing WakeLock...');
+    console.time('Init_SmartDriveWakeLock');
+    this.wakeLock = this.SmartDriveWakeLock;
+    console.timeEnd('Init_SmartDriveWakeLock');
+    sentryBreadCrumb('WakeLock has been initialized.');
+
+    sentryBreadCrumb('Registering for time updates.');
+    this.registerForTimeUpdates();
+    sentryBreadCrumb('Time updates registered.');
+
+    // load savedSmartDriveAddress from settings / memory
+    const savedSDAddr = appSettings.getString(DataKeys.SD_SAVED_ADDRESS);
+    if (savedSDAddr && savedSDAddr.length) {
+      this.updateSmartDrive(savedSDAddr);
+    }
+
+    // load serialized smartdrive data
+    if (this.smartDrive) {
+      this.loadSmartDriveStateFromLS();
+    }
+
+    this.initialized = true;
+    sentryBreadCrumb('Initialized Updates View Model');
+  }
+
+  async onUpdatesPageLoaded(args: EventData) {
+    sentryBreadCrumb('onUpdatesPageLoaded');
+    // clear out ota actions
+    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
+
+    try {
+      if (!this.hasAppliedTheme) {
+        // apply theme
+        if (this.isAmbient) {
+          this.applyTheme('ambient');
+        } else {
+          this.applyTheme('default');
+        }
+      }
+    } catch (err) {
+      Log.E('theme on startup error:', err);
+      Sentry.captureException(err);
+    }
+    // now init the ui
+    try {
+      await this.init();
+    } catch (err) {
+      sentryBreadCrumb('updates init error: ' + err);
+      Sentry.captureException(err);
+    }
+    // get child references
+    try {
+      // get references to update circle to control spin state
+      this.updateProgressCircle = this._updatesPage.getViewById(
+        'updateProgressCircle'
+      ) as AnimatedCircle;
+    } catch (err) {
+      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
+      Sentry.captureException(err);
+    }
+    try {
+      this.checkForUpdates();
+    } catch (err) {
+      sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
+    }
+  }
+
+  applyTheme(theme?: string) {
+    this.hasAppliedTheme = true;
+    // apply theme
+    sentryBreadCrumb('applying theme');
+    try {
+      if (theme === 'ambient' || this.isAmbient) {
+        // Log.D('applying ambient theme');
+        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
+        // this.showAmbientTime();
+      } else {
+        // Log.D('applying default theme');
+        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
+        // this.showMainDisplay();
+      }
+    } catch (err) {
+      Log.E('apply theme error:', err);
+      Sentry.captureException(err);
+    }
+    sentryBreadCrumb('theme applied');
+  }
+
+  maintainCPU() {
+    this.wakeLock.acquire();
+  }
+
+  releaseCPU() {
+    if (this.wakeLock && this.wakeLock.isHeld()) this.wakeLock.release();
+  }
+
   async askForPermissions() {
-    // this._sentryBreadCrumb('asking for permissions');
+    // sentryBreadCrumb('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest =
       appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
@@ -280,7 +244,7 @@ export class UpdatesViewModel extends Observable {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
-      // this._sentryBreadCrumb('requesting permissions: ' + neededPermissions);
+      // sentryBreadCrumb('requesting permissions: ' + neededPermissions);
       await alert({
         title: L('permissions-request.title'),
         message: reasons.join('\n\n'),
@@ -398,7 +362,7 @@ export class UpdatesViewModel extends Observable {
     if (this.smartDrive === undefined || this.smartDrive === null) {
       return;
     }
-    this._sentryBreadCrumb('Loading SD state from LS');
+    sentryBreadCrumb('Loading SD state from LS');
     const savedSd = LS.getItem(
       'com.permobil.smartdrive.wearos.smartdrive.data'
     );
@@ -411,7 +375,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   saveSmartDriveStateToLS() {
-    this._sentryBreadCrumb('Saving SD state to LS');
+    sentryBreadCrumb('Saving SD state to LS');
     if (this.smartDrive) {
       LS.setItemObject(
         'com.permobil.smartdrive.wearos.smartdrive.data',
@@ -488,7 +452,7 @@ export class UpdatesViewModel extends Observable {
   // TODO: don't use ':' with the errors - use [...] instead.
   private currentVersions = {};
   async checkForUpdates() {
-    this._sentryBreadCrumb('Checking for updates');
+    sentryBreadCrumb('Checking for updates');
     // update display of update progress
     this.smartDriveOtaProgress = 0;
     this.smartDriveOtaState = L('updates.checking-for-updates');
@@ -501,7 +465,7 @@ export class UpdatesViewModel extends Observable {
     } catch (err) {
       return this.updateError(err, L('updates.errors.loading'), `${err}`);
     }
-    this._sentryBreadCrumb(
+    sentryBreadCrumb(
       `Current FW Versions: ${JSON.stringify(this.currentVersions, null, 2)}`
     );
     let response = null;
@@ -527,7 +491,7 @@ export class UpdatesViewModel extends Observable {
     // have the most up to date firmware files and download them
     // if we don't
     const mds = response;
-    this._sentryBreadCrumb('mds: ' + mds);
+    sentryBreadCrumb('mds: ' + mds);
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
@@ -550,12 +514,12 @@ export class UpdatesViewModel extends Observable {
     });
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
-    this._sentryBreadCrumb(
+    sentryBreadCrumb(
       'Got file metadatas, length: ' + (fileMetaDatas && fileMetaDatas.length)
     );
     // do we need to download any firmware files?
     if (fileMetaDatas && fileMetaDatas.length) {
-      this._sentryBreadCrumb('downloading firmwares');
+      sentryBreadCrumb('downloading firmwares');
       // update progress text
       this.smartDriveOtaState = L('updates.downloading-new-firmwares');
       // reset ota progress to 0 to show downloading progress
@@ -598,7 +562,7 @@ export class UpdatesViewModel extends Observable {
     // our local metadata
     promises = [];
     if (files && files.length) {
-      this._sentryBreadCrumb('updating firmware data');
+      sentryBreadCrumb('updating firmware data');
       promises = files.filter(f => f).map(this.updateFirmwareData.bind(this));
     }
     try {
@@ -609,21 +573,21 @@ export class UpdatesViewModel extends Observable {
     // Now let's connect to the SD to make sure that we get it's
     // version information
     try {
-      this._sentryBreadCrumb('getting smartdrive version');
+      sentryBreadCrumb('getting smartdrive version');
       await this.getSmartDriveVersion();
     } catch (err) {
-      this._sentryBreadCrumb('Connecting to smartdrive failed');
+      sentryBreadCrumb('Connecting to smartdrive failed');
       return this.updateError(err, L('updates.errors.connecting'), err);
     }
     // Now perform the SmartDrive updates if we need to
 
     // now see what we need to do with the data
-    this._sentryBreadCrumb('Finished downloading updates.');
+    sentryBreadCrumb('Finished downloading updates.');
     this.performSmartDriveWirelessUpdate();
   }
 
   async performSmartDriveWirelessUpdate() {
-    this._sentryBreadCrumb('Performing SmartDrive Wireless Update');
+    sentryBreadCrumb('Performing SmartDrive Wireless Update');
     this.smartDriveOtaState = L('updates.initializing');
     // @ts-ignore
     this.updateProgressCircle.stopSpinning();
@@ -638,7 +602,7 @@ export class UpdatesViewModel extends Observable {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    this._sentryBreadCrumb('got version: ' + version);
+    sentryBreadCrumb('got version: ' + version);
     // show dialog to user informing them of the version number and changes
     const changes = Object.keys(this.currentVersions).map(
       k => this.currentVersions[k].changes
@@ -650,15 +614,15 @@ export class UpdatesViewModel extends Observable {
       okButtonText: L('buttons.ok')
     });
     this.isUpdatingSmartDrive = true;
-    this._sentryBreadCrumb('Beginning SmartDrive update');
+    sentryBreadCrumb('Beginning SmartDrive update');
     const bleFw = new Uint8Array(
       this.currentVersions['SmartDriveBLE.ota'].data
     );
     const mcuFw = new Uint8Array(
       this.currentVersions['SmartDriveMCU.ota'].data
     );
-    this._sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
-    this._sentryBreadCrumb(`ble length: ${bleFw.length}`);
+    sentryBreadCrumb(`mcu length: ${mcuFw.length}`);
+    sentryBreadCrumb(`ble length: ${bleFw.length}`);
     // maintain CPU resources while updating
     this.maintainCPU();
     // smartdrive needs to update
@@ -671,7 +635,7 @@ export class UpdatesViewModel extends Observable {
         mcuVersion,
         300 * 1000
       );
-      this._sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
+      sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
         if (this.closeCallback) {
           this.smartDriveOtaActions.splice(
@@ -710,9 +674,7 @@ export class UpdatesViewModel extends Observable {
       data: f.data
     };
     // save binary file to fs
-    this._sentryBreadCrumb(
-      `saving file ${this.currentVersions[f.name].filename}`
-    );
+    sentryBreadCrumb(`saving file ${this.currentVersions[f.name].filename}`);
     SmartDriveData.Firmwares.saveToFileSystem({
       filename: this.currentVersions[f.name].filename,
       data: f.data
@@ -752,7 +714,7 @@ export class UpdatesViewModel extends Observable {
         class: 'action-close'
       });
     }
-    this._sentryBreadCrumb(msg);
+    sentryBreadCrumb(msg);
     Sentry.captureException(err);
     if (alertMsg !== undefined) {
       alert({
@@ -786,10 +748,10 @@ export class UpdatesViewModel extends Observable {
       // ensure we have the permissions
       await this.askForPermissions();
       // ensure bluetooth radio is enabled
-      // this._sentryBreadCrumb('checking radio is enabled');
+      // sentryBreadCrumb('checking radio is enabled');
       const radioEnabled = await this._bluetoothService.radioEnabled();
       if (!radioEnabled) {
-        this._sentryBreadCrumb('radio is not enabled!');
+        sentryBreadCrumb('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
         const didEnable = await this._bluetoothService.enableRadio();
         if (!didEnable) {
@@ -812,7 +774,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   async saveNewSmartDrive(): Promise<any> {
-    this._sentryBreadCrumb('Saving new SmartDrive');
+    sentryBreadCrumb('Saving new SmartDrive');
     try {
       // make sure everything works
       const didEnsure = await this.ensureBluetoothCapabilities();
@@ -825,7 +787,7 @@ export class UpdatesViewModel extends Observable {
       this.scanningProgressCircle.spin();
       await this._bluetoothService.scanForSmartDrives(3);
       // this.hideScanning();
-      this._sentryBreadCrumb(
+      sentryBreadCrumb(
         `Discovered ${BluetoothService.SmartDrives.length} SmartDrives`
       );
 
@@ -871,7 +833,7 @@ export class UpdatesViewModel extends Observable {
         return false;
       }
     } catch (err) {
-      this._sentryBreadCrumb('could not scan ' + err);
+      sentryBreadCrumb('could not scan ' + err);
       Sentry.captureException(err);
       // this.hideScanning();
       alert({
@@ -884,13 +846,13 @@ export class UpdatesViewModel extends Observable {
   }
 
   async connectToSmartDrive(address: string) {
-    this._sentryBreadCrumb('Connecting to SmartDrive ' + address);
+    sentryBreadCrumb('Connecting to SmartDrive ' + address);
     this.updateSmartDrive(address);
     // now connect to smart drive
     try {
       const didEnsure = await this.ensureBluetoothCapabilities();
       if (!didEnsure) {
-        this._sentryBreadCrumb('could not ensure bluetooth capabilities!');
+        sentryBreadCrumb('could not ensure bluetooth capabilities!');
         return false;
       }
       await this.smartDrive.connect();
@@ -943,7 +905,7 @@ export class UpdatesViewModel extends Observable {
   }
 
   async getFirmwareData() {
-    this._sentryBreadCrumb('Getting firmware data');
+    sentryBreadCrumb('Getting firmware data');
     try {
       const objs = await this._sqliteService.getAll({
         tableName: SmartDriveData.Firmwares.TableName
@@ -969,29 +931,9 @@ export class UpdatesViewModel extends Observable {
         return data;
       }, {});
     } catch (err) {
-      this._sentryBreadCrumb('Could not get firmware metadata: ' + err);
+      sentryBreadCrumb('Could not get firmware metadata: ' + err);
       Sentry.captureException(err);
       return {};
-    }
-  }
-
-  private _sentryBreadCrumb(message: string) {
-    Log.D(message);
-    Sentry.captureBreadcrumb({
-      message,
-      category: 'info',
-      level: Level.Info
-    });
-  }
-
-  onNewDay() {
-    if (this.smartDrive) {
-      // it's a new day, reset smartdrive battery to 0
-      this.smartDrive.battery = 0;
-      // update displayed battery percentage
-      this.smartDriveCurrentBatteryPercentage = this.smartDrive.battery;
-      // and save it
-      this.saveSmartDriveStateToLS();
     }
   }
 
@@ -1001,7 +943,7 @@ export class UpdatesViewModel extends Observable {
     const timeReceiverCallback = (_1, _2) => {
       try {
         this.updateTimeDisplay();
-        this._sentryBreadCrumb('timeReceiverCallback');
+        sentryBreadCrumb('timeReceiverCallback');
       } catch (error) {
         Sentry.captureException(error);
       }
@@ -1024,7 +966,7 @@ export class UpdatesViewModel extends Observable {
 
   updateTimeDisplay() {
     const now = new Date();
-    const context = ad.getApplicationContext();
+    const context = androidUtils.getApplicationContext();
     const is24HourFormat = android.text.format.DateFormat.is24HourFormat(
       context
     );
@@ -1035,7 +977,5 @@ export class UpdatesViewModel extends Observable {
       this.currentTime = this._format(now, 'h:mm');
       this.currentTimeMeridiem = this._format(now, 'A');
     }
-    this.currentDay = this._format(now, 'ddd MMM D');
-    this.currentYear = this._format(now, 'YYYY');
   }
 }
