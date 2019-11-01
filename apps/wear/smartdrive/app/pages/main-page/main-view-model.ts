@@ -467,6 +467,8 @@ export class MainViewModel extends Observable {
         this._disableWifi();
         this._maintainCPU();
         this.powerAssistState = PowerAssist.State.Disconnected;
+        // ensure the pager is on the right page
+        if (this.pager) this.pager.selectedIndex = 0;
         this.powerAssistActive = true;
         this._updatePowerAssistRing();
         const didConnect = await this._connectToSavedSmartDrive();
