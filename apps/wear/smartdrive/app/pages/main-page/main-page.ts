@@ -2,7 +2,8 @@ import { EventData } from 'tns-core-modules/data/observable';
 import { Page } from 'tns-core-modules/ui/page';
 import { MainViewModel } from './main-view-model';
 
-export function onPageLoaded(args: EventData) {
+// Event handler for Page "navigatedTo" event attached in main-page.xml
+export function onNavigatingTo(args: EventData) {
   const page = args.object as Page;
   const vm = new MainViewModel();
 
