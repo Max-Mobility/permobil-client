@@ -1,8 +1,11 @@
-import { Device } from '@permobil/core';
+import { Device, Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
+import { Observable } from 'tns-core-modules/data/observable';
+import { Page } from 'tns-core-modules/ui/page';
 
 export class ChangeSettingsViewModel extends Observable {
+  @Prop() insetPadding = 0;
+  @Prop() chinSize = 0;
   @Prop() tempSettings = new Device.Settings();
   @Prop() tempSwitchControlSettings = new Device.SwitchControlSettings();
   @Prop() disableWearCheck: boolean = false;
@@ -13,7 +16,21 @@ export class ChangeSettingsViewModel extends Observable {
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
 
-  async onChangeSettingsPageLoaded(args: EventData) {}
+  private _closeCallback;
+
+  constructor(page: Page, data) {
+    super();
+
+    this.activeSettingToChange = data.activeSettingToChange;
+    this.changeSettingKeyString = data.changeSettingKeyString;
+    this.changeSettingKeyValue = data.changeSettingKeyValue;
+    this.disableWearCheck = data.disableWearCheck;
+    this.tempSettings.copy(data.tempSettings);
+    this.tempSwitchControlSettings.copy(data.switchControlSettings);
+    this._closeCallback = data.closeCallback;
+
+    this._updateSettingsChangeDisplay();
+  }
 
   onIncreaseSettingsTap() {
     this.tempSettings.increase(this.activeSettingToChange);
@@ -21,7 +38,7 @@ export class ChangeSettingsViewModel extends Observable {
     if (this.activeSettingToChange === 'wearcheck') {
       this.disableWearCheck = !this.disableWearCheck;
     }
-    this.updateSettingsChangeDisplay();
+    this._updateSettingsChangeDisplay();
   }
 
   onDecreaseSettingsTap() {
@@ -30,11 +47,11 @@ export class ChangeSettingsViewModel extends Observable {
     if (this.activeSettingToChange === 'wearcheck') {
       this.disableWearCheck = !this.disableWearCheck;
     }
-    this.updateSettingsChangeDisplay();
+    this._updateSettingsChangeDisplay();
   }
 
   onSettingsInfoItemTap() {
-    console.log(this.activeSettingToChange, this.changeSettingKeyString);
+    Log.D(this.activeSettingToChange, this.changeSettingKeyString);
     const messageKey = 'settings.description.' + this.activeSettingToChange;
     const message = this.changeSettingKeyString + '\n\n' + L(messageKey);
     alert({
@@ -44,7 +61,16 @@ export class ChangeSettingsViewModel extends Observable {
     });
   }
 
-  updateSettingsChangeDisplay() {
+  onConfirmChangesTap() {
+    this._closeCallback(
+      true,
+      this.tempSettings,
+      this.tempSwitchControlSettings,
+      this.disableWearCheck
+    );
+  }
+
+  private _updateSettingsChangeDisplay() {
     let translationKey = '';
     switch (this.activeSettingToChange) {
       case 'maxspeed':

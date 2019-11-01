@@ -1,74 +1,27 @@
 import { Log } from '@permobil/core';
-import { EventData } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { ChangeSettingsViewModel } from './change-settings-view-model';
 
-const vm = new ChangeSettingsViewModel();
 let closeCallback;
-let page: Page;
 
 export function onShownModally(args: ShownModallyData) {
-  console.log('change-settings-page onShownModally');
-  page = args.object as Page;
-  closeCallback = args.closeCallback;
-  vm.activeSettingToChange = args.context.activeSettingToChange;
-  vm.changeSettingKeyString = args.context.changeSettingKeyString;
-  vm.changeSettingKeyValue = args.context.changeSettingKeyValue;
-  vm.disableWearCheck = args.context.disableWearCheck;
-  vm.tempSettings.copy(args.context.settings);
-  vm.tempSwitchControlSettings.copy(args.context.switchControlSettings);
-  vm.updateSettingsChangeDisplay();
+  Log.D('change-settings-page onShownModally');
+  const page = args.object as Page;
+  closeCallback = args.closeCallback; // the closeCallback handles closing the modal
+  // create an object to pass for binding data in the VM
+  const data = {
+    activeSettingToChange: args.context.activeSettingToChange,
+    changeSettingKeyString: args.context.changeSettingKeyString,
+    changeSettingKeyValue: args.context.changeSettingKeyValue,
+    tempSettings: args.context.settings,
+    tempSwitchControlSettings: args.context.switchControlSettings,
+    disableWearCheck: args.context.disableWearCheck,
+    closeCallback: closeCallback
+  };
 
-  page.bindingContext = vm;
-  configureLayout();
+  page.bindingContext = new ChangeSettingsViewModel(page, data);
 }
 
-export function onChangeSettingsPageLoaded(args: EventData) {
-  vm.onChangeSettingsPageLoaded(args);
-}
-
-export function onCloseTap(args) {
-  closeCallback(
-    false,
-    vm.tempSettings,
-    vm.tempSwitchControlSettings,
-    vm.disableWearCheck
-  );
-}
-
-export function onConfirmTap(args) {
-  closeCallback(
-    true,
-    vm.tempSettings,
-    vm.tempSwitchControlSettings,
-    vm.disableWearCheck
-  );
-}
-
-function configureLayout() {
-  Log.D('customWOLInsetLoaded');
-  let insetPadding = 0;
-  let chinSize = 0;
-
-  // determine inset padding
-  const androidConfig = androidUtils
-    .getApplicationContext()
-    .getResources()
-    .getConfiguration();
-  const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
-
-  if (isCircleWatch) {
-    insetPadding = Math.round(0.146467 * screenWidth);
-    // if the height !== width then there is a chin!
-    if (screenWidth !== screenHeight && screenWidth > screenHeight) {
-      chinSize = screenWidth - screenHeight;
-    }
-  }
-  page.bindingContext.set('insetPadding', insetPadding);
-  page.bindingContext.set('chinSize', chinSize);
-  page.bindingContext.set('onCloseTap', onCloseTap);
+export function onCancelChangesTap() {
+  closeCallback(false); // this will close the modal when user cancels
 }
