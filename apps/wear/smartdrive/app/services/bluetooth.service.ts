@@ -1,6 +1,6 @@
-import { Log, Packet } from '@permobil/core';
+import { Log } from '@permobil/core';
 import { Injectable } from 'injection-js';
-import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
+import { Bluetooth, ConnectionState } from 'nativescript-bluetooth';
 import 'reflect-metadata';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { SmartDrive } from '../models/smartdrive';
@@ -202,9 +202,9 @@ export class BluetoothService {
     return this._bluetooth.disconnect(args);
   }
 
-  public discoverServices(opts: any) { }
+  public discoverServices(opts: any) {}
 
-  public discoverCharacteristics(opts: any) { }
+  public discoverCharacteristics(opts: any) {}
 
   public startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);

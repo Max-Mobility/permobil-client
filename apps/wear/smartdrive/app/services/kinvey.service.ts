@@ -48,16 +48,20 @@ export class KinveyService {
   }
 
   public wasGoodStatus(statusCode: number) {
-    return statusCode === 200 ||
+    return (
+      statusCode === 200 ||
       statusCode === 201 ||
-      (statusCode >= 200 && statusCode < 300);
+      (statusCode >= 200 && statusCode < 300)
+    );
   }
 
   public wasInvalidCredentials(statusCode: number) {
-    return statusCode === 400 ||
+    return (
+      statusCode === 400 ||
       statusCode === 401 ||
       statusCode === 422 ||
-      (statusCode >= 400 && statusCode < 500);
+      (statusCode >= 400 && statusCode < 500)
+    );
   }
 
   private handleBadStatus(statusCode: number) {
@@ -77,14 +81,14 @@ export class KinveyService {
   }
 
   private makeAuth(un: string, pw: string) {
-    const authorizationToEncode = new java.lang.String(
-      `${un}:${pw}`
-    );
+    const authorizationToEncode = new java.lang.String(`${un}:${pw}`);
     const data = authorizationToEncode.getBytes(
       java.nio.charset.StandardCharsets.UTF_8
     );
-    return 'Basic ' +
-      android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
+    return (
+      'Basic ' +
+      android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP)
+    );
   }
 
   public async setAuth(newAuth: string, userId: string) {
@@ -163,7 +167,10 @@ export class KinveyService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: this.makeAuth(KinveyService.api_app_key, KinveyService.api_app_secret)
+        Authorization: this.makeAuth(
+          KinveyService.api_app_key,
+          KinveyService.api_app_secret
+        )
       },
       content: JSON.stringify(content)
     });
@@ -201,13 +208,22 @@ export class KinveyService {
       url: url,
       method: 'GET',
       headers: {
-        Authorization: this.makeAuth(KinveyService.api_app_key, KinveyService.api_app_secret)
+        Authorization: this.makeAuth(
+          KinveyService.api_app_key,
+          KinveyService.api_app_secret
+        )
       }
     });
     return this.handleResponse(response);
   }
 
-  async getEntry(db: string, queries?: any, limit?: number, sort?: any, skip?: any) {
+  async getEntry(
+    db: string,
+    queries?: any,
+    limit?: number,
+    sort?: any,
+    skip?: any
+  ) {
     this.checkAuth();
     let url =
       KinveyService.api_base +
@@ -295,7 +311,8 @@ export class KinveyService {
     this.checkAuth();
     this.reformatForDb(activity);
     let response = null;
-    if (id) response = await this.put(KinveyService.api_activity_db, activity, id);
+    if (id)
+      response = await this.put(KinveyService.api_activity_db, activity, id);
     else response = await this.post(KinveyService.api_activity_db, activity);
     return response;
   }
@@ -304,7 +321,8 @@ export class KinveyService {
     this.checkAuth();
     this.reformatForDb(settings);
     let response = null;
-    if (id) response = await this.put(KinveyService.api_settings_db, settings, id);
+    if (id)
+      response = await this.put(KinveyService.api_settings_db, settings, id);
     else response = await this.post(KinveyService.api_settings_db, settings);
     return response;
   }

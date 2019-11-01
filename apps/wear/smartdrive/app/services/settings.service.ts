@@ -1,5 +1,5 @@
-import { Injectable } from 'injection-js';
 import { Device } from '@permobil/core';
+import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { DataKeys } from '../enums';
@@ -32,10 +32,7 @@ export class SettingsService {
 
   saveSettings() {
     // make sure to save the units setting for the complications
-    appSettings.setString(
-      DataKeys.SD_UNITS,
-      this.settings.units.toLowerCase()
-    );
+    appSettings.setString(DataKeys.SD_UNITS, this.settings.units.toLowerCase());
     // save state and local settings
     appSettings.setBoolean(
       DataKeys.SD_SETTINGS_DIRTY_FLAG,
@@ -55,5 +52,4 @@ export class SettingsService {
       this.switchControlSettings.toObj()
     );
   }
-
 }

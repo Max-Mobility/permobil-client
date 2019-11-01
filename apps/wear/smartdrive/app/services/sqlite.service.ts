@@ -41,7 +41,7 @@ export class SqliteService {
       .then((db: any) => {
         db.close();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error('could not close db:', err);
       });
   }
@@ -58,10 +58,8 @@ export class SqliteService {
           `${keyString.join(', ')})`;
         return db.execSQL(dbCreationString);
       })
-      .catch((err) => {
-        const msg =
-          'Could not make table: ' +
-          tableName + ': error - ' + err;
+      .catch(err => {
+        const msg = 'Could not make table: ' + tableName + ': error - ' + err;
         console.error(msg);
         return Promise.reject(msg);
       });
@@ -140,14 +138,13 @@ export class SqliteService {
   }
 
   public getLast(tableName: string, idName: string) {
-    return this.db
-      .then(db => {
-        return db
-          .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`)
-          .catch(err => {
-            return undefined;
-          });
-      });
+    return this.db.then(db => {
+      return db
+        .get(`SELECT * FROM ${tableName} ORDER BY ${idName} DESC LIMIT 1`)
+        .catch(err => {
+          return undefined;
+        });
+    });
   }
 
   public getOne(args: {
@@ -188,10 +185,9 @@ export class SqliteService {
           dbGetString += ' DESC';
         }
       }
-      return db.get(dbGetString, parameters)
-        .catch(err => {
-          return undefined;
-        });
+      return db.get(dbGetString, parameters).catch(err => {
+        return undefined;
+      });
     });
   }
 
@@ -243,10 +239,9 @@ export class SqliteService {
       if (orderBy && offset) {
         dbGetString += ` OFFSET ${offset}`;
       }
-      return db.all(dbGetString, parameters)
-        .catch(err => {
-          return [];
-        });
+      return db.all(dbGetString, parameters).catch(err => {
+        return [];
+      });
     });
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from 'injection-js';
+import * as app from 'tns-core-modules/application';
 import { Observable } from 'tns-core-modules/data/observable';
 
-import * as app from 'tns-core-modules/application';
 
 function cbExists(cb) {
   return cb && typeof cb === 'function';
