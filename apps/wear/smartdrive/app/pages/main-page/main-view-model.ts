@@ -431,7 +431,11 @@ export class MainViewModel extends Observable {
     // we have a smartdrive and a network, now check for updates
     const btn = args.object;
     const option: ShowModalOptions = {
-      context: {},
+      context: {
+        bluetoothService: this._bluetoothService,
+        kinveyService: this._kinveyService,
+        sqliteService: this._sqliteService
+      },
       closeCallback: () => {
         // we dont do anything with the about to return anything
       },
