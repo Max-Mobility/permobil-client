@@ -33,7 +33,7 @@ public class DailyActivity {
 
   // Factor used to scale average coast time by to determine coast
   // time threshold
-  private static final float COAST_THRESHOLD_FACTOR = 5.0;
+  private static final float COAST_THRESHOLD_FACTOR = 5.0f;
 
   // Minimum time for coast threshold setting (to keep it from getting
   // too small)
@@ -201,7 +201,6 @@ public class DailyActivity {
     if (detection.activity != ActivityDetector.Detection.Activity.PUSH) {
       return;
     }
-    float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
     Record rec = getRecord(detectionTimeMs);
     // increment record's pushes
@@ -209,6 +208,7 @@ public class DailyActivity {
     // now increment the total pushes
     this.push_count += 1;
     // calculate coast_time_threshold
+    float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     if (this.push_count < COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
       coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     } else {
