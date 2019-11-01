@@ -46,6 +46,7 @@ public class ActivityDetector {
   private static final String TAG = "ActivityDetector";
 
   private static final int LOCKOUT_TIME_MS = 600;
+
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
   public float predictionThreshold = 0.6f; // confidence
@@ -83,9 +84,9 @@ public class ActivityDetector {
   /**
    * Higher-level activity detection - not TFLite related
    */
-  private static final int InputHistorySize = 4;
-  private static final int PredictionHistorySize = 2;
-  private float[][] inputHistory = new float[InputHistorySize][InputSize];
+  private static final int InputHistorySize = 10;
+  private static final int PredictionHistorySize = 1;
+  private float[] inputHistory = new float[InputHistorySize];
   private float[] predictionHistory = new float[PredictionHistorySize];
 
   /**
@@ -99,7 +100,7 @@ public class ActivityDetector {
 
   public ActivityDetector(Context context) {
     // initialize the memory for the states
-    for (int i=0; i<StateSize; i++) {
+    for (int i = 0; i < StateSize; i++) {
       previousState[0][i] = 0.0f;
     }
     // set up the inputs and outputs
@@ -119,13 +120,13 @@ public class ActivityDetector {
       inputShapes[Input_StateIndex] = StateSize;
       inputShapes[Input_DataIndex] = InputSize;
       int inputCount = tflite.getInputTensorCount();
-      for (int i=0; i<inputCount; i++) {
+      for (int i = 0; i < inputCount; i++) {
         int[] inputShape = tflite.getInputTensor(i).shape();
-        Log.d(TAG, "Checking input tensor at " + i + " :\n" +
-              "\tshape of " + inputShapes[i] + " == " + inputShape[1] + " ?");
+        Log.d(TAG,
+            "Checking input tensor at " + i + " :\n" + "\tshape of " + inputShapes[i] + " == " + inputShape[1] + " ?");
         if (inputShapes[i] != inputShape[1]) {
-          Log.e(TAG, "input tensor at " + i + " misconfigured\n" +
-                "\texpected shape of " + inputShapes[i] + " but got " + inputShape[1]);
+          Log.e(TAG, "input tensor at " + i + " misconfigured\n" + "\texpected shape of " + inputShapes[i] + " but got "
+              + inputShape[1]);
           properlyConfigured = false;
         }
       }
@@ -134,13 +135,13 @@ public class ActivityDetector {
       outputShapes[Output_StateIndex] = StateSize;
       outputShapes[Output_PredictionIndex] = 1;
       int outputCount = tflite.getOutputTensorCount();
-      for (int i=0; i<outputCount; i++) {
+      for (int i = 0; i < outputCount; i++) {
         int[] outputShape = tflite.getOutputTensor(i).shape();
-        Log.d(TAG, "Checking output tensor at " + i + " :\n" +
-              "\tshape of " + outputShapes[i] + " == " + outputShape[1] + " ?");
+        Log.d(TAG, "Checking output tensor at " + i + " :\n" + "\tshape of " + outputShapes[i] + " == " + outputShape[1]
+            + " ?");
         if (outputShapes[i] != outputShape[1]) {
-          Log.e(TAG, "output tensor at " + i + " misconfigured\n" +
-                "\texpected shape of " + outputShapes[i] + " but got " + outputShape[1]);
+          Log.e(TAG, "output tensor at " + i + " misconfigured\n" + "\texpected shape of " + outputShapes[i]
+              + " but got " + outputShape[1]);
           properlyConfigured = false;
         }
       }
@@ -166,7 +167,7 @@ public class ActivityDetector {
    * Reset the histories to clear out old data
    */
   public void reset() {
-    inputHistory = new float[InputHistorySize][InputSize];
+    inputHistory = new float[InputHistorySize];
     predictionHistory = new float[PredictionHistorySize];
   }
 
@@ -182,6 +183,8 @@ public class ActivityDetector {
   private long lastLogTimeMs = 0;
   private long numDetections = 0;
   private long totalDetectionDuration = 0;
+  //private float prediction_sum = 0.0f;
+  //private boolean push_detected = false;
 
   /**
    * Main inference Function for detecting activity
@@ -192,8 +195,17 @@ public class ActivityDetector {
     }
     // Log.d(TAG, "data: " + Arrays.toString(data));
     // copy the data into our input buffer
-    for (int i=0; i<InputSize; i++) {
+    for (int i = 0; i < 3; i++) {
       inputData[0][i] = data[i];
+    }
+    for (int i = 3; i < InputSize; i++) {
+      if (data[i] / 10.0 > 1.0) {
+        inputData[0][i] = (float) Math.acos(1.0d);
+      } else if (data[i] / 10.0 < -1.0){
+        inputData[0][i] =(float) Math.acos(-1.0d);
+      } else {
+        inputData[0][i] = (float) Math.acos((double) data[i] / 10.0);
+      }
     }
     // Log.d(TAG, "input: " + Arrays.deepToString(inputData));
     // update the input history
@@ -205,22 +217,41 @@ public class ActivityDetector {
     long duration = (endTime - startTime);
     // Log.d(TAG, "Inference duration: " + duration);
     /*
-    // average the detection durations
-    numDetections++;
-    totalDetectionDuration += duration;
-    long now = System.currentTimeMillis();
-    long timeDiffMs = now - lastLogTimeMs;
-    if (timeDiffMs > LOG_TIME_MS) {
-      double average = (totalDetectionDuration / numDetections) / 1000000000.0;
-      Log.d(TAG, "Average inference duration: " + average);
-      numDetections = 0;
-      totalDetectionDuration = 0;
-      lastLogTimeMs = now;
-    }
-    */
+     * // average the detection durations numDetections++; totalDetectionDuration +=
+     * duration; long now = System.currentTimeMillis(); long timeDiffMs = now -
+     * lastLogTimeMs; if (timeDiffMs > LOG_TIME_MS) { double average =
+     * (totalDetectionDuration / numDetections) / 1000000000.0; Log.d(TAG,
+     * "Average inference duration: " + average); numDetections = 0;
+     * totalDetectionDuration = 0; lastLogTimeMs = now; }
+     */
     // get the prediction
+    numDetections++;
     float prediction = parsedPrediction[0][0];
-    // Log.d(TAG, "prediction: " + prediction);
+    // prediction_sum += prediction;
+    // if (numDetections % 50 == 0) {
+    //   Log.e(TAG, "prediction_sum: " + prediction_sum);
+    // }
+    // if (numDetections == 5) {
+    //   Log.e(TAG, "data:" + data[0] + " " + data[1] + " " + data[2] + " " + data[3] + " " + data[4] + " " + data[5]);
+    // }
+    //if (!push_detected && prediction > predictionThreshold) {
+    //if (numDetections % 10 == 0) {
+      // Log.e(TAG,
+      //     "input_his:" + inputHistory[9] + " " + inputHistory[8] + " " + inputHistory[7] + " "
+      //         + inputHistory[6] + " " + inputHistory[5] + " " + inputHistory[4] + " "
+      //         + inputHistory[3] + " " + inputHistory[2] + " " + inputHistory[1] + " "
+      //         + inputHistory[0]);
+      
+    //}
+
+    // if (push_detected && prediction < predictionThreshold) {
+    //   Log.e(TAG,
+    //       "prediction_his:" + predictionHistory[0] + " " + predictionHistory[1] + " " + predictionHistory[2] + " "
+    //           + predictionHistory[3] + " " + predictionHistory[4] + " " + predictionHistory[5] + " "
+    //           + predictionHistory[6] + " " + predictionHistory[7] + " " + predictionHistory[8] + " "
+    //           + predictionHistory[9]);
+    //   push_detected = false;
+    // }
     // update the prediction history
     updatePredictions(prediction);
     // determine the activity
@@ -228,8 +259,8 @@ public class ActivityDetector {
   }
 
   /**
-   * Determines (based on input and prediction histories) whether
-   * there was a activity.
+   * Determines (based on input and prediction histories) whether there was a
+   * activity.
    */
   private Detection getActivity(long timestamp) {
     // block high-frequency motion
@@ -240,38 +271,42 @@ public class ActivityDetector {
         return new Detection(); // no valid detection
       }
     }
+    // if (lastActivityTime > 0) {
+
+    //   if (push_detected) {
+    //     return new Detection(); // no valid detection
+    //   }
+    // }
     // make sure the confidences are above the threshold
     boolean predictionsWereGood = true;
-    for (int i=0; i<predictionHistory.length; i++) {
+    for (int i = 0; i < predictionHistory.length; i++) {
+    //for (int i = 0; i < 1; i++) {
       float prediction = predictionHistory[i];
       predictionsWereGood = predictionsWereGood && prediction > predictionThreshold;
     }
     if (!predictionsWereGood) {
       return new Detection();
     }
-    // TODO: determine the activity based on the prediction output
+    // determine the activity based on the prediction output
     // everything was good - now retrun a valid detection based
-    Detection detection = new Detection(predictionHistory[0],
-                                        Detection.Activity.PUSH,
-                                        timestamp
-                                        );
+    Detection detection = new Detection(predictionHistory[0], Detection.Activity.PUSH, timestamp);
     // update the timestamp of the last activity
     lastActivityTime = detection.time;
+    //push_detected = true;
     return detection;
   }
 
   private void updateHistory(float[] data) {
-    // TODO: this function doesn't work - since this is an array of
-    // arrays
-    for (int i=inputHistory.length - 1; i>0; i--) {
-      inputHistory[i] = inputHistory[i-1];
+    // update input data[0] only
+    for (int i = inputHistory.length - 1; i > 0; i--) {
+      inputHistory[i] = inputHistory[i - 1];
     }
-    inputHistory[0] = data;
+    inputHistory[0] = data[0];
   }
 
   private void updatePredictions(float prediction) {
-    for (int i=predictionHistory.length - 1; i>0; i--) {
-      predictionHistory[i] = predictionHistory[i-1];
+    for (int i = predictionHistory.length - 1; i > 0; i--) {
+      predictionHistory[i] = predictionHistory[i - 1];
     }
     predictionHistory[0] = prediction;
   }
