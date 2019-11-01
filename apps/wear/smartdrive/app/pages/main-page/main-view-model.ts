@@ -20,6 +20,7 @@ import { Color } from 'tns-core-modules/color';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
 import { screen } from 'tns-core-modules/platform';
 import { action, alert } from 'tns-core-modules/ui/dialogs';
+import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import { topmost } from 'tns-core-modules/ui/frame';
 import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
 import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
@@ -33,8 +34,6 @@ import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
-
-declare let com: any;
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -50,6 +49,8 @@ const dateLocales = {
   nn: require('date-fns/locale/nb'),
   zh: require('date-fns/locale/zh_cn')
 };
+
+declare const com: any;
 
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
@@ -309,7 +310,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -580,7 +581,6 @@ export class MainViewModel extends Observable {
     Sentry.init(
       'https://234acf21357a45c897c3708fcab7135d:bb45d8ca410c4c2ba2cf1b54ddf8ee3e@sentry.io/1376181'
     );
-    sentryBreadCrumb('Sentry has been initialized.');
 
     // log the build version
     this._logVersions();
@@ -602,14 +602,12 @@ export class MainViewModel extends Observable {
     this.wakeLock = this.SmartDriveWakeLock;
     sentryBreadCrumb('WakeLock has been initialized.');
 
-    sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([...SERVICES]);
     this._bluetoothService = injector.get(BluetoothService);
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
     this._kinveyService = injector.get(KinveyService);
     this._settingsService = injector.get(SettingsService);
-    sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings
     this._initSqliteTables();
@@ -623,7 +621,6 @@ export class MainViewModel extends Observable {
 
     // handle application lifecycle events
     this._registerAppEventHandlers();
-    sentryBreadCrumb('App event handlers registered.');
 
     // make throttled save function - not called more than once every 10 seconds
     this._throttledSmartDriveSaveFn = throttle(
@@ -634,9 +631,8 @@ export class MainViewModel extends Observable {
 
     // regiter for system updates related to battery / time UI
     this._registerForBatteryUpdates();
-    sentryBreadCrumb('Battery updates registered.');
     this._registerForTimeUpdates();
-    sentryBreadCrumb('Time updates registered.');
+    sentryBreadCrumb('Battery & Time updates registered.');
 
     // Tap / Gesture detection related code:
     this._sensorService.on(
@@ -778,7 +774,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -805,7 +801,8 @@ export class MainViewModel extends Observable {
       this._powerAssistView.animate({
         opacity: 0,
         scale: { x: 0.5, y: 0.5 },
-        duration: 200
+        duration: 100,
+        curve: AnimationCurve.linear
       });
     }
     if (this._ambientTimeView) {
@@ -813,7 +810,8 @@ export class MainViewModel extends Observable {
         translate: { x: 0, y: 0 },
         opacity: 1,
         scale: { x: 1, y: 1 },
-        duration: 200
+        duration: 250,
+        curve: AnimationCurve.easeIn
       });
     }
   }
@@ -824,42 +822,38 @@ export class MainViewModel extends Observable {
         translate: { x: 0, y: screen.mainScreen.heightPixels },
         opacity: 0,
         scale: { x: 0.5, y: 0.5 },
-        duration: 200
+        duration: 100,
+        curve: AnimationCurve.linear
       });
     }
     if (this._powerAssistView) {
       this._powerAssistView.animate({
         opacity: 1,
         scale: { x: 1, y: 1 },
-        duration: 200
+        duration: 250,
+        curve: AnimationCurve.easeIn
       });
     }
   }
 
   private _applyTheme(theme?: string) {
-    this.hasAppliedTheme = true;
     // apply theme
-    sentryBreadCrumb('applying theme');
+    this.hasAppliedTheme = true;
     try {
       if (theme === 'ambient' || this.isAmbient) {
         this._showAmbientTime();
-        Log.D('applying ambient theme');
         themes.applyThemeCss(ambientTheme, 'theme-ambient.css');
       } else {
         this._showMainDisplay();
-        Log.D('applying default theme');
         themes.applyThemeCss(defaultTheme, 'theme-default.css');
       }
     } catch (err) {
       Sentry.captureException(err);
-      Log.E('apply theme error:', err);
     }
-    sentryBreadCrumb('theme applied');
     this._applyStyle();
   }
 
   private _applyStyle() {
-    sentryBreadCrumb('applying style');
     try {
       if (this.pager) {
         try {
@@ -870,14 +864,11 @@ export class MainViewModel extends Observable {
           }
         } catch (err) {
           Sentry.captureException(err);
-          Log.E('apply style error:', err);
         }
       }
     } catch (err) {
       Sentry.captureException(err);
-      Log.E('apply style error:', err);
     }
-    sentryBreadCrumb('style applied');
   }
 
   private _registerForSmartDriveEvents() {
@@ -1866,7 +1857,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1931,7 +1922,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2353,7 +2344,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => { }
+            onTap: () => {}
           };
         });
       }
@@ -2730,36 +2721,6 @@ export class MainViewModel extends Observable {
     }
     // Log.D('chinsize:', this.chinSize);
   }
-
-  // async onSerialNumberTapped() {
-  //   // determine if we have shown the permissions request
-  //   const hasShownRequest =
-  //     appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
-  //   const p = android.Manifest.permission.READ_PHONE_STATE;
-  //   const needPermission =
-  //     !hasPermission(p) &&
-  //     (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
-  //       p
-  //     ) ||
-  //       !hasShownRequest);
-  //   // update the has-shown-request
-  //   appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
-  //   if (needPermission) {
-  //     await alert({
-  //       title: L('permissions-request.title'),
-  //       message: L('permissions-reasons.phone-state'),
-  //       okButtonText: L('buttons.ok')
-  //     });
-  //     try {
-  //       await requestPermissions([p], () => {});
-  //     } catch (permissionsObj) {
-  //       // could not get the permission
-  //     }
-  //   } else {
-  //     throw new SmartDriveException(L('failures.permissions'));
-  //   }
-  //   this._updateSerialNumber();
-  // }
 
   // #endregion "Private Functions"
 }
