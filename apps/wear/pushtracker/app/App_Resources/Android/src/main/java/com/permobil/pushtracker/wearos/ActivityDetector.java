@@ -183,8 +183,6 @@ public class ActivityDetector {
   private long lastLogTimeMs = 0;
   private long numDetections = 0;
   private long totalDetectionDuration = 0;
-  //private float prediction_sum = 0.0f;
-  //private boolean push_detected = false;
 
   /**
    * Main inference Function for detecting activity
