@@ -1,7 +1,8 @@
 import { hasPermission } from 'nativescript-permissions';
+import { WearOsLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
-import { View } from 'tns-core-modules/ui/core/view';
-import { ad } from 'tns-core-modules/utils/utils';
+import { screen } from 'tns-core-modules/platform';
+import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 
 declare const com: any;
 
@@ -23,7 +24,7 @@ export function getSerialNumber() {
 export function saveSerialNumber(sn: string) {
   // save it to datastore for service to use
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = ad
+  const sharedPreferences = androidUtils
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const editor = sharedPreferences.edit();
@@ -36,7 +37,7 @@ export function saveSerialNumber(sn: string) {
 
 export function loadSerialNumber() {
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = ad
+  const sharedPreferences = androidUtils
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const savedSerial = sharedPreferences.getString(
@@ -46,51 +47,29 @@ export function loadSerialNumber() {
   return savedSerial;
 }
 
-export function hideOffScreenLayout(
-  view: View,
-  position: { x: number; y: number }
-) {
-  return new Promise((resolve, reject) => {
-    if (view) {
-      view.visibility = 'collapse';
-      view
-        .animate({
-          target: view,
-          duration: 300,
-          translate: {
-            x: position.x,
-            y: position.y
-          }
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
-    }
-  });
-}
+export function configureLayout(layout: WearOsLayout) {
+  let insetPadding = 0;
+  let chinSize = 0;
 
-export function showOffScreenLayout(view: View) {
-  return new Promise((resolve, reject) => {
-    if (view) {
-      view.visibility = 'visible';
-      view
-        .animate({
-          target: view,
-          duration: 300,
-          translate: {
-            x: 0,
-            y: 0
-          }
-        })
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
+  // determine inset padding
+  const androidConfig = androidUtils
+    .getApplicationContext()
+    .getResources()
+    .getConfiguration();
+  const isCircleWatch = androidConfig.isScreenRound();
+  const screenWidth = screen.mainScreen.widthPixels;
+  const screenHeight = screen.mainScreen.heightPixels;
+
+  if (isCircleWatch) {
+    insetPadding = Math.round(0.146467 * screenWidth);
+    // if the height !== width then there is a chin!
+    if (screenWidth !== screenHeight && screenWidth > screenHeight) {
+      chinSize = screenWidth - screenHeight;
     }
-  });
+  }
+
+  return {
+    insetPadding,
+    chinSize
+  };
 }
