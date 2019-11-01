@@ -1,15 +1,12 @@
 import { Log } from '@permobil/core';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
 import { Page, ShowModalOptions, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { KinveyService } from '../../../services';
-import { getSerialNumber } from '../../../utils';
+import { configureLayout, getSerialNumber } from '../../../utils';
 
 let closeCallback;
-let page: Page;
-let wearOsLayout: WearOsLayout;
 
 // values for UI databinding via bindingContext
 const data = {
@@ -29,27 +26,9 @@ export function onCloseTap(args) {
   closeCallback();
 }
 
-export function onShowErrorHistory(args) {
-  const errorHistoryPage = 'pages/modals/error_history/error_history';
-  const btn = args.object;
-  const option: ShowModalOptions = {
-    context: {
-      insetPadding: data.insetPadding,
-      chinSize: data.chinSize,
-      sqliteService: data.sqliteService
-    },
-    closeCallback: () => {
-      // we dont do anything with the about to return anything
-    },
-    animated: false,
-    fullscreen: true
-  };
-  btn.showModal(errorHistoryPage, option);
-}
-
-export async function onShownModally(args: ShownModallyData) {
+export function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
-  page = args.object as Page;
+  const page = args.object as Page;
 
   const kinveyService = args.context.kinveyService as KinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
@@ -77,8 +56,16 @@ export async function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;
 
-  wearOsLayout = page.getViewById('wearOsLayout');
-  configureLayout(wearOsLayout);
+  const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+  const res = configureLayout(wearOsLayout);
+  page.bindingContext.set('chinSize', res.chinSize);
+  page.bindingContext.set('insetPadding', res.insetPadding);
+  wearOsLayout.nativeView.setPadding(
+    res.insetPadding,
+    res.insetPadding,
+    res.insetPadding,
+    0
+  );
 
   // get the user data and then update the bindingContext data
   // doing this after the bindingContext is set since it can take a second to fetch this data
@@ -94,33 +81,19 @@ export async function onShownModally(args: ShownModallyData) {
   });
 }
 
-function configureLayout(layout: WearOsLayout) {
-  Log.D('customWOLInsetLoaded', layout);
-
-  // determine inset padding
-  const androidConfig = androidUtils
-    .getApplicationContext()
-    .getResources()
-    .getConfiguration();
-  const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
-
-  if (isCircleWatch) {
-    data.insetPadding = Math.round(0.146467 * screenWidth);
-    // if the height !== width then there is a chin!
-    if (screenWidth !== screenHeight && screenWidth > screenHeight) {
-      data.chinSize = screenWidth - screenHeight;
-    }
-  }
-  layout.nativeView.setPadding(
-    data.insetPadding,
-    data.insetPadding,
-    data.insetPadding,
-    0
-  );
-
-  page.bindingContext.set('insetPadding', data.insetPadding);
-  page.bindingContext.set('chinSize', data.chinSize);
-  page.bindingContext.set('onCloseTap', onCloseTap);
+export function onShowErrorHistory(args) {
+  const btn = args.object;
+  const option: ShowModalOptions = {
+    context: {
+      insetPadding: data.insetPadding,
+      chinSize: data.chinSize,
+      sqliteService: data.sqliteService
+    },
+    closeCallback: () => {
+      // we dont do anything with the about to return anything
+    },
+    animated: false,
+    fullscreen: true
+  };
+  btn.showModal('pages/modals/error_history/error_history', option);
 }
