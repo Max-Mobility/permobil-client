@@ -22,9 +22,23 @@ import java.util.Calendar;
 // Class defining how the activity data will be collected per day
 public class DailyActivity {
   private static final String TAG = "DailyActivity";
-  private static final long MAX_ALLOWED_COAST_TIME_MS = 30 * 1000;
-  // convert to ns
-  private static final long COAST_TIME_THRESHOLD = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // nano seconds
+
+  // Maximum amount of time allowed between pushes to be considered
+  // when updating coast time. Value is in nanoseconds.
+  private static final long COAST_TIME_THRESHOLD = 30 * 1000 * 1000 * 1000; // ns
+
+  // Minimum number of pushes before we try updating the coast time
+  // threshold
+  private static final int COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT = 20;
+
+  // Factor used to scale average coast time by to determine coast
+  // time threshold
+  private static final float COAST_THRESHOLD_FACTOR = 5.0;
+
+  // Minimum time for coast threshold setting (to keep it from getting
+  // too small)
+  private static final float MIN_COAST_TIME_THRESHOLD = 10.0f;
+
   private static final long RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
 
   // individual record of activity with standard start time in 30
@@ -187,9 +201,6 @@ public class DailyActivity {
     if (detection.activity != ActivityDetector.Detection.Activity.PUSH) {
       return;
     }
-    int coastUpdateNumber = 20;
-    int coastThresholdNumber = 5;
-    float minCoastTimeThreshold = 10.0f;
     float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
     Record rec = getRecord(detectionTimeMs);
@@ -198,14 +209,14 @@ public class DailyActivity {
     // now increment the total pushes
     this.push_count += 1;
     // calculate coast_time_threshold
-    if (this.push_count < coastUpdateNumber) {
+    if (this.push_count < COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
       coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     } else {
-      float nCoastTime = this.coast_time_avg * coastThresholdNumber * (1000.0f * 1000.0f * 1000.0f);
+      float nCoastTime = this.coast_time_avg * COAST_THRESHOLD_FACTOR * (1000.0f * 1000.0f * 1000.0f);
       if (nCoastTime > (float) COAST_TIME_THRESHOLD){
         coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
-      } else if (nCoastTime < minCoastTimeThreshold) {
-        coastTimeThreshold = minCoastTimeThreshold;
+      } else if (nCoastTime < MIN_COAST_TIME_THRESHOLD) {
+        coastTimeThreshold = MIN_COAST_TIME_THRESHOLD;
       } else {
         coastTimeThreshold = nCoastTime;
       }
