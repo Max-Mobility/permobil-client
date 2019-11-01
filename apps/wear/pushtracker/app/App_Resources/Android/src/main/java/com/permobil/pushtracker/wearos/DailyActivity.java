@@ -22,18 +22,36 @@ import java.util.Calendar;
 // Class defining how the activity data will be collected per day
 public class DailyActivity {
   private static final String TAG = "DailyActivity";
-  private static final long MAX_ALLOWED_COAST_TIME_MS = 60 * 1000;
-  // convert to ns
-  private static final long COAST_TIME_THRESHOLD = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000;
+
+  // Maximum amount of time allowed between pushes to be considered
+  // when updating coast time. Value is in nanoseconds.
+  private static final long COAST_TIME_THRESHOLD = 30 * 1000 * 1000 * 1000; // ns
+
+  // Minimum number of pushes before we try updating the coast time
+  // threshold
+  private static final int COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT = 20;
+
+  // Factor used to scale average coast time by to determine coast
+  // time threshold
+  private static final float COAST_THRESHOLD_FACTOR = 5.0f;
+
+  // Minimum time for coast threshold setting (to keep it from getting
+  // too small)
+  private static final float MIN_COAST_TIME_THRESHOLD = 10.0f;
+
   private static final long RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
 
   // individual record of activity with standard start time in 30
   // minute intervals
   public static class Record {
+    // these entries are the same as the ones in the parent class -
+    // look at their comments for more info
     @Key("start_time")
     public long start_time;
     @Key("push_count")
     public int push_count;
+    @Key("coast_time_count")
+    public int coast_time_count;
     @Key("coast_time_total")
     public float coast_time_total;
     @Key("coast_time_avg")
@@ -57,16 +75,10 @@ public class DailyActivity {
       this.start_time = now.toEpochMilli();
     }
 
-    public Record(
-                  long start,
-                  int pushes,
-                  float coastTimeTotal,
-                  float coastTimeAvg,
-                  float watchDist,
-                  float heartRate
-                  ) {
+    public Record(long start, int pushes, int coastTimeCount, float coastTimeTotal, float coastTimeAvg, float watchDist, float heartRate) {
       this.start_time = start;
       this.push_count = pushes;
+      this.coast_time_count = coastTimeCount;
       this.coast_time_total = coastTimeTotal;
       this.coast_time_avg = coastTimeAvg;
       this.distance_watch = watchDist;
@@ -101,6 +113,13 @@ public class DailyActivity {
   @Key("push_count")
   public int push_count;
 
+  // push count used for coast time - we should not count pushes on
+  // the edge of intervals for coast time, so we only update this
+  // counter when we update coast time total
+  @Key("coast_time_count")
+  public int coast_time_count;
+
+  // total number of seconds of coasting
   @Key("coast_time_total")
   public float coast_time_total;
 
@@ -135,6 +154,7 @@ public class DailyActivity {
     // now initialize the data
     this.watch_serial_number = "";
     this.push_count = 0;
+    this.coast_time_count = 0;
     this.coast_time_total = 0;
     this.coast_time_avg = 0;
     this.heart_rate = 0;
@@ -145,8 +165,8 @@ public class DailyActivity {
   }
 
   /**
-   * Returns the existing record (or makes a new one if needed) whose
-   * start is the most half-hour increment.
+   * Returns the existing record (or makes a new one if needed) whose start is the
+   * most half-hour increment.
    */
   private Record getRecord(long timeMs) {
     Record rec = null;
@@ -174,33 +194,50 @@ public class DailyActivity {
   }
 
   /**
-   * These functions are responsible for managing the record list
-   * every time activity data is updated.
+   * These functions are responsible for managing the record list every time
+   * activity data is updated.
    */
   public void onPush(ActivityDetector.Detection detection) {
     if (detection.activity != ActivityDetector.Detection.Activity.PUSH) {
       return;
     }
-    long detectionTimeMs =
-      (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
-    Record rec = getRecord( detectionTimeMs );
+    long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
+    Record rec = getRecord(detectionTimeMs);
     // increment record's pushes
     rec.push_count += 1;
     // now increment the total pushes
     this.push_count += 1;
+    // calculate coast_time_threshold
+    float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
+    if (this.push_count < COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
+      coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
+    } else {
+      float nCoastTime = this.coast_time_avg * COAST_THRESHOLD_FACTOR * (1000.0f * 1000.0f * 1000.0f);
+      if (nCoastTime > (float) COAST_TIME_THRESHOLD){
+        coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
+      } else if (nCoastTime < MIN_COAST_TIME_THRESHOLD) {
+        coastTimeThreshold = MIN_COAST_TIME_THRESHOLD;
+      } else {
+        coastTimeThreshold = nCoastTime;
+      }
+    }
     // calculate coast time here
     if (lastPush != null) {
       long timeDiffNs = detection.time - lastPush.time;
-      if (timeDiffNs < COAST_TIME_THRESHOLD && timeDiffNs > 0) {
+      if ((float) timeDiffNs < coastTimeThreshold && timeDiffNs > 0) {
         float coastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
         // update record coast time
         rec.coast_time_total += coastTime;
         // update the total coast time
         this.coast_time_total += coastTime;
+        // update record coast count
+        rec.coast_time_count += 1;
+        // update daily coast count
+        this.coast_time_count += 1;
         // update record average coast time
-        rec.coast_time_avg = rec.coast_time_total / rec.push_count;
+        rec.coast_time_avg = rec.coast_time_total / rec.coast_time_count;
         // now compute the average coast time
-        this.coast_time_avg = this.coast_time_total / this.push_count;
+        this.coast_time_avg = this.coast_time_total / this.coast_time_count;
       }
     }
     // update the last push
