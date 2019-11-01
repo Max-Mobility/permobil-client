@@ -12,9 +12,9 @@ dependencies {
   implementation 'com.android.support:wear:28.0.0'
   implementation 'com.google.code.gson:gson:2.8.5'
   implementation 'com.google.android.gms:play-services-wearable:16.0.1'
-  implementation 'com.google.android.support:wearable:2.4.0'
-	implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
-  compileOnly 'com.google.android.wearable:wearable:2.4.0'
+  implementation 'com.google.android.support:wearable:2.5.0'
+  implementation 'org.tensorflow:tensorflow-lite:2.0.0'
+  compileOnly 'com.google.android.wearable:wearable:2.5.0'
 }
 
 android {
@@ -23,7 +23,7 @@ android {
     applicationId = "com.permobil.pushtracker"
     minSdkVersion 26 // WearOS 2.0 minimum SDK is 25 - https://developer.android.com/training/wearables/apps/packaging.html
     targetSdkVersion 28
-    versionCode 2800024
+    versionCode 2800025
     versionName "0.2.1"
 		ndk {
 			abiFilters 'armeabi-v7a', 'arm64-v8a'
