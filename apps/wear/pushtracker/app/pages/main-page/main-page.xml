@@ -1,10 +1,9 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd"
-      xmlns:nac="nativescript-animated-circle"
-      xmlns:pager="nativescript-pager"
-      xmlns:box="nativescript-wear-os/packages/box-inset-layout"
-      xmlns:wol="nativescript-wear-os/packages/wear-os-layout"
-      xmlns:ui="nativescript-auto-fit-text"
-      navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" 
+  xmlns:nac="nativescript-animated-circle" 
+  xmlns:pager="nativescript-pager" 
+  xmlns:box="nativescript-wear-os/packages/box-inset-layout" 
+  xmlns:wol="nativescript-wear-os/packages/wear-os-layout" 
+  xmlns:ui="nativescript-auto-fit-text" navigatingTo="onNavigatedTo" marginBottom="{{ chinSize / 2 }}" actionBarHidden="true">
   <GridLayout rows="*" columns="*">
     <pager:Pager loaded="{{ onPagerLoaded }}" orientation="vertical" height="100%" width="100%" transformer="none" pagesCount="4" showNativePageIndicator="false" disableSwipe="{{ powerAssistActive || isTraining }}">
 
@@ -16,7 +15,7 @@
             <nac:AnimatedCircle row="0" col="0" width="300" height="300" class="distanceCircle" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ distanceGoalCurrentProgress }}">
             </nac:AnimatedCircle>
             // Coast Goal Circle
-            <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
+                        <!-- TODO: THIS W/H setting is a hack and shouldn't work! -->
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
@@ -109,8 +108,7 @@
                 <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                 <Label row="2" col="1" text="{{ L('settings.connect-pushtracker') }}" tap="{{ onConnectPushTrackerTap }}" class="settings-label" textWrap="true" />
                 <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
-                <Label row="3" col="1" text="{{ L('settings.install-smartdrive') }}" tap="{{ onInstallSmartDriveTap }}" class="settings-label"
-                       textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
+                <Label row="3" col="1" text="{{ L('settings.install-smartdrive') }}" tap="{{ onInstallSmartDriveTap }}" class="settings-label" textWrap="true" visibility="{{ isSmartDriveAppInstalled ? 'collapsed':'visible' }}" />
               </GridLayout>
             </ScrollView>
           </StackLayout>

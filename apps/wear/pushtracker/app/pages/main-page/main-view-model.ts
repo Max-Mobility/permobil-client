@@ -7,9 +7,8 @@ import last from 'lodash/last';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { Level, Sentry } from 'nativescript-sentry';
+import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
-import { SwipeDismissLayout } from 'nativescript-wear-os';
 import * as application from 'tns-core-modules/application';
 import * as appSettings from 'tns-core-modules/application-settings';
 import { EventData, Observable } from 'tns-core-modules/data/observable';
@@ -21,7 +20,7 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import { getSerialNumber, loadSerialNumber, saveSerialNumber } from '../../utils';
+import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -47,6 +46,8 @@ declare const com: any;
 let debug: boolean = false;
 
 export class MainViewModel extends Observable {
+  // #region "Public Members for UI"
+
   /**
    * Goal progress data.
    *   * CurrentProgress: [0,100] used for ring display
@@ -60,27 +61,34 @@ export class MainViewModel extends Observable {
   @Prop()
   distanceGoalCurrentValueDisplay = this.distanceGoalCurrentValue.toFixed(1);
   @Prop() distanceGoalValueDisplay = this.distanceGoalValue.toFixed(1);
-
   @Prop() coastGoalValue: number = 0;
   @Prop() coastGoalCurrentValue: number = 0;
   @Prop() coastGoalCurrentProgress: number =
     (this.coastGoalCurrentValue / this.coastGoalValue) * 100.0;
   @Prop() coastGoalCurrentValueDisplay = this.coastGoalCurrentValue.toFixed(1);
   @Prop() coastGoalValueDisplay = this.coastGoalValue.toFixed(1);
-
   @Prop() distanceUnits: string = '';
-
   /**
    * For showing button to install SD.W app
    */
   @Prop() isSmartDriveAppInstalled: boolean = false;
-  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
-  private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
+  // for managing when we send data to server
+  @Prop() watchIsCharging: boolean = false;
 
-  private pager: Pager = null;
-  private _mainPage: ViewBase = null;
-  private _synchronizingModal: string = 'pages/modals/synchronizing/synchronizing';
-  private _synchronizingView: ViewBase = null;
+  // state variables
+  @Prop() isAmbient: boolean = false;
+
+  /**
+   * Data to bind to the Distance Chart repeater.
+   */
+  @Prop() distanceChartData: any[] = null;
+  @Prop() distanceChartMaxValue: string;
+
+  /**
+   * Data to bind to the Coast Chart repeater.
+   */
+  @Prop() coastChartData: any[];
+  @Prop() coastChartMaxValue: string;
 
   /**
    * Settings
@@ -100,23 +108,17 @@ export class MainViewModel extends Observable {
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
 
-  // for managing when we send data to server
-  @Prop() watchIsCharging: boolean = false;
+  // #endregion "Public Members for UI"
 
-  // state variables
-  @Prop() isAmbient: boolean = false;
+  // #region "Private Members"
+  private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
+  private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
-  /**
-   * Data to bind to the Distance Chart repeater.
-   */
-  @Prop() distanceChartData: any[] = null;
-  @Prop() distanceChartMaxValue: string;
-
-  /**
-   * Data to bind to the Coast Chart repeater.
-   */
-  @Prop() coastChartData: any[];
-  @Prop() coastChartMaxValue: string;
+  private pager: Pager = null;
+  private _mainPage: ViewBase = null;
+  private _synchronizingModal: string =
+    'pages/modals/synchronizing/synchronizing';
+  private _synchronizingView: ViewBase = null;
 
   // used to update the chart display when the date changes
   private lastChartDay = null;
@@ -143,15 +145,19 @@ export class MainViewModel extends Observable {
     'market://details?id=com.permobil.smartdrive.wearos';
   private serviceDataReceiver = new DataBroadcastReceiver();
   private hasAppliedTheme: boolean = false;
+  // #endregion "Private Members"
 
   constructor() {
     super();
-    this._sentryBreadCrumb('Main-View-Model constructor.');
+    sentryBreadCrumb('Main-View-Model constructor.');
+    // determine inset padding
     this._setupInsetChin();
   }
 
+  // #region "Public Functions"
+
   async onMainPageLoaded(args: EventData) {
-    this._sentryBreadCrumb('onMainPageLoaded');
+    sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
         // apply theme
@@ -205,7 +211,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -284,13 +290,17 @@ export class MainViewModel extends Observable {
     );
   }
 
+  // #endregion "Public Functions"
+
+  // #region "Private Functions"
+
   private async _init() {
-    this._sentryBreadCrumb('Main-View-Model _init.');
+    sentryBreadCrumb('Main-View-Model _init.');
 
     // handle application lifecycle events
-    this._sentryBreadCrumb('Registering app event handlers.');
+    sentryBreadCrumb('Registering app event handlers.');
     this._registerAppEventHandlers();
-    this._sentryBreadCrumb('App event handlers registered.');
+    sentryBreadCrumb('App event handlers registered.');
 
     this._registerForServiceDataUpdates();
 
@@ -313,14 +323,14 @@ export class MainViewModel extends Observable {
     );
     console.timeEnd('Sentry_Init');
 
-    this._sentryBreadCrumb('Creating services...');
+    sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([
       SqliteService,
       KinveyService
     ]);
     this.sqliteService = injector.get(SqliteService);
     this.kinveyService = injector.get(KinveyService);
-    this._sentryBreadCrumb('All Services created.');
+    sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings
     this._initSqliteTables();
@@ -331,16 +341,16 @@ export class MainViewModel extends Observable {
     }
 
     // load settings from memory
-    this._sentryBreadCrumb('Loading settings.');
+    sentryBreadCrumb('Loading settings.');
     this._loadSettings();
-    this._sentryBreadCrumb('Settings loaded.');
+    sentryBreadCrumb('Settings loaded.');
 
     // load activity data
     this._loadCurrentActivityData();
 
-    this._sentryBreadCrumb('Updating display.');
+    sentryBreadCrumb('Updating display.');
     this._updateDisplay();
-    this._sentryBreadCrumb('Display updated.');
+    sentryBreadCrumb('Display updated.');
 
     // register for time updates
     this._registerForTimeUpdates();
@@ -354,7 +364,7 @@ export class MainViewModel extends Observable {
   }
 
   private async _initSqliteTables() {
-    this._sentryBreadCrumb('Initializing SQLite...');
+    sentryBreadCrumb('Initializing SQLite...');
     try {
       console.time('SQLite_Init');
       // create / load tables for activity data
@@ -367,7 +377,7 @@ export class MainViewModel extends Observable {
       ];
       await Promise.all(sqlitePromises);
       console.timeEnd('SQLite_Init');
-      this._sentryBreadCrumb('SQLite has been initialized.');
+      sentryBreadCrumb('SQLite has been initialized.');
     } catch (err) {
       // Sentry.captureException(err);
       Log.E('Could not make table:', err);
@@ -476,7 +486,7 @@ export class MainViewModel extends Observable {
   }
 
   private _registerForServiceDataUpdates() {
-    this._sentryBreadCrumb('Registering for service data updates.');
+    sentryBreadCrumb('Registering for service data updates.');
     this.serviceDataReceiver.onReceiveFunction = this._onServiceData.bind(this);
     const context = ad.getApplicationContext();
     androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
@@ -487,7 +497,7 @@ export class MainViewModel extends Observable {
         com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DATA_INTENT_KEY
       )
     );
-    this._sentryBreadCrumb('Service Data Update registered.');
+    sentryBreadCrumb('Service Data Update registered.');
   }
 
   private async _onMessageReceived(data: {
@@ -595,7 +605,7 @@ export class MainViewModel extends Observable {
       WearOsComms.registerDataCallback(this._onDataReceived.bind(this));
       Log.D('initializing wear os comms!');
       WearOsComms.initWatch();
-      this._sentryBreadCrumb('Wear os comms started.');
+      sentryBreadCrumb('Wear os comms started.');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('could not advertise as companion');
@@ -604,13 +614,13 @@ export class MainViewModel extends Observable {
 
   private async _sendIntentToService() {
     try {
-      this._sentryBreadCrumb('Sending intent to Activity Service.');
+      sentryBreadCrumb('Sending intent to Activity Service.');
       const intent = new android.content.Intent();
       const context = application.android.context;
       intent.setClassName(context, 'com.permobil.pushtracker.ActivityService');
       intent.setAction('ACTION_START_SERVICE');
       context.startService(intent);
-      this._sentryBreadCrumb('Activity Service started.');
+      sentryBreadCrumb('Activity Service started.');
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -633,7 +643,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -655,7 +665,7 @@ export class MainViewModel extends Observable {
 
   private _applyTheme(theme?: string) {
     // apply theme
-    this._sentryBreadCrumb('applying theme');
+    sentryBreadCrumb('applying theme');
     this.hasAppliedTheme = true;
     try {
       if (theme === 'ambient' || this.isAmbient) {
@@ -667,12 +677,12 @@ export class MainViewModel extends Observable {
       // Sentry.captureException(err);
       Log.E('apply theme error:', err);
     }
-    this._sentryBreadCrumb('theme applied');
+    sentryBreadCrumb('theme applied');
     this._applyStyle();
   }
 
   private _applyStyle() {
-    this._sentryBreadCrumb('applying style');
+    sentryBreadCrumb('applying style');
     try {
       if (this.pager) {
         try {
@@ -683,14 +693,12 @@ export class MainViewModel extends Observable {
           }
         } catch (err) {
           Sentry.captureException(err);
-          Log.E('apply style error:', err);
         }
       }
     } catch (err) {
       Sentry.captureException(err);
-      Log.E('apply style error:', err);
     }
-    this._sentryBreadCrumb('style applied');
+    sentryBreadCrumb('style applied');
   }
 
   /**
@@ -699,9 +707,8 @@ export class MainViewModel extends Observable {
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
-      this._sentryBreadCrumb('*** enterAmbient ***');
+      sentryBreadCrumb('*** enterAmbient ***');
       this.isAmbient = true;
-      Log.D('*** enterAmbient ***');
       this._applyTheme();
     });
 
@@ -710,22 +717,20 @@ export class MainViewModel extends Observable {
     });
 
     application.on('exitAmbient', () => {
-      this._sentryBreadCrumb('*** exitAmbient ***');
+      sentryBreadCrumb('*** exitAmbient ***');
       this.isAmbient = false;
-      Log.D('*** exitAmbient ***');
       this._applyTheme();
     });
 
     // Activity lifecycle event handlers
     application.on(application.exitEvent, async () => {
-      this._sentryBreadCrumb('*** appExit ***');
+      sentryBreadCrumb('*** appExit ***');
       await WearOsComms.stopWatch();
     });
     application.on(
       application.lowMemoryEvent,
       (args: application.ApplicationEventData) => {
-        this._sentryBreadCrumb('*** appLowMemory ***');
-        Log.D('App low memory', args.android);
+        sentryBreadCrumb('*** appLowMemory ***');
       }
     );
   }
@@ -736,7 +741,7 @@ export class MainViewModel extends Observable {
     });
   }
 
-  showSynchronizing() {
+  private showSynchronizing() {
     const option: ShowModalOptions = {
       context: {},
       closeCallback: () => {
@@ -745,10 +750,13 @@ export class MainViewModel extends Observable {
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-    this._synchronizingView = this._mainPage.showModal(this._synchronizingModal, option);
+    this._synchronizingView = this._mainPage.showModal(
+      this._synchronizingModal,
+      option
+    );
   }
 
-  hideSynchronizing() {
+  private hideSynchronizing() {
     this._synchronizingView.closeModal();
   }
 
@@ -876,10 +884,10 @@ export class MainViewModel extends Observable {
     // monitor the clock / system time for display and logging:
     const timeReceiverCallback = (androidContext, intent) => {
       try {
-        // this._sentryBreadCrumb('timeReceiverCallback');
+        // sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this.lastChartDay)) {
-          this._sentryBreadCrumb('timereceiver - updating display for new day');
+          sentryBreadCrumb('timereceiver - updating display for new day');
           this._updateDisplay();
         }
       } catch (error) {
@@ -978,7 +986,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() { }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions
@@ -1186,11 +1194,5 @@ export class MainViewModel extends Observable {
     // Log.D('chinsize:', this.chinSize);
   }
 
-  private _sentryBreadCrumb(message: string) {
-    Sentry.captureBreadcrumb({
-      message,
-      category: 'info',
-      level: Level.Info
-    });
-  }
+  // #endregion "Private Functions"
 }
