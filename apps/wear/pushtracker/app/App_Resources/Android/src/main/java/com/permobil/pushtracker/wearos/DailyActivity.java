@@ -224,7 +224,7 @@ public class DailyActivity {
     // calculate coast time here
     if (lastPush != null) {
       long timeDiffNs = detection.time - lastPush.time;
-      if (timeDiffNs < coastTimeThreshold && timeDiffNs > 0) {
+      if ((float) timeDiffNs < coastTimeThreshold && timeDiffNs > 0) {
         float coastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
         // update record coast time
         rec.coast_time_total += coastTime;
