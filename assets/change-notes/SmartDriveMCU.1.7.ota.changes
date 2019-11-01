@@ -1,0 +1,17 @@
+{
+  "en": [
+    "SmartDrive Switch Control Indication - switch control LEDs indicate power assist and motor state. They will flash if a PushTracker is connected or switch control is enabled, and will turn solid while the motor is driving.",
+    "SmartDrive Switch Control Modes - SmartDrive Switch Control can be configured in one of two modes: Momentary or Latching. While in Momentary mode, the SmartDrive will only drive while the switch is being held - accelerating up to the configured Switch Control max speed. While in Latching mode, the SmartDrive will accelerate up to the configured Switch Control max speed and will stop accelerating and hold the current speed if the user releases the button; simply press the button again to turn off the motor.",
+    "SmartDrive Switch Control Speed - the SmartDrive Switch Control now has its own configurable max speed setting, independent of the max speed setting for the PushTracker!"
+  ],
+  "es": [],
+  "de": [],
+  "fr": [],
+  "nl": [],
+  "ja": [],
+  "ko": [],
+  "sv": [],
+  "ru": [],
+  "zh-CN": [],
+  "zh": []
+}
