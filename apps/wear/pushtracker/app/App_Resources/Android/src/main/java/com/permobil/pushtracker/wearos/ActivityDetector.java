@@ -181,7 +181,6 @@ public class ActivityDetector {
 
   private static final long LOG_TIME_MS = 1000;
   private long lastLogTimeMs = 0;
-  private long numDetections = 0;
   private long totalDetectionDuration = 0;
 
   /**
@@ -214,42 +213,8 @@ public class ActivityDetector {
     long endTime = System.nanoTime();
     long duration = (endTime - startTime);
     // Log.d(TAG, "Inference duration: " + duration);
-    /*
-     * // average the detection durations numDetections++; totalDetectionDuration +=
-     * duration; long now = System.currentTimeMillis(); long timeDiffMs = now -
-     * lastLogTimeMs; if (timeDiffMs > LOG_TIME_MS) { double average =
-     * (totalDetectionDuration / numDetections) / 1000000000.0; Log.d(TAG,
-     * "Average inference duration: " + average); numDetections = 0;
-     * totalDetectionDuration = 0; lastLogTimeMs = now; }
-     */
     // get the prediction
-    numDetections++;
     float prediction = parsedPrediction[0][0];
-    // prediction_sum += prediction;
-    // if (numDetections % 50 == 0) {
-    //   Log.e(TAG, "prediction_sum: " + prediction_sum);
-    // }
-    // if (numDetections == 5) {
-    //   Log.e(TAG, "data:" + data[0] + " " + data[1] + " " + data[2] + " " + data[3] + " " + data[4] + " " + data[5]);
-    // }
-    //if (!push_detected && prediction > predictionThreshold) {
-    //if (numDetections % 10 == 0) {
-      // Log.e(TAG,
-      //     "input_his:" + inputHistory[9] + " " + inputHistory[8] + " " + inputHistory[7] + " "
-      //         + inputHistory[6] + " " + inputHistory[5] + " " + inputHistory[4] + " "
-      //         + inputHistory[3] + " " + inputHistory[2] + " " + inputHistory[1] + " "
-      //         + inputHistory[0]);
-      
-    //}
-
-    // if (push_detected && prediction < predictionThreshold) {
-    //   Log.e(TAG,
-    //       "prediction_his:" + predictionHistory[0] + " " + predictionHistory[1] + " " + predictionHistory[2] + " "
-    //           + predictionHistory[3] + " " + predictionHistory[4] + " " + predictionHistory[5] + " "
-    //           + predictionHistory[6] + " " + predictionHistory[7] + " " + predictionHistory[8] + " "
-    //           + predictionHistory[9]);
-    //   push_detected = false;
-    // }
     // update the prediction history
     updatePredictions(prediction);
     // determine the activity
@@ -269,12 +234,6 @@ public class ActivityDetector {
         return new Detection(); // no valid detection
       }
     }
-    // if (lastActivityTime > 0) {
-
-    //   if (push_detected) {
-    //     return new Detection(); // no valid detection
-    //   }
-    // }
     // make sure the confidences are above the threshold
     boolean predictionsWereGood = true;
     for (int i = 0; i < predictionHistory.length; i++) {
@@ -285,12 +244,11 @@ public class ActivityDetector {
     if (!predictionsWereGood) {
       return new Detection();
     }
-    // determine the activity based on the prediction output
+    // TODO: determine the activity based on the prediction output
     // everything was good - now retrun a valid detection based
     Detection detection = new Detection(predictionHistory[0], Detection.Activity.PUSH, timestamp);
     // update the timestamp of the last activity
     lastActivityTime = detection.time;
-    //push_detected = true;
     return detection;
   }
 
