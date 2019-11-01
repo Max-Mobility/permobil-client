@@ -54,6 +54,7 @@
       "timeout": "App connection has timed out."
     },
     "connect": "Could not connect to SmartDrive.",
+    "could-not-enable-tap-sensor": "Could not enable tap sensor.",
     "getting-error": "Failed getting SmartDrive error.",
     "must-wear-watch": "[Check for Wrist] Setting is enabled, therefore the smartwatch must be worn to control your SmartDrive.",
     "no-network": "No network available, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.",
