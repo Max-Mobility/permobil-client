@@ -30,6 +30,8 @@ public class DailyActivity {
   // individual record of activity with standard start time in 30
   // minute intervals
   public static class Record {
+    // these entries are the same as the ones in the parent class -
+    // look at their comments for more info
     @Key("start_time")
     public long start_time;
     @Key("push_count")
@@ -97,9 +99,13 @@ public class DailyActivity {
   @Key("push_count")
   public int push_count;
 
+  // push count used for coast time - we should not count pushes on
+  // the edge of intervals for coast time, so we only update this
+  // counter when we update coast time total
   @Key("coast_time_count")
   public int coast_time_count;
 
+  // total number of seconds of coasting
   @Key("coast_time_total")
   public float coast_time_total;
 
@@ -151,13 +157,10 @@ public class DailyActivity {
   private Record getRecord(long timeMs) {
     Record rec = null;
     int numRecords = records.size();
-    //Log.e(TAG, "numRecords: " + numRecords);
     if (numRecords > 0) {
       // determine if we need a new record
       Record lastRec = records.get(numRecords - 1);
       long timeDiffMs = timeMs - lastRec.start_time;
-      //Log.e(TAG, "lastRec.start_time: " + lastRec.start_time/1000);
-      //Log.e(TAG, "timeDiffMs: " + timeDiffMs/1000);
       if (timeDiffMs > RECORD_LENGTH_MS) {
         // time for a new record
         rec = new Record();
@@ -189,11 +192,6 @@ public class DailyActivity {
     float minCoastTimeThreshold = 10.0f;
     float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
     long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
-    // Log.e(TAG, "getTime: " + (new Date()).getTime()/1000);
-    // Log.e(TAG, "detection.time: " + detection.time/1000000000L);
-    // Log.e(TAG, "elapsedRealtimeNanos: " + SystemClock.elapsedRealtimeNanos()/1000000000L);
-    // Log.e(TAG, "detectionTimeMs: " + detectionTimeMs/1000);
-    
     Record rec = getRecord(detectionTimeMs);
     // increment record's pushes
     rec.push_count += 1;
@@ -215,7 +213,6 @@ public class DailyActivity {
     // calculate coast time here
     if (lastPush != null) {
       long timeDiffNs = detection.time - lastPush.time;
-      //Log.e(TAG,"timeDiffNs: "+timeDiffNs/1000000000);
       if ((float) timeDiffNs < coastTimeThreshold && timeDiffNs > 0) {
         float coastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
         // update record coast time
@@ -230,10 +227,6 @@ public class DailyActivity {
         rec.coast_time_avg = rec.coast_time_total / rec.coast_time_count;
         // now compute the average coast time
         this.coast_time_avg = this.coast_time_total / this.coast_time_count;
-        // Log.e(TAG,"coast_time_count:this "+this.coast_time_count);
-        // Log.e(TAG,"coast_time_count:rec "+rec.coast_time_count);
-        // Log.e(TAG,"coast_time_avg:this "+this.coast_time_avg);
-        // Log.e(TAG,"coast_time_avg:rec "+rec.coast_time_avg);
       }
     }
     // update the last push
