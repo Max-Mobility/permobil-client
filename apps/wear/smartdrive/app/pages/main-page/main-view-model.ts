@@ -385,7 +385,6 @@ export class MainViewModel extends Observable {
     }
     const didEnableTapSensor = this._enableTapSensor();
     if (!didEnableTapSensor) {
-      // TODO: translate this alert!
       alert({
         title: L('failures.title'),
         message: L('failures.could-not-enable-tap-sensor'),
