@@ -310,7 +310,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -363,8 +363,8 @@ export class MainViewModel extends Observable {
       context: {
         kinveyService: this._kinveyService,
         sqliteService: this._sqliteService,
-        bleVersion: this.smartDrive ? this.smartDrive.ble_version_string : '',
-        mcuVersion: this.smartDrive ? this.smartDrive.mcu_version_string : ''
+        bleVersion: this.smartDrive ? this.smartDrive.ble_version_string : '---',
+        mcuVersion: this.smartDrive ? this.smartDrive.mcu_version_string : '---'
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
@@ -778,7 +778,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1861,7 +1861,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1926,7 +1926,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2348,7 +2348,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }
