@@ -1,8 +1,14 @@
 import { Log } from '@permobil/core';
+import { L } from '@permobil/nativescript';
+import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
+import * as application from 'tns-core-modules/application';
+import * as appSettings from 'tns-core-modules/application-settings';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { Page, ShowModalOptions, ShownModallyData } from 'tns-core-modules/ui/page';
 import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { DataKeys } from '../../../enums';
+import { SmartDriveException } from '../../../models';
 import { KinveyService } from '../../../services';
 import { configureLayout, getSerialNumber } from '../../../utils';
 
@@ -96,4 +102,34 @@ export function onShowErrorHistory(args) {
     fullscreen: true
   };
   btn.showModal('pages/modals/error_history/error_history', option);
+}
+
+export async function onSerialNumberTap() {
+  // determine if we have shown the permissions request
+  const hasShownRequest =
+    appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
+  const p = android.Manifest.permission.READ_PHONE_STATE;
+  const needPermission =
+    !hasPermission(p) &&
+    (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
+      p
+    ) ||
+      !hasShownRequest);
+  // update the has-shown-request
+  appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
+  if (needPermission) {
+    await alert({
+      title: L('permissions-request.title'),
+      message: L('permissions-reasons.phone-state'),
+      okButtonText: L('buttons.ok')
+    });
+    try {
+      await requestPermissions([p], () => {});
+    } catch (permissionsObj) {
+      // could not get the permission
+    }
+  } else {
+    throw new SmartDriveException(L('failures.permissions'));
+  }
+  this._updateSerialNumber();
 }
