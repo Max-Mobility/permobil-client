@@ -237,7 +237,6 @@ public class ActivityDetector {
     // make sure the confidences are above the threshold
     boolean predictionsWereGood = true;
     for (int i = 0; i < predictionHistory.length; i++) {
-    //for (int i = 0; i < 1; i++) {
       float prediction = predictionHistory[i];
       predictionsWereGood = predictionsWereGood && prediction > predictionThreshold;
     }
