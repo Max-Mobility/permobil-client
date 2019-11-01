@@ -24,8 +24,8 @@ public class DailyActivity {
   private static final String TAG = "DailyActivity";
   private static final long MAX_ALLOWED_COAST_TIME_MS = 30 * 1000;
   // convert to ns
-  private static final long COAST_TIME_THRESHOLD = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; //nano seconds
-  private static final long RECORD_LENGTH_MS =  30 * 60 * 1000; // 30 minutes
+  private static final long COAST_TIME_THRESHOLD = MAX_ALLOWED_COAST_TIME_MS * 1000 * 1000; // nano seconds
+  private static final long RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
 
   // individual record of activity with standard start time in 30
   // minute intervals
