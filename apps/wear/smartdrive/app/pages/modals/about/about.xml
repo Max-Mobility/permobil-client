@@ -7,7 +7,7 @@
       <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
         <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
           <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
-          <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="{{ onCloseTap }}" class="settings-label" textWrap="true" />
+          <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
 
           <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
           <Label row="1" col="1" text="{{ L('settings.error-history') }}" tap="onShowErrorHistory" class="settings-label" textWrap="true" />

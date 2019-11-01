@@ -1,29 +1,45 @@
 import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
+import { WearOsLayout } from 'nativescript-wear-os';
+import { Observable } from 'tns-core-modules/data/observable';
+import { Page, ShowModalOptions } from 'tns-core-modules/ui/page';
 import { SettingsService } from '../../../services';
+import { configureLayout } from '../../../utils';
 
 export class SettingsViewModel extends Observable {
+  @Prop() insetPadding = 0;
+  @Prop() chinSize = 0;
   /**
    * SmartDrive Settings UI:
    */
   @Prop() activeSettingToChange = '';
   @Prop() changeSettingKeyString = ' ';
   @Prop() changeSettingKeyValue: any = ' ';
-  private tempSettings = new Device.Settings();
-  private tempSwitchControlSettings = new Device.SwitchControlSettings();
-  settingsService: SettingsService;
+  private _tempSettings = new Device.Settings();
+  private _tempSwitchControlSettings = new Device.SwitchControlSettings();
+  private _settingsService: SettingsService;
 
-  async onSettingsPageLoaded(args: EventData) {
-    // this.settingsService.loadSettings();
+  constructor(page: Page, settingsService: SettingsService, data) {
+    super();
+    this._settingsService = settingsService;
+    this._settingsService.loadSettings();
+    const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+    const res = configureLayout(wearOsLayout);
+    this.chinSize = res.chinSize;
+    this.insetPadding = res.insetPadding;
+    wearOsLayout.nativeView.setPadding(
+      this.insetPadding,
+      this.insetPadding,
+      this.insetPadding,
+      0
+    );
   }
 
   onChangeSettingsItemTap(args) {
     // copy the current settings into temporary store
-    this.tempSettings.copy(this.settingsService.settings);
-    this.tempSwitchControlSettings.copy(
-      this.settingsService.switchControlSettings
+    this._tempSettings.copy(this._settingsService.settings);
+    this._tempSwitchControlSettings.copy(
+      this._settingsService.switchControlSettings
     );
     const tappedId = (args.object as any).id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
@@ -67,24 +83,24 @@ export class SettingsViewModel extends Observable {
         activeSettingToChange: this.activeSettingToChange,
         changeSettingKeyString: this.changeSettingKeyString,
         changeSettingKeyValue: this.changeSettingKeyValue,
-        disableWearCheck: this.settingsService.disableWearCheck,
-        settings: this.settingsService.settings,
-        switchControlSettings: this.settingsService.switchControlSettings
+        disableWearCheck: this._settingsService.disableWearCheck,
+        settings: this._settingsService.settings,
+        switchControlSettings: this._settingsService.switchControlSettings
       },
       closeCallback: (
         confirmedByUser,
-        tempSettings,
-        tempSwitchControlSettings,
+        _tempSettings,
+        _tempSwitchControlSettings,
         disableWearCheck
       ) => {
         if (confirmedByUser) {
-          this.settingsService.settings.copy(tempSettings);
-          this.settingsService.switchControlSettings.copy(
-            tempSwitchControlSettings
+          this._settingsService.settings.copy(_tempSettings);
+          this._settingsService.switchControlSettings.copy(
+            _tempSwitchControlSettings
           );
-          this.settingsService.disableWearCheck = disableWearCheck;
-          this.settingsService.hasSentSettings = false;
-          this.settingsService.saveSettings();
+          this._settingsService.disableWearCheck = disableWearCheck;
+          this._settingsService.hasSentSettings = false;
+          this._settingsService.saveSettings();
           // // now update any display that needs settings:
           // this.updateSettingsDisplay();
           // warning / indication to the user that they've updated their settings
@@ -105,16 +121,16 @@ export class SettingsViewModel extends Observable {
     let translationKey = '';
     switch (this.activeSettingToChange) {
       case 'maxspeed':
-        this.changeSettingKeyValue = `${this.tempSettings.maxSpeed} %`;
+        this.changeSettingKeyValue = `${this._tempSettings.maxSpeed} %`;
         break;
       case 'acceleration':
-        this.changeSettingKeyValue = `${this.tempSettings.acceleration} %`;
+        this.changeSettingKeyValue = `${this._tempSettings.acceleration} %`;
         break;
       case 'tapsensitivity':
-        this.changeSettingKeyValue = `${this.tempSettings.tapSensitivity} %`;
+        this.changeSettingKeyValue = `${this._tempSettings.tapSensitivity} %`;
         break;
       case 'powerassistbuzzer':
-        if (this.tempSettings.disablePowerAssistBeep) {
+        if (this._tempSettings.disablePowerAssistBeep) {
           this.changeSettingKeyValue = L(
             'sd.settings.power-assist-buzzer.disabled'
           );
@@ -125,24 +141,24 @@ export class SettingsViewModel extends Observable {
         }
         break;
       case 'controlmode':
-        this.changeSettingKeyValue = `${this.tempSettings.controlMode}`;
+        this.changeSettingKeyValue = `${this._tempSettings.controlMode}`;
         return;
       case 'units':
         translationKey =
-          'sd.settings.units.' + this.tempSettings.units.toLowerCase();
+          'sd.settings.units.' + this._tempSettings.units.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolmode':
         translationKey =
           'sd.switch-settings.mode.' +
-          this.tempSwitchControlSettings.mode.toLowerCase();
+          this._tempSwitchControlSettings.mode.toLowerCase();
         this.changeSettingKeyValue = L(translationKey);
         return;
       case 'switchcontrolspeed':
-        this.changeSettingKeyValue = `${this.tempSwitchControlSettings.maxSpeed} %`;
+        this.changeSettingKeyValue = `${this._tempSwitchControlSettings.maxSpeed} %`;
         return;
       case 'wearcheck':
-        if (this.settingsService.disableWearCheck) {
+        if (this._settingsService.disableWearCheck) {
           this.changeSettingKeyValue = L(
             'settings.watch-required.values.disabled'
           );

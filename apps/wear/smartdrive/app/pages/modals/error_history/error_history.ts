@@ -5,15 +5,12 @@ import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
+import { configureLayout } from '../../../utils';
 
 let closeCallback;
-let page: Page;
-let wearOsLayout: WearOsLayout;
 let sqliteService: SqliteService;
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -43,7 +40,7 @@ export function onCloseTap(args) {
 
 export async function onShownModally(args: ShownModallyData) {
   Log.D('error-history-page onShownModally');
-  page = args.object as Page;
+  const page = args.object as Page;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // Sqlite service
@@ -54,16 +51,24 @@ export async function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;
 
-  wearOsLayout = page.getViewById('wearOsLayout');
-  configureLayout(wearOsLayout);
+  const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+  const res = configureLayout(wearOsLayout);
+  page.bindingContext.set('chinSize', res.chinSize);
+  page.bindingContext.set('insetPadding', res.insetPadding);
+  wearOsLayout.nativeView.setPadding(
+    res.insetPadding,
+    res.insetPadding,
+    res.insetPadding,
+    0
+  );
 
   showErrorHistory();
 }
 
-function formatDate(d: Date, fmt: string) {
-  return format(d, fmt, {
-    locale: dateLocales[getDefaultLang()] || dateLocales['en']
-  });
+export function selectErrorTemplate(item, index, items) {
+  if (item.isBack) return 'back';
+  else if (index === items.length - 1) return 'last';
+  else return 'error';
 }
 
 async function getRecentErrors(numErrors: number, offset: number = 0) {
@@ -97,12 +102,6 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
     Log.E('Could not get errors', err);
   }
   return errors;
-}
-
-export function selectErrorTemplate(item, index, items) {
-  if (item.isBack) return 'back';
-  else if (index === items.length - 1) return 'last';
-  else return 'error';
 }
 
 async function onLoadMoreErrors() {
@@ -142,32 +141,8 @@ function showErrorHistory() {
   onLoadMoreErrors();
 }
 
-function configureLayout(layout: WearOsLayout) {
-  Log.D('customWOLInsetLoaded', layout);
-
-  // determine inset padding
-  const androidConfig = androidUtils
-    .getApplicationContext()
-    .getResources()
-    .getConfiguration();
-  const isCircleWatch = androidConfig.isScreenRound();
-  const screenWidth = screen.mainScreen.widthPixels;
-  const screenHeight = screen.mainScreen.heightPixels;
-
-  if (isCircleWatch) {
-    data.insetPadding = Math.round(0.146467 * screenWidth);
-    // if the height !== width then there is a chin!
-    if (screenWidth !== screenHeight && screenWidth > screenHeight) {
-      data.chinSize = screenWidth - screenHeight;
-    }
-  }
-  layout.nativeView.setPadding(
-    data.insetPadding,
-    data.insetPadding,
-    data.insetPadding,
-    0
-  );
-
-  page.bindingContext.set('insetPadding', data.insetPadding);
-  page.bindingContext.set('chinSize', data.chinSize);
+function formatDate(d: Date, fmt: string) {
+  return format(d, fmt, {
+    locale: dateLocales[getDefaultLang()] || dateLocales['en']
+  });
 }
