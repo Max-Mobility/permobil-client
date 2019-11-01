@@ -469,10 +469,6 @@ export class MainViewModel extends Observable {
       com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_COAST,
       0
     );
-    // const distance = intent.getFloatExtra(
-    //   com.permobil.pushtracker.Constants.ACTIVITY_SERVICE_DISTANCE,
-    //   0
-    // );
     Log.D('Got service data', pushes, coast);
     this.currentPushCount = pushes;
     this.coastGoalCurrentValue = coast;
