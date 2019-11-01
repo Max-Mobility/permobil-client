@@ -32,7 +32,7 @@ export class TapDetector {
   private jerkThreshold: number = 30.0; // tap jerk threshold value
   private maxJerkThreshold: number = 70.0;
   private minJerkThreshold: number = 30.0;
-  private systemVersionJerkFactor: number = 2.5;
+  private systemVersionJerkFactor: number = 3.5;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
 
@@ -135,10 +135,10 @@ export class TapDetector {
         if (inputShapes[i] !== inputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-              '  Expected shape of ' +
-              inputShapes[i] +
-              ' but got ' +
-              inputShape[1]
+            '  Expected shape of ' +
+            inputShapes[i] +
+            ' but got ' +
+            inputShape[1]
           );
         }
       }
@@ -153,10 +153,10 @@ export class TapDetector {
         if (outputShapes[i] !== outputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-              '  Expected shape of ' +
-              outputShapes[i] +
-              ' but got ' +
-              outputShape[1]
+            '  Expected shape of ' +
+            outputShapes[i] +
+            ' but got ' +
+            outputShape[1]
           );
         }
       }
