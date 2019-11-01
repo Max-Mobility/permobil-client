@@ -43,8 +43,8 @@ export function onShownModally(args: ShownModallyData) {
   data.watchSerialNumber = getSerialNumber() || '---';
 
   // set mcu and ble version
-  data.mcuVersion = args.context.mcuVersion;
-  data.bleVersion = args.context.bleVersion;
+  data.mcuVersion = args.context.mcuVersion || '---';
+  data.bleVersion = args.context.bleVersion || '---';
 
   // SqliteService
   data.sqliteService = args.context.sqliteService;
@@ -124,7 +124,7 @@ export async function onSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => {});
+      await requestPermissions([p], () => { });
     } catch (permissionsObj) {
       // could not get the permission
     }

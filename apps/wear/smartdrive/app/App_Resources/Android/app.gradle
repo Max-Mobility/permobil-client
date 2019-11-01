@@ -26,8 +26,8 @@ android {
     applicationId = "com.permobil.smartdrive.wearos"
     minSdkVersion 26
     targetSdkVersion 28
-    versionCode 10016
-    versionName "0.3.12"
+    versionCode 10017
+    versionName "0.3.13"
 		ndk {
 			abiFilters 'armeabi-v7a', 'arm64-v8a'
 		}
