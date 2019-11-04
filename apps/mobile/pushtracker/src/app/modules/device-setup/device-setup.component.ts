@@ -14,7 +14,7 @@ import { action, alert } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerUserService } from '../../services';
+import { BluetoothService, LoggingService, LoggingCategory, PushTrackerUserService } from '../../services';
 
 // TODO: activity indicator for E2 on ios (during scanning /
 // connection / etc.)
@@ -610,7 +610,12 @@ export class DeviceSetupComponent implements OnInit {
       console.error('error connecting:', err);
       // clear out the companion so we can search again
       WearOsComms.clearCompanion();
-      this._logService.logException(err);
+      // this._logService.logException(err);
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        'Error connecting: ' + err.message + '\n\t' + err,
+        LoggingCategory.Warning
+      );
     }
     return didConnect;
   }
@@ -622,7 +627,12 @@ export class DeviceSetupComponent implements OnInit {
     try {
       await WearOsComms.disconnectCompanion();
     } catch (err) {
-      this._logService.logException(err);
+      // this._logService.logException(err);
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        'Error disconnecting: ' + err.message + '\n\t' + err,
+        LoggingCategory.Warning
+      );
     }
   }
 
@@ -642,7 +652,12 @@ export class DeviceSetupComponent implements OnInit {
         );
       }
     } catch (error) {
-      this._logService.logException(error);
+      // this._logService.logException(error);
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        'Error sending data: ' + error.message + '\n\t' + error,
+        LoggingCategory.Warning
+      );
     }
     return didSend;
   }
@@ -667,7 +682,12 @@ export class DeviceSetupComponent implements OnInit {
       }
     } catch (error) {
       // means no devices are connected
-      this._logService.logException(error);
+      // this._logService.logException(error);
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        'Error sending message: ' + error.message + '\n\t' + error,
+        LoggingCategory.Warning
+      );
     }
     return didSend;
   }

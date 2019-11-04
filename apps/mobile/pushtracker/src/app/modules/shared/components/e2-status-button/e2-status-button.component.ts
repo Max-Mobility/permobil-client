@@ -12,7 +12,7 @@ import { isAndroid } from 'tns-core-modules/platform';
 import { ContentView } from 'tns-core-modules/ui/content-view';
 import { alert } from 'tns-core-modules/ui/dialogs';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { LoggingService, ThemeService } from '../../../../services';
+import { LoggingService, ThemeService, LoggingCategory } from '../../../../services';
 import { DeviceSetupComponent } from '../../..';
 
 @Component({
@@ -137,6 +137,7 @@ export class E2StatusButtonComponent {
       });
   }
 
+
   private _updateWatchIcon() {
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
       this.iconString = 'pte2_black';
@@ -168,7 +169,12 @@ export class E2StatusButtonComponent {
       // clear out the companion so we can search again
       WearOsComms.clearCompanion();
       */
-      this._logService.logException(err);
+      // this._logService.logException(err);
+      this._logService.logBreadCrumb(
+        E2StatusButtonComponent.name,
+        'Error connecting: ' + err.message + '\n\t' + err,
+        LoggingCategory.Warning
+      );
     }
     return didConnect;
   }
@@ -180,7 +186,12 @@ export class E2StatusButtonComponent {
     try {
       await WearOsComms.disconnectCompanion();
     } catch (err) {
-      this._logService.logException(err);
+      // this._logService.logException(err);
+      this._logService.logBreadCrumb(
+        E2StatusButtonComponent.name,
+        'Error disconnecting: ' + err.message + '\n\t' + err,
+        LoggingCategory.Warning
+      );
     }
   }
 
@@ -200,7 +211,12 @@ export class E2StatusButtonComponent {
         );
       }
     } catch (error) {
-      this._logService.logException(error);
+      // this._logService.logException(error);
+      this._logService.logBreadCrumb(
+        E2StatusButtonComponent.name,
+        'Error sending data: ' + error.message + '\n\t' + error,
+        LoggingCategory.Warning
+      );
     }
     return didSend;
   }
@@ -224,7 +240,12 @@ export class E2StatusButtonComponent {
         );
       }
     } catch (error) {
-      this._logService.logException(error);
+      // this._logService.logException(error);
+      this._logService.logBreadCrumb(
+        E2StatusButtonComponent.name,
+        'Error sending message: ' + error.message + '\n\t' + error,
+        LoggingCategory.Warning
+      );
     }
     return didSend;
   }
