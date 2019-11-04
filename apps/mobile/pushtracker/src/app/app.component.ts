@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { TranslateService } from '@ngx-translate/core';
-import { Fab } from '@nstudio/nativescript-floatingactionbutton';
 import { PullToRefresh } from '@nstudio/nativescript-pulltorefresh';
 import { Log, PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
@@ -9,7 +8,6 @@ import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { registerElement } from 'nativescript-angular/element-registry';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { AnimatedCircle } from 'nativescript-animated-circle';
-import { Gif } from 'nativescript-gif';
 import { LottieView } from 'nativescript-lottie';
 import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 import { Sentry } from 'nativescript-sentry';
@@ -19,8 +17,6 @@ import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { APP_KEY, APP_SECRET, applyTheme, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from './utils';
 
-registerElement('Gif', () => Gif);
-registerElement('Fab', () => Fab);
 registerElement('AnimatedCircle', () => AnimatedCircle);
 registerElement('LottieView', () => LottieView);
 registerElement(
