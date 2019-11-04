@@ -1030,10 +1030,10 @@ export class PushTracker extends Observable {
       day: di.day,
       pushesWith: di.pushesWith,
       pushesWithout: di.pushesWithout,
-      coastWith: di.coastWith,
-      coastWithout: di.coastWithout,
-      distance: di.distance,
-      speed: di.speed,
+      coastWith: di.coastWith / 100.0,
+      coastWithout: di.coastWithout / 100.0,
+      distance: di.distance / 10.0,
+      speed: di.speed / 10.0,
       ptBattery: di.ptBattery,
       sdBattery: di.sdBattery
     });
@@ -1114,9 +1114,9 @@ export namespace PushTrackerData {
           changes: f['change_notes']
         };
       })
-      .catch(error => {
-        console.error('download error', url, error);
-      });
+        .catch(error => {
+          console.error('download error', url, error);
+        });
     }
 
     export function versionByteToString(version: number): string {

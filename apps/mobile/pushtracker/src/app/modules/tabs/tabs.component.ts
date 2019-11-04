@@ -315,8 +315,8 @@ export class TabsComponent {
     const month = data.month - 1;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
-    const coastWith = data.coastWith / 100.0;
-    const coastWithout = data.coastWithout / 100.0;
+    const coastWith = data.coastWith;
+    const coastWithout = data.coastWithout;
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
 
