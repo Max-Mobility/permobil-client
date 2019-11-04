@@ -18,25 +18,25 @@
         "title": "Activity"
       },
       {
-        "text": "It’s important to set goals since they give you long-term vision and short-term motivation.",
+        "text": "It’s important to set goals since they give you long-term vision and short-term motivation. Increasing your coast time and your distance traveled, while monitoring your number of pushes is the purpose of the activity and goal tracking within the PushTracker app.",
         "title": "Goals"
       },
       {
         "lottie": "wheelchair.json",
-        "text": "This represents how many times a person pushes the wheel during mobility. The fewer the pushes, the less demand on the person in the chair.",
+        "text": "This represents how many times a person pushes the wheel of their wheelchair during mobility. The fewer the pushes, the less demand on the person in the chair. The pushes reported by the PushTracker app are measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
         "title": "Pushing"
       },
       {
-        "text": "This represents the time between pushes. The greater the time between pushes, means the further the person goes without the demand on their muscles and joints.",
+        "text": "Coast time represents the time between pushes. A greater time between pushes means you go further without as much demand on your muscles and joints. The coast time reported by the PushTracker app is measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
         "title": "Coast time"
       },
       {
         "lottie": "bullseye.json",
-        "text": "This tracks how far you go each day. SmartDrive allows people to go further by providing an assist when they need it.",
+        "text": "Distance tracks how far you go each day. SmartDrive allows people to go further by providing an assist when they need it. The distance reported by the PushTracker app is gathered from the SmartDrive via data that the SmartDrive MX2+ WearOS app has sent to the server.",
         "title": "Distance"
       },
       {
-        "text": "Between pushing thousands of times a day, transferring to multiple surfaces and reaching above 90 degrees frequently, manual chair users put a lot of strain on their shoulders and upper extremities. While we can’t control everything—we can control how many pushes a person using a manual wheelchair needs to perform in to participate to the fullest. ",
+        "text": "Between pushing thousands of times a day, transferring to multiple surfaces and reaching above 90 degrees frequently, manual chair users put a lot of strain on their shoulders and upper extremities. While we can’t control everything—we can control how many pushes a person using a manual wheelchair needs to perform in to participate to the fullest.",
         "title": "Your Health"
       }
     ],
@@ -121,7 +121,7 @@
     "disable-power-assist-beep": "Disable Power Assist Beep",
     "display": "Display",
     "distance": "Distance",
-    "distance-description": "The daily goal you want to meet or exceed for distance traveled. Get out there and be active!",
+    "distance-description": "The daily goal you want to meet or exceed for distance traveled as measured by your SmartDrive. Get out there and be active!",
     "email": "Email",
     "email-error": "is not a valid email address.",
     "email-invalid": "Email is invalid",
@@ -153,11 +153,11 @@
     "password-required": "Password is required.",
     "power-assist-beep": "Power Assist Beep",
     "profile": "Profile",
-    "push-count-description": "The daily goal you want to meet or exceed for number of pushes.",
+    "push-count-description": "The number of pushes of your manual wheelchair you have performed each day.",
     "pushes": "pushes",
     "pushes-today": "pushes today",
     "pushtracker-connected": "PushTracker connected",
-    "pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration. \n\nYou can see plots of hourly activity only with the PushTracker E2.",
+    "pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration.\n\nYou can see plots of hourly activity only with the PushTracker E2.",
     "pushtracker-disconnected": "PushTracker disconnected",
     "pushtracker-paired": "PushTracker paired",
     "reset-acct": "Reset Account",
@@ -239,7 +239,7 @@
     "nl": "Dutch",
     "ru": "Russian",
     "sv": "Swedish",
-    "zh-CN": "Chinese (Simplified)"
+    "zh-CN": "Chinese (Traditional)"
   },
   "my-activity-component": {
     "title": "My Activity"
@@ -414,7 +414,7 @@
     "no-smartdrive-title": "No SmartDrive detected!",
     "no-smartdrive-message": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby. This change has not been committed to a SmartDrive.",
     "scan-again": "Scan Again",
-    "sync-button": "Sync with SmartDrive" 
+    "sync-button": "Sync with SmartDrive"
   },
   "sign-up": {
     "birthdate-required": "Birth date is required.",
