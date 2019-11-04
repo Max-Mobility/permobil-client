@@ -23,9 +23,15 @@ import java.util.Calendar;
 public class DailyActivity {
   private static final String TAG = "DailyActivity";
 
+  // time helpers
+  private static final long NANO_PER_SECOND = 1000L * 1000L * 1000L;
+  private static final long MICRO_PER_SECOND = 1000L * 1000L;
+  private static final long MILLI_PER_SECOND = 1000L;
+  private static final long NANO_PER_MILLI = 1000L * 1000L;
+
   // Maximum amount of time allowed between pushes to be considered
-  // when updating coast time. Value is in nanoseconds.
-  private static final long COAST_TIME_THRESHOLD_NS = 30 * 1000 * 1000 * 1000;
+  // when updating coast time. Value is in seconds.
+  private static final float COAST_TIME_THRESHOLD = 30.0f;
 
   // Minimum number of pushes before we try updating the coast time
   // threshold
@@ -36,11 +42,11 @@ public class DailyActivity {
   private static final float COAST_THRESHOLD_FACTOR = 5.0f;
 
   // Minimum time for coast threshold setting (to keep it from getting
-  // too small). Value is in nanoseconds.
-  private static final long MIN_COAST_TIME_THRESHOLD_NS = 10 * 1000 * 1000 * 1000;
+  // too small). Value is in seconds.
+  private static final float MIN_COAST_TIME_THRESHOLD = 10.0f;
 
   private static final int RECORD_LENGTH_MINUTES = 30;
-  private static final long RECORD_LENGTH_MS = RECORD_LENGTH_MINUTES * 60 * 1000;
+  private static final long RECORD_LENGTH_MS = RECORD_LENGTH_MINUTES * 60 * MILLI_PER_SECOND;
 
   // individual record of activity with standard start time in 30
   // minute intervals
@@ -202,27 +208,28 @@ public class DailyActivity {
     if (detection.activity != ActivityDetector.Detection.Activity.PUSH) {
       return;
     }
-    long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / 1000000L;
+    long detectionTimeMs = (new Date()).getTime() + (detection.time - SystemClock.elapsedRealtimeNanos()) / NANO_PER_MILLI;
     Record rec = getRecord(detectionTimeMs);
     // increment record's pushes
     rec.push_count += 1;
     // now increment the total pushes
     this.push_count += 1;
     // calculate coast_time_threshold
-    long coastTimeThresholdNs = COAST_TIME_THRESHOLD_NS;
+    float coastTimeThreshold = COAST_TIME_THRESHOLD;
     if (this.push_count >= COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
-      long coastTimeNs = (long)(this.coast_time_avg * COAST_THRESHOLD_FACTOR * (1000.0f * 1000.0f * 1000.0f));
-      if (coastTimeNs < MIN_COAST_TIME_THRESHOLD_NS) {
-        coastTimeThresholdNs = MIN_COAST_TIME_THRESHOLD_NS;
-      } else if (coastTimeNs < COAST_TIME_THRESHOLD_NS) {
-        coastTimeThresholdNs = coastTimeNs;
+      float coastTime = this.coast_time_avg * COAST_THRESHOLD_FACTOR;
+      if (coastTime < MIN_COAST_TIME_THRESHOLD) {
+        coastTimeThreshold = MIN_COAST_TIME_THRESHOLD;
+      } else if (coastTime < COAST_TIME_THRESHOLD) {
+        coastTimeThreshold = coastTime;
       }
     }
     // calculate coast time here
     if (lastPush != null) {
       long timeDiffNs = detection.time - lastPush.time;
-      if (timeDiffNs > 0 && timeDiffNs < coastTimeThresholdNs) {
-        float coastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
+      // Log.d(TAG, "time diff ns: " + timeDiffNs);
+      float coastTime = timeDiffNs / (float) NANO_PER_SECOND;
+      if (coastTime > 0 && coastTime < coastTimeThreshold) {
         // update record coast time
         rec.coast_time_total += coastTime;
         // update the total coast time

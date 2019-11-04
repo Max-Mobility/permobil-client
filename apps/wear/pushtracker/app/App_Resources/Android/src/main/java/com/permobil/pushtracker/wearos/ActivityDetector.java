@@ -32,7 +32,7 @@ public class ActivityDetector {
       this.confidence = 0;
       this.activity = Activity.INACTIVE;
       this.name = Activity.INACTIVE.name();
-      this.time = System.currentTimeMillis();
+      this.time = System.nanoTime();
     }
 
     public Detection(float conf, Activity activity, long ts) {
