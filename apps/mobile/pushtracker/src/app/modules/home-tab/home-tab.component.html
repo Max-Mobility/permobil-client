@@ -1,6 +1,6 @@
 <PullToRefresh
-  (loaded)="onHomeTabLoaded()"
-  (unloaded)="onHomeTabUnloaded()"
+  (loaded)="onHomeTabLoaded($event)"
+  (unloaded)="onHomeTabUnloaded($event)"
   (refresh)="refreshPlots($event)"
   [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
   [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"

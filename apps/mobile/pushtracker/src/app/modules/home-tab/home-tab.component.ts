@@ -81,7 +81,7 @@ export class HomeTabComponent {
     private _userService: PushTrackerUserService
   ) { }
 
-  onHomeTabLoaded() {
+  onHomeTabLoaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -93,9 +93,12 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
+    const pullRefresh = args.object;
+    pullRefresh.refreshing = true;
     this.refreshUserFromKinvey(false)
-      .then(() => {
-        this._loadWeeklyData();
+      .then(async () => {
+        await this._loadWeeklyData();
+        pullRefresh.refreshing = false;
       })
       .catch(err => {
         this._logService.logException(err);
@@ -114,7 +117,7 @@ export class HomeTabComponent {
     );
   }
 
-  onHomeTabUnloaded() {
+  onHomeTabUnloaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Unloaded');
   }
 
@@ -281,6 +284,7 @@ export class HomeTabComponent {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
+    pullRefresh.refreshing = true;
     this.weeklyActivityLoaded = false;
     this.refreshUserFromKinvey(true)
       .then(result => {
