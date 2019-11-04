@@ -72,7 +72,7 @@ export class JourneyTabComponent {
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService
-  ) {}
+  ) { }
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
@@ -165,7 +165,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-            this.todayUsage.distance_smartdrive_coast_start
+          this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -471,12 +471,6 @@ export class JourneyTabComponent {
           if (!journey.coastTime || journey.coastTime === 0) {
             if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
           }
-          // If coastTime is non-zero but less than say 5 seconds, then too hide the list item
-          else if (journey.coastTime) {
-            if (journey.coastTime < 0.05) {
-              continue;
-            }
-          }
 
           newJourneyItems.push({
             journey_type: journey.journeyType,
@@ -508,27 +502,27 @@ export class JourneyTabComponent {
             icon_small:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? imageFromResource(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_black'
-                      : 'smartdrive_material_black_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_black'
+                    : 'smartdrive_material_black_45'
+                )
                 : imageFromResource(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  ),
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                ),
             icon_large:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? imageFromResource(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
                 : imageFromResource(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
           });
         }
         return newJourneyItems;
@@ -575,19 +569,22 @@ export class JourneyTabComponent {
             journeyList[firstIndex].stats.coastTime =
               ((journeyList[firstIndex].stats.coastTimeTotal || 0) +
                 second.stats.coastTimeTotal || 0) /
-              ((journeyList[firstIndex].stats.pushCount || 0) +
-                second.stats.pushCount ||
+              ((journeyList[firstIndex].stats.coastCount || 0) +
+                second.stats.coastCount ||
                 0 ||
                 1);
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
-                second.stats.coastDistance || 0;
+              second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance =
               (journeyList[firstIndex].stats.driveDistance || 0) +
-                second.stats.driveDistance || 0;
+              second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount =
               (journeyList[firstIndex].stats.pushCount || 0) +
-                second.stats.pushCount || 0;
+              second.stats.pushCount || 0;
+            journeyList[firstIndex].stats.coastCount =
+              (journeyList[firstIndex].stats.coastCount || 0) +
+              second.stats.coastCount || 0;
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
@@ -678,6 +675,8 @@ export class JourneyTabComponent {
                   record.coast_time_total || 0;
                 this._journeyMap[record.start_time].pushCount =
                   record.push_count || 0;
+                this._journeyMap[record.start_time].coastCount =
+                  record.coast_time_count || 0;
               }
             }
           }
