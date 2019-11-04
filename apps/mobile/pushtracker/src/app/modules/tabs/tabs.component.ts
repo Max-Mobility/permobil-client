@@ -315,15 +315,15 @@ export class TabsComponent {
     const month = data.month - 1;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
-    const coastWith = data.coastWith;
-    const coastWithout = data.coastWithout;
+    const coastWith = data.coastWith / 100.0;
+    const coastWithout = data.coastWithout / 100.0;
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
 
     const dailyActivity = {
       _acl: { creator: this.user._id },
       coast_time_avg: coastWithout,
-      coast_time_total: coastWith + coastWithout,
+      coast_time_total: coastWithout * pushesWithout,
       date: YYYY_MM_DD(date),
       has_been_sent: false,
       push_count: pushesWithout,
