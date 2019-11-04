@@ -25,7 +25,7 @@ public class DailyActivity {
 
   // Maximum amount of time allowed between pushes to be considered
   // when updating coast time. Value is in nanoseconds.
-  private static final long COAST_TIME_THRESHOLD = 30 * 1000 * 1000 * 1000; // ns
+  private static final long COAST_TIME_THRESHOLD_NS = 30 * 1000 * 1000 * 1000;
 
   // Minimum number of pushes before we try updating the coast time
   // threshold
@@ -36,10 +36,11 @@ public class DailyActivity {
   private static final float COAST_THRESHOLD_FACTOR = 5.0f;
 
   // Minimum time for coast threshold setting (to keep it from getting
-  // too small)
-  private static final float MIN_COAST_TIME_THRESHOLD = 10.0f;
+  // too small). Value is in nanoseconds.
+  private static final long MIN_COAST_TIME_THRESHOLD_NS = 10 * 1000 * 1000 * 1000;
 
-  private static final long RECORD_LENGTH_MS = 30 * 60 * 1000; // 30 minutes
+  private static final int RECORD_LENGTH_MINUTES = 30;
+  private static final long RECORD_LENGTH_MS = RECORD_LENGTH_MINUTES * 60 * 1000;
 
   // individual record of activity with standard start time in 30
   // minute intervals
@@ -65,7 +66,7 @@ public class DailyActivity {
       // make the start time the time in milliseconds of the most
       // recent half-hour
       Instant now = Instant.now().truncatedTo(ChronoUnit.MINUTES);
-      int modulo = now.atZone(ZoneOffset.UTC).getMinute() % 30;
+      int modulo = now.atZone(ZoneOffset.UTC).getMinute() % RECORD_LENGTH_MINUTES;
       if (modulo > 0) {
         // if we're not on the 30 minute mark already, subtract
         // however many minutes it's been since the last half-hour
@@ -208,23 +209,19 @@ public class DailyActivity {
     // now increment the total pushes
     this.push_count += 1;
     // calculate coast_time_threshold
-    float coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
-    if (this.push_count < COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
-      coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
-    } else {
-      float nCoastTime = this.coast_time_avg * COAST_THRESHOLD_FACTOR * (1000.0f * 1000.0f * 1000.0f);
-      if (nCoastTime > (float) COAST_TIME_THRESHOLD){
-        coastTimeThreshold = (float) COAST_TIME_THRESHOLD;
-      } else if (nCoastTime < MIN_COAST_TIME_THRESHOLD) {
-        coastTimeThreshold = MIN_COAST_TIME_THRESHOLD;
-      } else {
-        coastTimeThreshold = nCoastTime;
+    long coastTimeThresholdNs = COAST_TIME_THRESHOLD_NS;
+    if (this.push_count >= COAST_THRESHOLD_UPDATE_MIN_PUSH_COUNT) {
+      long coastTimeNs = (long)(this.coast_time_avg * COAST_THRESHOLD_FACTOR * (1000.0f * 1000.0f * 1000.0f));
+      if (coastTimeNs < MIN_COAST_TIME_THRESHOLD_NS) {
+        coastTimeThresholdNs = MIN_COAST_TIME_THRESHOLD_NS;
+      } else if (coastTimeNs < COAST_TIME_THRESHOLD_NS) {
+        coastTimeThresholdNs = coastTimeNs;
       }
     }
     // calculate coast time here
     if (lastPush != null) {
       long timeDiffNs = detection.time - lastPush.time;
-      if ((float) timeDiffNs < coastTimeThreshold && timeDiffNs > 0) {
+      if (timeDiffNs > 0 && timeDiffNs < coastTimeThresholdNs) {
         float coastTime = timeDiffNs / (1000.0f * 1000.0f * 1000.0f);
         // update record coast time
         rec.coast_time_total += coastTime;
