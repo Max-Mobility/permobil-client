@@ -11,6 +11,7 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { isAndroid } from 'tns-core-modules/platform';
 import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
 import { layout } from 'tns-core-modules/utils/utils';
+import { differenceInCalendarDays } from 'date-fns';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
@@ -451,8 +452,8 @@ export class ActivityComponent implements OnInit {
       // If the start fo the week is 0th element in an array of size 7, what is the index of date?
       const getIndex = function(date1, date2) {
         // date1 = Week start, date2 = current date
-        const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-        return Math.ceil(timeDiff / (1000 * 3600 * 24));
+        const index = differenceInCalendarDays(date2, date1);
+        return index;
       };
 
       let weeklyActivity = null;
