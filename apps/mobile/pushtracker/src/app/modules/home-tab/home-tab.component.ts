@@ -143,8 +143,8 @@ export class HomeTabComponent {
     // Off to a good start if the user is > 0 of one of the goals but < 30% of both goals
     else if (
       (coastTimeValue > 0.0 || distanceValue > 0.0) &&
-      (coastTimeValue < 0.3 * coastTimeGoal &&
-        distanceValue < 0.3 * distanceGoal)
+      (this.coastTimeCirclePercentage < 30 &&
+        this.distanceCirclePercentage < 30)
     ) {
       this.todayMessage = this._translateService.instant(
         'home-tab.off-to-a-good-start'
@@ -153,9 +153,9 @@ export class HomeTabComponent {
     }
     // Going strong if the user is >= 30% of one of the goals but < 70% of both goals
     else if (
-      (coastTimeValue >= 0.3 * coastTimeGoal &&
-        coastTimeValue < coastTimeGoal) ||
-      (distanceValue >= 0.3 * distanceGoal && distanceValue < distanceGoal)
+      (this.coastTimeCirclePercentage >= 30 &&
+        this.coastTimeCirclePercentage < 70) ||
+      (this.distanceCirclePercentage >= 30 && this.distanceCirclePercentage < 70)
     ) {
       this.todayMessage = this._translateService.instant(
         'home-tab.going-strong'
@@ -164,8 +164,8 @@ export class HomeTabComponent {
     }
     // Only ${x} ${units} left if the user is >= 70% of one of the goals but < 100% of both goals
     else if (
-      coastTimeValue >= 0.7 * coastTimeGoal &&
-      coastTimeValue < coastTimeGoal
+      this.coastTimeCirclePercentage >= 70 &&
+      coastTimeValue < coastTimeGoal && distanceValue < distanceGoal
     ) {
       this.todayMessage =
         this._translateService.instant('home-tab.only') +
@@ -175,8 +175,8 @@ export class HomeTabComponent {
         this._translateService.instant('home-tab.seconds-left');
       return;
     } else if (
-      distanceValue >= 0.7 * distanceGoal &&
-      distanceValue < distanceGoal
+      this.distanceCirclePercentage >= 70 &&
+      distanceValue < distanceGoal && coastTimeValue < coastTimeGoal
     ) {
       this.todayMessage =
         this._translateService.instant('home-tab.only') +
@@ -194,10 +194,9 @@ export class HomeTabComponent {
         'home-tab.reached-coast-time-goal'
       );
       return;
-    } else if (
-      distanceValue >= distanceGoal &&
-      coastTimeValue < coastTimeGoal
-    ) {
+    }
+    // Reached ${goal name} goal, way to go! if the user is >= 100% of one goal but < 100% of the other goal
+    else if (distanceValue >= distanceGoal && coastTimeValue < coastTimeGoal) {
       this.todayMessage = this._translateService.instant(
         'home-tab.reached-distance-goal'
       );
