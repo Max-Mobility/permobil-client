@@ -573,6 +573,7 @@ export class JourneyTabComponent {
                 second.stats.coastCount ||
                 0 ||
                 1);
+            // accumulate the second into the first for each data
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
               second.stats.coastDistance || 0;
@@ -585,6 +586,9 @@ export class JourneyTabComponent {
             journeyList[firstIndex].stats.coastCount =
               (journeyList[firstIndex].stats.coastCount || 0) +
               second.stats.coastCount || 0;
+            journeyList[firstIndex].stats.coastTimeTotal =
+              (journeyList[firstIndex].stats.coastTimeTotal || 0) +
+              second.stats.coastTimeTotal || 0;
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
