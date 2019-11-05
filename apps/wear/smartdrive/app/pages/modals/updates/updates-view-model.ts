@@ -81,7 +81,7 @@ export class UpdatesViewModel extends Observable {
     } catch (error) {
       Sentry.captureException(error);
     }
-  };
+  }
 
   constructor(
     page: Page,
