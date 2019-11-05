@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Device, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
+import once from 'lodash/once';
 import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import * as appSettings from 'tns-core-modules/application-settings';
@@ -211,6 +212,11 @@ export class ProfileSettingsComponent implements OnInit {
         this.smartDrive.on(
           SmartDrive.smartdrive_connect_event,
           this._onSmartDriveConnect,
+          this
+        );
+        this.smartDrive.on(
+          SmartDrive.smartdrive_motor_info_event,
+          this._onSmartDriveMotorInfo,
           this
         );
         this.smartDrive.on(
@@ -705,15 +711,8 @@ export class ProfileSettingsComponent implements OnInit {
           this.versionInfo = `(SD ${this.smartDrive.mcu_version_string}, BT ${this.smartDrive.ble_version_string})`;
   }
 
-  private async _onSmartDriveConnect(_: any) {
-    this._logService.logBreadCrumb(
-      ProfileSettingsComponent.name,
-      'SmartDrive connected: ' + this.smartDrive.address
-    );
-    this._mcu_version = this.smartDrive.mcu_version_string;
-    this._ble_version = this.smartDrive.ble_version_string;
-    this._updateSmartDriveSectionLabel();
-
+  private _onceSyncAndDisconnect: any = null;
+  private async _syncAndDisconnectSmartDrive() {
     this._logService.logBreadCrumb(
       ProfileSettingsComponent.name,
       'Able to send settings to SmartDrive? ' + this.smartDrive.ableToSend
@@ -735,7 +734,7 @@ export class ProfileSettingsComponent implements OnInit {
             'profile-settings.sync-successful'
           );
           this.syncSuccessful = true;
-          await this._sleep(3000);
+          await this._sleep(300);
           this.syncingWithSmartDrive = false;
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -766,6 +765,22 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
+  private async _onSmartDriveMotorInfo(_: any) {
+    this._onceSyncAndDisconnect();
+  }
+
+  private async _onSmartDriveConnect(_: any) {
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'SmartDrive connected: ' + this.smartDrive.address
+    );
+    this._mcu_version = this.smartDrive.mcu_version_string;
+    this._ble_version = this.smartDrive.ble_version_string;
+    this._updateSmartDriveSectionLabel();
+    // set the once handler here for sending data
+    this._onceSyncAndDisconnect = once(this._syncAndDisconnectSmartDrive.bind(this));
+  }
+
   private async _onSmartDriveDisconnect(_: any) {
     this._logService.logBreadCrumb(
       ProfileSettingsComponent.name,
@@ -775,6 +790,11 @@ export class ProfileSettingsComponent implements OnInit {
     this.smartDrive.off(
       SmartDrive.smartdrive_connect_event,
       this._onSmartDriveConnect,
+      this
+    );
+    this.smartDrive.off(
+      SmartDrive.smartdrive_motor_info_event,
+      this._onSmartDriveMotorInfo,
       this
     );
     this.smartDrive.off(
