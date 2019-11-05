@@ -43,6 +43,7 @@ $retry-color: #db4537;
   .update-status-label {
     @extend .UPDATE_STATUS_LABEL_BASE;
     text-align: center;
+    color: $black;
   }
 
   .action-start {
