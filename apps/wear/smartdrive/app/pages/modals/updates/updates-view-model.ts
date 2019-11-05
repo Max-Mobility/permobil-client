@@ -43,7 +43,6 @@ const dateLocales = {
 
 export class UpdatesViewModel extends Observable {
   @Prop() updateProgressCircle: AnimatedCircle;
-  @Prop() updateProgressText: string = 'Foo';
   @Prop() smartDriveOtaProgress: number = 0;
   @Prop() smartDriveOtaState: string = null;
   @Prop() smartDriveOtaActions = new ObservableArray();
@@ -54,11 +53,7 @@ export class UpdatesViewModel extends Observable {
   @Prop() currentTimeMeridiem: string = '';
 
   // state variables
-  private powerAssistActive: boolean = false;
-  private motorOn = false;
-  private smartDriveCurrentBatteryPercentage: number = 0;
   private isAmbient: boolean = false;
-  private isUpdatingSmartDrive: boolean = false;
 
   // permissions for the app
   private permissionsNeeded = [
@@ -76,18 +71,28 @@ export class UpdatesViewModel extends Observable {
   private _savedSmartDriveAddress: string = null;
   private initialized: boolean = false;
   private wakeLock: any = null;
-  private closeCallback;
   private _updatesPage: Page;
   private hasAppliedTheme: boolean = false;
+
+  private timeReceiverCallback = (_1, _2) => {
+    try {
+      this.updateTimeDisplay();
+      sentryBreadCrumb('timeReceiverCallback');
+    } catch (error) {
+      Sentry.captureException(error);
+    }
+  };
 
   constructor(
     page: Page,
     private _bluetoothService: BluetoothService,
     private _kinveyService: KinveyService,
-    private _sqliteService: SqliteService
+    private _sqliteService: SqliteService,
+    private _closeCallback: any
   ) {
     super();
     this._updatesPage = page;
+    this.onUpdatesPageLoaded();
   }
 
   get SmartDriveWakeLock() {
@@ -140,7 +145,7 @@ export class UpdatesViewModel extends Observable {
     sentryBreadCrumb('Initialized Updates View Model');
   }
 
-  async onUpdatesPageLoaded(args: EventData) {
+  async onUpdatesPageLoaded() {
     sentryBreadCrumb('onUpdatesPageLoaded');
     // clear out ota actions
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
@@ -251,7 +256,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -369,9 +374,6 @@ export class UpdatesViewModel extends Observable {
     if (savedSd) {
       this.smartDrive.fromObject(savedSd);
     }
-    // update the displayed smartdrive data
-    this.smartDriveCurrentBatteryPercentage =
-      (this.smartDrive && this.smartDrive.battery) || 0;
   }
 
   saveSmartDriveStateToLS() {
@@ -382,6 +384,12 @@ export class UpdatesViewModel extends Observable {
         this.smartDrive.data()
       );
     }
+  }
+
+  closeModal() {
+    this.unregisterForSmartDriveEvents();
+    this.unregisterForTimeUpdates();
+    this._closeCallback();
   }
 
   onSmartDriveOtaStatus(args: any) {
@@ -417,7 +425,7 @@ export class UpdatesViewModel extends Observable {
         ...actions,
         {
           label: L('ota.action.back'),
-          func: this.closeCallback.bind(this),
+          func: this.closeModal.bind(this),
           action: 'ota.action.close',
           class: 'action-close'
         }
@@ -438,7 +446,7 @@ export class UpdatesViewModel extends Observable {
           ...actions,
           {
             label: L('ota.action.close'),
-            func: this.closeCallback.bind(this),
+            func: this.closeModal.bind(this),
             action: 'ota.action.close',
             class: 'action-close'
           }
@@ -456,8 +464,6 @@ export class UpdatesViewModel extends Observable {
     // update display of update progress
     this.smartDriveOtaProgress = 0;
     this.smartDriveOtaState = L('updates.checking-for-updates');
-    // some state variables for the update
-    this.isUpdatingSmartDrive = true;
     // @ts-ignore
     this.updateProgressCircle.spin();
     try {
@@ -613,7 +619,6 @@ export class UpdatesViewModel extends Observable {
       message: L('updates.changes') + '\n\n' + flatten(changes).join('\n\n'),
       okButtonText: L('buttons.ok')
     });
-    this.isUpdatingSmartDrive = true;
     sentryBreadCrumb('Beginning SmartDrive update');
     const bleFw = new Uint8Array(
       this.currentVersions['SmartDriveBLE.ota'].data
@@ -637,18 +642,16 @@ export class UpdatesViewModel extends Observable {
       );
       sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
-        if (this.closeCallback) {
-          this.smartDriveOtaActions.splice(
-            0,
-            this.smartDriveOtaActions.length,
-            {
-              label: L('ota.action.close'),
-              func: this.closeCallback.bind(this),
-              action: 'ota.action.close',
-              class: 'action-close'
-            }
-          );
-        }
+        this.smartDriveOtaActions.splice(
+          0,
+          this.smartDriveOtaActions.length,
+          {
+            label: L('ota.action.close'),
+            func: this.closeModal.bind(this),
+            action: 'ota.action.close',
+            class: 'action-close'
+          }
+        );
       }
     } catch (err) {
       return this.updateError(err, L('updates.failed'), `${err}`);
@@ -706,15 +709,13 @@ export class UpdatesViewModel extends Observable {
 
   updateError(err: any, msg: string, alertMsg?: string) {
     // TODO: Show 'CLOSE/BACK' button to close this modal
-    if (this.closeCallback) {
-      this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
-        label: L('ota.action.close'),
-        func: this.closeCallback.bind(this),
-        action: 'ota.action.close',
-        class: 'action-close'
-      });
-    }
-    sentryBreadCrumb(msg);
+    sentryBreadCrumb(`${err}: ${msg} - ${alertMsg}`);
+    this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+      label: L('ota.action.close'),
+      func: this.closeModal.bind(this),
+      action: 'ota.action.close',
+      class: 'action-close'
+    });
     Sentry.captureException(err);
     if (alertMsg !== undefined) {
       alert({
@@ -728,16 +729,14 @@ export class UpdatesViewModel extends Observable {
 
   stopUpdates(msg: string, doCancelOta: boolean = true) {
     this.releaseCPU();
-    this.updateProgressText = msg;
-    // make sure we update the state variable
-    this.isUpdatingSmartDrive = false;
+    this.smartDriveOtaState = msg;
 
     if (doCancelOta && this.smartDrive) {
       this.smartDrive.cancelOTA();
     }
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
-      func: this.closeCallback.bind(this),
+      func: this.closeModal.bind(this),
       action: 'ota.action.close',
       class: 'action-close'
     });
@@ -769,78 +768,6 @@ export class UpdatesViewModel extends Observable {
       await this._bluetoothService.initialize();
       return true;
     } catch (err) {
-      return false;
-    }
-  }
-
-  async saveNewSmartDrive(): Promise<any> {
-    sentryBreadCrumb('Saving new SmartDrive');
-    try {
-      // make sure everything works
-      const didEnsure = await this.ensureBluetoothCapabilities();
-      if (!didEnsure) {
-        return false;
-      }
-      // this.showScanning();
-      // scan for smartdrives
-      // @ts-ignore
-      this.scanningProgressCircle.spin();
-      await this._bluetoothService.scanForSmartDrives(3);
-      // this.hideScanning();
-      sentryBreadCrumb(
-        `Discovered ${BluetoothService.SmartDrives.length} SmartDrives`
-      );
-
-      // make sure we have smartdrives
-      if (BluetoothService.SmartDrives.length <= 0) {
-        alert({
-          title: L('failures.title'),
-          message: L('failures.no-smartdrives-found'),
-          okButtonText: L('buttons.ok')
-        });
-        return false;
-      }
-
-      // make sure we have only one smartdrive
-      if (BluetoothService.SmartDrives.length > 1) {
-        alert({
-          title: L('failures.title'),
-          message: L('failures.too-many-smartdrives-found'),
-          okButtonText: L('buttons.ok')
-        });
-        return false;
-      }
-
-      // these are the smartdrives that are pushed into an array on the bluetooth service
-      const sds = BluetoothService.SmartDrives;
-
-      // map the smart drives to get all of the addresses
-      const addresses = sds.map(sd => `${sd.address}`);
-
-      const result = await action({
-        title: L('settings.select-smartdrive'),
-        message: L('settings.select-smartdrive'),
-        actions: addresses,
-        cancelButtonText: L('buttons.cancel')
-      });
-      // if user selected one of the smartdrives in the action dialog, attempt to connect to it
-      if (addresses.indexOf(result) > -1) {
-        // save the smartdrive here
-        this.updateSmartDrive(result);
-        appSettings.setString(DataKeys.SD_SAVED_ADDRESS, result);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (err) {
-      sentryBreadCrumb('could not scan ' + err);
-      Sentry.captureException(err);
-      // this.hideScanning();
-      alert({
-        title: L('failures.title'),
-        message: `${L('failures.scan')}\n\n${err}`,
-        okButtonText: L('buttons.ok')
-      });
       return false;
     }
   }
@@ -877,10 +804,13 @@ export class UpdatesViewModel extends Observable {
 
   async connectToSavedSmartDrive() {
     if (!this.hasSavedSmartDrive()) {
-      const didSave = await this.saveNewSmartDrive();
-      if (!didSave) {
-        return false;
-      }
+      alert({
+        title: L('failures.title'),
+        message: L('failures.no-smartdrive-paired'),
+        okButtonText: L('buttons.ok')
+      });
+      this.updateError(null, L('failures.no-smartdrive-paired'));
+      return;
     }
 
     // try to connect to the SmartDrive
@@ -890,17 +820,6 @@ export class UpdatesViewModel extends Observable {
   async disconnectFromSmartDrive() {
     if (this.smartDrive) {
       await this.smartDrive.disconnect();
-      this.motorOn = false;
-    }
-  }
-
-  retrySmartDriveConnection() {
-    if (
-      this.powerAssistActive &&
-      this.smartDrive &&
-      !this.smartDrive.connected
-    ) {
-      setTimeout(this.connectToSavedSmartDrive.bind(this), 1 * 1000);
     }
   }
 
@@ -937,24 +856,25 @@ export class UpdatesViewModel extends Observable {
     }
   }
 
+  unregisterForTimeUpdates() {
+    application.android.unregisterBroadcastReceiver(
+      android.content.Intent.ACTION_TIME_TICK
+    );
+    application.android.unregisterBroadcastReceiver(
+      android.content.Intent.ACTION_TIMEZONE_CHANGED
+    );
+  }
+
   registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this.updateTimeDisplay();
-    const timeReceiverCallback = (_1, _2) => {
-      try {
-        this.updateTimeDisplay();
-        sentryBreadCrumb('timeReceiverCallback');
-      } catch (error) {
-        Sentry.captureException(error);
-      }
-    };
     application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIME_TICK,
-      timeReceiverCallback
+      this.timeReceiverCallback
     );
     application.android.registerBroadcastReceiver(
       android.content.Intent.ACTION_TIMEZONE_CHANGED,
-      timeReceiverCallback
+      this.timeReceiverCallback
     );
   }
 

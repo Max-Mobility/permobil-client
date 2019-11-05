@@ -134,6 +134,7 @@ export class MainViewModel extends Observable {
    * SmartDrive Data / state management
    */
   private smartDrive: SmartDrive;
+  private _isUpdatingSmartDrive: boolean = false;
   private _savedSmartDriveAddress: string = null;
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
@@ -154,7 +155,6 @@ export class MainViewModel extends Observable {
   private _sqliteService: SqliteService;
   private _kinveyService: KinveyService;
   private _settingsService: SettingsService;
-  private _debouncedOtaAction: any = null;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
   // Used for doing work while charing
@@ -428,6 +428,7 @@ export class MainViewModel extends Observable {
       });
       return;
     }
+    this._isUpdatingSmartDrive = true;
     // we have a smartdrive and a network, now check for updates
     const btn = args.object;
     const option: ShowModalOptions = {
@@ -438,6 +439,7 @@ export class MainViewModel extends Observable {
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
+        this._isUpdatingSmartDrive = false;
       },
       animated: false,
       fullscreen: true
@@ -877,12 +879,6 @@ export class MainViewModel extends Observable {
 
   private _registerForSmartDriveEvents() {
     this._unregisterForSmartDriveEvents();
-    // set up ota action handler
-    // debounced function to keep people from pressing it too frequently
-    this._debouncedOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
-      leading: true,
-      trailing: false
-    });
     // register for event handlers
     // set the event listeners for mcu_version_event and smartdrive_distance_event
     this.smartDrive.on(
@@ -1321,6 +1317,9 @@ export class MainViewModel extends Observable {
   }
 
   private async _onNetworkAvailable() {
+    if (this.powerAssistActive || this.isTraining || this._isUpdatingSmartDrive) {
+      return;
+    }
     if (this._sqliteService === undefined) {
       // if this has gotten called before sqlite has been fully set up
       return;

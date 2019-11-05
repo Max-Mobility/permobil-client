@@ -11,7 +11,8 @@ export function onShownModally(args: ShownModallyData) {
     page,
     args.context.bluetoothService,
     args.context.kinveyService,
-    args.context.sqliteService
+    args.context.sqliteService,
+    closeCallback
   );
 }
 
