@@ -597,6 +597,7 @@ export class ProfileSettingsComponent implements OnInit {
           await pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
+              await this._sleep(300);
               await pt.sendSwitchControlSettingsObject(
                 this.settingsService.switchControlSettings
               );
