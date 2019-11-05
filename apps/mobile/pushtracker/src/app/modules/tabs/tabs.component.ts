@@ -117,9 +117,12 @@ export class TabsComponent {
         !this.bluetoothAdvertised
       ) {
         this._logService.logBreadCrumb(TabsComponent.name, 'Asking for Bluetooth Permission');
+        this.bluetoothAdvertised = true;
         setTimeout(() => {
           this.askForPermissions()
             .then(() => {
+              this.registerBluetoothEvents();
+              this.registerPushTrackerEvents();
               if (!this._bluetoothService.advertising) {
                 this._logService.logBreadCrumb(TabsComponent.name, 'Starting Bluetooth');
                 // start the bluetooth service
@@ -127,9 +130,9 @@ export class TabsComponent {
               }
             })
             .catch(err => {
+              this.bluetoothAdvertised = false;
               this._logService.logException(err);
             });
-          this.bluetoothAdvertised = true;
         }, 5000);
       }
     });
@@ -138,11 +141,6 @@ export class TabsComponent {
 
   onRootBottomNavLoaded(_) {
     if (this._firstLoad) return;
-
-    setTimeout(() => {
-      this.registerBluetoothEvents();
-    }, 5000);
-    this.registerPushTrackerEvents();
 
     if (isAndroid) {
       this.permissionsNeeded.push(
@@ -265,6 +263,7 @@ export class TabsComponent {
    * BLUETOOTH EVENT MANAGEMENT
    */
   private registerBluetoothEvents() {
+    this.unregisterBluetoothEvents();
     // register for bluetooth events here
     this._bluetoothService.on(
       BluetoothService.advertise_error,
@@ -277,6 +276,19 @@ export class TabsComponent {
     this._bluetoothService.on(
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
+    );
+  }
+
+  private unregisterBluetoothEvents() {
+    // register for bluetooth events here
+    this._bluetoothService.off(
+      BluetoothService.advertise_error
+    );
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_connected
+    );
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_disconnected
     );
   }
 
@@ -440,7 +452,6 @@ export class TabsComponent {
     BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
     BluetoothService.PushTrackers.map(pt => {
       pt.off(PushTracker.paired_event);
-      // pt.off(PushTracker.connect_event);
       pt.off(PushTracker.settings_event);
       pt.off(PushTracker.push_settings_event);
       pt.off(PushTracker.switch_control_settings_event);
