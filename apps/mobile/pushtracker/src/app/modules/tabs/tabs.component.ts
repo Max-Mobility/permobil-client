@@ -453,7 +453,6 @@ export class TabsComponent {
     BluetoothService.PushTrackers.map(pt => {
       pt.off(PushTracker.paired_event);
       pt.off(PushTracker.settings_event);
-      pt.off(PushTracker.push_settings_event);
       pt.off(PushTracker.switch_control_settings_event);
     });
   }
@@ -467,11 +466,6 @@ export class TabsComponent {
     });
     // register for settings and push settings
     pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
-    pt.on(
-      PushTracker.push_settings_event,
-      this.onPushTrackerPushSettings,
-      this
-    );
     pt.on(
       PushTracker.switch_control_settings_event,
       this.onPushTrackerSwitchControlSettings,
@@ -527,42 +521,6 @@ export class TabsComponent {
           'actions.overwrite-remote-settings'
         ):
           pt.sendSettingsObject(this._settingsService.settings);
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
-  private async onPushTrackerPushSettings(args: any) {
-    const s = args.data.pushSettings;
-    const pt = args.object as PushTracker;
-    if (!this._settingsService.pushSettings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant('push-settings-different.title'),
-        message: this._translateService.instant(
-          'push-settings-different.message'
-        ),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.pushSettings.copy(s);
-          this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
-          break;
-        case this._translateService.instant(
-          'actions.overwrite-remote-settings'
-        ):
-          pt.sendPushSettingsObject(this._settingsService.pushSettings);
           break;
         case this._translateService.instant('actions.keep-both-settings'):
           break;
