@@ -93,16 +93,7 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-    const pullRefresh = args.object;
-    pullRefresh.refreshing = true;
-    this.refreshUserFromKinvey(false)
-      .then(async () => {
-        await this._loadWeeklyData();
-        pullRefresh.refreshing = false;
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+    this.refreshPlots(args);
 
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
@@ -725,6 +716,7 @@ export class HomeTabComponent {
   private async _updateProgress() {
     this.coastTimeGoalMessage =
       this._translateService.instant('home-tab.coast-for') + ' ';
+    this.coastTimePlotAnnotationValue = this.user.data.activity_goal_coast_time;
     this.coastTimeGoalValue =
       this.user.data.activity_goal_coast_time.toFixed(1) + '';
     this.coastTimeGoalUnit =
@@ -751,8 +743,10 @@ export class HomeTabComponent {
       (parseFloat(this.todayCoastTime) /
         this.user.data.activity_goal_coast_time) *
       100;
+    // update Y axis for coast time plot
+    this._updateCoastTimePlotYAxis();
 
-    // Update Y axis for coast distance plot
+    // Update Y axis for distance plot
     this.distancePlotAnnotationValue = convertToMilesIfUnitPreferenceIsMiles(
       this.user.data.activity_goal_distance,
       this.user.data.distance_unit_preference
