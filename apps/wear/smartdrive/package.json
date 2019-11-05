@@ -3,7 +3,7 @@
   "nativescript": {
     "id": "com.permobil.smartdrive.wearos",
     "tns-android": {
-      "version": "6.1.2"
+      "version": "6.2.0"
     }
   },
   "scripts": {
