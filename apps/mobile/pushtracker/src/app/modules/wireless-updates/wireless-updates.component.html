@@ -3,7 +3,7 @@
   <MockActionBar
     row="0"
     [title]="'wireless-updates.title' | translate"
-    [showBackNav]="(pushTracker ? pushTracker.canBackNavigate : true) && (smartDrive ? smartDrive.canBackNavigate : true)"
+    [showBackNav]="allowBackNav"
     [showMoreBtn]="true"
     (moreTapEvent)="onMoreBtnTap()"
     (navTapEvent)="closeModal()"

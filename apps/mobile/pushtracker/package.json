@@ -43,6 +43,7 @@
     "nativescript-download-progress": "~1.2.0",
     "nativescript-email": "~1.5.5",
     "nativescript-geolocation": "~5.1.0",
+    "nativescript-insomnia": "^1.2.3",
     "nativescript-iqkeyboardmanager": "~1.5.1",
     "nativescript-localstorage": "~2.0.1",
     "nativescript-lottie": "~4.0.0",

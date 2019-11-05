@@ -10,6 +10,7 @@ import {
   Files as KinveyFiles,
   Query as KinveyQuery
 } from 'kinvey-nativescript-sdk';
+import { keepAwake, allowSleepAgain } from 'nativescript-insomnia';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
@@ -41,6 +42,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   languagePreference: string = '';
   controlConfiguration: string = '';
   screenWidth = screen.mainScreen.widthDIPs;
+  allowBackNav: boolean = true;
 
   /**
    * SmartDrive Wireless Updates:
@@ -60,7 +62,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   public noSmartDriveDetected = false;
   private _throttledOtaAction: any = null;
   private _throttledOtaStatus: any = null;
-  public canBackNavigate = true;
 
   /**
    * PushTracker Data / state management
@@ -143,6 +144,28 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.pushTrackerCheckedForUpdates = false;
     this.pushTrackerOtaProgress = 0;
     this.checkForPushTrackerUpdates();
+  }
+
+  updateBackButton() {
+    this.allowBackNav =
+      (this.pushTracker ? this.pushTracker.canBackNavigate : true) &&
+      (this.smartDrive ? this.smartDrive.canBackNavigate : true);
+    if (this.allowBackNav) {
+      this.setBackNav(true);
+    } else {
+      this.setBackNav(false);
+    }
+  }
+
+  updateInsomnia() {
+    const canSleep =
+      (this.pushTracker ? this.pushTracker.canBackNavigate : true) &&
+      (this.smartDrive ? this.smartDrive.canBackNavigate : true);
+    if (!canSleep) {
+      keepAwake();
+    } else {
+      allowSleepAgain();
+    }
   }
 
   async getFirmwareData() {
@@ -288,9 +311,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
 
       // Now perform the SmartDrive updates if we need to
-      if (this.smartDrive) this.smartDrive.canBackNavigate = false;
       await this.performSmartDriveWirelessUpdate();
-      if (this.smartDrive) this.smartDrive.canBackNavigate = true;
     })
     .catch(err => {
       this._logService.logException(err);
@@ -396,7 +417,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
     // smartdrive needs to update
     try {
-      this.smartDrive.canBackNavigate = false;
       this.registerForSmartDriveEvents();
       await this.smartDrive.performOTA(
         bleFw,
@@ -405,10 +425,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         mcuVersion,
         300 * 1000
       );
-      this.smartDrive.canBackNavigate = true;
     } catch (err) {
       if (this.smartDrive) {
-        this.smartDrive.canBackNavigate = true;
         this.smartDrive.cancelOTA();
       }
     }
@@ -416,8 +434,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   registerForSmartDriveEvents() {
-    if (!this.smartDrive) return;
     this.unregisterForSmartDriveEvents();
+    if (!this.smartDrive) return;
+    this.smartDrive.canBackNavigate = false;
+    this.updateBackButton();
+    this.updateInsomnia();
     // set up ota action handler
     // throttled function to keep people from pressing it too frequently
     this._throttledOtaAction = debounce(this.smartDrive.onOTAActionTap, 500, {
@@ -435,34 +456,27 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledOtaStatus,
       this
     );
-    // disable back nav for iOS - add event listener for android hardware back button
-    this.setBackNav(false);
-    this.smartDrive.canBackNavigate = false;
   }
 
   unregisterForSmartDriveEvents() {
+    this.smartDrive.canBackNavigate = true;
+    this.updateBackButton();
+    this.updateInsomnia();
     if (!this.smartDrive) return;
     this.smartDrive.off(
       SmartDrive.smartdrive_ota_status_event,
       this._throttledOtaStatus,
       this
     );
-    this.smartDrive.canBackNavigate = true;
-    if (!this.pushTracker || !this.pushTracker.canBackNavigate)
-      this.setBackNav(true);
   }
 
   onSmartDriveOtaStatus(args: any) {
-    // this.canBackNavigate = true;
     // get the current progress of the update
     const progress = args.data.progress;
     // translate the state
     const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
-      // if (a.includes('cancel')) {
-      //   this.canBackNavigate = false;
-      // }
       const actionClass = 'action-' + last(a.split('.')) + ' compact';
       // translate the label
       const actionLabel = this._translateService.instant(a); // .replace('ota.action.', '');
@@ -480,7 +494,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.smartDriveOtaActions.length,
       ...actions
     );
-    this.smartDriveOtaState = state;
+    if (this.smartDriveOtaProgress > 0) {
+      this.smartDriveOtaState = `${this.smartDriveOtaProgress.toFixed(1)} % ${state}`;
+    } else {
+      this.smartDriveOtaState = state;
+    }
     if (!this.smartDriveCheckedForUpdates)
       this.smartDriveCheckedForUpdates = true;
     if (
@@ -635,9 +653,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
 
       // Now perform the PushTracker updates if we need to
-      if (this.pushTracker) this.pushTracker.canBackNavigate = false;
       await this.performPushTrackerWirelessUpdate();
-      if (this.pushTracker) this.pushTracker.canBackNavigate = true;
     })
     .catch(err => {
       this._logService.logException(err);
@@ -732,26 +748,26 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
     // pushtracker needs to update
     try {
-      this.pushTracker.canBackNavigate = false;
       this.registerForPushTrackerEvents();
       await this.pushTracker.performOTA(
         ptFw,
         ptVersion,
         300 * 1000
       );
-      this.pushTracker.canBackNavigate = true;
     } catch (err) {
       if (this.pushTracker) {
         this.pushTracker.cancelOTA();
-        this.pushTracker.canBackNavigate = true;
       }
     }
     this.unregisterForPushTrackerEvents();
   }
 
   registerForPushTrackerEvents() {
-    if (!this.pushTracker) return;
     this.unregisterForPushTrackerEvents();
+    if (!this.pushTracker) return;
+    this.pushTracker.canBackNavigate = false;
+    this.updateBackButton();
+    this.updateInsomnia();
     // set up ota action handler
     // throttled function to keep people from pressing it too frequently
     this._throttledPTOtaAction = debounce(
@@ -773,21 +789,18 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this._throttledPTOtaStatus,
       this
     );
-    // disable back nav for iOS - add event listener for android hardware back button
-    this.setBackNav(false);
-    this.pushTracker.canBackNavigate = false;
   }
 
   unregisterForPushTrackerEvents() {
+    this.pushTracker.canBackNavigate = true;
+    this.updateBackButton();
+    this.updateInsomnia();
     if (!this.pushTracker) return;
     this.pushTracker.off(
       PushTracker.pushtracker_ota_status_event,
       this._throttledPTOtaStatus,
       this
     );
-    this.pushTracker.canBackNavigate = true;
-    if (!this.smartDrive || !this.smartDrive.canBackNavigate)
-      this.setBackNav(true);
   }
 
   onPushTrackerOtaStatus(args: any) {
@@ -814,7 +827,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.pushTrackerOtaActions.length,
       ...actions
     );
-    this.pushTrackerOtaState = state;
+    if (this.pushTrackerOtaProgress > 0) {
+      this.pushTrackerOtaState = `${this.pushTrackerOtaProgress.toFixed(1)} % ${state}`;
+    } else {
+      this.pushTrackerOtaState = state;
+    }
     if (!this.pushTrackerCheckedForUpdates)
       this.pushTrackerCheckedForUpdates = true;
     if (
