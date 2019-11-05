@@ -276,7 +276,7 @@ export namespace Device {
       static Latching = 'Latching';
 
       static fromSettings(s: any): string {
-        const o = bindingTypeToString('SwitchControlMode', s.mode);
+        const o = bindingTypeToString('SwitchControlMode', s.Mode);
         return Device.SwitchControlSettings.Mode[o];
       }
     };
