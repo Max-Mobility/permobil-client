@@ -74,6 +74,11 @@ export class UpdatesViewModel extends Observable {
   private _updatesPage: Page;
   private hasAppliedTheme: boolean = false;
 
+  private _bluetoothService: BluetoothService;
+  private _kinveyService: KinveyService;
+  private _sqliteService: SqliteService;
+  private _closeCallback: any;
+
   private timeReceiverCallback = (_1, _2) => {
     try {
       this.updateTimeDisplay();
@@ -83,16 +88,8 @@ export class UpdatesViewModel extends Observable {
     }
   }
 
-  constructor(
-    page: Page,
-    private _bluetoothService: BluetoothService,
-    private _kinveyService: KinveyService,
-    private _sqliteService: SqliteService,
-    private _closeCallback: any
-  ) {
+  constructor() {
     super();
-    this._updatesPage = page;
-    this.onUpdatesPageLoaded();
   }
 
   get SmartDriveWakeLock() {
@@ -115,10 +112,6 @@ export class UpdatesViewModel extends Observable {
 
   async init() {
     sentryBreadCrumb('Updates-View-Model init.');
-    if (this.initialized) {
-      sentryBreadCrumb('Already initialized.');
-      return;
-    }
 
     sentryBreadCrumb('Initializing WakeLock...');
     console.time('Init_SmartDriveWakeLock');
@@ -141,12 +134,24 @@ export class UpdatesViewModel extends Observable {
       this.loadSmartDriveStateFromLS();
     }
 
-    this.initialized = true;
     sentryBreadCrumb('Initialized Updates View Model');
   }
 
-  async onUpdatesPageLoaded() {
+  async onUpdatesPageLoaded(
+    page: Page,
+    _bluetoothService: BluetoothService,
+    _kinveyService: KinveyService,
+    _sqliteService: SqliteService,
+    _closeCallback: any
+  ) {
     sentryBreadCrumb('onUpdatesPageLoaded');
+
+    this._updatesPage = page;
+    this._bluetoothService = _bluetoothService;
+    this._kinveyService = _kinveyService;
+    this._sqliteService = _sqliteService;
+    this._closeCallback = _closeCallback;
+
     // clear out ota actions
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length);
 
@@ -387,7 +392,12 @@ export class UpdatesViewModel extends Observable {
   }
 
   closeModal() {
+    sentryBreadCrumb('Closing Updates page');
+    this.releaseCPU();
     this.unregisterForSmartDriveEvents();
+    if (this.smartDrive) {
+      this.smartDrive.cancelOTA();
+    }
     this.unregisterForTimeUpdates();
     this._closeCallback();
   }

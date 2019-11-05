@@ -3,19 +3,18 @@ import { UpdatesViewModel } from './updates-view-model';
 
 let closeCallback;
 
+let updatesViewModel: UpdatesViewModel = new UpdatesViewModel();
+
 export function onShownModally(args: ShownModallyData) {
   const page = args.object as Page;
   closeCallback = args.closeCallback;
 
-  page.bindingContext = new UpdatesViewModel(
+  updatesViewModel.onUpdatesPageLoaded(
     page,
     args.context.bluetoothService,
     args.context.kinveyService,
     args.context.sqliteService,
     closeCallback
   );
-}
-
-export function onCloseTap(args) {
-  closeCallback();
+  page.bindingContext = updatesViewModel;
 }
