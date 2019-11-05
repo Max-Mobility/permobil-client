@@ -2,8 +2,32 @@
 @import '../../global';
 
 .PUSHTRACKER_STATUS_BUTTON_LAYOUT_BASE {
-    height: 44;
-    width: 44;
+  height: 50;
+  width: 50;
+  border-radius: 25;
+  margin: 0 2 0 2;
+  padding: 0 2 0 2;
+  vertical-align: bottom;
+
+  image {
+    height: 30;
+    width: 30;
+  }
+
+  LottieView {
+      width: 30;
+      height: 30;
+  }
+
+  label {
+    font-size: 20;
+    font-family: $material-icon;
+    vertical-align: center;
+    vertical-align: center;
+  }
+}
+
+.pt-lottie {
 }
 
 .cross-lottie {

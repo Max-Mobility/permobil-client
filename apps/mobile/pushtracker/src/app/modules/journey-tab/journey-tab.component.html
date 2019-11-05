@@ -1,7 +1,7 @@
 // Journey Tab Layout
 <StackLayout (loaded)="onJourneyTabLoaded()" (unloaded)="onJourneyTabUnloaded()" class="journey-tab-layout">
   // main journey-tab layout // Page Title and Refresh Button
-  <GridLayout width="100%" orientation="horizontal" class="action-bar" marginBottom="20" rows="auto" cols="*, auto">
+  <GridLayout width="100%" orientation="horizontal" class="action-bar" marginBottom="20" rows="auto" columns="*, auto">
     <Label class="page-title" row="0" col="0" [text]="'journey-tab.title' | translate" textWrap="true"></Label>
     <ActivityIndicator
       height="22"
