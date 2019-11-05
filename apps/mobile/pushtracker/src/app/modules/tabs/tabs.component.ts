@@ -94,6 +94,7 @@ export class TabsComponent {
 
       this.user = user;
       const config = this.user.data.control_configuration;
+      //@ts-ignore
       if (!Object.values(CONFIGURATIONS).includes(config)) {
         // the user does not have a valid configuration - route to the
         // configuration page so they can set one

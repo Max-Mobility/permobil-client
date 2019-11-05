@@ -1,9 +1,9 @@
 <StackLayout class="bottom-sheet-layout" [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#ffffff' : '#202125'">
-  <StackLayout row="0" col="1" colSpan="3" padding="10">
+  <StackLayout padding="10">
     <Label class="title" [text]="title | translate" textWrap="true"></Label>
-    <Label marginTop="10" class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
-    <StackLayout marginTop="10" orientation="horizontal">
-      <Label width="10%" class="textfield-prefix" [text]="prefix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
+    <Label class="description" [text]="description | translate" [visibility]="description ? 'visible' : 'collapsed'" textWrap="true"></Label>
+    <StackLayout paddingTop="10" orientation="horizontal">
+      <Label width="10%" class="textfield-prefix" [text]="prefix" paddingTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
       <TextField
         #textField
         width="80%"
@@ -19,7 +19,7 @@
         horizontalAlignment="center"
       >
       </TextField>
-      <Label width="10%" class="textfield-suffix" [text]="suffix" marginTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
+      <Label width="10%" class="textfield-suffix" [text]="suffix" paddingTop="10" verticalAlignment="center" horizontalAlignment="center"></Label>
     </StackLayout>
   </StackLayout>
   <GridLayout rows="auto" columns="auto, *, auto">
