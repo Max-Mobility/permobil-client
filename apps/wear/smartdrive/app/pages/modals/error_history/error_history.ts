@@ -117,14 +117,14 @@ export async function onLoadMoreErrors(args: LoadOnDemandListViewEventData) {
     listView.notifyLoadOnDemandFinished();
   } else {
     if (data.errorHistoryData.length === 1) {
-      // or add the 'no errors' message
+      // we have no errors - add the 'no-errors' message
       data.errorHistoryData.push({
         code: L('error-history.no-errors'),
         insetPadding: data.insetPadding,
         key: 'no-errors'
       });
     } else {
-      // or add the 'no errors' message
+      // add the padding message if we have errors
       data.errorHistoryData.push({
         insetPadding: data.insetPadding,
         key: 'last'
