@@ -363,8 +363,8 @@ export class MainViewModel extends Observable {
       context: {
         kinveyService: this._kinveyService,
         sqliteService: this._sqliteService,
-        bleVersion: this.smartDrive ? this.smartDrive.ble_version_string : '---',
-        mcuVersion: this.smartDrive ? this.smartDrive.mcu_version_string : '---'
+        bleVersion: (this.smartDrive && this.smartDrive.hasVersionInfo()) ? this.smartDrive.ble_version_string : '---',
+        mcuVersion: (this.smartDrive && this.smartDrive.hasVersionInfo()) ? this.smartDrive.mcu_version_string : '---'
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
