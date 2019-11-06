@@ -18,16 +18,16 @@ export class ChangeSettingsViewModel extends Observable {
 
   private _closeCallback;
 
-  constructor(page: Page, data) {
+  constructor(page: Page, data, closeCallback) {
     super();
 
     this.activeSettingToChange = data.activeSettingToChange;
     this.changeSettingKeyString = data.changeSettingKeyString;
     this.changeSettingKeyValue = data.changeSettingKeyValue;
     this.disableWearCheck = data.disableWearCheck;
-    this.tempSettings.copy(data.tempSettings);
+    this.tempSettings.copy(data.settings);
     this.tempSwitchControlSettings.copy(data.switchControlSettings);
-    this._closeCallback = data.closeCallback;
+    this._closeCallback = closeCallback;
 
     this._updateSettingsChangeDisplay();
   }

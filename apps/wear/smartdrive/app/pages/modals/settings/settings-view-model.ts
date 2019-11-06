@@ -88,10 +88,10 @@ export class SettingsViewModel extends Observable {
         switchControlSettings: this._settingsService.switchControlSettings
       },
       closeCallback: (
-        confirmedByUser,
-        _tempSettings,
-        _tempSwitchControlSettings,
-        disableWearCheck
+        confirmedByUser: boolean,
+        _tempSettings: Device.Settings,
+        _tempSwitchControlSettings: Device.SwitchControlSettings,
+        disableWearCheck: boolean
       ) => {
         if (confirmedByUser) {
           this._settingsService.settings.copy(_tempSettings);
