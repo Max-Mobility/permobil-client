@@ -18,7 +18,10 @@ export class SettingsService {
 
   private datastore = KinveyDataStore.collection('SmartDriveSettings', DataStoreType.Auto);
 
-  constructor(private _logService: LoggingService) { }
+  constructor(private _logService: LoggingService) {
+    // load any settings that have been saved
+    this.loadFromFileSystem();
+  }
 
   private toData(): SettingsService.Data {
     return {
