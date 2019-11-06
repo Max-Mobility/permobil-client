@@ -7,7 +7,7 @@ import { WearOsLayout } from 'nativescript-wear-os';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ListViewEventData, RadListView, LoadOnDemandListViewEventData } from "nativescript-ui-listview";
+import { ListViewEventData, RadListView, LoadOnDemandListViewEventData } from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
