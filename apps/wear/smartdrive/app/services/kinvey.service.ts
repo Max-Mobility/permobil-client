@@ -2,6 +2,7 @@ import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { Injectable } from 'injection-js';
 import { request } from 'tns-core-modules/http';
 import { device } from 'tns-core-modules/platform';
+import * as LS from 'nativescript-localstorage';
 
 @Injectable()
 export class KinveyService {
@@ -21,9 +22,14 @@ export class KinveyService {
   private _auth: string = null;
   private _userId: string = null;
   public watch_serial_number: string = null;
+  public user: any = null;
+  private userStorageKey: string = 'com.permobil.smartdrive.wearos.user.data';
 
   constructor() {
     // TODO: try to load authorization from ContentProvider
+
+    // load user data if we've saved it
+    this.user = LS.getItem(this.userStorageKey) || null;
   }
 
   private reformatForDb(o: any) {
@@ -94,14 +100,19 @@ export class KinveyService {
   public async setAuth(newAuth: string, userId: string) {
     try {
       // see if we can get the user info
-      await this.getUser(newAuth, userId);
+      const userData = await this.getUser(newAuth, userId);
       // if we do then set the auth / id accordingly
+      this.user = userData;
       this._auth = newAuth;
       this._userId = userId;
+      // and save the user data in the local storage
+      LS.setItemObject(this.userStorageKey, this.user);
       return true;
     } catch (err) {
       console.error('error getting user info', err);
       // reset to null if login failed
+      LS.removeItem(this.userStorageKey);
+      this.user = null;
       this._auth = null;
       this._userId = null;
       return false;
@@ -110,9 +121,14 @@ export class KinveyService {
 
   public async getUserData() {
     try {
-      const user = await this.getUser(this._auth, this._userId);
-      return user;
+      const userData = await this.getUser(this._auth, this._userId);
+      // and save the user data in the local storage
+      this.user = userData;
+      LS.setItemObject(this.userStorageKey, this.user);
+      return userData;
     } catch (err) {
+      this.user = null;
+      LS.removeItem(this.userStorageKey);
       return undefined;
     }
   }

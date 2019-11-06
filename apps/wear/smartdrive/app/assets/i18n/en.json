@@ -6,7 +6,8 @@
     "sd-serial-number": "SmartDrive Serial Number",
     "title": "About Information",
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
-    "watch-serial-number": "Smartwatch Serial Number"
+    "watch-serial-number": "Smartwatch Serial Number",
+    "smartdrive-serial-number-info": "To access your SmartDrive serial number, you must connect to the PushTracker mobile app."
   },
   "app-connection": {
     "completed": "Connected successfully to PushTracker account.",

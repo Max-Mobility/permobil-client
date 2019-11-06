@@ -5,7 +5,7 @@
       <Label text="{{ L('about.title') }}" class="chart-title" textWrap="true" />
       <Label text="" class="hr-blue" />
       <ScrollView height="100%" marginBottom="{{ chinSize / 2 }}">
-        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
+        <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="auto, *" paddingBottom="{{ insetPadding }}">
           <Label row="0" col="0" text="&#xf107;" class="bullet-list-icon back-icon" textWrap="true" />
           <Label row="0" col="1" text="{{ L('buttons.back') }}" tap="onCloseTap" class="settings-label" textWrap="true" />
 
@@ -19,15 +19,22 @@
           <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
           <Label row="5" col="1" text="{{ L('about.sd-ble-version') }}" class="settings-label" textWrap="true" />
           <Label row="6" col="1" text="{{ bleVersion }}" class="settings-label" textWrap="true" />
+
           <Label row="7" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-          <Label row="7" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
-          <Label row="8" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" tap="onSerialNumberTap"/>
+          <Label row="7" col="1" text="{{ L('about.watch-serial-number') }}" class="settings-label" textWrap="true" tap="onWatchSerialNumberTap"/>
+          <Label row="8" col="1" text="{{ watchSerialNumber }}" class="settings-label" textWrap="true" tap="onWatchSerialNumberTap"/>
+
           <Label row="9" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-          <Label row="9" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
-          <Label row="10" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+          <Label row="9" col="1" text="{{ L('about.sd-serial-number') }}" class="settings-label" textWrap="true" tap="onSDSerialNumberTap"/>
+          <Label row="10" col="1" text="{{ smartDriveSerialNumber }}" class="settings-label" textWrap="true" tap="onSDSerialNumberTap"/>
+
           <Label row="11" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-          <Label row="11" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
-          <Label row="12" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
+          <Label row="11" col="1" text="{{ L('about.version') }}" class="settings-label" textWrap="true" />
+          <Label row="12" col="1" text="{{ appVersion }}" class="settings-label" textWrap="true" />
+
+          <Label row="13" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+          <Label row="13" col="1" text="{{ L('about.database') }}" class="settings-label" textWrap="true" />
+          <Label row="14" col="1" text="{{ databaseId }}" class="settings-label" textWrap="true" />
         </GridLayout>
       </ScrollView>
     </StackLayout>

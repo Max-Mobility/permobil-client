@@ -13,16 +13,18 @@ import { KinveyService } from '../../../services';
 import { configureLayout, getSerialNumber } from '../../../utils';
 
 let closeCallback;
+let kinveyService;
 
 // values for UI databinding via bindingContext
 const data = {
   insetPadding: 0,
   chinSize: 0,
+  smartDriveSerialNumber: '---',
   watchSerialNumber: '---',
   appVersion: KinveyService.api_app_key,
   databaseId: '---',
-  userName: '',
-  userEmail: '',
+  userName: '---',
+  userEmail: '---',
   mcuVersion: '---',
   bleVersion: '---',
   sqliteService: undefined
@@ -36,8 +38,21 @@ export function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
   const page = args.object as Page;
 
-  const kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as KinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
+
+  data.userName =
+    (kinveyService.user && `${kinveyService.user.first_name}\n${kinveyService.user.last_name}`) ||
+    '---';
+
+  data.userEmail =
+    (kinveyService.user && kinveyService.user.username) ||
+    '---';
+
+  // get the smartdrive serial number
+  data.smartDriveSerialNumber =
+    (kinveyService.user && kinveyService.user.smartdrive_serial_number) ||
+    '---';
 
   // get the device serial number
   data.watchSerialNumber = getSerialNumber() || '---';
@@ -73,18 +88,21 @@ export function onShownModally(args: ShownModallyData) {
     0
   );
 
-  // get the user data and then update the bindingContext data
-  // doing this after the bindingContext is set since it can take a second to fetch this data
-  kinveyService.getUserData().then(userData => {
-    Log.D('userInfo', userData);
-    if (userData) {
-      page.bindingContext.set(
-        'userName',
-        `${userData.first_name}\n${userData.last_name}`
-      );
-      page.bindingContext.set('userEmail', userData.username);
-    }
-  });
+  if (!kinveyService.user) {
+    // get the user data and then update the bindingContext data
+    // doing this after the bindingContext is set since it can take a second to fetch this data
+    kinveyService.getUserData().then(userData => {
+      Log.D('userInfo', userData);
+      if (userData) {
+        page.bindingContext.set(
+          'userName',
+          `${userData.first_name}\n${userData.last_name}`
+        );
+        page.bindingContext.set('userEmail', userData.username);
+        page.bindingContext.set('smartDriveSerialNumber', userData.smartdrive_serial_number);
+      }
+    });
+  }
 }
 
 export function onShowErrorHistory(args) {
@@ -104,7 +122,17 @@ export function onShowErrorHistory(args) {
   btn.showModal('pages/modals/error_history/error_history', option);
 }
 
-export async function onSerialNumberTap() {
+export async function onSDSerialNumberTap() {
+  if (!kinveyService.user) {
+    await alert({
+      title: L('failures.title'),
+      message: L('about.smartdrive-serial-number-info'),
+      okButtonText: L('buttons.ok')
+    });
+  }
+}
+
+export async function onWatchSerialNumberTap() {
   // determine if we have shown the permissions request
   const hasShownRequest =
     appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
