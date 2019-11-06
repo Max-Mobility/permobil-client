@@ -11,8 +11,8 @@
     "scss-b": "node-sass --watch ./app/scss -o ./app/scss"
   },
   "dependencies": {
-    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc1.tgz",
+    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.2.1",
@@ -35,6 +35,7 @@
     "nativescript-sqlite-encrypted": "github:autochair/nativescript-sqlite-encrypted",
     "nativescript-theme-core": "~1.0.6",
     "nativescript-themes": "~2.0.1",
+    "nativescript-ui-listview": "^8.0.0",
     "nativescript-vibrate": "~2.1.3",
     "nativescript-wear-os": "~2.1.1",
     "reflect-metadata": "~0.1.13",

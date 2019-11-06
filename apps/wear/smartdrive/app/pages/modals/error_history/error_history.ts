@@ -4,8 +4,10 @@ import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
+import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { fromObject, Observable } from 'tns-core-modules/data/observable';
 import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
+import { ListViewEventData, RadListView, LoadOnDemandListViewEventData } from "nativescript-ui-listview";
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
@@ -31,12 +33,8 @@ const dateLocales = {
 const data = {
   insetPadding: 0,
   chinSize: 0,
-  errorHistoryData: []
+  errorHistoryData: new ObservableArray()
 };
-
-export function onCloseTap(args) {
-  closeCallback();
-}
 
 export async function onShownModally(args: ShownModallyData) {
   Log.D('error-history-page onShownModally');
@@ -45,8 +43,6 @@ export async function onShownModally(args: ShownModallyData) {
 
   // Sqlite service
   sqliteService = args.context.sqliteService;
-
-  Log.D('data', data);
 
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;
@@ -63,12 +59,18 @@ export async function onShownModally(args: ShownModallyData) {
   );
 
   showErrorHistory();
+
+  data.insetPadding = res.insetPadding;
+  data.chinSize = res.chinSize;
 }
 
 export function selectErrorTemplate(item, index, items) {
+  return item.key;
+  /*
   if (item.isBack) return 'back';
   else if (index === items.length - 1) return 'last';
   else return 'error';
+  */
 }
 
 async function getRecentErrors(numErrors: number, offset: number = 0) {
@@ -91,8 +93,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
           id: r && r[3],
           uuid: r && r[4],
           insetPadding: data.insetPadding,
-          isBack: false,
-          onTap: () => {},
+          onTap: () => { },
           key: 'error'
         };
       });
@@ -104,33 +105,33 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
   return errors;
 }
 
-async function onLoadMoreErrors() {
-  let recents = await getRecentErrors(10, data.errorHistoryData.length);
-  // add the back button as the first element - should only load once
-  if (data.errorHistoryData.length === 0) {
-    data.errorHistoryData.push({
-      code: L('buttons.back'),
-      onTap: closeCallback,
-      isBack: true,
-      key: 'back'
-    });
-  }
+export async function onLoadMoreErrors(args: LoadOnDemandListViewEventData) {
+  const listView: RadListView = args.object;
+  // load more errors
+  let recents = await getRecentErrors(10, data.errorHistoryData.length - 1);
   // determine the unique errors that we have
   recents = differenceBy(recents, data.errorHistoryData.slice(), 'uuid');
   if (recents && recents.length) {
-    // now add the recent data
     data.errorHistoryData.push(...recents);
-    data.errorHistoryData.map(error => (error.key = 'error'));
-    data.errorHistoryData[0].key = 'back';
-    data.errorHistoryData[data.errorHistoryData.length - 1].key = 'last';
-  } else if (data.errorHistoryData.length === 1) {
-    // or add the 'no errors' message
-    data.errorHistoryData.push({
-      code: L('error-history.no-errors'),
-      insetPadding: data.insetPadding,
-      isBack: false,
-      key: 'last'
-    });
+    args.returnValue = true;
+    listView.notifyLoadOnDemandFinished();
+  } else {
+    if (data.errorHistoryData.length === 1) {
+      // or add the 'no errors' message
+      data.errorHistoryData.push({
+        code: L('error-history.no-errors'),
+        insetPadding: data.insetPadding,
+        key: 'no-errors'
+      });
+    } else {
+      // or add the 'no errors' message
+      data.errorHistoryData.push({
+        insetPadding: data.insetPadding,
+        key: 'last'
+      });
+    }
+    args.returnValue = false;
+    listView.notifyLoadOnDemandFinished(true);
   }
 }
 
@@ -138,7 +139,13 @@ function showErrorHistory() {
   // clear out any pre-loaded data
   data.errorHistoryData.splice(0, data.errorHistoryData.length);
   // load the error data
-  onLoadMoreErrors();
+  // onLoadMoreErrors();
+
+  data.errorHistoryData.push({
+    code: L('buttons.back'),
+    onTap: closeCallback,
+    key: 'back'
+  });
 }
 
 function formatDate(d: Date, fmt: string) {
