@@ -4,6 +4,8 @@ import * as appSettings from '@nativescript/core/application-settings';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
 
+declare const IQKeyboardManager: any;
+
 @Component({
   selector: 'textfield-sheet',
   moduleId: module.id,
@@ -24,6 +26,11 @@ export class TextFieldSheetComponent {
   textField: ElementRef;
 
   constructor(private _params: BottomSheetParams) {
+    if (!isAndroid) {
+      const iqKeyboard = IQKeyboardManager.sharedManager();
+      iqKeyboard.enable = false;
+    }
+
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -54,6 +61,10 @@ export class TextFieldSheetComponent {
   }
 
   closeSheet() {
+    if (!isAndroid) {
+      const iqKeyboard = IQKeyboardManager.sharedManager();
+      iqKeyboard.enable = true;
+    }
     this._params.closeCallback();
   }
 

@@ -22,8 +22,9 @@
         <StackLayout row="0" horizontalAlignment="center">
           <StackLayout horizontalAlignment="center" orientation="horizontal" width="80%" marginBottom="10">
             <LottieView
-              height="50"
-              width="75"
+              height="30"
+              width="30"
+	      margin="10"
               class="align-center"
               [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
               loop="true"
@@ -32,7 +33,7 @@
             ></LottieView>
             <LottieView height="25" width="25" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
             <LottieView height="25" width="25" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
-            <Label [marginLeft]="showDoneButton || showFailure ? 10 : -20" class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
+            <Label class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
           </StackLayout>
 
           <button
