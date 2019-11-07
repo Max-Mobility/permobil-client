@@ -1,15 +1,15 @@
+import { Observable, Page, ShownModallyData } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { fromObject } from '@nativescript/core/data/observable';
+import { screen } from '@nativescript/core/platform';
+import { alert } from '@nativescript/core/ui/dialogs';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { KinveyService } from '../../../services';
 import { DataKeys } from '../../../enums';
+import { KinveyService } from '../../../services';
 import { getSerialNumber, saveSerialNumber } from '../../../utils';
 
 let closeCallback;
@@ -78,11 +78,11 @@ export async function onSerialNumberTap(_: any) {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => { });
+      await requestPermissions([p], () => {});
       const watchSerialNumber = getSerialNumber();
       saveSerialNumber(watchSerialNumber);
       kinveyService.watch_serial_number = watchSerialNumber;
-    } catch (err) { }
+    } catch (err) {}
   } else {
   }
 }

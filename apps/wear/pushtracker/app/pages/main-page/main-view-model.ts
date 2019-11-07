@@ -1,4 +1,10 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { EventData, Observable, Page, ShowModalOptions, View, ViewBase } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { screen } from '@nativescript/core/platform';
+import { alert } from '@nativescript/core/ui/dialogs';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
@@ -9,13 +15,6 @@ import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page, ShowModalOptions, View, ViewBase } from 'tns-core-modules/ui/page/page';
-import { ad } from 'tns-core-modules/utils/utils';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
@@ -396,7 +395,7 @@ export class MainViewModel extends Observable {
     let maxDist = 0;
     let currentDist = 0;
     try {
-      const cursor = ad
+      const cursor = androidUtils
         .getApplicationContext()
         .getContentResolver()
         .query(
@@ -456,7 +455,7 @@ export class MainViewModel extends Observable {
 
   private _loadCurrentActivityData() {
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
+    const sharedPreferences = androidUtils
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     this.currentPushCount = sharedPreferences.getInt(
@@ -488,7 +487,7 @@ export class MainViewModel extends Observable {
   private _registerForServiceDataUpdates() {
     sentryBreadCrumb('Registering for service data updates.');
     this.serviceDataReceiver.onReceiveFunction = this._onServiceData.bind(this);
-    const context = ad.getApplicationContext();
+    const context = androidUtils.getApplicationContext();
     androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(
       context
     ).registerReceiver(
@@ -524,7 +523,7 @@ export class MainViewModel extends Observable {
     Log.D('Got auth', userId, token);
     // now save it to datastore for service to use
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
+    const sharedPreferences = androidUtils
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const editor = sharedPreferences.edit();
@@ -538,7 +537,9 @@ export class MainViewModel extends Observable {
     );
     editor.commit();
     try {
-      const contentResolver = ad.getApplicationContext().getContentResolver();
+      const contentResolver = androidUtils
+        .getApplicationContext()
+        .getContentResolver();
       // write token to content provider for smartdrive wear
       const tokenValue = new android.content.ContentValues();
       tokenValue.put('data', token);
@@ -861,7 +862,7 @@ export class MainViewModel extends Observable {
 
   private async _showConfirmation(animationType: number, message?: string) {
     const intent = new android.content.Intent(
-      ad.getApplicationContext(),
+      androidUtils.getApplicationContext(),
       android.support.wearable.activity.ConfirmationActivity.class
     );
     intent.putExtra(
@@ -1098,7 +1099,7 @@ export class MainViewModel extends Observable {
     let authorization = null;
     let userId = null;
     const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-    const sharedPreferences = ad
+    const sharedPreferences = androidUtils
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
     const savedToken = sharedPreferences.getString(
@@ -1119,7 +1120,9 @@ export class MainViewModel extends Observable {
       // Mobile app
       Log.D('No authorization found in app settings!');
       try {
-        const contentResolver = ad.getApplicationContext().getContentResolver();
+        const contentResolver = androidUtils
+          .getApplicationContext()
+          .getContentResolver();
         const authCursor = contentResolver.query(
           com.permobil.pushtracker.DatabaseHandler.AUTHORIZATION_URI,
           null,
@@ -1177,7 +1180,7 @@ export class MainViewModel extends Observable {
 
   private _setupInsetChin() {
     // https://developer.android.com/reference/android/content/res/Configuration.htm
-    const androidConfig = ad
+    const androidConfig = androidUtils
       .getApplicationContext()
       .getResources()
       .getConfiguration();

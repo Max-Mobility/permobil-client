@@ -1,7 +1,7 @@
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { hasPermission } from 'nativescript-permissions';
 import * as themes from 'nativescript-themes';
-import { ad } from 'tns-core-modules/utils/utils';
 import { sentryBreadCrumb } from '.';
 
 declare const com: any;
@@ -18,7 +18,7 @@ export function getSerialNumber() {
 export function saveSerialNumber(sn: string) {
   // save it to datastore for service to use
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = ad
+  const sharedPreferences = androidUtils
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const editor = sharedPreferences.edit();
@@ -31,7 +31,7 @@ export function saveSerialNumber(sn: string) {
 
 export function loadSerialNumber() {
   const prefix = com.permobil.pushtracker.Datastore.PREFIX;
-  const sharedPreferences = ad
+  const sharedPreferences = androidUtils
     .getApplicationContext()
     .getSharedPreferences('prefs.db', 0);
   const savedSerial = sharedPreferences.getString(
