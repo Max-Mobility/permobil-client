@@ -1,4 +1,4 @@
-import { Page } from 'tns-core-modules/ui/page';
+import { Page } from '@nativescript/core';
 /**
  * Sets margins for the safe area on iOS devices with safeAreaInsets
  * @param page [Page] - The page instance.

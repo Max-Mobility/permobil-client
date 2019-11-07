@@ -15,7 +15,6 @@ import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
 import { ListView } from 'tns-core-modules/ui/list-view';
 import { Page } from 'tns-core-modules/ui/page';
 import { Slider } from 'tns-core-modules/ui/slider';
-import * as utils from 'tns-core-modules/utils/utils';
 import { Demo, DemoRequest, User } from '../../models';
 import { DemoService, FirmwareService, LocationService, LoggingService, ProgressService, UserService } from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
@@ -177,11 +176,9 @@ export class DemosComponent implements OnInit {
               cancelButtonText: this._translateService.instant('dialogs.cancel')
             }).then(confirmResult => {
               if (confirmResult === true) {
-                utils.ios
-                  .getter(UIApplication, UIApplication.sharedApplication)
-                  .openURL(
-                    NSURL.URLWithString(UIApplicationOpenSettingsURLString)
-                  );
+                UIApplication.sharedApplication.openURL(
+                  NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+                );
               }
             });
 

@@ -519,7 +519,7 @@ export class OTAComponent implements OnInit {
       carousel.addChild(newCarouselItem);
 
       if (isAndroid) {
-        const adapter = carousel.android.getAdapter() as android.support.v4.view.PagerAdapter;
+        const adapter = carousel.android.getAdapter() as androidx.viewpager.widget.PagerAdapter;
         if (adapter) {
           adapter.notifyDataSetChanged();
           // console.log(

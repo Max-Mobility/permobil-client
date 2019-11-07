@@ -18,7 +18,6 @@ import { fromBase64, ImageSource } from 'tns-core-modules/image-source';
 import { isIOS } from 'tns-core-modules/platform';
 import { alert, confirm, prompt } from 'tns-core-modules/ui/dialogs';
 import { Page } from 'tns-core-modules/ui/page';
-import * as utils from 'tns-core-modules/utils/utils';
 import { Demo, DidYouKnow, User, UserTypes } from '../../models';
 import { DemoService, FileService, LoggingService, UserService } from '../../services';
 import { APP_KEY, HOST_URL } from '../../utils/kinvey-keys';
@@ -474,11 +473,9 @@ export class AccountComponent implements OnInit {
                 )
               }).then(result => {
                 if (result) {
-                  utils.ios
-                    .getter(UIApplication, UIApplication.sharedApplication)
-                    .openURL(
-                      NSURL.URLWithString(UIApplicationOpenSettingsURLString)
-                    );
+                  UIApplication.sharedApplication.openURL(
+                    NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+                  );
                 }
               });
             } else {
