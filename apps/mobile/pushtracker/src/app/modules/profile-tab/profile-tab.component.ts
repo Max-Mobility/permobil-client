@@ -1072,7 +1072,7 @@ export class ProfileTabComponent {
   }
 
   private _initDisplayWeight() {
-    if (this.user.data.weight === '') {
+    if (this.user.data.weight === 0) {
         this.displayWeight = '';
     } else {
       this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
@@ -1087,7 +1087,7 @@ export class ProfileTabComponent {
   }
 
   private _initDisplayHeight() {
-    if (this.user.data.height === '') {
+    if (this.user.data.height === 0) {
         this.displayHeight = '';
     } else {
       this.displayHeight = this._displayHeightInCentimeters(
