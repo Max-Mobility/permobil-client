@@ -62,9 +62,9 @@ export class SignUpComponent implements OnInit {
     last_name: '',
     dob: '',
     gender: '',
-    height: 0,
+    height: '',
     height_unit_preference: HEIGHT_UNITS.FEET_AND_INCHES,
-    weight: 0,
+    weight: '',
     weight_unit_preference: WEIGHT_UNITS.POUNDS,
     distance_unit_preference: DISTANCE_UNITS.MILES,
     time_format_preference: TIME_FORMAT.AM_PM,
@@ -74,8 +74,8 @@ export class SignUpComponent implements OnInit {
     has_read_privacy_policy: false,
     consent_to_product_development: false,
     consent_to_research: false,
-    chair_type: CHAIR_TYPE.RIGID,
-    chair_make: CHAIR_MAKE.COLOURS,
+    chair_type: '',
+    chair_make: '',
     smartdrive_serial_number: '',
     pushtracker_serial_number: ''
   };
