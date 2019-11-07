@@ -1,5 +1,5 @@
+import { android as androidApp } from '@nativescript/core/application';
 import { Log } from '@permobil/core';
-import { android as androidApp } from 'tns-core-modules/application';
 
 declare const org: any;
 
@@ -135,10 +135,10 @@ export class TapDetector {
         if (inputShapes[i] !== inputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            inputShapes[i] +
-            ' but got ' +
-            inputShape[1]
+              '  Expected shape of ' +
+              inputShapes[i] +
+              ' but got ' +
+              inputShape[1]
           );
         }
       }
@@ -153,10 +153,10 @@ export class TapDetector {
         if (outputShapes[i] !== outputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-            '  Expected shape of ' +
-            outputShapes[i] +
-            ' but got ' +
-            outputShape[1]
+              '  Expected shape of ' +
+              outputShapes[i] +
+              ' but got ' +
+              outputShape[1]
           );
         }
       }

@@ -3,6 +3,9 @@ const { join, relative, resolve, sep } = require('path');
 const webpack = require('webpack');
 const nsWebpack = require('nativescript-dev-webpack');
 const nativescriptTarget = require('nativescript-dev-webpack/nativescript-target');
+const {
+  getNoEmitOnErrorFromTSConfig
+} = require('nativescript-dev-webpack/utils/tsconfig-utils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -74,8 +77,13 @@ module.exports = env => {
     hiddenSourceMap, // --env.hiddenSourceMap
     hmr, // --env.hmr,
     unitTesting, // --env.unitTesting,
-    verbose // --env.verbose
+    verbose, // --env.verbose
+    snapshotInDocker, // --env.snapshotInDocker
+    skipSnapshotTools, // --env.skipSnapshotTools
+    compileSnapshot // --env.compileSnapshot
   } = env;
+
+  const useLibs = compileSnapshot;
   const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
   const externals = nsWebpack.getConvertedExternals(env.externals);
 
@@ -129,6 +137,8 @@ module.exports = env => {
     );
   }
 
+  const noEmitOnErrorFromTSConfig = getNoEmitOnErrorFromTSConfig(tsConfigPath);
+
   nsWebpack.processAppComponents(appComponents, platform);
   const config = {
     mode: production ? 'production' : 'development',
@@ -162,7 +172,8 @@ module.exports = env => {
         'node_modules'
       ],
       alias: {
-        '~': appFullPath
+        '~': appFullPath,
+        'tns-core-modules': '@nativescript/core'
       },
       // resolve symlinks to symlinked modules
       symlinks: true
@@ -186,6 +197,7 @@ module.exports = env => {
       : 'none',
     optimization: {
       runtimeChunk: 'single',
+      noEmitOnErrors: noEmitOnErrorFromTSConfig,
       splitChunks: {
         cacheGroups: {
           vendor: {
@@ -263,15 +275,12 @@ module.exports = env => {
 
         {
           test: /\.css$/,
-          use: { loader: 'css-loader', options: { url: false } }
+          use: 'nativescript-dev-webpack/css2json-loader'
         },
 
         {
           test: /\.scss$/,
-          use: [
-            { loader: 'css-loader', options: { url: false } },
-            'sass-loader'
-          ]
+          use: ['nativescript-dev-webpack/css2json-loader', 'sass-loader']
         },
 
         {
@@ -328,6 +337,7 @@ module.exports = env => {
         tsconfig: tsConfigPath,
         async: false,
         useTypescriptIncrementalApi: true,
+        checkSyntacticErrors: true,
         memoryLimit: 4096
       })
     ]
@@ -352,7 +362,10 @@ module.exports = env => {
         chunk: 'vendor',
         requireModules: ['tns-core-modules/bundle-entry-points'],
         projectRoot,
-        webpackConfig: config
+        webpackConfig: config,
+        snapshotInDocker,
+        skipSnapshotTools,
+        useLibs
       })
     );
   }

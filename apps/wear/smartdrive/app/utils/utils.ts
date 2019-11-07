@@ -1,8 +1,8 @@
+import * as application from '@nativescript/core/application';
+import { screen } from '@nativescript/core/platform';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { hasPermission } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
-import * as application from 'tns-core-modules/application';
-import { screen } from 'tns-core-modules/platform';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 
 declare const com: any;
 

@@ -1,12 +1,12 @@
+import { Observable, Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { fromObject } from '@nativescript/core/data/observable';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { Page, ShowModalOptions, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../../enums';
 import { SmartDriveException } from '../../../models';
 import { KinveyService } from '../../../services';
@@ -42,12 +42,11 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   data.userName =
-    (kinveyService.user && `${kinveyService.user.first_name}\n${kinveyService.user.last_name}`) ||
+    (kinveyService.user &&
+      `${kinveyService.user.first_name}\n${kinveyService.user.last_name}`) ||
     '---';
 
-  data.userEmail =
-    (kinveyService.user && kinveyService.user.username) ||
-    '---';
+  data.userEmail = (kinveyService.user && kinveyService.user.username) || '---';
 
   // get the smartdrive serial number
   data.smartDriveSerialNumber =
@@ -77,7 +76,9 @@ export function onShownModally(args: ShownModallyData) {
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;
 
-  const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+  const wearOsLayout = (<unknown>(
+    page.getViewById('wearOsLayout')
+  )) as WearOsLayout;
   const res = configureLayout(wearOsLayout);
   page.bindingContext.set('chinSize', res.chinSize);
   page.bindingContext.set('insetPadding', res.insetPadding);
@@ -99,7 +100,10 @@ export function onShownModally(args: ShownModallyData) {
           `${userData.first_name}\n${userData.last_name}`
         );
         page.bindingContext.set('userEmail', userData.username);
-        page.bindingContext.set('smartDriveSerialNumber', userData.smartdrive_serial_number);
+        page.bindingContext.set(
+          'smartDriveSerialNumber',
+          userData.smartdrive_serial_number
+        );
       }
     });
   }
@@ -152,7 +156,7 @@ export async function onWatchSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => { });
+      await requestPermissions([p], () => {});
     } catch (permissionsObj) {
       // could not get the permission
     }

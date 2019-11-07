@@ -4,10 +4,18 @@ import { format } from 'date-fns';
 import differenceBy from 'lodash/differenceBy';
 import { Sentry } from 'nativescript-sentry';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
-import { ListViewEventData, RadListView, LoadOnDemandListViewEventData } from 'nativescript-ui-listview';
+import {
+  ObservableArray,
+  Observable,
+  Page,
+  ShownModallyData
+} from '@nativescript/core';
+import { fromObject } from '@nativescript/core/data/observable';
+import {
+  ListViewEventData,
+  RadListView,
+  LoadOnDemandListViewEventData
+} from 'nativescript-ui-listview';
 import { SmartDriveData } from '../../../namespaces';
 import { SqliteService } from '../../../services';
 import { configureLayout } from '../../../utils';
@@ -93,7 +101,7 @@ async function getRecentErrors(numErrors: number, offset: number = 0) {
           id: r && r[3],
           uuid: r && r[4],
           insetPadding: data.insetPadding,
-          onTap: () => { },
+          onTap: () => {},
           key: 'error'
         };
       });

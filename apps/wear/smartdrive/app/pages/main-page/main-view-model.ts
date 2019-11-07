@@ -1,10 +1,16 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout, View } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { screen } from '@nativescript/core/platform';
+import { action, alert } from '@nativescript/core/ui/dialogs';
+import { AnimationCurve } from '@nativescript/core/ui/enums';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
-import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
@@ -14,18 +20,6 @@ import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { Color } from 'tns-core-modules/color';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { AnimationCurve } from 'tns-core-modules/ui/enums';
-import { topmost } from 'tns-core-modules/ui/frame';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { ShowModalOptions, View } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../enums';
 import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
@@ -310,7 +304,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -363,8 +357,14 @@ export class MainViewModel extends Observable {
       context: {
         kinveyService: this._kinveyService,
         sqliteService: this._sqliteService,
-        bleVersion: (this.smartDrive && this.smartDrive.hasVersionInfo()) ? this.smartDrive.ble_version_string : '---',
-        mcuVersion: (this.smartDrive && this.smartDrive.hasVersionInfo()) ? this.smartDrive.mcu_version_string : '---'
+        bleVersion:
+          this.smartDrive && this.smartDrive.hasVersionInfo()
+            ? this.smartDrive.ble_version_string
+            : '---',
+        mcuVersion:
+          this.smartDrive && this.smartDrive.hasVersionInfo()
+            ? this.smartDrive.mcu_version_string
+            : '---'
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
@@ -780,7 +780,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -865,7 +865,7 @@ export class MainViewModel extends Observable {
         try {
           const children = this.pager._childrenViews;
           for (let i = 0; i < children.size; i++) {
-            const child = children.get(i) as View;
+            const child = children.get(i) as any;
             child._onCssStateChange();
           }
         } catch (err) {
@@ -1317,7 +1317,11 @@ export class MainViewModel extends Observable {
   }
 
   private async _onNetworkAvailable() {
-    if (this.powerAssistActive || this.isTraining || this._isUpdatingSmartDrive) {
+    if (
+      this.powerAssistActive ||
+      this.isTraining ||
+      this._isUpdatingSmartDrive
+    ) {
       return;
     }
     if (this._sqliteService === undefined) {
@@ -1820,7 +1824,7 @@ export class MainViewModel extends Observable {
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-    this._scanningView = topmost().currentPage.showModal(
+    this._scanningView = Frame.topmost().currentPage.showModal(
       'pages/modals/scanning/scanning',
       option
     );
@@ -1860,7 +1864,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1925,7 +1929,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2347,7 +2351,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => { }
+            onTap: () => {}
           };
         });
       }

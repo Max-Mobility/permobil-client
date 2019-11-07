@@ -1,7 +1,6 @@
 import { Device, Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
-import { Observable } from 'tns-core-modules/data/observable';
-import { Page } from 'tns-core-modules/ui/page';
+import { Observable, Page } from '@nativescript/core';
 
 export class ChangeSettingsViewModel extends Observable {
   @Prop() insetPadding = 0;

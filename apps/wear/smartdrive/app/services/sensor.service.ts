@@ -1,10 +1,10 @@
+import { EventData, Observable } from '@nativescript/core';
+import * as app from '@nativescript/core/application';
+import { device } from '@nativescript/core/platform';
 import { Log } from '@permobil/core';
 import { Injectable } from 'injection-js';
 import { AndroidSensorListener, AndroidSensors, SensorDelay } from 'nativescript-android-sensors';
 import { Level, Sentry } from 'nativescript-sentry';
-import * as app from 'tns-core-modules/application';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { device } from 'tns-core-modules/platform';
 
 @Injectable()
 export class SensorService extends Observable {

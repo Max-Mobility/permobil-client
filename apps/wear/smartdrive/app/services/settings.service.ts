@@ -1,7 +1,7 @@
+import * as appSettings from '@nativescript/core/application-settings';
 import { Device } from '@permobil/core';
 import { Injectable } from 'injection-js';
 import * as LS from 'nativescript-localstorage';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { DataKeys } from '../enums';
 
 @Injectable()

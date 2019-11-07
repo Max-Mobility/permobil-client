@@ -1,8 +1,8 @@
+import { ObservableArray } from '@nativescript/core';
 import { Log } from '@permobil/core';
 import { Injectable } from 'injection-js';
 import { Bluetooth, ConnectionState } from 'nativescript-bluetooth';
 import 'reflect-metadata';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { SmartDrive } from '../models/smartdrive';
 
 @Injectable()

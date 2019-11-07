@@ -1,3 +1,8 @@
+import { Observable, ObservableArray, Page } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { alert } from '@nativescript/core/ui/dialogs';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { format } from 'date-fns';
@@ -10,13 +15,6 @@ import * as LS from 'nativescript-localstorage';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
@@ -261,7 +259,7 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this.updateSerialNumber();
       } catch (permissionsObj) {
@@ -652,16 +650,12 @@ export class UpdatesViewModel extends Observable {
       );
       sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
-        this.smartDriveOtaActions.splice(
-          0,
-          this.smartDriveOtaActions.length,
-          {
-            label: L('ota.action.close'),
-            func: this.closeModal.bind(this),
-            action: 'ota.action.close',
-            class: 'action-close'
-          }
-        );
+        this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
+          label: L('ota.action.close'),
+          func: this.closeModal.bind(this),
+          action: 'ota.action.close',
+          class: 'action-close'
+        });
       }
     } catch (err) {
       return this.updateError(err, L('updates.failed'), `${err}`);

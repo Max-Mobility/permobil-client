@@ -1,4 +1,4 @@
-import * as app from 'tns-core-modules/application';
+import * as app from '@nativescript/core/application';
 import { Log } from '@permobil/core';
 
 export const SMARTDRIVE_SPEECH_REQUEST_CODE = 5425;

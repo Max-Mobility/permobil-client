@@ -1,8 +1,7 @@
+import { Observable, Page, ShowModalOptions } from '@nativescript/core';
 import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { Observable } from 'tns-core-modules/data/observable';
-import { Page, ShowModalOptions } from 'tns-core-modules/ui/page';
 import { SettingsService } from '../../../services';
 import { configureLayout } from '../../../utils';
 

@@ -1,7 +1,7 @@
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import { request } from '@nativescript/core/http';
+import { device } from '@nativescript/core/platform';
 import { Injectable } from 'injection-js';
-import { request } from 'tns-core-modules/http';
-import { device } from 'tns-core-modules/platform';
 import * as LS from 'nativescript-localstorage';
 
 @Injectable()

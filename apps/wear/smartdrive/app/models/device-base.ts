@@ -1,6 +1,5 @@
+import { Observable, ObservableArray } from '@nativescript/core';
 import { Packet } from '@permobil/core';
-import { Observable } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { BluetoothService } from './../services';
 
 export class DeviceBase extends Observable {

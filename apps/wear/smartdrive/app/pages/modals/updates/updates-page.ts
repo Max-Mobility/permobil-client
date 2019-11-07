@@ -1,4 +1,4 @@
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
+import { Page, ShownModallyData } from '@nativescript/core';
 import { UpdatesViewModel } from './updates-view-model';
 
 let closeCallback;

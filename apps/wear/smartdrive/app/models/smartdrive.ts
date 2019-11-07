@@ -1,6 +1,6 @@
+import * as timer from '@nativescript/core/timer';
 import { bindingTypeToString, Device, ISmartDriveEvents, Packet, SD_OTA_State } from '@permobil/core';
 import { Prop } from '@permobil/nativescript';
-import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services/bluetooth.service';
 import { DeviceBase } from './device-base';
 
