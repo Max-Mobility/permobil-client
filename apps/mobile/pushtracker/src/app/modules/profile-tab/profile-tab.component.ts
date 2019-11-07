@@ -1069,30 +1069,38 @@ export class ProfileTabComponent {
   }
 
   private _initDisplayWeight() {
-    this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
-    // convert from metric weight (as stored in Kinvey) to user preferred unit
-    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
-      this.displayWeight = this._displayWeightInPounds(
-        kilogramsToPounds(this.user.data.weight)
-      );
+    if (this.user.data.weight === '') {
+        this.displayWeight = '';
+    } else {
+      this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
+      // convert from metric weight (as stored in Kinvey) to user preferred unit
+      if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
+        this.displayWeight = this._displayWeightInPounds(
+          kilogramsToPounds(this.user.data.weight)
+        );
+      }
+      if (!this.displayWeight) this.displayWeight = '';
     }
-    if (!this.displayWeight) this.displayWeight = '';
   }
 
   private _initDisplayHeight() {
-    this.displayHeight = this._displayHeightInCentimeters(
-      this.user.data.height
-    );
-    // convert from metric height (as stored in Kinvey) to user preferred unit
-    if (
-      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
-    ) {
-      const heightString = centimetersToFeetInches(this.user.data.height);
-      const feet = parseFloat(heightString.split('.')[0]);
-      const inches = parseFloat(heightString.split('.')[1]);
-      this.displayHeight = this._displayHeightInFeetInches(feet, inches);
+    if (this.user.data.height === '') {
+        this.displayHeight = '';
+    } else {
+      this.displayHeight = this._displayHeightInCentimeters(
+        this.user.data.height
+      );
+      // convert from metric height (as stored in Kinvey) to user preferred unit
+      if (
+        this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
+      ) {
+        const heightString = centimetersToFeetInches(this.user.data.height);
+        const feet = parseFloat(heightString.split('.')[0]);
+        const inches = parseFloat(heightString.split('.')[1]);
+        this.displayHeight = this._displayHeightInFeetInches(feet, inches);
+      }
+      if (!this.displayHeight) this.displayHeight = '';
     }
-    if (!this.displayHeight) this.displayHeight = '';
   }
 
   private _initDisplayChairType() {
@@ -1105,7 +1113,7 @@ export class ProfileTabComponent {
   }
 
   private _initDisplayChairMake() {
-    if (!this.user || !this.user.data) this.displayChairMake = '';
+    this.displayChairMake = '';
     if (this.user.data.chair_make && this.user.data.chair_make !== '') {
       const englishValue = this.user.data.chair_make;
       const index = this.chairMakes.indexOf(englishValue);
