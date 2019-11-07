@@ -363,6 +363,7 @@
     "pushtracker": "PushTracker",
     "pushtracker-e2": "PushTracker E2",
     "pushtracker-serial-number": "PushTracker Serial Number",
+    "pushtracker-e2-serial-number": "PushTracker E2 Serial Number",
     "scan-msg": "Scan a",
     "sd-or-pt": "SmartDrive or PushTracker",
     "set-goal": "Set goal",

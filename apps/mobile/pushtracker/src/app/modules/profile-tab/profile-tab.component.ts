@@ -921,7 +921,7 @@ export class ProfileTabComponent {
   onEditSerialNumber(deviceName) {
     this._logService.logBreadCrumb(
       ProfileTabComponent.name,
-      'Edit SmartDrive serial number pressed'
+      'Edit ' + deviceName + ' serial number pressed'
     );
 
     const validDevices =
@@ -930,17 +930,24 @@ export class ProfileTabComponent {
         : ['smartdrive'];
 
     let serialNumber = '';
-    if (deviceName === 'smartdrive')
+    let title = '';
+    if (deviceName === 'smartdrive') {
       serialNumber = this.user.data.smartdrive_serial_number || '';
-    else serialNumber = this.user.data.pushtracker_serial_number || '';
+      title = this._translateService.instant(
+        'profile-tab.smartdrive-serial-number'
+      );
+    } else {
+      serialNumber = this.user.data.pushtracker_serial_number || '';
+      title = this._translateService.instant(
+        'profile-tab.pushtracker-serial-number'
+      );
+    }
 
     const options: BottomSheetOptions = {
       viewContainerRef: this._vcRef,
       dismissOnBackgroundTap: true,
       context: {
-        title: this._translateService.instant(
-          'profile-tab.smartdrive-serial-number'
-        ),
+        title: title,
         description: '',
         text: serialNumber
       }
