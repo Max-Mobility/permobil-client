@@ -1,4 +1,4 @@
-import { Color } from 'tns-core-modules/color';
+import { Color } from '@nativescript/core';
 
 export namespace PowerAssist {
   export const InactiveRingColor = new Color('#000000');

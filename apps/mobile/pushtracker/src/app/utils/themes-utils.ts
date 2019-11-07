@@ -1,8 +1,8 @@
+import { Color, isAndroid, isIOS } from '@nativescript/core';
+import * as TNSApplication from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { device } from '@nativescript/core/platform';
 import * as themes from 'nativescript-themes';
-import * as TNSApplication from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { Color } from 'tns-core-modules/color';
-import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
 import { clearLightStatusBar, setDarkStatusBar, setLightStatusBar } from '.';
 import { APP_THEMES, STORAGE_KEYS } from '../enums';
 

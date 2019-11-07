@@ -1,18 +1,32 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { RouterExtensions } from 'nativescript-angular/router';
+import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { TextField } from 'tns-core-modules/ui/text-field';
-import { AppResourceIcons, APP_THEMES, STORAGE_KEYS,
-  DISTANCE_UNITS, HEIGHT_UNITS, WEIGHT_UNITS, CHAIR_MAKE, CHAIR_TYPE, TIME_FORMAT } from '../../enums';
+import * as appSettings from '@nativescript/core/application-settings';
+import { device } from '@nativescript/core/platform';
+import { alert } from '@nativescript/core/ui/dialogs';
+import { TextField, isAndroid, isIOS } from '@nativescript/core';
+import {
+  AppResourceIcons,
+  APP_THEMES,
+  STORAGE_KEYS,
+  DISTANCE_UNITS,
+  HEIGHT_UNITS,
+  WEIGHT_UNITS,
+  CHAIR_MAKE,
+  CHAIR_TYPE,
+  TIME_FORMAT
+} from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
 import { PushTrackerUser } from '@permobil/core';
@@ -177,17 +191,21 @@ export class SignUpComponent implements OnInit {
     let consent_to_product_development = false;
     let consent_to_research = false;
     try {
-      const result = await this._modalService
-        .showModal(PrivacyPolicyComponent, {
+      const result = await this._modalService.showModal(
+        PrivacyPolicyComponent,
+        {
           context: { data: {} },
           fullscreen: true,
           animated: true,
           viewContainerRef: this._vcRef
-        });
+        }
+      );
       if (result !== undefined) {
-        has_agreed_to_user_agreement = result.has_agreed_to_user_agreement || false;
+        has_agreed_to_user_agreement =
+          result.has_agreed_to_user_agreement || false;
         has_read_privacy_policy = result.has_read_privacy_policy || false;
-        consent_to_product_development = result.consent_to_product_development || false;
+        consent_to_product_development =
+          result.consent_to_product_development || false;
         consent_to_research = result.consent_to_research || false;
       }
     } catch (err) {
@@ -223,7 +241,10 @@ export class SignUpComponent implements OnInit {
     // // need to make sure the username is not already taken
     const userExists = await KinveyUser.exists(this.user.username);
 
-    this._logService.logBreadCrumb(SignUpComponent.name, `KinveyUser.exists() result: ${userExists}`);
+    this._logService.logBreadCrumb(
+      SignUpComponent.name,
+      `KinveyUser.exists() result: ${userExists}`
+    );
     // if username is taken tell user and exit so they can correct
     if (userExists === true) {
       this._loadingIndicator.hide();
@@ -245,25 +266,27 @@ export class SignUpComponent implements OnInit {
           this._translateService.instant('sign-up.sign-up-success') +
           ` ${user.username}`,
         okButtonText: this._translateService.instant('general.ok')
-      }).then(async () => {
-
-        Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
-        Kinvey.ping()
-          .then(() => {
-            // Kinvey SDK is working
-            // Navigate to tabs home with clearHistory
-            this._userService.initializeUser(<PushTrackerUser>((<any>KinveyUser.getActiveUser())));
-            this._router.navigate(['configuration'], {
-              clearHistory: true
-            });
-          })
-          .catch(err => {
-            this._logService.logException(err);
-          });
       })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+        .then(async () => {
+          Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
+          Kinvey.ping()
+            .then(() => {
+              // Kinvey SDK is working
+              // Navigate to tabs home with clearHistory
+              this._userService.initializeUser(<PushTrackerUser>(
+                (<any>KinveyUser.getActiveUser())
+              ));
+              this._router.navigate(['configuration'], {
+                clearHistory: true
+              });
+            })
+            .catch(err => {
+              this._logService.logException(err);
+            });
+        })
+        .catch(err => {
+          this._logService.logException(err);
+        });
     } catch (err) {
       this._loadingIndicator.hide();
       this._logService.logException(err);

@@ -1,19 +1,16 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { RouterExtensions } from '@nativescript/angular';
+import { Animation, AnimationDefinition, isAndroid, isIOS, Page, TextField, View } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { device } from '@nativescript/core/platform';
+import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
-import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
-import { Page } from 'tns-core-modules/ui/page';
-import { TextField } from 'tns-core-modules/ui/text-field';
-import { Animation, AnimationDefinition } from 'tns-core-modules/ui/animation';
-import { View } from 'tns-core-modules/ui/core/view';
-import { PercentLength } from 'tns-core-modules/ui/styling/style-properties';
 import { LottieView } from 'nativescript-lottie';
+import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 
@@ -59,7 +56,7 @@ export class LoginComponent implements OnInit {
   }
 
   lottieViewLoaded(event) {
-    this._lottieView = <LottieView>event.object;
+    this._lottieView = event.object as LottieView;
     this._lottieView.cancelAnimation();
     this._lottieView.completionBlock = this.onLottieFinished.bind(this);
     this._lottieView.speed = 1.5;
@@ -69,7 +66,7 @@ export class LoginComponent implements OnInit {
   async onLottieFinished() {
     const definitions = new Array<AnimationDefinition>();
     const a1: AnimationDefinition = {
-      target: this._lottieView,
+      target: this._lottieView as any,
       height: 200,
       duration: 500
     };
@@ -128,10 +125,7 @@ export class LoginComponent implements OnInit {
         LoginComponent.name,
         'Logged in user: ' + user.email
       );
-      appSettings.setString(
-        STORAGE_KEYS.APP_THEME,
-        APP_THEMES.DEFAULT
-      );
+      appSettings.setString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT);
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory

@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { RouterExtensions } from '@nativescript/angular/router';
+import { isAndroid, isIOS, TextField } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { device } from '@nativescript/core/platform';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { device, isAndroid, isIOS } from 'tns-core-modules/platform';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { TextField } from 'tns-core-modules/ui/text-field';
 import { AppResourceIcons, APP_THEMES, STORAGE_KEYS } from '../../enums';
 import { LoggingService } from '../../services';
 
@@ -104,12 +104,13 @@ export class ForgotPasswordComponent implements OnInit {
           title: this._translateService.instant('general.email-sent'),
           message: this._translateService.instant('general.check-email'),
           okButtonText: this._translateService.instant('general.ok')
-        }).then(() => {
-          this._routerExtensions.navigate(['/login'], {});
         })
-        .catch(err => {
-          this._logService.logException(err);
-        });
+          .then(() => {
+            this._routerExtensions.navigate(['/login'], {});
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
       .catch(err => {
         this._logService.logException(err);

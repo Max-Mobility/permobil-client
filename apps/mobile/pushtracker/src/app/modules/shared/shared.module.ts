@@ -1,9 +1,6 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ModalDialogService, NativeScriptCommonModule, NativeScriptFormsModule, NativeScriptRouterModule } from '@nativescript/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { NativeScriptCommonModule } from 'nativescript-angular/common';
-import { NativeScriptFormsModule } from 'nativescript-angular/forms';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { NativeScriptRouterModule } from 'nativescript-angular/router';
 import { NgRippleModule } from 'nativescript-ng-ripple';
 import { ListPickerSheetComponent, SHARED_COMPONENTS, SliderSheetComponent, TextFieldSheetComponent } from './components';
 

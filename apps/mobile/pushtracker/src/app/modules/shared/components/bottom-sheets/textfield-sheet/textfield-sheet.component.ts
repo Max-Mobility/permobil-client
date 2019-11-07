@@ -1,8 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { isAndroid, TextField } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
 import { BottomSheetParams } from 'nativescript-material-bottomsheet/angular';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { isAndroid } from 'tns-core-modules/platform';
-import { TextField } from 'tns-core-modules/ui/text-field';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../../enums';
 
 declare const IQKeyboardManager: any;

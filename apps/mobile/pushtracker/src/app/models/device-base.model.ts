@@ -1,8 +1,7 @@
+import { Observable, ObservableArray } from '@nativescript/core';
 import { Packet } from '@permobil/core';
-import { Observable } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { BluetoothService } from './../services';
 import { SMARTDRIVE_MODE, SMARTDRIVE_MODE_SETTING, SMARTDRIVE_UNIT } from './../enums';
+import { BluetoothService } from './../services';
 
 export class DeviceBase extends Observable {
   public static ota_start_event = 'ota_start_event';
@@ -113,13 +112,19 @@ export class DeviceBase extends Observable {
     const p = new Packet();
     const settings = p.data('settings');
     // convert mode
-    if (mode === SMARTDRIVE_MODE.MX2_PLUS) mode = SMARTDRIVE_MODE_SETTING.ADVANCED;
-    else if (mode === SMARTDRIVE_MODE.MX2) mode = SMARTDRIVE_MODE_SETTING.INTERMEDIATE;
-    else if (mode === SMARTDRIVE_MODE.MX1) mode = SMARTDRIVE_MODE_SETTING.BEGINNER;
+    if (mode === SMARTDRIVE_MODE.MX2_PLUS)
+      mode = SMARTDRIVE_MODE_SETTING.ADVANCED;
+    else if (mode === SMARTDRIVE_MODE.MX2)
+      mode = SMARTDRIVE_MODE_SETTING.INTERMEDIATE;
+    else if (mode === SMARTDRIVE_MODE.MX1)
+      mode = SMARTDRIVE_MODE_SETTING.BEGINNER;
     else if (mode === SMARTDRIVE_MODE.OFF) mode = SMARTDRIVE_MODE_SETTING.OFF;
     else mode = SMARTDRIVE_MODE_SETTING.ADVANCED;
     // convert units
-    units = units === SMARTDRIVE_UNIT.METRIC ? SMARTDRIVE_UNIT.METRIC : SMARTDRIVE_UNIT.ENGLISH;
+    units =
+      units === SMARTDRIVE_UNIT.METRIC
+        ? SMARTDRIVE_UNIT.METRIC
+        : SMARTDRIVE_UNIT.ENGLISH;
     // clamp numbers
     const clamp = n => {
       return Math.max(0, Math.min(n, 1.0));

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanLoad, Route } from '@angular/router';
+import { RouterExtensions } from '@nativescript/angular';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
 
 @Injectable()
 export class AuthGuardService implements CanActivate, CanLoad {

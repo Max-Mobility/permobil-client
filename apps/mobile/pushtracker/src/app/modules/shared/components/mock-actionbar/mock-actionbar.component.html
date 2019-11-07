@@ -1,5 +1,4 @@
-<GridLayout (loaded)="onLoaded($event)" (unloaded)="onUnloaded($event)" rows="*"
-  [columns]="showBackNav ? '50, *, auto' : '*, auto'" class="action-bar">
+<GridLayout (loaded)="onLoaded($event)" (unloaded)="onUnloaded($event)" rows="*" [columns]="showBackNav ? '50, *, auto' : '*, auto'" class="action-bar">
   <Button col="0" [text]="navIcon" [visibility]="showBackNav ? 'visible' : 'collapse'" (tap)="onNavBtnTap()" ripple class="action-item-btn"></Button>
   <Label [col]="showBackNav ? 1 : 0" [text]="title" [visibility]="title ? 'visible' : 'collapse'" textWrap="true" class="title"></Label>
   <FlexboxLayout col="2" flexDirection="row" justifyContent="flex-end" horizontalAlignment="right">

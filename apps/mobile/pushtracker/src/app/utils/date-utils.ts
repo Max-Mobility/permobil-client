@@ -49,7 +49,9 @@ export function formatAMPM(date: Date) {
 export function format24Hour(date: Date) {
   const hours = date.getHours();
   const minutes = date.getMinutes();
-  const strTime = (hours < 10 ? '0' + hours : hours) + ':' +
+  const strTime =
+    (hours < 10 ? '0' + hours : hours) +
+    ':' +
     (minutes < 10 ? '0' + minutes : minutes);
   return strTime;
 }
@@ -72,7 +74,11 @@ export enum TimeOfDay {
 export function YYYY_MM_DD(date: Date) {
   const month = date.getMonth() + 1;
   const day = date.getDate();
-  return date.getFullYear() + '/' +
+  return (
+    date.getFullYear() +
+    '/' +
     (month < 10 ? '0' + month : month) +
-    '/' + (day < 10 ? '0' + day : day);
+    '/' +
+    (day < 10 ? '0' + day : day)
+  );
 }

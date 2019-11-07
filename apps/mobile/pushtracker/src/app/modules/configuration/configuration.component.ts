@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Page } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { Page } from 'tns-core-modules/ui/page';
-import { PushTrackerUserService } from '../../services';
 import { CONFIGURATIONS } from '../../enums';
-import * as appSettings from 'tns-core-modules/application-settings';
+import { PushTrackerUserService } from '../../services';
 
 @Component({
   selector: 'configuration',

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { isAndroid, isIOS } from '@nativescript/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
 /**
  * Reactive progress indicator
