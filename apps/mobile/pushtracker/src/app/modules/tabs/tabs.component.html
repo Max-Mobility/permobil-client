@@ -1,8 +1,6 @@
 <ActivityIndicator busy="true" *ngIf="!user"></ActivityIndicator>
 
-<BottomNavigation (loaded)="onRootBottomNavLoaded($event)"
-  (selectedIndexChanged)="tabViewIndexChangeWithoutJourney($event)" selectedIndex="0"
-  *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChangeWithoutJourney($event)" selectedIndex="0" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE">
   <TabStrip>
     // Home
     <TabStripItem class="tabstripitem">
@@ -31,8 +29,7 @@
   </TabContentItem>
 </BottomNavigation>
 
-<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1" 
-  *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
+<BottomNavigation (loaded)="onRootBottomNavLoaded($event)" (selectedIndexChanged)="tabViewIndexChange($event)" selectedIndex="1" *ngIf="user?.data.control_configuration === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE">
   <TabStrip>
     // Journey
     <TabStripItem class="tabstripitem">

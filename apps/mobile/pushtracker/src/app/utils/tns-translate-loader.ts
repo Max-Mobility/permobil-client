@@ -1,5 +1,5 @@
+import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { Observable, Observer } from 'rxjs';
-import { File, Folder, knownFolders, path } from 'tns-core-modules/file-system';
 
 export class TNSTranslateLoader {
   constructor(private _path: string) {}

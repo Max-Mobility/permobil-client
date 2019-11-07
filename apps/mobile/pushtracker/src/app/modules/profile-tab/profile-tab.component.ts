@@ -1,21 +1,17 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
+import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
+import { Color, EventData, ImageSource, Page, StackLayout } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { screen } from '@nativescript/core/platform';
+import { action, prompt, PromptOptions } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { RouterExtensions } from 'nativescript-angular/router';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { Color } from 'tns-core-modules/color';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { screen } from 'tns-core-modules/platform';
-import { action, prompt, PromptOptions } from 'tns-core-modules/ui/dialogs';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { EventData, Page } from 'tns-core-modules/ui/page';
 import { ActivityGoalSettingComponent, DeviceSetupComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
 import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
@@ -398,9 +394,7 @@ export class ProfileTabComponent {
   onBirthDateTap(args: EventData) {
     this._setActiveDataBox(args);
 
-    const dateTimePickerStyle = DateTimePickerStyle.create(
-      args.object as StackLayout
-    );
+    const dateTimePickerStyle = DateTimePickerStyle.create(args.object as any);
 
     DateTimePicker.pickDate(
       {
@@ -885,7 +879,7 @@ export class ProfileTabComponent {
           this._logService.logBreadCrumb(
             ProfileTabComponent.name,
             `Configuration changed to: ${
-            this.configurations[result.data.primaryIndex]
+              this.configurations[result.data.primaryIndex]
             }`
           );
           KinveyUser.update({
@@ -912,7 +906,7 @@ export class ProfileTabComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => { })
+      .then(() => {})
       .catch(err => {
         this._logService.logException(err);
       });
@@ -966,7 +960,7 @@ export class ProfileTabComponent {
       error => {
         this._logService.logException(error);
       },
-      () => { }
+      () => {}
     );
   }
 
@@ -1042,7 +1036,7 @@ export class ProfileTabComponent {
 
   private _initDisplayActivityGoalCoastTime() {
     this.displayActivityGoalCoastTime =
-      (this.user.data.activity_goal_coast_time).toFixed(1) +
+      this.user.data.activity_goal_coast_time.toFixed(1) +
       ' ' +
       this._translateService.instant('units.s');
   }
@@ -1143,7 +1137,7 @@ export class ProfileTabComponent {
     } else {
       result += '_white';
     }
-    return imageFromResource(result);
+    return ImageSource.fromResourceSync(result);
   }
 
   private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {

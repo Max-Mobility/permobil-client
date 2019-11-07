@@ -1,11 +1,7 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ModalDialogService, NativeScriptCommonModule, NativeScriptFormsModule, NativeScriptHttpClientModule, NativeScriptModule } from '@nativescript/angular';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PermobilCoreModule } from '@permobil/angular';
-import { NativeScriptCommonModule } from 'nativescript-angular/common';
-import { NativeScriptFormsModule } from 'nativescript-angular/forms';
-import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { NativeScriptDateTimePickerModule } from 'nativescript-datetimepicker/angular';
 import { NativeScriptMaterialBottomSheetModule } from 'nativescript-material-bottomsheet/angular';

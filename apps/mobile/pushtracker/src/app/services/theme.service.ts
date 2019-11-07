@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { APP_THEMES, STORAGE_KEYS } from '../enums';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import * as appSettings from '@nativescript/core/application-settings';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as appSettings from 'tns-core-modules/application-settings';
+import { APP_THEMES, STORAGE_KEYS } from '../enums';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
@@ -11,10 +10,8 @@ export class ThemeService {
 
   constructor() {
     this._theme = new BehaviorSubject<string>(
-      appSettings.getString(
-        STORAGE_KEYS.APP_THEME,
-        APP_THEMES.DEFAULT
-    ));
+      appSettings.getString(STORAGE_KEYS.APP_THEME, APP_THEMES.DEFAULT)
+    );
     this.theme = this._theme.asObservable();
   }
 

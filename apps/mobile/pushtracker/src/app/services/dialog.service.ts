@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { action } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { Log } from '@permobil/core';
-import { action } from 'tns-core-modules/ui/dialogs';
 
 @Injectable()
 export class DialogService {

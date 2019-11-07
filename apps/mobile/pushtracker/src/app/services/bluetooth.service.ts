@@ -1,12 +1,11 @@
 /// <reference path="../../../node_modules/tns-platform-declarations/ios.d.ts" />
 
 import { Injectable } from '@angular/core';
+import { isAndroid, isIOS, Observable, ObservableArray } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { fromObject } from '@nativescript/core/data/observable';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromObject, Observable } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -50,9 +49,7 @@ export class BluetoothService extends Observable {
   private _bluetooth = new Bluetooth();
   private AppService: any = null;
 
-  constructor(
-    private _logService: LoggingService
-  ) {
+  constructor(private _logService: LoggingService) {
     super();
 
     // Checking app-settings to see if the user has paired a PT before
@@ -78,8 +75,10 @@ export class BluetoothService extends Observable {
       .then(() => {
         // Remember when we finished
         const end = new Date().getTime();
-        this._logService.logBreadCrumb(BluetoothService.name,
-          `Bluetooth init took: ${(end - start).toFixed(2)}ms`);
+        this._logService.logBreadCrumb(
+          BluetoothService.name,
+          `Bluetooth init took: ${(end - start).toFixed(2)}ms`
+        );
       })
       .catch(err => {
         this._logService.logException(err);
@@ -366,9 +365,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) { }
+  discoverServices(_: any) {}
 
-  discoverCharacteristics(_: any) { }
+  discoverCharacteristics(_: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -418,12 +417,19 @@ export class BluetoothService extends Observable {
   // private functions
   // event listeners
   private onAdvertiseFailure(args: any): void {
-    this._logService.logBreadCrumb(BluetoothService.name, 'Failed to advertise', args);
+    this._logService.logBreadCrumb(
+      BluetoothService.name,
+      'Failed to advertise',
+      args
+    );
     // nothing
   }
 
   private onAdvertiseSuccess(_: any): void {
-    this._logService.logBreadCrumb(BluetoothService.name, 'Succeeded in advertising!');
+    this._logService.logBreadCrumb(
+      BluetoothService.name,
+      'Succeeded in advertising!'
+    );
     // nothing
   }
 
@@ -462,7 +468,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void { }
+  private onDeviceNameChange(_: any): void {}
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -600,7 +606,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void { }
+  private onCharacteristicReadRequest(_: any): void {}
 
   // service controls
   private deleteServices() {
@@ -851,7 +857,8 @@ export class BluetoothService extends Observable {
     const isPT =
       (name && name.includes('PushTracker')) ||
       (name && name.includes('Bluegiga')) ||
-      hasUUID || isKnownDevice;
+      hasUUID ||
+      isKnownDevice;
     return isPT;
   }
 

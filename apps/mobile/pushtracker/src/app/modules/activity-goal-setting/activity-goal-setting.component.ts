@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ModalDialogParams } from '@nativescript/angular/modal-dialog';
+import { TextField } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { TextField } from 'tns-core-modules/ui/text-field';
-import { APP_THEMES, STORAGE_KEYS, DISTANCE_UNITS } from '../../enums';
+import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
 import { LoggingService, PushTrackerUserService } from '../../services';
 import { milesToKilometers } from '../../utils';
 
@@ -88,7 +88,6 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   _validateGoalValueFromText(text) {
     if (text || text !== '') {
-
       // Attempt to parse as float
       this.config.value = parseFloat(text);
 
@@ -103,7 +102,6 @@ export class ActivityGoalSettingComponent implements OnInit {
       // round to the nearest 0.1
       this.config.value = Math.round(this.config.value * 10) / 10;
     } else {
-
       // Input text is invalid or empty - restore to original value
       if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
         this.config.value = this._user.data.activity_goal_coast_time;
@@ -116,10 +114,11 @@ export class ActivityGoalSettingComponent implements OnInit {
   }
 
   onSetGoalBtnTap() {
-    const textField = (this.textField.nativeElement as TextField);
+    const textField = this.textField.nativeElement as TextField;
     const goalValue = textField.text;
     this._validateGoalValueFromText(goalValue);
-    this._logService.logBreadCrumb(ActivityGoalSettingComponent.name,
+    this._logService.logBreadCrumb(
+      ActivityGoalSettingComponent.name,
       'User set activity goals: ' + this.config.key + ' ' + this.config.value
     );
 
@@ -133,7 +132,6 @@ export class ActivityGoalSettingComponent implements OnInit {
         activity_goal_coast_time: this.config.value
       });
     } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
-
       if (this._user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
         // User input is in miles
         // Convert to kilometers before saving in DB

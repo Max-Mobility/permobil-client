@@ -1,16 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { registerElement } from '@nativescript/angular';
+import { GridLayout, StackLayout, TextField } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
 import { subYears } from 'date-fns';
-import { registerElement } from 'nativescript-angular/element-registry';
-import {
-  DateTimePicker,
-  DateTimePickerStyle
-} from 'nativescript-datetimepicker';
-import { ContentView } from 'tns-core-modules/ui/content-view';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { TextField } from 'tns-core-modules/ui/text-field';
+import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { LoggingService } from '../../../../services';
 import { YYYY_MM_DD } from '../../../../utils';
 
@@ -60,9 +53,7 @@ export class DataBoxComponent extends TextField {
     // return new Promise((resolve, reject) => {
     (args.object as StackLayout).className = 'data-box-active';
 
-    const dateTimePickerStyle = DateTimePickerStyle.create(
-      args.object as StackLayout
-    );
+    const dateTimePickerStyle = DateTimePickerStyle.create(args.object as any);
 
     const newDate = new Date();
 
@@ -96,5 +87,5 @@ export class DataBoxComponent extends TextField {
 }
 
 registerElement('DataBox', () => {
-  return ContentView;
+  return require('@nativescript/core/ui/content-view').ContentView;
 });

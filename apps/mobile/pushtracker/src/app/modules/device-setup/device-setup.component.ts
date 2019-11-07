@@ -1,20 +1,19 @@
 import { Component, NgZone, OnInit, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { ModalDialogParams } from '@nativescript/angular';
+import { isAndroid, Page } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { isAndroid } from 'tns-core-modules/platform';
-import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
 import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
-import { BluetoothService, LoggingService, LoggingCategory, PushTrackerUserService } from '../../services';
+import { BluetoothService, LoggingCategory, LoggingService, PushTrackerUserService } from '../../services';
 
 // TODO: activity indicator for E2 on ios (during scanning /
 // connection / etc.)
@@ -79,7 +78,7 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         // OG PushTracker configuration
         this.slide = this._translateService.instant(
@@ -128,7 +127,7 @@ export class DeviceSetupComponent implements OnInit {
         !this.slide &&
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
       ) {
         // PushTracker E2/ WearOS configuration
         this.slide = this._translateService.instant(
@@ -198,8 +197,8 @@ export class DeviceSetupComponent implements OnInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -211,7 +210,7 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -388,7 +387,9 @@ export class DeviceSetupComponent implements OnInit {
 
     // if there are no companion devices with the app installed,
     // see if there are any companion devices connected
-    this.statusMessage = this._translateService.instant('device-setup.e2.finding-devices');
+    this.statusMessage = this._translateService.instant(
+      'device-setup.e2.finding-devices'
+    );
     const nodesConnected = await WearOsComms.findDevicesConnected(10000);
 
     // if there are not companion devices connected, inform the

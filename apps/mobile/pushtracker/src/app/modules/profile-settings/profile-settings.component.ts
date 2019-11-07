@@ -1,21 +1,19 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ModalDialogParams } from '@nativescript/angular';
+import { Page, PropertyChangeData, Switch } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
-import { Switch } from 'tns-core-modules/ui/switch';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { applyTheme } from '../../utils';
-import { ListPickerSheetComponent, MockActionbarComponent, SliderSheetComponent, PushTrackerStatusButtonComponent } from '../shared/components';
+import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-settings',
@@ -535,8 +533,7 @@ export class ProfileSettingsComponent implements OnInit {
     }
     // Update local cache of this.user in appSettings
     appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-    if (this.activeSetting !== 'theme')
-      this._debouncedCommitSettingsFunction();
+    if (this.activeSetting !== 'theme') this._debouncedCommitSettingsFunction();
     this._logService.logBreadCrumb(
       ProfileSettingsComponent.name,
       `User updated setting: ${this.activeSetting} to: ${index}`
@@ -779,7 +776,9 @@ export class ProfileSettingsComponent implements OnInit {
     this._ble_version = this.smartDrive.ble_version_string;
     this._updateSmartDriveSectionLabel();
     // set the once handler here for sending data
-    this._onceSyncAndDisconnect = once(this._syncAndDisconnectSmartDrive.bind(this));
+    this._onceSyncAndDisconnect = once(
+      this._syncAndDisconnectSmartDrive.bind(this)
+    );
   }
 
   private async _onSmartDriveDisconnect(_: any) {

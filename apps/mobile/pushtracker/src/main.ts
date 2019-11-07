@@ -1,9 +1,9 @@
 // this import should be first in order to load some required settings (like globals and reflect-metadata)
 import { enableProdMode } from '@angular/core';
-import { platformNativeScriptDynamic } from 'nativescript-angular/platform';
+import { platformNativeScriptDynamic } from '@nativescript/angular';
+import * as appSettings from '@nativescript/core/application-settings';
 import * as themes from 'nativescript-themes';
 import 'reflect-metadata';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { AppModule } from './app/app.module';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 require('nativescript-plugin-firebase'); // for configuring push notifications

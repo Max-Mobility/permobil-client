@@ -8,7 +8,10 @@ export function kilometersToMiles(km: number) {
   return km * 0.621371;
 }
 
-export function convertToMilesIfUnitPreferenceIsMiles(distance: number, unit_preference: string) {
+export function convertToMilesIfUnitPreferenceIsMiles(
+  distance: number,
+  unit_preference: string
+) {
   if (unit_preference === DISTANCE_UNITS.MILES) {
     return kilometersToMiles(distance);
   }

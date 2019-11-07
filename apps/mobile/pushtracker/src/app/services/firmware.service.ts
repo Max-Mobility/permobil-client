@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
+import { isAndroid, isIOS, knownFolders, ObservableArray, path } from '@nativescript/core';
+import * as httpModule from '@nativescript/core/http';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { knownFolders, path } from 'tns-core-modules/file-system';
-import * as httpModule from 'tns-core-modules/http';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
 @Injectable()
 export class FirmwareService {

@@ -1,13 +1,6 @@
 <GridLayout rows="auto, *" class="wireless-updates-layout">
   // Mock ActionBar
-  <MockActionBar
-    row="0"
-    [title]="'wireless-updates.title' | translate"
-    [showBackNav]="allowBackNav"
-    [showMoreBtn]="true"
-    (moreTapEvent)="onMoreBtnTap()"
-    (navTapEvent)="closeModal()"
-  ></MockActionBar>
+  <MockActionBar row="0" [title]="'wireless-updates.title' | translate" [showBackNav]="allowBackNav" [showMoreBtn]="true" (moreTapEvent)="onMoreBtnTap()" (navTapEvent)="closeModal()"></MockActionBar>
 
   <ScrollView row="1" height="100%" width="100%">
     <GridLayout rows="*, auto, *" columns="*">

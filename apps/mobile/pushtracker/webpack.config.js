@@ -15,6 +15,9 @@ const {
 const {
   getMainModulePath
 } = require('nativescript-dev-webpack/utils/ast-utils');
+const {
+  getNoEmitOnErrorFromTSConfig
+} = require('nativescript-dev-webpack/utils/tsconfig-utils');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -88,9 +91,13 @@ module.exports = env => {
     hiddenSourceMap, // --env.hiddenSourceMap
     hmr, // --env.hmr,
     unitTesting, // --env.unitTesting
-    verbose // --env.verbose
+    verbose, // --env.verbose
+    snapshotInDocker, // --env.snapshotInDocker
+    skipSnapshotTools, // --env.skipSnapshotTools
+    compileSnapshot // --env.compileSnapshot
   } = env;
 
+  const useLibs = compileSnapshot;
   const isAnySourceMapEnabled = !!sourceMap || !!hiddenSourceMap;
   const externals = nsWebpack.getConvertedExternals(env.externals);
   const appFullPath = resolve(projectRoot, appPath);
@@ -181,6 +188,10 @@ module.exports = env => {
     );
   }
 
+  const noEmitOnErrorFromTSConfig = getNoEmitOnErrorFromTSConfig(
+    join(projectRoot, tsConfigName)
+  );
+
   nsWebpack.processAppComponents(appComponents, platform);
   const config = {
     mode: production ? 'production' : 'development',
@@ -214,7 +225,9 @@ module.exports = env => {
         'node_modules'
       ],
       alias: {
-        '~': appFullPath
+        '~': appFullPath,
+        'nativescript-angular': '@nativescript/angular',
+        'tns-core-modules': '@nativescript/core'
       },
       symlinks: true
     },
@@ -236,6 +249,7 @@ module.exports = env => {
       : 'none',
     optimization: {
       runtimeChunk: 'single',
+      noEmitOnErrors: noEmitOnErrorFromTSConfig,
       splitChunks: {
         cacheGroups: {
           vendor: {
@@ -266,8 +280,6 @@ module.exports = env => {
               semicolons: !isAnySourceMapEnabled
             },
             compress: {
-              drop_console: true,
-              drop_debugger: true,
               // The Android SBG has problems parsing the output
               // when these options are enabled
               collapse_vars: platform !== 'android',
@@ -304,19 +316,24 @@ module.exports = env => {
 
         { test: /\.html$|\.xml$/, use: 'raw-loader' },
 
-        // tns-core-modules reads the app.css and its imports using css-loader
         {
           test: /[\/|\\]app\.css$/,
           use: [
             'nativescript-dev-webpack/style-hot-loader',
-            { loader: 'css-loader', options: { url: false } }
+            {
+              loader: 'nativescript-dev-webpack/css2json-loader',
+              options: { useForImports: true }
+            }
           ]
         },
         {
           test: /[\/|\\]app\.scss$/,
           use: [
             'nativescript-dev-webpack/style-hot-loader',
-            { loader: 'css-loader', options: { url: false } },
+            {
+              loader: 'nativescript-dev-webpack/css2json-loader',
+              options: { useForImports: true }
+            },
             'sass-loader'
           ]
         },
@@ -403,7 +420,10 @@ module.exports = env => {
           'nativescript-angular/router'
         ],
         projectRoot,
-        webpackConfig: config
+        webpackConfig: config,
+        snapshotInDocker,
+        skipSnapshotTools,
+        useLibs
       })
     );
   }

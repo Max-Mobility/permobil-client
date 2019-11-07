@@ -1,10 +1,9 @@
 import { Component, NgZone } from '@angular/core';
+import { registerElement } from '@nativescript/angular';
+import { ImageSource } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { registerElement } from 'nativescript-angular/element-registry';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { ContentView } from 'tns-core-modules/ui/content-view';
-import { alert } from 'tns-core-modules/ui/dialogs';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { BluetoothService, PushTrackerState } from '../../../../services/bluetooth.service';
 
@@ -47,7 +46,7 @@ export class PushTrackerStatusButtonComponent {
         ? 'og_band_black'
         : 'og_band_white';
 
-    this.icon = imageFromResource(this.iconString);
+    this.icon = ImageSource.fromResourceSync(this.iconString);
     // set up the status watcher for the pushtracker state
     this._bluetoothService.on(
       BluetoothService.pushtracker_status_changed,
@@ -72,7 +71,7 @@ export class PushTrackerStatusButtonComponent {
       if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
         this.iconString = 'og_band_black';
       else this.iconString = 'og_band_white';
-      this.icon = imageFromResource(this.iconString);
+      this.icon = ImageSource.fromResourceSync(this.iconString);
     });
   }
 
@@ -109,5 +108,5 @@ export class PushTrackerStatusButtonComponent {
 }
 
 registerElement('pushtracker-status-button', () => {
-  return ContentView;
+  return require('@nativescript/core/ui/content-view').ContentView;
 });

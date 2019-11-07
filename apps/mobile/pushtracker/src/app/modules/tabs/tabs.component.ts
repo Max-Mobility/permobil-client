@@ -1,19 +1,15 @@
 import { Component } from '@angular/core';
+import { RouterExtensions } from '@nativescript/angular';
+import { BottomNavigation, ChangedData, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log, PushTrackerUser } from '@permobil/core';
+import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import throttle from 'lodash/throttle';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { ChangedData, ObservableArray } from 'tns-core-modules/data/observable-array';
-import { isAndroid } from 'tns-core-modules/platform';
-import { BottomNavigation } from 'tns-core-modules/ui/bottom-navigation';
-import { action, alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
-import { SelectedIndexChangedEventData } from 'tns-core-modules/ui/tab-view';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
@@ -113,10 +109,13 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Asking for Bluetooth Permission');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Asking for Bluetooth Permission'
+        );
         this.bluetoothAdvertised = true;
         setTimeout(() => {
           this.askForPermissions()
@@ -124,7 +123,10 @@ export class TabsComponent {
               this.registerBluetoothEvents();
               this.registerPushTrackerEvents();
               if (!this._bluetoothService.advertising) {
-                this._logService.logBreadCrumb(TabsComponent.name, 'Starting Bluetooth');
+                this._logService.logBreadCrumb(
+                  TabsComponent.name,
+                  'Starting Bluetooth'
+                );
                 // start the bluetooth service
                 return this._bluetoothService.advertise();
               }
@@ -136,7 +138,6 @@ export class TabsComponent {
         }, 5000);
       }
     });
-
   }
 
   onRootBottomNavLoaded(_) {
@@ -227,8 +228,8 @@ export class TabsComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -240,7 +241,7 @@ export class TabsComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -281,15 +282,9 @@ export class TabsComponent {
 
   private unregisterBluetoothEvents() {
     // register for bluetooth events here
-    this._bluetoothService.off(
-      BluetoothService.advertise_error
-    );
-    this._bluetoothService.off(
-      BluetoothService.pushtracker_connected
-    );
-    this._bluetoothService.off(
-      BluetoothService.pushtracker_disconnected
-    );
+    this._bluetoothService.off(BluetoothService.advertise_error);
+    this._bluetoothService.off(BluetoothService.pushtracker_connected);
+    this._bluetoothService.off(BluetoothService.pushtracker_disconnected);
   }
 
   private onBluetoothAdvertiseError(args: any) {
@@ -322,7 +317,10 @@ export class TabsComponent {
   }
 
   onDailyInfoEvent(args) {
-    this._logService.logBreadCrumb(TabsComponent.name, 'daily_info_event received from PushTracker');
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'daily_info_event received from PushTracker'
+    );
     const data = args.data;
     const year = data.year;
     const month = data.month - 1;
@@ -348,9 +346,16 @@ export class TabsComponent {
       .saveDailyActivityFromPushTracker(dailyActivity)
       .then(result => {
         if (result)
-          this._logService.logBreadCrumb(TabsComponent.name, 'DailyInfo from PushTracker successfully saved in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'DailyInfo from PushTracker successfully saved in Kinvey'
+          );
         else
-          this._logService.logException(new Error('[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'));
+          this._logService.logException(
+            new Error(
+              '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
+            )
+          );
       })
       .catch(err => {
         this._logService.logException(err);
@@ -359,12 +364,18 @@ export class TabsComponent {
     // Request distance information from PushTracker
     if (this.pushTracker) {
       this.pushTracker.sendPacket('Command', 'DistanceRequest');
-      this._logService.logBreadCrumb(TabsComponent.name, 'Distance data requested from PushTracker');
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'Distance data requested from PushTracker'
+      );
     }
   }
 
   onDistanceEvent(args) {
-    this._logService.logBreadCrumb(TabsComponent.name, 'distance_event received from PushTracker');
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'distance_event received from PushTracker'
+    );
     const data = args.data;
     const distance_smartdrive_drive = data.driveDistance;
     const distance_smartdrive_coast = data.coastDistance;
@@ -386,9 +397,16 @@ export class TabsComponent {
       .saveDailyUsageFromPushTracker(dailyUsage)
       .then(result => {
         if (result)
-          this._logService.logBreadCrumb(TabsComponent.name, 'Distance from PushTracker successfully saved in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Distance from PushTracker successfully saved in Kinvey'
+          );
         else
-          this._logService.logException(new Error('[TabsComponent] Failed to save Distance from PushTracker in Kinvey'));
+          this._logService.logException(
+            new Error(
+              '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
+            )
+          );
       })
       .catch(err => {
         this._logService.logException(err);
@@ -404,7 +422,10 @@ export class TabsComponent {
       return;
     }
 
-    this._logService.logBreadCrumb(TabsComponent.name, 'error_event received from PushTracker');
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'error_event received from PushTracker'
+    );
 
     const hour = data.hour;
     const minute = data.minute;
@@ -428,9 +449,19 @@ export class TabsComponent {
       .saveDailyErrorsFromPushTracker(dailyErrors)
       .then(result => {
         if (result)
-          this._logService.logBreadCrumb(TabsComponent.name, 'ErrorInfo from PushTracker successfully saved in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'ErrorInfo from PushTracker successfully saved in Kinvey'
+          );
         else
-          this._logService.logException(new Error('[' + TabsComponent.name + '] ' + 'Failed to save ErrorInfo from PushTracker in Kinvey'));
+          this._logService.logException(
+            new Error(
+              '[' +
+                TabsComponent.name +
+                '] ' +
+                'Failed to save ErrorInfo from PushTracker in Kinvey'
+            )
+          );
       })
       .catch(err => {
         this._logService.logException(err);
@@ -459,7 +490,10 @@ export class TabsComponent {
 
   private _registerEventsForPT(pt: PushTracker) {
     pt.on(PushTracker.paired_event, () => {
-      this._logService.logBreadCrumb(TabsComponent.name, 'PushTracker paired: ' + pt.address);
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'PushTracker paired: ' + pt.address
+      );
       this.onPushTrackerPaired({
         data: { pushtracker: pt }
       });
