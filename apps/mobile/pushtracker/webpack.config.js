@@ -280,6 +280,8 @@ module.exports = env => {
               semicolons: !isAnySourceMapEnabled
             },
             compress: {
+              drop_console: true,
+              drop_debugger: true,
               // The Android SBG has problems parsing the output
               // when these options are enabled
               collapse_vars: platform !== 'android',
