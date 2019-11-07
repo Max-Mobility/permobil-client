@@ -238,15 +238,6 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-    // try {
-    //   // store reference to pageer so that we can control what page
-    //   // it's on programatically
-    //   const page = args.object as Page;
-    //   this._mainPage = page;
-    // } catch (err) {
-    //   Sentry.captureException(err);
-    //   Log.E('onMainPageLoaded::error:', err);
-    // }
   }
 
   toggleDebug() {
@@ -304,7 +295,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -741,7 +732,6 @@ export class MainViewModel extends Observable {
   }
 
   private async _askForPermissions() {
-    // Log.D('asking for permissions');
     // determine if we have shown the permissions request
     const hasShownRequest =
       appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
@@ -773,14 +763,14 @@ export class MainViewModel extends Observable {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
-      // sentryBreadCrumb('requesting permissions!', neededPermissions);
+      sentryBreadCrumb('requesting permissions: ' + neededPermissions);
       await alert({
         title: L('permissions-request.title'),
         message: reasons.join('\n\n'),
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1864,7 +1854,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1929,7 +1919,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -1938,12 +1928,14 @@ export class MainViewModel extends Observable {
 
   private async _ensureBluetoothCapabilities() {
     try {
+      sentryBreadCrumb('ensuring bluetooth capabilities');
       // ensure we have the permissions
       await this._askForPermissions();
       // ensure bluetooth radio is enabled
       // Log.D('checking radio is enabled');
       const radioEnabled = await this._bluetoothService.radioEnabled();
       if (!radioEnabled) {
+        sentryBreadCrumb('bluetooth is not enabled');
         Log.W('radio is not enabled!');
         // if the radio is not enabled, we should turn it on
         const didEnable = await this._bluetoothService.enableRadio();
@@ -1962,6 +1954,7 @@ export class MainViewModel extends Observable {
       await this._bluetoothService.initialize();
       return true;
     } catch (err) {
+      sentryBreadCrumb('Error ensuring bluetooth: ' + err);
       return false;
     }
   }
@@ -2351,7 +2344,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }
