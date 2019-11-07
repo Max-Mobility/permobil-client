@@ -2,6 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noEmitHelpers": true,
@@ -21,15 +22,11 @@
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
     }
   },
-  "files": [
-    "./node_modules/tns-platform-declarations/android/android-platform-23.d.ts",
-    "./node_modules/tns-platform-declarations/android/android-support-28.d.ts",
-    "./node_modules/tns-platform-declarations/android/common.d.ts",
-    "./node_modules/tns-platform-declarations/ios.d.ts",
-    "../../../forked-plugins/nativescript-bluetooth/index.ts",
-    // "./src/app.module.ngfactory.d.ts",
-    "./src/main.ts"
-  ],
+  "files": ["./src/main.ts"],
   "include": ["./src/**/*.module.ts"],
-  "exclude": ["node_modules", "platforms"]
+  "exclude": [
+    "node_modules",
+    "platforms",
+    "../../../@permobil/nativescript/src/plugins/*"
+  ]
 }

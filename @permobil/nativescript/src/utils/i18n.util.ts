@@ -1,7 +1,7 @@
 require('globals');
-import { getResources, setResources } from 'tns-core-modules/application';
-import { File, Folder, knownFolders, path } from 'tns-core-modules/file-system';
-import { device } from 'tns-core-modules/platform';
+import { File, Folder, knownFolders, path } from '@nativescript/core';
+import { getResources, setResources } from '@nativescript/core/application';
+import { device } from '@nativescript/core/platform';
 
 const getDefaultLang = function() {
   return device.language;
@@ -111,3 +111,4 @@ setResources(applicationResources);
 global.L = L;
 
 export { getDefaultLang, use, load, update, L };
+

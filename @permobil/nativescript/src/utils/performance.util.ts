@@ -1,4 +1,4 @@
-import { isIOS } from 'tns-core-modules/platform';
+import { isIOS } from '@nativescript/core';
 
 declare const global: any;
 

@@ -7,14 +7,20 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import * as camera from 'nativescript-camera';
 import { Feedback } from 'nativescript-feedback';
 import * as geolocation from 'nativescript-geolocation';
-import { ImageCropper, Result as ImageCropperResult } from 'nativescript-imagecropper';
+import {
+  ImageCropper,
+  Result as ImageCropperResult
+} from 'nativescript-imagecropper';
 import * as LS from 'nativescript-localstorage';
 import { Mapbox } from 'nativescript-mapbox';
 import { Toasty } from 'nativescript-toasty';
 import { switchMap } from 'rxjs/operators';
 import * as app from 'tns-core-modules/application';
 import { ImageAsset } from 'tns-core-modules/image-asset';
-import { fromBase64, ImageSource } from 'tns-core-modules/image-source/image-source';
+import {
+  fromBase64,
+  ImageSource
+} from 'tns-core-modules/image-source/image-source';
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { setTimeout } from 'tns-core-modules/timer';
 import { View } from 'tns-core-modules/ui/core/view';
@@ -24,7 +30,14 @@ import * as utils from 'tns-core-modules/utils/utils';
 // import { Demo, PushTracker } from '@maxmobility/core';
 // import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '@maxmobility/mobile';
 import { Demo, PushTracker } from '../../models';
-import { BluetoothService, DemoService, FirmwareService, LocationService, LoggingService, ProgressService } from '../../services';
+import {
+  BluetoothService,
+  DemoService,
+  FirmwareService,
+  LocationService,
+  LoggingService,
+  ProgressService
+} from '../../services';
 
 @Component({
   selector: 'demo',
@@ -414,11 +427,9 @@ export class DemoDetailComponent implements OnInit {
               cancelButtonText: this._translateService.instant('dialogs.cancel')
             }).then(confirmResult => {
               if (confirmResult === true) {
-                utils.ios
-                  .getter(UIApplication, UIApplication.sharedApplication)
-                  .openURL(
-                    NSURL.URLWithString(UIApplicationOpenSettingsURLString)
-                  );
+                UIApplication.sharedApplication.openURL(
+                  NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+                );
               }
             });
 
@@ -641,11 +652,9 @@ export class DemoDetailComponent implements OnInit {
                 )
               }).then(result => {
                 if (result) {
-                  utils.ios
-                    .getter(UIApplication, UIApplication.sharedApplication)
-                    .openURL(
-                      NSURL.URLWithString(UIApplicationOpenSettingsURLString)
-                    );
+                  UIApplication.sharedApplication.openURL(
+                    NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+                  );
                 }
               });
             } else {

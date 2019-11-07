@@ -4,7 +4,7 @@ import {
   rimColorProperty,
   barColorProperty
 } from './animated-circle.common';
-import { Color } from 'tns-core-modules/color';
+import { Color } from '@nativescript/core';
 
 declare const at;
 

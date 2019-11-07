@@ -1,6 +1,6 @@
-import * as app from 'tns-core-modules/application';
-import { isAndroid } from 'tns-core-modules/platform';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
+import { isAndroid } from '@nativescript/core';
+import * as app from '@nativescript/core/application';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 
 /**
  * Hide the device keyboard from screen when executed.

@@ -1,15 +1,12 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { RouterExtensions } from '@nativescript/angular';
+import { Button, EventData, isAndroid, isIOS, Page, TextField } from '@nativescript/core';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { isIosSimulator, preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { Kinvey } from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
-import { isAndroid, isIOS } from 'tns-core-modules/platform';
-import { Button } from 'tns-core-modules/ui/button';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { EventData, Page } from 'tns-core-modules/ui/page';
-import { TextField } from 'tns-core-modules/ui/text-field';
 import { LoggingService, ProgressService, UserService } from '../../services';
 
 declare const com;

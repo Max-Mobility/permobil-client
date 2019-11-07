@@ -9,7 +9,7 @@
     "setup": "npm run global.installs && npm run setup.@permobil && npm run setup.mobile && npm run setup.wear && npm run setup.forked.plugins",
     "setup.all": "npm i && npm run global.installs && npm run setup.all.non-global",
     "setup.all.non-global": "npm i && npm run setup.forked.plugins && npm run setup.mobile && npm run setup.wear && npm run setup.@permobil",
-    "setup.mobile": "npm run setup.se.mobile && npm run setup.pt.mobile",
+    "setup.mobile": "npm run setup.pt.mobile",
     "setup.se.mobile": "cd apps/mobile/smart-eval && npm i && tsc",
     "setup.pt.mobile": "cd apps/mobile/pushtracker && npm i && tsc",
     "setup.wear": "npm run setup.sd.wear && npm run setup.pt.wear",
@@ -91,18 +91,18 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~6.1.0"
+    "tns-core-modules": "~6.2.0"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
     "node-sass": "~4.12.0",
     "prettier": "^1.18.2",
-    "husky": "^3.0.5",
+    "husky": "^3.0.9",
     "prompt": "^1.0.0",
-    "lint-staged": "^9.2.5",
+    "lint-staged": "^9.4.2",
     "rimraf": "~2.6.3",
-    "tns-platform-declarations": "~6.1.0",
-    "tslint": "~5.19.0",
+    "tns-platform-declarations": "~6.2.0",
+    "tslint": "~5.20.1",
     "typescript": "~3.5.3"
   },
   "husky": {

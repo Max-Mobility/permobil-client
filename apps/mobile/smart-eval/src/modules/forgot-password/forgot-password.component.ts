@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterExtensions } from '@nativescript/angular';
+import { Page, PropertyChangeData } from '@nativescript/core';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { preventKeyboardFromShowing, setMarginForIosSafeArea } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { RouterExtensions } from 'nativescript-angular/router';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { Page } from 'tns-core-modules/ui/page';
 import { LoggingService, ProgressService, UserService } from '../../services';
 
 @Component({

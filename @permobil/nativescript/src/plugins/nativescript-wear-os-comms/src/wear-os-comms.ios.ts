@@ -1,7 +1,6 @@
+import * as appSettings from '@nativescript/core/application-settings';
 import { Bluetooth } from 'nativescript-bluetooth';
-import * as appSettings from 'tns-core-modules/application-settings';
 import { Common } from './wear-os-comms.common';
-
 
 export class WearOsComms extends Common {
   private static _bluetooth: Bluetooth = new Bluetooth();
@@ -173,7 +172,10 @@ export class WearOsComms extends Common {
     // do nothing
   }
 
-  public static async openAppInStoreOnPhone(androidPackageName: string, iosAppStoreUri: string) {
+  public static async openAppInStoreOnPhone(
+    androidPackageName: string,
+    iosAppStoreUri: string
+  ) {
     // do nothing
   }
 

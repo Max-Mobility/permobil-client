@@ -1,11 +1,9 @@
-import { ContentView } from 'tns-core-modules/ui/content-view';
-import { Color } from 'tns-core-modules/color';
+import { Color, ContentView, View } from '@nativescript/core';
 import {
-  View,
   Style,
   CssProperty,
   InheritedCssProperty
-} from 'tns-core-modules/ui/core/view';
+} from '@nativescript/core/ui/core/view';
 
 export const spinBarColorProperty = new InheritedCssProperty<Style, Color>({
   name: 'spinBarColor',
@@ -36,7 +34,7 @@ export class Common extends ContentView {
 // https://docs.nativescript.org/core-concepts/properties#registering-the-property
 
 // augmenting style definitino so it includes rimColor and barColor
-declare module 'tns-core-modules/ui/styling/style' {
+declare module '@nativescript/core/ui/styling/style' {
   interface Style {
     spinBarColor: Color;
     rimColor: Color;

@@ -1,5 +1,5 @@
-import * as application from 'tns-core-modules/application';
-import * as utils from 'tns-core-modules/utils/utils';
+import * as application from '@nativescript/core/application';
+import * as utils from '@nativescript/core/utils/utils';
 import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, DisconnectOptions, MakeCharacteristicOptions, MakeServiceOptions, ReadOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from '../common';
 import { TNS_AdvertiseCallback } from './TNS_AdvertiseCallback';
 import { TNS_BluetoothGattCallback } from './TNS_BluetoothGattCallback';

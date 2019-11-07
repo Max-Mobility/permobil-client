@@ -1,6 +1,5 @@
-import * as app from 'tns-core-modules/application';
-import { isIOS } from 'tns-core-modules/platform';
-import { Page } from 'tns-core-modules/ui/page';
+import { isIOS, Page } from '@nativescript/core';
+import * as app from '@nativescript/core/application';
 
 /**
  * Sets margins for the safe area on iOS devices with safeAreaInsets
