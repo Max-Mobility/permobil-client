@@ -37,6 +37,12 @@ export class SettingsService {
     this.switchControlSettings.copy(data.switchControlSettings);
   }
 
+  reset() {
+    this.settings = new Device.Settings();
+    this.pushSettings = new Device.PushSettings();
+    this.switchControlSettings = new Device.SwitchControlSettings();
+  }
+
   save() {
     return new Promise(async (resolve, reject) => {
       try {

@@ -12,9 +12,10 @@ import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty } from 'nativescript-toasty';
+import * as LS from 'nativescript-localstorage';
 import { ActivityGoalSettingComponent, DeviceSetupComponent, PrivacyPolicyComponent } from '..';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
-import { LoggingService, PushTrackerUserService, ThemeService } from '../../services';
+import { LoggingService, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
@@ -71,6 +72,7 @@ export class ProfileTabComponent {
 
   constructor(
     private _userService: PushTrackerUserService,
+    private _settingsService: SettingsService,
     private _themeService: ThemeService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
@@ -224,11 +226,12 @@ export class ProfileTabComponent {
         if (result === signOut) {
           this._zone.run(async () => {
             KinveyUser.logout();
-            // Clean up appSettings key-value pairs that were
-            // saved in app.component.ts
-            appSettings.remove('PushTracker.WeeklyActivity');
-            appSettings.remove('SmartDrive.WeeklyUsage');
-            appSettings.remove('Kinvey.User');
+            // clean up local storage
+            LS.clear();
+            // Clean up appSettings key-value pairs
+            appSettings.clear();
+            // Reset the settings service
+            this._settingsService.reset();
             // Reset the user service and restore to default theme
             this._userService.reset();
             enableDefaultTheme();
@@ -883,7 +886,7 @@ export class ProfileTabComponent {
           this._logService.logBreadCrumb(
             ProfileTabComponent.name,
             `Configuration changed to: ${
-              this.configurations[result.data.primaryIndex]
+            this.configurations[result.data.primaryIndex]
             }`
           );
           KinveyUser.update({
@@ -910,7 +913,7 @@ export class ProfileTabComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => {})
+      .then(() => { })
       .catch(err => {
         this._logService.logException(err);
       });
@@ -964,7 +967,7 @@ export class ProfileTabComponent {
       error => {
         this._logService.logException(error);
       },
-      () => {}
+      () => { }
     );
   }
 

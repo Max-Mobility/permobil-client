@@ -3,6 +3,7 @@ import { RouterExtensions } from '@nativescript/angular';
 import { BottomNavigation, ChangedData, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
+import * as LS from 'nativescript-localstorage';
 import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
@@ -73,11 +74,12 @@ export class TabsComponent {
         // we should probably logout here since we don't have a valid
         // user
         KinveyUser.logout();
-        // Clean up appSettings key-value pairs that were
-        // saved in app.component.ts
-        appSettings.remove('PushTracker.WeeklyActivity');
-        appSettings.remove('SmartDrive.WeeklyUsage');
-        appSettings.remove('Kinvey.User');
+        // clean up local storage
+        LS.clear();
+        // Clean up appSettings key-value pairs
+        appSettings.clear();
+        // Reset the settings service
+        this._settingsService.reset();
         // Reset the user service and restore to default theme
         this._userService.reset();
         enableDefaultTheme();
@@ -109,7 +111,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
         !this.bluetoothAdvertised
       ) {
         this._logService.logBreadCrumb(
@@ -228,8 +230,8 @@ export class TabsComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -241,7 +243,7 @@ export class TabsComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -457,9 +459,9 @@ export class TabsComponent {
           this._logService.logException(
             new Error(
               '[' +
-                TabsComponent.name +
-                '] ' +
-                'Failed to save ErrorInfo from PushTracker in Kinvey'
+              TabsComponent.name +
+              '] ' +
+              'Failed to save ErrorInfo from PushTracker in Kinvey'
             )
           );
       })
