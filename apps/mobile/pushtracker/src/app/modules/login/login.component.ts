@@ -6,6 +6,7 @@ import { device } from '@nativescript/core/platform';
 import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
+import { PushTrackerUser } from '@permobil/core';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
@@ -129,7 +130,10 @@ export class LoginComponent implements OnInit {
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory
-      this._userService.reset();
+      // this._userService.reset();
+      this._userService.initializeUser(<PushTrackerUser>(
+        (<any>Kinvey.User.getActiveUser())
+      ));
       this._zone.run(() => {
         this._routerExtensions.navigate(['/tabs/default'], {
           clearHistory: true
