@@ -547,27 +547,29 @@
     }
   },
   "user": {
-    "consent-form-title": "Privacy Policy Consent Form",
+    "consent-form-title": "Your Privacy",
+    "privacy-policy-contact-email": "privacy@permobil.com",
     "privacy-policy-site": "https://privacy.permobil.com",
     "end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
     "accept": {
       "agreement-button": "View End User Agreement",
-      "privacy-button": "View Privacy Policy",
+      "privacy-button": "View Privacy Notice",
       "user-agreement-title": "Accept End User Agreement",
-      "privacy-policy-title": "Accept Privacy Policy",
+      "privacy-policy-title": "Accept Privacy Notice",
+      "privacy-brief": "Permobil uses the data you provide us to provide you insight into your activity over time.\n\nYour data will be encrypted and stored securely in the United States.\n\nWe never sell your personal data to anyone or give anyone access to your personal data without your consent.\n\nIf you have any questions or would like to have your data changed or deleted please contact us at privacy@permobil.com.\n\nFor more information please refer to our full privacy notice.",
       "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use the PushTracker (Android / iOS), PushTracker (WearOS), and SmartDrive MX2+ (WearOS) apps.",
       "user-agreement": "I have read, understood, and agree to the end user agreement",
-      "privacy-policy": "I have read and understood the privacy policy",
+      "privacy-policy": "I have read and understood the privacy notice",
       "accept-error": {
         "title": "Agreement Error",
-        "message": "You must read and accept the agreement and privacy policy to register an account!"
+        "message": "You must read and accept the agreement and privacy notice to register an account!"
       }
     },
     "consent": {
       "beta-test": "I opt into firmware beta testing and understand the associated risks.",
-      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Profile' page of the application.",
-      "research": "I give my consent to the usage of my data for product development as described in the privacy policy",
-      "product-development": "I give my consent to the usage of my data for research as described in the privacy policy"
+      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Profile' page of the application and pressing the privacy (shield) button.",
+      "research": "I give my consent to the usage of my data for product development as described in the privacy notice",
+      "product-development": "I give my consent to the usage of my data for research as described in the privacy notice"
     }
   },
   "updates-info-component": {

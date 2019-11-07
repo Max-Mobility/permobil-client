@@ -25,6 +25,11 @@
     color: darken($white, 10%);
   }
 
+  .privacy-btn {
+    @extend .PRIVACY_BUTTON_BASE;
+    color: $white;
+  }
+
   .ok-btn {
     @extend .OK_BTN_BASE;
     background-color: $permobil-sky;

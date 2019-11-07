@@ -1,25 +1,28 @@
 <GridLayout rows="auto, *" class="privacy-policy-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="close()"></MockActionBar>
+  <MockActionBar row="0" [title]="'user.consent-form-title' | translate" [showBackNav]="true" [backNavIcon]="1" (navTapEvent)="close()"></MockActionBar>
 
   <ScrollView row="1" height="100%">
     <StackLayout paddingTop="20" padding="20">
-      <Label class="title" textWrap="true" [text]="'user.consent-form-title' | translate"></Label>
       // agreements // end user agreement
-      <Label class="section-title" textWrap="true" [text]="'user.accept.header' | translate"></Label>
+      <Label *ngIf="!readonly" class="section-text" textWrap="true" [text]="'user.accept.header' | translate"></Label>
       <Button width="100%" [text]="'user.accept.agreement-button' | translate" (tap)="openWebsite('user.end-user-agreement-site')"></Button>
       <GridLayout columns="*, auto" rows="auto" *ngIf="!readonly">
         <Label class="section-text" textWrap="true" [text]="'user.accept.user-agreement' | translate"></Label>
         <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_agreed_to_user_agreement')" [checked]="has_agreed_to_user_agreement"></Switch>
       </GridLayout>
       // privacy policy
+      <Label class="section-text" textWrap="true" [text]="'user.accept.privacy-brief' | translate"></Label>
       <Button width="100%" [text]="'user.accept.privacy-button' | translate" (tap)="openWebsite('user.privacy-policy-site')"></Button>
       <GridLayout columns="*, auto" rows="auto" *ngIf="!readonly">
         <Label class="section-text" textWrap="true" [text]="'user.accept.privacy-policy' | translate"></Label>
         <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'has_read_privacy_policy')" [checked]="has_read_privacy_policy"></Switch>
       </GridLayout>
       // consent
-      <Label class="section-title" textWrap="true" [text]="'user.consent.header' | translate"></Label>
+      <GridLayout rows="auto" columns="*, auto" *ngIf="!readonly">
+        <Label col="0" class="section-text" textWrap="true" [text]="'user.consent.header' | translate"></Label>
+        <Button col="1" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
+      </GridLayout>
       <GridLayout columns="*, auto" rows="auto">
         <Label class="section-text" textWrap="true" [text]="'user.consent.product-development' | translate"></Label>
         <Switch col="1" class="inactive-setting-switch" (checkedChange)="onSettingsChecked($event, 'consent_to_product_development')" [checked]="consent_to_product_development"></Switch>
