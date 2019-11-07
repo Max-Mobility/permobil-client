@@ -1,10 +1,10 @@
 <GridLayout rows="*" columns="*, *" class="pushtracker-status-btn-layout" (unloaded)="onUnloaded()" (tap)="onTap()" ripple>
   <Image row="0" col="0" [src]="icon" stretch="aspectFit"></Image>
 
-  // PushTracker is paired - Show bluetooth symbol
+  // PushTracker is paired, busy or disconnected - Show bluetooth symbol
   <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center"
     [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_black.json' : 'bluetooth_white.json'"
-    *ngIf="state === PushTrackerState.paired"
+    *ngIf="state === PushTrackerState.paired || state === PushTrackerState.busy || state === PushTrackerState.disconnected"
     class="pt-lottie"
     loop="true" autoPlay="true"></LottieView>
 
@@ -15,10 +15,11 @@
     class="pt-lottie"
     loop="false" autoPlay="true"></LottieView>
 
-  // PushTracker is busy, disconnected or state unknown - Show loading
+
+  // PushTracker state is unknown
   <LottieView row="0" col="1" verticalAlignment="center" horizontalAlignment="center"
     [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'failure_black.json' : 'failure_white.json'"
-    *ngIf="state === PushTrackerState.unknown || state === PushTrackerState.busy || state === PushTrackerState.disconnected"
+    *ngIf="state === PushTrackerState.unknown"
     class="cross-lottie pt-lottie"
     loop="false" autoPlay="true"></LottieView>
 </GridLayout>
