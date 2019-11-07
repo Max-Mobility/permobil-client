@@ -1,5 +1,5 @@
+import { Observable } from '@nativescript/core';
 import { mod } from '@permobil/core';
-import { Observable } from 'tns-core-modules/data/observable';
 
 export class Profile extends Observable {
   public settings = new Profile.Settings();

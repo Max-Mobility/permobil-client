@@ -1,10 +1,9 @@
+import { Observable, Page, ShowModalOptions, View } from '@nativescript/core';
+import { screen } from '@nativescript/core/platform';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { Observable } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { Page, ShowModalOptions, View } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { KinveyService } from '../../../services';
 
 export class SettingsViewModel extends Observable {

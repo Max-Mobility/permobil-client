@@ -1,5 +1,5 @@
+import { android as androidApp } from '@nativescript/core/application';
 import { Log } from '@permobil/core';
-import { android as androidApp } from 'tns-core-modules/application';
 
 declare const org: any;
 

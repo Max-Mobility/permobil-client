@@ -1,16 +1,10 @@
-import * as application from 'tns-core-modules/application';
-import {
-  AndroidActivityCallbacks,
-  setActivityCallbacks
-} from 'tns-core-modules/ui/frame';
+import * as application from '@nativescript/core/application';
+import { AndroidActivityCallbacks, setActivityCallbacks } from '@nativescript/core/ui/frame';
 
 @JavaProxy('com.permobil.pushtracker.MainActivity')
-@Interfaces([
-  androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider
-])
+@Interfaces([androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider])
 class MainActivity extends androidx.appcompat.app.AppCompatActivity
-  implements
-  androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
+  implements androidx.wear.ambient.AmbientModeSupport.AmbientCallbackProvider {
   constructor() {
     super();
   }
@@ -37,7 +31,12 @@ class MainActivity extends androidx.appcompat.app.AppCompatActivity
       setActivityCallbacks(this);
     }
 
-    this._callbacks.onCreate(this, savedInstanceState, this.getIntent(), super.onCreate);
+    this._callbacks.onCreate(
+      this,
+      savedInstanceState,
+      this.getIntent(),
+      super.onCreate
+    );
 
     this.ambientController = androidx.wear.ambient.AmbientModeSupport.attach(
       this

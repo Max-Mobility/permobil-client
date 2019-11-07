@@ -1,5 +1,5 @@
+import { Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { Page, ShownModallyData } from 'tns-core-modules/ui/page';
 import { KinveyService } from '../../../services';
 import { SettingsViewModel } from './settings-view-model';
 

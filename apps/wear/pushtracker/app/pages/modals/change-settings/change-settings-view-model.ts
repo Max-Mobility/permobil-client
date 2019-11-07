@@ -1,13 +1,11 @@
+import { EventData, Observable, Page, ShowModalOptions } from '@nativescript/core';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { alert } from '@nativescript/core/ui/dialogs';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { EventData, Observable } from 'tns-core-modules/data/observable';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
-import { Page } from 'tns-core-modules/ui/page';
-import { ShowModalOptions } from 'tns-core-modules/ui/page/page';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
 import { KinveyService } from '../../../services';
@@ -20,7 +18,8 @@ export class ChangeSettingsViewModel extends Observable {
   @Prop() changeSettingKeyValue;
 
   // for showing busy status
-  private _synchronizingModal: string = 'pages/modals/synchronizing/synchronizing';
+  private _synchronizingModal: string =
+    'pages/modals/synchronizing/synchronizing';
   private _synchronizingView;
 
   private _disableWearCheck = false;
@@ -28,7 +27,11 @@ export class ChangeSettingsViewModel extends Observable {
   private _hasSentSettings = false;
   private _settings = new Profile.Settings();
 
-  constructor(private _mainPage: Page, private _kinveyService: KinveyService, data) {
+  constructor(
+    private _mainPage: Page,
+    private _kinveyService: KinveyService,
+    data
+  ) {
     super();
     this.loadSettings();
 
@@ -77,10 +80,10 @@ export class ChangeSettingsViewModel extends Observable {
   }
 
   private loadSettings() {
-    const savedSettings = LS.getItem('com.permobil.pushtracker.profile.settings');
-    this._settings.copy(
-      savedSettings
+    const savedSettings = LS.getItem(
+      'com.permobil.pushtracker.profile.settings'
     );
+    this._settings.copy(savedSettings);
     this._hasSentSettings =
       appSettings.getBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG) || false;
 
@@ -110,8 +113,7 @@ export class ChangeSettingsViewModel extends Observable {
           value *= 1.609;
         }
         this.changeSettingKeyValue = value.toFixed(1) + ' ';
-        translationKey =
-          'settings.distancegoal.units.' + this._settings.units;
+        translationKey = 'settings.distancegoal.units.' + this._settings.units;
         this.changeSettingKeyValue += L(translationKey);
         break;
       case 'height':
@@ -158,10 +160,7 @@ export class ChangeSettingsViewModel extends Observable {
       this._disableWearCheck
     );
     editor.apply();
-    appSettings.setBoolean(
-      DataKeys.PROFILE_SETTINGS_DIRTY_FLAG,
-      false
-    );
+    appSettings.setBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG, false);
     LS.setItemObject(
       'com.permobil.pushtracker.profile.settings',
       this._settings.toObj()
@@ -177,7 +176,10 @@ export class ChangeSettingsViewModel extends Observable {
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-    this._synchronizingView = this._mainPage.showModal(this._synchronizingModal, option);
+    this._synchronizingView = this._mainPage.showModal(
+      this._synchronizingModal,
+      option
+    );
   }
 
   hideSynchronizing() {

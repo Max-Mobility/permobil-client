@@ -1,6 +1,6 @@
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import { request } from '@nativescript/core/http';
 import { Injectable } from 'injection-js';
-import { request } from 'tns-core-modules/http';
 
 @Injectable()
 export class KinveyService {

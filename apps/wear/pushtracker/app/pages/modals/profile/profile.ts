@@ -1,10 +1,10 @@
+import { Page, ShowModalOptions, ShownModallyData, View } from '@nativescript/core';
+import { fromObject } from '@nativescript/core/data/observable';
+import { screen } from '@nativescript/core/platform';
+import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { fromObject } from 'tns-core-modules/data/observable';
-import { screen } from 'tns-core-modules/platform';
-import { Page, ShowModalOptions, ShownModallyData, View } from 'tns-core-modules/ui/page';
-import { ad as androidUtils } from 'tns-core-modules/utils/utils';
 import { KinveyService } from '../../../services';
 
 let closeCallback;
