@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
+import { ModalDialogParams } from '@nativescript/angular';
+import { PropertyChangeData, Switch } from '@nativescript/core';
+import * as utilityModule from '@nativescript/core/utils/utils';
 import { TranslateService } from '@ngx-translate/core';
-import { ModalDialogParams } from 'nativescript-angular/directives/dialogs';
-import { PropertyChangeData } from 'tns-core-modules/data/observable';
-import { Switch } from 'tns-core-modules/ui/switch';
-import * as utilityModule from 'tns-core-modules/utils/utils';
 
 @Component({
   selector: 'privacy-policy',

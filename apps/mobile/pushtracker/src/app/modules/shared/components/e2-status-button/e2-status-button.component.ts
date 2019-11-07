@@ -1,19 +1,16 @@
 import { Component, Input, NgZone, ViewContainerRef } from '@angular/core';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
+import { ModalDialogService, registerElement } from '@nativescript/angular';
+import { ImageSource, isAndroid } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
-import { registerElement } from 'nativescript-angular/element-registry';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { isAndroid } from 'tns-core-modules/platform';
-import { ContentView } from 'tns-core-modules/ui/content-view';
-import { alert } from 'tns-core-modules/ui/dialogs';
-import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
-import { LoggingService, ThemeService, LoggingCategory } from '../../../../services';
 import { DeviceSetupComponent } from '../../..';
+import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
+import { LoggingCategory, LoggingService, ThemeService } from '../../../../services';
 
 @Component({
   selector: 'e2-status-button',
@@ -53,7 +50,7 @@ export class E2StatusButtonComponent {
     this.updateWatchIcon();
   }
 
-  onUnloaded() { }
+  onUnloaded() {}
 
   async onTap() {
     if (!this.allowUserInteraction) return;
@@ -131,18 +128,17 @@ export class E2StatusButtonComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => { })
+      .then(() => {})
       .catch(err => {
         this._logService.logException(err);
       });
   }
 
-
   private _updateWatchIcon() {
     if (this.CURRENT_THEME === APP_THEMES.DEFAULT)
       this.iconString = 'pte2_black';
     else this.iconString = 'pte2_white';
-    this.icon = imageFromResource(this.iconString);
+    this.icon = ImageSource.fromResourceSync(this.iconString);
   }
 
   private _getSerializedAuth() {
@@ -252,5 +248,5 @@ export class E2StatusButtonComponent {
 }
 
 registerElement('e2-status-button', () => {
-  return ContentView;
+  return require('@nativescript/core/ui/content-view').ContentView;
 });

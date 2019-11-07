@@ -1,11 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { registerElement } from 'nativescript-angular/element-registry';
-import { EventData, PropertyChangeData } from 'tns-core-modules/data/observable';
-import { isAndroid } from 'tns-core-modules/platform';
-import { ContentView } from 'tns-core-modules/ui/content-view';
-import { GridLayout } from 'tns-core-modules/ui/layouts/grid-layout/grid-layout';
-import { StackLayout } from 'tns-core-modules/ui/layouts/stack-layout';
-import { TextField } from 'tns-core-modules/ui/text-field';
+import { registerElement } from '@nativescript/angular';
+import { EventData, GridLayout, isAndroid, PropertyChangeData, StackLayout, TextField } from '@nativescript/core';
 
 @Component({
   selector: 'MaxTextBox',
@@ -58,5 +53,5 @@ export class MaxTextBoxComponent extends TextField {
 }
 
 registerElement('MaxTextBox', () => {
-  return ContentView;
+  return require('@nativescript/core/ui/content-view').ContentView;
 });

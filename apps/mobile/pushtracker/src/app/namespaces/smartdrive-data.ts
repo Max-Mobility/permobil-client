@@ -1,4 +1,4 @@
-import { knownFolders, path, File } from 'tns-core-modules/file-system';
+import { File, knownFolders, path } from '@nativescript/core';
 import { eachDay, format, subDays } from 'date-fns';
 import { DownloadProgress } from 'nativescript-download-progress';
 
@@ -65,7 +65,11 @@ export namespace SmartDriveData {
       return eachDay(subDays(now, numDates), now);
     }
 
-    export function makeRecord(battery: number = 0, coast: number = 0, drive: number = 0) {
+    export function makeRecord(
+      battery: number = 0,
+      coast: number = 0,
+      drive: number = 0
+    ) {
       const timestamp = SmartDriveData.Info.getHalfHourDate().getTime();
       return {
         [SmartDriveData.Info.BatteryName]: battery,
@@ -77,11 +81,14 @@ export namespace SmartDriveData {
 
     // update the records, potentially creating a new record if none
     // exist with an appropriate start time
-    export function updateRecords(updates: {
-      driveDistance?: number;
-      coastDistance?: number;
-      battery?: number
-    }, records: any[]) {
+    export function updateRecords(
+      updates: {
+        driveDistance?: number;
+        coastDistance?: number;
+        battery?: number;
+      },
+      records: any[]
+    ) {
       const driveDistance = updates.driveDistance || 0;
       const coastDistance = updates.coastDistance || 0;
       const battery = updates.battery || 0;
@@ -97,7 +104,11 @@ export namespace SmartDriveData {
         const timeDiffMs = timeMs - record[SmartDriveData.Info.StartTimeName];
         if (timeDiffMs > SmartDriveData.Info.RECORD_LENGTH_MS) {
           // we need a new record
-          const record = SmartDriveData.Info.makeRecord(battery, coastDistance, driveDistance);
+          const record = SmartDriveData.Info.makeRecord(
+            battery,
+            coastDistance,
+            driveDistance
+          );
           // now append it
           records.push(record);
         } else {
@@ -110,7 +121,11 @@ export namespace SmartDriveData {
         }
       } else {
         // we have no records, make a new one
-        const record = SmartDriveData.Info.makeRecord(battery, coastDistance, driveDistance);
+        const record = SmartDriveData.Info.makeRecord(
+          battery,
+          coastDistance,
+          driveDistance
+        );
         // and append it
         records.push(record);
       }
@@ -118,11 +133,14 @@ export namespace SmartDriveData {
 
     // update the info object and return the diff (for inserting into
     // db. return null if no updates were performed.
-    export function updateInfo(updates: {
-      driveDistance?: number;
-      coastDistance?: number;
-      battery?: number
-    }, info: any) {
+    export function updateInfo(
+      updates: {
+        driveDistance?: number;
+        coastDistance?: number;
+        battery?: number;
+      },
+      info: any
+    ) {
       const driveDistance = updates.driveDistance || 0;
       const coastDistance = updates.coastDistance || 0;
       const battery = updates.battery || 0;
@@ -171,7 +189,8 @@ export namespace SmartDriveData {
       return {
         [SmartDriveData.Info.IdName]: id,
         [SmartDriveData.Info.DateName]: SmartDriveData.Info.getDateValue(date),
-        [SmartDriveData.Info.StartTimeName]: SmartDriveData.Info.getDateStartTime(date),
+        [SmartDriveData.Info
+          .StartTimeName]: SmartDriveData.Info.getDateStartTime(date),
         [SmartDriveData.Info.BatteryName]: +battery,
         [SmartDriveData.Info.DriveDistanceName]: +drive,
         [SmartDriveData.Info.CoastDistanceName]: +coast,
@@ -279,17 +298,21 @@ export namespace SmartDriveData {
     ];
 
     export function loadFromFileSystem(f) {
-      const file = File.fromPath(f.filename || f[SmartDriveData.Firmwares.FileName]);
-      return file.readSync((err) => {
+      const file = File.fromPath(
+        f.filename || f[SmartDriveData.Firmwares.FileName]
+      );
+      return file.readSync(err => {
         console.error('Could not load from fs:', err);
       });
     }
 
     export function saveToFileSystem(f) {
-      const file = File.fromPath(f.filename || f[SmartDriveData.Firmwares.FileName]);
+      const file = File.fromPath(
+        f.filename || f[SmartDriveData.Firmwares.FileName]
+      );
       // console.log('f.filename', f.filename, file);
       // console.log('f.data', typeof f.data, f.data.length);
-      file.writeSync(f.data, (err) => {
+      file.writeSync(f.data, err => {
         console.error('Could not save to fs:', err);
       });
     }
@@ -303,20 +326,20 @@ export namespace SmartDriveData {
       console.log('Downloading FW update', f['_filename']);
 
       const download = new DownloadProgress();
-      return download.downloadFile(url).then(file => {
-        const fileData = File.fromPath(file.path).readSync();
-        return {
-          version: SmartDriveData.Firmwares.versionStringToByte(
-            f['version']
-          ),
-          name: f['_filename'],
-          data: fileData,
-          changes: f['change_notes']
-        };
-      })
-      .catch(error => {
-        console.error('download error', url, error);
-      });
+      return download
+        .downloadFile(url)
+        .then(file => {
+          const fileData = File.fromPath(file.path).readSync();
+          return {
+            version: SmartDriveData.Firmwares.versionStringToByte(f['version']),
+            name: f['_filename'],
+            data: fileData,
+            changes: f['change_notes']
+          };
+        })
+        .catch(error => {
+          console.error('download error', url, error);
+        });
     }
 
     export function versionByteToString(version: number): string {

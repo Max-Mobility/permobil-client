@@ -1,8 +1,8 @@
 /// <reference path="../../../node_modules/tns-platform-declarations/android/android-platform-23.d.ts" />
 
-import * as TNSApplication from 'tns-core-modules/application';
-import { Color } from 'tns-core-modules/color';
-import { device, isAndroid } from 'tns-core-modules/platform';
+import { Color, isAndroid } from '@nativescript/core';
+import * as TNSApplication from '@nativescript/core/application';
+import { device } from '@nativescript/core/platform';
 
 export function setLightStatusBar() {
   if (isAndroid && device.sdkVersion >= '23') {

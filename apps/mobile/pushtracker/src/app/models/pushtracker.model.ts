@@ -1,10 +1,8 @@
+import { File, isIOS, knownFolders, Observable, path } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
-import { Observable } from 'tns-core-modules/data/observable';
-import { isIOS } from 'tns-core-modules/platform';
+import { DownloadProgress } from 'nativescript-download-progress';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services';
-import { knownFolders, path, File } from 'tns-core-modules/file-system';
-import { DownloadProgress } from 'nativescript-download-progress';
 
 enum OTAState {
   not_started = 'ota.pt.state.not-started',
@@ -62,8 +60,7 @@ export class PushTracker extends Observable {
   public static ota_retry_event = 'ota_retry_event';
   public static ota_failed_event = 'ota_failed_event';
   public static ota_timeout_event = 'ota_timeout_event';
-  public static pushtracker_ota_status_event =
-    'pushtracker_ota_status_event';  // sends state, actions, progress
+  public static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
 
   // private members
   private _bluetoothService: BluetoothService;
@@ -182,9 +179,10 @@ export class PushTracker extends Observable {
   }
 
   isUpToDate(version: string, checkAll?: boolean): boolean {
-    const v = typeof version === 'number'
-      ? version
-      : PushTracker.versionStringToByte(version);
+    const v =
+      typeof version === 'number'
+        ? version
+        : PushTracker.versionStringToByte(version);
     if (v === 0xff) {
       return false;
     }
@@ -361,10 +359,7 @@ export class PushTracker extends Observable {
           this.off(PushTracker.ota_force_event, otaForceHandler);
           this.off(PushTracker.ota_cancel_event, otaCancelHandler);
           this.off(PushTracker.ota_retry_event, otaRetryHandler);
-          this.off(
-            PushTracker.ota_timeout_event,
-            otaTimeoutHandler
-          );
+          this.off(PushTracker.ota_timeout_event, otaTimeoutHandler);
         };
         const register = () => {
           unregister();
@@ -509,7 +504,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => { });
+                ).catch(_ => {});
               }
               break;
             case PushTracker.OTAState.updating:
@@ -547,7 +542,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => { });
+                ).catch(_ => {});
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -588,7 +583,7 @@ export class PushTracker extends Observable {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(_ => { });
+                  .catch(_ => {});
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;
@@ -729,7 +724,10 @@ export class PushTracker extends Observable {
     );
   }
 
-  public sendSwitchControlSettings(mode: string, max_speed: number): Promise<any> {
+  public sendSwitchControlSettings(
+    mode: string,
+    max_speed: number
+  ): Promise<any> {
     const p = new Packet();
     const settings = p.data('switchControlSettings');
     // convert mode
@@ -764,7 +762,7 @@ export class PushTracker extends Observable {
   public sendTime(d?: Date) {
     const p = new Packet();
     const timeSettings = p.data('timeInfo');
-    const date = (d !== undefined) ? new Date(d) : new Date();
+    const date = d !== undefined ? new Date(d) : new Date();
     // now fill in the packet
     timeSettings.year = date.getFullYear();
     timeSettings.month = date.getMonth() + 1;
@@ -913,7 +911,10 @@ export class PushTracker extends Observable {
       hour: errorInfo.hour,
       minute: errorInfo.minute,
       second: errorInfo.second,
-      mostRecentError: bindingTypeToString('PacketErrorType', errorInfo.mostRecentError),
+      mostRecentError: bindingTypeToString(
+        'PacketErrorType',
+        errorInfo.mostRecentError
+      ),
       numBatteryVoltageErrors: errorInfo.numBatteryVoltageErrors,
       numOverCurrentErrors: errorInfo.numOverCurrentErrors,
       numMotorPhaseErrors: errorInfo.numMotorPhaseErrors,
@@ -1063,7 +1064,6 @@ export class PushTracker extends Observable {
 }
 
 export namespace PushTrackerData {
-
   export namespace Firmware {
     export const TableName = 'PushTrackerFirmware';
     export const IdName = 'id';
@@ -1079,17 +1079,21 @@ export namespace PushTrackerData {
     ];
 
     export function loadFromFileSystem(f) {
-      const file = File.fromPath(f.filename || f[PushTrackerData.Firmware.FileName]);
-      return file.readSync((err) => {
+      const file = File.fromPath(
+        f.filename || f[PushTrackerData.Firmware.FileName]
+      );
+      return file.readSync(err => {
         console.error('Could not load from fs:', err);
       });
     }
 
     export function saveToFileSystem(f) {
-      const file = File.fromPath(f.filename || f[PushTrackerData.Firmware.FileName]);
+      const file = File.fromPath(
+        f.filename || f[PushTrackerData.Firmware.FileName]
+      );
       // console.log('f.filename', f.filename, file);
       // console.log('f.data', typeof f.data, f.data.length);
-      file.writeSync(f.data, (err) => {
+      file.writeSync(f.data, err => {
         console.error('Could not save to fs:', err);
       });
     }
@@ -1103,17 +1107,17 @@ export namespace PushTrackerData {
       console.log('Downloading FW update', f['_filename']);
 
       const download = new DownloadProgress();
-      return download.downloadFile(url).then(file => {
-        const fileData = File.fromPath(file.path).readSync();
-        return {
-          version: PushTrackerData.Firmware.versionStringToByte(
-            f['version']
-          ),
-          name: f['_filename'],
-          data: fileData,
-          changes: f['change_notes']
-        };
-      })
+      return download
+        .downloadFile(url)
+        .then(file => {
+          const fileData = File.fromPath(file.path).readSync();
+          return {
+            version: PushTrackerData.Firmware.versionStringToByte(f['version']),
+            name: f['_filename'],
+            data: fileData,
+            changes: f['change_notes']
+          };
+        })
         .catch(error => {
           console.error('download error', url, error);
         });
@@ -1177,9 +1181,7 @@ export namespace PushTrackerData {
       };
     }
   }
-
 }
-
 
 /**
  * All of the events for PushTracker that can be emitted and listened

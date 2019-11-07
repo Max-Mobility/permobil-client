@@ -1,22 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
+import { ModalDialogParams } from '@nativescript/angular';
+import {
+  Color,
+  EventData,
+  isAndroid,
+  ObservableArray,
+  SegmentedBar,
+  SegmentedBarItem
+} from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { layout } from '@nativescript/core/utils/utils';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
-import debounce from 'lodash/debounce';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { CalendarMonthViewStyle, CalendarFontStyle, CellStyle, DayCellStyle, RadCalendar } from 'nativescript-ui-calendar';
-import { Color } from 'tns-core-modules/color';
-import { EventData } from 'tns-core-modules/data/observable';
-import { ObservableArray } from 'tns-core-modules/data/observable-array';
-import { isAndroid } from 'tns-core-modules/platform';
-import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar';
-import { layout } from 'tns-core-modules/utils/utils';
 import { differenceInCalendarDays } from 'date-fns';
-import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
+import debounce from 'lodash/debounce';
+import {
+  CalendarFontStyle,
+  CalendarMonthViewStyle,
+  CellStyle,
+  DayCellStyle,
+  RadCalendar
+} from 'nativescript-ui-calendar';
+import {
+  APP_THEMES,
+  CONFIGURATIONS,
+  DISTANCE_UNITS,
+  STORAGE_KEYS
+} from '../../enums';
 import { DeviceBase } from '../../models';
 import { LoggingService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek, areDatesSame } from '../../utils';
-import * as appSettings from 'tns-core-modules/application-settings';
+import {
+  areDatesSame,
+  convertToMilesIfUnitPreferenceIsMiles,
+  getFirstDayOfWeek,
+  getJSONFromKinvey,
+  YYYY_MM_DD
+} from '../../utils';
 
 enum TAB {
   DAY = 0,
@@ -124,7 +144,6 @@ export class ActivityComponent implements OnInit {
     private _translateService: TranslateService,
     private _params: ModalDialogParams
   ) {
-
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -192,11 +211,13 @@ export class ActivityComponent implements OnInit {
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
-    }).then(() => {
-      pullRefresh.refreshing = false;
-    }).catch(err => {
-      this._logService.logException(err);
-    });
+    })
+      .then(() => {
+        pullRefresh.refreshing = false;
+      })
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   ngOnInit() {
@@ -384,12 +405,11 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCalendarLoaded(args) {
-    this._logService.logBreadCrumb(ActivityComponent.name,
-      'Calendar Loaded');
-    const calendar = args.object as RadCalendar;
+    this._logService.logBreadCrumb(ActivityComponent.name, 'Calendar Loaded');
+    const calendar = args.object as any; // RadCalendar (using any bc the types might be incorrect with 6.2 throwing TSC warnings)
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
-    if (calendar.android) {
+    if (isAndroid) {
       calendar.android.setDayNamesHeight(layout.toDevicePixels(40));
     } else {
       calendar.ios.presenter.style.dayNameCellHeight = 40;
@@ -448,103 +468,110 @@ export class ActivityComponent implements OnInit {
     // Get the weekly summary for the current week
     // Find the dailyactivity for the currentDayInView from the weekly summary
     // Cache and visualize
-    this._loadWeeklyActivity(forcePullFromDatabase).then(() => {
-      // If the start fo the week is 0th element in an array of size 7, what is the index of date?
-      const getIndex = function(date1, date2) {
-        // date1 = Week start, date2 = current date
-        const index = differenceInCalendarDays(date2, date1);
-        return index;
-      };
+    this._loadWeeklyActivity(forcePullFromDatabase)
+      .then(() => {
+        // If the start fo the week is 0th element in an array of size 7, what is the index of date?
+        const getIndex = function(date1, date2) {
+          // date1 = Week start, date2 = current date
+          const index = differenceInCalendarDays(date2, date1);
+          return index;
+        };
 
-      let weeklyActivity = null;
-      if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
-        weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()]
-          .weeklyActivity;
-      else
-        weeklyActivity = this._weeklyActivityCache[this.weekStart.toUTCString()]
-          .weeklyActivity;
-
-      let days = [null, null, null, null, null, null, null];
-      if (weeklyActivity) days = weeklyActivity.days;
-
-      if (days) {
+        let weeklyActivity = null;
         if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
-          this._dailyUsageFromKinvey =
-            days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          weeklyActivity = this._weeklyUsageCache[this.weekStart.toUTCString()]
+            .weeklyActivity;
         else
-          this._dailyActivityFromKinvey =
-            days[getIndex(new Date(this.weekStart), this.currentDayInView)];
-      } else {
-        if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
-          this._dailyUsageFromKinvey = {
-            distance_smartdrive_drive: 0,
-            distance_smartdrive_coast: 0,
-            distance_smartdrive_drive_start: 0,
-            distance_smartdrive_coast_start: 0
-          };
-        else
-          this._dailyActivityFromKinvey = {
-            push_count: 0,
-            coast_time_avg: 0
-          };
-      }
+          weeklyActivity = this._weeklyActivityCache[
+            this.weekStart.toUTCString()
+          ].weeklyActivity;
 
-      this._formatActivityForView(0).then(result => {
-        this.dailyActivity = new ObservableArray(result);
-        if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
-          if (this._dailyActivityFromKinvey) {
-            // format chart description for chartYAxis
-            if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
-              this.chartDescription =
-                (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(1) +
-                ' ' +
-                this._translateService.instant('units.s');
-            } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-              this.chartDescription =
-                (this._dailyActivityFromKinvey.push_count || 0) +
-                ' ' +
-                this._translateService.instant('units.pushes');
-            }
-          } else {
-            // format chart description for chartYAxis
-            if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
-              this.chartDescription =
-                (0).toFixed(1) +
-                ' ' +
-                this._translateService.instant('units.s');
-            } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
-              this.chartDescription =
-                0 + ' ' + this._translateService.instant('units.pushes');
-            }
-          }
+        let days = [null, null, null, null, null, null, null];
+        if (weeklyActivity) days = weeklyActivity.days;
+
+        if (days) {
+          if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
+            this._dailyUsageFromKinvey =
+              days[getIndex(new Date(this.weekStart), this.currentDayInView)];
+          else
+            this._dailyActivityFromKinvey =
+              days[getIndex(new Date(this.weekStart), this.currentDayInView)];
         } else {
-          if (this._dailyUsageFromKinvey) {
-            this.chartDescription =
-              (
-                convertToMilesIfUnitPreferenceIsMiles(
-                  DeviceBase.caseTicksToKilometers(
-                    this._dailyUsageFromKinvey.distance_smartdrive_coast -
-                    this._dailyUsageFromKinvey.distance_smartdrive_coast_start
-                  ),
-                  this.user.data.distance_unit_preference
-                ) || 0
-              ).toFixed(1) + this.distanceUnit;
-          } else {
-            this.chartDescription = '0 ' + this.distanceUnit;
-          }
+          if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
+            this._dailyUsageFromKinvey = {
+              distance_smartdrive_drive: 0,
+              distance_smartdrive_coast: 0,
+              distance_smartdrive_drive_start: 0,
+              distance_smartdrive_coast_start: 0
+            };
+          else
+            this._dailyActivityFromKinvey = {
+              push_count: 0,
+              coast_time_avg: 0
+            };
         }
 
-        this._initDayChartTitle();
-        this._updateDailyActivityAnnotationValue();
-        this._calculateDailyActivityYAxisMax();
-        this._updateWeekStartAndEnd();
+        this._formatActivityForView(0)
+          .then(result => {
+            this.dailyActivity = new ObservableArray(result);
+            if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
+              if (this._dailyActivityFromKinvey) {
+                // format chart description for chartYAxis
+                if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
+                  this.chartDescription =
+                    (this._dailyActivityFromKinvey.coast_time_avg || 0).toFixed(
+                      1
+                    ) +
+                    ' ' +
+                    this._translateService.instant('units.s');
+                } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
+                  this.chartDescription =
+                    (this._dailyActivityFromKinvey.push_count || 0) +
+                    ' ' +
+                    this._translateService.instant('units.pushes');
+                }
+              } else {
+                // format chart description for chartYAxis
+                if (this.chartYAxis === CHART_Y_AXIS.COAST_TIME) {
+                  this.chartDescription =
+                    (0).toFixed(1) +
+                    ' ' +
+                    this._translateService.instant('units.s');
+                } else if (this.chartYAxis === CHART_Y_AXIS.PUSH_COUNT) {
+                  this.chartDescription =
+                    0 + ' ' + this._translateService.instant('units.pushes');
+                }
+              }
+            } else {
+              if (this._dailyUsageFromKinvey) {
+                this.chartDescription =
+                  (
+                    convertToMilesIfUnitPreferenceIsMiles(
+                      DeviceBase.caseTicksToKilometers(
+                        this._dailyUsageFromKinvey.distance_smartdrive_coast -
+                          this._dailyUsageFromKinvey
+                            .distance_smartdrive_coast_start
+                      ),
+                      this.user.data.distance_unit_preference
+                    ) || 0
+                  ).toFixed(1) + this.distanceUnit;
+              } else {
+                this.chartDescription = '0 ' + this.distanceUnit;
+              }
+            }
+
+            this._initDayChartTitle();
+            this._updateDailyActivityAnnotationValue();
+            this._calculateDailyActivityYAxisMax();
+            this._updateWeekStartAndEnd();
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
       })
-        .catch(err => {
-          this._logService.logException(err);
-        });
-    }).catch(err => {
-      this._logService.logException(err);
-    });
+      .catch(err => {
+        this._logService.logException(err);
+      });
   }
 
   private _calculateDailyActivityYAxisMax() {
@@ -576,7 +603,10 @@ export class ActivityComponent implements OnInit {
   }
 
   async loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly activity from Kinvey');
+    this._logService.logBreadCrumb(
+      ActivityComponent.name,
+      'Loading weekly activity from Kinvey'
+    );
 
     let result = [];
     if (!this.user) return result;
@@ -589,11 +619,15 @@ export class ActivityComponent implements OnInit {
         if (data && data.length) {
           result = data[0];
           this._weeklyActivityFromKinvey = result; // cache
-          this._logService.logBreadCrumb(ActivityComponent.name, 'loadWeeklyActivityFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(
+            ActivityComponent.name,
+            'loadWeeklyActivityFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(ActivityComponent.name, 'loadWeeklyActivityFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(
+          ActivityComponent.name,
+          'loadWeeklyActivityFromKinvey | No data for this week yet'
         );
         this._weeklyActivityFromKinvey = [];
         return Promise.resolve(this._weeklyActivityFromKinvey);
@@ -605,7 +639,10 @@ export class ActivityComponent implements OnInit {
   }
 
   async loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(ActivityComponent.name, 'Loading weekly usage from Kinvey');
+    this._logService.logBreadCrumb(
+      ActivityComponent.name,
+      'Loading weekly usage from Kinvey'
+    );
     let result = [];
     if (!this.user) return result;
 
@@ -617,11 +654,15 @@ export class ActivityComponent implements OnInit {
         if (data && data.length) {
           result = data[0];
           this._weeklyUsageFromKinvey = result; // cache
-          this._logService.logBreadCrumb(ActivityComponent.name, 'loadSmartDriveUsageFromKinvey | Loaded weekly usage'
+          this._logService.logBreadCrumb(
+            ActivityComponent.name,
+            'loadSmartDriveUsageFromKinvey | Loaded weekly usage'
           );
           return Promise.resolve(result);
         }
-        this._logService.logBreadCrumb(ActivityComponent.name, 'loadSmartDriveUsageFromKinvey | No data for this week yet'
+        this._logService.logBreadCrumb(
+          ActivityComponent.name,
+          'loadSmartDriveUsageFromKinvey | No data for this week yet'
         );
         this._weeklyUsageFromKinvey = [];
         return Promise.resolve(this._weeklyUsageFromKinvey);
@@ -642,73 +683,79 @@ export class ActivityComponent implements OnInit {
         this.weekStart.toUTCString() in this._weeklyActivityCache);
     if (!cacheAvailable || forcePullFromDatabase) {
       if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
-        return this.loadSmartDriveUsageFromKinvey(this.weekStart).then(
-          _ => {
-            return this._formatActivityForView(1).then(result => {
-              this.weeklyActivity = new ObservableArray(result);
-              if (this.currentTab === TAB.WEEK) {
-                this._initWeekChartTitle();
-                this.weekStart = new Date(this._weeklyUsageFromKinvey.date);
-                this.weekEnd = new Date(this.weekStart);
-                this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-                this.minDate = new Date('01/01/1999');
-                this.maxDate = new Date('01/01/2099');
-              }
-              this._weeklyUsageCache[this.weekStart.toUTCString()] = {
-                chartData: this.weeklyActivity,
-                weeklyActivity: this._weeklyUsageFromKinvey
-              };
-              this._updateWeeklyActivityAnnotationValue();
-              if (this.currentTab === TAB.WEEK)
-                this._calculateWeeklyActivityYAxisMax();
-              this._updateWeekStartAndEnd();
-              return true;
-            })
+        return this.loadSmartDriveUsageFromKinvey(this.weekStart)
+          .then(_ => {
+            return this._formatActivityForView(1)
+              .then(result => {
+                this.weeklyActivity = new ObservableArray(result);
+                if (this.currentTab === TAB.WEEK) {
+                  this._initWeekChartTitle();
+                  this.weekStart = new Date(this._weeklyUsageFromKinvey.date);
+                  this.weekEnd = new Date(this.weekStart);
+                  this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+                  this.minDate = new Date('01/01/1999');
+                  this.maxDate = new Date('01/01/2099');
+                }
+                this._weeklyUsageCache[this.weekStart.toUTCString()] = {
+                  chartData: this.weeklyActivity,
+                  weeklyActivity: this._weeklyUsageFromKinvey
+                };
+                this._updateWeeklyActivityAnnotationValue();
+                if (this.currentTab === TAB.WEEK)
+                  this._calculateWeeklyActivityYAxisMax();
+                this._updateWeekStartAndEnd();
+                return true;
+              })
               .catch(err => {
                 this._logService.logException(err);
                 return false;
               });
-          }
-        ).catch(err => {
-          this._logService.logException(err);
-          return false;
-        });
+          })
+          .catch(err => {
+            this._logService.logException(err);
+            return false;
+          });
       else
-        return this.loadWeeklyActivityFromKinvey(this.weekStart).then(
-          _ => {
-            return this._formatActivityForView(1).then(async result => {
-              this.weeklyActivity = new ObservableArray(result);
-              if (this.currentTab === TAB.WEEK) {
-                this._initWeekChartTitle();
-                this.weekStart = new Date(this._weeklyActivityFromKinvey.date);
-                this.weekEnd = new Date(this.weekStart);
-                this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-                this.minDate = new Date('01/01/1999');
-                this.maxDate = new Date('01/01/2099');
-              }
-              this._weeklyActivityCache[this.weekStart.toUTCString()] = {
-                chartData: this.weeklyActivity,
-                weeklyActivity: this._weeklyActivityFromKinvey
-              };
-              this._updateWeeklyActivityAnnotationValue();
-              if (this.currentTab === TAB.WEEK)
-                this._calculateWeeklyActivityYAxisMax();
-              this._updateWeekStartAndEnd();
-              return true;
-            })
+        return this.loadWeeklyActivityFromKinvey(this.weekStart)
+          .then(_ => {
+            return this._formatActivityForView(1)
+              .then(async result => {
+                this.weeklyActivity = new ObservableArray(result);
+                if (this.currentTab === TAB.WEEK) {
+                  this._initWeekChartTitle();
+                  this.weekStart = new Date(
+                    this._weeklyActivityFromKinvey.date
+                  );
+                  this.weekEnd = new Date(this.weekStart);
+                  this.weekEnd.setDate(this.weekEnd.getDate() + 6);
+                  this.minDate = new Date('01/01/1999');
+                  this.maxDate = new Date('01/01/2099');
+                }
+                this._weeklyActivityCache[this.weekStart.toUTCString()] = {
+                  chartData: this.weeklyActivity,
+                  weeklyActivity: this._weeklyActivityFromKinvey
+                };
+                this._updateWeeklyActivityAnnotationValue();
+                if (this.currentTab === TAB.WEEK)
+                  this._calculateWeeklyActivityYAxisMax();
+                this._updateWeekStartAndEnd();
+                return true;
+              })
               .catch(err => {
                 this._logService.logException(err);
                 return false;
               });
-          }
-        )
+          })
           .catch(err => {
             this._logService.logException(err);
             return false;
           });
     } else {
       // We have the data cached. Pull it up
-      this._logService.logBreadCrumb(ActivityComponent.name, 'Using local cache instead of pulling from database');
+      this._logService.logBreadCrumb(
+        ActivityComponent.name,
+        'Using local cache instead of pulling from database'
+      );
       let cache = null;
       if (this.chartYAxis === CHART_Y_AXIS.DISTANCE)
         cache = this._weeklyUsageCache[this.weekStart.toUTCString()];
@@ -734,7 +781,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                  cache.weeklyActivity.distance_smartdrive_coast_start
+                    cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -807,7 +854,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1043,7 +1090,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1092,21 +1139,23 @@ export class ActivityComponent implements OnInit {
             // https://github.com/Max-Mobility/permobil-client/issues/426
             // Smartdrive changed during the week - so the distance
             // reported can go negative
-            let driveDistance = convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.motorTicksToKilometers(
-                dailyActivity.distance_smartdrive_drive -
-                dailyActivity.distance_smartdrive_drive_start
-              ),
-              this.user.data.distance_unit_preference
-            ) || 0;
+            let driveDistance =
+              convertToMilesIfUnitPreferenceIsMiles(
+                DeviceBase.motorTicksToKilometers(
+                  dailyActivity.distance_smartdrive_drive -
+                    dailyActivity.distance_smartdrive_drive_start
+                ),
+                this.user.data.distance_unit_preference
+              ) || 0;
             if (driveDistance < 0.0) driveDistance = 0.0;
-            let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
-              DeviceBase.caseTicksToKilometers(
-                dailyActivity.distance_smartdrive_coast -
-                dailyActivity.distance_smartdrive_coast_start
-              ),
-              this.user.data.distance_unit_preference
-            ) || 0;
+            let coastDistance =
+              convertToMilesIfUnitPreferenceIsMiles(
+                DeviceBase.caseTicksToKilometers(
+                  dailyActivity.distance_smartdrive_coast -
+                    dailyActivity.distance_smartdrive_coast_start
+                ),
+                this.user.data.distance_unit_preference
+              ) || 0;
             if (coastDistance < 0.0) coastDistance = 0.0;
             // now push the data
             result.push({
@@ -1212,10 +1261,8 @@ export class ActivityComponent implements OnInit {
     const currentMonth = currentWeekStart.getMonth();
     return (
       currentWeekStart.getFullYear() < today.getFullYear() ||
-      (
-        currentWeekStart.getFullYear() === today.getFullYear() &&
-        currentMonth < month
-      )
+      (currentWeekStart.getFullYear() === today.getFullYear() &&
+        currentMonth < month)
     );
   }
 
@@ -1241,8 +1288,9 @@ export class ActivityComponent implements OnInit {
       ' ' +
       this.weekStart.getDate() +
       ' — ' +
-      (weekStartMonth !== weekEndMonth ?
-        this.monthNames[weekEndMonth] + ' ' : '') +
+      (weekStartMonth !== weekEndMonth
+        ? this.monthNames[weekEndMonth] + ' '
+        : '') +
       this.weekEnd.getDate();
   }
 
@@ -1256,9 +1304,13 @@ export class ActivityComponent implements OnInit {
 
   private async _initMonthViewStyle() {
     const pageColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorBlackCss : this._colorWhite;
+      this.CURRENT_THEME === APP_THEMES.DARK
+        ? this._colorBlackCss
+        : this._colorWhite;
     const textColor =
-      this.CURRENT_THEME === APP_THEMES.DARK ? this._colorWhite : this._colorBlack;
+      this.CURRENT_THEME === APP_THEMES.DARK
+        ? this._colorWhite
+        : this._colorBlack;
 
     this.monthViewStyle = new CalendarMonthViewStyle();
     this.monthViewStyle.showTitle = false;
@@ -1341,7 +1393,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1387,7 +1439,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
-              activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1446,7 +1498,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                    activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1463,7 +1515,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
-                cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1522,7 +1574,9 @@ export class ActivityComponent implements OnInit {
           }
           if (numDaysOfActivity === 0) numDaysOfActivity = 1;
           this.weeklyActivityAnnotationValue =
-            parseInt((cache.weeklyActivity.push_count / numDaysOfActivity).toFixed(1)) || 0;
+            parseInt(
+              (cache.weeklyActivity.push_count / numDaysOfActivity).toFixed(1)
+            ) || 0;
         }
       }
     } else {
@@ -1537,7 +1591,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0;
@@ -1548,8 +1602,7 @@ export class ActivityComponent implements OnInit {
         if (activity && activity.days) {
           for (const i in activity.days) {
             if (activity.days[i]) {
-              if (activity.days[i].records &&
-                activity.days[i].records.length) {
+              if (activity.days[i].records && activity.days[i].records.length) {
                 // There at least one record for this day. Include it.
                 numDaysOfActivity += 1;
               }
@@ -1566,7 +1619,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
-              cache.weeklyActivity.distance_smartdrive_coast_start
+                cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1574,8 +1627,10 @@ export class ActivityComponent implements OnInit {
         if (cache.weeklyActivity && cache.weeklyActivity.days) {
           for (const i in cache.weeklyActivity.days) {
             if (cache.weeklyActivity.days[i]) {
-              if (cache.weeklyActivity.days[i].records &&
-                cache.weeklyActivity.days[i].records.length) {
+              if (
+                cache.weeklyActivity.days[i].records &&
+                cache.weeklyActivity.days[i].records.length
+              ) {
                 // There at least one record for this day. Include it.
                 numDaysOfActivity += 1;
               }

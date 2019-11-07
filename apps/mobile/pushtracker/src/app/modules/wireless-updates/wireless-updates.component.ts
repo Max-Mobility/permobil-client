@@ -1,35 +1,22 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewContainerRef
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ModalDialogParams, ModalDialogService } from '@nativescript/angular';
+import { Color, isAndroid, isIOS, Page } from '@nativescript/core';
+import * as app from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
+import { screen } from '@nativescript/core/platform';
+import { confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { Log } from '@permobil/core';
-import {
-  Files as KinveyFiles,
-  Query as KinveyQuery
-} from 'kinvey-nativescript-sdk';
-import { keepAwake, allowSleepAgain } from 'nativescript-insomnia';
+import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import last from 'lodash/last';
 import throttle from 'lodash/throttle';
-import {
-  ModalDialogParams,
-  ModalDialogService
-} from 'nativescript-angular/modal-dialog';
-import { confirm } from 'tns-core-modules/ui/dialogs';
-import { Toasty, ToastDuration } from 'nativescript-toasty';
-import * as app from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { isAndroid, isIOS, screen } from 'tns-core-modules/platform';
-import { Color } from 'tns-core-modules/ui/content-view';
-import { Page } from 'tns-core-modules/ui/page';
-import { PushTracker, SmartDrive, PushTrackerData } from '../../models';
+import { allowSleepAgain, keepAwake } from 'nativescript-insomnia';
+import { ToastDuration, Toasty } from 'nativescript-toasty';
+import { APP_THEMES, CONFIGURATIONS } from '../../enums';
+import { PushTracker, PushTrackerData, SmartDrive } from '../../models';
 import { UpdatesInfoComponent } from '../../modules';
 import { SmartDriveData } from '../../namespaces';
 import { BluetoothService, LoggingService } from '../../services';
-import { APP_THEMES, CONFIGURATIONS } from '../../enums';
 
 @Component({
   selector: 'wireless-updates',
@@ -94,19 +81,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this._logService.logBreadCrumb(WirelessUpdatesComponent.name, 'OnInit');
     this.checkForSmartDriveUpdates();
-    if (this.controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE)
+    if (
+      this.controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    )
       this.checkForPushTrackerUpdates();
   }
 
   ngAfterViewInit() {}
 
   onMoreBtnTap() {
-    this._logService.logBreadCrumb(WirelessUpdatesComponent,
-      'morebtn tapped in mock action bar');
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent,
+      'morebtn tapped in mock action bar'
+    );
     this._modalService
       .showModal(UpdatesInfoComponent, {
         context: {
-          'languagePreference': this.languagePreference,
+          languagePreference: this.languagePreference,
           'SmartDriveBLE.ota': this.currentVersions['SmartDriveBLE.ota'],
           'SmartDriveMCU.ota': this.currentVersions['SmartDriveMCU.ota'],
           'PushTracker.ota': this.currentPushTrackerVersions['PushTracker.ota']
@@ -174,8 +165,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
       );
-    } catch (err) {
-    }
+    } catch (err) {}
 
     const objs = [];
     for (const key in versions) {
@@ -189,7 +179,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
         if (fname && fname.length) {
-          this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Loading SD firmware file: ${fname}`);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            `Loading SD firmware file: ${fname}`
+          );
           const blob = SmartDriveData.Firmwares.loadFromFileSystem({
             filename: fname
           });
@@ -257,65 +250,66 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     kinveySecondQuery.equalTo('_filename', 'SmartDriveMCU.ota');
     kinveyQuery.or(kinveySecondQuery);
 
-    KinveyFiles.find(kinveyQuery).then(async kinveyResponse => {
-      // Now that we have the metadata, check to see if we already
-      // have the most up to date firmware files and download them
-      // if we don't
-      const mds = kinveyResponse;
-      let promises = [];
-      // get the max firmware version for each firmware
-      const maxes = mds.reduce((maxes, md) => {
-        const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
-        const fwName = md['_filename'];
-        if (!maxes[fwName]) maxes[fwName] = 0;
-        maxes[fwName] = Math.max(v, maxes[fwName]);
-        return maxes;
-      }, {});
+    KinveyFiles.find(kinveyQuery)
+      .then(async kinveyResponse => {
+        // Now that we have the metadata, check to see if we already
+        // have the most up to date firmware files and download them
+        // if we don't
+        const mds = kinveyResponse;
+        let promises = [];
+        // get the max firmware version for each firmware
+        const maxes = mds.reduce((maxes, md) => {
+          const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
+          const fwName = md['_filename'];
+          if (!maxes[fwName]) maxes[fwName] = 0;
+          maxes[fwName] = Math.max(v, maxes[fwName]);
+          return maxes;
+        }, {});
 
-      // filter only the firmwares that we don't have or that are newer
-      // than the ones we have (and are the max)
-      const fileMetaDatas = mds.filter(f => {
-        const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
-        const fwName = f['_filename'];
-        const current = this.currentVersions[fwName];
-        const currentVersion = current && current.version;
-        const isMax = v === maxes[fwName];
-        return isMax && (!current || v > currentVersion);
+        // filter only the firmwares that we don't have or that are newer
+        // than the ones we have (and are the max)
+        const fileMetaDatas = mds.filter(f => {
+          const v = SmartDriveData.Firmwares.versionStringToByte(f['version']);
+          const fwName = f['_filename'];
+          const current = this.currentVersions[fwName];
+          const currentVersion = current && current.version;
+          const isMax = v === maxes[fwName];
+          return isMax && (!current || v > currentVersion);
+        });
+
+        // do we need to download any firmware files?
+        if (fileMetaDatas && fileMetaDatas.length) {
+          // TODO: update UI
+
+          // now download the files
+          promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
+        }
+
+        let files = null;
+        try {
+          files = await Promise.all(promises);
+        } catch (err) {
+          this._logService.logException(err);
+        }
+
+        // Now that we have the files, write them to disk and update
+        // our local metadata
+        promises = [];
+        if (files && files.length) {
+          promises = files.map(this.updateFirmwareData.bind(this));
+        }
+        try {
+          await Promise.all(promises);
+        } catch (err) {
+          this._logService.logException(err);
+        }
+
+        // Now perform the SmartDrive updates if we need to
+        await this.performSmartDriveWirelessUpdate();
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
-
-      // do we need to download any firmware files?
-      if (fileMetaDatas && fileMetaDatas.length) {
-        // TODO: update UI
-
-        // now download the files
-        promises = fileMetaDatas.map(SmartDriveData.Firmwares.download);
-      }
-
-      let files = null;
-      try {
-        files = await Promise.all(promises);
-      } catch (err) {
-        this._logService.logException(err);
-      }
-
-      // Now that we have the files, write them to disk and update
-      // our local metadata
-      promises = [];
-      if (files && files.length) {
-        promises = files.map(this.updateFirmwareData.bind(this));
-      }
-      try {
-        await Promise.all(promises);
-      } catch (err) {
-        this._logService.logException(err);
-      }
-
-      // Now perform the SmartDrive updates if we need to
-      await this.performSmartDriveWirelessUpdate();
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   async performSmartDriveWirelessUpdate() {
@@ -325,8 +319,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     ) {
       // Download failed
       this.smartDriveCheckedForUpdates = true;
-      this.smartDriveOtaState =
-        this._translateService.instant('wireless-updates.state.firmware-download-failed');
+      this.smartDriveOtaState = this._translateService.instant(
+        'wireless-updates.state.firmware-download-failed'
+      );
       this.smartDriveOtaProgress = 0;
       this.noSmartDriveDetected = true;
       return;
@@ -337,43 +332,47 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const mcuVersion = this.currentVersions['SmartDriveMCU.ota'].version;
 
     if (!this.smartDrive) {
-      await this._bluetoothService.scanForSmartDriveReturnOnFirst(10).then(async () => {
-        const drives = BluetoothService.SmartDrives;
-        if (drives.length === 0) {
-          new Toasty({
-            text:
-            this._translateService.instant('wireless-updates.messages.no-smartdrives-detected'),
-            duration: ToastDuration.LONG
-          }).show();
-          this.smartDriveCheckedForUpdates = true;
-          this.smartDriveOtaState = this._translateService.instant(
-            'wireless-updates.state.no-smartdrives-detected'
-          );
-          this.smartDriveOtaProgress = 0;
-          this.noSmartDriveDetected = true;
-          return;
-        } else if (drives.length > 1) {
-          new Toasty({
-            text:
-            this._translateService.instant('wireless-updates.messages.more-than-one-smartdrive-detected'),
-            duration: ToastDuration.LONG
-          }).show();
-          this.smartDriveCheckedForUpdates = true;
-          this.smartDriveOtaState = this._translateService.instant(
-            'wireless-updates.state.more-than-one-smartdrive-detected'
-          );
-          this.smartDriveOtaProgress = 0;
-          this.noSmartDriveDetected = true;
-          return;
-        } else {
-          drives.map(drive => {
-            this.smartDrive = drive;
-          });
-        }
-      })
-      .catch(err => {
-        this._logService.logException(err);
-      });
+      await this._bluetoothService
+        .scanForSmartDriveReturnOnFirst(10)
+        .then(async () => {
+          const drives = BluetoothService.SmartDrives;
+          if (drives.length === 0) {
+            new Toasty({
+              text: this._translateService.instant(
+                'wireless-updates.messages.no-smartdrives-detected'
+              ),
+              duration: ToastDuration.LONG
+            }).show();
+            this.smartDriveCheckedForUpdates = true;
+            this.smartDriveOtaState = this._translateService.instant(
+              'wireless-updates.state.no-smartdrives-detected'
+            );
+            this.smartDriveOtaProgress = 0;
+            this.noSmartDriveDetected = true;
+            return;
+          } else if (drives.length > 1) {
+            new Toasty({
+              text: this._translateService.instant(
+                'wireless-updates.messages.more-than-one-smartdrive-detected'
+              ),
+              duration: ToastDuration.LONG
+            }).show();
+            this.smartDriveCheckedForUpdates = true;
+            this.smartDriveOtaState = this._translateService.instant(
+              'wireless-updates.state.more-than-one-smartdrive-detected'
+            );
+            this.smartDriveOtaProgress = 0;
+            this.noSmartDriveDetected = true;
+            return;
+          } else {
+            drives.map(drive => {
+              this.smartDrive = drive;
+            });
+          }
+        })
+        .catch(err => {
+          this._logService.logException(err);
+        });
     }
 
     if (!this.smartDrive) return;
@@ -387,20 +386,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     const version = SmartDriveData.Firmwares.versionByteToString(
       Math.max(mcuVersion, bleVersion)
     );
-    this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Got version: ${version}`);
-    // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentVersions).map(
-      k => this.currentVersions[k].changes
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent.name,
+      `Got version: ${version}`
     );
+    // show dialog to user informing them of the version number and changes
+    Object.keys(this.currentVersions).map(k => this.currentVersions[k].changes);
     let bleFw = null;
     let mcuFw = null;
     if (isAndroid) {
-      bleFw = new Uint8Array(
-        this.currentVersions['SmartDriveBLE.ota'].data
-      );
-      mcuFw = new Uint8Array(
-        this.currentVersions['SmartDriveMCU.ota'].data
-      );
+      bleFw = new Uint8Array(this.currentVersions['SmartDriveBLE.ota'].data);
+      mcuFw = new Uint8Array(this.currentVersions['SmartDriveMCU.ota'].data);
     } else {
       let len = 0;
       let tmp = null;
@@ -411,7 +407,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       bleFw = new Uint8Array(tmp);
       // mcu fw
       len = this.currentVersions['SmartDriveMCU.ota'].data.length;
-      tmp = new ArrayBuffer(this.currentVersions['SmartDriveMCU.ota'].data.length);
+      tmp = new ArrayBuffer(
+        this.currentVersions['SmartDriveMCU.ota'].data.length
+      );
       this.currentVersions['SmartDriveMCU.ota'].data.getBytes(tmp);
       mcuFw = new Uint8Array(tmp);
     }
@@ -495,7 +493,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       ...actions
     );
     if (this.smartDriveOtaProgress > 0) {
-      this.smartDriveOtaState = `${this.smartDriveOtaProgress.toFixed(1)} % ${state}`;
+      this.smartDriveOtaState = `${this.smartDriveOtaProgress.toFixed(
+        1
+      )} % ${state}`;
     } else {
       this.smartDriveOtaState = state;
     }
@@ -516,8 +516,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
       );
-    } catch (err) {
-    }
+    } catch (err) {}
 
     const objs = [];
     for (const key in versions) {
@@ -531,7 +530,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
         if (fname && fname.length) {
-          this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Loading PT firmware file: ${fname}`);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            `Loading PT firmware file: ${fname}`
+          );
           const blob = PushTrackerData.Firmware.loadFromFileSystem({
             filename: fname
           });
@@ -600,64 +602,65 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     kinveyQuery.equalTo('firmware_file', true);
     kinveyQuery.equalTo('_filename', 'PushTracker.ota');
 
-    KinveyFiles.find(kinveyQuery).then(async kinveyResponse => {
-      // Now that we have the metadata, check to see if we already
-      // have the most up to date firmware files and download them
-      // if we don't
-      const mds = kinveyResponse;
+    KinveyFiles.find(kinveyQuery)
+      .then(async kinveyResponse => {
+        // Now that we have the metadata, check to see if we already
+        // have the most up to date firmware files and download them
+        // if we don't
+        const mds = kinveyResponse;
 
-      let promises = [];
-      // get the max firmware version for each firmware
-      const maxes = mds.reduce((maxes, md) => {
-        const v = PushTracker.versionStringToByte(md['version']);
-        const fwName = md['_filename'];
-        if (!maxes[fwName]) maxes[fwName] = 0;
-        maxes[fwName] = Math.max(v, maxes[fwName]);
-        return maxes;
-      }, {});
+        let promises = [];
+        // get the max firmware version for each firmware
+        const maxes = mds.reduce((maxes, md) => {
+          const v = PushTracker.versionStringToByte(md['version']);
+          const fwName = md['_filename'];
+          if (!maxes[fwName]) maxes[fwName] = 0;
+          maxes[fwName] = Math.max(v, maxes[fwName]);
+          return maxes;
+        }, {});
 
-      // filter only the firmwares that we don't have or that are newer
-      // than the ones we have (and are the max)
-      const fileMetaDatas = mds.filter(f => {
-        const v = PushTracker.versionStringToByte(f['version']);
-        const fwName = f['_filename'];
-        const current = this.currentPushTrackerVersions[fwName];
-        const currentVersion = current && current.version;
-        const isMax = v === maxes[fwName];
-        return isMax && (!current || v > currentVersion);
+        // filter only the firmwares that we don't have or that are newer
+        // than the ones we have (and are the max)
+        const fileMetaDatas = mds.filter(f => {
+          const v = PushTracker.versionStringToByte(f['version']);
+          const fwName = f['_filename'];
+          const current = this.currentPushTrackerVersions[fwName];
+          const currentVersion = current && current.version;
+          const isMax = v === maxes[fwName];
+          return isMax && (!current || v > currentVersion);
+        });
+
+        // do we need to download any firmware files?
+        if (fileMetaDatas && fileMetaDatas.length) {
+          // TODO: update UI
+          // now download the files
+          promises = fileMetaDatas.map(PushTrackerData.Firmware.download);
+        }
+        let files = null;
+        try {
+          files = await Promise.all(promises);
+        } catch (err) {
+          this._logService.logException(err);
+        }
+
+        // Now that we have the files, write them to disk and update
+        // our local metadata
+        promises = [];
+        if (files && files.length) {
+          promises = files.map(this.updatePushTrackerFirmwareData.bind(this));
+        }
+        try {
+          await Promise.all(promises);
+        } catch (err) {
+          this._logService.logException(err);
+        }
+
+        // Now perform the PushTracker updates if we need to
+        await this.performPushTrackerWirelessUpdate();
+      })
+      .catch(err => {
+        this._logService.logException(err);
       });
-
-      // do we need to download any firmware files?
-      if (fileMetaDatas && fileMetaDatas.length) {
-        // TODO: update UI
-        // now download the files
-        promises = fileMetaDatas.map(PushTrackerData.Firmware.download);
-      }
-      let files = null;
-      try {
-        files = await Promise.all(promises);
-      } catch (err) {
-        this._logService.logException(err);
-      }
-
-      // Now that we have the files, write them to disk and update
-      // our local metadata
-      promises = [];
-      if (files && files.length) {
-        promises = files.map(this.updatePushTrackerFirmwareData.bind(this));
-      }
-      try {
-        await Promise.all(promises);
-      } catch (err) {
-        this._logService.logException(err);
-      }
-
-      // Now perform the PushTracker updates if we need to
-      await this.performPushTrackerWirelessUpdate();
-    })
-    .catch(err => {
-      this._logService.logException(err);
-    });
   }
 
   async performPushTrackerWirelessUpdate() {
@@ -677,14 +680,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       .version;
 
     if (!this.pushTracker) {
-      const trackers = BluetoothService.PushTrackers.filter(
-        (val, _1, _2) => {
-          return val.connected;
-        }
-      );
+      const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
+        return val.connected;
+      });
       if (trackers.length === 0) {
         new Toasty({
-          text: this._translateService.instant('wireless-updates.messages.no-pushtracker-detected'),
+          text: this._translateService.instant(
+            'wireless-updates.messages.no-pushtracker-detected'
+          ),
           duration: ToastDuration.LONG
         }).show();
         this.pushTrackerCheckedForUpdates = true;
@@ -730,7 +733,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // this.smartDriveOtaProgress = 0;
     // get info out to tell the user
     const version = PushTracker.versionByteToString(ptVersion);
-    this._logService.logBreadCrumb(WirelessUpdatesComponent.name, `Got version: ${version}`);
+    this._logService.logBreadCrumb(
+      WirelessUpdatesComponent.name,
+      `Got version: ${version}`
+    );
     // show dialog to user informing them of the version number and changes
     Object.keys(this.currentPushTrackerVersions).map(
       k => this.currentPushTrackerVersions[k].changes
@@ -741,7 +747,8 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.currentPushTrackerVersions['PushTracker.ota'].data
       );
     } else {
-      const len = this.currentPushTrackerVersions['PushTracker.ota'].data.length;
+      const len = this.currentPushTrackerVersions['PushTracker.ota'].data
+        .length;
       const tmp = new ArrayBuffer(len);
       this.currentPushTrackerVersions['PushTracker.ota'].data.getBytes(tmp);
       ptFw = new Uint8Array(tmp);
@@ -749,11 +756,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     // pushtracker needs to update
     try {
       this.registerForPushTrackerEvents();
-      await this.pushTracker.performOTA(
-        ptFw,
-        ptVersion,
-        300 * 1000
-      );
+      await this.pushTracker.performOTA(ptFw, ptVersion, 300 * 1000);
     } catch (err) {
       if (this.pushTracker) {
         this.pushTracker.cancelOTA();
@@ -828,7 +831,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       ...actions
     );
     if (this.pushTrackerOtaProgress > 0) {
-      this.pushTrackerOtaState = `${this.pushTrackerOtaProgress.toFixed(1)} % ${state}`;
+      this.pushTrackerOtaState = `${this.pushTrackerOtaProgress.toFixed(
+        1
+      )} % ${state}`;
     } else {
       this.pushTrackerOtaState = state;
     }
@@ -873,9 +878,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
               ),
               okButtonText: this._translateService.instant('dialogs.yes'),
               cancelable: true,
-              cancelButtonText: this._translateService.instant(
-                'general.cancel'
-              )
+              cancelButtonText: this._translateService.instant('general.cancel')
             })
               .then((result: boolean) => {
                 if (result === true) {

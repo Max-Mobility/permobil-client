@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalDialogParams } from '@nativescript/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
 import { LoggingService } from '../../services';
 
 @Component({

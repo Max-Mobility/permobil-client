@@ -1,24 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
+import { registerElement } from '@nativescript/angular/element-registry';
+import { RouterExtensions } from '@nativescript/angular/router';
+import * as application from '@nativescript/core/application';
+import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
-import { PullToRefresh } from '@nstudio/nativescript-pulltorefresh';
 import { Log, PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { registerElement } from 'nativescript-angular/element-registry';
-import { RouterExtensions } from 'nativescript-angular/router';
-import { AnimatedCircle } from 'nativescript-animated-circle';
-import { LottieView } from 'nativescript-lottie';
-import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 import { Sentry } from 'nativescript-sentry';
-import * as application from 'tns-core-modules/application';
-import * as appSettings from 'tns-core-modules/application-settings';
+import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { APP_KEY, APP_SECRET, applyTheme, YYYY_MM_DD, getJSONFromKinvey, getFirstDayOfWeek } from './utils';
+import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, getJSONFromKinvey, YYYY_MM_DD } from './utils';
 
-registerElement('AnimatedCircle', () => AnimatedCircle);
-registerElement('LottieView', () => LottieView);
+registerElement(
+  'AnimatedCircle',
+  () => require('nativescript-animated-circle').AnimatedCircle
+);
+registerElement('LottieView', () => require('nativescript-lottie').LottieView);
 registerElement(
   'BarcodeScanner',
   () => require('nativescript-barcodescanner').BarcodeScannerView
@@ -27,7 +26,10 @@ registerElement(
   'PreviousNextView',
   () => require('nativescript-iqkeyboardmanager').PreviousNextView
 );
-registerElement('PullToRefresh', () => PullToRefresh);
+registerElement(
+  'PullToRefresh',
+  () => require('@nstudio/nativescript-pulltorefresh').PullToRefresh
+);
 
 @Component({
   selector: 'ns-app',
@@ -112,8 +114,11 @@ export class AppComponent implements OnInit {
   }
 
   async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(AppComponent.name, 'Loading WeeklyPushTrackerActivity from Kinvey');
-    const user = KinveyUser.getActiveUser();
+    this._logService.logBreadCrumb(
+      AppComponent.name,
+      'Loading WeeklyPushTrackerActivity from Kinvey'
+    );
+    const user = Kinvey.User.getActiveUser();
     if (!user) return;
     let result = [];
     const date = YYYY_MM_DD(weekStartDate);
@@ -138,8 +143,11 @@ export class AppComponent implements OnInit {
   }
 
   async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(AppComponent.name, 'Loading WeeklySmartDriveUsage from Kinvey');
-    const user = KinveyUser.getActiveUser();
+    this._logService.logBreadCrumb(
+      AppComponent.name,
+      'Loading WeeklySmartDriveUsage from Kinvey'
+    );
+    const user = Kinvey.User.getActiveUser();
     let result = [];
     if (!user) return result;
     const date = YYYY_MM_DD(weekStartDate);

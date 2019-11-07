@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalDialogParams } from 'nativescript-angular/modal-dialog';
-import { LoggingService } from '../../services';
-import { Log } from '@permobil/core';
+import { ModalDialogParams } from '@nativescript/angular';
 import { APP_LANGUAGES } from '../../enums';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'updates-info',
@@ -41,30 +40,42 @@ export class UpdatesInfoComponent implements OnInit {
       let smartDriveMCUChanges = [];
       let smartDriveMCUVersion = '';
       if (smartDriveMCUData && smartDriveMCUData.changes) {
-        smartDriveMCUChanges = smartDriveMCUData.changes[APP_LANGUAGES[languagePreference]];
-        smartDriveMCUVersion = this.versionByteToString(smartDriveMCUData.version);
+        smartDriveMCUChanges =
+          smartDriveMCUData.changes[APP_LANGUAGES[languagePreference]];
+        smartDriveMCUVersion = this.versionByteToString(
+          smartDriveMCUData.version
+        );
       }
 
       let smartDriveBLEChanges = [];
       let smartDriveBLEVersion = '';
       if (smartDriveBLEData && smartDriveBLEData.changes) {
-        smartDriveBLEChanges = smartDriveBLEData.changes[APP_LANGUAGES[languagePreference]];
-        smartDriveBLEVersion = this.versionByteToString(smartDriveBLEData.version);
+        smartDriveBLEChanges =
+          smartDriveBLEData.changes[APP_LANGUAGES[languagePreference]];
+        smartDriveBLEVersion = this.versionByteToString(
+          smartDriveBLEData.version
+        );
       }
 
       let pushTrackerChanges = [];
       let pushTrackerVersion = '';
       if (pushTrackerOTAData && pushTrackerOTAData.changes) {
-        pushTrackerChanges = pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference]];
-        pushTrackerVersion = this.versionByteToString(pushTrackerOTAData.version);
+        pushTrackerChanges =
+          pushTrackerOTAData.changes[APP_LANGUAGES[languagePreference]];
+        pushTrackerVersion = this.versionByteToString(
+          pushTrackerOTAData.version
+        );
       }
 
       if (smartDriveMCUVersion !== '') {
-        const smartDriveMCUSection = { 'title': 'SmartDrive MCU v' + smartDriveMCUVersion, 'items': [] };
+        const smartDriveMCUSection = {
+          title: 'SmartDrive MCU v' + smartDriveMCUVersion,
+          items: []
+        };
         for (const i in smartDriveMCUChanges) {
           const item = smartDriveMCUChanges[i];
           smartDriveMCUSection['items'].push({
-            text: (parseInt(i) + 1) + '. ' + item
+            text: parseInt(i) + 1 + '. ' + item
           });
         }
         if (smartDriveMCUChanges.length) {
@@ -73,11 +84,14 @@ export class UpdatesInfoComponent implements OnInit {
       }
 
       if (smartDriveBLEVersion !== '') {
-        const smartDriveBLESection = { 'title': 'SmartDrive BLE v' + smartDriveBLEVersion, 'items': [] };
+        const smartDriveBLESection = {
+          title: 'SmartDrive BLE v' + smartDriveBLEVersion,
+          items: []
+        };
         for (const i in smartDriveBLEChanges) {
           const item = smartDriveBLEChanges[i];
           smartDriveBLESection['items'].push({
-            text: (parseInt(i) + 1) + '. ' + item
+            text: parseInt(i) + 1 + '. ' + item
           });
         }
         if (smartDriveBLEChanges.length) {
@@ -86,20 +100,21 @@ export class UpdatesInfoComponent implements OnInit {
       }
 
       if (pushTrackerVersion !== '') {
-        const pushTrackerSection = { 'title': 'PushTracker v' + pushTrackerVersion, 'items': [] };
+        const pushTrackerSection = {
+          title: 'PushTracker v' + pushTrackerVersion,
+          items: []
+        };
         for (const i in pushTrackerChanges) {
           const item = pushTrackerChanges[i];
           pushTrackerSection['items'].push({
-            text: (parseInt(i) + 1) + '. ' + item
+            text: parseInt(i) + 1 + '. ' + item
           });
         }
         if (pushTrackerChanges.length) {
           this.infoItems.push(pushTrackerSection);
         }
       }
-
-    }
-    else {
+    } else {
       this.infoItems = [];
     }
   }

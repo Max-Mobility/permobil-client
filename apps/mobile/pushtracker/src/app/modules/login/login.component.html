@@ -1,14 +1,10 @@
 <ScrollView class="login-layout">
   <StackLayout>
-    <LottieView src="PermobilLogo.json" height="200" width="100%" class="align-center" loop="false" autoPlay="false"
-                (loaded)="lottieViewLoaded($event)"></LottieView>
+    <LottieView src="PermobilLogo.json" height="200" width="100%" class="align-center" loop="false" autoPlay="false" (loaded)="lottieViewLoaded($event)"></LottieView>
 
     <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
     <PreviousNextView>
-      <GridLayout row="1" rows="*, *, *, *" columns="*" class="login-form"
-                  opacity="0"
-                  (loaded)="contentLoaded($event)">
-
+      <GridLayout row="1" rows="*, *, *, *" columns="*" class="login-form" opacity="0" (loaded)="contentLoaded($event)">
         // Email
         <MaxTextBox
           row="0"
@@ -21,7 +17,7 @@
           keyboardType="email"
           autocorrect="false"
           autocapitalizationType="none"
-          ></MaxTextBox>
+        ></MaxTextBox>
 
         // Password
         <MaxTextBox
@@ -34,7 +30,7 @@
           returnKeyType="done"
           autocorrect="false"
           autocapitalizationType="none"
-          ></MaxTextBox>
+        ></MaxTextBox>
 
         <Button row="2" [text]="'general.login' | translate" (tap)="onSubmitLogin()" class="submit-btn"></Button>
 

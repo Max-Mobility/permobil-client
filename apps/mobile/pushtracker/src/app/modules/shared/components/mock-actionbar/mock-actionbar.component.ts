@@ -1,16 +1,13 @@
-import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, Output, ViewContainerRef } from '@angular/core';
+import { ModalDialogService, registerElement } from '@nativescript/angular';
+import { Color } from '@nativescript/core';
+import * as appSettings from '@nativescript/core/application-settings';
+import { TranslateService } from '@ngx-translate/core';
 import { Log, PushTrackerUser } from '@permobil/core';
-import { registerElement } from 'nativescript-angular/element-registry';
-import { ModalDialogService } from 'nativescript-angular/modal-dialog';
 import { Toasty } from 'nativescript-toasty';
-import * as appSettings from 'tns-core-modules/application-settings';
-import { fromResource as imageFromResource, ImageSource } from 'tns-core-modules/image-source';
-import { Color, ContentView } from 'tns-core-modules/ui/content-view';
 import { APP_THEMES, STORAGE_KEYS } from '../../../../enums';
 import { AppInfoComponent, ProfileSettingsComponent, SupportComponent, WirelessUpdatesComponent } from '../../../../modules';
-import { TranslateService } from '@ngx-translate/core';
-const dialogs = require('tns-core-modules/ui/dialogs');
-import { E2StatusButtonComponent } from '../../../shared/components';
+const dialogs = require('@nativescript/core/ui/dialogs');
 
 @Component({
   selector: 'MockActionBar',
@@ -164,5 +161,5 @@ export class MockActionbarComponent {
 }
 
 registerElement('MockActionBar', () => {
-  return ContentView;
+  return require('@nativescript/core/ui/content-view').ContentView;
 });
