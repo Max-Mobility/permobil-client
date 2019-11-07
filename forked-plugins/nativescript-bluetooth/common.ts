@@ -1,4 +1,4 @@
-import { Observable } from 'tns-core-modules/data/observable';
+import { Observable } from '@nativescript/core';
 
 declare var require;
 
@@ -450,14 +450,14 @@ export interface CRUDOptions {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface ReadOptions extends CRUDOptions { }
+export interface ReadOptions extends CRUDOptions {}
 
 export interface WriteOptions extends CRUDOptions {
   value: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface StopNotifyingOptions extends CRUDOptions { }
+export interface StopNotifyingOptions extends CRUDOptions {}
 
 export interface StartNotifyingOptions extends CRUDOptions {
   onNotify: (data: ReadResult) => void;

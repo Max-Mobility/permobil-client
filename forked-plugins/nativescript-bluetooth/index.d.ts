@@ -1,5 +1,14 @@
-import { Observable } from 'tns-core-modules/data/observable';
-import { ConnectOptions, DisconnectOptions, ReadOptions, ReadResult, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from './common';
+import { Observable } from '@nativescript/core';
+import {
+  ConnectOptions,
+  DisconnectOptions,
+  ReadOptions,
+  ReadResult,
+  StartNotifyingOptions,
+  StartScanningOptions,
+  StopNotifyingOptions,
+  WriteOptions
+} from './common';
 
 export declare class BluetoothCommon extends Observable {
   constructor();
@@ -270,7 +279,7 @@ export interface CRUDOptions {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface ReadOptions extends CRUDOptions { }
+export interface ReadOptions extends CRUDOptions {}
 
 export interface WriteOptions extends CRUDOptions {
   value: any;
@@ -278,7 +287,7 @@ export interface WriteOptions extends CRUDOptions {
 }
 
 // tslint:disable-next-line:no-empty-interface
-export interface StopNotifyingOptions extends CRUDOptions { }
+export interface StopNotifyingOptions extends CRUDOptions {}
 
 export interface StartNotifyingOptions extends CRUDOptions {
   onNotify: (data: ReadResult) => void;

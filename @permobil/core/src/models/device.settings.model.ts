@@ -1,6 +1,6 @@
 import { bindingTypeToString } from '../packet';
 import { mod } from '../utils';
-import { Observable } from 'tns-core-modules/data/observable';
+import { Observable } from '@nativescript/core';
 
 export namespace Device {
   // Standard Device Settings:
@@ -48,7 +48,7 @@ export namespace Device {
       units: Settings.Units.English,
       acceleration: 30,
       maxSpeed: 70,
-      tapSensitivity: 70,
+      tapSensitivity: 70
     };
 
     // public members
@@ -69,15 +69,15 @@ export namespace Device {
     }
 
     getFlags() {
-      const flags = [
-        this.ezOn,
-        this.disablePowerAssistBeep
-      ].reduce((f, s, i) => {
-        if (s) {
-          f |= (1 << i);
-        }
-        return f;
-      }, 0);
+      const flags = [this.ezOn, this.disablePowerAssistBeep].reduce(
+        (f, s, i) => {
+          if (s) {
+            f |= 1 << i;
+          }
+          return f;
+        },
+        0
+      );
       return flags;
     }
 
@@ -106,13 +106,8 @@ export namespace Device {
         case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
-          index = Device.Settings.ControlMode.Options.indexOf(
-            this.controlMode
-          );
-          index = mod(
-            index + 1,
-            Device.Settings.ControlMode.Options.length
-          );
+          index = Device.Settings.ControlMode.Options.indexOf(this.controlMode);
+          index = mod(index + 1, Device.Settings.ControlMode.Options.length);
           this.controlMode = Device.Settings.ControlMode.Options[index];
           break;
         case 'units':
@@ -149,13 +144,8 @@ export namespace Device {
         case 'controlmode':
         case 'control-mode':
         case 'Control Mode':
-          index = Device.Settings.ControlMode.Options.indexOf(
-            this.controlMode
-          );
-          index = mod(
-            index - 1,
-            Device.Settings.ControlMode.Options.length
-          );
+          index = Device.Settings.ControlMode.Options.indexOf(this.controlMode);
+          index = mod(index - 1, Device.Settings.ControlMode.Options.length);
           this.controlMode = Device.Settings.ControlMode.Options[index];
           break;
         case 'units':
@@ -168,11 +158,10 @@ export namespace Device {
     }
 
     toObj(): any {
-      return Object.keys(Device.Settings.Defaults)
-        .reduce((obj, key) => {
-          obj[key] = this[key];
-          return obj;
-        }, {});
+      return Object.keys(Device.Settings.Defaults).reduce((obj, key) => {
+        obj[key] = this[key];
+        return obj;
+      }, {});
     }
 
     fromSettings(s: any): void {
@@ -197,15 +186,13 @@ export namespace Device {
 
     copy(s: any) {
       // from a settings class exactly like this
-      Object.keys(Device.Settings.Defaults)
-        .map(k => this.copyKey(k, s));
+      Object.keys(Device.Settings.Defaults).map(k => this.copyKey(k, s));
     }
 
     equals(s: any): boolean {
-      return Object.keys(Device.Settings.Defaults)
-        .reduce((equal, key) => {
-          return equal && this[key] === s[key];
-        }, true);
+      return Object.keys(Device.Settings.Defaults).reduce((equal, key) => {
+        return equal && this[key] === s[key];
+      }, true);
     }
   }
 
@@ -230,11 +217,10 @@ export namespace Device {
     }
 
     toObj(): any {
-      return Object.keys(Device.PushSettings.Defaults)
-        .reduce((obj, key) => {
-          obj[key] = this[key];
-          return obj;
-        }, {});
+      return Object.keys(Device.PushSettings.Defaults).reduce((obj, key) => {
+        obj[key] = this[key];
+        return obj;
+      }, {});
     }
 
     fromSettings(ps: any): void {
@@ -254,15 +240,13 @@ export namespace Device {
 
     copy(s: any) {
       // from a push-settings class exactly like this
-      Object.keys(Device.PushSettings.Defaults)
-        .map(k => this.copyKey(k, s));
+      Object.keys(Device.PushSettings.Defaults).map(k => this.copyKey(k, s));
     }
 
     equals(ps: any): boolean {
-      return Object.keys(Device.PushSettings.Defaults)
-        .reduce((equal, key) => {
-          return equal && this[key] === ps[key];
-        }, true);
+      return Object.keys(Device.PushSettings.Defaults).reduce((equal, key) => {
+        return equal && this[key] === ps[key];
+      }, true);
     }
   }
 
@@ -305,15 +289,12 @@ export namespace Device {
         case 'switchcontrolmode':
         case 'switch-control-mode':
         case 'Switch Control Mode':
-          index = Device.SwitchControlSettings.Mode.Options.indexOf(
-            this.mode
-          );
+          index = Device.SwitchControlSettings.Mode.Options.indexOf(this.mode);
           index = mod(
             index + 1,
             Device.SwitchControlSettings.Mode.Options.length
           );
-          this.mode =
-            Device.SwitchControlSettings.Mode.Options[index];
+          this.mode = Device.SwitchControlSettings.Mode.Options[index];
           break;
       }
     }
@@ -329,32 +310,29 @@ export namespace Device {
         case 'switchcontrolmode':
         case 'switch-control-mode':
         case 'Switch Control Mode':
-          index = Device.SwitchControlSettings.Mode.Options.indexOf(
-            this.mode
-          );
+          index = Device.SwitchControlSettings.Mode.Options.indexOf(this.mode);
           index = mod(
             index - 1,
             Device.SwitchControlSettings.Mode.Options.length
           );
-          this.mode =
-            Device.SwitchControlSettings.Mode.Options[index];
+          this.mode = Device.SwitchControlSettings.Mode.Options[index];
           break;
       }
     }
 
     toObj(): any {
-      return Object.keys(Device.SwitchControlSettings.Defaults)
-        .reduce((obj, key) => {
+      return Object.keys(Device.SwitchControlSettings.Defaults).reduce(
+        (obj, key) => {
           obj[key] = this[key];
           return obj;
-        }, {});
+        },
+        {}
+      );
     }
 
     fromSettings(s: any): void {
       // from c++ settings bound array to c++ class
-      this.mode = Device.SwitchControlSettings.Mode.fromSettings(
-        s
-      );
+      this.mode = Device.SwitchControlSettings.Mode.fromSettings(s);
       // these floats are [0,1] on smartdrive
       this.maxSpeed = Math.round(s.MaxSpeed * 100.0);
     }
@@ -369,15 +347,18 @@ export namespace Device {
 
     copy(s: any) {
       // from a SwitchControlSettings class exactly like this
-      Object.keys(Device.SwitchControlSettings.Defaults)
-        .map(k => this.copyKey(k, s));
+      Object.keys(Device.SwitchControlSettings.Defaults).map(k =>
+        this.copyKey(k, s)
+      );
     }
 
     equals(s: any): boolean {
-      return Object.keys(Device.SwitchControlSettings.Defaults)
-        .reduce((equal, key) => {
+      return Object.keys(Device.SwitchControlSettings.Defaults).reduce(
+        (equal, key) => {
           return equal && this[key] === s[key];
-        }, true);
+        },
+        true
+      );
     }
   }
 }

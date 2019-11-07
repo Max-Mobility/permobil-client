@@ -1,5 +1,5 @@
-import * as application from 'tns-core-modules/application';
-import { isIOS } from 'tns-core-modules/platform';
+import * as application from '@nativescript/core/application';
+import { isIOS } from '@nativescript/core';
 
 /**
  * Adds margin-bottom to the page. Is not super elegant but works for now.

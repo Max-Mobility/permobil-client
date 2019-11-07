@@ -4,8 +4,8 @@ import {
   rimColorProperty,
   barColorProperty
 } from './animated-circle.common';
-import { Color } from 'tns-core-modules/color';
-import * as utils from 'tns-core-modules/utils/utils';
+import { Color } from '@nativescript/core';
+import * as utils from '@nativescript/core/utils/utils';
 
 export class AnimatedCircle extends Common {
   private _ios: any;
