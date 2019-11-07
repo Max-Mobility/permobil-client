@@ -12,12 +12,12 @@
       verticalAlignment="center"
       horizontalAlignment="right"
       marginRight="15"
-      *ngIf="!journeyItemsLoaded || showLoadingIndicator"
+      *ngIf="(!journeyItemsLoaded || showLoadingIndicator) && !noMoreDataAvailable"
       [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
       busy="true"
     ></ActivityIndicator>
 
-    <Button text="&#xe5d5;" row="0" col="1" verticalAlignment="center" horizontalAlignment="right" (tap)="onRefreshTap()" ripple *ngIf="journeyItemsLoaded && !showLoadingIndicator" class="material-icon action-item-btn"></Button>
+    <Button text="&#xe5d5;" row="0" col="1" verticalAlignment="center" horizontalAlignment="right" (tap)="onRefreshTap()" ripple *ngIf="(journeyItemsLoaded && !showLoadingIndicator) || noMoreDataAvailable" class="material-icon action-item-btn"></Button>
   </GridLayout>
 
   <GridLayout width="100%" rows="auto" columns="*, auto, auto, auto, auto">
