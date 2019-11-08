@@ -299,7 +299,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -404,8 +404,9 @@ export class MainViewModel extends Observable {
     this._maintainCPU();
     this.powerAssistState = PowerAssist.State.Training;
     this._updatePowerAssistRing();
-    if (this.pager) this.pager.selectedIndex = 0;
-    else sentryBreadCrumb('training activated but pager is null!');
+    if (this.pager) {
+      this.pager.scrollToIndexAnimated(0, false);
+    } else sentryBreadCrumb('training activated but pager is null!');
     // make sure the UI updates
     this.isTraining = true;
   }
@@ -495,7 +496,10 @@ export class MainViewModel extends Observable {
         this._maintainCPU();
         this.powerAssistState = PowerAssist.State.Disconnected;
         // ensure the pager is on the right page
-        if (this.pager) this.pager.selectedIndex = 0;
+        if (this.pager) {
+          this.pager.scrollToIndexAnimated(0, false);
+        }
+
         this.powerAssistActive = true;
         this._updatePowerAssistRing();
         const didConnect = await this._connectToSavedSmartDrive();
@@ -802,7 +806,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1893,7 +1897,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1958,7 +1962,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2383,7 +2387,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => { }
+            onTap: () => {}
           };
         });
       }
