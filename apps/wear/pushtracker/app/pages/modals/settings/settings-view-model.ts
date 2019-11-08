@@ -5,12 +5,14 @@ import { Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { KinveyService } from '../../../services';
+import { sentryBreadCrumb } from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
   @Prop() chinSize = 0;
 
   private _disableWearCheck: boolean;
+  private _showingModal: boolean = false;
 
   constructor(page: Page, private _kinveyService: KinveyService, data) {
     super();
@@ -20,6 +22,10 @@ export class SettingsViewModel extends Observable {
   }
 
   onEditProfileTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing profile');
+      return;
+    }
     const profilePage = 'pages/modals/profile/profile';
     const btn = args.object as View;
     const options: ShowModalOptions = {
@@ -28,16 +34,21 @@ export class SettingsViewModel extends Observable {
         disableWearCheck: this._disableWearCheck
       },
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-
+    this._showingModal = true;
     btn.showModal(profilePage, options);
   }
 
   onChangeSettingsItemTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing change settings');
+      return;
+    }
     const tappedId = args.object.id as string;
     Log.D('onChangeSettingsItemTap', tappedId);
 
@@ -56,12 +67,13 @@ export class SettingsViewModel extends Observable {
         disableWearCheck: this._disableWearCheck
       },
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-
+    this._showingModal = true;
     btn.showModal(changeSettingsPage, option);
   }
 

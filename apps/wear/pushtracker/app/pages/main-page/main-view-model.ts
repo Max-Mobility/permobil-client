@@ -106,6 +106,8 @@ export class MainViewModel extends Observable {
   private CAPABILITY_WEAR_APP: string = 'permobil_pushtracker_wear_app';
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
 
+  private _showingModal: boolean = false;
+
   private pager: Pager = null;
   private _mainPage: ViewBase = null;
   private _synchronizingModal: string =
@@ -203,6 +205,10 @@ export class MainViewModel extends Observable {
   }
 
   async onSettingsTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing settings');
+      return;
+    }
     await this.updateUserData(); // do we need to do this when opening the settings as modal, not certain, need to review
 
     const settingsPage = 'pages/modals/settings/settings';
@@ -212,13 +218,14 @@ export class MainViewModel extends Observable {
         kinveyService: this.kinveyService
       },
       closeCallback: () => {
+        this._showingModal = false;
         // now we need to update the display since goals / units may have changed
         this._updateDisplay();
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-
+    this._showingModal = true;
     btn.showModal(settingsPage, option);
   }
 
@@ -226,6 +233,10 @@ export class MainViewModel extends Observable {
    * Main Menu Button Tap Handlers
    */
   onAboutTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing about');
+      return;
+    }
     const aboutPage = 'pages/modals/about/about';
     const btn = args.object as View;
     const option: ShowModalOptions = {
@@ -233,12 +244,13 @@ export class MainViewModel extends Observable {
         kinveyService: this.kinveyService
       },
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
-
+    this._showingModal = true;
     btn.showModal(aboutPage, option);
   }
 
@@ -714,14 +726,20 @@ export class MainViewModel extends Observable {
   }
 
   private showSynchronizing() {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing synchronizing');
+      return;
+    }
     const option: ShowModalOptions = {
       context: {},
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
+    this._showingModal = true;
     this._synchronizingView = this._mainPage.showModal(
       this._synchronizingModal,
       option
@@ -730,6 +748,7 @@ export class MainViewModel extends Observable {
 
   private hideSynchronizing() {
     this._synchronizingView.closeModal();
+    this._showingModal = false;
   }
 
   private async updateUserData() {

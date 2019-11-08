@@ -6,12 +6,14 @@ import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { KinveyService } from '../../../services';
+import { sentryBreadCrumb } from '../../../utils';
 
 let closeCallback;
 let page: Page;
 let wearOsLayout: WearOsLayout;
 let kinveyService: KinveyService;
 let disableWearCheck: boolean;
+let _showingModal: boolean = false;
 
 // values for UI databinding via bindingContext
 const data = {
@@ -38,6 +40,10 @@ export function onShownModally(args: ShownModallyData) {
 }
 
 export function onChangeSettingsItemTap(args) {
+  if (_showingModal) {
+    sentryBreadCrumb('already showing modal, not showing change settings');
+    return;
+  }
   const tappedId = args.object.id as string;
   Log.D('onChangeSettingsItemTap', tappedId);
 
@@ -56,12 +62,13 @@ export function onChangeSettingsItemTap(args) {
       disableWearCheck
     },
     closeCallback: () => {
+      _showingModal = true;
       // we dont do anything with the about to return anything
     },
     animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
     fullscreen: true
   };
-
+  _showingModal = false;
   btn.showModal(changeSettingsPage, option);
 }
 

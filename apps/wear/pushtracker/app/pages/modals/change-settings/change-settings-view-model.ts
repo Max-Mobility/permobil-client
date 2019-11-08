@@ -9,6 +9,7 @@ import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
 import { KinveyService } from '../../../services';
+import { sentryBreadCrumb } from '../../../utils';
 
 declare const com: any;
 
@@ -21,6 +22,8 @@ export class ChangeSettingsViewModel extends Observable {
   private _synchronizingModal: string =
     'pages/modals/synchronizing/synchronizing';
   private _synchronizingView;
+
+  private _showingModal: boolean = false;
 
   private _disableWearCheck = false;
   private _closeCallback;
@@ -168,14 +171,20 @@ export class ChangeSettingsViewModel extends Observable {
   }
 
   showSynchronizing() {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing synchronizing');
+      return;
+    }
     const option: ShowModalOptions = {
       context: {},
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
+    this._showingModal = true;
     this._synchronizingView = this._mainPage.showModal(
       this._synchronizingModal,
       option
@@ -184,6 +193,7 @@ export class ChangeSettingsViewModel extends Observable {
 
   hideSynchronizing() {
     this._synchronizingView.closeModal();
+    this._showingModal = false;
   }
 
   private async sendSettings() {
