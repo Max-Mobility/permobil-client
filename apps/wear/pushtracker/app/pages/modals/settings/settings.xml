@@ -16,8 +16,10 @@
                     <Label row="3" col="1" text="{{ L('settings.coastgoal.title') }}" id="coastGoal" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
                     <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                     <Label row="4" col="1" text="{{ L('settings.units.title') }}" id="units" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+                    <!--
                     <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
                     <Label row="5" col="1" text="{{ L('settings.watchrequired.title') }}" id="watchrequired" tap="{{ onChangeSettingsItemTap }}" class="settings-label" textWrap="true" />
+                    -->
                 </GridLayout>
             </ScrollView>
         </StackLayout>

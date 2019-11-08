@@ -86,8 +86,6 @@ public class ActivityService
   public static final long SEND_DATA_PERIOD_MS = 10 * 1000;
   public static final long PUSH_DATA_PERIOD_MS = 1 * 60 * 1000;
 
-  public boolean isDebuggable = false;
-
   public String watchSerialNumber = null;
 
   private static final int NOTIFICATION_ID = 765;
@@ -126,11 +124,18 @@ public class ActivityService
   private KinveyApiService mKinveyApiService;
   private String mKinveyAuthorization = null;
 
+  public boolean isServiceRunning = false;
+
   // activity detection
+  private boolean hasData = false;
+  private float[] activityDetectorData = new float[ActivityDetector.InputSize];
   public boolean personIsActive = false;
   public boolean watchBeingWorn = false;
-  public boolean disableWearCheck = false;
-  public boolean isServiceRunning = false;
+  /*
+  public boolean disableWearCheck = true;
+  private long lastCheckTimeMs = 0;
+  private static long WEAR_CHECK_TIME_MS = 1000;
+  */
 
   // activity data
   DailyActivity currentActivity = new DailyActivity();
@@ -158,9 +163,6 @@ public class ActivityService
     Sentry.init(
                 "https://5670a4108fb84bc6b2a8c427ab353472@sentry.io/1485857"
                 );
-
-    // set the debuggable flag
-    // isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
 
     // create objects
     activityDetector = new ActivityDetector(this);
@@ -227,7 +229,7 @@ public class ActivityService
 
     // get the serial number from the data store
     watchSerialNumber = datastore.getSerialNumber();
-    disableWearCheck = datastore.getDisableWearCheck();
+    // disableWearCheck = datastore.getDisableWearCheck();
     // make sure to set the serial number
     currentActivity.watch_serial_number = this.watchSerialNumber;
 
@@ -480,7 +482,7 @@ public class ActivityService
 
   @Override
   public void onLocationChanged(Location location) {
-    if (!watchBeingWorn && !isDebuggable) {
+    if (!watchBeingWorn) {
       // don't do any range computation if the watch isn't being
       // worn
       return;
@@ -563,22 +565,19 @@ public class ActivityService
     Log.d(TAG, "onStatusChanged(): " + provider + " - " + status);
   }
 
-  private boolean hasData = false;
-  private float[] activityDetectorData = new float[ActivityDetector.InputSize];
-  private long lastCheckTimeMs = 0;
-  private static long WEAR_CHECK_TIME_MS = 1000;
-
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
+    /*
+    // check to see if the user wants to disable wear check
     long timeDiffMs = 0;
     long now = System.currentTimeMillis();
-    // check to see if the user wants to disable wear check
     timeDiffMs = now - lastCheckTimeMs;
     if (timeDiffMs > WEAR_CHECK_TIME_MS) {
       disableWearCheck = datastore.getDisableWearCheck();
       lastCheckTimeMs = now;
     }
+    */
     // handle event
     updateActivity(event);
     updateDetectorInputs(event);
@@ -609,8 +608,7 @@ public class ActivityService
   }
 
   boolean canRunDetector() {
-    return hasData &&
-      (watchBeingWorn || disableWearCheck);
+    return hasData; // && (watchBeingWorn || disableWearCheck);
   }
 
   void clearDetectorInputs() {
@@ -660,7 +658,7 @@ public class ActivityService
     if (event.sensor.getType() == Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT) {
       // 1.0 => device is on body, 0.0 => device is off body
       watchBeingWorn = (event.values[0] != 0.0);
-      if (watchBeingWorn || isDebuggable) {
+      if (watchBeingWorn) {
         // onWristCallback();
       } else {
         // offWristCallback();
