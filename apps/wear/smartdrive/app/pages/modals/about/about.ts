@@ -10,10 +10,12 @@ import { WearOsLayout } from 'nativescript-wear-os';
 import { DataKeys } from '../../../enums';
 import { SmartDriveException } from '../../../models';
 import { KinveyService } from '../../../services';
-import { configureLayout, getSerialNumber } from '../../../utils';
+import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
 
 let closeCallback;
 let kinveyService;
+
+let _showingModal: boolean = false;
 
 // values for UI databinding via bindingContext
 const data = {
@@ -37,6 +39,8 @@ export function onCloseTap(args) {
 export function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
   const page = args.object as Page;
+
+  _showingModal = false;
 
   kinveyService = args.context.kinveyService as KinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
@@ -110,6 +114,10 @@ export function onShownModally(args: ShownModallyData) {
 }
 
 export function onShowErrorHistory(args) {
+  if (_showingModal) {
+    sentryBreadCrumb('already showing modal, not showing error history');
+    return;
+  }
   const btn = args.object;
   const option: ShowModalOptions = {
     context: {
@@ -118,11 +126,13 @@ export function onShowErrorHistory(args) {
       sqliteService: data.sqliteService
     },
     closeCallback: () => {
+      _showingModal = false;
       // we dont do anything with the about to return anything
     },
     animated: false,
     fullscreen: true
   };
+  _showingModal = true;
   btn.showModal('pages/modals/error_history/error_history', option);
 }
 
@@ -156,7 +166,7 @@ export async function onWatchSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => {});
+      await requestPermissions([p], () => { });
     } catch (permissionsObj) {
       // could not get the permission
     }

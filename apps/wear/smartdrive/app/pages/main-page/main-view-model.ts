@@ -93,12 +93,16 @@ export class MainViewModel extends Observable {
   // #region "Private Members"
   private sendTapTimeoutId: any = null;
 
-  private currentSignalStrength: string = '--';
+  private _showingModal: boolean = false;
+
+  // private currentSignalStrength: string = '--';
   private currentSpeed: number = 0.0;
   private estimatedDistance: number = 0.0;
   private watchIsCharging: boolean = false;
+  // views for main page ambient mode
   private _ambientTimeView: View;
   private _powerAssistView: View;
+  // tap detector config
   private tapDetector: TapDetector = null;
   private tapTimeoutId: any = null;
   // Sensor listener config:
@@ -325,12 +329,17 @@ export class MainViewModel extends Observable {
    */
 
   onSettingsTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing settings');
+      return;
+    }
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {
         settingsService: this._settingsService
       },
       closeCallback: () => {
+        this._showingModal = false;
         // we dont do anything with the about to return anything
         // now update any display that needs settings:
         this._updateSpeedDisplay();
@@ -339,10 +348,15 @@ export class MainViewModel extends Observable {
       animated: false,
       fullscreen: true
     };
+    this._showingModal = true;
     btn.showModal('pages/modals/settings/settings-page', option);
   }
 
   onAboutTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing about');
+      return;
+    }
     const btn = args.object;
     const option: ShowModalOptions = {
       context: {
@@ -359,10 +373,12 @@ export class MainViewModel extends Observable {
       },
       closeCallback: () => {
         // we dont do anything with the about to return anything
+        this._showingModal = false;
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
+    this._showingModal = true;
     btn.showModal('pages/modals/about/about', option);
   }
 
@@ -403,6 +419,10 @@ export class MainViewModel extends Observable {
   }
 
   onUpdatesTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing updates');
+      return;
+    }
     if (!this.smartDrive) {
       alert({
         title: L('failures.title'),
@@ -431,14 +451,22 @@ export class MainViewModel extends Observable {
       closeCallback: () => {
         // we dont do anything with the about to return anything
         this._isUpdatingSmartDrive = false;
+        this._showingModal = false;
       },
       animated: false,
       fullscreen: true
     };
+    this._showingModal = true;
     btn.showModal('pages/modals/updates/updates-page', option);
   }
 
+  private _enablingPowerAssist: boolean = false;
   async enablePowerAssist() {
+    if (this._enablingPowerAssist) {
+      sentryBreadCrumb('Already enabling power assist!');
+      return;
+    }
+    this._enablingPowerAssist = true;
     sentryBreadCrumb('Enabling power assist');
     // only enable power assist if we're on the user's wrist
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
@@ -447,12 +475,14 @@ export class MainViewModel extends Observable {
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
       });
+      this._enablingPowerAssist = false;
       return;
     } else if (this._hasSavedSmartDrive()) {
       try {
         // make sure everything works
         const didEnsure = await this._ensureBluetoothCapabilities();
         if (!didEnsure) {
+          this._enablingPowerAssist = false;
           return false;
         }
         // vibrate for enabling power assist
@@ -507,6 +537,7 @@ export class MainViewModel extends Observable {
         sentryBreadCrumb('SmartDrive was not saved!');
       }
     }
+    this._enablingPowerAssist = false;
   }
 
   debugChartTap() {
@@ -1803,6 +1834,10 @@ export class MainViewModel extends Observable {
 
   private _scanningView = null;
   private _showScanning() {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing scanning');
+      return;
+    }
     // make sure we hide it if we were already showing it
     this._hideScanning();
     // now show it
@@ -1810,10 +1845,12 @@ export class MainViewModel extends Observable {
       context: {},
       closeCallback: () => {
         // we dont do anything with the about to return anything
+        this._showingModal = false;
       },
       animated: false, // might change this, but it seems quicker to display the modal without animation (might need to change core-modules modal animation style)
       fullscreen: true
     };
+    this._showingModal = true;
     this._scanningView = Frame.topmost().currentPage.showModal(
       'pages/modals/scanning/scanning',
       option
@@ -1824,6 +1861,7 @@ export class MainViewModel extends Observable {
     if (this._scanningView !== null) {
       this._scanningView.closeModal();
     }
+    this._showingModal = false;
     this._scanningView = null;
   }
 

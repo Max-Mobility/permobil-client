@@ -3,7 +3,7 @@ import { Device } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { SettingsService } from '../../../services';
-import { configureLayout } from '../../../utils';
+import { configureLayout, sentryBreadCrumb } from '../../../utils';
 
 export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
@@ -17,6 +17,7 @@ export class SettingsViewModel extends Observable {
   private _tempSettings = new Device.Settings();
   private _tempSwitchControlSettings = new Device.SwitchControlSettings();
   private _settingsService: SettingsService;
+  private _showingModal: boolean = false;
 
   constructor(page: Page, settingsService: SettingsService, data) {
     super();
@@ -35,6 +36,10 @@ export class SettingsViewModel extends Observable {
   }
 
   onChangeSettingsItemTap(args) {
+    if (this._showingModal) {
+      sentryBreadCrumb('already showing modal, not showing change settings');
+      return;
+    }
     // copy the current settings into temporary store
     this._tempSettings.copy(this._settingsService.settings);
     this._tempSwitchControlSettings.copy(
@@ -92,6 +97,7 @@ export class SettingsViewModel extends Observable {
         _tempSwitchControlSettings: Device.SwitchControlSettings,
         disableWearCheck: boolean
       ) => {
+        this._showingModal = false;
         if (confirmedByUser) {
           this._settingsService.settings.copy(_tempSettings);
           this._settingsService.switchControlSettings.copy(
@@ -113,6 +119,7 @@ export class SettingsViewModel extends Observable {
       animated: false,
       fullscreen: true
     };
+    this._showingModal = true;
     btn.showModal(changeSettingsPage, option);
   }
 
