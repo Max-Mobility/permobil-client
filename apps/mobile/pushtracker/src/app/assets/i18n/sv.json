@@ -553,27 +553,6 @@
 		}
 	},
 	"updates-info-component": {
-		"sections": {
-			"0": {
-				"text": "",
-				"title": ""
-			},
-			"1": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			},
-			"2": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			},
-			"3": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			}
-		},
 		"title": ""
 	},
 	"user": {
