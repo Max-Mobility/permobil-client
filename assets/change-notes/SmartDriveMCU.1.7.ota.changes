@@ -1,8 +1,9 @@
 {
   "en": [
-    "SmartDrive Switch Control Indication - switch control LEDs indicate power assist and motor state. They will flash if a PushTracker is connected or switch control is enabled, and will turn solid while the motor is driving.",
-    "SmartDrive Switch Control Modes - SmartDrive Switch Control can be configured in one of two modes: Momentary or Latching. While in Momentary mode, the SmartDrive will only drive while the switch is being held - accelerating up to the configured Switch Control max speed. While in Latching mode, the SmartDrive will accelerate up to the configured Switch Control max speed and will stop accelerating and hold the current speed if the user releases the button; simply press the button again to turn off the motor.",
-    "SmartDrive Switch Control Speed - the SmartDrive Switch Control now has its own configurable max speed setting, independent of the max speed setting for the PushTracker!"
+    "SmartDrive SwitchControl Indication - SwitchControl LEDs indicate power assist and motor state. They will flash if a PushTracker is connected or SwitchControl is enabled, and will turn solid while the motor is driving.",
+    "SmartDrive SwitchControl Modes - SmartDrive SwitchControl can be configured in one of two modes: Momentary or Latching. While in Momentary mode, the SmartDrive will only drive while the switch is being held - accelerating up to the configured SwitchControl max speed. While in Latching mode, the SmartDrive will accelerate up to the configured SwitchControl max speed and will stop accelerating and hold the current speed if the user releases the button; simply press the button again to turn off the motor.",
+    "SmartDrive SwitchControl Speed - the SmartDrive SwitchControl now has its own configurable max speed setting, independent of the max speed setting for the PushTracker!"
+    "Power Asisst Beep - The SmartDrive is now configured to beep once whenever you connect a PushTracker / E2 to it, and when you press and release one of the SwitchControl buttons to take SwitchControl out of standby. This setting can be turned off either through the SmartDrive MX2+ app on your PushTracker E2 or using the PushTracker mobile app on your phone if you do not have a PushTracker E2"
   ],
   "es": [],
   "de": [],
