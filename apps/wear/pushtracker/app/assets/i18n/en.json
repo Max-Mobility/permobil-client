@@ -1,11 +1,11 @@
 {
   "about": {
     "database": "Database ID",
-    "title": "Information",
-    "version": "App Version",
-    "watch-serial-number": "TicWatch Serial Number",
-    "user-email": "Email",
-    "user-name": "Name"
+    "title": "About Information",
+    "version": "PushTracker WearOS App (SW) Version",
+    "watch-serial-number": "Smartwatch Serial Number",
+    "user-email": "Your Email",
+    "user-name": "Your Name"
   },
   "buttons": {
     "back": "Back",
@@ -85,51 +85,20 @@
     "units": "pushes"
   },
   "settings": {
-    "chairmake": {
-      "description": "",
-      "title": "Chair Make",
-      "values": {
-        "colours": "Colours",
-        "invacare": "Invacare / Küschall",
-        "karman": "Karman",
-        "ki": "Ki",
-        "motion-composites": "Motion Composites",
-        "other": "Other",
-        "panthera": "Panthera",
-        "quickie": "Quickie / Sopur / RGK",
-        "tilite": "TiLite",
-        "top-end": "Top End"
-      }
-    },
-    "chairtype": {
-      "description": "",
-      "title": "Chair Type",
-      "values": {
-        "folding": "Folding Frame",
-        "other": "Other",
-        "pediatric": "Pedatric",
-        "rigid": "Rigid Frame"
-      }
-    },
     "coastgoal": {
-      "description": "",
+      "description": "Your goal for average coast time between pushes each day.",
       "title": "Coast Goal",
       "units": "s"
     },
     "install-smartdrive": "Install SmartDrive MX2+ WearOS App",
     "connect-pushtracker": "Connect PushTracker Mobile App",
     "distancegoal": {
-      "description": "",
+      "description": "Your goal for distanced traveled in your wheelchair each day.",
       "title": "Distance Goal",
       "units": {
         "english": "mi",
         "metric": "km"
       }
-    },
-    "edit-profile": "Edit Profile",
-    "height": {
-      "description": "",
-      "title": "Height"
     },
     "information": "Information",
     "pushsensitivity": {
@@ -138,27 +107,11 @@
     },
     "title": "Settings",
     "units": {
-      "description": "",
+      "description": "The unit system or units of measure to display the measurements within the user interfaces. Select either Imperial [ft / mi and lbs] or Metric [cm / km and kg].",
       "title": "Units",
       "values": {
-        "english": "English",
+        "english": "Imperial",
         "metric": "Metric"
-      }
-    },
-    "watchrequired": {
-      "description": "When enabled, the smartwatch must be on the wrist to detect activity.",
-      "title": "Check for Wrist",
-      "values": {
-        "disabled": "Disabled",
-        "enabled": "Enabled"
-      }
-    },
-    "weight": {
-      "description": "",
-      "title": "Weight",
-      "units": {
-        "english": "lb",
-        "metric": "kg"
       }
     }
   },
@@ -167,12 +120,8 @@
       "english": "mi",
       "metric": "km"
     },
-    "english": "English",
-    "metric": "Metric",
-    "speed": {
-      "english": "mph",
-      "metric": "kph"
-    }
+    "english": "Imperial",
+    "metric": "Metric"
   },
   "wearos-comms": {
     "errors": {
