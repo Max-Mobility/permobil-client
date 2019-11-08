@@ -19,15 +19,15 @@
     "allow": "Permitir",
     "back": "Atrás",
     "cancel": "Cancelar",
-    "deny": "No permitido",
+    "deny": "Denegar",
     "disable": "Apagado",
     "dismiss": "Omitir",
-    "enable": "Prendido",
+    "enable": "Encendido",
     "ok": "De acuerdo"
   },
   "charts": {
     "battery": {
-      "title": "Uso de la batería SmartDrive a diario (%)"
+      "title": "Uso de la batería del SmartDrive a diario (%)"
     },
     "distance": {
       "title": "SmartDrive distancia recorrida diariamente"
@@ -41,7 +41,7 @@
       "motorphases": "[ERR: 002] Motor del SD",
       "otaunavailable": "[ERR: 006] Actualizaciones no disponibles",
       "overcurrent": "[ERR: 003] Pico de corriente SD",
-      "overtemperature": "[ERR: 004] Sobre recalentado SD"
+      "overtemperature": "[ERR: 004] Sobrecalentamiento del SD"
     },
     "loading": "Cargando ...",
     "no-errors": "No se han registrado ni recibido errores del SmartDrive.",
@@ -49,22 +49,22 @@
   },
   "failures": {
     "app-connection": {
-      "credentials": "Error al tratar de conectarse la cuenta del PushTracker.",
-      "logout": "La cuenta ha sido desconectada. Se requiere la reconexión a la aplicación móvil PushTracker.",
+      "credentials": "Error al tratar de conectarse a la cuenta del PushTracker.",
+      "logout": "La cuenta ha sido desconectada. Se requiere reconectar a la aplicación móvil del PushTracker.",
       "timeout": "La conexión de la aplicación ha excedido el tiempo de espera."
     },
     "connect": "No se puede conectar al SmartDrive.",
     "getting-error": "No se puede obtener el error del SmartDrive.",
     "must-wear-watch": "El ajuste [Verificar muñeca] está habilitado, por lo tanto, el reloj inteligente (PushTracker E2) debe usarse para controlar su SmartDrive.",
-    "no-smartdrive-paired": "No SmartDrive emparejado.",
-    "no-smartdrives-found": "No se han encontrado SmartDrives cerca.",
+    "no-smartdrive-paired": "SmartDrive no emparejado.",
+    "no-smartdrives-found": "No se han encontrado otros SmartDrives cerca.",
     "permissions": "No se puede realizar la acción solicitada. No se otorgaron los permisos requeridos.",
     "saving-error": "No se pudo guardar el error del SmartDrive.",
-    "saving-usage": "No se pudo guardar los datos del uso del SmartDrive.",
+    "saving-usage": "No se pudieron guardar los datos del uso del SmartDrive.",
     "scan": "No se pudo escanear.",
     "send-settings": "No se pudo enviar la configuración al SmartDrive.",
     "title": "Atención",
-    "too-many-smartdrives-found": "Se ha encontrado cerca otros SmartDrives. Asegúrese de que solo haya uno en las proximidades cuando realice el emparejamiento."
+    "too-many-smartdrives-found": "Se han encontrado cerca otros SmartDrives. Asegúrese de que solo haya uno en las proximidades cuando realice el emparejamiento."
   },
   "languages": {
     "da": "Danés",
@@ -91,9 +91,9 @@
     "action": {
       "cancel": "Cancelar",
       "force": "Fuerza",
-      "pause": "Pausar",
-      "resume": "Recomenzar",
-      "retry": "Trate otra vez",
+      "pause": "Pausa",
+      "resume": "Reanudar",
+      "retry": "Pruebe otra vez",
       "start": "Empieze"
     },
     "sd": {
@@ -107,7 +107,7 @@
         "comm-failure": "Error de comunicación - se requiere reiniciar el SmartDrive",
         "complete": "Completado",
         "failed": "No se pudo",
-        "not-started": "No ha comenzado",
+        "not-started": "No ha empezado",
         "rebooting-ble": "Reiniciar BT",
         "rebooting-mcu": "Reiniciar SD",
         "timeout": "Se acabó el tiempo",
@@ -118,16 +118,16 @@
     }
   },
   "permissions-reasons": {
-    "coarse-location": "Para controlar su SmartDrive usando Bluetooth, requerimos que permita la Ubicación [ACCESS_COARSE_LOCATION] en la siguiente pantalla. Con este permiso, Permobil no accederá a sus datos de ubicación.",
-    "phone-state": "OPCIONAL: Para acceder al numero de serie de su reloj inteligente (PushTracker E2) y este le pueda ser útil para fines de soporte técnico y garantía, permitir el acceso del teléfono [READ_PHONE_STATE] en una de las siguientes pantallas. Con este permiso, Permobil no accederá a sus datos de su teléfono o cualquier otra información de su red inalámbrica."
+    "coarse-location": "Para controlar su SmartDrive usando Bluetooth, necesitamos que nos permita saber la Ubicación [ACCESS_COARSE_LOCATION] en la siguiente pantalla. Con este permiso, Permobil no accederá a sus datos de ubicación.",
+    "phone-state": "OPCIONAL: Para acceder al numero de serie de su reloj inteligente (PushTracker E2) y éste le pueda ser útil para fines de soporte técnico y garantía, necesitamos que nos permita obtener acceso a su teléfono [READ_PHONE_STATE] en una de las siguientes pantallas. Con este permiso, Permobil no accederá a los datos de su teléfono o cualquier otra información de su red inalámbrica."
   },
   "permissions-request": {
     "title": "Aviso de permisos"
   },
   "power-assist": {
-    "activate": "La asistencia de potencia encendido",
-    "deactivate": "La asistencia de potencia apagado",
-    "estimated-range": "Rango estimado",
+    "activate": "La asistencia de potencia está encendida",
+    "deactivate": "La asistencia de potencia está apagada",
+    "estimated-range": "Autonomina estimada",
     "exit-training": "Saliendo del programa de entrenamiento",
     "speed": "Velocidad actual",
     "stop": "Desactivar el mando de conducción"
@@ -152,35 +152,35 @@
   },
   "settings": {
     "acceleration": "Aceleración",
-    "connect-pushtracker": "Connectar la aplicación móvil PushTracker",
+    "connect-pushtracker": "Connectar la aplicación móvil del PushTracker",
     "control-mode": "Modo de control",
     "description": {
       "acceleration": "La tasa de aceleración de velocidad del SmartDrive.",
-      "controlmode": "MX2+: La operación predeterminada basada en gestos de SmartDrive. En el modo de control MX2+, una doble palmada comenzará a conducir el motor al aumentar su velocidad, una sola palmadita costará a la velocidad actual y una doble palmada desactivará la conducción.\n\nMX2: En el modo de control MX2, el SmartDrive comenzará a conducir cuando detecte su impulso y lo desactivará cuando lo palmas. Tenga en cuenta que esta es una opción de soporte heredado.\n\nMX1: En el modo de control MX1, el SmartDrive comenzará a conducir cuando detecte su empuje, y dejará de conducir cuando lo palmas o cuando frene los aros de mano. Tenga en cuenta que esta es una opción de soporte heredado.",
-      "maxspeed": "La velocidad máxima a la que puede conducir el SmartDrive cuando lo controla con su reloj inteligente (PushTracker E2).",
-      "powerassistbuzzer": "Cuando está habilitado, el SmartDrive emitirá un pitido cada vez que se establezca una conexión desde un dispositivo remoto, o cuando el Botón del interruptor salga del estado de espera.",
-      "switchcontrolmode": "Momentáneo: el modo de control de Botón en el que el SmartDrive comenzará a conducir el motor aumentando su velocidad a la velocidad máxima de control de Botón solo mientras se mantiene presionado uno de los Botones. Cuando se suelta el Botón retenido, o se presionan ambos Botones [si están presentes], la conducción se desactivará. Tenga en cuenta que, tras la desactivación, no pone el dispositivo en estado de espera.\n\nEnganchado: en el modo de control de Botón, el SmartDrive comenzará a conducir el motor aumentando su velocidad a la velocidad máxima de control de Botón mientras se mantiene presionado uno de los Botones de control de interruptor. Cuando se suelta el Botón retenido, el SmartDrive seguirá manejando / costando a la velocidad actual cuando se suelte el Botón. Cuando se presiona y suelte uno de los Botones nuevamente, o se presionan ambos Botones [si está presente], la conducción se desactivará. Tenga en cuenta que, tras la desactivación, no pone el dispositivo en estado de espera.",
+      "controlmode": "MX2+: La operación predeterminada basada en gestos de SmartDrive. En el modo de control MX2+, con una doble palmada se iniciará la marcha aumentando la velocidad, con una palmada mantendrá la velocidad actual y haciendo una doble palmada desactivará el motor.\n\nMX2: En el modo de control MX2, el SmartDrive iniciará la marcha cuando detecte su impulso y se desactivará el motor cuando realize una palmada. Tenga en cuenta que esta es una opción de soporte heredada.\n\nMX1: En el modo de control MX1, el SmartDrive iniciará la marcha cuando detecte su impulso, y se desactivará el motor cuando realize una palmada o cuando frene los aros con la mano. Tenga en cuenta que esta es una opción de soporte heredado.",
+      "maxspeed": "Velocidad máxima a la que puede conducir el SmartDrive cuando lo controla con su reloj inteligente (PushTracker E2).",
+      "powerassistbuzzer": "Cuando está encendido, el SmartDrive emitirá un pitido cada vez que se establezca una conexión desde un dispositivo remoto, o cuando el Botón del interruptor salga del estado de espera.",
+      "switchcontrolmode": "Momentáneo: el modo de control de Botón del SmartDrive,  iniciará la marcha  aumentando su velocidad a la velocidad máxima de control del Botón solo si se mantiene presionado uno de los Botones. Cuando se suelta el Botón retenido, o se presionan ambos Botones [si están presentes], el motor se desactivará. Tenga en cuenta que, tras la desactivación,  el dispositivo no se pone en modo de espera.\n\nEnganchado: en el modo de control de Botón, el SmartDrive iniciará la marcha aumentando su velocidad a la velocidad máxima de control del Botón mientras se mantiene presionado uno de los Botones de control. Cuando se suelta el Botón retenido, el SmartDrive seguirá  la marcha a la velocidad actual cuando se suelte el Botón. Cuando se presiona y suelte uno de los Botones nuevamente, o si se presionan ambos Botones [si está presente], el motor se desactivará. Tenga en cuenta que, tras la desactivación, el dispositivo no se pone en modo de espera.",
       "switchcontrolspeed": "La velocidad máxima a la que puede conducir el SmartDrive cuando está controlado por el Botón.",
-      "tapsensitivity": "La sensibilidad del gesto de palmear se utiliza para activar y desactivar la conducción. Cuanto más bajo sea el porcentaje, más fuerza necesitas usar para palmear. El 100% es el más sensible y, por lo tanto, necesitas usar lo meno fuerza a palmear, y el 10% es el menos sensible y, por lo tanto, debe usar más fuerza de palmear.",
-      "units": "El sistema de unidades o unidades de medida para mostrar la velocidad y las distancias dentro de las interfaces de usuario. Seleccione Imperial [mi y mph] o Métrico [km y km/h].",
-      "wearcheck": "Cuando está habilitado, el reloj inteligente (PushTracker E2) debe estar en la muñeca para activar la asistencia de potencia. Si la asistencia eléctrica está ENCENDIDA y el PushTracker E2 detectara que ya no está en la muñeca lo APAGARÁ automáticamente."
+      "tapsensitivity": "La sensibilidad del gesto del palmeo que se utiliza para activar y desactivar la marcha. Cuanto más bajo sea el porcentaje, más fuerza tienes que usar para palmear. El 100% es el más sensible y, por lo tanto, necesitas usar menos fuerza para palmear, y el 10% es el menos sensible y, por lo tanto, debe usar más fuerza para palmear.",
+      "units": "El sistema de unidades o las unidades de medida para mostrar la velocidad y las distancias dentro del interfaces de usuario. Seleccione Imperial [mi y mph] o Métrico [km y km/h].",
+      "wearcheck": "Cuando está habilitado, el reloj inteligente (PushTracker E2) debe estar en la muñeca para activar la asistencia. Si la asistencia eléctrica está ENCENDIDA y el PushTracker E2 detecta que ya no está en la muñeca lo APAGARÁ automáticamente."
     },
     "error-history": "Historial de errores",
     "information": "Información",
     "max-speed": "Máxima velocidad",
-    "pair-smartdrive": "Emparejandol SmartDrive",
+    "pair-smartdrive": "Emparejando SmartDrive",
     "paired-to-smartdrive": "Emparejado con éxito al SmartDrive.",
-    "power-assist-buzzer": "Indicación de asistencia de potencia de pitido",
+    "power-assist-buzzer": "Pitido de indicación de asistencia de potencia",
     "scanning": "Escaneando SmartDrive para emparejar con ...",
     "select-smartdrive": "Seleccione SmartDrive",
-    "tap-sensitivity": "La sensibilidad de palmear",
-    "title": "Configuraciones SmartDrive",
+    "tap-sensitivity": "La sensibilidad del palmeo",
+    "title": "Configuraciones del SmartDrive",
     "units": "Unidades",
     "watch-required": {
       "title": "Verificar muñeca",
       "values": {
         "disabled": "Apagado",
-        "enabled": "Prendido"
+        "enabled": "Habilitado"
       }
     }
   },
@@ -208,7 +208,7 @@
     "connecting-to-smartdrive": "Conectando al SmartDrive ...",
     "downloading-new-firmwares": "Descargando nuevos datos de actualizaciones ...",
     "errors": {
-      "connecting": "Error al conectarse a SmartDrive.",
+      "connecting": "Error al conectarse al SmartDrive.",
       "downloading": "Error al descargar actualizaciones.",
       "getting": "Error al buscar actualizaciones.",
       "saving": "Error al guardar datos de actualizaciones."
@@ -216,7 +216,7 @@
     "failed": "Las actualizaciones de SmartDrive fallaron.",
     "status": "Estado de actualizaciones",
     "success": "¡Actualizaciones de SmartDrive completadas con éxito!",
-    "timeout": "Las actualizaciones de SmartDrive caducaron.",
+    "timeout": "Las actualizaciones del SmartDrive caducaron.",
     "up-to-date": "¡SmartDrive está actualizado!",
     "version": "Versión"
   },
