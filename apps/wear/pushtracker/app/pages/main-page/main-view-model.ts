@@ -19,11 +19,7 @@ import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
-
-const ambientTheme = require('../../scss/theme-ambient.scss').toString();
-const defaultTheme = require('../../scss/theme-default.scss').toString();
-const retroTheme = require('../../scss/theme-retro.scss').toString();
+import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb, applyTheme } from '../../utils';
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -73,9 +69,6 @@ export class MainViewModel extends Observable {
   @Prop() isSmartDriveAppInstalled: boolean = false;
   // for managing when we send data to server
   @Prop() watchIsCharging: boolean = false;
-
-  // state variables
-  @Prop() isAmbient: boolean = false;
 
   /**
    * Data to bind to the Distance Chart repeater.
@@ -143,7 +136,6 @@ export class MainViewModel extends Observable {
   private ANDROID_MARKET_SMARTDRIVE_URI =
     'market://details?id=com.permobil.smartdrive.wearos';
   private serviceDataReceiver = new DataBroadcastReceiver();
-  private hasAppliedTheme: boolean = false;
   // #endregion "Private Members"
 
   constructor() {
@@ -158,14 +150,8 @@ export class MainViewModel extends Observable {
   async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
     try {
-      if (!this.hasAppliedTheme) {
-        // apply theme
-        if (this.isAmbient) {
-          this._applyTheme('ambient');
-        } else {
-          this._applyTheme('default');
-        }
-      }
+      // apply theme
+      this._applyTheme('default');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('theme on startup error:', err);
@@ -210,7 +196,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -644,7 +630,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -666,19 +652,7 @@ export class MainViewModel extends Observable {
 
   private _applyTheme(theme?: string) {
     // apply theme
-    sentryBreadCrumb('applying theme');
-    this.hasAppliedTheme = true;
-    try {
-      if (theme === 'ambient' || this.isAmbient) {
-        themes.applyThemeCss(ambientTheme, 'theme-ambient.scss');
-      } else {
-        themes.applyThemeCss(defaultTheme, 'theme-default.scss');
-      }
-    } catch (err) {
-      // Sentry.captureException(err);
-      Log.E('apply theme error:', err);
-    }
-    sentryBreadCrumb('theme applied');
+    applyTheme(theme);
     this._applyStyle();
   }
 
@@ -709,18 +683,15 @@ export class MainViewModel extends Observable {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
       sentryBreadCrumb('*** enterAmbient ***');
-      this.isAmbient = true;
-      this._applyTheme();
+      this._applyTheme('ambient');
     });
 
     application.on('updateAmbient', () => {
-      this.isAmbient = true;
     });
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
-      this.isAmbient = false;
-      this._applyTheme();
+      this._applyTheme('default');
     });
 
     // Activity lifecycle event handlers
@@ -987,7 +958,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() {}
+  private _updateSpeedDisplay() { }
 
   /**
    * SmartDrive Associated App Functions

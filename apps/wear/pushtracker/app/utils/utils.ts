@@ -8,7 +8,6 @@ declare const com: any;
 
 const ambientTheme = require('../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../scss/theme-default.scss').toString();
-const retroTheme = require('../scss/theme-retro.scss').toString();
 
 export function getSerialNumber() {
   if (!hasPermission(android.Manifest.permission.READ_PHONE_STATE)) return null;
