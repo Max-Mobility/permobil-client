@@ -299,7 +299,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-          }`,
+            }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -382,13 +382,19 @@ export class MainViewModel extends Observable {
     btn.showModal('pages/modals/about/about', option);
   }
 
+  private _enablingTraining: boolean = false;
   onTrainingTap() {
+    if (this._enablingTraining) {
+      return;
+    }
+    this._enablingTraining = true;
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       alert({
         title: L('failures.title'),
         message: L('failures.must-wear-watch'),
         okButtonText: L('buttons.ok')
       });
+      this._enablingTraining = false;
       return;
     }
     const didEnableTapSensor = this._enableTapSensor();
@@ -398,17 +404,19 @@ export class MainViewModel extends Observable {
         message: L('failures.could-not-enable-tap-sensor'),
         okButtonText: L('buttons.ok')
       });
+      this._enablingTraining = false;
       return;
     }
+    // make sure the UI updates
+    this.isTraining = true;
+    if (this.pager) {
+      this.pager.scrollToIndexAnimated(0, false);
+    } else sentryBreadCrumb('training activated but pager is null!');
     this.tapDetector.reset();
     this._maintainCPU();
     this.powerAssistState = PowerAssist.State.Training;
     this._updatePowerAssistRing();
-    if (this.pager) {
-      this.pager.scrollToIndexAnimated(0, false);
-    } else sentryBreadCrumb('training activated but pager is null!');
-    // make sure the UI updates
-    this.isTraining = true;
+    this._enablingTraining = false;
   }
 
   onExitTrainingModeTap() {
@@ -486,6 +494,11 @@ export class MainViewModel extends Observable {
           this._enablingPowerAssist = false;
           return false;
         }
+        this.powerAssistActive = true;
+        // ensure the pager is on the right page
+        if (this.pager) {
+          this.pager.scrollToIndexAnimated(0, false);
+        }
         // vibrate for enabling power assist
         this._vibrator.vibrate(200);
         // now actually set up power assist
@@ -495,12 +508,6 @@ export class MainViewModel extends Observable {
         this._disableWifi();
         this._maintainCPU();
         this.powerAssistState = PowerAssist.State.Disconnected;
-        // ensure the pager is on the right page
-        if (this.pager) {
-          this.pager.scrollToIndexAnimated(0, false);
-        }
-
-        this.powerAssistActive = true;
         this._updatePowerAssistRing();
         const didConnect = await this._connectToSavedSmartDrive();
         if (didConnect) {
@@ -806,7 +813,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => {});
+        await requestPermissions(neededPermissions, () => { });
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1897,7 +1904,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1962,7 +1969,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
@@ -2387,7 +2394,7 @@ export class MainViewModel extends Observable {
             uuid: r && r[4],
             insetPadding: this.insetPadding,
             isBack: false,
-            onTap: () => {}
+            onTap: () => { }
           };
         });
       }
