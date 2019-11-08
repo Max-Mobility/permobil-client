@@ -1,28 +1,26 @@
+/** Fonts **/
+/** Fonts **/
 .ionicon {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
-}
+  font-family: ionicons, "ionicons", Ionicons, "Ionicons"; }
 
 Page {
-  background-color: #000;
-}
+  background-color: #000; }
 
 .page {
-  background-color: #000;
-}
+  background-color: #000; }
 
 .ionicon {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
-}
+  font-family: ionicons, "ionicons", Ionicons, "Ionicons"; }
 
 .back-icon {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
+  font-family: ionicons, "ionicons", Ionicons, "Ionicons";
   font-size: 11;
   font-weight: bold;
   vertical-align: center;
   horizontal-align: center;
-  margin: 5 5 5 0;
-}
+  margin: 5 5 5 0; }
 
+/** Buttons **/
 .updates-btn {
   font-size: 15;
   border-radius: 50%;
@@ -30,287 +28,227 @@ Page {
   height: 30%;
   horizontal-align: center;
   vertical-align: center;
-  margin: 5, 0, 5, 0;
-}
+  margin: 5, 0, 5, 0; }
 
-.circle-image-btn,
-#changeSettingsPage .increase-btn,
-#changeSettingsPage .decrease-btn,
-#changeSettingsPage .cancel-btn,
-#changeSettingsPage .confirm-btn {
+.circle-image-btn, #changeSettingsPage .increase-btn, #changeSettingsPage .decrease-btn, #changeSettingsPage .cancel-btn, #changeSettingsPage .confirm-btn {
   height: 48;
   width: 48;
   border-radius: 24;
   vertical-align: center;
-  horizontal-align: center;
-}
-.circle-image-btn StackLayout,
-#changeSettingsPage .increase-btn StackLayout,
-#changeSettingsPage .decrease-btn StackLayout,
-#changeSettingsPage .cancel-btn StackLayout,
-#changeSettingsPage .confirm-btn StackLayout {
-  height: 48;
-  width: 48;
-  border-radius: 24;
-  height: 100%;
-  width: 100%;
-  vertical-align: center;
-  horizontal-align: center;
-}
-.circle-image-btn StackLayout label,
-#changeSettingsPage .increase-btn StackLayout label,
-#changeSettingsPage .decrease-btn StackLayout label,
-#changeSettingsPage .cancel-btn StackLayout label,
-#changeSettingsPage .confirm-btn StackLayout label {
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
-  font-size: 36;
-  vertical-align: center;
-  horizontal-align: center;
-}
+  horizontal-align: center; }
+  .circle-image-btn StackLayout, #changeSettingsPage .increase-btn StackLayout, #changeSettingsPage .decrease-btn StackLayout, #changeSettingsPage .cancel-btn StackLayout, #changeSettingsPage .confirm-btn StackLayout {
+    height: 48;
+    width: 48;
+    border-radius: 24;
+    height: 100%;
+    width: 100%;
+    vertical-align: center;
+    horizontal-align: center; }
+    .circle-image-btn StackLayout label, #changeSettingsPage .increase-btn StackLayout label, #changeSettingsPage .decrease-btn StackLayout label, #changeSettingsPage .cancel-btn StackLayout label, #changeSettingsPage .confirm-btn StackLayout label {
+      font-family: ionicons, "ionicons", Ionicons, "Ionicons";
+      font-size: 36;
+      vertical-align: center;
+      horizontal-align: center; }
 
 .center-label-base {
   horizontal-align: center;
   vertical-align: center;
   text-align: center;
-  text-wrap: true;
-}
+  text-wrap: true; }
 
 .ambient-show {
-  color: #888888;
-}
+  color: #888888; }
 
 .ambient-hide {
-  color: #000;
-}
+  color: #000; }
 
 .center-h {
-  horizontal-align: center;
-}
+  horizontal-align: center; }
 
 .center-v {
-  vertical-align: center;
-}
+  vertical-align: center; }
 
 .center-text {
-  text-align: center;
-}
+  text-align: center; }
 
 .no-margin {
-  margin: 0, 0, 0, 0;
-}
+  margin: 0, 0, 0, 0; }
 
 .no-padding {
-  padding: 0, 0, 0, 0;
-}
+  padding: 0, 0, 0, 0; }
 
 .compact {
   padding: 0, 0, 0, 0;
-  margin: 0, 0, 0, 0;
-}
+  margin: 0, 0, 0, 0; }
 
+/** Label Line Chart Styles **/
 .chart-title {
   horizontal-align: center;
   text-align: center;
-  font-size: 13;
-}
+  font-size: 13; }
 
 .bold {
-  font-weight: bold;
-}
+  font-weight: bold; }
 
 .fs6 {
-  font-size: 6;
-}
+  font-size: 6; }
 
 .fs8 {
-  font-size: 8;
-}
+  font-size: 8; }
 
 .fs10 {
-  font-size: 10;
-}
+  font-size: 10; }
 
 .fs12 {
-  font-size: 12;
-}
+  font-size: 12; }
 
 .fs14 {
-  font-size: 14;
-}
+  font-size: 14; }
 
 .fs16 {
-  font-size: 16;
-}
+  font-size: 16; }
 
 .fs18 {
-  font-size: 18;
-}
+  font-size: 18; }
 
 .fs20 {
-  font-size: 20;
-}
+  font-size: 20; }
 
 .fs22 {
-  font-size: 22;
-}
+  font-size: 22; }
 
 .fs24 {
-  font-size: 24;
-}
+  font-size: 24; }
 
 .fs26 {
-  font-size: 26;
-}
+  font-size: 26; }
 
 .fs28 {
-  font-size: 28;
-}
+  font-size: 28; }
 
 .fs30 {
-  font-size: 30;
-}
+  font-size: 30; }
 
 .fs32 {
-  font-size: 32;
-}
+  font-size: 32; }
 
 .fs34 {
-  font-size: 34;
-}
+  font-size: 34; }
 
 .fs36 {
-  font-size: 36;
-}
+  font-size: 36; }
 
 .fs38 {
-  font-size: 38;
-}
+  font-size: 38; }
 
 .fs40 {
-  font-size: 40;
-}
+  font-size: 40; }
 
+/** Fonts **/
 .chart-stack {
   vertical-align: bottom;
-  horizontal-align: center;
-}
+  horizontal-align: center; }
 
 .chart-max-value {
   font-size: 8;
   color: #fff;
-  vertical-align: top;
-}
+  vertical-align: top; }
 
 .coast-line {
   vertical-align: bottom;
   horizontal-align: center;
   background-color: #00c1d5;
-  width: 5;
-}
+  width: 5; }
 
 .distance-line {
   vertical-align: bottom;
   horizontal-align: center;
   background-color: #753bbd;
-  width: 5;
-}
+  width: 5; }
 
 .line-label {
   text-align: center;
   horizontal-align: center;
   vertical-align: top;
   color: #fff;
-  font-size: 12;
-}
+  font-size: 12; }
 
+/** Fonts **/
 #changeSettingsPage {
-  margin: 4;
-}
-#changeSettingsPage .increase-btn {
-  color: #fff;
-}
-#changeSettingsPage .decrease-btn {
-  color: #fff;
-}
-#changeSettingsPage .cancel-btn {
-  color: #fff;
-  background-color: gray;
-}
-#changeSettingsPage .confirm-btn {
-  color: #fff;
-  background-color: #004f7e;
-}
-#changeSettingsPage .value-circle {
-  height: 100;
-  width: 100;
-  border-radius: 50;
-  horizontal-align: center;
-  vertical-align: center;
-  background-color: #004f7e;
-  color: #fff;
-}
-#changeSettingsPage .value-circle .changeSettingsTitle {
-  color: #fff;
-  width: 90%;
-  text-align: center;
-  horizontal-align: center;
-  vertical-align: center;
-}
-#changeSettingsPage .value-circle .changeSettingsValue {
-  color: #fff;
-  width: 70%;
-  font-weight: bold;
-  text-align: center;
-  horizontal-align: center;
-  vertical-align: center;
-}
+  margin: 4; }
+  #changeSettingsPage .increase-btn {
+    color: #fff; }
+  #changeSettingsPage .decrease-btn {
+    color: #fff; }
+  #changeSettingsPage .cancel-btn {
+    color: #fff;
+    background-color: gray; }
+  #changeSettingsPage .confirm-btn {
+    color: #fff;
+    background-color: #004f7e; }
+  #changeSettingsPage .value-circle {
+    height: 100;
+    width: 100;
+    border-radius: 50;
+    horizontal-align: center;
+    vertical-align: center;
+    background-color: #004f7e;
+    color: #fff; }
+    #changeSettingsPage .value-circle .changeSettingsTitle {
+      color: #fff;
+      width: 90%;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center; }
+    #changeSettingsPage .value-circle .changeSettingsValue {
+      color: #fff;
+      width: 70%;
+      font-weight: bold;
+      text-align: center;
+      horizontal-align: center;
+      vertical-align: center; }
 
+/** Fonts **/
 .distanceCircle {
   background-color: transparent;
   fill-color: transparent;
   bar-color: #753bbd;
-  rim-color: #414042;
-}
+  rim-color: #414042; }
 
 .coastCircle {
   background-color: transparent;
   fill-color: transparent;
   bar-color: #00c1d5;
-  rim-color: #414042;
-}
+  rim-color: #414042; }
 
 .coast-goal-color {
-  color: #00c1d5;
-}
+  color: #00c1d5; }
 
 .distance-goal-color {
-  color: #753bbd;
-}
+  color: #753bbd; }
 
+/** Fonts **/
 .bullet-list-icon {
   font-size: 8;
-  font-family: ionicons, 'ionicons', Ionicons, 'Ionicons';
+  font-family: ionicons, "ionicons", Ionicons, "Ionicons";
   color: #fff;
   vertical-align: center;
   horizontal-align: center;
-  margin: 5 5 5 0;
-}
+  margin: 5 5 5 0; }
 
 .settings-label {
   font-size: 18;
   font-weight: normal;
   color: #fff;
   vertical-align: center;
-  margin: 5 0 5 0;
-}
+  margin: 0;
+  padding: 10; }
 
 label {
-  color: #fff;
-}
+  color: #fff; }
 
 .hr-blue {
   background-color: #336699;
   width: 100%;
   height: 2;
-  margin: 0;
-}
+  margin: 0; }
