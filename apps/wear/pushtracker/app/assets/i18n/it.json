@@ -1,154 +1,183 @@
 {
-  "about": {
-    "database": "ID del database",
-    "title": "Informazione",
-    "version": "Versione dell'app",
-    "watch-serial-number": "Numero di serie di TicWatch"
-  },
-  "buttons": {
-    "back": "indietro",
-    "dismiss": "Respingere",
-    "ok": "Ok"
-  },
-  "charts": {
-    "coast": {
-      "title": "Tempo / i giornaliero / i della costa"
-    },
-    "distance": {
-      "title": "Distanza giornaliera percorsa"
-    }
-  },
-  "failures": {
-    "connect": "Impossibile connettersi a",
-    "must-wear-watch": "Devi indossare il dispositivo per controllare il tuo SmartDrive.",
-    "permissions": "Le autorizzazioni richieste non sono state concesse!",
-    "saving-activity": "Attività di salvataggio non riuscita",
-    "scan": "Impossibile eseguire la scansione",
-    "title": "Fallimento"
-  },
-  "goals": {
-    "coast": {
-      "units": "secondi"
-    },
-    "distance": {
-      "english": "miglia",
-      "metric": "chilometri"
-    }
-  },
-  "information": "Informazione",
-  "languages": {
-    "da": "danese",
-    "de": "Tedesco",
-    "en": "Inglese",
-    "es": "Spagnolo",
-    "fr": "Francese",
-    "it": "Italiano",
-    "ja": "giapponese",
-    "ko": "coreano",
-    "nb": "Norvegese (Bokmål)",
-    "nl": "olandese",
-    "nn": "Norvegese (Nynorsk)",
-    "zh": "Cinese tradizionale)"
-  },
-  "menu": {
-    "about": "Di",
-    "profile": "Profilo",
-    "title": "Menu"
-  },
-  "permissions-reasons": {
-    "coarse-location": "Per controllare il tuo SmartDrive usando bluetooth abbiamo bisogno del permesso ACCESS_COARSE_LOCATION.",
-    "phone-state": "Per leggere il numero di serie del dispositivo (a scopo di garanzia / supporto) abbiamo bisogno dell'autorizzazione READ_PHONE_STATE."
-  },
-  "permissions-request": {
-    "title": "Richiesta di permessi"
-  },
-  "profile": "Profilo",
-  "pushes": {
-    "units": "spinge"
-  },
-  "settings": {
-    "chairmake": {
-      "description": "",
-      "title": "Sedia",
-      "values": {
-        "colours": "Colori",
-        "invacare": "Invacare / Küschall",
-        "karman": "Karman",
-        "ki": "Ki",
-        "motion-composites": "Compositi di movimento",
-        "other": "altro",
-        "panthera": "Panthera",
-        "quickie": "Quickie / Sopur / RGK",
-        "tilite": "TiLite",
-        "top-end": "Top End"
-      }
-    },
-    "chairtype": {
-      "description": "",
-      "title": "Tipo di sedia",
-      "values": {
-        "folding": "Telaio pieghevole",
-        "other": "altro",
-        "pediatric": "Pedatric",
-        "rigid": "Telaio rigido"
-      }
-    },
-    "coastgoal": {
-      "description": "",
-      "title": "Obiettivo costiero",
-      "units": "S"
-    },
-    "connect-pushtracker": "Connetti l'app mobile PushTracker",
-    "distancegoal": {
-      "description": "",
-      "title": "Obiettivo a distanza",
-      "units": {
-        "english": "mi",
-        "metric": "km"
-      }
-    },
-    "edit-profile": "Modifica Profilo",
-    "height": {
-      "description": "",
-      "title": "altezza"
-    },
-    "information": "Informazione",
-    "title": "impostazioni",
-    "units": {
-      "description": "",
-      "title": "Unità",
-      "values": {
-        "english": "Inglese",
-        "metric": "metrico"
-      }
-    },
-    "watchrequired": {
-      "description": "Quando abilitato, lo smartwatch deve essere al polso per rilevare l'attività.",
-      "title": "Controlla il polso",
-      "values": {
-        "disabled": "Disabilitato",
-        "enabled": "Abilitato"
-      }
-    },
-    "weight": {
-      "description": "",
-      "title": "Peso",
-      "units": {
-        "english": "libbre",
-        "metric": "kg"
-      }
-    }
-  },
-  "units": {
-    "distance": {
-      "english": "mi",
-      "metric": "km"
-    },
-    "english": "Inglese",
-    "metric": "metrico",
-    "speed": {
-      "english": "mph",
-      "metric": "kph"
-    }
-  }
+	"about": {
+		"database": "",
+		"title": "",
+		"user-email": "",
+		"user-name": "",
+		"version": "",
+		"watch-serial-number": ""
+	},
+	"busy": {
+		"synchronizing": ""
+	},
+	"buttons": {
+		"back": "",
+		"dismiss": "",
+		"ok": ""
+	},
+	"charts": {
+		"coast": {
+			"title": ""
+		},
+		"distance": {
+			"title": ""
+		}
+	},
+	"enhancements": {
+		"coast-time": "",
+		"distance": "",
+		"pushes": ""
+	},
+	"failures": {
+		"connect": "",
+		"could-not-update-profile": "",
+		"must-wear-watch": "",
+		"no-auth-for-saving": "",
+		"not-connected-to-mobile": "",
+		"not-fully-initialized": "",
+		"permissions": "",
+		"saving-activity": "",
+		"scan": "",
+		"title": ""
+	},
+	"goals": {
+		"coast": {
+			"units": ""
+		},
+		"distance": {
+			"english": "",
+			"metric": ""
+		}
+	},
+	"information": "",
+	"languages": {
+		"da": "",
+		"de": "",
+		"en": "",
+		"es": "",
+		"fr": "",
+		"it": "",
+		"ja": "",
+		"ko": "",
+		"nb": "",
+		"nl": "",
+		"nn": "",
+		"zh": ""
+	},
+	"menu": {
+		"about": "",
+		"profile": "",
+		"title": ""
+	},
+	"notifications": {
+		"foreground-service": ""
+	},
+	"permissions-reasons": {
+		"coarse-location": "",
+		"fine-location": "",
+		"phone-state": ""
+	},
+	"permissions-request": {
+		"title": ""
+	},
+	"profile": "",
+	"pushes": {
+		"units": ""
+	},
+	"settings": {
+		"chairmake": {
+			"description": "",
+			"title": "",
+			"values": {
+				"colours": "",
+				"invacare": "",
+				"karman": "",
+				"ki": "",
+				"motion-composites": "",
+				"other": "",
+				"panthera": "",
+				"quickie": "",
+				"tilite": "",
+				"top-end": ""
+			}
+		},
+		"chairtype": {
+			"description": "",
+			"title": "",
+			"values": {
+				"folding": "",
+				"other": "",
+				"pediatric": "",
+				"rigid": ""
+			}
+		},
+		"coastgoal": {
+			"description": "",
+			"title": "",
+			"units": ""
+		},
+		"connect-pushtracker": "",
+		"distancegoal": {
+			"description": "",
+			"title": "",
+			"units": {
+				"english": "",
+				"metric": ""
+			}
+		},
+		"edit-profile": "",
+		"height": {
+			"description": "",
+			"title": ""
+		},
+		"information": "",
+		"install-smartdrive": "",
+		"pushsensitivity": {
+			"description": "",
+			"title": ""
+		},
+		"title": "",
+		"units": {
+			"description": "",
+			"title": "",
+			"values": {
+				"english": "",
+				"metric": ""
+			}
+		},
+		"watchrequired": {
+			"description": "",
+			"title": "",
+			"values": {
+				"disabled": "",
+				"enabled": ""
+			}
+		},
+		"weight": {
+			"description": "",
+			"title": "",
+			"units": {
+				"english": "",
+				"metric": ""
+			}
+		}
+	},
+	"units": {
+		"distance": {
+			"english": "",
+			"metric": ""
+		},
+		"english": "",
+		"metric": "",
+		"speed": {
+			"english": "",
+			"metric": ""
+		}
+	},
+	"wearos-comms": {
+		"errors": {
+			"bad-authorization": "",
+			"bad-data": ""
+		}
+	}
 }
