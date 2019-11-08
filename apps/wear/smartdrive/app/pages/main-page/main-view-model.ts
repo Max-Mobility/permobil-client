@@ -515,10 +515,12 @@ export class MainViewModel extends Observable {
               'Could not enable tap sensor for power assist!'
             );
           } else {
-            this._ringTimerId = setInterval(
-              this._blinkPowerAssistRing.bind(this),
-              this.RING_TIMER_INTERVAL_MS
-            );
+            if (this._ringTimerId === null) {
+              this._ringTimerId = setInterval(
+                this._blinkPowerAssistRing.bind(this),
+                this.RING_TIMER_INTERVAL_MS
+              );
+            }
           }
         } else {
           sentryBreadCrumb('Did not connect, disabling power assist');
@@ -568,9 +570,8 @@ export class MainViewModel extends Observable {
     this._vibrator.vibrate([0, 200, 50, 200]);
 
     // update UI
-    if (this._ringTimerId) {
-      clearInterval(this._ringTimerId);
-    }
+    clearInterval(this._ringTimerId);
+    this._ringTimerId = null;
     this._updatePowerAssistRing();
 
     // turn off the smartdrive
