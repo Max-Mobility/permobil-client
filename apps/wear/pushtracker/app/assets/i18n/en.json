@@ -23,6 +23,11 @@
       "title": "Daily Distance Traveled"
     }
   },
+  "enhancements": {
+    "coast-time": "Coast Time",
+    "distance": "Distance",
+    "pushes": "Pushes"
+  },
   "failures": {
     "connect": "Could not connect to",
     "must-wear-watch": "You must wear the device to control your SmartDrive.",
@@ -63,6 +68,9 @@
     "about": "About",
     "profile": "Profile",
     "title": "Menu"
+  },
+  "notifications": {
+    "foreground-service": "Permobil PushTracker is analyzing your activity."
   },
   "permissions-reasons": {
     "fine-location": "To measure distance using your SmartWatch GPS need ACCESS_FINE_LOCATION permission.",
