@@ -49,7 +49,9 @@ public class ActivityDetector {
 
   private static final String MODEL_FILE_NAME = "activityDetectorLSTM.tflite";
 
-  public float predictionThreshold = 0.6f; // confidence
+  public float predictionThreshold = 0.75f; // confidence
+  public float minPredictionThreshold = 0.5f;
+  public float maxPredictionThreshold = 1.0f;
 
   private long lastActivityTime = 0; // timestamp of last detected activity
 
@@ -219,6 +221,12 @@ public class ActivityDetector {
     updatePredictions(prediction);
     // determine the activity
     return getActivity(timestamp);
+  }
+
+  public void setDetectionConfidencePercent(float percent) {
+    if (percent < 0.0f) percent = 0.0f;
+    else if (percent > 1.0f) percent = 1.0f;
+    predictionThreshold = maxPredictionThreshold - (maxPredictionThreshold - minPredictionThreshold) * percent;
   }
 
   /**

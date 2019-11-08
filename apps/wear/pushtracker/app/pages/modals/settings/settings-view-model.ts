@@ -11,12 +11,10 @@ export class SettingsViewModel extends Observable {
   @Prop() insetPadding = 0;
   @Prop() chinSize = 0;
 
-  private _disableWearCheck: boolean;
   private _showingModal: boolean = false;
 
   constructor(page: Page, private _kinveyService: KinveyService, data) {
     super();
-    this._disableWearCheck = data.disableWearCheck;
     const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
     this._configureLayout(wearOsLayout);
   }
@@ -30,8 +28,7 @@ export class SettingsViewModel extends Observable {
     const btn = args.object as View;
     const options: ShowModalOptions = {
       context: {
-        kinveyService: this._kinveyService,
-        disableWearCheck: this._disableWearCheck
+        kinveyService: this._kinveyService
       },
       closeCallback: () => {
         this._showingModal = false;
@@ -63,8 +60,7 @@ export class SettingsViewModel extends Observable {
       context: {
         kinveyService: this._kinveyService,
         activeSettingToChange: activeSettingToChange,
-        changeSettingKeyString: changeSettingKeyString,
-        disableWearCheck: this._disableWearCheck
+        changeSettingKeyString: changeSettingKeyString
       },
       closeCallback: () => {
         this._showingModal = false;

@@ -7,6 +7,7 @@ public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
   public static final String PREFIX = "com.permobil.pushtracker.";
+  public static final String PUSH_SENSITIVITY_KEY = "push_sensitivity";
   public static final String DISABLE_WEAR_CHECK_KEY = "disable_wear_check";
   public static final String CURRENT_DATE_KEY = "current_date";
   public static final String CURRENT_PUSH_COUNT_KEY = "current_push_count";
@@ -40,6 +41,16 @@ public class Datastore {
   public void setDisableWearCheck(boolean disabled) {
     SharedPreferences.Editor editor = preferences.edit();
     editor.putBoolean(PREFIX + DISABLE_WEAR_CHECK_KEY, disabled);
+    editor.commit();
+  }
+
+  public float getPushSensitivity() {
+    return preferences.getFloat(PREFIX + PUSH_SENSITIVITY_KEY, 0.5f);
+  }
+
+  public void setPushSensitivity(float sensitivity) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putFloat(PREFIX + PUSH_SENSITIVITY_KEY, sensitivity);
     editor.commit();
   }
 

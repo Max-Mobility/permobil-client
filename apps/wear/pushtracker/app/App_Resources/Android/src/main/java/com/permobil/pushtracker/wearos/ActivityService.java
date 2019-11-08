@@ -131,11 +131,10 @@ public class ActivityService
   private float[] activityDetectorData = new float[ActivityDetector.InputSize];
   public boolean personIsActive = false;
   public boolean watchBeingWorn = false;
-  /*
-  public boolean disableWearCheck = true;
+  private float pushSensitivity = 0.5f;
   private long lastCheckTimeMs = 0;
-  private static long WEAR_CHECK_TIME_MS = 1000;
-  */
+  private static long DATASTORE_CHECK_TIME_MS = 1000;
+  // public boolean disableWearCheck = true;
 
   // activity data
   DailyActivity currentActivity = new DailyActivity();
@@ -568,16 +567,18 @@ public class ActivityService
   @Override
   public void onSensorChanged(SensorEvent event) {
     // Log.d(TAG, "SensorChanged: " + event);
-    /*
-    // check to see if the user wants to disable wear check
+    // check to see if the user has updated any of their preferences
+    // in the app
     long timeDiffMs = 0;
     long now = System.currentTimeMillis();
     timeDiffMs = now - lastCheckTimeMs;
-    if (timeDiffMs > WEAR_CHECK_TIME_MS) {
-      disableWearCheck = datastore.getDisableWearCheck();
+    if (timeDiffMs > DATASTORE_CHECK_TIME_MS) {
+      // disableWearCheck = datastore.getDisableWearCheck();
+      // update push detection thresholds
+      pushSensitivity = datastore.getPushSensitivity();
+      activityDetector.setDetectionConfidencePercent(pushSensitivity);
       lastCheckTimeMs = now;
     }
-    */
     // handle event
     updateActivity(event);
     updateDetectorInputs(event);

@@ -26,6 +26,7 @@ export class ChangeSettingsViewModel extends Observable {
   private _showingModal: boolean = false;
 
   private _disableWearCheck = false;
+  private _pushSensitivity: number = 0.5;
   private _closeCallback;
   private _hasSentSettings = false;
   private _settings = new Profile.Settings();
@@ -40,7 +41,6 @@ export class ChangeSettingsViewModel extends Observable {
 
     this.activeSettingToChange = data.activeSettingToChange;
     this.changeSettingKeyString = data.changeSettingKeyString;
-    this.changeSettingKeyValue = data.changeSettingKeyValue;
     this._closeCallback = data.closeCallback;
 
     this.updateSettingsChangeDisplay();
@@ -50,6 +50,9 @@ export class ChangeSettingsViewModel extends Observable {
     this._settings.decrease(this.activeSettingToChange);
     if (this.activeSettingToChange === 'watchrequired') {
       this._disableWearCheck = !this._disableWearCheck;
+    } else if (this.activeSettingToChange === 'pushsensitivity') {
+      this._pushSensitivity -= 0.1;
+      if (this._pushSensitivity < 0.0) this._pushSensitivity = 0.0;
     }
     this.updateSettingsChangeDisplay();
   }
@@ -58,6 +61,9 @@ export class ChangeSettingsViewModel extends Observable {
     this._settings.increase(this.activeSettingToChange);
     if (this.activeSettingToChange === 'watchrequired') {
       this._disableWearCheck = !this._disableWearCheck;
+    } else if (this.activeSettingToChange === 'pushsensitivity') {
+      this._pushSensitivity += 0.1;
+      if (this._pushSensitivity > 1.0) this._pushSensitivity = 1.0;
     }
     this.updateSettingsChangeDisplay();
   }
@@ -65,7 +71,11 @@ export class ChangeSettingsViewModel extends Observable {
   onConfirmChangesTap() {
     // SAVE THE VALUE to local data for the setting user has selected
     this.saveSettings();
-    this.sendSettings();
+    if (this.activeSettingToChange !== 'watchrequired' &&
+      this.activeSettingToChange !== 'units' &&
+      this.activeSettingToChange !== 'pushsensitivity') {
+      this.sendSettings();
+    }
     //   // now update any display that needs settings:
     //   updateDisplay();
 
@@ -94,9 +104,15 @@ export class ChangeSettingsViewModel extends Observable {
     const sharedPreferences = androidUtils
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0);
+    // load disable wear check
     this._disableWearCheck = sharedPreferences.getBoolean(
       prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
       false
+    );
+    // load push sensitivity
+    this._pushSensitivity = sharedPreferences.getFloat(
+      prefix + com.permobil.pushtracker.Datastore.PUSH_SENSITIVITY_KEY,
+      0.5
     );
   }
 
@@ -104,6 +120,9 @@ export class ChangeSettingsViewModel extends Observable {
     let translationKey = '';
     let value = null;
     switch (this.activeSettingToChange) {
+      case 'pushsensitivity':
+        this.changeSettingKeyValue = `${(this._pushSensitivity * 100).toFixed(0)} %`;
+        break;
       case 'coastgoal':
         this.changeSettingKeyValue =
           this._settings.coastGoal.toFixed(1) +
@@ -158,9 +177,15 @@ export class ChangeSettingsViewModel extends Observable {
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0) as android.content.SharedPreferences;
     const editor = sharedPreferences.edit() as android.content.SharedPreferences.Editor;
+    // save disable wear check
     editor.putBoolean(
       prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
       this._disableWearCheck
+    );
+    // save push sensitivity
+    editor.putFloat(
+      prefix + com.permobil.pushtracker.Datastore.PUSH_SENSITIVITY_KEY,
+      this._pushSensitivity
     );
     editor.apply();
     appSettings.setBoolean(DataKeys.PROFILE_SETTINGS_DIRTY_FLAG, false);

@@ -124,6 +124,10 @@
       "title": "Height"
     },
     "information": "Information",
+    "pushsensitivity": {
+      "description": "Controls how sensitive the push detection is - 0% detects fewer pushes, 100% detects more pushes.",
+      "title": "Push Sensitivity"
+    },
     "title": "Settings",
     "units": {
       "description": "",
