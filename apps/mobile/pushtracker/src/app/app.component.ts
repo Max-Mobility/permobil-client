@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { registerElement } from '@nativescript/angular/element-registry';
 import { RouterExtensions } from '@nativescript/angular/router';
+import { device } from '@nativescript/core/platform';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
@@ -48,7 +49,24 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
+      const defaultLanguage = device.language;
+      this._logService.logBreadCrumb(
+        AppComponent.name,
+        'Setting default language to ' + defaultLanguage
+      );
+      this._translateService.setDefaultLang(defaultLanguage);
+    } catch (error) {
+      this._logService.logBreadCrumb(
+        AppComponent.name,
+        'Caught error, setting langauge to ' + APP_LANGUAGES.English
+      );
       this._translateService.setDefaultLang(APP_LANGUAGES.English);
+      Log.E(error);
+      this._logService.logException(error);
+    }
+
+    try {
+      // add all the languages
       this._translateService.addLangs(
         Object.keys(APP_LANGUAGES).map(key => APP_LANGUAGES[key])
       );

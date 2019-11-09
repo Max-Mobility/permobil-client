@@ -1,6 +1,7 @@
 import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
 import { Page, PropertyChangeData, Switch } from '@nativescript/core';
+import { device } from '@nativescript/core/platform';
 import * as appSettings from '@nativescript/core/application-settings';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
@@ -72,7 +73,7 @@ export class ProfileSettingsComponent implements OnInit {
     private _zone: NgZone,
     private _bottomSheet: BottomSheetService,
     private _vcRef: ViewContainerRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
@@ -179,8 +180,16 @@ export class ProfileSettingsComponent implements OnInit {
 
   getUser() {
     this.user = this._params.context.user;
+    let defaultLanguage = 'English';
+    Object.entries(APP_LANGUAGES).map(([key, value]) => {
+      if (device.language.startsWith(value)) {
+        defaultLanguage = key;
+      }
+    });
     if (this.user && this.user.data) {
-      this.CURRENT_LANGUAGE = this.user.data.language_preference || 'English';
+      this.CURRENT_LANGUAGE = this.user.data.language_preference || defaultLanguage;
+    } else {
+      this.CURRENT_LANGUAGE = defaultLanguage;
     }
   }
 
@@ -640,7 +649,7 @@ export class ProfileSettingsComponent implements OnInit {
       this._logService.logBreadCrumb(
         ProfileSettingsComponent.name,
         'Scan is not forced - Already have a SmartDrive: ' +
-          this.smartDrive.address
+        this.smartDrive.address
       );
       return true;
     }
@@ -741,7 +750,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Settings successfully commited to SmartDrive: ' +
-              this.smartDrive.address
+            this.smartDrive.address
           );
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -754,7 +763,7 @@ export class ProfileSettingsComponent implements OnInit {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Error committing settings to SmartDrive: ' +
-              this.smartDrive.address
+            this.smartDrive.address
           );
           this._logService.logBreadCrumb(ProfileSettingsComponent.name, err);
           this._logService.logException(err);
