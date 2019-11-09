@@ -124,7 +124,7 @@ public class BatteryComplicationProviderService extends ComplicationProviderServ
     case ComplicationData.TYPE_LONG_TEXT:
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
-        .setLongText(ComplicationText.plainText("Number: " + numberText))
+        .setLongText(ComplicationText.plainText(numberText))
         .setIcon(Icon.createWithResource(this, R.drawable.ic_battery_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();

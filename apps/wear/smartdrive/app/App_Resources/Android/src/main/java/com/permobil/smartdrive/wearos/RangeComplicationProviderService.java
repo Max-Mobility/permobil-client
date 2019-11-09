@@ -107,7 +107,7 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
     float kilometers = miles * 1.609f;
     String numberText = String.format(Locale.getDefault(), "%.1f mi", miles);
     if (units.equals("metric")) {
-      numberText = String.format(Locale.getDefault(), "%.1f mi", kilometers);
+      numberText = String.format(Locale.getDefault(), "%.1f km", kilometers);
     }
 
     ComplicationData complicationData = null;
@@ -124,7 +124,7 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
     case ComplicationData.TYPE_LONG_TEXT:
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
-        .setLongText(ComplicationText.plainText("Number: " + numberText))
+        .setLongText(ComplicationText.plainText(numberText))
         .setIcon(Icon.createWithResource(this, R.drawable.ic_range_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();

@@ -126,7 +126,7 @@ public class DriveComplicationProviderService extends ComplicationProviderServic
     case ComplicationData.TYPE_LONG_TEXT:
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
-        .setLongText(ComplicationText.plainText("Number: " + numberText))
+        .setLongText(ComplicationText.plainText(numberText))
         .setIcon(Icon.createWithResource(this, R.drawable.ic_omniwheel_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
