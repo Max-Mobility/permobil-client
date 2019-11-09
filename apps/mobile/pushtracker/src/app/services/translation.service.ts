@@ -54,7 +54,7 @@ export class TranslationService extends Observable {
         const isMax = v === maxes[fName];
         return isMax && (!current || v > currentVersion);
       });
-      let files = [];
+      const files = [];
       // do we need to download any language files?
       if (fileMetadatas && fileMetadatas.length) {
         for (let i = 0; i < fileMetadatas.length; i++) {
