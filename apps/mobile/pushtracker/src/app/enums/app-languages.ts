@@ -1,14 +1,14 @@
 export enum APP_LANGUAGES {
   'English' = 'en',
-  'Spanish' = 'es',
-  'Danish' = 'da',
-  'German' = 'de',
-  'French' = 'fr',
-  'Italian' = 'it',
-  'Japanese' = 'ja',
-  'Korean' = 'ko',
-  'Norwegian' = 'nb',
-  'Dutch' = 'nl',
-  'Swedish' = 'sv',
-  'Chinese (Traditional)' = 'zh'
+  'Español' = 'es',
+  'Dansk' = 'da',
+  'Deutsch' = 'de',
+  'Français' = 'fr',
+  'Italiano' = 'it',
+  '日本語' = 'ja',
+  '한국어' = 'ko',
+  'Norsk [bokmål]' = 'nb',
+  'Nederlands' = 'nl',
+  'Svenska' = 'sv',
+  '中國傳統的' = 'zh'
 }
