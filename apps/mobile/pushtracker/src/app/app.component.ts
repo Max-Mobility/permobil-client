@@ -11,7 +11,7 @@ import * as Kinvey from 'kinvey-nativescript-sdk';
 import { Sentry } from 'nativescript-sentry';
 import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
-import { LoggingService } from './services';
+import { LoggingService, TranslationService } from './services';
 import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, getJSONFromKinvey, YYYY_MM_DD } from './utils';
 
 registerElement(
@@ -39,6 +39,7 @@ registerElement(
 export class AppComponent implements OnInit {
   constructor(
     private _translateService: TranslateService,
+    private _translationService: TranslationService,
     private _logService: LoggingService,
     private _router: RouterExtensions
   ) {
@@ -103,6 +104,11 @@ export class AppComponent implements OnInit {
     Kinvey.ping()
       .then(() => {
         // nothing useful here - Kinvey SDK is working
+        try {
+          this._translationService.updateTranslationFilesFromKinvey();
+        } catch (error) {
+          Log.E(error);
+        }
       })
       .catch(err => {
         this._logService.logException(err);

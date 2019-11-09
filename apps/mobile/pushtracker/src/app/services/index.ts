@@ -12,6 +12,7 @@ import { SettingsService } from './settings.service';
 import { SmartDriveUsageService } from './smartdrive-usage.service';
 import { SmartDriveErrorsService } from './smartdrive-errors.service';
 import { ThemeService } from './theme.service';
+import { TranslationService } from './translation.service';
 
 export const PROVIDERS: any[] = [
   LoggingService,
@@ -27,7 +28,8 @@ export const PROVIDERS: any[] = [
   PushTrackerUserService,
   SmartDriveUsageService,
   SmartDriveErrorsService,
-  ThemeService
+  ThemeService,
+  TranslationService
 ];
 
 export * from './activity.service';
@@ -44,3 +46,4 @@ export * from './settings.service';
 export * from './smartdrive-usage.service';
 export * from './smartdrive-errors.service';
 export * from './theme.service';
+export * from './translation.service';
