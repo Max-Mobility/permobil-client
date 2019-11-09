@@ -86,10 +86,12 @@ public class ActivityDetector {
   /**
    * Higher-level activity detection - not TFLite related
    */
+  private static final int StartupDelay = 100; // at 25 Hz this equates to 4 seconds
   private static final int InputHistorySize = 10;
-  private static final int PredictionHistorySize = 1;
+  private static final int PredictionHistorySize = 2;
   private float[] inputHistory = new float[InputHistorySize];
   private float[] predictionHistory = new float[PredictionHistorySize];
+  private int startupCountdown = StartupDelay;
 
   /**
    * Creates a classifier with the provided configuration.
@@ -234,6 +236,11 @@ public class ActivityDetector {
    * activity.
    */
   private Detection getActivity(long timestamp) {
+    // wait for detector state startup before returning any activities
+    if (startupCountdown > 0) {
+      startupCountdown -= 1;
+      return new Detection(); // no valid detection
+    }
     // block high-frequency motion
     if (lastActivityTime > 0) {
       long timeDiffNs = timestamp - lastActivityTime;
