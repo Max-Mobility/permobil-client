@@ -835,10 +835,12 @@ public class ActivityService
       Sentry.capture("NotificationManager was null. Unable to create the NotificationChannel to start the service with the notification.");
     }
 
+    String contentText = getString(R.string.foreground_service_notification);
+
     // create the notification builder
     Builder notificationBuilder = new Builder(this, Constants.NOTIFICATION_CHANNEL)
       .setTicker("Permobil")
-      .setContentText("Permobil PushTracker is analyzing your activity.")
+      .setContentText(contentText)
       .setColor(0x006ea5)
       .setSmallIcon(R.drawable.ic_notification_icon)
       .setLargeIcon(Icon.createWithResource(this, R.drawable.ic_notification_icon))
