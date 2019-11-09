@@ -17,7 +17,7 @@
   </MockActionBar>
 
   <ScrollView row="1" height="100%">
-    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
+    <GridLayout rows="*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *" columns="*">
       // Units Section
       <Label row="0" class="category" [text]="'general.units' | translate"></Label>
       // Height
@@ -133,6 +133,14 @@
       <StackLayout (tap)="onListPickerItemTap('language')" ripple rippleColorAlpha="0.18" row="17" class="setting-layout">
         <Label class="setting-title" [text]="'profile-settings.language' | translate"></Label>
         <Label class="setting-value" [text]="CURRENT_LANGUAGE" textWrap="true"></Label>
+      </StackLayout>
+
+      // App info
+      <Label row="18" class="category" [text]="'general.app-info' | translate"></Label>
+      // Height
+      <StackLayout ripple rippleColorAlpha="0.18" row="19" class="setting-layout">
+        <Label class="setting-title" [text]="'general.app-version-display' | translate"></Label>
+        <Label class="setting-value" [text]="appBuildDisplay" textWrap="true"></Label>
       </StackLayout>
     </GridLayout>
   </ScrollView>

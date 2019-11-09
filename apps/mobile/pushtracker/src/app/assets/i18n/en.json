@@ -140,6 +140,8 @@
 	"general": {
 		"acceleration": "Acceleration",
 		"afternoon": "afternoon",
+    "app-info": "PushTracker Info",
+    "app-version-display": "Version",
 		"birthday": "Birthday",
 		"cancel": "Cancel",
 		"chair-type": "Chair Type",

@@ -7,6 +7,7 @@ import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion'
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
@@ -50,6 +51,8 @@ export class ProfileSettingsComponent implements OnInit {
   syncState = '';
   versionInfo = '';
 
+  appBuildDisplay = '';
+
   /**
    * Used to keep track of the setting value the user is interacting/modifying
    */
@@ -92,6 +95,11 @@ export class ProfileSettingsComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+
+    // update app build version for display
+    const appVersionName = getVersionNameSync();
+    const appVersionCode = getVersionCodeSync();
+    this.appBuildDisplay = `${appVersionName} - ${appVersionCode}`;
 
     this.getUser();
 
