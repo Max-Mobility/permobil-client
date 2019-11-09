@@ -88,7 +88,8 @@ export class TranslationService extends Observable {
         const data = this.languageData[key];
         // console.log('loaded data for', info.name, ':', data);
         // now set the translation service to use it
-        this._translateService.setTranslation(info.language_code, data);
+        this._translateService.reloadLang(info.language_code);
+        // this._translateService.setTranslation(info.language_code, data);
       });
     } catch (err) {
       this._logService.logException(err);
@@ -116,10 +117,18 @@ export class TranslationService extends Observable {
             TranslationService.name,
             `Loading Language file: ${fname}`
           );
-          const blob = TranslationService.loadFromFileSystem(fname);
-          if (blob && blob.length) {
-            this.currentVersions[f.name] = f;
-            this.languageData[f.name] = blob;
+          try {
+            const blob = TranslationService.loadFromFileSystem(fname);
+            if (blob && blob.length) {
+              this.currentVersions[f.name] = f;
+              this.languageData[f.name] = blob;
+            }
+          } catch (err) {
+            this._logService.logBreadCrumb(
+              TranslationService.name,
+              'Could not load language file: ' + err
+            );
+            this._logService.logException(err);
           }
         }
       });
@@ -142,24 +151,35 @@ export class TranslationService extends Observable {
     };
     // store the data for access later
     this.languageData[f.name] = f.data;
-    // save binary file to fs
-    TranslationService.saveToFileSystem(
-      this.currentVersions[f.name].filename,
-      f.data
-    );
+    try {
+      // save binary file to fs
+      TranslationService.saveToFileSystem(
+        this.currentVersions[f.name].filename,
+        f.data
+      );
+    } catch (err) {
+      // clear out the data - we couldn't save the file
+      delete this.languageData[f.name];
+      delete this.currentVersions[f.name];
+      this._logService.logBreadCrumb(
+        TranslationService.name,
+        'Could not save language file: ' + err
+      );
+      this._logService.logException(err);
+    }
   }
 
   private static loadFromFileSystem(filename: string) {
     const file = File.fromPath(filename);
     return file.readTextSync(err => {
-      console.error('Could not load from fs:', err);
+      throw new Error('Could not load language from fs: ' + err);
     });
   }
 
   private static saveToFileSystem(filename: string, data: any) {
     const file = File.fromPath(filename);
-    file.writeTextSync(data, err => {
-      console.error('Could not save to fs:', err);
+    file.writeSync(data, err => {
+      throw new Error('Could not save language to fs: ' + err);
     });
   }
 
