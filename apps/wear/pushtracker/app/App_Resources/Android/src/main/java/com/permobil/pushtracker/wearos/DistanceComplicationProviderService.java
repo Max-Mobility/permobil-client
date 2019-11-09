@@ -38,6 +38,7 @@ public class DistanceComplicationProviderService extends ComplicationProviderSer
 
   private static final String TAG = "DistanceComplicationProvider";
   private static final String DATA_ID = Datastore.PREFIX + Datastore.CURRENT_DISTANCE_KEY;
+  private static final String UNITS_ID = Datastore.PREFIX + Datastore.UNITS_KEY;
 
   /*
    * Called when a complication has been activated. The method is for any one-time
@@ -75,10 +76,16 @@ public class DistanceComplicationProviderService extends ComplicationProviderSer
 
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
-      getSharedPreferences(
-                           ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
+      getSharedPreferences(ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
+
     float meters = preferences.getFloat(DATA_ID, 0.0f);
-    String numberText = String.format(Locale.getDefault(), "%.1f km", meters / 1000.0f);
+    String units = preferences.getString(UNITS_ID, "english");
+    float miles = meters / 1609.0f;
+
+    String numberText = String.format(Locale.getDefault(), "%.1f mi", miles);
+    if (units.equals("metric")) {
+      numberText = String.format(Locale.getDefault(), "%.1f km", meters / 1000.0f);
+    }
 
     ComplicationData complicationData = null;
 
@@ -94,7 +101,7 @@ public class DistanceComplicationProviderService extends ComplicationProviderSer
     case ComplicationData.TYPE_LONG_TEXT:
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
-        .setLongText(ComplicationText.plainText("Number: " + numberText))
+        .setLongText(ComplicationText.plainText(numberText))
         .setIcon(Icon.createWithResource(this, R.drawable.ic_distance_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();

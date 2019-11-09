@@ -7,6 +7,7 @@ public class Datastore {
   public static final String PREF_NAME = "prefs.db";
 
   public static final String PREFIX = "com.permobil.pushtracker.";
+  public static final String UNITS_KEY = "units";
   public static final String PUSH_SENSITIVITY_KEY = "push_sensitivity";
   public static final String DISABLE_WEAR_CHECK_KEY = "disable_wear_check";
   public static final String CURRENT_DATE_KEY = "current_date";
@@ -31,6 +32,16 @@ public class Datastore {
     editor.putInt(PREFIX + CURRENT_PUSH_COUNT_KEY, pushes);
     editor.putFloat(PREFIX + CURRENT_COAST_KEY, coastTime);
     editor.putFloat(PREFIX + CURRENT_DISTANCE_KEY, distance);
+    editor.commit();
+  }
+
+  public String getUnits() {
+    return preferences.getString(PREFIX + UNITS_KEY, "english");
+  }
+
+  public void setUnits(String units) {
+    SharedPreferences.Editor editor = preferences.edit();
+    editor.putString(PREFIX + UNITS_KEY, units);
     editor.commit();
   }
 

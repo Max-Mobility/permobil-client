@@ -177,12 +177,17 @@ export class ChangeSettingsViewModel extends Observable {
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0) as android.content.SharedPreferences;
     const editor = sharedPreferences.edit() as android.content.SharedPreferences.Editor;
-    // save disable wear check
+    // save units - for complications
+    editor.putString(
+      prefix + com.permobil.pushtracker.Datastore.UNITS_KEY,
+      this._settings.units
+    );
+    // save disable wear check - for activity service
     editor.putBoolean(
       prefix + com.permobil.pushtracker.Datastore.DISABLE_WEAR_CHECK_KEY,
       this._disableWearCheck
     );
-    // save push sensitivity
+    // save push sensitivity - for activity service
     editor.putFloat(
       prefix + com.permobil.pushtracker.Datastore.PUSH_SENSITIVITY_KEY,
       this._pushSensitivity
