@@ -54,20 +54,22 @@ export class TranslationService extends Observable {
         const isMax = v === maxes[fName];
         return isMax && (!current || v > currentVersion);
       });
-      // array for the different sets of promises we'll be waiting
-      // on
-      let promises = [];
+      let files = [];
       // do we need to download any language files?
       if (fileMetadatas && fileMetadatas.length) {
-        promises = fileMetadatas.map(TranslationService.download);
-      }
-
-      // await the downloading of the files
-      let files = null;
-      try {
-        files = await Promise.all(promises);
-      } catch (err) {
-        this._logService.logException(err);
+        for (let i = 0; i < fileMetadatas.length; i++) {
+          try {
+            const f = fileMetadatas[i];
+            this._logService.logBreadCrumb(
+              TranslationService.name,
+              `Downloading language file update ${f['_filename']} version ${f['_version']}`
+            );
+            const dl = await TranslationService.download(f);
+            files.push(dl);
+          } catch (err) {
+            this._logService.logException(err);
+          }
+        }
       }
 
       // now that we have downloaded the files, write them to disk
@@ -136,6 +138,9 @@ export class TranslationService extends Observable {
   }
 
   private updateLanguageData(f: DownloadedFile) {
+    if (f === null) {
+      return;
+    }
     // update the current versions
     this.currentVersions[f.name] = {
       version: f.version,
@@ -178,7 +183,7 @@ export class TranslationService extends Observable {
 
   private static saveToFileSystem(filename: string, data: any) {
     const file = File.fromPath(filename);
-    file.writeSync(data, err => {
+    file.writeTextSync(data, err => {
       throw new Error('Could not save language to fs: ' + err);
     });
   }
@@ -189,24 +194,24 @@ export class TranslationService extends Observable {
     if (!url.startsWith('https:')) {
       url = url.replace('http:', 'https:');
     }
-    console.log('Downloading language file update', f['_filename']);
 
-    const download = new DownloadProgress();
-    return download
-      .downloadFile(url)
-      .then(file => {
-        const fileData = File.fromPath(file.path).readSync();
-        return new DownloadedFile(
-          f['_version'],
-          f['_filename'],
-          f['app_name'],
-          fileData
-        );
-      })
-      .catch(error => {
-        console.error('download error', url, error);
-        return null;
-      });
+    let file = null;
+    try {
+      const download = new DownloadProgress();
+      file = await download
+        .downloadFile(url);
+    } catch (err) {
+      throw new Error(`Could not download ${f['_filename']}: ${err.toString()}`);
+    }
+    const fileData = File.fromPath(file.path).readTextSync(err => {
+      throw new Error('could not load downloaded file data:' + err);
+    });
+    return new DownloadedFile(
+      f['_version'],
+      f['_filename'],
+      f['app_name'],
+      fileData
+    );
   }
 }
 
