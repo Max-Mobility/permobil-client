@@ -7,7 +7,7 @@ import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { Device, PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
-import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion'
+import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
