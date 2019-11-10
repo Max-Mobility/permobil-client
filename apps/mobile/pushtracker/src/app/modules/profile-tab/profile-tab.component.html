@@ -21,9 +21,9 @@
 
           <GridLayout col="1" rows="*, *" columns="*, auto" verticalAlignment="center">
             // User Name
-            <Label row="0" col="0" class="profile-name" [text]="user?.data.first_name + ' ' + user?.data.last_name" textWrap="true"></Label>
+            <Label row="0" col="0" class="profile-name" (tap)="onAvatarTap()" [text]="user?.data.first_name + ' ' + user?.data.last_name" textWrap="true"></Label>
             // User Email
-            <Label row="1" col="0" class="profile-email" [text]="user?.username" textWrap="true"></Label>
+            <Label row="1" col="0" class="profile-email" (tap)="onAvatarTap()" [text]="user?.username" textWrap="true"></Label>
             // Privacy Policy Button
             <Button rowSpan="2" col="1" (tap)="onPrivacyTap()" class="privacy-btn" text="&#xe32a;" ripple rippleColorAlpha="0.18"></Button>
           </GridLayout>
