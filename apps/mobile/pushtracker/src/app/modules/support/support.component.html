@@ -1,10 +1,15 @@
-<GridLayout rows="auto, auto, *, auto" class="support-layout">
+<GridLayout rows="auto, auto, auto, *, auto" class="support-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()"></MockActionBar>
 
-  <Label row="1" text="" class="hr" textWrap="true"></Label>
+  <SearchBar row="1" [hint]="'support-component.search-hint' | translate"
+             [text]="searchPhrase" (textChange)="onTextChanged($event)"
+             (clear)="onClear($event)" (submit)="onSubmit($event)">
+  </SearchBar>
 
-  <StackLayout row="2">
+  <Label row="2" text="" class="hr" textWrap="true"></Label>
+
+  <StackLayout row="3">
     <ListView [items]="supportItems" (itemLoading)="onItemLoading($event)" class="faq-list">
       <ng-template let-item="item">
         <GridLayout rows="auto, auto" columns="auto, *" padding="8">

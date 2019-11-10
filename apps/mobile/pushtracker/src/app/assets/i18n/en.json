@@ -513,6 +513,7 @@
 		"user-exists": "An account already exists for this email."
 	},
 	"support-component": {
+    "search-hint": "Enter search term...",
 		"faqs": [
 			{
 				"a": "Generally, you should check these things: 1) that your SmartDrive is powered on, 2) that your PushTracker is in 'SD On' mode - the blue light should be flashing, and 3) that you are in MX2+ mode - in which a double tap will engage the motor.",
