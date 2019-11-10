@@ -255,6 +255,7 @@ export class MainViewModel extends Observable {
   }
 
   debugTap() {
+    /*
     debug = !debug;
     if (debug) {
       this.currentPushCount = Math.random() * 2000 + 1000;
@@ -268,6 +269,7 @@ export class MainViewModel extends Observable {
       this._loadCurrentActivityData();
     }
     this._updateDisplay();
+    */
   }
 
   async onConnectPushTrackerTap() {
