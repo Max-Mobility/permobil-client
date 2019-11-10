@@ -554,7 +554,7 @@ export class MainViewModel extends Observable {
   }
 
   debugChartTap() {
-    this._showDebugChartData = !this._showDebugChartData;
+    // this._showDebugChartData = !this._showDebugChartData;
     this._updateChartData();
   }
 
