@@ -1,8 +1,8 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
-import { Color, EventData, ImageSource, Page, StackLayout } from '@nativescript/core';
+import { Color, EventData, ImageSource, Label, Page, StackLayout } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { screen } from '@nativescript/core/platform';
+import { isAndroid, screen } from '@nativescript/core/platform';
 import { action, prompt, PromptOptions } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
@@ -919,6 +919,16 @@ export class ProfileTabComponent {
       });
   }
 
+  onLabelLoaded(args: EventData) {
+    const label = args.object as Label;
+    if (isAndroid) {
+      // make sure label is centered vertically! - look at
+      // https://developer.android.com/reference/android/view/Gravity.html#CENTER_VERTICAL
+      // for other constants
+      label.android.setGravity(16);
+    }
+  }
+
   onEditSerialNumber(deviceName) {
     this._logService.logBreadCrumb(
       ProfileTabComponent.name,
@@ -1073,7 +1083,7 @@ export class ProfileTabComponent {
 
   private _initDisplayWeight() {
     if (this.user.data.weight === 0) {
-        this.displayWeight = '';
+      this.displayWeight = '';
     } else {
       this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
       // convert from metric weight (as stored in Kinvey) to user preferred unit
@@ -1088,7 +1098,7 @@ export class ProfileTabComponent {
 
   private _initDisplayHeight() {
     if (this.user.data.height === 0) {
-        this.displayHeight = '';
+      this.displayHeight = '';
     } else {
       this.displayHeight = this._displayHeightInCentimeters(
         this.user.data.height
