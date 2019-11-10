@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">Batterie Level</string>
+    <string name="complications_provider_service_label_pushes">Geschätzte Reichweite</string>
+    <string name="complications_provider_service_label_coast_time">Fahrstrecke</string>
+    <string name="complications_provider_service_label_distance">Küstenentfernung</string>
+</resources>

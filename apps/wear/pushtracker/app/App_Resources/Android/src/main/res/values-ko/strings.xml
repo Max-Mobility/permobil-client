@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PushTracker</string>
+    <string name="title_activity_kimera">PushTracker</string>
+    <string name="foreground_service_notification">배터리 잔량</string>
+    <string name="complications_provider_service_label_pushes">예상 범위</string>
+    <string name="complications_provider_service_label_coast_time">주행 거리</string>
+    <string name="complications_provider_service_label_distance">해안 거리</string>
+</resources>
