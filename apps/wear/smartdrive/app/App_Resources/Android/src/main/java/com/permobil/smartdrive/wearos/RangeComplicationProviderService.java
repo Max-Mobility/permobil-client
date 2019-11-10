@@ -39,6 +39,7 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
 
   private static final String TAG = "RangeComplicationProvider";
   private static final String DATA_ID = "sd.estimated_range";
+  private static final String BATTERY_ID = "sd.battery";
   private static final String UNITS_ID = "sd.units";
 
   public static void forceUpdate(Context context) {
@@ -91,6 +92,13 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
     SharedPreferences preferences =
       getSharedPreferences(
                            ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
+    float battery =
+      preferences.getFloat(
+                           ComplicationToggleReceiver.getPreferenceKey(
+                                                                       thisProvider,
+                                                                       complicationId,
+                                                                       BATTERY_ID),
+                           0.0f);
     float miles =
       preferences.getFloat(
                            ComplicationToggleReceiver.getPreferenceKey(thisProvider,
@@ -113,6 +121,17 @@ public class RangeComplicationProviderService extends ComplicationProviderServic
     ComplicationData complicationData = null;
 
     switch (dataType) {
+    case ComplicationData.TYPE_RANGED_VALUE:
+      complicationData =
+        new ComplicationData.Builder(ComplicationData.TYPE_RANGED_VALUE)
+        .setValue(battery)
+        .setMinValue(0)
+        .setMaxValue(100)
+        .setShortText(ComplicationText.plainText(numberText))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_range_white))
+        .setTapAction(complicationTogglePendingIntent)
+        .build();
+      break;
     case ComplicationData.TYPE_SHORT_TEXT:
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_SHORT_TEXT)
