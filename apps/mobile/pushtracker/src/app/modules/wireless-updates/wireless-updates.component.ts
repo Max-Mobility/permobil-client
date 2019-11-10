@@ -80,6 +80,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb(WirelessUpdatesComponent.name, 'OnInit');
+    // make sure we allow background execution (iOS) of the bluetooth
+    BluetoothService.requestOtaBackgroundExecution();
+    // now get updates
     this.checkForSmartDriveUpdates();
     if (
       this.controlConfiguration === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
@@ -87,7 +90,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.checkForPushTrackerUpdates();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
   onMoreBtnTap() {
     this._logService.logBreadCrumb(
@@ -120,6 +123,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   }
 
   closeModal() {
+    // make sure to stop the bluetooth background execution (iOS)
+    BluetoothService.stopOtaBackgroundExecution();
+    // now close the page
     this._params.closeCallback();
   }
 
@@ -165,7 +171,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
       );
-    } catch (err) {}
+    } catch (err) { }
 
     const objs = [];
     for (const key in versions) {
@@ -516,7 +522,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       versions = JSON.parse(
         appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
       );
-    } catch (err) {}
+    } catch (err) { }
 
     const objs = [];
     for (const key in versions) {
