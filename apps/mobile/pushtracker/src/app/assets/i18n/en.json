@@ -148,7 +148,7 @@
 		"change-pass": "Change Password",
 		"check-email": "Check your email for instructions on resetting your password.",
 		"coast-time": "Coast Time",
-		"coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the time between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
+		"coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the number of seconds between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
 		"day": "Day",
 		"disable-power-assist-beep": "Disable Power Assist Beep",
 		"disabled": "Disabled",
@@ -165,10 +165,12 @@
 		"error": "Error",
 		"ez-on": "EZ-ON",
 		"first-name": "First Name",
+		"first-name-description": "We use your first and last name to provide better technical support.",
 		"forgot-password": "Forgot Password",
 		"gender": "Gender",
+		"gender-description": "You can optionally provide your gender by which you wish to be identified.",
 		"height": "Height",
-		"height-guess": "If you don't know your exact height, enter your best guess.",
+		"height-description": "You can optionally provide your height. If you provided consent, then we may use this information for research purposes. If you don't know your exact height, enter your best guess.",
 		"home": "Home",
 		"journey": "Journey",
 		"kilometers": "Kilometers",
@@ -176,6 +178,7 @@
 		"km-this-week": "kilometers this week",
 		"km-today": "kilometers today",
 		"last-name": "Last Name",
+		"last-name-description": "We use your first and last name to provide better technical support.",
 		"loading": "Loading...",
 		"login": "Login",
 		"logout": "Logout",
@@ -229,7 +232,7 @@
 		"user-name": "User Name",
 		"week": "Week",
 		"weight": "Weight",
-		"weight-guess": "If you don't know your exact weight, enter your best guess."
+		"weight-description": "You can optionally provide your weight. If you provided consent, then we may use this information for research and technical support purposes. If you don't know your exact weight, enter your best guess."
 	},
 	"home-tab": {
 		"coast-for": "Coast for",
@@ -414,6 +417,7 @@
 		"cancel": "Cancel",
 		"cancel-scan": "Cancel Scan",
 		"chair-make": "Chair Make",
+		"chair-make-description": "You can optionally provide the make of your chair. If you provided consent, then we may use this information for research and technical support purposes.",
 		"chair-makes": {
 			"colours": "Colours",
 			"invacare-kuschall": "Invacare / Küschall",
@@ -427,6 +431,7 @@
 			"top-end": "Top End"
 		},
 		"chair-type": "Chair Type",
+		"chair-type-description": "You can optionally provide the type of chair you use. If you provided consent, then we may use this information for research and technical support purposes.",
 		"chair-types": {
 			"folding": "Folding",
 			"pediatric": "Pediatric",
@@ -441,6 +446,7 @@
 			"switch-control-with-smartdrive": "Switch Control with SmartDrive"
 		},
 		"control-configuration": "Control Configuration",
+		"control-configuration-description": "Configures the PushTracker app to present the most relevant options and information to you depending on what SmartDrive hardware you have.",
 		"device-serial-numbers": "Device Serial Numbers",
 		"distance-units-km": "kilometers",
 		"distance-units-mi": "miles",
@@ -463,11 +469,13 @@
 		"pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
 		"pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
 		"pushtracker-serial-number": "PushTracker Serial Number",
+		"pushtracker-serial-number-description": "You can find the PushTracker serial number on the label on the underside of your PushTracker. We use your PushTracker serial number to provide better technical support to you.",
 		"scan-msg": "Scan a",
 		"sd-or-pt": "SmartDrive or PushTracker",
 		"set-goal": "Set goal",
 		"smartdrive": "SmartDrive",
 		"smartdrive-serial-number": "SmartDrive Serial Number",
+		"smartdrive-serial-number-description": "You can find the SmartDrive serial number on the label on the underside of your SmartDrive. We use your SmartDrive serial number to provide better technical support to you.",
 		"title": "Profile"
 	},
 	"push-settings-different": {

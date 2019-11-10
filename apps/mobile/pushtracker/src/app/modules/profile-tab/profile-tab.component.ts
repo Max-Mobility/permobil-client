@@ -455,7 +455,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.first-name'),
-        description: '', // Do we really need a description for name?
+        description: this._translateService.instant('general.first-name-description'),
         text: firstName
       }
     };
@@ -497,7 +497,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.last-name'),
-        description: '', // Do we really need a description for name?
+        description: this._translateService.instant('general.last-name-description'),
         text: lastName
       }
     };
@@ -551,6 +551,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.gender'),
+        description: this._translateService.instant('general.gender-description'),
         primaryItems: this.gendersTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -635,7 +636,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.weight'),
-        description: this._translateService.instant('general.weight-guess'),
+        description: this._translateService.instant('general.weight-description'),
         text: text,
         suffix: suffix,
         keyboardType: 'number'
@@ -716,7 +717,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.height'),
-        description: this._translateService.instant('general.height-guess'),
+        description: this._translateService.instant('general.height-description'),
         primaryItems,
         primaryIndex,
         secondaryItems,
@@ -766,6 +767,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('profile-tab.chair-type'),
+        description: this._translateService.instant('profile-tab.chair-type-description'),
         primaryItems: this.chairTypesTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -817,6 +819,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('profile-tab.chair-make'),
+        description: this._translateService.instant('profile-tab.chair-make-description'),
         primaryItems: this.chairMakesTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -869,6 +872,9 @@ export class ProfileTabComponent {
       context: {
         title: this._translateService.instant(
           'profile-tab.control-configuration'
+        ),
+        description: this._translateService.instant(
+          'profile-tab.control-configuration-description'
         ),
         primaryItems: this.configurationsTranslated,
         primaryIndex,
@@ -942,15 +948,22 @@ export class ProfileTabComponent {
 
     let serialNumber = '';
     let title = '';
+    let description = '';
     if (deviceName === 'smartdrive') {
       serialNumber = this.user.data.smartdrive_serial_number || '';
       title = this._translateService.instant(
         'profile-tab.smartdrive-serial-number'
       );
+      description = this._translateService.instant(
+        'profile-tab.smartdrive-serial-number-description'
+      );
     } else {
       serialNumber = this.user.data.pushtracker_serial_number || '';
       title = this._translateService.instant(
         'profile-tab.pushtracker-serial-number'
+      );
+      description = this._translateService.instant(
+        'profile-tab.pushtracker-serial-number-description'
       );
     }
 
@@ -959,7 +972,7 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: title,
-        description: '',
+        description: description,
         text: serialNumber
       }
     };
