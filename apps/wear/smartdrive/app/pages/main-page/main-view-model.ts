@@ -775,25 +775,13 @@ export class MainViewModel extends Observable {
   }
 
   private async _askForPermissions() {
-    // determine if we have shown the permissions request
-    const hasShownRequest =
-      appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
     // will throw an error if permissions are denied, else will
     // return either true or a permissions object detailing all the
     // granted permissions. The error thrown details which
     // permissions were rejected
     const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
     const reasons = [];
-    const neededPermissions = this.permissionsNeeded.filter(
-      p =>
-        !hasPermission(p) &&
-        (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
-          p
-        ) ||
-          !hasShownRequest)
-    );
-    // update the has-shown-request
-    appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
+    const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
     const reasoning = {
       [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
         'permissions-reasons.coarse-location'

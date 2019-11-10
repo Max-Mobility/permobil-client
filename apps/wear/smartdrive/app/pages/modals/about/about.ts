@@ -14,7 +14,7 @@ import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../uti
 
 let closeCallback;
 let kinveyService;
-
+let page: Page;
 let _showingModal: boolean = false;
 
 // values for UI databinding via bindingContext
@@ -38,7 +38,7 @@ export function onCloseTap(args) {
 
 export function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
-  const page = args.object as Page;
+  page = args.object as Page;
 
   _showingModal = false;
 
@@ -146,19 +146,19 @@ export async function onSDSerialNumberTap() {
   }
 }
 
-export async function onWatchSerialNumberTap() {
-  // determine if we have shown the permissions request
-  const hasShownRequest =
-    appSettings.getBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST) || false;
+function _updateSerialNumber() {
   const p = android.Manifest.permission.READ_PHONE_STATE;
-  const needPermission =
-    !hasPermission(p) &&
-    (application.android.foregroundActivity.shouldShowRequestPermissionRationale(
-      p
-    ) ||
-      !hasShownRequest);
-  // update the has-shown-request
-  appSettings.setBoolean(DataKeys.SHOULD_SHOW_PERMISSIONS_REQUEST, true);
+  if (hasPermission(p)) {
+    page.bindingContext.set(
+      'watchSerialNumber',
+      getSerialNumber() || '---'
+    );
+  }
+}
+
+export async function onWatchSerialNumberTap() {
+  const p = android.Manifest.permission.READ_PHONE_STATE;
+  const needPermission = !hasPermission(p);
   if (needPermission) {
     await alert({
       title: L('permissions-request.title'),
@@ -170,8 +170,6 @@ export async function onWatchSerialNumberTap() {
     } catch (permissionsObj) {
       // could not get the permission
     }
-  } else {
-    throw new SmartDriveException(L('failures.permissions'));
   }
-  this._updateSerialNumber();
+  _updateSerialNumber();
 }
