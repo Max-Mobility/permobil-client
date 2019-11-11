@@ -1362,6 +1362,8 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthChartTitle() {
+    if (this._calendar)
+      this._calendar.displayedDate = this.currentDayInView
     const date = this.currentDayInView;
     this.chartTitle =
       this.monthNames[date.getMonth()] + ' ' + date.getFullYear();
