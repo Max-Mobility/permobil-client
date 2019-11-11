@@ -4,7 +4,7 @@
 		"title": "About Information",
 		"user-email": "Your Email",
 		"user-name": "Your Name",
-		"version": "PushTracker WearOS App (SW) Version",
+		"version": "PushTracker Wear OS App Version",
 		"watch-serial-number": "Smartwatch Serial Number"
 	},
 	"busy": {
@@ -17,10 +17,10 @@
 	},
 	"charts": {
 		"coast": {
-			"title": "Daily Coast Time (s)"
+			"title": "Coast Time Daily (s)"
 		},
 		"distance": {
-			"title": "Daily Distance Traveled"
+			"title": "Distance Traveled Daily"
 		}
 	},
 	"enhancements": {
@@ -29,15 +29,15 @@
 		"pushes": "Pushes"
 	},
 	"failures": {
-		"connect": "Could not connect to",
-		"could-not-update-profile": "Could not update user profile on the server",
-		"must-wear-watch": "You must wear the device to control your SmartDrive.",
-		"no-auth-for-saving": "To (optionally) save your settings to the server, you should connect your PushTracker WearOS app to your PushTracker mobile app. To do so, please follow the instructions in the 'Device Setup' page of the PushTracker mobile app.",
-		"not-connected-to-mobile": "Could not authenticate with server, please re-connect with PushTracker mobile app.",
-		"not-fully-initialized": "PushTracker is still initializing the connection to the server, your settings will be sent at a later time.",
-		"permissions": "Required permissions were not granted!",
-		"saving-activity": "Failed saving activity",
-		"scan": "Could not scan",
+		"connect": "Failed to connect to",
+		"could-not-update-profile": "Failed to update Profile on Permobil server.",
+		"must-wear-watch": "[Check for Wrist] Setting is enabled, therefore the smartwatch must be worn to control your SmartDrive.",
+		"no-auth-for-saving": "To save settings to the server, which is optional, you must connect PushTracker Wear OS app to the PushTracker Mobile app. To do this follow the instructions on the \"Device Setup\" page of the PushTracker Mobile app.",
+		"not-connected-to-mobile": "Failed to authenticate with Permobil server. Reconnection to PushTracker Mobile app required.",
+		"not-fully-initialized": "Still initializing connection to Permobil server. Settings will be sent when possible.",
+		"permissions": "Unable to perform the requested action. Required permissions were not granted.",
+		"saving-activity": "Failed saving activity.",
+		"scan": "Could not scan.",
 		"title": "Notice"
 	},
 	"goals": {
@@ -59,10 +59,11 @@
 		"it": "Italian",
 		"ja": "Japanese",
 		"ko": "Korean",
-		"nb": "Norwegian (Bokmål)",
+		"nb": "Norwegian [Bokmål]",
 		"nl": "Dutch",
-		"nn": "Norwegian (Nynorsk)",
-		"zh": "Chinese (Traditional)"
+		"nn": "Norwegian [Nynorsk]",
+		"sv": "Swedish",
+		"zh": "Chinese [Traditional]"
 	},
 	"menu": {
 		"about": "About",
@@ -70,15 +71,15 @@
 		"title": "Menu"
 	},
 	"notifications": {
-		"foreground-service": "Permobil PushTracker is analyzing your activity."
+		"foreground-service": "Permobil PushTracker is collecting your activity"
 	},
 	"permissions-reasons": {
-		"coarse-location": "To communicate to the PushTracker mobile app on your iPhone using bluetooth we need ACCESS_COARSE_LOCATION permission.",
-		"fine-location": "To measure distance using your SmartWatch GPS need ACCESS_FINE_LOCATION permission.",
-		"phone-state": "To read your device serial number (for warranty / support purposes) we need the READ_PHONE_STATE permission."
+		"coarse-location": "To connect with the PushTracker Mobile app on your iPhone using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data.",
+		"fine-location": "OPTIONAL: To measure distance using your smartwatch GPS we need you to allow the  permission [ACCESS_FINE_LOCATION] on one of the following screens. From this permission Permobil will not be accessing your location data.",
+		"phone-state": "OPTIONAL: To access your smartwatch Serial Number, which can be useful for support and warranty purposes, we need you to allow the Phone permission [READ_PHONE_STATE] on one of the following screens. From this permission Permobil will not be accessing your phone number, cellular network information, or any other data except the smartwatch serial number."
 	},
 	"permissions-request": {
-		"title": "Permissions Request"
+		"title": "Permissions Notice"
 	},
 	"profile": "Profile",
 	"pushes": {
@@ -113,13 +114,13 @@
 		},
 		"coastgoal": {
 			"description": "Your goal for average coast time between pushes each day.",
-			"title": "Coast Goal",
+			"title": "Coast Time Goal",
 			"units": "s"
 		},
 		"connect-pushtracker": "Connect PushTracker Mobile App",
 		"distancegoal": {
-			"description": "Your goal for distanced traveled in your wheelchair each day.",
-			"title": "Distance Goal",
+			"description": "Your goal for distance traveled in your wheelchair each day as measured by a SmartDrive.",
+			"title": "Distance Traveled Goal",
 			"units": {
 				"english": "mi",
 				"metric": "km"
@@ -131,14 +132,14 @@
 			"title": ""
 		},
 		"information": "Information",
-		"install-smartdrive": "Install SmartDrive MX2+ WearOS App",
+		"install-smartdrive": "Install SmartDrive MX2+ Wear OS App",
 		"pushsensitivity": {
-			"description": "Controls how sensitive the push detection is - 0% detects fewer pushes, 100% detects more pushes.",
+			"description": "The sensitivity of the detection used to count pushes. The lower the percentage is the less sensitive it is to detecting a push - 0% is the least sensitive and therefore will detect fewer pushes, and 100% is the most sensitive and therefore will detect more pushes.",
 			"title": "Push Sensitivity"
 		},
-		"title": "Settings",
+		"title": "PushTracker Settings",
 		"units": {
-			"description": "The unit system or units of measure to display the measurements within the user interfaces. Select either Imperial [ft / mi and lbs] or Metric [cm / km and kg].",
+			"description": "The unit system or units of measure to display the measurements within the user interfaces. Select either Imperial [ft, mi and lbs] or Metric [cm, km and kg].",
 			"title": "Units",
 			"values": {
 				"english": "Imperial",
@@ -176,8 +177,8 @@
 	},
 	"wearos-comms": {
 		"errors": {
-			"bad-authorization": "Invalid account authorization data received from PushTracker mobile app - please ensure your account information is up to date and you have a network connecction to the backend.",
-			"bad-data": "Invalid data received from PushTracker mobile app - please check your connection and try again."
+			"bad-authorization": "Invalid account authorization data received from PushTracker Mobile app. Ensure your account information is up-to-date and your smartwatch is connected to the internet either through Wi-Fi or your phone.",
+			"bad-data": "Invalid data received from PushTracker Mobile app. Check the connection and try again."
 		}
 	}
 }
