@@ -301,6 +301,7 @@ export class ActivityComponent implements OnInit {
     } else if (this.currentTab === TAB.WEEK) {
       // week
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
+      this.currentDayInView = getFirstDayOfWeek(this.currentDayInView);
       this._updateWeekStartAndEnd();
       this._initWeekChartTitle();
       this._debouncedLoadWeeklyActivity();
@@ -328,6 +329,7 @@ export class ActivityComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
         if (this.currentDayInView > new Date())
           this.currentDayInView = new Date();
+        this.currentDayInView = getFirstDayOfWeek(this.currentDayInView);
         this._updateWeekStartAndEnd();
         this._initWeekChartTitle();
         this._debouncedLoadWeeklyActivity();
