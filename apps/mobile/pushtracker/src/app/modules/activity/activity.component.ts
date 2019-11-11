@@ -439,7 +439,7 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCalendarDateSelected(args) {
-    if (this.currentTab != TAB.MONTH) return;
+    if (this.currentTab !== TAB.MONTH) return;
     if (this.selectedIndexDirty) {
       this.selectedIndexDirty = false;
       return;
