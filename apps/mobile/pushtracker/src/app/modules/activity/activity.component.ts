@@ -96,6 +96,9 @@ export class ActivityComponent implements OnInit {
     this._translateService.instant('months.december')
   ];
   currentDayInView: Date;
+  calendarSelectedDate: Date;
+  calendarDisplayedDate: Date;
+  selectedIndexDirty: boolean;
   // dayChartLabel: string;
   weekStart: Date;
   weekEnd: Date;
@@ -172,6 +175,9 @@ export class ActivityComponent implements OnInit {
     } else {
       this.currentDayInView = new Date();
     }
+    this.calendarSelectedDate = new Date(this.currentDayInView);
+    this.calendarDisplayedDate = new Date(this.currentDayInView);
+    this.selectedIndexDirty = false;
     this._updateWeekStartAndEnd();
 
     // save the debounced loadDailyActivity function
@@ -279,7 +285,9 @@ export class ActivityComponent implements OnInit {
       this._debouncedLoadWeeklyActivity(forcePullFromDatabase);
     } else if (this.currentTab === TAB.MONTH) {
       this._initMonthChartTitle();
-      // this._initMonthViewStyle();
+      this.calendarSelectedDate = new Date(this.currentDayInView);
+      this.calendarDisplayedDate = new Date(this.currentDayInView);
+      this.selectedIndexDirty = true;
     }
   }
 
@@ -293,6 +301,7 @@ export class ActivityComponent implements OnInit {
     } else if (this.currentTab === TAB.WEEK) {
       // week
       this.currentDayInView.setDate(this.currentDayInView.getDate() - 7);
+      this.currentDayInView = getFirstDayOfWeek(this.currentDayInView);
       this._updateWeekStartAndEnd();
       this._initWeekChartTitle();
       this._debouncedLoadWeeklyActivity();
@@ -320,6 +329,7 @@ export class ActivityComponent implements OnInit {
         this.currentDayInView.setDate(this.currentDayInView.getDate() + 7);
         if (this.currentDayInView > new Date())
           this.currentDayInView = new Date();
+        this.currentDayInView = getFirstDayOfWeek(this.currentDayInView);
         this._updateWeekStartAndEnd();
         this._initWeekChartTitle();
         this._debouncedLoadWeeklyActivity();
@@ -429,6 +439,11 @@ export class ActivityComponent implements OnInit {
   }
 
   async onCalendarDateSelected(args) {
+    if (this.currentTab !== TAB.MONTH) return;
+    if (this.selectedIndexDirty) {
+      this.selectedIndexDirty = false;
+      return;
+    }
     if (
       this.user.data.control_configuration ===
       CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
@@ -1342,7 +1357,7 @@ export class ActivityComponent implements OnInit {
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellTextSize = 20;
     selectedDayCellStyle.cellBackgroundColor = pageColor;
-    selectedDayCellStyle.cellBorderColor = pageColor;
+    // selectedDayCellStyle.cellBorderColor = pageColor;
     selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
@@ -1362,10 +1377,6 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthChartTitle() {
-    if (this._calendar) {
-      this._calendar.displayedDate = this.currentDayInView;
-      // this._calendar.selectedDate = this.currentDayInView;
-    }
     const date = this.currentDayInView;
     this.chartTitle =
       this.monthNames[date.getMonth()] + ' ' + date.getFullYear();
