@@ -67,7 +67,9 @@
   }
 
   SegmentedBar {
-    color: $permobil-cousteau;
+      selected-background-color: $dark-grey;
+      background-color: $black;
+      color: $white;
     margin: 2;
   }
 

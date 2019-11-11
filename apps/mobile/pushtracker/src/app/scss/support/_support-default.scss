@@ -29,6 +29,8 @@
 
   .faq-list {
     @extend .FAQ_LIST_BASE;
+    background-color: $white;
+    color: $black;
 
     .item-icon {
       @extend .ITEM_ICON_BASE;

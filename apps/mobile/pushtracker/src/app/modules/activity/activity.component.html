@@ -9,7 +9,6 @@
             row="0"
             [items]="tabItems"
             [selectedIndex]="currentTab"
-            [selectedBackgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
             (loaded)="segmentedBarLoaded($event)"
             (selectedIndexChange)="onSelectedIndexChanged($event)"
             class="m-5"

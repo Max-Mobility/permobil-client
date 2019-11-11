@@ -1,3 +1,4 @@
+
 @import '../variables';
 @import 'activity-tab-base';
 
@@ -68,7 +69,9 @@
   }
 
   SegmentedBar {
-    color: $permobil-primary;
+      background-color: $white;
+      selected-background-color: $grey;
+    color: $black;
     margin: 2;
   }
 }

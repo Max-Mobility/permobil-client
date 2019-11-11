@@ -20,7 +20,8 @@ export class TNSTranslateLoader {
           (data: string) => {
             try {
               const json = JSON.parse(data);
-              observer.next(json);
+              const processed = this._process(json);
+              observer.next(processed);
               observer.complete();
             } catch (error) {
               // Even though the response status was 2xx, this is still an error.
@@ -42,6 +43,26 @@ export class TNSTranslateLoader {
         observer.error(errorResult);
       }
     });
+  }
+
+  private _process(object: any) {
+    const newObject = {};
+
+    for (const key in object) {
+      if (object.hasOwnProperty(key)) {
+        if (typeof object[key] === 'object') {
+          newObject[key] = this._process(object[key]);
+        }
+        else if ((typeof object[key] === 'string') && (object[key] === '')) {
+          // do not copy empty strings
+          console.log('empty string found!');
+        }
+        else {
+          newObject[key] = object[key];
+        }
+      }
+    }
+    return newObject;
   }
 
   private _currentApp(): Folder {
