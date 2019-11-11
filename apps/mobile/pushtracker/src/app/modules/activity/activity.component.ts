@@ -1357,7 +1357,7 @@ export class ActivityComponent implements OnInit {
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellTextSize = 20;
     selectedDayCellStyle.cellBackgroundColor = pageColor;
-    selectedDayCellStyle.cellBorderColor = pageColor;
+    // selectedDayCellStyle.cellBorderColor = pageColor;
     selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
