@@ -2,10 +2,19 @@
   // Mock ActionBar
   <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()"></MockActionBar>
 
-  <SearchBar row="1" [hint]="'support-component.search-hint' | translate"
-             [text]="searchPhrase" (textChange)="onTextChanged($event)"
-             (clear)="onClear($event)" (submit)="onSubmit($event)">
-  </SearchBar>
+  <GridLayout row="1" rows="auto" columns="auto, *, auto">
+    <Label col="0" class="search-btn" text="&#xe8b6;" (tap)="onSearch()" ripple rippleColorAlpha="0.18"></Label>
+    <TextField col="1"
+               class="search-bar"
+               returnKeyType="search"
+               [hint]="'support-component.search-hint' | translate"
+               [text]="searchPhrase"
+               (textChange)="onTextChanged($event)"
+               (returnPress)="onSubmit($event)"
+               >
+    </TextField>
+    <Label col="2" class="cancel-search-btn" text="&#xe5cd;" (tap)="onClear()" ripple rippleColorAlpha="0.18"></Label>
+  </GridLayout>
 
   <Label row="2" text="" class="hr" textWrap="true"></Label>
 

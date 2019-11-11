@@ -20,6 +20,37 @@
   horizontal-align: center;
 }
 
+.SEARCH_BAR_BASE {
+    font-family: $os;
+    border-bottom-width: 1;
+}
+
+.CANCEL_SEARCH_BUTTON_BASE {
+  @extend .btn-transparent;
+  padding: 4;
+  margin: 2;
+  font-family: $material-icon;
+  font-size: 30;
+  vertical-align: center;
+  horizontal-align: center;
+  height: 44;
+  width: 44;
+  border-radius: 22;
+}
+
+.SEARCH_BUTTON_BASE {
+  @extend .btn-transparent;
+  padding: 4;
+  margin: 2;
+  font-family: $material-icon;
+  font-size: 30;
+  vertical-align: center;
+  horizontal-align: center;
+  height: 44;
+  width: 44;
+  border-radius: 22;
+}
+
 .FAQ_QUESTION_BASE {
   font-size: 18;
   font-weight: bold;

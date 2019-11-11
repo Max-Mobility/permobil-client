@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
 import { isIOS } from '@nativescript/core';
-import { SearchBar } from '@nativescript/core/ui';
+import { EventData, ItemEventData, TextField } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services';
 
@@ -15,6 +15,7 @@ export class SupportComponent implements OnInit {
   searchPhrase: string = '';
 
   private _allSupportItems;
+  private _searchBar: TextField;
 
   constructor(
     private _logService: LoggingService,
@@ -35,7 +36,7 @@ export class SupportComponent implements OnInit {
     });
   }
 
-  onItemLoading(args) {
+  onItemLoading(args: ItemEventData) {
     if (isIOS) {
       const iosCell = args.ios as UITableViewCell;
       iosCell.selectionStyle = UITableViewCellSelectionStyle.None;
@@ -46,21 +47,38 @@ export class SupportComponent implements OnInit {
     this._params.closeCallback('');
   }
 
-  onSubmit(args) {
-    const searchBar = args.object as SearchBar;
-    this.searchPhrase = searchBar.text;
-    const relevant = this._allSupportItems.filter(i => {
-      return i.a.includes(this.searchPhrase) || i.q.includes(this.searchPhrase);
-    });
-    this.supportItems.splice(0, this.supportItems.length, ...relevant);
+  onSearch() {
+    if (this.searchPhrase && this.searchPhrase.length) {
+      const regex = new RegExp(this.searchPhrase, 'i');
+      const relevant = this._allSupportItems.filter(i => {
+        return regex.test(i.a) || regex.test(i.q);
+      });
+      this.supportItems.splice(0, this.supportItems.length, ...relevant);
+      if (this._searchBar) {
+        this._searchBar.dismissSoftInput();
+      }
+    } else {
+      this.onClear();
+    }
   }
 
-  onTextChanged(args) {
-    const searchBar = args.object as SearchBar;
+  onSubmit(args: EventData) {
+    this._searchBar = args.object as TextField;
+    this.searchPhrase = this._searchBar.text;
+    this.onSearch();
   }
 
-  onClear(args) {
-    const searchBar = args.object as SearchBar;
+  onTextChanged(args: EventData) {
+    this._searchBar = args.object as TextField;
+    this.searchPhrase = this._searchBar.text;
+  }
+
+  onClear() {
+    this.searchPhrase = '';
     this.supportItems.splice(0, this.supportItems.length, ...this._allSupportItems);
+    if (this._searchBar) {
+      this._searchBar.text = '';
+      this._searchBar.dismissSoftInput();
+    }
   }
 }
