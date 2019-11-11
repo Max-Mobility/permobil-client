@@ -1,6 +1,6 @@
 import * as appSettings from '@nativescript/core/application-settings';
 import { Bluetooth } from 'nativescript-bluetooth';
-import { Common } from './wear-os-comms.common';
+import { Common } from '../wear-os-comms.common';
 
 export class WearOsComms extends Common {
   private static _bluetooth: Bluetooth = new Bluetooth();

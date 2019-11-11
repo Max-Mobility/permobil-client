@@ -38,7 +38,7 @@
 
     .faq-question {
       @extend .FAQ_QUESTION_BASE;
-      color: #fff;
+      color: $white;
     }
 
     .faq-answer {

@@ -1,8 +1,8 @@
 {
   "name": "@maxmobility/nativescript-wear-os-comms",
-  "version": "0.1.3-rc2",
+  "version": "0.1.3-rc3",
   "description": "Your awesome NativeScript plugin.",
-  "main": "wear-os-comms",
+  "main": "index",
   "typings": "index.d.ts",
   "nativescript": {
     "platforms": {
