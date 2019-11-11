@@ -1343,7 +1343,6 @@ export class ActivityComponent implements OnInit {
     selectedDayCellStyle.cellBackgroundColor = pageColor;
     selectedDayCellStyle.cellBorderColor = pageColor;
     selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
-    selectedDayCellStyle.cellTextSize = 20;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
 
