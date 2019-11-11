@@ -71,6 +71,7 @@ import io.sentry.Sentry;
 import io.sentry.event.BreadcrumbBuilder;
 
 import com.permobil.pushtracker.DailyActivity;
+import com.permobil.pushtracker.BootReceiver;
 
 // TODO: communicate with the main app regarding when to start / stop tracking:
 //        * heart rate
