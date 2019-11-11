@@ -2,23 +2,29 @@
 @import 'support-base';
 
 .support-layout {
-  @extend .SUPPORT_LAYOUT_BASE;
+    @extend .SUPPORT_LAYOUT_BASE;
+    background-color: $white;
 
-  .search-bar {
-      @extend .SEARCH_BAR_BASE;
-      placeholder-color: $dark-grey;
-      color: $black;
-      border-color: $black;
-  }
+    .search-layout {
+        @extend .SEARCH_LAYOUT_BASE;
 
-  .search-btn {
-    @extend .SEARCH_BUTTON_BASE;
-    color: $black;
-  }
+        .search-bar {
+            @extend .SEARCH_BAR_BASE;
+            placeholder-color: $dark-grey;
+            color: $black;
+            border-color: $black;
+        }
 
-  .cancel-search-btn {
-    @extend .CANCEL_SEARCH_BUTTON_BASE;
-    color: $black;
+        .search-btn {
+            @extend .SEARCH_BUTTON_BASE;
+            color: $black;
+        }
+
+        .cancel-search-btn {
+            @extend .CANCEL_SEARCH_BUTTON_BASE;
+            color: $black;
+        }
+
   }
 
   .faq-list {

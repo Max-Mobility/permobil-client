@@ -1,8 +1,8 @@
-<GridLayout rows="auto, auto, auto, *, auto" class="support-layout">
+<GridLayout rows="auto, auto, auto, *, auto" columns="*" class="support-layout">
   // Mock ActionBar
   <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()"></MockActionBar>
 
-  <GridLayout row="1" rows="auto" columns="auto, *, auto">
+  <GridLayout class="search-layout" row="1" rows="auto" columns="auto, *, auto">
     <Label col="0" class="search-btn" text="&#xe8b6;" (tap)="onSearch()" ripple rippleColorAlpha="0.18"></Label>
     <TextField col="1"
                class="search-bar"
