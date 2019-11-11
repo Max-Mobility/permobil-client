@@ -5,6 +5,23 @@
   @extend .SUPPORT_LAYOUT_BASE;
   background-color: $black;
 
+  .search-bar {
+      @extend .SEARCH_BAR_BASE;
+      placeholder-color: $light-grey;
+      color: $white;
+      border-color: $white;
+  }
+
+  .search-btn {
+    @extend .SEARCH_BUTTON_BASE;
+    color: $white;
+  }
+
+  .cancel-search-btn {
+    @extend .CANCEL_SEARCH_BUTTON_BASE;
+    color: $white;
+  }
+
   .faq-list {
     @extend .FAQ_LIST_BASE;
     background-color: $black;
