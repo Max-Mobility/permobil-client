@@ -1,8 +1,8 @@
 import * as appSettings from '@nativescript/core/application-settings';
 import { ad, ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Bluetooth } from 'nativescript-bluetooth';
-import { ResultReceiver } from './result-receiver.android';
-import { Common } from './wear-os-comms.common';
+import { ResultReceiver } from './ResultReceiver';
+import { Common } from '../wear-os-comms.common';
 
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
 @Interfaces([
