@@ -13,7 +13,7 @@ import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
+import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService, TranslationService } from '../../services';
 import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
 
@@ -67,6 +67,7 @@ export class ProfileSettingsComponent implements OnInit {
   constructor(
     public settingsService: SettingsService,
     private _logService: LoggingService,
+    private _translationService: TranslationService,
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService,
@@ -80,6 +81,15 @@ export class ProfileSettingsComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
+
+    try {
+      this._translationService.updateTranslationFilesFromKinvey();
+    } catch (error) {
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
+        'Error updating translation files: ' + error
+      );
+    }
 
     this._page.actionBarHidden = true;
 
@@ -544,8 +554,10 @@ export class ProfileSettingsComponent implements OnInit {
         );
         KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
         const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
-        if (this._translateService.currentLang !== language)
+        if (this._translateService.currentLang !== language) {
+          this._translateService.reloadLang(language);
           this._translateService.use(language);
+        }
         break;
     }
     // Update local cache of this.user in appSettings

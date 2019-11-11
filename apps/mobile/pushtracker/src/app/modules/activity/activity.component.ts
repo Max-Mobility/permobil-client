@@ -1341,9 +1341,8 @@ export class ActivityComponent implements OnInit {
     // Selected cell style
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellBackgroundColor = pageColor;
-    // always white since selection is dark grey filled circle
-    selectedDayCellStyle.cellTextColor = this._colorWhite;
-    selectedDayCellStyle.cellTextSize = 20;
+    selectedDayCellStyle.cellBorderColor = pageColor;
+    selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
 
@@ -1362,6 +1361,8 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _initMonthChartTitle() {
+    if (this._calendar)
+      this._calendar.displayedDate = this.currentDayInView;
     const date = this.currentDayInView;
     this.chartTitle =
       this.monthNames[date.getMonth()] + ' ' + date.getFullYear();

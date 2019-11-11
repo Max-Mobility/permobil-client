@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as appSettings from '@nativescript/core/application-settings';
+import { isIOS } from '@nativescript/core/platform';
 import { Observable } from '@nativescript/core';
 import { LoggingService } from './logging.service';
-import { TranslateService } from '@ngx-translate/core';
 
 // for querying kinvey for translation files
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
@@ -17,11 +17,9 @@ export class TranslationService extends Observable {
   private static CURRENT_VERSIONS_KEY: string = 'translation.service.current-versions';
 
   private currentVersions: any = {};
-  private languageData: any = {};
 
   constructor(
-    private _logService: LoggingService,
-    private _translateService: TranslateService
+    private _logService: LoggingService
   ) {
     super();
   }
@@ -83,16 +81,6 @@ export class TranslationService extends Observable {
         TranslationService.CURRENT_VERSIONS_KEY,
         JSON.stringify(this.currentVersions)
       );
-
-      // now update the languages in the app
-      Object.keys(this.currentVersions).map((key: string) => {
-        const info = this.currentVersions[key];
-        const data = this.languageData[key];
-        // console.log('loaded data for', info.name, ':', data);
-        // now set the translation service to use it
-        this._translateService.reloadLang(info.language_code);
-        // this._translateService.setTranslation(info.language_code, data);
-      });
     } catch (err) {
       this._logService.logException(err);
     }
@@ -123,7 +111,6 @@ export class TranslationService extends Observable {
             const blob = TranslationService.loadFromFileSystem(fname);
             if (blob && blob.length) {
               this.currentVersions[f.name] = f;
-              this.languageData[f.name] = blob;
             }
           } catch (err) {
             this._logService.logBreadCrumb(
@@ -154,8 +141,6 @@ export class TranslationService extends Observable {
       ),
       language_code: f.name.replace('.json', '')
     };
-    // store the data for access later
-    this.languageData[f.name] = f.data;
     try {
       // save binary file to fs
       TranslationService.saveToFileSystem(
@@ -164,7 +149,6 @@ export class TranslationService extends Observable {
       );
     } catch (err) {
       // clear out the data - we couldn't save the file
-      delete this.languageData[f.name];
       delete this.currentVersions[f.name];
       this._logService.logBreadCrumb(
         TranslationService.name,
