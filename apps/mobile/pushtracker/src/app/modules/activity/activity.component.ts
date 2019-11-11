@@ -1341,8 +1341,8 @@ export class ActivityComponent implements OnInit {
     // Selected cell style
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellBackgroundColor = pageColor;
-    // always white since selection is dark grey filled circle
-    selectedDayCellStyle.cellTextColor = this._colorWhite;
+    selectedDayCellStyle.cellBorderColor = pageColor;
+    selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextSize = 20;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;
