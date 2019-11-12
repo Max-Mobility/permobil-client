@@ -45,5 +45,10 @@
       @extend .FAQ_ANSWER_BASE;
       color: $white;
     }
+
+    .faq-link {
+        @extend .FAQ_LINK_BASE;
+        color: $permobil-cousteau;
+    }
   }
 }

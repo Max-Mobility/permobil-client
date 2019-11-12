@@ -33,7 +33,7 @@
           <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
           <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
           <StackLayout row="2" col="1">
-            <Button *ngFor="let link of item.links" [text]="link" textWrap="true" class="faq-answer" (tap)="onLinkTapped(link)"></Button>
+            <Button *ngFor="let link of item.links" [text]="link" textWrap="true" class="faq-link" (tap)="onLinkTapped(link)"></Button>
           </StackLayout>
         </GridLayout>
       </ng-template>

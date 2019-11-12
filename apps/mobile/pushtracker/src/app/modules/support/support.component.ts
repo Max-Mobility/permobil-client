@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
 import { isIOS } from '@nativescript/core';
 import { EventData, ItemEventData, TextField } from '@nativescript/core';
+import { openUrl } from '@nativescript/core/utils/utils';
+import { validate } from 'email-validator';
+import { compose } from "nativescript-email";
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services';
 
@@ -65,8 +68,27 @@ export class SupportComponent implements OnInit {
     return item.links ? 'has-links' : 'no-links';
   }
 
-  onLinkTapped(link: string) {
-    console.log('link tapped:', link);
+  async onLinkTapped(link: string) {
+    try {
+      const emailRegex = new RegExp('@permobil\.com', 'i');
+      const isEmail = emailRegex.test(link);
+      if (isEmail || validate(link)) {
+        await compose({
+          subject: '',
+          body: '',
+          to: [link]
+        })
+          .then(() => {
+          })
+          .catch((err) => {
+            this._logService.logException(err);
+          });
+      } else {
+        openUrl(link);
+      }
+    } catch (err) {
+      this._logService.logException(err);
+    }
   }
 
   onItemLoading(args: ItemEventData) {

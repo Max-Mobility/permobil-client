@@ -67,3 +67,13 @@
   font-family: $os;
   margin: 2 5 5 20;
 }
+
+.FAQ_LINK_BASE {
+    @extend .btn-transparent;
+    padding: 4;
+    margin: 2;
+    font-size: 14;
+    font-family: $os;
+    vertical-align: center;
+    horizontal-align: center;
+}
