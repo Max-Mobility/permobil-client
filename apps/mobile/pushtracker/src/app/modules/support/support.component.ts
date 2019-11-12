@@ -4,7 +4,7 @@ import { isIOS } from '@nativescript/core';
 import { EventData, ItemEventData, TextField } from '@nativescript/core';
 import { openUrl } from '@nativescript/core/utils/utils';
 import { validate } from 'email-validator';
-import { compose } from "nativescript-email";
+import { compose } from 'nativescript-email';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services';
 
