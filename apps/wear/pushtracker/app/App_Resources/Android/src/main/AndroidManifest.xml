@@ -141,6 +141,7 @@
           android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
           android:value="600"/>
     </service>
+    <!--
     <service
         android:name="com.permobil.pushtracker.DistanceComplicationProviderService"
         android:icon="@drawable/ic_distance_white"
@@ -157,6 +158,7 @@
           android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
           android:value="600"/>
     </service>
+    -->
     <!-- end for providing complications -->
 
     <!-- for receiving complications -->
