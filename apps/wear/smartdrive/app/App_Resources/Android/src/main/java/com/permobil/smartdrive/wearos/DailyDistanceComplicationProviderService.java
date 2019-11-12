@@ -38,7 +38,7 @@ import java.util.Locale;
 public class DailyDistanceComplicationProviderService extends ComplicationProviderService {
 
   private static final String TAG = "DailyDistanceComplicationProvider";
-  private static final String DATA_ID = "sd.distance.drive";
+  private static final String DATA_ID = "sd.distance.daily";
   private static final String UNITS_ID = "sd.units";
 
   public static void forceUpdate(Context context) {

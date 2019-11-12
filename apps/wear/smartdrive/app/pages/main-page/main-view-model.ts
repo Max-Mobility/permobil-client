@@ -2410,6 +2410,11 @@ export class MainViewModel extends Observable {
       }
       const u = await this._getTodaysUsageInfoFromDatabase();
       if (u[SmartDriveData.Info.IdName]) {
+        // save today's current distance to storage for complication to use
+        appSettings.setNumber(
+          DataKeys.SD_DISTANCE_DAILY,
+          this.smartDrive.coastDistance - u[SmartDriveData.Info.CoastDistanceStartName]
+        );
         // there was a record, so we need to update it. we add the
         // already used battery plus the amount of new battery that
         // has been used. we directly overwrite the distance and

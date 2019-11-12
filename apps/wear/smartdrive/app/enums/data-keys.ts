@@ -6,6 +6,7 @@ export enum DataKeys {
   'REQUIRE_WATCH_BEING_WORN' = 'watch.require-being-worn',
   'SD_SETTINGS_DIRTY_FLAG' = 'sd.settings.dirty-flag',
   'SD_ESTIMATED_RANGE' = 'sd.estimated_range',
+  'SD_DISTANCE_DAILY' = 'sd.distance.daily',
   'SD_DISTANCE_CASE' = 'sd.distance.case',
   'SD_DISTANCE_DRIVE' = 'sd.distance.drive',
   'SD_VERSION_MCU' = 'sd.version.mcu',
