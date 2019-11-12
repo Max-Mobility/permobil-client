@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
 import { isIOS } from '@nativescript/core';
 import { EventData, ItemEventData, TextField } from '@nativescript/core';
@@ -6,7 +6,9 @@ import { openUrl } from '@nativescript/core/utils/utils';
 import { validate } from 'email-validator';
 import { compose } from 'nativescript-email';
 import { TranslateService } from '@ngx-translate/core';
+import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { LoggingService } from '../../services';
+import { ListPickerSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'support',
@@ -17,13 +19,19 @@ export class SupportComponent implements OnInit {
   supportItems;
   searchPhrase: string = '';
 
+  allCategory: string = this._translateService.instant('support-component.category.all');
+  selectedCategory: string = this.allCategory;
+  categories: string[] = [];
+
   private _allSupportItems;
   private _searchBar: TextField;
 
   constructor(
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _params: ModalDialogParams
+    private _params: ModalDialogParams,
+    private _bottomSheet: BottomSheetService,
+    private _vcRef: ViewContainerRef
   ) { }
 
   ngOnInit() {
@@ -36,7 +44,14 @@ export class SupportComponent implements OnInit {
       'support-component.faqs'
     );
 
+    this.categories = [
+      this.allCategory
+    ];
+
     this.supportItems = Object.values(faqs).map((i: any) => {
+      if (this.categories.indexOf(i.category) === -1) {
+        this.categories.push(i.category);
+      }
       if (i.links) {
         return {
           category: i.category,
@@ -66,6 +81,32 @@ export class SupportComponent implements OnInit {
 
   itemTemplateSelector(item: any, index: number, items: any) {
     return item.links ? 'has-links' : 'no-links';
+  }
+
+  async onFilterSelectorTapped(args: EventData) {
+    const primaryIndex = this.categories.indexOf(this.selectedCategory);
+    const options: BottomSheetOptions = {
+      viewContainerRef: this._vcRef,
+      dismissOnBackgroundTap: true,
+      context: {
+        title: this._translateService.instant('support-component.category.title'),
+        description: this._translateService.instant('support-component.category.description'),
+        primaryItems: this.categories,
+        primaryIndex,
+        listPickerNeedsSecondary: false
+      }
+    };
+
+    this._bottomSheet
+      .show(ListPickerSheetComponent, options)
+      .subscribe(result => {
+        if (result && result.data) {
+          this.selectedCategory = this.categories[result.data.primaryIndex];
+        } else {
+          this.selectedCategory = this.allCategory;
+        }
+        this.onSearch();
+      });
   }
 
   async onLinkTapped(link: string) {
@@ -106,7 +147,16 @@ export class SupportComponent implements OnInit {
     if (this.searchPhrase && this.searchPhrase.length) {
       const regex = new RegExp(this.searchPhrase, 'i');
       const relevant = this._allSupportItems.filter(i => {
-        return regex.test(i.a) || regex.test(i.q);
+        return regex.test(i.a) || regex.test(i.q) &&
+          (this.selectedCategory === this.allCategory || i.category === this.selectedCategory);
+      });
+      this.supportItems.splice(0, this.supportItems.length, ...relevant);
+      if (this._searchBar) {
+        this._searchBar.dismissSoftInput();
+      }
+    } else if (this.selectedCategory !== this.allCategory) {
+      const relevant = this._allSupportItems.filter(i => {
+        return i.category === this.selectedCategory;
       });
       this.supportItems.splice(0, this.supportItems.length, ...relevant);
       if (this._searchBar) {
@@ -129,6 +179,7 @@ export class SupportComponent implements OnInit {
   }
 
   onClear() {
+    this.selectedCategory = this.allCategory;
     this.searchPhrase = '';
     this.supportItems.splice(0, this.supportItems.length, ...this._allSupportItems);
     if (this._searchBar) {

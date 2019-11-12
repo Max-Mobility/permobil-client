@@ -1,8 +1,19 @@
-<GridLayout rows="auto, auto, auto, *, auto" columns="*" class="support-layout">
+<GridLayout rows="auto, auto, auto, auto, *" columns="*, *" class="support-layout">
   // Mock ActionBar
-  <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()"></MockActionBar>
+  <MockActionBar row="0" [title]="'support-component.title' | translate" [showBackNav]="true" (navTapEvent)="onNavBtnTap()">
+  </MockActionBar>
 
-  <GridLayout class="search-layout" row="1" rows="auto" columns="auto, *, auto">
+  <StackLayout row="0" col="1" horizontalAlign="right" class="data-box" (tap)="onFilterSelectorTapped($event)"
+               padding="0" paddingRight="5">
+    <GridLayout rows="*" columns="auto, *" height="40">
+      <Label class="data-box-value" [text]="('support-component.category.title' | translate) + ':'" margin="0" fontSize="12" fontWeight="normal">
+      </Label>
+      <Label col="1" class="data-box-value" [text]="selectedCategory" textWrap="true" paddingRight="10" fontSize="13">
+      </Label>
+    </GridLayout>
+  </StackLayout>
+
+  <GridLayout class="search-layout" row="2" colSpan="2" rows="auto" columns="auto, *, auto">
     <Label col="0" class="search-btn" text="&#xe8b6;" (tap)="onSearch()" ripple rippleColorAlpha="0.18"></Label>
     <TextField col="1"
                class="search-bar"
@@ -13,12 +24,13 @@
                (returnPress)="onSubmit($event)"
                >
     </TextField>
+
     <Label col="2" class="cancel-search-btn" text="&#xe5cd;" (tap)="onClear()" ripple rippleColorAlpha="0.18"></Label>
   </GridLayout>
 
-  <Label row="2" text="" class="hr" textWrap="true"></Label>
+  <Label row="3" colSpan="2" text="" class="hr" textWrap="true"></Label>
 
-  <StackLayout row="3">
+  <StackLayout row="4" colSpan="2" >
     <ListView [items]="supportItems" [itemTemplateSelector]="itemTemplateSelector" (itemLoading)="onItemLoading($event)" class="faq-list">
       <ng-template nsTemplateKey="no-links" let-item="item">
         <GridLayout rows="auto, auto" columns="auto, *" padding="8">

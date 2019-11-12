@@ -24,32 +24,45 @@
             @extend .CANCEL_SEARCH_BUTTON_BASE;
             color: $black;
         }
-
-  }
-
-  .faq-list {
-    @extend .FAQ_LIST_BASE;
-    background-color: $white;
-    color: $black;
-
-    .item-icon {
-      @extend .ITEM_ICON_BASE;
-      color: $permobil-primary;
     }
 
-    .faq-question {
-      @extend .FAQ_QUESTION_BASE;
-      color: $black;
+    .filter-layout {
+        @extend .FILTER_LAYOUT_BASE;
+
+        .filter-title {
+            @extend .FILTER_TITLE_BASE;
+            color: $dark-grey;
+        }
+
+        .filter-value {
+            @extend .FILTER_VALUE_BASE;
+            color: $black;
+        }
     }
 
-    .faq-answer {
-      @extend .FAQ_ANSWER_BASE;
-      color: $black;
-    }
+    .faq-list {
+        @extend .FAQ_LIST_BASE;
+        background-color: $white;
+        color: $black;
 
-    .faq-link {
-        @extend .FAQ_LINK_BASE;
-        color: $permobil-primary;
+        .item-icon {
+            @extend .ITEM_ICON_BASE;
+            color: $permobil-primary;
+        }
+
+        .faq-question {
+            @extend .FAQ_QUESTION_BASE;
+            color: $black;
+        }
+
+        .faq-answer {
+            @extend .FAQ_ANSWER_BASE;
+            color: $black;
+        }
+
+        .faq-link {
+            @extend .FAQ_LINK_BASE;
+            color: $permobil-primary;
+        }
     }
-  }
 }

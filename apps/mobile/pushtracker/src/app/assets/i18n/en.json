@@ -513,10 +513,15 @@
 		"user-exists": "An account already exists for this email."
 	},
 	"support-component": {
-    "search-hint": "enter search term...",
+    "category": {
+      "title": "Category",
+      "description": "Select the category of support items you would like to view.",
+      "all": "All"
+    },
+    "search-hint": "Enter search term...",
 		"faqs": [
       {
-        "category": "setup & Installation",
+        "category": "Setup & Installation",
         "a": "No. There is an initial set up process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on set up and a library of how to videos.",
         "q": "How do I set up my new PushTracker E2?",
         "links": [ "https://youtube.com" ]

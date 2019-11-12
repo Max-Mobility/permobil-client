@@ -26,29 +26,43 @@
         }
     }
 
-  .faq-list {
-    @extend .FAQ_LIST_BASE;
-    background-color: $black;
-    color: $white;
+    .filter-layout {
+        @extend .FILTER_LAYOUT_BASE;
 
-    .item-icon {
-      @extend .ITEM_ICON_BASE;
-      color: $permobil-cousteau;
+        .filter-title {
+            @extend .FILTER_TITLE_BASE;
+            color: $light-grey;
+        }
+
+        .filter-value {
+            @extend .FILTER_VALUE_BASE;
+            color: $white;
+        }
     }
 
-    .faq-question {
-      @extend .FAQ_QUESTION_BASE;
-      color: $white;
-    }
+    .faq-list {
+        @extend .FAQ_LIST_BASE;
+        background-color: $black;
+        color: $white;
 
-    .faq-answer {
-      @extend .FAQ_ANSWER_BASE;
-      color: $white;
-    }
+        .item-icon {
+            @extend .ITEM_ICON_BASE;
+            color: $permobil-cousteau;
+        }
 
-    .faq-link {
-        @extend .FAQ_LINK_BASE;
-        color: $permobil-cousteau;
+        .faq-question {
+            @extend .FAQ_QUESTION_BASE;
+            color: $white;
+        }
+
+        .faq-answer {
+            @extend .FAQ_ANSWER_BASE;
+            color: $white;
+        }
+
+        .faq-link {
+            @extend .FAQ_LINK_BASE;
+            color: $permobil-cousteau;
+        }
     }
-  }
 }
