@@ -4,6 +4,6 @@
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Batteriniveau</string>
     <string name="complications_provider_service_label_range">Anslået rækkevidde</string>
-    <string name="complications_provider_service_label_drive">Drevafstand</string>
-    <string name="complications_provider_service_label_coast">Kystafstand</string>
+    <string name="complications_provider_service_label_daily_distance">Drevafstand</string>
+    <string name="complications_provider_service_label_odometer">Kystafstand</string>
 </resources>

@@ -4,6 +4,6 @@
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Batterijniveau</string>
     <string name="complications_provider_service_label_range">Geschatte Rance</string>
-    <string name="complications_provider_service_label_drive">Rijd afstand</string>
-    <string name="complications_provider_service_label_coast">Kust afstand</string>
+    <string name="complications_provider_service_label_daily_distance">Rijd afstand</string>
+    <string name="complications_provider_service_label_odometer">Kust afstand</string>
 </resources>

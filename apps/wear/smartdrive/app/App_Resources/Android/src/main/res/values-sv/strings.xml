@@ -4,6 +4,6 @@
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Batterinivå</string>
     <string name="complications_provider_service_label_range">Uppskattat intervall</string>
-    <string name="complications_provider_service_label_drive">Kör avstånd</string>
-    <string name="complications_provider_service_label_coast">Kustavstånd</string>
+    <string name="complications_provider_service_label_daily_distance">Kör avstånd</string>
+    <string name="complications_provider_service_label_odometer">Kustavstånd</string>
 </resources>

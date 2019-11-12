@@ -35,16 +35,16 @@ import java.util.Locale;
 /**
  * Example Watch Face Complication data provider provides a number that can be incremented on tap.
  */
-public class CoastComplicationProviderService extends ComplicationProviderService {
+public class DailyDistanceComplicationProviderService extends ComplicationProviderService {
 
-  private static final String TAG = "CoastComplicationProvider";
-  private static final String DATA_ID = "sd.distance.case";
+  private static final String TAG = "DailyDistanceComplicationProvider";
+  private static final String DATA_ID = "sd.distance.drive";
   private static final String UNITS_ID = "sd.units";
 
   public static void forceUpdate(Context context) {
     ComponentName componentName = new ComponentName(
                                                     context,
-                                                    CoastComplicationProviderService.class
+                                                    DailyDistanceComplicationProviderService.class
                                                     );
     ProviderUpdateRequester pur = new ProviderUpdateRequester(
                                                               context,
@@ -97,7 +97,7 @@ public class CoastComplicationProviderService extends ComplicationProviderServic
                                                                        thisProvider,
                                                                        complicationId,
                                                                        DATA_ID),
-                           0.0f);
+                           0);
     String units =
       preferences.getString(
                             ComplicationToggleReceiver.getPreferenceKey(
@@ -119,7 +119,7 @@ public class CoastComplicationProviderService extends ComplicationProviderServic
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_SHORT_TEXT)
         .setShortText(ComplicationText.plainText(numberText))
-        .setIcon(Icon.createWithResource(this, R.drawable.ic_omniwheel_white))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_distance_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;
@@ -127,7 +127,7 @@ public class CoastComplicationProviderService extends ComplicationProviderServic
       complicationData =
         new ComplicationData.Builder(ComplicationData.TYPE_LONG_TEXT)
         .setLongText(ComplicationText.plainText(numberText))
-        .setIcon(Icon.createWithResource(this, R.drawable.ic_omniwheel_white))
+        .setIcon(Icon.createWithResource(this, R.drawable.ic_distance_white))
         .setTapAction(complicationTogglePendingIntent)
         .build();
       break;
@@ -147,8 +147,8 @@ public class CoastComplicationProviderService extends ComplicationProviderServic
     }
   }
 
-  float ticksToMiles(float ticks) {
-    return (ticks * (2.0f * 3.14159265358f * 3.8f)) / (36.0f * 63360.0f);
+  private float ticksToMiles(float ticks) {
+    return (ticks * (2.0f * 3.14159265358f * 3.8f)) / (265.714f * 63360.0f);
   }
 
   /*

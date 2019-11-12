@@ -1136,13 +1136,13 @@ export class MainViewModel extends Observable {
       com.permobil.smartdrive.wearos.BatteryComplicationProviderService.forceUpdate(
         context
       );
-      com.permobil.smartdrive.wearos.DriveComplicationProviderService.forceUpdate(
+      com.permobil.smartdrive.wearos.DailyDistanceComplicationProviderService.forceUpdate(
         context
       );
       com.permobil.smartdrive.wearos.RangeComplicationProviderService.forceUpdate(
         context
       );
-      com.permobil.smartdrive.wearos.CoastComplicationProviderService.forceUpdate(
+      com.permobil.smartdrive.wearos.OdometerComplicationProviderService.forceUpdate(
         context
       );
     } catch (err) {

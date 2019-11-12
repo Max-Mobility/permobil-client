@@ -4,6 +4,6 @@
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">電池電量</string>
     <string name="complications_provider_service_label_range">估計範圍</string>
-    <string name="complications_provider_service_label_drive">行車距離</string>
-    <string name="complications_provider_service_label_coast">海岸距離</string>
+    <string name="complications_provider_service_label_daily_distance">行車距離</string>
+    <string name="complications_provider_service_label_odometer">海岸距離</string>
 </resources>

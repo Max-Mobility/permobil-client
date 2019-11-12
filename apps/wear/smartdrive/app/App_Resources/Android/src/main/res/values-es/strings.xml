@@ -4,6 +4,6 @@
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Nivel de bateria</string>
     <string name="complications_provider_service_label_range">Rango estimado</string>
-    <string name="complications_provider_service_label_drive">Distancia de conducción</string>
-    <string name="complications_provider_service_label_coast">Distancia costera</string>
+    <string name="complications_provider_service_label_daily_distance">Distancia de conducción</string>
+    <string name="complications_provider_service_label_odometer">Distancia costera</string>
 </resources>
