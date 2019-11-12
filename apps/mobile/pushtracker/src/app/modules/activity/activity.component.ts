@@ -98,7 +98,6 @@ export class ActivityComponent implements OnInit {
   currentDayInView: Date;
   calendarSelectedDate: Date;
   calendarDisplayedDate: Date;
-  selectedIndexDirty: boolean;
   // dayChartLabel: string;
   weekStart: Date;
   weekEnd: Date;
@@ -177,7 +176,6 @@ export class ActivityComponent implements OnInit {
     }
     this.calendarSelectedDate = new Date(this.currentDayInView);
     this.calendarDisplayedDate = new Date(this.currentDayInView);
-    this.selectedIndexDirty = false;
     this._updateWeekStartAndEnd();
 
     // save the debounced loadDailyActivity function
@@ -285,9 +283,6 @@ export class ActivityComponent implements OnInit {
       this._debouncedLoadWeeklyActivity(forcePullFromDatabase);
     } else if (this.currentTab === TAB.MONTH) {
       this._initMonthChartTitle();
-      this.calendarSelectedDate = new Date(this.currentDayInView);
-      this.calendarDisplayedDate = new Date(this.currentDayInView);
-      this.selectedIndexDirty = true;
     }
   }
 
@@ -440,10 +435,6 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarDateSelected(args) {
     if (this.currentTab !== TAB.MONTH) return;
-    if (this.selectedIndexDirty) {
-      this.selectedIndexDirty = false;
-      return;
-    }
     if (
       this.user.data.control_configuration ===
       CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
