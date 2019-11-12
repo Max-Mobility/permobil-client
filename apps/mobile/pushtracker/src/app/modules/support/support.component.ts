@@ -4,6 +4,7 @@ import { isIOS } from '@nativescript/core';
 import { EventData, ItemEventData, TextField } from '@nativescript/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoggingService } from '../../services';
+import * as mustache from 'mustache';
 
 @Component({
   selector: 'support',
@@ -25,14 +26,33 @@ export class SupportComponent implements OnInit {
 
   ngOnInit() {
     this._logService.logBreadCrumb(SupportComponent.name, 'OnInit');
+
+    const parameters = {
+      setup_video_link: 'youtube.com',
+      pairing_video_links: [
+        'youtube.com'
+      ].join(', '),
+      link_to_landing_page: 'https://permobilus.com',
+      permobil_site: 'https://permobilus.com',
+      updates_video: 'youtube.com'
+    };
+
+    // since this is an array object it appears we can't simply pass
+    // the parameters as the second argument to the instant function -
+    // the templates don't render
     const faqs = this._translateService.instant(
       'support-component.faqs'
     );
-    if (faqs.length) {
-      this.supportItems = faqs;
-    } else {
-      this.supportItems = Object.values(faqs);
-    }
+
+    // make sure to use the parameters with mustache to fill the text
+    // properly
+    this.supportItems = Object.values(faqs).map((f: any) => {
+      return {
+        a: mustache.render(f.a, parameters),
+        q: mustache.render(f.q, parameters)
+      };
+    });
+
     this._allSupportItems = this.supportItems.map(i => {
       return {
         a: i.a,

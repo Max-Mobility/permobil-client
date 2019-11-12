@@ -513,12 +513,13 @@
 		"user-exists": "An account already exists for this email."
 	},
 	"support-component": {
-    "search-hint": "Enter search term...",
+    "search-hint": "enter search term...",
 		"faqs": [
       {
-        "category": "Setup & Installation",
-        "a": "No. There is an initial set up process to get your PushTracker E2 ready to pair and connect. Refer to this video {{ video_link }} for more information on set up and a library of how to videos.",
-        "q": "How do I set up my new PushTracker E2?"
+        "category": "setup & Installation",
+        "a": "No. There is an initial set up process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on set up and a library of how to videos.",
+        "q": "How do I set up my new PushTracker E2?",
+        "links": [ "youtube.com" ]
       },
       {
         "category": "Setup & Installation",
@@ -537,7 +538,7 @@
       },
       {
         "category": "Setup & Installation",
-        "a": "Your Google account allows you to access the Google Play store. The store is where you will download the SmartDrive MX2+ app for your new PushTracker.",
+        "a": "Your Google account allows you to access the Google Play store. The store is where you will download the SmartDrive MX2+ app and PushTracker App for your new smartwatch.",
         "q": "Why do I need a Google account?"
       },
       {
@@ -552,12 +553,12 @@
       },
       {
         "category": "Setup & Installation",
-        "a": "SwitchControl works in momentary function at 1.5 mph out of the box. To change these settings, you can through the PushTracker E2 or the PushTracker app on your phone.",
+        "a": "SwitchControl works in momentary function at 1.5 mph out of the box. To change these settings, you can use the SmartDrive MX2+ app on your PushTracker E2 or the PushTracker app on your phone.",
         "q": "How to I change my SwitchControl settings?"
       },
       {
         "category": "Setup & Installation",
-        "a": "The bands for the PushTracker E2 are interchangeable and can easily be found online retails stores. The size for the band is 22\"",
+        "a": "The bands for the PushTracker E2 are interchangeable and can easily be found online retail stores. The size for the band is 22\"",
         "q": "Can I get another band for my PushTracker E2? What size?"
       },
       {
@@ -567,18 +568,20 @@
       },
       {
         "category": "Updates",
-        "a": "Use the PushTracker app on your phone to keep your SwitchControl, original PushTracker and SmartDrive up to date.",
+        "a": "Use the PushTracker app on your phone to keep your original PushTracker and SmartDrive up to date.",
         "q": "I have a SwitchControl and/or an original PushTracker. How do I keep my devices up to date?"
       },
       {
         "category": "Updates",
-        "a": "Yes. To get full functionality of your SmartDrive, use the PushTracker E2 to perform a wireless update. Refer to this video for step by step instructions.",
-        "q": "I recently purchased the new PushTracker E2. Do I need to update my SmartDrive?"
+        "a": "Yes. To get full functionality of your SmartDrive, use the PushTracker E2 to perform a wireless update. Refer to the video below for step by step instructions.",
+        "q": "I recently purchased the new PushTracker E2. Do I need to update my SmartDrive?",
+        "links": [ "youtube.com" ]
       },
       {
         "category": "Connectivity",
-        "a": "If it is the first time pairing, you can pair for by just tapping the green \"turn power assist on\" button. At any point you can use the \"Pair SmartDrive\" function in the settings menu. {{ video_links }}",
-        "q": "How do I pair my SmartDrive to my PushTracker E2?"
+        "a": "If it is the first time pairing, you can pair your SmartDrive and PushTracker E2 by just tapping the green \"turn power assist on\" button. At any point you can use the \"Pair SmartDrive\" function in the settings menu.",
+        "q": "How do I pair my SmartDrive to my PushTracker E2?",
+        "links": [ "youtube.com" ]
       },
       {
         "category": "Connectivity",
@@ -602,8 +605,8 @@
       },
       {
         "category": "Usability",
-        "a": "The sensor on the back of the device may not be sensing you are wearing it. You can turn off the 'check wrist' function in the settings of the SmartDrive MX2+ app.",
-        "q": "My PushTracker E2 is on my wrist, but the 'turn power assist button' and it won't let me push it."
+        "a": "The sensor on the back of the device may not be sensing you are wearing it. You can turn off the [Check for Wrist] function in the settings of the SmartDrive MX2+ app.",
+        "q": "My PushTracker E2 is on my wrist, but I cannot activate power assist using the 'turn power assist on' button. How can I turn power assist on?"
       },
       {
         "category": "Usability",
@@ -612,7 +615,7 @@
       },
       {
         "category": "Usability",
-        "a": "You can save battery life by adjusting the following: decrease brightness level, turn off always on screen, turn off wi-fi, turn off location tracking (GPS), turn off 'Ok Google', and use Mobvoi watch faces.",
+        "a": "You can save battery life by adjusting the following: decrease brightness level, turn off [Always on Screen] setting, turn off Wi-Fi, turn off location tracking (GPS), turn off 'OK Google', and use Mobvoi or Permobil watch faces.",
         "q": "My PushTracker E2 battery drained and I was not using it at all. What happened?"
       },
       {
@@ -622,17 +625,18 @@
       },
       {
         "category": "Usability",
-        "a": "All of the SmartDrive MX2+ settings are changed within the app. Be sure to go to the settings menu within the app, and pnot the settings for the device itself.",
+        "a": "All of the SmartDrive MX2+ settings are changed within the SmartDrive MX2+ app. Be sure to go to the settings menu within the app, and not the settings for the smartwatch itself.",
         "q": "Why can't I see SmartDrive MX2+ settings even though I went to settings?"
       },
       {
         "category": "Usability",
         "a": "Your first point of contact if you are having issues is the dealer who provided you with the SmartDrive. Our customer support staff can also help at support.smartdrive@permobil.com.",
-        "q": "Who do I contact when my SmartDrive is not working right?"
+        "q": "Who do I contact when my SmartDrive is not working right?",
+        "links": [ "support.smartdrive@permobil.com" ]
       },
       {
         "category": "Usability",
-        "a": "Momentary and latched are terms used in the Complex Rehab Technology (CRT) industry to explain different driving capabilities. Momentary means you push the button to go, and then the motor stops if you let go of the button. It only works in the \"moment\" you push it. Latched means you hold the button until you reach a safe, desired speed and then when you let go the motor continues to cruise until you push the button again to start it.",
+        "a": "Momentary and latched are terms used in the Complex Rehab Technology (CRT) industry to explain different driving capabilities. Momentary means you push the button to go, and then the motor stops if you let go of the button. It only works in the \"moment\" you push it. Latched means you hold the button until you reach a safe, desired speed and then when you let go the motor continues to cruise until you push the button again to stop it.",
         "q": "What do Momentary and Latched mean?"
       },
       {
@@ -642,41 +646,43 @@
       },
       {
         "category": "Procurement & Funding",
-        "a": "We have an LMN generator on EZ-TI (Permobil TiLite manual wheelchair configurator) and {{ links_on_landing_page }}. You can also reach out to our funding experts at us_funding@permobil.com.",
-        "q": "Where can I find resources on documentation/letters of medical necessity?"
+        "a": "We have an LMN generator on EZ-TI (Permobil TiLite manual wheelchair configurator) and a landing page (link below). You can also reach out to our funding experts at us_funding@permobil.com.",
+        "q": "Where can I find resources on documentation/letters of medical necessity?",
+        "links": [ "https://permobilus.com", "us_funding@permobil.com" ]
       },
       {
         "category": "Procurement & Funding",
-        "a": "A new PushTracker E2 can be purchased from Permobil {{ permobil_site }} or from online retails stores like Amazon [search for TicWatch E2 by Mobvoi]. You can also go through your dealer if you prefer to work with them.",
-        "q": "Where can I get a new PushTrackerE2? Do I have to use a dealer?"
+        "a": "A new PushTracker E2 can be purchased from Permobil (see the permobil website below) or from online retails stores like Amazon [search for TicWatch E2 by Mobvoi]. You can also go through your dealer if you prefer to work with them.",
+        "q": "Where can I get a new PushTrackerE2? Do I have to use a dealer?",
+        "links": [ "https://permobilus.com", "us_funding@permobil.com" ]
       },
       {
         "category": "Procurement & Funding",
-        "a": "If you have an original PushTracker and a SmartDrive that is MX2+, you qualify for an upgrade. If you received your original PushTracker on Aug 1st or after, you qualify for a free upgrade. If you received it before Aug. 1st, then you qualify for a $40 discount off MSRP, which is equals $160.",
+        "a": "If you have an original PushTracker and a SmartDrive that is MX2+, you qualify for an upgrade. If you received your original PushTracker on or after Aug 1st, 2019, you qualify for a free upgrade. If you received it before Aug. 1st 2019, then you qualify for a $40 discount off MSRP, which equals $160.",
         "q": "Is there a way for me to trade in or upgrade my current PushTracker?"
       },
 			{
-        "category": "General",
-				"a": "Generally, you should check these things: 1) that your SmartDrive is powered on, 2) that your PushTracker is in 'SD On' mode - the blue light should be flashing, and 3) that you are in MX2+ mode - in which a double tap will engage the motor.",
+        "category": "Other",
+				"a": "Generally, you should check these things: 1) that you are in MX2+ mode, 2) that your SmartDrive is powered on, 3) that power assist is on, and 4) that the PushTracker is connected to your SmartDrive (the PushTracker will flash blue) - if all of these are true, then a double tap will engage the motor.",
 				"q": "Why isn't my SmartDrive engaging?"
 			},
 			{
-        "category": "General",
-				"a": "Unfortunately, no - the SmartDrive is incapable of providing any braking for your chair. This means that after you turn off the motor you will need to manually grab the hand-rims and bring your chair to a stop.  This also means that your SmartDrive cannot slow you down going down a ramp or a hill.",
+        "category": "Other",
+				"a": "Unfortunately, no - the SmartDrive is incapable of providing any braking for your chair. This means that after you deactivate the motor you will need to manually grab the hand-rims and bring your chair to a stop.  This also means that your SmartDrive cannot slow you down going down a ramp or a hill.",
 				"q": "Can my SmartDrive slow me down?"
 			},
 			{
-        "category": "General",
+        "category": "Other",
 				"a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the PushTracker app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!",
-				"q": "Why won't my PushTracker connect to my phone?"
+				"q": "Why won't my original PushTracker connect to my phone?"
 			},
 			{
-        "category": "General",
+        "category": "Other",
 				"a": "The SmartDrive is safe for children to use - but we do recommend the best way to ensure safety is to train them on proper tapping and braking techniques. Moreover, we have included the ability to limit the max speed of the SmartDrive (from 0.5 miles per hour all the way up to 5.5 miles per hour) as well as the acceleration of the SmartDrive. For someone who is just learning to push or to use a SmartDrive, we recommend setting both very low.",
 				"q": "How can I make the SmartDrive safe for children?"
 			},
 			{
-        "category": "General",
+        "category": "Other",
 				"a": "You should be active and go out into the world! With pushing however, unlike the general advice with walking (where people really cannot walk too much) - people CAN push too much! If you push too much then you will be more likely to get pain and injury in your arms and shoulders - which may limit your mobility and independence.  With the SmartDrive you are still able to push around in your chair as you normally would - you can now go farther faster and with less effort! Use it when you need to get somewhere fast or up a big hill - don't kill your shoulders if you don't have to! Enjoy your journey with your SmartDrive!",
 				"q": "Why should I want a SmartDrive?"
 			}

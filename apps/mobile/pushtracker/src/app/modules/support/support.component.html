@@ -21,10 +21,11 @@
   <StackLayout row="3">
     <ListView [items]="supportItems" (itemLoading)="onItemLoading($event)" class="faq-list">
       <ng-template let-item="item">
-        <GridLayout rows="auto, auto" columns="auto, *" padding="8">
+        <GridLayout rows="auto, auto, auto" columns="auto, *" padding="8">
           <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
           <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
           <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
+          <label *ngIf="links?.length" row="2" col="1" [text]="item.links.join('\n')" textWrap="true" class="faq-answer"></label>
         </GridLayout>
       </ng-template>
     </ListView>
