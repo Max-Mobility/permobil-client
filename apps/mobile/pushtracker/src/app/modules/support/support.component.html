@@ -19,13 +19,22 @@
   <Label row="2" text="" class="hr" textWrap="true"></Label>
 
   <StackLayout row="3">
-    <ListView [items]="supportItems" (itemLoading)="onItemLoading($event)" class="faq-list">
-      <ng-template let-item="item">
+    <ListView [items]="supportItems" [itemTemplateSelector]="itemTemplateSelector" (itemLoading)="onItemLoading($event)" class="faq-list">
+      <ng-template nsTemplateKey="no-links" let-item="item">
+        <GridLayout rows="auto, auto" columns="auto, *" padding="8">
+          <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
+          <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
+          <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
+        </GridLayout>
+      </ng-template>
+      <ng-template nsTemplateKey="has-links" let-item="item">
         <GridLayout rows="auto, auto, auto" columns="auto, *" padding="8">
           <Label rowSpan="2" col="0" text="&#xe8af;" class="item-icon"></Label>
           <label row="0" col="1" [text]="item.q" textWrap="true" class="faq-question"></label>
           <label row="1" col="1" [text]="item.a" textWrap="true" class="faq-answer"></label>
-          <label *ngIf="links?.length" row="2" col="1" [text]="item.links.join('\n')" textWrap="true" class="faq-answer"></label>
+          <StackLayout row="2" col="1">
+            <Button *ngFor="let link of item.links" [text]="link" textWrap="true" class="faq-answer" (tap)="onLinkTapped(link)"></Button>
+          </StackLayout>
         </GridLayout>
       </ng-template>
     </ListView>
