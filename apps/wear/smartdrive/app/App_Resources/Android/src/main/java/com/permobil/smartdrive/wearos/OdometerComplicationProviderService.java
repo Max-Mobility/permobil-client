@@ -90,21 +90,11 @@ public class OdometerComplicationProviderService extends ComplicationProviderSer
     // Retrieves your data, in this case, we grab an incrementing number from SharedPrefs.
     SharedPreferences preferences =
       getSharedPreferences(
-                           ComplicationToggleReceiver.COMPLICATION_PROVIDER_PREFERENCES_FILE_KEY, 0);
+                           ComplicationToggleReceiver.APP_PREFERENCES_FILE_KEY, 0);
     float ticks =
-      preferences.getFloat(
-                           ComplicationToggleReceiver.getPreferenceKey(
-                                                                       thisProvider,
-                                                                       complicationId,
-                                                                       DATA_ID),
-                           0.0f);
+      preferences.getFloat(DATA_ID, 0.0f);
     String units =
-      preferences.getString(
-                            ComplicationToggleReceiver.getPreferenceKey(
-                                                                        thisProvider,
-                                                                        complicationId,
-                                                                        UNITS_ID),
-                            "english");
+      preferences.getString(UNITS_ID, "english");
     float miles = ticksToMiles(ticks);
     float kilometers = miles * 1.609f;
     String numberText = String.format(Locale.getDefault(), "%.1f mi", miles);
