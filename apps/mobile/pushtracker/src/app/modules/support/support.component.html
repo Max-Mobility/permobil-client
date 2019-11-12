@@ -5,11 +5,10 @@
 
   <StackLayout row="0" col="1" horizontalAlign="right" class="data-box" (tap)="onFilterSelectorTapped($event)"
                padding="0" paddingRight="5">
-    <GridLayout rows="*" columns="auto, *" height="40">
-      <Label class="data-box-value" [text]="('support-component.category.title' | translate) + ':'" margin="0" fontSize="12" fontWeight="normal">
+    <GridLayout rows="*" columns="*, auto" height="40">
+      <Label class="data-box-value" [text]="selectedCategory" textWrap="true" paddingRight="10" fontSize="13">
       </Label>
-      <Label col="1" class="data-box-value" [text]="selectedCategory" textWrap="true" paddingRight="10" fontSize="13">
-      </Label>
+      <Label col="1" class="data-box-arrow" text="&#xe5c5;"></Label>
     </GridLayout>
   </StackLayout>
 
