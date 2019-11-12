@@ -17,7 +17,7 @@
         <StackLayout row="1" col="1" class="value-circle" tap="{{ onSettingsInfoItemTap }}">
             <ui:AutoFitText text="{{ changeSettingKeyValue }}" class="changeSettingsValue" />
             <Label text="{{ changeSettingKeyString }}" textWrap="true" class="changeSettingsTitle no-margin"/>
-            <Label text="&#xf149;" class="bullet-list-icon bold fs16 no-margin no-padding"/>
+            <Label text="&#xf149;" class="info-icon"/>
         </StackLayout>
             // Confirm button - will save the changes
         <RL:Ripple row="1" col="2" rippleColor="#ddd" class="confirm-btn">

@@ -34,6 +34,16 @@
     background-color: $permobil-hero;
     color: $white;
 
+    .info-icon {
+        font-size: 20;
+        font-family: $ionicon;
+        color: $white;
+        vertical-align: $center;
+        horizontal-align: $center;
+        margin: 0;
+        padding: 0;
+    }
+
     .changeSettingsTitle {
       color: $white;
         width: 90%;

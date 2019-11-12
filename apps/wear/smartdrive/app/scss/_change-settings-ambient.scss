@@ -36,6 +36,16 @@
     background-color: transparent;
     color: $white;
 
+    .info-icon {
+        font-size: 20;
+        font-family: $ionicon;
+        color: $ambient-white;
+        vertical-align: $center;
+        horizontal-align: $center;
+        margin: 0;
+        padding: 0;
+    }
+
     .changeSettingsTitle {
         width: 90%;
       color: $ambient-white;
