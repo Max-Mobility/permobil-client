@@ -5,6 +5,7 @@ import * as app from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { confirm } from '@nativescript/core/ui/dialogs';
+import { connectionType, getConnectionType }from "@nativescript/core/connectivity";
 import { TranslateService } from '@ngx-translate/core';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
@@ -239,6 +240,22 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private async _loadSmartDriveFirmwareFromFileSystem() {
+    this.currentVersions = JSON.parse(
+      appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
+    );
+    if (this.currentVersions['SmartDriveBLE.ota']) {
+      const f = this.currentVersions['SmartDriveMCU.ota'].filename;
+      this.currentVersions['SmartDriveMCU.ota'].data =
+        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
+    }
+    if (this.currentVersions['SmartDriveBLE.ota']) {
+      const f = this.currentVersions['SmartDriveBLE.ota'].filename;
+      this.currentVersions['SmartDriveBLE.ota'].data =
+        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
+    }
+  }
+
   private currentVersions = {};
   async checkForSmartDriveUpdates() {
     try {
@@ -255,6 +272,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     kinveySecondQuery.equalTo('firmware_file', true);
     kinveySecondQuery.equalTo('_filename', 'SmartDriveMCU.ota');
     kinveyQuery.or(kinveySecondQuery);
+
+    const _connType = getConnectionType();
+    console.log('_connType', _connType);
+    if (_connType === connectionType.none) {
+      try {
+        await this._loadSmartDriveFirmwareFromFileSystem();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      // Now perform the SmartDrive updates if we need to
+      try {
+        await this.performSmartDriveWirelessUpdate();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      return;
+    }
 
     KinveyFiles.find(kinveyQuery)
       .then(async kinveyResponse => {
@@ -319,9 +353,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       })
       .catch(async err => {
         try {
-          this.currentVersions = JSON.parse(
-            appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
-          );
+          await this._loadSmartDriveFirmwareFromFileSystem();
         } catch (err) {
           this._logService.logException(err);
         }
@@ -608,6 +640,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private async _loadPushTrackerFirmwareFromFileSystem() {
+    this.currentPushTrackerVersions = JSON.parse(
+      appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
+    );
+    if (this.currentPushTrackerVersions['PushTracker.ota']) {
+      const f = this.currentPushTrackerVersions['PushTracker.ota'].filename;
+      this.currentPushTrackerVersions['PushTracker.ota'].data =
+        PushTrackerData.Firmware.loadFromFileSystem(this.currentPushTrackerVersions['PushTracker.ota']);
+    }
+  }
+
   private currentPushTrackerVersions = {};
   async checkForPushTrackerUpdates() {
     try {
@@ -618,6 +661,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       };
     } catch (err) {
       this._logService.logException(err);
+    }
+
+    const _connType = getConnectionType();
+    console.log('_connType', _connType);
+    if (_connType === connectionType.none) {
+      try {
+        await this._loadPushTrackerFirmwareFromFileSystem();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      // Now perform the PushTracker updates if we need to
+      try {
+        await this.performPushTrackerWirelessUpdate();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      return;
     }
 
     const kinveyQuery = new KinveyQuery();
@@ -686,9 +746,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       })
       .catch(async err => {
         try {
-          this.currentPushTrackerVersions = JSON.parse(
-            appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
-          );
+          await this._loadPushTrackerFirmwareFromFileSystem();
         } catch (err) {
           this._logService.logException(err);
         }
@@ -722,12 +780,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         return val.connected;
       });
       if (trackers.length === 0) {
+        /*
         new Toasty({
           text: this._translateService.instant(
             'wireless-updates.messages.no-pushtracker-detected'
           ),
           duration: ToastDuration.LONG
         }).show();
+        */
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.no-pushtracker-detected'
@@ -736,12 +796,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else if (trackers.length > 1) {
+        /*
         new Toasty({
           text: this._translateService.instant(
             'wireless-updates.messages.more-than-one-pushtracker-connected'
           ),
           duration: ToastDuration.LONG
         }).show();
+        */
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.more-than-one-pushtracker-detected'
