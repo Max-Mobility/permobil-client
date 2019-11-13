@@ -5,7 +5,7 @@ import * as app from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { confirm } from '@nativescript/core/ui/dialogs';
-import { connectionType, getConnectionType }from "@nativescript/core/connectivity";
+import { connectionType, getConnectionType }from '@nativescript/core/connectivity';
 import { TranslateService } from '@ngx-translate/core';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
