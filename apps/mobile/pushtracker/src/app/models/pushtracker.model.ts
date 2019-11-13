@@ -1029,7 +1029,7 @@ export class PushTracker extends Observable {
     */
     this.sendEvent(PushTracker.daily_info_event, {
       year: di.year,
-      month: di.month - 1,
+      month: di.month,
       day: di.day,
       pushesWith: di.pushesWith,
       pushesWithout: di.pushesWithout,
