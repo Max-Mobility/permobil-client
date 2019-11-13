@@ -1,0 +1,48 @@
+{
+  "da": [
+    "Tilføjet mulighed for at se de nyeste SmartDrive Bluetooth-forbindelsers styrke til \"Om\" i indstillingsmenuen",
+    "Tilføjet support til at sende og modtage SmartDrive SwitchControl-konfigurationer til / fra PushTracker Mobile-app og SmartDrive"
+  ],
+  "de": [
+    "Möglichkeit die Stärke der letzten SmartDrive-Bluetoothverbindungen einzusehen ist dem \"Über\" Menü hinzugefügt worden",
+    "Support für Senden und Empfangen von SmartDrive SwitchControls Konfigurationen zu und von der Pushtracker Mobil app und dem SmartDrive hinzugeführt"
+  ],
+  "en": [
+    "Added ability to view most recent SmartDrive Bluetooth connection strength to the \"About\" Settings Menu",
+    "Added support for sending and receiving SmartDrive SwitchControl configurations to / from PushTracker Mobile app and SmartDrive"
+  ],
+  "es": [
+    "Se ha añadido poder ver la fuerza de conexión Bluetooth SmartDrive más reciente al menú de configuración \"Acerca de\"",
+    "Agregado soporte  para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
+  ],
+  "fr": [
+    "Ajouté la possibilité d'afficher la dernière puissance de connexion Bluetooth SmartDrive dans le menu de configuration \"A propos de\"",
+    "Ajout de la prise en charge de l'envoi et de la réception des configurations SmartDrive SwitchControl vers et depuis l'application PushTracker Mobile app et SmartDrive"
+  ],
+  "it": [
+  ],
+  "ja": [
+    "最新のSmartDriveのBluetooth接続強度を確認する機能が追加されました。設定メニューの「バージョン情報」をご参照ください",
+    "PushTrackerモバイルアプリとSmartDrive間でスイッチコントロールの設定を共有するためのサポートが追加されました "
+  ],
+  "ko": [
+    "설정의 \"관련 정보\"에서 스마트드라이브와의 블루투스 연결 강도가 확인 가능하도록 추가되었습니다",
+    "스마트드라이브의 스위치 조절장치의 설정을 PushTracker 모바일 앱에서도 변경할 수 있도록 추가되었습니다"
+  ],
+  "nb": [
+    "Lagt til muligheten til å se de nyeste SmartDrive Bluetooth-tilkoblingsfordelene til \"Om\" i Innstillingsmenyen",
+    "Lagt til støtte for sending og mottak av SmartDrive SwitchControl-konfigurasjoner til / fra PushTracker Mobile-app og SmartDrive"
+  ],
+  "nl": [
+    "Mogelijkheid toegevoegd om de meest recente SmartDrive Bluetooth-verbindingssterkte te bekijken in het instellingenmenu \"Over\"",
+    "Ondersteuning toegevoegd voor het verzenden en ontvangen van SmartDrive SwitchControl-configuraties van / naar PushTracker Mobile-app en SmartDrive"
+  ],
+  "sv": [
+    "Adderad funktion att se de senaste SmartDrive Bluetooth anlutningarnas styrka under \"Om\" i inställningsmenyn",
+    "Adderad support för att skicka och ta emot SmartDrive SwitchControl-konfigurationer från / till PushTracker Mobil appen och SmartDrive"
+  ],
+  "zh": [
+    "關於”設置選單中增加了查看最新的SmartDrive藍牙連接強度的功能",
+    "增加支持-可用於推送和接收SmartDrive線控配置到/從PushTracker移動端應用和SmartDrive"
+  ]
+}
