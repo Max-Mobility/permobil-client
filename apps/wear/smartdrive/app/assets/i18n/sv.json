@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
     "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive Serienummer",
+    "smartdrive-serial-number-info": "För att komma åt din SmartDrive-serienummer, som kan vara användbart för support- och garantisyften, måste du ansluta till PushTracker Mobile-appen.",
     "title": "Om information",
     "version": "SmartDrive MX2+ Wear OS App (SW) version",
     "watch-serial-number": "Serienummer Klocka"
@@ -54,8 +55,10 @@
       "timeout": "Appanslutningen har gått ut."
     },
     "connect": "Det gick inte att ansluta till SmartDrive.",
+    "could-not-enable-tap-sensor": "Det gick inte att aktivea enhetens sensor.",
     "getting-error": "Det gick inte att få  fram SmartDrive felet.",
     "must-wear-watch": "[Kontrollera för handled] Inställningen är aktiverad, därför måste klockan bäras för att styra din SmartDrive.",
+    "no-network": "Anslutning till molnet är inte tillgänglig. Se till att din smartwatch är anslutet till internet antingen via Wi-Fi eller din telefon.",
     "no-smartdrive-paired": "Ingen SmartDrive är parkopplad.",
     "no-smartdrives-found": "Ingen SmartDrives hittades i närheten.",
     "permissions": "Det gick inte att utföra den begärda åtgärden. Erforderliga behörigheter beviljades inte.",
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Avbryta",
+      "close": "Stäng",
       "force": "Styrka",
       "pause": "Pausa",
       "resume": "Återuppta",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Hämtar nya uppdateringar ...",
     "errors": {
       "connecting": "Fel vid anslutning till SmartDrive.",
+      "connection-failure": "Anslutningen till Permobil-servern misslyckades. Se till att smartklockan är ansluten till internet antingen via Wi-Fi eller din telefon.\n\nFel:",
       "downloading": "Fel vid nedladdning av uppdateringar.",
       "getting": "Fel vid sökning efter uppdateringar.",
-      "saving": "Fel vid lagring av uppdateringsdata."
+      "saving": "Fel vid lagring av uppdateringsdata.",
+      "timeout": "SmartDrive uppdatering har avbrutits."
     },
     "failed": "SmartDrive uppdateringar misslyckades.",
+    "initializing": "Hämtar uppdateringar…",
     "status": "Status uppdateringar",
     "success": "SmartDrive-uppdateringar avslutade framgångsrikt!",
     "timeout": "SmartDrive uppdateringar avbrutits.",

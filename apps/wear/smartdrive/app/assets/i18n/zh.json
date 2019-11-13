@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive藍牙（BT）版本",
     "sd-mcu-version": "SmartDrive MCU（SD）版本",
     "sd-serial-number": "SmartDrive序列號",
+    "smartdrive-serial-number-info": "取得SmartDrive序號 (可用於售後服務和保固），你必須連接到PushTracker移動端應用程序。",
     "title": "關於信息",
     "version": "SmartDrive MX2 Wear OS App（SW）版本",
     "watch-serial-number": "Smartwatch序列號"
@@ -54,8 +55,10 @@
       "timeout": "App連接已超時。"
     },
     "connect": "無法連接到SmartDrive。",
+    "could-not-enable-tap-sensor": "無法啟用敲擊感應器。",
     "getting-error": "無法獲得SmartDrive錯誤。",
     "must-wear-watch": "[檢查手腕]設置已啟用，因此必須佩戴智能手錶才能控制SmartDrive。",
+    "no-network": "無法連接到雲端。確認你的智能手錶透過Wi-Fi或手機連接到互聯網。",
     "no-smartdrive-paired": "沒有SmartDrive配對。",
     "no-smartdrives-found": "附近找不到SmartDrives。",
     "permissions": "無法執行請求的操作。未授予所需權限。",
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "取消",
+      "close": "關閉",
       "force": "力",
       "pause": "暫停",
       "resume": "恢復",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "下載新的更新數據...",
     "errors": {
       "connecting": "連接到SmartDrive時出錯。",
+      "connection-failure": "連接到Permobil伺服器失敗。確認你的智能手錶透過Wi-Fi或手機連接到互聯網。\n\n 錯誤：",
       "downloading": "下載更新時出錯。",
       "getting": "搜索更新時出錯。",
-      "saving": "保存更新數據時出錯。"
+      "saving": "保存更新數據時出錯。",
+      "timeout": "SmartDrive更新已逾時。"
     },
     "failed": "SmartDrive更新失敗。",
+    "initializing": "初始化更新…",
     "status": "更新狀態",
     "success": "SmartDrive更新成功完成！",
     "timeout": "SmartDrive更新超時。",

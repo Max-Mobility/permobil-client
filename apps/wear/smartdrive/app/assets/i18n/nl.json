@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Versie",
     "sd-mcu-version": "SmartDrive MCU (SD) Versie",
     "sd-serial-number": "SmartDrive Serienummer",
+    "smartdrive-serial-number-info": "Om toegang te krijgen tot uw SmartDrive serienummer, wat handig kan zijn voor ondersteuning en garantiedoeleinden, moet u verbinding maken met de PushTracker Mobile-app.",
     "title": "Over informatie",
     "version": "SmartDrive MX2+ Wear OS App (SW) Versie",
     "watch-serial-number": "Smartwatch Serienummer"
@@ -54,8 +55,10 @@
       "timeout": "Er is een time-out voor de App-verbinding opgetreden."
     },
     "connect": "Kan geen verbinding maken met SmartDrive.",
+    "could-not-enable-tap-sensor": "Kon tapsensor niet inschakelen.",
     "getting-error": "Ophalen SmartDrive fout mislukt.",
     "must-wear-watch": "[Controleer positie op pols] Instellingen is vrijgegeven, daarom moet de Smartwatch om uw pols worden gedragen om uw SmartDrive te bedienen.",
+    "no-network": "Verbinding met de cloud is niet beschikbaar. Zorg ervoor dat uw smartwatch verbinding heeft met internet via wifi of uw telefoon.",
     "no-smartdrive-paired": "Geen SmartDrive gekoppeld.",
     "no-smartdrives-found": "Geen SmartDrives gevonden in de buurt.",
     "permissions": "Kan de gevraagde actie niet uitvoeren. Vereiste rechten zijn niet verleend.",
@@ -78,7 +81,7 @@
     "nb": "Noors [Bokmål]",
     "nl": "Nederlands",
     "nn": "Noors [Nynorsk]",
-    "sv": "",
+    "sv": "Zweeds",
     "zh": "Chinese [Traditional]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Annuleren",
+      "close": "Sluiten",
       "force": "Dwingen",
       "pause": "Pauze",
       "resume": "Hervatten",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Nieuwe updates downloaden...",
     "errors": {
       "connecting": "Fout bij verbinding maken met SmartDrive.",
+      "connection-failure": "Verbinding met Permobil-server mislukt. Zorg ervoor dat uw smartwatch verbinding heeft met internet via Wi-Fi of uw telefoon.\n\nFout:",
       "downloading": "Fout bij downloaden van updates.",
       "getting": "Fout bij zoeken naar updates.",
-      "saving": "Fout bij het opslaan van de updategegevens."
+      "saving": "Fout bij het opslaan van de updategegevens.",
+      "timeout": "SmartDrive-updates zijn verlopen."
     },
     "failed": "SmartDrive updates zijn mislukt.",
+    "initializing": "Updates initialiseren ...",
     "status": "Updates Status",
     "success": "SmartDrive updates met succes voltooid!",
     "timeout": "Er is een time-out opgetreden voor SmartDrive updates.",

@@ -4,10 +4,10 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
     "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive Serial Number",
+    "smartdrive-serial-number-info": "To access your SmartDrive serial number, you must connect to the PushTracker mobile app.",
     "title": "About Information",
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
-    "watch-serial-number": "Smartwatch Serial Number",
-    "smartdrive-serial-number-info": "To access your SmartDrive serial number, you must connect to the PushTracker mobile app."
+    "watch-serial-number": "Smartwatch Serial Number"
   },
   "app-connection": {
     "completed": "Connected successfully to PushTracker account.",
@@ -94,12 +94,12 @@
   "ota": {
     "action": {
       "cancel": "Cancel",
+      "close": "Close",
       "force": "Force",
       "pause": "Pause",
       "resume": "Resume",
       "retry": "Retry",
-      "start": "Start",
-      "close": "Close"
+      "start": "Start"
     },
     "sd": {
       "state": {
@@ -209,19 +209,19 @@
     "canceled": "SmartDrive updates canceled.",
     "changes": "Summary of Changes",
     "checking-for-updates": "Checking for updates...",
-    "initializing": "Initializing updates",
     "communications-failed": "Communications with the SmartDrive have failed, please reboot your SmartDrive.",
     "connecting-to-smartdrive": "Connecting to SmartDrive...",
     "downloading-new-firmwares": "Downloading new updates data...",
     "errors": {
-      "connection-failure": "Connection to backend failed, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.\n\nError:",
       "connecting": "Error connecting to SmartDrive.",
+      "connection-failure": "Connection to backend failed, please ensure that your smartwatch is able to connect to the internet either through Wifi or your phone.\n\nError:",
       "downloading": "Error downloading updates.",
       "getting": "Error searching for updates.",
       "saving": "Error saving updates data.",
       "timeout": "SmartDrive updates timed out."
     },
     "failed": "SmartDrive updates failed.",
+    "initializing": "Initializing updates",
     "status": "Updates Status",
     "success": "SmartDrive updates completed successfully!",
     "timeout": "SmartDrive updates timed out.",

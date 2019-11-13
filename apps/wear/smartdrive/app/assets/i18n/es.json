@@ -4,6 +4,7 @@
     "sd-ble-version": "Versión SmartDrive Bluetooth (BT)",
     "sd-mcu-version": "Versión SmartDrive MCU (SD)",
     "sd-serial-number": "Número de serie del SmartDrive",
+    "smartdrive-serial-number-info": "Para acceder al número de serie del SmartDrive, que puede ser útil para fines de soporte y garantía, debe conectarse a la aplicación móvil PushTracker.",
     "title": "Acerca de la información",
     "version": "Versión de la aplicación SmartDrive MX2+ Wear OS (SW)",
     "watch-serial-number": "Número de serie del reloj inteligente (PushTracker E2)"
@@ -54,8 +55,10 @@
       "timeout": "La conexión de la aplicación ha excedido el tiempo de espera."
     },
     "connect": "No se puede conectar al SmartDrive.",
+    "could-not-enable-tap-sensor": "No se pudo habilitar el sensor de palmeo.",
     "getting-error": "No se puede obtener el error del SmartDrive.",
     "must-wear-watch": "El ajuste [Verificar muñeca] está habilitado, por lo tanto, el reloj inteligente (PushTracker E2) debe usarse para controlar su SmartDrive.",
+    "no-network": "La conexión a la nube no está disponible. Asegúrese de que su reloj inteligente esté conectado a Internet a través de Wi-Fi o su teléfono.",
     "no-smartdrive-paired": "SmartDrive no emparejado.",
     "no-smartdrives-found": "No se han encontrado otros SmartDrives cerca.",
     "permissions": "No se puede realizar la acción solicitada. No se otorgaron los permisos requeridos.",
@@ -78,7 +81,7 @@
     "nb": "Noruego [Bokmål]",
     "nl": "Holandés",
     "nn": "Noruego [Nynorsk]",
-    "sv": "",
+    "sv": "sueco",
     "zh": "Chino [Tradicional]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Cancelar",
+      "close": "Cerrar",
       "force": "Fuerza",
       "pause": "Pausa",
       "resume": "Reanudar",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Descargando nuevos datos de actualizaciones ...",
     "errors": {
       "connecting": "Error al conectarse al SmartDrive.",
+      "connection-failure": "Falló la conexión al servidor de Permobil. Asegúrese de que su reloj inteligente esté conectado a Internet a través de Wi-Fi o a través de su teléfono.\n\nError:",
       "downloading": "Error al descargar actualizaciones.",
       "getting": "Error al buscar actualizaciones.",
-      "saving": "Error al guardar datos de actualizaciones."
+      "saving": "Error al guardar datos de actualizaciones.",
+      "timeout": "Se agotó el tiempo para las actualizaciones de SmartDrive."
     },
     "failed": "Las actualizaciones de SmartDrive fallaron.",
+    "initializing": "Iniciando actualizaciones…",
     "status": "Estado de actualizaciones",
     "success": "¡Actualizaciones de SmartDrive completadas con éxito!",
     "timeout": "Las actualizaciones del SmartDrive caducaron.",

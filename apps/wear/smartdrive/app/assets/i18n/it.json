@@ -4,6 +4,7 @@
     "sd-ble-version": "Versione Bluetooth SmartDrive (BT)",
     "sd-mcu-version": "Versione SmartDrive MCU (SD)",
     "sd-serial-number": "Numero di serie SmartDrive",
+    "smartdrive-serial-number-info": "Per accedere al numero di serie di SmartDrive, è necessario connettersi all'app mobile PushTracker.",
     "title": "informazioni",
     "version": "Versione SmartDrive MX2 Wear OS App (SW)",
     "watch-serial-number": "Numero seriale Smartwatch"
@@ -54,8 +55,10 @@
       "timeout": "La connessione all'app è scaduta."
     },
     "connect": "Impossibile connettersi a SmartDrive.",
+    "could-not-enable-tap-sensor": "Impossibile abilitare il sensore di tocco.",
     "getting-error": "Impossibile ottenere l'errore SmartDrive.",
     "must-wear-watch": "L'impostazione [Controlla polso] è abilitata, pertanto è necessario indossare lo smartwatch per controllare SmartDrive.",
+    "no-network": "Nessuna rete disponibile, assicurarsi che lo smartwatch sia in grado di connettersi a Internet tramite Wi-Fi o telefono.",
     "no-smartdrive-paired": "Nessuno SmartDrive associato.",
     "no-smartdrives-found": "Nessun SmartDrive trovato nelle vicinanze.",
     "permissions": "Impossibile eseguire l'azione richiesta. Le autorizzazioni necessarie non sono state concesse.",
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Annulla",
+      "close": "Vicino",
       "force": "Vigore",
       "pause": "pausa",
       "resume": "Curriculum vitae",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Download di nuovi dati di aggiornamenti ...",
     "errors": {
       "connecting": "Errore durante la connessione a SmartDrive.",
+      "connection-failure": "Connessione al back-end non riuscita, assicurati che il tuo smartwatch sia in grado di connettersi a Internet tramite Wi-Fi o telefono.\n\nErrore:",
       "downloading": "Errore durante il download degli aggiornamenti.",
       "getting": "Errore durante la ricerca di aggiornamenti.",
-      "saving": "Errore durante il salvataggio dei dati degli aggiornamenti."
+      "saving": "Errore durante il salvataggio dei dati degli aggiornamenti.",
+      "timeout": "Gli aggiornamenti di SmartDrive sono scaduti."
     },
     "failed": "Aggiornamenti di SmartDrive non riusciti.",
+    "initializing": "Inizializzazione degli aggiornamenti...",
     "status": "Stato degli aggiornamenti",
     "success": "Gli aggiornamenti di SmartDrive sono stati completati correttamente!",
     "timeout": "Gli aggiornamenti di SmartDrive sono scaduti.",
