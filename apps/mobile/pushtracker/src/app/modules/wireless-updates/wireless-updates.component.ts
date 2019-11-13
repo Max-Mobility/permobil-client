@@ -125,6 +125,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   closeModal() {
     // make sure to stop the bluetooth background execution (iOS)
+    if (this.smartDrive) {
+      this.smartDrive.disconnect();
+    }
     BluetoothService.stopOtaBackgroundExecution();
     // now close the page
     this._params.closeCallback();
@@ -277,7 +280,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       // Now perform the SmartDrive updates if we need to
       try {
         await this.performSmartDriveWirelessUpdate();
+        if (this.smartDrive) {
+          this.smartDrive.disconnect();
+        }
       } catch (err) {
+        if (this.smartDrive) {
+          this.smartDrive.cancelOTA();
+        }
         this._logService.logException(err);
       }
       return;
@@ -349,7 +358,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         // Now perform the SmartDrive updates if we need to
         try {
           await this.performSmartDriveWirelessUpdate();
+          if (this.smartDrive) {
+            this.smartDrive.disconnect();
+          }
         } catch (err) {
+          if (this.smartDrive) {
+            this.smartDrive.cancelOTA();
+          }
           this._logService.logException(err);
         }
       })
@@ -362,7 +377,13 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         // Now perform the SmartDrive updates if we need to
         try {
           await this.performSmartDriveWirelessUpdate();
+          if (this.smartDrive) {
+            this.smartDrive.disconnect();
+          }
         } catch (err) {
+          if (this.smartDrive) {
+            this.smartDrive.cancelOTA();
+          }
           this._logService.logException(err);
         }
       });
@@ -479,6 +500,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         mcuVersion,
         300 * 1000
       );
+      if (this.smartDrive) {
+        this.smartDrive.disconnect();
+      }
     } catch (err) {
       if (this.smartDrive) {
         this.smartDrive.cancelOTA();
