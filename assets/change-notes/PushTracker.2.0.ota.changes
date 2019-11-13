@@ -20,6 +20,8 @@
     "Ajout de la prise en charge de l'envoi et de la réception des configurations SmartDrive SwitchControl vers et depuis l'application PushTracker Mobile app et SmartDrive"
   ],
   "it": [
+    "Aggiunta la possibilità di visualizzare la più recente potenza della connessione Bluetooth SmartDrive al menu \"Informazioni\"",
+    "Aggiunto supporto per l'invio e la ricezione di configurazioni SmartDrive SwitchControl da / verso l'app Mobile PushTracker e SmartDrive"
   ],
   "ja": [
     "最新のSmartDriveのBluetooth接続強度を確認する機能が追加されました。設定メニューの「バージョン情報」をご参照ください",
