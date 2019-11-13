@@ -8,8 +8,8 @@ export class KinveyService {
   public static api_user_route = '/user/';
   public static api_file_route = '/blob/';
   public static api_data_route = '/appdata/';
-  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  public static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
   public static api_login = '/login';
   public static api_logout = '/logout';
   public static api_error_db = '/SmartDriveErrors';

@@ -67,8 +67,8 @@ export class HomeTabComponent {
   private _debouncedLoadWeeklyUsage: any;
 
   public static api_base = PushTrackerKinveyKeys.HOST_URL;
-  public static api_app_key = PushTrackerKinveyKeys.DEV_KEY;
-  public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
+  public static api_app_key = PushTrackerKinveyKeys.PROD_KEY;
+  public static api_app_secret = PushTrackerKinveyKeys.PROD_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
 

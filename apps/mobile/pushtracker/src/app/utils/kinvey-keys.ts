@@ -1,8 +1,8 @@
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 
 // use these for dev environment
-export const APP_KEY = PushTrackerKinveyKeys.DEV_KEY;
-export const APP_SECRET = PushTrackerKinveyKeys.DEV_SECRET;
+export const APP_KEY = PushTrackerKinveyKeys.PROD_KEY;
+export const APP_SECRET = PushTrackerKinveyKeys.PROD_SECRET;
 
 // use these for production environment
 // export const APP_KEY = KinveyKeys.PROD_KEY;

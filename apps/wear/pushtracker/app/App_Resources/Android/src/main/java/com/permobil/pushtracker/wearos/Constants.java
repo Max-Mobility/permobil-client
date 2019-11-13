@@ -11,6 +11,6 @@ public class Constants {
     public static final String ACTIVITY_SERVICE_MESSAGE = "ACTIVITY_SERVICE_MESSAGE";
     public static final String ACTIVITY_SERVICE_LOCAL_DB_RECORD_COUNT = "ACTIVITY_SERVICE_LOCAL_DB_RECORD_COUNT";
     static final String API_BASE = "https://baas.kinvey.com";
-    static final String API_DATA_ENDPOINT = "/appdata/kid_rkoCpw8VG/DailyPushTrackerActivity";
-    static final String API_SD_ENDPOINT = "/appdata/kid_rkoCpw8VG/DailySmartDriveUsage";
+    static final String API_DATA_ENDPOINT = "/appdata/kid_rkrkb_8vB/DailyPushTrackerActivity";
+    static final String API_SD_ENDPOINT = "/appdata/kid_rkrkb_8vB/DailySmartDriveUsage";
 }
