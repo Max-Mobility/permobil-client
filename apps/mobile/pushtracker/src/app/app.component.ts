@@ -49,7 +49,8 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
-      const defaultLanguage = device.language;
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+      const defaultLanguage = APP_LANGUAGES.English; // device.language;
       this._logService.logBreadCrumb(
         AppComponent.name,
         'Setting default language to ' + defaultLanguage
