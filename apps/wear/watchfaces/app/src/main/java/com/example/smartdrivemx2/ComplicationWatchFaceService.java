@@ -601,6 +601,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
              * with a "chin", the watch face is centered on the entire screen,
              * not just the usable portion.
              */
+            Log.d(TAG,"width:"+width);
+            Log.d(TAG,"height:"+height);
             mCenterX = width / 2f;
             mCenterY = height / 2f;
             mScale = ((float) width) / (float) mBackgroundBitmap.getWidth();
@@ -635,11 +637,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             Rect leftBounds =
                     // Left, Top, Right, Bottom
-                    new Rect(
-                            horizontalOffset,
-                            verticalOffset,
-                            (horizontalOffset + sizeOfComplication),
-                            (verticalOffset + sizeOfComplication));
+                    new Rect( 10,10,width-10,height-10);
+//                            horizontalOffset,
+//                            verticalOffset,
+//                            (horizontalOffset + sizeOfComplication),
+//                            (verticalOffset + sizeOfComplication));
 
             ComplicationDrawable leftComplicationDrawable =
                     mComplicationDrawableSparseArray.get(LEFT_COMPLICATION_ID);
@@ -647,11 +649,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             Rect backgroundBounds =
                     // Left, Top, Right, Bottom
-                    new Rect(
-                            horizontalOffset,
-                            horizontalOffset,
-                            (width - horizontalOffset),
-                            (width - horizontalOffset));
+                    new Rect( 0,0,width,height);
+//                            horizontalOffset,
+//                            horizontalOffset,
+//                            (width - horizontalOffset),
+//                            (width - horizontalOffset));
 
             ComplicationDrawable backgroundComplicationDrawable =
                     mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
@@ -705,20 +707,27 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             canvas.drawText(minuteString, x, mYOffset, mMinutePaint);
             x += mMinutePaint.measureText(minuteString);
 
+            // Draw the am/pm.
+            if (!is24Hour) {
+                canvas.drawText(getAmPmString(
+                        mCalendar.get(Calendar.AM_PM)), mXOffset+20, mYOffset+25, mAmPmPaint);
+            }
+
             // In unmuted interactive mode, draw a second blinking colon followed by the seconds.
             // Otherwise, if we're in 12-hour mode, draw AM/PM
-            if (!isInAmbientMode() && !mMute) {
-                if (mShouldDrawColons) {
-                    canvas.drawText(COLON_STRING, x, mYOffset, mColonPaint);
-                }
-                x += mColonWidth;
-                canvas.drawText(formatTwoDigitNumber(
-                        mCalendar.get(Calendar.SECOND)), x, mYOffset, mSecondPaint);
-            } else if (!is24Hour) {
-                x += mColonWidth;
-                canvas.drawText(getAmPmString(
-                        mCalendar.get(Calendar.AM_PM)), x, mYOffset, mAmPmPaint);
-            }
+//            if (!isInAmbientMode() && !mMute) {
+//                if (mShouldDrawColons) {
+//                    canvas.drawText(COLON_STRING, x, mYOffset, mColonPaint);
+//                }
+//                x += mColonWidth;
+//                canvas.drawText(formatTwoDigitNumber(
+//                        mCalendar.get(Calendar.SECOND)), x, mYOffset, mSecondPaint);
+//            }
+//            else if (!is24Hour) {
+//                x += mColonWidth;
+//                canvas.drawText(getAmPmString(
+//                        mCalendar.get(Calendar.AM_PM)), mXOffset+10, mYOffset+25, mAmPmPaint);
+//            }
         }
 
         private String formatTwoDigitNumber(int hour) {

@@ -47,40 +47,43 @@
 
     <ImageView
         android:id="@+id/left_complication_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/added_complication"
         style="?android:borderlessButtonStyle"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/watch_face_background"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginBottom="120dp"
         android:background="@android:color/transparent"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/watch_face_background"/>
+        android:src="@drawable/added_complication" />
 
     <ImageButton
         android:id="@+id/left_complication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         style="?android:borderlessButtonStyle"
         android:background="@android:color/transparent"
         android:layout_alignTop="@+id/left_complication_background"
-        android:layout_alignStart="@+id/watch_face_background"/>
+        android:layout_alignStart="@+id/left_complication_background"/>
 
     <ImageView
         android:id="@+id/background_complication_background"
         style="?android:borderlessButtonStyle"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignStart="@+id/watch_face_background"
         android:layout_alignTop="@+id/watch_face_background"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="22dp"
         android:background="@android:color/transparent"
         android:src="@drawable/added_complication" />
 
     <ImageButton
         android:id="@+id/background_complication"
         style="?android:borderlessButtonStyle"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignTop="@+id/background_complication_background"
         android:layout_alignStart="@+id/background_complication_background"
         android:layout_centerVertical="true"
