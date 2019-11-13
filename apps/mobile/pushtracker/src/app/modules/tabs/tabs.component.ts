@@ -102,11 +102,14 @@ export class TabsComponent {
         return;
       }
 
+      /*
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
       if (this.user.data.language_preference) {
         const language = APP_LANGUAGES[this.user.data.language_preference];
         if (this._translateService.currentLang !== language)
           this._translateService.use(language);
       }
+      */
 
       if (
         this.user &&
