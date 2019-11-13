@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">バッテリー残量</string>
-    <string name="complications_provider_service_label_pushes">推定範囲</string>
-    <string name="complications_provider_service_label_coast_time">走行距離</string>
-    <string name="complications_provider_service_label_distance">海岸距離</string>
+    <string name="foreground_service_notification">Permobil PushTrackerはアクティビティを収集しています</string>
+    <string name="complications_provider_service_label_pushes">毎日プッシュ</string>
+    <string name="complications_provider_service_label_coast_time">コーストタイムデイリー</string>
+    <string name="complications_provider_service_label_distance">毎日の距離</string>
 </resources>

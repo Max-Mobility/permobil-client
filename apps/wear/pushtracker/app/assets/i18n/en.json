@@ -24,9 +24,9 @@
 		}
 	},
 	"enhancements": {
-		"coast-time": "Coast Time",
-		"distance": "Distance",
-		"pushes": "Pushes"
+		"coast-time": "Coast time daily",
+		"distance": "Distance Daily",
+		"pushes": "Pushes Daily"
 	},
 	"failures": {
 		"connect": "Failed to connect to",
@@ -61,7 +61,6 @@
 		"ko": "Korean",
 		"nb": "Norwegian [Bokmål]",
 		"nl": "Dutch",
-		"nn": "Norwegian [Nynorsk]",
 		"sv": "Swedish",
 		"zh": "Chinese [Traditional]"
 	},
@@ -86,32 +85,6 @@
 		"units": "pushes"
 	},
 	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "",
-			"values": {
-				"colours": "",
-				"invacare": "",
-				"karman": "",
-				"ki": "",
-				"motion-composites": "",
-				"other": "",
-				"panthera": "",
-				"quickie": "",
-				"tilite": "",
-				"top-end": ""
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "",
-			"values": {
-				"folding": "",
-				"other": "",
-				"pediatric": "",
-				"rigid": ""
-			}
-		},
 		"coastgoal": {
 			"description": "Your goal for average coast time between pushes each day.",
 			"title": "Coast Time Goal",
@@ -125,11 +98,6 @@
 				"english": "mi",
 				"metric": "km"
 			}
-		},
-		"edit-profile": "",
-		"height": {
-			"description": "",
-			"title": ""
 		},
 		"information": "Information",
 		"install-smartdrive": "Install SmartDrive MX2+ Wear OS App",
@@ -145,22 +113,6 @@
 				"english": "Imperial",
 				"metric": "Metric"
 			}
-		},
-		"watchrequired": {
-			"description": "",
-			"title": "",
-			"values": {
-				"disabled": "",
-				"enabled": ""
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "",
-			"units": {
-				"english": "",
-				"metric": ""
-			}
 		}
 	},
 	"units": {
@@ -169,11 +121,7 @@
 			"metric": "km"
 		},
 		"english": "Imperial",
-		"metric": "Metric",
-		"speed": {
-			"english": "",
-			"metric": ""
-		}
+		"metric": "Metric"
 	},
 	"wearos-comms": {
 		"errors": {

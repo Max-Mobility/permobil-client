@@ -3,7 +3,7 @@
     <string name="app_name">SmartDrive MX2+</string>
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Batterinivå</string>
-    <string name="complications_provider_service_label_range">Uppskattat intervall</string>
-    <string name="complications_provider_service_label_daily_distance">Kör avstånd</string>
-    <string name="complications_provider_service_label_odometer">Kustavstånd</string>
+    <string name="complications_provider_service_label_range">Uppskattad strömförbrukning</string>
+    <string name="complications_provider_service_label_daily_distance">SmartDrive Dagliga körsträcka</string>
+    <string name="complications_provider_service_label_odometer">Distansmätare</string>
 </resources>

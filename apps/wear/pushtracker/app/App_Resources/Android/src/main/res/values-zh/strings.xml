@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">電池電量</string>
-    <string name="complications_provider_service_label_pushes">估計範圍</string>
-    <string name="complications_provider_service_label_coast_time">行車距離</string>
-    <string name="complications_provider_service_label_distance">海岸距離</string>
+    <string name="foreground_service_notification">Permobil PushTracker正在收集您的活動</string>
+    <string name="complications_provider_service_label_pushes">每日推送</string>
+    <string name="complications_provider_service_label_coast_time">每日海岸時間</string>
+    <string name="complications_provider_service_label_distance">每日距離</string>
 </resources>

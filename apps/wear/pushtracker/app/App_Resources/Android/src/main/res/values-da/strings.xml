@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">Batteriniveau</string>
-    <string name="complications_provider_service_label_pushes">Anslået rækkevidde</string>
-    <string name="complications_provider_service_label_coast_time">Drevafstand</string>
-    <string name="complications_provider_service_label_distance">Kystafstand</string>
+    <string name="foreground_service_notification">Permobil PushTracker indsamler din aktivitet</string>
+    <string name="complications_provider_service_label_pushes">Skubber dagligt</string>
+    <string name="complications_provider_service_label_coast_time">Afstand dagligt</string>
+    <string name="complications_provider_service_label_distance">Kysttid dagligt</string>
 </resources>

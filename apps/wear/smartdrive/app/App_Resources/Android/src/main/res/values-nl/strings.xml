@@ -3,7 +3,7 @@
     <string name="app_name">SmartDrive MX2+</string>
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Batterijniveau</string>
-    <string name="complications_provider_service_label_range">Geschatte Rance</string>
-    <string name="complications_provider_service_label_daily_distance">Rijd afstand</string>
-    <string name="complications_provider_service_label_odometer">Kust afstand</string>
+    <string name="complications_provider_service_label_range">Geschat rij bereik</string>
+    <string name="complications_provider_service_label_daily_distance">SmartDrive Dagelijks afgelegde afstand</string>
+    <string name="complications_provider_service_label_odometer">Kilometerteller</string>
 </resources>

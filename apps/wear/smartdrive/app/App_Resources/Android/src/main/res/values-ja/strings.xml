@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">SmartDrive MX2+</string>
     <string name="title_activity_kimera">SmartDrive MX2+</string>
-    <string name="complications_provider_service_label_battery">バッテリー残量</string>
+    <string name="complications_provider_service_label_battery">バッテリーレベル</string>
     <string name="complications_provider_service_label_range">推定範囲</string>
-    <string name="complications_provider_service_label_daily_distance">走行距離</string>
-    <string name="complications_provider_service_label_odometer">海岸距離</string>
+    <string name="complications_provider_service_label_daily_distance">毎日のSmartDrive走行距離</string>
+    <string name="complications_provider_service_label_odometer">走行距離</string>
 </resources>
