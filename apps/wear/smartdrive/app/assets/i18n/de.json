@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) Version",
     "sd-mcu-version": "SmartDrive MCU (SD) Version",
     "sd-serial-number": "SmartDrive-Seriennummer",
+    "smartdrive-serial-number-info": "Zum Anzeigen der Seriennummer, welche für Service und Gewährleistungs-Themen hilfreich ist, muss eine Verbindung mit der Pushtracker Mobil app hergestellt werden. ",
     "title": "Informationen über",
     "version": "SmartDrive MX2+ Wear OS App (SW) Version",
     "watch-serial-number": "PushTracker E2 (Smartwatch)-Seriennummer"
@@ -54,8 +55,10 @@
       "timeout": "Zeitüberschreitung. App erneut verbinden."
     },
     "connect": "Verbindung zu SmartDrive konnte nicht hergestellt werden.",
+    "could-not-enable-tap-sensor": "Klopfsensor kann nicht eingeschaltet werden.",
     "getting-error": "SmartDrive-Fehler können nicht gelesen werden.",
     "must-wear-watch": "Die Einstellung ist aktiviert, daher muss der PushTracker E2 (Smartwatch) zur Steuerung Ihres SmartDrive getragen werden.",
+    "no-network": "Verbindung zur Cloud ist nicht verfügbar. Sicherstellen, dass der Pushtracker E2 mit dem Internet verbunden ist (via WiFi oder Smartphone).",
     "no-smartdrive-paired": "Kein SmartDrive gekoppelt.",
     "no-smartdrives-found": "Kein SmartDrive in der Nähe gefunden.",
     "permissions": "Die Aktion konnte nicht ausgeführt werden. Erforderliche Berechtigungen nicht erteilt.",
@@ -78,7 +81,7 @@
     "nb": "Norwegisch [Bokmål]",
     "nl": "Niederländisch",
     "nn": "Norwegisch [Nynorsk]",
-    "sv": "",
+    "sv": "Schwedisch",
     "zh": "Chinesisch [Traditionell]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Abbrechen",
+      "close": "Schliessen",
       "force": "Erzwingen",
       "pause": "Pause",
       "resume": "Fortsetzen",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Neue Update-Daten werden heruntergeladen...",
     "errors": {
       "connecting": "Fehler beim Verbinden mit dem SmartDrive.",
+      "connection-failure": "Verbindung zum Permobil Server nicht möglich. Sicherstellen, dass der Pushtracker E2 mit dem Internet verbunden ist (via WiFi oder Smartphone).\n\nError:",
       "downloading": "Fehler beim Herunterladen der Updates.",
       "getting": "Fehler beim Suchen nach Updates",
-      "saving": "Fehler beim Speichern der Update-Daten."
+      "saving": "Fehler beim Speichern der Update-Daten.",
+      "timeout": "Zeitüberschreitungsfehler beim SmartDrive Update."
     },
     "failed": "SmartDrive-Updates fehlgeschlagen",
+    "initializing": "Updates initialisieren...",
     "status": "Updatestatus",
     "success": "SmartDrive-Updates erfolgreich abgeschlossen!",
     "timeout": "Zeitüberschreitung bei SmartDrive-Updates",

@@ -4,6 +4,7 @@
     "sd-ble-version": "Version Bluetooth (BT) SmartDrive ",
     "sd-mcu-version": "Version du MCU (SD) SmartDrive",
     "sd-serial-number": "Numéro de série de la SmartDrive",
+    "smartdrive-serial-number-info": "Pour accéder à votre numéro de série SmartDrive, qui peut être utile à des fins de support et de garantie, vous devez vous connecter à l'application PushTracker Mobile.",
     "title": "À propos de",
     "version": "Version de l'application SmartDrive MX2 Wear OS (SW)",
     "watch-serial-number": "Numéro de série du PushTracker E2"
@@ -54,8 +55,10 @@
       "timeout": "Délai de connexion à l'application expiré."
     },
     "connect": "Impossible de se connecter à la SmartDrive.",
+    "could-not-enable-tap-sensor": "Impossible d'activer le capteur de tape.",
     "getting-error": "Échec de réception des codes erreurs.",
     "must-wear-watch": "Le paramètre [Vérifier le poignet] est activé. Vous devez porter obligatoirement le Pushtracker E2  pour contrôler votre SmartDrive.",
+    "no-network": "La connexion au Cloud n'est pas disponible. Assurez-vous que votre PushTracker E2 est connecté à Internet via Wi-Fi ou à votre téléphone.",
     "no-smartdrive-paired": "Pas de SmartDrive jumelée.",
     "no-smartdrives-found": "Aucune SmartDrive trouvée à proximité.",
     "permissions": "Impossible d'effectuer l'action demandée. Les autorisations requises n'ont pas été acceptées.",
@@ -78,7 +81,7 @@
     "nb": "Norvégien [Bokmål]",
     "nl": "Néerlandais",
     "nn": "Norvégien [Nynorsk]",
-    "sv": "",
+    "sv": "suédois",
     "zh": "Chinois [traditionnel]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Annuler",
+      "close": "Fermer",
       "force": "Forcer",
       "pause": "Pause",
       "resume": "Reprendre",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Téléchargement de nouvelles données de mises à jour ...",
     "errors": {
       "connecting": "Erreur de connexion à la SmartDrive.",
+      "connection-failure": "La connexion au serveur Permobil a échoué. Assurez-vous que votre PushTracker E2 est connecté à Internet via Wi-Fi ou à votre téléphone.\n\nErreur :",
       "downloading": "Erreur lors du téléchargement des mises à jour.",
       "getting": "Erreur lors de la recherche de mises à jour.",
-      "saving": "Erreur lors de l'enregistrement des données de mises à jour."
+      "saving": "Erreur lors de l'enregistrement des données de mises à jour.",
+      "timeout": "Les mises à jour de SmartDrive ont expirés."
     },
     "failed": "Echec des mises à jour de la SmartDrive.",
+    "initializing": "Activation des mises à jour...",
     "status": "État des mises à jour",
     "success": "Mises à jour de la SmartDrive réussies !",
     "timeout": "Les mises à jour de la SmartDrive ont expiré.",

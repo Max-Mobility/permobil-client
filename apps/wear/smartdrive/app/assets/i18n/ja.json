@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth（BT）バージョン",
     "sd-mcu-version": "SmartDrive MCU（SD）バージョン",
     "sd-serial-number": "SmartDrive シリアル番号",
+    "smartdrive-serial-number-info": "サポートや保証の際に必要なシリアル番号にアクセスするにはPushTrackerモバイルアプリをダウンロードしてください。",
     "title": "情報について",
     "version": "SmartDrive MX2+ Wear OSアプリ（SW）バージョン",
     "watch-serial-number": "スマートウォッチ シリアル番号"
@@ -54,8 +55,10 @@
       "timeout": "アプリ接続がタイムアウトしました。"
     },
     "connect": "SmartDriveに接続できませんでした。",
+    "could-not-enable-tap-sensor": "タップセンサーを有効にできませんでした。",
     "getting-error": "SmartDriveエラーの取得に失敗しました。",
     "must-wear-watch": "[手首の確認]設定が有効になっているため、SmartDriveを制御するにはスマートウォッチを装着する必要があります。",
+    "no-network": "クラウドへ接続できませんでした。スマートウォッチがWi-Fiまたはスマートフォンを介してインターネットに接続されていることを確認してください。",
     "no-smartdrive-paired": "ペアリングされたSmartDriveはありません。",
     "no-smartdrives-found": "近くにSmartDrivesが見つかりませんでした。",
     "permissions": "要求されたアクションを実行できません。必要な権限が付与されていません。",
@@ -78,7 +81,7 @@
     "nb": "ノルウェー語[ブークモール]",
     "nl": "オランダ語",
     "nn": "ノルウェー語[ニーノシュク]",
-    "sv": "",
+    "sv": "スウェーデンの",
     "zh": "中国語[繁体字]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "キャンセル ",
+      "close": "閉じる",
       "force": "力",
       "pause": "一時停止",
       "resume": "再開",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "新しい更新データをダウンロードしています ...",
     "errors": {
       "connecting": "SmartDriveへの接続エラー。",
+      "connection-failure": "サーバーへの接続に失敗しました。スマートウォッチがWi-Fiまたはスマートフォンを介してインターネットに接続されていることを確認してください。 \n\nエラー：",
       "downloading": "更新のダウンロード中にエラーが発生しました。",
       "getting": "更新の検索エラー。",
-      "saving": "更新データの保存中にエラーが発生しました。"
+      "saving": "更新データの保存中にエラーが発生しました。",
+      "timeout": "SmartDriveのアップデートが中断されました。"
     },
     "failed": "SmartDriveの更新に失敗しました。",
+    "initializing": "アップデートを開始しています…",
     "status": "更新ステータス",
     "success": "SmartDriveの更新が正常に完了しました！",
     "timeout": "SmartDriveの更新がタイムアウトしました。",

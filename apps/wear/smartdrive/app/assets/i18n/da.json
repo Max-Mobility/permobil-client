@@ -4,6 +4,7 @@
     "sd-ble-version": "SmartDrive Bluetooth (BT) version",
     "sd-mcu-version": "SmartDrive MCU (SD) version",
     "sd-serial-number": "SmartDrive serienummer",
+    "smartdrive-serial-number-info": "For at få adgang til dit SmartDrive-serienummer, som kan være nyttigt til support og garantiformål, skal du oprette forbindelse til PushTracker Mobile-appen.",
     "title": "Om information",
     "version": "SmartDrive MX2+ Wear OS App (SW) version",
     "watch-serial-number": "Smartwatch serienummer"
@@ -54,8 +55,10 @@
       "timeout": "Appforbindelsen er udløbet."
     },
     "connect": "Kunne ikke oprette forbindelse til SmartDrive.",
+    "could-not-enable-tap-sensor": "Kunne ikke aktivere tryk sensor.",
     "getting-error": "Kunne ikke modtage SmartDrive-fejl.",
     "must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
+    "no-network": "Forbindelse til skyen er ikke tilgængelig. Sørg for, at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.",
     "no-smartdrive-paired": "Ingen SmartDrive parret.",
     "no-smartdrives-found": "Ingen SmartDrives fundet i nærheden.",
     "permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
@@ -78,7 +81,7 @@
     "nb": "Norsk [bokmål]",
     "nl": "Hollandsk",
     "nn": "Norsk [nynorsk]",
-    "sv": "",
+    "sv": "Svensk",
     "zh": "Kinesisk [traditionelt]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "Fortryd",
+      "close": "Luk",
       "force": "Kraft",
       "pause": "Pause",
       "resume": "Genoptag",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "Downloader nye opdateringsdata ...",
     "errors": {
       "connecting": "Fejl ved forbindelse til SmartDrive.",
+      "connection-failure": "Forbindelse til Permobil-serveren mislykkedes. Sørg for, at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.\n\nFejl:",
       "downloading": "Fejl ved download af opdateringer.",
       "getting": "Fejl ved søgning efter opdateringer.",
-      "saving": "Fejl ved lagring af opdateringsdata."
+      "saving": "Fejl ved lagring af opdateringsdata.",
+      "timeout": "SmartDrive-opdateringer er afbrudt."
     },
     "failed": "SmartDrive opdateringer mislykkedes.",
+    "initializing": "Henter opdateringer…",
     "status": "Opdateringsstatus",
     "success": "SmartDrive opdateringer afsluttet med succes!",
     "timeout": "SmartDrive opdateringer er udløbet.",

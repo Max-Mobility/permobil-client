@@ -4,6 +4,7 @@
     "sd-ble-version": "스마트드라이브 블루투스(BT) 버전",
     "sd-mcu-version": "스마트드라이브 기기(SD) 버전",
     "sd-serial-number": "스마트드라이브 일련번호",
+    "smartdrive-serial-number-info": "제품 보증 지원을 위해 요청되는 스마트드라이브의 일련번호를 얻기위해서는 PushTracker 모바일 앱으로 연결되어야 합니다.",
     "title": "정보",
     "version": "스마트드라이브 MX2+ WearOS 앱(SW) 버전",
     "watch-serial-number": "스마트워치 일련번호"
@@ -54,8 +55,10 @@
       "timeout": "앱 연결 시간이 초과되었습니다."
     },
     "connect": "스마트드라이브에 연결할 수 없습니다.",
+    "could-not-enable-tap-sensor": "탭 센서 활성화할 수 없음.",
     "getting-error": "오류를 가져오는 데 실패했습니다.",
     "must-wear-watch": "[착용 확인]설정이 완료되었습니다. 스마트드라이브를 제어를 위해 반드시 스마트워치를 착용하십시오.",
+    "no-network": "인터넷(클라우드)에 연결되지 않았습니다. 스마트워치가 핸드폰 또는 와이파이와 제대로 연결되었는지 확인하십시오.",
     "no-smartdrive-paired": "스마트드라이브가 페어링되지 않았습니다.",
     "no-smartdrives-found": "스마트드라이브를 찾을 수 없습니다.",
     "permissions": "요청한 작업을 수행 할 수 없습니다. 필요한 권한이 부여되지 않았습니다.",
@@ -78,7 +81,7 @@
     "nb": "노르웨이어 [Bokmål]",
     "nl": "네덜란드어",
     "nn": "노르웨이어 [Nynorsk]",
-    "sv": "",
+    "sv": "스웨덴어",
     "zh": "중국어 [Traditional]"
   },
   "menu": {
@@ -91,6 +94,7 @@
   "ota": {
     "action": {
       "cancel": "취소",
+      "close": "닫기",
       "force": "강도",
       "pause": "일시정지",
       "resume": "재개",
@@ -210,11 +214,14 @@
     "downloading-new-firmwares": "업데이트 데이터 다운로드 중 ...",
     "errors": {
       "connecting": "스마트드라이브 연결 오류.",
+      "connection-failure": "퍼모빌 서버와의 연결에 실패하였습니다. 스마트워치가 핸드폰 또는 와이파이와 제대로 연결되었는지 확인하십시오. \n\n에러:",
       "downloading": "업데이트 다운로드 오류.",
       "getting": "업데이트 검색중 오류.",
-      "saving": "업데이트 데이터 저장 오류."
+      "saving": "업데이트 데이터 저장 오류.",
+      "timeout": "스마트드라이브 업데이트 시간 초과."
     },
     "failed": "스마트드라이브 업데이트 실패.",
+    "initializing": "업데이트 시작...",
     "status": "업데이트 상태",
     "success": "스마트드라이브 업데이트 완료!",
     "timeout": "스마트드라이브 업데이트 시간 초과.",
