@@ -1,183 +1,132 @@
 {
 	"about": {
-		"database": "",
-		"title": "",
-		"user-email": "",
-		"user-name": "",
-		"version": "",
-		"watch-serial-number": ""
+		"database": "Database ID",
+		"title": "Om information",
+		"user-email": "Din email",
+		"user-name": "Dit navn",
+		"version": "PushTracker Wear OS-appversion",
+		"watch-serial-number": "Smartwatch serienummer"
 	},
 	"busy": {
-		"synchronizing": ""
+		"synchronizing": "Synkronisering ..."
 	},
 	"buttons": {
-		"back": "",
-		"dismiss": "",
-		"ok": ""
+		"back": "Tilbage",
+		"dismiss": "Afskedige",
+		"ok": "Okay"
 	},
 	"charts": {
 		"coast": {
-			"title": ""
+			"title": "Kysttid dagligt"
 		},
 		"distance": {
-			"title": ""
+			"title": "Afstand rejst dagligt"
 		}
 	},
 	"enhancements": {
-		"coast-time": "",
-		"distance": "",
-		"pushes": ""
+		"coast-time": "Kysttid dagligt",
+		"distance": "Afstand dagligt",
+		"pushes": "Skubber dagligt"
 	},
 	"failures": {
-		"connect": "",
-		"could-not-update-profile": "",
-		"must-wear-watch": "",
-		"no-auth-for-saving": "",
-		"not-connected-to-mobile": "",
-		"not-fully-initialized": "",
-		"permissions": "",
-		"saving-activity": "",
-		"scan": "",
-		"title": ""
+		"connect": "Kunne ikke oprette forbindelse til",
+		"could-not-update-profile": "Kunne ikke opdatere profilen på Permobil-serveren.",
+		"must-wear-watch": "[Kontroller for håndled] Indstillingen er aktiveret, derfor skal smarturet bæres for at kontrollere din SmartDrive.",
+		"no-auth-for-saving": "For at gemme indstillinger på serveren, som er valgfri, skal du tilslutte PushTracker Wear OS-app til PushTracker Mobile-appen. For at gøre dette skal du følge instruktionerne på siden \"Enhedsopsætning\" i appen PushTracker Mobile.",
+		"not-connected-to-mobile": "Kunne ikke godkende med Permobil-serveren. Genforbindelse til PushTracker mobilapp kræves.",
+		"not-fully-initialized": "Initialiserer stadig forbindelsen til Permobil-serveren. Indstillinger sendes, når det er muligt.",
+		"permissions": "Kan ikke udføre den anmodede handling. Krævede tilladelser blev ikke tildelt.",
+		"saving-activity": "Gemt aktivitet ikke.",
+		"scan": "Kunne ikke scanne.",
+		"title": "Varsel"
 	},
 	"goals": {
 		"coast": {
-			"units": ""
+			"units": "sekunder"
 		},
 		"distance": {
-			"english": "",
-			"metric": ""
+			"english": "miles",
+			"metric": "kilometer"
 		}
 	},
-	"information": "",
+	"information": "Information",
 	"languages": {
-		"da": "",
-		"de": "",
-		"en": "",
-		"es": "",
-		"fr": "",
-		"it": "",
-		"ja": "",
-		"ko": "",
-		"nb": "",
-		"nl": "",
-		"nn": "",
-		"zh": ""
+		"da": "dansk",
+		"de": "tysk",
+		"en": "engelsk",
+		"es": "spansk",
+		"fr": "fransk",
+		"it": "italiensk",
+		"ja": "japansk",
+		"ko": "Korean",
+		"nb": "Norsk [bokmål]",
+		"nl": "hollandske",
+		"sv": "Svensk",
+		"zh": "Kinesisk [traditionelt]"
 	},
 	"menu": {
-		"about": "",
-		"profile": "",
-		"title": ""
+		"about": "Om",
+		"profile": "Profil",
+		"title": "Menu"
 	},
 	"notifications": {
-		"foreground-service": ""
+		"foreground-service": "Permobil PushTracker indsamler din aktivitet"
 	},
 	"permissions-reasons": {
-		"coarse-location": "",
-		"fine-location": "",
-		"phone-state": ""
+		"coarse-location": "For at oprette forbindelse til PushTracker-appen på din iPhone ved hjælp af Bluetooth kræver vi, at du tillader placeringstilladelse [ACCESS_COARSE_LOCATION] på følgende skærm. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
+		"fine-location": "VALGFRITT: For at måle afstand ved hjælp af din smartwatch GPS har vi brug for dig for at tillade tilladelsen [ACCESS_FINE_LOCATION] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dine placeringsdata.",
+		"phone-state": "VALGFRITT: For at få adgang til dit smartwatch-serienummer, som kan være nyttigt til support og garantiformål, har vi brug for, at du tillader telefontilladelse [READ_PHONE_STATE] på en af følgende skærme. Fra denne tilladelse får Permobil ikke adgang til dit telefonnummer, mobilnetværksoplysninger eller andre data undtagen smartwatch-serienummeret."
 	},
 	"permissions-request": {
-		"title": ""
+		"title": "Tilladelsesmeddelelse"
 	},
-	"profile": "",
+	"profile": "Profil",
 	"pushes": {
-		"units": ""
+		"units": "skubber"
 	},
 	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "",
-			"values": {
-				"colours": "",
-				"invacare": "",
-				"karman": "",
-				"ki": "",
-				"motion-composites": "",
-				"other": "",
-				"panthera": "",
-				"quickie": "",
-				"tilite": "",
-				"top-end": ""
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "",
-			"values": {
-				"folding": "",
-				"other": "",
-				"pediatric": "",
-				"rigid": ""
-			}
-		},
 		"coastgoal": {
-			"description": "",
-			"title": "",
-			"units": ""
+			"description": "Dit mål for gennemsnitlig kysttid mellem skubber hver dag.",
+			"title": "Coast Time Goal",
+			"units": "S"
 		},
-		"connect-pushtracker": "",
+		"connect-pushtracker": "Tilslut PushTracker mobilapp",
 		"distancegoal": {
-			"description": "",
-			"title": "",
+			"description": "Dit mål for tilbagelagt afstand i din kørestol hver dag målt ved en SmartDrive.",
+			"title": "Afstand rejset mål",
 			"units": {
-				"english": "",
-				"metric": ""
+				"english": "mi",
+				"metric": "km"
 			}
 		},
-		"edit-profile": "",
-		"height": {
-			"description": "",
-			"title": ""
-		},
-		"information": "",
-		"install-smartdrive": "",
+		"information": "Information",
+		"install-smartdrive": "Installer SmartDrive MX2 Wear OS-app",
 		"pushsensitivity": {
-			"description": "",
-			"title": ""
+			"description": "Følsomheden for detektionen, der bruges til at tælle skubber. Jo lavere procentdelen er, desto mindre følsom er det at opdage et skub - 0% er det mindst følsomme og registrerer derfor færre skub, og 100% er det mest følsomme og registrerer derfor flere skub.",
+			"title": "Skub følsomhed"
 		},
-		"title": "",
+		"title": "PushTracker-indstillinger",
 		"units": {
-			"description": "",
-			"title": "",
+			"description": "Enhedssystemet eller måleenhederne til at vise målingerne inden for brugergrænsefladerne. Vælg enten Imperial [ft, mi og lbs] eller Metric [cm, km og kg].",
+			"title": "enheder",
 			"values": {
-				"english": "",
-				"metric": ""
-			}
-		},
-		"watchrequired": {
-			"description": "",
-			"title": "",
-			"values": {
-				"disabled": "",
-				"enabled": ""
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "",
-			"units": {
-				"english": "",
-				"metric": ""
+				"english": "Kejserlig",
+				"metric": "metric"
 			}
 		}
 	},
 	"units": {
 		"distance": {
-			"english": "",
-			"metric": ""
+			"english": "mi",
+			"metric": "km"
 		},
-		"english": "",
-		"metric": "",
-		"speed": {
-			"english": "",
-			"metric": ""
-		}
+		"english": "Kejserlig",
+		"metric": "metric"
 	},
 	"wearos-comms": {
 		"errors": {
-			"bad-authorization": "",
-			"bad-data": ""
+			"bad-authorization": "Ugyldige kontotilladelsesdata modtaget fra PushTracker Mobile-appen. Sørg for, at dine kontooplysninger er opdaterede, og at din smartwatch er tilsluttet internettet enten via Wi-Fi eller din telefon.",
+			"bad-data": "Ugyldige data modtaget fra PushTracker Mobile-appen. Kontroller forbindelsen, og prøv igen."
 		}
 	}
 }

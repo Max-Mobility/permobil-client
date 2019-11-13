@@ -1,183 +1,132 @@
 {
 	"about": {
-		"database": "",
-		"title": "",
-		"user-email": "",
-		"user-name": "",
-		"version": "",
-		"watch-serial-number": ""
+		"database": "Datenbank-ID",
+		"title": "Über Informationen",
+		"user-email": "Deine E-Mail",
+		"user-name": "Dein Name",
+		"version": "PushTracker Wear OS App Version",
+		"watch-serial-number": "Smartwatch-Seriennummer"
 	},
 	"busy": {
-		"synchronizing": ""
+		"synchronizing": "Synchronisierung läuft ..."
 	},
 	"buttons": {
-		"back": "",
-		"dismiss": "",
-		"ok": ""
+		"back": "Zurück",
+		"dismiss": "entlassen",
+		"ok": "OK"
 	},
 	"charts": {
 		"coast": {
-			"title": ""
+			"title": "Küstenzeit Täglich"
 		},
 		"distance": {
-			"title": ""
+			"title": "Täglich zurückgelegte Strecke"
 		}
 	},
 	"enhancements": {
-		"coast-time": "",
-		"distance": "",
-		"pushes": ""
+		"coast-time": "Küstenzeit Täglich",
+		"distance": "Entfernung Täglich",
+		"pushes": "Drückt Täglich"
 	},
 	"failures": {
-		"connect": "",
-		"could-not-update-profile": "",
-		"must-wear-watch": "",
-		"no-auth-for-saving": "",
-		"not-connected-to-mobile": "",
-		"not-fully-initialized": "",
-		"permissions": "",
-		"saving-activity": "",
-		"scan": "",
-		"title": ""
+		"connect": "Verbindung zu fehlgeschlagen",
+		"could-not-update-profile": "Fehler beim Aktualisieren des Profils auf dem Permobil-Server.",
+		"must-wear-watch": "Die Einstellung [Auf Handgelenk prüfen] ist aktiviert, daher muss die Smartwatch zur Steuerung Ihres SmartDrive getragen werden.",
+		"no-auth-for-saving": "Um die Einstellungen auf dem Server zu speichern (optional), müssen Sie die PushTracker Wear OS-App mit der PushTracker Mobile-App verbinden. Befolgen Sie dazu die Anweisungen auf der Seite \"Geräte-Setup\" der PushTracker Mobile-App.",
+		"not-connected-to-mobile": "Fehler bei der Authentifizierung beim Permobil-Server. Erneute Verbindung zur PushTracker Mobile-App erforderlich.",
+		"not-fully-initialized": "Die Verbindung zum Permobil-Server wird noch initialisiert. Einstellungen werden nach Möglichkeit gesendet.",
+		"permissions": "Die angeforderte Aktion konnte nicht ausgeführt werden. Erforderliche Berechtigungen wurden nicht erteilt.",
+		"saving-activity": "Speichern der Aktivität fehlgeschlagen.",
+		"scan": "Konnte nicht scannen.",
+		"title": "Beachten"
 	},
 	"goals": {
 		"coast": {
-			"units": ""
+			"units": "Sekunden"
 		},
 		"distance": {
-			"english": "",
-			"metric": ""
+			"english": "Meilen",
+			"metric": "Kilometer"
 		}
 	},
-	"information": "",
+	"information": "Information",
 	"languages": {
-		"da": "",
-		"de": "",
-		"en": "",
-		"es": "",
-		"fr": "",
-		"it": "",
-		"ja": "",
-		"ko": "",
-		"nb": "",
-		"nl": "",
-		"nn": "",
-		"zh": ""
+		"da": "dänisch",
+		"de": "Deutsche",
+		"en": "Englisch",
+		"es": "Spanisch",
+		"fr": "Französisch",
+		"it": "Italienisch",
+		"ja": "Japanisch",
+		"ko": "Koreanisch",
+		"nb": "Norwegisch [Bokmål]",
+		"nl": "Niederländisch",
+		"sv": "Schwedisch",
+		"zh": "Chinesische Tradition]"
 	},
 	"menu": {
-		"about": "",
-		"profile": "",
-		"title": ""
+		"about": "Über",
+		"profile": "Profil",
+		"title": "Speisekarte"
 	},
 	"notifications": {
-		"foreground-service": ""
+		"foreground-service": "Permobil PushTracker sammelt Ihre Aktivitäten"
 	},
 	"permissions-reasons": {
-		"coarse-location": "",
-		"fine-location": "",
-		"phone-state": ""
+		"coarse-location": "Um über Bluetooth eine Verbindung mit der PushTracker Mobile-App auf Ihrem iPhone herzustellen, müssen Sie die Standortberechtigung [ACCESS_COARSE_LOCATION] auf dem folgenden Bildschirm zulassen. Von dieser Berechtigung aus greift Permobil nicht auf Ihre Standortdaten zu.",
+		"fine-location": "OPTIONAL: Um die Entfernung mit Ihrem Smartwatch-GPS zu messen, müssen Sie die Berechtigung [ACCESS_FINE_LOCATION] auf einem der folgenden Bildschirme zulassen. Von dieser Berechtigung aus greift Permobil nicht auf Ihre Standortdaten zu.",
+		"phone-state": "OPTIONAL: Um auf Ihre Smartwatch-Seriennummer zuzugreifen, die für Support- und Garantiezwecke nützlich sein kann, müssen Sie die Telefonberechtigung [READ_PHONE_STATE] in einem der folgenden Bildschirme zulassen. Mit dieser Erlaubnis greift Permobil nicht auf Ihre Telefonnummer, Mobilfunknetzinformationen oder andere Daten mit Ausnahme der Smartwatch-Seriennummer zu."
 	},
 	"permissions-request": {
-		"title": ""
+		"title": "Berechtigungshinweis"
 	},
-	"profile": "",
+	"profile": "Profil",
 	"pushes": {
-		"units": ""
+		"units": "drückt"
 	},
 	"settings": {
-		"chairmake": {
-			"description": "",
-			"title": "",
-			"values": {
-				"colours": "",
-				"invacare": "",
-				"karman": "",
-				"ki": "",
-				"motion-composites": "",
-				"other": "",
-				"panthera": "",
-				"quickie": "",
-				"tilite": "",
-				"top-end": ""
-			}
-		},
-		"chairtype": {
-			"description": "",
-			"title": "",
-			"values": {
-				"folding": "",
-				"other": "",
-				"pediatric": "",
-				"rigid": ""
-			}
-		},
 		"coastgoal": {
-			"description": "",
-			"title": "",
-			"units": ""
+			"description": "Dein Ziel für die durchschnittliche Küstenzeit zwischen zwei Schüben pro Tag.",
+			"title": "Küstenzeit-Ziel",
+			"units": "s"
 		},
-		"connect-pushtracker": "",
+		"connect-pushtracker": "Verbinden Sie die PushTracker Mobile App",
 		"distancegoal": {
-			"description": "",
-			"title": "",
+			"description": "Ihr tägliches Ziel für die im Rollstuhl zurückgelegte Strecke, gemessen mit einem SmartDrive.",
+			"title": "Zurückgelegte Strecke Ziel",
 			"units": {
-				"english": "",
-				"metric": ""
+				"english": "Mi",
+				"metric": "km"
 			}
 		},
-		"edit-profile": "",
-		"height": {
-			"description": "",
-			"title": ""
-		},
-		"information": "",
-		"install-smartdrive": "",
+		"information": "Information",
+		"install-smartdrive": "Installieren Sie die SmartDrive MX2 Wear OS App",
 		"pushsensitivity": {
-			"description": "",
-			"title": ""
+			"description": "Die Empfindlichkeit der zum Zählen verwendeten Erkennung drückt. Je niedriger der Prozentsatz ist, desto unempfindlicher ist es für die Erkennung eines Stoßes. 0% ist am unempfindlichsten und erkennt daher weniger Stöße, und 100% ist am empfindlichsten und erkennt daher mehr Stöße.",
+			"title": "Empfindlichkeit drücken"
 		},
-		"title": "",
+		"title": "PushTracker-Einstellungen",
 		"units": {
-			"description": "",
-			"title": "",
+			"description": "Das Einheitensystem oder die Maßeinheiten für die Anzeige der Messungen in den Benutzeroberflächen. Wählen Sie entweder Imperial [ft, mi und lbs] oder Metric [cm, km und kg].",
+			"title": "Einheiten",
 			"values": {
-				"english": "",
-				"metric": ""
-			}
-		},
-		"watchrequired": {
-			"description": "",
-			"title": "",
-			"values": {
-				"disabled": "",
-				"enabled": ""
-			}
-		},
-		"weight": {
-			"description": "",
-			"title": "",
-			"units": {
-				"english": "",
-				"metric": ""
+				"english": "Kaiserliche",
+				"metric": "Metrisch"
 			}
 		}
 	},
 	"units": {
 		"distance": {
-			"english": "",
-			"metric": ""
+			"english": "Mi",
+			"metric": "km"
 		},
-		"english": "",
-		"metric": "",
-		"speed": {
-			"english": "",
-			"metric": ""
-		}
+		"english": "Kaiserliche",
+		"metric": "Metrisch"
 	},
 	"wearos-comms": {
 		"errors": {
-			"bad-authorization": "",
-			"bad-data": ""
+			"bad-authorization": "Ungültige Kontoberechtigungsdaten von PushTracker Mobile-App erhalten. Stellen Sie sicher, dass Ihre Kontoinformationen aktuell sind und Ihre Smartwatch über WLAN oder Ihr Telefon mit dem Internet verbunden ist.",
+			"bad-data": "Ungültige Daten von PushTracker Mobile App empfangen. Überprüfen Sie die Verbindung und versuchen Sie es erneut."
 		}
 	}
 }

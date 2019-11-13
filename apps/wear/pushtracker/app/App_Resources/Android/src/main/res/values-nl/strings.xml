@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">Batterijniveau</string>
-    <string name="complications_provider_service_label_pushes">Geschatte Rance</string>
-    <string name="complications_provider_service_label_coast_time">Rijd afstand</string>
-    <string name="complications_provider_service_label_distance">Kust afstand</string>
+    <string name="foreground_service_notification">Permobil PushTracker verzamelt uw activiteit</string>
+    <string name="complications_provider_service_label_pushes">Dagelijks duwen</string>
+    <string name="complications_provider_service_label_coast_time">Kusttijd Dagelijks</string>
+    <string name="complications_provider_service_label_distance">Dagelijkse afstand</string>
 </resources>
