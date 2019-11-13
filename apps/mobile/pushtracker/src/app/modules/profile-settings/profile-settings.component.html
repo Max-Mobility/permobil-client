@@ -107,7 +107,7 @@
                 autoPlay="true"
                 *ngIf="!syncSuccessful"
               ></LottieView>
-              <LottieView height="25" width="25" verticalAlignment="center" horizontalAlignment="center" src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
+              <LottieView height="30" width="30" class="align-center" src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
               <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
             </StackLayout>
           </GridLayout>
