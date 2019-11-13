@@ -3,7 +3,7 @@
     <string name="app_name">SmartDrive MX2+</string>
     <string name="title_activity_kimera">SmartDrive MX2+</string>
     <string name="complications_provider_service_label_battery">Niveau de batterie</string>
-    <string name="complications_provider_service_label_range">Gamme estimée</string>
-    <string name="complications_provider_service_label_daily_distance">Distance de conduite</string>
-    <string name="complications_provider_service_label_odometer">Distance côtière</string>
+    <string name="complications_provider_service_label_range">Autonomie estimée</string>
+    <string name="complications_provider_service_label_daily_distance">Distance quotidienne parcourue</string>
+    <string name="complications_provider_service_label_odometer">Odomètre</string>
 </resources>
