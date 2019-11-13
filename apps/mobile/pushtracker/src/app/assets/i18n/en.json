@@ -516,7 +516,7 @@
     "category": {
       "title": "Category",
       "description": "Select the category of support items you would like to view.",
-      "all": "All"
+      "all": "All Categories"
     },
     "search-hint": "Enter search term...",
 		"faqs": [
