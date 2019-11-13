@@ -311,10 +311,26 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
 
         // Now perform the SmartDrive updates if we need to
-        await this.performSmartDriveWirelessUpdate();
+        try {
+          await this.performSmartDriveWirelessUpdate();
+        } catch(err) {
+          this._logService.logException(err);
+        }
       })
-      .catch(err => {
-        this._logService.logException(err);
+      .catch(async err => {
+        try {
+          this.currentVersions = JSON.parse(
+            appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
+          );
+        } catch (err) {
+          this._logService.logException(err);
+        }
+        // Now perform the SmartDrive updates if we need to
+        try {
+          await this.performSmartDriveWirelessUpdate();
+        } catch(err) {
+          this._logService.logException(err);
+        }
       });
   }
 
@@ -662,10 +678,26 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
 
         // Now perform the PushTracker updates if we need to
-        await this.performPushTrackerWirelessUpdate();
+        try {
+          await this.performPushTrackerWirelessUpdate();
+        } catch(err) {
+          this._logService.logException(err);
+        }
       })
-      .catch(err => {
-        this._logService.logException(err);
+      .catch(async err => {
+        try {
+          this.currentPushTrackerVersions = JSON.parse(
+            appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
+          );
+        } catch (err) {
+          this._logService.logException(err);
+        }
+        // Now perform the PushTracker updates if we need to
+        try {
+          await this.performPushTrackerWirelessUpdate();
+        } catch(err) {
+          this._logService.logException(err);
+        }
       });
   }
 
