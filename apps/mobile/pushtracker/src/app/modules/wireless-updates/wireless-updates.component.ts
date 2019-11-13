@@ -244,7 +244,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     this.currentVersions = JSON.parse(
       appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
     );
-    if (this.currentVersions['SmartDriveBLE.ota']) {
+    if (this.currentVersions['SmartDriveMCU.ota']) {
       const f = this.currentVersions['SmartDriveMCU.ota'].filename;
       this.currentVersions['SmartDriveMCU.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
@@ -254,6 +254,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentVersions['SmartDriveBLE.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
     }
+    console.log('Loaded from FS', this.currentVersions);
   }
 
   private currentVersions = {};
@@ -264,14 +265,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     } catch (err) {
       this._logService.logException(err);
     }
-
-    const kinveyQuery = new KinveyQuery();
-    kinveyQuery.equalTo('firmware_file', true);
-    kinveyQuery.equalTo('_filename', 'SmartDriveBLE.ota');
-    const kinveySecondQuery = new KinveyQuery();
-    kinveySecondQuery.equalTo('firmware_file', true);
-    kinveySecondQuery.equalTo('_filename', 'SmartDriveMCU.ota');
-    kinveyQuery.or(kinveySecondQuery);
 
     const _connType = getConnectionType();
     console.log('_connType', _connType);
@@ -289,6 +282,15 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
       return;
     }
+
+
+    const kinveyQuery = new KinveyQuery();
+    kinveyQuery.equalTo('firmware_file', true);
+    kinveyQuery.equalTo('_filename', 'SmartDriveBLE.ota');
+    const kinveySecondQuery = new KinveyQuery();
+    kinveySecondQuery.equalTo('firmware_file', true);
+    kinveySecondQuery.equalTo('_filename', 'SmartDriveMCU.ota');
+    kinveyQuery.or(kinveySecondQuery);
 
     KinveyFiles.find(kinveyQuery)
       .then(async kinveyResponse => {
