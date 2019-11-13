@@ -98,17 +98,17 @@
           <GridLayout width="80%" horizontalAlignment="center" columns="auto, auto" *ngIf="syncingWithSmartDrive">
             <StackLayout orientation="horizontal" horizontalAlignment="center">
               <LottieView
-                height="50"
-                width="75"
-                verticalAlignment="center"
-                horizontalAlignment="center"
+                height="30"
+                width="30"
+	              margin="10"
+                class="align-center"
                 [src]="CURRENT_THEME === APP_THEMES.DEFAULT ? 'bluetooth_default.json' : 'bluetooth_dark.json'"
                 loop="true"
                 autoPlay="true"
                 *ngIf="!syncSuccessful"
               ></LottieView>
-              <LottieView height="50" width="50" verticalAlignment="center" horizontalAlignment="center" src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
-              <Label [marginLeft]="!syncSuccessful ? -20 : 0" horizontalAlignment="center" verticalAlignment="center" class="sync-status" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
+              <LottieView height="30" width="30" class="align-center" src="success.json" loop="false" autoPlay="true" *ngIf="syncSuccessful || !syncingWithSmartDrive"></LottieView>
+              <Label horizontalAlignment="center" verticalAlignment="center" class="sync-status" [text]="syncState" *ngIf="syncingWithSmartDrive"></Label>
             </StackLayout>
           </GridLayout>
           <Button (tap)="onSyncSettingsWithSmartDrive($event)" *ngIf="!syncingWithSmartDrive && !syncSuccessful" class="sync-button" width="70%" [text]="'settings-component.sync-button' | translate"></Button>
