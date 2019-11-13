@@ -32,7 +32,7 @@ export class SmartDriveErrorsService {
 
       // Run a .find first to get the _id of the daily activity
       {
-        const stream = this.datastore
+        return this.datastore
           .find(query)
           .then((data: any[]) => {
             if (data && data.length) {
