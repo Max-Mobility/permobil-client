@@ -6,12 +6,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,12 +21,24 @@ import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
+import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
+import android.view.WindowInsets;
 
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataClient;
+import com.google.android.gms.wearable.DataEventBuffer;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +46,22 @@ import java.util.concurrent.TimeUnit;
 public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
     private static final String TAG = "ComplicationWatchFace";
+
+    private static final Typeface BOLD_TYPEFACE =
+            Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
+    private static final Typeface NORMAL_TYPEFACE =
+            Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+
+    /**
+     * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
+     * a second to blink the colons.
+     */
+    private static final long NORMAL_UPDATE_RATE_MS = 500;
+
+    /**
+     * Update rate in milliseconds for mute mode. We update every minute, like in ambient mode.
+     */
+    private static final long MUTE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
 
     private static final int LEFT_COMPLICATION_ID = 0;
@@ -98,7 +128,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
      * Update rate in milliseconds for interactive mode. We update once a second to advance the
      * second hand.
      */
-    private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
+    private static long mInteractiveUpdateRateMs = NORMAL_UPDATE_RATE_MS;
 
     @Override
     public Engine onCreateEngine() {
@@ -108,12 +138,23 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     private class Engine extends CanvasWatchFaceService.Engine {
         private static final int MSG_UPDATE_TIME = 0;
 
+        static final String COLON_STRING = ":";
+
+        /** Alpha value for drawing time when in mute mode. */
+        static final int MUTE_ALPHA = 100;
+
+        /** Alpha value for drawing time when not in mute mode. */
+        static final int NORMAL_ALPHA = 255;
+
         private static final float HOUR_AND_MINUTE_STROKE_WIDTH = 5f;
         private static final float SECOND_TICK_STROKE_WIDTH = 2f;
         private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
         private static final int SHADOW_RADIUS = 6;
 
         private Calendar mCalendar;
+        private Date mDate;
+        private SimpleDateFormat mDayOfWeekFormat;
+        private java.text.DateFormat mDateFormat;
         private boolean mRegisteredTimeZoneReceiver = false;
 
         private float mCenterX;
@@ -126,12 +167,30 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         private Paint mHourMinuteTicksHandPaint;
         private Paint mSecondHandPaint;
-
         private Paint mBackgroundPaint;
-
         private Bitmap mBackgroundBitmap;
 
         private boolean mAmbient;
+
+        private Paint mDatePaint;
+        private Paint mHourPaint;
+        private Paint mMinutePaint;
+        private Paint mSecondPaint;
+        private Paint mAmPmPaint;
+        private Paint mColonPaint;
+        float mColonWidth;
+        boolean mMute;
+
+        boolean mShouldDrawColons;
+        float mXOffset;
+        float mYOffset;
+        float mLineHeight;
+        String mAmString;
+        String mPmString;
+        int mInteractiveBackgroundColor = Color.BLACK;
+        int mInteractiveHourDigitsColor = Color.WHITE;
+        int mInteractiveMinuteDigitsColor = Color.WHITE;
+        int mInteractiveSecondDigitsColor = Color.GRAY;
 
         /*
          * Whether the display supports fewer bits for each color in ambient mode.
@@ -162,22 +221,37 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         mCalendar.setTimeZone(TimeZone.getDefault());
+                        initFormats();
                         invalidate();
                     }
                 };
+
+        private void initFormats() {
+            mDayOfWeekFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+            mDayOfWeekFormat.setCalendar(mCalendar);
+            mDateFormat = DateFormat.getDateFormat(ComplicationWatchFaceService.this);
+            mDateFormat.setCalendar(mCalendar);
+        }
 
         // Handler to update the time once a second in interactive mode.
         private final Handler mUpdateTimeHandler =
                 new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        invalidate();
-                        if (shouldTimerBeRunning()) {
-                            long timeMs = System.currentTimeMillis();
-                            long delayMs =
-                                    INTERACTIVE_UPDATE_RATE_MS
-                                            - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
-                            mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                        switch (message.what) {
+                            case MSG_UPDATE_TIME:
+                                if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                                    Log.v(TAG, "updating time");
+                                }
+                                invalidate();
+                                if (shouldTimerBeRunning()) {
+                                    long timeMs = System.currentTimeMillis();
+                                    long delayMs =
+                                            mInteractiveUpdateRateMs
+                                                    - (timeMs % mInteractiveUpdateRateMs);
+                                    mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                                }
+                                break;
                         }
                     }
                 };
@@ -190,25 +264,50 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     new WatchFaceStyle.Builder(ComplicationWatchFaceService.this)
                             .setAcceptsTapEvents(true)
                             .build());
-
-            mCalendar = Calendar.getInstance();
+            Resources resources = ComplicationWatchFaceService.this.getResources();
+            mYOffset = resources.getDimension(R.dimen.digital_y_offset);
+            mLineHeight = resources.getDimension(R.dimen.digital_line_height);
+            mAmString = resources.getString(R.string.digital_am);
+            mPmString = resources.getString(R.string.digital_pm);
 
             initializeBackground();
 
-
+            mCalendar = Calendar.getInstance();
+            mDate = new Date();
+            initFormats();
             initializeComplications();
-
-            initializeHands();
+            //initializeHands();
         }
 
         private void initializeBackground() {
             mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(Color.BLACK);
+            mBackgroundPaint.setColor(mInteractiveBackgroundColor);
 
             final int backgroundResId = R.drawable.permobil;
             mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), backgroundResId);
+
+            mDatePaint = createTextPaint(
+                    ContextCompat.getColor(getApplicationContext(), R.color.digital_date));
+            mHourPaint = createTextPaint(mInteractiveHourDigitsColor, BOLD_TYPEFACE);
+            mMinutePaint = createTextPaint(mInteractiveMinuteDigitsColor);
+            mSecondPaint = createTextPaint(mInteractiveSecondDigitsColor);
+            mAmPmPaint = createTextPaint(
+                    ContextCompat.getColor(getApplicationContext(), R.color.digital_am_pm));
+            mColonPaint = createTextPaint(
+                    ContextCompat.getColor(getApplicationContext(), R.color.digital_colons));
         }
 
+        private Paint createTextPaint(int defaultInteractiveColor) {
+            return createTextPaint(defaultInteractiveColor, NORMAL_TYPEFACE);
+        }
+
+        private Paint createTextPaint(int defaultInteractiveColor, Typeface typeface) {
+            Paint paint = new Paint();
+            paint.setColor(defaultInteractiveColor);
+            paint.setTypeface(typeface);
+            paint.setAntiAlias(true);
+            return paint;
+        }
 
         private void initializeComplications() {
             Log.d(TAG, "initializeComplications()");
@@ -263,6 +362,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         public void onPropertiesChanged(Bundle properties) {
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+            mHourPaint.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
 
             // Updates complications to properly render in ambient mode based on the
             // screen's capabilities.
@@ -299,14 +399,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         public void onTapCommand(int tapType, int x, int y, long eventTime) {
 
             Log.d(TAG, "OnTapCommand()");
-//            switch (tapType) {
-//                case TAP_TYPE_TAP:
-//                    int tappedComplicationId = getTappedComplicationId(x, y);
-//                    if (tappedComplicationId != -1) {
-//                        onComplicationTap(tappedComplicationId);
-//                    }
-//                    break;
-//            }
+            switch (tapType) {
+                case TAP_TYPE_TAP:
+                    int tappedComplicationId = getTappedComplicationId(x, y);
+                    if (tappedComplicationId != -1) {
+                        onComplicationTap(tappedComplicationId);
+                    }
+                    break;
+            }
         }
 
         /*
@@ -393,7 +493,30 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             mAmbient = inAmbientMode;
 
-            updateWatchHandStyles();
+            adjustPaintColorToCurrentMode(mBackgroundPaint, mInteractiveBackgroundColor,
+                    Color.BLACK);
+            adjustPaintColorToCurrentMode(mHourPaint, mInteractiveHourDigitsColor,
+                    Color.WHITE);
+            adjustPaintColorToCurrentMode(mMinutePaint, mInteractiveMinuteDigitsColor,
+                    Color.WHITE);
+            // Actually, the seconds are not rendered in the ambient mode, so we could pass just any
+            // value as ambientColor here.
+            adjustPaintColorToCurrentMode(mSecondPaint, mInteractiveSecondDigitsColor,
+                    Color.GRAY);
+
+            if (mLowBitAmbient) {
+                boolean antiAlias = !inAmbientMode;
+                mDatePaint.setAntiAlias(antiAlias);
+                mHourPaint.setAntiAlias(antiAlias);
+                mMinutePaint.setAntiAlias(antiAlias);
+                mSecondPaint.setAntiAlias(antiAlias);
+                mAmPmPaint.setAntiAlias(antiAlias);
+                mColonPaint.setAntiAlias(antiAlias);
+            }
+            invalidate();
+
+
+            //updateWatchHandStyles();
 
 
             // Update drawable complications' ambient state.
@@ -408,6 +531,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             // Check and trigger whether or not timer should be running (only in active mode).
             updateTimer();
+        }
+
+        private void adjustPaintColorToCurrentMode(Paint paint, int interactiveColor,
+                                                   int ambientColor) {
+            paint.setColor(isInAmbientMode() ? ambientColor : interactiveColor);
         }
 
         private void updateWatchHandStyles() {
@@ -425,6 +553,41 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
                 mSecondHandPaint.setAntiAlias(true);
                 mSecondHandPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, Color.BLACK);
+            }
+        }
+
+        @Override
+        public void onInterruptionFilterChanged(int interruptionFilter) {
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "onInterruptionFilterChanged: " + interruptionFilter);
+            }
+            super.onInterruptionFilterChanged(interruptionFilter);
+
+            boolean inMuteMode = interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE;
+            // We only need to update once a minute in mute mode.
+            setInteractiveUpdateRateMs(inMuteMode ? MUTE_UPDATE_RATE_MS : NORMAL_UPDATE_RATE_MS);
+
+            if (mMute != inMuteMode) {
+                mMute = inMuteMode;
+                int alpha = inMuteMode ? MUTE_ALPHA : NORMAL_ALPHA;
+                mDatePaint.setAlpha(alpha);
+                mHourPaint.setAlpha(alpha);
+                mMinutePaint.setAlpha(alpha);
+                mColonPaint.setAlpha(alpha);
+                mAmPmPaint.setAlpha(alpha);
+                invalidate();
+            }
+        }
+
+        public void setInteractiveUpdateRateMs(long updateRateMs) {
+            if (updateRateMs == mInteractiveUpdateRateMs) {
+                return;
+            }
+            mInteractiveUpdateRateMs = updateRateMs;
+
+            // Stop and restart the timer so the new update rate takes effect immediately.
+            if (shouldTimerBeRunning()) {
+                updateTimer();
             }
         }
 
@@ -499,12 +662,71 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         public void onDraw(Canvas canvas, Rect bounds) {
             long now = System.currentTimeMillis();
             mCalendar.setTimeInMillis(now);
+            mDate.setTime(now);
+            boolean is24Hour = DateFormat.is24HourFormat(ComplicationWatchFaceService.this);
+
+            // Show colons for the first half of each second so the colons blink on when the time
+            // updates.
+            mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
+
+            // Draw the background.
+            canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
             drawBackground(canvas);
 
             drawComplications(canvas, now);
 
-            drawHands(canvas);
+            //drawHands(canvas);
+
+            // Draw the hours.
+            float x = mXOffset;
+            String hourString;
+            if (is24Hour) {
+                hourString = formatTwoDigitNumber(mCalendar.get(Calendar.HOUR_OF_DAY));
+            } else {
+                int hour = mCalendar.get(Calendar.HOUR);
+                if (hour == 0) {
+                    hour = 12;
+                }
+                hourString = String.valueOf(hour);
+            }
+            canvas.drawText(hourString, x, mYOffset, mHourPaint);
+            x += mHourPaint.measureText(hourString);
+
+            // In ambient and mute modes, always draw the first colon. Otherwise, draw the
+            // first colon for the first half of each second.
+            if (isInAmbientMode() || mMute || mShouldDrawColons) {
+                canvas.drawText(COLON_STRING, x, mYOffset, mColonPaint);
+            }
+            x += mColonWidth;
+
+            // Draw the minutes.
+            String minuteString = formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
+            canvas.drawText(minuteString, x, mYOffset, mMinutePaint);
+            x += mMinutePaint.measureText(minuteString);
+
+            // In unmuted interactive mode, draw a second blinking colon followed by the seconds.
+            // Otherwise, if we're in 12-hour mode, draw AM/PM
+            if (!isInAmbientMode() && !mMute) {
+                if (mShouldDrawColons) {
+                    canvas.drawText(COLON_STRING, x, mYOffset, mColonPaint);
+                }
+                x += mColonWidth;
+                canvas.drawText(formatTwoDigitNumber(
+                        mCalendar.get(Calendar.SECOND)), x, mYOffset, mSecondPaint);
+            } else if (!is24Hour) {
+                x += mColonWidth;
+                canvas.drawText(getAmPmString(
+                        mCalendar.get(Calendar.AM_PM)), x, mYOffset, mAmPmPaint);
+            }
+        }
+
+        private String formatTwoDigitNumber(int hour) {
+            return String.format("%02d", hour);
+        }
+
+        private String getAmPmString(int amPm) {
+            return amPm == Calendar.AM ? mAmString : mPmString;
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
@@ -613,7 +835,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 registerReceiver();
                 // Update time zone in case it changed while we weren't visible.
                 mCalendar.setTimeZone(TimeZone.getDefault());
-                invalidate();
+                initFormats();
+                //invalidate();
             } else {
                 unregisterReceiver();
             }
@@ -632,6 +855,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             }
             mRegisteredTimeZoneReceiver = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
+            filter.addAction(Intent.ACTION_LOCALE_CHANGED);
             ComplicationWatchFaceService.this.registerReceiver(mTimeZoneReceiver, filter);
         }
 
@@ -641,6 +865,33 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             }
             mRegisteredTimeZoneReceiver = false;
             ComplicationWatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
+        }
+
+        @Override
+        public void onApplyWindowInsets(WindowInsets insets){
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
+            }
+            super.onApplyWindowInsets(insets);
+
+            // Load resources that have alternate values for round watches.
+            Resources resources = ComplicationWatchFaceService.this.getResources();
+            boolean isRound = insets.isRound();
+            mXOffset = resources.getDimension(isRound
+                    ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
+            float textSize = resources.getDimension(isRound
+                    ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
+            float amPmSize = resources.getDimension(isRound
+                    ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
+
+            mDatePaint.setTextSize(resources.getDimension(R.dimen.digital_date_text_size));
+            mHourPaint.setTextSize(textSize);
+            mMinutePaint.setTextSize(textSize);
+            mSecondPaint.setTextSize(textSize);
+            mAmPmPaint.setTextSize(amPmSize);
+            mColonPaint.setTextSize(textSize);
+
+            mColonWidth = mColonPaint.measureText(COLON_STRING);
         }
 
         /**

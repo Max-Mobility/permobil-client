@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">SmartDrive MX2+</string>
     <string name="message">Watch face tapped</string>
-    <string name="my_analog_name">SD Analog</string>
+    <string name="my_analog_name">SD Digital</string>
+
+    <string name="digital_am">AM</string>
+    <string name="digital_pm">PM</string>
 </resources>

@@ -27,22 +27,22 @@
         android:layout_centerVertical="true"
         android:background="@drawable/settings_watch_face_preview_background"/>
 
-    <View
-        android:id="@+id/watch_face_highlight"
-        android:layout_width="@dimen/settings_preview_size"
-        android:layout_height="@dimen/settings_preview_size"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/settings_watch_face_preview_highlight"/>
+<!--    <View-->
+<!--        android:id="@+id/watch_face_highlight"-->
+<!--        android:layout_width="@dimen/settings_preview_size"-->
+<!--        android:layout_height="@dimen/settings_preview_size"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:background="@drawable/settings_watch_face_preview_highlight"/>-->
 
 
-    <View
-        android:id="@+id/watch_face_arms_and_ticks"
-        android:layout_width="@dimen/settings_preview_size"
-        android:layout_height="@dimen/settings_preview_size"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/settings_watch_face_preview_arms_and_ticks"/>
+<!--    <View-->
+<!--        android:id="@+id/watch_face_arms_and_ticks"-->
+<!--        android:layout_width="@dimen/settings_preview_size"-->
+<!--        android:layout_height="@dimen/settings_preview_size"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_centerVertical="true"-->
+<!--        android:background="@drawable/settings_watch_face_preview_arms_and_ticks"/>-->
 
 
     <ImageView
@@ -66,20 +66,23 @@
 
     <ImageView
         android:id="@+id/background_complication_background"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:src="@drawable/added_complication"
         style="?android:borderlessButtonStyle"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignStart="@+id/watch_face_background"
+        android:layout_alignTop="@+id/watch_face_background"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
         android:background="@android:color/transparent"
-        android:layout_alignTop="@+id/watch_face_arms_and_ticks"
-        android:layout_alignStart="@+id/watch_face_arms_and_ticks"/>
+        android:src="@drawable/added_complication" />
 
     <ImageButton
         android:id="@+id/background_complication"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
         style="?android:borderlessButtonStyle"
-        android:background="@android:color/transparent"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_alignTop="@+id/background_complication_background"
-        android:layout_alignEnd="@+id/background_complication_background"/>
+        android:layout_alignStart="@+id/background_complication_background"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent" />
 </RelativeLayout>
