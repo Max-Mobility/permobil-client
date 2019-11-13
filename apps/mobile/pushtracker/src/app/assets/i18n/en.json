@@ -524,7 +524,7 @@
         "category": "Setup & Installation",
         "a": "No. There is an initial set up process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on set up and a library of how to videos.",
         "q": "How do I set up my new PushTracker E2?",
-        "links": [ "https://youtube.com" ]
+        "links": [ "https://permobilus.com/howtosmartdrive" ]
       },
       {
         "category": "Setup & Installation",
@@ -580,13 +580,13 @@
         "category": "Updates",
         "a": "Yes. To get full functionality of your SmartDrive, use the PushTracker E2 to perform a wireless update. Refer to the video below for step by step instructions.",
         "q": "I recently purchased the new PushTracker E2. Do I need to update my SmartDrive?",
-        "links": [ "https://youtube.com" ]
+        "links": [ "https://permobilus.com/howtosmartdrive" ]
       },
       {
         "category": "Connectivity",
         "a": "If it is the first time pairing, you can pair your SmartDrive and PushTracker E2 by just tapping the green \"turn power assist on\" button. At any point you can use the \"Pair SmartDrive\" function in the settings menu.",
         "q": "How do I pair my SmartDrive to my PushTracker E2?",
-        "links": [ "https://youtube.com" ]
+        "links": [ "https://permobilus.com/howtosmartdrive" ]
       },
       {
         "category": "Connectivity",
@@ -653,13 +653,13 @@
         "category": "Procurement & Funding",
         "a": "We have an LMN generator on EZ-TI (Permobil TiLite manual wheelchair configurator) and a landing page (link below). You can also reach out to our funding experts at us_funding@permobil.com.",
         "q": "Where can I find resources on documentation/letters of medical necessity?",
-        "links": [ "https://permobilus.com", "us_funding@permobil.com" ]
+        "links": [ "https://www.permobillmn.com/login.php", "us_funding@permobil.com" ]
       },
       {
         "category": "Procurement & Funding",
-        "a": "A new PushTracker E2 can be purchased from Permobil (see the permobil website below) or from online retails stores like Amazon [search for TicWatch E2 by Mobvoi]. You can also go through your dealer if you prefer to work with them.",
+        "a": "You can go through your dealer to purchase a PushTracker E2.  You can also purchase it now on Amazon or other internet retailers (search Mobvoi TicWatch E2).  And after January 1st 2020, you will also be able to purchase it directly from Permobil by contacting sales.smartdrive@permobil.com.",
         "q": "Where can I get a new PushTrackerE2? Do I have to use a dealer?",
-        "links": [ "https://permobilus.com", "us_funding@permobil.com" ]
+        "links": [ "sales.smartdrive@permobil.com" ]
       },
       {
         "category": "Procurement & Funding",
