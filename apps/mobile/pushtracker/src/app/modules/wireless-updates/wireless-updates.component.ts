@@ -5,6 +5,7 @@ import * as app from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { confirm } from '@nativescript/core/ui/dialogs';
+import { connectionType, getConnectionType }from '@nativescript/core/connectivity';
 import { TranslateService } from '@ngx-translate/core';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
@@ -124,6 +125,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
 
   closeModal() {
     // make sure to stop the bluetooth background execution (iOS)
+    if (this.smartDrive) {
+      this.smartDrive.disconnect();
+    }
     BluetoothService.stopOtaBackgroundExecution();
     // now close the page
     this._params.closeCallback();
@@ -239,6 +243,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private async _loadSmartDriveFirmwareFromFileSystem() {
+    this.currentVersions = JSON.parse(
+      appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
+    );
+    if (this.currentVersions['SmartDriveMCU.ota']) {
+      const f = this.currentVersions['SmartDriveMCU.ota'].filename;
+      this.currentVersions['SmartDriveMCU.ota'].data =
+        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
+    }
+    if (this.currentVersions['SmartDriveBLE.ota']) {
+      const f = this.currentVersions['SmartDriveBLE.ota'].filename;
+      this.currentVersions['SmartDriveBLE.ota'].data =
+        SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
+    }
+    console.log('Loaded from FS', this.currentVersions);
+  }
+
   private currentVersions = {};
   async checkForSmartDriveUpdates() {
     try {
@@ -247,6 +268,30 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     } catch (err) {
       this._logService.logException(err);
     }
+
+    const _connType = getConnectionType();
+    console.log('_connType', _connType);
+    if (_connType === connectionType.none) {
+      try {
+        await this._loadSmartDriveFirmwareFromFileSystem();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      // Now perform the SmartDrive updates if we need to
+      try {
+        await this.performSmartDriveWirelessUpdate();
+        if (this.smartDrive) {
+          this.smartDrive.disconnect();
+        }
+      } catch (err) {
+        if (this.smartDrive) {
+          this.smartDrive.cancelOTA();
+        }
+        this._logService.logException(err);
+      }
+      return;
+    }
+
 
     const kinveyQuery = new KinveyQuery();
     kinveyQuery.equalTo('firmware_file', true);
@@ -311,10 +356,36 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
 
         // Now perform the SmartDrive updates if we need to
-        await this.performSmartDriveWirelessUpdate();
+        try {
+          await this.performSmartDriveWirelessUpdate();
+          if (this.smartDrive) {
+            this.smartDrive.disconnect();
+          }
+        } catch (err) {
+          if (this.smartDrive) {
+            this.smartDrive.cancelOTA();
+          }
+          this._logService.logException(err);
+        }
       })
-      .catch(err => {
-        this._logService.logException(err);
+      .catch(async err => {
+        try {
+          await this._loadSmartDriveFirmwareFromFileSystem();
+        } catch (err) {
+          this._logService.logException(err);
+        }
+        // Now perform the SmartDrive updates if we need to
+        try {
+          await this.performSmartDriveWirelessUpdate();
+          if (this.smartDrive) {
+            this.smartDrive.disconnect();
+          }
+        } catch (err) {
+          if (this.smartDrive) {
+            this.smartDrive.cancelOTA();
+          }
+          this._logService.logException(err);
+        }
       });
   }
 
@@ -429,6 +500,9 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         mcuVersion,
         300 * 1000
       );
+      if (this.smartDrive) {
+        this.smartDrive.disconnect();
+      }
     } catch (err) {
       if (this.smartDrive) {
         this.smartDrive.cancelOTA();
@@ -592,6 +666,17 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private async _loadPushTrackerFirmwareFromFileSystem() {
+    this.currentPushTrackerVersions = JSON.parse(
+      appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
+    );
+    if (this.currentPushTrackerVersions['PushTracker.ota']) {
+      const f = this.currentPushTrackerVersions['PushTracker.ota'].filename;
+      this.currentPushTrackerVersions['PushTracker.ota'].data =
+        PushTrackerData.Firmware.loadFromFileSystem(this.currentPushTrackerVersions['PushTracker.ota']);
+    }
+  }
+
   private currentPushTrackerVersions = {};
   async checkForPushTrackerUpdates() {
     try {
@@ -602,6 +687,23 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       };
     } catch (err) {
       this._logService.logException(err);
+    }
+
+    const _connType = getConnectionType();
+    console.log('_connType', _connType);
+    if (_connType === connectionType.none) {
+      try {
+        await this._loadPushTrackerFirmwareFromFileSystem();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      // Now perform the PushTracker updates if we need to
+      try {
+        await this.performPushTrackerWirelessUpdate();
+      } catch (err) {
+        this._logService.logException(err);
+      }
+      return;
     }
 
     const kinveyQuery = new KinveyQuery();
@@ -662,10 +764,24 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         }
 
         // Now perform the PushTracker updates if we need to
-        await this.performPushTrackerWirelessUpdate();
+        try {
+          await this.performPushTrackerWirelessUpdate();
+        } catch (err) {
+          this._logService.logException(err);
+        }
       })
-      .catch(err => {
-        this._logService.logException(err);
+      .catch(async err => {
+        try {
+          await this._loadPushTrackerFirmwareFromFileSystem();
+        } catch (err) {
+          this._logService.logException(err);
+        }
+        // Now perform the PushTracker updates if we need to
+        try {
+          await this.performPushTrackerWirelessUpdate();
+        } catch (err) {
+          this._logService.logException(err);
+        }
       });
   }
 
@@ -690,12 +806,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         return val.connected;
       });
       if (trackers.length === 0) {
+        /*
         new Toasty({
           text: this._translateService.instant(
             'wireless-updates.messages.no-pushtracker-detected'
           ),
           duration: ToastDuration.LONG
         }).show();
+        */
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.no-pushtracker-detected'
@@ -704,12 +822,14 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else if (trackers.length > 1) {
+        /*
         new Toasty({
           text: this._translateService.instant(
             'wireless-updates.messages.more-than-one-pushtracker-connected'
           ),
           duration: ToastDuration.LONG
         }).show();
+        */
         this.pushTrackerCheckedForUpdates = true;
         this.pushTrackerOtaState = this._translateService.instant(
           'wireless-updates.state.more-than-one-pushtracker-detected'

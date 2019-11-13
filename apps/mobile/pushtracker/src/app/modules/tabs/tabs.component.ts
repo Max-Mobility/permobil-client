@@ -137,7 +137,7 @@ export class TabsComponent {
               this.bluetoothAdvertised = false;
               this._logService.logException(err);
             });
-        }, 5000);
+        }, 1000);
       }
     });
   }
@@ -313,6 +313,11 @@ export class TabsComponent {
       this._translateService.instant('general.pushtracker-connected') +
       `: ${pt.address}`;
     this.snackbar.simple(msg);
+    // unregister so we don't get duplicate events
+    pt.off(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
+    pt.off(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
+    pt.off(PushTracker.error_event, this.onErrorEvent, this);
+    // now register again to make sure we get the events
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.on(PushTracker.error_event, this.onErrorEvent, this);
@@ -491,6 +496,11 @@ export class TabsComponent {
   }
 
   private _registerEventsForPT(pt: PushTracker) {
+    // unregister
+    pt.off(PushTracker.paired_event);
+    pt.off(PushTracker.settings_event);
+    pt.off(PushTracker.switch_control_settings_event);
+    // now register
     pt.on(PushTracker.paired_event, () => {
       this._logService.logBreadCrumb(
         TabsComponent.name,

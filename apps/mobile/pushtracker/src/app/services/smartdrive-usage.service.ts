@@ -46,13 +46,14 @@ export class SmartDriveUsageService {
               dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
               dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
             }
-            return this.datastore.save(dailyUsage)
-              .then((_) => {
-                return true;
-              }).catch((error) => {
-                this._logService.logException(error);
-                return false;
-              });
+            return this.datastore.save(dailyUsage);
+          })
+          .then((_) => {
+            return true;
+          })
+          .catch((error) => {
+            this._logService.logException(error);
+            return false;
           });
       }
 
