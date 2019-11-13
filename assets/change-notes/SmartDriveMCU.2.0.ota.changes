@@ -1,0 +1,70 @@
+{
+  "da": [
+    "Tilføjet dynamisk SwitchControl-knapindikation, så knap-LED(er) viser strømforsyning og kørselstilstand\n - Hvis PushTracker / E2 er tilsluttet og / eller SwitchControl er aktiveret, blinker LED(er) i forskellige mønstre.\n - Hvis motoren kører, vil LED(er) have konstant lys.",
+    "SmartDrive kan konfigureres til Momentary eller Latched SwitchControl-tilstande\n - I standardtilstanden (Momentary) starter SmartDrive motoren med at øge dens hastighed til den konfigurerede SwitchControl Max Speed, mens en af ​​knapperne holdes nede.\n - I låst tilstand, (Latched)  starter SmartDrive med at øge hastigheden op til den konfigurerede SwitchControl Max Speed, mens en af ​​knapperne holdes nede. Når den holdte knap slippes, bliver SmartDrive ved med at køre med den aktuelle hastighed. Deaktiver kørslen ved at trykke på en knap.",
+    "SmartDrive SwitchControl har sin egen konfigurerbare Max Speed ​​indstilling, som er uafhængig af Max Speed ​​indstillingen for PushTracker / E2",
+    "SmartDrive er nu konfigureret til at bippe en gang, hver gang dens status ændres til strømforsyning TIL\n - Denne statusændring kan være fra en PushTracker / E2- og SwitchControl-knap (er).\n - Denne statusindstilling kan deaktiveres enten via SmartDrive MX2+ -appen på din PushTracker E2 eller ved hjælp af PushTracker Mobile-appen på din smartphone, hvis du ikke har en E2. "
+  ],
+  "de": [
+    "SwitchControl LEDs werden als dynamische Anzeige für den Fahrmodus eingesetzt\n - Wenn Pushtracker  /E2 angeschlossen ist und/oder SwitchControl eingeschaltet ist, dann leuchten die LEDs in verschiedenen Mustern.\n - Wenn Motor läuft sind LEDs permanent an.",
+    "SmartDrive kann für kurzzeitigen oder verriegelten Modus konfiguriert werden\n - Als Standard ist der kurzzeitige Modus voreingestellt. SmartDrive beschleunigt bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird.\n - Im verriegelten Modus beschleunigt der SmartDrive bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird. Wird der gedrückte SwitchControl losgelassen, wird die erreichte Geschwindigkeit gehalten. Das Fahren wird durch erneutes Drücken deaktiviert.",
+    "Die Maximalgeschwindigkeit für die SwitchControls kann unabhängig der Maximalgeschwindigkeit für Pushtracker / E2 eingestellt werden",
+    "SmartDrive zeigt jetzt durch einen Signalton den Wechsel in den Power Assist Modus \"Ein\" an\n - Der Statuswechsel kann durch Pushtracker/E2 und/oder SwitchControls erfolgen.\n - Diese Anzeige kann entweder durch die SmartDrive MX2+ App auf dem Pushtracker E2 oder durch die Pushtracker Mobile App auf dem Smartphone  deaktiviert werden."
+  ],
+  "en": [
+    "Added dynamic SwitchControl button indication so button LED(s) indicate power assist and driving state\n - If PushTracker / E2 is connected and / or switch control is enabled LED(s) will flash in different patterns.\n - If motor is driving LED(s) will be solid.",
+    "SmartDrive can be configured to Momentary or Latched SwitchControl Modes\n - In the default Momentary Mode the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed only while one of the buttons is being held.\n - In Latched Mode, the SmartDrive will start ramping up its speed to the configured SwitchControl Max Speed while one of the buttons is being held. When the held button is released, the SmartDrive will remain driving at the current speed. Deactivate the driving by pressing a button.",
+    "SmartDrive SwitchControl has its own configurable Max Speed setting which is independent of the Max Speed setting for the PushTracker / E2",
+    "SmartDrive is now configured to beep once whenever its state is changed to power assist ON\n - This state change can be from a PushTracker / E2 and SwitchControl button(s).\n - This indication setting can be disabled either through the SmartDrive MX2+ app on your PushTracker E2 or using the PushTracker Mobile app on your smartphone if you do not have an E2."
+  ],
+  "es": [
+    "Se agregó una indicación dinámica del botón SwitchControl para que los LED del botón indiquen la asistencia eléctrica y el estado de conducción\n - Si el PushTracker / E2 está conectado y / o el control del interruptor está habilitado, los LED parpadearán en diferentes patrones.\n - Si el motor está en marcha, los LED estarán encendidos.",
+    "SmartDrive se puede configurar en modos de control de interruptor momentáneo o bloqueado\n - En el modo Momentáneo predeterminado, el SmartDrive iniciará la marcha y el motor irá aumentando su velocidad a la velocidad máxima configurada de SwitchControl, solo mientras se mantiene presionado uno de los botones.\n - En el modo fijo, el SmartDrive comenzará a aumentar su velocidad a la velocidad máxima configurada de SwitchControl mientras se mantiene presionado uno de los botones. Cuando se suelta el botón retenido, el SmartDrive seguirá continuará la marcha a la velocidad actual. Desactive la conducción presionando un botón.",
+    "SmartDrive SwitchControl tiene su propia configuración de velocidad máxima configurable, que es independiente de la configuración de velocidad máxima para PushTracker / E2",
+    "SmartDrive ahora está configurado para emitir un pitido cada vez que cambia su estado a encendido\n - Este cambio de estado puede ser desde la PushTracker / E2 y desde el botón SwitchControl.\n - Esta configuración de indicación se puede deshabilitar a través de la aplicación SmartDrive MX2+ en su PushTracker E2 o usando la aplicación PushTracker Mobile en su teléfono inteligente si no tiene un E2."
+  ],
+  "fr": [
+    "Ajout d'une indication dynamique sur les LEDs des boutons de tierce personnes pour signaler l'assistance électrique et l'état de conduite\n - Si PushTracker / E2 est connecté et / ou si les boutons de tierce personne sont activées, les LEDs clignoteront selon différents motifs.\n - Si le moteur tourne, les LEDs seront allumées.",
+    "SmartDrive peut être configuré en mode momentané ou maintenu sur les bouton de commande tierce personnes\n - En mode Momentané par défaut, la SmartDrive démarre le moteur en augmentant sa vitesse jusqu'à la vitesse maximale configurée sur les boutons de tierce personne tout en maintenant un des boutons enfoncé.\n - En mode maintenu, la SmartDrive commence à augmenter sa vitesse jusqu'à la vitesse maximale configurée des bouton de tierce personne pendant que l'un des boutons est maintenu enfoncé. Lorsque vous relâchez le bouton, la SmartDrive continue à rouler à la vitesse actuelle. Désactivez la conduite en appuyant sur un bouton.",
+    "Les boutons de tierce personne de la SmartDrive ont leur propre réglage de vitesse maximum configurable qui est indépendant du réglage de vitesse maximum pour le PushTracker / E2",
+    "SmartDrive est maintenant configuré pour émettre un bip sonore chaque fois que son état est modifié pour que l'assistance d'alimentation soit activée\n - Ce changement d'état peut provenir d'un PushTracker / E2 et d'un ou plusieurs boutons de commande tierce personnes.\n - Ce réglage d'indication peut être désactivé soit via l'application SmartDrive MX2+ sur votre PushTracker E2, soit via l'application PushTracker Mobile sur votre smartphone si vous n'avez pas de E2."
+  ],
+  "it": [
+  ],
+  "ja": [
+    "スウィッチコントロールのLEDボタンにより、パワーアシスト状態や走行状態を表示されます\ - Push Tracker E2が接続されている場合、かつ/またはスウィッチコントロールが有効になっている場合、LEDライトが異なるパターンで点滅します。\n - モーターが駆動している場合、LEDライトは点灯したままになります。",
+    "SmartDriveはモーメンタリーモードもしくはラッチモードに設定することができます\n - デフォルトのモーメンタリーモードではボタンを押し続けている間のみSmartDriveが駆動します。その際、設定されている最大速度まで速度を上げて走行します。\n - ラッチモードではボタンを押し続けている間、設定されている最大速度までスピードを上げながら走行し、ボタンを離してもその速度で走行し続けます。再度ボタンを押すと、SmartDriveは走行を停止します。",
+    "SmartDriveのスイッチコントロールの最大速度は個別に設定することができ、それはPushTracker E2の最大速度とは異なる設定です。",
+    "SmartDriveの状態が「パワーアシストがON」になるたびにビープ音が一度鳴ります\n - ON/OFFの変更はPushTracker E2とスイッチコントロールから操作することができます。\n - この設定はPushTracker E2のSmartDrive MX2＋アプリ上、もしくはE2をお持ちでない場合はスマートフォン上のPushTrackerモバイルアプリから無効にすることができます。",
+  ],
+  "ko": [
+    "다이나믹 스위치 조절장치 버튼 알림이 추가되어 LED가 아래의 내용을 추가로 알려줄 수 있습니다\n - 푸시트랙커 또는 스위치 조절장치가 연결되면 LED의 깜빡이는 패턴이 달라집니다.\n - 주행중에는 LED가 계속 켜져있습니다.",
+    "스마트드라이브는 순간 모드와 지속모드로 설정할 수 있습니다\n - 기본설정인 순간모드에서는 스마트드라이브는 버튼을 누르고 있는 동안에는 설정된 최대 속도까지 가속되면서 작동합니다.\n - 지속모드에서는 버튼을 누르고 있는 동안은 설정된 최대 속도까지 지속적으로 속도가 증가하며 버튼에서 손을 때면, 해당 속도가 유지되고, 다시 버튼을 누르면 해제되는 형태로 작동합니다.",
+    "스마트드라이브 스위치 조절만을 위한 독립적인 별도의 최대 속도가 푸시트래커를 통해 설정됩니다",
+    "스마트드라이브는 이제 파워 어시스트 기능이 활성화되면 한번의 비프음을 내도록 설정되었습니다\n - 이 상태는 푸시트래커 그리고 스위치 조절장치에 의해 변경될 수 있습니다.\n - 비프음은 푸시 트래커의 스마트드라이브 MX2+앱, 또는 스마트폰의 PushTracker 모바일 앱을 통해 해제할 수 있습니다."
+  ],
+  "nb": [
+    "Lagt til dynamisk SwitchControl-knappindikasjon slik at LED-(er) indikerer kjøreassistanse og kjøretilstand\n - Hvis PushTracker / E2 er tilkoblet og / eller bryterkontroll er aktivert, vil LED (er) blinke i forskjellige mønstre.\n - Hvis motoren kjører vil LED (er) lyse konstant. ",
+    "Smart kan konfigureres til å Momentan eller Vekslende Switch Modes\n  - I standard Momentan Mode vil SmartDrive begynne å kjøre motoren ved å gradvis øke hastigheten til den konfigurerte SwitchControl maksimale hastighet bare mens en av knappene holdes inne.\n  - I låst modus, vil Smart starte den gradvis økende hastigheten til den konfigurerte Switch Maksimal hastighet mens en av knappene blir holdt. Når den holdte knappen slippes, vil SmartDrive fortsette å kjøre med satte hastighet. Deaktiver kjøringen ved å trykke på en knapp. ",
+    "SmartDrive SwitchControl har en egen konfigurerbar innstilling for maks hastighet som er uavhengig av innstillingen for maks hastighet for PushTracker / E2",
+    "SmartDrive er nå konfigurert til å bippe en gang når tilstanden blir endret til kjøre/motor assistranse er PÅ\n  - Denne endringen kan foretas fra en PushTracker / E2 og SwitchControl-knapp (er).\n  - Denne indikasjonsinnstillingen kan deaktiveres enten via SmartDrive MX2+ appen på PushTracker E2 eller ved å bruke PushTracker Mobile-appen på smarttelefonen din, hvis du ikke har en E2. ",
+  ],
+  "nl": [
+    "Dynamische Knoppenbesturing-indicatie toegevoegd, zoals de LED ('s) in de knoppen power assist en rijstatus aangeven\n - Als PushTracker / E2 is aangesloten en / of schakelbesturing is ingeschakeld, knipperen LED ('s) in verschillende patronen.\n - Als de motor aan het rijden is, branden de LED ('s) continu. ",
+    "SmartDrive kan worden geconfigureerd voor Direct of Geschakeld knoppenbesturing mode \n - In de Direct-mode start de SmartDrive de motor bij het indrukken en vasthouden van een van de knoppen door de snelheid op te voeren naar de ingestelde Max Snelheid Knoppenbesturing. Deactiveer het rijden door de knop los te laten. \n - In de vergrendelde modus zal de SmartDrive bij het indrukken en vasthouden van een van de knoppen zijn snelheid verhogen naar de ingestelde Max Snelheid Knoppenbesturing. Wanneer de vastgehouden knop wordt losgelaten, blijft de SmartDrive rijden met de huidige snelheid. Deactiveer het rijden door op een knop te drukken.",
+    "SmartDrive Knoppenbesturing heeft zijn eigen instelbare  Maximum Snelheid instelling die onafhankelijk is van de Maximum Snelheid instelling voor de PushTracker / E2",
+    "SmartDrive is nu geconfigureerd om één keer te piepen wanneer de status wordt gewijzigd in Power Assist ON\n - Deze statusverandering kan van een PushTracker / E2 en Knoppenbesturing zijn.\n - Deze indicatie-instelling kan worden uitgeschakeld via de SmartDrive MX2 + -app op uw PushTracker E2 of via de PushTracker Mobile-app op uw smartphone als u geen E2 hebt. "
+  ],
+  "sv": [
+    "Dynamisk SwitchControl-knappindikering, LED-lampor indikerar effektstöd och körläge\n - Om PushTracker / E2 är ansluten och / eller SwitchControl är aktiverad kommer LED -lampor att blinka i olika mönster.\n - Om motorn kör kommer LED-indikeringen att vara ett fast ljus.",
+    "SmartDrive med SwitchControl kan konfigureras till läge Momentary eller Latched\n - I standardmomentläget (Momentary) kommer SmartDrive att börja köra motorn genom att höja hastigheten upp till den konfigurerade Max hastigheten endast medan en av knapparna hålls intryckt\n - I låst läge (Latched) kommer SmartDrive att börja höja hastigheten till den konfigurerade Max hastigheten medan en av knapparna hålls intryckt. När den hållna knappen släpps kommer SmartDrive att fortsätta köra med aktuell hastighet. Deaktivera körningen genom att trycka på en knapp. ",
+    "SmartDrive SwitchControl har en egen konfigurerbar inställning för Max hastighet som är oberoende av inställningen Max hastigheten för PushTracker / E2",
+    "SmartDrive är nu konfigurerat för att pipa en gång när dess status ändras till  Smartdrive PÅ\n - Denna statusändring kan komma från en PushTracker / E2- och SwitchControl-knappar.\n - Denna indikationsinställning kan avaktiveras antingen via SmartDrive MX2+ appen på din PushTracker E2 eller med PushTracker Mobil appen på din smartphone om du inte har en E2. "
+  ],
+  "zh": [
+    "增加了動態線控按鈕指示，使按鈕LED顯示電動輔助和驅動狀態\n - 如果PushTracker / E2被連接和/或線控被啟動，LED(s)將以不同的模式閃爍。\n - 如果馬達在驅動，LED(s)將是穩定的。",
+    "SmartDrive可以配置為長按行駛或定速行駛缐控模式\n - 在預設的長按行駛模式下，只有當其中一個按鈕被按住時，SmartDrive才會透過將速度提升到配置的缐控最大速度來啟動馬達。\n -在定速行駛模式下，當其中一個按鈕是被按住時，SmartDrive將速度提升到配置的缐控最大速度。當鬆開按鈕時，SmartDrive將保持當前速度行駛。再次按下按鈕便停止驅動。",
+    "SmartDrive線控有自己的可配置的最大速度設置，可不同於PushTracker / E2最高速度設置",
+    "SmartDrive配置為每當狀態為開啟時便發出一次蜂鳴聲\n - 這種狀態的開啟來自於PushTracker / E2和(或)線控按鈕(s)。\n - 這種指示設置可以透過你的PushTracker E2上的SmartDrive MX2+應用程式停用，如果你沒有E2，也可以使用你的智能手機上的PushTracker移動應用程序來停用。"
+  ]
+}
