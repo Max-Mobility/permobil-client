@@ -887,41 +887,43 @@ export class PushTracker extends Observable {
     // This is sent by the PushTracker when it connects
     const errorInfo = p.data('errorInfo');
     /* Error Info
-         struct {
-           uint16_t            year;
-           uint8_t             month;
-           uint8_t             day;
-           uint8_t             hour;
-           uint8_t             minute;
-           uint8_t             second;
-           SmartDrive::Error   mostRecentError;
-           uint8_t             numBatteryVoltageErrors;
-           uint8_t             numOverCurrentErrors;
-           uint8_t             numMotorPhaseErrors;
-           uint8_t             numGyroRangeErrors;
-           uint8_t             numOverTemperatureErrors;
-           uint8_t             numBLEDisconnectErrors;
-         }                     errorInfo;
+       struct {
+       uint16_t            year;
+       uint8_t             month;
+       uint8_t             day;
+       uint8_t             hour;
+       uint8_t             minute;
+       uint8_t             second;
+       SmartDrive::Error   mostRecentError;
+       uint8_t             numBatteryVoltageErrors;
+       uint8_t             numOverCurrentErrors;
+       uint8_t             numMotorPhaseErrors;
+       uint8_t             numGyroRangeErrors;
+       uint8_t             numOverTemperatureErrors;
+       uint8_t             numBLEDisconnectErrors;
+       }                     errorInfo;
     */
     // TODO: send error event to subscribers so they get updated
-    this.sendEvent(PushTracker.error_event, {
-      year: errorInfo.year,
-      month: errorInfo.month,
-      day: errorInfo.day,
-      hour: errorInfo.hour,
-      minute: errorInfo.minute,
-      second: errorInfo.second,
-      mostRecentError: bindingTypeToString(
-        'PacketErrorType',
-        errorInfo.mostRecentError
-      ),
-      numBatteryVoltageErrors: errorInfo.numBatteryVoltageErrors,
-      numOverCurrentErrors: errorInfo.numOverCurrentErrors,
-      numMotorPhaseErrors: errorInfo.numMotorPhaseErrors,
-      numGyroRangeErrors: errorInfo.numGyroRangeErrors,
-      numOverTemperatureErrors: errorInfo.numOverTemperatureErrors,
-      numBLEDisconnectErrors: errorInfo.numBLEDisconnectErrors
-    });
+    if (errorInfo.year && errorInfo.month && errorInfo.day) {
+      this.sendEvent(PushTracker.error_event, {
+        year: errorInfo.year,
+        month: errorInfo.month - 1,
+        day: errorInfo.day,
+        hour: errorInfo.hour,
+        minute: errorInfo.minute,
+        second: errorInfo.second,
+        mostRecentError: bindingTypeToString(
+          'PacketErrorType',
+          errorInfo.mostRecentError
+        ),
+        numBatteryVoltageErrors: errorInfo.numBatteryVoltageErrors,
+        numOverCurrentErrors: errorInfo.numOverCurrentErrors,
+        numMotorPhaseErrors: errorInfo.numMotorPhaseErrors,
+        numGyroRangeErrors: errorInfo.numGyroRangeErrors,
+        numOverTemperatureErrors: errorInfo.numOverTemperatureErrors,
+        numBLEDisconnectErrors: errorInfo.numBLEDisconnectErrors
+      });
+    }
     // TODO: update error record for this pushtracker (locally and
     // on the server)
   }
@@ -1027,7 +1029,7 @@ export class PushTracker extends Observable {
     */
     this.sendEvent(PushTracker.daily_info_event, {
       year: di.year,
-      month: di.month,
+      month: di.month - 1,
       day: di.day,
       pushesWith: di.pushesWith,
       pushesWithout: di.pushesWithout,
