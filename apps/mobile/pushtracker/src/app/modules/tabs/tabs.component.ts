@@ -137,7 +137,7 @@ export class TabsComponent {
               this.bluetoothAdvertised = false;
               this._logService.logException(err);
             });
-        }, 5000);
+        }, 1000);
       }
     });
   }
