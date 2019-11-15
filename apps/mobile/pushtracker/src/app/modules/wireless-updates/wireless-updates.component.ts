@@ -972,6 +972,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         otaState === PushTracker.OTAState.complete ||
         otaState === PushTracker.OTAState.failed ||
         otaState === PushTracker.OTAState.not_started ||
+        otaState === PushTracker.OTAState.detected_pt ||
         otaState === PushTracker.OTAState.timeout) {
         this.pushTracker.canBackNavigate = true;
       } else {
