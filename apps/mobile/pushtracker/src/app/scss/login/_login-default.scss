@@ -3,9 +3,12 @@
 
 .login-layout {
   @extend .LOGIN_LAYOUT_BASE;
+  background-color: $white;
 
   .login-form {
     @extend .LOGIN_FORM_BASE;
+    background-color: $white;
+    color: $black;
   }
 
   .submit-btn {

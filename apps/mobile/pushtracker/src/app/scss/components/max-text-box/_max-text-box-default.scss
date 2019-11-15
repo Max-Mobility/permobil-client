@@ -4,6 +4,7 @@
 // TextBox
 .max-textbox {
   @extend .MAX_TEXTBOX_BASE;
+  background-color: $white;
 
   .max-textbox-label {
     color: #696c71;
@@ -11,7 +12,8 @@
   }
 
   GridLayout {
-    border-color: #e7e7ea;
+      border-color: #e7e7ea;
+      background-color: $white;
 
     > .max-textbox-value {
       color: #3c4043;
@@ -21,6 +23,8 @@
 
 .max-textbox-active {
   @extend .MAX_TEXTBOX_BASE;
+  background-color: $white;
+
   .max-textbox-label {
     color: #1c72e6;
     background-color: $white;
@@ -28,9 +32,11 @@
 
   GridLayout {
     border-color: #1c72e6;
+    background-color: $white;
 
     > .max-textbox-value {
       color: #3c4043;
+      background-color: $white;
     }
   }
 }
