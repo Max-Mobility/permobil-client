@@ -21,9 +21,9 @@
     <dimen name="digital_date_text_size">10dp</dimen>
     <dimen name="digital_am_pm_size">15dp</dimen>
     <dimen name="digital_am_pm_size_round">10dp</dimen>
-    <dimen name="digital_x_offset">100dp</dimen>
-    <dimen name="digital_x_offset_round">100dp</dimen>
-    <dimen name="digital_y_offset">180dp</dimen>
+    <dimen name="digital_x_offset">85dp</dimen>
+    <dimen name="digital_x_offset_round">85dp</dimen>
+    <dimen name="digital_y_offset">190dp</dimen>
     <dimen name="digital_line_height">25dp</dimen>
     <dimen name="digital_config_color_picker_item_margin">32dp</dimen>
     <dimen name="content_padding_start">12dp</dimen>

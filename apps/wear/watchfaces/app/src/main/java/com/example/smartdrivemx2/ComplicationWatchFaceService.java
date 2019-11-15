@@ -1,5 +1,6 @@
 package com.example.smartdrivemx2;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -11,7 +12,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
+import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -31,9 +35,6 @@ import android.view.WindowInsets;
 
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataEventBuffer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -66,8 +67,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
     private static final int LEFT_COMPLICATION_ID = 0;
     private static final int BACKGROUND_COMPLICATION_ID = 1;
+    private static final int CENTER_COMPLICATION_ID = 2;
 
-    private static final int[] COMPLICATION_IDS = {LEFT_COMPLICATION_ID, BACKGROUND_COMPLICATION_ID};
+    private static final int[] COMPLICATION_IDS = {LEFT_COMPLICATION_ID, BACKGROUND_COMPLICATION_ID, CENTER_COMPLICATION_ID};
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
@@ -75,7 +77,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
+            },
+            {
+                    ComplicationData.TYPE_RANGED_VALUE,
+                    ComplicationData.TYPE_ICON,
+                    ComplicationData.TYPE_SHORT_TEXT,
             },
             {
                     ComplicationData.TYPE_RANGED_VALUE,
@@ -97,6 +103,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 return LEFT_COMPLICATION_ID;
             case BACKGROUND:
                 return BACKGROUND_COMPLICATION_ID;
+            case CENTER:
+                return  CENTER_COMPLICATION_ID;
             default:
                 return -1;
         }
@@ -119,6 +127,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 return COMPLICATION_SUPPORTED_TYPES[1];
             case BACKGROUND:
                 return COMPLICATION_SUPPORTED_TYPES[0];
+            case CENTER:
+                return  COMPLICATION_SUPPORTED_TYPES[2];
             default:
                 return new int[] {};
         }
@@ -263,7 +273,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(ComplicationWatchFaceService.this)
                             .setAcceptsTapEvents(true)
+                            .setHideStatusBar(true)
                             .build());
+
+
             Resources resources = ComplicationWatchFaceService.this.getResources();
             mYOffset = resources.getDimension(R.dimen.digital_y_offset);
             mLineHeight = resources.getDimension(R.dimen.digital_line_height);
@@ -277,6 +290,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             initFormats();
             initializeComplications();
             //initializeHands();
+
+            //TODO: set APP_SHORTCUT to smartdrive mx2+
+
         }
 
         private void initializeBackground() {
@@ -327,13 +343,31 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
             backgroundComplicationDrawable.setContext(getApplicationContext());
 
+            ComplicationDrawable centerComplicationDrawable =
+                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            centerComplicationDrawable.setContext(getApplicationContext());
+
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
             mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
             mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
             mComplicationDrawableSparseArray.put(BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
+            mComplicationDrawableSparseArray.put(CENTER_COMPLICATION_ID, centerComplicationDrawable);
 
             setActiveComplications(COMPLICATION_IDS);
+
+            setDefaultComplicationProvider(COMPLICATION_IDS[1], new ComponentName("com.permobil.smartdrive.wearos","com.permobil.smartdrive.wearos.BatteryComplicationProviderService"),ComplicationData.TYPE_RANGED_VALUE);
+            setDefaultSystemComplicationProvider(COMPLICATION_IDS[2], SystemProviders.APP_SHORTCUT, ComplicationData.TYPE_SMALL_IMAGE);
+            setDefaultSystemComplicationProvider(COMPLICATION_IDS[0], SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
+
+//            Intent permissionRequestIntent =
+//                    ComplicationHelperActivity.createPermissionRequestHelperIntent(
+//                            getApplicationContext(), new ComponentName("com.permobil.smartdrive.wearos","com.permobil.smartdrive.wearos.BatteryComplicationProviderService"));
+//
+//            permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(permissionRequestIntent);
+
+            Log.e("TAG", "onCreate done.");
         }
 
         private void initializeHands() {
@@ -420,7 +454,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             long currentTimeMillis = System.currentTimeMillis();
 
-            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
+            for (int i = 1; i < COMPLICATION_IDS.length; i++) {
                 complicationId = COMPLICATION_IDS[i];
                 complicationData = mActiveComplicationDataSparseArray.get(complicationId);
 
@@ -429,16 +463,30 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                         && (complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED)
                         && (complicationData.getType() != ComplicationData.TYPE_EMPTY)) {
 
-                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
-                    Rect complicationBoundingRect = complicationDrawable.getBounds();
-
-                    if (complicationBoundingRect.width() > 0) {
-                        if (complicationBoundingRect.contains(x, y)) {
-                            return complicationId;
-                        }
+                    // tap position: y < 125 => Refresh SD battery
+                    //           125 < y < 275 => launch MX2+ app
+                    //               y> 275 => call system battery setting
+                    if (y<125){
+                        complicationId = 1;
+                        return complicationId;
+                    } else if(y>275) {
+                        complicationId = 0;
+                        return complicationId;
                     } else {
-                        Log.e(TAG, "Not a recognized complication id.");
+                        complicationId = 2;
+                        return complicationId;
                     }
+
+//                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+//                    Rect complicationBoundingRect = complicationDrawable.getBounds();
+//
+//                    if (complicationBoundingRect.width() > 0) {
+//                        if (complicationBoundingRect.contains(x, y)) {
+//                            return complicationId;
+//                        }
+//                    } else {
+//                        Log.e(TAG, "Not a recognized complication id.");
+//                    }
                 }
             }
             return -1;
@@ -456,7 +504,12 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
                 if (complicationData.getTapAction() != null) {
                     try {
-                        complicationData.getTapAction().send();
+                        if (complicationId !=2){
+                            complicationData.getTapAction().send();
+                        } else {
+                            Intent sdLaunch = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
+                            startActivity(sdLaunch);
+                        }
                     } catch (PendingIntent.CanceledException e) {
                         Log.e(TAG, "onComplicationTap() tap action error: " + e);
                     }
@@ -472,8 +525,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     Intent permissionRequestIntent =
                             ComplicationHelperActivity.createPermissionRequestHelperIntent(
                                     getApplicationContext(), componentName);
-
+                    permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(permissionRequestIntent);
+                    //Log.e("TAG", "Need permission");
                 }
 
             } else {
@@ -635,9 +689,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
             int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
 
+            int offset=15;
             Rect leftBounds =
                     // Left, Top, Right, Bottom
-                    new Rect( 10,10,width-10,height-10);
+                    new Rect( offset,offset,width-offset,height-offset);
 //                            horizontalOffset,
 //                            verticalOffset,
 //                            (horizontalOffset + sizeOfComplication),
@@ -658,6 +713,19 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             ComplicationDrawable backgroundComplicationDrawable =
                     mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
             backgroundComplicationDrawable.setBounds(backgroundBounds);
+
+            Rect centerBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect( 200,200,200,200);
+//                            horizontalOffset,
+//                            verticalOffset,
+//                            (horizontalOffset + sizeOfComplication),
+//                            (verticalOffset + sizeOfComplication));
+
+            ComplicationDrawable centerComplicationDrawable =
+                    mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
+            // hide app icon image
+            centerComplicationDrawable.setBounds(centerBounds);
         }
 
         @Override
@@ -698,7 +766,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // In ambient and mute modes, always draw the first colon. Otherwise, draw the
             // first colon for the first half of each second.
             if (isInAmbientMode() || mMute || mShouldDrawColons) {
-                canvas.drawText(COLON_STRING, x, mYOffset, mColonPaint);
+                canvas.drawText(COLON_STRING, x-2, mYOffset-2, mColonPaint);
             }
             x += mColonWidth;
 
@@ -710,7 +778,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // Draw the am/pm.
             if (!is24Hour) {
                 canvas.drawText(getAmPmString(
-                        mCalendar.get(Calendar.AM_PM)), mXOffset+20, mYOffset+25, mAmPmPaint);
+                        mCalendar.get(Calendar.AM_PM)), mXOffset+40, mYOffset+25, mAmPmPaint);
             }
 
             // In unmuted interactive mode, draw a second blinking colon followed by the seconds.
@@ -743,11 +811,45 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int complicationId;
             ComplicationDrawable complicationDrawable;
 
+
             for (int i = 0; i < COMPLICATION_IDS.length; i++) {
                 complicationId = COMPLICATION_IDS[i];
-                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
-                complicationDrawable.draw(canvas, currentTimeMillis);
+                if (i==0) {
+                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                    complicationDrawable.draw(canvas, currentTimeMillis);
+                    complicationDrawable.setRangedValueRingWidthActive(8);
+                    complicationDrawable.setRangedValuePrimaryColorActive(0xff28628E);
+                    complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
+                    complicationDrawable.setIconColorAmbient(0x00000000);
+                    complicationDrawable.setTextColorAmbient(0x00000000);
+                    complicationDrawable.setTextColorActive(0x00000000);
+                    complicationDrawable.setIconColorActive(0x00000000);
+                } else if (i==1) {
+                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                    complicationDrawable.draw(canvas, currentTimeMillis);
+                    complicationDrawable.setRangedValueRingWidthActive(8);
+                    complicationDrawable.setRangedValuePrimaryColorActive(0xff89d4e3);
+                    complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
+                    complicationDrawable.setIconColorAmbient(0x00000000);
+                    complicationDrawable.setTextColorAmbient(0x00000000);
+                    complicationDrawable.setTextColorActive(0x00000000);
+                    complicationDrawable.setIconColorActive(0x00000000);
+
+                } else {
+                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+
+                    complicationDrawable.draw(canvas, currentTimeMillis);
+
+//                    complicationDrawable.setColorFilter(0x006ea4,PorterDuff.Mode.CLEAR);
+//                    ColorFilter colorfilter = complicationDrawable.getColorFilter();
+//
+//                    //canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+//
+//                    complicationDrawable.setImageColorFilterActive(colorfilter);
+                }
             }
         }
 

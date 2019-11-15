@@ -127,3 +127,6 @@ apps/**/report/
 # VS Code workspace
 *.code-workspace
 .vscode
+apps/wear/watchfaces/app/build/
+
+apps/wear/watchfaces/.gradle/

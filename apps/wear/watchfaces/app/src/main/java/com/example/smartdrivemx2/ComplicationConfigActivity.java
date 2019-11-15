@@ -36,11 +36,13 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
     public enum ComplicationLocation {
         LEFT,
-        BACKGROUND
+        BACKGROUND,
+        CENTER
     }
 
     private int mLeftComplicationId;
     private int mBackgroundComplicationId;
+    private int mCenterComplicationId;
 
     // Selected complication id by user.
     private int mSelectedComplicationId;
@@ -53,9 +55,11 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
     private ImageView mLeftComplicationBackground;
     private ImageView mBackgroundComplicationBackground;
+    private ImageView mCenterComplicationBackground;
 
     private ImageButton mLeftComplication;
     private ImageButton mBackgroundComplication;
+    private ImageButton mCenterComplication;
 
     private Drawable mDefaultAddComplicationDrawable;
 
@@ -74,6 +78,8 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
                 ComplicationWatchFaceService.getComplicationId(ComplicationLocation.LEFT);
         mBackgroundComplicationId =
                 ComplicationWatchFaceService.getComplicationId(ComplicationLocation.BACKGROUND);
+        mCenterComplicationId =
+                ComplicationWatchFaceService.getComplicationId(ComplicationLocation.CENTER);
 
         mWatchFaceComponentName =
                 new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
@@ -95,6 +101,15 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         // Sets default as "Add Complication" icon.
         mBackgroundComplication.setImageDrawable(mDefaultAddComplicationDrawable);
         mBackgroundComplicationBackground.setVisibility(View.INVISIBLE);
+
+        // Sets up center complication preview.
+        mCenterComplicationBackground = findViewById(R.id.center_complication_background);
+        mCenterComplication = findViewById(R.id.center_complication);
+        mCenterComplication.setOnClickListener(this);
+
+        // Sets default as "Add Complication" icon.
+        mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
+        mCenterComplicationBackground.setVisibility(View.INVISIBLE);
 
 
         // Initialization of code to retrieve active complication data for the watch face.
@@ -137,13 +152,16 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        if (view.equals(mLeftComplication)) {
-            Log.d(TAG, "Left Complication click()");
-            launchComplicationHelperActivity(ComplicationLocation.LEFT);
+        if (view.equals(mCenterComplication)) {
+            Log.d(TAG, "Center Complication click()");
+            launchComplicationHelperActivity(ComplicationLocation.CENTER);
 
         } else if (view.equals(mBackgroundComplication)) {
             Log.d(TAG, "Background Complication click()");
             launchComplicationHelperActivity(ComplicationLocation.BACKGROUND);
+        } else if (view.equals(mLeftComplication)) {
+            Log.d(TAG, "Left Complication click()");
+            launchComplicationHelperActivity(ComplicationLocation.LEFT);
         }
     }
 
@@ -197,6 +215,15 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
             } else {
                 mBackgroundComplication.setImageDrawable(mDefaultAddComplicationDrawable);
                 mBackgroundComplicationBackground.setVisibility(View.INVISIBLE);
+            }
+        } else if (watchFaceComplicationId == mCenterComplicationId) {
+            if (complicationProviderInfo != null) {
+                mCenterComplication.setImageIcon(complicationProviderInfo.providerIcon);
+                mCenterComplicationBackground.setVisibility(View.VISIBLE);
+
+            } else {
+                mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
+                mCenterComplicationBackground.setVisibility(View.INVISIBLE);
             }
         }
     }
