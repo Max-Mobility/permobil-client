@@ -12,11 +12,11 @@ repositories {
 android {
   defaultConfig {
     generatedDensities = []
-    applicationId = "com.permobil.pushtracker"  
+    applicationId = "com.permobil.pushtracker"
     minSdkVersion 21
     targetSdkVersion 28
-    versionCode 10007
-    versionName "2.0.00"
+    versionCode 10008
+    versionName "2.0.01"
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"
