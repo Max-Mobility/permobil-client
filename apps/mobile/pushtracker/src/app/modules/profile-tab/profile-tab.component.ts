@@ -1248,6 +1248,36 @@ export class ProfileTabComponent {
     return val.toFixed() + ' ' + this._translateService.instant('units.cm');
   }
 
+  private _showBadSerialAlert(text: string, forDevices: string[]) {
+    this._logService.logMessage(
+      `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
+    );
+    setTimeout(() => {
+      let message = '';
+      let title = '';
+      if (forDevices.includes('smartdrive')) {
+        title = this._translateService.instant(
+          'profile-tab.smartdrive-serial-number-dialog-title'
+        );
+        message = this._translateService.instant(
+          'profile-tab.bad-smartdrive-serial-messsage'
+        );
+      } else {
+        title = this._translateService.instant(
+          'profile-tab.pushtracker-serial-number-dialog-title'
+        );
+        message = this._translateService.instant(
+          'profile-tab.bad-pushtracker-serial-messsage'
+        );
+      }
+      alert({
+        title: title,
+        message: message,
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    }, 1000);
+  }
+
   private _handleSerial(text: string, forDevices?: string[]) {
     try {
       text = text || '';
@@ -1269,6 +1299,7 @@ export class ProfileTabComponent {
       } else if (isSmartDrive) {
         deviceType = 'smartdrive';
       } else {
+        this._showBadSerialAlert(text, forDevices);
         return;
       }
       // check the type
@@ -1277,9 +1308,7 @@ export class ProfileTabComponent {
         forDevices.length &&
         forDevices.indexOf(deviceType) === -1
       ) {
-        this._logService.logMessage(
-          `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
-        );
+        this._showBadSerialAlert(text, forDevices);
         return;
       }
 
