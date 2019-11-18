@@ -9,13 +9,26 @@ import { LoggingService } from './logging.service';
 
 @Injectable()
 export class ActivityService {
-  private datastore = KinveyDataStore.collection('DailyPushTrackerActivity', DataStoreType.Auto);
+  private dailyDatastore = KinveyDataStore.collection('DailyPushTrackerActivity', DataStoreType.Sync);
+  private weeklyDatastore = KinveyDataStore.collection('WeeklyPushTrackerActivity', DataStoreType.Sync);
   public dailyActivity: any;
   public weeklyActivity: any;
 
+  private _query: KinveyQuery;
+
   constructor(private _logService: LoggingService) {
+    this.reset();
+  }
+
+  async reset() {
     this.login();
-    this.datastore.sync();
+    this.dailyDatastore.sync(this._query);
+    this.weeklyDatastore.sync(this._query);
+  }
+
+  clear() {
+    this.dailyDatastore.clear();
+    this.weeklyDatastore.clear();
   }
 
   async saveDailyActivityFromPushTracker(dailyActivity: any): Promise<boolean> {
@@ -29,13 +42,13 @@ export class ActivityService {
 
       // Run a .find first to get the _id of the daily activity
       {
-        return this.datastore.find(query)
+        return this.dailyDatastore.find(query)
           .then(data => {
             if (data && data.length) {
               const id = data[0]._id;
               dailyActivity._id = id;
             }
-            return this.datastore.save(dailyActivity)
+            return this.dailyDatastore.save(dailyActivity)
               .then((_) => {
                 return true;
               }).catch((error) => {
@@ -52,11 +65,13 @@ export class ActivityService {
     }
   }
 
-  private login(): Promise<any> {
-    if (!!KinveyUser.getActiveUser()) {
-      return Promise.resolve();
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      this._query = new KinveyQuery();
+      this._query.equalTo('_acl.creator', activeUser._id);
     } else {
-      return Promise.reject('no active user');
+      throw new Error('no active user');
     }
   }
 }

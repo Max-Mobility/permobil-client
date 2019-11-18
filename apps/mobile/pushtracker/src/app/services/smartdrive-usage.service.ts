@@ -7,18 +7,32 @@ import {
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 import { BehaviorSubject } from 'rxjs';
+import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 
 @Injectable()
 export class SmartDriveUsageService {
-  private datastore = KinveyDataStore.collection('DailySmartDriveUsage', DataStoreType.Auto);
+  private dailyDatastore = KinveyDataStore.collection('DailySmartDriveUsage', DataStoreType.Sync);
+  private weeklyDatastore = KinveyDataStore.collection('WeeklySmartDriveUsage', DataStoreType.Sync);
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);
   usageUpdated = this._usageUpdated.asObservable();
 
+  private _query: KinveyQuery;
+
   constructor(private _logService: LoggingService) {
+    this.reset();
+  }
+
+  async reset() {
     this.login();
-    this.datastore.sync();
+    this.dailyDatastore.sync(this._query);
+    this.weeklyDatastore.sync(this._query);
+  }
+
+  clear() {
+    this.dailyDatastore.clear();
+    this.weeklyDatastore.clear();
   }
 
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
@@ -32,7 +46,7 @@ export class SmartDriveUsageService {
 
       // Run a .find first to get the _id of the daily activity
       {
-        return this.datastore.find(query)
+        return this.dailyDatastore.find(query)
           .then(data => {
             if (data && data.length) {
               const id = data[0]._id;
@@ -46,7 +60,7 @@ export class SmartDriveUsageService {
               dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
               dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
             }
-            return this.datastore.save(dailyUsage);
+            return this.dailyDatastore.save(dailyUsage);
           })
           .then((_) => {
             return true;
@@ -64,11 +78,14 @@ export class SmartDriveUsageService {
     }
   }
 
-  private login(): Promise<any> {
-    if (!!KinveyUser.getActiveUser()) {
-      return Promise.resolve();
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      this._query = new KinveyQuery();
+      // we are only interested in the usage data for this user
+      this._query.equalTo('_acl.creator', activeUser._id);
     } else {
-      return Promise.reject('no active user');
+      throw new Error('no active user');
     }
   }
 

@@ -69,6 +69,12 @@ export class TabsComponent {
       }
     );
 
+    // make sure to reset the data services when we load (in case the
+    // user has changed)
+    this._activityService.reset();
+    this._usageService.reset();
+    this._errorsService.reset();
+
     this._userService.user.subscribe(async user => {
       if (!user || !user.data) {
         // we should probably logout here since we don't have a valid
