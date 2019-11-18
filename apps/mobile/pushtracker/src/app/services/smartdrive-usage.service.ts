@@ -18,7 +18,10 @@ export class SmartDriveUsageService {
   private _usageUpdated = new BehaviorSubject<boolean>(false);
   usageUpdated = this._usageUpdated.asObservable();
 
-  private _query: KinveyQuery;
+  // queries used to control what data is stored on device for each
+  // datastore
+  private _dailyQuery: KinveyQuery;
+  private _weeklyQuery: KinveyQuery;
 
   constructor(private _logService: LoggingService) {
     this.reset();
@@ -26,8 +29,8 @@ export class SmartDriveUsageService {
 
   async reset() {
     this.login();
-    this.dailyDatastore.sync(this._query);
-    this.weeklyDatastore.sync(this._query);
+    this.dailyDatastore.sync(this._dailyQuery);
+    this.weeklyDatastore.sync(this._weeklyQuery);
   }
 
   clear() {
@@ -81,9 +84,18 @@ export class SmartDriveUsageService {
   private async login() {
     const activeUser = KinveyUser.getActiveUser();
     if (!!activeUser) {
-      this._query = new KinveyQuery();
-      // we are only interested in the usage data for this user
-      this._query.equalTo('_acl.creator', activeUser._id);
+      // we only ever push data to the daily activity datastore - so
+      // we should set a date that is far in the future to keep the
+      // pulls from ever actually pulling data
+      this._dailyQuery = new KinveyQuery();
+      this._dailyQuery.equalTo('_acl.creator', activeUser._id);
+      this._dailyQuery.equalTo('date', '2200-01-01');
+      // we actually want to have the weekly datastore storing data
+      // locally for use when offline / bad network conditions (and to
+      // not have to pull data that we've already seen) so we just set
+      // the user id
+      this._weeklyQuery = new KinveyQuery();
+      this._weeklyQuery.equalTo('_acl.creator', activeUser._id);
     } else {
       throw new Error('no active user');
     }
