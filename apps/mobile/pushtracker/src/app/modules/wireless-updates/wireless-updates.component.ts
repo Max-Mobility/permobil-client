@@ -343,7 +343,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
             'Failed to download SmartDrive firmware files'
-          );          
+          );
         }
 
         // Now that we have the files, write them to disk and update
@@ -780,7 +780,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           this._logService.logBreadCrumb(
             WirelessUpdatesComponent.name,
             'Failed to download PushTracker firmware files'
-          );  
+          );
         }
 
         // Now that we have the files, write them to disk and update

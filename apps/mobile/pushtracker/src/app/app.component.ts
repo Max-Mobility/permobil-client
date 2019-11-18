@@ -155,7 +155,8 @@ export class AppComponent implements OnInit {
         return Promise.resolve(true);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly activity from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }
@@ -184,7 +185,8 @@ export class AppComponent implements OnInit {
         return Promise.resolve(false);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }
