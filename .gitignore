@@ -130,3 +130,5 @@ apps/**/report/
 apps/wear/watchfaces/app/build/
 
 apps/wear/watchfaces/.gradle/
+
+*.iml
