@@ -340,7 +340,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           files = await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to download SmartDrive firmware files'
+          );          
         }
 
         // Now that we have the files, write them to disk and update
@@ -774,7 +777,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           files = await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to download PushTracker firmware files'
+          );  
         }
 
         // Now that we have the files, write them to disk and update
