@@ -70,7 +70,7 @@ export class TabsComponent {
     );
 
     this._userService.user.subscribe(async user => {
-      if (!user) {
+      if (!user || !user.data) {
         // we should probably logout here since we don't have a valid
         // user
         KinveyUser.logout();
@@ -94,6 +94,10 @@ export class TabsComponent {
       const config = this.user.data.control_configuration;
       // @ts-ignore
       if (!Object.values(CONFIGURATIONS).includes(config)) {
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          `got user, but did not get valid configuration: ${config}, ${this.user}`
+        );
         // the user does not have a valid configuration - route to the
         // configuration page so they can set one
         this._routerExtensions.navigate(['configuration'], {
@@ -359,11 +363,11 @@ export class TabsComponent {
           );
         else
           this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
-          // this._logService.logException(
-          //   new Error(
-          //     '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
-          //   )
-          // );
+        // this._logService.logException(
+        //   new Error(
+        //     '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
+        //   )
+        // );
       })
       .catch(err => {
         this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
@@ -412,11 +416,11 @@ export class TabsComponent {
           );
         else
           this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
-          // this._logService.logException(
-          //   new Error(
-          //     '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
-          //   )
-          // );
+        // this._logService.logException(
+        //   new Error(
+        //     '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
+        //   )
+        // );
       })
       .catch(err => {
         this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
@@ -466,14 +470,14 @@ export class TabsComponent {
           );
         else
           this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
-          // this._logService.logException(
-          //   new Error(
-          //     '[' +
-          //     TabsComponent.name +
-          //     '] ' +
-          //     'Failed to save ErrorInfo from PushTracker in Kinvey'
-          //   )
-          // );
+        // this._logService.logException(
+        //   new Error(
+        //     '[' +
+        //     TabsComponent.name +
+        //     '] ' +
+        //     'Failed to save ErrorInfo from PushTracker in Kinvey'
+        //   )
+        // );
       })
       .catch(err => {
         this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
