@@ -90,11 +90,13 @@ export class JourneyTabComponent {
             this._firstLoad = false;
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to init journey items');
+            // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey');
+        // this._logService.logException(err);
       });
     this._today = new Date();
     this._weekStart = getFirstDayOfWeek(this._today);
@@ -129,7 +131,8 @@ export class JourneyTabComponent {
         this.journeyItemsLoaded = true;
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data fror data when init journey items');
+        // this._logService.logException(err);
         this.journeyItemsLoaded = true;
       });
   }
@@ -153,7 +156,8 @@ export class JourneyTabComponent {
         this.showLoadingIndicator = false;
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems');
+        // this._logService.logException(err);
       });
   }
 
@@ -218,7 +222,8 @@ export class JourneyTabComponent {
           return Promise.resolve(true);
         }
       } catch (err) {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey');
+        // this._logService.logException(err);
       }
     }
 
@@ -230,7 +235,8 @@ export class JourneyTabComponent {
         return Promise.resolve(true);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get user data from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }
@@ -260,12 +266,14 @@ export class JourneyTabComponent {
             this.journeyItemsLoaded = true;
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user');
+            // this._logService.logException(err);
             this.journeyItemsLoaded = true;
           });
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey in _refresh');
+        // this._logService.logException(err);
       });
   }
 
@@ -282,11 +290,13 @@ export class JourneyTabComponent {
                   return result;
                 })
                 .catch(err => {
-                  this._logService.logException(err);
+                  this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to process journey map');
+                  // this._logService.logException(err);
                 });
             })
             .catch(err => {
-              this._logService.logException(err);
+              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage');
+              // this._logService.logException(err);
             });
         } else {
           return this.journeyItems;
@@ -302,11 +312,13 @@ export class JourneyTabComponent {
               return result;
             })
             .catch(err => {
-              this._logService.logException(err);
+              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to process journey map');
+              // this._logService.logException(err);
             });
         })
         .catch(err => {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage');
+          // this._logService.logException(err);
         });
     } else {
       // No data available
@@ -525,7 +537,8 @@ export class JourneyTabComponent {
         return newJourneyItems;
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to merge journey items');
+        // this._logService.logException(err);
       });
   }
 
@@ -639,7 +652,8 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -685,7 +699,8 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Faield to load weekly pushtracker activity from kinvey');
+        // this._logService.logException(err);
         return false;
       });
   }
@@ -720,7 +735,8 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -814,7 +830,8 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }
