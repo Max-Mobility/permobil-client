@@ -1250,7 +1250,8 @@ export class ProfileTabComponent {
   }
 
   private _showBadSerialAlert(text: string, forDevices: string[]) {
-    this._logService.logMessage(
+    this._logService.logBreadCrumb(
+      ProfileTabComponent.name,
       `Wrong device entered/scanned --- text: ${text}, forDevices: ${forDevices}`
     );
     setTimeout(() => {
