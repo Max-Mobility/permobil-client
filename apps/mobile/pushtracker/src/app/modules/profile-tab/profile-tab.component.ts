@@ -1257,17 +1257,17 @@ export class ProfileTabComponent {
       let title = '';
       if (forDevices.includes('smartdrive')) {
         title = this._translateService.instant(
-          'profile-tab.smartdrive-serial-number-dialog-title'
+          'profile-tab.smartdrive-serial-number'
         );
         message = this._translateService.instant(
-          'profile-tab.bad-smartdrive-serial-messsage'
+          'profile-tab.bad-smartdrive-serial-message'
         );
       } else {
         title = this._translateService.instant(
-          'profile-tab.pushtracker-serial-number-dialog-title'
+          'profile-tab.pushtracker-serial-number'
         );
         message = this._translateService.instant(
-          'profile-tab.bad-pushtracker-serial-messsage'
+          'profile-tab.bad-pushtracker-serial-message'
         );
       }
       alert({
