@@ -38,6 +38,30 @@ export class SmartDriveUsageService {
     this.weeklyDatastore.clear();
   }
 
+  async getWeeklyActivity(date?: string, limit?: number): Promise<any> {
+    // initialize the query from the query that we have (which
+    // contains the user id)
+    const query = this.makeQuery();
+    if (date) {
+      // make sure we only get the weekly activity we are looking for
+      query.equalTo('date', date);
+    }
+    if (limit) {
+      query.limit = limit;
+    }
+    query.descending('_kmd.lmt');
+    console.log('getting usage data for date:', date);
+    console.log('loading weekly usage for user', query.toString());
+    return this.weeklyDatastore.find(query)
+      .then((data: any[]) => {
+        console.log('GOT DATA:', data);
+        if (data && data.length) {
+          console.log('ACTUALLY HAVE DATA', data[0]);
+        }
+        return data;
+      });
+  }
+
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
     try {
       const query = new KinveyQuery();
@@ -50,7 +74,7 @@ export class SmartDriveUsageService {
       // Run a .find first to get the _id of the daily activity
       {
         return this.dailyDatastore.find(query)
-          .then(data => {
+          .then((data: any[]) => {
             if (data && data.length) {
               const id = data[0]._id;
               dailyUsage._id = id;
@@ -81,24 +105,32 @@ export class SmartDriveUsageService {
     }
   }
 
-  private async login() {
+  private makeQuery() {
     const activeUser = KinveyUser.getActiveUser();
     if (!!activeUser) {
-      // we only ever push data to the daily activity datastore - so
-      // we should set a date that is far in the future to keep the
-      // pulls from ever actually pulling data
-      this._dailyQuery = new KinveyQuery();
-      this._dailyQuery.equalTo('_acl.creator', activeUser._id);
-      this._dailyQuery.equalTo('date', '2200-01-01');
-      // we actually want to have the weekly datastore storing data
-      // locally for use when offline / bad network conditions (and to
-      // not have to pull data that we've already seen) so we just set
-      // the user id
-      this._weeklyQuery = new KinveyQuery();
-      this._weeklyQuery.equalTo('_acl.creator', activeUser._id);
+      const query = new KinveyQuery();
+      query.equalTo('_acl.creator', activeUser._id);
+      return query;
     } else {
       throw new Error('no active user');
     }
   }
 
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      this._dailyQuery = this.makeQuery();
+      // we only ever push data to the daily activity datastore - so
+      // we should set a date that is far in the future to keep the
+      // pulls from ever actually pulling data
+      this._dailyQuery.equalTo('date', '2200-01-01');
+      // we actually want to have the weekly datastore storing data
+      // locally for use when offline / bad network conditions (and to
+      // not have to pull data that we've already seen) so we just set
+      // the user id
+      this._weeklyQuery = this.makeQuery();
+    } else {
+      throw new Error('no active user');
+    }
+  }
 }
