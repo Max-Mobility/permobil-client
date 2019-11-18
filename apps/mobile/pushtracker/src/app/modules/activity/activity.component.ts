@@ -572,11 +572,13 @@ export class ActivityComponent implements OnInit {
             this._updateWeekStartAndEnd();
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format activity for view when loading daily activity');
+            // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load daily activity');
+        // this._logService.logException(err);
       });
   }
 
@@ -639,7 +641,8 @@ export class ActivityComponent implements OnInit {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly activity');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -674,7 +677,8 @@ export class ActivityComponent implements OnInit {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly smartdrive usage');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -713,12 +717,14 @@ export class ActivityComponent implements OnInit {
                 return true;
               })
               .catch(err => {
-                this._logService.logException(err);
+                this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format weekly activity for view');
+                // this._logService.logException(err);
                 return false;
               });
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load smartdrive usage from kinvey');
+            // this._logService.logException(err);
             return false;
           });
       else
@@ -748,12 +754,14 @@ export class ActivityComponent implements OnInit {
                 return true;
               })
               .catch(err => {
-                this._logService.logException(err);
+                this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to format weekly activity');
+                // this._logService.logException(err);
                 return false;
               });
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(ActivityComponent.name, 'Failed to load weekly activity from kinvey');
+            // this._logService.logException(err);
             return false;
           });
     } else {

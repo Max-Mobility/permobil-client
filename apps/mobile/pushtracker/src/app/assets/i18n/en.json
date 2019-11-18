@@ -414,6 +414,8 @@
 	"profile-tab": {
 		"about-you": "About You",
 		"activity-goals": "Activity Goals",
+    "bad-pushtracker-serial-message": "Invalid pushtracker serial number entered, please ensure you are scanning / entering the serial number on your PushTracker wristband.",
+    "bad-smartdrive-serial-message": "Invalid SmartDrive serial number entered, please ensure you are scanning / entering the serial number on your SmartDrive drive unit.",
 		"cancel": "Cancel",
 		"cancel-scan": "Cancel Scan",
 		"chair-make": "Chair Make",

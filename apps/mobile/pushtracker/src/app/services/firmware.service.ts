@@ -7,7 +7,7 @@ import * as LS from 'nativescript-localstorage';
 @Injectable()
 export class FirmwareService {
   // static members
-  static firmwarePathPrefix = '/assets/ota/';
+  static firmwarePathPrefix = '/firmwares/';
   private static fsKeyPrefix = 'FirmwareService.';
   private static fsKeyMetadata = 'Metadata';
 
@@ -39,7 +39,7 @@ export class FirmwareService {
     }
   };
 
-  constructor() {}
+  constructor() { }
 
   static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
@@ -158,19 +158,10 @@ export class FirmwareService {
 
   // FOR LOADING A FW FILE FROM SERVER
   getData(url, filename) {
-    let filePath;
-    // on Android this is working, iOS needs to use `documents` for permission to write during a release build. currentApp is readonly for iOS.
-    if (isAndroid) {
-      filePath = path.join(
-        knownFolders.currentApp().path,
-        FirmwareService.firmwarePathPrefix + filename
-      );
-    } else if (isIOS) {
-      filePath = path.join(
-        knownFolders.documents().path,
-        FirmwareService.firmwarePathPrefix + filename
-      );
-    }
+    const filePath = path.join(
+      knownFolders.documents().path,
+      FirmwareService.firmwarePathPrefix + filename
+    );
     return httpModule.getFile(url, filePath);
   }
 

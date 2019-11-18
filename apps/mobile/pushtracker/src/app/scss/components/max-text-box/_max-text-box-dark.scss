@@ -4,7 +4,8 @@
 // TextBox
 
 .max-textbox {
-  @extend .MAX_TEXTBOX_BASE;
+    @extend .MAX_TEXTBOX_BASE;
+    background-color: $black;
 
   .max-textbox-label {
     color: #898e94;
@@ -23,6 +24,8 @@
 
 .max-textbox-active {
   @extend .MAX_TEXTBOX_BASE;
+    background-color: $black;
+
   .max-textbox-label {
     color: $permobil-sky;
     background-color: $black;
@@ -30,9 +33,11 @@
 
   GridLayout {
     border-color: $permobil-sky;
+    background-color: $black;
 
     > .max-textbox-value {
       color: $white;
+      background-color: $black;
     }
   }
 }

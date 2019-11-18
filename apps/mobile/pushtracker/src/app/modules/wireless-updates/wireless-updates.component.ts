@@ -5,7 +5,7 @@ import * as app from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { confirm } from '@nativescript/core/ui/dialogs';
-import { connectionType, getConnectionType }from '@nativescript/core/connectivity';
+import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 import { TranslateService } from '@ngx-translate/core';
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
@@ -126,6 +126,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   closeModal() {
     // make sure to stop the bluetooth background execution (iOS)
     if (this.smartDrive) {
+      this.smartDrive.cancelOTA();
       this.smartDrive.disconnect();
     }
     BluetoothService.stopOtaBackgroundExecution();
@@ -257,7 +258,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       this.currentVersions['SmartDriveBLE.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
     }
-    console.log('Loaded from FS', this.currentVersions);
+    // console.log('Loaded from FS', this.currentVersions);
   }
 
   private currentVersions = {};
@@ -270,7 +271,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
 
     const _connType = getConnectionType();
-    console.log('_connType', _connType);
     if (_connType === connectionType.none) {
       try {
         await this._loadSmartDriveFirmwareFromFileSystem();
@@ -340,7 +340,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           files = await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to download SmartDrive firmware files'
+          );
         }
 
         // Now that we have the files, write them to disk and update
@@ -352,7 +355,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to save SmartDrive firmware files to disk'
+          );
+          // this._logService.logException(err);
         }
 
         // Now perform the SmartDrive updates if we need to
@@ -514,7 +521,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   registerForSmartDriveEvents() {
     this.unregisterForSmartDriveEvents();
     if (!this.smartDrive) return;
-    this.smartDrive.canBackNavigate = false;
+    this.smartDrive.canBackNavigate = true;
     this.updateBackButton();
     this.updateInsomnia();
     // set up ota action handler
@@ -524,7 +531,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       trailing: true
     });
 
-    this._throttledOtaStatus = throttle(this.onSmartDriveOtaStatus, 250, {
+    this._throttledOtaStatus = throttle(this.onSmartDriveOtaStatus, 500, {
       leading: true,
       trailing: true
     });
@@ -548,11 +555,34 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private _previousSmartDriveOtaState = null;
   onSmartDriveOtaStatus(args: any) {
     // get the current progress of the update
     const progress = args.data.progress;
+    const otaState = args.data.state; // .replace('ota.sd.state.', '');
+
     // translate the state
-    const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
+    const state = this._translateService.instant(otaState);
+
+    // Allow users to back navigate as long as the update is not
+    // started:
+    // https://github.com/Max-Mobility/permobil-client/issues/521
+    if (otaState !== this._previousSmartDriveOtaState) {
+      this._previousSmartDriveOtaState = otaState;
+      if (otaState === SmartDrive.OTAState.canceled ||
+        otaState === SmartDrive.OTAState.comm_failure ||
+        otaState === SmartDrive.OTAState.complete ||
+        otaState === SmartDrive.OTAState.failed ||
+        otaState === SmartDrive.OTAState.not_started ||
+        otaState === SmartDrive.OTAState.detected_sd ||
+        otaState === SmartDrive.OTAState.timeout) {
+        this.smartDrive.canBackNavigate = true;
+      } else {
+        this.smartDrive.canBackNavigate = false;
+      }
+      this.updateBackButton();
+    }
+
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
       const actionClass = 'action-' + last(a.split('.')) + ' compact';
@@ -690,7 +720,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     }
 
     const _connType = getConnectionType();
-    console.log('_connType', _connType);
     if (_connType === connectionType.none) {
       try {
         await this._loadPushTrackerFirmwareFromFileSystem();
@@ -748,7 +777,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           files = await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to download PushTracker firmware files'
+          );
         }
 
         // Now that we have the files, write them to disk and update
@@ -760,7 +792,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to save PushTracker firmware files to disk'
+          );
+          // this._logService.logException(err);
         }
 
         // Now perform the PushTracker updates if we need to
@@ -894,7 +930,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
   registerForPushTrackerEvents() {
     this.unregisterForPushTrackerEvents();
     if (!this.pushTracker) return;
-    this.pushTracker.canBackNavigate = false;
+    this.pushTracker.canBackNavigate = true;
     this.updateBackButton();
     this.updateInsomnia();
     // set up ota action handler
@@ -908,7 +944,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this._throttledPTOtaStatus = throttle(this.onPushTrackerOtaStatus, 250, {
+    this._throttledPTOtaStatus = throttle(this.onPushTrackerOtaStatus, 500, {
       leading: true,
       trailing: true
     });
@@ -932,11 +968,33 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private _previousPushTrackerOtaState = null;
   onPushTrackerOtaStatus(args: any) {
     // get the current progress of the update
     const progress = args.data.progress;
+    const otaState = args.data.state; // .replace('ota.sd.state.', '');
+
     // translate the state
-    const state = this._translateService.instant(args.data.state); // .replace('ota.sd.state.', '');
+    const state = this._translateService.instant(otaState);
+
+    // Allow users to back navigate as long as the update is not
+    // started:
+    // https://github.com/Max-Mobility/permobil-client/issues/521
+    if (otaState !== this._previousPushTrackerOtaState) {
+      this._previousPushTrackerOtaState = otaState;
+      if (otaState === PushTracker.OTAState.canceled ||
+        otaState === PushTracker.OTAState.complete ||
+        otaState === PushTracker.OTAState.failed ||
+        otaState === PushTracker.OTAState.not_started ||
+        otaState === PushTracker.OTAState.detected_pt ||
+        otaState === PushTracker.OTAState.timeout) {
+        this.pushTracker.canBackNavigate = true;
+      } else {
+        this.pushTracker.canBackNavigate = false;
+      }
+      this.updateBackButton();
+    }
+
     // now turn the actions into structures for our UI
     const actions = args.data.actions.map(a => {
       const actionClass = 'action-' + last(a.split('.')) + ' compact';

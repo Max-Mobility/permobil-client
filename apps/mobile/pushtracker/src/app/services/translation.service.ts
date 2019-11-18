@@ -65,7 +65,11 @@ export class TranslationService extends Observable {
             const dl = await TranslationService.download(f);
             files.push(dl);
           } catch (err) {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(
+              TranslationService.name,
+              'Could not download language files'
+            );
+            // this._logService.logException(err);
           }
         }
       }
@@ -134,8 +138,7 @@ export class TranslationService extends Observable {
       name: f.name,
       app_name: f.app_name,
       filename: path.join(
-        knownFolders.currentApp().path,
-        'assets',
+        knownFolders.documents().path,
         'i18n',
         f.name
       ),
@@ -154,7 +157,7 @@ export class TranslationService extends Observable {
         TranslationService.name,
         'Could not save language file: ' + err
       );
-      this._logService.logException(err);
+      // this._logService.logException(err);
     }
   }
 

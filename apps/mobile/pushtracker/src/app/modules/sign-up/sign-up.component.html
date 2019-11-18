@@ -1,43 +1,52 @@
-<ActionBar [title]="'sign-up.title' | translate" flat="true" class="action-bar">
-  <NavigationButton text="Back" android:[icon]="androidBackIcon" (tap)="goBack()"></NavigationButton>
-</ActionBar>
+<GridLayout rows="auto, *" columns="*" class="profile-settings-layout-default">
+  // Mock ActionBar
+  <MockActionBar
+    row="0"
+    #mockActionBar
+    [title]="'sign-up.title' | translate"
+    [showBackNav]="true"
+    (navTapEvent)="goBack()"
+    >
+  </MockActionBar>
 
-<ScrollView class="sign-up-layout" iosOverflowSafeArea="false">
-  <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
-  <PreviousNextView>
-    <GridLayout rows="*, *, *, *, *, *, *" columns="*" iosOverflowSafeArea="false">
-      // Email
-      <MaxTextBox
-        row="0"
-        [(text)]="user.username"
-        [error]="emailError"
-        [label]="'general.email' | translate"
-        (textfieldLoadedEvent)="onEmailTextFieldLoaded($event)"
-        (textChange)="onEmailTextChange($event)"
-        keyboardType="email"
-        autocorrect="false"
-        autocapitalizationType="none"
-      ></MaxTextBox>
+  <ScrollView row="1" height="100%"class="sign-up-layout">
 
-      // Password
-      <MaxTextBox
-        row="1"
-        [(text)]="user.password"
-        [error]="passwordError"
-        [label]="'general.password' | translate"
-        [isSecure]="true"
-        (textfieldLoadedEvent)="onPasswordTextFieldLoaded($event)"
-        autocorrect="false"
-        autocapitalizationType="none"
-      ></MaxTextBox>
+    <!-- add this 'wrapper' to enable those previous / next buttons on iOS IQKeyboardManager -->
+    <PreviousNextView>
+      <GridLayout rows="*, *, *, *, *, *, *" columns="*" iosOverflowSafeArea="false">
+        // Email
+        <MaxTextBox
+          row="0"
+          [(text)]="user.username"
+          [error]="emailError"
+          [label]="'general.email' | translate"
+          (textfieldLoadedEvent)="onEmailTextFieldLoaded($event)"
+          (textChange)="onEmailTextChange($event)"
+          keyboardType="email"
+          autocorrect="false"
+          autocapitalizationType="none"
+          ></MaxTextBox>
 
-      // FirstName
-      <MaxTextBox row="2" [(text)]="user.first_name" [error]="firstNameError" [label]="'profile-tab.first-name' | translate" (textfieldLoadedEvent)="onFirstNameTextFieldLoaded($event)"></MaxTextBox>
+        // Password
+        <MaxTextBox
+          row="1"
+          [(text)]="user.password"
+          [error]="passwordError"
+          [label]="'general.password' | translate"
+          [isSecure]="true"
+          (textfieldLoadedEvent)="onPasswordTextFieldLoaded($event)"
+          autocorrect="false"
+          autocapitalizationType="none"
+          ></MaxTextBox>
 
-      // LastName
-      <MaxTextBox row="3" [(text)]="user.last_name" [error]="lastNameError" [label]="'profile-tab.last-name' | translate" (textfieldLoadedEvent)="onLastNameTextFieldLoaded($event)"></MaxTextBox>
+        // FirstName
+        <MaxTextBox row="2" [(text)]="user.first_name" [error]="firstNameError" [label]="'profile-tab.first-name' | translate" (textfieldLoadedEvent)="onFirstNameTextFieldLoaded($event)"></MaxTextBox>
 
-      <Button row="6" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
-    </GridLayout>
-  </PreviousNextView>
-</ScrollView>
+        // LastName
+        <MaxTextBox row="3" [(text)]="user.last_name" [error]="lastNameError" [label]="'profile-tab.last-name' | translate" (textfieldLoadedEvent)="onLastNameTextFieldLoaded($event)"></MaxTextBox>
+
+        <Button row="6" [text]="'general.submit' | translate" (tap)="onSubmitSignUp()" class="submit-btn"></Button>
+      </GridLayout>
+    </PreviousNextView>
+  </ScrollView>
+</GridLayout>

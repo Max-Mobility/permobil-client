@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular/router';
-import { isAndroid, isIOS, TextField } from '@nativescript/core';
+import { Page, isAndroid, isIOS, TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
@@ -28,11 +28,14 @@ export class ForgotPasswordComponent implements OnInit {
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
+    private _page: Page,
     private _routerExtensions: RouterExtensions,
     private _logService: LoggingService,
     private _translateService: TranslateService
   ) {
     preventKeyboardFromShowing();
+
+    this._page.actionBarHidden = true;
 
     const currentTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,

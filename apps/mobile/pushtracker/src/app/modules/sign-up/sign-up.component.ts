@@ -15,7 +15,7 @@ import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as appSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
-import { TextField, isAndroid, isIOS } from '@nativescript/core';
+import { Page, TextField, isAndroid, isIOS } from '@nativescript/core';
 import {
   AppResourceIcons,
   APP_THEMES,
@@ -91,6 +91,7 @@ export class SignUpComponent implements OnInit {
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
+    private _page: Page,
     private _logService: LoggingService,
     private _router: RouterExtensions,
     private _modalService: ModalDialogService,
@@ -99,6 +100,8 @@ export class SignUpComponent implements OnInit {
     private _userService: PushTrackerUserService
   ) {
     preventKeyboardFromShowing();
+
+    this._page.actionBarHidden = true;
 
     const currentTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -209,7 +212,8 @@ export class SignUpComponent implements OnInit {
         consent_to_research = result.consent_to_research || false;
       }
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SignUpComponent.name, 'Error while handling user agreement / privacy policy');
+      // this._logService.logException(err);
       return;
     }
 

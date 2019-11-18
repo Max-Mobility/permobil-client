@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
       // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
-      const defaultLanguage = APP_LANGUAGES.English; // device.language;
+      const defaultLanguage = APP_LANGUAGES.English; // device.language.split('-')[0];
       this._logService.logBreadCrumb(
         AppComponent.name,
         'Setting default language to ' + defaultLanguage
@@ -156,7 +156,8 @@ export class AppComponent implements OnInit {
         return Promise.resolve(true);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly activity from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }
@@ -185,7 +186,8 @@ export class AppComponent implements OnInit {
         return Promise.resolve(false);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
+        // this._logService.logException(err);
         return Promise.reject(false);
       });
   }

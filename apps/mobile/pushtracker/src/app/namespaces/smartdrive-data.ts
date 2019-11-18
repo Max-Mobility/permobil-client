@@ -357,8 +357,7 @@ export namespace SmartDriveData {
 
     export function getFileName(firmware: string): string {
       return path.join(
-        knownFolders.currentApp().path,
-        'assets',
+        knownFolders.documents().path,
         'firmwares',
         firmware
       );

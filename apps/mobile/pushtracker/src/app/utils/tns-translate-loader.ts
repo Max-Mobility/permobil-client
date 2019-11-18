@@ -2,10 +2,35 @@ import { File, Folder, knownFolders, path } from '@nativescript/core';
 import { Observable, Observer } from 'rxjs';
 
 export class TNSTranslateLoader {
-  constructor(private _path: string) {}
+  constructor() {
+    // copy all language files to documents folder from assets folder
+    const i18nFolder = Folder.fromPath(path.join(knownFolders.currentApp().path, 'app', 'assets', 'i18n'));
+    const dest = path.join(knownFolders.documents().path, 'i18n');
+    // this should create the folder
+    const destFolder = Folder.fromPath(dest);
+    // if the dest path doesn't exist, we've never copied the files,
+    // so do it now
+    const entities = i18nFolder.getEntitiesSync();
+    // entities is array with the document's files and folders.
+    entities.forEach((entity) => {
+      const newFilePath = path.join(destFolder.path, entity.name);
+      if (!File.exists(newFilePath)) {
+        // copy over the file if it is not there already - we don't
+        // want to overwrite files that may have been downloaded from
+        // the server as updates!
+        const newFile = File.fromPath(newFilePath);
+        const data = File.fromPath(entity.path).readSync((err) => {
+          console.error('could not read file:', err);
+        });
+        newFile.writeSync(data, (err) => {
+          console.error('exception writing', entity, err);
+        });
+      }
+    });
+  }
 
   getTranslation(lang: string) {
-    const filePath = `${this._path || '/assets/i18n/'}${lang}.json`;
+    const filePath = `/i18n/${lang}.json`;
     return this.requestLocalFile(filePath);
   }
 
@@ -69,6 +94,10 @@ export class TNSTranslateLoader {
     return knownFolders.currentApp();
   }
 
+  private _documents(): Folder {
+    return knownFolders.documents();
+  }
+
   private _fileFromPath(filepath: string): File {
     return File.fromPath(filepath);
   }
@@ -79,7 +108,7 @@ export class TNSTranslateLoader {
 
   private _getAbsolutePath(url: string): string {
     url = url.replace('~', '').replace('/', '');
-    url = path.join(this._currentApp().path, url);
+    url = path.join(this._documents().path, url);
     return url;
   }
 }
