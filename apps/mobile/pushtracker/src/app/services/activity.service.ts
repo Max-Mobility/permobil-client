@@ -35,25 +35,31 @@ export class ActivityService {
   }
 
   async getWeeklyActivity(date?: string, limit?: number): Promise<ActivityService.Data> {
-    // initialize the query from the query that we have (which
-    // contains the user id)
-    console.log('loading weekly activity for user', this._weeklyQuery.toQueryString());
-    const query = this.makeQuery();
-    if (date) {
-      // make sure we only get the weekly activity we are looking for
-      query.equalTo('date', date);
+    try {
+      const query = new KinveyQuery();
+
+      // configure the query to search for only activity that was
+      // saved by this user, and to get only the most recent activity
+      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+
+      if (date) {
+        // make sure we only get the weekly activity we are looking for
+        query.equalTo('date', date);
+      }
+      if (limit) {
+        query.limit = limit;
+      }
+      query.descending('_kmd.lmt');
+      return this.weeklyDatastore.find(query)
+        .subscribe((data: any[]) => {
+          return data;
+        }, (err) => {
+          console.error('\n', 'error finding weekly activity', err);
+        }, () => {
+        });
+    } catch (err) {
+      console.error('Could not get weekly activity:', err);
     }
-    if (limit) {
-      query.limit = limit;
-    }
-    query.descending('_kmd.lmt');
-    console.log('getting activity data for date:', date);
-    console.log('loading weekly activity for user', query.toString());
-    return this.weeklyDatastore.find(query)
-      .then((data: any[]) => {
-        console.log('GOT DATA:', data);
-        return data;
-      });
   }
 
   async saveDailyActivityFromPushTracker(dailyActivity: any): Promise<boolean> {

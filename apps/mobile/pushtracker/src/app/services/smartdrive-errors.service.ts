@@ -45,7 +45,7 @@ export class SmartDriveErrorsService {
       {
         return this.datastore
           .find(query)
-          .then((data: any[]) => {
+          .subscribe((data: any[]) => {
             if (data && data.length) {
               const id = data[0]._id;
               dailyErrors._id = id;
@@ -57,14 +57,18 @@ export class SmartDriveErrorsService {
               dailyErrors.num_over_temperature_errors += data[0].num_over_temperature_errors || 0;
               dailyErrors.num_ble_disconnect_errors += data[0].num_ble_disconnect_errors || 0;
             }
-            return this.datastore.save(dailyErrors);
-          })
-          .then((_) => {
-            return true;
-          })
-          .catch((error) => {
-            this._logService.logException(error);
+            return this.datastore.save(dailyErrors)
+              .then((_) => {
+                return true;
+              })
+              .catch((error) => {
+                this._logService.logException(error);
+                return false;
+              });
+          }, (err) => {
+            this._logService.logException(err);
             return false;
+          }, () => {
           });
       }
 
