@@ -212,7 +212,8 @@ export class SignUpComponent implements OnInit {
         consent_to_research = result.consent_to_research || false;
       }
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SignUpComponent.name, 'Error while handling user agreement / privacy policy');
+      // this._logService.logException(err);
       return;
     }
 
