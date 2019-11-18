@@ -352,7 +352,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to save SmartDrive firmware files to disk'
+          );
+          // this._logService.logException(err);
         }
 
         // Now perform the SmartDrive updates if we need to
@@ -782,7 +786,11 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         try {
           await Promise.all(promises);
         } catch (err) {
-          this._logService.logException(err);
+          this._logService.logBreadCrumb(
+            WirelessUpdatesComponent.name,
+            'Failed to save PushTracker firmware files to disk'
+          );
+          // this._logService.logException(err);
         }
 
         // Now perform the PushTracker updates if we need to
