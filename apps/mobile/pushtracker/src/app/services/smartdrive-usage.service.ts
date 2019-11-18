@@ -38,34 +38,42 @@ export class SmartDriveUsageService {
     this.weeklyDatastore.clear();
   }
 
-  async getWeeklyActivity(date?: string, limit?: number): Promise<any> {
-    // initialize the query from the query that we have (which
-    // contains the user id)
-    try {
-      const query = new KinveyQuery();
+  async getWeeklyActivity(date?: string, limit?: number): Promise<any[]> {
+    return new Promise(async (resolve, reject) => {
+      // initialize the query from the query that we have (which
+      // contains the user id)
+      try {
+        const query = new KinveyQuery();
 
-      // configure the query to search for only activity that was
-      // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+        // configure the query to search for only activity that was
+        // saved by this user, and to get only the most recent activity
+        query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
 
-      if (date) {
-        // make sure we only get the weekly activity we are looking for
-        query.equalTo('date', date);
+        if (date) {
+          // make sure we only get the weekly activity we are looking for
+          query.equalTo('date', date);
+        }
+        if (limit) {
+          query.limit = limit;
+        }
+        query.descending('_kmd.lmt');
+        this.weeklyDatastore.find(query)
+          .subscribe((data: any[]) => {
+            resolve(data);
+          }, (err) => {
+            console.error('\n', 'error finding weekly usage', err);
+            reject(err);
+          }, () => {
+            // this seems to be called right at the very end - after
+            // we've gotten data, so this resolve will have been
+            // superceded by the resolve(data) above
+            resolve([]);
+          });
+      } catch (err) {
+        console.error('Could not get weekly usage:', err);
+        reject(err);
       }
-      if (limit) {
-        query.limit = limit;
-      }
-      query.descending('_kmd.lmt');
-      return this.weeklyDatastore.find(query)
-        .subscribe((data: any[]) => {
-          return data;
-        }, (err) => {
-          console.error('\n', 'error finding weekly usage', err);
-        }, () => {
-        });
-    } catch (err) {
-      console.error('Could not get weekly usage:', err);
-    }
+    });
   }
 
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {

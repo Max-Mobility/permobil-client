@@ -383,10 +383,7 @@ export class HomeTabComponent {
       }
     }
 
-    await this._usageService.getWeeklyActivity(date, 1);
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    return this._usageService.getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -501,10 +498,7 @@ export class HomeTabComponent {
     if (!this.user) return Promise.resolve(result);
 
     // don't want to filter by date, just give the latest data available
-    await this._usageService.getWeeklyActivity(null, 1);
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    return this._usageService.getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -518,7 +512,7 @@ export class HomeTabComponent {
         }
         this._logService.logBreadCrumb(
           HomeTabComponent.name,
-          '' + 'No WeeklySmartDriveUsage data available for this week'
+          '' + 'No WeeklySmartDriveUsage data available at all!'
         );
         // There's no data for this week
         // Reset weekly usage object
@@ -547,10 +541,7 @@ export class HomeTabComponent {
     let result = {} as any;
     if (!this.user) return result;
 
-    await this._activityService.getWeeklyActivity(null, 1);
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    return this._activityService.getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -617,10 +608,7 @@ export class HomeTabComponent {
       }
     }
 
-    await this._activityService.getWeeklyActivity(date, 1);
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    return this._activityService.getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
