@@ -58,7 +58,8 @@ export class SmartDriveErrorsService {
       }
 
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SmartDriveErrorsService.name, 'Failed to save daily errors from pushtracker in Kinvey');
+      // his._logService.logException(err);
       return false;
     }
   }

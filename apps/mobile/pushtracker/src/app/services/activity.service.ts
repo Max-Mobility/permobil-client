@@ -46,7 +46,8 @@ export class ActivityService {
       }
 
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(ActivityService.name, 'Failed to save daily activity from pushtracker in Kinvey');
+      // this._logService.logException(err);
       return false;
     }
   }

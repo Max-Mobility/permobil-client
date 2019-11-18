@@ -58,7 +58,8 @@ export class SmartDriveUsageService {
       }
 
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SmartDriveUsageService.name, 'Failed to save daily usage from pushtracker in Kinvey');
+      // this._logService.logException(err);
       return false;
     }
   }
