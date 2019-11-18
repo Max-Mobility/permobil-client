@@ -258,7 +258,8 @@ export class HomeTabComponent {
           return Promise.resolve(true);
         }
       } catch (err) {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent, 'Failed to refresh user from kinvey');
+        // this._logService.logException(err);
       }
     }
 
@@ -270,7 +271,8 @@ export class HomeTabComponent {
         return Promise.resolve(true);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get user data from kinvey');
+        // his._logService.logException(err);
         return Promise.reject(false);
       });
   }
@@ -296,11 +298,13 @@ export class HomeTabComponent {
             pullRefresh.refreshing = false;
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly data when refreshing plots');
+            // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to refresh user from kinvey when refreshing plots');
+        // this._logService.logException(err);
       });
   }
 
@@ -372,7 +376,8 @@ export class HomeTabComponent {
           return Promise.resolve(result[0]);
         }
       } catch (err) {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly usage from appSettings');
+        // this._logService.logException(err);
       }
     }
 
@@ -407,7 +412,8 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -477,7 +483,8 @@ export class HomeTabComponent {
         this._updateProgress();
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load smartdrive usage');
+        // this._logService.logException(err);
       });
   }
 
@@ -519,7 +526,8 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading latest smartdrive usage');
+        // this._logService.logException(err);
         return Promise.reject({});
       });
   }
@@ -562,7 +570,8 @@ export class HomeTabComponent {
         return Promise.resolve(activity);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading latest pushtracker activity');
+        // this._logService.logException(err);
         return Promise.reject({});
       });
   }
@@ -591,7 +600,8 @@ export class HomeTabComponent {
         );
         if (weeklyActivityJSON) result = JSON.parse(weeklyActivityJSON);
       } catch (err) {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly activity from appSettings');
+        // this._logService.logException(err);
       }
       if (result && result.length) {
         return result[0];
@@ -629,7 +639,8 @@ export class HomeTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading weekly activity');
+        // this._logService.logException(err);
         return Promise.reject([]);
       });
   }
@@ -710,11 +721,13 @@ export class HomeTabComponent {
             this._updateProgress();
           })
           .catch(err => {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to format activity from view');
+            // this._logService.logException(err);
           });
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly activity');
+        // this._logService.logException(err);
       });
   }
 
