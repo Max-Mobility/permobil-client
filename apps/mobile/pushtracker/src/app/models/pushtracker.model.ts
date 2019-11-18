@@ -504,7 +504,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => {});
+                ).catch(_ => { });
               }
               break;
             case PushTracker.OTAState.updating:
@@ -542,7 +542,7 @@ export class PushTracker extends Observable {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => {});
+                ).catch(_ => { });
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -583,7 +583,7 @@ export class PushTracker extends Observable {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;
@@ -1140,8 +1140,7 @@ export namespace PushTrackerData {
 
     export function getFileName(firmware: string): string {
       return path.join(
-        knownFolders.currentApp().path,
-        'assets',
+        knownFolders.documents().path,
         'firmwares',
         firmware
       );

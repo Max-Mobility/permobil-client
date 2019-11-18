@@ -138,8 +138,7 @@ export class TranslationService extends Observable {
       name: f.name,
       app_name: f.app_name,
       filename: path.join(
-        knownFolders.currentApp().path,
-        'assets',
+        knownFolders.documents().path,
         'i18n',
         f.name
       ),

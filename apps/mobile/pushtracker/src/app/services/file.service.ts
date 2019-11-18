@@ -11,7 +11,7 @@ export class FileService {
   constructor(
     private _translateService: TranslateService,
     private _loggingService: LoggingService
-  ) {}
+  ) { }
 
   private static fsKeyMetadata = 'Metadata';
 
@@ -38,8 +38,8 @@ export class FileService {
         }
 
         const filePath = fs.path.join(
-          fs.knownFolders.currentApp().path,
-          `assets/i18n/${file._filename}`
+          fs.knownFolders.documents().path,
+          `i18n/${file._filename}`
         );
         await http.getFile(file._downloadURL, filePath).catch(err => {
           this._loggingService.logException(err);
