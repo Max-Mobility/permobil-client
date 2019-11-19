@@ -36,7 +36,7 @@ export class ConfigurationComponent implements OnInit {
         this._user.data.control_configuration = selection;
         this._user.update({
           control_configuration: selection
-        })
+        });
         appSettings.setString('Kinvey.User', JSON.stringify(this._user));
       }
     }
