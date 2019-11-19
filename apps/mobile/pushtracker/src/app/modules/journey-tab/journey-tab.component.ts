@@ -4,16 +4,15 @@ import { ModalDialogService } from '@nativescript/angular';
 import { Color, ImageSource, ItemEventData, Page } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
-import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS, TIME_FORMAT } from '../../enums';
-import { DeviceBase } from '../../models';
-import { ActivityService, SmartDriveUsageService, LoggingService, PushTrackerUserService } from '../../services';
-import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, getUserDataFromKinvey, YYYY_MM_DD } from '../../utils';
+import { PushTrackerUser, DeviceBase } from '../../models';
+import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
+import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, YYYY_MM_DD } from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -69,8 +68,7 @@ export class JourneyTabComponent {
     private _vcRef: ViewContainerRef,
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _page: Page,
-    private _userService: PushTrackerUserService
+    private _page: Page
   ) { }
 
   onJourneyTabLoaded() {
@@ -83,7 +81,7 @@ export class JourneyTabComponent {
 
     this._page.actionBarHidden = true;
 
-    this.refreshUserFromKinvey(false)
+    this.refreshUserFromKinvey()
       .then(() => {
         this.savedTimeFormat =
           this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
@@ -179,73 +177,28 @@ export class JourneyTabComponent {
     }
   }
 
-  getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
-    const kinveyActiveUser = KinveyUser.getActiveUser();
-    const result: any = {};
-    result._id = user._id;
-    result._acl = user._acl;
-    result._kmd = kinveyActiveUser._kmd;
-    result.authtoken = kinveyActiveUser._kmd.authtoken;
-    result.username = user.username;
-    result.email = user.username;
-    result.data = {};
-    const keys = Object.keys(user);
-    for (const i in keys) {
-      const key = keys[i];
-      if (
-        !['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)
-      ) {
-        result.data[key] = user[key];
-      }
-    }
-    return result;
+  parseUser(user: KinveyUser) {
+    this.user = user as PushTrackerUser;
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
-  async refreshUserFromKinvey(forceRefresh: boolean = false) {
-    if (this._firstLoad && !forceRefresh) {
-      try {
-        const kinveyUserJSON = appSettings.getString('Kinvey.User', '{}');
-        let user = undefined;
-        if (kinveyUserJSON !== '{}') user = JSON.parse(kinveyUserJSON);
-        if (user) {
-          this.user = user;
-          if (user.data) {
-            if (user.data._id) user._id = user.data._id;
-            if (user.data._acl) user._acl = user.data._acl;
-            if (user.data._kmd) {
-              user._kmd = user.data._kmd;
-              if (user.data._kmd.authtoken)
-                user.authtoken = user.data._kmd.authtoken;
-            }
-            if (user.data.username) user.username = user.data.username;
-            if (user.data.email) user.email = user.data.email;
-          }
-          this.user = user;
-          return Promise.resolve(true);
-        }
-      } catch (err) {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey');
-        // this._logService.logException(err);
-      }
+  async refreshUserFromKinvey() {
+    try {
+      const kinveyUser = KinveyUser.getActiveUser();
+      this.parseUser(kinveyUser);
+      return true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        JourneyTabComponent.name,
+        'Failed to refresh user from kinvey: ' + err
+      );
+      return false;
     }
-
-    return getUserDataFromKinvey()
-      .then(data => {
-        this.user = this.getPushTrackerUserFromKinveyUser(data);
-        this._userService.updateUser(this.user);
-        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get user data from kinvey');
-        // this._logService.logException(err);
-        return Promise.reject(false);
-      });
   }
 
   private async _refresh() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
-    return this.refreshUserFromKinvey(true)
+    return this.refreshUserFromKinvey()
       .then(() => {
         this.noMorePushTrackerActivityDataAvailable = false;
         this.noMoreSmartDriveUsageDataAvailable = false;
