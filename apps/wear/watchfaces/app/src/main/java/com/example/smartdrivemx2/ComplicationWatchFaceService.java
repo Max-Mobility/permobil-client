@@ -1,6 +1,5 @@
 package com.example.smartdrivemx2;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,9 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -35,7 +32,6 @@ import android.view.WindowInsets;
 
 import androidx.core.content.ContextCompat;
 
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,15 +39,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-/** Watch Face for "Adding Complications to your Watch Face" code lab. */
+import io.sentry.Sentry;
+import io.sentry.event.BreadcrumbBuilder;
+
+/**
+ * Watch Face for "Adding Complications to your Watch Face" code lab.
+ */
 public class ComplicationWatchFaceService extends CanvasWatchFaceService {
-
     private static final String TAG = "ComplicationWatchFace";
-
-    private static final Typeface BOLD_TYPEFACE =
-            Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
-    private static final Typeface NORMAL_TYPEFACE =
-            Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
 
     /**
      * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
@@ -104,7 +99,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             case BACKGROUND:
                 return BACKGROUND_COMPLICATION_ID;
             case CENTER:
-                return  CENTER_COMPLICATION_ID;
+                return CENTER_COMPLICATION_ID;
             default:
                 return -1;
         }
@@ -128,9 +123,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             case BACKGROUND:
                 return COMPLICATION_SUPPORTED_TYPES[0];
             case CENTER:
-                return  COMPLICATION_SUPPORTED_TYPES[2];
+                return COMPLICATION_SUPPORTED_TYPES[2];
             default:
-                return new int[] {};
+                return new int[]{};
         }
     }
 
@@ -150,10 +145,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         static final String COLON_STRING = ":";
 
-        /** Alpha value for drawing time when in mute mode. */
+        /**
+         * Alpha value for drawing time when in mute mode.
+         */
         static final int MUTE_ALPHA = 100;
 
-        /** Alpha value for drawing time when not in mute mode. */
+        /**
+         * Alpha value for drawing time when not in mute mode.
+         */
         static final int NORMAL_ALPHA = 255;
 
         private static final float HOUR_AND_MINUTE_STROKE_WIDTH = 5f;
@@ -213,7 +212,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
          * When true, remove the background in ambient mode.
          */
         private boolean mBurnInProtection;
-
 
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
@@ -276,7 +274,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                             .setHideStatusBar(true)
                             .build());
 
-
             Resources resources = ComplicationWatchFaceService.this.getResources();
             mYOffset = resources.getDimension(R.dimen.digital_y_offset);
             mLineHeight = resources.getDimension(R.dimen.digital_line_height);
@@ -291,8 +288,30 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             initializeComplications();
             //initializeHands();
 
+            initSentrySetup();
             //TODO: set APP_SHORTCUT to smartdrive mx2+
 
+        }
+
+        private void initSentrySetup() {
+            // Setup Sentry logging, uses `sentry.properties`
+            Sentry.init();
+            /*
+            Record a breadcrumb in the current context which will be sent
+            with the next event(s). By default the last 100 breadcrumbs are kept.
+            */
+            Sentry.getContext().recordBreadcrumb(
+                    new BreadcrumbBuilder().setMessage("SmartDrive MX2 Digital WatchFace started.").build()
+            );
+
+            Thread.setDefaultUncaughtExceptionHandler(
+                    new Thread.UncaughtExceptionHandler() {
+                        @Override
+                        public void uncaughtException(Thread thread, Throwable e) {
+                            Log.e(TAG, e.getMessage());
+                            Sentry.capture(e);
+                        }
+                    });
         }
 
         private void initializeBackground() {
@@ -302,18 +321,21 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             final int backgroundResId = R.drawable.permobil;
             mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), backgroundResId);
 
+            final Typeface NORMAL_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
+
             mDatePaint = createTextPaint(
                     ContextCompat.getColor(getApplicationContext(), R.color.digital_date));
-            mHourPaint = createTextPaint(mInteractiveHourDigitsColor, BOLD_TYPEFACE);
-            mMinutePaint = createTextPaint(mInteractiveMinuteDigitsColor);
+            mHourPaint = createTextPaint(mInteractiveHourDigitsColor, NORMAL_TYPEFACE);
+            mMinutePaint = createTextPaint(mInteractiveMinuteDigitsColor, NORMAL_TYPEFACE);
             mSecondPaint = createTextPaint(mInteractiveSecondDigitsColor);
             mAmPmPaint = createTextPaint(
-                    ContextCompat.getColor(getApplicationContext(), R.color.digital_am_pm));
+                    ContextCompat.getColor(getApplicationContext(), R.color.digital_am_pm), NORMAL_TYPEFACE);
             mColonPaint = createTextPaint(
                     ContextCompat.getColor(getApplicationContext(), R.color.digital_colons));
         }
 
         private Paint createTextPaint(int defaultInteractiveColor) {
+            final Typeface NORMAL_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
             return createTextPaint(defaultInteractiveColor, NORMAL_TYPEFACE);
         }
 
@@ -356,7 +378,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             setActiveComplications(COMPLICATION_IDS);
 
-            setDefaultComplicationProvider(COMPLICATION_IDS[1], new ComponentName("com.permobil.smartdrive.wearos","com.permobil.smartdrive.wearos.BatteryComplicationProviderService"),ComplicationData.TYPE_RANGED_VALUE);
+            setDefaultComplicationProvider(COMPLICATION_IDS[1], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
             setDefaultSystemComplicationProvider(COMPLICATION_IDS[2], SystemProviders.APP_SHORTCUT, ComplicationData.TYPE_SMALL_IMAGE);
             setDefaultSystemComplicationProvider(COMPLICATION_IDS[0], SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
 
@@ -394,6 +416,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onPropertiesChanged(Bundle properties) {
+            final Typeface BOLD_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_semibold.ttf");
+            final Typeface NORMAL_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
+
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
             mHourPaint.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
@@ -405,7 +430,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             for (int i = 0; i < COMPLICATION_IDS.length; i++) {
                 complicationDrawable = mComplicationDrawableSparseArray.get(COMPLICATION_IDS[i]);
 
-                if(complicationDrawable != null) {
+                if (complicationDrawable != null) {
                     complicationDrawable.setLowBitAmbient(mLowBitAmbient);
                     complicationDrawable.setBurnInProtection(mBurnInProtection);
                 }
@@ -466,10 +491,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     // tap position: y < 125 => Refresh SD battery
                     //           125 < y < 275 => launch MX2+ app
                     //               y> 275 => call system battery setting
-                    if (y<125){
+                    if (y < 125) {
                         complicationId = 1;
                         return complicationId;
-                    } else if(y>275) {
+                    } else if (y > 275) {
                         complicationId = 0;
                         return complicationId;
                     } else {
@@ -504,7 +529,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
                 if (complicationData.getTapAction() != null) {
                     try {
-                        if (complicationId !=2){
+                        if (complicationId != 2) {
                             complicationData.getTapAction().send();
                         } else {
                             Intent sdLaunch = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
@@ -655,8 +680,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
              * with a "chin", the watch face is centered on the entire screen,
              * not just the usable portion.
              */
-            Log.d(TAG,"width:"+width);
-            Log.d(TAG,"height:"+height);
+            Log.d(TAG, "width:" + width);
+            Log.d(TAG, "height:" + height);
             mCenterX = width / 2f;
             mCenterY = height / 2f;
             mScale = ((float) width) / (float) mBackgroundBitmap.getWidth();
@@ -689,10 +714,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
             int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
 
-            int offset=15;
+            int offset = 15;
             Rect leftBounds =
                     // Left, Top, Right, Bottom
-                    new Rect( offset,offset,width-offset,height-offset);
+                    new Rect(offset, offset, width - offset, height - offset);
 //                            horizontalOffset,
 //                            verticalOffset,
 //                            (horizontalOffset + sizeOfComplication),
@@ -704,7 +729,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             Rect backgroundBounds =
                     // Left, Top, Right, Bottom
-                    new Rect( 0,0,width,height);
+                    new Rect(0, 0, width, height);
 //                            horizontalOffset,
 //                            horizontalOffset,
 //                            (width - horizontalOffset),
@@ -716,7 +741,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             Rect centerBounds =
                     // Left, Top, Right, Bottom
-                    new Rect( 200,200,200,200);
+                    new Rect(200, 200, 200, 200);
 //                            horizontalOffset,
 //                            verticalOffset,
 //                            (horizontalOffset + sizeOfComplication),
@@ -766,7 +791,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // In ambient and mute modes, always draw the first colon. Otherwise, draw the
             // first colon for the first half of each second.
             if (isInAmbientMode() || mMute || mShouldDrawColons) {
-                canvas.drawText(COLON_STRING, x-2, mYOffset-2, mColonPaint);
+                canvas.drawText(COLON_STRING, x - 2, mYOffset - 2, mColonPaint);
             }
             x += mColonWidth;
 
@@ -778,7 +803,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // Draw the am/pm.
             if (!is24Hour) {
                 canvas.drawText(getAmPmString(
-                        mCalendar.get(Calendar.AM_PM)), mXOffset+40, mYOffset+25, mAmPmPaint);
+                        mCalendar.get(Calendar.AM_PM)), mXOffset + 40, mYOffset + 25, mAmPmPaint);
             }
 
             // In unmuted interactive mode, draw a second blinking colon followed by the seconds.
@@ -815,7 +840,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             for (int i = 0; i < COMPLICATION_IDS.length; i++) {
                 complicationId = COMPLICATION_IDS[i];
 
-                if (i==0) {
+                if (i == 0) {
                     complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
                     complicationDrawable.draw(canvas, currentTimeMillis);
@@ -826,7 +851,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     complicationDrawable.setTextColorAmbient(0x00000000);
                     complicationDrawable.setTextColorActive(0x00000000);
                     complicationDrawable.setIconColorActive(0x00000000);
-                } else if (i==1) {
+                } else if (i == 1) {
                     complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 
                     complicationDrawable.draw(canvas, currentTimeMillis);
@@ -979,7 +1004,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         }
 
         @Override
-        public void onApplyWindowInsets(WindowInsets insets){
+        public void onApplyWindowInsets(WindowInsets insets) {
             if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
             }
