@@ -5,15 +5,15 @@ import { Color, ImageSource, ItemEventData, Page } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
 import { PushTrackerUser } from '@permobil/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { User as KinveyUser, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS, TIME_FORMAT } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService, PushTrackerUserService } from '../../services';
-import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getJSONFromKinvey, getTimeOfDayFromStartTime, getTimeOfDayString, getUserDataFromKinvey, YYYY_MM_DD } from '../../utils';
+import { ActivityService, SmartDriveUsageService, LoggingService, PushTrackerUserService } from '../../services';
+import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, getUserDataFromKinvey, YYYY_MM_DD } from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -63,13 +63,15 @@ export class JourneyTabComponent {
   private _firstLoad = true;
 
   constructor(
+    private _activityService: ActivityService,
+    private _usageService: SmartDriveUsageService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _page: Page,
     private _userService: PushTrackerUserService
-  ) {}
+  ) { }
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
@@ -166,7 +168,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-            this.todayUsage.distance_smartdrive_coast_start
+          this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -511,27 +513,27 @@ export class JourneyTabComponent {
             icon_small:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_black'
-                      : 'smartdrive_material_black_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_black'
+                    : 'smartdrive_material_black_45'
+                )
                 : ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  ),
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                ),
             icon_large:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
                 : ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
           });
         }
         return newJourneyItems;
@@ -586,19 +588,19 @@ export class JourneyTabComponent {
             // accumulate the second into the first for each data
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
-                second.stats.coastDistance || 0;
+              second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance =
               (journeyList[firstIndex].stats.driveDistance || 0) +
-                second.stats.driveDistance || 0;
+              second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount =
               (journeyList[firstIndex].stats.pushCount || 0) +
-                second.stats.pushCount || 0;
+              second.stats.pushCount || 0;
             journeyList[firstIndex].stats.coastCount =
               (journeyList[firstIndex].stats.coastCount || 0) +
-                second.stats.coastCount || 0;
+              second.stats.coastCount || 0;
             journeyList[firstIndex].stats.coastTimeTotal =
               (journeyList[firstIndex].stats.coastTimeTotal || 0) +
-                second.stats.coastTimeTotal || 0;
+              second.stats.coastTimeTotal || 0;
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
@@ -632,8 +634,11 @@ export class JourneyTabComponent {
     if (!this.user) return result;
 
     const date = YYYY_MM_DD(weekStartDate);
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    const query = new KinveyQuery();
+    query.lessThanOrEqualTo('date', date);
+    query.descending('date');
+    query.limit = 1;
+    return this._activityService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -652,7 +657,7 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get activity from kinvey');
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -715,8 +720,11 @@ export class JourneyTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    const query = new KinveyQuery();
+    query.lessThanOrEqualTo('date', date);
+    query.descending('date');
+    query.limit = 1;
+    return this._usageService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -735,7 +743,7 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get usage from kinvey');
         // this._logService.logException(err);
         return Promise.reject([]);
       });

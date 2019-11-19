@@ -18,19 +18,28 @@ export class SmartDriveUsageService {
   private _usageUpdated = new BehaviorSubject<boolean>(false);
   usageUpdated = this._usageUpdated.asObservable();
 
-  // queries used to control what data is stored on device for each
-  // datastore
-  private _dailyQuery: KinveyQuery;
-  private _weeklyQuery: KinveyQuery;
-
   constructor(private _logService: LoggingService) {
     this.reset();
   }
 
   async reset() {
     this.login();
-    this.dailyDatastore.sync(this._dailyQuery);
-    this.weeklyDatastore.sync(this._weeklyQuery);
+
+    // now set up the queries to make sure we don't sync more than we need to
+
+    const _dailyQuery = this.makeQuery();
+    // we only ever push data to the daily activity datastore - so
+    // we should set a date that is far in the future to keep the
+    // pulls from ever actually pulling data
+    _dailyQuery.equalTo('date', '2200-01-01');
+    // we actually want to have the weekly datastore storing data
+    // locally for use when offline / bad network conditions (and to
+    // not have to pull data that we've already seen) so we just set
+    // the user id
+    const _weeklyQuery = this.makeQuery();
+
+    this.dailyDatastore.sync(_dailyQuery);
+    this.weeklyDatastore.sync(_weeklyQuery);
   }
 
   clear() {
@@ -38,42 +47,55 @@ export class SmartDriveUsageService {
     this.weeklyDatastore.clear();
   }
 
-  async getWeeklyActivity(date?: string, limit?: number): Promise<any[]> {
-    return new Promise(async (resolve, reject) => {
-      // initialize the query from the query that we have (which
-      // contains the user id)
-      try {
-        const query = new KinveyQuery();
-
-        // configure the query to search for only activity that was
-        // saved by this user, and to get only the most recent activity
-        query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
-
-        if (date) {
-          // make sure we only get the weekly activity we are looking for
-          query.equalTo('date', date);
-        }
-        if (limit) {
-          query.limit = limit;
-        }
-        query.descending('_kmd.lmt');
-        this.weeklyDatastore.find(query)
-          .subscribe((data: any[]) => {
-            resolve(data);
-          }, (err) => {
-            console.error('\n', 'error finding weekly usage', err);
-            reject(err);
-          }, () => {
-            // this seems to be called right at the very end - after
-            // we've gotten data, so this resolve will have been
-            // superceded by the resolve(data) above
-            resolve([]);
-          });
-      } catch (err) {
-        console.error('Could not get weekly usage:', err);
-        reject(err);
-      }
+  async _query(db: any, query: KinveyQuery): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      db.find(query)
+        .subscribe((data: any[]) => {
+          resolve(data);
+        }, (err) => {
+          console.error('\n', 'error finding weekly activity', err);
+          reject(err);
+        }, () => {
+          // this seems to be called right at the very end - after
+          // we've gotten data, so this resolve will have been
+          // superceded by the resolve(data) above
+          resolve([]);
+        });
     });
+  }
+
+  async dailyQuery(query: KinveyQuery): Promise<any[]> {
+    return this._query(this.dailyDatastore, query);
+  }
+
+  async weeklyQuery(query: KinveyQuery): Promise<any[]> {
+    return this._query(this.weeklyDatastore, query);
+  }
+
+  async getWeeklyActivityWithQuery(query: KinveyQuery): Promise<any[]> {
+    // make sure the query only returns data that was created by this
+    // user!
+    query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+    return this.weeklyQuery(query);
+  }
+
+  async getWeeklyActivity(date?: string, limit?: number): Promise<any[]> {
+    const query = new KinveyQuery();
+    // configure the query to search for only activity that was
+    // saved by this user, and to get only the most recent activity
+    query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+    // set the date if they provided it
+    if (date) {
+      // make sure we only get the weekly activity we are looking for
+      query.equalTo('date', date);
+    }
+    // set the limit if they provided it
+    if (limit) {
+      query.limit = limit;
+    }
+    // sort by last modified time descending
+    query.descending('_kmd.lmt');
+    return this.weeklyQuery(query);
   }
 
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
@@ -85,9 +107,11 @@ export class SmartDriveUsageService {
       query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.equalTo('date', dailyUsage.date);
 
+      // TODO: test this after the update to the Sync datastore type!
+
       // Run a .find first to get the _id of the daily activity
       {
-        return this.dailyDatastore.find(query)
+        return this.dailyQuery(query)
           .then((data: any[]) => {
             if (data && data.length) {
               const id = data[0]._id;
@@ -133,16 +157,7 @@ export class SmartDriveUsageService {
   private async login() {
     const activeUser = KinveyUser.getActiveUser();
     if (!!activeUser) {
-      this._dailyQuery = this.makeQuery();
-      // we only ever push data to the daily activity datastore - so
-      // we should set a date that is far in the future to keep the
-      // pulls from ever actually pulling data
-      this._dailyQuery.equalTo('date', '2200-01-01');
-      // we actually want to have the weekly datastore storing data
-      // locally for use when offline / bad network conditions (and to
-      // not have to pull data that we've already seen) so we just set
-      // the user id
-      this._weeklyQuery = this.makeQuery();
+      // do nothing - we're good now
     } else {
       throw new Error('no active user');
     }
