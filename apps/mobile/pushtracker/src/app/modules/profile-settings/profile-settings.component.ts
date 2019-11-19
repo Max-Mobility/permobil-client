@@ -5,15 +5,15 @@ import { device } from '@nativescript/core/platform';
 import * as appSettings from '@nativescript/core/application-settings';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { Device, PushTrackerUser } from '@permobil/core';
+import { Device } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
-import { PushTracker, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService, TranslationService } from '../../services';
+import { PushTracker, PushTrackerUser, SmartDrive } from '../../models';
+import { BluetoothService, LoggingService, PushTrackerState, SettingsService, ThemeService, TranslationService } from '../../services';
 import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
 
@@ -70,7 +70,6 @@ export class ProfileSettingsComponent implements OnInit {
     private _translationService: TranslationService,
     private _translateService: TranslateService,
     private _page: Page,
-    private _userService: PushTrackerUserService,
     private _themeService: ThemeService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
@@ -197,7 +196,7 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   getUser() {
-    this.user = this._params.context.user;
+    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
     Object.entries(APP_LANGUAGES).map(([key, value]) => {
       if (device.language.startsWith(value)) {
@@ -488,31 +487,19 @@ export class ProfileSettingsComponent implements OnInit {
     // save settings
     switch (this.activeSetting) {
       case 'height':
-        this._userService.updateDataProperty(
-          'height_unit_preference',
-          this.heightUnits[index]
-        );
-        KinveyUser.update({
+        this.user.update({
           height_unit_preference: this.heightUnits[index]
         });
         this.displayHeightUnit = this.heightUnitsTranslated[index];
         break;
       case 'weight':
-        this._userService.updateDataProperty(
-          'weight_unit_preference',
-          this.weightUnits[index]
-        );
-        KinveyUser.update({
+        this.user.update({
           weight_unit_preference: this.weightUnits[index]
         });
         this.displayWeightUnit = this.weightUnitsTranslated[index];
         break;
       case 'distance':
-        this._userService.updateDataProperty(
-          'distance_unit_preference',
-          this.distanceUnits[index]
-        );
-        KinveyUser.update({
+        this.user.update({
           distance_unit_preference: this.distanceUnits[index]
         });
         this.displayDistanceUnit = this.distanceUnitsTranslated[index];
@@ -526,11 +513,7 @@ export class ProfileSettingsComponent implements OnInit {
           Device.SwitchControlSettings.Mode.Options[index];
         break;
       case 'time format':
-        this._userService.updateDataProperty(
-          'time_format_preference',
-          this.timeFormats[index]
-        );
-        KinveyUser.update({
+        this.user.update({
           time_format_preference: this.timeFormats[index]
         });
         this.displayTimeFormat = this.timeFormatsTranslated[index];
@@ -548,11 +531,7 @@ export class ProfileSettingsComponent implements OnInit {
         break;
       case 'language':
         this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
-        this._userService.updateDataProperty(
-          'language_preference',
-          this.CURRENT_LANGUAGE
-        );
-        KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
+        this.user.update({ language_preference: this.CURRENT_LANGUAGE });
         const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
         if (this._translateService.currentLang !== language) {
           this._translateService.reloadLang(language);
