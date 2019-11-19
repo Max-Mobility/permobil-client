@@ -7,13 +7,13 @@ import * as LS from 'nativescript-localstorage';
 import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import throttle from 'lodash/throttle';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
-import { PushTracker } from '../../models';
-import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
+import { PushTracker, PushTrackerUser } from '../../models';
+import { ActivityService, BluetoothService, LoggingService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
 import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
 @Component({
@@ -41,7 +41,6 @@ export class TabsComponent {
     private _bluetoothService: BluetoothService,
     private _routerExtensions: RouterExtensions,
     private _page: Page,
-    private _userService: PushTrackerUserService,
     private _usageService: SmartDriveUsageService,
     private _errorsService: SmartDriveErrorsService
   ) {
@@ -75,81 +74,83 @@ export class TabsComponent {
     this._usageService.reset();
     this._errorsService.reset();
 
-    this._userService.user.subscribe(async user => {
-      if (!user || !user.data) {
-        // we should probably logout here since we don't have a valid
-        // user
-        KinveyUser.logout();
-        // clean up local storage
-        LS.clear();
-        // Clean up appSettings key-value pairs
-        appSettings.clear();
-        // Reset the settings service
-        this._settingsService.reset();
-        // Reset the user service and restore to default theme
-        this._userService.reset();
-        enableDefaultTheme();
-        // go ahead and nav to login to keep UI moving without waiting
-        this._routerExtensions.navigate(['/login'], {
-          clearHistory: true
-        });
-        return;
-      }
+    const user = KinveyUser.getActiveUser() as PushTrackerUser;
 
-      this.user = user;
-      const config = this.user.data.control_configuration;
-      // @ts-ignore
-      if (!Object.values(CONFIGURATIONS).includes(config)) {
-        this._logService.logBreadCrumb(
-          TabsComponent.name,
-          `got user, but did not get valid configuration: ${config}, ${this.user}`
-        );
-        // the user does not have a valid configuration - route to the
-        // configuration page so they can set one
-        this._routerExtensions.navigate(['configuration'], {
-          clearHistory: true
-        });
-        return;
-      }
+    if (!user || !user.data) {
+      // we should probably logout here since we don't have a valid
+      // user
+      KinveyUser.logout();
+      // clean up local storage
+      LS.clear();
+      // Clean up appSettings key-value pairs
+      appSettings.clear();
+      // Reset the settings service
+      this._settingsService.reset();
+      // restore to default theme
+      enableDefaultTheme();
+      // go ahead and nav to login to keep UI moving without waiting
+      this._routerExtensions.navigate(['/login'], {
+        clearHistory: true
+      });
+      return;
+    }
 
-      if (this.user.data.language_preference) {
-        const language = APP_LANGUAGES[this.user.data.language_preference];
-        if (this._translateService.currentLang !== language)
-          this._translateService.use(language);
-      }
+    // we have a user - set it!
+    this.user = user;
 
-      if (
-        this.user &&
-        this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
-        !this.bluetoothAdvertised
-      ) {
-        this._logService.logBreadCrumb(
-          TabsComponent.name,
-          'Asking for Bluetooth Permission'
-        );
-        this.bluetoothAdvertised = true;
-        setTimeout(() => {
-          this.askForPermissions()
-            .then(() => {
-              this.registerBluetoothEvents();
-              this.registerPushTrackerEvents();
-              if (!this._bluetoothService.advertising) {
-                this._logService.logBreadCrumb(
-                  TabsComponent.name,
-                  'Starting Bluetooth'
-                );
-                // start the bluetooth service
-                return this._bluetoothService.advertise();
-              }
-            })
-            .catch(err => {
-              this.bluetoothAdvertised = false;
-              this._logService.logException(err);
-            });
-        }, 1000);
-      }
-    });
+    // now update all of the UI
+    if (this.user.data.language_preference) {
+      const language = APP_LANGUAGES[this.user.data.language_preference];
+      if (this._translateService.currentLang !== language)
+        this._translateService.use(language);
+    }
+
+    const config = this.user.data.control_configuration;
+    // @ts-ignore
+    if (!Object.values(CONFIGURATIONS).includes(config)) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        `got user, but did not get valid configuration: ${config}, ${this.user}`
+      );
+      // the user does not have a valid configuration - route to the
+      // configuration page so they can set one
+      this._routerExtensions.navigate(['configuration'], {
+        clearHistory: true
+      });
+      return;
+    }
+
+    if (
+      this.user &&
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+      !this.bluetoothAdvertised
+    ) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'Asking for Bluetooth Permission'
+      );
+      this.bluetoothAdvertised = true;
+      setTimeout(() => {
+        this.askForPermissions()
+          .then(() => {
+            this.registerBluetoothEvents();
+            this.registerPushTrackerEvents();
+            if (!this._bluetoothService.advertising) {
+              this._logService.logBreadCrumb(
+                TabsComponent.name,
+                'Starting Bluetooth'
+              );
+              // start the bluetooth service
+              return this._bluetoothService.advertise();
+            }
+          })
+          .catch(err => {
+            this.bluetoothAdvertised = false;
+            this._logService.logException(err);
+          });
+      }, 1000);
+    }
   }
 
   onRootBottomNavLoaded(_) {

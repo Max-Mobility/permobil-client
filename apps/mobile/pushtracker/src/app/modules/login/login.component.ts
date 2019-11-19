@@ -6,14 +6,14 @@ import { device } from '@nativescript/core/platform';
 import { PercentLength } from '@nativescript/core/ui/styling/style-properties';
 import { TranslateService } from '@ngx-translate/core';
 import { LoadingIndicator } from '@nstudio/nativescript-loading-indicator';
-import { PushTrackerUser } from '@permobil/core';
 import { preventKeyboardFromShowing } from '@permobil/nativescript';
 import { validate } from 'email-validator';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { LottieView } from 'nativescript-lottie';
 import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
+import { PushTrackerUser } from '../../models';
 import { APP_THEMES, STORAGE_KEYS } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService } from '../../services';
 
 @Component({
   selector: 'login',
@@ -35,8 +35,7 @@ export class LoginComponent implements OnInit {
     private _logService: LoggingService,
     private _page: Page,
     private _translateService: TranslateService,
-    private _zone: NgZone,
-    private _userService: PushTrackerUserService
+    private _zone: NgZone
   ) {
     this._page.actionBarHidden = true;
     preventKeyboardFromShowing();
@@ -130,10 +129,6 @@ export class LoginComponent implements OnInit {
       this._loadingIndicator.hide();
 
       // Navigate to tabs home with clearHistory
-      // this._userService.reset();
-      this._userService.initializeUser(<PushTrackerUser>(
-        (<any>Kinvey.User.getActiveUser())
-      ));
       this._zone.run(() => {
         this._routerExtensions.navigate(['/tabs/default'], {
           clearHistory: true
