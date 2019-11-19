@@ -1,4 +1,4 @@
-package com.example.smartdrivemx2;
+package com.permobil.smartdrivemx2digital;
 
 import android.app.Activity;
 import android.content.ComponentName;
