@@ -5,15 +5,14 @@ import { Color, ObservableArray } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { TranslateService } from '@ngx-translate/core';
-import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
-import { DeviceBase } from '../../models';
-import { LoggingService, PushTrackerUserService } from '../../services';
-import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, getJSONFromKinvey, getUserDataFromKinvey, milesToKilometers, YYYY_MM_DD } from '../../utils';
+import { PushTrackerUser, DeviceBase } from '../../models';
+import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
+import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
   selector: 'home-tab',
@@ -62,7 +61,6 @@ export class HomeTabComponent {
   private _weekStart: Date;
   private _weekEnd: Date;
   private _todaysActivity: any;
-  private _firstLoad: boolean = true;
   private _debouncedLoadWeeklyActivity: any;
   private _debouncedLoadWeeklyUsage: any;
 
@@ -77,11 +75,15 @@ export class HomeTabComponent {
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
-    private _userService: PushTrackerUserService
-  ) {}
+    private _activityService: ActivityService,
+    private _usageService: SmartDriveUsageService
+  ) { }
 
-  onHomeTabLoaded(args) {
+  async onHomeTabLoaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
+
+    this.refreshUserFromKinvey();
+
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -97,13 +99,13 @@ export class HomeTabComponent {
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
-      { trailing: true }
+      { leading: true }
     );
 
     this._debouncedLoadWeeklyUsage = debounce(
       this._loadSmartDriveUsage.bind(this),
       this.MAX_COMMIT_INTERVAL_MS,
-      { trailing: true }
+      { leading: true }
     );
   }
 
@@ -213,112 +215,75 @@ export class HomeTabComponent {
       this.user.data.first_name;
   }
 
-  getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
-    const kinveyActiveUser = KinveyUser.getActiveUser();
-    const result: any = {};
-    result._id = user._id;
-    result._acl = user._acl;
-    result._kmd = kinveyActiveUser._kmd;
-    result.authtoken = kinveyActiveUser._kmd.authtoken;
-    result.username = user.username;
-    result.email = user.username;
-    result.data = {};
-    const keys = Object.keys(user);
-    for (const i in keys) {
-      const key = keys[i];
-      if (
-        !['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)
-      ) {
-        result.data[key] = user[key];
-      }
-    }
-    return result;
+  parseUser(user: KinveyUser) {
+    this.user = user as PushTrackerUser;
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
-  async refreshUserFromKinvey(forceRefresh: boolean = false) {
-    if (this._firstLoad && !forceRefresh) {
+  async refreshUserFromKinvey() {
+    try {
+      const kinveyUser = KinveyUser.getActiveUser();
       try {
-        const kinveyUserJSON = appSettings.getString('Kinvey.User', '{}');
-        let user = undefined;
-        if (kinveyUserJSON !== '{}') user = JSON.parse(kinveyUserJSON);
-        if (user) {
-          this.user = user;
-          if (user.data) {
-            if (user.data._id) user._id = user.data._id;
-            if (user.data._acl) user._acl = user.data._acl;
-            if (user.data._kmd) {
-              user._kmd = user.data._kmd;
-              if (user.data._kmd.authtoken)
-                user.authtoken = user.data._kmd.authtoken;
-            }
-            if (user.data.username) user.username = user.data.username;
-            if (user.data.email) user.email = user.data.email;
-          }
-          this.user = user;
-          return Promise.resolve(true);
-        }
+        await kinveyUser.me();
       } catch (err) {
-        this._logService.logBreadCrumb(HomeTabComponent, 'Failed to refresh user from kinvey');
-        // this._logService.logException(err);
+        this._logService.logBreadCrumb(HomeTabComponent.name,
+          'Failed to refresh user from kinvey');
       }
+      this.parseUser(kinveyUser);
+      return true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        HomeTabComponent.name,
+        'Failed to refresh user from kinvey: ' + err
+      );
+      return false;
     }
-
-    return getUserDataFromKinvey()
-      .then(data => {
-        this.user = this.getPushTrackerUserFromKinveyUser(data);
-        this._userService.updateUser(this.user);
-        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get user data from kinvey');
-        // his._logService.logException(err);
-        return Promise.reject(false);
-      });
   }
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
-    pullRefresh.refreshing = true;
-    this.weeklyActivityLoaded = false;
-    this.refreshUserFromKinvey(true)
-      .then(result => {
-        if (!result) return;
-        // The user might come back and refresh the next day, just keeping
-        // the app running - Update currentDayInView and weekStart to
-        // account for this
-        this._currentDayInView = new Date();
-        this._weekStart = getFirstDayOfWeek(this._currentDayInView);
-        this._weekEnd = new Date(this._weekStart);
-        this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+    try {
+      pullRefresh.refreshing = true;
+      this.weeklyActivityLoaded = false;
 
-        // Now refresh the data
-        this._loadWeeklyData()
-          .then(() => {
-            pullRefresh.refreshing = false;
-          })
-          .catch(err => {
-            this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly data when refreshing plots');
-            // this._logService.logException(err);
-          });
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to refresh user from kinvey when refreshing plots');
-        // this._logService.logException(err);
-      });
+      const gotUser = await this.refreshUserFromKinvey();
+      if (!gotUser) return;
+
+      // actually synchronize with the server
+      try {
+        await this._activityService.refreshWeekly();
+      } catch (err) {
+      }
+      try {
+        await this._usageService.refreshWeekly();
+      } catch (err) {
+      }
+
+      // The user might come back and refresh the next day, just keeping
+      // the app running - Update currentDayInView and weekStart to
+      // account for this
+      this._currentDayInView = new Date();
+      this._weekStart = getFirstDayOfWeek(this._currentDayInView);
+      this._weekEnd = new Date(this._weekStart);
+      this._weekEnd.setDate(this._weekEnd.getDate() + 6);
+
+      // Now refresh the data
+      await this._loadWeeklyData();
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        HomeTabComponent.name,
+        'Failed to refresh plots'
+      );
+      // this._logService.logException(err);
+    }
+    pullRefresh.refreshing = false;
   }
 
   private async _loadWeeklyData() {
     this.weeklyActivityLoaded = false;
 
-    if (this._firstLoad) {
-      this._loadWeeklyActivity();
-      this._loadSmartDriveUsage();
-      this._firstLoad = false;
-    } else {
-      this._debouncedLoadWeeklyActivity();
-      this._debouncedLoadWeeklyUsage();
-    }
+    this._debouncedLoadWeeklyActivity();
+    this._debouncedLoadWeeklyUsage();
     this._updateProgress();
     this.updateTodayMessage();
     this.weeklyActivityLoaded = true;
@@ -330,7 +295,7 @@ export class HomeTabComponent {
         context: {
           currentTab:
             this.user.data.control_configuration !==
-            CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+              CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
               ? 0
               : 1,
           user: this.user
@@ -359,30 +324,7 @@ export class HomeTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    if (this._firstLoad) {
-      // First load of the home tab
-      // Check if there's cached activity loaded in app.component.ts
-      this._logService.logBreadCrumb(
-        HomeTabComponent.name,
-        '' + 'Loading WeeklySmartDriveUsage from appSettings'
-      );
-      try {
-        const weeklyUsageJSON = appSettings.getString(
-          'SmartDrive.WeeklyUsage.' + date,
-          '{}'
-        );
-        if (weeklyUsageJSON) result = JSON.parse(weeklyUsageJSON);
-        if (result && result.length) {
-          return Promise.resolve(result[0]);
-        }
-      } catch (err) {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly usage from appSettings');
-        // this._logService.logException(err);
-      }
-    }
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    return this._usageService.getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -442,7 +384,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 this._todaysUsage.distance_smartdrive_coast -
-                  this._todaysUsage.distance_smartdrive_coast_start
+                this._todaysUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -454,7 +396,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 this._todaysUsage.distance_smartdrive_drive -
-                  this._todaysUsage.distance_smartdrive_drive_start
+                this._todaysUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -496,22 +438,22 @@ export class HomeTabComponent {
     let result = {} as any;
     if (!this.user) return Promise.resolve(result);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    // don't want to filter by date, just give the latest data available
+    return this._usageService.getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
           this._logService.logBreadCrumb(
             HomeTabComponent.name,
             '' +
-              'Successfully loaded WeeklySmartDriveUsage from Kinvey for date ' +
-              result.date
+            'Successfully loaded WeeklySmartDriveUsage from Kinvey for date ' +
+            result.date
           );
           return Promise.resolve(result);
         }
         this._logService.logBreadCrumb(
           HomeTabComponent.name,
-          '' + 'No WeeklySmartDriveUsage data available for this week'
+          '' + 'No WeeklySmartDriveUsage data available at all!'
         );
         // There's no data for this week
         // Reset weekly usage object
@@ -540,16 +482,15 @@ export class HomeTabComponent {
     let result = {} as any;
     if (!this.user) return result;
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    return this._activityService.getWeeklyActivity(null, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
           this._logService.logBreadCrumb(
             HomeTabComponent.name,
             '' +
-              'Successfully loaded latest WeeklyPushTrackerActivity from Kinvey - for ' +
-              result.date
+            'Successfully loaded latest WeeklyPushTrackerActivity from Kinvey - for ' +
+            result.date
           );
           return Promise.resolve(result);
         }
@@ -570,7 +511,10 @@ export class HomeTabComponent {
         return Promise.resolve(activity);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to get JSON from kinvey when loading latest pushtracker activity');
+        this._logService.logBreadCrumb(
+          HomeTabComponent.name,
+          'Failed to get latest activity from kinvey'
+        );
         // this._logService.logException(err);
         return Promise.reject({});
       });
@@ -586,30 +530,7 @@ export class HomeTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    if (this._firstLoad) {
-      // First load of the home tab
-      // Check if there's cached activity loaded in app.component.ts
-      this._logService.logBreadCrumb(
-        HomeTabComponent.name,
-        '' + 'Loading WeeklyPushTrackerActivity from appSettings'
-      );
-      try {
-        const weeklyActivityJSON = appSettings.getString(
-          'PushTracker.WeeklyActivity.' + date,
-          '{}'
-        );
-        if (weeklyActivityJSON) result = JSON.parse(weeklyActivityJSON);
-      } catch (err) {
-        this._logService.logBreadCrumb(HomeTabComponent.name, 'Failed to load weekly activity from appSettings');
-        // this._logService.logException(err);
-      }
-      if (result && result.length) {
-        return result[0];
-      }
-    }
-
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    return this._activityService.getWeeklyActivity(date, 1)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -684,7 +605,7 @@ export class HomeTabComponent {
             ).toFixed(1);
             this.distanceGoalUnit =
               this.user.data.distance_unit_preference ===
-              DISTANCE_UNITS.KILOMETERS
+                DISTANCE_UNITS.KILOMETERS
                 ? ' ' + this._translateService.instant('home-tab.km-per-day')
                 : ' ' + this._translateService.instant('home-tab.mi-per-day');
             this.distanceCirclePercentageMaxValue =
@@ -884,7 +805,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 day.distance_smartdrive_coast -
-                  day.distance_smartdrive_coast_start
+                day.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -987,7 +908,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.caseTicksToMiles(
                 dailyUsage.distance_smartdrive_coast -
-                  dailyUsage.distance_smartdrive_coast_start
+                dailyUsage.distance_smartdrive_coast_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -998,7 +919,7 @@ export class HomeTabComponent {
             milesToKilometers(
               DeviceBase.motorTicksToMiles(
                 dailyUsage.distance_smartdrive_drive -
-                  dailyUsage.distance_smartdrive_drive_start
+                dailyUsage.distance_smartdrive_drive_start
               ) || 0
             ),
             this.user.data.distance_unit_preference
@@ -1066,7 +987,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,
@@ -1082,7 +1003,7 @@ export class HomeTabComponent {
     this._openActivityTabModal({
       currentTab:
         this.user.data.control_configuration !==
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
           ? 0
           : 1,
       currentDayInView: dailyActivity.date,

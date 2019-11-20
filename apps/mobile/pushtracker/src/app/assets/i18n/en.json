@@ -463,6 +463,10 @@
 			"prefer-not-to-say": "Prefer not to say"
 		},
 		"last-name": "last name",
+    "network-error": {
+      "title": "Network Error",
+      "message": "Unable to connect to server, please make sure your device has an internet connection."
+    },
 		"ok": "OK",
 		"per-day": "per day",
 		"pushtracker": "PushTracker",

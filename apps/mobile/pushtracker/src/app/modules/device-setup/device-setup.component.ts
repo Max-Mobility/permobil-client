@@ -7,13 +7,12 @@ import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { ToastDuration, Toasty } from 'nativescript-toasty';
 import { APP_THEMES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
-import { PushTracker } from '../../models';
-import { BluetoothService, LoggingCategory, LoggingService, PushTrackerUserService } from '../../services';
+import { PushTracker, PushTrackerUser } from '../../models';
+import { BluetoothService, LoggingCategory, LoggingService } from '../../services';
 
 // TODO: activity indicator for E2 on ios (during scanning /
 // connection / etc.)
@@ -55,7 +54,6 @@ export class DeviceSetupComponent implements OnInit {
   private CAPABILITY_PHONE_APP: string = 'permobil_pushtracker_phone_app';
   constructor(
     private _router: Router,
-    private _userService: PushTrackerUserService,
     private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _logService: LoggingService,
@@ -70,78 +68,75 @@ export class DeviceSetupComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-    this._userService.user.subscribe(async user => {
-      this.user = user;
+  async ngOnInit() {
+    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
+    if (
+      !this.slide &&
+      this.user &&
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
+      // OG PushTracker configuration
+      this.slide = this._translateService.instant(
+        'device-setup.pushtracker-with-smartdrive'
+      );
 
-      if (
-        !this.slide &&
-        this.user &&
-        this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
-      ) {
-        // OG PushTracker configuration
-        this.slide = this._translateService.instant(
-          'device-setup.pushtracker-with-smartdrive'
+      // Check for already connected PushTrackers
+      this.onPushTrackerConnected();
+
+      if (!this.pushTracker && !this.bluetoothAdvertised) {
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'Asking for Bluetooth Permission'
         );
-
-        // Check for already connected PushTrackers
-        this.onPushTrackerConnected();
-
-        if (!this.pushTracker && !this.bluetoothAdvertised) {
-          this._logService.logBreadCrumb(
-            DeviceSetupComponent.name,
-            'Asking for Bluetooth Permission'
-          );
-          this._askForPermissions()
-            .then(() => {
-              if (!this._bluetoothService.advertising) {
-                this._logService.logBreadCrumb(
-                  DeviceSetupComponent.name,
-                  'Starting Bluetooth'
-                );
-                // start the bluetooth service
-                return this._bluetoothService.advertise();
-              }
-            })
-            .catch(err => {
-              this._logService.logException(err);
-            });
-          this.bluetoothAdvertised = true;
-        }
-
-        this._bluetoothService.on(
-          BluetoothService.pushtracker_connected,
-          this.onPushTrackerConnected,
-          this
-        );
-
-        this._bluetoothService.on(
-          BluetoothService.pushtracker_disconnected,
-          this.onPushTrackerDisconnected,
-          this
-        );
+        this._askForPermissions()
+          .then(() => {
+            if (!this._bluetoothService.advertising) {
+              this._logService.logBreadCrumb(
+                DeviceSetupComponent.name,
+                'Starting Bluetooth'
+              );
+              // start the bluetooth service
+              return this._bluetoothService.advertise();
+            }
+          })
+          .catch(err => {
+            this._logService.logException(err);
+          });
+        this.bluetoothAdvertised = true;
       }
 
-      if (
-        !this.slide &&
-        this.user &&
-        this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
-      ) {
-        // PushTracker E2/ WearOS configuration
-        this.slide = this._translateService.instant(
-          'device-setup.pushtracker-e2-with-smartdrive'
-        );
-        try {
-          await WearOsComms.initPhone();
-        } catch (err) {
-          console.error('error initializing phone:', err);
-        }
-        // start looking for E2
-        this._onPushTrackerE2();
+      this._bluetoothService.on(
+        BluetoothService.pushtracker_connected,
+        this.onPushTrackerConnected,
+        this
+      );
+
+      this._bluetoothService.on(
+        BluetoothService.pushtracker_disconnected,
+        this.onPushTrackerDisconnected,
+        this
+      );
+    }
+
+    if (
+      !this.slide &&
+      this.user &&
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+    ) {
+      // PushTracker E2/ WearOS configuration
+      this.slide = this._translateService.instant(
+        'device-setup.pushtracker-e2-with-smartdrive'
+      );
+      try {
+        await WearOsComms.initPhone();
+      } catch (err) {
+        console.error('error initializing phone:', err);
       }
-    });
+      // start looking for E2
+      this._onPushTrackerE2();
+    }
   }
 
   isAndroid(): boolean {
@@ -197,8 +192,8 @@ export class DeviceSetupComponent implements OnInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.map(r => {
         reasons.push(reasoning[r]);
@@ -210,7 +205,7 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
@@ -519,7 +514,6 @@ export class DeviceSetupComponent implements OnInit {
       this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-      console.log('didConnect', didConnect);
       this.statusMessage =
         this._translateService.instant(
           'device-setup.e2.sending-authorization'

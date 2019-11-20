@@ -12,7 +12,7 @@ import { Sentry } from 'nativescript-sentry';
 import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, getJSONFromKinvey, YYYY_MM_DD } from './utils';
+import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, YYYY_MM_DD } from './utils';
 
 registerElement(
   'AnimatedCircle',
@@ -95,9 +95,6 @@ export class AppComponent implements OnInit {
     );
 
     application.on(application.resumeEvent, () => {
-      const weekStart = getFirstDayOfWeek(new Date());
-      this._loadWeeklyActivityFromKinvey(weekStart);
-      this._loadSmartDriveUsageFromKinvey(weekStart);
     });
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
@@ -130,65 +127,5 @@ export class AppComponent implements OnInit {
       APP_THEMES.DEFAULT
     );
     applyTheme(CURRENT_THEME);
-  }
-
-  async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(
-      AppComponent.name,
-      'Loading WeeklyPushTrackerActivity from Kinvey'
-    );
-    const user = Kinvey.User.getActiveUser();
-    if (!user) return;
-    let result = [];
-    const date = YYYY_MM_DD(weekStartDate);
-    // Query Kinvey database for weekly pushtracker activity
-    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
-      .then(data => {
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString(
-            'PushTracker.WeeklyActivity.' + date,
-            JSON.stringify(result)
-          );
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly activity from kinvey');
-        // this._logService.logException(err);
-        return Promise.reject(false);
-      });
-  }
-
-  async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(
-      AppComponent.name,
-      'Loading WeeklySmartDriveUsage from Kinvey'
-    );
-    const user = Kinvey.User.getActiveUser();
-    let result = [];
-    if (!user) return result;
-    const date = YYYY_MM_DD(weekStartDate);
-    // Query Kinvey database for weekly smartdrive usage
-    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
-      .then(data => {
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString(
-            'SmartDrive.WeeklyUsage.' + date,
-            JSON.stringify(result)
-          );
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(false);
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(AppComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
-        // this._logService.logException(err);
-        return Promise.reject(false);
-      });
   }
 }
