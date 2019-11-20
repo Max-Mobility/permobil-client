@@ -85,7 +85,7 @@ export class JourneyTabComponent {
       .then(() => {
         this.savedTimeFormat =
           this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        this.initJourneyItems()
+        this._refresh()
           .then(() => {
             this._firstLoad = false;
           })
