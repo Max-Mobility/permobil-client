@@ -633,11 +633,47 @@ export class ProfileSettingsComponent implements OnInit {
         // will then communicate these settings changes to the
         // connected SmartDrive.
         const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+
         if (pts && pts.length > 0) {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
             'Sending to pushtrackers: ' + pts.map(pt => pt.address)
           );
+
+          // Alert user if they are sync-ing settings to a pushtracker
+          // or smartdrive which is out of date -
+          // https://github.com/Max-Mobility/permobil-client/issues/516
+          // TODO: should get this version from the server somewhere!
+          const ptsUpToDate = pts.reduce((upToDate, pt) => {
+            return upToDate && pt.isUpToDate('2.0');
+          }, true);
+          const allUpToDate = pts.reduce((upToDate, pt) => {
+            return upToDate && pt.isUpToDate('2.0', true);
+          }, true);
+          if (!allUpToDate && ptsUpToDate) {
+            // the pushtrackers are up to date but the smartdrives are not
+            alert({
+              title: this._translateService.instant(
+                'profile-settings.update-notice.title'
+              ),
+              message: this._translateService.instant(
+                'profile-settings.update-notice.smartdrive-settings-require-update'
+              ),
+              okButtonText: this._translateService.instant('profile-tab.ok')
+            });
+          } else if (!ptsUpToDate) {
+            // only the pushtrackers are out of date
+            alert({
+              title: this._translateService.instant(
+                'profile-settings.update-notice.title'
+              ),
+              message: this._translateService.instant(
+                'profile-settings.update-notice.pushtracker-settings-require-update'
+              ),
+              okButtonText: this._translateService.instant('profile-tab.ok')
+            });
+          }
+
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.busy;
           await pts.map(async pt => {
@@ -779,7 +815,7 @@ export class ProfileSettingsComponent implements OnInit {
           // which is out of date -
           // https://github.com/Max-Mobility/permobil-client/issues/516
           // TODO: should get this version from the server somewhere!
-          if (!this.smartDrive.isUpToDate("2.0")) {
+          if (!this.smartDrive.isUpToDate('2.0')) {
             alert({
               title: this._translateService.instant(
                 'profile-settings.update-notice.title'

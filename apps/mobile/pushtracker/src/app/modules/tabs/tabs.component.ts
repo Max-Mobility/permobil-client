@@ -347,10 +347,45 @@ export class TabsComponent {
     pt.off(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.off(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.off(PushTracker.error_event, this.onErrorEvent, this);
+    pt.off(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
     // now register again to make sure we get the events
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.on(PushTracker.error_event, this.onErrorEvent, this);
+    pt.on(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
+  }
+
+  onPushTrackerVersionEvent(args) {
+    const pt = args.object as PushTracker;
+    const allUpToDate = pt.isUpToDate('2.0', true);
+    const ptUpToDate = pt.isUpToDate('2.0');
+    // Alert user if they are connected to a pushtracker which is out
+    // of date -
+    // https://github.com/Max-Mobility/permobil-client/issues/516
+    // TODO: should get this version from the server somewhere!
+    if (!allUpToDate && ptUpToDate) {
+      // the pushtrackers are up to date but the smartdrives are not
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!ptUpToDate) {
+      // only the pushtrackers are out of date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    }
   }
 
   onDailyInfoEvent(args) {
