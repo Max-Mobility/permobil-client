@@ -535,32 +535,14 @@ export class ProfileTabComponent {
     );
     this._setActiveDataBox(args);
 
-    let primaryIndex = 0;
-    let secondaryIndex = 0;
-    let primaryItems;
-    let secondaryItems;
-
-    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      primaryItems = Array.from({ length: 280 }, (_, k) => k + 1 + '');
-      secondaryItems = Array.from({ length: 9 }, (_, k) => '.' + k);
-    } else {
-      primaryItems = Array.from({ length: 600 }, (_, k) => k + 1 + '');
-      secondaryItems = Array.from({ length: 10 }, (_, k) => '.' + k);
-    }
-
-    // Initialize primaryIndex and secondaryIndex from user.data.weight
-    const indices = this._getWeightIndices();
-    if (indices[0] > 0) {
-      primaryIndex = parseFloat(primaryItems[indices[0]]);
-      secondaryIndex = 10 * indices[1];
+    let weight = this.user.data.weight;
+    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
+      weight = kilogramsToPounds(weight);
     }
 
     let text = '';
-    if (primaryIndex === 0 && secondaryIndex === 0) {
-      text = '0.0';
-    } else {
-      text += primaryItems[primaryIndex] || '0';
-      text += secondaryItems[secondaryIndex] || '.0';
+    if (weight > 0) {
+      text = weight.toFixed(1);
     }
 
     const _validateWeightFromText = function(text) {
@@ -598,12 +580,7 @@ export class ProfileTabComponent {
         if (result && result.data) {
           const newWeight = _validateWeightFromText(result.data.text);
           if (newWeight) {
-            const primary = (newWeight + '').split('.')[0];
-            const secondary = '0.' + (newWeight + '').split('.')[1];
-            this._saveWeightOnChange(
-              parseFloat(primary),
-              parseFloat(secondary)
-            );
+            this._saveWeightOnChange(newWeight);
           }
         }
       },
@@ -981,18 +958,6 @@ export class ProfileTabComponent {
     });
   }
 
-  private _getWeightIndices() {
-    let weight = this.user.data.weight;
-    if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
-      weight = kilogramsToPounds(weight);
-    }
-    const primaryIndex = Math.floor(weight);
-    const secondaryIndex = parseFloat((weight % 1).toFixed(1));
-    if (primaryIndex <= 0 && secondaryIndex <= 0) {
-      return [0, 0];
-    } else return [primaryIndex - 2, secondaryIndex];
-  }
-
   private _getHeightIndices() {
     let heightString = this.user.data.height + '';
     if (
@@ -1155,23 +1120,23 @@ export class ProfileTabComponent {
     return ImageSource.fromResourceSync(result);
   }
 
-  private _saveWeightOnChange(primaryValue: number, secondaryValue: number) {
+  private _saveWeightOnChange(weight: number) {
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
       this.updateUser({
-        weight: primaryValue + secondaryValue // user's preferred unit is Kg. Save as is
+        weight: weight // user's preferred unit is Kg. Save as is
       });
       this.displayWeight = this._displayWeightInKilograms(
-        primaryValue + secondaryValue
+        weight
       );
     } else {
       // User's preferred unit is lbs
       // Database stores all weight measures in metric
       // Convert to Kg and then store in database
       this.updateUser({
-        weight: poundsToKilograms(primaryValue + secondaryValue)
+        weight: poundsToKilograms(weight)
       });
       this.displayWeight = this._displayWeightInPounds(
-        primaryValue + secondaryValue
+        weight
       );
     }
   }
