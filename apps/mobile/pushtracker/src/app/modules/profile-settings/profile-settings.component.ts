@@ -654,7 +654,8 @@ export class ProfileSettingsComponent implements OnInit {
               this._logService.logException(err);
             }
           });
-          // now that all PTs have had their settings updated, we probably want to update the icon
+          // now that all PTs have had their settings updated, we
+          // probably want to update the icon
           this.ptStatusButton.state = PushTrackerState.connected;
         } else {
           if (this.ptStatusButton)
@@ -770,6 +771,26 @@ export class ProfileSettingsComponent implements OnInit {
       );
       this._zone.run(async () => {
         try {
+          this._mcu_version = this.smartDrive.mcu_version_string;
+          this._ble_version = this.smartDrive.ble_version_string;
+          // update the label
+          this._updateSmartDriveSectionLabel();
+          // Alert user if they are sync-ing settings to a smartdrive
+          // which is out of date -
+          // https://github.com/Max-Mobility/permobil-client/issues/516
+          // TODO: should get this version from the server somewhere!
+          if (!this.smartDrive.isUpToDate("2.0")) {
+            alert({
+              title: this._translateService.instant(
+                'profile-settings.update-notice.title'
+              ),
+              message: this._translateService.instant(
+                'profile-settings.update-notice.smartdrive-settings-require-update'
+              ),
+              okButtonText: this._translateService.instant('profile-tab.ok')
+            });
+          }
+          // now actually send the data
           await this.smartDrive.sendSettingsObject(
             this.settingsService.settings
           );
@@ -785,7 +806,7 @@ export class ProfileSettingsComponent implements OnInit {
           this.syncingWithSmartDrive = false;
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
-            `Done sync'ing with SmartDrive`
+            'Done sync-ing with SmartDrive'
           );
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -821,9 +842,6 @@ export class ProfileSettingsComponent implements OnInit {
       ProfileSettingsComponent.name,
       'SmartDrive connected: ' + this.smartDrive.address
     );
-    this._mcu_version = this.smartDrive.mcu_version_string;
-    this._ble_version = this.smartDrive.ble_version_string;
-    this._updateSmartDriveSectionLabel();
     // set the once handler here for sending data
     this._onceSyncAndDisconnect = once(
       this._syncAndDisconnectSmartDrive.bind(this)
