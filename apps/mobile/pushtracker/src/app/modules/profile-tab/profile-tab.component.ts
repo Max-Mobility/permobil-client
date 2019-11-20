@@ -811,7 +811,7 @@ export class ProfileTabComponent {
     this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
       async result => {
         if (result && result.data) {
-          const newConfig = this.configurations[result.data.primaryIndex]
+          const newConfig = this.configurations[result.data.primaryIndex];
           if (this.user.data.control_configuration !== newConfig) {
             const didUpdate = await this.updateUser({
               control_configuration: newConfig
