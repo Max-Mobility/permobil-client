@@ -13,7 +13,7 @@ import throttle from 'lodash/throttle';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
-import { ActivityService, BluetoothService, LoggingService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
+import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
 import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
 @Component({
@@ -35,6 +35,7 @@ export class TabsComponent {
 
   constructor(
     private _logService: LoggingService,
+    private _userService: PushTrackerUserService,
     private _activityService: ActivityService,
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
@@ -45,6 +46,14 @@ export class TabsComponent {
     private _errorsService: SmartDriveErrorsService
   ) {
     this._logService.logBreadCrumb(TabsComponent.name, 'Constructor');
+
+    // register for user configuration changed event
+    this._userService.on(
+      PushTrackerUserService.configuration_change_event,
+      this.onUserChangedConfiguration,
+      this
+    );
+
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
@@ -151,6 +160,16 @@ export class TabsComponent {
           });
       }, 1000);
     }
+  }
+
+  onUserChangedConfiguration(args: any) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      `Registered user changed configuration: ${args.data.control_configuration}`
+    );
+    const data = args.data;
+    const config = data.control_configuration;
+    this.user.data.control_configuration = config;
   }
 
   onRootBottomNavLoaded(_) {

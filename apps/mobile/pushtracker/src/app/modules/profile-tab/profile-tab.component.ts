@@ -15,7 +15,7 @@ import * as LS from 'nativescript-localstorage';
 import { ActivityGoalSettingComponent, DeviceSetupComponent, PrivacyPolicyComponent } from '..';
 import { PushTrackerUser } from '../../models';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
-import { LoggingService, SettingsService, ThemeService } from '../../services';
+import { LoggingService, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD, milesToKilometers } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
@@ -72,6 +72,7 @@ export class ProfileTabComponent {
 
   constructor(
     private _settingsService: SettingsService,
+    private _userService: PushTrackerUserService,
     private _themeService: ThemeService,
     private _zone: NgZone,
     private _routerExtensions: RouterExtensions,
@@ -250,7 +251,6 @@ export class ProfileTabComponent {
       .catch(err => {
         this._logService.logException(err);
       });
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   private _saveFirstNameOnChange(newFirstName: string) {
@@ -259,7 +259,6 @@ export class ProfileTabComponent {
 
   private _saveLastNameOnChange(newLastName: string) {
     this.updateUser({ last_name: newLastName });
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
   async onActivityGoalTap(
@@ -383,11 +382,13 @@ export class ProfileTabComponent {
           );
           const dateFormatted = YYYY_MM_DD(new Date(result));
           // TODO: not using result?
-          this.updateUser({ dob: dateFormatted });
-          this._logService.logBreadCrumb(
-            ProfileTabComponent.name,
-            `Birthday formatted: ${dateFormatted}`
-          );
+          const didUpdate = this.updateUser({ dob: dateFormatted });
+          if (didUpdate) {
+            this._logService.logBreadCrumb(
+              ProfileTabComponent.name,
+              `Birthday formatted: ${dateFormatted}`
+            );
+          }
         }
       })
       .catch(err => {
@@ -808,17 +809,24 @@ export class ProfileTabComponent {
     };
 
     this._bottomSheet.show(ListPickerSheetComponent, options).subscribe(
-      result => {
+      async result => {
         if (result && result.data) {
-          this.updateUser({
-            control_configuration: this.configurations[result.data.primaryIndex]
-          });
-          this._logService.logBreadCrumb(
-            ProfileTabComponent.name,
-            `Configuration changed to: ${
-            this.configurations[result.data.primaryIndex]
-            }`
-          );
+          const newConfig = this.configurations[result.data.primaryIndex]
+          if (this.user.data.control_configuration !== newConfig) {
+            const didUpdate = await this.updateUser({
+              control_configuration: newConfig
+            });
+            if (didUpdate) {
+              this._logService.logBreadCrumb(
+                ProfileTabComponent.name,
+                `Configuration changed to: ${newConfig}`
+              );
+              this._userService.emitEvent(
+                PushTrackerUserService.configuration_change_event,
+                { control_configuration: newConfig }
+              );
+            }
+          }
         }
       },
       error => {
@@ -972,27 +980,28 @@ export class ProfileTabComponent {
     return [primaryIndex - 2, secondaryIndex];
   }
 
-  private updateUser(update: any) {
-    this._zone.run(async () => {
-      try {
-        await this.user.update(update);
-      } catch (err) {
-        this._logService.logBreadCrumb(
-          ProfileTabComponent.name,
-          'Could not update the user - ' + err
-        );
-        setTimeout(() => {
-          alert({
-            title: this._translateService.instant('profile-tab.network-error.title'),
-            message: this._translateService.instant('profile-tab.network-error.message'),
-            okButtonText: this._translateService.instant('profile-tab.ok')
-          });
-        }, 1000);
-      }
-      appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-      // now actually update the rendering
-      this.updateUserDisplay();
-    });
+  private async updateUser(update: any) {
+    let didUpdate = false;
+    try {
+      await this.user.update(update);
+      didUpdate = true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        ProfileTabComponent.name,
+        'Could not update the user - ' + err
+      );
+      setTimeout(() => {
+        alert({
+          title: this._translateService.instant('profile-tab.network-error.title'),
+          message: this._translateService.instant('profile-tab.network-error.message'),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+      }, 1000);
+    }
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+    // now actually update the rendering
+    this.updateUserDisplay();
+    return didUpdate;
   }
 
   private updateUserDisplay() {
@@ -1122,22 +1131,26 @@ export class ProfileTabComponent {
 
   private _saveWeightOnChange(weight: number) {
     if (this.user.data.weight_unit_preference === WEIGHT_UNITS.KILOGRAMS) {
-      this.updateUser({
+      const didUpdate = this.updateUser({
         weight: weight // user's preferred unit is Kg. Save as is
       });
-      this.displayWeight = this._displayWeightInKilograms(
-        weight
-      );
+      if (didUpdate) {
+        this.displayWeight = this._displayWeightInKilograms(
+          weight
+        );
+      }
     } else {
       // User's preferred unit is lbs
       // Database stores all weight measures in metric
       // Convert to Kg and then store in database
-      this.updateUser({
+      const didUpdate = this.updateUser({
         weight: poundsToKilograms(weight)
       });
-      this.displayWeight = this._displayWeightInPounds(
-        weight
-      );
+      if (didUpdate) {
+        this.displayWeight = this._displayWeightInPounds(
+          weight
+        );
+      }
     }
   }
 
@@ -1145,19 +1158,23 @@ export class ProfileTabComponent {
     if (this.user.data.height_unit_preference === HEIGHT_UNITS.CENTIMETERS) {
       // User's preference matches the database preference - Metric
       // Save height as is
-      this.updateUser({ height: primaryValue });
-      this.displayHeight = this._displayHeightInCentimeters(primaryValue);
+      const didUpdate = this.updateUser({ height: primaryValue });
+      if (didUpdate) {
+        this.displayHeight = this._displayHeightInCentimeters(primaryValue);
+      }
     } else {
       // User's preference is Ft and inches
       // Database wants height in Centimeters
       // Convert and save
-      this.updateUser({
+      const didUpdate = this.updateUser({
         height: feetInchesToCentimeters(primaryValue, secondaryValue)
       });
-      this.displayHeight = this._displayHeightInFeetInches(
-        primaryValue,
-        secondaryValue
-      );
+      if (didUpdate) {
+        this.displayHeight = this._displayHeightInFeetInches(
+          primaryValue,
+          secondaryValue
+        );
+      }
     }
   }
 
@@ -1225,7 +1242,7 @@ export class ProfileTabComponent {
       const serialNumber = text;
 
       const value = parseInt(text, 10);
-      const valid = isFinite(value);
+      const valid = isFinite(value) && isFinite(Number(text));
       isSmartDrive = !isPushTracker && !isWristband && valid && value > 0;
 
       if (isPushTracker) {
