@@ -7,18 +7,29 @@ import {
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 import { BehaviorSubject } from 'rxjs';
+import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 
 @Injectable()
 export class SmartDriveErrorsService {
-  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Auto);
+  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Sync);
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);
   usageUpdated = this._usageUpdated.asObservable();
 
+  private _query: KinveyQuery;
+
   constructor(private _logService: LoggingService) {
+    this.reset();
+  }
+
+  async reset() {
     this.login();
-    this.datastore.sync();
+    this.datastore.sync(this._query);
+  }
+
+  clear() {
+    this.datastore.clear();
   }
 
   async saveDailyErrorsFromPushTracker(dailyErrors: any): Promise<boolean> {
@@ -34,7 +45,7 @@ export class SmartDriveErrorsService {
       {
         return this.datastore
           .find(query)
-          .then((data: any[]) => {
+          .subscribe((data: any[]) => {
             if (data && data.length) {
               const id = data[0]._id;
               dailyErrors._id = id;
@@ -46,14 +57,18 @@ export class SmartDriveErrorsService {
               dailyErrors.num_over_temperature_errors += data[0].num_over_temperature_errors || 0;
               dailyErrors.num_ble_disconnect_errors += data[0].num_ble_disconnect_errors || 0;
             }
-            return this.datastore.save(dailyErrors);
-          })
-          .then((_) => {
-            return true;
-          })
-          .catch((error) => {
-            this._logService.logException(error);
+            return this.datastore.save(dailyErrors)
+              .then((_) => {
+                return true;
+              })
+              .catch((error) => {
+                this._logService.logException(error);
+                return false;
+              });
+          }, (err) => {
+            this._logService.logException(err);
             return false;
+          }, () => {
           });
       }
 
@@ -64,11 +79,17 @@ export class SmartDriveErrorsService {
     }
   }
 
-  private login(): Promise<any> {
-    if (!!KinveyUser.getActiveUser()) {
-      return Promise.resolve();
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      this._query = new KinveyQuery();
+      this._query.equalTo('_acl.creator', activeUser._id);
+      // since this is the errors service - we don't actually want to
+      // pull anything from the server, so we set an arbitrary date in
+      // the future which will prevent any data download
+      this._query.equalTo('date', '2200-01-01');
     } else {
-      return Promise.reject('no active user');
+      throw new Error('no active user');
     }
   }
 

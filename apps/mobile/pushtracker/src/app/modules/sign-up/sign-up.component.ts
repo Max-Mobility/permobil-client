@@ -27,9 +27,8 @@ import {
   CHAIR_TYPE,
   TIME_FORMAT
 } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
-import { PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { APP_KEY, APP_SECRET } from '../../utils/kinvey-keys';
 
@@ -96,8 +95,7 @@ export class SignUpComponent implements OnInit {
     private _router: RouterExtensions,
     private _modalService: ModalDialogService,
     private _translateService: TranslateService,
-    private _vcRef: ViewContainerRef,
-    private _userService: PushTrackerUserService
+    private _vcRef: ViewContainerRef
   ) {
     preventKeyboardFromShowing();
 
@@ -277,9 +275,6 @@ export class SignUpComponent implements OnInit {
             .then(() => {
               // Kinvey SDK is working
               // Navigate to tabs home with clearHistory
-              this._userService.initializeUser(<PushTrackerUser>(
-                (<any>KinveyUser.getActiveUser())
-              ));
               this._router.navigate(['configuration'], {
                 clearHistory: true
               });

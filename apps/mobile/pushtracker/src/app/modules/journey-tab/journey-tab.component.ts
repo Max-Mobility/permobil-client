@@ -4,16 +4,15 @@ import { ModalDialogService } from '@nativescript/angular';
 import { Color, ImageSource, ItemEventData, Page } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
-import { PushTrackerUser } from '@permobil/core';
-import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { User as KinveyUser, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS, TIME_FORMAT } from '../../enums';
-import { DeviceBase } from '../../models';
-import { LoggingService, PushTrackerUserService } from '../../services';
-import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getJSONFromKinvey, getTimeOfDayFromStartTime, getTimeOfDayString, getUserDataFromKinvey, YYYY_MM_DD } from '../../utils';
+import { PushTrackerUser, DeviceBase } from '../../models';
+import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
+import { areDatesSame, convertToMilesIfUnitPreferenceIsMiles, format24Hour, formatAMPM, getDayOfWeek, getFirstDayOfWeek, getTimeOfDayFromStartTime, getTimeOfDayString, YYYY_MM_DD } from '../../utils';
 
 enum JourneyType {
   'ROLL',
@@ -63,13 +62,14 @@ export class JourneyTabComponent {
   private _firstLoad = true;
 
   constructor(
+    private _activityService: ActivityService,
+    private _usageService: SmartDriveUsageService,
     private _modalService: ModalDialogService,
     private _vcRef: ViewContainerRef,
     private _logService: LoggingService,
     private _translateService: TranslateService,
-    private _page: Page,
-    private _userService: PushTrackerUserService
-  ) {}
+    private _page: Page
+  ) { }
 
   onJourneyTabLoaded() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Loaded');
@@ -81,11 +81,11 @@ export class JourneyTabComponent {
 
     this._page.actionBarHidden = true;
 
-    this.refreshUserFromKinvey(false)
+    this.refreshUserFromKinvey()
       .then(() => {
         this.savedTimeFormat =
           this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        this.initJourneyItems()
+        this._refresh()
           .then(() => {
             this._firstLoad = false;
           })
@@ -118,25 +118,6 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Unloaded');
   }
 
-  async initJourneyItems() {
-    this._loadDataForDate(this._weekStart, true)
-      .then(result => {
-        this.journeyItems = result;
-        if (result.length === 0) {
-          // force loading of more data if we have none on iOS
-          return this.onLoadMoreItems();
-        }
-      })
-      .then(result => {
-        this.journeyItemsLoaded = true;
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data fror data when init journey items');
-        // this._logService.logException(err);
-        this.journeyItemsLoaded = true;
-      });
-  }
-
   onRefreshTap() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refresh tapped');
     this.debouncedRefresh();
@@ -156,7 +137,7 @@ export class JourneyTabComponent {
         this.showLoadingIndicator = false;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems' + err);
         // this._logService.logException(err);
       });
   }
@@ -166,7 +147,7 @@ export class JourneyTabComponent {
       let coastDistance = convertToMilesIfUnitPreferenceIsMiles(
         DeviceBase.caseTicksToKilometers(
           this.todayUsage.distance_smartdrive_coast -
-            this.todayUsage.distance_smartdrive_coast_start
+          this.todayUsage.distance_smartdrive_coast_start
         ),
         this.user.data.distance_unit_preference
       );
@@ -177,74 +158,41 @@ export class JourneyTabComponent {
     }
   }
 
-  getPushTrackerUserFromKinveyUser(user: any): PushTrackerUser {
-    const kinveyActiveUser = KinveyUser.getActiveUser();
-    const result: any = {};
-    result._id = user._id;
-    result._acl = user._acl;
-    result._kmd = kinveyActiveUser._kmd;
-    result.authtoken = kinveyActiveUser._kmd.authtoken;
-    result.username = user.username;
-    result.email = user.username;
-    result.data = {};
-    const keys = Object.keys(user);
-    for (const i in keys) {
-      const key = keys[i];
-      if (
-        !['_id', '_acl', '_kmd', 'authtoken', 'username', 'email'].includes(key)
-      ) {
-        result.data[key] = user[key];
-      }
-    }
-    return result;
+  parseUser(user: KinveyUser) {
+    this.user = user as PushTrackerUser;
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
   }
 
-  async refreshUserFromKinvey(forceRefresh: boolean = false) {
-    if (this._firstLoad && !forceRefresh) {
-      try {
-        const kinveyUserJSON = appSettings.getString('Kinvey.User', '{}');
-        let user = undefined;
-        if (kinveyUserJSON !== '{}') user = JSON.parse(kinveyUserJSON);
-        if (user) {
-          this.user = user;
-          if (user.data) {
-            if (user.data._id) user._id = user.data._id;
-            if (user.data._acl) user._acl = user.data._acl;
-            if (user.data._kmd) {
-              user._kmd = user.data._kmd;
-              if (user.data._kmd.authtoken)
-                user.authtoken = user.data._kmd.authtoken;
-            }
-            if (user.data.username) user.username = user.data.username;
-            if (user.data.email) user.email = user.data.email;
-          }
-          this.user = user;
-          return Promise.resolve(true);
-        }
-      } catch (err) {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to refresh user from kinvey');
-        // this._logService.logException(err);
-      }
+  async refreshUserFromKinvey() {
+    try {
+      const kinveyUser = KinveyUser.getActiveUser();
+      this.parseUser(kinveyUser);
+      return true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        JourneyTabComponent.name,
+        'Failed to refresh user from kinvey: ' + err
+      );
+      return false;
     }
-
-    return getUserDataFromKinvey()
-      .then(data => {
-        this.user = this.getPushTrackerUserFromKinveyUser(data);
-        this._userService.updateUser(this.user);
-        appSettings.setString('Kinvey.User', JSON.stringify(this.user));
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get user data from kinvey');
-        // this._logService.logException(err);
-        return Promise.reject(false);
-      });
   }
 
   private async _refresh() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
-    return this.refreshUserFromKinvey(true)
-      .then(() => {
+    return this.refreshUserFromKinvey()
+      .then(async () => {
+
+        // actually synchronize with the server
+        try {
+          await this._activityService.refreshWeekly();
+        } catch (err) {
+        }
+        try {
+          await this._usageService.refreshWeekly();
+        } catch (err) {
+        }
+
+        // now load the cached or refreshed data and display it
         this.noMorePushTrackerActivityDataAvailable = false;
         this.noMoreSmartDriveUsageDataAvailable = false;
         this.noMoreDataAvailable = false;
@@ -266,7 +214,7 @@ export class JourneyTabComponent {
             this.journeyItemsLoaded = true;
           })
           .catch(err => {
-            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user');
+            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user' + err);
             // this._logService.logException(err);
             this.journeyItemsLoaded = true;
           });
@@ -295,7 +243,7 @@ export class JourneyTabComponent {
                 });
             })
             .catch(err => {
-              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage');
+              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage' + err);
               // this._logService.logException(err);
             });
         } else {
@@ -511,27 +459,27 @@ export class JourneyTabComponent {
             icon_small:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_black'
-                      : 'smartdrive_material_black_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_black'
+                    : 'smartdrive_material_black_45'
+                )
                 : ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  ),
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                ),
             icon_large:
               this.CURRENT_THEME === APP_THEMES.DEFAULT
                 ? ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
                 : ImageSource.fromResourceSync(
-                    journey.journeyType === JourneyType.ROLL
-                      ? 'roll_white'
-                      : 'smartdrive_material_white_45'
-                  )
+                  journey.journeyType === JourneyType.ROLL
+                    ? 'roll_white'
+                    : 'smartdrive_material_white_45'
+                )
           });
         }
         return newJourneyItems;
@@ -586,19 +534,19 @@ export class JourneyTabComponent {
             // accumulate the second into the first for each data
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
-                second.stats.coastDistance || 0;
+              second.stats.coastDistance || 0;
             journeyList[firstIndex].stats.driveDistance =
               (journeyList[firstIndex].stats.driveDistance || 0) +
-                second.stats.driveDistance || 0;
+              second.stats.driveDistance || 0;
             journeyList[firstIndex].stats.pushCount =
               (journeyList[firstIndex].stats.pushCount || 0) +
-                second.stats.pushCount || 0;
+              second.stats.pushCount || 0;
             journeyList[firstIndex].stats.coastCount =
               (journeyList[firstIndex].stats.coastCount || 0) +
-                second.stats.coastCount || 0;
+              second.stats.coastCount || 0;
             journeyList[firstIndex].stats.coastTimeTotal =
               (journeyList[firstIndex].stats.coastTimeTotal || 0) +
-                second.stats.coastTimeTotal || 0;
+              second.stats.coastTimeTotal || 0;
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
@@ -632,8 +580,11 @@ export class JourneyTabComponent {
     if (!this.user) return result;
 
     const date = YYYY_MM_DD(weekStartDate);
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    const query = new KinveyQuery();
+    query.lessThanOrEqualTo('date', date);
+    query.descending('date');
+    query.limit = 1;
+    return this._activityService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -652,7 +603,7 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyActivityFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get activity from kinvey');
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -715,8 +666,11 @@ export class JourneyTabComponent {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":{"$lte":"${date}"}}&limit=1&sort={"date":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    const query = new KinveyQuery();
+    query.lessThanOrEqualTo('date', date);
+    query.descending('date');
+    query.limit = 1;
+    return this._usageService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -735,7 +689,7 @@ export class JourneyTabComponent {
         return Promise.resolve(this._weeklyUsageFromKinvey);
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get JSON from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to get usage from kinvey');
         // this._logService.logException(err);
         return Promise.reject([]);
       });
@@ -748,17 +702,7 @@ export class JourneyTabComponent {
           for (const i in this._weeklyUsageFromKinvey.days) {
             if (areDatesSame(this._weekStart, date)) {
               const index = getDayOfWeek(new Date());
-              const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
-              if (
-                firstDayOfCurrentWeek &&
-                firstDayOfCurrentWeek.date &&
-                areDatesSame(
-                  this._weekStart,
-                  new Date(firstDayOfCurrentWeek.date)
-                )
-              ) {
-                this.todayUsage = this._weeklyUsageFromKinvey.days[index];
-              }
+              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
             }
 
             const dailyUsage = this._weeklyUsageFromKinvey.days[i];
@@ -830,7 +774,7 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey' + err);
         // this._logService.logException(err);
         return Promise.reject(false);
       });

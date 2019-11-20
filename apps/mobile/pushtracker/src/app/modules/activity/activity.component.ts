@@ -12,6 +12,7 @@ import {
 import * as appSettings from '@nativescript/core/application-settings';
 import { layout } from '@nativescript/core/utils/utils';
 import { TranslateService } from '@ngx-translate/core';
+import { Query as KinveyQuery } from 'kinvey-nativescript-sdk';
 import { PushTrackerUser } from '@permobil/core';
 import { differenceInCalendarDays } from 'date-fns';
 import debounce from 'lodash/debounce';
@@ -29,12 +30,11 @@ import {
   STORAGE_KEYS
 } from '../../enums';
 import { DeviceBase } from '../../models';
-import { LoggingService } from '../../services';
+import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
 import {
   areDatesSame,
   convertToMilesIfUnitPreferenceIsMiles,
   getFirstDayOfWeek,
-  getJSONFromKinvey,
   YYYY_MM_DD
 } from '../../utils';
 
@@ -142,6 +142,8 @@ export class ActivityComponent implements OnInit {
   private _dailyUsageFromKinvey: any;
 
   constructor(
+    private _activityService: ActivityService,
+    private _usageService: SmartDriveUsageService,
     private _logService: LoggingService,
     private _translateService: TranslateService,
     private _params: ModalDialogParams
@@ -212,6 +214,17 @@ export class ActivityComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
+
+    // actually synchronize with the server
+    try {
+      await this._activityService.refreshWeekly();
+    } catch (err) {
+    }
+    try {
+      await this._usageService.refreshWeekly();
+    } catch (err) {
+    }
+
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
@@ -555,8 +568,8 @@ export class ActivityComponent implements OnInit {
                     convertToMilesIfUnitPreferenceIsMiles(
                       DeviceBase.caseTicksToKilometers(
                         this._dailyUsageFromKinvey.distance_smartdrive_coast -
-                          this._dailyUsageFromKinvey
-                            .distance_smartdrive_coast_start
+                        this._dailyUsageFromKinvey
+                          .distance_smartdrive_coast_start
                       ),
                       this.user.data.distance_unit_preference
                     ) || 0
@@ -621,8 +634,11 @@ export class ActivityComponent implements OnInit {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
+    const query = new KinveyQuery();
+    query.equalTo('date', date);
+    query.descending('_kmd.lmt');
+    query.limit = 1;
+    return this._activityService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -657,8 +673,11 @@ export class ActivityComponent implements OnInit {
 
     const date = YYYY_MM_DD(weekStartDate);
 
-    const queryString = `?query={"_acl.creator":"${this.user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
+    const query = new KinveyQuery();
+    query.equalTo('date', date);
+    query.descending('_kmd.lmt');
+    query.limit = 1;
+    return this._usageService.getWeeklyActivityWithQuery(query)
       .then(data => {
         if (data && data.length) {
           result = data[0];
@@ -795,7 +814,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   cache.weeklyActivity.distance_smartdrive_coast -
-                    cache.weeklyActivity.distance_smartdrive_coast_start
+                  cache.weeklyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -868,7 +887,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1104,7 +1123,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1157,7 +1176,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.motorTicksToKilometers(
                   dailyActivity.distance_smartdrive_drive -
-                    dailyActivity.distance_smartdrive_drive_start
+                  dailyActivity.distance_smartdrive_drive_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1166,7 +1185,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   dailyActivity.distance_smartdrive_coast -
-                    dailyActivity.distance_smartdrive_coast_start
+                  dailyActivity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0;
@@ -1407,7 +1426,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1453,7 +1472,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               activity.distance_smartdrive_coast -
-                activity.distance_smartdrive_coast_start
+              activity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
@@ -1512,7 +1531,7 @@ export class ActivityComponent implements OnInit {
               convertToMilesIfUnitPreferenceIsMiles(
                 DeviceBase.caseTicksToKilometers(
                   activity.distance_smartdrive_coast -
-                    activity.distance_smartdrive_coast_start
+                  activity.distance_smartdrive_coast_start
                 ),
                 this.user.data.distance_unit_preference
               ) || 0
@@ -1529,7 +1548,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 cache.weeklyActivity.distance_smartdrive_coast -
-                  cache.weeklyActivity.distance_smartdrive_coast_start
+                cache.weeklyActivity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0
@@ -1605,7 +1624,7 @@ export class ActivityComponent implements OnInit {
             convertToMilesIfUnitPreferenceIsMiles(
               DeviceBase.caseTicksToKilometers(
                 activity.distance_smartdrive_coast -
-                  activity.distance_smartdrive_coast_start
+                activity.distance_smartdrive_coast_start
               ),
               this.user.data.distance_unit_preference
             ) || 0;
@@ -1633,7 +1652,7 @@ export class ActivityComponent implements OnInit {
           convertToMilesIfUnitPreferenceIsMiles(
             DeviceBase.caseTicksToKilometers(
               cache.weeklyActivity.distance_smartdrive_coast -
-                cache.weeklyActivity.distance_smartdrive_coast_start
+              cache.weeklyActivity.distance_smartdrive_coast_start
             ),
             this.user.data.distance_unit_preference
           ) || 0;
