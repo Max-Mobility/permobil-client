@@ -214,6 +214,17 @@ export class ActivityComponent implements OnInit {
 
   async refreshPlots(args) {
     const pullRefresh = args.object;
+
+    // actually synchronize with the server
+    try {
+      await this._activityService.refreshWeekly();
+    } catch (err) {
+    }
+    try {
+      await this._usageService.refreshWeekly();
+    } catch (err) {
+    }
+
     this.onSelectedIndexChanged({
       object: { selectedIndex: this.currentTab },
       options: { forcePullFromDatabase: true }
