@@ -620,8 +620,6 @@ export class ProfileTabComponent {
         ? true
         : false;
 
-    console.log('listpicker', listPickerNeedsSecondary, this.user.data.height_unit_preference);
-
     let primaryIndex = 0;
     let secondaryIndex = 0;
     // let listPickerIndex = 2;
