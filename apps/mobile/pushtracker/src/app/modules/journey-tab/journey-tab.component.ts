@@ -118,25 +118,6 @@ export class JourneyTabComponent {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Unloaded');
   }
 
-  async initJourneyItems() {
-    this._loadDataForDate(this._weekStart, true)
-      .then(result => {
-        this.journeyItems = result;
-        if (result.length === 0) {
-          // force loading of more data if we have none on iOS
-          return this.onLoadMoreItems();
-        }
-      })
-      .then(result => {
-        this.journeyItemsLoaded = true;
-      })
-      .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data fror data when init journey items');
-        // this._logService.logException(err);
-        this.journeyItemsLoaded = true;
-      });
-  }
-
   onRefreshTap() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refresh tapped');
     this.debouncedRefresh();
@@ -156,7 +137,7 @@ export class JourneyTabComponent {
         this.showLoadingIndicator = false;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date in onLoadMoreItems' + err);
         // this._logService.logException(err);
       });
   }
@@ -233,7 +214,7 @@ export class JourneyTabComponent {
             this.journeyItemsLoaded = true;
           })
           .catch(err => {
-            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user');
+            this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load data for date when refreshing user' + err);
             // this._logService.logException(err);
             this.journeyItemsLoaded = true;
           });
@@ -262,7 +243,7 @@ export class JourneyTabComponent {
                 });
             })
             .catch(err => {
-              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage');
+              this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage' + err);
               // this._logService.logException(err);
             });
         } else {
@@ -721,17 +702,7 @@ export class JourneyTabComponent {
           for (const i in this._weeklyUsageFromKinvey.days) {
             if (areDatesSame(this._weekStart, date)) {
               const index = getDayOfWeek(new Date());
-              const firstDayOfCurrentWeek = this._weeklyUsageFromKinvey.days[0];
-              if (
-                firstDayOfCurrentWeek &&
-                firstDayOfCurrentWeek.date &&
-                areDatesSame(
-                  this._weekStart,
-                  new Date(firstDayOfCurrentWeek.date)
-                )
-              ) {
-                this.todayUsage = this._weeklyUsageFromKinvey.days[index];
-              }
+              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
             }
 
             const dailyUsage = this._weeklyUsageFromKinvey.days[i];
@@ -803,7 +774,7 @@ export class JourneyTabComponent {
         return didLoad;
       })
       .catch(err => {
-        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey');
+        this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to load weekly smartdrive usage from kinvey' + err);
         // this._logService.logException(err);
         return Promise.reject(false);
       });
