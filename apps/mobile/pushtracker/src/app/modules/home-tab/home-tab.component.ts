@@ -87,8 +87,8 @@ export class HomeTabComponent {
         agreeButtonText: 'Rate It Now',
         remindButtonText: 'Remind Me Later',
         declineButtonText: 'No, Thanks',
-        androidPackageId: 'com.nativescript.demo',
-        iTunesAppId: '12345'
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
     });
   }
 
