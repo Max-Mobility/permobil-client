@@ -13,7 +13,7 @@ import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
 import { PushTracker, PushTrackerUser, SmartDrive } from '../../models';
-import { BluetoothService, LoggingService, PushTrackerState, SettingsService, ThemeService, TranslationService } from '../../services';
+import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService, TranslationService } from '../../services';
 import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
 
@@ -66,6 +66,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   constructor(
     public settingsService: SettingsService,
+    private _userService: PushTrackerUserService,
     private _logService: LoggingService,
     private _translationService: TranslationService,
     private _translateService: TranslateService,
@@ -483,26 +484,67 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  private async updateUser(update: any) {
+    let didUpdate = false;
+    try {
+      await this.user.update(update);
+      didUpdate = true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
+        'Could not update the user - ' + err
+      );
+      setTimeout(() => {
+        alert({
+          title: this._translateService.instant('profile-tab.network-error.title'),
+          message: this._translateService.instant('profile-tab.network-error.message'),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+      }, 1000);
+    }
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+    return didUpdate;
+  }
+
   private async _saveListPickerSettings(index) {
     // save settings
+    let didUpdate = false;
     switch (this.activeSetting) {
       case 'height':
-        this.user.update({
+        didUpdate = await this.updateUser({
           height_unit_preference: this.heightUnits[index]
         });
-        this.displayHeightUnit = this.heightUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayHeightUnit = this.heightUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { height_unit_preference: this.heightUnits[index] }
+          );
+        }
         break;
       case 'weight':
-        this.user.update({
+        didUpdate = await this.updateUser({
           weight_unit_preference: this.weightUnits[index]
         });
-        this.displayWeightUnit = this.weightUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayWeightUnit = this.weightUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { weight_unit_preference: this.weightUnits[index] }
+          );
+        }
         break;
       case 'distance':
-        this.user.update({
+        didUpdate = await this.updateUser({
           distance_unit_preference: this.distanceUnits[index]
         });
-        this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { distance_unit_preference: this.distanceUnits[index] }
+          );
+        }
         break;
       case 'mode':
         this.settingsService.settings.controlMode =
@@ -513,10 +555,12 @@ export class ProfileSettingsComponent implements OnInit {
           Device.SwitchControlSettings.Mode.Options[index];
         break;
       case 'time format':
-        this.user.update({
+        didUpdate = await this.updateUser({
           time_format_preference: this.timeFormats[index]
         });
-        this.displayTimeFormat = this.timeFormatsTranslated[index];
+        if (didUpdate) {
+          this.displayTimeFormat = this.timeFormatsTranslated[index];
+        }
         break;
       case 'theme':
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
@@ -530,22 +574,19 @@ export class ProfileSettingsComponent implements OnInit {
         }
         break;
       case 'language':
-        this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
-        this.user.update({ language_preference: this.CURRENT_LANGUAGE });
-        const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
-        if (this._translateService.currentLang !== language) {
-          this._translateService.reloadLang(language);
-          this._translateService.use(language);
+        const newLanguage = Object.keys(APP_LANGUAGES)[index];
+        didUpdate = await this.updateUser({ language_preference: newLanguage });
+        if (didUpdate) {
+          this.CURRENT_LANGUAGE = newLanguage;
+          const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
+          if (this._translateService.currentLang !== language) {
+            this._translateService.reloadLang(language);
+            this._translateService.use(language);
+          }
         }
         break;
     }
-    // Update local cache of this.user in appSettings
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
     if (this.activeSetting !== 'theme') this._debouncedCommitSettingsFunction();
-    this._logService.logBreadCrumb(
-      ProfileSettingsComponent.name,
-      `User updated setting: ${this.activeSetting} to: ${index}`
-    );
   }
 
   private async _saveSliderSetting(newValue) {

@@ -92,6 +92,13 @@ export class ProfileTabComponent {
       // Update the displayed control configuration icon on theme change
       this._initDisplayControlConfiguration();
     });
+
+    // register for units update events
+    this._userService.on(
+      PushTrackerUserService.units_change_event,
+      this.onUserUpdateUnits,
+      this
+    );
   }
 
   onProfileTabLoaded() {
@@ -1002,6 +1009,18 @@ export class ProfileTabComponent {
     // now actually update the rendering
     this.updateUserDisplay();
     return didUpdate;
+  }
+
+  private onUserUpdateUnits(args: any) {
+    const data = args.data;
+    Object.entries(data).map(([key, value]) => {
+      this._logService.logBreadCrumb(
+        ProfileTabComponent.name,
+        `Registered user changed units: ${key}: ${value}`
+      );
+      this.user.data[key] = value;
+    });
+    this.updateUserDisplay();
   }
 
   private updateUserDisplay() {
