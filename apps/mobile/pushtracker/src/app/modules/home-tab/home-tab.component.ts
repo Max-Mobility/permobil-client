@@ -249,6 +249,16 @@ export class HomeTabComponent {
       const gotUser = await this.refreshUserFromKinvey();
       if (!gotUser) return;
 
+      // actually synchronize with the server
+      try {
+        await this._activityService.refreshWeekly();
+      } catch (err) {
+      }
+      try {
+        await this._usageService.refreshWeekly();
+      } catch (err) {
+      }
+
       // The user might come back and refresh the next day, just keeping
       // the app running - Update currentDayInView and weekStart to
       // account for this

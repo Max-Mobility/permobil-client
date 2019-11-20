@@ -199,7 +199,19 @@ export class JourneyTabComponent {
   private async _refresh() {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
     return this.refreshUserFromKinvey()
-      .then(() => {
+      .then(async () => {
+
+        // actually synchronize with the server
+        try {
+          await this._activityService.refreshWeekly();
+        } catch (err) {
+        }
+        try {
+          await this._usageService.refreshWeekly();
+        } catch (err) {
+        }
+
+        // now load the cached or refreshed data and display it
         this.noMorePushTrackerActivityDataAvailable = false;
         this.noMoreSmartDriveUsageDataAvailable = false;
         this.noMoreDataAvailable = false;

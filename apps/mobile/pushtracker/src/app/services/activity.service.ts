@@ -20,22 +20,26 @@ export class ActivityService {
 
   async reset() {
     this.login();
+    this.refreshDaily();
+    this.refreshWeekly();
+  }
 
-    // now set up the queries to make sure we don't sync more than we need to
-
+  refreshDaily() {
     const _dailyQuery = this.makeQuery();
     // we only ever push data to the daily activity datastore - so
     // we should set a date that is far in the future to keep the
     // pulls from ever actually pulling data
     _dailyQuery.equalTo('date', '2200-01-01');
+    return this.dailyDatastore.sync(_dailyQuery);
+  }
+
+  refreshWeekly() {
     // we actually want to have the weekly datastore storing data
     // locally for use when offline / bad network conditions (and to
     // not have to pull data that we've already seen) so we just set
     // the user id
     const _weeklyQuery = this.makeQuery();
-
-    this.dailyDatastore.sync(_dailyQuery);
-    this.weeklyDatastore.sync(_weeklyQuery);
+    return this.weeklyDatastore.sync(_weeklyQuery);
   }
 
   clear() {
