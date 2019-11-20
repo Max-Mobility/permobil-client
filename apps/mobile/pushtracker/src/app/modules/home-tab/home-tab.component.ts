@@ -223,6 +223,12 @@ export class HomeTabComponent {
   async refreshUserFromKinvey() {
     try {
       const kinveyUser = KinveyUser.getActiveUser();
+      try {
+        await kinveyUser.me();
+      } catch (err) {
+        this._logService.logBreadCrumb(HomeTabComponent.name,
+          'Failed to refresh user from kinvey');
+      }
       this.parseUser(kinveyUser);
       return true;
     } catch (err) {

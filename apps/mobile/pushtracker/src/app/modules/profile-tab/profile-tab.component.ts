@@ -101,7 +101,7 @@ export class ProfileTabComponent {
     );
   }
 
-  onProfileTabLoaded() {
+  async onProfileTabLoaded() {
     this._logService.logBreadCrumb(ProfileTabComponent.name, 'Loaded');
     this._page.actionBarHidden = true;
     this.screenHeight = screen.mainScreen.heightDIPs;
@@ -140,6 +140,12 @@ export class ProfileTabComponent {
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
+    try {
+      await this.user.me();
+    } catch (err) {
+      this._logService.logBreadCrumb(ProfileTabComponent.name,
+        'Failed to refresh user from kinvey');
+    }
     this.updateUserDisplay();
   }
 
