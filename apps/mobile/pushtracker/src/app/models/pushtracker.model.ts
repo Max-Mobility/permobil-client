@@ -178,6 +178,20 @@ export class PushTracker extends Observable {
     return PushTracker.versionByteToString(this.version);
   }
 
+  isSmartDriveUpToDate(version: string): boolean {
+    const v =
+      typeof version === 'number'
+        ? version
+        : PushTracker.versionStringToByte(version);
+    if (v === 0xff) {
+      return false;
+    }
+    const versions = [this.mcu_version, this.ble_version];
+    return versions.reduce((a, e) => {
+      return a && e !== 0xff && e >= v;
+    }, true);
+  }
+
   isUpToDate(version: string, checkAll?: boolean): boolean {
     const v =
       typeof version === 'number'

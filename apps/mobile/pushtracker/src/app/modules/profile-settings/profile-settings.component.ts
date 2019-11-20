@@ -647,10 +647,21 @@ export class ProfileSettingsComponent implements OnInit {
           const ptsUpToDate = pts.reduce((upToDate, pt) => {
             return upToDate && pt.isUpToDate('2.0');
           }, true);
-          const allUpToDate = pts.reduce((upToDate, pt) => {
-            return upToDate && pt.isUpToDate('2.0', true);
+          const sdsUpToDate = pts.reduce((upToDate, pt) => {
+            return upToDate && pt.isSmartDriveUpToDate('2.0');
           }, true);
-          if (!allUpToDate && ptsUpToDate) {
+          if (!sdsUpToDate && !ptsUpToDate) {
+            // both the pushtrackers and the smartdrives are not up to date
+            alert({
+              title: this._translateService.instant(
+                'profile-settings.update-notice.title'
+              ),
+              message: this._translateService.instant(
+                'profile-settings.update-notice.both-settings-require-update'
+              ),
+              okButtonText: this._translateService.instant('profile-tab.ok')
+            });
+          } else if (!sdsUpToDate) {
             // the pushtrackers are up to date but the smartdrives are not
             alert({
               title: this._translateService.instant(

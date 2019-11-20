@@ -357,13 +357,24 @@ export class TabsComponent {
 
   onPushTrackerVersionEvent(args) {
     const pt = args.object as PushTracker;
-    const allUpToDate = pt.isUpToDate('2.0', true);
+    const smartDriveUpToDate = pt.isSmartDriveUpToDate('2.0');
     const ptUpToDate = pt.isUpToDate('2.0');
     // Alert user if they are connected to a pushtracker which is out
     // of date -
     // https://github.com/Max-Mobility/permobil-client/issues/516
     // TODO: should get this version from the server somewhere!
-    if (!allUpToDate && ptUpToDate) {
+    if (!smartDriveUpToDate && !ptUpToDate) {
+      // both the pushtrackers and the smartdrives are not up to date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-and-smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!smartDriveUpToDate) {
       // the pushtrackers are up to date but the smartdrives are not
       alert({
         title: this._translateService.instant(
