@@ -26,19 +26,12 @@ export class ConfigurationComponent implements OnInit {
     this._user = KinveyUser.getActiveUser() as PushTrackerUser;
   }
 
-  onConfigurationSelection(_, selection) {
-    const loggedInUser = KinveyUser.getActiveUser();
-    if (loggedInUser) {
-      KinveyUser.update({
+  async onConfigurationSelection(_, selection) {
+    if (this._user) {
+      await this._user.update({
         control_configuration: selection
       });
-      if (this._user) {
-        this._user.data.control_configuration = selection;
-        this._user.update({
-          control_configuration: selection
-        });
-        appSettings.setString('Kinvey.User', JSON.stringify(this._user));
-      }
+      appSettings.setString('Kinvey.User', JSON.stringify(this._user));
     }
     if (selection === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
       this._router.navigate(['/tabs/default']);

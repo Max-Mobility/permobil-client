@@ -70,7 +70,6 @@ export class DeviceSetupComponent implements OnInit {
 
   async ngOnInit() {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
-
     if (
       !this.slide &&
       this.user &&
@@ -515,7 +514,6 @@ export class DeviceSetupComponent implements OnInit {
       this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
     if (didConnect) {
-      console.log('didConnect', didConnect);
       this.statusMessage =
         this._translateService.instant(
           'device-setup.e2.sending-authorization'
