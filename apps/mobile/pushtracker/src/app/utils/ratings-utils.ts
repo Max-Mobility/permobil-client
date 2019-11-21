@@ -46,6 +46,12 @@ export class Ratings {
   }
 
   prompt() {
+    const userRated = appSettings.getBoolean('PUSHTRACKER.RATER.ACCEPTED', false);
+    if (userRated) {
+      console.log('User has already rated the app. Not showing prompt');
+      return;
+    }
+
     const userDeclined = appSettings.getBoolean('PUSHTRACKER.RATER.DECLINED', false);
     if (userDeclined) {
       console.log('User declined to provide ratings. Not showing prompt');
@@ -62,8 +68,8 @@ export class Ratings {
           neutralButtonText: this.configuration.remindButtonText,
           cancelable: false
         }).then(result => {
-          console.log('Dialogs.confirm returned', result);
           if (result === true) {
+            appSettings.setBoolean('PUSHTRACKER.RATER.ACCEPTED', true);
             let appStore = '';
             if (Application.android) {
               const androidPackageName = this.configuration.androidPackageId ? this.configuration.androidPackageId : Application.android.packageName;
