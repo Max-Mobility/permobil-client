@@ -13,7 +13,6 @@ import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../
 import { PushTrackerUser, DeviceBase } from '../../models';
 import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, milesToKilometers, YYYY_MM_DD } from '../../utils';
-import { Ratings } from '../../utils/ratings-utils';
 
 @Component({
   selector: 'home-tab',
@@ -70,7 +69,6 @@ export class HomeTabComponent {
   public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
-  private _ratings: Ratings;
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
@@ -78,19 +76,7 @@ export class HomeTabComponent {
     private _vcRef: ViewContainerRef,
     private _activityService: ActivityService,
     private _usageService: SmartDriveUsageService
-  ) {
-    this._ratings = new Ratings({
-        id: 'appname-1.0.0',
-        showOnCount: 5,
-        title: 'Tell us what you think',
-        text: 'How would you rate your PushTracker experience?',
-        agreeButtonText: 'Rate It Now',
-        remindButtonText: 'Remind Me Later',
-        declineButtonText: 'No, Thanks',
-        androidPackageId: 'com.permobil.pushtracker',
-        iTunesAppId: '1121427802'
-    });
-  }
+  ) {}
 
   async onHomeTabLoaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
@@ -120,10 +106,6 @@ export class HomeTabComponent {
       this.MAX_COMMIT_INTERVAL_MS,
       { leading: true }
     );
-    console.log('Prompting');
-    this._ratings.init();
-    this._ratings.prompt();
-    console.log(appSettings.getNumber('appname-1.0.0'));
   }
 
   onHomeTabUnloaded(args) {

@@ -13,6 +13,7 @@ import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
 import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, YYYY_MM_DD } from './utils';
+import { Ratings } from './utils/ratings-utils';
 
 registerElement(
   'AnimatedCircle',
@@ -44,6 +45,18 @@ export class AppComponent implements OnInit {
   ) {
     // init sentry - DNS key is in the SmartEvalKinvey package
     Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
+    const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: 'Tell us what you think',
+        text: 'How would you rate your PushTracker experience?',
+        agreeButtonText: 'Rate It Now',
+        remindButtonText: 'Remind Me Later',
+        declineButtonText: 'No, Thanks',
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+    });
+    ratings.increment();
 
     // Brad - sets the default language for ngx-translate
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***

@@ -18,6 +18,7 @@ import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GEN
 import { LoggingService, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD, milesToKilometers } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import { Ratings } from '../../utils/ratings-utils';
 
 @Component({
   selector: 'profile-tab',
@@ -147,6 +148,24 @@ export class ProfileTabComponent {
         'Failed to refresh user from kinvey');
     }
     this.updateUserDisplay();
+    this.showRateMeDialog();
+  }
+
+  showRateMeDialog() {
+    const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: 'Tell us what you think',
+        text: 'How would you rate your PushTracker experience?',
+        agreeButtonText: 'Rate It Now',
+        remindButtonText: 'Remind Me Later',
+        declineButtonText: 'No, Thanks',
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+    });
+    ratings.init();
+    console.log('Current count', ratings.count());
+    ratings.prompt();
   }
 
   getTranslationKeyForGenders(key) {

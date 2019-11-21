@@ -31,13 +31,27 @@ export class Ratings {
     this.configuration.declineButtonText = this.configuration.declineButtonText ? this.configuration.declineButtonText : 'No Thanks';
   }
 
+  count() {
+    return this.showCount;
+  }
+
   init() {
+    this.showCount = appSettings.getNumber(this.configuration.id, 0);
+  }
+
+  increment() {
     this.showCount = appSettings.getNumber(this.configuration.id, 0);
     this.showCount++;
     appSettings.setNumber(this.configuration.id, this.showCount);
   }
 
   prompt() {
+    const userDeclined = appSettings.getBoolean('PUSHTRACKER.RATER.DECLINED', false);
+    if (userDeclined) {
+      console.log('User declined to provide ratings. Not showing prompt');
+      return;
+    }
+
     if (this.showCount >= this.configuration.showOnCount) {
       setTimeout(() => {
         Dialogs.confirm({
@@ -62,6 +76,7 @@ export class Ratings {
             Utility.openUrl(appStore);
           } else if (result === false) {
             // Decline
+            appSettings.setBoolean('PUSHTRACKER.RATER.DECLINED', true);
           } else {
             appSettings.setNumber(this.configuration.id, 0);
           }
