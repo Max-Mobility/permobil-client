@@ -80,10 +80,9 @@ export class ActivityService {
   }
 
   async getWeeklyActivity(date?: string, limit?: number): Promise<any[]> {
-    const query = new KinveyQuery();
     // configure the query to search for only activity that was
     // saved by this user, and to get only the most recent activity
-    query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+    const query = this.makeQuery();
     // set the date if they provided it
     if (date) {
       // make sure we only get the weekly activity we are looking for
@@ -100,14 +99,10 @@ export class ActivityService {
 
   async saveDailyActivityFromPushTracker(dailyActivity: any): Promise<boolean> {
     try {
-      const query = new KinveyQuery();
-
       // configure the query to search for only activity that was
       // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      const query = this.makeQuery();
       query.equalTo('date', dailyActivity.date);
-
-      // TODO: test this after the update to the Sync datastore type!
 
       return this.dailyQuery(query)
         .then((data: any[]) => {
