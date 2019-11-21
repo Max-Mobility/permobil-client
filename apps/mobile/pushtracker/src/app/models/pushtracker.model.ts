@@ -178,6 +178,12 @@ export class PushTracker extends Observable {
     return PushTracker.versionByteToString(this.version);
   }
 
+  hasVersionInfo(): boolean {
+    return [this.version, this.ble_version, this.mcu_version].reduce((a, v) => {
+      return a && v < 0xff && v > 0x00;
+    }, true);
+  }
+
   isSmartDriveUpToDate(version: string): boolean {
     const v =
       typeof version === 'number'
@@ -889,7 +895,6 @@ export class PushTracker extends Observable {
     this.version = versionInfo.pushTracker;
     this.mcu_version = versionInfo.smartDrive;
     this.ble_version = versionInfo.smartDriveBluetooth;
-    // TODO: send version event to subscribers so they get updated
     this.sendEvent(PushTracker.version_event, {
       pt: this.version,
       mcu: this.mcu_version,
