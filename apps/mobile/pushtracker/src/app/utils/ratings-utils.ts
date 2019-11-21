@@ -59,8 +59,10 @@ export class Ratings {
           message: this.configuration.text,
           okButtonText: this.configuration.agreeButtonText,
           cancelButtonText: this.configuration.declineButtonText,
-          neutralButtonText: this.configuration.remindButtonText
+          neutralButtonText: this.configuration.remindButtonText,
+          cancelable: false
         }).then(result => {
+          console.log('Dialogs.confirm returned', result);
           if (result === true) {
             let appStore = '';
             if (Application.android) {
@@ -82,6 +84,10 @@ export class Ratings {
           }
         });
       });
+    } else {
+      console.log('Not showing prompt');
+      console.log('showOnCount =', this.configuration.showOnCount);
+      console.log('currentCount =', this.showCount);
     }
   }
 
