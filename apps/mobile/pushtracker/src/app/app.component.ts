@@ -45,18 +45,6 @@ export class AppComponent implements OnInit {
   ) {
     // init sentry - DNS key is in the SmartEvalKinvey package
     Sentry.init(SentryKeys.PUSHTRACKER_MOBILE_DSN);
-    const ratings = new Ratings({
-        id: 'PUSHTRACKER.RATER.COUNT',
-        showOnCount: 100,
-        title: this._translateService.instant('dialogs.ratings.title'),
-        text: this._translateService.instant('dialogs.ratings.text'),
-        agreeButtonText: this._translateService.instant('dialogs.ratings.agree'),
-        remindButtonText: this._translateService.instant('dialogs.ratings.remind'),
-        declineButtonText: this._translateService.instant('dialogs.ratings.decline'),
-        androidPackageId: 'com.permobil.pushtracker',
-        iTunesAppId: '1121427802'
-    });
-    ratings.increment();
 
     // Brad - sets the default language for ngx-translate
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
@@ -106,7 +94,18 @@ export class AppComponent implements OnInit {
       }
     );
 
-    application.on(application.resumeEvent, (args) => { });
+    application.android.on(application.AndroidApplication.activityResumedEvent, function (args) {
+      const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: '',
+        text: '',
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+      });
+      console.log('Incrementing ratings counter');
+      ratings.increment();
+    });
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
     Kinvey.ping()
