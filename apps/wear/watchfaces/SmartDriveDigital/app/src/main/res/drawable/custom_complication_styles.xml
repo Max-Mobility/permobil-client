@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2017 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<drawable
+<drawable xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     class="android.support.wearable.complications.rendering.ComplicationDrawable"
     app:backgroundColor="@android:color/transparent"
     app:borderColor="@color/white"
@@ -25,23 +23,23 @@
     app:borderRadius="50dp"
     app:borderStyle="none"
     app:borderWidth="0dp"
-    app:highlightColor="@color/fuchsia"
+    app:highlightColor="@color/permobil_cousteau"
     app:iconColor="@color/dark_blue"
-    app:rangedValuePrimaryColor="@color/teal"
+    app:rangedValuePrimaryColor="@color/permobil_hero"
     app:rangedValueRingWidth="1dp"
     app:rangedValueSecondaryColor="@color/white"
     app:textColor="@color/white"
     app:textSize="12sp"
     app:textTypeface="sans-serif-condensed"
-    app:titleColor="@color/gray"
+    app:titleColor="@color/white"
     app:titleSize="10sp"
     app:titleTypeface="sans-serif">
 
     <ambient
+        app:borderColor="@android:color/transparent"
         app:highlightColor="@color/white"
         app:iconColor="@color/white"
         app:rangedValuePrimaryColor="@color/white"
-        app:titleColor="@color/white"
-        app:borderColor="@android:color/transparent"
-        app:rangedValueSecondaryColor="@android:color/transparent"/>
+        app:rangedValueSecondaryColor="@android:color/transparent"
+        app:titleColor="@color/white" />
 </drawable>

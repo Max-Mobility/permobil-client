@@ -588,14 +588,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
-
             Log.d(TAG, "onComplicationTap() " + complicationId);
 
-            ComplicationData complicationData =
-                    mActiveComplicationDataSparseArray.get(complicationId);
+            ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
 
             if (complicationData != null) {
-
                 if (complicationData.getTapAction() != null) {
                     try {
                         if (complicationId != 2) {
@@ -733,7 +730,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             String minuteString = Utils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
             // Set the time value combining the hours & minute strings
             minuteTextView.setText(minuteString);
-            Log.d(TAG, "Set the time: " + hourString + " " + minuteString);
 
             // Set the am/pm.
             if (!is24Hour) {
