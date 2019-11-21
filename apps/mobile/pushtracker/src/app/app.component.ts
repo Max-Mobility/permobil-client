@@ -106,7 +106,12 @@ export class AppComponent implements OnInit {
       }
     );
 
-    application.on(application.resumeEvent, () => {
+    application.on(application.resumeEvent, (args) => {
+      if (args.android) {
+        console.log('Incrementing ratings counter');
+        ratings.increment();
+        // For iOS, we increment using an iOS delegate - see main.ts
+      }
     });
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
