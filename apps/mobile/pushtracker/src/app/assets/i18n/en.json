@@ -132,7 +132,14 @@
 		"warning": "Warning",
 		"yes": "Yes",
 		"yes-delete": "Yes, delete",
-		"yes-login": "Yes, login!"
+		"yes-login": "Yes, login!",
+		"ratings": {
+			"title": "Tell us what you think",
+			"text": "How would you rate your PushTracker experience?",
+			"agree": "Rate It Now",
+			"remind": "Remind Me Later",
+			"decline": "No, Thanks"
+		}
 	},
 	"failures": {
 		"permissions": "Could not perform the requested action - permissions were not granted."

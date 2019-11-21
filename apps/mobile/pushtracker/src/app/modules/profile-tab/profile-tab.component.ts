@@ -18,6 +18,7 @@ import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GEN
 import { LoggingService, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
 import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD, milesToKilometers } from '../../utils';
 import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import { Ratings } from '../../utils/ratings-utils';
 
 @Component({
   selector: 'profile-tab',
@@ -148,6 +149,23 @@ export class ProfileTabComponent {
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
     this.updateUserDisplay();
+    this.showRateMeDialog();
+  }
+
+  showRateMeDialog() {
+    const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: this._translateService.instant('dialogs.ratings.title'),
+        text: this._translateService.instant('dialogs.ratings.text'),
+        agreeButtonText: this._translateService.instant('dialogs.ratings.agree'),
+        remindButtonText: this._translateService.instant('dialogs.ratings.remind'),
+        declineButtonText: this._translateService.instant('dialogs.ratings.decline'),
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+    });
+    ratings.init();
+    ratings.prompt();
   }
 
   getTranslationKeyForGenders(key) {
