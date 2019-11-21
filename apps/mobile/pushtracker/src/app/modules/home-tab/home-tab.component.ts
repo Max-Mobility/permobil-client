@@ -69,7 +69,7 @@ export class HomeTabComponent {
   public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
-  
+
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
