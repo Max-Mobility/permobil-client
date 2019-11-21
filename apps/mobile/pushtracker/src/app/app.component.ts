@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { registerElement } from '@nativescript/angular/element-registry';
 import { RouterExtensions } from '@nativescript/angular/router';
-import { device } from '@nativescript/core/platform';
+import { isAndroid, device } from '@nativescript/core/platform';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
@@ -94,18 +94,20 @@ export class AppComponent implements OnInit {
       }
     );
 
-    application.android.on(application.AndroidApplication.activityResumedEvent, function (args) {
-      const ratings = new Ratings({
-        id: 'PUSHTRACKER.RATER.COUNT',
-        showOnCount: 100,
-        title: '',
-        text: '',
-        androidPackageId: 'com.permobil.pushtracker',
-        iTunesAppId: '1121427802'
+    if (isAndroid) {
+      application.android.on(application.AndroidApplication.activityResumedEvent, function (args) {
+        const ratings = new Ratings({
+          id: 'PUSHTRACKER.RATER.COUNT',
+          showOnCount: 100,
+          title: '',
+          text: '',
+          androidPackageId: 'com.permobil.pushtracker',
+          iTunesAppId: '1121427802'
+        });
+        console.log('Incrementing ratings counter');
+        ratings.increment();
       });
-      console.log('Incrementing ratings counter');
-      ratings.increment();
-    });
+    }
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
     Kinvey.ping()
