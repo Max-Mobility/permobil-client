@@ -107,13 +107,6 @@ export class TabsComponent {
     // we have a user - set it!
     this.user = user;
 
-    // now update all of the UI
-    if (this.user.data.language_preference) {
-      const language = APP_LANGUAGES[this.user.data.language_preference];
-      if (this._translateService.currentLang !== language)
-        this._translateService.use(language);
-    }
-
     const config = this.user.data.control_configuration;
     // @ts-ignore
     if (!Object.values(CONFIGURATIONS).includes(config)) {
@@ -172,7 +165,15 @@ export class TabsComponent {
     this.user.data.control_configuration = config;
   }
 
-  onRootBottomNavLoaded(_) {
+  async onRootBottomNavLoaded(_) {
+    // now update all of the UI
+    let language: string | APP_LANGUAGES = APP_LANGUAGES.English;
+    if (this.user && this.user.data.language_preference) {
+      language = APP_LANGUAGES[this.user.data.language_preference];
+    }
+    await this._translateService.reloadLang(language).toPromise();
+    await this._translateService.use(language).toPromise();
+
     if (this._firstLoad) return;
 
     if (isAndroid) {

@@ -107,6 +107,14 @@ export class ProfileTabComponent {
     this.screenHeight = screen.mainScreen.heightDIPs;
     this._barcodeScanner = new BarcodeScanner();
 
+    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
+    try {
+      await this.user.me();
+    } catch (err) {
+      this._logService.logBreadCrumb(ProfileTabComponent.name,
+        'Failed to refresh user from kinvey');
+    }
+
     // WARNING: There's an important assumption here
     // chairTypes and chairTypesTranslated (or chairMakes and chairMakesTranslated) are
     // assumed to be ordered in the same way, i.e., chairMakes[foo] === chairMakesTranslated[foo]
@@ -139,13 +147,6 @@ export class ProfileTabComponent {
     // If you need the chair makes to be sorted, sort it in the CHAIR_MAKE enum
     // Do not sort any derived lists, e.g., this.chairMakesTranslated, here.
 
-    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
-    try {
-      await this.user.me();
-    } catch (err) {
-      this._logService.logBreadCrumb(ProfileTabComponent.name,
-        'Failed to refresh user from kinvey');
-    }
     this.updateUserDisplay();
   }
 
