@@ -5,7 +5,7 @@ import * as appSettings from '@nativescript/core/application-settings';
 import * as themes from 'nativescript-themes';
 import 'reflect-metadata';
 import { AppModule } from './app/app.module';
-import * as application from "application";
+import * as application from 'application';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 require('nativescript-plugin-firebase'); // for configuring push notifications
 import { Ratings } from './app/utils/ratings-utils';
