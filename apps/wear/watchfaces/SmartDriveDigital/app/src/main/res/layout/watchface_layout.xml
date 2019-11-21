@@ -20,17 +20,21 @@
     tools:layout_editor_absoluteX="10dp"
     tools:layout_editor_absoluteY="10dp">
 
-    <ImageView
-        android:id="@+id/batteryIcon"
-        android:layout_width="24dp"
-        android:layout_height="26dp"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_centerHorizontal="true"
-        android:background="@color/blue"
-        android:contentDescription="@string/batteryicon"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:elevation="10dp"
-        android:textAlignment="center"
-        tools:src="@drawable/ic_battery" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/batteryIcon"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:background="@drawable/action_item_background"
+            android:contentDescription="@string/batteryicon"
+            android:elevation="10dp"
+            tools:src="@drawable/ic_battery_full" />
+    </LinearLayout>
 
     <at.grabner.circleprogress.CircleProgressView
         android:id="@+id/watchBatteryCircle"
@@ -39,7 +43,7 @@
         CircleProgressView:cpv_autoTextSize="false"
         CircleProgressView:cpv_barColor="@color/permobil_ocean"
         CircleProgressView:cpv_barStrokeCap="Round"
-        CircleProgressView:cpv_barWidth="6dp"
+        CircleProgressView:cpv_barWidth="5dp"
         CircleProgressView:cpv_direction="CW"
         CircleProgressView:cpv_innerContourSize="2dp"
         CircleProgressView:cpv_maxValue="100"
@@ -60,23 +64,22 @@
         CircleProgressView:cpv_unitScale="1" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="14dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
         <at.grabner.circleprogress.CircleProgressView
             android:id="@+id/smartDriveBatteryCircle"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             CircleProgressView:cpv_autoTextSize="true"
             CircleProgressView:cpv_barColor="@color/permobil_primary"
             CircleProgressView:cpv_barStrokeCap="Round"
-            CircleProgressView:cpv_barWidth="8dp"
+            CircleProgressView:cpv_barWidth="5dp"
             CircleProgressView:cpv_direction="CW"
             CircleProgressView:cpv_innerContourSize="2dp"
             CircleProgressView:cpv_maxValue="100"
@@ -93,27 +96,70 @@
             CircleProgressView:cpv_unitPosition="right_top"
             CircleProgressView:cpv_unitScale="1" />
 
-        <ImageButton
-            android:id="@+id/smartDriveButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/smartdrivebutton"
-            android:src="@drawable/permobil" />
-
-        <TextView
-            android:id="@+id/timeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:fontFamily="@font/roboto_mono_bold"
-            android:textAlignment="center"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/amPmTextView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_mono"
-            android:textAlignment="center" />
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/smartDriveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/action_item_background"
+                android:contentDescription="@string/smartdrivebutton"
+                android:src="@drawable/smartdrive_button" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/hourTextView"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:fontFamily="@font/roboto_mono_bold"
+                        android:textAlignment="textEnd"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/colonTextView"
+                        android:layout_width="10dp"
+                        android:layout_height="30dp"
+                        android:fontFamily="@font/roboto_mono_bold"
+                        android:text="@string/colon"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/minuteTextView"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:fontFamily="@font/roboto_mono_bold"
+                        android:textAlignment="textStart"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/amPmTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_mono"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

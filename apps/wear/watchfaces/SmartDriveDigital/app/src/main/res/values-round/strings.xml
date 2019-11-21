@@ -2,4 +2,5 @@
     <string name="hello_world">Hello Round World!</string>
     <string name="centercomplicationbackground">centerComplicationBackground</string>
     <string name="centercomplication">centercomplication</string>
+    <string name="colon">:</string>
 </resources>

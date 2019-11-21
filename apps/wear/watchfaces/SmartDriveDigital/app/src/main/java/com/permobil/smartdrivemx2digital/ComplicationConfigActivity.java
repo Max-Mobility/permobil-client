@@ -33,12 +33,12 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
      * supported complication data types.
      */
     public enum ComplicationLocation {
+        TOP,
         CENTER
     }
 
-    private int mLeftComplicationId;
-    private int mBackgroundComplicationId;
     private int mCenterComplicationId;
+    private int mTopComplicationId;
     // Selected complication id by user.
     private int mSelectedComplicationId;
     // ComponentName used to identify a specific service that renders the watch face.
@@ -56,7 +56,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
 
         mDefaultAddComplicationDrawable = getDrawable(R.drawable.add_complication);
         mSelectedComplicationId = -1;
-        mCenterComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.CENTER);
+        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.TOP);
         mWatchFaceComponentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
 
         // Sets up center complication preview.
@@ -64,7 +64,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         mCenterComplication = findViewById(R.id.center_complication);
         mCenterComplication.setOnClickListener(this);
         // Sets default as "Add Complication" icon.
-        mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
+//        mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
         mCenterComplicationBackground.setVisibility(View.INVISIBLE);
 
         // Initialization of code to retrieve active complication data for the watch face.

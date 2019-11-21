@@ -9,9 +9,11 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,6 +56,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     private static Typeface BOLD_TYPEFACE;
     private static Typeface NORMAL_TYPEFACE;
 
+
     /**
      * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
      * a second to blink the colons.
@@ -64,10 +68,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
      */
     private static final long MUTE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
-    private static final int LEFT_COMPLICATION_ID = 0;
-    private static final int BACKGROUND_COMPLICATION_ID = 1;
-    private static final int CENTER_COMPLICATION_ID = 2;
-    private static final int[] COMPLICATION_IDS = {LEFT_COMPLICATION_ID, BACKGROUND_COMPLICATION_ID, CENTER_COMPLICATION_ID};
+    private static final int CENTER_COMPLICATION_ID = 0;
+    private static final int TOP_COMPLICATION_ID = 0;
+    private static final int[] COMPLICATION_IDS = {CENTER_COMPLICATION_ID, TOP_COMPLICATION_ID};
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
@@ -80,12 +83,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
-            },
-            {
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
-                    ComplicationData.TYPE_SHORT_TEXT,
-                    ComplicationData.TYPE_SMALL_IMAGE
             }
     };
 
@@ -95,20 +92,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     // Used by {@link ComplicationConfigActivity} to retrieve id for complication locations and
     // to check if complication location is supported.
 
-    static int getComplicationId(
-            ComplicationConfigActivity.ComplicationLocation complicationLocation) {
-        // Add any other supported locations here you would like to support. In our case, we are
-        // only supporting a left and right complication.
-        switch (complicationLocation) {
-            case LEFT:
-                return LEFT_COMPLICATION_ID;
-            case BACKGROUND:
-                return BACKGROUND_COMPLICATION_ID;
-            case CENTER:
-                return CENTER_COMPLICATION_ID;
-            default:
-                return -1;
+    static int getComplicationId(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
+        // Add any other supported locations here you would like to support. In our case, we are only supporting a center top complication
+        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
+            return CENTER_COMPLICATION_ID;
+        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+            return TOP_COMPLICATION_ID;
         }
+        return -1;
     }
 
     // Used by {@link ComplicationConfigActivity} to retrieve all complication ids.
@@ -120,19 +111,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     // Used by {@link ComplicationConfigActivity} to retrieve complication types supported by
     // location.
 
-    static int[] getSupportedComplicationTypes(
-            ComplicationConfigActivity.ComplicationLocation complicationLocation) {
+    static int[] getSupportedComplicationTypes(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
-        switch (complicationLocation) {
-            case LEFT:
-                return COMPLICATION_SUPPORTED_TYPES[1];
-            case BACKGROUND:
-                return COMPLICATION_SUPPORTED_TYPES[0];
-            case CENTER:
-                return COMPLICATION_SUPPORTED_TYPES[2];
-            default:
-                return new int[]{};
+        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
+            return COMPLICATION_SUPPORTED_TYPES[0];
+        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+            return COMPLICATION_SUPPORTED_TYPES[1];
         }
+        return new int[]{};
     }
 
     /*
@@ -156,10 +142,17 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         CircleProgressView watchBatteryCircle;
         @BindView(R.id.smartDriveBatteryCircle)
         CircleProgressView smartDriveBatteryCircle;
-        @BindView(R.id.timeTextView)
-        TextView timeTextView;
+        @BindView(R.id.hourTextView)
+        TextView hourTextView;
+        @BindView(R.id.smartDriveBtn)
+        ImageButton smartDriveBtn;
+        @BindView(R.id.colonTextView)
+        TextView colonTextView;
+        @BindView(R.id.minuteTextView)
+        TextView minuteTextView;
         @BindView(R.id.amPmTextView)
         TextView amPmTextView;
+
 
         /**
          * Alpha value for drawing time when in mute mode.
@@ -271,7 +264,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             initFormats();
             initializeComplications();
             initSentrySetup();
-            // TODO: set APP_SHORTCUT to smartdrive mx2+
         }
 
         @Override
@@ -283,44 +275,18 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
-
-            /*
-             * Calculates location bounds for right and left circular complications. Please note,
-             * we are not demonstrating a long text complication in this watch face.
-             *
-             * We suggest using at least 1/4 of the screen width for circular (or squared)
-             * complications and 2/3 of the screen width for wide rectangular complications for
-             * better readability.
-             */
-
             // For most Wear devices, width and height are the same, so we just chose one (width).
 
             int sizeOfComplication = width / 4;
             int midpointOfScreen = width / 2;
 
-            int offset = 15;
-            Rect leftBounds =
-                    // Left, Top, Right, Bottom
-                    new Rect(offset, offset, width - offset, height - offset);
+            int offset = 40;
+            Rect topBounds = new Rect(width, offset, width, offset);
+            ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
+            topComplicationDrawable.setBounds(topBounds);
 
-            ComplicationDrawable leftComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(LEFT_COMPLICATION_ID);
-            leftComplicationDrawable.setBounds(leftBounds);
-
-            Rect backgroundBounds =
-                    // Left, Top, Right, Bottom
-                    new Rect(0, 0, width, height);
-
-            ComplicationDrawable backgroundComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(BACKGROUND_COMPLICATION_ID);
-            backgroundComplicationDrawable.setBounds(backgroundBounds);
-
-            Rect centerBounds =
-                    // Left, Top, Right, Bottom
-                    new Rect(200, 200, 200, 200);
-
-            ComplicationDrawable centerComplicationDrawable =
-                    mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
+            Rect centerBounds = new Rect(200, 200, 200, 200);
+            ComplicationDrawable centerComplicationDrawable = mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
             // hide app icon image
             centerComplicationDrawable.setBounds(centerBounds);
         }
@@ -342,7 +308,29 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             ButterKnife.bind(this, mRelativeLayout);
 
+            // set the click event for the smart drive button
+            smartDriveBtn.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
+                            if (smartDriveWearIntent != null) {
+                                smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(smartDriveWearIntent);
+                            } else {
+                                Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
+                                Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
+                                playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(playStoreIntent);
+                            }
+                        }
+                    }
+            );
+
+
             drawTimeStrings();
+            float batteryLvl = getWatchBatteryLevel();
+            watchBatteryCircle.setValue(batteryLvl);
             drawComplications(canvas, now);
         }
 
@@ -358,30 +346,23 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
 
             if (inAmbientMode) {
+                smartDriveBtn.setVisibility(View.GONE);
                 watchBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
                 smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                watchBatteryCircle.setValue(40f);
+                smartDriveBatteryCircle.setValue(75f);
+                Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
             } else {
+                smartDriveBtn.setVisibility(View.VISIBLE);
                 watchBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_ocean, getTheme()));
-                watchBatteryCircle.setValue(83f);
                 smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
+                smartDriveBatteryCircle.setValue(38f);
             }
-
-
-            //            adjustPaintColorToCurrentMode(mBackgroundPaint, mInteractiveBackgroundColor,
-//                    Color.BLACK);
-//            adjustPaintColorToCurrentMode(mHourPaint, mInteractiveHourDigitsColor,
-//                    Color.WHITE);
-//            adjustPaintColorToCurrentMode(mMinutePaint, mInteractiveMinuteDigitsColor,
-//                    Color.WHITE);
-//            // Actually, the seconds are not rendered in the ambient mode, so we could pass just any
-//            // value as ambientColor here.
-//            adjustPaintColorToCurrentMode(mSecondPaint, mInteractiveSecondDigitsColor,
-//                    Color.GRAY);
 
             if (mLowBitAmbient) {
                 boolean antiAlias = !inAmbientMode;
-                timeTextView.getPaint().setAntiAlias(antiAlias);
+                hourTextView.getPaint().setAntiAlias(antiAlias);
+                colonTextView.getPaint().setAntiAlias(antiAlias);
+                minuteTextView.getPaint().setAntiAlias(antiAlias);
                 amPmTextView.getPaint().setAntiAlias(antiAlias);
             }
             invalidate();
@@ -414,7 +395,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             if (mMute != inMuteMode) {
                 mMute = inMuteMode;
                 int alpha = inMuteMode ? MUTE_ALPHA : NORMAL_ALPHA;
-                timeTextView.setAlpha(alpha);
+                hourTextView.setAlpha(alpha);
+                colonTextView.setAlpha(alpha);
+                minuteTextView.setAlpha(alpha);
                 amPmTextView.setAlpha(alpha);
                 invalidate();
             }
@@ -424,8 +407,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         public void onPropertiesChanged(Bundle properties) {
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
-            if (timeTextView != null) {
-                timeTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
+            if (hourTextView != null) {
+                hourTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
+            }
+            if (colonTextView != null) {
+                colonTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
+            }
+            if (minuteTextView != null) {
+                minuteTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
             }
             if (amPmTextView != null) {
                 amPmTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
@@ -460,12 +449,21 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             invalidate();
         }
 
+        public Point getViewsLocation(View view) {
+            int[] location = new int[2];
+            view.getLocationInWindow(location);
+            return new Point(location[0], location[1]);
+        }
+
         @Override
         public void onTapCommand(int tapType, int x, int y, long eventTime) {
+            Point p = getViewsLocation(smartDriveBtn);
+            Log.d(TAG, "smart drive btn coords: " + p);
 
-            Log.d(TAG, "OnTapCommand()");
+            Log.d(TAG, "OnTapCommand() " + tapType);
             if (tapType == TAP_TYPE_TAP) {
                 int tappedComplicationId = getTappedComplicationId(x, y);
+                Log.d(TAG, "Tapped Complication Id: " + tappedComplicationId);
                 if (tappedComplicationId != -1) {
                     onComplicationTap(tappedComplicationId);
                 }
@@ -511,8 +509,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             float amPmSize = resources.getDimension(isRound
                     ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
 
-            if (timeTextView != null) {
-                timeTextView.setTextSize(textSize);
+            if (hourTextView != null) {
+                hourTextView.setTextSize(textSize);
+            }
+            if (colonTextView != null) {
+                colonTextView.setTextSize(textSize);
+            }
+            if (minuteTextView != null) {
+                minuteTextView.setTextSize(textSize);
             }
             if (amPmTextView != null) {
                 amPmTextView.setTextSize(amPmSize);
@@ -549,20 +553,20 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // but you could add many more.
             // All styles for the complications are defined in
             // drawable/custom_complication_styles.xml.
-            ComplicationDrawable leftComplicationDrawable =
-                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            if (leftComplicationDrawable != null) {
-                leftComplicationDrawable.setContext(getApplicationContext());
+
+//            ComplicationDrawable backgroundComplicationDrawable =
+//                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+//            if (backgroundComplicationDrawable != null) {
+//                backgroundComplicationDrawable.setContext(getApplicationContext());
+//            }
+
+
+            ComplicationDrawable topComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            if (topComplicationDrawable != null) {
+                topComplicationDrawable.setContext(getApplicationContext());
             }
 
-            ComplicationDrawable backgroundComplicationDrawable =
-                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            if (backgroundComplicationDrawable != null) {
-                backgroundComplicationDrawable.setContext(getApplicationContext());
-            }
-
-            ComplicationDrawable centerComplicationDrawable =
-                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
+            ComplicationDrawable centerComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
             if (centerComplicationDrawable != null) {
                 centerComplicationDrawable.setContext(getApplicationContext());
             }
@@ -570,30 +574,22 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
             mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
-            mComplicationDrawableSparseArray.put(LEFT_COMPLICATION_ID, leftComplicationDrawable);
-            mComplicationDrawableSparseArray.put(BACKGROUND_COMPLICATION_ID, backgroundComplicationDrawable);
             mComplicationDrawableSparseArray.put(CENTER_COMPLICATION_ID, centerComplicationDrawable);
+            mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
 
             setActiveComplications(COMPLICATION_IDS);
 
-            setDefaultComplicationProvider(COMPLICATION_IDS[1], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
-            setDefaultSystemComplicationProvider(COMPLICATION_IDS[2], SystemProviders.APP_SHORTCUT, ComplicationData.TYPE_SMALL_IMAGE);
-            setDefaultSystemComplicationProvider(COMPLICATION_IDS[0], SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
+            setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
+            setDefaultSystemComplicationProvider(COMPLICATION_IDS[1], SystemProviders.APP_SHORTCUT, ComplicationData.TYPE_LARGE_IMAGE);
+//            setDefaultSystemComplicationProvider(COMPLICATION_IDS[0], SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
 
-//            Intent permissionRequestIntent =
-//                    ComplicationHelperActivity.createPermissionRequestHelperIntent(
-//                            getApplicationContext(), new ComponentName("com.permobil.smartdrive.wearos","com.permobil.smartdrive.wearos.BatteryComplicationProviderService"));
-//
-//            permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(permissionRequestIntent);
-
-            Log.e("TAG", "onCreate done.");
         }
+
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
 
-            Log.d(TAG, "onComplicationTap()");
+            Log.d(TAG, "onComplicationTap() " + complicationId);
 
             ComplicationData complicationData =
                     mActiveComplicationDataSparseArray.get(complicationId);
@@ -676,6 +672,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                         && (complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED)
                         && (complicationData.getType() != ComplicationData.TYPE_EMPTY)) {
 
+                    Log.d(TAG, "tapped complication y: " + y);
+
                     // tap position: y < 125 => Refresh SD battery
                     //           125 < y < 275 => launch MX2+ app
                     //               y> 275 => call system battery setting
@@ -689,6 +687,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                         complicationId = 2;
                         return complicationId;
                     }
+
 
 //                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
 //                    Rect complicationBoundingRect = complicationDrawable.getBounds();
@@ -710,6 +709,11 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
             mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
+            if (mShouldDrawColons) {
+                colonTextView.setVisibility(View.VISIBLE);
+            } else {
+                colonTextView.setVisibility(View.INVISIBLE);
+            }
 
             // Get the hours.
             String hourString;
@@ -722,34 +726,35 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 }
                 hourString = String.valueOf(hour);
             }
+            hourTextView.setText(hourString);
+
 
             // Get the minutes.
             String minuteString = Utils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
             // Set the time value combining the hours & minute strings
-            if (mShouldDrawColons) {
-                timeTextView.setText(String.format("%s:%s", hourString, minuteString));
-            } else {
-                timeTextView.setText(String.format("%s %s", hourString, minuteString));
-            }
-            Log.d(TAG, "Set the time: " + timeTextView.getText());
+            minuteTextView.setText(minuteString);
+            Log.d(TAG, "Set the time: " + hourString + " " + minuteString);
 
             // Set the am/pm.
             if (!is24Hour) {
                 String value = Utils.getAmPmString(mCalendar.get(Calendar.AM_PM));
                 amPmTextView.setText(value);
                 amPmTextView.setVisibility(View.VISIBLE);
-                Log.d(TAG, "set the amPmTextView to " + value);
             } else {
                 amPmTextView.setVisibility(View.INVISIBLE);
             }
 
             // handle color of text depending if ambient mode
             if (!isInAmbientMode()) {
-                timeTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
+                hourTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
+                colonTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
+                minuteTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
                 amPmTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
             } else {
                 // in ambient so use ambient color
-                timeTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                hourTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                colonTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                minuteTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
                 amPmTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
             }
         }
@@ -797,6 +802,16 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 //                    complicationDrawable.setImageColorFilterActive(colorfilter);
                 }
             }
+        }
+
+        private float getWatchBatteryLevel() {
+            IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = getApplicationContext().registerReceiver(null, iFilter);
+            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+            float batteryPct = level * 100 / (float) scale;
+            return batteryPct;
         }
 
         private void registerReceiver() {
