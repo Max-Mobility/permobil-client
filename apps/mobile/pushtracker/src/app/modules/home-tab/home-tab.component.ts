@@ -94,7 +94,7 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
-    this.refreshPlots(args);
+    this.refreshPlots(args, false);
 
     this._debouncedLoadWeeklyActivity = debounce(
       this._loadWeeklyActivity.bind(this),
@@ -240,7 +240,7 @@ export class HomeTabComponent {
     }
   }
 
-  async refreshPlots(args) {
+  async refreshPlots(args, forceRefresh: boolean = true) {
     const pullRefresh = args.object;
     try {
       pullRefresh.refreshing = true;
@@ -250,13 +250,15 @@ export class HomeTabComponent {
       if (!gotUser) return;
 
       // actually synchronize with the server
-      try {
-        await this._activityService.refreshWeekly();
-      } catch (err) {
-      }
-      try {
-        await this._usageService.refreshWeekly();
-      } catch (err) {
+      if (forceRefresh) {
+        try {
+          await this._activityService.refreshWeekly();
+        } catch (err) {
+        }
+        try {
+          await this._usageService.refreshWeekly();
+        } catch (err) {
+        }
       }
 
       // The user might come back and refresh the next day, just keeping

@@ -59,7 +59,6 @@ export class JourneyTabComponent {
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 3000; // 3 seconds
-  private _firstLoad = true;
 
   constructor(
     private _activityService: ActivityService,
@@ -85,10 +84,7 @@ export class JourneyTabComponent {
       .then(() => {
         this.savedTimeFormat =
           this.user.data.time_format_preference || TIME_FORMAT.AM_PM;
-        this._refresh()
-          .then(() => {
-            this._firstLoad = false;
-          })
+        this._refresh(false)
           .catch(err => {
             this._logService.logBreadCrumb(JourneyTabComponent.name, 'Failed to init journey items');
             // this._logService.logException(err);
@@ -177,19 +173,21 @@ export class JourneyTabComponent {
     }
   }
 
-  private async _refresh() {
+  private async _refresh(syncWithServer: boolean = true) {
     this._logService.logBreadCrumb(JourneyTabComponent.name, 'Refreshing data');
     return this.refreshUserFromKinvey()
       .then(async () => {
 
         // actually synchronize with the server
-        try {
-          await this._activityService.refreshWeekly();
-        } catch (err) {
-        }
-        try {
-          await this._usageService.refreshWeekly();
-        } catch (err) {
+        if (syncWithServer) {
+          try {
+            await this._activityService.refreshWeekly();
+          } catch (err) {
+          }
+          try {
+            await this._usageService.refreshWeekly();
+          } catch (err) {
+          }
         }
 
         // now load the cached or refreshed data and display it
