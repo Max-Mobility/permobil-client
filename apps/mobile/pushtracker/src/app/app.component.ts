@@ -48,11 +48,11 @@ export class AppComponent implements OnInit {
     const ratings = new Ratings({
         id: 'PUSHTRACKER.RATER.COUNT',
         showOnCount: 100,
-        title: 'Tell us what you think',
-        text: 'How would you rate your PushTracker experience?',
-        agreeButtonText: 'Rate It Now',
-        remindButtonText: 'Remind Me Later',
-        declineButtonText: 'No, Thanks',
+        title: this._translateService.instant('dialogs.ratings.title'),
+        text: this._translateService.instant('dialogs.ratings.text'),
+        agreeButtonText: this._translateService.instant('dialogs.ratings.agree'),
+        remindButtonText: this._translateService.instant('dialogs.ratings.remind'),
+        declineButtonText: this._translateService.instant('dialogs.ratings.decline'),
         androidPackageId: 'com.permobil.pushtracker',
         iTunesAppId: '1121427802'
     });
