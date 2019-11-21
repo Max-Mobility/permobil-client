@@ -164,7 +164,6 @@ export class ProfileTabComponent {
         iTunesAppId: '1121427802'
     });
     ratings.init();
-    console.log('Current count', ratings.count());
     ratings.prompt();
   }
 

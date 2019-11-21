@@ -69,6 +69,7 @@ export class HomeTabComponent {
   public static api_app_secret = PushTrackerKinveyKeys.DEV_SECRET;
   private _weeklyActivityFromKinvey: any;
   private _weeklyUsageFromKinvey: any;
+  
   constructor(
     private _translateService: TranslateService,
     private _logService: LoggingService,
@@ -76,7 +77,7 @@ export class HomeTabComponent {
     private _vcRef: ViewContainerRef,
     private _activityService: ActivityService,
     private _usageService: SmartDriveUsageService
-  ) {}
+  ) { }
 
   async onHomeTabLoaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Loaded');
