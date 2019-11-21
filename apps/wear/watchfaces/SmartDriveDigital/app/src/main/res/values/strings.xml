@@ -16,4 +16,8 @@
     <string name="centercomplicationbackground">centerComplicationBackground</string>
     <string name="centercomplication">centercomplication</string>
     <string name="colon">:</string>
+    <string name="topcomplicationbackground">topcomplicationbackground</string>
+    <string name="topcomplication">topcomplication</string>
+    <string name="smartdriveimagebutton">smartDriveImageButton</string>
+    <string name="noonTime">12:00</string>
 </resources>

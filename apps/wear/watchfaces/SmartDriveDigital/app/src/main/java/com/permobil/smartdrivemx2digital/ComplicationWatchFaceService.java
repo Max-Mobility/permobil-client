@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -32,6 +31,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,9 +68,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
      */
     private static final long MUTE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
-    private static final int CENTER_COMPLICATION_ID = 0;
-    private static final int TOP_COMPLICATION_ID = 0;
-    private static final int[] COMPLICATION_IDS = {CENTER_COMPLICATION_ID, TOP_COMPLICATION_ID};
+    private static final int TOP_COMPLICATION_ID = 1;
+    private static final int CENTER_COMPLICATION_ID = 2;
+    private static final int[] COMPLICATION_IDS = {TOP_COMPLICATION_ID, CENTER_COMPLICATION_ID};
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
@@ -83,6 +83,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_LARGE_IMAGE
             }
     };
 
@@ -113,11 +114,12 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
     static int[] getSupportedComplicationTypes(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
-        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
+        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
             return COMPLICATION_SUPPORTED_TYPES[0];
-        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
             return COMPLICATION_SUPPORTED_TYPES[1];
         }
+
         return new int[]{};
     }
 
@@ -130,7 +132,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     @Override
     public Engine onCreateEngine() {
         mInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        Log.d(TAG, "LayoutInflater in onCreateEngine " + mInflater);
         return new Engine();
     }
 
@@ -138,6 +139,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         private static final int MSG_UPDATE_TIME = 0;
 
         // Gets our view instances in our layout bound with ButterKnife
+        @BindView(R.id.batteryIcon)
+        ImageView batteryIcon;
         @BindView(R.id.watchBatteryCircle)
         CircleProgressView watchBatteryCircle;
         @BindView(R.id.smartDriveBatteryCircle)
@@ -280,14 +283,16 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int sizeOfComplication = width / 4;
             int midpointOfScreen = width / 2;
 
+            int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
+            int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
+
             int offset = 40;
             Rect topBounds = new Rect(width, offset, width, offset);
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
             topComplicationDrawable.setBounds(topBounds);
 
-            Rect centerBounds = new Rect(200, 200, 200, 200);
+            Rect centerBounds = new Rect(200, 50, 200, 50);
             ComplicationDrawable centerComplicationDrawable = mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
-            // hide app icon image
             centerComplicationDrawable.setBounds(centerBounds);
         }
 
@@ -457,10 +462,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onTapCommand(int tapType, int x, int y, long eventTime) {
-            Point p = getViewsLocation(smartDriveBtn);
-            Log.d(TAG, "smart drive btn coords: " + p);
-
-            Log.d(TAG, "OnTapCommand() " + tapType);
             if (tapType == TAP_TYPE_TAP) {
                 int tappedComplicationId = getTappedComplicationId(x, y);
                 Log.d(TAG, "Tapped Complication Id: " + tappedComplicationId);
@@ -588,13 +589,12 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
-            Log.d(TAG, "onComplicationTap() " + complicationId);
-
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
                     try {
+
                         if (complicationId != 2) {
                             complicationData.getTapAction().send();
                         } else {
@@ -612,7 +612,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     } catch (PendingIntent.CanceledException e) {
                         Log.e(TAG, "onComplicationTap() tap action error: " + e);
                     }
-
                 } else if (complicationData.getType() == ComplicationData.TYPE_NO_PERMISSION) {
 
                     // Watch face does not have permission to receive complication data, so launch
@@ -632,10 +631,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             } else {
                 Log.d(TAG, "No PendingIntent for complication " + complicationId + ".");
             }
-        }
-
-        private void adjustPaintColorToCurrentMode(Paint paint, int interactiveColor, int ambientColor) {
-            paint.setColor(isInAmbientMode() ? ambientColor : interactiveColor);
         }
 
         private void setInteractiveUpdateRateMs(long updateRateMs) {
@@ -671,17 +666,14 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
                     Log.d(TAG, "tapped complication y: " + y);
 
-                    // tap position: y < 125 => Refresh SD battery
-                    //           125 < y < 275 => launch MX2+ app
-                    //               y> 275 => call system battery setting
-                    if (y < 125) {
-                        complicationId = 1;
-                        return complicationId;
-                    } else if (y > 275) {
+                    // first lets handle if the user is tapping the smart drive image button
+                    // which holds a fake complication behind it to respond to this event
+                    // we may not need a fake complication if we can rely on the coordinate system to work always here
+                    if (y < 275 && y > 125) {
                         complicationId = 0;
                         return complicationId;
-                    } else {
-                        complicationId = 2;
+                    } else if (y < 125) {
+                        complicationId = 1;
                         return complicationId;
                     }
 
@@ -806,8 +798,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-            float batteryPct = level * 100 / (float) scale;
-            return batteryPct;
+            return level * 100 / (float) scale;
         }
 
         private void registerReceiver() {

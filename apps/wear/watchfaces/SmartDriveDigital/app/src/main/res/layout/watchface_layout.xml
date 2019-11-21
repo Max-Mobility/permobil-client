@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:CircleProgressView="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:weightSum="100"-->
-<!--    tools:context=".MainActivity">-->
+<?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:CircleProgressView="http://schemas.android.com/apk/res-auto"
@@ -20,21 +14,6 @@
     tools:layout_editor_absoluteX="10dp"
     tools:layout_editor_absoluteY="10dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="10dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/batteryIcon"
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:background="@drawable/action_item_background"
-            android:contentDescription="@string/batteryicon"
-            android:elevation="10dp"
-            tools:src="@drawable/ic_battery_full" />
-    </LinearLayout>
 
     <at.grabner.circleprogress.CircleProgressView
         android:id="@+id/watchBatteryCircle"
@@ -104,7 +83,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                android:layout_height="49dp" />
 
             <ImageButton
                 android:id="@+id/smartDriveBtn"
@@ -112,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/action_item_background"
                 android:contentDescription="@string/smartdrivebutton"
+                android:hapticFeedbackEnabled="true"
                 android:src="@drawable/smartdrive_button" />
 
             <LinearLayout
@@ -163,7 +143,16 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/batteryIcon"
+        android:layout_width="20dp"
+        android:layout_height="16dp"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="true"
+        android:background="@color/black"
+        android:contentDescription="@string/batteryicon"
+        android:src="@drawable/ic_battery_full"
+        android:visibility="visible"
+        tools:src="@drawable/ic_battery_full" />
+
 </RelativeLayout>
-
-
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->

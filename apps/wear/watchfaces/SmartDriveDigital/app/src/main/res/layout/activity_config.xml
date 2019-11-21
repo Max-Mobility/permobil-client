@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical">
 
-    <View
-        android:id="@+id/watch_face_background"
-        android:layout_width="@dimen/settings_preview_size"
-        android:layout_height="@dimen/settings_preview_size"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/settings_watch_face_preview_background" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/top_complication_background"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/topcomplicationbackground"
+            android:src="@drawable/add_complication" />
+
+        <ImageButton
+            android:id="@+id/top_complication"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/topcomplication" />
+
+    </RelativeLayout>
+
 
     <ImageView
-        android:id="@+id/center_complication_background"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignStart="@+id/watch_face_background"
-        android:layout_alignTop="@+id/watch_face_background"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="25dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/centercomplicationbackground"
-        android:src="@drawable/added_complication" />
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/smartdriveimagebutton"
+        android:src="@drawable/smartdrive_button" />
 
-    <ImageButton
-        android:id="@+id/center_complication"
-        style="?android:borderlessButtonStyle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignStart="@id/center_complication_background"
-        android:layout_alignTop="@id/center_complication_background"
-        android:layout_centerVertical="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/centercomplication" />
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/noonTime"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-</RelativeLayout>
+</LinearLayout>

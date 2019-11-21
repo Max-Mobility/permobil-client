@@ -18,13 +18,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.Executors;
 
+import butterknife.BindDrawable;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * The watch-side config activity for {@link ComplicationWatchFaceService}, which allows for setting
  * the left and right complications of watch face.
  */
 public class ComplicationConfigActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ConfigActivity";
-
     static final int COMPLICATION_CONFIG_REQUEST_CODE = 1001;
 
     /**
@@ -37,7 +40,6 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         CENTER
     }
 
-    private int mCenterComplicationId;
     private int mTopComplicationId;
     // Selected complication id by user.
     private int mSelectedComplicationId;
@@ -45,27 +47,31 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     private ComponentName mWatchFaceComponentName;
     // Required to retrieve complication data from watch face for preview.
     private ProviderInfoRetriever mProviderInfoRetriever;
-    private ImageView mCenterComplicationBackground;
-    private ImageButton mCenterComplication;
-    private Drawable mDefaultAddComplicationDrawable;
+
+    // Butterknife views
+    @BindDrawable(R.drawable.add_complication)
+    Drawable defaultAddComplicationDrawable;
+    @BindView(R.id.top_complication_background)
+    ImageView topComplicationBackground;
+    @BindView(R.id.top_complication)
+    ImageButton topComplication;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
 
-        mDefaultAddComplicationDrawable = getDrawable(R.drawable.add_complication);
-        mSelectedComplicationId = -1;
-        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.TOP);
         mWatchFaceComponentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
 
-        // Sets up center complication preview.
-        mCenterComplicationBackground = findViewById(R.id.center_complication_background);
-        mCenterComplication = findViewById(R.id.center_complication);
-        mCenterComplication.setOnClickListener(this);
+        ButterKnife.bind(this);
+
+        mSelectedComplicationId = -1;
+        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.CENTER);
+        topComplication.setOnClickListener(this);
         // Sets default as "Add Complication" icon.
-//        mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
-        mCenterComplicationBackground.setVisibility(View.INVISIBLE);
+        topComplication.setImageDrawable(defaultAddComplicationDrawable);
+        topComplicationBackground.setVisibility(View.INVISIBLE);
 
         // Initialization of code to retrieve active complication data for the watch face.
         mProviderInfoRetriever = new ProviderInfoRetriever(getApplicationContext(), Executors.newCachedThreadPool());
@@ -78,6 +84,14 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         super.onDestroy();
         // Required to release retriever for active complication data.
         mProviderInfoRetriever.release();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.equals(topComplication)) {
+            Log.d(TAG, "Top Complication click()");
+            launchComplicationHelperActivity(ComplicationLocation.TOP);
+        }
     }
 
 
@@ -96,13 +110,6 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
                 complicationIds);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.equals(mCenterComplication)) {
-            Log.d(TAG, "Center Complication click()");
-            launchComplicationHelperActivity(ComplicationLocation.CENTER);
-        }
-    }
 
     // Verifies the watch face supports the complication location, then launches the helper
     // class, so user can choose their complication data provider.
@@ -129,13 +136,13 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         Log.d(TAG, "updateComplicationViews(): id: " + watchFaceComplicationId);
         Log.d(TAG, "\tinfo: " + complicationProviderInfo);
 
-        if (watchFaceComplicationId == mCenterComplicationId) {
+        if (watchFaceComplicationId == mTopComplicationId) {
             if (complicationProviderInfo != null) {
-                mCenterComplication.setImageIcon(complicationProviderInfo.providerIcon);
-                mCenterComplicationBackground.setVisibility(View.VISIBLE);
+                topComplication.setImageIcon(complicationProviderInfo.providerIcon);
+                topComplicationBackground.setVisibility(View.INVISIBLE);
             } else {
-                mCenterComplication.setImageDrawable(mDefaultAddComplicationDrawable);
-                mCenterComplicationBackground.setVisibility(View.INVISIBLE);
+                topComplication.setImageDrawable(defaultAddComplicationDrawable);
+                topComplicationBackground.setVisibility(View.VISIBLE);
             }
         }
     }
