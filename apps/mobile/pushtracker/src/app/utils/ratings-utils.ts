@@ -74,7 +74,6 @@ export class Ratings {
             if (Application.android) {
               const androidPackageName = this.configuration.androidPackageId ? this.configuration.androidPackageId : Application.android.packageName;
               const uri = android.net.Uri.parse('market://details?id=' + androidPackageName);
-              console.log(uri);
               const myAppLinkToMarket = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
               // Launch the PlayStore
               Application.android.foregroundActivity.startActivity(myAppLinkToMarket);
