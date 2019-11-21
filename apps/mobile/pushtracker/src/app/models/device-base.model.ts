@@ -54,6 +54,21 @@ export class DeviceBase extends Observable {
     }
   }
 
+  public static validVersion(version: number): boolean {
+    return typeof version === 'number' &&
+      version > 0x00 && version < 0xff;
+  }
+
+  public static versionsUpToDate(latest: string, versions: number[]): boolean {
+    const v = DeviceBase.versionStringToByte(latest);
+    if (v === 0xff) {
+      return false;
+    }
+    return versions.reduce((a, e) => {
+      return a && e !== 0xff && e >= v;
+    }, true);
+  }
+
   /**
    * Microcontroller firmware version number
    */

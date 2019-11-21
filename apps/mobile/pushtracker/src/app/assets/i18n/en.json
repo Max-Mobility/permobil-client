@@ -401,6 +401,15 @@
 		"sync-successful": "Updated SmartDrive settings!",
 		"theme": "Theme",
 		"time-format": "Time Format",
+    "update-notice": {
+      "title": "Update Notice",
+      "both-settings-require-update": "Your PushTracker and SmartDrive are out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your PushTracker and SmartDrive to enable these settings.",
+      "pushtracker-and-smartdrive-out-of-date": "Updates are available for your PushTracker and SmartDrive, please perform a wireless update of both your PushTracker and SmartDrive to get the full functionality of your PushTracker and SmartDrive.",
+      "pushtracker-settings-require-update": "Your PushTracker is out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your PushTracker to enable these settings.",
+      "pushtracker-out-of-date": "Updates are available for your PushTracker, please perform a wireless update of your PushTracker to get the full functionality of your PushTracker and SmartDrive.",
+      "smartdrive-settings-require-update": "Your SmartDrive is out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your SmartDrive to enable these settings.",
+      "smartdrive-out-of-date": "Updates are available for your SmartDrive, please perform a wireless update of your SmartDrive to get the full functionality of your SmartDrive."
+    },
 		"watch-status-alert-message": {
 			"busy": "PushTracker is busy",
 			"connected": "PushTracker is connected",
