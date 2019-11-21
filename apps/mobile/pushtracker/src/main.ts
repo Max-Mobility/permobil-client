@@ -9,6 +9,7 @@ import * as application from 'application';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 require('nativescript-plugin-firebase'); // for configuring push notifications
 import { Ratings } from './app/utils/ratings-utils';
+import { isIOS } from '@nativescript/core';
 
 // If built with env.uglify
 declare const __UGLIFIED__;
@@ -40,22 +41,24 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
   );
 }
 
-class PushTrackerIOSDelegate extends UIResponder implements UIApplicationDelegate {
-  public static ObjCProtocols = [UIApplicationDelegate];
-  applicationDidBecomeActive(application: UIApplication): void {
-    const ratings = new Ratings({
-      id: 'PUSHTRACKER.RATER.COUNT',
-      showOnCount: 100,
-      title: '',
-      text: '',
-      androidPackageId: 'com.permobil.pushtracker',
-      iTunesAppId: '1121427802'
-    });
-    console.log('Incrementing ratings counter');
-    ratings.increment();
+if (isIOS) {
+  class PushTrackerIOSDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
+    applicationDidBecomeActive(application: UIApplication): void {
+      const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: '',
+        text: '',
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+      });
+      console.log('Incrementing ratings counter');
+      ratings.increment();
+    }
   }
+  application.ios.delegate = PushTrackerIOSDelegate;
 }
-application.ios.delegate = PushTrackerIOSDelegate;
 
 // A traditional NativeScript application starts by initializing global objects,
 // setting up global CSS rules, creating, and navigating to the main page.
