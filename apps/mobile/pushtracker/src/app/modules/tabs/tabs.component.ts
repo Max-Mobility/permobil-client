@@ -107,15 +107,6 @@ export class TabsComponent {
     // we have a user - set it!
     this.user = user;
 
-    /*
-    // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
-    if (this.user.data.language_preference) {
-      const language = APP_LANGUAGES[this.user.data.language_preference];
-      if (this._translateService.currentLang !== language)
-        this._translateService.use(language);
-    }
-    */
-
     const config = this.user.data.control_configuration;
     // @ts-ignore
     if (!Object.values(CONFIGURATIONS).includes(config)) {
@@ -174,7 +165,19 @@ export class TabsComponent {
     this.user.data.control_configuration = config;
   }
 
-  onRootBottomNavLoaded(_) {
+  async onRootBottomNavLoaded(_) {
+    // now update all of the UI
+    let language: string | APP_LANGUAGES = APP_LANGUAGES.English;
+    if (this.user && this.user.data.language_preference) {
+      language = APP_LANGUAGES[this.user.data.language_preference];
+      // THIS IS FOR PRODCUTION RELEASE ONLY - at launch PT.M will only support english
+      language = APP_LANGUAGES.English;
+    }
+    if (this._translateService.currentLang !== language) {
+      await this._translateService.reloadLang(language).toPromise();
+      await this._translateService.use(language).toPromise();
+    }
+
     if (this._firstLoad) return;
 
     if (isAndroid) {
@@ -349,10 +352,56 @@ export class TabsComponent {
     pt.off(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.off(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.off(PushTracker.error_event, this.onErrorEvent, this);
+    pt.off(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
     // now register again to make sure we get the events
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.on(PushTracker.error_event, this.onErrorEvent, this);
+    pt.on(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
+  }
+
+  onPushTrackerVersionEvent(args) {
+    const pt = args.object as PushTracker;
+    const smartDriveUpToDate = pt.isSmartDriveUpToDate('2.0');
+    const ptUpToDate = pt.isUpToDate('2.0');
+    // Alert user if they are connected to a pushtracker which is out
+    // of date -
+    // https://github.com/Max-Mobility/permobil-client/issues/516
+    // TODO: should get this version from the server somewhere!
+    if (!smartDriveUpToDate && !ptUpToDate) {
+      // both the pushtrackers and the smartdrives are not up to date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-and-smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!smartDriveUpToDate) {
+      // the pushtrackers are up to date but the smartdrives are not
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!ptUpToDate) {
+      // only the pushtrackers are out of date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    }
   }
 
   onDailyInfoEvent(args) {

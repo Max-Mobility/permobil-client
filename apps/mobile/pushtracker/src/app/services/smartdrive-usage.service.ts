@@ -84,10 +84,9 @@ export class SmartDriveUsageService {
   }
 
   async getWeeklyActivity(date?: string, limit?: number): Promise<any[]> {
-    const query = new KinveyQuery();
     // configure the query to search for only activity that was
     // saved by this user, and to get only the most recent activity
-    query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+    const query = this.makeQuery();
     // set the date if they provided it
     if (date) {
       // make sure we only get the weekly activity we are looking for
@@ -104,41 +103,37 @@ export class SmartDriveUsageService {
 
   async saveDailyUsageFromPushTracker(dailyUsage: any): Promise<boolean> {
     try {
-      const query = new KinveyQuery();
-
       // configure the query to search for only activity that was
       // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      const query = this.makeQuery();
       query.equalTo('date', dailyUsage.date);
 
       // TODO: test this after the update to the Sync datastore type!
 
       // Run a .find first to get the _id of the daily activity
-      {
-        return this.dailyQuery(query)
-          .then((data: any[]) => {
-            if (data && data.length) {
-              const id = data[0]._id;
-              dailyUsage._id = id;
-              dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
-              dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
-            }
-            else {
-              // First record for this day
-              // Save distance_start
-              dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
-              dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
-            }
-            return this.dailyDatastore.save(dailyUsage);
-          })
-          .then((_) => {
-            return true;
-          })
-          .catch((error) => {
-            this._logService.logException(error);
-            return false;
-          });
-      }
+      return this.dailyQuery(query)
+        .then((data: any[]) => {
+          if (data && data.length) {
+            const id = data[0]._id;
+            dailyUsage._id = id;
+            dailyUsage.distance_smartdrive_drive_start = data[0].distance_smartdrive_drive_start;
+            dailyUsage.distance_smartdrive_coast_start = data[0].distance_smartdrive_coast_start;
+          }
+          else {
+            // First record for this day
+            // Save distance_start
+            dailyUsage.distance_smartdrive_drive_start = dailyUsage.distance_smartdrive_drive;
+            dailyUsage.distance_smartdrive_coast_start = dailyUsage.distance_smartdrive_coast;
+          }
+          return this.dailyDatastore.save(dailyUsage);
+        })
+        .then((_) => {
+          return true;
+        })
+        .catch((error) => {
+          this._logService.logException(error);
+          return false;
+        });
 
     } catch (err) {
       this._logService.logBreadCrumb(SmartDriveUsageService.name, 'Failed to save daily usage from pushtracker in Kinvey');
