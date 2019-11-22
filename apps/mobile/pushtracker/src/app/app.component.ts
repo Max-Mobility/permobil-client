@@ -76,6 +76,10 @@ export class AppComponent implements OnInit {
       this._logService.logException(error);
     }
 
+    // unregister for events
+    application.off(application.uncaughtErrorEvent);
+    application.off(application.discardedErrorEvent);
+
     // application level events
     application.on(
       application.uncaughtErrorEvent,
@@ -95,7 +99,8 @@ export class AppComponent implements OnInit {
     );
 
     if (isAndroid) {
-      application.android.on(application.AndroidApplication.activityResumedEvent, function (args) {
+      application.android.off(application.AndroidApplication.activityResumedEvent);
+      application.android.on(application.AndroidApplication.activityResumedEvent, function(args) {
         const ratings = new Ratings({
           id: 'PUSHTRACKER.RATER.COUNT',
           showOnCount: 100,
@@ -104,7 +109,7 @@ export class AppComponent implements OnInit {
           androidPackageId: 'com.permobil.pushtracker',
           iTunesAppId: '1121427802'
         });
-        console.log('Incrementing ratings counter');
+        console.log('Incrementing ratings counter activityResumedEvent');
         ratings.increment();
       });
     }
