@@ -356,16 +356,28 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
 
             if (inAmbientMode) {
-                smartDriveBtn.setVisibility(View.GONE);
-                watchBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                smartDriveBatteryCircle.setValue(75f);
+                if (smartDriveBtn != null) {
+                    smartDriveBtn.setVisibility(View.GONE);
+                }
+                if (watchBatteryCircle != null) {
+                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                }
+                if (smartDriveBatteryCircle != null) {
+                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                    smartDriveBatteryCircle.setValue(75f);
+                }
                 Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
             } else {
-                smartDriveBtn.setVisibility(View.VISIBLE);
-                watchBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_ocean, getTheme()));
-                smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
-                smartDriveBatteryCircle.setValue(38f);
+                if (smartDriveBtn != null) {
+                    smartDriveBtn.setVisibility(View.VISIBLE);
+                }
+                if (watchBatteryCircle != null) {
+                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_ocean, getTheme()));
+                }
+                if (smartDriveBatteryCircle != null) {
+                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
+                    smartDriveBatteryCircle.setValue(38f);
+                }
             }
 
             if (mLowBitAmbient) {
@@ -586,7 +598,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
             Log.d(TAG, "Complication Id: " + complicationId);
             if (complicationId == 0) {
-                Log.d(TAG, "TODO: Need to create a Rect() that holds the SmartDriveButton so we can rely on the actual bounding Rect of the button instead of a value between the Y axis");
                 Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
                 if (smartDriveWearIntent != null) {
                     smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -667,8 +678,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     }
                 } else {
                     // the complication isn't active so lets check if the user is tapping the smartdrive button in center of screen
-
-
                     // we are going to get the rect for the smartDriveBtn and then check if the tap is within the top, left, right, bottom of the button
                     Rect rectView = new Rect();
                     smartDriveBtn.getGlobalVisibleRect(rectView);
