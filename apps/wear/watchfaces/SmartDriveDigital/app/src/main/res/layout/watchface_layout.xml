@@ -75,42 +75,58 @@
             CircleProgressView:cpv_unitPosition="right_top"
             CircleProgressView:cpv_unitScale="1" />
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <Space
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="49dp" />
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
 
-            <ImageButton
-                android:id="@+id/smartDriveBtn"
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp" />
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/action_item_background"
-                android:contentDescription="@string/smartdrivebutton"
-                android:hapticFeedbackEnabled="true"
-                android:src="@drawable/smartdrive_button" />
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
 
-            <LinearLayout
+                <ImageButton
+                    android:id="@+id/smartDriveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|fill_horizontal|center_vertical"
+                    android:background="@drawable/action_item_background"
+                    android:contentDescription="@string/smartdrivebutton"
+                    android:hapticFeedbackEnabled="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/smartdrive_button" />
+            </TableRow>
+
+            <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
 
+                <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center|center_horizontal"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
 
                     <TextView
                         android:id="@+id/hourTextView"
-                        android:layout_width="40dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:fontFamily="@font/roboto_mono_bold"
-                        android:textAlignment="textEnd"
+                        android:textAlignment="viewEnd"
                         android:textSize="24sp" />
 
                     <TextView
@@ -124,22 +140,29 @@
 
                     <TextView
                         android:id="@+id/minuteTextView"
-                        android:layout_width="40dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:fontFamily="@font/roboto_mono_bold"
                         android:textAlignment="textStart"
                         android:textSize="24sp" />
                 </LinearLayout>
 
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
                 <TextView
                     android:id="@+id/amPmTextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_mono"
+                    android:gravity="center"
                     android:textAlignment="center" />
+            </TableRow>
 
-            </LinearLayout>
-        </LinearLayout>
+        </TableLayout>
 
     </RelativeLayout>
 
