@@ -69,7 +69,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     private static final long MUTE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
     private static final int TOP_COMPLICATION_ID = 1;
-    private static final int CENTER_COMPLICATION_ID = 2;
+    private static final int CENTER_COMPLICATION_ID = 0;
     private static final int[] COMPLICATION_IDS = {TOP_COMPLICATION_ID, CENTER_COMPLICATION_ID};
 
     // Left and right dial supported types.
@@ -83,6 +83,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
                     ComplicationData.TYPE_SHORT_TEXT,
+                    ComplicationData.TYPE_SMALL_IMAGE,
                     ComplicationData.TYPE_LARGE_IMAGE
             }
     };
@@ -278,18 +279,44 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
+
+            Log.d(TAG, "width: " + width + " " + "height: " + height);
+
             // For most Wear devices, width and height are the same, so we just chose one (width).
-
             int sizeOfComplication = width / 4;
+            Log.d(TAG, "size of complication: " + sizeOfComplication);
             int midpointOfScreen = width / 2;
-
+            Log.d(TAG, "midpoint of screen: " + midpointOfScreen);
             int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
+            Log.d(TAG, "horizontalOffset: " + horizontalOffset);
             int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
+            Log.d(TAG, "verticalOffset: " + verticalOffset);
 
-            int offset = 40;
-            Rect topBounds = new Rect(width, offset, width, offset);
+            int left = midpointOfScreen - (sizeOfComplication / 2);
+            int top = midpointOfScreen / 2;
+            int right = (horizontalOffset + sizeOfComplication);
+            int bottom = (verticalOffset + sizeOfComplication);
+            Rect topComplicationBounds = new Rect(left, top, right, bottom);
+
+            Rect leftBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            horizontalOffset,
+                            verticalOffset,
+                            (horizontalOffset + sizeOfComplication),
+                            (verticalOffset + sizeOfComplication));
+
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
-            topComplicationDrawable.setBounds(topBounds);
+            topComplicationDrawable.setBorderColorActive(R.color.dark_red);
+            topComplicationDrawable.setBorderColorAmbient(R.color.ambient_mode_text);
+            topComplicationDrawable.setBackgroundColorActive(R.color.blue_a400);
+            topComplicationDrawable.setBackgroundColorAmbient(R.color.permobil_cousteau);
+            topComplicationDrawable.setBounds(leftBounds);
+
+//            int offset = 40;
+//            Rect topBounds = new Rect(width, offset, width, offset);
+//            ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
+//            topComplicationDrawable.setBounds(topBounds);
 
             Rect centerBounds = new Rect(200, 50, 200, 50);
             ComplicationDrawable centerComplicationDrawable = mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
@@ -312,26 +339,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             mRelativeLayout.draw(canvas);
 
             ButterKnife.bind(this, mRelativeLayout);
-
-            // set the click event for the smart drive button
-            smartDriveBtn.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
-                            if (smartDriveWearIntent != null) {
-                                smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(smartDriveWearIntent);
-                            } else {
-                                Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
-                                Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
-                                playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(playStoreIntent);
-                            }
-                        }
-                    }
-            );
-
 
             drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
@@ -447,8 +454,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
             // Updates correct ComplicationDrawable with updated data.
-            ComplicationDrawable complicationDrawable =
-                    mComplicationDrawableSparseArray.get(complicationId);
+            ComplicationDrawable complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
             complicationDrawable.setComplicationData(complicationData);
 
             invalidate();
@@ -563,20 +569,17 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
 
             ComplicationDrawable topComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            if (topComplicationDrawable != null) {
-                topComplicationDrawable.setContext(getApplicationContext());
-            }
+            topComplicationDrawable.setContext(getApplicationContext());
 
             ComplicationDrawable centerComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            if (centerComplicationDrawable != null) {
-                centerComplicationDrawable.setContext(getApplicationContext());
-            }
+            centerComplicationDrawable.setContext(getApplicationContext());
+
 
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
             mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
-            mComplicationDrawableSparseArray.put(CENTER_COMPLICATION_ID, centerComplicationDrawable);
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
+            mComplicationDrawableSparseArray.put(CENTER_COMPLICATION_ID, centerComplicationDrawable);
 
             setActiveComplications(COMPLICATION_IDS);
 
