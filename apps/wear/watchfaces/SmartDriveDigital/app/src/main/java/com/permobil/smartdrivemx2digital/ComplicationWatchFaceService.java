@@ -66,8 +66,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
      */
     private static final long MUTE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
-    private static final int TOP_COMPLICATION_ID = 1;
-    private static final int CENTER_COMPLICATION_ID = 0;
+    private static final int TOP_COMPLICATION_ID = 0;
     private static final int[] COMPLICATION_IDS = {TOP_COMPLICATION_ID};
 
     // Left and right dial supported types.
@@ -339,7 +338,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 }
                 if (smartDriveBatteryCircle != null) {
                     smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                    smartDriveBatteryCircle.setValue(75f);
                     Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
                 }
 
@@ -352,7 +350,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 }
                 if (smartDriveBatteryCircle != null) {
                     smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
-                    smartDriveBatteryCircle.setValue(38f);
                 }
             }
 
@@ -565,7 +562,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
-
                     try {
                         complicationData.getTapAction().send();
                     } catch (PendingIntent.CanceledException e) {
@@ -575,11 +571,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 } else if (complicationData.getType() == ComplicationData.TYPE_NO_PERMISSION) {
                     // Watch face does not have permission to receive complication data, so launch permission request.
                     ComponentName componentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
-
                     Intent permissionRequestIntent = ComplicationHelperActivity.createPermissionRequestHelperIntent(getApplicationContext(), componentName);
                     permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(permissionRequestIntent);
-                    //Log.e("TAG", "Need permission");
+                    Log.e("TAG", "Need permission");
                 }
 
             } else {
