@@ -667,12 +667,13 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     }
                 } else {
                     // the complication isn't active so lets check if the user is tapping the smartdrive button in center of screen
-                    Log.d(TAG, "tapped complication y: " + y);
 
-                    // first lets handle if the user is tapping the smart drive image button
-                    // which holds a fake complication behind it to respond to this event
-                    // we may not need a fake complication if we can rely on the coordinate system to work always here
-                    if (y < 275 && y > 125) {
+
+                    // we are going to get the rect for the smartDriveBtn and then check if the tap is within the top, left, right, bottom of the button
+                    Rect rectView = new Rect();
+                    smartDriveBtn.getGlobalVisibleRect(rectView);
+
+                    if (y < rectView.bottom && y > rectView.top && x > rectView.left && x < rectView.right) {
                         complicationId = 0;
                         return complicationId;
                     }
