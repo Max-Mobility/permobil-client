@@ -171,8 +171,10 @@ export class TabsComponent {
     if (this.user && this.user.data.language_preference) {
       language = APP_LANGUAGES[this.user.data.language_preference];
     }
-    await this._translateService.reloadLang(language).toPromise();
-    await this._translateService.use(language).toPromise();
+    if (this._translateService.currentLang !== language) {
+      await this._translateService.reloadLang(language).toPromise();
+      await this._translateService.use(language).toPromise();
+    }
 
     if (this._firstLoad) return;
 
