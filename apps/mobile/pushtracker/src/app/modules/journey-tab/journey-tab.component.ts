@@ -507,15 +507,26 @@ export class JourneyTabComponent {
 
     if (journeyList.length > 1) {
       for (const i in journeyList) {
-        const first = journeyList[parseInt(i)];
         const firstIndex = parseInt(i);
-        let second = journeyList[parseInt(i) + 1];
+        const first = journeyList[firstIndex];
         const secondIndex = parseInt(i) + 1;
+        let second = journeyList[secondIndex];
 
         while (secondIndex < journeyList.length) {
           // If type of journey is the same
           // If time of day is the same
-          // If first.time + 30 mins == second.time
+          // If first.time + 45 mins < second.time
+
+          // Selectively hide list items in Journey tab #249
+          // https://github.com/Max-Mobility/permobil-client/issues/249
+          // If coastTime is zero, if coastDistance is less then 0.1
+          // then hide the list item
+          if (!second.stats.coastTime || second.stats.coastTime === 0 ||
+            !second.stats.coastCount || second.stats.coastCount <= 10 ||
+            !second.stats.pushCount || second.stats.pushCount <= 10) {
+            if (!second.stats.coastDistance || second.stats.coastDistance < 0.1) break;
+          }
+
           // Then, merge entries
           const firstDate = new Date(parseInt(first.startTime));
           const secondDate = new Date(parseInt(second.startTime));
