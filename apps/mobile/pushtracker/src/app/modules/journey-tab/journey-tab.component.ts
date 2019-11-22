@@ -422,8 +422,11 @@ export class JourneyTabComponent {
 
           // Selectively hide list items in Journey tab #249
           // https://github.com/Max-Mobility/permobil-client/issues/249
-          // If coastTime is zero, if coastDistance is less then 0.1 then hide the list item
-          if (!journey.coastTime || journey.coastTime === 0) {
+          // If coastTime is zero, if coastDistance is less then 0.1
+          // then hide the list item
+          if (!journey.coastTime || journey.coastTime === 0 ||
+            !journey.coastCount || journey.coastCount <= 10 ||
+            !journey.pushCount || journey.pushCount <= 10) {
             if (!journey.coastDistance || journey.coastDistance < 0.1) continue;
           }
 
@@ -522,29 +525,27 @@ export class JourneyTabComponent {
             first.stats.timeOfDay === second.stats.timeOfDay &&
             timeDiff < FORTY_FIVE_MINUTES
           ) {
-            journeyList[firstIndex].stats.coastTime =
-              ((journeyList[firstIndex].stats.coastTimeTotal || 0) +
-                second.stats.coastTimeTotal || 0) /
-              ((journeyList[firstIndex].stats.coastCount || 0) +
-                second.stats.coastCount ||
-                0 ||
-                1);
             // accumulate the second into the first for each data
             journeyList[firstIndex].stats.coastDistance =
               (journeyList[firstIndex].stats.coastDistance || 0) +
-              second.stats.coastDistance || 0;
+              (second.stats.coastDistance || 0);
             journeyList[firstIndex].stats.driveDistance =
               (journeyList[firstIndex].stats.driveDistance || 0) +
-              second.stats.driveDistance || 0;
+              (second.stats.driveDistance || 0);
             journeyList[firstIndex].stats.pushCount =
               (journeyList[firstIndex].stats.pushCount || 0) +
-              second.stats.pushCount || 0;
+              (second.stats.pushCount || 0);
             journeyList[firstIndex].stats.coastCount =
               (journeyList[firstIndex].stats.coastCount || 0) +
-              second.stats.coastCount || 0;
+              (second.stats.coastCount || 0);
             journeyList[firstIndex].stats.coastTimeTotal =
               (journeyList[firstIndex].stats.coastTimeTotal || 0) +
-              second.stats.coastTimeTotal || 0;
+              (second.stats.coastTimeTotal || 0);
+            // now calculate the coast time for the overall journey
+            journeyList[firstIndex].stats.coastTime =
+              (journeyList[firstIndex].stats.coastTimeTotal || 0) /
+              (journeyList[firstIndex].stats.coastCount || 1);
+            // now update the journey list
             if (!journeyList[firstIndex].stats.mergedTimes)
               journeyList[firstIndex].stats.mergedTimes = [];
             journeyList[firstIndex].stats.mergedTimes.push(second.startTime);
