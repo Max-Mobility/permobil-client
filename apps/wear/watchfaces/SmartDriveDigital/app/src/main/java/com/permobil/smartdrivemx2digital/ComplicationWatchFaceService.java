@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -307,20 +306,19 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                             (verticalOffset + sizeOfComplication));
 
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
-            topComplicationDrawable.setBorderColorActive(R.color.dark_red);
-            topComplicationDrawable.setBorderColorAmbient(R.color.ambient_mode_text);
-            topComplicationDrawable.setBackgroundColorActive(R.color.blue_a400);
-            topComplicationDrawable.setBackgroundColorAmbient(R.color.permobil_cousteau);
             topComplicationDrawable.setBounds(leftBounds);
 
-//            int offset = 40;
-//            Rect topBounds = new Rect(width, offset, width, offset);
-//            ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
-//            topComplicationDrawable.setBounds(topBounds);
-
-            Rect centerBounds = new Rect(200, 50, 200, 50);
+            Rect rect = new Rect(left, top, right, bottom);
+            Rect rightBounds =
+                    // Left, Top, Right, Bottom
+                    new Rect(
+                            (midpointOfScreen + horizontalOffset),
+                            verticalOffset,
+                            (midpointOfScreen + horizontalOffset + sizeOfComplication),
+                            (verticalOffset + sizeOfComplication));
             ComplicationDrawable centerComplicationDrawable = mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
-            centerComplicationDrawable.setBounds(centerBounds);
+            centerComplicationDrawable.setBounds(rightBounds);
+            Log.d(TAG, "set the bounds for the center complication");
         }
 
         @Override
@@ -432,8 +430,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 amPmTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
             }
 
-            // Updates complications to properly render in ambient mode based on the
-            // screen's capabilities.
+            // Updates complications to properly render in ambient mode based on the screen's capabilities.
             ComplicationDrawable complicationDrawable;
 
             for (int complicationId : COMPLICATION_IDS) {
@@ -453,27 +450,23 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
-            // Updates correct ComplicationDrawable with updated data.
+            // Updates correct ComplicationDrawable with updated  data.
             ComplicationDrawable complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
             complicationDrawable.setComplicationData(complicationData);
 
             invalidate();
         }
 
-        public Point getViewsLocation(View view) {
-            int[] location = new int[2];
-            view.getLocationInWindow(location);
-            return new Point(location[0], location[1]);
-        }
-
         @Override
         public void onTapCommand(int tapType, int x, int y, long eventTime) {
-            if (tapType == TAP_TYPE_TAP) {
-                int tappedComplicationId = getTappedComplicationId(x, y);
-                Log.d(TAG, "Tapped Complication Id: " + tappedComplicationId);
-                if (tappedComplicationId != -1) {
-                    onComplicationTap(tappedComplicationId);
-                }
+            // leave as switch statement
+            switch (tapType) {
+                case TAP_TYPE_TAP:
+                    int tappedComplicationId = getTappedComplicationId(x, y);
+                    if (tappedComplicationId != -1) {
+                        onComplicationTap(tappedComplicationId);
+                    }
+                    break;
             }
         }
 
@@ -560,19 +553,15 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // but you could add many more.
             // All styles for the complications are defined in
             // drawable/custom_complication_styles.xml.
-
-//            ComplicationDrawable backgroundComplicationDrawable =
-//                    (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-//            if (backgroundComplicationDrawable != null) {
-//                backgroundComplicationDrawable.setContext(getApplicationContext());
-//            }
-
-
             ComplicationDrawable topComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            topComplicationDrawable.setContext(getApplicationContext());
+            if (topComplicationDrawable != null) {
+                topComplicationDrawable.setContext(getApplicationContext());
+            }
 
             ComplicationDrawable centerComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            centerComplicationDrawable.setContext(getApplicationContext());
+            if (centerComplicationDrawable != null) {
+                centerComplicationDrawable.setContext(getApplicationContext());
+            }
 
 
             // Adds new complications to a SparseArray to simplify setting styles and ambient
@@ -592,40 +581,38 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
+            Log.d(TAG, "onComplicationTap()");
+
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
+            Log.d(TAG, "Complication Id: " + complicationId);
+            if (complicationId == 0) {
+                Log.d(TAG, "TODO: Need to create a Rect() that holds the SmartDriveButton so we can rely on the actual bounding Rect of the button instead of a value between the Y axis");
+                Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
+                if (smartDriveWearIntent != null) {
+                    smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(smartDriveWearIntent);
+                } else {
+                    Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
+                    Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
+                    playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(playStoreIntent);
+                }
+            }
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
-                    try {
 
-                        if (complicationId != 2) {
-                            complicationData.getTapAction().send();
-                        } else {
-                            Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
-                            if (smartDriveWearIntent != null) {
-                                smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(smartDriveWearIntent);
-                            } else {
-                                Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
-                                Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
-                                playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(playStoreIntent);
-                            }
-                        }
+                    try {
+                        complicationData.getTapAction().send();
                     } catch (PendingIntent.CanceledException e) {
+                        Sentry.capture(e);
                         Log.e(TAG, "onComplicationTap() tap action error: " + e);
                     }
                 } else if (complicationData.getType() == ComplicationData.TYPE_NO_PERMISSION) {
+                    // Watch face does not have permission to receive complication data, so launch permission request.
+                    ComponentName componentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
 
-                    // Watch face does not have permission to receive complication data, so launch
-                    // permission request.
-                    ComponentName componentName =
-                            new ComponentName(
-                                    getApplicationContext(), ComplicationWatchFaceService.class);
-
-                    Intent permissionRequestIntent =
-                            ComplicationHelperActivity.createPermissionRequestHelperIntent(
-                                    getApplicationContext(), componentName);
+                    Intent permissionRequestIntent = ComplicationHelperActivity.createPermissionRequestHelperIntent(getApplicationContext(), componentName);
                     permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(permissionRequestIntent);
                     //Log.e("TAG", "Need permission");
@@ -658,7 +645,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             long currentTimeMillis = System.currentTimeMillis();
 
-            for (int i = 1; i < COMPLICATION_IDS.length; i++) {
+            // leave as for loop to iterate correctly
+            for (int i = 0; i < COMPLICATION_IDS.length; i++) {
                 complicationId = COMPLICATION_IDS[i];
                 complicationData = mActiveComplicationDataSparseArray.get(complicationId);
 
@@ -667,6 +655,18 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                         && (complicationData.getType() != ComplicationData.TYPE_NOT_CONFIGURED)
                         && (complicationData.getType() != ComplicationData.TYPE_EMPTY)) {
 
+                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+                    Rect complicationBoundingRect = complicationDrawable.getBounds();
+
+                    if (complicationBoundingRect.width() > 0) {
+                        if (complicationBoundingRect.contains(x, y)) {
+                            return complicationId;
+                        }
+                    } else {
+                        Log.e(TAG, "Not a recognized complication id.");
+                    }
+                } else {
+                    // the complication isn't active so lets check if the user is tapping the smartdrive button in center of screen
                     Log.d(TAG, "tapped complication y: " + y);
 
                     // first lets handle if the user is tapping the smart drive image button
@@ -675,22 +675,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     if (y < 275 && y > 125) {
                         complicationId = 0;
                         return complicationId;
-                    } else if (y < 125) {
-                        complicationId = 1;
-                        return complicationId;
                     }
-
-
-//                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
-//                    Rect complicationBoundingRect = complicationDrawable.getBounds();
-//
-//                    if (complicationBoundingRect.width() > 0) {
-//                        if (complicationBoundingRect.contains(x, y)) {
-//                            return complicationId;
-//                        }
-//                    } else {
-//                        Log.e(TAG, "Not a recognized complication id.");
-//                    }
                 }
             }
             return -1;
