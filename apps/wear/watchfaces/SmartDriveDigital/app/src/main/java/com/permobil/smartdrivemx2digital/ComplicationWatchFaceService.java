@@ -365,8 +365,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBatteryCircle != null) {
                     smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
                     smartDriveBatteryCircle.setValue(75f);
+                    Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
                 }
-                Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
+
             } else {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
@@ -590,6 +591,12 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
         }
 
+        // Helper method to change the text size of the time during ambient mode changes for layout positioning
+        private void changeTimeTextSize(float textSize) {
+            minuteTextView.setTextSize(textSize);
+            colonTextView.setTextSize(textSize);
+            hourTextView.setTextSize(textSize);
+        }
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
