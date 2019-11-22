@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.complications.ComplicationData;
 import android.support.wearable.complications.ComplicationHelperActivity;
-import android.support.wearable.complications.SystemProviders;
 import android.support.wearable.complications.rendering.ComplicationDrawable;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -69,15 +68,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
     private static final int TOP_COMPLICATION_ID = 1;
     private static final int CENTER_COMPLICATION_ID = 0;
-    private static final int[] COMPLICATION_IDS = {TOP_COMPLICATION_ID, CENTER_COMPLICATION_ID};
+    private static final int[] COMPLICATION_IDS = {TOP_COMPLICATION_ID};
 
     // Left and right dial supported types.
     private static final int[][] COMPLICATION_SUPPORTED_TYPES = {
-            {
-                    ComplicationData.TYPE_RANGED_VALUE,
-                    ComplicationData.TYPE_ICON,
-                    ComplicationData.TYPE_SHORT_TEXT,
-            },
             {
                     ComplicationData.TYPE_RANGED_VALUE,
                     ComplicationData.TYPE_ICON,
@@ -94,10 +88,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     // to check if complication location is supported.
 
     static int getComplicationId(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
-        // Add any other supported locations here you would like to support. In our case, we are only supporting a center top complication
-        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
-            return CENTER_COMPLICATION_ID;
-        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+        // Add any other supported locations here you would like to support. In our case, we are only supporting a top complication
+        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
             return TOP_COMPLICATION_ID;
         }
         return -1;
@@ -116,8 +108,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         // Add any other supported locations here.
         if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
             return COMPLICATION_SUPPORTED_TYPES[0];
-        } else if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.CENTER) {
-            return COMPLICATION_SUPPORTED_TYPES[1];
         }
 
         return new int[]{};
@@ -278,9 +268,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
-
             Log.d(TAG, "width: " + width + " " + "height: " + height);
-
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 4;
             Log.d(TAG, "size of complication: " + sizeOfComplication);
@@ -295,9 +283,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int top = midpointOfScreen / 2;
             int right = (horizontalOffset + sizeOfComplication);
             int bottom = (verticalOffset + sizeOfComplication);
-            Rect topComplicationBounds = new Rect(left, top, right, bottom);
 
-            Rect leftBounds =
+            Rect topComplicationBounds =
                     // Left, Top, Right, Bottom
                     new Rect(
                             horizontalOffset,
@@ -306,19 +293,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                             (verticalOffset + sizeOfComplication));
 
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
-            topComplicationDrawable.setBounds(leftBounds);
-
-            Rect rect = new Rect(left, top, right, bottom);
-            Rect rightBounds =
-                    // Left, Top, Right, Bottom
-                    new Rect(
-                            (midpointOfScreen + horizontalOffset),
-                            verticalOffset,
-                            (midpointOfScreen + horizontalOffset + sizeOfComplication),
-                            (verticalOffset + sizeOfComplication));
-            ComplicationDrawable centerComplicationDrawable = mComplicationDrawableSparseArray.get(CENTER_COMPLICATION_ID);
-            centerComplicationDrawable.setBounds(rightBounds);
-            Log.d(TAG, "set the bounds for the center complication");
+            topComplicationDrawable.setBounds(topComplicationBounds);
         }
 
         @Override
@@ -571,51 +546,22 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 topComplicationDrawable.setContext(getApplicationContext());
             }
 
-            ComplicationDrawable centerComplicationDrawable = (ComplicationDrawable) getDrawable(R.drawable.custom_complication_styles);
-            if (centerComplicationDrawable != null) {
-                centerComplicationDrawable.setContext(getApplicationContext());
-            }
-
-
             // Adds new complications to a SparseArray to simplify setting styles and ambient
             // properties for all complications, i.e., iterate over them all.
             mComplicationDrawableSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
             mComplicationDrawableSparseArray.put(TOP_COMPLICATION_ID, topComplicationDrawable);
-            mComplicationDrawableSparseArray.put(CENTER_COMPLICATION_ID, centerComplicationDrawable);
 
             setActiveComplications(COMPLICATION_IDS);
 
+            // set the default complication provider for the TOP COMPLICATION
             setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
-            setDefaultSystemComplicationProvider(COMPLICATION_IDS[1], SystemProviders.APP_SHORTCUT, ComplicationData.TYPE_LARGE_IMAGE);
-//            setDefaultSystemComplicationProvider(COMPLICATION_IDS[0], SystemProviders.WATCH_BATTERY, ComplicationData.TYPE_RANGED_VALUE);
-
-        }
-
-        // Helper method to change the text size of the time during ambient mode changes for layout positioning
-        private void changeTimeTextSize(float textSize) {
-            minuteTextView.setTextSize(textSize);
-            colonTextView.setTextSize(textSize);
-            hourTextView.setTextSize(textSize);
         }
 
         // Fires PendingIntent associated with complication (if it has one).
         private void onComplicationTap(int complicationId) {
             Log.d(TAG, "onComplicationTap()");
-
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
             Log.d(TAG, "Complication Id: " + complicationId);
-            if (complicationId == 0) {
-                Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
-                if (smartDriveWearIntent != null) {
-                    smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(smartDriveWearIntent);
-                } else {
-                    Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
-                    Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
-                    playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(playStoreIntent);
-                }
-            }
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
@@ -683,19 +629,32 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     } else {
                         Log.e(TAG, "Not a recognized complication id.");
                     }
-                } else {
-                    // the complication isn't active so lets check if the user is tapping the smartdrive button in center of screen
-                    // we are going to get the rect for the smartDriveBtn and then check if the tap is within the top, left, right, bottom of the button
-                    Rect rectView = new Rect();
-                    smartDriveBtn.getGlobalVisibleRect(rectView);
-
-                    if (y < rectView.bottom && y > rectView.top && x > rectView.left && x < rectView.right) {
-                        complicationId = 0;
-                        return complicationId;
-                    }
                 }
             }
+
+            // here we wanna check if the user tapped the smartdrive button in the view layout
+            // the complication isn't active so lets check if the user is tapping the smartdrive button in center of screen
+            // we are going to get the rect for the smartDriveBtn and then check if the tap is within the top, left, right, bottom of the button
+            Rect rectView = new Rect();
+            smartDriveBtn.getGlobalVisibleRect(rectView);
+            if (y < rectView.bottom && y > rectView.top && x > rectView.left && x < rectView.right) {
+                openSmartDriveAppOrPlayStore();
+            }
+
             return -1;
+        }
+
+        private void openSmartDriveAppOrPlayStore() {
+            Intent smartDriveWearIntent = getPackageManager().getLaunchIntentForPackage("com.permobil.smartdrive.wearos");
+            if (smartDriveWearIntent != null) {
+                smartDriveWearIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(smartDriveWearIntent);
+            } else {
+                Uri uri = Uri.parse("market://details?id=" + "com.permobil.smartdrive.wearos");
+                Intent playStoreIntent = new android.content.Intent(android.content.Intent.ACTION_VIEW, uri);
+                playStoreIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(playStoreIntent);
+            }
         }
 
         private void drawTimeStrings() {

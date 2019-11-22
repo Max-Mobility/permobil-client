@@ -36,8 +36,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
      * supported complication data types.
      */
     public enum ComplicationLocation {
-        TOP,
-        CENTER
+        TOP
     }
 
     private int mTopComplicationId;
@@ -67,7 +66,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         ButterKnife.bind(this);
 
         mSelectedComplicationId = -1;
-        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.CENTER);
+        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.TOP);
         topComplication.setOnClickListener(this);
         // Sets default as "Add Complication" icon.
         topComplication.setImageDrawable(defaultAddComplicationDrawable);
@@ -94,6 +93,17 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == COMPLICATION_CONFIG_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Retrieves information for selected Complication provider.
+            ComplicationProviderInfo complicationProviderInfo = data.getParcelableExtra(ProviderChooserIntent.EXTRA_PROVIDER_INFO);
+            Log.d(TAG, "Provider: " + complicationProviderInfo);
+            if (mSelectedComplicationId >= 0) {
+                updateComplicationViews(mSelectedComplicationId, complicationProviderInfo);
+            }
+        }
+    }
 
     public void retrieveInitialComplicationsData() {
         final int[] complicationIds = ComplicationWatchFaceService.getComplicationIds();
@@ -110,10 +120,23 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
                 complicationIds);
     }
 
+    public void updateComplicationViews(int watchFaceComplicationId, ComplicationProviderInfo complicationProviderInfo) {
+        Log.d(TAG, "updateComplicationViews(): id: " + watchFaceComplicationId);
+        Log.d(TAG, "\tinfo: " + complicationProviderInfo);
+
+        if (watchFaceComplicationId == mTopComplicationId) {
+            if (complicationProviderInfo != null) {
+                topComplication.setImageIcon(complicationProviderInfo.providerIcon);
+                topComplicationBackground.setVisibility(View.VISIBLE);
+            } else {
+                topComplication.setImageDrawable(defaultAddComplicationDrawable);
+                topComplicationBackground.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
 
     // Verifies the watch face supports the complication location, then launches the helper
     // class, so user can choose their complication data provider.
-
     private void launchComplicationHelperActivity(ComplicationLocation complicationLocation) {
         mSelectedComplicationId = ComplicationWatchFaceService.getComplicationId(complicationLocation);
 
@@ -129,34 +152,6 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
             );
         } else {
             Log.d(TAG, "Complication not supported by watch face.");
-        }
-    }
-
-    public void updateComplicationViews(int watchFaceComplicationId, ComplicationProviderInfo complicationProviderInfo) {
-        Log.d(TAG, "updateComplicationViews(): id: " + watchFaceComplicationId);
-        Log.d(TAG, "\tinfo: " + complicationProviderInfo);
-
-        if (watchFaceComplicationId == mTopComplicationId) {
-            if (complicationProviderInfo != null) {
-                topComplication.setImageIcon(complicationProviderInfo.providerIcon);
-                topComplicationBackground.setVisibility(View.INVISIBLE);
-            } else {
-                topComplication.setImageDrawable(defaultAddComplicationDrawable);
-                topComplicationBackground.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == COMPLICATION_CONFIG_REQUEST_CODE && resultCode == RESULT_OK) {
-
-            // Retrieves information for selected Complication provider.
-            ComplicationProviderInfo complicationProviderInfo = data.getParcelableExtra(ProviderChooserIntent.EXTRA_PROVIDER_INFO);
-            Log.d(TAG, "Provider: " + complicationProviderInfo);
-            if (mSelectedComplicationId >= 0) {
-                updateComplicationViews(mSelectedComplicationId, complicationProviderInfo);
-            }
         }
     }
 }

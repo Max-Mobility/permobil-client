@@ -118,7 +118,7 @@
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_gravity="center_horizontal|fill_horizontal|center_vertical"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
@@ -144,7 +144,6 @@
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:fontFamily="@font/roboto_mono_bold"
                         android:text="@string/_12"
                         android:textAlignment="viewEnd"
                         android:textSize="24sp" />
@@ -153,7 +152,6 @@
                         android:id="@+id/colonTextView"
                         android:layout_width="10dp"
                         android:layout_height="30dp"
-                        android:fontFamily="@font/roboto_mono_bold"
                         android:text="@string/colon"
                         android:textAlignment="center"
                         android:textSize="24sp" />
@@ -162,7 +160,6 @@
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:fontFamily="@font/roboto_mono_bold"
                         android:text="@string/_00"
                         android:textAlignment="textStart"
                         android:textSize="24sp" />
