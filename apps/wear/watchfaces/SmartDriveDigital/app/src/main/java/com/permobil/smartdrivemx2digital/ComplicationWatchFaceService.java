@@ -126,7 +126,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
     public class Engine extends CanvasWatchFaceService.Engine {
         private static final int MSG_UPDATE_TIME = 0;
-
         // Gets our view instances in our layout bound with ButterKnife
         @BindView(R.id.batteryIcon)
         ImageView batteryIcon;
@@ -144,7 +143,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         TextView minuteTextView;
         @BindView(R.id.amPmTextView)
         TextView amPmTextView;
-
 
         /**
          * Alpha value for drawing time when in mute mode.
@@ -278,20 +276,16 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
             Log.d(TAG, "verticalOffset: " + verticalOffset);
 
-            int left = midpointOfScreen - (sizeOfComplication / 2);
-            int top = midpointOfScreen / 2;
-            int right = (horizontalOffset + sizeOfComplication);
-            int bottom = (verticalOffset + sizeOfComplication);
+            int left = horizontalOffset;
+            int top = verticalOffset;
+            int right = horizontalOffset + sizeOfComplication;
+            int bottom = verticalOffset + sizeOfComplication;
 
-            Rect topComplicationBounds =
-                    // Left, Top, Right, Bottom
-                    new Rect(
-                            horizontalOffset,
-                            verticalOffset,
-                            (horizontalOffset + sizeOfComplication),
-                            (verticalOffset + sizeOfComplication));
+            Rect topComplicationBounds = new Rect(left, top, right, bottom);
+            Log.d(TAG, "complication bounds: " + topComplicationBounds);
 
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
+            topComplicationDrawable.setBackgroundColorActive(R.color.permobil_cousteau);
             topComplicationDrawable.setBounds(topComplicationBounds);
         }
 
