@@ -271,9 +271,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             Log.d(TAG, "size of complication: " + sizeOfComplication);
             int midpointOfScreen = width / 2;
             Log.d(TAG, "midpoint of screen: " + midpointOfScreen);
-            int horizontalOffset = (midpointOfScreen - sizeOfComplication) / 2;
+            int horizontalOffset = midpointOfScreen - sizeOfComplication / 2;
             Log.d(TAG, "horizontalOffset: " + horizontalOffset);
-            int verticalOffset = midpointOfScreen - (sizeOfComplication / 2);
+            int verticalOffset = midpointOfScreen  / 7;
             Log.d(TAG, "verticalOffset: " + verticalOffset);
 
             int left = horizontalOffset;
