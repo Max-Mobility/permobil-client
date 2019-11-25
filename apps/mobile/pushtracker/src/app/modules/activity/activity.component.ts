@@ -1401,7 +1401,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateDayChartLabel() {
-    let activity = undefined;
+    let activity;
     if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {
@@ -1447,7 +1447,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateDailyActivityAnnotationValue() {
-    let activity = undefined;
+    let activity;
     if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {
