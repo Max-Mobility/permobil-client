@@ -1,6 +1,5 @@
 # Permobil-Client
 
-
 This repo contains multiple app projects.
 Mobile apps are built using NativeScript + Angular.
 Wear OS apps are built using plain NativeScript to avoid having additional javascript loaded with a framework like Angular.
