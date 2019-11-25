@@ -1,6 +1,7 @@
 import { File, isIOS, knownFolders, Observable, path } from '@nativescript/core';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { DownloadProgress } from 'nativescript-download-progress';
+import { differenceInCalendarDays } from 'date-fns';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services';
 
@@ -922,12 +923,19 @@ export class PushTracker extends Observable {
        uint8_t             numBLEDisconnectErrors;
        }                     errorInfo;
     */
-    // TODO: send error event to subscribers so they get updated
-    if (errorInfo.year && errorInfo.month && errorInfo.day) {
+    // Properly check against invalid dates (null or in the future)
+    // https://github.com/Max-Mobility/permobil-client/issues/546
+    const year = errorInfo.year;
+    const month = errorInfo.month - 1;
+    const day = errorInfo.day;
+    const now = new Date();
+    const then = new Date(year, month, day);
+    const diff = differenceInCalendarDays(now, then);
+    if (year && month && day && diff >= 0) {
       this.sendEvent(PushTracker.error_event, {
-        year: errorInfo.year,
-        month: errorInfo.month - 1,
-        day: errorInfo.day,
+        year: year,
+        month: month,
+        day: day,
         hour: errorInfo.hour,
         minute: errorInfo.minute,
         second: errorInfo.second,
@@ -943,8 +951,6 @@ export class PushTracker extends Observable {
         numBLEDisconnectErrors: errorInfo.numBLEDisconnectErrors
       });
     }
-    // TODO: update error record for this pushtracker (locally and
-    // on the server)
   }
 
   private handleDistance(p: Packet) {
@@ -968,8 +974,6 @@ export class PushTracker extends Observable {
       driveMiles: motorMiles,
       coastMiles: caseMiles
     });
-    // TODO: update distance record for this pushtracker (locally
-    // and on the server)
   }
 
   private handleSettings(p: Packet) {
@@ -1044,23 +1048,31 @@ export class PushTracker extends Observable {
            uint8_t     speed;           /** Speed (mph) * 10.
            uint8_t     ptBattery;       /** Percent, [0, 100].
            uint8_t     sdBattery;       /** Percent, [0, 100].
-         }            dailyInfo;
+           }            dailyInfo;
     */
-    this.sendEvent(PushTracker.daily_info_event, {
-      year: di.year,
-      month: di.month,
-      day: di.day,
-      pushesWith: di.pushesWith,
-      pushesWithout: di.pushesWithout,
-      coastWith: di.coastWith / 100.0,
-      coastWithout: di.coastWithout / 100.0,
-      distance: di.distance / 10.0,
-      speed: di.speed / 10.0,
-      ptBattery: di.ptBattery,
-      sdBattery: di.sdBattery
-    });
-    // TODO: upate daily info record for this pushtracker (locally
-    // and on the server)
+    // Properly check against invalid dates (null or in the future)
+    // https://github.com/Max-Mobility/permobil-client/issues/546
+    const year = di.year;
+    const month = di.month;
+    const day = di.day;
+    const now = new Date();
+    const then = new Date(year, month, day);
+    const diff = differenceInCalendarDays(now, then);
+    if (year && month && day && diff >= 0) {
+      this.sendEvent(PushTracker.daily_info_event, {
+        year: year,
+        month: month,
+        day: day,
+        pushesWith: di.pushesWith,
+        pushesWithout: di.pushesWithout,
+        coastWith: di.coastWith / 100.0,
+        coastWithout: di.coastWithout / 100.0,
+        distance: di.distance / 10.0,
+        speed: di.speed / 10.0,
+        ptBattery: di.ptBattery,
+        sdBattery: di.sdBattery
+      });
+    }
   }
 
   private handleReady(_: Packet) {
