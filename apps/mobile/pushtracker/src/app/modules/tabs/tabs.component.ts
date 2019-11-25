@@ -409,7 +409,7 @@ export class TabsComponent {
     );
     const data = args.data;
     const year = data.year;
-    const month = data.month - 1;
+    const month = data.month;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
     const coastWith = data.coastWith;
