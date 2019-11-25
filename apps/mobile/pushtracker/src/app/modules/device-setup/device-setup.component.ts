@@ -195,7 +195,7 @@ export class DeviceSetupComponent implements OnInit {
             'permissions-reasons.coarse-location'
           )
       };
-      neededPermissions.map(r => {
+      neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
       });
       if (neededPermissions && neededPermissions.length > 0) {
@@ -234,7 +234,7 @@ export class DeviceSetupComponent implements OnInit {
       } else if (trackers.length > 1) {
         return;
       } else {
-        trackers.map(tracker => {
+        trackers.forEach(tracker => {
           this.pushTracker = tracker;
           this.paired = true;
           this.statusMessage = this._translateService.instant(

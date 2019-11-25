@@ -266,7 +266,7 @@ export class TabsComponent {
             'permissions-reasons.coarse-location'
           )
       };
-      neededPermissions.map(r => {
+      neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
       });
       if (neededPermissions && neededPermissions.length > 0) {

@@ -470,17 +470,11 @@ export class JourneyTabComponent {
                     : 'smartdrive_material_white_45'
                 ),
             icon_large:
-              this.CURRENT_THEME === APP_THEMES.DEFAULT
-                ? ImageSource.fromResourceSync(
-                  journey.journeyType === JourneyType.ROLL
-                    ? 'roll_white'
-                    : 'smartdrive_material_white_45'
-                )
-                : ImageSource.fromResourceSync(
-                  journey.journeyType === JourneyType.ROLL
-                    ? 'roll_white'
-                    : 'smartdrive_material_white_45'
-                )
+              ImageSource.fromResourceSync(
+                journey.journeyType === JourneyType.ROLL
+                  ? 'roll_white'
+                  : 'smartdrive_material_white_45'
+              )
           });
         }
         return newJourneyItems;

@@ -1033,7 +1033,7 @@ export class ProfileTabComponent {
 
   private onUserUpdateUnits(args: any) {
     const data = args.data;
-    Object.entries(data).map(([key, value]) => {
+    Object.entries(data).forEach(([key, value]) => {
       this._logService.logBreadCrumb(
         ProfileTabComponent.name,
         `Registered user changed units: ${key}: ${value}`

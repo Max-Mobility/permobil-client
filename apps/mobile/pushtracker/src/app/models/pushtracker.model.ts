@@ -1138,11 +1138,7 @@ export namespace PushTrackerData {
     }
 
     export function versionByteToString(version: number): string {
-      if (version === 0xff || version === 0x00) {
-        return 'unknown';
-      } else {
-        return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
-      }
+      return PushTracker.versionByteToString(version);
     }
 
     export function versionStringToByte(version: string): number {

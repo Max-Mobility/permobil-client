@@ -649,7 +649,7 @@ export class BluetoothService extends Observable {
             return d;
           });
 
-          descriptors.map(d => {
+          descriptors.forEach(d => {
             c.addDescriptor(d);
           });
         } else {
@@ -677,7 +677,7 @@ export class BluetoothService extends Observable {
         return c;
       });
       if (isAndroid) {
-        characteristics.map(c => this.AppService.addCharacteristic(c));
+        characteristics.forEach(c => this.AppService.addCharacteristic(c));
       } else {
         this.AppService.characteristics = characteristics;
       }
@@ -789,7 +789,7 @@ export class BluetoothService extends Observable {
   }
 
   disconnectPushTrackers(addresses: string[]) {
-    addresses.map(addr => {
+    addresses.forEach(addr => {
       this._bluetooth.cancelServerConnection(addr);
     });
   }

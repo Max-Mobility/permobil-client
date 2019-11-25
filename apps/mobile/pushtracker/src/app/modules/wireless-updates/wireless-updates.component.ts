@@ -473,7 +473,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       `Got version: ${version}`
     );
     // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentVersions).map(k => this.currentVersions[k].changes);
+    Object.keys(this.currentVersions).forEach(k => this.currentVersions[k].changes);
     let bleFw = null;
     let mcuFw = null;
     if (isAndroid) {
@@ -871,7 +871,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else {
-        trackers.map(tracker => {
+        trackers.forEach(tracker => {
           this.pushTracker = tracker;
         });
       }
@@ -897,7 +897,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       `Got version: ${version}`
     );
     // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentPushTrackerVersions).map(
+    Object.keys(this.currentPushTrackerVersions).forEach(
       k => this.currentPushTrackerVersions[k].changes
     );
     let ptFw = null;

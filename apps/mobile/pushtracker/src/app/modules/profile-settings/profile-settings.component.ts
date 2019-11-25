@@ -230,7 +230,7 @@ export class ProfileSettingsComponent implements OnInit {
   getUser() {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
-    Object.entries(APP_LANGUAGES).map(([key, value]) => {
+    Object.entries(APP_LANGUAGES).forEach(([key, value]) => {
       if (device.language.startsWith(value)) {
         defaultLanguage = key;
       }
