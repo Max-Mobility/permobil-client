@@ -1053,7 +1053,7 @@ export class PushTracker extends Observable {
     // Properly check against invalid dates (null or in the future)
     // https://github.com/Max-Mobility/permobil-client/issues/546
     const year = di.year;
-    const month = di.month;
+    const month = di.month - 1;
     const day = di.day;
     const now = new Date();
     const then = new Date(year, month, day);
