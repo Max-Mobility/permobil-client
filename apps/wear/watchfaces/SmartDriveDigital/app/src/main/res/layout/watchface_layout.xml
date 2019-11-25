@@ -19,6 +19,7 @@
         android:id="@+id/watchBatteryCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/black_border_background"
         CircleProgressView:cpv_autoTextSize="false"
         CircleProgressView:cpv_barColor="@color/permobil_ocean"
         CircleProgressView:cpv_barStrokeCap="Round"
@@ -99,7 +100,7 @@
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="62dp"
                     android:layout_gravity="center_horizontal|fill_horizontal|center_vertical"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
