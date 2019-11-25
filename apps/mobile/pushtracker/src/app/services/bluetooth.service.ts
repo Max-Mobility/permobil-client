@@ -330,7 +330,7 @@ export class BluetoothService extends Observable {
   }
 
   connect(address: string, onConnected?: any, onDisconnected?: any) {
-    this._bluetooth.connect({
+    return this._bluetooth.connect({
       UUID: address,
       onConnected: onConnected,
       onDisconnected: onDisconnected
