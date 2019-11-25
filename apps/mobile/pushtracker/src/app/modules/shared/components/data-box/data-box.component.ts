@@ -35,7 +35,7 @@ export class DataBoxComponent extends TextField {
     }
   }
 
-  setClassName(className: string) {
+  setClassName(args, className: string) {
     const tf = args.object as TextField;
     const gl = tf.parent as GridLayout;
     const root = gl.parent as StackLayout;
@@ -43,11 +43,11 @@ export class DataBoxComponent extends TextField {
   }
 
   onFocusTF(args) {
-    this.setClassName('data-box-active');
+    this.setClassName(args, 'data-box-active');
   }
 
   onBlurTF(args) {
-    this.setClassName('data-box');
+    this.setClassName(args, 'data-box');
   }
 
   private _showDatePicker(args) {
