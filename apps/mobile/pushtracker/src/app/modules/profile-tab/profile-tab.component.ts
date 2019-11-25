@@ -44,7 +44,7 @@ export class ProfileTabComponent {
   displayControlConfiguration: string;
   displayControlConfigurationImage: ImageSource;
 
-  genders: Array<String> = [];
+  genders: Array<string> = [];
   gendersTranslated: Array<string> = [];
   displayGender: string;
 
