@@ -60,7 +60,7 @@ export class FirmwareService {
 
   async loadFromFS() {
     await this.loadMetadata();
-    const tasks = await Object.keys(this.firmwares).map(async k => {
+    const tasks = Object.keys(this.firmwares).map(async k => {
       return await this.loadFirmwareFile(this.firmwares[k].filename);
     });
     await Promise.all(tasks);

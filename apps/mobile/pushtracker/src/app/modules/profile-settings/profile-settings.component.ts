@@ -734,7 +734,7 @@ export class ProfileSettingsComponent implements OnInit {
 
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.busy;
-          await pts.map(async pt => {
+          pts.map(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await this._sleep(300);
