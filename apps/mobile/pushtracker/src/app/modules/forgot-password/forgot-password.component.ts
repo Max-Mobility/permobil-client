@@ -65,7 +65,7 @@ export class ForgotPasswordComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
       ]);
