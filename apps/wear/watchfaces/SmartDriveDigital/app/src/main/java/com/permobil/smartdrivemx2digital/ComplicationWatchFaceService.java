@@ -6,10 +6,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -51,8 +51,6 @@ import io.sentry.event.BreadcrumbBuilder;
  */
 public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
-    private static Typeface BOLD_TYPEFACE;
-    private static Typeface NORMAL_TYPEFACE;
     private int whiteColor;
     private int ambientColor;
 
@@ -237,13 +235,13 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             mRelativeLayout = (RelativeLayout) mInflater.inflate(R.layout.watchface_layout, null);
 
-            // create the fonts to set on the service class to use for styling text
-            BOLD_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_semibold.ttf");
-            NORMAL_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
+            Resources.Theme theme = getTheme();
+            Resources resources = getResources();
+
             // get the color ints for changing the text colors during ambient mode switches
             // saving as member of the class to avoid duplicate calls to get the resources, convert colors, and getTheme methods over and over
-            whiteColor = getResources().getColor(R.color.white, getTheme());
-            ambientColor = getResources().getColor(R.color.ambient_mode_text, getTheme());
+            whiteColor = resources.getColor(R.color.white, theme);
+            ambientColor = resources.getColor(R.color.ambient_mode_text, theme);
 
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(ComplicationWatchFaceService.this)
@@ -251,7 +249,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                             .setHideStatusBar(true)
                             .build());
 
-            Resources resources = ComplicationWatchFaceService.this.getResources();
             mYOffset = resources.getDimension(R.dimen.digital_y_offset);
             mLineHeight = resources.getDimension(R.dimen.digital_line_height);
             mCalendar = Calendar.getInstance();
@@ -393,18 +390,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         public void onPropertiesChanged(Bundle properties) {
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
             mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
-            if (hourTextView != null) {
-                hourTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
-            }
-            if (colonTextView != null) {
-                colonTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
-            }
-            if (minuteTextView != null) {
-                minuteTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
-            }
-            if (amPmTextView != null) {
-                amPmTextView.setTypeface(mBurnInProtection ? NORMAL_TYPEFACE : BOLD_TYPEFACE);
-            }
 
             // Updates complications to properly render in ambient mode based on the screen's capabilities.
             ComplicationDrawable complicationDrawable;
