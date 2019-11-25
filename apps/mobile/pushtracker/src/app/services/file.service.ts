@@ -33,7 +33,7 @@ export class FileService {
         );
 
         // _version is a property on our Kinvey files
-        if (data && data.file_version >= (file as any)._version) {
+        if (data && data.file_version >= file._version) {
           return;
         }
 
@@ -63,7 +63,7 @@ export class FileService {
 
   private _saveFileMetaData(file) {
     const metadata = {
-      file_version: (file as any)._version
+      file_version: file._version
     };
 
     localStorage.setItem(

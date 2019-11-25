@@ -249,12 +249,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
     );
     if (this.currentVersions['SmartDriveMCU.ota']) {
-      const f = this.currentVersions['SmartDriveMCU.ota'].filename;
       this.currentVersions['SmartDriveMCU.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
     }
     if (this.currentVersions['SmartDriveBLE.ota']) {
-      const f = this.currentVersions['SmartDriveBLE.ota'].filename;
       this.currentVersions['SmartDriveBLE.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
     }
@@ -701,7 +699,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
     );
     if (this.currentPushTrackerVersions['PushTracker.ota']) {
-      const f = this.currentPushTrackerVersions['PushTracker.ota'].filename;
       this.currentPushTrackerVersions['PushTracker.ota'].data =
         PushTrackerData.Firmware.loadFromFileSystem(this.currentPushTrackerVersions['PushTracker.ota']);
     }

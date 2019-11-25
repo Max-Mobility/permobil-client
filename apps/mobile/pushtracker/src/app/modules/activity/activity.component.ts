@@ -424,7 +424,7 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarLoaded(args) {
     this._logService.logBreadCrumb(ActivityComponent.name, 'Calendar Loaded');
-    const calendar = args.object as any; // RadCalendar (using any bc the types might be incorrect with 6.2 throwing TSC warnings)
+    const calendar = args.object; // RadCalendar (using any bc the types might be incorrect with 6.2 throwing TSC warnings)
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
     if (isAndroid) {

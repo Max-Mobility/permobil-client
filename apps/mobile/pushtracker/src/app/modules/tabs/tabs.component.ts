@@ -412,7 +412,6 @@ export class TabsComponent {
     const month = data.month - 1;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
-    const coastWith = data.coastWith;
     const coastWithout = data.coastWithout;
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
@@ -438,15 +437,9 @@ export class TabsComponent {
           );
         else
           this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
-        // this._logService.logException(
-        //   new Error(
-        //     '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
-        //   )
-        // );
       })
       .catch(err => {
         this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
-        // this._logService.logException(err);
       });
 
     // Request distance information from PushTracker

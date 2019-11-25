@@ -53,7 +53,7 @@ export class DataBoxComponent extends TextField {
     // return new Promise((resolve, reject) => {
     (args.object as StackLayout).className = 'data-box-active';
 
-    const dateTimePickerStyle = DateTimePickerStyle.create(args.object as any);
+    const dateTimePickerStyle = DateTimePickerStyle.create(args.object);
 
     const newDate = new Date();
 

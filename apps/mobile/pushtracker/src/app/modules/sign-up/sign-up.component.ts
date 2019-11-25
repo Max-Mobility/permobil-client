@@ -125,7 +125,7 @@ export class SignUpComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
       ]);
@@ -140,7 +140,7 @@ export class SignUpComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
       et.setImportantForAutofill(
         (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES

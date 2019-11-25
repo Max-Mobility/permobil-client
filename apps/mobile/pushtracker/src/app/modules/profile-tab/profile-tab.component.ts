@@ -634,10 +634,7 @@ export class ProfileTabComponent {
     );
     this._setActiveDataBox(args);
 
-    const listPickerNeedsSecondary =
-      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
-        ? true
-        : false;
+    const listPickerNeedsSecondary = this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES;
 
     let primaryIndex = 0;
     let secondaryIndex = 0;

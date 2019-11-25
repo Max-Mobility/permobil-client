@@ -743,10 +743,6 @@ export class BluetoothService extends Observable {
 
           // setting true so we know the user has connected to a PT previously
           appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
-        } else if (pt) {
-          state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.unknown)
-          );
         } else {
           state = <any>(
             this._mergePushTrackerState(ptState, PushTrackerState.unknown)

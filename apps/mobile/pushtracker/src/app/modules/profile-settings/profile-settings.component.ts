@@ -173,7 +173,7 @@ export class ProfileSettingsComponent implements OnInit {
         return pt.connected === true;
       });
       if (ptConnected && ptConnected.length === 1) {
-        const pt = ptConnected[0] as PushTracker;
+        const pt = ptConnected[0];
         this._updatePushTrackerSectionLabel(pt);
       }
     }
