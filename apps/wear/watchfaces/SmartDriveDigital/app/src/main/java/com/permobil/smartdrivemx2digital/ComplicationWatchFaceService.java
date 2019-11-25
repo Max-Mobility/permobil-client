@@ -53,6 +53,8 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
     private static Typeface BOLD_TYPEFACE;
     private static Typeface NORMAL_TYPEFACE;
+    private int whiteColor;
+    private int ambientColor;
 
 
     /**
@@ -238,6 +240,10 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // create the fonts to set on the service class to use for styling text
             BOLD_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_semibold.ttf");
             NORMAL_TYPEFACE = Typeface.createFromAsset(getAssets(), "fonts/opensans_regular.ttf");
+            // get the color ints for changing the text colors during ambient mode switches
+            // saving as member of the class to avoid duplicate calls to get the resources, convert colors, and getTheme methods over and over
+            whiteColor = getResources().getColor(R.color.white, getTheme());
+            ambientColor = getResources().getColor(R.color.ambient_mode_text, getTheme());
 
             setWatchFaceStyle(
                     new WatchFaceStyle.Builder(ComplicationWatchFaceService.this)
@@ -265,27 +271,20 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
-            Log.d(TAG, "width: " + width + " " + "height: " + height);
+            // Moving ButterKnife bind to this event to avoid too much work on the main thread with `onDraw()` event
+            // improves performance after profiling the bind call in both overrides.
+            ButterKnife.bind(this, mRelativeLayout);
+
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 4;
-            Log.d(TAG, "size of complication: " + sizeOfComplication);
             int midpointOfScreen = width / 2;
-            Log.d(TAG, "midpoint of screen: " + midpointOfScreen);
             int horizontalOffset = midpointOfScreen - sizeOfComplication / 2;
-            Log.d(TAG, "horizontalOffset: " + horizontalOffset);
-            int verticalOffset = midpointOfScreen  / 7;
-            Log.d(TAG, "verticalOffset: " + verticalOffset);
+            int verticalOffset = midpointOfScreen / 6;
 
-            int left = horizontalOffset;
-            int top = verticalOffset;
-            int right = horizontalOffset + sizeOfComplication;
-            int bottom = verticalOffset + sizeOfComplication;
-
-            Rect topComplicationBounds = new Rect(left, top, right, bottom);
+            Rect topComplicationBounds = new Rect(horizontalOffset, verticalOffset, horizontalOffset + sizeOfComplication, verticalOffset + sizeOfComplication);
             Log.d(TAG, "complication bounds: " + topComplicationBounds);
 
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
-            topComplicationDrawable.setBackgroundColorActive(R.color.permobil_cousteau);
             topComplicationDrawable.setBounds(topComplicationBounds);
         }
 
@@ -303,8 +302,6 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             // Lay the view out at the rect width and height
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
             mRelativeLayout.draw(canvas);
-
-            ButterKnife.bind(this, mRelativeLayout);
 
             drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
@@ -651,11 +648,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
             mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
-            if (mShouldDrawColons) {
-                colonTextView.setVisibility(View.VISIBLE);
-            } else {
-                colonTextView.setVisibility(View.INVISIBLE);
-            }
+            colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
 
             // Get the hours.
             String hourString;
@@ -686,18 +679,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             }
 
             // handle color of text depending if ambient mode
-            if (!isInAmbientMode()) {
-                hourTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
-                colonTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
-                minuteTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
-                amPmTextView.setTextColor(getResources().getColor(R.color.white, getTheme()));
-            } else {
-                // in ambient so use ambient color
-                hourTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                colonTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                minuteTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                amPmTextView.setTextColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-            }
+            colorTextViewsForAmbientHandling();
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
@@ -752,6 +734,21 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
             return level * 100 / (float) scale;
+        }
+
+        private void colorTextViewsForAmbientHandling() {
+            if (!isInAmbientMode()) {
+                hourTextView.setTextColor(whiteColor);
+                colonTextView.setTextColor(whiteColor);
+                minuteTextView.setTextColor(whiteColor);
+                amPmTextView.setTextColor(whiteColor);
+            } else {
+                // in ambient so use ambient color
+                hourTextView.setTextColor(ambientColor);
+                colonTextView.setTextColor(ambientColor);
+                minuteTextView.setTextColor(ambientColor);
+                amPmTextView.setTextColor(ambientColor);
+            }
         }
 
         private void registerReceiver() {
