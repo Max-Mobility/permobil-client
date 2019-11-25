@@ -1073,14 +1073,7 @@ export class PushTracker extends Observable {
     // this is sent by both the PT in response to a
     // Command::StartOTA
     const otaDevice = bindingTypeToString('PacketOTAType', p.data('OTADevice'));
-    switch (otaDevice) {
-      case 'PushTracker':
-        this.sendEvent(PushTracker.ota_ready_event);
-        break;
-      default:
-        this.sendEvent(PushTracker.ota_ready_event);
-        break;
-    }
+    this.sendEvent(PushTracker.ota_ready_event);
   }
 }
 
