@@ -208,7 +208,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           }
         }
         return data;
-      });
+      }, firmwareData);
     }
     return firmwareData;
   }
@@ -656,7 +656,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           }
         }
         return data;
-      });
+      }, firmwareData);
     }
     return firmwareData;
   }
