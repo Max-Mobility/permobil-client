@@ -47,6 +47,11 @@
     -->
     <meta-data android:name="com.google.android.wearable.standalone" android:value="true"/>
 
+    <meta-data
+       android:name="android.support.wearable.complications.SAFE_WATCH_FACES"
+       android:value="
+          com.permobil.smartdrive.watchface/com.permobil.smartdrive.watchface.DigitalWatchFaceService"/>
+
     <!-- for main activity -->
     <activity
         android:name="com.permobil.smartdrive.MainActivity"
