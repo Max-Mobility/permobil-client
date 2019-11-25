@@ -1,4 +1,4 @@
-package com.permobil.smartdrivemx2digital;
+package com.permobil.smartdrive.watchface;
 
 import java.util.Calendar;
 import java.util.Locale;

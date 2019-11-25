@@ -1,4 +1,4 @@
-package com.permobil.smartdrivemx2digital;
+package com.permobil.smartdrive.watchface;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -23,15 +23,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * The watch-side config activity for {@link ComplicationWatchFaceService}, which allows for setting
+ * The watch-side config activity for {@link DigitalWatchFaceService}, which allows for setting
  * the left and right complications of watch face.
  */
-public class ComplicationConfigActivity extends Activity implements View.OnClickListener {
+public class DigitalWatchFaceConfigActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "ConfigActivity";
     static final int COMPLICATION_CONFIG_REQUEST_CODE = 1001;
 
     /**
-     * Used by associated watch face ({@link ComplicationWatchFaceService}) to let this
+     * Used by associated watch face ({@link DigitalWatchFaceService}) to let this
      * configuration Activity know which complication locations are supported, their ids, and
      * supported complication data types.
      */
@@ -61,12 +61,12 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
 
-        mWatchFaceComponentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
+        mWatchFaceComponentName = new ComponentName(getApplicationContext(), DigitalWatchFaceService.class);
 
         ButterKnife.bind(this);
 
         mSelectedComplicationId = -1;
-        mTopComplicationId = ComplicationWatchFaceService.getComplicationId(ComplicationLocation.TOP);
+        mTopComplicationId = DigitalWatchFaceService.getComplicationId(ComplicationLocation.TOP);
         topComplication.setOnClickListener(this);
         // Sets default as "Add Complication" icon.
         topComplication.setImageDrawable(defaultAddComplicationDrawable);
@@ -106,7 +106,7 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     }
 
     public void retrieveInitialComplicationsData() {
-        final int[] complicationIds = ComplicationWatchFaceService.getComplicationIds();
+        final int[] complicationIds = DigitalWatchFaceService.getComplicationIds();
 
         mProviderInfoRetriever.retrieveProviderInfo(
                 new ProviderInfoRetriever.OnProviderInfoReceivedCallback() {
@@ -138,17 +138,17 @@ public class ComplicationConfigActivity extends Activity implements View.OnClick
     // Verifies the watch face supports the complication location, then launches the helper
     // class, so user can choose their complication data provider.
     private void launchComplicationHelperActivity(ComplicationLocation complicationLocation) {
-        mSelectedComplicationId = ComplicationWatchFaceService.getComplicationId(complicationLocation);
+        mSelectedComplicationId = DigitalWatchFaceService.getComplicationId(complicationLocation);
 
         if (mSelectedComplicationId >= 0) {
-            int[] supportedTypes = ComplicationWatchFaceService.getSupportedComplicationTypes(complicationLocation);
+            int[] supportedTypes = DigitalWatchFaceService.getSupportedComplicationTypes(complicationLocation);
 
             startActivityForResult(ComplicationHelperActivity.createProviderChooserHelperIntent(
                     getApplicationContext(),
                     mWatchFaceComponentName,
                     mSelectedComplicationId,
                     supportedTypes),
-                    ComplicationConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE
+                    DigitalWatchFaceConfigActivity.COMPLICATION_CONFIG_REQUEST_CODE
             );
         } else {
             Log.d(TAG, "Complication not supported by watch face.");

@@ -1,4 +1,4 @@
-package com.permobil.smartdrivemx2digital;
+package com.permobil.smartdrive.watchface;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -49,7 +48,7 @@ import io.sentry.event.BreadcrumbBuilder;
 /**
  * Watch Face for "Adding Complications to your Watch Face" code lab.
  */
-public class ComplicationWatchFaceService extends CanvasWatchFaceService {
+public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
     private int whiteColor;
     private int ambientColor;
@@ -86,9 +85,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     // Used by {@link ComplicationConfigActivity} to retrieve id for complication locations and
     // to check if complication location is supported.
 
-    static int getComplicationId(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
+    static int getComplicationId(DigitalWatchFaceConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here you would like to support. In our case, we are only supporting a top complication
-        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+        if (complicationLocation == DigitalWatchFaceConfigActivity.ComplicationLocation.TOP) {
             return TOP_COMPLICATION_ID;
         }
         return -1;
@@ -103,9 +102,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
     // Used by {@link ComplicationConfigActivity} to retrieve complication types supported by
     // location.
 
-    static int[] getSupportedComplicationTypes(ComplicationConfigActivity.ComplicationLocation complicationLocation) {
+    static int[] getSupportedComplicationTypes(DigitalWatchFaceConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
-        if (complicationLocation == ComplicationConfigActivity.ComplicationLocation.TOP) {
+        if (complicationLocation == DigitalWatchFaceConfigActivity.ComplicationLocation.TOP) {
             return COMPLICATION_SUPPORTED_TYPES[0];
         }
 
@@ -202,7 +201,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         private void initFormats() {
             SimpleDateFormat mDayOfWeekFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
             mDayOfWeekFormat.setCalendar(mCalendar);
-            java.text.DateFormat mDateFormat = DateFormat.getDateFormat(ComplicationWatchFaceService.this);
+            java.text.DateFormat mDateFormat = DateFormat.getDateFormat(DigitalWatchFaceService.this);
             mDateFormat.setCalendar(mCalendar);
         }
 
@@ -244,8 +243,9 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             ambientColor = resources.getColor(R.color.ambient_mode_text, theme);
 
             setWatchFaceStyle(
-                    new WatchFaceStyle.Builder(ComplicationWatchFaceService.this)
+                    new WatchFaceStyle.Builder(DigitalWatchFaceService.this)
                             .setAcceptsTapEvents(true)
+                            .setShowUnreadCountIndicator(true)
                             .setHideStatusBar(true)
                             .build());
 
@@ -461,7 +461,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             super.onApplyWindowInsets(insets);
 
             // Load resources that have alternate values for round watches.
-            Resources resources = ComplicationWatchFaceService.this.getResources();
+            Resources resources = DigitalWatchFaceService.this.getResources();
             boolean isRound = insets.isRound();
             mXOffset = resources.getDimension(isRound
                     ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
@@ -546,7 +546,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                     }
                 } else if (complicationData.getType() == ComplicationData.TYPE_NO_PERMISSION) {
                     // Watch face does not have permission to receive complication data, so launch permission request.
-                    ComponentName componentName = new ComponentName(getApplicationContext(), ComplicationWatchFaceService.class);
+                    ComponentName componentName = new ComponentName(getApplicationContext(), DigitalWatchFaceService.class);
                     Intent permissionRequestIntent = ComplicationHelperActivity.createPermissionRequestHelperIntent(getApplicationContext(), componentName);
                     permissionRequestIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(permissionRequestIntent);
@@ -629,7 +629,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void drawTimeStrings() {
-            boolean is24Hour = DateFormat.is24HourFormat(ComplicationWatchFaceService.this);
+            boolean is24Hour = DateFormat.is24HourFormat(DigitalWatchFaceService.this);
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
             mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
@@ -743,7 +743,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
             mRegisteredTimeZoneReceiver = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
             filter.addAction(Intent.ACTION_LOCALE_CHANGED);
-            ComplicationWatchFaceService.this.registerReceiver(mTimeZoneReceiver, filter);
+            DigitalWatchFaceService.this.registerReceiver(mTimeZoneReceiver, filter);
         }
 
         private void unregisterReceiver() {
@@ -751,7 +751,7 @@ public class ComplicationWatchFaceService extends CanvasWatchFaceService {
                 return;
             }
             mRegisteredTimeZoneReceiver = false;
-            ComplicationWatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
+            DigitalWatchFaceService.this.unregisterReceiver(mTimeZoneReceiver);
         }
 
         /**

@@ -1,9 +1,9 @@
-package com.permobil.smartdrivemx2digital;
+package com.permobil.smartdrive.watchface;
 
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 
-public class WatchfaceLayoutActivity extends WearableActivity {
+public class DigitalWatchFaceLayoutActivity extends WearableActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

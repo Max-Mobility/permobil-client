@@ -5,12 +5,11 @@
 
     <string name="digital_am">AM</string>
     <string name="digital_pm">PM</string>
-    <string name="title_activity_watchface_layout">WatchfaceLayoutActivity</string>
+    <string name="digital_activity_watchface_layout">DigitalWatchFaceLayoutActivity</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
     <string name="smartdrivebutton">smartDriveButton</string>
     <string name="batteryicon">batteryIcon</string>
     <string name="centercomplicationbackground">centerComplicationBackground</string>
