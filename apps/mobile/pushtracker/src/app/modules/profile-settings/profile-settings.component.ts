@@ -76,17 +76,22 @@ export class ProfileSettingsComponent implements OnInit {
     private _vcRef: ViewContainerRef
   ) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
-    try {
-      await this._translationService.updateTranslationFilesFromKinvey();
-    } catch (error) {
-      this._logService.logBreadCrumb(
-        ProfileSettingsComponent.name,
-        'Error updating translation files: ' + error
-      );
-    }
+      this._translationService.updateTranslationFilesFromKinvey()
+        .then(() => {
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Updated translation files'
+          );
+        })
+        .catch(error => {
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Error updating translation files: ' + error
+          );
+        });
 
     this._page.actionBarHidden = true;
 
