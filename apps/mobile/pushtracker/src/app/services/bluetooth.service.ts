@@ -365,9 +365,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) {}
+  discoverServices(_: any) { }
 
-  discoverCharacteristics(_: any) {}
+  discoverCharacteristics(_: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -468,7 +468,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void {}
+  private onDeviceNameChange(_: any): void { }
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -511,11 +511,13 @@ export class BluetoothService extends Observable {
       case ConnectionState.connected:
         if (this.isPushTracker(device)) {
           const pt = this.getOrMakePushTracker(device);
+          if (!pt.connected) {
+            this.sendEvent(BluetoothService.pushtracker_connected, {
+              pushtracker: pt
+            });
+          }
           pt.handleConnect();
           this.updatePushTrackerState();
-          this.sendEvent(BluetoothService.pushtracker_connected, {
-            pushtracker: pt
-          });
         } else if (this.isSmartDrive(device)) {
           const sd = this.getOrMakeSmartDrive(device);
           sd.handleConnect();
@@ -606,7 +608,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void {}
+  private onCharacteristicReadRequest(_: any): void { }
 
   // service controls
   private deleteServices() {
