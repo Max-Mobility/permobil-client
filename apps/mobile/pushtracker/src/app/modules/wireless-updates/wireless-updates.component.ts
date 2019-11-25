@@ -182,12 +182,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     for (const key in versions) {
       objs.push(versions[key]);
     }
-    const firmwareData = {};
+    let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       // make the metadata
-      mds.reduce((data, md) => {
+      firmwareData = mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
         if (fname && fname.length) {
           this._logService.logBreadCrumb(
@@ -208,7 +208,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           }
         }
         return data;
-      }, firmwareData);
+      });
     }
     return firmwareData;
   }
@@ -630,12 +630,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     for (const key in versions) {
       objs.push(versions[key]);
     }
-    const firmwareData = {};
+    let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(...o));
       // make the metadata
-      mds.reduce((data, md) => {
+      firmwareData = mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
         if (fname && fname.length) {
           this._logService.logBreadCrumb(
@@ -656,7 +656,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
           }
         }
         return data;
-      }, firmwareData);
+      });
     }
     return firmwareData;
   }
