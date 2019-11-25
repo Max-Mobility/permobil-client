@@ -76,11 +76,11 @@ export class ProfileSettingsComponent implements OnInit {
     private _vcRef: ViewContainerRef
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
     try {
-      this._translationService.updateTranslationFilesFromKinvey();
+      await this._translationService.updateTranslationFilesFromKinvey();
     } catch (error) {
       this._logService.logBreadCrumb(
         ProfileSettingsComponent.name,
