@@ -10,15 +10,15 @@
     android:background="@android:color/background_dark"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context=".WatchfaceLayoutActivity"
+    tools:context=".DigitalWatchFaceConfigActivity"
     tools:layout_editor_absoluteX="10dp"
     tools:layout_editor_absoluteY="10dp">
-
 
     <at.grabner.circleprogress.CircleProgressView
         android:id="@+id/watchBatteryCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/black_border_background"
         CircleProgressView:cpv_autoTextSize="false"
         CircleProgressView:cpv_barColor="@color/permobil_ocean"
         CircleProgressView:cpv_barStrokeCap="Round"
@@ -28,7 +28,7 @@
         CircleProgressView:cpv_maxValue="100"
         CircleProgressView:cpv_outerContourSize="2dp"
         CircleProgressView:cpv_rimColor="@color/gray"
-        CircleProgressView:cpv_rimWidth="1dp"
+        CircleProgressView:cpv_rimWidth="2dp"
         CircleProgressView:cpv_seekMode="false"
         CircleProgressView:cpv_showUnit="false"
         CircleProgressView:cpv_spin="false"
@@ -40,7 +40,8 @@
         CircleProgressView:cpv_unit="%"
         CircleProgressView:cpv_unitColor="@color/permobil_primary"
         CircleProgressView:cpv_unitPosition="bottom"
-        CircleProgressView:cpv_unitScale="1" />
+        CircleProgressView:cpv_unitScale="1"
+        CircleProgressView:cpv_value="100" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -64,7 +65,7 @@
             CircleProgressView:cpv_maxValue="100"
             CircleProgressView:cpv_outerContourSize="2dp"
             CircleProgressView:cpv_rimColor="@color/gray"
-            CircleProgressView:cpv_rimWidth="1dp"
+            CircleProgressView:cpv_rimWidth="2dp"
             CircleProgressView:cpv_seekMode="false"
             CircleProgressView:cpv_showUnit="false"
             CircleProgressView:cpv_spinColor="@color/permobil_hero"
@@ -82,8 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/topcomplicationbackground"
-            android:src="@drawable/add_complication" />
+            android:contentDescription="@string/topcomplicationbackground" />
 
         <ImageButton
             android:id="@+id/top_complication"
@@ -144,6 +144,7 @@
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/_12"
                         android:textAlignment="viewEnd"
                         android:textSize="24sp" />
@@ -152,6 +153,7 @@
                         android:id="@+id/colonTextView"
                         android:layout_width="10dp"
                         android:layout_height="30dp"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/colon"
                         android:textAlignment="center"
                         android:textSize="24sp" />
@@ -160,6 +162,7 @@
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/_00"
                         android:textAlignment="textStart"
                         android:textSize="24sp" />
@@ -176,6 +179,7 @@
                     android:id="@+id/amPmTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="@string/pm"
                     android:textAlignment="center" />

@@ -50,6 +50,8 @@ public class DigitalWatchFaceConfigActivity extends Activity implements View.OnC
     // Butterknife views
     @BindDrawable(R.drawable.add_complication)
     Drawable defaultAddComplicationDrawable;
+    @BindDrawable(R.drawable.added_complication)
+    Drawable addedComplicationDrawable;
     @BindView(R.id.top_complication_background)
     ImageView topComplicationBackground;
     @BindView(R.id.top_complication)
@@ -125,12 +127,15 @@ public class DigitalWatchFaceConfigActivity extends Activity implements View.OnC
         Log.d(TAG, "\tinfo: " + complicationProviderInfo);
 
         if (watchFaceComplicationId == mTopComplicationId) {
+            Log.d(TAG, "checking for provider info");
             if (complicationProviderInfo != null) {
+                Log.d(TAG, "has provider info..");
                 topComplication.setImageIcon(complicationProviderInfo.providerIcon);
-                topComplicationBackground.setVisibility(View.VISIBLE);
-            } else {
-                topComplication.setImageDrawable(defaultAddComplicationDrawable);
                 topComplicationBackground.setVisibility(View.INVISIBLE);
+            } else {
+                topComplication.setImageIcon(null); // removes the old image icon set if the user previously had a provider selected
+                topComplication.setImageDrawable(defaultAddComplicationDrawable);
+                topComplicationBackground.setVisibility(View.VISIBLE);
             }
         }
     }
