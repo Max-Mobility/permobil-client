@@ -820,10 +820,12 @@ export class PushTracker extends Observable {
   }
 
   handleConnect() {
+    if (!this.connected) {
+      this.sendEvent(PushTracker.connect_event);
+      // send set time command on first connection
+      this.sendTime();
+    }
     this.connected = true;
-    this.sendEvent(PushTracker.connect_event);
-    // send set time command on first connection
-    this.sendTime();
   }
 
   handleDisconnect() {
