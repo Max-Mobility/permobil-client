@@ -337,6 +337,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 colonTextView.setTextSize(46);
                 minuteTextView.setTextSize(46);
 
+                // always draw the colon with the time in ambient mode
+                colonTextView.setVisibility(View.VISIBLE);
             } else {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
