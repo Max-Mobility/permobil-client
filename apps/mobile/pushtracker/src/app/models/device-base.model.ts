@@ -21,12 +21,20 @@ export class DeviceBase extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  static motorTicksToKilometers(ticks: number): number {
+  public static motorTicksToKilometers(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714 / 1000.0;
   }
 
-  static caseTicksToKilometers(ticks: number): number {
+  public static caseTicksToKilometers(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0 / 1000.0;
+  }
+
+  public static motorTicksToMeters(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714;
+  }
+
+  public static caseTicksToMeters(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0;
   }
 
   public static milesToMotorTicks(miles: number): number {
@@ -48,7 +56,7 @@ export class DeviceBase extends Observable {
 
   public static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
-      return 'unknown';
+      return '??';
     } else {
       return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
     }

@@ -4,6 +4,7 @@ import { DownloadProgress } from 'nativescript-download-progress';
 import { differenceInCalendarDays } from 'date-fns';
 import * as timer from 'tns-core-modules/timer';
 import { BluetoothService } from '../services';
+import { DeviceBase } from './device-base.model';
 
 enum OTAState {
   not_started = 'ota.pt.state.not-started',
@@ -21,7 +22,7 @@ enum OTAState {
   detected_pt = 'ota.pt.state.detected-pt'
 }
 
-export class PushTracker extends Observable {
+export class PushTracker extends DeviceBase {
   // STATIC:
   static readonly OTAState = OTAState;
   readonly OTAState = PushTracker.OTAState;
@@ -63,9 +64,6 @@ export class PushTracker extends Observable {
   public static ota_timeout_event = 'ota_timeout_event';
   public static pushtracker_ota_status_event = 'pushtracker_ota_status_event'; // sends state, actions, progress
 
-  // private members
-  private _bluetoothService: BluetoothService;
-
   canBackNavigate = true;
 
   // NON STATIC:
@@ -89,49 +87,14 @@ export class PushTracker extends Observable {
   device: any = null; // the actual device (ios:CBCentral, android:BluetoothDevice)
   otaState: OTAState = OTAState.not_started;
   otaProgress = 0;
-  otaActions: string[] = [];
   ableToSend = false;
   otaStartTime: Date;
   otaCurrentTime: Date;
   otaEndTime: Date;
 
-  // static methods:
-  static motorTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (265.714 * 63360.0);
-  }
-
-  static caseTicksToMiles(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
-  }
-
-  static motorTicksToMeters(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714;
-  }
-
-  static caseTicksToMeters(ticks: number): number {
-    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0;
-  }
-
-  static versionStringToByte(version: string): number {
-    if (version.includes('.')) {
-      const [major, minor] = version.split('.');
-      return (parseInt(major) << 4) | parseInt(minor);
-    } else {
-      return 0xff;
-    }
-  }
-
-  static versionByteToString(version: number): string {
-    if (version === 0xff || version === 0x00) {
-      return '??';
-    } else {
-      return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
-    }
-  }
-
   // functions
   constructor(btService: BluetoothService, obj?: any) {
-    super();
+    super(btService);
     this._bluetoothService = btService;
     if (obj !== null && obj !== undefined) {
       this.fromObject(obj);
@@ -180,6 +143,12 @@ export class PushTracker extends Observable {
   }
 
   hasVersionInfo(): boolean {
+    return [this.version].reduce((a, v) => {
+      return a && v < 0xff && v > 0x00;
+    }, true);
+  }
+
+  hasAllVersionInfo(): boolean {
     return [this.version, this.ble_version, this.mcu_version].reduce((a, v) => {
       return a && v < 0xff && v > 0x00;
     }, true);
@@ -298,12 +267,12 @@ export class PushTracker extends Observable {
           this.otaProgress = 0;
           // set the state
           this.otaState = PushTracker.OTAState.detected_pt;
-          this.otaActions = [];
+          this.setOtaActions();
           if (this.connected) {
             if (this.version !== 0xff) {
               haveVersion = true;
             }
-            this.otaActions = ['ota.action.start'];
+            this.setOtaActions(['ota.action.start']);
           }
           // stop the timer
           if (otaIntervalID) {
@@ -328,7 +297,7 @@ export class PushTracker extends Observable {
         };
         const otaStartHandler = _ => {
           this.otaState = PushTracker.OTAState.awaiting_version;
-          this.otaActions = ['ota.action.cancel'];
+          this.setOtaActions(['ota.action.cancel']);
           this.otaStartTime = new Date();
           // start the timeout timer
           if (otaTimeoutID) {
@@ -341,20 +310,20 @@ export class PushTracker extends Observable {
         const otaReadyHandler = _ => {
           startedOTA = true;
           this.otaState = PushTracker.OTAState.updating;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaForceHandler = _ => {
           startedOTA = true;
           this.otaState = PushTracker.OTAState.awaiting_ready;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaPauseHandler = _ => {
           paused = true;
-          this.otaActions = ['ota.action.resume', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.resume', 'ota.action.cancel']);
         };
         const otaResumeHandler = _ => {
           paused = false;
-          this.otaActions = ['ota.action.pause', 'ota.action.cancel'];
+          this.setOtaActions(['ota.action.pause', 'ota.action.cancel']);
         };
         const otaCancelHandler = _ => {
           this.otaState = PushTracker.OTAState.canceling;
@@ -455,7 +424,7 @@ export class PushTracker extends Observable {
         ) => {
           cancelOTA = true;
           startedOTA = false;
-          this.otaActions = [];
+          this.setOtaActions();
           // stop timers
           if (otaIntervalID) {
             timer.clearInterval(otaIntervalID);
@@ -472,7 +441,7 @@ export class PushTracker extends Observable {
           } else if (doRetry) {
             this.on(PushTracker.ota_cancel_event, otaCancelHandler);
             this.on(PushTracker.ota_retry_event, otaRetryHandler);
-            this.otaActions = ['ota.action.retry'];
+            this.setOtaActions(['ota.action.retry']);
             otaIntervalID = timer.setInterval(runOTA, 250);
           } else {
             resolve(reason);
@@ -495,16 +464,16 @@ export class PushTracker extends Observable {
           switch (this.otaState) {
             case PushTracker.OTAState.detected_pt:
               if (this.connected && this.ableToSend) {
-                this.otaActions = ['ota.action.start'];
+                this.setOtaActions(['ota.action.start']);
               } else {
-                this.otaActions = [];
+                this.setOtaActions();
               }
               break;
             case PushTracker.OTAState.awaiting_version:
               this.canBackNavigate = false;
               if (this.ableToSend && haveVersion) {
                 if (this.version >= fwVersion) {
-                  this.otaActions = ['ota.action.force', 'ota.action.cancel'];
+                  this.setOtaActions(['ota.action.force', 'ota.action.cancel']);
                   this.otaState = PushTracker.OTAState.already_uptodate;
                 } else {
                   this.otaState = PushTracker.OTAState.awaiting_ready;
@@ -554,7 +523,7 @@ export class PushTracker extends Observable {
               if (!paused) {
                 this.otaCurrentTime = new Date();
               }
-              this.otaActions = [];
+              this.setOtaActions();
               if (this.ableToSend && !hasRebooted) {
                 // send stop ota command
                 this.sendPacket(
@@ -583,7 +552,7 @@ export class PushTracker extends Observable {
               stopOTA('OTA Complete', true, false);
               break;
             case PushTracker.OTAState.canceling:
-              this.otaActions = [];
+              this.setOtaActions();
               this.otaProgress = 0;
               cancelOTA = true;
               if (!startedOTA) {
@@ -1148,10 +1117,6 @@ export namespace PushTrackerData {
         .catch(error => {
           console.error('download error', url, error);
         });
-    }
-
-    export function versionByteToString(version: number): string {
-      return PushTracker.versionByteToString(version);
     }
 
     export function versionStringToByte(version: string): number {
