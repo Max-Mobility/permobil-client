@@ -37,18 +37,19 @@ export class MaxTextBoxComponent extends TextField {
     this.textfieldLoadedEvent.emit(args);
   }
 
-  onFocusTF(args) {
+  setClassName(args, className: string) {
     const tf = args.object as TextField;
     const gl = tf.parent as GridLayout;
     const root = gl.parent as StackLayout;
-    root.className = 'max-textbox-active';
+    root.className = className;
+  }
+
+  onFocusTF(args) {
+    this.setClassName(args, 'max-textbox-active');
   }
 
   onBlurTF(args) {
-    const tf = args.object as TextField;
-    const gl = tf.parent as GridLayout;
-    const root = gl.parent as StackLayout;
-    root.className = 'max-textbox';
+    this.setClassName(args, 'max-textbox');
   }
 }
 

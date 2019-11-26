@@ -182,12 +182,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     for (const key in versions) {
       objs.push(versions[key]);
     }
-    const firmwareData = {};
+    let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
       // make the metadata
-      mds.reduce((data, md) => {
+      firmwareData = mds.reduce((data, md) => {
         const fname = md[SmartDriveData.Firmwares.FileName];
         if (fname && fname.length) {
           this._logService.logBreadCrumb(
@@ -249,12 +249,10 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(SmartDriveData.Firmwares.TableName, '{}')
     );
     if (this.currentVersions['SmartDriveMCU.ota']) {
-      const f = this.currentVersions['SmartDriveMCU.ota'].filename;
       this.currentVersions['SmartDriveMCU.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveMCU.ota']);
     }
     if (this.currentVersions['SmartDriveBLE.ota']) {
-      const f = this.currentVersions['SmartDriveBLE.ota'].filename;
       this.currentVersions['SmartDriveBLE.ota'].data =
         SmartDriveData.Firmwares.loadFromFileSystem(this.currentVersions['SmartDriveBLE.ota']);
     }
@@ -475,7 +473,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       `Got version: ${version}`
     );
     // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentVersions).map(k => this.currentVersions[k].changes);
+    Object.keys(this.currentVersions).forEach(k => this.currentVersions[k].changes);
     let bleFw = null;
     let mcuFw = null;
     if (isAndroid) {
@@ -632,12 +630,12 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
     for (const key in versions) {
       objs.push(versions[key]);
     }
-    const firmwareData = {};
+    let firmwareData = {};
     if (objs.length) {
       // @ts-ignore
       const mds = objs.map(o => PushTrackerData.Firmware.loadFirmware(...o));
       // make the metadata
-      mds.reduce((data, md) => {
+      firmwareData = mds.reduce((data, md) => {
         const fname = md[PushTrackerData.Firmware.FileName];
         if (fname && fname.length) {
           this._logService.logBreadCrumb(
@@ -701,7 +699,6 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       appSettings.getString(PushTrackerData.Firmware.TableName, '{}')
     );
     if (this.currentPushTrackerVersions['PushTracker.ota']) {
-      const f = this.currentPushTrackerVersions['PushTracker.ota'].filename;
       this.currentPushTrackerVersions['PushTracker.ota'].data =
         PushTrackerData.Firmware.loadFromFileSystem(this.currentPushTrackerVersions['PushTracker.ota']);
     }
@@ -874,7 +871,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
         this.noPushTrackerDetected = true;
         return;
       } else {
-        trackers.map(tracker => {
+        trackers.forEach(tracker => {
           this.pushTracker = tracker;
         });
       }
@@ -900,7 +897,7 @@ export class WirelessUpdatesComponent implements OnInit, AfterViewInit {
       `Got version: ${version}`
     );
     // show dialog to user informing them of the version number and changes
-    Object.keys(this.currentPushTrackerVersions).map(
+    Object.keys(this.currentPushTrackerVersions).forEach(
       k => this.currentPushTrackerVersions[k].changes
     );
     let ptFw = null;

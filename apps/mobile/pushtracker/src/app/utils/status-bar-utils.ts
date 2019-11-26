@@ -10,7 +10,7 @@ export function setLightStatusBar() {
     const androidActivity: android.app.Activity =
       TNSApplication.android.startActivity ||
       TNSApplication.android.foregroundActivity;
-    const window = androidActivity.getWindow() as android.view.Window;
+    const window = androidActivity.getWindow();
 
     if (window) window.setStatusBarColor(whiteColor.android);
 

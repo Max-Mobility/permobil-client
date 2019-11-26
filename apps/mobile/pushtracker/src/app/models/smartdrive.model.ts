@@ -1143,12 +1143,8 @@ export class SmartDrive extends DeviceBase {
           break;
       }
     } else if (packetType === 'Command') {
-      switch (subType) {
-        case 'OTAReady':
-          this._handleOTAReady(p);
-          break;
-        default:
-          break;
+      if (subType === 'OTAReady') {
+        this._handleOTAReady(p);
       }
     } else if (packetType === 'Error') {
       this._handleError(p);

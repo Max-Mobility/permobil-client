@@ -867,7 +867,7 @@ export class HomeTabComponent {
       let driveTotal = weekDriveEnd;
       if (coastTotal === 0) {
         // get last usage for odometer --- https://github.com/Max-Mobility/permobil-client/issues/459
-        const latest = (await this.loadLatestSmartDriveUsageFromKinvey()) as any;
+        const latest = (await this.loadLatestSmartDriveUsageFromKinvey());
         coastTotal = (latest && latest.distance_smartdrive_coast) || 0;
         driveTotal = (latest && latest.distance_smartdrive_drive) || 0;
       }

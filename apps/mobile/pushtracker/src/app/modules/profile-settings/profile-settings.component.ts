@@ -79,14 +79,19 @@ export class ProfileSettingsComponent implements OnInit {
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
-    try {
-      this._translationService.updateTranslationFilesFromKinvey();
-    } catch (error) {
-      this._logService.logBreadCrumb(
-        ProfileSettingsComponent.name,
-        'Error updating translation files: ' + error
-      );
-    }
+      this._translationService.updateTranslationFilesFromKinvey()
+        .then(() => {
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Updated translation files'
+          );
+        })
+        .catch(error => {
+          this._logService.logBreadCrumb(
+            ProfileSettingsComponent.name,
+            'Error updating translation files: ' + error
+          );
+        });
 
     this._page.actionBarHidden = true;
 
@@ -173,7 +178,7 @@ export class ProfileSettingsComponent implements OnInit {
         return pt.connected === true;
       });
       if (ptConnected && ptConnected.length === 1) {
-        const pt = ptConnected[0] as PushTracker;
+        const pt = ptConnected[0];
         this._updatePushTrackerSectionLabel(pt);
       }
     }
@@ -230,7 +235,7 @@ export class ProfileSettingsComponent implements OnInit {
   getUser() {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
-    Object.entries(APP_LANGUAGES).map(([key, value]) => {
+    Object.entries(APP_LANGUAGES).forEach(([key, value]) => {
       if (device.language.startsWith(value)) {
         defaultLanguage = key;
       }
@@ -734,7 +739,7 @@ export class ProfileSettingsComponent implements OnInit {
 
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.busy;
-          await pts.map(async pt => {
+          pts.forEach(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await this._sleep(300);

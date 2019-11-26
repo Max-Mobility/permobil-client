@@ -262,7 +262,7 @@ export class ActivityComponent implements OnInit {
       try {
         const tabHost = (args.object as SegmentedBar)
           .android as android.widget.TabHost;
-        const t = tabHost.getTabWidget() as android.widget.TabWidget;
+        const t = tabHost.getTabWidget();
 
         for (let i = 0; i < t.getChildCount(); i++) {
           const tv = t
@@ -424,7 +424,7 @@ export class ActivityComponent implements OnInit {
 
   async onCalendarLoaded(args) {
     this._logService.logBreadCrumb(ActivityComponent.name, 'Calendar Loaded');
-    const calendar = args.object as any; // RadCalendar (using any bc the types might be incorrect with 6.2 throwing TSC warnings)
+    const calendar = args.object; // RadCalendar (using any bc the types might be incorrect with 6.2 throwing TSC warnings)
     // Increasing the height of dayNameCells in RadCalendar
     // https://stackoverflow.com/questions/56720589/increasing-the-height-of-daynamecells-in-radcalendar
     if (isAndroid) {
@@ -1401,7 +1401,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateDayChartLabel() {
-    let activity = undefined;
+    let activity;
     if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {
@@ -1447,7 +1447,7 @@ export class ActivityComponent implements OnInit {
   }
 
   private async _updateDailyActivityAnnotationValue() {
-    let activity = undefined;
+    let activity;
     if (this.chartYAxis !== CHART_Y_AXIS.DISTANCE) {
       activity = this._dailyActivityFromKinvey;
     } else {

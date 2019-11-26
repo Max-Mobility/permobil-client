@@ -44,7 +44,7 @@ export class ProfileTabComponent {
   displayControlConfiguration: string;
   displayControlConfigurationImage: ImageSource;
 
-  genders: Array<String> = [];
+  genders: Array<string> = [];
   gendersTranslated: Array<string> = [];
   displayGender: string;
 
@@ -634,10 +634,7 @@ export class ProfileTabComponent {
     );
     this._setActiveDataBox(args);
 
-    const listPickerNeedsSecondary =
-      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES
-        ? true
-        : false;
+    const listPickerNeedsSecondary = this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES;
 
     let primaryIndex = 0;
     let secondaryIndex = 0;
@@ -1036,7 +1033,7 @@ export class ProfileTabComponent {
 
   private onUserUpdateUnits(args: any) {
     const data = args.data;
-    Object.entries(data).map(([key, value]) => {
+    Object.entries(data).forEach(([key, value]) => {
       this._logService.logBreadCrumb(
         ProfileTabComponent.name,
         `Registered user changed units: ${key}: ${value}`

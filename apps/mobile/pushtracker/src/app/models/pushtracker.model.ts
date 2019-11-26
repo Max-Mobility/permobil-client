@@ -1084,15 +1084,7 @@ export class PushTracker extends Observable {
   private handleOTAReady(p: Packet) {
     // this is sent by both the PT in response to a
     // Command::StartOTA
-    const otaDevice = bindingTypeToString('PacketOTAType', p.data('OTADevice'));
-    switch (otaDevice) {
-      case 'PushTracker':
-        this.sendEvent(PushTracker.ota_ready_event);
-        break;
-      default:
-        this.sendEvent(PushTracker.ota_ready_event);
-        break;
-    }
+    this.sendEvent(PushTracker.ota_ready_event);
   }
 }
 
@@ -1157,11 +1149,7 @@ export namespace PushTrackerData {
     }
 
     export function versionByteToString(version: number): string {
-      if (version === 0xff || version === 0x00) {
-        return 'unknown';
-      } else {
-        return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
-      }
+      return PushTracker.versionByteToString(version);
     }
 
     export function versionStringToByte(version: string): number {

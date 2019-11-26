@@ -330,7 +330,7 @@ export class BluetoothService extends Observable {
   }
 
   connect(address: string, onConnected?: any, onDisconnected?: any) {
-    this._bluetooth.connect({
+    return this._bluetooth.connect({
       UUID: address,
       onConnected: onConnected,
       onDisconnected: onDisconnected
@@ -649,7 +649,7 @@ export class BluetoothService extends Observable {
             return d;
           });
 
-          descriptors.map(d => {
+          descriptors.forEach(d => {
             c.addDescriptor(d);
           });
         } else {
@@ -677,7 +677,7 @@ export class BluetoothService extends Observable {
         return c;
       });
       if (isAndroid) {
-        characteristics.map(c => this.AppService.addCharacteristic(c));
+        characteristics.forEach(c => this.AppService.addCharacteristic(c));
       } else {
         this.AppService.characteristics = characteristics;
       }
@@ -743,10 +743,6 @@ export class BluetoothService extends Observable {
 
           // setting true so we know the user has connected to a PT previously
           appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
-        } else if (pt) {
-          state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.unknown)
-          );
         } else {
           state = <any>(
             this._mergePushTrackerState(ptState, PushTrackerState.unknown)
@@ -793,7 +789,7 @@ export class BluetoothService extends Observable {
   }
 
   disconnectPushTrackers(addresses: string[]) {
-    addresses.map(addr => {
+    addresses.forEach(addr => {
       this._bluetooth.cancelServerConnection(addr);
     });
   }

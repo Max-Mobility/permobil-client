@@ -65,11 +65,6 @@ export class LoginComponent implements OnInit {
 
   async onLottieFinished() {
     const definitions = new Array<AnimationDefinition>();
-    const a1: AnimationDefinition = {
-      target: this._lottieView as any,
-      height: 200,
-      duration: 500
-    };
     const a2: AnimationDefinition = {
       target: this._contentView,
       opacity: 1,
@@ -212,7 +207,7 @@ export class LoginComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
       ]);
@@ -227,7 +222,7 @@ export class LoginComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
       et.setImportantForAutofill(
         (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES

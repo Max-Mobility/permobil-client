@@ -90,7 +90,6 @@ export class PushTrackerStatusButtonComponent {
 
   private _getTranslationKeyForPushTrackerStatus() {
     switch (this.state) {
-      default:
       case PushTrackerState.unknown:
         return 'unknown';
       case PushTrackerState.busy:
@@ -103,6 +102,8 @@ export class PushTrackerStatusButtonComponent {
         return 'connected';
       case PushTrackerState.ready:
         return 'ready';
+      default:
+        return 'unknown';
     }
   }
 }

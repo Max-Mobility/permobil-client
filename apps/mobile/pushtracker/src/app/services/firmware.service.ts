@@ -60,8 +60,8 @@ export class FirmwareService {
 
   async loadFromFS() {
     await this.loadMetadata();
-    const tasks = await Object.keys(this.firmwares).map(k => {
-      return this.loadFirmwareFile(this.firmwares[k].filename);
+    const tasks = Object.keys(this.firmwares).map(async k => {
+      return await this.loadFirmwareFile(this.firmwares[k].filename);
     });
     await Promise.all(tasks);
   }
@@ -87,7 +87,7 @@ export class FirmwareService {
         const md = {
           last_check: this.last_check
         };
-        Object.keys(this.firmwares).map(k => {
+        Object.keys(this.firmwares).forEach(k => {
           md[k] = {
             id: this.firmwares[k].id,
             length: this.firmwares[k].length,
@@ -113,7 +113,7 @@ export class FirmwareService {
       if (md) {
         // now update our firmwares data
         this.last_check = md.last_check ? new Date(md.last_check) : null;
-        Object.keys(this.firmwares).map(k => {
+        Object.keys(this.firmwares).forEach(k => {
           this.firmwares[k].id = (md[k] && md[k].id) || null;
           this.firmwares[k].length = (md[k] && md[k].length) || 0;
           this.firmwares[k].version = (md[k] && md[k].version) || null;

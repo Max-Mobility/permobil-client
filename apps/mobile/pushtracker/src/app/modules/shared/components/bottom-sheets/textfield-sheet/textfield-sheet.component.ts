@@ -76,10 +76,7 @@ export class TextFieldSheetComponent {
   }
 
   onReturnPress(args) {
-    // returnPress event will be triggered when user submits a value
-    const textField: TextField = <TextField>args.object;
-    // Gets or sets the input text.
-    this.text = textField.text;
+    this.onTextChange(args);
   }
 
   // When user selects the new data value we need to pass it back to the calling component.
