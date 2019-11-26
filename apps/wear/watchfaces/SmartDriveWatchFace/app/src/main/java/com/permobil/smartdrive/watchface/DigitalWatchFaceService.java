@@ -333,6 +333,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
                 }
 
+                hourTextView.setTextSize(46);
+                colonTextView.setTextSize(46);
+                minuteTextView.setTextSize(46);
+
             } else {
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
@@ -343,6 +347,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 if (smartDriveBatteryCircle != null) {
                     smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
                 }
+
+                hourTextView.setTextSize(24);
+                colonTextView.setTextSize(24);
+                minuteTextView.setTextSize(24);
             }
 
             if (mLowBitAmbient) {
@@ -469,18 +477,18 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
             float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
 
-            if (hourTextView != null) {
-                hourTextView.setTextSize(textSize);
-            }
-            if (colonTextView != null) {
-                colonTextView.setTextSize(textSize);
-            }
-            if (minuteTextView != null) {
-                minuteTextView.setTextSize(textSize);
-            }
-            if (amPmTextView != null) {
-                amPmTextView.setTextSize(amPmSize);
-            }
+//            if (hourTextView != null) {
+//                hourTextView.setTextSize(textSize);
+//            }
+//            if (colonTextView != null) {
+//                colonTextView.setTextSize(textSize);
+//            }
+//            if (minuteTextView != null) {
+//                minuteTextView.setTextSize(textSize);
+//            }
+//            if (amPmTextView != null) {
+//                amPmTextView.setTextSize(amPmSize);
+//            }
         }
 
         private void initSentrySetup() {
