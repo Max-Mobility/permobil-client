@@ -79,19 +79,19 @@ export class ProfileSettingsComponent implements OnInit {
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
-      this._translationService.updateTranslationFilesFromKinvey()
-        .then(() => {
-          this._logService.logBreadCrumb(
-            ProfileSettingsComponent.name,
-            'Updated translation files'
-          );
-        })
-        .catch(error => {
-          this._logService.logBreadCrumb(
-            ProfileSettingsComponent.name,
-            'Error updating translation files: ' + error
-          );
-        });
+    this._translationService.updateTranslationFilesFromKinvey()
+      .then(() => {
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'Updated translation files'
+        );
+      })
+      .catch(error => {
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'Error updating translation files: ' + error
+        );
+      });
 
     this._page.actionBarHidden = true;
 
