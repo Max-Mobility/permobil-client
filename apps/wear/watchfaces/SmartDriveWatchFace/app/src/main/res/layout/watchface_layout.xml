@@ -10,15 +10,14 @@
     android:background="@android:color/background_dark"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context=".WatchfaceLayoutActivity"
+    tools:context=".DigitalWatchFaceLayoutActivity"
     tools:layout_editor_absoluteX="10dp"
     tools:layout_editor_absoluteY="10dp">
 
-
     <at.grabner.circleprogress.CircleProgressView
         android:id="@+id/watchBatteryCircle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/black_border_background"
         CircleProgressView:cpv_autoTextSize="false"
         CircleProgressView:cpv_barColor="@color/permobil_ocean"
@@ -100,8 +99,8 @@
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="62dp"
-                    android:layout_gravity="center_horizontal|fill_horizontal|center_vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
                     android:hapticFeedbackEnabled="true"
@@ -112,13 +111,13 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+                android:gravity="center|center_horizontal">
 
                 <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
+                    android:gravity="center|center_horizontal"
                     android:orientation="horizontal"
                     tools:ignore="UselessParent">
 
@@ -126,23 +125,26 @@
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:fontFamily="sans-serif"
-                        android:textAlignment="viewEnd" />
+                        android:fontFamily="sans-serif-light"
+                        android:textAlignment="viewEnd"
+                        android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/colonTextView"
                         android:layout_width="10dp"
                         android:layout_height="30dp"
-                        android:fontFamily="sans-serif"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/colon"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
-                        android:fontFamily="sans-serif"
-                        android:textAlignment="textStart" />
+                        android:fontFamily="sans-serif-light"
+                        android:textAlignment="textStart"
+                        android:textSize="24sp" />
                 </LinearLayout>
 
             </TableRow>
@@ -156,7 +158,7 @@
                     android:id="@+id/amPmTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
+                    android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:textAlignment="center" />
             </TableRow>
@@ -168,11 +170,12 @@
     <ImageView
         android:id="@+id/batteryIcon"
         android:layout_width="20dp"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:layout_alignWithParentIfMissing="false"
         android:layout_centerHorizontal="true"
-        android:background="@color/black"
+        android:background="@drawable/black_border_background"
         android:contentDescription="@string/batteryicon"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_battery_full"
         android:visibility="visible"
         tools:src="@drawable/ic_battery_full" />
