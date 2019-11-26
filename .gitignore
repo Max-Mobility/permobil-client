@@ -132,3 +132,7 @@ apps/wear/watchfaces/app/build/
 apps/wear/watchfaces/.gradle/
 
 *.iml
+
+
+## Android Watchface projects
+apps/wear/watchfaces/SmartDriveWatchFace/.gradle/**
