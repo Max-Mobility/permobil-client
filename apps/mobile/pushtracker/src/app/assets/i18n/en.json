@@ -544,13 +544,13 @@
 		"faqs": [
       {
         "category": "Setup & Installation",
-        "a": "There is an initial setup process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on set up and a playlist of how-to videos.",
+        "a": "There is an initial setup process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on setup and a playlist of how-to videos.",
         "q": "How do I set up my new PushTracker E2?",
         "links": [ "https://permobilus.com/howtosmartdrive" ]
       },
       {
         "category": "Setup & Installation",
-        "a": "You should use your personal phone to set up your PushTracker E2. You can use someone else's phone to set it up, but you should use your Google account on that person's phone.",
+        "a": "You should use your personal phone to setup your PushTracker E2. You can use someone else's phone to set it up, but you should use your Google account on that person's phone.",
         "q": "Do I have to use my phone to set up my PushTracker E2?"
       },
       {
@@ -627,7 +627,7 @@
       },
       {
         "category": "Connectivity",
-        "a": "No. The phone used to set up your SmartDrive does not have to be with your SwitchControl or PushTracker E2 in order to use your SmartDrive.",
+        "a": "No, the phone used to set up your SmartDrive does not have to be with your SwitchControl or PushTracker E2 in order to use your SmartDrive.",
         "q": "Does the phone have to be with the person using the SmartDrive?"
       },
       {
