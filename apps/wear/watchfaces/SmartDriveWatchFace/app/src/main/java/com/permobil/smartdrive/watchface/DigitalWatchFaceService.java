@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -32,10 +33,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -273,10 +277,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             ButterKnife.bind(this, mRelativeLayout);
 
             // For most Wear devices, width and height are the same, so we just chose one (width).
-            int sizeOfComplication = width / 4;
+            int sizeOfComplication = width / 6;
             int midpointOfScreen = width / 2;
             int horizontalOffset = midpointOfScreen - sizeOfComplication / 2;
-            int verticalOffset = midpointOfScreen / 6;
+            int verticalOffset = midpointOfScreen / 5;
 
             Rect topComplicationBounds = new Rect(horizontalOffset, verticalOffset, horizontalOffset + sizeOfComplication, verticalOffset + sizeOfComplication);
             Log.d(TAG, "complication bounds: " + topComplicationBounds);
@@ -455,20 +459,15 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onApplyWindowInsets(WindowInsets insets) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
-            }
             super.onApplyWindowInsets(insets);
+            Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
 
             // Load resources that have alternate values for round watches.
             Resources resources = DigitalWatchFaceService.this.getResources();
             boolean isRound = insets.isRound();
-            mXOffset = resources.getDimension(isRound
-                    ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-            float textSize = resources.getDimension(isRound
-                    ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-            float amPmSize = resources.getDimension(isRound
-                    ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
+            mXOffset = resources.getDimension(isRound ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
+            float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
+            float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
 
             if (hourTextView != null) {
                 hourTextView.setTextSize(textSize);
@@ -498,8 +497,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Thread.setDefaultUncaughtExceptionHandler(
                     new Thread.UncaughtExceptionHandler() {
                         @Override
-                        public void uncaughtException(Thread thread, Throwable e) {
-                            Log.e(TAG, e.getMessage());
+                        public void uncaughtException(@NotNull Thread thread, @NotNull Throwable e) {
+                            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
                             Sentry.capture(e);
                         }
                     });
@@ -526,7 +525,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             setActiveComplications(COMPLICATION_IDS);
 
-            // set the default complication provider for the TOP COMPLICATION
+            // set the default complication provider for the TOP COMPLICATION - this will set the default icon for the complication
             setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
         }
 
@@ -674,41 +673,18 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             for (int i = 0; i < COMPLICATION_IDS.length; i++) {
                 complicationId = COMPLICATION_IDS[i];
 
-                if (i == 0) {
-                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
-
-                    complicationDrawable.draw(canvas, currentTimeMillis);
-                    complicationDrawable.setRangedValueRingWidthActive(8);
-                    complicationDrawable.setRangedValuePrimaryColorActive(0xff28628E);
-                    complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
-                    complicationDrawable.setIconColorAmbient(0x00000000);
-                    complicationDrawable.setTextColorAmbient(0x00000000);
-                    complicationDrawable.setTextColorActive(0x00000000);
-                    complicationDrawable.setIconColorActive(0x00000000);
-                } else if (i == 1) {
-                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
-
-                    complicationDrawable.draw(canvas, currentTimeMillis);
-                    complicationDrawable.setRangedValueRingWidthActive(8);
-                    complicationDrawable.setRangedValuePrimaryColorActive(0xff89d4e3);
-                    complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
-                    complicationDrawable.setIconColorAmbient(0x00000000);
-                    complicationDrawable.setTextColorAmbient(0x00000000);
-                    complicationDrawable.setTextColorActive(0x00000000);
-                    complicationDrawable.setIconColorActive(0x00000000);
-
-                } else {
-                    complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
-
-                    complicationDrawable.draw(canvas, currentTimeMillis);
-
-//                    complicationDrawable.setColorFilter(0x006ea4,PorterDuff.Mode.CLEAR);
-//                    ColorFilter colorfilter = complicationDrawable.getColorFilter();
-//
-//                    //canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-//
-//                    complicationDrawable.setImageColorFilterActive(colorfilter);
-                }
+                complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
+                complicationDrawable.draw(canvas, currentTimeMillis);
+                complicationDrawable.setRangedValueRingWidthActive(8);
+                complicationDrawable.setRangedValuePrimaryColorActive(0xff28628E);
+                complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
+                complicationDrawable.setIconColorAmbient(0x00000000);
+                complicationDrawable.setTextColorAmbient(0x00000000);
+                complicationDrawable.setTextColorActive(0x00000000);
+                complicationDrawable.setIconColorActive(0x00000000);
+                ColorFilter colorfilter = complicationDrawable.getColorFilter();
+                //canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+                complicationDrawable.setImageColorFilterActive(colorfilter);
             }
         }
 
