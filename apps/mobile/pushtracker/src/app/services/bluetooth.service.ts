@@ -515,9 +515,9 @@ export class BluetoothService extends Observable {
             this.sendEvent(BluetoothService.pushtracker_connected, {
               pushtracker: pt
             });
+            pt.handleConnect();
+            this.updatePushTrackerState();
           }
-          pt.handleConnect();
-          this.updatePushTrackerState();
         } else if (this.isSmartDrive(device)) {
           const sd = this.getOrMakeSmartDrive(device);
           sd.handleConnect();
