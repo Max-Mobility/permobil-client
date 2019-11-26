@@ -1,4 +1,4 @@
-package com.permobil.smartdrive.watchface;
+package com.permobil.smartdrive.wearos.watchface.digital;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.permobil.smartdrive.wearos.R;
 
 import org.jetbrains.annotations.Nullable;
 

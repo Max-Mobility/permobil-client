@@ -1,4 +1,4 @@
-package com.permobil.smartdrive.watchface;
+package com.permobil.smartdrive.wearos.watchface.digital;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -32,6 +32,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.permobil.smartdrive.wearos.R;
+import com.permobil.smartdrive.wearos.util.DateUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -473,24 +476,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
 
             // Load resources that have alternate values for round watches.
-            Resources resources = DigitalWatchFaceService.this.getResources();
-            boolean isRound = insets.isRound();
-            mXOffset = resources.getDimension(isRound ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-            float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-            float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
-
-//            if (hourTextView != null) {
-//                hourTextView.setTextSize(textSize);
-//            }
-//            if (colonTextView != null) {
-//                colonTextView.setTextSize(textSize);
-//            }
-//            if (minuteTextView != null) {
-//                minuteTextView.setTextSize(textSize);
-//            }
-//            if (amPmTextView != null) {
-//                amPmTextView.setTextSize(amPmSize);
-//            }
+//            Resources resources = DigitalWatchFaceService.this.getResources();
+//            boolean isRound = insets.isRound();
+//            mXOffset = resources.getDimension(isRound ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
+//            float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
+//            float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
         }
 
         private void initSentrySetup() {
@@ -647,7 +637,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Get the hours.
             String hourString;
             if (is24Hour) {
-                hourString = Utils.formatTwoDigitNumber(mCalendar.get(Calendar.HOUR_OF_DAY));
+                hourString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.HOUR_OF_DAY));
             } else {
                 int hour = mCalendar.get(Calendar.HOUR);
                 if (hour == 0) {
@@ -659,13 +649,13 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
 
             // Get the minutes.
-            String minuteString = Utils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
+            String minuteString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
             // Set the time value combining the hours & minute strings
             minuteTextView.setText(minuteString);
 
             // Set the am/pm.
             if (!is24Hour) {
-                String value = Utils.getAmPmString(mCalendar.get(Calendar.AM_PM));
+                String value = DateUtils.getAmPmString(mCalendar.get(Calendar.AM_PM));
                 amPmTextView.setText(value);
                 amPmTextView.setVisibility(View.VISIBLE);
             } else {

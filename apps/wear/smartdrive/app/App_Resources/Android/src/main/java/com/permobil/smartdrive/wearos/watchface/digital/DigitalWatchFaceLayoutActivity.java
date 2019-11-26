@@ -1,7 +1,9 @@
-package com.permobil.smartdrive.watchface;
+package com.permobil.smartdrive.wearos.watchface.digital;
 
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
+
+import com.permobil.smartdrive.wearos.R;
 
 public class DigitalWatchFaceLayoutActivity extends WearableActivity {
 

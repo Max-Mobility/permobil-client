@@ -1,9 +1,9 @@
-package com.permobil.smartdrive.watchface;
+package com.permobil.smartdrive.wearos.util;
 
 import java.util.Calendar;
 import java.util.Locale;
 
-class Utils {
+public class DateUtils {
 
     public static String formatTwoDigitNumber(int hour) {
         return String.format(Locale.getDefault(), "%02d", hour);
