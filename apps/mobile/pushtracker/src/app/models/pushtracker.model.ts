@@ -69,28 +69,16 @@ export class PushTracker extends DeviceBase {
   // NON STATIC:
   events: any /*IPushTrackerEvents*/;
 
-  //  members
+  //  members - in addition to Device Base
   version = 0xff; // firmware version number for the PT firmware
-  mcu_version = 0xff; // firmware version number for the SD MCU firmware
-  ble_version = 0xff; // firmware version number for the SD BLE firmware
-  battery = 0; // battery percent Stat of Charge (SoC)
-
-  address = ''; // MAC Address
   paired = false; // Is this PushTracker paired?
-  connected = false; // Is this PushTracker connected?
-
   settings = new Device.Settings();
   pushSettings = new Device.PushSettings();
   switchControlSettings = new Device.SwitchControlSettings();
 
   // not serialized
-  device: any = null; // the actual device (ios:CBCentral, android:BluetoothDevice)
   otaState: OTAState = OTAState.not_started;
   otaProgress = 0;
-  ableToSend = false;
-  otaStartTime: Date;
-  otaCurrentTime: Date;
-  otaEndTime: Date;
 
   // functions
   constructor(btService: BluetoothService, obj?: any) {
@@ -626,59 +614,6 @@ export class PushTracker extends DeviceBase {
     ]);
   }
 
-  sendSettingsObject(settings: Device.Settings) {
-    return this.sendSettings(
-      settings.controlMode,
-      settings.units,
-      settings.getFlags(),
-      settings.tapSensitivity / 100.0,
-      settings.acceleration / 100.0,
-      settings.maxSpeed / 100.0
-    );
-  }
-
-  sendSettings(
-    mode: string,
-    units: string,
-    flags: number,
-    tap_sensitivity: number,
-    acceleration: number,
-    max_speed: number
-  ): Promise<any> {
-    const p = new Packet();
-    const settings = p.data('settings');
-    // convert mode
-    if (mode === 'MX2+') mode = 'Advanced';
-    else if (mode === 'MX2') mode = 'Intermediate';
-    else if (mode === 'MX1') mode = 'Beginner';
-    else if (mode === 'Off') mode = 'Off';
-    else mode = 'Advanced';
-    // convert units
-    units = units === 'Metric' ? 'Metric' : 'English';
-    // clamp numbers
-    const clamp = n => {
-      return Math.max(0, Math.min(n, 1.0));
-    };
-    tap_sensitivity = clamp(tap_sensitivity);
-    acceleration = clamp(acceleration);
-    max_speed = clamp(max_speed);
-    // now fill in the packet
-    settings.ControlMode = Packet.makeBoundData('SmartDriveControlMode', mode);
-    settings.Units = Packet.makeBoundData('Units', units);
-    settings.Flags = flags;
-    settings.TapSensitivity = tap_sensitivity;
-    settings.Acceleration = acceleration;
-    settings.MaxSpeed = max_speed;
-    p.destroy();
-    return this.sendPacket(
-      'Command',
-      'SetSettings',
-      'settings',
-      null,
-      settings
-    );
-  }
-
   sendPushSettingsObject(settings: Device.PushSettings) {
     return this.sendPushSettings(
       settings.threshold,
@@ -714,41 +649,6 @@ export class PushTracker extends DeviceBase {
     );
   }
 
-  public sendSwitchControlSettings(
-    mode: string,
-    max_speed: number
-  ): Promise<any> {
-    const p = new Packet();
-    const settings = p.data('switchControlSettings');
-    // convert mode
-    // don't have to convert mode since we don't alias it in any way
-    // clamp numbers
-    const clamp = n => {
-      return Math.max(0, Math.min(n, 1.0));
-    };
-    max_speed = clamp(max_speed);
-    // now fill in the packet
-    settings.Mode = Packet.makeBoundData('SwitchControlMode', mode);
-    settings.MaxSpeed = max_speed;
-    p.destroy();
-    return this.sendPacket(
-      'Command',
-      'SetSwitchControlSettings',
-      'switchControlSettings',
-      null,
-      settings
-    );
-  }
-
-  public sendSwitchControlSettingsObject(
-    settings: Device.SwitchControlSettings
-  ): Promise<any> {
-    return this.sendSwitchControlSettings(
-      settings.mode,
-      settings.maxSpeed / 100.0
-    );
-  }
-
   public sendTime(d?: Date) {
     const p = new Packet();
     const timeSettings = p.data('timeInfo');
@@ -768,18 +668,6 @@ export class PushTracker extends DeviceBase {
       null,
       timeSettings
     );
-  }
-
-  /**
-   * Notify events by name and optionally pass data
-   */
-  sendEvent(eventName: string, data?: any, msg?: string) {
-    this.notify({
-      eventName,
-      object: this,
-      data,
-      message: msg
-    });
   }
 
   // handlers

@@ -1,9 +1,9 @@
 import { Observable, ObservableArray } from '@nativescript/core';
-import { Packet } from '@permobil/core';
+import { Device, Packet } from '@permobil/core';
 import { SMARTDRIVE_MODE, SMARTDRIVE_MODE_SETTING, SMARTDRIVE_UNIT } from './../enums';
 import { BluetoothService } from './../services';
 
-export class DeviceBase extends Observable {
+export abstract class DeviceBase extends Observable {
   public static ota_start_event = 'ota_start_event';
   public static ota_pause_event = 'ota_pause_event';
   public static ota_resume_event = 'ota_resume_event';
@@ -124,6 +124,14 @@ export class DeviceBase extends Observable {
     else this.otaActions.splice(0, this.otaActions.length);
   }
 
+  public abstract sendPacket(
+    Type: string,
+    SubType: string,
+    dataKey?: string,
+    dataType?: string,
+    data?: any
+  ): Promise<any>;
+
   public sendSettings(
     mode: string,
     units: string,
@@ -163,7 +171,24 @@ export class DeviceBase extends Observable {
     settings.Acceleration = acceleration;
     settings.MaxSpeed = max_speed;
     p.destroy();
-    return settings;
+    return this.sendPacket(
+      'Command',
+      'SetSettings',
+      'settings',
+      null,
+      settings
+    );
+  }
+
+  sendSettingsObject(settings: Device.Settings) {
+    return this.sendSettings(
+      settings.controlMode,
+      settings.units,
+      settings.getFlags(),
+      settings.tapSensitivity / 100.0,
+      settings.acceleration / 100.0,
+      settings.maxSpeed / 100.0
+    );
   }
 
   public sendSwitchControlSettings(
@@ -183,7 +208,22 @@ export class DeviceBase extends Observable {
     settings.Mode = Packet.makeBoundData('SwitchControlMode', mode);
     settings.MaxSpeed = max_speed;
     p.destroy();
-    return settings;
+    return this.sendPacket(
+      'Command',
+      'SetSwitchControlSettings',
+      'switchControlSettings',
+      null,
+      settings
+    );
+  }
+
+  public sendSwitchControlSettingsObject(
+    settings: Device.SwitchControlSettings
+  ): Promise<any> {
+    return this.sendSwitchControlSettings(
+      settings.mode,
+      settings.maxSpeed / 100.0
+    );
   }
 
   /**
