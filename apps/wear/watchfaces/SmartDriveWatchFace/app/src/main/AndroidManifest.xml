@@ -72,6 +72,10 @@
         </activity>
 
         <meta-data
+            android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+            android:value="0" />
+
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>
