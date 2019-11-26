@@ -360,7 +360,7 @@ export class TabsComponent {
 
   onPushTrackerVersionEvent(args) {
     const pt = args.object as PushTracker;
-    const smartDriveUpToDate = pt.isSmartDriveUpToDate('2.0');
+    const smartDriveUpToDate = !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
     const ptUpToDate = pt.isUpToDate('2.0');
     // Alert user if they are connected to a pushtracker which is out
     // of date -
