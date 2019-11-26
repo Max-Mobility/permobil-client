@@ -2,10 +2,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular/modal-dialog';
 import { TextField } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import { PushTrackerUser } from '../../models';
 import { APP_THEMES, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService } from '../../services';
 import { milesToKilometers } from '../../utils';
 
 @Component({
@@ -32,14 +32,11 @@ export class ActivityGoalSettingComponent implements OnInit {
 
   constructor(
     private _logService: LoggingService,
-    private _userService: PushTrackerUserService,
     private _params: ModalDialogParams
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this._userService.user.subscribe(user => {
-      this._user = user;
-    });
+    this._user = KinveyUser.getActiveUser() as PushTrackerUser;
     this._logService.logBreadCrumb(ActivityGoalSettingComponent.name, 'OnInit');
     this.config = {
       title: '',
@@ -116,38 +113,14 @@ export class ActivityGoalSettingComponent implements OnInit {
   onSetGoalBtnTap() {
     const textField = this.textField.nativeElement as TextField;
     const goalValue = textField.text;
+
+    // update this.config.value and convert it appropriately
     this._validateGoalValueFromText(goalValue);
+
     this._logService.logBreadCrumb(
       ActivityGoalSettingComponent.name,
       'User set activity goals: ' + this.config.key + ' ' + this.config.value
     );
-
-    // Persist this goal in Kinvey
-    if (this.config.key === STORAGE_KEYS.COAST_TIME_ACTIVITY_GOAL) {
-      this._userService.updateDataProperty(
-        'activity_goal_coast_time',
-        this.config.value
-      );
-      KinveyUser.update({
-        activity_goal_coast_time: this.config.value
-      });
-    } else if (this.config.key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
-      if (this._user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
-        // User input is in miles
-        // Convert to kilometers before saving in DB
-        this.config.value = milesToKilometers(this.config.value);
-      }
-
-      this._userService.updateDataProperty(
-        'activity_goal_distance',
-        this.config.value
-      );
-      KinveyUser.update({
-        activity_goal_distance: this.config.value
-      });
-    }
-
-    appSettings.setString('Kinvey.User', JSON.stringify(this._user));
 
     // close the modal
     this.closeModal();

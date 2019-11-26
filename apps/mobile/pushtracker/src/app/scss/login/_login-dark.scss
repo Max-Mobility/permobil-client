@@ -3,9 +3,12 @@
 
 .login-layout {
   @extend .LOGIN_LAYOUT_BASE;
+  background-color: $black;
 
   .login-form {
     @extend .LOGIN_FORM_BASE;
+    background-color: $black;
+    color: $white;
   }
 
   .submit-btn {
@@ -17,11 +20,11 @@
 
   .forgot-pw-btn {
     @extend .FORGOT_PW_BTN_BASE;
-    color: #3d4144;
+    color: $permobil-cousteau-light;
   }
 
   .register-btn {
     @extend .REGISTER_BTN_BASE;
-    color: #3d4144;
+    color: $permobil-cousteau-light;
   }
 }

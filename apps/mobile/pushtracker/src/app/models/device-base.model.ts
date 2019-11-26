@@ -1,9 +1,9 @@
 import { Observable, ObservableArray } from '@nativescript/core';
-import { Packet } from '@permobil/core';
+import { Device, Packet } from '@permobil/core';
 import { SMARTDRIVE_MODE, SMARTDRIVE_MODE_SETTING, SMARTDRIVE_UNIT } from './../enums';
 import { BluetoothService } from './../services';
 
-export class DeviceBase extends Observable {
+export abstract class DeviceBase extends Observable {
   public static ota_start_event = 'ota_start_event';
   public static ota_pause_event = 'ota_pause_event';
   public static ota_resume_event = 'ota_resume_event';
@@ -21,12 +21,20 @@ export class DeviceBase extends Observable {
     return (ticks * (2.0 * 3.14159265358 * 3.8)) / (36.0 * 63360.0);
   }
 
-  static motorTicksToKilometers(ticks: number): number {
+  public static motorTicksToKilometers(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714 / 1000.0;
   }
 
-  static caseTicksToKilometers(ticks: number): number {
+  public static caseTicksToKilometers(ticks: number): number {
     return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0 / 1000.0;
+  }
+
+  public static motorTicksToMeters(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 265.714;
+  }
+
+  public static caseTicksToMeters(ticks: number): number {
+    return (ticks * (2.0 * 3.14159265358 * 0.09652)) / 36.0;
   }
 
   public static milesToMotorTicks(miles: number): number {
@@ -48,10 +56,25 @@ export class DeviceBase extends Observable {
 
   public static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
-      return 'unknown';
+      return '??';
     } else {
       return `${(version & 0xf0) >> 4}.${version & 0x0f}`;
     }
+  }
+
+  public static validVersion(version: number): boolean {
+    return typeof version === 'number' &&
+      version > 0x00 && version < 0xff;
+  }
+
+  public static versionsUpToDate(latest: string, versions: number[]): boolean {
+    const v = DeviceBase.versionStringToByte(latest);
+    if (v === 0xff) {
+      return false;
+    }
+    return versions.reduce((a, e) => {
+      return a && e !== 0xff && e >= v;
+    }, true);
   }
 
   /**
@@ -101,6 +124,14 @@ export class DeviceBase extends Observable {
     else this.otaActions.splice(0, this.otaActions.length);
   }
 
+  public abstract sendPacket(
+    Type: string,
+    SubType: string,
+    dataKey?: string,
+    dataType?: string,
+    data?: any
+  ): Promise<any>;
+
   public sendSettings(
     mode: string,
     units: string,
@@ -140,7 +171,24 @@ export class DeviceBase extends Observable {
     settings.Acceleration = acceleration;
     settings.MaxSpeed = max_speed;
     p.destroy();
-    return settings;
+    return this.sendPacket(
+      'Command',
+      'SetSettings',
+      'settings',
+      null,
+      settings
+    );
+  }
+
+  sendSettingsObject(settings: Device.Settings) {
+    return this.sendSettings(
+      settings.controlMode,
+      settings.units,
+      settings.getFlags(),
+      settings.tapSensitivity / 100.0,
+      settings.acceleration / 100.0,
+      settings.maxSpeed / 100.0
+    );
   }
 
   public sendSwitchControlSettings(
@@ -160,7 +208,22 @@ export class DeviceBase extends Observable {
     settings.Mode = Packet.makeBoundData('SwitchControlMode', mode);
     settings.MaxSpeed = max_speed;
     p.destroy();
-    return settings;
+    return this.sendPacket(
+      'Command',
+      'SetSwitchControlSettings',
+      'switchControlSettings',
+      null,
+      settings
+    );
+  }
+
+  public sendSwitchControlSettingsObject(
+    settings: Device.SwitchControlSettings
+  ): Promise<any> {
+    return this.sendSwitchControlSettings(
+      settings.mode,
+      settings.maxSpeed / 100.0
+    );
   }
 
   /**

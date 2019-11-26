@@ -15,7 +15,7 @@ import { ToastDuration, ToastPosition, Toasty } from 'nativescript-toasty';
 import * as appSettings from '@nativescript/core/application-settings';
 import { device } from '@nativescript/core/platform';
 import { alert } from '@nativescript/core/ui/dialogs';
-import { TextField, isAndroid, isIOS } from '@nativescript/core';
+import { Page, TextField, isAndroid, isIOS } from '@nativescript/core';
 import {
   AppResourceIcons,
   APP_THEMES,
@@ -27,9 +27,8 @@ import {
   CHAIR_TYPE,
   TIME_FORMAT
 } from '../../enums';
-import { LoggingService, PushTrackerUserService } from '../../services';
+import { LoggingService } from '../../services';
 import { PrivacyPolicyComponent } from '..';
-import { PushTrackerUser } from '@permobil/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import { APP_KEY, APP_SECRET } from '../../utils/kinvey-keys';
 
@@ -91,14 +90,16 @@ export class SignUpComponent implements OnInit {
   private _loadingIndicator = new LoadingIndicator();
 
   constructor(
+    private _page: Page,
     private _logService: LoggingService,
     private _router: RouterExtensions,
     private _modalService: ModalDialogService,
     private _translateService: TranslateService,
-    private _vcRef: ViewContainerRef,
-    private _userService: PushTrackerUserService
+    private _vcRef: ViewContainerRef
   ) {
     preventKeyboardFromShowing();
+
+    this._page.actionBarHidden = true;
 
     const currentTheme = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
@@ -124,7 +125,7 @@ export class SignUpComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypeEmailAddress;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([
         (android.view.View as any).AUTOFILL_HINT_EMAIL_ADDRESS
       ]);
@@ -139,7 +140,7 @@ export class SignUpComponent implements OnInit {
       const uiTF = (args.object as TextField).ios as UITextField;
       uiTF.textContentType = UITextContentTypePassword;
     } else if (isAndroid && device.sdkVersion >= '26') {
-      const et = (args.object as TextField).android as any; // android.widget.EditText
+      const et = (args.object as TextField).android; // android.widget.EditText
       et.setAutofillHints([(android.view.View as any).AUTOFILL_HINT_PASSWORD]);
       et.setImportantForAutofill(
         (android.view.View as any).IMPORTANT_FOR_AUTOFILL_YES
@@ -209,7 +210,8 @@ export class SignUpComponent implements OnInit {
         consent_to_research = result.consent_to_research || false;
       }
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SignUpComponent.name, 'Error while handling user agreement / privacy policy');
+      // this._logService.logException(err);
       return;
     }
 
@@ -273,9 +275,6 @@ export class SignUpComponent implements OnInit {
             .then(() => {
               // Kinvey SDK is working
               // Navigate to tabs home with clearHistory
-              this._userService.initializeUser(<PushTrackerUser>(
-                (<any>KinveyUser.getActiveUser())
-              ));
               this._router.navigate(['configuration'], {
                 clearHistory: true
               });

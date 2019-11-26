@@ -11,7 +11,7 @@ export class FileService {
   constructor(
     private _translateService: TranslateService,
     private _loggingService: LoggingService
-  ) {}
+  ) { }
 
   private static fsKeyMetadata = 'Metadata';
 
@@ -33,13 +33,13 @@ export class FileService {
         );
 
         // _version is a property on our Kinvey files
-        if (data && data.file_version >= (file as any)._version) {
+        if (data && data.file_version >= file._version) {
           return;
         }
 
         const filePath = fs.path.join(
-          fs.knownFolders.currentApp().path,
-          `assets/i18n/${file._filename}`
+          fs.knownFolders.documents().path,
+          `i18n/${file._filename}`
         );
         await http.getFile(file._downloadURL, filePath).catch(err => {
           this._loggingService.logException(err);
@@ -63,7 +63,7 @@ export class FileService {
 
   private _saveFileMetaData(file) {
     const metadata = {
-      file_version: (file as any)._version
+      file_version: file._version
     };
 
     localStorage.setItem(

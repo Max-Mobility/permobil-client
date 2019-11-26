@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">Batterinivå</string>
-    <string name="complications_provider_service_label_pushes">Uppskattat intervall</string>
-    <string name="complications_provider_service_label_coast_time">Kör avstånd</string>
-    <string name="complications_provider_service_label_distance">Kustavstånd</string>
+    <string name="foreground_service_notification">Permobil PushTracker samlar in din aktivitet</string>
+    <string name="complications_provider_service_label_pushes">Skjuter dagligen</string>
+    <string name="complications_provider_service_label_coast_time">Kusttid dagligen</string>
+    <string name="complications_provider_service_label_distance">Avstånd dagligen</string>
 </resources>

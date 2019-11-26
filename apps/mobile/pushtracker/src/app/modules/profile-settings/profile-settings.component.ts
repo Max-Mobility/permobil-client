@@ -1,18 +1,18 @@
 import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { Page, PropertyChangeData, Switch } from '@nativescript/core';
+import { ChangedData, ObservableArray, Page, PropertyChangeData, Switch } from '@nativescript/core';
 import { device } from '@nativescript/core/platform';
 import * as appSettings from '@nativescript/core/application-settings';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
-import { Device, PushTrackerUser } from '@permobil/core';
+import { Device } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { getVersionNameSync, getVersionCodeSync } from 'nativescript-appversion';
 import debounce from 'lodash/debounce';
 import once from 'lodash/once';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { APP_LANGUAGES, APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, HEIGHT_UNITS, STORAGE_KEYS, TIME_FORMAT, WEIGHT_UNITS } from '../../enums';
-import { PushTracker, SmartDrive } from '../../models';
+import { DeviceBase, PushTracker, PushTrackerUser, SmartDrive } from '../../models';
 import { BluetoothService, LoggingService, PushTrackerState, PushTrackerUserService, SettingsService, ThemeService, TranslationService } from '../../services';
 import { applyTheme } from '../../utils';
 import { ListPickerSheetComponent, PushTrackerStatusButtonComponent, SliderSheetComponent } from '../shared/components';
@@ -60,17 +60,14 @@ export class ProfileSettingsComponent implements OnInit {
   private _debouncedCommitSettingsFunction: any = null;
   private MAX_COMMIT_INTERVAL_MS: number = 1 * 1000;
   private smartDrive: SmartDrive = undefined;
-  private _pt_version = '';
-  private _mcu_version = '';
-  private _ble_version = '';
 
   constructor(
     public settingsService: SettingsService,
+    private _userService: PushTrackerUserService,
     private _logService: LoggingService,
     private _translationService: TranslationService,
     private _translateService: TranslateService,
     private _page: Page,
-    private _userService: PushTrackerUserService,
     private _themeService: ThemeService,
     private _params: ModalDialogParams,
     private _bluetoothService: BluetoothService,
@@ -82,14 +79,19 @@ export class ProfileSettingsComponent implements OnInit {
   ngOnInit() {
     this._logService.logBreadCrumb(ProfileSettingsComponent.name, 'ngOnInit');
 
-    try {
-      this._translationService.updateTranslationFilesFromKinvey();
-    } catch (error) {
-      this._logService.logBreadCrumb(
-        ProfileSettingsComponent.name,
-        'Error updating translation files: ' + error
-      );
-    }
+    this._translationService.updateTranslationFilesFromKinvey()
+      .then(() => {
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'Updated translation files'
+        );
+      })
+      .catch(error => {
+        this._logService.logBreadCrumb(
+          ProfileSettingsComponent.name,
+          'Error updating translation files: ' + error
+        );
+      });
 
     this._page.actionBarHidden = true;
 
@@ -171,35 +173,69 @@ export class ProfileSettingsComponent implements OnInit {
       this.user.data.control_configuration ===
       CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
+      this.registerPushTrackerEvents();
       const ptConnected = BluetoothService.PushTrackers.filter(pt => {
         return pt.connected === true;
       });
       if (ptConnected && ptConnected.length === 1) {
-        const pt = ptConnected[0] as PushTracker;
-        this._pt_version = PushTracker.versionByteToString(pt.version);
-        this._mcu_version = PushTracker.versionByteToString(pt.mcu_version);
-        this._ble_version = PushTracker.versionByteToString(pt.ble_version);
-        if (
-          !(
-            this._pt_version === '??' &&
-            this._mcu_version === '??' &&
-            this._ble_version === '??'
-          )
-        ) {
-          this.versionInfo = `(PT ${this._pt_version}, SD ${this._mcu_version}, BT ${this._ble_version})`;
-          this._logService.logBreadCrumb(
-            ProfileSettingsComponent.name,
-            'PushTracker connected: ' + this.versionInfo
-          );
-        }
+        const pt = ptConnected[0];
+        this._updatePushTrackerSectionLabel(pt);
       }
     }
   }
 
+  /**
+   * BLUETOOTH EVENT MANAGEMENT
+   */
+  private unregisterPushTrackerEvents() {
+    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    BluetoothService.PushTrackers.map(pt => {
+      pt.off(PushTracker.version_event);
+      pt.off(PushTracker.daily_info_event);
+    });
+  }
+
+  private _registerEventsForPT(pt: PushTracker) {
+    // unregister
+    pt.off(PushTracker.version_event);
+    pt.off(PushTracker.daily_info_event);
+    // register for version and info events
+    pt.on(PushTracker.version_event, this.onPushTrackerVersionInfo, this);
+    pt.once(PushTracker.daily_info_event, this.onPushTrackerVersionInfo, this);
+  }
+
+  private registerPushTrackerEvents() {
+    this.unregisterPushTrackerEvents();
+    // handle pushtracker pairing events for existing pushtrackers
+    BluetoothService.PushTrackers.map(pt => {
+      this._registerEventsForPT(pt);
+    });
+
+    // listen for completely new pusthrackers (that we haven't seen before)
+    BluetoothService.PushTrackers.on(
+      ObservableArray.changeEvent,
+      (args: ChangedData<number>) => {
+        if (args.action === 'add') {
+          const pt = BluetoothService.PushTrackers.getItem(
+            BluetoothService.PushTrackers.length - 1
+          );
+          if (pt) {
+            this._registerEventsForPT(pt);
+          }
+        }
+      }
+    );
+  }
+
+  onPushTrackerVersionInfo(args: any) {
+    const pt = args.object as PushTracker;
+    this._updatePushTrackerSectionLabel(pt);
+  }
+
   getUser() {
-    this.user = this._params.context.user;
+    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     let defaultLanguage = 'English';
-    Object.entries(APP_LANGUAGES).map(([key, value]) => {
+    Object.entries(APP_LANGUAGES).forEach(([key, value]) => {
       if (device.language.startsWith(value)) {
         defaultLanguage = key;
       }
@@ -273,6 +309,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.syncingWithSmartDrive = false;
   }
 
+  private _changedSettingsWhichRequireUpdate: boolean = false;
   async onSettingsChecked(args: PropertyChangeData, setting: string) {
     let updatedSmartDriveSettings = false;
 
@@ -292,8 +329,10 @@ export class ProfileSettingsComponent implements OnInit {
         // since the value we use is actually the OPPOSITE of the
         // switch
         isChecked = !isChecked;
-        if (isChecked !== this.settingsService.settings.disablePowerAssistBeep)
+        if (isChecked !== this.settingsService.settings.disablePowerAssistBeep) {
+          this._changedSettingsWhichRequireUpdate = true;
           updatedSmartDriveSettings = true;
+        }
         this.settingsService.settings.disablePowerAssistBeep = isChecked;
         break;
       default:
@@ -484,56 +523,84 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  private async updateUser(update: any) {
+    let didUpdate = false;
+    try {
+      await this.user.update(update);
+      didUpdate = true;
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        ProfileSettingsComponent.name,
+        'Could not update the user - ' + err
+      );
+      setTimeout(() => {
+        alert({
+          title: this._translateService.instant('profile-tab.network-error.title'),
+          message: this._translateService.instant('profile-tab.network-error.message'),
+          okButtonText: this._translateService.instant('profile-tab.ok')
+        });
+      }, 1000);
+    }
+    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+    return didUpdate;
+  }
+
   private async _saveListPickerSettings(index) {
     // save settings
+    let didUpdate = false;
     switch (this.activeSetting) {
       case 'height':
-        this._userService.updateDataProperty(
-          'height_unit_preference',
-          this.heightUnits[index]
-        );
-        KinveyUser.update({
+        didUpdate = await this.updateUser({
           height_unit_preference: this.heightUnits[index]
         });
-        this.displayHeightUnit = this.heightUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayHeightUnit = this.heightUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { height_unit_preference: this.heightUnits[index] }
+          );
+        }
         break;
       case 'weight':
-        this._userService.updateDataProperty(
-          'weight_unit_preference',
-          this.weightUnits[index]
-        );
-        KinveyUser.update({
+        didUpdate = await this.updateUser({
           weight_unit_preference: this.weightUnits[index]
         });
-        this.displayWeightUnit = this.weightUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayWeightUnit = this.weightUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { weight_unit_preference: this.weightUnits[index] }
+          );
+        }
         break;
       case 'distance':
-        this._userService.updateDataProperty(
-          'distance_unit_preference',
-          this.distanceUnits[index]
-        );
-        KinveyUser.update({
+        didUpdate = await this.updateUser({
           distance_unit_preference: this.distanceUnits[index]
         });
-        this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+        if (didUpdate) {
+          this.displayDistanceUnit = this.distanceUnitsTranslated[index];
+          this._userService.emitEvent(
+            PushTrackerUserService.units_change_event,
+            { distance_unit_preference: this.distanceUnits[index] }
+          );
+        }
         break;
       case 'mode':
         this.settingsService.settings.controlMode =
           Device.Settings.ControlMode.Options[index];
         break;
       case 'switch-control-mode':
+        this._changedSettingsWhichRequireUpdate = true;
         this.settingsService.switchControlSettings.mode =
           Device.SwitchControlSettings.Mode.Options[index];
         break;
       case 'time format':
-        this._userService.updateDataProperty(
-          'time_format_preference',
-          this.timeFormats[index]
-        );
-        KinveyUser.update({
+        didUpdate = await this.updateUser({
           time_format_preference: this.timeFormats[index]
         });
-        this.displayTimeFormat = this.timeFormatsTranslated[index];
+        if (didUpdate) {
+          this.displayTimeFormat = this.timeFormatsTranslated[index];
+        }
         break;
       case 'theme':
         this.CURRENT_THEME = Object.keys(APP_THEMES)[index];
@@ -547,26 +614,19 @@ export class ProfileSettingsComponent implements OnInit {
         }
         break;
       case 'language':
-        this.CURRENT_LANGUAGE = Object.keys(APP_LANGUAGES)[index];
-        this._userService.updateDataProperty(
-          'language_preference',
-          this.CURRENT_LANGUAGE
-        );
-        KinveyUser.update({ language_preference: this.CURRENT_LANGUAGE });
-        const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
-        if (this._translateService.currentLang !== language) {
-          this._translateService.reloadLang(language);
-          this._translateService.use(language);
+        const newLanguage = Object.keys(APP_LANGUAGES)[index];
+        didUpdate = await this.updateUser({ language_preference: newLanguage });
+        if (didUpdate) {
+          this.CURRENT_LANGUAGE = newLanguage;
+          const language = APP_LANGUAGES[this.CURRENT_LANGUAGE];
+          if (this._translateService.currentLang !== language) {
+            this._translateService.reloadLang(language);
+            this._translateService.use(language);
+          }
         }
         break;
     }
-    // Update local cache of this.user in appSettings
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
     if (this.activeSetting !== 'theme') this._debouncedCommitSettingsFunction();
-    this._logService.logBreadCrumb(
-      ProfileSettingsComponent.name,
-      `User updated setting: ${this.activeSetting} to: ${index}`
-    );
   }
 
   private async _saveSliderSetting(newValue) {
@@ -581,6 +641,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.settingsService.settings.tapSensitivity = newValue * 10;
         break;
       case 'switch-control-max-speed':
+        this._changedSettingsWhichRequireUpdate = true;
         this.settingsService.switchControlSettings.maxSpeed = newValue * 10;
         break;
       default:
@@ -599,6 +660,53 @@ export class ProfileSettingsComponent implements OnInit {
     );
   }
 
+  private async _showUpdateWarning(ptsUpToDate: boolean, sdsUpToDate: boolean) {
+    // use set timeout so iOS can show the alert
+    setTimeout(() => {
+      if (this._changedSettingsWhichRequireUpdate) {
+        this._changedSettingsWhichRequireUpdate = false;
+        // Alert user if they are sync-ing settings to a pushtracker
+        // or smartdrive which is out of date -
+        // https://github.com/Max-Mobility/permobil-client/issues/516
+        // TODO: should get this version from the server somewhere!
+        if (!sdsUpToDate && !ptsUpToDate) {
+          // both the pushtrackers and the smartdrives are not up to date
+          alert({
+            title: this._translateService.instant(
+              'profile-settings.update-notice.title'
+            ),
+            message: this._translateService.instant(
+              'profile-settings.update-notice.both-settings-require-update'
+            ),
+            okButtonText: this._translateService.instant('profile-tab.ok')
+          });
+        } else if (!sdsUpToDate) {
+          // the pushtrackers are up to date but the smartdrives are not
+          alert({
+            title: this._translateService.instant(
+              'profile-settings.update-notice.title'
+            ),
+            message: this._translateService.instant(
+              'profile-settings.update-notice.smartdrive-settings-require-update'
+            ),
+            okButtonText: this._translateService.instant('profile-tab.ok')
+          });
+        } else if (!ptsUpToDate) {
+          // only the pushtrackers are out of date
+          alert({
+            title: this._translateService.instant(
+              'profile-settings.update-notice.title'
+            ),
+            message: this._translateService.instant(
+              'profile-settings.update-notice.pushtracker-settings-require-update'
+            ),
+            okButtonText: this._translateService.instant('profile-tab.ok')
+          });
+        }
+      }
+    }, 300);
+  }
+
   private async _commitSettingsChange() {
     this.syncSuccessful = false;
     this.settingsService.saveToFileSystem();
@@ -613,14 +721,25 @@ export class ProfileSettingsComponent implements OnInit {
         // will then communicate these settings changes to the
         // connected SmartDrive.
         const pts = BluetoothService.PushTrackers.filter(p => p.connected);
+
         if (pts && pts.length > 0) {
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
-            'Sending to pushtrackers: ' + pts.map(pt => pt.address)
+            'Sending to pushtrackers: ' + pts.map(pt => pt.address) +
+            ' - ' + this._changedSettingsWhichRequireUpdate
           );
+
+          const ptsUpToDate = pts.reduce((upToDate, pt) => {
+            return upToDate && pt.isUpToDate('2.0');
+          }, true);
+          const sdsUpToDate = pts.reduce((upToDate, pt) => {
+            return upToDate && pt.isSmartDriveUpToDate('2.0');
+          }, true);
+          this._showUpdateWarning(ptsUpToDate, sdsUpToDate);
+
           if (this.ptStatusButton)
             this.ptStatusButton.state = PushTrackerState.busy;
-          await pts.map(async pt => {
+          pts.forEach(async pt => {
             try {
               await pt.sendSettingsObject(this.settingsService.settings);
               await this._sleep(300);
@@ -634,7 +753,8 @@ export class ProfileSettingsComponent implements OnInit {
               this._logService.logException(err);
             }
           });
-          // now that all PTs have had their settings updated, we probably want to update the icon
+          // now that all PTs have had their settings updated, we
+          // probably want to update the icon
           this.ptStatusButton.state = PushTrackerState.connected;
         } else {
           if (this.ptStatusButton)
@@ -722,20 +842,30 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   private async _onSmartDriveBleVersion(args: any) {
-    this._ble_version = SmartDrive.versionByteToString(args.data.ble);
     this._updateSmartDriveSectionLabel();
   }
 
   private async _onSmartDriveMcuVersion(args: any) {
-    this._mcu_version = SmartDrive.versionByteToString(args.data.mcu);
     this._updateSmartDriveSectionLabel();
   }
 
+  private async _updatePushTrackerSectionLabel(pt: PushTracker) {
+    if (pt.hasVersionInfo()) {
+      this._zone.run(() => {
+        const ptVersionString = DeviceBase.versionByteToString(pt.version);
+        const btVersionString = DeviceBase.versionByteToString(pt.ble_version);
+        const sdVersionString = DeviceBase.versionByteToString(pt.mcu_version);
+        this.versionInfo = `(PT ${ptVersionString}, SD ${sdVersionString}, BT ${btVersionString})`;
+      });
+    }
+  }
+
   private async _updateSmartDriveSectionLabel() {
-    if (this._mcu_version && this._ble_version)
-      if (this._mcu_version !== '' && this._ble_version !== '')
-        if (this._mcu_version !== 'unknown' && this._ble_version !== 'unknown')
-          this.versionInfo = `(SD ${this.smartDrive.mcu_version_string}, BT ${this.smartDrive.ble_version_string})`;
+    this._zone.run(async () => {
+      if (this.smartDrive.hasVersionInfo()) {
+        this.versionInfo = `(SD ${this.smartDrive.mcu_version_string}, BT ${this.smartDrive.ble_version_string})`;
+      }
+    });
   }
 
   private _onceSyncAndDisconnect: any = null;
@@ -750,6 +880,11 @@ export class ProfileSettingsComponent implements OnInit {
       );
       this._zone.run(async () => {
         try {
+          // update the label
+          this._updateSmartDriveSectionLabel();
+          this._showUpdateWarning(true, this.smartDrive.isUpToDate('2.0'));
+
+          // now actually send the data
           await this.smartDrive.sendSettingsObject(
             this.settingsService.settings
           );
@@ -765,7 +900,7 @@ export class ProfileSettingsComponent implements OnInit {
           this.syncingWithSmartDrive = false;
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
-            `Done sync'ing with SmartDrive`
+            'Done sync-ing with SmartDrive'
           );
           this._logService.logBreadCrumb(
             ProfileSettingsComponent.name,
@@ -801,9 +936,6 @@ export class ProfileSettingsComponent implements OnInit {
       ProfileSettingsComponent.name,
       'SmartDrive connected: ' + this.smartDrive.address
     );
-    this._mcu_version = this.smartDrive.mcu_version_string;
-    this._ble_version = this.smartDrive.ble_version_string;
-    this._updateSmartDriveSectionLabel();
     // set the once handler here for sending data
     this._onceSyncAndDisconnect = once(
       this._syncAndDisconnectSmartDrive.bind(this)

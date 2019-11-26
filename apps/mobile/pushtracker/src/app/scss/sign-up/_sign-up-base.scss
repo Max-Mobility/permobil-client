@@ -6,6 +6,12 @@
   padding: 10;
 }
 
+.DESCRIPTION_LABEL_BASE {
+    font: $os;
+    font-size: 15;
+    width: 80%;
+}
+
 .SUBMIT_BTN_BASE {
   horizontal-align: center;
   vertical-align: center;

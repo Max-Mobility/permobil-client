@@ -5,8 +5,11 @@ import * as appSettings from '@nativescript/core/application-settings';
 import * as themes from 'nativescript-themes';
 import 'reflect-metadata';
 import { AppModule } from './app/app.module';
+import * as application from 'application';
 import { APP_THEMES, STORAGE_KEYS } from './app/enums';
 require('nativescript-plugin-firebase'); // for configuring push notifications
+import { Ratings } from './app/utils/ratings-utils';
+import { isIOS } from '@nativescript/core';
 
 // If built with env.uglify
 declare const __UGLIFIED__;
@@ -36,6 +39,25 @@ if (SAVED_THEME === APP_THEMES.DEFAULT) {
     require('./app/scss/theme-dark.scss').toString(),
     'theme-dark.scss'
   );
+}
+
+if (isIOS) {
+  class PushTrackerIOSDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
+    applicationDidBecomeActive(application: UIApplication): void {
+      const ratings = new Ratings({
+        id: 'PUSHTRACKER.RATER.COUNT',
+        showOnCount: 100,
+        title: '',
+        text: '',
+        androidPackageId: 'com.permobil.pushtracker',
+        iTunesAppId: '1121427802'
+      });
+      console.log('Incrementing ratings counter');
+      ratings.increment();
+    }
+  }
+  application.ios.delegate = PushTrackerIOSDelegate;
 }
 
 // A traditional NativeScript application starts by initializing global objects,

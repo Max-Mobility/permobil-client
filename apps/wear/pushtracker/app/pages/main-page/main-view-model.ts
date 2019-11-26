@@ -9,17 +9,15 @@ import { Log } from '@permobil/core';
 import { getDefaultLang, L, Prop } from '@permobil/nativescript';
 import { closestIndexTo, format, isSameDay, isToday } from 'date-fns';
 import { ReflectiveInjector } from 'injection-js';
-import last from 'lodash/last';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
-import * as themes from 'nativescript-themes';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
 import { KinveyService, SqliteService } from '../../services';
-import { getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb, applyTheme } from '../../utils';
+import { applyTheme, getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const dateLocales = {
   da: require('date-fns/locale/da'),
@@ -198,7 +196,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(this.ANDROID_MARKET_SMARTDRIVE_URI));
     application.android.foregroundActivity.startActivity(intent);
@@ -644,7 +642,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
         // and return true letting the caller know we got the permissions
@@ -700,8 +698,7 @@ export class MainViewModel extends Observable {
       this._applyTheme('ambient');
     });
 
-    application.on('updateAmbient', () => {
-    });
+    application.on('updateAmbient', () => {});
 
     application.on('exitAmbient', () => {
       sentryBreadCrumb('*** exitAmbient ***');
@@ -904,7 +901,8 @@ export class MainViewModel extends Observable {
       // we've asked for one more day than needed so that we can
       // compute distance differences
       const oldest = activityData[0];
-      const newest = last(activityData);
+      // const newest = last(activityData);
+      const newest = activityData[activityData.length - 1]; // get the last item in the array
       // keep track of the most recent day so we know when to update
       this.lastChartDay = new Date(newest.date);
       // remove the oldest so it's not displayed - we only use it
@@ -979,7 +977,7 @@ export class MainViewModel extends Observable {
     this.currentPushCountDisplay = this.currentPushCount.toFixed(0);
   }
 
-  private _updateSpeedDisplay() { }
+  private _updateSpeedDisplay() {}
 
   /**
    * SmartDrive Associated App Functions

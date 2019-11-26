@@ -7,7 +7,7 @@ import * as LS from 'nativescript-localstorage';
 @Injectable()
 export class FirmwareService {
   // static members
-  static firmwarePathPrefix = '/assets/ota/';
+  static firmwarePathPrefix = '/firmwares/';
   private static fsKeyPrefix = 'FirmwareService.';
   private static fsKeyMetadata = 'Metadata';
 
@@ -39,7 +39,7 @@ export class FirmwareService {
     }
   };
 
-  constructor() {}
+  constructor() { }
 
   static versionByteToString(version: number): string {
     if (version === 0xff || version === 0x00) {
@@ -60,8 +60,8 @@ export class FirmwareService {
 
   async loadFromFS() {
     await this.loadMetadata();
-    const tasks = await Object.keys(this.firmwares).map(k => {
-      return this.loadFirmwareFile(this.firmwares[k].filename);
+    const tasks = Object.keys(this.firmwares).map(async k => {
+      return await this.loadFirmwareFile(this.firmwares[k].filename);
     });
     await Promise.all(tasks);
   }
@@ -87,7 +87,7 @@ export class FirmwareService {
         const md = {
           last_check: this.last_check
         };
-        Object.keys(this.firmwares).map(k => {
+        Object.keys(this.firmwares).forEach(k => {
           md[k] = {
             id: this.firmwares[k].id,
             length: this.firmwares[k].length,
@@ -113,7 +113,7 @@ export class FirmwareService {
       if (md) {
         // now update our firmwares data
         this.last_check = md.last_check ? new Date(md.last_check) : null;
-        Object.keys(this.firmwares).map(k => {
+        Object.keys(this.firmwares).forEach(k => {
           this.firmwares[k].id = (md[k] && md[k].id) || null;
           this.firmwares[k].length = (md[k] && md[k].length) || 0;
           this.firmwares[k].version = (md[k] && md[k].version) || null;
@@ -158,19 +158,10 @@ export class FirmwareService {
 
   // FOR LOADING A FW FILE FROM SERVER
   getData(url, filename) {
-    let filePath;
-    // on Android this is working, iOS needs to use `documents` for permission to write during a release build. currentApp is readonly for iOS.
-    if (isAndroid) {
-      filePath = path.join(
-        knownFolders.currentApp().path,
-        FirmwareService.firmwarePathPrefix + filename
-      );
-    } else if (isIOS) {
-      filePath = path.join(
-        knownFolders.documents().path,
-        FirmwareService.firmwarePathPrefix + filename
-      );
-    }
+    const filePath = path.join(
+      knownFolders.documents().path,
+      FirmwareService.firmwarePathPrefix + filename
+    );
     return httpModule.getFile(url, filePath);
   }
 

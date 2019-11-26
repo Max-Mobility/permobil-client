@@ -65,7 +65,11 @@ export class TranslationService extends Observable {
             const dl = await TranslationService.download(f);
             files.push(dl);
           } catch (err) {
-            this._logService.logException(err);
+            this._logService.logBreadCrumb(
+              TranslationService.name,
+              'Could not download language files'
+            );
+            // this._logService.logException(err);
           }
         }
       }
@@ -73,7 +77,7 @@ export class TranslationService extends Observable {
       // now that we have downloaded the files, write them to disk
       // and update our stored metadata
       if (files && files.length) {
-        files.map(this.updateLanguageData.bind(this));
+        files.forEach(this.updateLanguageData.bind(this));
       }
 
       // save the metadata to app settings
@@ -100,7 +104,7 @@ export class TranslationService extends Observable {
     if (objs.length) {
       // for each language we got, try to load the file. If we have
       // the file, update the langauge data and current versions
-      objs.map((f: any) => {
+      objs.forEach((f: any) => {
         const fname = f.filename;
         if (fname && fname.length) {
           this._logService.logBreadCrumb(
@@ -134,8 +138,7 @@ export class TranslationService extends Observable {
       name: f.name,
       app_name: f.app_name,
       filename: path.join(
-        knownFolders.currentApp().path,
-        'assets',
+        knownFolders.documents().path,
         'i18n',
         f.name
       ),
@@ -154,7 +157,7 @@ export class TranslationService extends Observable {
         TranslationService.name,
         'Could not save language file: ' + err
       );
-      this._logService.logException(err);
+      // this._logService.logException(err);
     }
   }
 

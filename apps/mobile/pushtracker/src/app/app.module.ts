@@ -21,7 +21,7 @@ export function createBarcodeScanner() {
 
 // factories
 export function createTranslateLoader() {
-  return new TNSTranslateLoader('/app/assets/i18n/');
+  return new TNSTranslateLoader();
 }
 
 @NgModule({
@@ -60,4 +60,4 @@ export function createTranslateLoader() {
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app
 */
-export class AppModule {}
+export class AppModule { }

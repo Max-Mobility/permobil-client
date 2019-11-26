@@ -7,33 +7,61 @@ import {
 } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 import { BehaviorSubject } from 'rxjs';
+import { connectionType, getConnectionType } from '@nativescript/core/connectivity';
 
 @Injectable()
 export class SmartDriveErrorsService {
-  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Auto);
+  private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Sync);
   public dailyActivity: any;
   public weeklyActivity: any;
   private _usageUpdated = new BehaviorSubject<boolean>(false);
   usageUpdated = this._usageUpdated.asObservable();
 
   constructor(private _logService: LoggingService) {
+    this.reset();
+  }
+
+  async reset() {
     this.login();
-    this.datastore.sync();
+    const query = this.makeQuery();
+    // since this is the errors service - we don't actually want to
+    // pull anything from the server, so we set an arbitrary date in
+    // the future which will prevent any data download
+    query.equalTo('date', '2200-01-01');
+    this.datastore.sync(query);
+  }
+
+  clear() {
+    this.datastore.clear();
+  }
+
+  async _query(query: KinveyQuery): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.datastore.find(query)
+        .subscribe((data: any[]) => {
+          resolve(data);
+        }, (err) => {
+          console.error('\n', 'error finding error by query', err);
+          reject(err);
+        }, () => {
+          // this seems to be called right at the very end - after
+          // we've gotten data, so this resolve will have been
+          // superceded by the resolve(data) above
+          resolve([]);
+        });
+    });
   }
 
   async saveDailyErrorsFromPushTracker(dailyErrors: any): Promise<boolean> {
     try {
-      const query = new KinveyQuery();
-
       // configure the query to search for only activity that was
       // saved by this user, and to get only the most recent activity
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
+      const query = this.makeQuery();
       query.equalTo('date', dailyErrors.date);
 
       // Run a .find first to get the _id of the daily activity
-      {
-        const stream = this.datastore.find(query);
-        return stream.toPromise().then(data => {
+      return this._query(query)
+        .then((data: any[]) => {
           if (data && data.length) {
             const id = data[0]._id;
             dailyErrors._id = id;
@@ -48,24 +76,36 @@ export class SmartDriveErrorsService {
           return this.datastore.save(dailyErrors)
             .then((_) => {
               return true;
-            }).catch((error) => {
-              this._logService.logException(error);
-              return false;
             });
+        })
+        .catch((error) => {
+          this._logService.logException(error);
+          return false;
         });
-      }
-
     } catch (err) {
-      this._logService.logException(err);
+      this._logService.logBreadCrumb(SmartDriveErrorsService.name, 'Failed to save daily errors from pushtracker in Kinvey');
+      // his._logService.logException(err);
       return false;
     }
   }
 
-  private login(): Promise<any> {
-    if (!!KinveyUser.getActiveUser()) {
-      return Promise.resolve();
+  private makeQuery() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      const query = new KinveyQuery();
+      query.equalTo('_acl.creator', activeUser._id);
+      return query;
     } else {
-      return Promise.reject('no active user');
+      throw new Error('no active user');
+    }
+  }
+
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      // do nothing - we're good
+    } else {
+      throw new Error('no active user');
     }
   }
 

@@ -132,7 +132,14 @@
 		"warning": "Warning",
 		"yes": "Yes",
 		"yes-delete": "Yes, delete",
-		"yes-login": "Yes, login!"
+		"yes-login": "Yes, login!",
+		"ratings": {
+			"title": "Tell us what you think",
+			"text": "How would you rate your PushTracker experience?",
+			"agree": "Rate It Now",
+			"remind": "Remind Me Later",
+			"decline": "No, Thanks"
+		}
 	},
 	"failures": {
 		"permissions": "Could not perform the requested action - permissions were not granted."
@@ -401,6 +408,15 @@
 		"sync-successful": "Updated SmartDrive settings!",
 		"theme": "Theme",
 		"time-format": "Time Format",
+    "update-notice": {
+      "title": "Update Notice",
+      "both-settings-require-update": "Your PushTracker and SmartDrive are out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your PushTracker and SmartDrive to enable these settings.",
+      "pushtracker-and-smartdrive-out-of-date": "Updates are available for your PushTracker and SmartDrive, please perform a wireless update of both your PushTracker and SmartDrive to get the full functionality of your PushTracker and SmartDrive.",
+      "pushtracker-settings-require-update": "Your PushTracker is out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your PushTracker to enable these settings.",
+      "pushtracker-out-of-date": "Updates are available for your PushTracker, please perform a wireless update of your PushTracker to get the full functionality of your PushTracker and SmartDrive.",
+      "smartdrive-settings-require-update": "Your SmartDrive is out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your SmartDrive to enable these settings.",
+      "smartdrive-out-of-date": "Updates are available for your SmartDrive, please perform a wireless update of your SmartDrive to get the full functionality of your SmartDrive."
+    },
 		"watch-status-alert-message": {
 			"busy": "PushTracker is busy",
 			"connected": "PushTracker is connected",
@@ -414,6 +430,8 @@
 	"profile-tab": {
 		"about-you": "About You",
 		"activity-goals": "Activity Goals",
+    "bad-pushtracker-serial-message": "Invalid pushtracker serial number entered, please ensure you are scanning / entering the serial number on your PushTracker wristband.",
+    "bad-smartdrive-serial-message": "Invalid SmartDrive serial number entered, please ensure you are scanning / entering the serial number on your SmartDrive drive unit.",
 		"cancel": "Cancel",
 		"cancel-scan": "Cancel Scan",
 		"chair-make": "Chair Make",
@@ -461,6 +479,10 @@
 			"prefer-not-to-say": "Prefer not to say"
 		},
 		"last-name": "last name",
+    "network-error": {
+      "title": "Network Error",
+      "message": "Unable to connect to server, please make sure your device has an internet connection."
+    },
 		"ok": "OK",
 		"per-day": "per day",
 		"pushtracker": "PushTracker",
@@ -522,13 +544,13 @@
 		"faqs": [
       {
         "category": "Setup & Installation",
-        "a": "No. There is an initial set up process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on set up and a library of how to videos.",
+        "a": "There is an initial setup process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on setup and a playlist of how-to videos.",
         "q": "How do I set up my new PushTracker E2?",
         "links": [ "https://permobilus.com/howtosmartdrive" ]
       },
       {
         "category": "Setup & Installation",
-        "a": "You should use your personal phone to set up your PushTracker E2. You can use someone else's phone to set it up, but you should use your Google account on that person's phone.",
+        "a": "You should use your personal phone to setup your PushTracker E2. You can use someone else's phone to set it up, but you should use your Google account on that person's phone.",
         "q": "Do I have to use my phone to set up my PushTracker E2?"
       },
       {
@@ -563,7 +585,7 @@
       },
       {
         "category": "Setup & Installation",
-        "a": "The bands for the PushTracker E2 are interchangeable and can easily be found online retail stores. The size for the band is 22\"",
+        "a": "The bands for the PushTracker E2 are interchangeable and can easily be found online retail stores. The size for the band is 22 mm",
         "q": "Can I get another band for my PushTracker E2? What size?"
       },
       {
@@ -605,7 +627,7 @@
       },
       {
         "category": "Connectivity",
-        "a": "No. The phone used to set up your SmartDrive does not have to be with your SwitchControl or PushTracker E2 in order to use your SmartDrive.",
+        "a": "No, the phone used to set up your SmartDrive does not have to be with your SwitchControl or PushTracker E2 in order to use your SmartDrive.",
         "q": "Does the phone have to be with the person using the SmartDrive?"
       },
       {

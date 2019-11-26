@@ -7,12 +7,12 @@ import * as LS from 'nativescript-localstorage';
 import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
-import { Log, PushTrackerUser } from '@permobil/core';
+import { Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import throttle from 'lodash/throttle';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
-import { PushTracker } from '../../models';
+import { PushTracker, PushTrackerUser } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
 import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 
@@ -35,17 +35,25 @@ export class TabsComponent {
 
   constructor(
     private _logService: LoggingService,
+    private _userService: PushTrackerUserService,
     private _activityService: ActivityService,
     private _translateService: TranslateService,
     private _settingsService: SettingsService,
     private _bluetoothService: BluetoothService,
     private _routerExtensions: RouterExtensions,
     private _page: Page,
-    private _userService: PushTrackerUserService,
     private _usageService: SmartDriveUsageService,
     private _errorsService: SmartDriveErrorsService
   ) {
     this._logService.logBreadCrumb(TabsComponent.name, 'Constructor');
+
+    // register for user configuration changed event
+    this._userService.on(
+      PushTrackerUserService.configuration_change_event,
+      this.onUserChangedConfiguration,
+      this
+    );
+
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
@@ -69,80 +77,105 @@ export class TabsComponent {
       }
     );
 
-    this._userService.user.subscribe(async user => {
-      if (!user) {
-        // we should probably logout here since we don't have a valid
-        // user
-        KinveyUser.logout();
-        // clean up local storage
-        LS.clear();
-        // Clean up appSettings key-value pairs
-        appSettings.clear();
-        // Reset the settings service
-        this._settingsService.reset();
-        // Reset the user service and restore to default theme
-        this._userService.reset();
-        enableDefaultTheme();
-        // go ahead and nav to login to keep UI moving without waiting
-        this._routerExtensions.navigate(['/login'], {
-          clearHistory: true
-        });
-        return;
-      }
+    // make sure to reset the data services when we load (in case the
+    // user has changed)
+    this._activityService.reset();
+    this._usageService.reset();
+    this._errorsService.reset();
 
-      this.user = user;
-      const config = this.user.data.control_configuration;
-      // @ts-ignore
-      if (!Object.values(CONFIGURATIONS).includes(config)) {
-        // the user does not have a valid configuration - route to the
-        // configuration page so they can set one
-        this._routerExtensions.navigate(['configuration'], {
-          clearHistory: true
-        });
-        return;
-      }
+    const user = KinveyUser.getActiveUser() as PushTrackerUser;
 
-      if (this.user.data.language_preference) {
-        const language = APP_LANGUAGES[this.user.data.language_preference];
-        if (this._translateService.currentLang !== language)
-          this._translateService.use(language);
-      }
+    if (!user || !user.data) {
+      // we should probably logout here since we don't have a valid
+      // user
+      KinveyUser.logout();
+      // clean up local storage
+      LS.clear();
+      // Clean up appSettings key-value pairs
+      appSettings.clear();
+      // Reset the settings service
+      this._settingsService.reset();
+      // restore to default theme
+      enableDefaultTheme();
+      // go ahead and nav to login to keep UI moving without waiting
+      this._routerExtensions.navigate(['/login'], {
+        clearHistory: true
+      });
+      return;
+    }
 
-      if (
-        this.user &&
-        this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
-        !this.bluetoothAdvertised
-      ) {
-        this._logService.logBreadCrumb(
-          TabsComponent.name,
-          'Asking for Bluetooth Permission'
-        );
-        this.bluetoothAdvertised = true;
-        setTimeout(() => {
-          this.askForPermissions()
-            .then(() => {
-              this.registerBluetoothEvents();
-              this.registerPushTrackerEvents();
-              if (!this._bluetoothService.advertising) {
-                this._logService.logBreadCrumb(
-                  TabsComponent.name,
-                  'Starting Bluetooth'
-                );
-                // start the bluetooth service
-                return this._bluetoothService.advertise();
-              }
-            })
-            .catch(err => {
-              this.bluetoothAdvertised = false;
-              this._logService.logException(err);
-            });
-        }, 5000);
-      }
-    });
+    // we have a user - set it!
+    this.user = user;
+
+    const config = this.user.data.control_configuration;
+    // @ts-ignore
+    if (!Object.values(CONFIGURATIONS).includes(config)) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        `got user, but did not get valid configuration: ${config}, ${this.user}`
+      );
+      // the user does not have a valid configuration - route to the
+      // configuration page so they can set one
+      this._routerExtensions.navigate(['configuration'], {
+        clearHistory: true
+      });
+      return;
+    }
+
+    if (
+      this.user &&
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
+      !this.bluetoothAdvertised
+    ) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'Asking for Bluetooth Permission'
+      );
+      this.bluetoothAdvertised = true;
+      setTimeout(() => {
+        this.askForPermissions()
+          .then(() => {
+            this.registerBluetoothEvents();
+            this.registerPushTrackerEvents();
+            if (!this._bluetoothService.advertising) {
+              this._logService.logBreadCrumb(
+                TabsComponent.name,
+                'Starting Bluetooth'
+              );
+              // start the bluetooth service
+              return this._bluetoothService.advertise();
+            }
+          })
+          .catch(err => {
+            this.bluetoothAdvertised = false;
+            this._logService.logException(err);
+          });
+      }, 1000);
+    }
   }
 
-  onRootBottomNavLoaded(_) {
+  onUserChangedConfiguration(args: any) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      `Registered user changed configuration: ${args.data.control_configuration}`
+    );
+    const data = args.data;
+    const config = data.control_configuration;
+    this.user.data.control_configuration = config;
+  }
+
+  async onRootBottomNavLoaded(_) {
+    // now update all of the UI
+    let language: string | APP_LANGUAGES = APP_LANGUAGES.English;
+    if (this.user && this.user.data.language_preference) {
+      language = APP_LANGUAGES[this.user.data.language_preference];
+    }
+    if (this._translateService.currentLang !== language) {
+      await this._translateService.reloadLang(language).toPromise();
+      await this._translateService.use(language).toPromise();
+    }
+
     if (this._firstLoad) return;
 
     if (isAndroid) {
@@ -233,7 +266,7 @@ export class TabsComponent {
             'permissions-reasons.coarse-location'
           )
       };
-      neededPermissions.map(r => {
+      neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
       });
       if (neededPermissions && neededPermissions.length > 0) {
@@ -313,9 +346,60 @@ export class TabsComponent {
       this._translateService.instant('general.pushtracker-connected') +
       `: ${pt.address}`;
     this.snackbar.simple(msg);
+    // unregister so we don't get duplicate events
+    pt.off(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
+    pt.off(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
+    pt.off(PushTracker.error_event, this.onErrorEvent, this);
+    pt.off(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
+    // now register again to make sure we get the events
     pt.on(PushTracker.daily_info_event, this._throttledOnDailyInfoEvent, this);
     pt.on(PushTracker.distance_event, this._throttledOnDistanceEvent, this);
     pt.on(PushTracker.error_event, this.onErrorEvent, this);
+    pt.on(PushTracker.version_event, this.onPushTrackerVersionEvent, this);
+  }
+
+  onPushTrackerVersionEvent(args) {
+    const pt = args.object as PushTracker;
+    const smartDriveUpToDate = !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
+    const ptUpToDate = pt.isUpToDate('2.0');
+    // Alert user if they are connected to a pushtracker which is out
+    // of date -
+    // https://github.com/Max-Mobility/permobil-client/issues/516
+    // TODO: should get this version from the server somewhere!
+    if (!smartDriveUpToDate && !ptUpToDate) {
+      // both the pushtrackers and the smartdrives are not up to date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-and-smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!smartDriveUpToDate) {
+      // the pushtrackers are up to date but the smartdrives are not
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.smartdrive-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    } else if (!ptUpToDate) {
+      // only the pushtrackers are out of date
+      alert({
+        title: this._translateService.instant(
+          'profile-settings.update-notice.title'
+        ),
+        message: this._translateService.instant(
+          'profile-settings.update-notice.pushtracker-out-of-date'
+        ),
+        okButtonText: this._translateService.instant('profile-tab.ok')
+      });
+    }
   }
 
   onDailyInfoEvent(args) {
@@ -325,10 +409,9 @@ export class TabsComponent {
     );
     const data = args.data;
     const year = data.year;
-    const month = data.month - 1;
+    const month = data.month;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
-    const coastWith = data.coastWith;
     const coastWithout = data.coastWithout;
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
@@ -353,14 +436,10 @@ export class TabsComponent {
             'DailyInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logException(
-            new Error(
-              '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
-            )
-          );
+          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
       });
 
     // Request distance information from PushTracker
@@ -404,14 +483,16 @@ export class TabsComponent {
             'Distance from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logException(
-            new Error(
-              '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
-            )
-          );
+          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+        // this._logService.logException(
+        //   new Error(
+        //     '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
+        //   )
+        // );
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+        // this._logService.logException(err);
       });
   }
 
@@ -456,17 +537,19 @@ export class TabsComponent {
             'ErrorInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logException(
-            new Error(
-              '[' +
-              TabsComponent.name +
-              '] ' +
-              'Failed to save ErrorInfo from PushTracker in Kinvey'
-            )
-          );
+          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+        // this._logService.logException(
+        //   new Error(
+        //     '[' +
+        //     TabsComponent.name +
+        //     '] ' +
+        //     'Failed to save ErrorInfo from PushTracker in Kinvey'
+        //   )
+        // );
       })
       .catch(err => {
-        this._logService.logException(err);
+        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+        // this._logService.logException(err);
       });
   }
 
@@ -491,6 +574,11 @@ export class TabsComponent {
   }
 
   private _registerEventsForPT(pt: PushTracker) {
+    // unregister
+    pt.off(PushTracker.paired_event);
+    pt.off(PushTracker.settings_event);
+    pt.off(PushTracker.switch_control_settings_event);
+    // now register
     pt.on(PushTracker.paired_event, () => {
       this._logService.logBreadCrumb(
         TabsComponent.name,

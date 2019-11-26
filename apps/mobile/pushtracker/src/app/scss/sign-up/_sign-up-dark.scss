@@ -3,6 +3,12 @@
 
 .sign-up-layout {
   @extend .SIGN_UP_LAYOUT_BASE;
+  background-color: $black;
+
+  .description-label {
+      @extend .DESCRIPTION_LABEL_BASE;
+      color: $light-grey;
+  }
 
   .submit-btn {
     @extend .SUBMIT_BTN_BASE;

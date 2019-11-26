@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">PushTracker</string>
     <string name="title_activity_kimera">PushTracker</string>
-    <string name="foreground_service_notification">Batterie Level</string>
-    <string name="complications_provider_service_label_pushes">Geschätzte Reichweite</string>
-    <string name="complications_provider_service_label_coast_time">Fahrstrecke</string>
-    <string name="complications_provider_service_label_distance">Küstenentfernung</string>
+    <string name="foreground_service_notification">Permobil PushTracker sammelt Ihre Aktivitäten</string>
+    <string name="complications_provider_service_label_pushes">Drückt Täglich</string>
+    <string name="complications_provider_service_label_coast_time">Küstenzeit Täglich</string>
+    <string name="complications_provider_service_label_distance">Entfernung Täglich</string>
 </resources>

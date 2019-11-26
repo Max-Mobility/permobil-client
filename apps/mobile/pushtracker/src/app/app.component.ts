@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SentryKeys } from '@maxmobility/private-keys';
 import { registerElement } from '@nativescript/angular/element-registry';
 import { RouterExtensions } from '@nativescript/angular/router';
-import { device } from '@nativescript/core/platform';
+import { isAndroid, device } from '@nativescript/core/platform';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,8 @@ import { Sentry } from 'nativescript-sentry';
 import { AppURL, handleOpenURL } from 'nativescript-urlhandler';
 import { APP_LANGUAGES, APP_THEMES, STORAGE_KEYS } from './enums';
 import { LoggingService } from './services';
-import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, getJSONFromKinvey, YYYY_MM_DD } from './utils';
+import { applyTheme, APP_KEY, APP_SECRET, getFirstDayOfWeek, YYYY_MM_DD } from './utils';
+import { Ratings } from './utils/ratings-utils';
 
 registerElement(
   'AnimatedCircle',
@@ -49,7 +50,7 @@ export class AppComponent implements OnInit {
     // *** The value being set must match a translation .json file in assets/i18n/ or it will fail ***
     // wrapping this in try/catch due to https://github.com/PushTracker/EvalApp/issues/43
     try {
-      const defaultLanguage = device.language;
+      const defaultLanguage = device.language.split('-')[0];
       this._logService.logBreadCrumb(
         AppComponent.name,
         'Setting default language to ' + defaultLanguage
@@ -75,6 +76,10 @@ export class AppComponent implements OnInit {
       this._logService.logException(error);
     }
 
+    // unregister for events
+    application.off(application.uncaughtErrorEvent);
+    application.off(application.discardedErrorEvent);
+
     // application level events
     application.on(
       application.uncaughtErrorEvent,
@@ -93,11 +98,21 @@ export class AppComponent implements OnInit {
       }
     );
 
-    application.on(application.resumeEvent, () => {
-      const weekStart = getFirstDayOfWeek(new Date());
-      this._loadWeeklyActivityFromKinvey(weekStart);
-      this._loadSmartDriveUsageFromKinvey(weekStart);
-    });
+    if (isAndroid) {
+      application.android.off(application.AndroidApplication.activityResumedEvent);
+      application.android.on(application.AndroidApplication.activityResumedEvent, function(args) {
+        const ratings = new Ratings({
+          id: 'PUSHTRACKER.RATER.COUNT',
+          showOnCount: 100,
+          title: '',
+          text: '',
+          androidPackageId: 'com.permobil.pushtracker',
+          iTunesAppId: '1121427802'
+        });
+        console.log('Incrementing ratings counter activityResumedEvent');
+        ratings.increment();
+      });
+    }
 
     Kinvey.init({ appKey: `${APP_KEY}`, appSecret: `${APP_SECRET}` });
     Kinvey.ping()
@@ -129,63 +144,5 @@ export class AppComponent implements OnInit {
       APP_THEMES.DEFAULT
     );
     applyTheme(CURRENT_THEME);
-  }
-
-  async _loadWeeklyActivityFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(
-      AppComponent.name,
-      'Loading WeeklyPushTrackerActivity from Kinvey'
-    );
-    const user = Kinvey.User.getActiveUser();
-    if (!user) return;
-    let result = [];
-    const date = YYYY_MM_DD(weekStartDate);
-    // Query Kinvey database for weekly pushtracker activity
-    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklyPushTrackerActivity${queryString}`)
-      .then(data => {
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString(
-            'PushTracker.WeeklyActivity.' + date,
-            JSON.stringify(result)
-          );
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(true);
-      })
-      .catch(err => {
-        this._logService.logException(err);
-        return Promise.reject(false);
-      });
-  }
-
-  async _loadSmartDriveUsageFromKinvey(weekStartDate: Date) {
-    this._logService.logBreadCrumb(
-      AppComponent.name,
-      'Loading WeeklySmartDriveUsage from Kinvey'
-    );
-    const user = Kinvey.User.getActiveUser();
-    let result = [];
-    if (!user) return result;
-    const date = YYYY_MM_DD(weekStartDate);
-    // Query Kinvey database for weekly smartdrive usage
-    const queryString = `?query={"_acl.creator":"${user._id}","date":"${date}"}&limit=1&sort={"_kmd.lmt":-1}`;
-    return getJSONFromKinvey(`WeeklySmartDriveUsage${queryString}`)
-      .then(data => {
-        if (data && data.length) {
-          result = data[0];
-          appSettings.setString(
-            'SmartDrive.WeeklyUsage.' + date,
-            JSON.stringify(result)
-          );
-          return Promise.resolve(true);
-        }
-        return Promise.resolve(false);
-      })
-      .catch(err => {
-        this._logService.logException(err);
-        return Promise.reject(false);
-      });
   }
 }

@@ -330,7 +330,7 @@ export class BluetoothService extends Observable {
   }
 
   connect(address: string, onConnected?: any, onDisconnected?: any) {
-    this._bluetooth.connect({
+    return this._bluetooth.connect({
       UUID: address,
       onConnected: onConnected,
       onDisconnected: onDisconnected
@@ -365,9 +365,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) {}
+  discoverServices(_: any) { }
 
-  discoverCharacteristics(_: any) {}
+  discoverCharacteristics(_: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -468,7 +468,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void {}
+  private onDeviceNameChange(_: any): void { }
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -511,11 +511,13 @@ export class BluetoothService extends Observable {
       case ConnectionState.connected:
         if (this.isPushTracker(device)) {
           const pt = this.getOrMakePushTracker(device);
-          pt.handleConnect();
-          this.updatePushTrackerState();
-          this.sendEvent(BluetoothService.pushtracker_connected, {
-            pushtracker: pt
-          });
+          if (!pt.connected) {
+            this.sendEvent(BluetoothService.pushtracker_connected, {
+              pushtracker: pt
+            });
+            pt.handleConnect();
+            this.updatePushTrackerState();
+          }
         } else if (this.isSmartDrive(device)) {
           const sd = this.getOrMakeSmartDrive(device);
           sd.handleConnect();
@@ -606,7 +608,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void {}
+  private onCharacteristicReadRequest(_: any): void { }
 
   // service controls
   private deleteServices() {
@@ -649,7 +651,7 @@ export class BluetoothService extends Observable {
             return d;
           });
 
-          descriptors.map(d => {
+          descriptors.forEach(d => {
             c.addDescriptor(d);
           });
         } else {
@@ -677,7 +679,7 @@ export class BluetoothService extends Observable {
         return c;
       });
       if (isAndroid) {
-        characteristics.map(c => this.AppService.addCharacteristic(c));
+        characteristics.forEach(c => this.AppService.addCharacteristic(c));
       } else {
         this.AppService.characteristics = characteristics;
       }
@@ -743,10 +745,6 @@ export class BluetoothService extends Observable {
 
           // setting true so we know the user has connected to a PT previously
           appSettings.setBoolean(STORAGE_KEYS.HAS_PAIRED_TO_PUSHTRACKER, true);
-        } else if (pt) {
-          state = <any>(
-            this._mergePushTrackerState(ptState, PushTrackerState.unknown)
-          );
         } else {
           state = <any>(
             this._mergePushTrackerState(ptState, PushTrackerState.unknown)
@@ -793,7 +791,7 @@ export class BluetoothService extends Observable {
   }
 
   disconnectPushTrackers(addresses: string[]) {
-    addresses.map(addr => {
+    addresses.forEach(addr => {
       this._bluetooth.cancelServerConnection(addr);
     });
   }

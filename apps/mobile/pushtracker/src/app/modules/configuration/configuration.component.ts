@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Page } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { PushTrackerUser } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { CONFIGURATIONS } from '../../enums';
-import { PushTrackerUserService } from '../../services';
+import { PushTrackerUser } from '../../models';
 
 @Component({
   selector: 'configuration',
@@ -18,30 +17,26 @@ export class ConfigurationComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private userService: PushTrackerUserService,
     private _page: Page
   ) {
     this._page.actionBarHidden = true;
   }
 
   ngOnInit() {
-    this.userService.user.subscribe(user => {
-      this._user = user;
-    });
+    this._user = KinveyUser.getActiveUser() as PushTrackerUser;
   }
 
-  onConfigurationSelection(_, selection) {
-    const loggedInUser = KinveyUser.getActiveUser();
-    if (loggedInUser) {
-      KinveyUser.update({
+  async onConfigurationSelection(_, selection) {
+    if (this._user) {
+      await this._user.update({
         control_configuration: selection
       });
-      if (this._user) {
-        this._user.data.control_configuration = selection;
-        this.userService.updateDataProperty('control_configuration', selection);
-        appSettings.setString('Kinvey.User', JSON.stringify(this._user));
-      }
+      appSettings.setString('Kinvey.User', JSON.stringify(this._user));
     }
-    this._router.navigate(['/device-setup']);
+    if (selection === CONFIGURATIONS.SWITCHCONTROL_WITH_SMARTDRIVE) {
+      this._router.navigate(['/tabs/default']);
+    } else {
+      this._router.navigate(['/device-setup']);
+    }
   }
 }

@@ -639,7 +639,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(_ => {});
+                ).catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_mcu:
@@ -656,8 +656,8 @@ export class SmartDrive extends DeviceBase {
               const nextState = this.doBLEUpdate
                 ? SmartDrive.OTAState.awaiting_ble_ready
                 : this.doMCUUpdate
-                ? SmartDrive.OTAState.rebooting_mcu
-                : SmartDrive.OTAState.complete;
+                  ? SmartDrive.OTAState.rebooting_mcu
+                  : SmartDrive.OTAState.complete;
 
               if (this.doMCUUpdate) {
                 // we need to reboot after the OTA
@@ -704,7 +704,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.updating_ble:
@@ -762,7 +762,7 @@ export class SmartDrive extends DeviceBase {
                     characteristicUUID: SmartDrive.BLEOTAControlCharacteristic.toUpperCase(),
                     value: data
                   })
-                  .catch(_ => {});
+                  .catch(_ => { });
               }
               break;
             case SmartDrive.OTAState.rebooting_mcu:
@@ -785,7 +785,7 @@ export class SmartDrive extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'SmartDrive'
-                ).catch(() => {});
+                ).catch(() => { });
               }
               break;
             case SmartDrive.OTAState.verifying_update:
@@ -862,83 +862,6 @@ export class SmartDrive extends DeviceBase {
     });
   }
 
-  // TODO: abstract sendPacket to the DeviceBase class
-  public sendSettings(
-    mode: string,
-    units: string,
-    flags: number,
-    tap_sensitivity: number,
-    acceleration: number,
-    max_speed: number
-  ): Promise<any> {
-    const settings = super.sendSettings(
-      mode,
-      units,
-      flags,
-      tap_sensitivity,
-      acceleration,
-      max_speed
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSettings',
-      'settings',
-      null,
-      settings
-    );
-  }
-
-  public sendSettingsObject(settings: Device.Settings): Promise<any> {
-    const _settings = super.sendSettings(
-      settings.controlMode,
-      settings.units,
-      settings.getFlags(),
-      settings.tapSensitivity / 100.0,
-      settings.acceleration / 100.0,
-      settings.maxSpeed / 100.0
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSettings',
-      'settings',
-      null,
-      _settings
-    );
-  }
-
-  public sendSwitchControlSettings(
-    mode: string,
-    max_speed: number
-  ): Promise<any> {
-    const switchControlSettings = super.sendSwitchControlSettings(
-      mode,
-      max_speed
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSwitchControlSettings',
-      'switchControlSettings',
-      null,
-      switchControlSettings
-    );
-  }
-
-  public sendSwitchControlSettingsObject(
-    settings: Device.SwitchControlSettings
-  ): Promise<any> {
-    const _switchControlSettings = super.sendSwitchControlSettings(
-      settings.mode,
-      settings.maxSpeed / 100.0
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSwitchControlSettings',
-      'switchControlSettings',
-      null,
-      _switchControlSettings
-    );
-  }
-
   public sendPacket(
     Type: string,
     SubType: string,
@@ -999,11 +922,12 @@ export class SmartDrive extends DeviceBase {
     }
   }
 
+  private _numStartNotifyTriesLeft = 10;
   private async startNotifyCharacteristics(
     characteristics: Array<string>
   ): Promise<any> {
-    console.log(`StartNotifying`);
     try {
+      this._numStartNotifyTriesLeft -= 1;
       for (const c of characteristics) {
         await this._bluetoothService.startNotifying({
           peripheralUUID: this.address,
@@ -1012,12 +936,15 @@ export class SmartDrive extends DeviceBase {
           onNotify: this.handleNotify.bind(this)
         });
       }
+      this._numStartNotifyTriesLeft = 10;
       this.sendEvent(SmartDrive.smartdrive_connect_event);
     } catch (err) {
       console.error('could not start notifying:', err);
-      setTimeout(() => {
-        this.startNotifyCharacteristics(characteristics);
-      }, 100);
+      if (this._numStartNotifyTriesLeft > 0) {
+        setTimeout(() => {
+          this.startNotifyCharacteristics(characteristics);
+        }, 100);
+      }
     }
   }
 
@@ -1081,8 +1008,9 @@ export class SmartDrive extends DeviceBase {
     this.ableToSend = false;
     // now that we're connected, subscribe to the characteristics
     try {
+      this._numStartNotifyTriesLeft = 10;
       await this.startNotifyCharacteristics(SmartDrive.Characteristics);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   public handleDisconnect() {
@@ -1138,12 +1066,8 @@ export class SmartDrive extends DeviceBase {
           break;
       }
     } else if (packetType === 'Command') {
-      switch (subType) {
-        case 'OTAReady':
-          this._handleOTAReady(p);
-          break;
-        default:
-          break;
+      if (subType === 'OTAReady') {
+        this._handleOTAReady(p);
       }
     } else if (packetType === 'Error') {
       this._handleError(p);
