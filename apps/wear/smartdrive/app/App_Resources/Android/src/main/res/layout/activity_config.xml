@@ -143,28 +143,31 @@
                     <TextView
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="@string/_12"
                         android:textAlignment="viewEnd"
+                        android:textColor="@color/ambient_mode_text"
                         android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/colonTextView"
                         android:layout_width="10dp"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="@string/colon"
                         android:textAlignment="center"
+                        android:textColor="@color/ambient_mode_text"
                         android:textSize="24sp" />
 
                     <TextView
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:text="@string/_00"
                         android:textAlignment="textStart"
+                        android:textColor="@color/ambient_mode_text"
                         android:textSize="24sp" />
                 </LinearLayout>
 
@@ -182,7 +185,8 @@
                     android:fontFamily="sans-serif-light"
                     android:gravity="center"
                     android:text="@string/pm"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textColor="@color/ambient_mode_text" />
             </TableRow>
 
         </TableLayout>
@@ -201,54 +205,4 @@
         android:visibility="visible"
         tools:src="@drawable/ic_battery_full" />
 
-</RelativeLayout><!--    -->
-    <!--    <?xml version="1.0" encoding="utf-8"?>-->
-    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    android:background="@color/black"-->
-    <!--    android:orientation="vertical">-->
-
-    <!--    <RelativeLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content">-->
-
-    <!--        <ImageView-->
-    <!--            android:id="@+id/top_complication_background"-->
-    <!--            style="?android:borderlessButtonStyle"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginTop="10dp"-->
-    <!--            android:background="@android:color/transparent"-->
-    <!--            android:contentDescription="@string/topcomplicationbackground"-->
-    <!--            android:src="@drawable/add_complication" />-->
-
-    <!--        <ImageButton-->
-    <!--            android:id="@+id/top_complication"-->
-    <!--            style="?android:borderlessButtonStyle"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginTop="10dp"-->
-    <!--            android:background="@android:color/transparent"-->
-    <!--            android:contentDescription="@string/topcomplication" />-->
-
-    <!--    </RelativeLayout>-->
-
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/imageView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:contentDescription="@string/smartdriveimagebutton"-->
-    <!--        android:src="@drawable/smartdrive_button" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/timeTextView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="@string/noonTime"-->
-    <!--        android:textAlignment="center"-->
-    <!--        android:textSize="24sp"-->
-    <!--        android:textStyle="bold" />-->
-
-    <!--</LinearLayout>-->
+</RelativeLayout>
