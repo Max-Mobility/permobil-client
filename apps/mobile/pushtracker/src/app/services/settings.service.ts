@@ -16,11 +16,34 @@ export class SettingsService {
   pushSettings = new Device.PushSettings();
   switchControlSettings = new Device.SwitchControlSettings();
 
-  private datastore = KinveyDataStore.collection('SmartDriveSettings', DataStoreType.Auto);
+  private datastore = KinveyDataStore.collection('SmartDriveSettings', DataStoreType.Sync);
 
   constructor(private _logService: LoggingService) {
+    this.reset();
     // load any settings that have been saved
     this.loadFromFileSystem();
+  }
+
+  async reset() {
+    // reset the settings to defaults
+    this.settings = new Device.Settings();
+    this.pushSettings = new Device.PushSettings();
+    this.switchControlSettings = new Device.SwitchControlSettings();
+    // now login and pull the latest
+    this.login();
+    await this.refresh();
+  }
+
+  async refresh() {
+    // we actually want to have the datastore storing data locally for
+    // use when offline / bad network conditions (and to not have to
+    // pull data that we've already seen) so we just set the user id
+    const query = this.makeQuery();
+    await this.datastore.sync(query);
+  }
+
+  clear() {
+    this.datastore.clear();
   }
 
   private toData(): SettingsService.Data {
@@ -37,22 +60,8 @@ export class SettingsService {
     this.switchControlSettings.copy(data.switchControlSettings);
   }
 
-  reset() {
-    this.settings = new Device.Settings();
-    this.pushSettings = new Device.PushSettings();
-    this.switchControlSettings = new Device.SwitchControlSettings();
-  }
-
-  save() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.datastore.save(this.toData());
-        await this.datastore.push();
-        resolve();
-      } catch (error) {
-        reject(error);
-      }
-    });
+  async save() {
+    await this.datastore.save(this.toData());
   }
 
   saveToFileSystem() {
@@ -84,18 +93,13 @@ export class SettingsService {
 
   async loadSettings() {
     try {
-      await this.login();
-      await this.datastore.sync();
-      const query = new KinveyQuery();
-
+      const query = this.makeQuery();
       // configure the query to search for only settings that were
       // saved by this user, and to get only the most recent settings
-      query.equalTo('_acl.creator', KinveyUser.getActiveUser()._id);
       query.descending('_kmd.lmt');
       query.limit = 1;
 
-      const stream = this.datastore.find(query);
-      const data = await stream.toPromise();
+      const data = await this._query(query);
       if (data && data.length) {
         this.fromData(data[0]);
       } else {
@@ -106,11 +110,40 @@ export class SettingsService {
     }
   }
 
-  private login(): Promise<any> {
-    if (!!KinveyUser.getActiveUser()) {
-      return Promise.resolve();
+  async _query(query: KinveyQuery): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.datastore.find(query)
+        .subscribe((data: any[]) => {
+          resolve(data);
+        }, (err) => {
+          console.error('\n', 'error finding settings', err);
+          reject(err);
+        }, () => {
+          // this seems to be called right at the very end - after
+          // we've gotten data, so this resolve will have been
+          // superceded by the resolve(data) above
+          resolve([]);
+        });
+    });
+  }
+
+  private makeQuery() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      const query = new KinveyQuery();
+      query.equalTo('_acl.creator', activeUser._id);
+      return query;
     } else {
-      return Promise.reject('no active user');
+      throw new Error('no active user');
+    }
+  }
+
+  private async login() {
+    const activeUser = KinveyUser.getActiveUser();
+    if (!!activeUser) {
+      // do nothing - we're good now
+    } else {
+      throw new Error('no active user');
     }
   }
 }
