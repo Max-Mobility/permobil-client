@@ -6,4 +6,27 @@
     <string name="complications_provider_service_label_range">Estimated Range</string>
     <string name="complications_provider_service_label_daily_distance">Distance Traveled Daily</string>
     <string name="complications_provider_service_label_odometer">Odometer</string>
+
+
+    <string name="digital_watch_face_name">SD MD2+</string>
+
+    <string name="digital_am">AM</string>
+    <string name="digital_pm">PM</string>
+    <string name="digital_activity_watchface_layout">DigitalWatchFaceLayoutActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="smartdrivebutton">smartDriveButton</string>
+    <string name="batteryicon">batteryIcon</string>
+    <string name="centercomplicationbackground">centerComplicationBackground</string>
+    <string name="centercomplication">centercomplication</string>
+    <string name="colon">:</string>
+    <string name="topcomplicationbackground">topcomplicationbackground</string>
+    <string name="topcomplication">topcomplication</string>
+    <string name="smartdriveimagebutton">smartDriveImageButton</string>
+    <string name="noonTime">12:00</string>
+    <string name="pm">PM</string>
+    <string name="_00">00</string>
+    <string name="_12">12</string>
 </resources>

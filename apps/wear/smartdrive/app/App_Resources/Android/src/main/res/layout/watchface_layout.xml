@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:CircleProgressView="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="2dp"
+    android:layout_weight="100"
+    android:background="@android:color/background_dark"
+    android:orientation="vertical"
+    android:weightSum="100"
+    tools:context=".DigitalWatchFaceLayoutActivity"
+    tools:layout_editor_absoluteX="10dp"
+    tools:layout_editor_absoluteY="10dp">
+
+    <at.grabner.circleprogress.CircleProgressView
+        android:id="@+id/watchBatteryCircle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_border_background"
+        CircleProgressView:cpv_autoTextSize="false"
+        CircleProgressView:cpv_barColor="@color/permobil_ocean"
+        CircleProgressView:cpv_barStrokeCap="Round"
+        CircleProgressView:cpv_barWidth="5dp"
+        CircleProgressView:cpv_direction="CW"
+        CircleProgressView:cpv_innerContourSize="2dp"
+        CircleProgressView:cpv_maxValue="100"
+        CircleProgressView:cpv_outerContourSize="2dp"
+        CircleProgressView:cpv_rimColor="@color/gray"
+        CircleProgressView:cpv_rimWidth="2dp"
+        CircleProgressView:cpv_seekMode="false"
+        CircleProgressView:cpv_showUnit="false"
+        CircleProgressView:cpv_spin="false"
+        CircleProgressView:cpv_spinColor="@color/permobil_cousteau"
+        CircleProgressView:cpv_textColor="@color/permobil_violet"
+        CircleProgressView:cpv_textMode="Percent"
+        CircleProgressView:cpv_textScale="0"
+        CircleProgressView:cpv_textSize="0dp"
+        CircleProgressView:cpv_unit="%"
+        CircleProgressView:cpv_unitColor="@color/permobil_primary"
+        CircleProgressView:cpv_unitPosition="bottom"
+        CircleProgressView:cpv_unitScale="1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <at.grabner.circleprogress.CircleProgressView
+            android:id="@+id/smartDriveBatteryCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            CircleProgressView:cpv_autoTextSize="true"
+            CircleProgressView:cpv_barColor="@color/permobil_primary"
+            CircleProgressView:cpv_barStrokeCap="Round"
+            CircleProgressView:cpv_barWidth="5dp"
+            CircleProgressView:cpv_direction="CW"
+            CircleProgressView:cpv_innerContourSize="2dp"
+            CircleProgressView:cpv_maxValue="100"
+            CircleProgressView:cpv_outerContourSize="2dp"
+            CircleProgressView:cpv_rimColor="@color/gray"
+            CircleProgressView:cpv_rimWidth="2dp"
+            CircleProgressView:cpv_seekMode="false"
+            CircleProgressView:cpv_showUnit="false"
+            CircleProgressView:cpv_spinColor="@color/permobil_hero"
+            CircleProgressView:cpv_textColor="@color/digital_am_pm"
+            CircleProgressView:cpv_textScale="0"
+            CircleProgressView:cpv_unit="%"
+            CircleProgressView:cpv_unitColor="@color/digital_am_pm"
+            CircleProgressView:cpv_unitPosition="right_top"
+            CircleProgressView:cpv_unitScale="1" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal">
+
+                <ImageButton
+                    android:id="@+id/smartDriveBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/action_item_background"
+                    android:contentDescription="@string/smartdrivebutton"
+                    android:hapticFeedbackEnabled="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/smartdrive_button" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center|center_horizontal">
+
+                <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center|center_horizontal"
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:id="@+id/hourTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:textAlignment="viewEnd"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/colonTextView"
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/colon"
+                        android:textAlignment="center"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/minuteTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:textAlignment="textStart"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/amPmTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:gravity="center"
+                    android:textAlignment="center" />
+            </TableRow>
+
+        </TableLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/batteryIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/black_border_background"
+        android:contentDescription="@string/batteryicon"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_battery_full"
+        android:visibility="visible"
+        tools:src="@drawable/ic_battery_full" />
+
+</RelativeLayout>
