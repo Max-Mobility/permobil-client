@@ -93,9 +93,11 @@
         </service>
 
         <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
-        <activity
+        <!-- Adding custom style to the ConfigActivity so that the user is able to swipe to dismiss the activity and get back to the watchface -->
+         <activity
             android:name=".watchface.digital.DigitalWatchFaceConfigActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/SwipeableActivityTheme">
             <intent-filter>
                 <action android:name="com.example.android.wearable.watchface.CONFIG_COMPLICATION" />
 
