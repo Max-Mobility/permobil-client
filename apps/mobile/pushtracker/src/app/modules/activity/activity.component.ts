@@ -103,8 +103,8 @@ export class ActivityComponent implements OnInit {
   weekEnd: Date;
 
   // Month View (Calendar tab)
-  minDate: Date;
-  maxDate: Date;
+  minDate: Date = new Date('01/01/1999');
+  maxDate: Date = new Date('01/01/2099');
   monthViewStyle: CalendarMonthViewStyle;
   dailyActivityAnnotationValue: number = 0.001;
   yAxisMax = 0;
@@ -482,8 +482,6 @@ export class ActivityComponent implements OnInit {
     this.weekStart = getFirstDayOfWeek(date);
     this.weekEnd = new Date(this.weekStart);
     this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-    this.minDate = new Date('01/01/1999');
-    this.maxDate = new Date('01/01/2099');
     // Get the weekly summary for the current week
     // Find the dailyactivity for the currentDayInView from the weekly summary
     // Cache and visualize
@@ -722,8 +720,6 @@ export class ActivityComponent implements OnInit {
                   this.weekStart = new Date(this._weeklyUsageFromKinvey.date);
                   this.weekEnd = new Date(this.weekStart);
                   this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-                  this.minDate = new Date('01/01/1999');
-                  this.maxDate = new Date('01/01/2099');
                 }
                 this._weeklyUsageCache[this.weekStart.toUTCString()] = {
                   chartData: this.weeklyActivity,
@@ -759,8 +755,6 @@ export class ActivityComponent implements OnInit {
                   );
                   this.weekEnd = new Date(this.weekStart);
                   this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-                  this.minDate = new Date('01/01/1999');
-                  this.maxDate = new Date('01/01/2099');
                 }
                 this._weeklyActivityCache[this.weekStart.toUTCString()] = {
                   chartData: this.weeklyActivity,
@@ -825,8 +819,6 @@ export class ActivityComponent implements OnInit {
         this.weekStart = new Date(cache.weeklyActivity.date);
         this.weekEnd = new Date(this.weekStart);
         this.weekEnd.setDate(this.weekEnd.getDate() + 6);
-        this.minDate = new Date('01/01/1999');
-        this.maxDate = new Date('01/01/2099');
         this._updateWeeklyActivityAnnotationValue();
       }
     }
