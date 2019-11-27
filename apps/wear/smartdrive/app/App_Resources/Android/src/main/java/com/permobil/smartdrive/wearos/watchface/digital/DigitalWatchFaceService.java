@@ -331,16 +331,23 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             super.onAmbientModeChanged(inAmbientMode);
             Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
 
+            Resources res = getResources();
+            Resources.Theme theme = getTheme();
+
             if (inAmbientMode) {
+                int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
+                int transparentColor = res.getColor(R.color.transparent, theme);
+
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.GONE);
                 }
                 if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                    watchBatteryCircle.setBarColor(ambientColor);
+                    watchBatteryCircle.setRimColor(transparentColor);
                 }
                 if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                    Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
+                    smartDriveBatteryCircle.setBarColor(ambientColor);
+                    smartDriveBatteryCircle.setRimColor(transparentColor);
                 }
 
                 hourTextView.setTextSize(46);
@@ -350,14 +357,20 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
             } else {
+                int oceanColor = res.getColor(R.color.permobil_ocean, theme);
+                int primaryColor = res.getColor(R.color.permobil_ocean, theme);
+                int grayColor = res.getColor(R.color.gray, theme);
+
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
                 if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_ocean, getTheme()));
+                    watchBatteryCircle.setBarColor(oceanColor);
+                    watchBatteryCircle.setRimColor(grayColor);
                 }
                 if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
+                    smartDriveBatteryCircle.setBarColor(primaryColor);
+                    smartDriveBatteryCircle.setRimColor(grayColor);
                 }
 
                 hourTextView.setTextSize(24);
