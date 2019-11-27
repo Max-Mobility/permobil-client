@@ -7,7 +7,6 @@ import * as LS from 'nativescript-localstorage';
 @Injectable()
 export class FirmwareService {
   // static members
-  static firmwarePathPrefix = '/firmwares/';
   private static fsKeyPrefix = 'FirmwareService.';
   private static fsKeyMetadata = 'Metadata';
 
@@ -158,9 +157,10 @@ export class FirmwareService {
 
   // FOR LOADING A FW FILE FROM SERVER
   getData(url, filename) {
+    const firmwares = knownFolders.documents().getFolder('firmwares');
     const filePath = path.join(
-      knownFolders.documents().path,
-      FirmwareService.firmwarePathPrefix + filename
+      firmwares.path,
+      filename
     );
     return httpModule.getFile(url, filePath);
   }

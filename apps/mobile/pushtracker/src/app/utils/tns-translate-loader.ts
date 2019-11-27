@@ -5,9 +5,8 @@ export class TNSTranslateLoader {
   constructor() {
     // copy all language files to documents folder from assets folder
     const i18nFolder = Folder.fromPath(path.join(knownFolders.currentApp().path, 'app', 'assets', 'i18n'));
-    const dest = path.join(knownFolders.documents().path, 'i18n');
     // this should create the folder
-    const destFolder = Folder.fromPath(dest);
+    const destFolder = knownFolders.documents().getFolder('i18n');
     // if the dest path doesn't exist, we've never copied the files,
     // so do it now
     const entities = i18nFolder.getEntitiesSync();
