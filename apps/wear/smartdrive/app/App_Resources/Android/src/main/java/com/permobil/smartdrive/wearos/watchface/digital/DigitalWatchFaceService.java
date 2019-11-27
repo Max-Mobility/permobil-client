@@ -546,7 +546,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             setActiveComplications(COMPLICATION_IDS);
 
             // set the default complication provider for the TOP COMPLICATION - this will set the default icon for the complication
-            setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
+            // setDefaultComplicationProvider(COMPLICATION_IDS[0], new ComponentName("com.permobil.smartdrive.wearos", "com.permobil.smartdrive.wearos.BatteryComplicationProviderService"), ComplicationData.TYPE_RANGED_VALUE);
         }
 
         // Fires PendingIntent associated with complication (if it has one).
