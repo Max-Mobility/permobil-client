@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -59,6 +60,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private static final String TAG = "ComplicationWatchFace";
     private int whiteColor;
     private int ambientColor;
+    private SharedPreferences sharedPreferences;
 
 
     /**
@@ -241,6 +243,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             mRelativeLayout = (RelativeLayout) mInflater.inflate(R.layout.watchface_layout, null);
 
+            sharedPreferences = getApplicationContext().getSharedPreferences("prefs.db", 0);
+
             Resources.Theme theme = getTheme();
             Resources resources = getResources();
 
@@ -279,6 +283,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // improves performance after profiling the bind call in both overrides.
             ButterKnife.bind(this, mRelativeLayout);
 
+
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 6;
             int midpointOfScreen = width / 2;
@@ -310,6 +315,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
             watchBatteryCircle.setValue(batteryLvl);
+            float sdBatteryLvl = getSmartDriveBatteryLevel();
+            smartDriveBatteryCircle.setValue(sdBatteryLvl);
             drawComplications(canvas, now);
         }
 
@@ -695,6 +702,17 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
             return level * 100 / (float) scale;
+        }
+
+        private float getSmartDriveBatteryLevel() {
+            // try to check if we have the sd.battery key in sharedPrefs from the SD.W app
+            try {
+                return sharedPreferences.getFloat("sd.battery", 0);
+            } catch (Exception e) {
+                Log.e(TAG, "Error trying to get the sd.battery value from sharedPrefs: " + e.getMessage());
+                Sentry.capture(e);
+                return 0;
+            }
         }
 
         private void colorTextViewsForAmbientHandling() {
