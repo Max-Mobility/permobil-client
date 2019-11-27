@@ -32,6 +32,7 @@ import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.permobil.smartdrive.wearos.R;
@@ -151,6 +152,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         TextView minuteTextView;
         @BindView(R.id.amPmTextView)
         TextView amPmTextView;
+        @BindView(R.id.spaceTableRow)
+        TableRow spaceTableRow;
 
         /**
          * Alpha value for drawing time when in mute mode.
@@ -331,33 +334,54 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             super.onAmbientModeChanged(inAmbientMode);
             Log.d(TAG, "onAmbientModeChanged: " + inAmbientMode);
 
+            Resources res = getResources();
+            Resources.Theme theme = getTheme();
+
             if (inAmbientMode) {
+                int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
+                int transparentColor = res.getColor(R.color.transparent, theme);
+
+                // hide the space TableRow and the SD Button from layout so the time shifts up in ambient
+                if (spaceTableRow != null) {
+                    spaceTableRow.setVisibility(View.GONE);
+                }
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.GONE);
                 }
                 if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
+                    watchBatteryCircle.setBarColor(ambientColor);
+                    watchBatteryCircle.setRimColor(transparentColor);
                 }
                 if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.ambient_mode_text, getTheme()));
-                    Log.d(TAG, "hard coding the smartdrive value right now, need to get it from complication data available");
+                    smartDriveBatteryCircle.setBarColor(ambientColor);
+                    smartDriveBatteryCircle.setRimColor(transparentColor);
                 }
 
-                hourTextView.setTextSize(46);
-                colonTextView.setTextSize(46);
-                minuteTextView.setTextSize(46);
+                hourTextView.setTextSize(48);
+                colonTextView.setTextSize(48);
+                minuteTextView.setTextSize(48);
 
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
             } else {
+                int oceanColor = res.getColor(R.color.permobil_ocean, theme);
+                int primaryColor = res.getColor(R.color.permobil_ocean, theme);
+                int grayColor = res.getColor(R.color.gray, theme);
+
+                // Make sure the space TableRow and the SD Button are visible in active mode
+                if (spaceTableRow != null) {
+                    spaceTableRow.setVisibility(View.VISIBLE);
+                }
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
                 if (watchBatteryCircle != null) {
-                    watchBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_ocean, getTheme()));
+                    watchBatteryCircle.setBarColor(oceanColor);
+                    watchBatteryCircle.setRimColor(grayColor);
                 }
                 if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(getResources().getColor(R.color.permobil_primary, getTheme()));
+                    smartDriveBatteryCircle.setBarColor(primaryColor);
+                    smartDriveBatteryCircle.setRimColor(grayColor);
                 }
 
                 hourTextView.setTextSize(24);
@@ -481,22 +505,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         public void onApplyWindowInsets(WindowInsets insets) {
             super.onApplyWindowInsets(insets);
             Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
-
-            // Load resources that have alternate values for round watches.
-//            Resources resources = DigitalWatchFaceService.this.getResources();
-//            boolean isRound = insets.isRound();
-//            mXOffset = resources.getDimension(isRound ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-//            float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-//            float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
         }
 
         private void initSentrySetup() {
             // Setup Sentry logging, uses `sentry.properties`
             Sentry.init();
-            /*
-            Record a breadcrumb in the current context which will be sent
-            with the next event(s). By default the last 100 breadcrumbs are kept.
-            */
             Sentry.getContext().recordBreadcrumb(
                     new BreadcrumbBuilder().setMessage("SmartDrive MX2 Digital WatchFace started.").build()
             );
