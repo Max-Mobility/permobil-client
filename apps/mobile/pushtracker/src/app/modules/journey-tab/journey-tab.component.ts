@@ -617,12 +617,16 @@ export class JourneyTabComponent {
     return this.loadWeeklyPushtrackerActivityFromKinvey(date)
       .then(didLoad => {
         if (didLoad) {
+          // make sure to actually check against the loaded weekly
+          // activity since we are using
+          // query.lessThanOrEqualTo('date', date), it could load a
+          // week prior to the week we actually requested -
+          // https://github.com/Max-Mobility/permobil-client/issues/566
+          if (YYYY_MM_DD(this._weekStart) === this._weeklyActivityFromKinvey.date) {
+            const index = getDayOfWeek(new Date());
+            this.todayActivity = this._weeklyActivityFromKinvey.days[index];
+          }
           for (const i in this._weeklyActivityFromKinvey.days) {
-            if (areDatesSame(this._weekStart, date)) {
-              const index = getDayOfWeek(new Date());
-              this.todayActivity = this._weeklyActivityFromKinvey.days[index];
-            }
-
             const dailyActivity = this._weeklyActivityFromKinvey.days[i];
             if (dailyActivity) {
               // There's activity for today. Update journey list with coast_time/push_count info
@@ -703,12 +707,16 @@ export class JourneyTabComponent {
     return this.loadWeeklySmartDriveUsageFromKinvey(date)
       .then(didLoad => {
         if (didLoad) {
+          // make sure to actually check against the loaded weekly
+          // activity since we are using
+          // query.lessThanOrEqualTo('date', date), it could load a
+          // week prior to the week we actually requested -
+          // https://github.com/Max-Mobility/permobil-client/issues/566
+          if (YYYY_MM_DD(this._weekStart) === this._weeklyUsageFromKinvey.date) {
+            const index = getDayOfWeek(new Date());
+            this.todayUsage = this._weeklyUsageFromKinvey.days[index];
+          }
           for (const i in this._weeklyUsageFromKinvey.days) {
-            if (areDatesSame(this._weekStart, date)) {
-              const index = getDayOfWeek(new Date());
-              this.todayUsage = this._weeklyUsageFromKinvey.days[index];
-            }
-
             const dailyUsage = this._weeklyUsageFromKinvey.days[i];
             if (dailyUsage) {
               // There's usage information for today. Update journey list with distance info
