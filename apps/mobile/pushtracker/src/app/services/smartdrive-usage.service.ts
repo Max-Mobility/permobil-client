@@ -13,10 +13,6 @@ import { connectionType, getConnectionType } from '@nativescript/core/connectivi
 export class SmartDriveUsageService {
   private dailyDatastore = KinveyDataStore.collection('DailySmartDriveUsage', DataStoreType.Sync);
   private weeklyDatastore = KinveyDataStore.collection('WeeklySmartDriveUsage', DataStoreType.Sync);
-  public dailyActivity: any;
-  public weeklyActivity: any;
-  private _usageUpdated = new BehaviorSubject<boolean>(false);
-  usageUpdated = this._usageUpdated.asObservable();
 
   constructor(private _logService: LoggingService) {
     this.reset();

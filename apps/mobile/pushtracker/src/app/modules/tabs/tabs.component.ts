@@ -639,7 +639,9 @@ export class TabsComponent {
         case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.settings.copy(s);
           this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
+          try {
+            await this._settingsService.save();
+          } catch (err) { Log.E(err); }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'
@@ -677,7 +679,9 @@ export class TabsComponent {
         case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.switchControlSettings.copy(s);
           this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
+          try {
+            await this._settingsService.save();
+          } catch (err) { Log.E(err); }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'

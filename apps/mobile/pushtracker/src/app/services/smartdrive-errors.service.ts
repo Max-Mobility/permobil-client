@@ -12,10 +12,6 @@ import { connectionType, getConnectionType } from '@nativescript/core/connectivi
 @Injectable()
 export class SmartDriveErrorsService {
   private datastore = KinveyDataStore.collection('DailyPushTrackerErrors', DataStoreType.Sync);
-  public dailyActivity: any;
-  public weeklyActivity: any;
-  private _usageUpdated = new BehaviorSubject<boolean>(false);
-  usageUpdated = this._usageUpdated.asObservable();
 
   constructor(private _logService: LoggingService) {
     this.reset();
