@@ -32,6 +32,7 @@ import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.permobil.smartdrive.wearos.R;
@@ -151,6 +152,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         TextView minuteTextView;
         @BindView(R.id.amPmTextView)
         TextView amPmTextView;
+        @BindView(R.id.spaceTableRow)
+        TableRow spaceTableRow;
 
         /**
          * Alpha value for drawing time when in mute mode.
@@ -338,6 +341,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 int ambientColor = res.getColor(R.color.ambient_mode_text, theme);
                 int transparentColor = res.getColor(R.color.transparent, theme);
 
+                // hide the space TableRow and the SD Button from layout so the time shifts up in ambient
+                if (spaceTableRow != null) {
+                    spaceTableRow.setVisibility(View.GONE);
+                }
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.GONE);
                 }
@@ -350,9 +357,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     smartDriveBatteryCircle.setRimColor(transparentColor);
                 }
 
-                hourTextView.setTextSize(46);
-                colonTextView.setTextSize(46);
-                minuteTextView.setTextSize(46);
+                hourTextView.setTextSize(48);
+                colonTextView.setTextSize(48);
+                minuteTextView.setTextSize(48);
 
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
@@ -361,6 +368,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 int primaryColor = res.getColor(R.color.permobil_ocean, theme);
                 int grayColor = res.getColor(R.color.gray, theme);
 
+                // Make sure the space TableRow and the SD Button are visible in active mode
+                if (spaceTableRow != null) {
+                    spaceTableRow.setVisibility(View.VISIBLE);
+                }
                 if (smartDriveBtn != null) {
                     smartDriveBtn.setVisibility(View.VISIBLE);
                 }
@@ -494,22 +505,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         public void onApplyWindowInsets(WindowInsets insets) {
             super.onApplyWindowInsets(insets);
             Log.d(TAG, "onApplyWindowInsets: " + (insets.isRound() ? "round" : "square"));
-
-            // Load resources that have alternate values for round watches.
-//            Resources resources = DigitalWatchFaceService.this.getResources();
-//            boolean isRound = insets.isRound();
-//            mXOffset = resources.getDimension(isRound ? R.dimen.digital_x_offset_round : R.dimen.digital_x_offset);
-//            float textSize = resources.getDimension(isRound ? R.dimen.digital_text_size_round : R.dimen.digital_text_size);
-//            float amPmSize = resources.getDimension(isRound ? R.dimen.digital_am_pm_size_round : R.dimen.digital_am_pm_size);
         }
 
         private void initSentrySetup() {
             // Setup Sentry logging, uses `sentry.properties`
             Sentry.init();
-            /*
-            Record a breadcrumb in the current context which will be sent
-            with the next event(s). By default the last 100 breadcrumbs are kept.
-            */
             Sentry.getContext().recordBreadcrumb(
                     new BreadcrumbBuilder().setMessage("SmartDrive MX2 Digital WatchFace started.").build()
             );
