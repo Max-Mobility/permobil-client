@@ -365,8 +365,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 colonTextView.setVisibility(View.VISIBLE);
             } else {
                 int oceanColor = res.getColor(R.color.permobil_ocean, theme);
-                int primaryColor = res.getColor(R.color.permobil_ocean, theme);
-                int grayColor = res.getColor(R.color.gray, theme);
+                int skyColor = res.getColor(R.color.permobil_sky, theme);
+                int charcoalColor = res.getColor(R.color.permobil_charcoal, theme);
 
                 // Make sure the space TableRow and the SD Button are visible in active mode
                 if (spaceTableRow != null) {
@@ -377,11 +377,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 }
                 if (watchBatteryCircle != null) {
                     watchBatteryCircle.setBarColor(oceanColor);
-                    watchBatteryCircle.setRimColor(grayColor);
+                    watchBatteryCircle.setRimColor(charcoalColor);
                 }
                 if (smartDriveBatteryCircle != null) {
-                    smartDriveBatteryCircle.setBarColor(primaryColor);
-                    smartDriveBatteryCircle.setRimColor(grayColor);
+                    smartDriveBatteryCircle.setBarColor(skyColor);
+                    smartDriveBatteryCircle.setRimColor(charcoalColor);
                 }
 
                 hourTextView.setTextSize(24);

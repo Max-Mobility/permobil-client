@@ -15,6 +15,8 @@
     <color name="permobil_ocean">#009ac7</color>
     <color name="permobil_cousteau">#00c1d5</color>
     <color name="permobil_violet">#753bbd</color>
+    <color name="permobil_sky">#89d4e3</color>
+    <color name="permobil_charcoal">#414042</color>
 
     <color name="digital_date">#aaaaaa</color>
     <color name="digital_am_pm">#aaaaa0</color>
