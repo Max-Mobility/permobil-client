@@ -1013,9 +1013,9 @@ export namespace PushTrackerData {
     }
 
     export function getFileName(firmware: string): string {
+      const firmwares = knownFolders.documents().getFolder('firmwares'); // creates Documents/firmwares if it doesn't exist
       return path.join(
-        knownFolders.documents().path,
-        'firmwares',
+        firmwares.path,
         firmware
       );
     }

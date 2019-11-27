@@ -133,13 +133,13 @@ export class TranslationService extends Observable {
       return;
     }
     // update the current versions
+    const i18n = knownFolders.documents().getFolder('i18n');
     this.currentVersions[f.name] = {
       version: f.version,
       name: f.name,
       app_name: f.app_name,
       filename: path.join(
-        knownFolders.documents().path,
-        'i18n',
+        i18n.path,
         f.name
       ),
       language_code: f.name.replace('.json', '')
