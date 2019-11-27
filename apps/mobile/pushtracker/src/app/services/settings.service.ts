@@ -35,10 +35,11 @@ export class SettingsService {
   }
 
   async refresh() {
-    // we actually want to have the datastore storing data locally for
-    // use when offline / bad network conditions (and to not have to
-    // pull data that we've already seen) so we just set the user id
     const query = this.makeQuery();
+    // we're only ever interested in the latest data from the server
+    query.descending('_kmd.lmt');
+    query.limit = 1;
+    // query.equalTo('date', '2200-01-01');
     await this.datastore.sync(query);
   }
 
