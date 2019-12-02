@@ -58,7 +58,11 @@ export class PushTrackerStatusButtonComponent {
   }
 
   onUnloaded() {
-    this._bluetoothService.off(BluetoothService.pushtracker_status_changed);
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_status_changed,
+      this._updateWatchState,
+      this
+    );
   }
 
   private _updateWatchState() {

@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ModalDialogParams } from '@nativescript/angular';
-import { ChangedData, ObservableArray, Page, PropertyChangeData, Switch } from '@nativescript/core';
+import { ObservableArray, Page, PropertyChangeData, Switch } from '@nativescript/core';
 import { device } from '@nativescript/core/platform';
 import * as appSettings from '@nativescript/core/application-settings';
 import { alert } from '@nativescript/core/ui/dialogs';
@@ -188,17 +188,21 @@ export class ProfileSettingsComponent implements OnInit {
    * BLUETOOTH EVENT MANAGEMENT
    */
   private unregisterPushTrackerEvents() {
-    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
+    );
     BluetoothService.PushTrackers.map(pt => {
-      pt.off(PushTracker.version_event);
-      pt.off(PushTracker.daily_info_event);
+      pt.off(PushTracker.version_event, this.onPushTrackerVersionInfo, this);
+      pt.off(PushTracker.daily_info_event, this.onPushTrackerVersionInfo, this);
     });
   }
 
   private _registerEventsForPT(pt: PushTracker) {
     // unregister
-    pt.off(PushTracker.version_event);
-    pt.off(PushTracker.daily_info_event);
+    pt.off(PushTracker.version_event, this.onPushTrackerVersionInfo, this);
+    pt.off(PushTracker.daily_info_event, this.onPushTrackerVersionInfo, this);
     // register for version and info events
     pt.on(PushTracker.version_event, this.onPushTrackerVersionInfo, this);
     pt.once(PushTracker.daily_info_event, this.onPushTrackerVersionInfo, this);
@@ -212,22 +216,26 @@ export class ProfileSettingsComponent implements OnInit {
     });
 
     // listen for completely new pusthrackers (that we haven't seen before)
-    BluetoothService.PushTrackers.on(
-      ObservableArray.changeEvent,
-      (args: ChangedData<number>) => {
-        if (args.action === 'add') {
-          const pt = BluetoothService.PushTrackers.getItem(
-            BluetoothService.PushTrackers.length - 1
-          );
-          if (pt) {
-            this._registerEventsForPT(pt);
-          }
-        }
-      }
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
     );
   }
 
+  onPushTrackerAdded(args: any) {
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'PushTracker Added event received from BLE service'
+    );
+    this._registerEventsForPT(args.data.pt);
+  }
+
   onPushTrackerVersionInfo(args: any) {
+    this._logService.logBreadCrumb(
+      ProfileSettingsComponent.name,
+      'PushTracker Version Info received'
+    );
     const pt = args.object as PushTracker;
     this._updatePushTrackerSectionLabel(pt);
   }

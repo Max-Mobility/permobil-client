@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { BottomNavigation, ChangedData, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
+import { BottomNavigation, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import * as LS from 'nativescript-localstorage';
@@ -317,9 +317,18 @@ export class TabsComponent {
 
   private unregisterBluetoothEvents() {
     // register for bluetooth events here
-    this._bluetoothService.off(BluetoothService.advertise_error);
-    this._bluetoothService.off(BluetoothService.pushtracker_connected);
-    this._bluetoothService.off(BluetoothService.pushtracker_disconnected);
+    this._bluetoothService.off(
+      BluetoothService.advertise_error,
+      this.onBluetoothAdvertiseError.bind(this)
+    );
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_connected,
+      this.onPushTrackerConnected.bind(this)
+    );
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_disconnected,
+      this.onPushTrackerDisconnected.bind(this)
+    );
   }
 
   private onBluetoothAdvertiseError(args: any) {
@@ -332,7 +341,11 @@ export class TabsComponent {
   }
 
   private onPushTrackerPaired(args: any) {
-    const pt = args.data.pushtracker;
+    const pt = args.data.pt;
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'PushTracker paired: ' + pt.address
+    );
     const msg =
       this._translateService.instant('general.pushtracker-paired') +
       `: ${pt.address}`;
@@ -565,30 +578,31 @@ export class TabsComponent {
    * PUSHTRACKER EVENT MANAGEMENT
    */
   private unregisterPushTrackerEvents() {
-    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
+    );
     BluetoothService.PushTrackers.map(pt => {
-      pt.off(PushTracker.paired_event);
-      pt.off(PushTracker.settings_event);
-      pt.off(PushTracker.switch_control_settings_event);
+      this._unregisterEventsForPT(pt);
     });
   }
 
-  private _registerEventsForPT(pt: PushTracker) {
+  private _unregisterEventsForPT(pt: PushTracker) {
     // unregister
-    pt.off(PushTracker.paired_event);
-    pt.off(PushTracker.settings_event);
-    pt.off(PushTracker.switch_control_settings_event);
+    pt.off(PushTracker.paired_event, this.onPushTrackerPaired, this);
+    pt.off(PushTracker.settings_event, this.onPushTrackerSettings, this);
+    pt.off(
+      PushTracker.switch_control_settings_event,
+      this.onPushTrackerSwitchControlSettings,
+      this
+    );
+  }
+
+  private _registerEventsForPT(pt: PushTracker) {
+    this._unregisterEventsForPT(pt);
     // now register
-    pt.on(PushTracker.paired_event, () => {
-      this._logService.logBreadCrumb(
-        TabsComponent.name,
-        'PushTracker paired: ' + pt.address
-      );
-      this.onPushTrackerPaired({
-        data: { pushtracker: pt }
-      });
-    });
-    // register for settings and push settings
+    pt.on(PushTracker.paired_event, this.onPushTrackerPaired, this);
     pt.on(PushTracker.settings_event, this.onPushTrackerSettings, this);
     pt.on(
       PushTracker.switch_control_settings_event,
@@ -603,24 +617,27 @@ export class TabsComponent {
     BluetoothService.PushTrackers.map(pt => {
       this._registerEventsForPT(pt);
     });
-
     // listen for completely new pusthrackers (that we haven't seen before)
-    BluetoothService.PushTrackers.on(
-      ObservableArray.changeEvent,
-      (args: ChangedData<number>) => {
-        if (args.action === 'add') {
-          const pt = BluetoothService.PushTrackers.getItem(
-            BluetoothService.PushTrackers.length - 1
-          );
-          if (pt) {
-            this._registerEventsForPT(pt);
-          }
-        }
-      }
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
     );
   }
 
+  private onPushTrackerAdded(args: any) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'PushTracker added event received from BLE service'
+    );
+    this._registerEventsForPT(args.data.pt);
+  }
+
   private async onPushTrackerSettings(args: any) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'PushTracker settings received'
+    );
     const s = args.data.settings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.settings.equals(s)) {
@@ -657,6 +674,10 @@ export class TabsComponent {
   }
 
   private async onPushTrackerSwitchControlSettings(args: any) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'PushTracker switch control settings received'
+    );
     const s = args.data.switchControlSettings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.switchControlSettings.equals(s)) {
