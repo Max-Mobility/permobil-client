@@ -76,16 +76,58 @@ export class PushTrackerStatusButtonComponent {
   }
 
   onTap() {
+    const title = this._translateService.instant(
+      'profile-settings.watch-status-alert-title'
+    );
+    const msg = this.getMessage();
     alert({
-      title: this._translateService.instant(
-        'profile-settings.watch-status-alert-title'
-      ),
-      message: this._translateService.instant(
-        'profile-settings.watch-status-alert-message.' +
-          this._getTranslationKeyForPushTrackerStatus()
-      ),
+      title: title,
+      message: msg,
       okButtonText: this._translateService.instant('dialogs.ok')
     });
+  }
+
+  private getBatteryMessage(allowOnlyOneConnected: boolean = true) {
+    let msg = '';
+
+    // get the pts needed
+    const pts = BluetoothService.PushTrackers.filter(pt => pt.connected);
+    let pt = null;
+    if (allowOnlyOneConnected) {
+      pts.splice(1, pts.length - 1);
+    }
+    pts.forEach(pt => {
+      const ptBattery = pt && pt.battery;
+      const sdBattery = pt && pt.sdBattery;
+      if (ptBattery) {
+        switch (this.state) {
+          case PushTrackerState.busy:
+          case PushTrackerState.connected:
+          case PushTrackerState.ready:
+            msg += '\n';
+            msg += this._translateService.instant(
+              'pt-battery'
+            ) + `: ${ptBattery.toFixed(0)}%`;
+            msg += '\n';
+            msg += this._translateService.instant(
+              'sd-battery'
+            ) + `: ${sdBattery.toFixed(0)}%`;
+            break;
+          default:
+            break;
+        }
+      }
+    });
+    return msg;
+  }
+
+  private getMessage() {
+    let msg = this._translateService.instant(
+      'profile-settings.watch-status-alert-message.' +
+      this._getTranslationKeyForPushTrackerStatus()
+    );
+    msg += this.getBatteryMessage(false);
+    return msg;
   }
 
   private _getTranslationKeyForPushTrackerStatus() {
