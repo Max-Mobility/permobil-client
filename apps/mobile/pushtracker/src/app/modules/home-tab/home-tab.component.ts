@@ -1,7 +1,7 @@
 import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
-import { Color, ObservableArray, ChangedData } from '@nativescript/core';
+import { Color, ObservableArray } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { TranslateService } from '@ngx-translate/core';
@@ -47,7 +47,7 @@ export class HomeTabComponent {
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
 
-  hasBatteryInfo: boolean = false;
+  showBatteryInfo: boolean = false;
   ptBattery: string = '--';
   sdBattery: string = '--';
 
@@ -76,6 +76,7 @@ export class HomeTabComponent {
 
   constructor(
     private _zone: NgZone,
+    private _bluetoothService: BluetoothService,
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
@@ -89,6 +90,10 @@ export class HomeTabComponent {
 
     this.refreshUserFromKinvey();
 
+    // register for pushtracker events if we need to here -
+    // https://github.com/Max-Mobility/permobil-client/issues/580
+    this.registerPushTrackerEvents();
+
     this.CURRENT_THEME = appSettings.getString(
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
@@ -98,8 +103,6 @@ export class HomeTabComponent {
     this._weekStart = getFirstDayOfWeek(this._currentDayInView);
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
-
-    this.registerPushTrackerEvents();
 
     this.refreshPlots(args, false);
 
@@ -125,15 +128,19 @@ export class HomeTabComponent {
    * https://github.com/Max-Mobility/permobil-client/issues/580
    */
   private unregisterPushTrackerEvents() {
-    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
+    );
     BluetoothService.PushTrackers.map(pt => {
-      pt.off(PushTracker.daily_info_event);
+      pt.off(PushTracker.daily_info_event, this.onPushTrackerDailyInfo, this);
     });
   }
 
   private _registerEventsForPT(pt: PushTracker) {
     // unregister
-    pt.off(PushTracker.daily_info_event);
+    pt.off(PushTracker.daily_info_event, this.onPushTrackerDailyInfo, this);
     // register for version and info events
     pt.on(PushTracker.daily_info_event, this.onPushTrackerDailyInfo, this);
   }
@@ -145,6 +152,11 @@ export class HomeTabComponent {
       // to have a PushTracker!
       return;
     }
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      'Registering for pushtracker events'
+    );
+    this.showBatteryInfo = true;
     this.unregisterPushTrackerEvents();
     // handle pushtracker pairing events for existing pushtrackers
     BluetoothService.PushTrackers.map(pt => {
@@ -152,26 +164,32 @@ export class HomeTabComponent {
     });
 
     // listen for completely new pusthrackers (that we haven't seen before)
-    BluetoothService.PushTrackers.on(
-      ObservableArray.changeEvent,
-      (args: ChangedData<number>) => {
-        if (args.action === 'add') {
-          const pt = BluetoothService.PushTrackers.getItem(
-            BluetoothService.PushTrackers.length - 1
-          );
-          if (pt) {
-            this._registerEventsForPT(pt);
-          }
-        }
-      }
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_added,
+      this.onPushTrackerAdded,
+      this
+    );
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      'Registered for pushtracker events'
     );
   }
 
+  onPushTrackerAdded(args: any) {
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      'PushTracker Added event received from BLE service'
+    );
+    this._registerEventsForPT(args.data.pt);
+  }
+
   onPushTrackerDailyInfo(args: any) {
+    this._logService.logBreadCrumb(
+      HomeTabComponent.name,
+      'Daily Info event received from pushtracker'
+    );
     const pt = args.object as PushTracker;
-    console.log('got daily info event', pt.battery);
     this._zone.run(() => {
-      this.hasBatteryInfo = true;
       this.ptBattery = pt.battery + '%';
       this.sdBattery = pt.sdBattery ? (pt.sdBattery + '%') : '--';
     });
@@ -280,20 +298,23 @@ export class HomeTabComponent {
   }
 
   parseUser(user: KinveyUser) {
-    this.user = user as PushTrackerUser;
-    appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+    this._zone.run(() => {
+      this.user = user as PushTrackerUser;
+      appSettings.setString('Kinvey.User', JSON.stringify(this.user));
+    });
   }
 
   async refreshUserFromKinvey() {
     try {
       const kinveyUser = KinveyUser.getActiveUser();
+      this.parseUser(kinveyUser);
       try {
         await kinveyUser.me();
+        this.parseUser(kinveyUser);
       } catch (err) {
         this._logService.logBreadCrumb(HomeTabComponent.name,
           'Failed to refresh user from kinvey');
       }
-      this.parseUser(kinveyUser);
       return true;
     } catch (err) {
       this._logService.logBreadCrumb(
