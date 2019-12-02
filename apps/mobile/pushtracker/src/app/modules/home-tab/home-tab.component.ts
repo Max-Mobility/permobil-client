@@ -1,7 +1,7 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
-import { Color, ObservableArray } from '@nativescript/core';
+import { Color, ObservableArray, ChangedData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,8 +10,8 @@ import debounce from 'lodash/debounce';
 import { Toasty } from 'nativescript-toasty';
 import { ActivityComponent } from '..';
 import { APP_THEMES, CONFIGURATIONS, DISTANCE_UNITS, STORAGE_KEYS } from '../../enums';
-import { PushTrackerUser, DeviceBase } from '../../models';
-import { ActivityService, SmartDriveUsageService, LoggingService } from '../../services';
+import { PushTrackerUser, DeviceBase, PushTracker } from '../../models';
+import { ActivityService, BluetoothService, SmartDriveUsageService, LoggingService } from '../../services';
 import { convertToMilesIfUnitPreferenceIsMiles, getFirstDayOfWeek, milesToKilometers, YYYY_MM_DD } from '../../utils';
 
 @Component({
@@ -46,6 +46,10 @@ export class HomeTabComponent {
   weeklyActivityLoaded: boolean = false;
   coastDistanceYAxisMax: number = 1.0;
   coastDistanceYAxisStep: number = 0.25;
+
+  hasBatteryInfo: boolean = false;
+  ptBattery: number = 0;
+  sdBattery: number = 0;
 
   todayMessage: string = '';
   todayCoastDistance: string = '0.0';
@@ -94,6 +98,8 @@ export class HomeTabComponent {
     this._weekEnd = new Date(this._weekStart);
     this._weekEnd.setDate(this._weekEnd.getDate() + 6);
 
+    this.registerPushTrackerEvents();
+
     this.refreshPlots(args, false);
 
     this._debouncedLoadWeeklyActivity = debounce(
@@ -111,6 +117,60 @@ export class HomeTabComponent {
 
   onHomeTabUnloaded(args) {
     this._logService.logBreadCrumb(HomeTabComponent.name, 'Unloaded');
+  }
+
+  /**
+   * BLUETOOTH EVENT MANAGEMENT - for
+   * https://github.com/Max-Mobility/permobil-client/issues/580
+   */
+  private unregisterPushTrackerEvents() {
+    BluetoothService.PushTrackers.off(ObservableArray.changeEvent);
+    BluetoothService.PushTrackers.map(pt => {
+      pt.off(PushTracker.daily_info_event);
+    });
+  }
+
+  private _registerEventsForPT(pt: PushTracker) {
+    // unregister
+    pt.off(PushTracker.daily_info_event);
+    // register for version and info events
+    pt.on(PushTracker.daily_info_event, this.onPushTrackerDailyInfo, this);
+  }
+
+  private registerPushTrackerEvents() {
+    if (this.user.data.control_configuration !==
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      // we only register for these events if the user is configured
+      // to have a PushTracker!
+      return;
+    }
+    this.unregisterPushTrackerEvents();
+    // handle pushtracker pairing events for existing pushtrackers
+    BluetoothService.PushTrackers.map(pt => {
+      this._registerEventsForPT(pt);
+    });
+
+    // listen for completely new pusthrackers (that we haven't seen before)
+    BluetoothService.PushTrackers.on(
+      ObservableArray.changeEvent,
+      (args: ChangedData<number>) => {
+        if (args.action === 'add') {
+          const pt = BluetoothService.PushTrackers.getItem(
+            BluetoothService.PushTrackers.length - 1
+          );
+          if (pt) {
+            this._registerEventsForPT(pt);
+          }
+        }
+      }
+    );
+  }
+
+  onPushTrackerDailyInfo(args: any) {
+    const pt = args.object as PushTracker;
+    this.hasBatteryInfo = true;
+    this.ptBattery = pt.battery;
+    this.sdBattery = pt.sdBattery;
   }
 
   // Update what is displayed in the center of the home-tab circle #263
