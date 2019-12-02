@@ -3,6 +3,7 @@ import { bindingTypeToString, Device, Packet } from '@permobil/core';
 import { DownloadProgress } from 'nativescript-download-progress';
 import { differenceInCalendarDays } from 'date-fns';
 import * as timer from 'tns-core-modules/timer';
+import throttle from 'lodash/throttle';
 import { BluetoothService } from '../services';
 import { DeviceBase } from './device-base.model';
 
@@ -81,6 +82,8 @@ export class PushTracker extends DeviceBase {
   otaState: OTAState = OTAState.not_started;
   otaProgress = 0;
 
+  private _throttledSendTime: any = null;
+
   // functions
   constructor(btService: BluetoothService, obj?: any) {
     super(btService);
@@ -88,6 +91,12 @@ export class PushTracker extends DeviceBase {
     if (obj !== null && obj !== undefined) {
       this.fromObject(obj);
     }
+
+    this._throttledSendTime = throttle(
+      this.sendTime.bind(this),
+      1000,
+      { leading: false, trailing: true }
+    );
   }
 
   toString(): string {
@@ -596,9 +605,6 @@ export class PushTracker extends DeviceBase {
     dataType?: string,
     data?: any
   ): Promise<any> {
-    console.log(
-      `\n\n PushTracker.model Sending ${Type}::${SubType}::${data} to ${this.address} \n\n`
-    );
     const p = new Packet();
     p.Type(Type);
     p.SubType(SubType);
@@ -610,6 +616,9 @@ export class PushTracker extends DeviceBase {
       }
       p.data(dataKey, boundData);
     }
+    console.log(
+      `\n\n PushTracker.model Sending ${Type}::${SubType} (${p.toString()}) to ${this.address} \n\n`
+    );
     const transmitData = p.writableBuffer();
     p.destroy();
     return this._bluetoothService.sendToPushTrackers(transmitData, [
@@ -682,8 +691,6 @@ export class PushTracker extends DeviceBase {
   handleConnect() {
     if (!this.connected) {
       this.sendEvent(PushTracker.connect_event);
-      // send set time command on first connection
-      this.sendTime();
     }
     this.connected = true;
   }
@@ -793,7 +800,9 @@ export class PushTracker extends DeviceBase {
     const now = new Date();
     const then = new Date(year, month, day);
     const diff = differenceInCalendarDays(now, then);
-    if (year && month && day && diff >= 0) {
+    // don't check against month being truthy - it can be 0 -
+    // https://github.com/Max-Mobility/permobil-client/issues/583
+    if (year && diff >= 0) {
       this.sendEvent(PushTracker.error_event, {
         year: year,
         month: month,
@@ -916,6 +925,7 @@ export class PushTracker extends DeviceBase {
     // https://github.com/Max-Mobility/permobil-client/issues/580
     this.battery = di.ptBattery;
     this.sdBattery = di.sdBattery;
+
     // Properly check against invalid dates (null or in the future)
     // https://github.com/Max-Mobility/permobil-client/issues/546
     const year = di.year;
@@ -924,7 +934,22 @@ export class PushTracker extends DeviceBase {
     const now = new Date();
     const then = new Date(year, month, day);
     const diff = differenceInCalendarDays(now, then);
-    if (year && month && day && diff >= 0) {
+
+    if (diff > 0) {
+      // we are receiving a daily info event for days that are not
+      // today - which may happen on connection establishment for the
+      // first connection of the day - but we want to make sure that
+      // if the PT is out of date then we set the proper time
+      // (throttled to 1 second to prevent saturation on connection
+      // when we potentially receive 100 daily info at once) -
+      // https://github.com/Max-Mobility/permobil-client/issues/581
+      this._throttledSendTime();
+    }
+
+
+    // don't check against month being truthy - it can be 0 -
+    // https://github.com/Max-Mobility/permobil-client/issues/583
+    if (year && diff >= 0) {
       this.sendEvent(PushTracker.daily_info_event, {
         year: year,
         month: month,
