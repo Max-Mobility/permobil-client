@@ -1,0 +1,14 @@
+<resources>
+  <item name="batteryIcon" type="id"/>
+  <item name="watchBatteryCircle" type="id"/>
+  <item name="smartDriveBatteryCircle" type="id"/>
+  <item name="hourTextView" type="id"/>
+  <item name="smartDriveBtn" type="id"/>
+  <item name="colonTextView" type="id"/>
+  <item name="minuteTextView" type="id"/>
+  <item name="amPmTextView" type="id"/>
+  <item name="spaceTableRow" type="id"/>
+
+  <item name="top_complication_background" type="id"/>
+  <item name="top_complication" type="id"/>
+</resources>

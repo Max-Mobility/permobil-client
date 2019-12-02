@@ -862,83 +862,6 @@ export class SmartDrive extends DeviceBase {
     });
   }
 
-  // TODO: abstract sendPacket to the DeviceBase class
-  public sendSettings(
-    mode: string,
-    units: string,
-    flags: number,
-    tap_sensitivity: number,
-    acceleration: number,
-    max_speed: number
-  ): Promise<any> {
-    const settings = super.sendSettings(
-      mode,
-      units,
-      flags,
-      tap_sensitivity,
-      acceleration,
-      max_speed
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSettings',
-      'settings',
-      null,
-      settings
-    );
-  }
-
-  public sendSettingsObject(settings: Device.Settings): Promise<any> {
-    const _settings = super.sendSettings(
-      settings.controlMode,
-      settings.units,
-      settings.getFlags(),
-      settings.tapSensitivity / 100.0,
-      settings.acceleration / 100.0,
-      settings.maxSpeed / 100.0
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSettings',
-      'settings',
-      null,
-      _settings
-    );
-  }
-
-  public sendSwitchControlSettings(
-    mode: string,
-    max_speed: number
-  ): Promise<any> {
-    const switchControlSettings = super.sendSwitchControlSettings(
-      mode,
-      max_speed
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSwitchControlSettings',
-      'switchControlSettings',
-      null,
-      switchControlSettings
-    );
-  }
-
-  public sendSwitchControlSettingsObject(
-    settings: Device.SwitchControlSettings
-  ): Promise<any> {
-    const _switchControlSettings = super.sendSwitchControlSettings(
-      settings.mode,
-      settings.maxSpeed / 100.0
-    );
-    return this.sendPacket(
-      'Command',
-      'SetSwitchControlSettings',
-      'switchControlSettings',
-      null,
-      _switchControlSettings
-    );
-  }
-
   public sendPacket(
     Type: string,
     SubType: string,
@@ -1143,12 +1066,8 @@ export class SmartDrive extends DeviceBase {
           break;
       }
     } else if (packetType === 'Command') {
-      switch (subType) {
-        case 'OTAReady':
-          this._handleOTAReady(p);
-          break;
-        default:
-          break;
+      if (subType === 'OTAReady') {
+        this._handleOTAReady(p);
       }
     } else if (packetType === 'Error') {
       this._handleError(p);

@@ -13,6 +13,7 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.INTERNET"/>
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.BLUETOOTH"/>
   <uses-permission android:name="android.permission.BODY_SENSORS"/>
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -21,11 +22,9 @@
   <!-- Required so that we can turn wifi off when power assist is on -->
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-  <!--
-      <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-      <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-  -->
+
+  <!-- Required for complications to receive complication data and open the provider chooser. -->
+  <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
 
   <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
 
@@ -47,6 +46,11 @@
     -->
     <meta-data android:name="com.google.android.wearable.standalone" android:value="true"/>
 
+    <meta-data
+       android:name="android.support.wearable.complications.SAFE_WATCH_FACES"
+       android:value="
+          com.permobil.smartdrive.watchface/com.permobil.smartdrive.watchface.DigitalWatchFaceService"/>
+
     <!-- for main activity -->
     <activity
         android:name="com.permobil.smartdrive.MainActivity"
@@ -62,6 +66,46 @@
     </activity>
     <!-- end for main activity -->
     <activity android:name="com.tns.ErrorReportActivity"/>
+
+    <!-- Digital WatchFace Activities and Services -->
+    <service
+            android:name=".watchface.digital.DigitalWatchFaceService"
+            android:label="@string/digital_watch_face_name"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
+                android:value="com.example.android.wearable.watchface.CONFIG_COMPLICATION" />
+
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <activity android:name="android.support.wearable.complications.ComplicationHelperActivity" />
+        <!-- Adding custom style to the ConfigActivity so that the user is able to swipe to dismiss the activity and get back to the watchface -->
+         <activity
+            android:name=".watchface.digital.DigitalWatchFaceConfigActivity"
+            android:label="@string/app_name"
+            android:theme="@style/SwipeableActivityTheme">
+            <intent-filter>
+                <action android:name="com.example.android.wearable.watchface.CONFIG_COMPLICATION" />
+
+                <category android:name="com.google.android.wearable.watchface.category.WEARABLE_CONFIGURATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- END - Digital Watch Face -->
 
 
     <!-- for confirmation (success / failure / open-on-phone) activity -->
@@ -159,6 +203,10 @@
     <!-- for receiving complications -->
     <receiver android:name="com.permobil.smartdrive.wearos.ComplicationToggleReceiver" />
     <!-- end for receiving complications -->
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
   </application>
 </manifest>

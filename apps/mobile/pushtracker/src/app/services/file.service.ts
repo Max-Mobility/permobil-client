@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import * as Kinvey from 'kinvey-nativescript-sdk';
 import * as localStorage from 'nativescript-localstorage';
 import { LoggingService } from './logging.service';
+import { knownFolders } from '@nativescript/core';
 
 @Injectable()
 export class FileService {
@@ -33,13 +34,14 @@ export class FileService {
         );
 
         // _version is a property on our Kinvey files
-        if (data && data.file_version >= (file as any)._version) {
+        if (data && data.file_version >= file._version) {
           return;
         }
 
+        const i18n = knownFolders.documents().getFolder('i18n'); // creates i18n if it doesn't exist
         const filePath = fs.path.join(
-          fs.knownFolders.documents().path,
-          `i18n/${file._filename}`
+          i18n.path,
+          file._filename
         );
         await http.getFile(file._downloadURL, filePath).catch(err => {
           this._loggingService.logException(err);
@@ -63,7 +65,7 @@ export class FileService {
 
   private _saveFileMetaData(file) {
     const metadata = {
-      file_version: (file as any)._version
+      file_version: file._version
     };
 
     localStorage.setItem(

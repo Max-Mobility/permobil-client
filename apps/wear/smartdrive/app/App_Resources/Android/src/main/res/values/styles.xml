@@ -45,6 +45,12 @@
     <style name="AppTheme" parent="AppThemeBase">
     </style>
 
+    <style name="SwipeableActivityTheme" parent="AppThemeBase">
+        <item name="android:windowSwipeToDismiss">true</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:colorBackground">#000000</item>
+    </style>
+
     <!-- theme for alert dialog -->
     <style name="MyBorderlessButton" parent="@style/Widget.AppCompat.Button.Borderless">
       <!-- Set background drawable and text size of the buttons here -->

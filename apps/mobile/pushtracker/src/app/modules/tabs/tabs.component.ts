@@ -268,7 +268,7 @@ export class TabsComponent {
             'permissions-reasons.coarse-location'
           )
       };
-      neededPermissions.map(r => {
+      neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
       });
       if (neededPermissions && neededPermissions.length > 0) {
@@ -362,7 +362,7 @@ export class TabsComponent {
 
   onPushTrackerVersionEvent(args) {
     const pt = args.object as PushTracker;
-    const smartDriveUpToDate = pt.isSmartDriveUpToDate('2.0');
+    const smartDriveUpToDate = !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
     const ptUpToDate = pt.isUpToDate('2.0');
     // Alert user if they are connected to a pushtracker which is out
     // of date -
@@ -411,10 +411,9 @@ export class TabsComponent {
     );
     const data = args.data;
     const year = data.year;
-    const month = data.month - 1;
+    const month = data.month;
     const day = data.day;
     const pushesWithout = data.pushesWithout;
-    const coastWith = data.coastWith;
     const coastWithout = data.coastWithout;
     const date = new Date(year, month, day);
     date.setHours(0, 0, 0, 0);
@@ -440,15 +439,9 @@ export class TabsComponent {
           );
         else
           this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
-        // this._logService.logException(
-        //   new Error(
-        //     '[TabsComponent] Failed to save DailyInfo from PushTracker in Kinvey'
-        //   )
-        // );
       })
       .catch(err => {
         this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
-        // this._logService.logException(err);
       });
 
     // Request distance information from PushTracker
@@ -648,7 +641,9 @@ export class TabsComponent {
         case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.settings.copy(s);
           this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
+          try {
+            await this._settingsService.save();
+          } catch (err) { Log.E(err); }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'
@@ -686,7 +681,9 @@ export class TabsComponent {
         case this._translateService.instant('actions.overwrite-local-settings'):
           this._settingsService.switchControlSettings.copy(s);
           this._settingsService.saveToFileSystem();
-          this._settingsService.save().catch(Log.E);
+          try {
+            await this._settingsService.save();
+          } catch (err) { Log.E(err); }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'

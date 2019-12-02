@@ -86,11 +86,6 @@
         // push count data
         <Label row="0" col="0" class="detail-value" [text]="todayPushCount"></Label>
         <Label textWrap="true" row="1" col="0" class="detail-description" [text]="'general.pushes-today' | translate"></Label>
-        <!--
-        // drive distance data
-        <Label row="0" col="2" class="detail-value" [text]="todayDriveDistance"></Label>
-        <Label textWrap="true" row="1" col="2" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.km-driven-today' : 'general.miles-driven-today') | translate"></Label>
-        -->
         // week drive distance data
         <Label row="0" col="2" class="detail-value" [text]="weekCoastDistance"></Label>
         <Label textWrap="true" row="1" col="2" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.km-this-week' : 'general.miles-this-week') | translate"></Label>
