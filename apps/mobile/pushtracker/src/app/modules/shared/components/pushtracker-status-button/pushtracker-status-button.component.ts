@@ -92,7 +92,6 @@ export class PushTrackerStatusButtonComponent {
 
     // get the pts needed
     const pts = BluetoothService.PushTrackers.filter(pt => pt.connected);
-    let pt = null;
     if (allowOnlyOneConnected) {
       pts.splice(1, pts.length - 1);
     }
