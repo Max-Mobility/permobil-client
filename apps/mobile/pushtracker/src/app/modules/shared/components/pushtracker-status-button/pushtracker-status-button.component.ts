@@ -100,21 +100,23 @@ export class PushTrackerStatusButtonComponent {
       pts.splice(1, pts.length - 1);
     }
     pts.forEach(pt => {
-      const ptBattery = pt && pt.battery;
-      const sdBattery = pt && pt.sdBattery;
+      const ptBattery = (pt && pt.battery && `${pt.battery}%`) || '--';
+      const sdBattery = (pt && pt.sdBattery && `${pt.sdBattery}%`) || '--';
       if (ptBattery) {
         switch (this.state) {
           case PushTrackerState.busy:
           case PushTrackerState.connected:
           case PushTrackerState.ready:
+            msg += '\n\n';
+            msg += `${pt.address}`;
             msg += '\n';
             msg += this._translateService.instant(
               'pt-battery'
-            ) + `: ${ptBattery.toFixed(0)}%`;
+            ) + `: ${ptBattery}`;
             msg += '\n';
             msg += this._translateService.instant(
               'sd-battery'
-            ) + `: ${sdBattery.toFixed(0)}%`;
+            ) + `: ${sdBattery}`;
             break;
           default:
             break;
