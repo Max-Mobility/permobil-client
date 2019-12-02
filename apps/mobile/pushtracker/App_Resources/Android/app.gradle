@@ -15,8 +15,8 @@ android {
     applicationId = "com.permobil.pushtracker"
     minSdkVersion 21
     targetSdkVersion 28
-    versionCode 10009
-    versionName "2.0.02"
+    versionCode 100010
+    versionName "2.0.03"
   }
   aaptOptions {
     additionalParameters "--no-version-vectors"
