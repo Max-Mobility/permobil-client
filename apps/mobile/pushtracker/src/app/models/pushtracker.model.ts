@@ -70,6 +70,7 @@ export class PushTracker extends DeviceBase {
   events: any /*IPushTrackerEvents*/;
 
   //  members - in addition to Device Base
+  sdBattery = 0; // stored battery information about smartdrive
   version = 0xff; // firmware version number for the PT firmware
   paired = false; // Is this PushTracker paired?
   settings = new Device.Settings();
@@ -108,6 +109,7 @@ export class PushTracker extends DeviceBase {
       mcu_version: this.mcu_version,
       ble_version: this.ble_version,
       battery: this.battery,
+      sdBattery: this.sdBattery,
       address: this.address,
       paired: this.paired,
       connected: this.connected
@@ -119,6 +121,7 @@ export class PushTracker extends DeviceBase {
     this.mcu_version = (obj && obj.mcu_version) || 0xff;
     this.ble_version = (obj && obj.ble_version) || 0xff;
     this.battery = (obj && obj.battery) || 0;
+    this.sdBattery = (obj && obj.sdBattery) || 0;
     this.address = (obj && obj.address) || '';
     this.paired = (obj && obj.paired) || false;
     this.connected = (obj && obj.connected) || false;
@@ -909,6 +912,10 @@ export class PushTracker extends DeviceBase {
            uint8_t     sdBattery;       /** Percent, [0, 100].
            }            dailyInfo;
     */
+    // set the battery for
+    // https://github.com/Max-Mobility/permobil-client/issues/580
+    this.battery = di.ptBattery;
+    this.sdBattery = di.sdBattery;
     // Properly check against invalid dates (null or in the future)
     // https://github.com/Max-Mobility/permobil-client/issues/546
     const year = di.year;
