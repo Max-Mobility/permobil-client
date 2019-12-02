@@ -94,13 +94,13 @@
         <Label textWrap="true" row="1" col="4" class="detail-description" [text]="(user?.data.distance_unit_preference === DISTANCE_UNITS.KILOMETERS ? 'general.odometer-km' : 'general.odometer') | translate"></Label>
       </GridLayout>
 
-      <GridLayout *ngIf="hasBatteryInfo" rows="auto, auto" columns="*, *, *, *, *" class="detail-data">
+      <GridLayout *ngIf="showBatteryInfo" rows="auto, auto" columns="*, *" class="detail-data">
         // pushtracker battery data
-        <Label row="0" col="1" class="detail-value" [text]="ptBattery"></Label>
-        <Label textWrap="true" row="1" col="1" class="detail-description" [text]="'pt-battery' | translate"></Label>
+        <Label row="0" col="0" class="detail-value" [text]="ptBattery"></Label>
+        <Label textWrap="true" row="1" col="0" class="detail-description" [text]="'pt-battery' | translate"></Label>
         // smartdrive battery data
-        <Label row="0" col="3" class="detail-value" [text]="sdBattery"></Label>
-        <Label textWrap="true" row="1" col="3" class="detail-description" [text]="'sd-battery' | translate"></Label>
+        <Label row="0" col="1" class="detail-value" [text]="sdBattery"></Label>
+        <Label textWrap="true" row="1" col="1" class="detail-description" [text]="'sd-battery' | translate"></Label>
       </GridLayout>
 
       // Coast Time Chart
