@@ -26,7 +26,9 @@ export class BluetoothService extends Observable {
   static PushTrackers = new ObservableArray<PushTracker>();
   static SmartDrives = new ObservableArray<SmartDrive>();
 
+  public static advertise_success = 'advertise_success';
   public static advertise_error = 'advertise_error';
+  public static pushtracker_added = 'pushtracker_added';
   public static pushtracker_connected = 'pushtracker_connected';
   public static pushtracker_disconnected = 'pushtracker_disconnected';
   public static smartdrive_connected = 'smartdrive_connected';
@@ -271,6 +273,8 @@ export class BluetoothService extends Observable {
     this._bluetooth.addService(this.AppService);
 
     this.advertising = true;
+
+    this.sendEvent(BluetoothService.advertise_success);
 
     return Promise.resolve();
   }
@@ -766,6 +770,7 @@ export class BluetoothService extends Observable {
     if (pt === null || pt === undefined) {
       pt = new PushTracker(this, { address: device.address });
       BluetoothService.PushTrackers.push(pt);
+      this.sendEvent(BluetoothService.pushtracker_added, { pt });
     }
     if (device.device) {
       pt.device = device.device;
