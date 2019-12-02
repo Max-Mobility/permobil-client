@@ -94,31 +94,30 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
     // Used by {@link ComplicationConfigActivity} to retrieve id for complication locations and
     // to check if complication location is supported.
-
     static int getComplicationId(DigitalWatchFaceConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here you would like to support. In our case, we are only supporting a top complication
-        if (complicationLocation == DigitalWatchFaceConfigActivity.ComplicationLocation.TOP) {
-            return TOP_COMPLICATION_ID;
+        switch (complicationLocation) {
+            case TOP:
+                return TOP_COMPLICATION_ID;
+            default:
+                return -1;
         }
-        return -1;
     }
 
     // Used by {@link ComplicationConfigActivity} to retrieve all complication ids.
-
     static int[] getComplicationIds() {
         return COMPLICATION_IDS;
     }
 
-    // Used by {@link ComplicationConfigActivity} to retrieve complication types supported by
-    // location.
-
+    // Used by {@link ComplicationConfigActivity} to retrieve complication types supported by location.
     static int[] getSupportedComplicationTypes(DigitalWatchFaceConfigActivity.ComplicationLocation complicationLocation) {
         // Add any other supported locations here.
-        if (complicationLocation == DigitalWatchFaceConfigActivity.ComplicationLocation.TOP) {
-            return COMPLICATION_SUPPORTED_TYPES[0];
+        switch (complicationLocation) {
+            case TOP:
+                return COMPLICATION_SUPPORTED_TYPES[0];
+            default:
+                return new int[]{};
         }
-
-        return new int[]{};
     }
 
     /*
@@ -695,16 +694,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
                 complicationDrawable = mComplicationDrawableSparseArray.get(complicationId);
                 complicationDrawable.draw(canvas, currentTimeMillis);
-                complicationDrawable.setRangedValueRingWidthActive(8);
-                complicationDrawable.setRangedValuePrimaryColorActive(0xff28628E);
-                complicationDrawable.setRangedValueSecondaryColorActive(0xff434244);
-                complicationDrawable.setIconColorAmbient(0x00000000);
-                complicationDrawable.setTextColorAmbient(0x00000000);
-                complicationDrawable.setTextColorActive(0x00000000);
-                complicationDrawable.setIconColorActive(0x00000000);
-                ColorFilter colorfilter = complicationDrawable.getColorFilter();
-                //canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-                complicationDrawable.setImageColorFilterActive(colorfilter);
             }
         }
 
