@@ -1,4 +1,4 @@
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, ViewContainerRef } from '@angular/core';
 import { PushTrackerKinveyKeys } from '@maxmobility/private-keys';
 import { ModalDialogService } from '@nativescript/angular';
 import { Color, ObservableArray, ChangedData } from '@nativescript/core';
@@ -48,8 +48,8 @@ export class HomeTabComponent {
   coastDistanceYAxisStep: number = 0.25;
 
   hasBatteryInfo: boolean = false;
-  ptBattery: number = 0;
-  sdBattery: number = 0;
+  ptBattery: string = '--';
+  sdBattery: string = '--';
 
   todayMessage: string = '';
   todayCoastDistance: string = '0.0';
@@ -75,6 +75,7 @@ export class HomeTabComponent {
   private _weeklyUsageFromKinvey: any;
 
   constructor(
+    private _zone: NgZone,
     private _translateService: TranslateService,
     private _logService: LoggingService,
     private _modalService: ModalDialogService,
@@ -168,9 +169,12 @@ export class HomeTabComponent {
 
   onPushTrackerDailyInfo(args: any) {
     const pt = args.object as PushTracker;
-    this.hasBatteryInfo = true;
-    this.ptBattery = pt.battery;
-    this.sdBattery = pt.sdBattery;
+    console.log('got daily info event', pt.battery);
+    this._zone.run(() => {
+      this.hasBatteryInfo = true;
+      this.ptBattery = pt.battery + '%';
+      this.sdBattery = pt.sdBattery ? (pt.sdBattery + '%') : '--';
+    });
   }
 
   // Update what is displayed in the center of the home-tab circle #263
