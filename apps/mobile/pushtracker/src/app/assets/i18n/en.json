@@ -1,4 +1,6 @@
 {
+  "sd-battery": "SmartDrive Battery",
+  "pt-battery": "PushTracker Battery",
 	"actions": {
 		"keep-both-settings": "Do not change either settings.",
 		"overwrite-local-settings": "Overwrite app's settings.",
