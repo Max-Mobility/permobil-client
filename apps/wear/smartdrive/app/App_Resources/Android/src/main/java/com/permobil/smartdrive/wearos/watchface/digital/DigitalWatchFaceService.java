@@ -651,8 +651,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 mShouldDrawColons = true;
             } else {
                 mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
-                colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
             }
+            colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
+
 
             // Get the hours.
             String hourString;
