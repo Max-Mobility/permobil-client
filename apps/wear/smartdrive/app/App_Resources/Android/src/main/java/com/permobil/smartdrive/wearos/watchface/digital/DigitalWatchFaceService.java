@@ -294,7 +294,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             Rect topComplicationBounds = new Rect(horizontalOffset, verticalOffset, horizontalOffset + sizeOfComplication, verticalOffset + sizeOfComplication);
             Log.d(TAG, "complication bounds: " + topComplicationBounds);
-
+            
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
             topComplicationDrawable.setBounds(topComplicationBounds);
         }
@@ -387,7 +387,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourTextView.setTextSize(18);
                 colonTextView.setTextSize(18);
                 minuteTextView.setTextSize(18);
-                amPmTextView.setTextSize(14);
+                amPmTextView.setTextSize(12);
             }
 
             if (mLowBitAmbient) {
@@ -456,7 +456,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onComplicationDataUpdate(int complicationId, ComplicationData complicationData) {
             Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
-
+            
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
