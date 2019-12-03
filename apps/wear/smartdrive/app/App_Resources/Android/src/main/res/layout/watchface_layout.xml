@@ -94,25 +94,25 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal">
 
                 <ImageButton
                     android:id="@+id/smartDriveBtn"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/action_item_background"
                     android:contentDescription="@string/smartdrivebutton"
                     android:hapticFeedbackEnabled="true"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerInside"
                     android:src="@drawable/smartdrive_button" />
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center|center_horizontal">
+                android:gravity="bottom|center|center_horizontal|center_vertical">
 
                 <!-- ignore the useless parent warning here, the layout wont align with just table row to the design -->
                 <LinearLayout

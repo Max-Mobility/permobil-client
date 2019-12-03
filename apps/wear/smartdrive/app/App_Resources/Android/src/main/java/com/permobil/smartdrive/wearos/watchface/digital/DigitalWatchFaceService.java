@@ -359,6 +359,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourTextView.setTextSize(48);
                 colonTextView.setTextSize(48);
                 minuteTextView.setTextSize(48);
+                amPmTextView.setTextSize(20);
 
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
@@ -383,9 +384,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     smartDriveBatteryCircle.setRimColor(charcoalColor);
                 }
 
-                hourTextView.setTextSize(24);
-                colonTextView.setTextSize(24);
-                minuteTextView.setTextSize(24);
+                hourTextView.setTextSize(18);
+                colonTextView.setTextSize(18);
+                minuteTextView.setTextSize(18);
+                amPmTextView.setTextSize(14);
             }
 
             if (mLowBitAmbient) {
