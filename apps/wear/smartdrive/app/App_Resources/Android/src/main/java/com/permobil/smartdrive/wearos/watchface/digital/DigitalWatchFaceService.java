@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -293,8 +292,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             int verticalOffset = midpointOfScreen / 5;
 
             Rect topComplicationBounds = new Rect(horizontalOffset, verticalOffset, horizontalOffset + sizeOfComplication, verticalOffset + sizeOfComplication);
-            Log.d(TAG, "complication bounds: " + topComplicationBounds);
-
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
             topComplicationDrawable.setBounds(topComplicationBounds);
         }
@@ -397,7 +394,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 minuteTextView.getPaint().setAntiAlias(antiAlias);
                 amPmTextView.getPaint().setAntiAlias(antiAlias);
             }
-            invalidate();
 
             // Update drawable complications' ambient state.
             // Note: ComplicationDrawable handles switching between active/ambient colors, we just
@@ -409,6 +405,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 complicationDrawable.setInAmbientMode(inAmbientMode);
             }
 
+            invalidate();
             // Check and trigger whether or not timer should be running (only in active mode).
             updateTimer();
         }
@@ -455,8 +452,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onComplicationDataUpdate(int complicationId, ComplicationData complicationData) {
-            Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
-
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
@@ -526,7 +521,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         }
 
         private void initializeComplications() {
-            Log.d(TAG, "initializeComplications()");
             mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
 
             // Creates a ComplicationDrawable for each location where the user can render a
@@ -554,7 +548,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private void onComplicationTap(int complicationId) {
             Log.d(TAG, "onComplicationTap()");
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
-            Log.d(TAG, "Complication Id: " + complicationId);
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
@@ -652,8 +645,14 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             boolean is24Hour = DateFormat.is24HourFormat(DigitalWatchFaceService.this);
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
-            mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
-            colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
+            // always draw the colon during ambient mode for time display
+            mShouldDrawColons = false;
+            if (isInAmbientMode()) {
+                mShouldDrawColons = true;
+            } else {
+                mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
+                colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
+            }
 
             // Get the hours.
             String hourString;
@@ -685,6 +684,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // handle color of text depending if ambient mode
             colorTextViewsForAmbientHandling();
+            invalidate(); // should force the time strings to update, important for ambient mode to be in sync
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
