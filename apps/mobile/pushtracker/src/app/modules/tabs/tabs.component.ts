@@ -341,7 +341,7 @@ export class TabsComponent {
   }
 
   private onPushTrackerPaired(args: any) {
-    const pt = args.data.pt;
+    const pt = args.object as PushTracker;
     this._logService.logBreadCrumb(
       TabsComponent.name,
       'PushTracker paired: ' + pt.address
