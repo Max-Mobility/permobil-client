@@ -126,26 +126,26 @@
                         android:id="@+id/hourTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="sans-serif"
                         android:textAlignment="viewEnd"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/colonTextView"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="sans-serif"
                         android:text="@string/colon"
                         android:textAlignment="center"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/minuteTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
+                        android:fontFamily="sans-serif"
                         android:textAlignment="textStart"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
             </TableRow>
@@ -159,9 +159,10 @@
                     android:id="@+id/amPmTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
+                    android:fontFamily="sans-serif"
                     android:gravity="center"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
             </TableRow>
 
         </TableLayout>
