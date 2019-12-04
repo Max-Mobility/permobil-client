@@ -384,7 +384,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourTextView.setTextSize(18);
                 colonTextView.setTextSize(18);
                 minuteTextView.setTextSize(18);
-                amPmTextView.setTextSize(14);
+                amPmTextView.setTextSize(12);
             }
 
             if (mLowBitAmbient) {
