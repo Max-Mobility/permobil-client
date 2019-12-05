@@ -21,11 +21,7 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "outDir": "./plugin",
-        "rootDir": "src",
-        "paths": {
-            "nativescript-opencv": ["./src"],
-            "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
-        }
+        "rootDir": "src"
     },
     "include": ["src/**/*.ts", "references.d.ts", "src/references.d.ts"],
     "exclude": ["node_modules", ".git", "dist"],
