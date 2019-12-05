@@ -23,7 +23,6 @@ import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
 })
 export class TabsComponent {
   public CONFIGURATIONS = CONFIGURATIONS;
-  bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
   private _throttledOnDailyInfoEvent: any = null;
@@ -122,36 +121,35 @@ export class TabsComponent {
       return;
     }
 
+    setTimeout(this.configureBluetooth.bind(this), 1000);
+  }
+
+  private async configureBluetooth() {
     if (
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
-      !this.bluetoothAdvertised
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       this._logService.logBreadCrumb(
         TabsComponent.name,
         'Asking for Bluetooth Permission'
       );
-      this.bluetoothAdvertised = true;
-      setTimeout(() => {
-        this.askForPermissions()
-          .then(() => {
-            this.registerBluetoothEvents();
-            this.registerPushTrackerEvents();
-            if (!this._bluetoothService.advertising) {
-              this._logService.logBreadCrumb(
-                TabsComponent.name,
-                'Starting Bluetooth'
-              );
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
-            }
-          })
-          .catch(err => {
-            this.bluetoothAdvertised = false;
-            this._logService.logException(err);
-          });
-      }, 1000);
+      return this.askForPermissions()
+        .then(() => {
+          this.registerBluetoothEvents();
+          this.registerPushTrackerEvents();
+          if (!this._bluetoothService.advertising) {
+            this._logService.logBreadCrumb(
+              TabsComponent.name,
+              'Starting Bluetooth'
+            );
+            // start the bluetooth service
+            return this._bluetoothService.advertise();
+          }
+        })
+        .catch(err => {
+          this._logService.logException(err);
+        });
     }
   }
 
@@ -235,64 +233,21 @@ export class TabsComponent {
   }
 
   private async askForPermissions() {
-    if (isAndroid) {
-      // determine if we have shown the permissions request
-      const hasShownRequest =
-        appSettings.getBoolean(
-          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
-        ) || false;
-      // will throw an error if permissions are denied, else will
-      // return either true or a permissions object detailing all the
-      // granted permissions. The error thrown details which
-      // permissions were rejected
-      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-      const reasons = [];
-      const activity: android.app.Activity =
-        application.android.startActivity ||
-        application.android.foregroundActivity;
-      const neededPermissions = this.permissionsNeeded.filter(
-        p =>
-          !hasPermission(p) &&
-          (activity.shouldShowRequestPermissionRationale(p) || !hasShownRequest)
-      );
-      // update the has-shown-request
-      appSettings.setBoolean(
-        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
-        true
-      );
-      const reasoning = {
-        [android.Manifest.permission
-          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
-      };
-      neededPermissions.forEach(r => {
-        reasons.push(reasoning[r]);
+    const hasPermission = await this._bluetoothService.hasPermissions();
+    if (!hasPermission && isAndroid) {
+      // only show our permissions alert on android - on iOS we
+      // already show the permissions request at this point, and the
+      // text for it comes from Info.plist
+      await alert({
+        title: this._translateService.instant('permissions-request.title'),
+        message: this._translateService.instant(
+          'permissions-reasons.coarse-location'
+        ),
+        okButtonText: this._translateService.instant('general.ok')
       });
-      if (neededPermissions && neededPermissions.length > 0) {
-        await alert({
-          title: this._translateService.instant('permissions-request.title'),
-          message: reasons.join('\n\n'),
-          okButtonText: this._translateService.instant('general.ok')
-        });
-        try {
-          await requestPermissions(neededPermissions, () => { });
-          return true;
-        } catch (permissionsObj) {
-          const hasBlePermission =
-            permissionsObj[blePermission] || hasPermission(blePermission);
-          if (hasBlePermission) {
-            return true;
-          } else {
-            throw this._translateService.instant('failures.permissions');
-          }
-        }
-      } else if (hasPermission(blePermission)) {
-        return Promise.resolve(true);
-      } else {
-        throw this._translateService.instant('failures.permissions');
-      }
     }
+    await this._bluetoothService.requestPermissions();
+    return true;
   }
 
   /**

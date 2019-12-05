@@ -6,6 +6,7 @@ import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
+import { check as checkPermission, request as requestPermission, setDebug as setPermissionsDebug } from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -230,21 +231,28 @@ export class BluetoothService extends Observable {
     this.initialized = true;
   }
 
-  async advertise(): Promise<any> {
+  async advertise(): Promise<boolean> {
     if (this.advertising) {
-      return Promise.resolve();
+      return true;
     }
     // check to make sure that bluetooth is enabled, or this will
     // always fail and we don't need to show the error
     const result = await this._bluetooth.isBluetoothEnabled();
 
-    if (isAndroid && result === false) {
-      try {
-        await this._bluetooth.enable();
-      } catch (err) {
+    if (result === false) {
+      if (isAndroid) {
+        try {
+          await this._bluetooth.enable();
+        } catch (err) {
+          this.sendEvent(BluetoothService.advertise_error, { error: err });
+          this._logService.logException(err);
+          return false;
+        }
+      } else {
+        // can't do anything about it on ios
+        const err = new Error('bluetooth not enabled');
         this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._logService.logException(err);
-        return;
+        throw err;
       }
     }
 
@@ -276,7 +284,7 @@ export class BluetoothService extends Observable {
 
     this.sendEvent(BluetoothService.advertise_success);
 
-    return Promise.resolve();
+    return true;
   }
 
   scanForAny(timeout: number = 4): Promise<any> {
@@ -379,6 +387,44 @@ export class BluetoothService extends Observable {
 
   stopNotifying(opts: any) {
     return this._bluetooth.stopNotifying(opts);
+  }
+
+  public async hasPermissions() {
+    setPermissionsDebug(true);
+    let _has = false
+    if (isAndroid) {
+      _has = await this._bluetooth.hasCoarseLocationPermission();
+    } else {
+      const result = await checkPermission('bluetooth');
+      this._logService.logBreadCrumb(
+        BluetoothService.name,
+        `result: ${result}`
+      );
+      _has = result === 'authorized';
+    }
+    this._logService.logBreadCrumb(
+      BluetoothService.name,
+      `_has: ${_has}`
+    );
+    return _has;
+  }
+
+  public async requestPermissions() {
+    setPermissionsDebug(true);
+    const _hasPerms = await this.hasPermissions();
+    this._logService.logBreadCrumb(
+      BluetoothService.name,
+      `has perms: ${_hasPerms}`
+    );
+    if (isAndroid) {
+      await this._bluetooth.requestCoarseLocationPermission();
+    } else {
+      const didRequest = await requestPermission('bluetooth');
+      if (didRequest !== 'authorized') {
+        throw new Error('could not request bluetooth permissions');
+      }
+    }
+    return true;
   }
 
   public requestConnectionPriority(address: string, priority: number) {
