@@ -391,7 +391,7 @@ export class BluetoothService extends Observable {
 
   public async hasPermissions() {
     setPermissionsDebug(true);
-    let _has = false
+    let _has = false;
     if (isAndroid) {
       _has = await this._bluetooth.hasCoarseLocationPermission();
     } else {
