@@ -3,7 +3,7 @@
 
 .journey-tab-layout {
   @extend .JOURNEY_TAB_LAYOUT_BASE;
-  background-color: $white;
+
 
   .page-title {
     @extend .PAGE_TITLE_BASE;
@@ -14,7 +14,6 @@
     font-size: 16;
     font-weight: bold;
     font-family: $os;
-    color: $black;
     padding-left: 10;
     margin-left: 5;
     margin-bottom: 10;
@@ -36,7 +35,6 @@
     margin-bottom: 5;
     margin-left: 5;
     padding-left: 10;
-    color: $black;
     font-family: $os;
   }
 
@@ -99,7 +97,6 @@
 
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
-    background-color: $white;
     color: #3c4043;
   }
 

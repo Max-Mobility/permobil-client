@@ -47,3 +47,6 @@ $error-red: #dd4646;
 $light-custom-dialog-layout-shadow: rgba(0, 0, 0, 0.65);
 $dark-custom-dialog-layout-shadow: rgba(13, 13, 13, 0.75);
 $dark-custom-dialog-layout-black: rgba(54, 54, 54, 1);
+
+// Theme-core
+@import "~nativescript-theme-core/core";

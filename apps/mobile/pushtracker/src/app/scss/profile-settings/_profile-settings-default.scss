@@ -3,7 +3,6 @@
 
 .profile-settings-layout-default {
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
-  background-color: $white;
 
   .category {
     @extend .CATEGORY_BASE;
@@ -21,12 +20,10 @@
 
   .setting-title {
     @extend .SETTING_TITLE_BASE;
-    color: $black;
   }
 
   .setting-value {
     @extend .SETTING_VALUE_BASE;
-    color: $black;
   }
 
   .setting-switch {
@@ -48,7 +45,6 @@
     margin: 2 4 2 4;
     padding: 4;
     border-radius: 3;
-    color: $white;
     background-color: #00a73c;
   }
 

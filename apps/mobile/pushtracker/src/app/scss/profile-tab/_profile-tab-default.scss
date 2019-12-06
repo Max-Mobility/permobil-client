@@ -4,21 +4,16 @@
 /* these have to be outside the component class to work */
 .date-time-picker {
   @extend .DATE_TIME_PICKER_BASE;
-  background-color: $white;
-  color: $black;
 }
 .date-time-picker-spinners {
-  background-color: $white;
   color: #202125;
 }
 .date-time-picker-buttons {
-  background-color: $white;
   color: #1a73e9;
 }
 
 .textfield {
-  color: $black;
-  font-size: 22;
+   font-size: 22;
 }
 
 .textfield-prefix {
@@ -33,45 +28,34 @@
 
 .profile-tab-layout {
   @extend .PROFILE_TAB_LAYOUT_BASE;
-  background-color: $white;
+  @include colorize($background-color: background);
 
   .page-title {
     @extend .PAGE_TITLE_BASE;
-    color: #1f2024;
   }
 
   .profile-name {
     @extend .PROFILE_NAME_BASE;
-    color: #3c4043;
   }
 
   .profile-email {
     @extend .PROFILE_EMAIL_BASE;
-    color: #5f6267;
   }
 
   .privacy-btn {
     @extend .PRIVACY_BUTTON_BASE;
-    color: #3c4043;
   }
 
   .section-label {
     @extend .SECTION_LABEL_BASE;
-    color: #3c4043;
   }
 
   .avatar-circle {
     @extend .AVATAR_CIRCLE_BASE;
     background-color: $permobil-primary;
-
-    label {
-      color: $white;
-    }
   }
 }
 
 .device-setup-btn {
   @extend .DEVICE_SETUP_BUTTON;
-  color: $black;
-  background-color: $white;
 }

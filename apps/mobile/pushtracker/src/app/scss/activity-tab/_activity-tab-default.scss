@@ -4,16 +4,16 @@
 
 .activity-tab-layout {
   @extend .ACTIVITY_TAB_LAYOUT_BASE;
-  background-color: $white;
+
 
   .prev-btn {
     @extend .PREV_BTN_BASE;
-    color: $black;
+
   }
 
   .next-btn {
     @extend .NEXT_BTN_BASE;
-    color: $black;
+
   }
 
   .next-btn-disabled {
@@ -23,7 +23,7 @@
 
   .chart-title {
     @extend .CHART_TITLE_BASE;
-    color: $black;
+
   }
 
   .chevron-left {
@@ -33,7 +33,7 @@
 
   .chart-description {
     @extend .CHART_DESCRIPTION_BASE;
-    color: $black;
+
   }
 
   .chart-label {

@@ -3,7 +3,6 @@
 
 .home-tab-layout {
   @extend .HOME_TAB_LAYOUT_BASE;
-  background-color: $white;
 
   .info-btn {
     @extend .INFO_BTN_BASE;

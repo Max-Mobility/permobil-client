@@ -4,8 +4,7 @@
 .data-box {
   @extend .DATA_BOX_BASE;
   .data-box-label {
-    color: #4b4d51;
-    background-color: $white;
+    @include colorize($background-color: background);
   }
 
   GridLayout {
@@ -16,7 +15,7 @@
     }
 
     > .data-box-icon {
-      color: $black;
+  
     }
 
     > .data-box-arrow {
@@ -33,7 +32,6 @@
   @extend .DATA_BOX_BASE;
   .data-box-label {
     color: $permobil-primary;
-    background-color: $white;
   }
 
   GridLayout {
