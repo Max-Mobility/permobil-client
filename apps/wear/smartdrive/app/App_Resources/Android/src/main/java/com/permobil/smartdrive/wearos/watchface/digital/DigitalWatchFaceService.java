@@ -37,8 +37,6 @@ import android.widget.TextView;
 import com.permobil.smartdrive.wearos.R;
 import com.permobil.smartdrive.wearos.util.DateUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -284,7 +282,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // improves performance after profiling the bind call in both overrides.
             ButterKnife.bind(this, mRelativeLayout);
 
-
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 6;
             int midpointOfScreen = width / 2;
@@ -310,7 +307,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Lay the view out at the rect width and height
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
             mRelativeLayout.draw(canvas);
-
+            
             drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
             watchBatteryCircle.setValue(batteryLvl);
@@ -478,13 +475,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
-
             if (visible) {
                 registerReceiver();
                 // Update time zone in case it changed while we weren't visible.
                 mCalendar.setTimeZone(TimeZone.getDefault());
                 initFormats();
-                //invalidate();
             } else {
                 unregisterReceiver();
             }
@@ -511,12 +506,9 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             );
 
             Thread.setDefaultUncaughtExceptionHandler(
-                    new Thread.UncaughtExceptionHandler() {
-                        @Override
-                        public void uncaughtException(@NotNull Thread thread, @NotNull Throwable e) {
-                            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                            Sentry.capture(e);
-                        }
+                    (thread, e) -> {
+                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+                        Sentry.capture(e);
                     });
         }
 
@@ -647,7 +639,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Show colons for the first half of each second so the colons blink on when the time updates.
             // always draw the colon during ambient mode for time display
             mShouldDrawColons = false;
-            if (isInAmbientMode()) {
+            if (isInAmbientMode() || mMute) {
                 mShouldDrawColons = true;
             } else {
                 mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
@@ -668,10 +660,16 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             }
             hourTextView.setText(hourString);
 
-
             // Get the minutes.
             String minuteString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
-            // Set the time value combining the hours & minute strings
+
+            // HACK - for some reason when we are setting the value of the string in Ambient Mode it's using the previous value.
+            // so here we are just incrementing the string value +1 to force the minutes in ambient mode to be in sync with what the system clock is
+            // For now this seems to be working fine... will need to analyze with other devices and more testing feedback.
+            if (isInAmbientMode()) {
+                int i = (Integer.parseInt(minuteString) + 1);
+                minuteString = String.valueOf(i);
+            }
             minuteTextView.setText(minuteString);
 
             // Set the am/pm.
@@ -685,7 +683,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // handle color of text depending if ambient mode
             colorTextViewsForAmbientHandling();
-            invalidate(); // should force the time strings to update, important for ambient mode to be in sync
         }
 
         private void drawComplications(Canvas canvas, long currentTimeMillis) {
