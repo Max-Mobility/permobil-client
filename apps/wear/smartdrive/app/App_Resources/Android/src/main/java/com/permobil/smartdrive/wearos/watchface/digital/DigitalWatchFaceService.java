@@ -307,7 +307,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // Lay the view out at the rect width and height
             mRelativeLayout.layout(0, 0, bounds.width(), bounds.height());
             mRelativeLayout.draw(canvas);
-            
+
             drawTimeStrings();
             float batteryLvl = getWatchBatteryLevel();
             watchBatteryCircle.setValue(batteryLvl);
@@ -662,13 +662,12 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
             // Get the minutes.
             String minuteString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
-
             // HACK - for some reason when we are setting the value of the string in Ambient Mode it's using the previous value.
             // so here we are just incrementing the string value +1 to force the minutes in ambient mode to be in sync with what the system clock is
             // For now this seems to be working fine... will need to analyze with other devices and more testing feedback.
             if (isInAmbientMode()) {
                 int i = (Integer.parseInt(minuteString) + 1);
-                minuteString = String.valueOf(i);
+                minuteString = DateUtils.formatTwoDigitNumber(i);
             }
             minuteTextView.setText(minuteString);
 
