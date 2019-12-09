@@ -10,8 +10,12 @@ export namespace PermissionsIOS {
     Authorized = 'authorized',
     Restricted = 'restricted'
   }
+
   namespace NSPLocation {
-    function getStatusFromCLAuthorizationStatus(status: CLAuthorizationStatus, type?: string): Status {
+    function getStatusFromCLAuthorizationStatus(
+      status: CLAuthorizationStatus,
+      type?: string
+    ): Status {
       switch (status) {
         case CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedAlways:
           return Status.Authorized;
@@ -31,8 +35,12 @@ export namespace PermissionsIOS {
     }
     let locationManager: CLLocationManager;
     let locationManagerDelegate: CLLocationManagerDelegateImpl;
-    export type SubCLLocationManagerDelegate = Partial<CLLocationManagerDelegate>;
-    export class CLLocationManagerDelegateImpl extends NSObject implements CLLocationManagerDelegate {
+    export type SubCLLocationManagerDelegate = Partial<
+      CLLocationManagerDelegate
+    >;
+
+    export class CLLocationManagerDelegateImpl extends NSObject
+      implements CLLocationManagerDelegate {
       public static ObjCProtocols = [CLLocationManagerDelegate];
 
       private subDelegates: SubCLLocationManagerDelegate[];
@@ -60,7 +68,10 @@ export namespace PermissionsIOS {
         this.subDelegates = [];
         return this;
       }
-      locationManagerDidChangeAuthorizationStatus(manager, status: CLAuthorizationStatus) {
+      locationManagerDidChangeAuthorizationStatus(
+        manager,
+        status: CLAuthorizationStatus
+      ) {
         this.subDelegates &&
           this.subDelegates.forEach(d => {
             if (d.locationManagerDidChangeAuthorizationStatus) {
@@ -79,11 +90,23 @@ export namespace PermissionsIOS {
             locationManagerDelegate = locationManager.delegate = CLLocationManagerDelegateImpl.new().initDelegate();
           }
           const subD = {
-            locationManagerDidChangeAuthorizationStatus: (manager, status: CLAuthorizationStatus) => {
-              CLog(CLogTypes.info, 'locationManagerDidChangeAuthorizationStatus', status);
-              if (status !== CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined) {
+            locationManagerDidChangeAuthorizationStatus: (
+              manager,
+              status: CLAuthorizationStatus
+            ) => {
+              CLog(
+                CLogTypes.info,
+                'locationManagerDidChangeAuthorizationStatus',
+                status
+              );
+              if (
+                status !==
+                CLAuthorizationStatus.kCLAuthorizationStatusNotDetermined
+              ) {
                 if (locationManager) {
-                  (locationManager.delegate as CLLocationManagerDelegateImpl).removeSubDelegate(subD);
+                  (locationManager.delegate as CLLocationManagerDelegateImpl).removeSubDelegate(
+                    subD
+                  );
                   locationManager.delegate = null;
                   locationManager = null;
                   locationManagerDelegate = null;
@@ -94,7 +117,9 @@ export namespace PermissionsIOS {
               }
             }
           };
-          (locationManager.delegate as CLLocationManagerDelegateImpl).addSubDelegate(subD);
+          (locationManager.delegate as CLLocationManagerDelegateImpl).addSubDelegate(
+            subD
+          );
           try {
             CLog(CLogTypes.info, 'NSPLocation requestAuthorization', type);
             if (type === 'always') {
@@ -105,14 +130,20 @@ export namespace PermissionsIOS {
           } catch (e) {
             reject(e);
             if (locationManager) {
-              (locationManager.delegate as CLLocationManagerDelegateImpl).removeSubDelegate(subD);
+              (locationManager.delegate as CLLocationManagerDelegateImpl).removeSubDelegate(
+                subD
+              );
               locationManager.delegate = null;
               locationManager = null;
             }
           }
         });
       } else {
-        if (CLLocationManager.authorizationStatus() === CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse && type === 'always') {
+        if (
+          CLLocationManager.authorizationStatus() ===
+            CLAuthorizationStatus.kCLAuthorizationStatusAuthorizedWhenInUse &&
+          type === 'always'
+        ) {
           return Promise.resolve(Status.Denied);
         } else {
           return Promise.resolve(status);
@@ -187,8 +218,11 @@ export namespace PermissionsIOS {
         }
       }
     }
-    export type SubCBPeripheralManagerDelegate = Partial<CBPeripheralManagerDelegate>;
-    export class CBPeripheralManagerDelegateImpl extends NSObject implements CBPeripheralManagerDelegate {
+    export type SubCBPeripheralManagerDelegate = Partial<
+      CBPeripheralManagerDelegate
+    >;
+    export class CBPeripheralManagerDelegateImpl extends NSObject
+      implements CBPeripheralManagerDelegate {
       public static ObjCProtocols = [CBPeripheralManagerDelegate];
 
       private subDelegates: SubCBPeripheralManagerDelegate[];
@@ -234,7 +268,9 @@ export namespace PermissionsIOS {
             peripheralManagerDidUpdateState: peripheralManager => {
               if (peripheralManager) {
                 peripheralManager.stopAdvertising();
-                (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).removeSubDelegate(subD);
+                (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).removeSubDelegate(
+                  subD
+                );
                 peripheralManager.delegate = null;
                 peripheralManager = null;
               }
@@ -244,7 +280,9 @@ export namespace PermissionsIOS {
               }, 100);
             }
           };
-          (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).addSubDelegate(subD);
+          (peripheralManager.delegate as CBPeripheralManagerDelegateImpl).addSubDelegate(
+            subD
+          );
           try {
             peripheralManager.startAdvertising(null);
           } catch (e) {
@@ -265,7 +303,9 @@ export namespace PermissionsIOS {
       }
     }
     export function getStatus(type?: string): Status {
-      const status = AVCaptureDevice.authorizationStatusForMediaType(typeFromString(type));
+      const status = AVCaptureDevice.authorizationStatusForMediaType(
+        typeFromString(type)
+      );
       switch (status) {
         case AVAuthorizationStatus.Authorized:
           return Status.Authorized;
@@ -280,7 +320,10 @@ export namespace PermissionsIOS {
 
     export function request(type): Promise<Status> {
       return new Promise((resolve, reject) => {
-        AVCaptureDevice.requestAccessForMediaTypeCompletionHandler(type, granted => resolve(getStatus(type)));
+        AVCaptureDevice.requestAccessForMediaTypeCompletionHandler(
+          type,
+          granted => resolve(getStatus(type))
+        );
       });
     }
   }
@@ -352,17 +395,29 @@ export namespace PermissionsIOS {
           let activityManager = CMMotionActivityManager.new();
           let motionActivityQueue = NSOperationQueue.new();
           CLog(CLogTypes.info, 'NSPMotion request', status);
-          activityManager.queryActivityStartingFromDateToDateToQueueWithHandler(NSDate.distantPast, new Date(), motionActivityQueue, (activities, error) => {
-            if (error) {
-              status = Status.Denied;
-            } else if (activities || !error) {
-              status = Status.Authorized;
+          activityManager.queryActivityStartingFromDateToDateToQueueWithHandler(
+            NSDate.distantPast,
+            new Date(),
+            motionActivityQueue,
+            (activities, error) => {
+              if (error) {
+                status = Status.Denied;
+              } else if (activities || !error) {
+                status = Status.Authorized;
+              }
+              CLog(
+                CLogTypes.info,
+                'NSPMotion got response',
+                activities,
+                error,
+                status,
+                getStatus()
+              );
+              resolve(status);
+              activityManager = null;
+              motionActivityQueue = null;
             }
-            CLog(CLogTypes.info, 'NSPMotion got response', activities, error, status, getStatus());
-            resolve(status);
-            activityManager = null;
-            motionActivityQueue = null;
-          });
+          );
         });
       } else {
         return Promise.resolve(status);
@@ -393,8 +448,12 @@ export namespace PermissionsIOS {
   namespace NSPNotification {
     const NSPDidAskForNotification = 'NSPDidAskForNotification';
     export function getStatus(): Status {
-      const didAskForPermission = NSUserDefaults.standardUserDefaults.boolForKey(NSPDidAskForNotification);
-      const isEnabled = UIApplication.sharedApplication.currentUserNotificationSettings.types !== UIUserNotificationType.None;
+      const didAskForPermission = NSUserDefaults.standardUserDefaults.boolForKey(
+        NSPDidAskForNotification
+      );
+      const isEnabled =
+        UIApplication.sharedApplication.currentUserNotificationSettings
+          .types !== UIUserNotificationType.None;
 
       if (isEnabled) {
         return Status.Authorized;
@@ -412,13 +471,26 @@ export namespace PermissionsIOS {
             resolve(getStatus());
             NSNotificationCenter.defaultCenter.removeObserver(observer);
           };
-          NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(UIApplicationDidBecomeActiveNotification, null, null, observer);
+          NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(
+            UIApplicationDidBecomeActiveNotification,
+            null,
+            null,
+            observer
+          );
 
-          const settings = UIUserNotificationSettings.settingsForTypesCategories(types, null);
-          UIApplication.sharedApplication.registerUserNotificationSettings(settings);
+          const settings = UIUserNotificationSettings.settingsForTypesCategories(
+            types,
+            null
+          );
+          UIApplication.sharedApplication.registerUserNotificationSettings(
+            settings
+          );
           UIApplication.sharedApplication.registerForRemoteNotifications();
 
-          NSUserDefaults.standardUserDefaults.setBoolForKey(true, NSPDidAskForNotification);
+          NSUserDefaults.standardUserDefaults.setBoolForKey(
+            true,
+            NSPDidAskForNotification
+          );
           NSUserDefaults.standardUserDefaults.synchronize();
         });
       } else {
@@ -428,7 +500,9 @@ export namespace PermissionsIOS {
   }
   namespace NSPContacts {
     export function getStatus(): Status {
-      const status = CNContactStore.authorizationStatusForEntityType(CNEntityType.Contacts);
+      const status = CNContactStore.authorizationStatusForEntityType(
+        CNEntityType.Contacts
+      );
       switch (status) {
         case CNAuthorizationStatus.Authorized:
           return Status.Authorized;
@@ -444,7 +518,10 @@ export namespace PermissionsIOS {
     export function request(): Promise<Status> {
       return new Promise(resolve => {
         const contactStore = CNContactStore.new();
-        contactStore.requestAccessForEntityTypeCompletionHandler(CNEntityType.Contacts, () => resolve(getStatus()));
+        contactStore.requestAccessForEntityTypeCompletionHandler(
+          CNEntityType.Contacts,
+          () => resolve(getStatus())
+        );
       });
     }
   }
@@ -466,7 +543,10 @@ export namespace PermissionsIOS {
     export function request(): Promise<Status> {
       return new Promise(resolve => {
         const contactStore = CNContactStore.new();
-        contactStore.requestAccessForEntityTypeCompletionHandler(CNEntityType.Contacts, () => resolve(getStatus()));
+        contactStore.requestAccessForEntityTypeCompletionHandler(
+          CNEntityType.Contacts,
+          () => resolve(getStatus())
+        );
       });
     }
   }
@@ -479,7 +559,9 @@ export namespace PermissionsIOS {
       }
     }
     export function getStatus(type?: string): Status {
-      const status = EKEventStore.authorizationStatusForEntityType(typeFromString(type));
+      const status = EKEventStore.authorizationStatusForEntityType(
+        typeFromString(type)
+      );
       switch (status) {
         case EKAuthorizationStatus.Authorized:
           return Status.Authorized;
@@ -495,7 +577,9 @@ export namespace PermissionsIOS {
     export function request(type?: string): Promise<Status> {
       return new Promise(resolve => {
         const aStore = EKEventStore.new();
-        aStore.requestAccessToEntityTypeCompletion(typeFromString(type), () => resolve(getStatus(type)));
+        aStore.requestAccessToEntityTypeCompletion(typeFromString(type), () =>
+          resolve(getStatus(type))
+        );
       });
     }
   }
@@ -524,8 +608,15 @@ export namespace PermissionsIOS {
         resolve(true);
         center.removeObserver(observer);
       };
-      center.addObserverForNameObjectQueueUsingBlock(UIApplicationDidBecomeActiveNotification, null, null, observer);
-      UIApplication.sharedApplication.openURL(NSURL.URLWithString(UIApplicationOpenSettingsURLString));
+      center.addObserverForNameObjectQueueUsingBlock(
+        UIApplicationDidBecomeActiveNotification,
+        null,
+        null,
+        observer
+      );
+      UIApplication.sharedApplication.openURL(
+        NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+      );
     });
   }
   export function canOpenSettings() {
@@ -632,7 +723,9 @@ const DEFAULTS = {
   notification: ['alert', 'badge', 'sound']
 };
 
-const permissionTypes = Object.keys(PermissionsIOS.NSType).map(k => PermissionsIOS.NSType[k]) as string[];
+const permissionTypes = Object.keys(PermissionsIOS.NSType).map(
+  k => PermissionsIOS.NSType[k]
+) as string[];
 
 export function canOpenSettings() {
   return PermissionsIOS.canOpenSettings();
@@ -652,7 +745,10 @@ export function check(permission: string, options?: CheckOptions) {
     // const error = new Error(`ReactNativePermissions: ${permission} is not a valid permission type on iOS`);
 
     // return Promise.reject(error);
-    CLog(CLogTypes.warning, `nativescript-perms: ${permission} is not a valid permission type on iOS`);
+    CLog(
+      CLogTypes.warning,
+      `nativescript-perms: ${permission} is not a valid permission type on iOS`
+    );
     // const error = new Error(`nativescript-perms: ${permission} is not a valid permission type on Android`);
 
     return Promise.resolve('authorized');
@@ -666,20 +762,28 @@ export function check(permission: string, options?: CheckOptions) {
     type = options.type;
   }
 
-  return PermissionsIOS.getPermissionStatus(permission, type || DEFAULTS[permission]);
+  return PermissionsIOS.getPermissionStatus(
+    permission,
+    type || DEFAULTS[permission]
+  );
 }
 
 export function request(permission: string, options?: RequestOptions) {
   CLog(CLogTypes.info, `nativescript-perms: request ${permission}`);
   if (permissionTypes.indexOf(permission) === -1) {
     // const error = new Error(`ReactNativePermissions: ${permission} is not a valid permission type on iOS`);
-    CLog(CLogTypes.warning, `nativescript-perms: ${permission} is not a valid permission type on iOS`);
+    CLog(
+      CLogTypes.warning,
+      `nativescript-perms: ${permission} is not a valid permission type on iOS`
+    );
 
     return Promise.resolve('authorized');
   }
 
   if (permission === 'backgroundRefresh') {
-    const error = new Error('nativescript-perms: You cannot request backgroundRefresh');
+    const error = new Error(
+      'nativescript-perms: You cannot request backgroundRefresh'
+    );
 
     return Promise.reject(error);
   }
@@ -692,11 +796,16 @@ export function request(permission: string, options?: RequestOptions) {
     type = options.type;
   }
 
-  return PermissionsIOS.requestPermission(permission, type || DEFAULTS[permission]);
+  return PermissionsIOS.requestPermission(
+    permission,
+    type || DEFAULTS[permission]
+  );
 }
 
 export function checkMultiple(permissions: string[]) {
-  return Promise.all(permissions.map(permission => this.check(permission))).then(result =>
+  return Promise.all(
+    permissions.map(permission => this.check(permission))
+  ).then(result =>
     result.reduce((acc, value, index) => {
       const name = permissions[index];
       acc[name] = value;
