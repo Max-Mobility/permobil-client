@@ -1,16 +1,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "sourceMap": true,
+    "baseUrl": ".",
     "declaration": false,
-    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "target": "es5",
-    "typeRoots": ["node_modules/@types"],
     "lib": ["es2017", "dom", "webworker"],
-    "baseUrl": "."
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["platforms", "hooks", "node_modules", "tmp"]
 }
