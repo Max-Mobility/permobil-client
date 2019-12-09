@@ -132,7 +132,7 @@
 
                     <TextView
                         android:id="@+id/colonTextView"
-                        android:layout_width="10dp"
+                        android:layout_width="6dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:text="@string/colon"
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:textAlignment="textStart"
+                        android:textAlignment="viewStart"
                         android:textSize="18sp" />
                 </LinearLayout>
 
