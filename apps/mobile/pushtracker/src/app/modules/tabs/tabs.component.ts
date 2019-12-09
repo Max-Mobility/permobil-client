@@ -235,9 +235,9 @@ export class TabsComponent {
   private async askForPermissions() {
     const hasPermission = await this._bluetoothService.hasPermissions();
     if (!hasPermission && isAndroid) {
-      // only show our permissions alert on android - on iOS we
-      // already show the permissions request at this point, and the
-      // text for it comes from Info.plist
+      // only show our permissions alert on android - on iOS the
+      // system has already shown the permissions request at this
+      // point, and the text for it comes from Info.plist
       await alert({
         title: this._translateService.instant('permissions-request.title'),
         message: this._translateService.instant(

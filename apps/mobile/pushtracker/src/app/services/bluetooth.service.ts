@@ -6,7 +6,7 @@ import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
-import { check as checkPermission, request as requestPermission, setDebug as setPermissionsDebug } from 'nativescript-perms';
+import { check as checkPermission, request as requestPermission } from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -390,7 +390,6 @@ export class BluetoothService extends Observable {
   }
 
   public async hasPermissions() {
-    setPermissionsDebug(true);
     let _has = false;
     if (isAndroid) {
       _has = await this._bluetooth.hasCoarseLocationPermission();
@@ -410,7 +409,6 @@ export class BluetoothService extends Observable {
   }
 
   public async requestPermissions() {
-    setPermissionsDebug(true);
     const _hasPerms = await this.hasPermissions();
     this._logService.logBreadCrumb(
       BluetoothService.name,
