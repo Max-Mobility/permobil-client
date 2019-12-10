@@ -169,7 +169,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         boolean mMute;
         boolean mShouldDrawColons;
 
-        float mXOffset;
         float mYOffset;
         float mLineHeight;
 
@@ -178,12 +177,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
          * When true, we disable anti-aliasing in ambient mode.
          */
         private boolean mLowBitAmbient;
-
-        /*
-         * Whether the display supports burn in protection in ambient mode.
-         * When true, remove the background in ambient mode.
-         */
-        private boolean mBurnInProtection;
 
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
@@ -226,9 +219,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                                 invalidate();
                                 if (shouldTimerBeRunning()) {
                                     long timeMs = System.currentTimeMillis();
-                                    long delayMs =
-                                            mInteractiveUpdateRateMs
-                                                    - (timeMs % mInteractiveUpdateRateMs);
+                                    long delayMs = mInteractiveUpdateRateMs - (timeMs % mInteractiveUpdateRateMs);
                                     mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
                                 }
                                 break;
@@ -432,7 +423,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onPropertiesChanged(Bundle properties) {
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-            mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+            /*
+             * Whether the display supports burn in protection in ambient mode.
+             * When true, remove the background in ambient mode.
+             */
+            boolean mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
 
             // Updates complications to properly render in ambient mode based on the screen's capabilities.
             ComplicationDrawable complicationDrawable;
@@ -699,8 +694,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private float getWatchBatteryLevel() {
             IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             Intent batteryStatus = getApplicationContext().registerReceiver(null, iFilter);
-            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : 0;
+            int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : 0;
 
             return level * 100 / (float) scale;
         }
