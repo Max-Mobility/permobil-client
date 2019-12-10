@@ -133,11 +133,13 @@ public class DigitalWatchFaceConfigActivity extends Activity implements View.OnC
             if (complicationProviderInfo != null) {
                 Log.d(TAG, "has provider info..");
                 topComplication.setImageIcon(complicationProviderInfo.providerIcon);
-                topComplicationBackground.setVisibility(View.INVISIBLE);
+                topComplicationBackground.setImageIcon(null); // removes the old image icon set if the user previously had a provider selected
+                topComplicationBackground.setImageDrawable(addedComplicationDrawable);
+                topComplicationBackground.setVisibility(View.VISIBLE); // need to ensure it's VISIBLE here if it's been flagged INVISIBLE prior
             } else {
                 topComplication.setImageIcon(null); // removes the old image icon set if the user previously had a provider selected
                 topComplication.setImageDrawable(defaultAddComplicationDrawable);
-                topComplicationBackground.setVisibility(View.VISIBLE);
+                topComplicationBackground.setVisibility(View.INVISIBLE);
             }
         }
     }
