@@ -2,8 +2,6 @@
   (loaded)="onHomeTabLoaded($event)"
   (unloaded)="onHomeTabUnloaded($event)"
   (refresh)="refreshPlots($event)"
-  [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
-  [color]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#0067a6' : '#89d4e3'"
 >
   <ScrollView class="home-tab-layout" height="100%">
     <StackLayout horizontalAlignment="center" row="1" col="0">
@@ -110,7 +108,6 @@
           <RadCartesianChartGrid tkCartesianGrid horizontalLinesVisible="true" verticalLinesVisible="false" horizontalStripLinesVisible="false" verticalStripLinesVisible="false"> </RadCartesianChartGrid>
           <CategoricalAxis
             tkCartesianHorizontalAxis
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             lineHidden="true"
             tickHidden="false"
             majorTickInterval="1"
@@ -125,7 +122,6 @@
           <LinearAxis
             tkCartesianVerticalAxis
             id="vAxis"
-            [labelTextColor]="CURRENT_THEME == APP_THEMES.DARK ? 'White' : 'Black'"
             horizontalLocation="Right"
             labelMargin="10"
             lineHidden="true"
