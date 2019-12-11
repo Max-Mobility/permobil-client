@@ -6,13 +6,12 @@
   @extend .MAX_TEXTBOX_BASE;
 
   .max-textbox-label {
-    color: #696c71;
+    @include colorize($background-color: background);
   }
 
   GridLayout {
       border-color: #e7e7ea;
     > .max-textbox-value {
-      color: #3c4043;
     }
   }
 }
@@ -23,14 +22,14 @@
 
   .max-textbox-label {
     color: #1c72e6;
-
+    @include colorize($background-color: background);
   }
 
   GridLayout {
     border-color: #1c72e6;
 
     > .max-textbox-value {
-      color: #3c4043;
+
 
     }
   }

@@ -3,30 +3,24 @@
 
 .login-layout {
   @extend .LOGIN_LAYOUT_BASE;
-  background-color: $white;
 
   .login-form {
     @extend .LOGIN_FORM_BASE;
-    background-color: $white;
-    color: $black;
-  }
+   }
 
   .submit-btn {
     @extend .SUBMIT_BTN_BASE;
-
     background-color: #1c72e6;
     color: $white;
   }
 
   .forgot-pw-btn {
     @extend .FORGOT_PW_BTN_BASE;
-    color: #3d4144;
     text-transform: capitalize;
   }
 
   .register-btn {
     @extend .REGISTER_BTN_BASE;
-    color: #3d4144;
-    text-transform: capitalize;
+     text-transform: capitalize;
   }
 }
