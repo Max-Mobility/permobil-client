@@ -114,7 +114,7 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
     ) {
       // TODO: device here might be peripheral or central - need to
       //       figure out which one it is!
-      this._owner.get().sendEvent(Bluetooth.device_acl_connected_event, {
+      owner.sendEvent(Bluetooth.device_acl_connected_event, {
         device: getDevice(device)
       });
     } else if (
@@ -128,7 +128,7 @@ export class TNS_BroadcastReceiver extends android.content.BroadcastReceiver {
       action === android.bluetooth.BluetoothDevice.ACTION_FOUND
     ) {
       CLog(CLogTypes.info, `Bluetooth Device Found: ${device}`);
-      this._owner.get().sendEvent(Bluetooth.device_found_event, {
+      owner.sendEvent(Bluetooth.device_found_event, {
         device: getDevice(device)
       });
     }
