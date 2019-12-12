@@ -25,6 +25,7 @@ import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../.
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -1092,8 +1093,15 @@ export class MainViewModel extends Observable {
       this._enableBodySensor();
     });
 
-    application.on(application.suspendEvent, () => {
+    application.on(application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
+
+      if (updatesViewModel) {
+        sentryBreadCrumb('Stopping OTA updates');
+        await updatesViewModel.stopUpdates(L('updates.canceled'), true);
+        sentryBreadCrumb('OTA updates successfully stopped');
+      }
+
       this._fullStop();
       this._updateComplications();
     });

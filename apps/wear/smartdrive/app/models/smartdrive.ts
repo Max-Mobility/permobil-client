@@ -49,6 +49,8 @@ export class SmartDrive extends DeviceBase {
     'smartdrive_ota_completed_event';
   public static smartdrive_ota_failed_event = 'smartdrive_ota_failed_event';
 
+  public static smartdrive_ota_stopped_event = 'smartdrive_ota_stopped_event';
+
   // NON STATIC:
   public events: ISmartDriveEvents;
 
@@ -572,6 +574,7 @@ export class SmartDrive extends DeviceBase {
           };
 
           const finish = () => {
+            this.sendEvent(SmartDrive.smartdrive_ota_stopped_event);
             if (success) {
               resolve(reason);
             } else if (doRetry) {
