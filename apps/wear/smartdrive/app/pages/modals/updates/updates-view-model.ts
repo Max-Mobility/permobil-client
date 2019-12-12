@@ -80,7 +80,6 @@ export class UpdatesViewModel extends Observable {
   private timeReceiverCallback = (_1, _2) => {
     try {
       this.updateTimeDisplay();
-      sentryBreadCrumb('timeReceiverCallback');
     } catch (error) {
       Sentry.captureException(error);
     }
