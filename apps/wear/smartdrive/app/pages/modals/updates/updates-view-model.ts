@@ -662,7 +662,7 @@ export class UpdatesViewModel extends Observable {
       if (otaStatus === 'updates.canceled') {
         this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
           label: L('ota.action.close'),
-          func: this.closeModal.bind(this),
+          func: this._debouncedCloseModal.bind(this),
           action: 'ota.action.close',
           class: 'action-close'
         });
@@ -726,7 +726,7 @@ export class UpdatesViewModel extends Observable {
     sentryBreadCrumb(`${err}: ${msg} - ${alertMsg}`);
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
-      func: this.closeModal.bind(this),
+      func: this._debouncedCloseModal.bind(this),
       action: 'ota.action.close',
       class: 'action-close'
     });
@@ -756,7 +756,7 @@ export class UpdatesViewModel extends Observable {
     }
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
-      func: this.closeModal.bind(this),
+      func: this._debouncedCloseModal.bind(this),
       action: 'ota.action.close',
       class: 'action-close'
     });
