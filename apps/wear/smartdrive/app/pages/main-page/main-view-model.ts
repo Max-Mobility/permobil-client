@@ -1202,7 +1202,6 @@ export class MainViewModel extends Observable {
     const timeReceiverCallback = (_1, _2) => {
       try {
         this._updateTimeDisplay();
-        sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
           this._onNewDay();
