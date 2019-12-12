@@ -61,6 +61,7 @@ export class UpdatesViewModel extends Observable {
 
   // Debounced OTA action
   private _debouncedOtaAction: any = null;
+  private _debouncedCloseModal: any = null;
 
   /**
    * SmartDrive Data / state management
@@ -111,6 +112,12 @@ export class UpdatesViewModel extends Observable {
 
   async init() {
     sentryBreadCrumb('Updates-View-Model init.');
+
+    // debounced function to keep people from pressing it too frequently
+    this._debouncedCloseModal = debounce(this.closeModal, 500, {
+      leading: true,
+      trailing: false
+    });
 
     sentryBreadCrumb('Initializing WakeLock...');
     console.time('Init_SmartDriveWakeLock');
@@ -434,7 +441,7 @@ export class UpdatesViewModel extends Observable {
         ...actions,
         {
           label: L('ota.action.back'),
-          func: this.closeModal.bind(this),
+          func: this._debouncedCloseModal.bind(this),
           action: 'ota.action.close',
           class: 'action-close'
         }
@@ -455,7 +462,7 @@ export class UpdatesViewModel extends Observable {
           ...actions,
           {
             label: L('ota.action.close'),
-            func: this.closeModal.bind(this),
+            func: this._debouncedCloseModal.bind(this),
             action: 'ota.action.close',
             class: 'action-close'
           }
