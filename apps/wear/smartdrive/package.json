@@ -29,7 +29,7 @@
     "nativescript-ng-ripple": "~3.0.0-beta.1",
     "nativescript-pager": "file:../../../forked-plugins/nativescript-pager-11.0.11.tgz",
     "nativescript-permissions": "~1.3.8",
-    "nativescript-sentry": "~1.9.1",
+    "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-1.9.1.tgz",
     "nativescript-sqlite": "~2.3.3",
     "nativescript-sqlite-commercial": "github:autochair/nativescript-sqlite-commercial",
     "nativescript-sqlite-encrypted": "github:autochair/nativescript-sqlite-encrypted",
