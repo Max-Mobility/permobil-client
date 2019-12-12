@@ -3,7 +3,7 @@ import { UpdatesViewModel } from './updates-view-model';
 
 let closeCallback;
 
-const updatesViewModel: UpdatesViewModel = new UpdatesViewModel();
+export const updatesViewModel: UpdatesViewModel = new UpdatesViewModel();
 
 export function onShownModally(args: ShownModallyData) {
   const page = args.object as Page;
