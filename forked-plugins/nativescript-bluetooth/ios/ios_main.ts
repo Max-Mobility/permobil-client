@@ -1,20 +1,6 @@
 /// <reference path="../node_modules/tns-platform-declarations/ios.d.ts" />
 
-declare var NSMakeRange;
-
-import {
-  BluetoothCommon,
-  CLog,
-  CLogTypes,
-  ConnectOptions,
-  Device,
-  MakeCharacteristicOptions,
-  MakeServiceOptions,
-  StartAdvertisingOptions,
-  StartNotifyingOptions,
-  StartScanningOptions,
-  StopNotifyingOptions
-} from '../common';
+import { BluetoothCommon, CLog, CLogTypes, ConnectOptions, Device, MakeCharacteristicOptions, MakeServiceOptions, StartAdvertisingOptions, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions } from '../common';
 import { CBCentralManagerDelegateImpl } from './CBCentralManagerDelegateImpl';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { CBPeripheralManagerDelegateImpl } from './CBPeripheralManagerDelegateImpl';
@@ -29,7 +15,7 @@ export function getDevice(dev: CBCentral | CBPeripheral): Device {
   if (uuid) {
     uuids.push(uuid);
   }
-  const name = ((dev as any).name) || 'PushTracker'; // TODO: fix
+  const name = (dev as any).name || 'PushTracker'; // TODO: fix
   return {
     device: dev,
     UUIDs: uuids,
@@ -324,8 +310,8 @@ export class Bluetooth extends BluetoothCommon {
     const props =
       (opts && opts.properties) ||
       CBCharacteristicProperties.PropertyRead |
-      CBCharacteristicProperties.PropertyWrite |
-      CBCharacteristicProperties.PropertyNotify;
+        CBCharacteristicProperties.PropertyWrite |
+        CBCharacteristicProperties.PropertyNotify;
 
     const permissions =
       (opts && opts.permissions) ||
@@ -625,9 +611,7 @@ export class Bluetooth extends BluetoothCommon {
         } else {
           CLog(
             CLogTypes.info,
-            `Bluetooth.connect ---- Connecting to peripheral with UUID: ${
-            args.UUID
-            }`
+            `Bluetooth.connect ---- Connecting to peripheral with UUID: ${args.UUID}`
           );
           this._connectCallbacks[args.UUID] = args.onConnected;
           this._disconnectCallbacks[args.UUID] = args.onDisconnected;
@@ -658,9 +642,7 @@ export class Bluetooth extends BluetoothCommon {
         } else {
           CLog(
             CLogTypes.info,
-            `Bluetooth.disconnect ---- Disconnecting peripheral with UUID ${
-            arg.UUID
-            }`
+            `Bluetooth.disconnect ---- Disconnecting peripheral with UUID ${arg.UUID}`
           );
           // no need to send an error when already disconnected, but it's wise to check it
           if (peripheral.state !== CBPeripheralState.Disconnected) {
@@ -694,9 +676,7 @@ export class Bluetooth extends BluetoothCommon {
         } else {
           CLog(
             CLogTypes.info,
-            `Bluetooth.isConnected ---- checking connection with peripheral UUID: ${
-            arg.UUID
-            }`
+            `Bluetooth.isConnected ---- checking connection with peripheral UUID: ${arg.UUID}`
           );
           resolve(peripheral.state === CBPeripheralState.Connected);
         }
@@ -709,20 +689,18 @@ export class Bluetooth extends BluetoothCommon {
 
   findPeripheralsWithIdentifiers(UUIDs): CBPeripheral[] {
     const peripherals = [];
-    const periArray = this._centralManager.retrievePeripheralsWithIdentifiers(UUIDs);
+    const periArray = this._centralManager.retrievePeripheralsWithIdentifiers(
+      UUIDs
+    );
     CLog(
       CLogTypes.info,
-      `Bluetooth.findPeripheralsWithIdentifiers ---- periArray: ${
-periArray
-}, ${periArray.count}`
+      `Bluetooth.findPeripheralsWithIdentifiers ---- periArray: ${periArray}, ${periArray.count}`
     );
     for (let i = 0; i < periArray.count; i++) {
       const peripheral = periArray.objectAtIndex(i);
       CLog(
         CLogTypes.info,
-        `Bluetooth.findPeripheralsWithIdentifiers ---- peripheral UUID: ${
-peripheral.identifier.UUIDString
-}`
+        `Bluetooth.findPeripheralsWithIdentifiers ---- peripheral UUID: ${peripheral.identifier.UUIDString}`
       );
       peripherals.push(peripheral);
     }
@@ -731,20 +709,18 @@ peripheral.identifier.UUIDString
 
   findConnectedPeripheralsWithServices(services): CBPeripheral[] {
     const peripherals = [];
-    const periArray = this._centralManager.retrieveConnectedPeripheralsWithServices(services);
+    const periArray = this._centralManager.retrieveConnectedPeripheralsWithServices(
+      services
+    );
     CLog(
       CLogTypes.info,
-      `Bluetooth.findConnectedPeripheralsWithServices ---- periArray: ${
-periArray
-}, ${periArray.count}`
+      `Bluetooth.findConnectedPeripheralsWithServices ---- periArray: ${periArray}, ${periArray.count}`
     );
     for (let i = 0; i < periArray.count; i++) {
       const peripheral = periArray.objectAtIndex(i);
       CLog(
         CLogTypes.info,
-        `Bluetooth.findConnectedPeripheralsWithServices ---- peripheral UUID: ${
-peripheral.identifier.UUIDString
-}`
+        `Bluetooth.findConnectedPeripheralsWithServices ---- peripheral UUID: ${peripheral.identifier.UUIDString}`
       );
       peripherals.push(peripheral);
     }
@@ -828,11 +804,11 @@ peripheral.identifier.UUIDString
           .delegate as CBPeripheralDelegateImpl)._onWriteReject = reject;
         (wrapper.peripheral
           .delegate as CBPeripheralDelegateImpl)._onWriteTimeout = setTimeout(
-            () => {
-              reject('Write timed out!');
-            },
-            arg.timeout || 10000
-          );
+          () => {
+            reject('Write timed out!');
+          },
+          arg.timeout || 10000
+        );
 
         wrapper.peripheral.writeValueForCharacteristicType(
           valueEncoded,
@@ -871,7 +847,7 @@ peripheral.identifier.UUIDString
         CLog(
           CLogTypes.info,
           'Bluetooth.writeWithoutResponse ---- Attempting to write (encoded): ' +
-          valueEncoded
+            valueEncoded
         );
 
         wrapper.peripheral.writeValueForCharacteristicType(
@@ -987,9 +963,7 @@ peripheral.identifier.UUIDString
     const state = this._centralManager.state;
     CLog(
       CLogTypes.info,
-      `Bluetooth._isEnabled ---- this._centralManager.state: ${
-      this._centralManager.state
-      }`
+      `Bluetooth._isEnabled ---- this._centralManager.state: ${this._centralManager.state}`
     );
     return state === CBManagerState.PoweredOn;
   }
@@ -1009,9 +983,7 @@ peripheral.identifier.UUIDString
       if (UUID.UUIDString === service.UUID.UUIDString) {
         CLog(
           CLogTypes.info,
-          `Bluetooth._findService ---- found service with UUID:  ${
-          service.UUID
-          }`
+          `Bluetooth._findService ---- found service with UUID:  ${service.UUID}`
         );
         return service;
       }
@@ -1023,9 +995,7 @@ peripheral.identifier.UUIDString
   private _findCharacteristic(UUID, service, property) {
     CLog(
       CLogTypes.info,
-      `Bluetooth._findCharacteristic ---- UUID: ${UUID}, service: ${service}, characteristics: ${
-      service.characteristics
-      }`
+      `Bluetooth._findCharacteristic ---- UUID: ${UUID}, service: ${service}, characteristics: ${service.characteristics}`
     );
     // CLog("--- _findCharacteristic characteristics.count: " + service.characteristics.count);
     for (let i = 0; i < service.characteristics.count; i++) {
@@ -1038,9 +1008,7 @@ peripheral.identifier.UUIDString
           if (property === property) {
             CLog(
               CLogTypes.info,
-              `Bluetooth._findCharacteristic ---- characteristic.found: ${
-              characteristic.UUID
-              }`
+              `Bluetooth._findCharacteristic ---- characteristic.found: ${characteristic.UUID}`
             );
             return characteristic;
           }
@@ -1098,9 +1066,7 @@ peripheral.identifier.UUIDString
     const service = this._findService(serviceUUID, peripheral);
     if (!service) {
       reject(
-        `Could not find service with UUID ${
-        arg.serviceUUID
-        } on peripheral with UUID ${arg.peripheralUUID}`
+        `Could not find service with UUID ${arg.serviceUUID} on peripheral with UUID ${arg.peripheralUUID}`
       );
       return null;
     }
@@ -1137,11 +1103,7 @@ peripheral.identifier.UUIDString
 
     if (!characteristic) {
       reject(
-        `Could not find characteristic with UUID ${
-        arg.characteristicUUID
-        } on service with UUID ${arg.serviceUUID} on peripheral with UUID ${
-        arg.peripheralUUID
-        }`
+        `Could not find characteristic with UUID ${arg.characteristicUUID} on service with UUID ${arg.serviceUUID} on peripheral with UUID ${arg.peripheralUUID}`
       );
       return null;
     }

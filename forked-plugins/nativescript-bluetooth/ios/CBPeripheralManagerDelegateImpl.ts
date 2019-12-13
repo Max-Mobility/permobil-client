@@ -1,3 +1,4 @@
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes, ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './ios_main';
 
@@ -29,9 +30,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${
-        this._owner
-      }`
+      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
     );
     return this;
   }
@@ -43,9 +42,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${
-        this._owner
-      }`
+      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
     );
     return this;
   }
@@ -67,9 +64,42 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     const state = owner._getManagerStateString(mgr.state);
     CLog(CLogTypes.info, `current peripheral manager state = ${state}`);
 
+    let authStatus;
+    if (device.sdkVersion < '13.0') {
+      const status = CBPeripheralManager.authorizationStatus();
+      switch (status) {
+        case CBPeripheralManagerAuthorizationStatus.Authorized:
+          authStatus = 'authorized';
+        case CBPeripheralManagerAuthorizationStatus.Denied:
+          authStatus = 'denied';
+        case CBPeripheralManagerAuthorizationStatus.Restricted:
+          authStatus = 'restricted';
+        default:
+          authStatus = 'undetermined';
+      }
+    }
+    // else if (device.sdkVersion >= '13.0') {
+    //   const centralManager = CBCentralManager.alloc().initWithDelegateQueue(
+    //     null,
+    //     null
+    //   );
+    //   const t = centralManager.authorization;
+    //   switch (t) {
+    //     case CBManagerAuthorization.AllowedAlways:
+    //       authStatus = 'authorized';
+    //     case CBManagerAuthorization.Denied:
+    //       authStatus = 'denied';
+    //     case CBManagerAuthorization.Restricted:
+    //       authStatus = 'restricted';
+    //     default:
+    //       authStatus = 'undetermined';
+    //   }
+    // }
+
     owner.sendEvent(Bluetooth.peripheralmanager_update_state_event, {
       manager: mgr,
-      state
+      state,
+      authStatus
     });
   }
 
