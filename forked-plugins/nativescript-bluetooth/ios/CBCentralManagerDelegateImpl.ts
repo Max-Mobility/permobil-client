@@ -1,3 +1,4 @@
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes } from '../common';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { Bluetooth } from './ios_main';
@@ -34,9 +35,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBCentralManagerDelegateImpl.initWithOwner ---- this._owner: ${
-        this._owner
-      }`
+      `CBCentralManagerDelegateImpl.initWithOwner ---- this._owner: ${this._owner}`
     );
     // this._callback = callback;
     return this;
@@ -68,8 +67,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     }
 
     // find the peri in the array and attach the delegate to that
-    const peri = owner
-      .findPeripheral(peripheral.identifier.UUIDString);
+    const peri = owner.findPeripheral(peripheral.identifier.UUIDString);
     CLog(
       CLogTypes.info,
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: cached perio: ${peri}`
@@ -202,9 +200,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
   ) {
     CLog(
       CLogTypes.info,
-      `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${
-        peripheral.name
-      } @ ${RSSI}`
+      `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${peripheral.name} @ ${RSSI}`
     );
 
     const owner = this._owner.get();
@@ -287,7 +283,24 @@ export class CBCentralManagerDelegateImpl extends NSObject
     if (!owner) {
       return;
     }
-    owner.sendEvent('centralmanager_updated_state_event', { manager: central });
+
+    let authStatus;
+    // check the auth state here - not sure if this event emits when the auth status changes on the centralmanager or if this is just STATE
+    if (device.sdkVersion < '13.0') {
+      const status = (central as any).authorizationStatus(); // this is pre iOS 13 so the declaration doesn't include it anymore
+      const value = this._checkCentralAuthStatus(status);
+      authStatus = value;
+    } else if (device.sdkVersion >= '13.0') {
+      const status = central.authorization;
+      const value = this._checkCentralAuthStatus(status);
+      authStatus = value;
+    }
+
+    owner.sendEvent('centralmanager_updated_state_event', {
+      manager: central,
+      state: central.state,
+      authStatus
+    });
   }
 
   /**
@@ -340,5 +353,18 @@ export class CBCentralManagerDelegateImpl extends NSObject
       manager: central,
       dict
     });
+  }
+
+  private _checkCentralAuthStatus(value) {
+    switch (value) {
+      case CBManagerAuthorization.AllowedAlways:
+        return 'authorized';
+      case CBManagerAuthorization.Denied:
+        return 'denied';
+      case CBManagerAuthorization.Restricted:
+        return 'restricted';
+      default:
+        return 'undetermined';
+    }
   }
 }
