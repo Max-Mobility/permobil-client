@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, Optional } from '@angular/core';
+import { Component, NgZone, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { ModalDialogParams } from '@nativescript/angular';
@@ -22,7 +22,7 @@ import { BluetoothService, LoggingCategory, LoggingService } from '../../service
   moduleId: module.id,
   templateUrl: './device-setup.component.html'
 })
-export class DeviceSetupComponent implements OnInit {
+export class DeviceSetupComponent {
   APP_THEMES = APP_THEMES;
   CONFIGURATIONS = CONFIGURATIONS;
   CURRENT_THEME: string;
@@ -66,15 +66,13 @@ export class DeviceSetupComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
-  }
 
-  async ngOnInit() {
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
     if (
       !this.slide &&
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       // OG PushTracker configuration
       this.slide = this._translateService.instant(
@@ -123,14 +121,14 @@ export class DeviceSetupComponent implements OnInit {
       !this.slide &&
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
     ) {
       // PushTracker E2/ WearOS configuration
       this.slide = this._translateService.instant(
         'device-setup.pushtracker-e2-with-smartdrive'
       );
       try {
-        await WearOsComms.initPhone();
+        WearOsComms.initPhone();
       } catch (err) {
         console.error('error initializing phone:', err);
       }
@@ -192,8 +190,8 @@ export class DeviceSetupComponent implements OnInit {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
+          'permissions-reasons.coarse-location'
+        )
       };
       neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
@@ -205,7 +203,7 @@ export class DeviceSetupComponent implements OnInit {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => { });
+          await requestPermissions(neededPermissions, () => {});
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
