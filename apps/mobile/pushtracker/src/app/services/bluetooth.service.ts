@@ -474,7 +474,7 @@ export class BluetoothService extends Observable {
     this._logService.logBreadCrumb(
       BluetoothService.name,
       'Failed to advertise',
-      args
+      args ? args.data : null // avoid passing null into the NSDictionary for Sentry
     );
     // nothing
   }
