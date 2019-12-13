@@ -1,17 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { BottomNavigation, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
+import { BottomNavigation, isAndroid, isIOS, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import * as LS from 'nativescript-localstorage';
-import { action, alert } from '@nativescript/core/ui/dialogs';
+import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import throttle from 'lodash/throttle';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
+import * as LS from 'nativescript-localstorage';
+import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
 import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
@@ -128,17 +126,30 @@ export class TabsComponent {
     if (
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       this._logService.logBreadCrumb(
         TabsComponent.name,
         'Asking for Bluetooth Permission'
       );
+
       return this.askForPermissions()
-        .then(() => {
+        .then(result => {
+          if (result === false) {
+            // we dont have permission to use bluetooth so we shouldn't call `advertise` until we do
+            this._logService.logBreadCrumb(
+              TabsComponent.name,
+              'Bluetooth permission check failed, so we cannot advertise.'
+            );
+
+            // TODO: do we want to tell the user that we cannot do anything here since we don't have access???
+            // William?
+            return;
+          }
+
           this.registerBluetoothEvents();
           this.registerPushTrackerEvents();
-          if (!this._bluetoothService.advertising) {
+          if (!this._bluetoothService.advertising && result === true) {
             this._logService.logBreadCrumb(
               TabsComponent.name,
               'Starting Bluetooth'
@@ -234,7 +245,7 @@ export class TabsComponent {
 
   private async askForPermissions() {
     const hasPermission = await this._bluetoothService.hasPermissions();
-    if (!hasPermission && isAndroid) {
+    if (isAndroid && !hasPermission) {
       // only show our permissions alert on android - on iOS the
       // system has already shown the permissions request at this
       // point, and the text for it comes from Info.plist
@@ -245,9 +256,32 @@ export class TabsComponent {
         ),
         okButtonText: this._translateService.instant('general.ok')
       });
+      await this._bluetoothService.requestPermissions();
+      return true;
+    } else if (isIOS) {
+      if (hasPermission) {
+        // we have bluetooth access on this device granted by the user previously
+        return true;
+      } else {
+        // we don't have permission to access bluetooth
+        // so if the user hasn't authorized Bluetooth permission to PT.M we need to let them know to enable it in Settings and try again.
+        const confirmResult = await confirm({
+          message:
+            'PushTracker does not have access to use Bluetooth, do you want to enable Bluetooth in the Settings on your device?',
+          cancelable: true,
+          okButtonText: this._translateService.instant('dialogs.yes'),
+          cancelButtonText: this._translateService.instant('dialogs.no')
+        });
+
+        if (confirmResult === true) {
+          // open Settings on iOS for this device
+          UIApplication.sharedApplication.openURL(
+            NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+          );
+        }
+        return false;
+      }
     }
-    await this._bluetoothService.requestPermissions();
-    return true;
   }
 
   /**
@@ -328,7 +362,8 @@ export class TabsComponent {
 
   onPushTrackerVersionEvent(args) {
     const pt = args.object as PushTracker;
-    const smartDriveUpToDate = !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
+    const smartDriveUpToDate =
+      !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
     const ptUpToDate = pt.isUpToDate('2.0');
     // Alert user if they are connected to a pushtracker which is out
     // of date -
@@ -404,10 +439,16 @@ export class TabsComponent {
             'DailyInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save DailyInfo from PushTracker in Kinvey'
+          );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save DailyInfo from PushTracker in Kinvey'
+        );
       });
 
     // Request distance information from PushTracker
@@ -451,7 +492,10 @@ export class TabsComponent {
             'Distance from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save Distance from PushTracker in Kinvey'
+          );
         // this._logService.logException(
         //   new Error(
         //     '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
@@ -459,7 +503,10 @@ export class TabsComponent {
         // );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save Distance from PushTracker in Kinvey'
+        );
         // this._logService.logException(err);
       });
   }
@@ -505,7 +552,10 @@ export class TabsComponent {
             'ErrorInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save ErrorInfo from PushTracker in Kinvey'
+          );
         // this._logService.logException(
         //   new Error(
         //     '[' +
@@ -516,7 +566,10 @@ export class TabsComponent {
         // );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save ErrorInfo from PushTracker in Kinvey'
+        );
         // this._logService.logException(err);
       });
   }
@@ -613,7 +666,9 @@ export class TabsComponent {
           this._settingsService.saveToFileSystem();
           try {
             await this._settingsService.save();
-          } catch (err) { Log.E(err); }
+          } catch (err) {
+            Log.E(err);
+          }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'
@@ -657,7 +712,9 @@ export class TabsComponent {
           this._settingsService.saveToFileSystem();
           try {
             await this._settingsService.save();
-          } catch (err) { Log.E(err); }
+          } catch (err) {
+            Log.E(err);
+          }
           break;
         case this._translateService.instant(
           'actions.overwrite-remote-settings'

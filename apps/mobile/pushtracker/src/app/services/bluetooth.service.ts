@@ -235,6 +235,7 @@ export class BluetoothService extends Observable {
     if (this.advertising) {
       return true;
     }
+
     // check to make sure that bluetooth is enabled, or this will
     // always fail and we don't need to show the error
     const result = await this._bluetooth.isBluetoothEnabled();
@@ -248,9 +249,9 @@ export class BluetoothService extends Observable {
           this._logService.logException(err);
           return false;
         }
-      } else {
+      } else if (isIOS) {
         // can't do anything about it on ios
-        const err = new Error('bluetooth not enabled');
+        const err = new Error('Bluetooth not Enabled');
         this.sendEvent(BluetoothService.advertise_error, { error: err });
         throw err;
       }
@@ -377,9 +378,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) { }
+  discoverServices(_: any) {}
 
-  discoverCharacteristics(_: any) { }
+  discoverCharacteristics(_: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -393,18 +394,11 @@ export class BluetoothService extends Observable {
     let _has = false;
     if (isAndroid) {
       _has = await this._bluetooth.hasCoarseLocationPermission();
-    } else {
+    } else if (isIOS) {
       const result = await checkPermission('bluetooth');
-      this._logService.logBreadCrumb(
-        BluetoothService.name,
-        `result: ${result}`
-      );
       _has = result === 'authorized';
     }
-    this._logService.logBreadCrumb(
-      BluetoothService.name,
-      `_has: ${_has}`
-    );
+    this._logService.logBreadCrumb(BluetoothService.name, `_has: ${_has}`);
     return _has;
   }
 
@@ -416,13 +410,15 @@ export class BluetoothService extends Observable {
     );
     if (isAndroid) {
       await this._bluetooth.requestCoarseLocationPermission();
-    } else {
-      const didRequest = await requestPermission('bluetooth');
-      if (didRequest !== 'authorized') {
-        throw new Error('could not request bluetooth permissions');
+      return true;
+    } else if (isIOS) {
+      const status = await requestPermission('bluetooth');
+      if (status === 'authorized') {
+        return true;
+      } else {
+        return false;
       }
     }
-    return true;
   }
 
   public requestConnectionPriority(address: string, priority: number) {
@@ -516,7 +512,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void { }
+  private onDeviceNameChange(_: any): void {}
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -656,7 +652,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void { }
+  private onCharacteristicReadRequest(_: any): void {}
 
   // service controls
   private deleteServices() {
