@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { isAndroid, isIOS, Observable, ObservableArray } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
-import { Packet } from '@permobil/core';
+import { Log, Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
 import { check as checkPermission, request as requestPermission } from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
@@ -35,6 +35,8 @@ export class BluetoothService extends Observable {
   public static smartdrive_connected = 'smartdrive_connected';
   public static smartdrive_disconnected = 'smartdrive_disconnected';
   public static pushtracker_status_changed = 'pushtracker_status_changed';
+  public static centralmanager_updated_state_event =
+    'centralmanager_updated_state_event';
 
   /**
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
@@ -178,6 +180,13 @@ export class BluetoothService extends Observable {
       this.onAdvertiseSuccess,
       this
     );
+
+    // iOS ONLY event
+    this._bluetooth.on(
+      Bluetooth.centralmanager_updated_state_event,
+      this.onCentralManagerUpdatedState,
+      this
+    );
   }
 
   clearEventListeners() {
@@ -194,6 +203,7 @@ export class BluetoothService extends Observable {
     this._bluetooth.off(Bluetooth.characteristic_read_request_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_failure_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_success_event);
+    this._bluetooth.off(Bluetooth.centralmanager_updated_state_event);
   }
 
   clearSmartDrives() {
@@ -475,6 +485,10 @@ export class BluetoothService extends Observable {
       'Succeeded in advertising!'
     );
     // nothing
+  }
+
+  private onCentralManagerUpdatedState(args: any) {
+    Log.D('Central Manager Updated State', args.data);
   }
 
   private onBondStatusChange(args: any): void {

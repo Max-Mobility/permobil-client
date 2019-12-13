@@ -119,48 +119,54 @@ export class TabsComponent {
       return;
     }
 
+    this.registerBluetoothEvents();
+
     setTimeout(this.configureBluetooth.bind(this), 1000);
   }
 
   private async configureBluetooth() {
-    if (
-      this.user &&
-      this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
-    ) {
-      this._logService.logBreadCrumb(
-        TabsComponent.name,
-        'Asking for Bluetooth Permission'
-      );
+    try {
+      if (
+        this.user &&
+        this.user.data.control_configuration ===
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      ) {
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Configuring Bluetooth'
+        );
 
-      return this.askForPermissions()
-        .then(result => {
-          if (result === false) {
-            // we dont have permission to use bluetooth so we shouldn't call `advertise` until we do
-            this._logService.logBreadCrumb(
-              TabsComponent.name,
-              'Bluetooth permission check failed, so we cannot advertise.'
-            );
-
-            // TODO: do we want to tell the user that we cannot do anything here since we don't have access???
-            // William?
-            return;
+        const hasPermission = await this._bluetoothService.hasPermissions();
+        if (hasPermission === true) {
+          this._startAdvertising();
+        } else {
+          if (isAndroid) {
+            // only show our permissions alert on android - on iOS the
+            // system has already shown the permissions request at this
+            // point, and the text for it comes from Info.plist
+            await alert({
+              title: this._translateService.instant(
+                'permissions-request.title'
+              ),
+              message: this._translateService.instant(
+                'permissions-reasons.coarse-location'
+              ),
+              okButtonText: this._translateService.instant('general.ok')
+            });
+            const perm = await this._bluetoothService.requestPermissions();
+            if (perm === true) {
+              // retry this method to start advertising
+              this.configureBluetooth();
+            }
+          } else if (isIOS) {
+            // if we're here the permission hasn't been granted... now it is possible this happens on app start since this might execute before
+            // the user grants the initial bluetooth permission system dialog
+            this._confirmToOpenSettingsOnIOS();
           }
-
-          this.registerBluetoothEvents();
-          this.registerPushTrackerEvents();
-          if (!this._bluetoothService.advertising && result === true) {
-            this._logService.logBreadCrumb(
-              TabsComponent.name,
-              'Starting Bluetooth'
-            );
-            // start the bluetooth service
-            return this._bluetoothService.advertise();
-          }
-        })
-        .catch(err => {
-          this._logService.logException(err);
-        });
+        }
+      }
+    } catch (error) {
+      this._logService.logException(error);
     }
   }
 
@@ -243,44 +249,12 @@ export class TabsComponent {
     }
   }
 
-  private async askForPermissions() {
-    const hasPermission = await this._bluetoothService.hasPermissions();
-    if (isAndroid && !hasPermission) {
-      // only show our permissions alert on android - on iOS the
-      // system has already shown the permissions request at this
-      // point, and the text for it comes from Info.plist
-      await alert({
-        title: this._translateService.instant('permissions-request.title'),
-        message: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        ),
-        okButtonText: this._translateService.instant('general.ok')
-      });
-      await this._bluetoothService.requestPermissions();
-      return true;
-    } else if (isIOS) {
-      if (hasPermission) {
-        // we have bluetooth access on this device granted by the user previously
-        return true;
-      } else {
-        // we don't have permission to access bluetooth
-        // so if the user hasn't authorized Bluetooth permission to PT.M we need to let them know to enable it in Settings and try again.
-        const confirmResult = await confirm({
-          message:
-            'PushTracker does not have access to use Bluetooth, do you want to enable Bluetooth in the Settings on your device?',
-          cancelable: true,
-          okButtonText: this._translateService.instant('dialogs.yes'),
-          cancelButtonText: this._translateService.instant('dialogs.no')
-        });
-
-        if (confirmResult === true) {
-          // open Settings on iOS for this device
-          UIApplication.sharedApplication.openURL(
-            NSURL.URLWithString(UIApplicationOpenSettingsURLString)
-          );
-        }
-        return false;
-      }
+  private _startAdvertising() {
+    this.registerPushTrackerEvents();
+    if (!this._bluetoothService.advertising) {
+      this._logService.logBreadCrumb(TabsComponent.name, 'Starting Bluetooth');
+      // start the bluetooth service
+      this._bluetoothService.advertise();
     }
   }
 
@@ -302,6 +276,10 @@ export class TabsComponent {
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
     );
+    this._bluetoothService.on(
+      BluetoothService.centralmanager_updated_state_event,
+      this.onCentralManagerUpdatedState.bind(this)
+    );
   }
 
   private unregisterBluetoothEvents() {
@@ -317,6 +295,10 @@ export class TabsComponent {
     this._bluetoothService.off(
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
+    );
+    this._bluetoothService.off(
+      BluetoothService.centralmanager_updated_state_event,
+      this.onCentralManagerUpdatedState.bind(this)
     );
   }
 
@@ -582,6 +564,24 @@ export class TabsComponent {
     this.snackbar.simple(msg);
   }
 
+  private onCentralManagerUpdatedState(args: any) {
+    Log.D(TabsComponent.name, 'onCentralManagerUpdatedState', args.data);
+    if (
+      this.user &&
+      this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
+      if (args.data.authStatus === 'authorized') {
+        // we can advertise now
+        this._startAdvertising();
+      } else {
+        // we don't have permission to access bluetooth
+        // so if the user hasn't authorized Bluetooth permission to PT.M we need to let them know to enable it in Settings and try again.
+        this._confirmToOpenSettingsOnIOS();
+      }
+    }
+  }
+
   /**
    * PUSHTRACKER EVENT MANAGEMENT
    */
@@ -727,6 +727,29 @@ export class TabsComponent {
           break;
         default:
           break;
+      }
+    }
+  }
+
+  private async _confirmToOpenSettingsOnIOS() {
+    if (isIOS) {
+      const confirmResult = await confirm({
+        message: this._translateService.instant('bluetooth.ios-open-settings'),
+        cancelable: true,
+        okButtonText: this._translateService.instant('dialogs.yes'),
+        cancelButtonText: this._translateService.instant('dialogs.no')
+      });
+
+      if (confirmResult === true) {
+        // open Settings on iOS for this device
+        UIApplication.sharedApplication.openURL(
+          NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+        );
+      } else {
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'User declined to open Settings to enable Bluetooth.'
+        );
       }
     }
   }
