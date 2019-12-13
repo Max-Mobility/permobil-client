@@ -253,10 +253,18 @@ export class MainViewModel extends Observable {
     // this.displayDebug = !this.displayDebug;
   }
 
-  customWOLInsetLoaded(args: EventData) {
+  setLeftRightTopPadding(args: EventData) {
     (args.object as any).nativeView.setPadding(
       this.insetPadding,
       this.insetPadding,
+      this.insetPadding,
+      0
+    );
+  }
+  setLeftRightPadding(args: EventData) {
+    (args.object as any).nativeView.setPadding(
+      this.insetPadding,
+      0,
       this.insetPadding,
       0
     );
@@ -1057,18 +1065,22 @@ export class MainViewModel extends Observable {
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
-      if (this.scrollView) {
-        this.scrollView.scrollToVerticalOffset(0, false);
-      }
       sentryBreadCrumb('*** enterAmbient ***');
       this.isAmbient = true;
+
       // the user can enter ambient mode even when we hold wake lock
       // and use the keepAlive() function by full-palming the screen
       // or going underwater - so we have to handle the cases that
       // power assist is active or training mode is active.
       this._fullStop();
 
-      this._applyTheme();
+      if (!this._showingModal) {
+        if (this.scrollView) {
+          this.scrollView.scrollToVerticalOffset(0, false);
+        }
+
+        this._applyTheme();
+      }
     });
 
     application.on('updateAmbient', () => {

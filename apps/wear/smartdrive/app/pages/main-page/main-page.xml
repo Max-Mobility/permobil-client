@@ -132,11 +132,11 @@
         </wol:WearOsLayout>
 
         // Menu Items
-        <StackLayout id="settingsTitle" loaded="{{ customWOLInsetLoaded }}" tap="{{ toggleSticky }}" backgroundColor="black" style="z-index: 1;">
+        <StackLayout id="settingsTitle" loaded="{{ setLeftRightTopPadding }}" tap="{{ toggleSticky }}" backgroundColor="black" style="z-index: 1;">
           <Label text="{{ L('menu.title') }}" tap="{{ toggleSticky }}" class="chart-title" textWrap="true" />
           <Label text="" tap="{{ toggleSticky }}" class="hr-blue" />
         </StackLayout>
-        <GridLayout rows="*, *, *, *, *, *" columns="auto, *" paddingLeft="{{ insetPadding / 2 }}" paddingRight="{{ insetPadding / 2 }}" style="z-index: 0;">
+        <GridLayout rows="*, *, *, *, *, *" columns="auto, *" loaded="{{ setLeftRightPadding }}" style="z-index: 0;">
           // Settings
           <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
           <Label row="0" col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" tap="{{ onSettingsTap }}" />
