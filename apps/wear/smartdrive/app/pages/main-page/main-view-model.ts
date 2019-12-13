@@ -321,6 +321,29 @@ export class MainViewModel extends Observable {
     this.scrollView = args.object as ScrollView;
   }
 
+  private _enableSticky = true;
+  toggleSticky(args: any) {
+    this._enableSticky = !this._enableSticky;
+    this.onScrollViewScroll(null);
+  }
+
+  private _titleStart = null;
+  onScrollViewScroll(args: ScrollEventData) {
+    if (this.scrollView) {
+      const o = this.scrollView.getViewById('settingsTitle') as View;
+      if (this._titleStart === null) {
+        this._titleStart = o.getLocationRelativeTo(this.scrollView).y;
+      }
+
+      if (this.scrollView.verticalOffset > this._titleStart && this._enableSticky) {
+        const offset = this.scrollView.verticalOffset - this._titleStart;
+        o.translateY = Math.floor(offset);
+      } else {
+        o.translateY = 0;
+      }
+    }
+  }
+
   onPagerLoaded(args: EventData) {
     // this.pager = args.object as Pager;
   }
