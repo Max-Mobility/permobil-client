@@ -2321,37 +2321,6 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  private async _getFirmwareData() {
-    try {
-      const objs = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Firmwares.TableName
-      });
-      // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      // make the metadata
-      return mds.reduce((data, md) => {
-        const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
-        }
-        return data;
-      }, {});
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get firmware metadata:', err);
-      return {};
-    }
-  }
-
   private async _saveErrorToDatabase(errorCode: string, errorId: number) {
     if (errorId === undefined) {
       // we use this when saving a local error
@@ -2375,39 +2344,6 @@ export class MainViewModel extends Observable {
           });
         });
     }
-  }
-
-  private async _getRecentErrors(numErrors: number, offset: number = 0) {
-    // sentryBreadCrumb('_getRecentErrors', numErrors, offset);
-    let errors = [];
-    try {
-      const rows = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Errors.TableName,
-        orderBy: SmartDriveData.Errors.IdName,
-        ascending: false,
-        limit: numErrors,
-        offset: offset
-      });
-      if (rows && rows.length) {
-        errors = rows.map(r => {
-          const translationKey =
-            'error-history.errors.' + (r && r[2]).toLowerCase();
-          return {
-            time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-            code: L(translationKey),
-            id: r && r[3],
-            uuid: r && r[4],
-            insetPadding: this.insetPadding,
-            isBack: false,
-            onTap: () => { }
-          };
-        });
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get errors', err);
-    }
-    return errors;
   }
 
   private async _saveSmartDriveData(args: {
