@@ -81,7 +81,7 @@
         // SmartDrive Battery Usage Chat
         <wol:WearOsLayout width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
           <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
-            <ui:AutoFitText height="15" row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title" textWrap="true"/>
+            <Label row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title fs10" textWrap="true"/>
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Battery Usage Bar Chart
@@ -108,7 +108,7 @@
         <wol:WearOsLayout width="{{ screenWidth / 1.8 }}" height="{{ screenHeight / 1.8 }}">
           <GridLayout rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
             // Chart Title
-            <ui:AutoFitText height="15" row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
+            <Label row="0" colSpan="2" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title fs10" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ distanceChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
             // Distance Traveled Bar Chart
