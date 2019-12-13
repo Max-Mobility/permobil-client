@@ -4,6 +4,7 @@ import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
 import { action, alert } from '@nativescript/core/ui/dialogs';
+import { ScrollEventData, ScrollView } from '@nativescript/core/ui/scroll-view';
 import { AnimationCurve } from '@nativescript/core/ui/enums';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
@@ -15,7 +16,7 @@ import last from 'lodash/last';
 import once from 'lodash/once';
 import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
-import { Pager } from 'nativescript-pager';
+// import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
@@ -51,6 +52,8 @@ export class MainViewModel extends Observable {
   // #region "Public Members for UI"
   @Prop() insetPadding: number = 0;
   @Prop() chinSize: number = 0;
+  @Prop() screenWidth: number = 100;
+  @Prop() screenHeight: number = 100;
   // battery display
   @Prop() smartDriveCurrentBatteryPercentage: number = 0;
   @Prop() watchCurrentBatteryPercentage: number = 0;
@@ -147,7 +150,8 @@ export class MainViewModel extends Observable {
    */
   private initialized: boolean = false;
   private wakeLock: any = null;
-  private pager: Pager;
+  private scrollView: ScrollView;
+  // private pager: Pager;
   private _vibrator: Vibrate = new Vibrate();
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
@@ -313,8 +317,12 @@ export class MainViewModel extends Observable {
   /**
    * View Loaded event handlers
    */
+  onScrollViewLoaded(args: EventData) {
+    this.scrollView = args.object as ScrollView;
+  }
+
   onPagerLoaded(args: EventData) {
-    this.pager = args.object as Pager;
+    // this.pager = args.object as Pager;
   }
 
   onAmbientTimeViewLoaded(args: EventData) {
@@ -409,10 +417,15 @@ export class MainViewModel extends Observable {
       return;
     }
     // make sure the UI updates
+    if (this.scrollView) {
+      this.scrollView.scrollToVerticalOffset(0, false);
+    }
     this.isTraining = true;
+    /*
     if (this.pager) {
       this.pager.scrollToIndexAnimated(0, false);
     } else sentryBreadCrumb('training activated but pager is null!');
+    */
     this.tapDetector.reset();
     this._maintainCPU();
     this.powerAssistState = PowerAssist.State.Training;
@@ -495,11 +508,16 @@ export class MainViewModel extends Observable {
           this._enablingPowerAssist = false;
           return false;
         }
-        this.powerAssistActive = true;
         // ensure the pager is on the right page
+        if (this.scrollView) {
+          this.scrollView.scrollToVerticalOffset(0, false);
+        }
+        this.powerAssistActive = true;
+        /*
         if (this.pager) {
           this.pager.scrollToIndexAnimated(0, false);
         }
+        */
         // vibrate for enabling power assist
         this._vibrator.vibrate(200);
         // now actually set up power assist
@@ -883,6 +901,7 @@ export class MainViewModel extends Observable {
 
   private _applyStyle() {
     try {
+      /*
       if (this.pager) {
         try {
           const children = this.pager._childrenViews;
@@ -894,6 +913,7 @@ export class MainViewModel extends Observable {
           Sentry.captureException(err);
         }
       }
+      */
     } catch (err) {
       Sentry.captureException(err);
     }
@@ -1014,6 +1034,9 @@ export class MainViewModel extends Observable {
   private _registerAppEventHandlers() {
     // handle ambient mode callbacks
     application.on('enterAmbient', () => {
+      if (this.scrollView) {
+        this.scrollView.scrollToVerticalOffset(0, false);
+      }
       sentryBreadCrumb('*** enterAmbient ***');
       this.isAmbient = true;
       // the user can enter ambient mode even when we hold wake lock
@@ -2703,6 +2726,8 @@ export class MainViewModel extends Observable {
     const isCircleWatch = androidConfig.isScreenRound();
     const widthPixels = screen.mainScreen.widthPixels;
     const heightPixels = screen.mainScreen.heightPixels;
+    this.screenWidth = widthPixels;
+    this.screenHeight = heightPixels;
     if (isCircleWatch) {
       this.insetPadding = Math.round(0.146467 * widthPixels);
       // if the height !== width then there is a chin!
