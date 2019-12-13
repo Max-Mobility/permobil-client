@@ -135,28 +135,26 @@
         <StackLayout loaded="{{ customWOLInsetLoaded }}">
           <Label text="{{ L('menu.title') }}" class="chart-title" textWrap="true" />
           <Label text="" class="hr-blue" />
-          <ScrollView height="100%">
-            <GridLayout rows="*, *, *, *, *, *" columns="auto, *">
-              // Settings
-              <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-              <Label row="0" col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" tap="{{ onSettingsTap }}" />
-              // About
-              <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-              <Label row="1" col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" tap="{{ onAboutTap }}"/>
-              // Training
-              <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-              <Label row="2" col="1" text="{{ L('menu.training') }}" class="settings-label" textWrap="true" tap="{{ onTrainingTap }}" />
-              // Updates
-              <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-              <Label row="3" col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" tap="{{ onUpdatesTap }}" />
-              // Pair SmartDrive
-              <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
-              <Label row="4" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
-              // Connect PushTracker
-              <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
-              <Label row="5" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
-            </GridLayout>
-          </ScrollView>
+          <GridLayout rows="*, *, *, *, *, *" columns="auto, *">
+            // Settings
+            <Label row="0" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="0" col="1" text="{{ L('menu.settings') }}" class="settings-label" textWrap="true" tap="{{ onSettingsTap }}" />
+            // About
+            <Label row="1" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="1" col="1" text="{{ L('menu.about') }}" class="settings-label" textWrap="true" tap="{{ onAboutTap }}"/>
+            // Training
+            <Label row="2" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="2" col="1" text="{{ L('menu.training') }}" class="settings-label" textWrap="true" tap="{{ onTrainingTap }}" />
+            // Updates
+            <Label row="3" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="3" col="1" text="{{ L('menu.updates') }}" class="settings-label" textWrap="true" tap="{{ onUpdatesTap }}" />
+            // Pair SmartDrive
+            <Label row="4" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" />
+            <Label row="4" col="1" text="{{ L('settings.pair-smartdrive') }}" class="settings-label" textWrap="true" tap="{{ onPairingTap }}" />
+            // Connect PushTracker
+            <Label row="5" col="0" text="&#xf21b;" class="bullet-list-icon" textWrap="true" marginBottom="{{ insetPadding }}" />
+            <Label row="5" col="1" text="{{ L('settings.connect-pushtracker') }}" class="settings-label" textWrap="true" tap="{{ onConnectPushTrackerTap }}" marginBottom="{{ insetPadding }}" />
+          </GridLayout>
         </StackLayout>
 
       </StackLayout>
