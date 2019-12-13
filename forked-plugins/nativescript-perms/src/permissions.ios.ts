@@ -1,6 +1,6 @@
+import { device } from '@nativescript/core/platform';
 import { CheckOptions, RequestOptions } from './permissions';
 import { CLog, CLogTypes } from './permissions.common';
-import { device } from 'tns-core-modules/platform';
 export * from './permissions.common';
 
 export namespace PermissionsIOS {
@@ -151,10 +151,9 @@ export namespace PermissionsIOS {
       }
     }
   }
+
   namespace NSPBluetooth {
     export function getStatus(): Status {
-      // const status2 = CBPeripheralManager.authorizationStatus();
-      // const status2 = CBCentralManager.authorizationStatus();
       CLog(CLogTypes.info, 'Device SDK ', device.sdkVersion);
       if (device.sdkVersion < '13.0') {
         // @ts-ignore
@@ -170,43 +169,13 @@ export namespace PermissionsIOS {
           default:
             return Status.Undetermined;
         }
-      } else if (device.sdkVersion === '13.0') {
-        // TODO: using deprecated technique here - see comment below:
-        // @ts-ignore
-        const status2 = CBCentralManager.authorizationStatus();
-        CLog(CLogTypes.info, 'authorization status ', status2);
-        switch (status2) {
-          case CBPeripheralManagerAuthorizationStatus.Authorized:
-            return Status.Authorized;
-          case CBPeripheralManagerAuthorizationStatus.Denied:
-            return Status.Denied;
-          case CBPeripheralManagerAuthorizationStatus.Restricted:
-            return Status.Restricted;
-          default:
-            return Status.Undetermined;
-        }
-        /*
-        // TODO: don't know if this works in this version the
-        // authorization is an instance method, so we'll likely need
-        // to do something else!
-        // @ts-ignore
-      const status2 = CBCentralManager.authorization();
-      switch (status2) {
-        case CBManagerAuthorization.AllowedAlways:
-          return Status.Authorized;
-        case CBManagerAuthorization.Denied:
-          return Status.Denied;
-        case CBManagerAuthorization.Restricted:
-          return Status.Restricted;
-        default:
-          return Status.Undetermined;
-      }
-        */
-      } else {
-        // @ts-ignore
-        const status2 = CBCentralManager.authorization;
-        CLog(CLogTypes.info, 'authorization status ', status2);
-        switch (status2) {
+      } else if (device.sdkVersion >= '13.0') {
+        const centralManager = CBCentralManager.alloc().initWithDelegateQueue(
+          null,
+          null
+        );
+        const t = centralManager.authorization;
+        switch (t) {
           case CBManagerAuthorization.AllowedAlways:
             return Status.Authorized;
           case CBManagerAuthorization.Denied:
@@ -217,6 +186,7 @@ export namespace PermissionsIOS {
             return Status.Undetermined;
         }
       }
+      return Status.Undetermined; // default return, shouldn't ever hit since we just check less than 13x and greater than equal to
     }
     export type SubCBPeripheralManagerDelegate = Partial<
       CBPeripheralManagerDelegate
