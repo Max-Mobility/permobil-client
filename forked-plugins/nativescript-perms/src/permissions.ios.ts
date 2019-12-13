@@ -156,10 +156,9 @@ export namespace PermissionsIOS {
     export function getStatus(): Status {
       CLog(CLogTypes.info, 'Device SDK ', device.sdkVersion);
       if (device.sdkVersion < '13.0') {
-        // @ts-ignore
-        const status2 = CBCentralManager.authorizationStatus();
-        CLog(CLogTypes.info, 'authorization status ', status2);
-        switch (status2) {
+        const status = CBPeripheralManager.authorizationStatus();
+        CLog(CLogTypes.info, 'authorization status ', status);
+        switch (status) {
           case CBPeripheralManagerAuthorizationStatus.Authorized:
             return Status.Authorized;
           case CBPeripheralManagerAuthorizationStatus.Denied:
