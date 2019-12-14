@@ -5,15 +5,22 @@
   @extend .HOME_TAB_LAYOUT_BASE;
   @include colorize($background-color: background);
 
+ 
   .info-btn {
     @extend .INFO_BTN_BASE;
-    @include colorize($color: $dark-grey);
+    color: $dark-grey;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
   .distance-remaining-circle {
     @extend .DISTANCE_REMAINING_CIRCLE_BASE;
     // background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
     background-image: linear-gradient(to bottom, #0067a6, #004f7e);
+    @at-root .ns-dark & {
+      background-image: linear-gradient(to bottom, #3d4b6d, #3f4e6b);
+    }
 
     label {
     }
@@ -24,10 +31,16 @@
     .value {
     }
     .max-value {
-      //color: $dark-grey;
+      color: $dark-grey;
+      @at-root .ns-dark & {
+        color: darken($white, 0.1);
+      }
     }
     .description {
-      //color: $dark-grey;
+      color: $dark-grey;
+      @at-root .ns-dark & {
+        color: darken($white, 0.1);
+      }
     }
   }
 

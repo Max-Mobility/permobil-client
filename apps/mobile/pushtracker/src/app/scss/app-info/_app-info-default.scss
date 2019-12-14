@@ -3,7 +3,7 @@
 
 .app-info-layout {
   @extend .APP_INFO_LAYOUT_BASE;
-  background-color: $white;
+  @include colorize($background-color: background);
 
   .close-btn {
     @extend .CLOSE_BTN_BASE;

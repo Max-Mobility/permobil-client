@@ -3,15 +3,25 @@
 
 .profile-settings-layout-default {
   @extend .PROFILE_SETTINGS_LAYOUT_BASE;
+   MockActionBar,
+  ScrollView {
+    @include colorize($background-color: background);
+  }
 
   .category {
     @extend .CATEGORY_BASE;
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      color: $permobil-sky;
+    }
   }
 
   .version-info {
     @extend .category;
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      color: $permobil-success;
+    }
   }
 
   .setting-layout {
@@ -20,24 +30,47 @@
 
   .setting-title {
     @extend .SETTING_TITLE_BASE;
+    color: $black;
+    @at-root .ns-dark &  {
+      color: $white;
+    }
   }
 
   .setting-value {
     @extend .SETTING_VALUE_BASE;
+    color: $black;
+    @at-root .ns-dark & {
+      color: darken($white, 10%);
+    }
   }
 
   .setting-switch {
     @extend .SETTING_SWITCH_BASE;
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      color: $permobil-sky;
+    }
     background: $permobil-sky;
+    @at-root .ns-dark & {
+      background: darken($white, 10%);
+    }
     off-background-color: $dark-grey;
+    @at-root .ns-dark & {
+      off-background-color: $dark-grey;
+    }
   }
 
   .inactive-setting-switch {
     @extend .SETTING_SWITCH_BASE;
     color: $dark-grey;
+    @at-root .ns-dark & {
+      color: $grey;
+    }
     background: $dark-grey;
     off-background-color: $grey;
+    @at-root .ns-dark & {
+      off-background-color: lighten($grey, 10%);
+    }
   }
 
   .sync-button {
@@ -51,5 +84,8 @@
   .sync-status {
     font-size: 16;
     color: $dark-grey;
+    @at-root .ns-dark & {
+      color: $light-grey;
+    }
   }
 }

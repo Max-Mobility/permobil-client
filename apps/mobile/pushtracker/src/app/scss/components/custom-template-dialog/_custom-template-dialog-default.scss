@@ -4,7 +4,8 @@
 .custom-template-dialog {
   @extend .CUSTOM_TEMPLATE_DIALOG_BASE;
 
-  background-color: $light-custom-dialog-layout-shadow;
+  //background-color: $light-custom-dialog-layout-shadow;
+  @include colorize($background-color: background);
 
   > StackLayout {
     .title {

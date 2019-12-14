@@ -75,12 +75,18 @@ RadListView {
   height: 1;
   width: 100%;
   color: #e9eaee;
+  @at-root .ns-dark & {
+    color: #3b3f42;;
+  }
   background-color: #e9eaee;
+  @at-root .ns-dark & {
+    background-color: #3b3f42
+  }
 }
 
 // Bottom Navigation
 TabStrip {
-  background-color: $white;
+  @include colorize($background-color: background);
 }
 
 TabStripItem > label {
@@ -93,6 +99,9 @@ TabStripItem > image {
 
 TabStripItem.tabstripitem {
   color: $inactive-grey;
+  @at-root .ns-dark & {
+    color: #9b9fa6;
+  }
 
   > label {
     font-size: 12;
@@ -105,6 +114,9 @@ TabStripItem.tabstripitem {
 
 TabStripItem.tabstripitem-active {
   color: $permobil-primary;
+  @at-root .ns-dark & {
+    color: $white;
+  }
 
   > label {
     font-size: 14;

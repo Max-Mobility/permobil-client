@@ -4,7 +4,7 @@
 
 .activity-tab-layout {
   @extend .ACTIVITY_TAB_LAYOUT_BASE;
-
+  @include colorize($background-color: background);
 
   .prev-btn {
     @extend .PREV_BTN_BASE;

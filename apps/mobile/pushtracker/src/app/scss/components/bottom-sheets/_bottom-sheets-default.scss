@@ -3,7 +3,7 @@
 
 .bottom-sheet-layout {
   @extend .BOTTOM_SHEET_LAYOUT_BASE;
-
+  @include colorize($background-color: background);
   .title {
     color: #202125;
   }

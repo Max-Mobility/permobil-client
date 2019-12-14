@@ -4,6 +4,7 @@
 // ActionBar
 .action-bar {
   @extend .ACTION_BAR_BASE;
+  @include colorize($background-color: background);
   .nav-btn {
     @extend .BACK_BTN_BASE;
   }

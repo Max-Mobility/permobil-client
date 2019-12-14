@@ -3,11 +3,13 @@
 
 .journey-tab-layout {
   @extend .JOURNEY_TAB_LAYOUT_BASE;
-
-
+  
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
   .journey-today {
@@ -45,7 +47,13 @@
 
   .cousteau-circle {
     background-color: #bad4ee;
+    @at-root .ns-dark & {
+      background-color: $permobil-cousteau-light;
+    }
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      color: $permobil-cousteau-dark;
+    }
     height: 20;
     width: 20;
     border-radius: 10;
@@ -66,7 +74,13 @@
 
   .violet-circle {
     background-color: #cbb3ec;
+    @at-root .ns-dark & {
+      background-color: $permobil-cousteau-light;
+    }
     color: $permobil-violet;
+    @at-root .ns-dark & {
+      color: $permobil-cousteau-dark;
+    }
     height: 20;
     width: 20;
     border-radius: 10;
@@ -98,6 +112,9 @@
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
 }

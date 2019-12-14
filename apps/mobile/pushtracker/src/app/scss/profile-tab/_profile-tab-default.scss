@@ -10,20 +10,29 @@
 }
 .date-time-picker-buttons {
   color: #1a73e9;
+  @at-root .ns-dark & {
+    color: $permobil-sky;
+  }
 }
 
 .textfield {
-   font-size: 22;
+  font-size: 22;
 }
 
 .textfield-prefix {
   font-size: 14;
   color: $permobil-primary;
+  @at-root .ns-dark & {
+    color: $permobil-sky;
+  }
 }
 
 .textfield-suffix {
   font-size: 14;
   color: $permobil-primary;
+  @at-root .ns-dark & {
+    color: $permobil-sky;
+  }
 }
 
 .profile-tab-layout {
@@ -32,6 +41,10 @@
 
   .page-title {
     @extend .PAGE_TITLE_BASE;
+    color: $black;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
   .profile-name {
@@ -53,9 +66,17 @@
   .avatar-circle {
     @extend .AVATAR_CIRCLE_BASE;
     background-color: $permobil-primary;
+    @at-root .ns-dark & {
+      background-color: $permobil-sky;
+    }
   }
 }
 
+.data-box-value {
+  @at-root .ns-dark & {
+    color: $permobil-sky;
+  }
+}
 .device-setup-btn {
   @extend .DEVICE_SETUP_BUTTON;
 }
