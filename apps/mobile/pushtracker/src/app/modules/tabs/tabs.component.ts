@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
 import { BottomNavigation, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
@@ -55,6 +55,7 @@ export class TabsComponent {
     private _bluetoothService: BluetoothService,
     private _routerExtensions: RouterExtensions,
     private _page: Page,
+    private _zone: NgZone,
     private _usageService: SmartDriveUsageService,
     private _errorsService: SmartDriveErrorsService
   ) {
@@ -674,9 +675,11 @@ export class TabsComponent {
     });
     switch (selection) {
       case this._translateService.instant('actions.overwrite-local-settings'):
-        this._settingsService.settings.copy(settings);
-        this._settingsService.switchControlSettings.copy(switchControlSettings);
-        this._settingsService.saveToFileSystem();
+        this._zone.run(() => {
+          this._settingsService.settings.copy(settings);
+          this._settingsService.switchControlSettings.copy(switchControlSettings);
+          this._settingsService.saveToFileSystem();
+        });
         try {
           await this._settingsService.save();
         } catch (err) { Log.E(err); }
