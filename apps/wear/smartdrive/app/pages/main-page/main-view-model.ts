@@ -25,6 +25,7 @@ import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../.
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -1092,8 +1093,15 @@ export class MainViewModel extends Observable {
       this._enableBodySensor();
     });
 
-    application.on(application.suspendEvent, () => {
+    application.on(application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
+
+      if (updatesViewModel) {
+        sentryBreadCrumb('Stopping OTA updates');
+        await updatesViewModel.stopUpdates(L('updates.canceled'), true);
+        sentryBreadCrumb('OTA updates successfully stopped');
+      }
+
       this._fullStop();
       this._updateComplications();
     });
@@ -1202,7 +1210,6 @@ export class MainViewModel extends Observable {
     const timeReceiverCallback = (_1, _2) => {
       try {
         this._updateTimeDisplay();
-        sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
           this._onNewDay();
@@ -2314,37 +2321,6 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  private async _getFirmwareData() {
-    try {
-      const objs = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Firmwares.TableName
-      });
-      // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      // make the metadata
-      return mds.reduce((data, md) => {
-        const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
-        }
-        return data;
-      }, {});
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get firmware metadata:', err);
-      return {};
-    }
-  }
-
   private async _saveErrorToDatabase(errorCode: string, errorId: number) {
     if (errorId === undefined) {
       // we use this when saving a local error
@@ -2368,39 +2344,6 @@ export class MainViewModel extends Observable {
           });
         });
     }
-  }
-
-  private async _getRecentErrors(numErrors: number, offset: number = 0) {
-    // sentryBreadCrumb('_getRecentErrors', numErrors, offset);
-    let errors = [];
-    try {
-      const rows = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Errors.TableName,
-        orderBy: SmartDriveData.Errors.IdName,
-        ascending: false,
-        limit: numErrors,
-        offset: offset
-      });
-      if (rows && rows.length) {
-        errors = rows.map(r => {
-          const translationKey =
-            'error-history.errors.' + (r && r[2]).toLowerCase();
-          return {
-            time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-            code: L(translationKey),
-            id: r && r[3],
-            uuid: r && r[4],
-            insetPadding: this.insetPadding,
-            isBack: false,
-            onTap: () => { }
-          };
-        });
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get errors', err);
-    }
-    return errors;
   }
 
   private async _saveSmartDriveData(args: {

@@ -77,10 +77,10 @@
                 android:resource="@xml/watch_face" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview"
-                android:resource="@drawable/preview_watch_face" />
+                android:resource="@drawable/digital_watchface_preview" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.preview_circular"
-                android:resource="@drawable/preview_watch_face" />
+                android:resource="@drawable/digital_watchface_preview" />
             <meta-data
                 android:name="com.google.android.wearable.watchface.wearableConfigurationAction"
                 android:value="com.example.android.wearable.watchface.CONFIG_COMPLICATION" />

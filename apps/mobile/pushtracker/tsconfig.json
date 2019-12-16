@@ -30,5 +30,8 @@
     "node_modules",
     "platforms",
     "../../../@permobil/nativescript/src/plugins/*"
-  ]
+  ],
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true // disabling for now to use TS 3.7.3 which should be fine with Angular and available in Q1 with NG9 release
+  }
 }
