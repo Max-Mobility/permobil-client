@@ -72,7 +72,7 @@ export class DeviceSetupComponent {
       !this.slide &&
       this.user &&
       this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       // OG PushTracker configuration
       this.slide = this._translateService.instant(
@@ -121,19 +121,24 @@ export class DeviceSetupComponent {
       !this.slide &&
       this.user &&
       this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
+      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
     ) {
       // PushTracker E2/ WearOS configuration
       this.slide = this._translateService.instant(
         'device-setup.pushtracker-e2-with-smartdrive'
       );
-      try {
-        WearOsComms.initPhone();
-      } catch (err) {
-        console.error('error initializing phone:', err);
-      }
-      // start looking for E2
-      this._onPushTrackerE2();
+      WearOsComms
+        .initPhone()
+        .then(() => {
+          // start looking for E2
+          this._onPushTrackerE2();
+        })
+        .catch((err) => {
+          this._logService.logBreadCrumb(
+            DeviceSetupComponent.name,
+            `Error initializing phone wear-os-comms: ${err}`
+          );
+        });
     }
   }
 
@@ -190,8 +195,8 @@ export class DeviceSetupComponent {
       const reasoning = {
         [android.Manifest.permission
           .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-          'permissions-reasons.coarse-location'
-        )
+            'permissions-reasons.coarse-location'
+          )
       };
       neededPermissions.forEach(r => {
         reasons.push(reasoning[r]);
@@ -203,7 +208,7 @@ export class DeviceSetupComponent {
           okButtonText: this._translateService.instant('general.ok')
         });
         try {
-          await requestPermissions(neededPermissions, () => {});
+          await requestPermissions(neededPermissions, () => { });
           return true;
         } catch (permissionsObj) {
           const hasBlePermission =
