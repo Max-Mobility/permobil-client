@@ -279,6 +279,8 @@ module.exports = env => {
           cache: true,
           sourceMap: isAnySourceMapEnabled,
           terserOptions: {
+            // https://github.com/terser/terser#minify-options
+            keep_classnames: true,
             output: {
               comments: false,
               semicolons: !isAnySourceMapEnabled
