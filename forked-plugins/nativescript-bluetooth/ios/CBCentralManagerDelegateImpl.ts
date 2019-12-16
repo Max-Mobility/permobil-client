@@ -292,14 +292,13 @@ export class CBCentralManagerDelegateImpl extends NSObject
     let status;
     // checking the auth state of the Manager to emit the authorization event
     // so the app can know the auth/permission
-    if (device.sdkVersion < '13.0') {
+    if (device.sdkVersion < '13.0.0') {
       const value = CBPeripheralManager.authorizationStatus();
-      status = this._checkCentralAuthStatus(value);
-    } else if (device.sdkVersion >= '13.0') {
+      status = this._checkPeripheralAuthStatus(value);
+    } else if (device.sdkVersion >= '13.0.0') {
       const value = central.authorization;
       status = this._checkCentralAuthStatus(value);
     }
-
     owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
       status
     });
@@ -355,6 +354,19 @@ export class CBCentralManagerDelegateImpl extends NSObject
       manager: central,
       dict
     });
+  }
+
+  private _checkPeripheralAuthStatus(value) {
+    switch (value) {
+      case CBPeripheralManagerAuthorizationStatus.Authorized:
+        return 'authorized';
+      case CBPeripheralManagerAuthorizationStatus.Denied:
+        return 'denied';
+      case CBPeripheralManagerAuthorizationStatus.Restricted:
+        return 'restricted';
+      default:
+        return 'undetermined';
+    }
   }
 
   private _checkCentralAuthStatus(value) {

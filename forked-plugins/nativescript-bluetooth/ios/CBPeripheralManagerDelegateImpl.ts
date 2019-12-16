@@ -75,12 +75,16 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       switch (value) {
         case CBPeripheralManagerAuthorizationStatus.Authorized:
           status = 'authorized';
+          break;
         case CBPeripheralManagerAuthorizationStatus.Denied:
           status = 'denied';
+          break;
         case CBPeripheralManagerAuthorizationStatus.Restricted:
           status = 'restricted';
+          break;
         default:
           status = 'undetermined';
+          break;
       }
     }
     // else if (device.sdkVersion >= '13.0') {
