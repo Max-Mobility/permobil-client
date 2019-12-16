@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
 import { BottomNavigation, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
@@ -7,14 +7,26 @@ import * as LS from 'nativescript-localstorage';
 import { action, alert } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
-import { Log } from '@permobil/core';
+import { Device, Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
+import assign from 'lodash/assign';
 import throttle from 'lodash/throttle';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
-import { enableDefaultTheme, YYYY_MM_DD } from '../../utils';
+import { debounceRight, enableDefaultTheme, YYYY_MM_DD } from '../../utils';
+
+// added deferred settings object for providing a way for multiple
+// functions to call a version of an alert settings function each
+// providing slightly different arguments - but which are all combined
+// together into a single set of arguments. This is for
+// https://github.com/Max-Mobility/permobil-client/issues/629
+interface DeferredSettings {
+  pushTracker: PushTracker;
+  settings: Device.Settings;
+  switchControlSettings: Device.SwitchControlSettings;
+}
 
 @Component({
   moduleId: module.id,
@@ -26,6 +38,7 @@ export class TabsComponent {
   bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
+  private _debouncedSettingsAlert: any = null;
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
   private _firstLoad = false;
@@ -42,6 +55,7 @@ export class TabsComponent {
     private _bluetoothService: BluetoothService,
     private _routerExtensions: RouterExtensions,
     private _page: Page,
+    private _zone: NgZone,
     private _usageService: SmartDriveUsageService,
     private _errorsService: SmartDriveErrorsService
   ) {
@@ -50,17 +64,24 @@ export class TabsComponent {
     // register for user configuration changed event
     this._userService.on(
       PushTrackerUserService.configuration_change_event,
-      this.onUserChangedConfiguration,
+      this.onUserChangedConfiguration.bind(this),
       this
     );
 
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
+    this._debouncedSettingsAlert = debounceRight(
+      this.alertPushTrackerSettingsDiffer.bind(this),
+      1000,
+      { leading: false, trailing: true },
+      function(acc: any, args: any) { return assign(acc || {}, ...args); }
+    );
+
     // Run every 10 minutes
     const TEN_MINUTES = 10 * 60 * 1000;
     this._throttledOnDailyInfoEvent = throttle(
-      this.onDailyInfoEvent,
+      this.onDailyInfoEvent.bind(this),
       TEN_MINUTES,
       {
         leading: true,
@@ -69,7 +90,7 @@ export class TabsComponent {
     );
 
     this._throttledOnDistanceEvent = throttle(
-      this.onDistanceEvent,
+      this.onDistanceEvent.bind(this),
       TEN_MINUTES,
       {
         leading: true,
@@ -633,6 +654,49 @@ export class TabsComponent {
     this._registerEventsForPT(args.data.pt);
   }
 
+  private async alertPushTrackerSettingsDiffer(args: DeferredSettings) {
+    this._logService.logBreadCrumb(
+      TabsComponent.name,
+      'Alerting that pushtracker settings differ!'
+    );
+    const pushTracker = args.pushTracker;
+    const settings = args.settings;
+    const switchControlSettings = args.switchControlSettings;
+    const selection = await action({
+      cancelable: false,
+      title: this._translateService.instant('settings-different.title'),
+      message: this._translateService.instant('settings-different.message'),
+      actions: [
+        this._translateService.instant('actions.overwrite-local-settings'),
+        this._translateService.instant('actions.overwrite-remote-settings'),
+        this._translateService.instant('actions.keep-both-settings')
+      ],
+      cancelButtonText: this._translateService.instant('general.cancel')
+    });
+    switch (selection) {
+      case this._translateService.instant('actions.overwrite-local-settings'):
+        this._zone.run(() => {
+          this._settingsService.settings.copy(settings);
+          this._settingsService.switchControlSettings.copy(switchControlSettings);
+          this._settingsService.saveToFileSystem();
+        });
+        try {
+          await this._settingsService.save();
+        } catch (err) { Log.E(err); }
+        break;
+      case this._translateService.instant(
+        'actions.overwrite-remote-settings'
+      ):
+        await pushTracker.sendSettingsObject(this._settingsService.settings);
+        await pushTracker.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
+        break;
+      case this._translateService.instant('actions.keep-both-settings'):
+        break;
+      default:
+        break;
+    }
+  }
+
   private async onPushTrackerSettings(args: any) {
     this._logService.logBreadCrumb(
       TabsComponent.name,
@@ -641,35 +705,7 @@ export class TabsComponent {
     const s = args.data.settings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.settings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant('settings-different.title'),
-        message: this._translateService.instant('settings-different.message'),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.settings.copy(s);
-          this._settingsService.saveToFileSystem();
-          try {
-            await this._settingsService.save();
-          } catch (err) { Log.E(err); }
-          break;
-        case this._translateService.instant(
-          'actions.overwrite-remote-settings'
-        ):
-          pt.sendSettingsObject(this._settingsService.settings);
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
+      this._debouncedSettingsAlert({ settings: s, pushTracker: pt });
     }
   }
 
@@ -681,41 +717,7 @@ export class TabsComponent {
     const s = args.data.switchControlSettings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.switchControlSettings.equals(s)) {
-      const selection = await action({
-        cancelable: false,
-        title: this._translateService.instant(
-          'switch-control-settings-different.title'
-        ),
-        message: this._translateService.instant(
-          'switch-control-settings-different.message'
-        ),
-        actions: [
-          this._translateService.instant('actions.overwrite-local-settings'),
-          this._translateService.instant('actions.overwrite-remote-settings'),
-          this._translateService.instant('actions.keep-both-settings')
-        ],
-        cancelButtonText: this._translateService.instant('general.cancel')
-      });
-      switch (selection) {
-        case this._translateService.instant('actions.overwrite-local-settings'):
-          this._settingsService.switchControlSettings.copy(s);
-          this._settingsService.saveToFileSystem();
-          try {
-            await this._settingsService.save();
-          } catch (err) { Log.E(err); }
-          break;
-        case this._translateService.instant(
-          'actions.overwrite-remote-settings'
-        ):
-          pt.sendSwitchControlSettingsObject(
-            this._settingsService.switchControlSettings
-          );
-          break;
-        case this._translateService.instant('actions.keep-both-settings'):
-          break;
-        default:
-          break;
-      }
+      this._debouncedSettingsAlert({ switchControlSettings: s, pushTracker: pt });
     }
   }
 }
