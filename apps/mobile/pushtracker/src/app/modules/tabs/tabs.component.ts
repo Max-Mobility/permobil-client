@@ -72,7 +72,9 @@ export class TabsComponent {
       this.alertPushTrackerSettingsDiffer.bind(this),
       1000,
       { leading: false, trailing: true },
-      function(acc: any, args: any) { return assign(acc || {}, ...args); }
+      function(acc: any, args: any) {
+        return assign(acc || {}, ...args);
+      }
     );
 
     // Run every 10 minutes
@@ -693,7 +695,9 @@ export class TabsComponent {
         this._zone.run(() => {
           try {
             this._settingsService.settings.copy(settings);
-            this._settingsService.switchControlSettings.copy(switchControlSettings);
+            this._settingsService.switchControlSettings.copy(
+              switchControlSettings
+            );
           } catch (err) {
             this._logService.logBreadCrumb(
               TabsComponent.name,
@@ -704,19 +708,19 @@ export class TabsComponent {
         try {
           this._settingsService.saveToFileSystem();
           await this._settingsService.save();
-        } catch (err) { 
+        } catch (err) {
           this._logService.logBreadCrumb(
             TabsComponent.name,
             `Error saving local settings: ${err}`
           );
         }
         break;
-      case this._translateService.instant(
-        'actions.overwrite-remote-settings'
-      ):
+      case this._translateService.instant('actions.overwrite-remote-settings'):
         try {
           await pushTracker.sendSettingsObject(this._settingsService.settings);
-          await pushTracker.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
+          await pushTracker.sendSwitchControlSettingsObject(
+            this._settingsService.switchControlSettings
+          );
         } catch (err) {
           this._logService.logBreadCrumb(
             TabsComponent.name,
@@ -751,7 +755,10 @@ export class TabsComponent {
     const s = args.data.switchControlSettings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.switchControlSettings.equals(s)) {
-      this._debouncedSettingsAlert({ switchControlSettings: s, pushTracker: pt });
+      this._debouncedSettingsAlert({
+        switchControlSettings: s,
+        pushTracker: pt
+      });
     }
   }
 

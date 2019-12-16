@@ -388,9 +388,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) {}
+  discoverServices(_: any) { }
 
-  discoverCharacteristics(_: any) {}
+  discoverCharacteristics(_: any) { }
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -489,6 +489,9 @@ export class BluetoothService extends Observable {
 
   private onBluetoothAuthEvent(args: any) {
     Log.D('Bluetooth Auth Event', args.data);
+    // make sure to relay the event so others listening for it will
+    // receive it
+    this.sendEvent(BluetoothService.bluetooth_authorization_event, args.data);
   }
 
   private onBondStatusChange(args: any): void {
@@ -526,7 +529,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void {}
+  private onDeviceNameChange(_: any): void { }
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -666,7 +669,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void {}
+  private onCharacteristicReadRequest(_: any): void { }
 
   // service controls
   private deleteServices() {
