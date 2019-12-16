@@ -64,18 +64,23 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     const state = owner._getManagerStateString(mgr.state);
     CLog(CLogTypes.info, `current peripheral manager state = ${state}`);
 
-    let authStatus;
+    owner.sendEvent(Bluetooth.peripheralmanager_update_state_event, {
+      manager: mgr,
+      state
+    });
+
+    let status;
     if (device.sdkVersion < '13.0') {
-      const status = CBPeripheralManager.authorizationStatus();
-      switch (status) {
+      const value = CBPeripheralManager.authorizationStatus();
+      switch (value) {
         case CBPeripheralManagerAuthorizationStatus.Authorized:
-          authStatus = 'authorized';
+          status = 'authorized';
         case CBPeripheralManagerAuthorizationStatus.Denied:
-          authStatus = 'denied';
+          status = 'denied';
         case CBPeripheralManagerAuthorizationStatus.Restricted:
-          authStatus = 'restricted';
+          status = 'restricted';
         default:
-          authStatus = 'undetermined';
+          status = 'undetermined';
       }
     }
     // else if (device.sdkVersion >= '13.0') {
@@ -96,10 +101,8 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     //   }
     // }
 
-    owner.sendEvent(Bluetooth.peripheralmanager_update_state_event, {
-      manager: mgr,
-      state,
-      authStatus
+    owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
+      status
     });
   }
 

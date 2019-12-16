@@ -26,17 +26,15 @@ export class BluetoothService extends Observable {
   static AppServiceUUID = '9358ac8f-6343-4a31-b4e0-4b13a2b45d86';
   static PushTrackers = new ObservableArray<PushTracker>();
   static SmartDrives = new ObservableArray<SmartDrive>();
-
-  public static advertise_success = 'advertise_success';
-  public static advertise_error = 'advertise_error';
-  public static pushtracker_added = 'pushtracker_added';
-  public static pushtracker_connected = 'pushtracker_connected';
-  public static pushtracker_disconnected = 'pushtracker_disconnected';
-  public static smartdrive_connected = 'smartdrive_connected';
-  public static smartdrive_disconnected = 'smartdrive_disconnected';
-  public static pushtracker_status_changed = 'pushtracker_status_changed';
-  public static centralmanager_updated_state_event =
-    'centralmanager_updated_state_event';
+  static advertise_success = 'advertise_success';
+  static advertise_error = 'advertise_error';
+  static pushtracker_added = 'pushtracker_added';
+  static pushtracker_connected = 'pushtracker_connected';
+  static pushtracker_disconnected = 'pushtracker_disconnected';
+  static smartdrive_connected = 'smartdrive_connected';
+  static smartdrive_disconnected = 'smartdrive_disconnected';
+  static pushtracker_status_changed = 'pushtracker_status_changed';
+  static bluetooth_authorization_event = 'bluetooth_authorization_event';
 
   /**
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
@@ -181,12 +179,14 @@ export class BluetoothService extends Observable {
       this
     );
 
-    // iOS ONLY event
-    this._bluetooth.on(
-      Bluetooth.centralmanager_updated_state_event,
-      this.onCentralManagerUpdatedState,
-      this
-    );
+    // iOS ONLY event for SDK 13x+
+    if (isIOS) {
+      this._bluetooth.on(
+        Bluetooth.bluetooth_authorization_event,
+        this.onBluetoothAuthEvent,
+        this
+      );
+    }
   }
 
   clearEventListeners() {
@@ -487,8 +487,8 @@ export class BluetoothService extends Observable {
     // nothing
   }
 
-  private onCentralManagerUpdatedState(args: any) {
-    Log.D('Central Manager Updated State', args.data);
+  private onBluetoothAuthEvent(args: any) {
+    Log.D('Bluetooth Auth Event', args.data);
   }
 
   private onBondStatusChange(args: any): void {

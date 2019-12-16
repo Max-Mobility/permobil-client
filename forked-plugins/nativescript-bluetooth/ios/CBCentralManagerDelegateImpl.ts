@@ -284,22 +284,24 @@ export class CBCentralManagerDelegateImpl extends NSObject
       return;
     }
 
-    let authStatus;
-    // check the auth state here - not sure if this event emits when the auth status changes on the centralmanager or if this is just STATE
+    owner.sendEvent(Bluetooth.centralmanager_updated_state_event, {
+      manager: central,
+      state: central.state
+    });
+
+    let status;
+    // checking the auth state of the Manager to emit the authorization event
+    // so the app can know the auth/permission
     if (device.sdkVersion < '13.0') {
-      const status = (central as any).authorizationStatus(); // this is pre iOS 13 so the declaration doesn't include it anymore
-      const value = this._checkCentralAuthStatus(status);
-      authStatus = value;
+      const value = CBPeripheralManager.authorizationStatus();
+      status = this._checkCentralAuthStatus(value);
     } else if (device.sdkVersion >= '13.0') {
-      const status = central.authorization;
-      const value = this._checkCentralAuthStatus(status);
-      authStatus = value;
+      const value = central.authorization;
+      status = this._checkCentralAuthStatus(value);
     }
 
-    owner.sendEvent('centralmanager_updated_state_event', {
-      manager: central,
-      state: central.state,
-      authStatus
+    owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
+      status
     });
   }
 

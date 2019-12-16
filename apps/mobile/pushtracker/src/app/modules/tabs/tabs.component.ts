@@ -276,10 +276,14 @@ export class TabsComponent {
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
     );
-    this._bluetoothService.on(
-      BluetoothService.centralmanager_updated_state_event,
-      this.onCentralManagerUpdatedState.bind(this)
-    );
+
+    // iOS ONLY event
+    if (isIOS) {
+      this._bluetoothService.on(
+        BluetoothService.bluetooth_authorization_event,
+        this.onBluetoothAuthEvent.bind(this)
+      );
+    }
   }
 
   private unregisterBluetoothEvents() {
@@ -296,10 +300,13 @@ export class TabsComponent {
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
     );
-    this._bluetoothService.off(
-      BluetoothService.centralmanager_updated_state_event,
-      this.onCentralManagerUpdatedState.bind(this)
-    );
+
+    if (isIOS) {
+      this._bluetoothService.off(
+        BluetoothService.bluetooth_authorization_event,
+        this.onBluetoothAuthEvent.bind(this)
+      );
+    }
   }
 
   private onBluetoothAdvertiseError(args: any) {
@@ -564,14 +571,14 @@ export class TabsComponent {
     this.snackbar.simple(msg);
   }
 
-  private onCentralManagerUpdatedState(args: any) {
-    Log.D(TabsComponent.name, 'onCentralManagerUpdatedState', args.data);
+  private onBluetoothAuthEvent(args: any) {
+    Log.D(TabsComponent.name, 'onBluetoothAuthEvent', args.data);
     if (
       this.user &&
       this.user.data.control_configuration ===
         CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
-      if (args.data.authStatus === 'authorized') {
+      if (args.data.status === 'authorized') {
         // we can advertise now
         this._startAdvertising();
       } else {
