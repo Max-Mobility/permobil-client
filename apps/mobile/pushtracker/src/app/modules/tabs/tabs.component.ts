@@ -190,7 +190,7 @@ export class TabsComponent {
               this.configureBluetooth();
             }
           } else if (isIOS) {
-            const iosPerms = await this._bluetoothService.getIOSPermissions()
+            const iosPerms = await this._bluetoothService.getIOSPermissions();
             if (iosPerms !== 'undetermined') {
               // we don't have permission to access bluetooth (because
               // the user denied those permissions!) so we need to let
