@@ -248,6 +248,7 @@ export class BluetoothService extends Observable {
     if (this.advertising) {
       return true;
     }
+    this.advertising = true;
 
     // check to make sure that bluetooth is enabled, or this will
     // always fail and we don't need to show the error
@@ -260,12 +261,14 @@ export class BluetoothService extends Observable {
         } catch (err) {
           this.sendEvent(BluetoothService.advertise_error, { error: err });
           this._logService.logException(err);
-          return false;
+          this.advertising = false;
+          throw err;
         }
       } else if (isIOS) {
         // can't do anything about it on ios
         const err = new Error('Bluetooth not Enabled');
         this.sendEvent(BluetoothService.advertise_error, { error: err });
+        this.advertising = false;
         throw err;
       }
     }
@@ -277,28 +280,26 @@ export class BluetoothService extends Observable {
     // now add them back
     this.addServices();
 
-    await this._bluetooth
-      .startAdvertising({
-        UUID: BluetoothService.AppServiceUUID,
-        settings: {
-          connectable: true
-        },
-        data: {
-          includeDeviceName: true
-        }
-      })
-      .catch(err => {
-        this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._logService.logException(err);
-      });
+    try {
+      await this._bluetooth
+        .startAdvertising({
+          UUID: BluetoothService.AppServiceUUID,
+          settings: {
+            connectable: true
+          },
+          data: {
+            includeDeviceName: true
+          }
+        });
+    } catch (err) {
+      this.advertising = false;
+      this.sendEvent(BluetoothService.advertise_error, { error: err });
+      this._logService.logException(err);
+      throw err;
+    }
 
     this._bluetooth.addService(this.AppService);
-
-    this.advertising = true;
-
     this.sendEvent(BluetoothService.advertise_success);
-
-    return true;
   }
 
   scanForAny(timeout: number = 4): Promise<any> {
@@ -468,15 +469,16 @@ export class BluetoothService extends Observable {
     return Promise.resolve();
   }
 
-  restart(): Promise<any> {
-    return this.stop()
-      .then(() => {
-        return this.advertise();
-      })
-      .catch(_ => {
-        this.initialized = false;
-        this.advertising = false;
-      });
+  async restart(): Promise<boolean> {
+    try {
+      await this.stop();
+      await this.advertise();
+      return true;
+    } catch (err) {
+      this.initialized = false;
+      this.advertising = false;
+      return false;
+    }
   }
 
   // private functions

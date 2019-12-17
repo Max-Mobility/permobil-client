@@ -28,7 +28,6 @@ export class DeviceSetupComponent {
   CURRENT_THEME: string;
   user: PushTrackerUser;
   slide = undefined;
-  bluetoothAdvertised = false;
   pushTracker: PushTracker;
   // Done button
   paired: boolean = false;
@@ -82,7 +81,7 @@ export class DeviceSetupComponent {
       // Check for already connected PushTrackers
       this.onPushTrackerConnected();
 
-      if (!this.pushTracker && !this.bluetoothAdvertised) {
+      if (!this.pushTracker) {
         this._logService.logBreadCrumb(
           DeviceSetupComponent.name,
           'Asking for Bluetooth Permission'
@@ -101,7 +100,6 @@ export class DeviceSetupComponent {
           .catch(err => {
             this._logService.logException(err);
           });
-        this.bluetoothAdvertised = true;
       }
 
       this._bluetoothService.on(
