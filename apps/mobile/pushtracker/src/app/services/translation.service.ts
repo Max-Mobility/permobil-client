@@ -34,6 +34,16 @@ export class TranslationService extends Observable {
         );
       });
 
+      // if response is null be sure to log and return since we won't have any files to work with at this point.
+      if (!kinveyResponse) {
+        this._logService.logException(
+          new Error(
+            `Kinvey Query for translation files returned no response: ${kinveyQuery.toString()}`
+          )
+        );
+        return;
+      }
+
       // get the max version of each file
       const maxes = kinveyResponse.reduce((maxes, metadata) => {
         const v = metadata['_version'];
@@ -56,9 +66,9 @@ export class TranslationService extends Observable {
 
       const files = [];
       // do we need to download any language files?
-      if (kinveyResponse && kinveyResponse.length) {
-        for (let i = 0; i < kinveyResponse.length; i++) {
-          const f = kinveyResponse[i];
+      if (fileMetadatas && fileMetadatas.length) {
+        for (let i = 0; i < fileMetadatas.length; i++) {
+          const f = fileMetadatas[i];
           this._logService.logBreadCrumb(
             TranslationService.name,
             `Downloading language file update ${f['_filename']} version ${f['_version']}`
@@ -67,7 +77,7 @@ export class TranslationService extends Observable {
           const dl = await TranslationService.download(f).catch(err => {
             this._logService.logBreadCrumb(
               TranslationService.name,
-              'Could not download language files: ' + err
+              `Could not download language files: ${err.toString()}`
             );
             // clear out the data - we couldn't save the file
             delete this.currentVersions[f.name];
@@ -79,7 +89,7 @@ export class TranslationService extends Observable {
 
       // now that we have downloaded the files, write them to disk
       // and update our stored metadata
-      if (files && files.length) {
+      if (files.length >= 1) {
         files.forEach(f => {
           this.currentVersions[f.name] = {
             version: f.version,
@@ -149,7 +159,7 @@ export class TranslationService extends Observable {
     });
   }
 
-  private static async download(f: any): Promise<DownloadedFile | null> {
+  private static async download(f: any) {
     let url = f['_downloadURL'];
     // make sure they're https!
     if (!url.startsWith('https:')) {
@@ -166,29 +176,5 @@ export class TranslationService extends Observable {
           `Could not download ${f['_filename']}: ${err.toString()}`
         );
       });
-
-    const fileData = File.fromPath(file.path)
-      .readText()
-      .catch(err => {
-        throw new Error(
-          `Could not read text from file @ ${file.path} - ${err}`
-        );
-      });
-
-    return new DownloadedFile(
-      f['_version'],
-      f['_filename'],
-      f['app_name'],
-      fileData
-    );
   }
-}
-
-class DownloadedFile {
-  constructor(
-    public version: string,
-    public name: string,
-    public app_name: string,
-    public data: any
-  ) {}
 }
