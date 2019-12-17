@@ -431,15 +431,15 @@ export class BluetoothService extends Observable {
       `has perms: ${_hasPerms}`
     );
     if (isAndroid) {
-      await this._bluetooth.requestCoarseLocationPermission();
-      return true;
-    } else if (isIOS) {
-      const status = await requestPermission('bluetooth');
-      if (status === 'authorized') {
+      try {
+        await this._bluetooth.requestCoarseLocationPermission();
         return true;
-      } else {
+      } catch (err) {
         return false;
       }
+    } else if (isIOS) {
+      const status = await requestPermission('bluetooth');
+      return (status === 'authorized');
     }
   }
 
