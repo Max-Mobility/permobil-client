@@ -1,3 +1,4 @@
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes } from '../common';
 import { CBPeripheralDelegateImpl } from './CBPeripheralDelegateImpl';
 import { Bluetooth } from './ios_main';
@@ -34,9 +35,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBCentralManagerDelegateImpl.initWithOwner ---- this._owner: ${
-        this._owner
-      }`
+      `CBCentralManagerDelegateImpl.initWithOwner ---- this._owner: ${this._owner}`
     );
     // this._callback = callback;
     return this;
@@ -68,8 +67,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     }
 
     // find the peri in the array and attach the delegate to that
-    const peri = owner
-      .findPeripheral(peripheral.identifier.UUIDString);
+    const peri = owner.findPeripheral(peripheral.identifier.UUIDString);
     CLog(
       CLogTypes.info,
       `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral: cached perio: ${peri}`
@@ -202,9 +200,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
   ) {
     CLog(
       CLogTypes.info,
-      `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${
-        peripheral.name
-      } @ ${RSSI}`
+      `CBCentralManagerDelegateImpl.centralManagerDidDiscoverPeripheralAdvertisementDataRSSI ---- ${peripheral.name} @ ${RSSI}`
     );
 
     const owner = this._owner.get();
@@ -287,7 +283,25 @@ export class CBCentralManagerDelegateImpl extends NSObject
     if (!owner) {
       return;
     }
-    owner.sendEvent('centralmanager_updated_state_event', { manager: central });
+
+    owner.sendEvent(Bluetooth.centralmanager_updated_state_event, {
+      manager: central,
+      state: central.state
+    });
+
+    let status;
+    // checking the auth state of the Manager to emit the authorization event
+    // so the app can know the auth/permission
+    if (device.sdkVersion < '13.0.0') {
+      const value = CBPeripheralManager.authorizationStatus();
+      status = this._checkPeripheralManagerStatus(value);
+    } else if (device.sdkVersion >= '13.0') {
+      const value = central.authorization;
+      status = this._checkCentralManagerStatus(value);
+    }
+    owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
+      status
+    });
   }
 
   /**
@@ -340,5 +354,33 @@ export class CBCentralManagerDelegateImpl extends NSObject
       manager: central,
       dict
     });
+  }
+
+  private _checkCentralManagerStatus(value: CBManagerAuthorization) {
+    switch (value) {
+      case CBManagerAuthorization.AllowedAlways:
+        return 'authorized';
+      case CBManagerAuthorization.Denied:
+        return 'denied';
+      case CBManagerAuthorization.Restricted:
+        return 'restricted';
+      default:
+        return 'undetermined';
+    }
+  }
+
+  private _checkPeripheralManagerStatus(
+    value: CBPeripheralManagerAuthorizationStatus
+  ) {
+    switch (value) {
+      case CBPeripheralManagerAuthorizationStatus.Authorized:
+        return 'authorized';
+      case CBPeripheralManagerAuthorizationStatus.Denied:
+        return 'denied';
+      case CBPeripheralManagerAuthorizationStatus.Restricted:
+        return 'restricted';
+      default:
+        return 'undetermined';
+    }
   }
 }

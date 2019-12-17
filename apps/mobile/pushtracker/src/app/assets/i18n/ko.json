@@ -1,636 +1,629 @@
 {
-	"actions": {
-		"keep-both-settings": "",
-		"overwrite-local-settings": "",
-		"overwrite-remote-settings": ""
-	},
-	"activity-tab-component": {
-		"day": "",
-		"month": "",
-		"title": "",
-		"week": ""
-	},
-	"app-info-component": {
-		"sections": {
-			"0": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			},
-			"1": {
-				"text": "",
-				"title": ""
-			},
-			"2": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			},
-			"3": {
-				"text": "",
-				"title": ""
-			},
-			"4": {
-				"lottie": "",
-				"text": "",
-				"title": ""
-			},
-			"5": {
-				"text": "",
-				"title": ""
-			}
-		},
-		"title": ""
-	},
-	"bluetooth": {
-		"service-failure": ""
-	},
-	"configuration": {
-		"pushtracker-e2-with-smartdrive": "",
-		"pushtracker-with-smartdrive": "",
-		"switch-control-with-smartdrive": "",
-		"title": ""
-	},
-	"days": {
-		"friday": "",
-		"monday": "",
-		"saturday": "",
-		"sunday": "",
-		"thursday": "",
-		"tuesday": "",
-		"wednesday": ""
-	},
-	"days-abbreviated": {
-		"friday": "",
-		"monday": "",
-		"saturday": "",
-		"sunday": "",
-		"thursday": "",
-		"tuesday": "",
-		"wednesday": ""
-	},
-	"device-setup": {
-		"connection-successful": "",
-		"do-later": "",
-		"done": "",
-		"e2": {
-			"authorization-sent": "",
-			"connecting": "",
-			"failures": {
-				"app-not-installed": "",
-				"bluetooth": "",
-				"connect": "",
-				"none-found": "",
-				"none-selected": "",
-				"scanning": "",
-				"sending": ""
-			},
-			"finding-app": "",
-			"finding-devices": "",
-			"found-pairing-info": "",
-			"must-select-error": {
-				"message": "",
-				"title": ""
-			},
-			"repair": "",
-			"scanning": "",
-			"select-device": "",
-			"sending-authorization": ""
-		},
-		"finish": "",
-		"next": "",
-		"pairing": "",
-		"previous": "",
-		"pushtracker-e2-with-smartdrive": {
-			"AndroidText": "",
-			"IOSText": "",
-			"IconText": "",
-			"Image": "",
-			"Label": ""
-		},
-		"pushtracker-with-smartdrive": {
-			"IconText": "",
-			"Image": "",
-			"Label": "",
-			"Text": ""
-		},
-		"retry": "",
-		"skip": "",
-		"title": "",
-		"waiting-for-pairing-request": ""
-	},
-	"dialogs": {
-		"camera": "",
-		"cancel": "",
-		"close": "",
-		"confirm": "",
-		"confirm-photo-delete": "",
-		"no": "",
-		"ok": "",
-		"sms": "",
-		"success": "",
-		"warning": "",
-		"yes": "",
-		"yes-delete": "",
-		"yes-login": ""
-	},
-	"failures": {
-		"permissions": ""
-	},
-	"general": {
-		"acceleration": "",
-		"afternoon": "",
-		"birthday": "",
-		"cancel": "",
-		"chair-type": "",
-		"change-pass": "",
-		"check-email": "",
-		"coast-time": "",
-		"coast-time-description": "",
-		"day": "",
-		"disable-power-assist-beep": "",
-		"disabled": "",
-		"display": "",
-		"distance": "",
-		"distance-description": "",
-		"drive-distance": "",
-		"email": "",
-		"email-error": "",
-		"email-invalid": "",
-		"email-required": "",
-		"email-sent": "",
-		"enabled": "",
-		"error": "",
-		"ez-on": "",
-		"first-name": "",
-		"forgot-password": "",
-		"gender": "",
-		"height": "",
-		"height-guess": "",
-		"home": "",
-		"journey": "",
-		"kilometers": "",
-		"km-driven-today": "",
-		"km-this-week": "",
-		"km-today": "",
-		"last-name": "",
-		"loading": "",
-		"login": "",
-		"logout": "",
-		"max-speed": "",
-		"meters": "",
-		"mi": "",
-		"miles": "",
-		"miles-driven-today": "",
-		"miles-this-week": "",
-		"miles-today": "",
-		"mode": "",
-		"month": "",
-		"odometer": "",
-		"odometer-km": "",
-		"ok": "",
-		"password": "",
-		"password-change": "",
-		"password-change-confirm": "",
-		"password-required": "",
-		"power-assist-beep": "",
-		"profile": "",
-		"push-count": "",
-		"push-count-description": "",
-		"pushes": "",
-		"pushes-today": "",
-		"pushtracker-connected": "",
-		"pushtracker-daily-activity-unavailable": "",
-		"pushtracker-disconnected": "",
-		"pushtracker-paired": "",
-		"reset-acct": "",
-		"reset-pass-desc": "",
-		"roll": "",
-		"sign-in-error-1": "",
-		"sign-in-error-2": "",
-		"sign-out": "",
-		"sign-out-confirm": "",
-		"signing-in": "",
-		"smartdrive": "",
-		"start": "",
-		"stop": "",
-		"submit": "",
-		"submitting": "",
-		"success": "",
-		"switch-control-max-speed": "",
-		"switch-control-mode": "",
-		"tap-sensitivity": "",
-		"time-format": "",
-		"today": "",
-		"travel": "",
-		"units": "",
-		"user-name": "",
-		"week": "",
-		"weight": "",
-		"weight-guess": ""
-	},
-	"home-tab": {
-		"coast-for": "",
-		"day-names": [
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			""
-		],
-		"going-strong": "",
-		"kilometers-to-go": "",
-		"km-per-day": "",
-		"left": "",
-		"mi-per-day": "",
-		"miles-to-go": "",
-		"off-to-a-good-start": "",
-		"only": "",
-		"reached-all-goals": "",
-		"reached-coast-time-goal": "",
-		"reached-distance-goal": "",
-		"seconds": "",
-		"seconds-left": "",
-		"seconds-per-day": "",
-		"title": "",
-		"travel": "",
-		"welcome-back": ""
-	},
-	"journey-tab": {
-		"afternoon": "",
-		"drive": "",
-		"evening": "",
-		"morning": "",
-		"night": "",
-		"no-data-available": "",
-		"no-more-data": "",
-		"pushes": "",
-		"roll": "",
-		"title": "",
-		"today": "",
-		"yesterday": ""
-	},
-	"languages": {
-		"de": "",
-		"en": "",
-		"es": "",
-		"fr": "",
-		"it": "",
-		"ja": "",
-		"ko": "",
-		"nl": "",
-		"ru": "",
-		"sv": "",
-		"zh-CN": ""
-	},
-	"months": {
-		"april": "",
-		"august": "",
-		"december": "",
-		"february": "",
-		"january": "",
-		"july": "",
-		"june": "",
-		"march": "",
-		"may": "",
-		"november": "",
-		"october": "",
-		"september": ""
-	},
-	"months-abbreviated": {
-		"april": "",
-		"august": "",
-		"december": "",
-		"february": "",
-		"january": "",
-		"july": "",
-		"june": "",
-		"march": "",
-		"may": "",
-		"november": "",
-		"october": "",
-		"september": ""
-	},
-	"my-activity-component": {
-		"title": ""
-	},
-	"ota": {
-		"action": {
-			"cancel": "",
-			"force": "",
-			"pause": "",
-			"resume": "",
-			"retry": "",
-			"scan": "",
-			"start": ""
-		},
-		"pt": {
-			"state": {
-				"already-uptodate": "",
-				"awaiting-ready": "",
-				"awaiting-version": "",
-				"canceled": "",
-				"canceling": "",
-				"complete": "",
-				"detected-pt": "",
-				"failed": "",
-				"not-started": "",
-				"rebooting": "",
-				"timeout": "",
-				"updating": "",
-				"verifying-update": ""
-			}
-		},
-		"sd": {
-			"state": {
-				"already-uptodate": "",
-				"awaiting-ble-ready": "",
-				"awaiting-connection": "",
-				"awaiting-mcu-ready": "",
-				"awaiting-versions": "",
-				"canceled": "",
-				"canceling": "",
-				"comm-failure": "",
-				"complete": "",
-				"detected-sd": "",
-				"failed": "",
-				"not-started": "",
-				"rebooting-ble": "",
-				"rebooting-mcu": "",
-				"timeout": "",
-				"updating-ble": "",
-				"updating-mcu": "",
-				"verifying": ""
-			}
-		},
-		"warnings": {
-			"leaving": {
-				"message": "",
-				"title": ""
-			},
-			"multiple-devices": {
-				"message": "",
-				"title": ""
-			},
-			"starting": {
-				"message": "",
-				"title": ""
-			}
-		}
-	},
-	"permissions-reasons": {
-		"coarse-location": ""
-	},
-	"permissions-request": {
-		"title": ""
-	},
-	"profile-settings": {
-		"connected-a-smartdrive": "",
-		"detected-a-smartdrive": "",
-		"error-sending-settings": "",
-		"language": "",
-		"scanning-for-smartdrives": "",
-		"sending-settings": "",
-		"sync-successful": "",
-		"theme": "",
-		"time-format": "",
-		"watch-status-alert-message": {
-			"busy": "",
-			"connected": "",
-			"disconnected": "",
-			"paired": "",
-			"ready": "",
-			"unknown": ""
-		},
-		"watch-status-alert-title": ""
-	},
-	"profile-tab": {
-		"about-you": "",
-		"activity-goals": "",
-		"cancel": "",
-		"cancel-scan": "",
-		"chair-make": "",
-		"chair-makes": {
-			"colours": "",
-			"invacare-kuschall": "",
-			"karman": "",
-			"ki": "",
-			"motion-composites": "",
-			"other": "",
-			"panthera": "",
-			"quickie-sopur-rgk": "",
-			"tilite": "",
-			"top-end": ""
-		},
-		"chair-type": "",
-		"chair-types": {
-			"folding": "",
-			"pediatric": "",
-			"rigid": ""
-		},
-		"coast-time-units": "",
-		"configuration-change-dialog-message": "",
-		"configuration-change-dialog-title": "",
-		"configurations": {
-			"pushtracker-e2-with-smartdrive": "",
-			"pushtracker-with-smartdrive": "",
-			"switch-control-with-smartdrive": ""
-		},
-		"control-configuration": "",
-		"device-serial-numbers": "",
-		"distance-units-km": "",
-		"distance-units-mi": "",
-		"edit-first-name": "",
-		"edit-last-name": "",
-		"first-name": "",
-		"gender": {
-			"female": "",
-			"male": "",
-			"non-binary": "",
-			"other": "",
-			"prefer-not-to-say": ""
-		},
-		"last-name": "",
-		"ok": "",
-		"per-day": "",
-		"pushtracker": "",
-		"pushtracker-e2": "",
-		"pushtracker-e2-serial-number": "",
-		"pushtracker-e2-serial-number-dialog-message": "",
-		"pushtracker-e2-serial-number-dialog-title": "",
-		"pushtracker-serial-number": "",
-		"scan-msg": "",
-		"sd-or-pt": "",
-		"set-goal": "",
-		"smartdrive": "",
-		"smartdrive-serial-number": "",
-		"title": ""
-	},
-	"push-settings-different": {
-		"message": "",
-		"title": ""
-	},
-	"sd": {
-		"switch-settings": {
-			"mode": {
-				"latching": "",
-				"momentary": ""
-			}
-		}
-	},
-	"settings-component": {
-		"no-smartdrive-message": "",
-		"no-smartdrive-title": "",
-		"scan-again": "",
-		"sync-button": "",
-		"title": ""
-	},
-	"settings-different": {
-		"message": "",
-		"title": ""
-	},
-	"sign-up": {
-		"birthdate-required": "",
-		"creating-account": "",
-		"first-name-required": "",
-		"last-name-required": "",
-		"must-agree-and-read": "",
-		"sign-up-error": "",
-		"sign-up-success": "",
-		"title": "",
-		"user-exists": ""
-	},
-	"support-component": {
-		"faqs": {
-			"0": {
-				"a": "",
-				"q": ""
-			},
-			"1": {
-				"a": "",
-				"q": ""
-			},
-			"2": {
-				"a": "",
-				"q": ""
-			},
-			"3": {
-				"a": "",
-				"q": ""
-			},
-			"4": {
-				"a": "",
-				"q": ""
-			}
-		},
-		"title": ""
-	},
-	"switch-control-settings-different": {
-		"message": "",
-		"title": ""
-	},
-	"units": {
-		"centimeters": "",
-		"cm": "",
-		"feet-inches": "",
-		"ft": "",
-		"in": "",
-		"kg": "",
-		"kilograms": "",
-		"kilometers": "",
-		"km": "",
-		"lbs": "",
-		"mi": "",
-		"miles": "",
-		"pounds": "",
-		"pushes": "",
-		"s": "",
-		"time": {
-			"am-pm": "",
-			"military": ""
-		}
-	},
-	"updates-info-component": {
-		"title": ""
-	},
-	"user": {
-		"accept": {
-			"accept-error": {
-				"message": "",
-				"title": ""
-			},
-			"agreement-button": "",
-			"header": "",
-			"privacy-brief": "",
-			"privacy-button": "",
-			"privacy-policy": "",
-			"privacy-policy-title": "",
-			"user-agreement": "",
-			"user-agreement-title": ""
-		},
-		"consent": {
-			"beta-test": "",
-			"header": "",
-			"product-development": "",
-			"research": ""
-		},
-		"consent-form-title": "",
-		"end-user-agreement-site": "",
-		"privacy-policy-contact-email": "",
-		"privacy-policy-site": ""
-	},
-	"wearos-comms": {
-		"errors": {
-			"bluetooth-error": {
-				"message": "",
-				"title": ""
-			},
-			"pte2-connection-error": {
-				"message": "",
-				"title": ""
-			},
-			"pte2-not-installed": {
-				"message": "",
-				"title": ""
-			},
-			"pte2-not-setup": {
-				"message": "",
-				"title": ""
-			},
-			"pte2-scan-error": {
-				"message": "",
-				"title": ""
-			},
-			"pte2-send-error": {
-				"message": "",
-				"title": ""
-			}
-		},
-		"messages": {
-			"pte2-sync-successful": "",
-			"synchronizing": "",
-			"synchronizing-long": ""
-		}
-	},
-	"wireless-updates": {
-		"error": "",
-		"messages": {
-			"more-than-one-pushtracker-connected": "",
-			"more-than-one-smartdrive-detected": "",
-			"no-pushtracker-detected": "",
-			"no-smartdrives-detected": "",
-			"pushtracker-connected": "",
-			"pushtracker-disconnected": ""
-		},
-		"state": {
-			"firmware-download-failed": "",
-			"more-than-one-pushtracker-detected": "",
-			"more-than-one-smartdrive-detected": "",
-			"no-pushtracker-detected": "",
-			"no-smartdrives-detected": ""
-		},
-		"title": ""
-	}
+  "actions": {
+    "keep-both-settings": "",
+    "overwrite-local-settings": "",
+    "overwrite-remote-settings": ""
+  },
+  "activity-tab-component": {
+    "day": "",
+    "month": "",
+    "title": "",
+    "week": ""
+  },
+  "app-info-component": {
+    "sections": {
+      "0": {
+        "lottie": "",
+        "text": "",
+        "title": ""
+      },
+      "1": {
+        "text": "",
+        "title": ""
+      },
+      "2": {
+        "lottie": "",
+        "text": "",
+        "title": ""
+      },
+      "3": {
+        "text": "",
+        "title": ""
+      },
+      "4": {
+        "lottie": "",
+        "text": "",
+        "title": ""
+      },
+      "5": {
+        "text": "",
+        "title": ""
+      }
+    },
+    "title": ""
+  },
+  "bluetooth": {
+	"service-failure": "",
+	"ios-open-settings": ""
+  },
+  "configuration": {
+    "pushtracker-e2-with-smartdrive": "",
+    "pushtracker-with-smartdrive": "",
+    "switch-control-with-smartdrive": "",
+    "title": ""
+  },
+  "days": {
+    "friday": "",
+    "monday": "",
+    "saturday": "",
+    "sunday": "",
+    "thursday": "",
+    "tuesday": "",
+    "wednesday": ""
+  },
+  "days-abbreviated": {
+    "friday": "",
+    "monday": "",
+    "saturday": "",
+    "sunday": "",
+    "thursday": "",
+    "tuesday": "",
+    "wednesday": ""
+  },
+  "device-setup": {
+    "connection-successful": "",
+    "do-later": "",
+    "done": "",
+    "e2": {
+      "authorization-sent": "",
+      "connecting": "",
+      "failures": {
+        "app-not-installed": "",
+        "bluetooth": "",
+        "connect": "",
+        "none-found": "",
+        "none-selected": "",
+        "scanning": "",
+        "sending": ""
+      },
+      "finding-app": "",
+      "finding-devices": "",
+      "found-pairing-info": "",
+      "must-select-error": {
+        "message": "",
+        "title": ""
+      },
+      "repair": "",
+      "scanning": "",
+      "select-device": "",
+      "sending-authorization": ""
+    },
+    "finish": "",
+    "next": "",
+    "pairing": "",
+    "previous": "",
+    "pushtracker-e2-with-smartdrive": {
+      "AndroidText": "",
+      "IOSText": "",
+      "IconText": "",
+      "Image": "",
+      "Label": ""
+    },
+    "pushtracker-with-smartdrive": {
+      "IconText": "",
+      "Image": "",
+      "Label": "",
+      "Text": ""
+    },
+    "retry": "",
+    "skip": "",
+    "title": "",
+    "waiting-for-pairing-request": ""
+  },
+  "dialogs": {
+    "camera": "",
+    "cancel": "",
+    "close": "",
+    "confirm": "",
+    "confirm-photo-delete": "",
+    "no": "",
+    "ok": "",
+    "sms": "",
+    "success": "",
+    "warning": "",
+    "yes": "",
+    "yes-delete": "",
+    "yes-login": ""
+  },
+  "failures": {
+    "permissions": ""
+  },
+  "general": {
+    "acceleration": "",
+    "afternoon": "",
+    "birthday": "",
+    "cancel": "",
+    "chair-type": "",
+    "change-pass": "",
+    "check-email": "",
+    "coast-time": "",
+    "coast-time-description": "",
+    "day": "",
+    "disable-power-assist-beep": "",
+    "disabled": "",
+    "display": "",
+    "distance": "",
+    "distance-description": "",
+    "drive-distance": "",
+    "email": "",
+    "email-error": "",
+    "email-invalid": "",
+    "email-required": "",
+    "email-sent": "",
+    "enabled": "",
+    "error": "",
+    "ez-on": "",
+    "first-name": "",
+    "forgot-password": "",
+    "gender": "",
+    "height": "",
+    "height-guess": "",
+    "home": "",
+    "journey": "",
+    "kilometers": "",
+    "km-driven-today": "",
+    "km-this-week": "",
+    "km-today": "",
+    "last-name": "",
+    "loading": "",
+    "login": "",
+    "logout": "",
+    "max-speed": "",
+    "meters": "",
+    "mi": "",
+    "miles": "",
+    "miles-driven-today": "",
+    "miles-this-week": "",
+    "miles-today": "",
+    "mode": "",
+    "month": "",
+    "odometer": "",
+    "odometer-km": "",
+    "ok": "",
+    "password": "",
+    "password-change": "",
+    "password-change-confirm": "",
+    "password-required": "",
+    "power-assist-beep": "",
+    "profile": "",
+    "push-count": "",
+    "push-count-description": "",
+    "pushes": "",
+    "pushes-today": "",
+    "pushtracker-connected": "",
+    "pushtracker-daily-activity-unavailable": "",
+    "pushtracker-disconnected": "",
+    "pushtracker-paired": "",
+    "reset-acct": "",
+    "reset-pass-desc": "",
+    "roll": "",
+    "sign-in-error-1": "",
+    "sign-in-error-2": "",
+    "sign-out": "",
+    "sign-out-confirm": "",
+    "signing-in": "",
+    "smartdrive": "",
+    "start": "",
+    "stop": "",
+    "submit": "",
+    "submitting": "",
+    "success": "",
+    "switch-control-max-speed": "",
+    "switch-control-mode": "",
+    "tap-sensitivity": "",
+    "time-format": "",
+    "today": "",
+    "travel": "",
+    "units": "",
+    "user-name": "",
+    "week": "",
+    "weight": "",
+    "weight-guess": ""
+  },
+  "home-tab": {
+    "coast-for": "",
+    "day-names": ["", "", "", "", "", "", ""],
+    "going-strong": "",
+    "kilometers-to-go": "",
+    "km-per-day": "",
+    "left": "",
+    "mi-per-day": "",
+    "miles-to-go": "",
+    "off-to-a-good-start": "",
+    "only": "",
+    "reached-all-goals": "",
+    "reached-coast-time-goal": "",
+    "reached-distance-goal": "",
+    "seconds": "",
+    "seconds-left": "",
+    "seconds-per-day": "",
+    "title": "",
+    "travel": "",
+    "welcome-back": ""
+  },
+  "journey-tab": {
+    "afternoon": "",
+    "drive": "",
+    "evening": "",
+    "morning": "",
+    "night": "",
+    "no-data-available": "",
+    "no-more-data": "",
+    "pushes": "",
+    "roll": "",
+    "title": "",
+    "today": "",
+    "yesterday": ""
+  },
+  "languages": {
+    "de": "",
+    "en": "",
+    "es": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nl": "",
+    "ru": "",
+    "sv": "",
+    "zh-CN": ""
+  },
+  "months": {
+    "april": "",
+    "august": "",
+    "december": "",
+    "february": "",
+    "january": "",
+    "july": "",
+    "june": "",
+    "march": "",
+    "may": "",
+    "november": "",
+    "october": "",
+    "september": ""
+  },
+  "months-abbreviated": {
+    "april": "",
+    "august": "",
+    "december": "",
+    "february": "",
+    "january": "",
+    "july": "",
+    "june": "",
+    "march": "",
+    "may": "",
+    "november": "",
+    "october": "",
+    "september": ""
+  },
+  "my-activity-component": {
+    "title": ""
+  },
+  "ota": {
+    "action": {
+      "cancel": "",
+      "force": "",
+      "pause": "",
+      "resume": "",
+      "retry": "",
+      "scan": "",
+      "start": ""
+    },
+    "pt": {
+      "state": {
+        "already-uptodate": "",
+        "awaiting-ready": "",
+        "awaiting-version": "",
+        "canceled": "",
+        "canceling": "",
+        "complete": "",
+        "detected-pt": "",
+        "failed": "",
+        "not-started": "",
+        "rebooting": "",
+        "timeout": "",
+        "updating": "",
+        "verifying-update": ""
+      }
+    },
+    "sd": {
+      "state": {
+        "already-uptodate": "",
+        "awaiting-ble-ready": "",
+        "awaiting-connection": "",
+        "awaiting-mcu-ready": "",
+        "awaiting-versions": "",
+        "canceled": "",
+        "canceling": "",
+        "comm-failure": "",
+        "complete": "",
+        "detected-sd": "",
+        "failed": "",
+        "not-started": "",
+        "rebooting-ble": "",
+        "rebooting-mcu": "",
+        "timeout": "",
+        "updating-ble": "",
+        "updating-mcu": "",
+        "verifying": ""
+      }
+    },
+    "warnings": {
+      "leaving": {
+        "message": "",
+        "title": ""
+      },
+      "multiple-devices": {
+        "message": "",
+        "title": ""
+      },
+      "starting": {
+        "message": "",
+        "title": ""
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": ""
+  },
+  "permissions-request": {
+    "title": ""
+  },
+  "profile-settings": {
+    "connected-a-smartdrive": "",
+    "detected-a-smartdrive": "",
+    "error-sending-settings": "",
+    "language": "",
+    "scanning-for-smartdrives": "",
+    "sending-settings": "",
+    "sync-successful": "",
+    "theme": "",
+    "time-format": "",
+    "watch-status-alert-message": {
+      "busy": "",
+      "connected": "",
+      "disconnected": "",
+      "paired": "",
+      "ready": "",
+      "unknown": ""
+    },
+    "watch-status-alert-title": ""
+  },
+  "profile-tab": {
+    "about-you": "",
+    "activity-goals": "",
+    "cancel": "",
+    "cancel-scan": "",
+    "chair-make": "",
+    "chair-makes": {
+      "colours": "",
+      "invacare-kuschall": "",
+      "karman": "",
+      "ki": "",
+      "motion-composites": "",
+      "other": "",
+      "panthera": "",
+      "quickie-sopur-rgk": "",
+      "tilite": "",
+      "top-end": ""
+    },
+    "chair-type": "",
+    "chair-types": {
+      "folding": "",
+      "pediatric": "",
+      "rigid": ""
+    },
+    "coast-time-units": "",
+    "configuration-change-dialog-message": "",
+    "configuration-change-dialog-title": "",
+    "configurations": {
+      "pushtracker-e2-with-smartdrive": "",
+      "pushtracker-with-smartdrive": "",
+      "switch-control-with-smartdrive": ""
+    },
+    "control-configuration": "",
+    "device-serial-numbers": "",
+    "distance-units-km": "",
+    "distance-units-mi": "",
+    "edit-first-name": "",
+    "edit-last-name": "",
+    "first-name": "",
+    "gender": {
+      "female": "",
+      "male": "",
+      "non-binary": "",
+      "other": "",
+      "prefer-not-to-say": ""
+    },
+    "last-name": "",
+    "ok": "",
+    "per-day": "",
+    "pushtracker": "",
+    "pushtracker-e2": "",
+    "pushtracker-e2-serial-number": "",
+    "pushtracker-e2-serial-number-dialog-message": "",
+    "pushtracker-e2-serial-number-dialog-title": "",
+    "pushtracker-serial-number": "",
+    "scan-msg": "",
+    "sd-or-pt": "",
+    "set-goal": "",
+    "smartdrive": "",
+    "smartdrive-serial-number": "",
+    "title": ""
+  },
+  "push-settings-different": {
+    "message": "",
+    "title": ""
+  },
+  "sd": {
+    "switch-settings": {
+      "mode": {
+        "latching": "",
+        "momentary": ""
+      }
+    }
+  },
+  "settings-component": {
+    "no-smartdrive-message": "",
+    "no-smartdrive-title": "",
+    "scan-again": "",
+    "sync-button": "",
+    "title": ""
+  },
+  "settings-different": {
+    "message": "",
+    "title": ""
+  },
+  "sign-up": {
+    "birthdate-required": "",
+    "creating-account": "",
+    "first-name-required": "",
+    "last-name-required": "",
+    "must-agree-and-read": "",
+    "sign-up-error": "",
+    "sign-up-success": "",
+    "title": "",
+    "user-exists": ""
+  },
+  "support-component": {
+    "faqs": {
+      "0": {
+        "a": "",
+        "q": ""
+      },
+      "1": {
+        "a": "",
+        "q": ""
+      },
+      "2": {
+        "a": "",
+        "q": ""
+      },
+      "3": {
+        "a": "",
+        "q": ""
+      },
+      "4": {
+        "a": "",
+        "q": ""
+      }
+    },
+    "title": ""
+  },
+  "switch-control-settings-different": {
+    "message": "",
+    "title": ""
+  },
+  "units": {
+    "centimeters": "",
+    "cm": "",
+    "feet-inches": "",
+    "ft": "",
+    "in": "",
+    "kg": "",
+    "kilograms": "",
+    "kilometers": "",
+    "km": "",
+    "lbs": "",
+    "mi": "",
+    "miles": "",
+    "pounds": "",
+    "pushes": "",
+    "s": "",
+    "time": {
+      "am-pm": "",
+      "military": ""
+    }
+  },
+  "updates-info-component": {
+    "title": ""
+  },
+  "user": {
+    "accept": {
+      "accept-error": {
+        "message": "",
+        "title": ""
+      },
+      "agreement-button": "",
+      "header": "",
+      "privacy-brief": "",
+      "privacy-button": "",
+      "privacy-policy": "",
+      "privacy-policy-title": "",
+      "user-agreement": "",
+      "user-agreement-title": ""
+    },
+    "consent": {
+      "beta-test": "",
+      "header": "",
+      "product-development": "",
+      "research": ""
+    },
+    "consent-form-title": "",
+    "end-user-agreement-site": "",
+    "privacy-policy-contact-email": "",
+    "privacy-policy-site": ""
+  },
+  "wearos-comms": {
+    "errors": {
+      "bluetooth-error": {
+        "message": "",
+        "title": ""
+      },
+      "pte2-connection-error": {
+        "message": "",
+        "title": ""
+      },
+      "pte2-not-installed": {
+        "message": "",
+        "title": ""
+      },
+      "pte2-not-setup": {
+        "message": "",
+        "title": ""
+      },
+      "pte2-scan-error": {
+        "message": "",
+        "title": ""
+      },
+      "pte2-send-error": {
+        "message": "",
+        "title": ""
+      }
+    },
+    "messages": {
+      "pte2-sync-successful": "",
+      "synchronizing": "",
+      "synchronizing-long": ""
+    }
+  },
+  "wireless-updates": {
+    "error": "",
+    "messages": {
+      "more-than-one-pushtracker-connected": "",
+      "more-than-one-smartdrive-detected": "",
+      "no-pushtracker-detected": "",
+      "no-smartdrives-detected": "",
+      "pushtracker-connected": "",
+      "pushtracker-disconnected": ""
+    },
+    "state": {
+      "firmware-download-failed": "",
+      "more-than-one-pushtracker-detected": "",
+      "more-than-one-smartdrive-detected": "",
+      "no-pushtracker-detected": "",
+      "no-smartdrives-detected": ""
+    },
+    "title": ""
+  }
 }

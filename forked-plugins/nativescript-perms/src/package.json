@@ -1,0 +1,30 @@
+{
+  "name": "nativescript-perms",
+  "version": "1.0.12",
+  "description": "Nativescript Permissions plugin.",
+  "main": "./permissions",
+  "typings": "./permissions.d.ts",
+  "nativescript": {
+    "platforms": {
+      "android": "6.2.0",
+      "ios": "6.2.0"
+    }
+  },
+  "devDependencies": {
+    "tns-core-modules": "../../../node_modules/tns-core-modules",
+    "tns-platform-declarations": "../../../node_modules/tns-platform-declarations",
+    "typescript": "../../../node_modules/typescript"
+  },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS"
+  ],
+  "bugs": {
+    "url": "https://github.com/max-mobility/nativescript-perms/issues"
+  },
+  "license": "Apache 2.0",
+  "homepage": "https://github.com/max-mobility/nativescript-perms",
+  "readmeFilename": "README.md"
+}

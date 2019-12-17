@@ -1,18 +1,17 @@
 import { Component, NgZone } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { BottomNavigation, isAndroid, ObservableArray, Page, SelectedIndexChangedEventData } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
+import { BottomNavigation, isAndroid, isIOS, Page, SelectedIndexChangedEventData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import * as LS from 'nativescript-localstorage';
-import { action, alert } from '@nativescript/core/ui/dialogs';
+import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import assign from 'lodash/assign';
+import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
-import { hasPermission, requestPermissions } from 'nativescript-permissions';
-import { APP_LANGUAGES, CONFIGURATIONS, STORAGE_KEYS } from '../../enums';
+import * as LS from 'nativescript-localstorage';
+import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
 import { PushTracker, PushTrackerUser } from '../../models';
 import { ActivityService, BluetoothService, LoggingService, PushTrackerUserService, SettingsService, SmartDriveErrorsService, SmartDriveUsageService } from '../../services';
 import { debounceRight, enableDefaultTheme, YYYY_MM_DD } from '../../utils';
@@ -35,10 +34,10 @@ interface DeferredSettings {
 })
 export class TabsComponent {
   public CONFIGURATIONS = CONFIGURATIONS;
-  bluetoothAdvertised: boolean = false;
   pushTracker: PushTracker;
   user: PushTrackerUser;
   private _debouncedSettingsAlert: any = null;
+  private _debouncedBluetoothAuthEvent: any = null;
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
   private _firstLoad = false;
@@ -71,11 +70,19 @@ export class TabsComponent {
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
 
+    this._debouncedBluetoothAuthEvent = debounce(
+      this.onBluetoothAuthEvent.bind(this),
+      500,
+      { leading: false, trailing: true }
+    );
+
     this._debouncedSettingsAlert = debounceRight(
       this.alertPushTrackerSettingsDiffer.bind(this),
       1000,
       { leading: false, trailing: true },
-      function(acc: any, args: any) { return assign(acc || {}, ...args); }
+      function(acc: any, args: any) {
+        return assign(acc || {}, ...args);
+      }
     );
 
     // Run every 10 minutes
@@ -143,36 +150,58 @@ export class TabsComponent {
       return;
     }
 
-    if (
-      this.user &&
-      this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE &&
-      !this.bluetoothAdvertised
-    ) {
-      this._logService.logBreadCrumb(
-        TabsComponent.name,
-        'Asking for Bluetooth Permission'
-      );
-      this.bluetoothAdvertised = true;
-      setTimeout(() => {
-        this.askForPermissions()
-          .then(() => {
-            this.registerBluetoothEvents();
-            this.registerPushTrackerEvents();
-            if (!this._bluetoothService.advertising) {
-              this._logService.logBreadCrumb(
-                TabsComponent.name,
-                'Starting Bluetooth'
-              );
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
+    this.registerBluetoothEvents();
+
+    setTimeout(this.configureBluetooth.bind(this), 1000);
+  }
+
+  private async configureBluetooth() {
+    try {
+      if (
+        this.user &&
+        this.user.data.control_configuration ===
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      ) {
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Configuring Bluetooth'
+        );
+
+        const hasPermission = await this._bluetoothService.hasPermissions();
+        if (hasPermission === true) {
+          this._startAdvertising();
+        } else {
+          if (isAndroid) {
+            // only show our permissions alert on android - on iOS the
+            // system has already shown the permissions request at this
+            // point, and the text for it comes from Info.plist
+            await alert({
+              title: this._translateService.instant(
+                'permissions-request.title'
+              ),
+              message: this._translateService.instant(
+                'permissions-reasons.coarse-location'
+              ),
+              okButtonText: this._translateService.instant('general.ok')
+            });
+            const perm = await this._bluetoothService.requestPermissions();
+            if (perm === true) {
+              // retry this method to start advertising
+              this.configureBluetooth();
             }
-          })
-          .catch(err => {
-            this.bluetoothAdvertised = false;
-            this._logService.logException(err);
-          });
-      }, 1000);
+          } else if (isIOS) {
+            const iosPerms = await this._bluetoothService.getIOSPermissions();
+            if (iosPerms !== 'undetermined') {
+              // we don't have permission to access bluetooth (because
+              // the user denied those permissions!) so we need to let
+              // them know to enable it in Settings and try again.
+              this._confirmToOpenSettingsOnIOS();
+            }
+          }
+        }
+      }
+    } catch (error) {
+      this._logService.logException(error);
     }
   }
 
@@ -255,64 +284,12 @@ export class TabsComponent {
     }
   }
 
-  private async askForPermissions() {
-    if (isAndroid) {
-      // determine if we have shown the permissions request
-      const hasShownRequest =
-        appSettings.getBoolean(
-          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
-        ) || false;
-      // will throw an error if permissions are denied, else will
-      // return either true or a permissions object detailing all the
-      // granted permissions. The error thrown details which
-      // permissions were rejected
-      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-      const reasons = [];
-      const activity: android.app.Activity =
-        application.android.startActivity ||
-        application.android.foregroundActivity;
-      const neededPermissions = this.permissionsNeeded.filter(
-        p =>
-          !hasPermission(p) &&
-          (activity.shouldShowRequestPermissionRationale(p) || !hasShownRequest)
-      );
-      // update the has-shown-request
-      appSettings.setBoolean(
-        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
-        true
-      );
-      const reasoning = {
-        [android.Manifest.permission
-          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
-      };
-      neededPermissions.forEach(r => {
-        reasons.push(reasoning[r]);
-      });
-      if (neededPermissions && neededPermissions.length > 0) {
-        await alert({
-          title: this._translateService.instant('permissions-request.title'),
-          message: reasons.join('\n\n'),
-          okButtonText: this._translateService.instant('general.ok')
-        });
-        try {
-          await requestPermissions(neededPermissions, () => { });
-          return true;
-        } catch (permissionsObj) {
-          const hasBlePermission =
-            permissionsObj[blePermission] || hasPermission(blePermission);
-          if (hasBlePermission) {
-            return true;
-          } else {
-            throw this._translateService.instant('failures.permissions');
-          }
-        }
-      } else if (hasPermission(blePermission)) {
-        return Promise.resolve(true);
-      } else {
-        throw this._translateService.instant('failures.permissions');
-      }
+  private _startAdvertising() {
+    this.registerPushTrackerEvents();
+    if (!this._bluetoothService.advertising) {
+      this._logService.logBreadCrumb(TabsComponent.name, 'Starting Bluetooth');
+      // start the bluetooth service
+      this._bluetoothService.advertise();
     }
   }
 
@@ -334,6 +311,14 @@ export class TabsComponent {
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
     );
+
+    // iOS ONLY event
+    if (isIOS) {
+      this._bluetoothService.on(
+        BluetoothService.bluetooth_authorization_event,
+        this._debouncedBluetoothAuthEvent
+      );
+    }
   }
 
   private unregisterBluetoothEvents() {
@@ -350,6 +335,13 @@ export class TabsComponent {
       BluetoothService.pushtracker_disconnected,
       this.onPushTrackerDisconnected.bind(this)
     );
+
+    if (isIOS) {
+      this._bluetoothService.off(
+        BluetoothService.bluetooth_authorization_event,
+        this._debouncedBluetoothAuthEvent
+      );
+    }
   }
 
   private onBluetoothAdvertiseError(args: any) {
@@ -394,7 +386,8 @@ export class TabsComponent {
 
   onPushTrackerVersionEvent(args) {
     const pt = args.object as PushTracker;
-    const smartDriveUpToDate = !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
+    const smartDriveUpToDate =
+      !pt.hasAllVersionInfo() || pt.isSmartDriveUpToDate('2.0');
     const ptUpToDate = pt.isUpToDate('2.0');
     // Alert user if they are connected to a pushtracker which is out
     // of date -
@@ -470,10 +463,16 @@ export class TabsComponent {
             'DailyInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save DailyInfo from PushTracker in Kinvey'
+          );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save DailyInfo from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save DailyInfo from PushTracker in Kinvey'
+        );
       });
 
     // Request distance information from PushTracker
@@ -517,7 +516,10 @@ export class TabsComponent {
             'Distance from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save Distance from PushTracker in Kinvey'
+          );
         // this._logService.logException(
         //   new Error(
         //     '[TabsComponent] Failed to save Distance from PushTracker in Kinvey'
@@ -525,7 +527,10 @@ export class TabsComponent {
         // );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save Distance from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save Distance from PushTracker in Kinvey'
+        );
         // this._logService.logException(err);
       });
   }
@@ -571,7 +576,10 @@ export class TabsComponent {
             'ErrorInfo from PushTracker successfully saved in Kinvey'
           );
         else
-          this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            'Failed to save ErrorInfo from PushTracker in Kinvey'
+          );
         // this._logService.logException(
         //   new Error(
         //     '[' +
@@ -582,7 +590,10 @@ export class TabsComponent {
         // );
       })
       .catch(err => {
-        this._logService.logBreadCrumb(TabsComponent.name, 'Failed to save ErrorInfo from PushTracker in Kinvey');
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'Failed to save ErrorInfo from PushTracker in Kinvey'
+        );
         // this._logService.logException(err);
       });
   }
@@ -593,6 +604,24 @@ export class TabsComponent {
       this._translateService.instant('general.pushtracker-disconnected') +
       `: ${pt.address}`;
     this.snackbar.simple(msg);
+  }
+
+  private onBluetoothAuthEvent(args: any) {
+    Log.D(TabsComponent.name, 'onBluetoothAuthEvent', args.data);
+
+    if (
+      this.user &&
+      this.user.data.control_configuration ===
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+    ) {
+      if (args.data.status === 'authorized') {
+        // we can advertise now
+        this._startAdvertising();
+      } else {
+        // if we're here the permission hasn't been granted
+        this._confirmToOpenSettingsOnIOS();
+      }
+    }
   }
 
   /**
@@ -676,19 +705,40 @@ export class TabsComponent {
     switch (selection) {
       case this._translateService.instant('actions.overwrite-local-settings'):
         this._zone.run(() => {
-          this._settingsService.settings.copy(settings);
-          this._settingsService.switchControlSettings.copy(switchControlSettings);
-          this._settingsService.saveToFileSystem();
+          try {
+            this._settingsService.settings.copy(settings);
+            this._settingsService.switchControlSettings.copy(
+              switchControlSettings
+            );
+          } catch (err) {
+            this._logService.logBreadCrumb(
+              TabsComponent.name,
+              `Error updating local settings: ${err}`
+            );
+          }
         });
         try {
+          this._settingsService.saveToFileSystem();
           await this._settingsService.save();
-        } catch (err) { Log.E(err); }
+        } catch (err) {
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            `Error saving local settings: ${err}`
+          );
+        }
         break;
-      case this._translateService.instant(
-        'actions.overwrite-remote-settings'
-      ):
-        await pushTracker.sendSettingsObject(this._settingsService.settings);
-        await pushTracker.sendSwitchControlSettingsObject(this._settingsService.switchControlSettings);
+      case this._translateService.instant('actions.overwrite-remote-settings'):
+        try {
+          await pushTracker.sendSettingsObject(this._settingsService.settings);
+          await pushTracker.sendSwitchControlSettingsObject(
+            this._settingsService.switchControlSettings
+          );
+        } catch (err) {
+          this._logService.logBreadCrumb(
+            TabsComponent.name,
+            `Error sending settings to pt: ${err}`
+          );
+        }
         break;
       case this._translateService.instant('actions.keep-both-settings'):
         break;
@@ -717,7 +767,37 @@ export class TabsComponent {
     const s = args.data.switchControlSettings;
     const pt = args.object as PushTracker;
     if (!this._settingsService.switchControlSettings.equals(s)) {
-      this._debouncedSettingsAlert({ switchControlSettings: s, pushTracker: pt });
+      this._debouncedSettingsAlert({
+        switchControlSettings: s,
+        pushTracker: pt
+      });
+    }
+  }
+
+  private async _confirmToOpenSettingsOnIOS() {
+    if (isIOS) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'Asking user to open settings on iOS'
+      );
+      const confirmResult = await confirm({
+        message: this._translateService.instant('bluetooth.ios-open-settings'),
+        cancelable: true,
+        okButtonText: this._translateService.instant('dialogs.yes'),
+        cancelButtonText: this._translateService.instant('dialogs.no')
+      });
+
+      if (confirmResult === true) {
+        // open Settings on iOS for this device
+        UIApplication.sharedApplication.openURL(
+          NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+        );
+      } else {
+        this._logService.logBreadCrumb(
+          TabsComponent.name,
+          'User declined to open Settings to enable Bluetooth.'
+        );
+      }
     }
   }
 }
