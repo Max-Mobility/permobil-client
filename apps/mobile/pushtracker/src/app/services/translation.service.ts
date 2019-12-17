@@ -81,7 +81,6 @@ export class TranslationService extends Observable {
       // and update our stored metadata
       if (files && files.length) {
         files.forEach(f => {
-          console.log(f.name);
           this.currentVersions[f.name] = {
             version: f.version,
             name: f.name,
@@ -143,49 +142,12 @@ export class TranslationService extends Observable {
     }
   }
 
-  // private updateLanguageData(f: DownloadedFile) {
-  //   if (f === null) {
-  //     return;
-  //   }
-  //   // update the current versions
-  //   const i18n = knownFolders.documents().getFolder('i18n');
-  //   this.currentVersions[f.name] = {
-  //     version: f.version,
-  //     name: f.name,
-  //     app_name: f.app_name,
-  //     filename: path.join(i18n.path, f.name),
-  //     language_code: f.name.replace('.json', '')
-  //   };
-  //   try {
-  //     // save binary file to fs
-  //     TranslationService.saveToFileSystem(
-  //       this.currentVersions[f.name].filename,
-  //       f.data
-  //     );
-  //   } catch (err) {
-  //     // clear out the data - we couldn't save the file
-  //     delete this.currentVersions[f.name];
-  //     this._logService.logBreadCrumb(
-  //       TranslationService.name,
-  //       'Could not save language file: ' + err
-  //     );
-  //     // this._logService.logException(err);
-  //   }
-  // }
-
   private static loadFromFileSystem(filename: string) {
     const file = File.fromPath(filename);
     return file.readTextSync(err => {
       throw new Error('Could not load language from fs: ' + err);
     });
   }
-
-  // private static saveToFileSystem(filename: string, data: any) {
-  //   const file = File.fromPath(filename);
-  //   file.writeTextSync(data, err => {
-  //     throw new Error('Could not save language to fs: ' + err);
-  //   });
-  // }
 
   private static async download(f: any): Promise<DownloadedFile | null> {
     let url = f['_downloadURL'];
