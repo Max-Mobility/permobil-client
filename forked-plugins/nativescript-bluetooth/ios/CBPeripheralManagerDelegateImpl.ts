@@ -69,8 +69,8 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       state
     });
 
-    let status;
     if (device.sdkVersion < '13.0') {
+      let status;
       const value = CBPeripheralManager.authorizationStatus();
       switch (value) {
         case CBPeripheralManagerAuthorizationStatus.Authorized:
@@ -86,28 +86,10 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
           status = 'undetermined';
           break;
       }
+      owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
+        status
+      });
     }
-    // else if (device.sdkVersion >= '13.0') {
-    //   const centralManager = CBCentralManager.alloc().initWithDelegateQueue(
-    //     null,
-    //     null
-    //   );
-    //   const t = centralManager.authorization;
-    //   switch (t) {
-    //     case CBManagerAuthorization.AllowedAlways:
-    //       authStatus = 'authorized';
-    //     case CBManagerAuthorization.Denied:
-    //       authStatus = 'denied';
-    //     case CBManagerAuthorization.Restricted:
-    //       authStatus = 'restricted';
-    //     default:
-    //       authStatus = 'undetermined';
-    //   }
-    // }
-
-    owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
-      status
-    });
   }
 
   /**
