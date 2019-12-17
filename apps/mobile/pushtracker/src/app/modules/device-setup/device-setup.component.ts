@@ -129,14 +129,12 @@ export class DeviceSetupComponent {
   unregisterBluetoothEvents() {
     this._bluetoothService.off(
       BluetoothService.pushtracker_added,
-      this.updatePushTrackerState,
-      this
+      this.updatePushTrackerState.bind(this)
     );
 
     this._bluetoothService.off(
       BluetoothService.pushtracker_connected,
-      this.updatePushTrackerState,
-      this
+      this.updatePushTrackerState.bind(this)
     );
   }
 
@@ -144,14 +142,12 @@ export class DeviceSetupComponent {
     this.unregisterBluetoothEvents();
     this._bluetoothService.on(
       BluetoothService.pushtracker_added,
-      this.updatePushTrackerState,
-      this
+      this.updatePushTrackerState.bind(this)
     );
 
     this._bluetoothService.on(
       BluetoothService.pushtracker_connected,
-      this.updatePushTrackerState,
-      this
+      this.updatePushTrackerState.bind(this)
     );
   }
 
@@ -236,19 +232,24 @@ export class DeviceSetupComponent {
     // unregister to make sure we don't register multiple times
     pt.off(
       PushTracker.daily_info_event,
-      this.onPushTrackerDailyInfoEvent,
-      this
+      this.onPushTrackerDailyInfoEvent.bind(this)
     );
     // now register for the events we're interested in
     pt.on(
       PushTracker.daily_info_event,
-      this.onPushTrackerDailyInfoEvent,
-      this
+      this.onPushTrackerDailyInfoEvent.bind(this)
     );
   }
 
   private updatePushTrackerState() {
     this._zone.run(() => {
+      if (this.setupComplete) {
+        this.statusMessage = this._translateService.instant(
+          'device-setup.connection-successful'
+        );
+        this.showDoneButton = true;
+        return;
+      }
       // a pt has been paired if we have at least one known pushtracker
       this.paired = BluetoothService.PushTrackers.length > 0;
       if (!this.paired) {
@@ -292,15 +293,10 @@ export class DeviceSetupComponent {
     );
     // We just received a daily info event
     // Our connection with the OG PushTracker is solid
-    this._zone.run(() => {
-      this.paired = true;
-      this.connected = true;
-      this.setupComplete = true;
-      this.statusMessage = this._translateService.instant(
-        'device-setup.connection-successful'
-      );
-      this.showDoneButton = true;
-    });
+    this.paired = true;
+    this.connected = true;
+    this.setupComplete = true;
+    this.updatePushTrackerState();
   }
 
   private async _onPushTrackerE2() {
