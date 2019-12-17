@@ -204,6 +204,7 @@ export class BluetoothService extends Observable {
     this._bluetooth.off(Bluetooth.bluetooth_advertise_failure_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_success_event);
     this._bluetooth.off(Bluetooth.centralmanager_updated_state_event);
+    this._bluetooth.off(Bluetooth.bluetooth_authorization_event);
   }
 
   clearSmartDrives() {
