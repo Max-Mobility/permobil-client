@@ -244,9 +244,9 @@ export class BluetoothService extends Observable {
     this.initialized = true;
   }
 
-  async advertise(): Promise<boolean> {
+  async advertise() {
     if (this.advertising) {
-      return true;
+      return; // we no longer return a boolean
     }
     this.advertising = true;
 
