@@ -204,7 +204,9 @@ export class BluetoothService extends Observable {
     this._bluetooth.off(Bluetooth.bluetooth_advertise_failure_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_success_event);
     this._bluetooth.off(Bluetooth.centralmanager_updated_state_event);
-    this._bluetooth.off(Bluetooth.bluetooth_authorization_event);
+    if (isIOS) {
+      this._bluetooth.off(Bluetooth.bluetooth_authorization_event);
+    }
   }
 
   clearSmartDrives() {
@@ -399,6 +401,14 @@ export class BluetoothService extends Observable {
 
   stopNotifying(opts: any) {
     return this._bluetooth.stopNotifying(opts);
+  }
+
+  public async getIOSPermissions() {
+    if (isIOS) {
+      return await checkPermission('bluetooth');
+    } else {
+      throw new Error('Unsupported operation when not on iOS');
+    }
   }
 
   public async hasPermissions() {
