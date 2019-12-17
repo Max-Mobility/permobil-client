@@ -24,9 +24,16 @@ export class TranslationService extends Observable {
       // this query will get the metadata about all translation files on
       // the server for the pushtracker_mobile app
       const kinveyQuery = new KinveyQuery();
-      kinveyQuery.equalTo('app_name', 'pushtracker_mobile');
-      kinveyQuery.equalTo('translation_file', true);
-      const kinveyResponse = await KinveyFiles.find(kinveyQuery);
+      kinveyQuery
+        .equalTo('app_name', 'pushtracker_mobile')
+        .equalTo('translation_file', true);
+      const kinveyResponse = await KinveyFiles.find(kinveyQuery).catch(err => {
+        this._logService.logBreadCrumb(
+          TranslationService.name,
+          `Error querying the Kinvey Files: ${err}`
+        );
+      });
+
       // get the max version of each file
       const maxes = kinveyResponse.reduce((maxes, metadata) => {
         const v = metadata['_version'];
@@ -35,6 +42,7 @@ export class TranslationService extends Observable {
         maxes[fName] = Math.max(v, maxes[fName]);
         return maxes;
       }, {});
+
       // filter only the files that we don't have of that are newer
       // than the ones we have (and are the max)
       const fileMetadatas = kinveyResponse.filter(f => {
@@ -45,6 +53,7 @@ export class TranslationService extends Observable {
         const isMax = v === maxes[fName];
         return isMax && (!current || v > currentVersion);
       });
+
       const files = [];
       // do we need to download any language files?
       if (fileMetadatas && fileMetadatas.length) {
@@ -185,7 +194,9 @@ export class TranslationService extends Observable {
     const fileData = File.fromPath(file.path)
       .readText()
       .catch(err => {
-        throw new Error('could not load downloaded file data:' + err);
+        throw new Error(
+          `Could not read text from file @ ${file.path} - ${err}`
+        );
       });
 
     return new DownloadedFile(
