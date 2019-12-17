@@ -73,7 +73,7 @@ export class DeviceSetupComponent {
   }
 
   async init() {
-    const config = this.user?.data?.control_configuration;
+    const config = this.user && this.user.data && this.user.data.control_configuration;
     if (config === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
       this.initPushTracker();
     } else if (config === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
