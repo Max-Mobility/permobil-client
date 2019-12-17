@@ -1,26 +1,19 @@
 import { Injectable } from '@angular/core';
+import { File, knownFolders, Observable, path } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { isIOS } from '@nativescript/core/platform';
-import { Observable } from '@nativescript/core';
-import { LoggingService } from './logging.service';
-
 // for querying kinvey for translation files
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
-
-// for downloading firmware files
-import { File, knownFolders, path } from '@nativescript/core';
 import { DownloadProgress } from 'nativescript-download-progress';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class TranslationService extends Observable {
-
-  private static CURRENT_VERSIONS_KEY: string = 'translation.service.current-versions';
+  private static CURRENT_VERSIONS_KEY: string =
+    'translation.service.current-versions';
 
   private currentVersions: any = {};
 
-  constructor(
-    private _logService: LoggingService
-  ) {
+  constructor(private _logService: LoggingService) {
     super();
   }
 
@@ -56,21 +49,20 @@ export class TranslationService extends Observable {
       // do we need to download any language files?
       if (fileMetadatas && fileMetadatas.length) {
         for (let i = 0; i < fileMetadatas.length; i++) {
-          try {
-            const f = fileMetadatas[i];
+          const f = fileMetadatas[i];
+          this._logService.logBreadCrumb(
+            TranslationService.name,
+            `Downloading language file update ${f['_filename']} version ${f['_version']}`
+          );
+
+          const dl = await TranslationService.download(f).catch(err => {
             this._logService.logBreadCrumb(
               TranslationService.name,
-              `Downloading language file update ${f['_filename']} version ${f['_version']}`
+              'Could not download language files: ' + err
             );
-            const dl = await TranslationService.download(f);
-            files.push(dl);
-          } catch (err) {
-            this._logService.logBreadCrumb(
-              TranslationService.name,
-              'Could not download language files'
-            );
-            // this._logService.logException(err);
-          }
+          });
+
+          files.push(dl);
         }
       }
 
@@ -99,7 +91,7 @@ export class TranslationService extends Observable {
       versions = JSON.parse(
         appSettings.getString(TranslationService.CURRENT_VERSIONS_KEY, '{}')
       );
-    } catch (err) { }
+    } catch (err) {}
     const objs = Object.values(versions);
     if (objs.length) {
       // for each language we got, try to load the file. If we have
@@ -138,10 +130,7 @@ export class TranslationService extends Observable {
       version: f.version,
       name: f.name,
       app_name: f.app_name,
-      filename: path.join(
-        i18n.path,
-        f.name
-      ),
+      filename: path.join(i18n.path, f.name),
       language_code: f.name.replace('.json', '')
     };
     try {
@@ -182,17 +171,23 @@ export class TranslationService extends Observable {
       url = url.replace('http:', 'https:');
     }
 
-    let file = null;
-    try {
-      const download = new DownloadProgress();
-      file = await download
-        .downloadFile(url);
-    } catch (err) {
-      throw new Error(`Could not download ${f['_filename']}: ${err.toString()}`);
-    }
-    const fileData = File.fromPath(file.path).readTextSync(err => {
-      throw new Error('could not load downloaded file data:' + err);
-    });
+    const i18nFolder = knownFolders.documents().getFolder('i18n');
+    const download = new DownloadProgress();
+    const destFilePath = path.join(i18nFolder.path, f._filename);
+    const file = await download
+      .downloadFile(url, null, destFilePath)
+      .catch(err => {
+        throw new Error(
+          `Could not download ${f['_filename']}: ${err.toString()}`
+        );
+      });
+
+    const fileData = File.fromPath(file.path)
+      .readText()
+      .catch(err => {
+        throw new Error('could not load downloaded file data:' + err);
+      });
+
     return new DownloadedFile(
       f['_version'],
       f['_filename'],
@@ -203,8 +198,10 @@ export class TranslationService extends Observable {
 }
 
 class DownloadedFile {
-  constructor(public version: string,
+  constructor(
+    public version: string,
     public name: string,
     public app_name: string,
-    public data: any) { }
+    public data: any
+  ) {}
 }
