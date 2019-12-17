@@ -8,6 +8,7 @@ import { SnackBar } from '@nstudio/nativescript-snackbar';
 import { Device, Log } from '@permobil/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import assign from 'lodash/assign';
+import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
 import { APP_LANGUAGES, CONFIGURATIONS } from '../../enums';
@@ -36,6 +37,7 @@ export class TabsComponent {
   pushTracker: PushTracker;
   user: PushTrackerUser;
   private _debouncedSettingsAlert: any = null;
+  private _debouncedBluetoothAuthEvent: any = null;
   private _throttledOnDailyInfoEvent: any = null;
   private _throttledOnDistanceEvent: any = null;
   private _firstLoad = false;
@@ -67,6 +69,12 @@ export class TabsComponent {
 
     // hide the actionbar on the root tabview
     this._page.actionBarHidden = true;
+
+    this._debouncedBluetoothAuthEvent = debounce(
+      this.onBluetoothAuthEvent.bind(this),
+      500,
+      { leading: false, trailing: true }
+    );
 
     this._debouncedSettingsAlert = debounceRight(
       this.alertPushTrackerSettingsDiffer.bind(this),
@@ -152,7 +160,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         this._logService.logBreadCrumb(
           TabsComponent.name,
@@ -182,9 +190,13 @@ export class TabsComponent {
               this.configureBluetooth();
             }
           } else if (isIOS) {
-            // if we're here the permission hasn't been granted... now it is possible this happens on app start since this might execute before
-            // the user grants the initial bluetooth permission system dialog
-            this._confirmToOpenSettingsOnIOS();
+            const iosPerms = await this._bluetoothService.getIOSPermissions()
+            if (iosPerms !== 'undetermined') {
+              // we don't have permission to access bluetooth (because
+              // the user denied those permissions!) so we need to let
+              // them know to enable it in Settings and try again.
+              this._confirmToOpenSettingsOnIOS();
+            }
           }
         }
       }
@@ -304,7 +316,7 @@ export class TabsComponent {
     if (isIOS) {
       this._bluetoothService.on(
         BluetoothService.bluetooth_authorization_event,
-        this.onBluetoothAuthEvent.bind(this)
+        this._debouncedBluetoothAuthEvent
       );
     }
   }
@@ -327,7 +339,7 @@ export class TabsComponent {
     if (isIOS) {
       this._bluetoothService.off(
         BluetoothService.bluetooth_authorization_event,
-        this.onBluetoothAuthEvent.bind(this)
+        this._debouncedBluetoothAuthEvent
       );
     }
   }
@@ -596,17 +608,17 @@ export class TabsComponent {
 
   private onBluetoothAuthEvent(args: any) {
     Log.D(TabsComponent.name, 'onBluetoothAuthEvent', args.data);
+
     if (
       this.user &&
       this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       if (args.data.status === 'authorized') {
         // we can advertise now
         this._startAdvertising();
       } else {
-        // we don't have permission to access bluetooth
-        // so if the user hasn't authorized Bluetooth permission to PT.M we need to let them know to enable it in Settings and try again.
+        // if we're here the permission hasn't been granted
         this._confirmToOpenSettingsOnIOS();
       }
     }
@@ -764,6 +776,10 @@ export class TabsComponent {
 
   private async _confirmToOpenSettingsOnIOS() {
     if (isIOS) {
+      this._logService.logBreadCrumb(
+        TabsComponent.name,
+        'Asking user to open settings on iOS'
+      );
       const confirmResult = await confirm({
         message: this._translateService.instant('bluetooth.ios-open-settings'),
         cancelable: true,
