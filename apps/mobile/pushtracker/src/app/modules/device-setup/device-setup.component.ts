@@ -69,60 +69,59 @@ export class DeviceSetupComponent {
     );
 
     this.user = KinveyUser.getActiveUser() as PushTrackerUser;
-    if (
-      !this.slide &&
-      this.user &&
-      this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
-    ) {
-      // OG PushTracker configuration
-      this.slide = this._translateService.instant(
-        'device-setup.pushtracker-with-smartdrive'
-      );
+    this.init();
+  }
 
-      this.registerBluetoothEvents();
-      this.updatePushTrackerState();
-
-      if (!this._bluetoothService.advertising) {
-        this._askForPermissions()
-          .then((didGetPermissions) => {
-            if (didGetPermissions) {
-              this._logService.logBreadCrumb(
-                DeviceSetupComponent.name,
-                'Starting Bluetooth'
-              );
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
-            }
-          })
-          .catch(err => {
-            this._logService.logException(err);
-          });
-      }
+  async init() {
+    const config = this.user?.data?.control_configuration;
+    if (config === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      this.initPushTracker();
+    } else if (config === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
+      this.initPushTrackerE2();
     }
+  }
 
-    if (
-      !this.slide &&
-      this.user &&
-      this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
-    ) {
-      // PushTracker E2/ WearOS configuration
-      this.slide = this._translateService.instant(
-        'device-setup.pushtracker-e2-with-smartdrive'
-      );
-      WearOsComms
-        .initPhone()
-        .then(() => {
-          // start looking for E2
-          this._onPushTrackerE2();
+  async initPushTracker() {
+    // OG PushTracker configuration
+    this.slide = this._translateService.instant(
+      'device-setup.pushtracker-with-smartdrive'
+    );
+
+    this.registerBluetoothEvents();
+    this.updatePushTrackerState();
+
+    if (!this._bluetoothService.advertising) {
+      this._askForPermissions()
+        .then((didGetPermissions) => {
+          if (didGetPermissions) {
+            this._logService.logBreadCrumb(
+              DeviceSetupComponent.name,
+              'Starting Bluetooth'
+            );
+            // start the bluetooth service
+            return this._bluetoothService.advertise();
+          }
         })
-        .catch((err) => {
-          this._logService.logBreadCrumb(
-            DeviceSetupComponent.name,
-            `Error initializing phone wear-os-comms: ${err}`
-          );
+        .catch(err => {
+          this._logService.logException(err);
         });
+    }
+  }
+
+  async initPushTrackerE2() {
+    // PushTracker E2/ WearOS configuration
+    this.slide = this._translateService.instant(
+      'device-setup.pushtracker-e2-with-smartdrive'
+    );
+    try {
+      await WearOsComms.initPhone();
+      // start looking for E2
+      this._onPushTrackerE2();
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        `Error initializing phone wear-os-comms: ${err}`
+      );
     }
   }
 
