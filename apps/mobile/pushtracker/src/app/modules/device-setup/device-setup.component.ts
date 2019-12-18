@@ -334,7 +334,7 @@ export class DeviceSetupComponent {
       this.CAPABILITY_WEAR_APP
     );
 
-    // return immediately - the subsequent call may have taken a while
+    // return immediately - the previous call may have taken a while
     // - during which the user may have pressed 'Do this Later'
     if (this.doThisLater) return;
 
@@ -386,7 +386,7 @@ export class DeviceSetupComponent {
     );
     const nodesConnected = await WearOsComms.findDevicesConnected(10000);
 
-    // return immediately - the subsequent call may have taken a while
+    // return immediately - the previous call may have taken a while
     // - during which the user may have pressed 'Do this Later'
     if (this.doThisLater) return;
 
@@ -446,7 +446,7 @@ export class DeviceSetupComponent {
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
 
-    // return immediately - the subsequent call may have taken a while
+    // return immediately - the previous call may have taken a while
     // - during which the user may have pressed 'Do this Later'
     if (this.doThisLater) return;
 
@@ -522,7 +522,7 @@ export class DeviceSetupComponent {
       this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
 
-    // return immediately - the subsequent call may have taken a while
+    // return immediately - the previous call may have taken a while
     // - during which the user may have pressed 'Do this Later'
     if (this.doThisLater) return;
 
