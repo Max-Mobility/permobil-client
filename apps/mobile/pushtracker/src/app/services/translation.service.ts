@@ -123,7 +123,7 @@ export class TranslationService extends Observable {
       versions = JSON.parse(
         appSettings.getString(TranslationService.CURRENT_VERSIONS_KEY, '{}')
       );
-    } catch (err) {}
+    } catch (err) { }
     const objs = Object.values(versions);
     if (objs.length) {
       // for each language we got, try to load the file. If we have
@@ -176,5 +176,6 @@ export class TranslationService extends Observable {
           `Could not download ${f['_filename']}: ${err.toString()}`
         );
       });
+    return file;
   }
 }
