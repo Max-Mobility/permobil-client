@@ -83,7 +83,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
 
     CLog(
       CLogTypes.info,
-      `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral, let's discover service`
+      `----- CBCentralManagerDelegateImpl centralManager:didConnectPeripheral, discover service`
     );
     peri.discoverServices(null);
     const eventData = {
@@ -292,7 +292,7 @@ export class CBCentralManagerDelegateImpl extends NSObject
     let status;
     // checking the auth state of the Manager to emit the authorization event
     // so the app can know the auth/permission
-    if (device.sdkVersion < '13.0.0') {
+    if (device.sdkVersion < '13.0') {
       const value = CBPeripheralManager.authorizationStatus();
       status = this._checkPeripheralManagerStatus(value);
     } else if (device.sdkVersion >= '13.0') {
