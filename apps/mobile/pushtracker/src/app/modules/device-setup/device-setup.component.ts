@@ -32,6 +32,7 @@ export class DeviceSetupComponent {
   paired: boolean = false;
   connected: boolean = false;
   setupComplete: boolean = false;
+  doThisLater: boolean = false; // do this later - cancel ops;
   // messages
   statusMessage: string = this._translateService.instant(
     'device-setup.waiting-for-pairing-request'
@@ -171,6 +172,10 @@ export class DeviceSetupComponent {
   }
 
   onDoLaterTap(args) {
+    // set flag that user has canceled this operation
+    this.doThisLater = true;
+    // make sure we stop whatever work we might have started
+    WearOsComms.cancelOperations();
     this.onDoneTap(args);
   }
 
@@ -328,6 +333,11 @@ export class DeviceSetupComponent {
     const nodesWithApp = await WearOsComms.findDevicesWithApp(
       this.CAPABILITY_WEAR_APP
     );
+
+    // return immediately - the subsequent call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
       const name = node.getDisplayName();
@@ -375,6 +385,10 @@ export class DeviceSetupComponent {
       'device-setup.e2.finding-devices'
     );
     const nodesConnected = await WearOsComms.findDevicesConnected(10000);
+
+    // return immediately - the subsequent call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
 
     // if there are not companion devices connected, inform the
     // user they need to set up a PushTracker E2 with the WearOS app
@@ -431,6 +445,11 @@ export class DeviceSetupComponent {
     WearOsComms.clearCompanion();
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
+
+    // return immediately - the subsequent call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (possiblePeripherals === null || possiblePeripherals === undefined) {
       // search failed, let them know
       await alert({
@@ -502,6 +521,11 @@ export class DeviceSetupComponent {
     this.statusMessage =
       this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
+
+    // return immediately - the subsequent call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (didConnect) {
       this.statusMessage =
         this._translateService.instant(
