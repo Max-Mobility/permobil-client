@@ -10,8 +10,8 @@ import { Common } from '../wear-os-comms.common';
 ])
 class CapabilityListener extends androidx.fragment.app.FragmentActivity
   implements
-    com.google.android.gms.wearable.CapabilityClient
-      .OnCapabilityChangedListener {
+  com.google.android.gms.wearable.CapabilityClient
+    .OnCapabilityChangedListener {
   public callback: any = null;
   constructor() {
     super();
@@ -48,6 +48,7 @@ export class WearOsComms extends Common {
   private static _mCapabilityListener = new CapabilityListener();
 
   // FOR STATE STORAGE:
+  private static _cancelCallback: any = null;
   private static _nodesConnected: any = []; // all connected nodes
   private static _nodesWithApp: any = []; // all connected nodes with app
 
@@ -382,12 +383,13 @@ export class WearOsComms extends Common {
         context
       ).getConnectedNodes();
       let tid = null;
+      const resolveEarly = () => {
+        WearOsComms._nodesConnected = [];
+        resolve([]);
+      };
+      WearOsComms._cancelCallback = resolveEarly;
       if (timeout !== undefined && timeout > 0) {
-        tid = setTimeout(() => {
-          WearOsComms.error('Timed out searching for connected devices');
-          WearOsComms._nodesConnected = [];
-          resolve([]);
-        }, timeout);
+        tid = setTimeout(resolveEarly, timeout);
       }
       nodeTaskList.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
@@ -575,6 +577,11 @@ export class WearOsComms extends Common {
   public static async findAvailableCompanion(timeout: number) {
     // do nothing
     return null;
+  }
+
+  public static async cancelOperations() {
+    WearOsComms._cancelCallback && WearOsComms._cancelCallback();
+    WearOsComms._cancelCallback = null;
   }
 
   public static saveCompanion(address: string) {
