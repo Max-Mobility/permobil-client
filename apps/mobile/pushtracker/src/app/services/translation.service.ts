@@ -83,7 +83,7 @@ export class TranslationService extends Observable {
             delete this.currentVersions[f.name];
           });
 
-          files.push(dl);
+          if (dl) files.push(dl);
         }
       }
 
