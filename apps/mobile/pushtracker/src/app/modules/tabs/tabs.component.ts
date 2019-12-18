@@ -135,6 +135,8 @@ export class TabsComponent {
     // we have a user - set it!
     this.user = user;
 
+    const x = this.user?._id;
+
     const config = this.user.data.control_configuration;
     // @ts-ignore
     if (!Object.values(CONFIGURATIONS).includes(config)) {
@@ -160,7 +162,7 @@ export class TabsComponent {
       if (
         this.user &&
         this.user.data.control_configuration ===
-        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+          CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
       ) {
         this._logService.logBreadCrumb(
           TabsComponent.name,
@@ -612,7 +614,7 @@ export class TabsComponent {
     if (
       this.user &&
       this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
+        CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
     ) {
       if (args.data.status === 'authorized') {
         // we can advertise now
