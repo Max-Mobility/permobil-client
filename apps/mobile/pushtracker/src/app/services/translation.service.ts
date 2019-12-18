@@ -77,7 +77,7 @@ export class TranslationService extends Observable {
           const dl = await TranslationService.download(f).catch(err => {
             this._logService.logBreadCrumb(
               TranslationService.name,
-              `Could not download language files: ${err.toString()}`
+              `Could not download ${f['_filename']}: ${err.toString()}`
             );
             // clear out the data - we couldn't save the file
             delete this.currentVersions[f.name];
@@ -170,12 +170,7 @@ export class TranslationService extends Observable {
     const download = new DownloadProgress();
     const destFilePath = path.join(i18nFolder.path, f._filename);
     const file = await download
-      .downloadFile(url, null, destFilePath)
-      .catch(err => {
-        throw new Error(
-          `Could not download ${f['_filename']}: ${err.toString()}`
-        );
-      });
+      .downloadFile(url, null, destFilePath);
     return file;
   }
 }
