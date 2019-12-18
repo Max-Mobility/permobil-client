@@ -39,6 +39,7 @@ export declare class WearOsComms extends Common {
   static hasCompanion(): boolean;
   static clearCompanion();
   static saveCompanion(address: string);
+  static cancelOperations();
   // ios only
   static connectCompanion(timeout: number = 10000);
   static disconnectCompanion();
