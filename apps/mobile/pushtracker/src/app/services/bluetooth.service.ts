@@ -281,16 +281,15 @@ export class BluetoothService extends Observable {
     this.addServices();
 
     try {
-      await this._bluetooth
-        .startAdvertising({
-          UUID: BluetoothService.AppServiceUUID,
-          settings: {
-            connectable: true
-          },
-          data: {
-            includeDeviceName: true
-          }
-        });
+      await this._bluetooth.startAdvertising({
+        UUID: BluetoothService.AppServiceUUID,
+        settings: {
+          connectable: true
+        },
+        data: {
+          includeDeviceName: true
+        }
+      });
     } catch (err) {
       this.advertising = false;
       this.sendEvent(BluetoothService.advertise_error, { error: err });
@@ -392,9 +391,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) { }
+  discoverServices(_: any) {}
 
-  discoverCharacteristics(_: any) { }
+  discoverCharacteristics(_: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -439,7 +438,7 @@ export class BluetoothService extends Observable {
       }
     } else if (isIOS) {
       const status = await requestPermission('bluetooth');
-      return (status === 'authorized');
+      return status === 'authorized';
     }
   }
 
@@ -487,7 +486,7 @@ export class BluetoothService extends Observable {
     this._logService.logBreadCrumb(
       BluetoothService.name,
       'Failed to advertise',
-      args ? args.data : null // avoid passing null into the NSDictionary for Sentry
+      args && 'data' in args ? args.data : null // avoid passing null into the NSDictionary for Sentry
     );
     // nothing
   }
@@ -542,7 +541,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void { }
+  private onDeviceNameChange(_: any): void {}
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -682,7 +681,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void { }
+  private onCharacteristicReadRequest(_: any): void {}
 
   // service controls
   private deleteServices() {
