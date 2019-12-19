@@ -212,8 +212,8 @@ export class TapDetector {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
-    let _maxJerk = this.maxJerkThreshold;
-    let _minJerk = this.minJerkThreshold;
+    const _maxJerk = this.maxJerkThreshold;
+    const _minJerk = this.minJerkThreshold;
     const _maxPrediction = this.maxPredictionThreshold;
     const _minPrediction = this.minPredictionThreshold;
 
