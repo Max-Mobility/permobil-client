@@ -33,12 +33,18 @@ export class TapDetector {
   private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
 
   // TODO: NEED TO UPDATE ALL OF THESE BASED ON TESTING:
-  private jerkThresholdDynamic: number = 8.0; // calculated tap jerk threshold
-  private jerkThresholdOnOffDiff: number = 3.0; // tap jerk threshold difference when motor on/off
-  private maxJerkThreshold: number = 20.0;
-  private minJerkThreshold: number = 10.0;
-  private jerkThreshold: number = this.minJerkThreshold; // default tap jerk threshold value
   private systemVersionJerkFactor: number = 3.5;
+  private maxJerkThreshold: number = 35.0;
+  private minJerkThreshold: number = 15.0;
+  // subtracted from jerkThreshold when motor on to produce
+  // jerkThresholdDynamic
+  private jerkThresholdOnOffDiff: number = (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
+  // base jerk threshold calculated from min/max/sensitivity - default
+  // value does not matter
+  private jerkThreshold: number;
+  // actual dynamic jerk threshold used for comparison - uses
+  // jerkThreshold ( - onOffDiff ) depending on motor state
+  private jerkThresholdDynamic: number;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
 
