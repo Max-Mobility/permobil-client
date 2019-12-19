@@ -1,0 +1,11 @@
+dist: trusty
+
+addons:
+  sonarcloud:
+    organization: "max-mobility"
+    token:
+      secure: "gTyswpAPTNOTggTsrHoMX4SfnWQm4CdO7kJaQLMw/jUIKDiMQzaWqxmG2THIFtnUxwav7huFY0cprOugMisn2ezn2k4Ev0vSFNeDKfeTsO1CzI3PPQaPKj60ATbEzmjSLlvZjWSPT3g3Var2CtEvItPhdSY3JjXB7UJAxgwnE8cJEzS4BeQe5b63lQ0W0PuQpWFEvFQJota0LKsKZQv+4mxptAblJjXZioHKzs6BTg7UmM9NgyD7rngyoI8dyIW6JwV47ClX/JXFN/QoMKAMHOerQjEtnyWrLKv7pA7ggps8MG++PcwKJwy42I6DBRPGON7oYKn1VMnyK0UNLNdcAJdIPsIycAMyeoqUBB1HnXptsC+0BlUHjfEYbDuCmNSDxSozVFSamCJgeNVKHzECoG6zn5i8/x3byPzXv7pfHIOTJO4+5gO4S9aDLik62q9I//ME8YkiKSSvtDN8fIvJqK1D8jRro2f/9Z3Hx1pNTDq4yjgTV8Du0B+oBotkMlonh6sFrev+i7uS7zlZ3MvbNzIxip+q+yQR9P7HFYq9hxy4o0a4D5exX8xcD9C0/u6mlW04KhkZYtkE+oN5YAXgMOpAHEO+5dqby8jM4KWyTRrjLlaDqO1Ri07IcPZ9QInSTXCPLWg1pKnjJ+ga1hGoAQ2xfZxtuBVueDafnzFGslM="
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - sonar-scanner
