@@ -24,7 +24,8 @@ export class TapDetector {
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
-   * Higher-level tap detection configuration
+   * Higher-level model prediction thresholds for determining if the
+   * TFLite model thinks there was a tap
    */
   private minPredictionThreshold: number = 0.5;
   private maxPredictionThreshold: number = 1.0;
@@ -38,7 +39,11 @@ export class TapDetector {
   // predictionThreshold ( - onOffDiff ) depending on motor state
   private predictionThresholdDynamic: number;
 
-  // TODO: NEED TO UPDATE ALL OF THESE BASED ON TESTING:
+  /**
+   * Higher-level hard-coded tap prediction thresholds for determining
+   * if the jerk measured from the raw data indicates that there was a
+   * tap
+   */
   private systemVersionJerkFactor: number = 4.0;
   private maxJerkThreshold: number = 35.0;
   private minJerkThreshold: number = 15.0;
