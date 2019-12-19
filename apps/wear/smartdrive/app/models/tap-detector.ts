@@ -11,7 +11,7 @@ export interface Acceleration {
 
 export interface StoredAcceleration {
   accel: Acceleration;
-  timestamp: number
+  timestamp: number;
 }
 
 type TimeStamp = number;
