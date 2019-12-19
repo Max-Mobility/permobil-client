@@ -28,12 +28,18 @@ export class TapDetector {
    */
   private minPredictionThreshold: number = 0.5;
   private maxPredictionThreshold: number = 1.0;
-  private predictionThreshold: number = 0.5; // tap prediction confidence
-  private predictionThresholdOnOffDiff: number = 0.2; // prediction confidence difference when motor on/off
-  private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
+  // subtracted from predictionThreshold when motor on to produce
+  // predictionThresholdDynamic
+  private predictionThresholdOnOffDiff: number = 0.2;
+  // base prediction threshold calculated from min/max/sensitivity -
+  // default value does not matter
+  private predictionThreshold: number;
+  // actual dynamic prediction threshold used for comparison - uses
+  // predictionThreshold ( - onOffDiff ) depending on motor state
+  private predictionThresholdDynamic: number;
 
   // TODO: NEED TO UPDATE ALL OF THESE BASED ON TESTING:
-  private systemVersionJerkFactor: number = 3.5;
+  private systemVersionJerkFactor: number = 4.0;
   private maxJerkThreshold: number = 35.0;
   private minJerkThreshold: number = 15.0;
   // subtracted from jerkThreshold when motor on to produce
