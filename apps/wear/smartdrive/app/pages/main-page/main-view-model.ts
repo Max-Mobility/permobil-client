@@ -1436,6 +1436,13 @@ export class MainViewModel extends Observable {
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       return;
     }
+    // scale the acceleration values if we're not up to date
+    if (!this.systemIsUpToDate) {
+      const factor = 2.0;
+      acceleration.x *= factor;
+      acceleration.y *= factor;
+      acceleration.z *= factor;
+    }
     // add the data to our accel history
     this._previousData.push({
       accel: acceleration,
@@ -1499,8 +1506,7 @@ export class MainViewModel extends Observable {
       // set tap sensitivity threshold
       this.tapDetector.setSensitivity(
         this._settingsService.settings.tapSensitivity,
-        this.motorOn,
-        this.systemIsUpToDate
+        this.motorOn
       );
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(

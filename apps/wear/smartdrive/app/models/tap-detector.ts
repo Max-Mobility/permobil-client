@@ -44,7 +44,6 @@ export class TapDetector {
    * if the jerk measured from the raw data indicates that there was a
    * tap
    */
-  private systemVersionJerkFactor: number = 4.0;
   private maxJerkThreshold: number = 35.0;
   private minJerkThreshold: number = 15.0;
   // subtracted from jerkThreshold when motor on to produce
@@ -205,14 +204,10 @@ export class TapDetector {
    * @param sensitivity [number]: [0-100] percent sensitivity.
    * @param motorOn [boolean]: increase sensitivity from setting if
    *                           motor is on.
-   * @param systemUpToDate [boolean]: modify sensitivity range (to be
-   *                                  more sensitive) if system is not
-   *                                  up to date
    */
   public setSensitivity(
     sensitivity: number,
-    motorOn: boolean,
-    systemUpToDate: boolean
+    motorOn: boolean
   ) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
@@ -221,11 +216,6 @@ export class TapDetector {
     let _minJerk = this.minJerkThreshold;
     const _maxPrediction = this.maxPredictionThreshold;
     const _minPrediction = this.minPredictionThreshold;
-    // update jerk range if system is not up to date
-    if (!systemUpToDate) {
-      _maxJerk = this.maxJerkThreshold / this.systemVersionJerkFactor;
-      _minJerk = this.minJerkThreshold / this.systemVersionJerkFactor;
-    }
 
     const scaleFactor = sensitivity / 100.0;
     // update jerk threshold
