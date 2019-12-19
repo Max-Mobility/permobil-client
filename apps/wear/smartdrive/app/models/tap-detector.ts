@@ -32,11 +32,12 @@ export class TapDetector {
   private predictionThresholdOnOffDiff: number = 0.2; // prediction confidence difference when motor on/off
   private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
 
-  private jerkThresholdDynamic: number = 30.0; // calculated tap jerk threshold
-  private jerkThresholdOnOffDiff: number = 10.0; // tap jerk threshold difference when motor on/off
-  private jerkThreshold: number = 30.0; // tap jerk threshold value
-  private maxJerkThreshold: number = 70.0;
-  private minJerkThreshold: number = 30.0;
+  // TODO: NEED TO UPDATE ALL OF THESE BASED ON TESTING:
+  private jerkThresholdDynamic: number = 8.0; // calculated tap jerk threshold
+  private jerkThresholdOnOffDiff: number = 3.0; // tap jerk threshold difference when motor on/off
+  private maxJerkThreshold: number = 20.0;
+  private minJerkThreshold: number = 10.0;
+  private jerkThreshold: number = this.minJerkThreshold; // default tap jerk threshold value
   private systemVersionJerkFactor: number = 3.5;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
@@ -292,17 +293,17 @@ export class TapDetector {
 
     // Check that inputRawHistory max-min > jerkThresholdDynamic
     const minZ = this.inputRawHistory.reduce(
-      (min, accel) => (accel.z < min ? accel.z : min),
+      (min, accel) => Math.min(accel.z, min),
       this.inputRawHistory[0].z
     );
     const maxZ = this.inputRawHistory.reduce(
-      (max, accel) => (accel.z > max ? accel.z : max),
+      (max, accel) => Math.max(accel.z, max),
       this.inputRawHistory[0].z
     );
     const jerk = maxZ - minZ;
     this.updateJerkHistory(jerk);
     const maxJerk = this.jerkHistory.reduce(
-      (max, jerk) => (jerk > max ? jerk : max),
+      (max, jerk) => Math.max(jerk, max),
       this.jerkHistory[0]
     );
     const isJerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;
