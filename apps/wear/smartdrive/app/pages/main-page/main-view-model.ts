@@ -21,7 +21,7 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../../models';
+import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
@@ -163,7 +163,7 @@ export class MainViewModel extends Observable {
   private wearIsUpToDate: boolean = false;
   private buildDisplay: string = null;
   private hasAppliedTheme: boolean = false;
-  private _previousData: any[] = [];
+  private _previousData: StoredAcceleration[] = [];
   private _previousDataLength: number = 4;
   private _wifiWasEnabled = false;
   private _bodySensorEnabled: boolean = false;
@@ -1458,35 +1458,31 @@ export class MainViewModel extends Observable {
       });
 
       const max = this._previousData.reduce((element1, element2) => {
-        element1.accelx > element2.accelx ? element1.accelx : element2.accelx;
-        element1.accely > element2.accely ? element1.accely : element2.accely;
-        element1.accelz > element2.accelz ? element1.accelz : element2.accelz;
-        return element1;
+        const _max: StoredAcceleration = element1;
+        _max.accel.x = Math.max(element1.accel.x, element2.accel.x);
+        _max.accel.y = Math.max(element1.accel.y, element2.accel.y);
+        _max.accel.z = Math.max(element1.accel.z, element2.accel.z);
+        return _max;
       });
 
       const min = this._previousData.reduce((element1, element2) => {
-        element1.accel.x < element2.accel.x
-          ? element1.accel.x
-          : element2.accel.x;
-        element1.accel.y < element2.accel.y
-          ? element1.accel.y
-          : element2.accel.y;
-        element1.accel.z < element2.accel.z
-          ? element1.accel.z
-          : element2.accel.z;
-        return element1;
+        const _min: StoredAcceleration = element1;
+        _min.accel.x = Math.min(element1.accel.x, element2.accel.x);
+        _min.accel.y = Math.min(element1.accel.y, element2.accel.y);
+        _min.accel.z = Math.min(element1.accel.z, element2.accel.z);
+        return _min;
       });
 
+      // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
         x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
         y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
         z: total.accel.z >= 0 ? max.accel.z : min.accel.z
       };
 
+      // compute the average timestamp of our stored higher-frequency
+      // data
       const averageTimestamp = total.timestamp / this._previousDataLength;
-      // if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
-      //   Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
-      // }
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
@@ -1502,7 +1498,7 @@ export class MainViewModel extends Observable {
       );
       if (didTap) {
         // user has met threshold for tapping
-        this._handleTap(/* averageTimestamp */);
+        this._handleTap();
       }
     }
   }
@@ -1539,7 +1535,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private async _handleTap(/* timestamp: number */) {
+  private async _handleTap() {
     this.hasTapped = true;
     // timeout for updating the power assist ring
     if (this.tapTimeoutId) {
