@@ -35,14 +35,7 @@ export class KeyboardService {
           .orientation;
         if (keyboardHeight > screenHeight / 3) {
           this.keyboardActive = true;
-          if (
-            orientation ===
-            android.content.res.Configuration.ORIENTATION_PORTRAIT
-          ) {
-            this.notifyKeyboardHeightChanged(keyboardHeight, orientation);
-          } else {
-            this.notifyKeyboardHeightChanged(keyboardHeight, orientation);
-          }
+          this.notifyKeyboardHeightChanged(keyboardHeight, orientation);
         } else {
           if (this.keyboardActive) {
             this.notifyKeyboardHeightChanged(0, orientation);
