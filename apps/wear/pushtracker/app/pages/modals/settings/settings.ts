@@ -1,6 +1,6 @@
 import { Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { SettingsViewModel } from './settings-view-model';
 
 let closeCallback;
@@ -13,7 +13,7 @@ export function onCloseTap() {
 export function onShownModally(args: ShownModallyData) {
   Log.D('settings onShownModally');
   const page = args.object as Page;
-  const kinveyService = args.context.kinveyService as KinveyService;
+  const kinveyService = args.context.kinveyService as PushTrackerKinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   const data = {
