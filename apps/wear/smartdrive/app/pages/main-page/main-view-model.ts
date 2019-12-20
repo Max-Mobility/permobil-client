@@ -1438,7 +1438,7 @@ export class MainViewModel extends Observable {
     }
     // scale the acceleration values if we're not up to date
     if (!this.systemIsUpToDate) {
-      const factor = 2.0;
+      const factor = 4.0;
       acceleration.x *= factor;
       acceleration.y *= factor;
       acceleration.z *= factor;
