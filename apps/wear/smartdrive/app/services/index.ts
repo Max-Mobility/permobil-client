@@ -1,5 +1,5 @@
 import { BluetoothService } from './bluetooth.service';
-import { KinveyService } from './kinvey.service';
+import { SmartDriveKinveyService } from './kinvey.service';
 import { NetworkService } from './network.service';
 import { SensorService } from './sensor.service';
 import { SettingsService } from './settings.service';
@@ -11,7 +11,7 @@ export const SERVICES = [
   SensorService,
   SqliteService,
   NetworkService,
-  KinveyService,
+  SmartDriveKinveyService,
   SettingsService
 ];
 
