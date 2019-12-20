@@ -36,8 +36,6 @@ const dateLocales = {
 
 declare const com: any;
 
-const debug: boolean = false;
-
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
 
