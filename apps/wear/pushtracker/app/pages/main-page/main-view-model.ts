@@ -16,7 +16,7 @@ import { Sentry } from 'nativescript-sentry';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
-import { KinveyService, SqliteService } from '../../services';
+import { PushTrackerKinveyService, SqliteService } from '../../services';
 import { applyTheme, getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const dateLocales = {
@@ -120,7 +120,7 @@ export class MainViewModel extends Observable {
    * User interaction objects
    */
   private sqliteService: SqliteService;
-  private kinveyService: KinveyService;
+  private kinveyService: PushTrackerKinveyService;
 
   // permissions for the app
   private permissionsNeeded: any[] = [];
@@ -323,10 +323,10 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([
       SqliteService,
-      KinveyService
+      PushTrackerKinveyService
     ]);
     this.sqliteService = injector.get(SqliteService);
-    this.kinveyService = injector.get(KinveyService);
+    this.kinveyService = injector.get(PushTrackerKinveyService);
     sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings

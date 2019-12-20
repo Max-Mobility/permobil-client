@@ -5,13 +5,13 @@ import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 let closeCallback;
 let page: Page;
 let wearOsLayout: WearOsLayout;
-let kinveyService: KinveyService;
+let kinveyService: PushTrackerKinveyService;
 let disableWearCheck: boolean;
 let _showingModal: boolean = false;
 
@@ -29,7 +29,7 @@ export function onCloseTap() {
 export function onShownModally(args: ShownModallyData) {
   Log.D('profile onShownModally');
   page = args.object as Page;
-  kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as PushTrackerKinveyService;
   disableWearCheck = args.context.disableWearCheck;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 

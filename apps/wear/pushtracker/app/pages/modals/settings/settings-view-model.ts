@@ -4,7 +4,7 @@ import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L, Prop } from '@permobil/nativescript';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 export class SettingsViewModel extends Observable {
@@ -13,7 +13,7 @@ export class SettingsViewModel extends Observable {
 
   private _showingModal: boolean = false;
 
-  constructor(page: Page, private _kinveyService: KinveyService, data) {
+  constructor(page: Page, private _kinveyService: PushTrackerKinveyService, data) {
     super();
     const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
     this._configureLayout(wearOsLayout);

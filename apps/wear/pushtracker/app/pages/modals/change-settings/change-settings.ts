@@ -1,6 +1,6 @@
 import { Page, ShownModallyData } from '@nativescript/core';
 import { Log } from '@permobil/core';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { ChangeSettingsViewModel } from './change-settings-view-model';
 
 let closeCallback: Function;
@@ -16,7 +16,7 @@ export function onShownModally(args: ShownModallyData) {
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the values sent in the modal context
-  const kinveyService = args.context.kinveyService as KinveyService;
+  const kinveyService = args.context.kinveyService as PushTrackerKinveyService;
   // create an object to pass for binding data in the VM
   const data = {
     activeSettingToChange: args.context.activeSettingToChange,
