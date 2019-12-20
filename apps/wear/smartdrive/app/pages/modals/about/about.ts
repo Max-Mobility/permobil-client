@@ -9,7 +9,7 @@ import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { DataKeys } from '../../../enums';
 import { SmartDriveException } from '../../../models';
-import { KinveyService } from '../../../services';
+import { SmartDriveKinveyService } from '../../../services';
 import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
 
 let closeCallback;
@@ -23,7 +23,7 @@ const data = {
   chinSize: 0,
   smartDriveSerialNumber: '---',
   watchSerialNumber: '---',
-  appVersion: KinveyService.api_app_key,
+  appVersion: SmartDriveKinveyService.api_app_key,
   databaseId: '---',
   userName: '---',
   userEmail: '---',
@@ -42,7 +42,7 @@ export function onShownModally(args: ShownModallyData) {
 
   _showingModal = false;
 
-  kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as SmartDriveKinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   data.userName =
@@ -75,7 +75,7 @@ export function onShownModally(args: ShownModallyData) {
   data.appVersion = versionName;
 
   // get the database id
-  data.databaseId = KinveyService.api_app_key;
+  data.databaseId = SmartDriveKinveyService.api_app_key;
 
   // set the pages bindingContext
   page.bindingContext = fromObject(data) as Observable;

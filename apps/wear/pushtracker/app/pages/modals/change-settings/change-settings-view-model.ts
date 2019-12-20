@@ -8,7 +8,7 @@ import { L, Prop } from '@permobil/nativescript';
 import * as LS from 'nativescript-localstorage';
 import { DataKeys } from '../../../enums';
 import { Profile } from '../../../namespaces';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 declare const com: any;
@@ -33,7 +33,7 @@ export class ChangeSettingsViewModel extends Observable {
 
   constructor(
     private _mainPage: Page,
-    private _kinveyService: KinveyService,
+    private _kinveyService: PushTrackerKinveyService,
     data
   ) {
     super();

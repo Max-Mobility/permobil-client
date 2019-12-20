@@ -23,7 +23,7 @@ import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
 import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
+import { BluetoothService, SmartDriveKinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
@@ -151,7 +151,7 @@ export class MainViewModel extends Observable {
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
-  private _kinveyService: KinveyService;
+  private _kinveyService: SmartDriveKinveyService;
   private _settingsService: SettingsService;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
@@ -646,7 +646,7 @@ export class MainViewModel extends Observable {
     this._bluetoothService = injector.get(BluetoothService);
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
-    this._kinveyService = injector.get(KinveyService);
+    this._kinveyService = injector.get(SmartDriveKinveyService);
     this._settingsService = injector.get(SettingsService);
 
     // initialize data storage for usage, errors, settings
