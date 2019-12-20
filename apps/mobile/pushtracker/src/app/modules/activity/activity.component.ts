@@ -1332,6 +1332,10 @@ export class ActivityComponent implements OnInit {
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorBlackCss
         : this._colorWhite;
+    const selectedColor =
+      this.CURRENT_THEME === APP_THEMES.DARK
+        ? this._colorWhite
+        : this._colorBlackCss;
     const textColor =
       this.CURRENT_THEME === APP_THEMES.DARK
         ? this._colorWhite
@@ -1347,8 +1351,9 @@ export class ActivityComponent implements OnInit {
     const todayCellStyle = new DayCellStyle();
     // make the border / text blue to make it easy to find today
     todayCellStyle.cellBorderColor = this._colorPermobilCousteau;
+    todayCellStyle.cellBackgroundColor = pageColor;
     // todayCellStyle.cellTextSize = 18;
-    todayCellStyle.cellTextColor = this._colorPermobilCousteau;
+    todayCellStyle.cellTextColor = textColor;
     this.monthViewStyle.todayCellStyle = todayCellStyle;
 
     // Day cell style
@@ -1361,13 +1366,14 @@ export class ActivityComponent implements OnInit {
     // Weekend cell style
     const weekendCellStyle = new DayCellStyle();
     weekendCellStyle.cellBorderColor = pageColor;
+    weekendCellStyle.cellBackgroundColor = pageColor;
     this.monthViewStyle.weekendCellStyle = weekendCellStyle;
 
     // Selected cell style
     const selectedDayCellStyle = new DayCellStyle();
     selectedDayCellStyle.cellTextSize = 20;
     selectedDayCellStyle.cellBackgroundColor = pageColor;
-    // selectedDayCellStyle.cellBorderColor = pageColor;
+    selectedDayCellStyle.cellBorderColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextColor = this._colorPermobilCousteau;
     selectedDayCellStyle.cellTextFontStyle = CalendarFontStyle.Bold;
     this.monthViewStyle.selectedDayCellStyle = selectedDayCellStyle;

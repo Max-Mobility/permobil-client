@@ -2,7 +2,7 @@ import * as appSettings from '@nativescript/core/application-settings';
 import { ad, ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Bluetooth } from 'nativescript-bluetooth';
 import { ResultReceiver } from './ResultReceiver';
-import { Common } from '../wear-os-comms.common';
+import { CallbackFunction, Common } from '../wear-os-comms.common';
 
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
 @Interfaces([
@@ -10,9 +10,9 @@ import { Common } from '../wear-os-comms.common';
 ])
 class CapabilityListener extends androidx.fragment.app.FragmentActivity
   implements
-    com.google.android.gms.wearable.CapabilityClient
-      .OnCapabilityChangedListener {
-  public callback: any = null;
+  com.google.android.gms.wearable.CapabilityClient
+    .OnCapabilityChangedListener {
+  public callback: CallbackFunction = null;
   constructor() {
     super();
   }
@@ -32,10 +32,14 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
-  private static _onConnectedCallback: any = null;
-  private static _onDisconnectedCallback: any = null;
-  private static _onMessageReceivedCallback: any = null;
-  private static _onDataReceivedCallback: any = null;
+
+  // callback functions
+  private static _cancelCallback: CallbackFunction = null;
+  private static _onConnectedCallback: CallbackFunction = null;
+  private static _onDisconnectedCallback: CallbackFunction = null;
+  private static _onMessageReceivedCallback: CallbackFunction = null;
+  private static _onDataReceivedCallback: CallbackFunction = null;
+
   private static _mResultReceiver = new ResultReceiver(
     new android.os.Handler()
   );
@@ -55,19 +59,19 @@ export class WearOsComms extends Common {
     super();
   }
 
-  public static registerConnectedCallback(cb: any) {
+  public static registerConnectedCallback(cb: CallbackFunction) {
     WearOsComms._onConnectedCallback = cb;
   }
 
-  public static registerDisconnectedCallback(cb: any) {
+  public static registerDisconnectedCallback(cb: CallbackFunction) {
     WearOsComms._onDisconnectedCallback = cb;
   }
 
-  public static registerMessageCallback(cb: any) {
+  public static registerMessageCallback(cb: CallbackFunction) {
     WearOsComms._onMessageReceivedCallback = cb;
   }
 
-  public static registerDataCallback(cb: any) {
+  public static registerDataCallback(cb: CallbackFunction) {
     WearOsComms._onDataReceivedCallback = cb;
   }
 
@@ -382,12 +386,13 @@ export class WearOsComms extends Common {
         context
       ).getConnectedNodes();
       let tid = null;
+      const resolveEarly = () => {
+        WearOsComms._nodesConnected = [];
+        resolve([]);
+      };
+      WearOsComms._cancelCallback = resolveEarly;
       if (timeout !== undefined && timeout > 0) {
-        tid = setTimeout(() => {
-          WearOsComms.error('Timed out searching for connected devices');
-          WearOsComms._nodesConnected = [];
-          resolve([]);
-        }, timeout);
+        tid = setTimeout(resolveEarly, timeout);
       }
       nodeTaskList.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
@@ -575,6 +580,11 @@ export class WearOsComms extends Common {
   public static async findAvailableCompanion(timeout: number) {
     // do nothing
     return null;
+  }
+
+  public static async cancelOperations() {
+    WearOsComms._cancelCallback && WearOsComms._cancelCallback();
+    WearOsComms._cancelCallback = null;
   }
 
   public static saveCompanion(address: string) {

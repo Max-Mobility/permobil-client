@@ -68,6 +68,11 @@
     font-size: 16;
   }
 
+  RadCartesianChart {
+    background-color: $white;
+    color: $black;
+  }
+
   SegmentedBar {
       background-color: $white;
       selected-background-color: $grey;

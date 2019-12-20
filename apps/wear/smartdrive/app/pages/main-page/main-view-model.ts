@@ -21,10 +21,11 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, TapDetector } from '../../models';
+import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
 import { BluetoothService, SmartDriveKinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
+import { updatesViewModel } from '../modals/updates/updates-page';
 
 const ambientTheme = require('../../scss/theme-ambient.scss').toString();
 const defaultTheme = require('../../scss/theme-default.scss').toString();
@@ -162,7 +163,7 @@ export class MainViewModel extends Observable {
   private wearIsUpToDate: boolean = false;
   private buildDisplay: string = null;
   private hasAppliedTheme: boolean = false;
-  private _previousData: any[] = [];
+  private _previousData: StoredAcceleration[] = [];
   private _previousDataLength: number = 4;
   private _wifiWasEnabled = false;
   private _bodySensorEnabled: boolean = false;
@@ -1092,8 +1093,15 @@ export class MainViewModel extends Observable {
       this._enableBodySensor();
     });
 
-    application.on(application.suspendEvent, () => {
+    application.on(application.suspendEvent, async () => {
       sentryBreadCrumb('*** appSuspend ***');
+
+      if (updatesViewModel) {
+        sentryBreadCrumb('Stopping OTA updates');
+        await updatesViewModel.stopUpdates(L('updates.canceled'), true);
+        sentryBreadCrumb('OTA updates successfully stopped');
+      }
+
       this._fullStop();
       this._updateComplications();
     });
@@ -1202,7 +1210,6 @@ export class MainViewModel extends Observable {
     const timeReceiverCallback = (_1, _2) => {
       try {
         this._updateTimeDisplay();
-        sentryBreadCrumb('timeReceiverCallback');
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
           this._onNewDay();
@@ -1451,35 +1458,31 @@ export class MainViewModel extends Observable {
       });
 
       const max = this._previousData.reduce((element1, element2) => {
-        element1.accelx > element2.accelx ? element1.accelx : element2.accelx;
-        element1.accely > element2.accely ? element1.accely : element2.accely;
-        element1.accelz > element2.accelz ? element1.accelz : element2.accelz;
-        return element1;
+        const _max: StoredAcceleration = element1;
+        _max.accel.x = Math.max(element1.accel.x, element2.accel.x);
+        _max.accel.y = Math.max(element1.accel.y, element2.accel.y);
+        _max.accel.z = Math.max(element1.accel.z, element2.accel.z);
+        return _max;
       });
 
       const min = this._previousData.reduce((element1, element2) => {
-        element1.accel.x < element2.accel.x
-          ? element1.accel.x
-          : element2.accel.x;
-        element1.accel.y < element2.accel.y
-          ? element1.accel.y
-          : element2.accel.y;
-        element1.accel.z < element2.accel.z
-          ? element1.accel.z
-          : element2.accel.z;
-        return element1;
+        const _min: StoredAcceleration = element1;
+        _min.accel.x = Math.min(element1.accel.x, element2.accel.x);
+        _min.accel.y = Math.min(element1.accel.y, element2.accel.y);
+        _min.accel.z = Math.min(element1.accel.z, element2.accel.z);
+        return _min;
       });
 
+      // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
         x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
         y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
         z: total.accel.z >= 0 ? max.accel.z : min.accel.z
       };
 
+      // compute the average timestamp of our stored higher-frequency
+      // data
       const averageTimestamp = total.timestamp / this._previousDataLength;
-      // if (((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000) > 100) {
-      //   Log.E('time diff:', ((android.os.SystemClock.elapsedRealtimeNanos() - averageTimestamp) / 1000000));
-      // }
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
@@ -1495,7 +1498,7 @@ export class MainViewModel extends Observable {
       );
       if (didTap) {
         // user has met threshold for tapping
-        this._handleTap(/* averageTimestamp */);
+        this._handleTap();
       }
     }
   }
@@ -1532,7 +1535,7 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private async _handleTap(/* timestamp: number */) {
+  private async _handleTap() {
     this.hasTapped = true;
     // timeout for updating the power assist ring
     if (this.tapTimeoutId) {
@@ -2314,37 +2317,6 @@ export class MainViewModel extends Observable {
   /*
    * DATABASE FUNCTIONS
    */
-  private async _getFirmwareData() {
-    try {
-      const objs = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Firmwares.TableName
-      });
-      // @ts-ignore
-      const mds = objs.map(o => SmartDriveData.Firmwares.loadFirmware(...o));
-      // make the metadata
-      return mds.reduce((data, md) => {
-        const fname = md[SmartDriveData.Firmwares.FileName];
-        const blob = SmartDriveData.Firmwares.loadFromFileSystem({
-          filename: fname
-        });
-        if (blob && blob.length) {
-          data[md[SmartDriveData.Firmwares.FirmwareName]] = {
-            version: md[SmartDriveData.Firmwares.VersionName],
-            filename: fname,
-            id: md[SmartDriveData.Firmwares.IdName],
-            changes: md[SmartDriveData.Firmwares.ChangesName],
-            data: blob
-          };
-        }
-        return data;
-      }, {});
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get firmware metadata:', err);
-      return {};
-    }
-  }
-
   private async _saveErrorToDatabase(errorCode: string, errorId: number) {
     if (errorId === undefined) {
       // we use this when saving a local error
@@ -2368,39 +2340,6 @@ export class MainViewModel extends Observable {
           });
         });
     }
-  }
-
-  private async _getRecentErrors(numErrors: number, offset: number = 0) {
-    // sentryBreadCrumb('_getRecentErrors', numErrors, offset);
-    let errors = [];
-    try {
-      const rows = await this._sqliteService.getAll({
-        tableName: SmartDriveData.Errors.TableName,
-        orderBy: SmartDriveData.Errors.IdName,
-        ascending: false,
-        limit: numErrors,
-        offset: offset
-      });
-      if (rows && rows.length) {
-        errors = rows.map(r => {
-          const translationKey =
-            'error-history.errors.' + (r && r[2]).toLowerCase();
-          return {
-            time: this._format(new Date(r && +r[1]), 'YYYY-MM-DD HH:mm'),
-            code: L(translationKey),
-            id: r && r[3],
-            uuid: r && r[4],
-            insetPadding: this.insetPadding,
-            isBack: false,
-            onTap: () => { }
-          };
-        });
-      }
-    } catch (err) {
-      Sentry.captureException(err);
-      Log.E('Could not get errors', err);
-    }
-    return errors;
   }
 
   private async _saveSmartDriveData(args: {

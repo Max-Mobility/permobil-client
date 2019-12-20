@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -38,8 +37,6 @@ import android.widget.TextView;
 import com.permobil.smartdrive.wearos.R;
 import com.permobil.smartdrive.wearos.util.DateUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,7 +60,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
     private int ambientColor;
     private SharedPreferences sharedPreferences;
 
-
+    
     /**
      * Update rate in milliseconds for normal (not ambient and not mute) mode. We update twice
      * a second to blink the colons.
@@ -172,7 +169,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         boolean mMute;
         boolean mShouldDrawColons;
 
-        float mXOffset;
         float mYOffset;
         float mLineHeight;
 
@@ -181,12 +177,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
          * When true, we disable anti-aliasing in ambient mode.
          */
         private boolean mLowBitAmbient;
-
-        /*
-         * Whether the display supports burn in protection in ambient mode.
-         * When true, remove the background in ambient mode.
-         */
-        private boolean mBurnInProtection;
 
 
         /* Maps active complication ids to the data for that complication. Note: Data will only be
@@ -229,9 +219,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                                 invalidate();
                                 if (shouldTimerBeRunning()) {
                                     long timeMs = System.currentTimeMillis();
-                                    long delayMs =
-                                            mInteractiveUpdateRateMs
-                                                    - (timeMs % mInteractiveUpdateRateMs);
+                                    long delayMs = mInteractiveUpdateRateMs - (timeMs % mInteractiveUpdateRateMs);
                                     mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
                                 }
                                 break;
@@ -285,7 +273,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             // improves performance after profiling the bind call in both overrides.
             ButterKnife.bind(this, mRelativeLayout);
 
-
             // For most Wear devices, width and height are the same, so we just chose one (width).
             int sizeOfComplication = width / 6;
             int midpointOfScreen = width / 2;
@@ -293,8 +280,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             int verticalOffset = midpointOfScreen / 5;
 
             Rect topComplicationBounds = new Rect(horizontalOffset, verticalOffset, horizontalOffset + sizeOfComplication, verticalOffset + sizeOfComplication);
-            Log.d(TAG, "complication bounds: " + topComplicationBounds);
-
             ComplicationDrawable topComplicationDrawable = mComplicationDrawableSparseArray.get(TOP_COMPLICATION_ID);
             topComplicationDrawable.setBounds(topComplicationBounds);
         }
@@ -359,6 +344,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourTextView.setTextSize(48);
                 colonTextView.setTextSize(48);
                 minuteTextView.setTextSize(48);
+                amPmTextView.setTextSize(20);
 
                 // always draw the colon with the time in ambient mode
                 colonTextView.setVisibility(View.VISIBLE);
@@ -383,9 +369,10 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                     smartDriveBatteryCircle.setRimColor(charcoalColor);
                 }
 
-                hourTextView.setTextSize(24);
-                colonTextView.setTextSize(24);
-                minuteTextView.setTextSize(24);
+                hourTextView.setTextSize(18);
+                colonTextView.setTextSize(18);
+                minuteTextView.setTextSize(18);
+                amPmTextView.setTextSize(12);
             }
 
             if (mLowBitAmbient) {
@@ -395,7 +382,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 minuteTextView.getPaint().setAntiAlias(antiAlias);
                 amPmTextView.getPaint().setAntiAlias(antiAlias);
             }
-            invalidate();
 
             // Update drawable complications' ambient state.
             // Note: ComplicationDrawable handles switching between active/ambient colors, we just
@@ -407,6 +393,7 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 complicationDrawable.setInAmbientMode(inAmbientMode);
             }
 
+            invalidate();
             // Check and trigger whether or not timer should be running (only in active mode).
             updateTimer();
         }
@@ -436,7 +423,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onPropertiesChanged(Bundle properties) {
             mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-            mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+            /*
+             * Whether the display supports burn in protection in ambient mode.
+             * When true, remove the background in ambient mode.
+             */
+            boolean mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
 
             // Updates complications to properly render in ambient mode based on the screen's capabilities.
             ComplicationDrawable complicationDrawable;
@@ -453,8 +444,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onComplicationDataUpdate(int complicationId, ComplicationData complicationData) {
-            Log.d(TAG, "onComplicationDataUpdate() id: " + complicationId);
-
             // Adds/updates active complication data in the array.
             mActiveComplicationDataSparseArray.put(complicationId, complicationData);
 
@@ -481,13 +470,11 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         @Override
         public void onVisibilityChanged(boolean visible) {
             super.onVisibilityChanged(visible);
-
             if (visible) {
                 registerReceiver();
                 // Update time zone in case it changed while we weren't visible.
                 mCalendar.setTimeZone(TimeZone.getDefault());
                 initFormats();
-                //invalidate();
             } else {
                 unregisterReceiver();
             }
@@ -514,17 +501,13 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             );
 
             Thread.setDefaultUncaughtExceptionHandler(
-                    new Thread.UncaughtExceptionHandler() {
-                        @Override
-                        public void uncaughtException(@NotNull Thread thread, @NotNull Throwable e) {
-                            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                            Sentry.capture(e);
-                        }
+                    (thread, e) -> {
+                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+                        Sentry.capture(e);
                     });
         }
 
         private void initializeComplications() {
-            Log.d(TAG, "initializeComplications()");
             mActiveComplicationDataSparseArray = new SparseArray<>(COMPLICATION_IDS.length);
 
             // Creates a ComplicationDrawable for each location where the user can render a
@@ -552,7 +535,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private void onComplicationTap(int complicationId) {
             Log.d(TAG, "onComplicationTap()");
             ComplicationData complicationData = mActiveComplicationDataSparseArray.get(complicationId);
-            Log.d(TAG, "Complication Id: " + complicationId);
 
             if (complicationData != null) {
                 if (complicationData.getTapAction() != null) {
@@ -650,8 +632,27 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             boolean is24Hour = DateFormat.is24HourFormat(DigitalWatchFaceService.this);
 
             // Show colons for the first half of each second so the colons blink on when the time updates.
-            mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
+            // always draw the colon during ambient mode for time display
+            mShouldDrawColons = false;
+            if (isInAmbientMode() || mMute) {
+                mShouldDrawColons = true;
+            } else {
+                mShouldDrawColons = (System.currentTimeMillis() % 1000) < 500;
+            }
             colonTextView.setVisibility(mShouldDrawColons ? View.VISIBLE : View.INVISIBLE);
+
+            // Get the minutes.
+            String minuteString;
+            int minute = mCalendar.get(Calendar.MINUTE);
+            // HACK - for some reason when we are setting the value of the string in Ambient Mode it's using the previous value.
+            // so here we are just incrementing the string value +1 to force the minutes in ambient mode to be in sync with what the system clock is
+            // For now this seems to be working fine... will need to analyze with other devices and more testing feedback.
+            // https://github.com/Max-Mobility/permobil-client/issues/639
+            if (isInAmbientMode()) {
+                minute = ((minute) + 1) % 60;
+            }
+            minuteString = DateUtils.formatTwoDigitNumber(minute);
+            minuteTextView.setText(minuteString);
 
             // Get the hours.
             String hourString;
@@ -659,6 +660,14 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
                 hourString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.HOUR_OF_DAY));
             } else {
                 int hour = mCalendar.get(Calendar.HOUR);
+
+                // handle updating the hour in ambient mode - if the minutes have rolled around to 00
+                // https://github.com/Max-Mobility/permobil-client/issues/639
+                if (isInAmbientMode() && minute == 0) {
+                    // we need to bump the hour +1 around the clock our minutes are updating in ambient here
+                    hour = (hour + 1);
+                }
+
                 if (hour == 0) {
                     hour = 12;
                 }
@@ -666,11 +675,6 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
             }
             hourTextView.setText(hourString);
 
-
-            // Get the minutes.
-            String minuteString = DateUtils.formatTwoDigitNumber(mCalendar.get(Calendar.MINUTE));
-            // Set the time value combining the hours & minute strings
-            minuteTextView.setText(minuteString);
 
             // Set the am/pm.
             if (!is24Hour) {
@@ -700,8 +704,8 @@ public class DigitalWatchFaceService extends CanvasWatchFaceService {
         private float getWatchBatteryLevel() {
             IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
             Intent batteryStatus = getApplicationContext().registerReceiver(null, iFilter);
-            int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : 0;
+            int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : 0;
 
             return level * 100 / (float) scale;
         }

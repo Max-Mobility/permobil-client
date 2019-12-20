@@ -61,6 +61,7 @@ export class UpdatesViewModel extends Observable {
 
   // Debounced OTA action
   private _debouncedOtaAction: any = null;
+  private _debouncedCloseModal: any = null;
 
   /**
    * SmartDrive Data / state management
@@ -80,11 +81,12 @@ export class UpdatesViewModel extends Observable {
   private timeReceiverCallback = (_1, _2) => {
     try {
       this.updateTimeDisplay();
-      sentryBreadCrumb('timeReceiverCallback');
     } catch (error) {
       Sentry.captureException(error);
     }
   }
+
+  private _otaStarted: boolean = false;
 
   constructor() {
     super();
@@ -110,6 +112,12 @@ export class UpdatesViewModel extends Observable {
 
   async init() {
     sentryBreadCrumb('Updates-View-Model init.');
+
+    // debounced function to keep people from pressing it too frequently
+    this._debouncedCloseModal = debounce(this.closeModal, 500, {
+      leading: true,
+      trailing: false
+    });
 
     sentryBreadCrumb('Initializing WakeLock...');
     console.time('Init_SmartDriveWakeLock');
@@ -433,7 +441,7 @@ export class UpdatesViewModel extends Observable {
         ...actions,
         {
           label: L('ota.action.back'),
-          func: this.closeModal.bind(this),
+          func: this._debouncedCloseModal.bind(this),
           action: 'ota.action.close',
           class: 'action-close'
         }
@@ -454,7 +462,7 @@ export class UpdatesViewModel extends Observable {
           ...actions,
           {
             label: L('ota.action.close'),
-            func: this.closeModal.bind(this),
+            func: this._debouncedCloseModal.bind(this),
             action: 'ota.action.close',
             class: 'action-close'
           }
@@ -641,6 +649,7 @@ export class UpdatesViewModel extends Observable {
     // smartdrive needs to update
     let otaStatus = '';
     try {
+      this._otaStarted = true;
       otaStatus = await this.smartDrive.performOTA(
         bleFw,
         mcuFw,
@@ -648,11 +657,12 @@ export class UpdatesViewModel extends Observable {
         mcuVersion,
         300 * 1000
       );
+      this._otaStarted = false;
       sentryBreadCrumb('"' + otaStatus + '" ' + typeof otaStatus);
       if (otaStatus === 'updates.canceled') {
         this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
           label: L('ota.action.close'),
-          func: this.closeModal.bind(this),
+          func: this._debouncedCloseModal.bind(this),
           action: 'ota.action.close',
           class: 'action-close'
         });
@@ -661,7 +671,7 @@ export class UpdatesViewModel extends Observable {
       return this.updateError(err, L('updates.failed'), `${err}`);
     }
     const updateMsg = L(otaStatus);
-    this.stopUpdates(updateMsg, false);
+    await this.stopUpdates(updateMsg, false);
   }
 
   async updateFirmwareData(f: any) {
@@ -711,12 +721,12 @@ export class UpdatesViewModel extends Observable {
     }
   }
 
-  updateError(err: any, msg: string, alertMsg?: string) {
+  async updateError(err: any, msg: string, alertMsg?: string) {
     // TODO: Show 'CLOSE/BACK' button to close this modal
     sentryBreadCrumb(`${err}: ${msg} - ${alertMsg}`);
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
-      func: this.closeModal.bind(this),
+      func: this._debouncedCloseModal.bind(this),
       action: 'ota.action.close',
       class: 'action-close'
     });
@@ -728,19 +738,25 @@ export class UpdatesViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
     }
-    this.stopUpdates(msg, true);
+    await this.stopUpdates(msg, true);
   }
 
-  stopUpdates(msg: string, doCancelOta: boolean = true) {
+  async stopUpdates(msg: string, doCancelOta: boolean = true) {
     this.releaseCPU();
     this.smartDriveOtaState = msg;
 
     if (doCancelOta && this.smartDrive) {
-      this.smartDrive.cancelOTA();
+      if (this._otaStarted) {
+        await new Promise((resolve, reject) => {
+          this.smartDrive.once(SmartDrive.smartdrive_ota_stopped_event, resolve);
+          this.smartDrive.cancelOTA();
+          setTimeout(resolve, 10000);
+        });
+      }
     }
     this.smartDriveOtaActions.splice(0, this.smartDriveOtaActions.length, {
       label: L('ota.action.close'),
-      func: this.closeModal.bind(this),
+      func: this._debouncedCloseModal.bind(this),
       action: 'ota.action.close',
       class: 'action-close'
     });

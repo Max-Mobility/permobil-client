@@ -26,7 +26,7 @@
     "nativescript-ng-ripple": "~3.0.0-beta.1",
     "nativescript-pager": "file:../../../forked-plugins/nativescript-pager-11.0.11.tgz",
     "nativescript-permissions": "~1.3.8",
-    "nativescript-sentry": "~1.9.1",
+    "nativescript-sentry": "file:../../../forked-plugins/nativescript-sentry-1.9.1.tgz",
     "nativescript-sqlite": "~2.3.3",
     "nativescript-sqlite-commercial": "github:autochair/nativescript-sqlite-commercial",
     "nativescript-sqlite-encrypted": "github:autochair/nativescript-sqlite-encrypted",
@@ -35,19 +35,19 @@
     "nativescript-toasty": "~2.0.1",
     "nativescript-wear-os": "~2.1.1",
     "reflect-metadata": "~0.1.13",
-    "tns-core-modules": "~6.2.0"
+    "tns-core-modules": "~6.2.3"
   },
   "devDependencies": {
     "mkdirp": "~0.5.1",
     "nativescript-dev-webpack": "~1.3.0",
     "nativescript-hook": "~0.2.5",
-    "nativescript-worker-loader": "~0.9.5",
+    "nativescript-worker-loader": "~0.10.0",
     "node-sass": "^4.13.0",
     "prompts": "~2.1.0",
     "rimraf": "~2.6.3",
     "sass-loader": "^8.0.0",
-    "tns-platform-declarations": "6.2.0",
+    "tns-platform-declarations": "~6.2.3",
     "tslint": "~5.20.1",
-    "typescript": "3.7.2"
+    "typescript": "~3.7.3"
   }
 }

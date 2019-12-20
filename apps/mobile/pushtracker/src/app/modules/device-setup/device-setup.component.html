@@ -31,8 +31,8 @@
               autoPlay="true"
               *ngIf="!showDoneButton && !showFailure && slide"
             ></LottieView>
-            <LottieView height="25" width="25" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
-            <LottieView height="25" width="25" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
+            <LottieView height="25" width="25" margin="10" class="align-center" src="success_green.json" loop="false" autoPlay="true" *ngIf="showDoneButton"></LottieView>
+            <LottieView height="25" width="25" margin="10" class="align-center" src="failure_red.json" loop="false" autoPlay="true" *ngIf="showFailure"></LottieView>
             <Label class="device-setup-status-label align-center" textWrap="true" [text]="statusMessage"></Label>
           </StackLayout>
 

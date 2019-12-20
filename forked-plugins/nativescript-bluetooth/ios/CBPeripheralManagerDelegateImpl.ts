@@ -1,3 +1,4 @@
+import { device } from '@nativescript/core/platform';
 import { CLog, CLogTypes, ConnectionState } from '../common';
 import { Bluetooth, getDevice } from './ios_main';
 
@@ -29,9 +30,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${
-        this._owner
-      }`
+      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
     );
     return this;
   }
@@ -43,9 +42,7 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${
-        this._owner
-      }`
+      `CBPeripheralManagerDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
     );
     return this;
   }
@@ -71,6 +68,28 @@ export class CBPeripheralManagerDelegateImpl extends NSObject
       manager: mgr,
       state
     });
+
+    if (device.sdkVersion < '13.0') {
+      let status;
+      const value = CBPeripheralManager.authorizationStatus();
+      switch (value) {
+        case CBPeripheralManagerAuthorizationStatus.Authorized:
+          status = 'authorized';
+          break;
+        case CBPeripheralManagerAuthorizationStatus.Denied:
+          status = 'denied';
+          break;
+        case CBPeripheralManagerAuthorizationStatus.Restricted:
+          status = 'restricted';
+          break;
+        default:
+          status = 'undetermined';
+          break;
+      }
+      owner.sendEvent(Bluetooth.bluetooth_authorization_event, {
+        status
+      });
+    }
   }
 
   /**

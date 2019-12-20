@@ -5,8 +5,8 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    public static String formatTwoDigitNumber(int hour) {
-        return String.format(Locale.getDefault(), "%02d", hour);
+    public static String formatTwoDigitNumber(int value) {
+        return String.format(Locale.getDefault(), "%02d", value);
     }
 
     public static String getAmPmString(int amPm) {

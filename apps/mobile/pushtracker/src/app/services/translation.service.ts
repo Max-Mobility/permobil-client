@@ -1,26 +1,19 @@
 import { Injectable } from '@angular/core';
+import { File, knownFolders, Observable, path } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
-import { isIOS } from '@nativescript/core/platform';
-import { Observable } from '@nativescript/core';
-import { LoggingService } from './logging.service';
-
 // for querying kinvey for translation files
 import { Files as KinveyFiles, Query as KinveyQuery } from 'kinvey-nativescript-sdk';
-
-// for downloading firmware files
-import { File, knownFolders, path } from '@nativescript/core';
 import { DownloadProgress } from 'nativescript-download-progress';
+import { LoggingService } from './logging.service';
 
 @Injectable()
 export class TranslationService extends Observable {
-
-  private static CURRENT_VERSIONS_KEY: string = 'translation.service.current-versions';
+  private static CURRENT_VERSIONS_KEY: string =
+    'translation.service.current-versions';
 
   private currentVersions: any = {};
 
-  constructor(
-    private _logService: LoggingService
-  ) {
+  constructor(private _logService: LoggingService) {
     super();
   }
 
@@ -31,9 +24,26 @@ export class TranslationService extends Observable {
       // this query will get the metadata about all translation files on
       // the server for the pushtracker_mobile app
       const kinveyQuery = new KinveyQuery();
-      kinveyQuery.equalTo('app_name', 'pushtracker_mobile');
-      kinveyQuery.equalTo('translation_file', true);
-      const kinveyResponse = await KinveyFiles.find(kinveyQuery);
+      kinveyQuery
+        .equalTo('app_name', 'pushtracker_mobile')
+        .equalTo('translation_file', true);
+      const kinveyResponse = await KinveyFiles.find(kinveyQuery).catch(err => {
+        this._logService.logBreadCrumb(
+          TranslationService.name,
+          `Error querying the Kinvey Files: ${err}`
+        );
+      });
+
+      // if response is null be sure to log and return since we won't have any files to work with at this point.
+      if (!kinveyResponse) {
+        this._logService.logException(
+          new Error(
+            `Kinvey Query for translation files returned no response: ${kinveyQuery.toString()}`
+          )
+        );
+        return;
+      }
+
       // get the max version of each file
       const maxes = kinveyResponse.reduce((maxes, metadata) => {
         const v = metadata['_version'];
@@ -42,6 +52,7 @@ export class TranslationService extends Observable {
         maxes[fName] = Math.max(v, maxes[fName]);
         return maxes;
       }, {});
+
       // filter only the files that we don't have of that are newer
       // than the ones we have (and are the max)
       const fileMetadatas = kinveyResponse.filter(f => {
@@ -52,32 +63,45 @@ export class TranslationService extends Observable {
         const isMax = v === maxes[fName];
         return isMax && (!current || v > currentVersion);
       });
+
       const files = [];
       // do we need to download any language files?
       if (fileMetadatas && fileMetadatas.length) {
         for (let i = 0; i < fileMetadatas.length; i++) {
-          try {
-            const f = fileMetadatas[i];
+          const f = fileMetadatas[i];
+          this._logService.logBreadCrumb(
+            TranslationService.name,
+            `Downloading language file update ${f['_filename']} version ${f['_version']}`
+          );
+
+          const dl = await TranslationService.download(f).catch(err => {
             this._logService.logBreadCrumb(
               TranslationService.name,
-              `Downloading language file update ${f['_filename']} version ${f['_version']}`
+              `Could not download ${f['_filename']}: ${err.toString()}`
             );
-            const dl = await TranslationService.download(f);
-            files.push(dl);
-          } catch (err) {
-            this._logService.logBreadCrumb(
-              TranslationService.name,
-              'Could not download language files'
-            );
-            // this._logService.logException(err);
-          }
+            // clear out the data - we couldn't save the file
+            delete this.currentVersions[f.name];
+          });
+
+          if (dl) files.push(dl);
         }
       }
 
       // now that we have downloaded the files, write them to disk
       // and update our stored metadata
-      if (files && files.length) {
-        files.forEach(this.updateLanguageData.bind(this));
+      if (files.length >= 1) {
+        files.forEach(f => {
+          this.currentVersions[f.name] = {
+            version: f.version,
+            name: f.name,
+            app_name: f.app_name,
+            filename: path.join(
+              knownFolders.documents().getFolder('i18n').path,
+              f.name
+            ),
+            language_code: f.name.replace('.json', '')
+          };
+        });
       }
 
       // save the metadata to app settings
@@ -128,39 +152,6 @@ export class TranslationService extends Observable {
     }
   }
 
-  private updateLanguageData(f: DownloadedFile) {
-    if (f === null) {
-      return;
-    }
-    // update the current versions
-    const i18n = knownFolders.documents().getFolder('i18n');
-    this.currentVersions[f.name] = {
-      version: f.version,
-      name: f.name,
-      app_name: f.app_name,
-      filename: path.join(
-        i18n.path,
-        f.name
-      ),
-      language_code: f.name.replace('.json', '')
-    };
-    try {
-      // save binary file to fs
-      TranslationService.saveToFileSystem(
-        this.currentVersions[f.name].filename,
-        f.data
-      );
-    } catch (err) {
-      // clear out the data - we couldn't save the file
-      delete this.currentVersions[f.name];
-      this._logService.logBreadCrumb(
-        TranslationService.name,
-        'Could not save language file: ' + err
-      );
-      // this._logService.logException(err);
-    }
-  }
-
   private static loadFromFileSystem(filename: string) {
     const file = File.fromPath(filename);
     return file.readTextSync(err => {
@@ -168,43 +159,18 @@ export class TranslationService extends Observable {
     });
   }
 
-  private static saveToFileSystem(filename: string, data: any) {
-    const file = File.fromPath(filename);
-    file.writeTextSync(data, err => {
-      throw new Error('Could not save language to fs: ' + err);
-    });
-  }
-
-  private static async download(f: any): Promise<DownloadedFile | null> {
+  private static async download(f: any) {
     let url = f['_downloadURL'];
     // make sure they're https!
     if (!url.startsWith('https:')) {
       url = url.replace('http:', 'https:');
     }
 
-    let file = null;
-    try {
-      const download = new DownloadProgress();
-      file = await download
-        .downloadFile(url);
-    } catch (err) {
-      throw new Error(`Could not download ${f['_filename']}: ${err.toString()}`);
-    }
-    const fileData = File.fromPath(file.path).readTextSync(err => {
-      throw new Error('could not load downloaded file data:' + err);
-    });
-    return new DownloadedFile(
-      f['_version'],
-      f['_filename'],
-      f['app_name'],
-      fileData
-    );
+    const i18nFolder = knownFolders.documents().getFolder('i18n');
+    const download = new DownloadProgress();
+    const destFilePath = path.join(i18nFolder.path, f._filename);
+    const file = await download
+      .downloadFile(url, null, destFilePath);
+    return file;
   }
-}
-
-class DownloadedFile {
-  constructor(public version: string,
-    public name: string,
-    public app_name: string,
-    public data: any) { }
 }

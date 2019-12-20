@@ -49,7 +49,7 @@
     "pt.m.i.nohmr": "cd apps/mobile/pushtracker && tns run ios --env.aot --no-hmr",
     "pt.m.start.ios": "cd apps/mobile/pushtracker && tns run ios --env.aot",
     "pt.m.start.ios.report": "cd apps/mobile/pushtracker && tns run ios --env.aot --env.report",
-    "pt.m.ios.release": "cd apps/mobile/pushtracker && tns build ios --release --env.aot --env.uglify --env.hiddenSourceMap",
+    "pt.m.ios.release": "cd apps/mobile/pushtracker && tns build ios --release --no-hmr --env.aot --env.uglify --env.hiddenSourceMap",
     "pt.m.android.release": "cd apps/mobile/pushtracker/tools && node ./android-release.js",
     "pt.m.android.layouts": "adb shell dumpsys gfxinfo com.permobil.pushtracker > layout-profile.txt",
     "pt.m.android.framestats": "adb shell dumpsys gfxinfo com.permobil.pushtracker framestats > framestats.txt",
@@ -62,7 +62,7 @@
     "se.i": "cd apps/mobile/smart-eval && tsc && tns run ios --env.aot",
     "se.start.ios": "cd apps/mobile/smart-eval && tsc && tns run ios --env.aot",
     "se.start.ios.report": "cd apps/mobile/smart-eval && tsc && tns run ios --env.aot --env.report",
-    "se.ios.release": "npm run nuki && cd apps/mobile/smart-eval && tsc && tns build ios --release --env.aot --env.uglify",
+    "se.ios.release": "npm run nuki && cd apps/mobile/smart-eval && tsc && tns build ios --release --no-hmr --env.aot --env.uglify",
     "se.android.release": "cd apps/mobile/smart-eval/tools && node ./android-release.js",
     "se.android.layouts": "adb shell dumpsys gfxinfo com.permobil.smartevaluation > layout-profile.txt",
     "se.android.framestats": "adb shell dumpsys gfxinfo com.permobil.smartevaluation framestats > framestats.txt",
@@ -91,19 +91,19 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~6.2.0"
+    "tns-core-modules": "~6.2.3"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
-    "node-sass": "~4.12.0",
-    "prettier": "^1.18.2",
-    "husky": "^3.0.9",
+    "node-sass": "~4.13.0",
+    "prettier": "^1.19.1",
+    "husky": "^3.1.0",
     "prompt": "^1.0.0",
-    "lint-staged": "^9.4.2",
+    "lint-staged": "^9.5.0",
     "rimraf": "~2.6.3",
-    "tns-platform-declarations": "~6.2.0",
+    "tns-platform-declarations": "~6.2.3",
     "tslint": "~5.20.1",
-    "typescript": "~3.5.3"
+    "typescript": "~3.7.3"
   },
   "husky": {
     "hooks": {
