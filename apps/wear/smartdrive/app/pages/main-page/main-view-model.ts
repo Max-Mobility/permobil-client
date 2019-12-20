@@ -219,7 +219,7 @@ export class MainViewModel extends Observable {
 
   // #region "Public Functions"
 
-  onMainPageLoaded(args: EventData) {
+  async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
@@ -236,9 +236,8 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      this._init().then(() => {
-        Log.D('init finished in the main-view-model');
-      });
+      await this._init();
+      Log.D('init finished in the main-view-model');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -285,7 +284,7 @@ export class MainViewModel extends Observable {
       }
     }
     // try to send the data to synchronize
-    this._onNetworkAvailable();
+    await this._onNetworkAvailable();
     // if we got here then we have valid authorization!
     this._showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
@@ -1384,11 +1383,10 @@ export class MainViewModel extends Observable {
   private _doWhileCharged() {
     // Since we're not sending a lot of data, we'll not bother
     // requesting network
-    try {
-      this._onNetworkAvailable();
-    } catch (err) {
-      sentryBreadCrumb('Error sending data to server: ' + err);
-    }
+    this._onNetworkAvailable()
+      .catch((err) => {
+        sentryBreadCrumb('Error sending data to server: ' + err);          
+      });
   }
 
   /**

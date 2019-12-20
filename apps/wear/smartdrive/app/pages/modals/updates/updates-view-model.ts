@@ -192,7 +192,7 @@ export class UpdatesViewModel extends Observable {
       Sentry.captureException(err);
     }
     try {
-      this.checkForUpdates();
+      await this.checkForUpdates();
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
     }
