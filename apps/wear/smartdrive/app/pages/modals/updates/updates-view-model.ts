@@ -18,7 +18,7 @@ import * as themes from 'nativescript-themes';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
-import { BluetoothService, KinveyService, SqliteService } from '../../../services';
+import { BluetoothService, SmartDriveKinveyService, SqliteService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -74,7 +74,7 @@ export class UpdatesViewModel extends Observable {
   private hasAppliedTheme: boolean = false;
 
   private _bluetoothService: BluetoothService;
-  private _kinveyService: KinveyService;
+  private _kinveyService: SmartDriveKinveyService;
   private _sqliteService: SqliteService;
   private _closeCallback: any;
 
@@ -146,7 +146,7 @@ export class UpdatesViewModel extends Observable {
   async onUpdatesPageLoaded(
     page: Page,
     _bluetoothService: BluetoothService,
-    _kinveyService: KinveyService,
+    _kinveyService: SmartDriveKinveyService,
     _sqliteService: SqliteService,
     _closeCallback: any
   ) {
