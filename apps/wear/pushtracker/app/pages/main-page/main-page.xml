@@ -19,7 +19,7 @@
             <nac:AnimatedCircle row="0" col="0" class="coastCircle" width="200" height="200" animated="true" animateFrom="0" clockwise="true" rimWidth="2" barWidth="8" progress="{{ coastGoalCurrentProgress }}">
             </nac:AnimatedCircle>
 
-            <GridLayout height="65%" width="70%" rows="auto, auto, auto, auto, auto" columns="*, auto, *" tap="{{ debugTap }}">
+            <GridLayout height="65%" width="70%" rows="auto, auto, auto, auto, auto" columns="*, auto, *">
               // distance
               <Label row="0" col="0" class="center-label-base ionicon distance-goal-color compact fs34" text="&#xf125;" />
               <Label row="1" col="0" textWrap="true" class="center-label-base compact fs26 bold" text="{{ distanceGoalCurrentValueDisplay }}" />

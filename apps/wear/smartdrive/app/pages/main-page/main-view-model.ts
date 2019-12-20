@@ -140,7 +140,6 @@ export class MainViewModel extends Observable {
   private CHARGING_WORK_PERIOD_MS = 1 * 60 * 1000;
   private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
   private _lastChartDay = null;
-  private _showDebugChartData = false;
 
   /**
    * User interaction objects
@@ -242,10 +241,6 @@ export class MainViewModel extends Observable {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-  }
-
-  toggleDebug() {
-    // this.displayDebug = !this.displayDebug;
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -553,8 +548,7 @@ export class MainViewModel extends Observable {
     this._enablingPowerAssist = false;
   }
 
-  debugChartTap() {
-    // this._showDebugChartData = !this._showDebugChartData;
+  handleChartTap() {
     this._updateChartData();
   }
 
@@ -2471,30 +2465,8 @@ export class MainViewModel extends Observable {
 
   private async _getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
-    // have to start at 1 so that they're valid
-    let coastDistance = 1;
-    let driveDistance = 1;
     const usageInfo = dates.map(d => {
-      if (this._showDebugChartData) {
-        const battery = Math.random() * 50 + 30;
-        const mileDiff = (battery * (Math.random() * 2.0 + 6.0)) / 100.0;
-        const newDrive = driveDistance + SmartDrive.milesToMotorTicks(mileDiff);
-        const newCoast = coastDistance + SmartDrive.milesToCaseTicks(mileDiff);
-        const info = SmartDriveData.Info.newInfo(
-          null,
-          d,
-          battery,
-          newDrive,
-          newCoast,
-          driveDistance,
-          coastDistance
-        );
-        driveDistance = newDrive;
-        coastDistance = newCoast;
-        return info;
-      } else {
-        return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
-      }
+      return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
     });
     return this._getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
