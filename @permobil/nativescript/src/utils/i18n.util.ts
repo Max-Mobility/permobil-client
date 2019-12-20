@@ -49,7 +49,7 @@ const load = async function(language?: string) {
     languagesToLoad.push(...langFiles);
   }
   // now actually load the language files
-  languagesToLoad.map(async l => {
+  languagesToLoad.forEach(async l => {
     try {
       const fname = languagePath(l);
       const file = File.fromPath(fname);

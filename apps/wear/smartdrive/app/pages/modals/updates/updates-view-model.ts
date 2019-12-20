@@ -256,7 +256,7 @@ export class UpdatesViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {

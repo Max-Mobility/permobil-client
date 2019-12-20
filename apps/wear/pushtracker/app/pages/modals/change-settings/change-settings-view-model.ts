@@ -259,7 +259,7 @@ export class ChangeSettingsViewModel extends Observable {
       // now request user data
       const userData = (await this._kinveyService.getUserData()) as any;
       const values = this._settings.toUser();
-      Object.keys(values).map(k => {
+      Object.keys(values).forEach(k => {
         userData[k] = values[k];
       });
       // don't want to do anything to these

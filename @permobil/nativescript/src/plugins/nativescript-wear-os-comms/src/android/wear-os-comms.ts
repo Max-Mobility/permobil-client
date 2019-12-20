@@ -121,7 +121,7 @@ export class WearOsComms extends Common {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
     // now iterate through the nodes without the app and open it in the play store
-    nodesWithoutApp.map(n => {
+    nodesWithoutApp.forEach(n => {
       com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
         ad.getApplicationContext(),
         intent,
@@ -772,7 +772,7 @@ export class WearOsComms extends Common {
         return d;
       });
 
-      descriptors.map(d => {
+      descriptors.forEach(d => {
         c.addDescriptor(d);
       });
 
@@ -789,7 +789,7 @@ export class WearOsComms extends Common {
       return c;
     });
     WearOsComms.log('Adding characteristics to service!');
-    characteristics.map(c =>
+    characteristics.forEach(c =>
       WearOsComms._companionService.addCharacteristic(c)
     );
   }
