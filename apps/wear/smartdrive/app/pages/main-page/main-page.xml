@@ -29,11 +29,11 @@
           </StackLayout>
           // power assist controls / info display
           <GridLayout id="powerAssistGridLayout" rowSpan="3" colSpan="3" width="90%" height="90%" loaded="{{ onPowerAssistViewLoaded}}" rows="15, auto, auto, *, auto, auto, 15" columns="30, *, 30" class="circleDetails" visibility="{{ isAmbient, isAmbient ? 'collapsed':'visible'}}">
-            <StackLayout row="1" col="1" rowSpan="2" padding="0 0 5 0" tap="{{ toggleDebug }}" visibility="{{ !motorOn ? 'visible':'collapsed' }}">
+            <StackLayout row="1" col="1" rowSpan="2" padding="0 0 5 0" visibility="{{ !motorOn ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true" text="{{ estimatedDistanceDisplay }}"/>
               <ui:AutoFitText class="topValueDescription" text="{{ estimatedDistanceDescription }}"/>
             </StackLayout>
-            <StackLayout row="1" col="1" rowSpan="2" tap="{{ toggleDebug }}" padding="0 0 5 0" visibility="{{ motorOn ? 'visible':'collapsed' }}">
+            <StackLayout row="1" col="1" rowSpan="2" padding="0 0 5 0" visibility="{{ motorOn ? 'visible':'collapsed' }}">
               <Label class="topValue" horizontalAlignment="center" textWrap="true" text="{{ currentSpeedDisplay }}"/>
               <ui:AutoFitText class="topValueDescription" text="{{ currentSpeedDescription }}"/>
             </StackLayout>
@@ -62,7 +62,7 @@
       // SmartDrive Battery Usage Chat
       <pager:PagerItem>
         <box:BoxInsetLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ handleChartTap }}">
             <ui:AutoFitText height="15" row="0" colSpan="2" text="{{ L('charts.battery.title') }}" class="chart-title" textWrap="true"/>
             <Label text="" row="1" col="0" class="hr-blue" />
             <Label text="{{ batteryChartMaxValue }}" row="1" col="1" class="chart-max-value" padding="0 0 0 5"/>
@@ -90,7 +90,7 @@
       // SmartDrive Distance Traveled Chart
       <pager:PagerItem>
         <box:BoxInsetLayout>
-          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ debugChartTap }}">
+          <GridLayout width="100%" height="100%" rows="auto, auto, *" columns="*, auto" tap="{{ handleChartTap }}">
             // Chart Title
             <ui:AutoFitText height="15" row="0" colSpan="8" text="{{ L('charts.distance.title') + ' (' + distanceUnits + ')' }}" class="chart-title" textWrap="true" />
             <Label text="" row="1" col="0" class="hr-blue" />

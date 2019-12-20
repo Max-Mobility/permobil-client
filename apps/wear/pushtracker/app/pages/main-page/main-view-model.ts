@@ -36,8 +36,6 @@ const dateLocales = {
 
 declare const com: any;
 
-const debug: boolean = false;
-
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
 
@@ -249,24 +247,6 @@ export class MainViewModel extends Observable {
     };
     this._showingModal = true;
     btn.showModal(aboutPage, option);
-  }
-
-  debugTap() {
-    /*
-    debug = !debug;
-    if (debug) {
-      this.currentPushCount = Math.random() * 2000 + 1000;
-      this.distanceGoalValue = Math.random() * 10.0 + 2.0;
-      this.distanceGoalCurrentValue = debug
-        ? Math.random() * this.distanceGoalValue
-        : 0;
-      this.coastGoalValue = Math.random() * 10 + 2.0;
-      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
-    } else {
-      this._loadCurrentActivityData();
-    }
-    this._updateDisplay();
-    */
   }
 
   async onConnectPushTrackerTap() {
@@ -1034,14 +1014,7 @@ export class MainViewModel extends Observable {
   private async _getActivityInfoFromDatabase(numDays: number) {
     const dates = DailyActivity.Info.getPastDates(numDays);
     const activityInfo = dates.map((d: Date) => {
-      if (debug) {
-        const pushes = Math.random() * 3000 + 1000;
-        const coast = Math.random() * 10.0 + 0.5;
-        const distance = Math.random() * 5.0 + 1.0;
-        return DailyActivity.Info.newInfo(d, pushes, coast, distance);
-      } else {
-        return DailyActivity.Info.newInfo(d, 0, 0, 0);
-      }
+      return DailyActivity.Info.newInfo(d, 0, 0, 0);
     });
     try {
       const objs = await this._getRecentInfoFromDatabase(numDays + 1);
