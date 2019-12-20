@@ -74,8 +74,8 @@ export class NetworkService extends Observable {
         android.net.NetworkCapabilities.TRANSPORT_WIFI
       ];
       // add the capabilities and transport types to the request
-      capabilities.map(c => request.addCapability(c));
-      transportTypes.map(t => request.addTransportType(t));
+      capabilities.forEach(c => request.addCapability(c));
+      transportTypes.forEach(t => request.addTransportType(t));
       // set timeout
       const timeoutMs = args.timeoutMs || 10 * 1000;
       this.connectivityManager.requestNetwork(

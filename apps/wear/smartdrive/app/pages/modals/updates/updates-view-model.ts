@@ -192,7 +192,7 @@ export class UpdatesViewModel extends Observable {
       Sentry.captureException(err);
     }
     try {
-      this.checkForUpdates();
+      await this.checkForUpdates();
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
     }
@@ -256,7 +256,7 @@ export class UpdatesViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {

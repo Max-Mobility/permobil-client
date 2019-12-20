@@ -219,7 +219,7 @@ export class MainViewModel extends Observable {
 
   // #region "Public Functions"
 
-  onMainPageLoaded(args: EventData) {
+  async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
@@ -236,9 +236,8 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      this._init().then(() => {
-        Log.D('init finished in the main-view-model');
-      });
+      await this._init();
+      Log.D('init finished in the main-view-model');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -285,7 +284,7 @@ export class MainViewModel extends Observable {
       }
     }
     // try to send the data to synchronize
-    this._onNetworkAvailable();
+    await this._onNetworkAvailable();
     // if we got here then we have valid authorization!
     this._showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
@@ -791,7 +790,7 @@ export class MainViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
@@ -1384,11 +1383,10 @@ export class MainViewModel extends Observable {
   private _doWhileCharged() {
     // Since we're not sending a lot of data, we'll not bother
     // requesting network
-    try {
-      this._onNetworkAvailable();
-    } catch (err) {
-      sentryBreadCrumb('Error sending data to server: ' + err);
-    }
+    this._onNetworkAvailable()
+      .catch((err) => {
+        sentryBreadCrumb('Error sending data to server: ' + err);          
+      });
   }
 
   /**
@@ -1689,7 +1687,7 @@ export class MainViewModel extends Observable {
           value: dist
         };
       });
-      distanceData.map(data => {
+      distanceData.forEach(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
         // @ts-ignore
         if (data.value) data.value += '%';
@@ -1717,7 +1715,7 @@ export class MainViewModel extends Observable {
       // set the range factor to be default (half way between the min/max)
       let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
       if (sdData && sdData.length) {
-        sdData.map(e => {
+        sdData.forEach(e => {
           const start = e[SmartDriveData.Info.DriveDistanceStartName];
           const end = e[SmartDriveData.Info.DriveDistanceName];
           if (end > start && start > 0) {
@@ -2421,7 +2419,7 @@ export class MainViewModel extends Observable {
     try {
       // aggregate the data
       const data = {};
-      sdData.map(e => {
+      sdData.forEach(e => {
         // record the date
         const driveStart = e[SmartDriveData.Info.DriveDistanceStartName];
         const totalStart = e[SmartDriveData.Info.CoastDistanceStartName];
@@ -2500,7 +2498,7 @@ export class MainViewModel extends Observable {
     });
     return this._getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
-        objs.map((o: any) => {
+        objs.forEach((o: any) => {
           // @ts-ignore
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);

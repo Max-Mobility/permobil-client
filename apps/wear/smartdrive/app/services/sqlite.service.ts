@@ -2,7 +2,7 @@ import { Injectable } from 'injection-js';
 const Sqlite = require('nativescript-sqlite');
 
 function _exists(o, k): boolean {
-  return o[k] !== undefined && o[k] !== null && o[k] !== NaN;
+  return o[k] !== undefined && o[k] !== null && !isNaN(o[k]);
 }
 
 const enableMultithreading: boolean = false;

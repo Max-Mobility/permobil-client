@@ -158,9 +158,8 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      this._init().then(() => {
-        Log.D('init finished in the main-view-model');
-      });
+      await this._init();
+      Log.D('init finished in the main-view-model');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -414,7 +413,7 @@ export class MainViewModel extends Observable {
         if (data[today]) {
           currentDist = data[today].total || 0.0;
         }
-        Object.keys(data).map(k => {
+        Object.keys(data).forEach(k => {
           const total = data[k].total;
           if (total > maxDist) maxDist = total;
         });
@@ -1046,7 +1045,7 @@ export class MainViewModel extends Observable {
     });
     try {
       const objs = await this._getRecentInfoFromDatabase(numDays + 1);
-      objs.map((o: any) => {
+      objs.forEach((o: any) => {
         // @ts-ignore
         const obj = DailyActivity.Info.loadInfo(...o);
         // have to ts-ignore since we're using the java defs.
