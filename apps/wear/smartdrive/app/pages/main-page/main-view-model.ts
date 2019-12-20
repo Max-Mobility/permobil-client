@@ -791,7 +791,7 @@ export class MainViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
@@ -1689,7 +1689,7 @@ export class MainViewModel extends Observable {
           value: dist
         };
       });
-      distanceData.map(data => {
+      distanceData.forEach(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
         // @ts-ignore
         if (data.value) data.value += '%';
@@ -1717,7 +1717,7 @@ export class MainViewModel extends Observable {
       // set the range factor to be default (half way between the min/max)
       let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
       if (sdData && sdData.length) {
-        sdData.map(e => {
+        sdData.forEach(e => {
           const start = e[SmartDriveData.Info.DriveDistanceStartName];
           const end = e[SmartDriveData.Info.DriveDistanceName];
           if (end > start && start > 0) {
@@ -2421,7 +2421,7 @@ export class MainViewModel extends Observable {
     try {
       // aggregate the data
       const data = {};
-      sdData.map(e => {
+      sdData.forEach(e => {
         // record the date
         const driveStart = e[SmartDriveData.Info.DriveDistanceStartName];
         const totalStart = e[SmartDriveData.Info.CoastDistanceStartName];
@@ -2500,7 +2500,7 @@ export class MainViewModel extends Observable {
     });
     return this._getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
-        objs.map((o: any) => {
+        objs.forEach((o: any) => {
           // @ts-ignore
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);

@@ -186,7 +186,7 @@ export namespace Device {
 
     copy(s: any) {
       // from a settings class exactly like this
-      Object.keys(Device.Settings.Defaults).map(k => this.copyKey(k, s));
+      Object.keys(Device.Settings.Defaults).forEach(k => this.copyKey(k, s));
     }
 
     equals(s: any): boolean {
@@ -240,7 +240,7 @@ export namespace Device {
 
     copy(s: any) {
       // from a push-settings class exactly like this
-      Object.keys(Device.PushSettings.Defaults).map(k => this.copyKey(k, s));
+      Object.keys(Device.PushSettings.Defaults).forEach(k => this.copyKey(k, s));
     }
 
     equals(ps: any): boolean {
@@ -347,7 +347,7 @@ export namespace Device {
 
     copy(s: any) {
       // from a SwitchControlSettings class exactly like this
-      Object.keys(Device.SwitchControlSettings.Defaults).map(k =>
+      Object.keys(Device.SwitchControlSettings.Defaults).forEach(k =>
         this.copyKey(k, s)
       );
     }

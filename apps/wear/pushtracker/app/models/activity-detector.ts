@@ -228,7 +228,7 @@ export class ActivityDetector {
     // the threshold
     let minZ = null;
     let maxZ = null;
-    this.inputHistory.map(accel => {
+    this.inputHistory.forEach(accel => {
       const z = accel.z;
       if (minZ === null || z < minZ) {
         minZ = z;

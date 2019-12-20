@@ -657,7 +657,7 @@ export class BluetoothService {
             return d;
           });
 
-          descriptors.map(d => {
+          descriptors.forEach(d => {
             (<any>c).addDescriptor(d);
           });
         } else {
