@@ -1,5 +1,14 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout, View } from '@nativescript/core';
+import {
+  Color,
+  EventData,
+  Frame,
+  GridLayout,
+  Observable,
+  ShowModalOptions,
+  StackLayout,
+  View
+} from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -21,9 +30,23 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
+import {
+  Acceleration,
+  SmartDrive,
+  SmartDriveException,
+  StoredAcceleration,
+  TapDetector
+} from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, SmartDriveKinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
+import {
+  BluetoothService,
+  SmartDriveKinveyService,
+  SensorChangedEventData,
+  SensorService,
+  SERVICES,
+  SettingsService,
+  SqliteService
+} from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -294,7 +317,7 @@ export class MainViewModel extends Observable {
           title: L('warnings.title.notice'),
           message: `${L('settings.paired-to-smartdrive')}\n\n${
             this.smartDrive.address
-            }`,
+          }`,
           okButtonText: L('buttons.ok')
         });
       }
@@ -775,7 +798,9 @@ export class MainViewModel extends Observable {
     // permissions were rejected
     const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
     const reasons = [];
-    const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
+    const neededPermissions = this.permissionsNeeded.filter(
+      p => !hasPermission(p)
+    );
     const reasoning = {
       [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
         'permissions-reasons.coarse-location'
@@ -795,7 +820,7 @@ export class MainViewModel extends Observable {
         okButtonText: L('buttons.ok')
       });
       try {
-        await requestPermissions(neededPermissions, () => { });
+        await requestPermissions(neededPermissions, () => {});
         // now that we have permissions go ahead and save the serial number
         this._updateSerialNumber();
       } catch (permissionsObj) {
@@ -1377,10 +1402,9 @@ export class MainViewModel extends Observable {
   private _doWhileCharged() {
     // Since we're not sending a lot of data, we'll not bother
     // requesting network
-    this._onNetworkAvailable()
-      .catch((err) => {
-        sentryBreadCrumb('Error sending data to server: ' + err);          
-      });
+    this._onNetworkAvailable().catch(err => {
+      sentryBreadCrumb('Error sending data to server: ' + err);
+    });
   }
 
   /**
@@ -1654,8 +1678,10 @@ export class MainViewModel extends Observable {
 
   private async _updateDistanceChart(sdData: any[]) {
     try {
-      const todayCaseStart = sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceStartName];
-      const todayCaseEnd = sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceName];
+      const todayCaseStart =
+        sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceStartName];
+      const todayCaseEnd =
+        sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceName];
       if (todayCaseEnd > todayCaseStart) {
         // save today's current distance to storage for complication to use
         appSettings.setNumber(
@@ -1897,7 +1923,7 @@ export class MainViewModel extends Observable {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .addFlags(
         android.content.Intent.FLAG_ACTIVITY_NO_HISTORY |
-        android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
+          android.content.Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET
       )
       .setData(android.net.Uri.parse(playStorePrefix + packageName));
     application.android.foregroundActivity.startActivity(intent);
@@ -1962,7 +1988,7 @@ export class MainViewModel extends Observable {
     }
     intent.addFlags(
       android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK |
-      android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+        android.content.Intent.FLAG_ACTIVITY_NEW_TASK
     );
     intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION);
     application.android.foregroundActivity.startActivity(intent);
