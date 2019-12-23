@@ -3,7 +3,7 @@
   "nativescript": {
     "id": "com.permobil.pushtracker",
     "tns-android": {
-      "version": "6.2.0"
+      "version": "6.3.0"
     }
   },
   "scripts": {
@@ -13,6 +13,7 @@
   "dependencies": {
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc3.tgz",
     "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@nativescript/core": "~6.3.2",
     "@permobil/core": "file:../../../@permobil/core",
     "@permobil/nativescript": "file:../../../@permobil/nativescript",
     "buffer": "~5.2.1",
@@ -39,14 +40,14 @@
   },
   "devDependencies": {
     "mkdirp": "~0.5.1",
-    "nativescript-dev-webpack": "~1.3.0",
+    "nativescript-dev-webpack": "~1.4.0",
     "nativescript-hook": "~0.2.5",
     "nativescript-worker-loader": "~0.10.0",
     "node-sass": "^4.13.0",
     "prompts": "~2.1.0",
     "rimraf": "~2.6.3",
     "sass-loader": "^8.0.0",
-    "tns-platform-declarations": "~6.2.3",
+    "tns-platform-declarations": "~6.3.2",
     "tslint": "~5.20.1",
     "typescript": "~3.7.3"
   }

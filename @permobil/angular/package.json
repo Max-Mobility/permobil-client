@@ -11,6 +11,6 @@
   },
   "peerDependencies": {
     "nativescript-angular": "~8.20.3",
-    "tns-core-modules": "~6.2.3"
+    "tns-core-modules": "~6.3.2"
   }
 }

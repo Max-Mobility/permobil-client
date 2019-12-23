@@ -91,7 +91,7 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~6.2.3"
+    "tns-core-modules": "~6.3.2"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
@@ -101,7 +101,7 @@
     "prompt": "^1.0.0",
     "lint-staged": "^9.5.0",
     "rimraf": "~2.6.3",
-    "tns-platform-declarations": "~6.2.3",
+    "tns-platform-declarations": "~6.3.2",
     "tslint": "~5.20.1",
     "typescript": "~3.7.3"
   },
