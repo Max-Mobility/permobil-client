@@ -84,6 +84,7 @@ export async function onSerialNumberTap(_: any) {
       kinveyService.watch_serial_number = watchSerialNumber;
     } catch (err) {}
   } else {
+    Log.D('Already has permission.');
   }
 }
 
