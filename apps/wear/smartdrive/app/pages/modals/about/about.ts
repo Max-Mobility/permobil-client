@@ -1,14 +1,11 @@
 import { Observable, Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { DataKeys } from '../../../enums';
-import { SmartDriveException } from '../../../models';
 import { SmartDriveKinveyService } from '../../../services';
 import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
 
@@ -149,10 +146,7 @@ export async function onSDSerialNumberTap() {
 function _updateSerialNumber() {
   const p = android.Manifest.permission.READ_PHONE_STATE;
   if (hasPermission(p)) {
-    page.bindingContext.set(
-      'watchSerialNumber',
-      getSerialNumber() || '---'
-    );
+    page.bindingContext.set('watchSerialNumber', getSerialNumber() || '---');
   }
 }
 
@@ -166,7 +160,7 @@ export async function onWatchSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => { });
+      await requestPermissions([p], () => {});
     } catch (permissionsObj) {
       // could not get the permission
     }
