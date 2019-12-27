@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Device } from '@permobil/core';
+import { DataStore as KinveyDataStore, DataStoreType, Query as KinveyQuery, User as KinveyUser } from 'kinvey-nativescript-sdk';
 import * as LS from 'nativescript-localstorage';
 import { STORAGE_KEYS } from '../enums';
-import {
-  DataStoreType as DataStoreType,
-  DataStore as KinveyDataStore,
-  Query as KinveyQuery,
-  User as KinveyUser
-} from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 
 @Injectable()
@@ -16,7 +11,10 @@ export class SettingsService {
   pushSettings = new Device.PushSettings();
   switchControlSettings = new Device.SwitchControlSettings();
 
-  private datastore = KinveyDataStore.collection('SmartDriveSettings', DataStoreType.Sync);
+  private datastore = KinveyDataStore.collection(
+    'SmartDriveSettings',
+    DataStoreType.Sync
+  );
 
   constructor(private _logService: LoggingService) {
     this.reset();
@@ -47,7 +45,7 @@ export class SettingsService {
     this.datastore.clear();
   }
 
-  private toData(): SettingsService.Data {
+  private toData(): SettingsServiceNS.Data {
     return {
       settings: this.settings.toObj(),
       pushSettings: this.pushSettings.toObj(),
@@ -66,10 +64,7 @@ export class SettingsService {
   }
 
   saveToFileSystem() {
-    LS.setItemObject(
-      STORAGE_KEYS.DEVICE_SETTINGS,
-      this.settings.toObj()
-    );
+    LS.setItemObject(STORAGE_KEYS.DEVICE_SETTINGS, this.settings.toObj());
     LS.setItemObject(
       STORAGE_KEYS.DEVICE_PUSH_SETTINGS,
       this.pushSettings.toObj()
@@ -81,12 +76,8 @@ export class SettingsService {
   }
 
   loadFromFileSystem() {
-    this.settings.copy(
-      LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS)
-    );
-    this.pushSettings.copy(
-      LS.getItem(STORAGE_KEYS.DEVICE_PUSH_SETTINGS)
-    );
+    this.settings.copy(LS.getItem(STORAGE_KEYS.DEVICE_SETTINGS));
+    this.pushSettings.copy(LS.getItem(STORAGE_KEYS.DEVICE_PUSH_SETTINGS));
     this.switchControlSettings.copy(
       LS.getItem(STORAGE_KEYS.DEVICE_SWITCH_CONTROL_SETTINGS)
     );
@@ -113,18 +104,21 @@ export class SettingsService {
 
   async _query(query: KinveyQuery): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      this.datastore.find(query)
-        .subscribe((data: any[]) => {
+      this.datastore.find(query).subscribe(
+        (data: any[]) => {
           resolve(data);
-        }, (err) => {
+        },
+        err => {
           console.error('\n', 'error finding settings', err);
           reject(err);
-        }, () => {
+        },
+        () => {
           // this seems to be called right at the very end - after
           // we've gotten data, so this resolve will have been
           // superceded by the resolve(data) above
           resolve([]);
-        });
+        }
+      );
     });
   }
 
@@ -149,7 +143,7 @@ export class SettingsService {
   }
 }
 
-namespace SettingsService {
+namespace SettingsServiceNS {
   export interface Data {
     pushSettings?: any;
     settings?: any;
