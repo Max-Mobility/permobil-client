@@ -3,36 +3,31 @@
 
 .device-setup-layout {
   @extend .DEVICE_SETUP_LAYOUT_BASE;
-  background-color: $white;
+
 
   .device-setup-title {
     @extend .DEVICE_SETUP_TITLE_BASE;
-    color: $black;
   }
 
   .slideTitle {
     @extend .SLIDE_TITLE_BASE;
-    color: $black;
   }
 
   .bullet {
     @extend .BULLET_BASE;
-    color: $black;
   }
 
   .bullet-next-to-lottie {
     @extend .BULLET_NEXT_TO_LOTTIE_BASE;
-    color: $black;
   }
 
   .permobil-green-btn {
     background-color: $permobil-success;
-    color: $white;
   }
 
   .permobil-grey-btn {
     background-color: $permobil-steel;
-    color: $white;
+
   }
 
   .device-setup-status-label {

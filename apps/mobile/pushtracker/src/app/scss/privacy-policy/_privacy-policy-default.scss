@@ -7,13 +7,11 @@
 
   .title {
     @extend .TITLE_BASE;
-    color: $black;
     width: 70%;
   }
 
   .section-title {
     @extend .SECTION_TITLE_BASE;
-    color: $black;
   }
 
   .section-text {
@@ -29,7 +27,6 @@
   .ok-btn {
     @extend .OK_BTN_BASE;
     background-color: $permobil-primary;
-    color: $white;
   }
 
   .cancel-btn {

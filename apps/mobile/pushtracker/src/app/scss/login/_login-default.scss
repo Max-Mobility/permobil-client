@@ -3,13 +3,11 @@
 
 .login-layout {
   @extend .LOGIN_LAYOUT_BASE;
-  background-color: $white;
-
+  @include colorize($background-color: background);
   .login-form {
     @extend .LOGIN_FORM_BASE;
-    background-color: $white;
-    color: $black;
-  }
+    @include colorize($background-color: background);
+   }
 
   .submit-btn {
     @extend .SUBMIT_BTN_BASE;

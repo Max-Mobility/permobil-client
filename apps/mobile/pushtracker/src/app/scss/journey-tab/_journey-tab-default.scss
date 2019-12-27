@@ -3,18 +3,20 @@
 
 .journey-tab-layout {
   @extend .JOURNEY_TAB_LAYOUT_BASE;
-  background-color: $white;
-
+  @include colorize($background-color: background);
+  
   .page-title {
     @extend .PAGE_TITLE_BASE;
     color: #1f2024;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
   .journey-today {
     font-size: 16;
     font-weight: bold;
     font-family: $os;
-    color: $black;
     padding-left: 10;
     margin-left: 5;
     margin-bottom: 10;
@@ -25,6 +27,9 @@
     font-weight: bold;
     font-family: $os;
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      color:$permobil-sky;
+    }
     padding-left: 10;
     margin-top: 10;
     margin-left: 5;
@@ -36,7 +41,6 @@
     margin-bottom: 5;
     margin-left: 5;
     padding-left: 10;
-    color: $black;
     font-family: $os;
   }
 
@@ -48,6 +52,10 @@
   .cousteau-circle {
     background-color: #bad4ee;
     color: $permobil-primary;
+    @at-root .ns-dark & {
+      background-color: $permobil-cousteau-light;
+      color: $permobil-cousteau-dark;
+    }
     height: 20;
     width: 20;
     border-radius: 10;
@@ -69,6 +77,10 @@
   .violet-circle {
     background-color: #cbb3ec;
     color: $permobil-violet;
+    @at-root .ns-dark & {
+      background-color: $permobil-cousteau-light;
+      color: $permobil-cousteau-dark;
+    }
     height: 20;
     width: 20;
     border-radius: 10;
@@ -99,8 +111,11 @@
 
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
-    background-color: $white;
     color: #3c4043;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
+  
 
 }

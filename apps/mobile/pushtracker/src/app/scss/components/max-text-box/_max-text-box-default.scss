@@ -4,39 +4,54 @@
 // TextBox
 .max-textbox {
   @extend .MAX_TEXTBOX_BASE;
-  background-color: $white;
+  @include colorize($background-color: background);
 
   .max-textbox-label {
+    @include colorize($background-color: background);
     color: #696c71;
-    background-color: $white;
+    @at-root .ns-dark & {
+      color: #898e94;
+    }
   }
 
   GridLayout {
       border-color: #e7e7ea;
-      background-color: $white;
-
+      @at-root .ns-dark & {
+        border-color:#4c4f54;
+      }
     > .max-textbox-value {
       color: #3c4043;
+      @at-root .ns-dark & {
+        color: $white;
+      }
     }
   }
 }
 
 .max-textbox-active {
   @extend .MAX_TEXTBOX_BASE;
-  background-color: $white;
+
 
   .max-textbox-label {
     color: #1c72e6;
-    background-color: $white;
+    @at-root .ns-dark & {
+      color: $permobil-sky;
+    }
+    @include colorize($background-color: background);
   }
 
   GridLayout {
     border-color: #1c72e6;
-    background-color: $white;
+    @at-root .ns-dark & {
+      border-color: $permobil-sky;
+    }
 
     > .max-textbox-value {
-      color: #3c4043;
-      background-color: $white;
+        color: #3c4043;
+        @at-root .ns-dark & {
+          color: $white;
+        }
+        @include colorize($background-color: background);
     }
   }
 }

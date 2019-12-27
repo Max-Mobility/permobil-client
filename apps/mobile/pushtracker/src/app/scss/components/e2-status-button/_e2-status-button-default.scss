@@ -5,4 +5,7 @@
   @extend .E2_STATUS_BUTTON_LAYOUT_BASE;
   background-color: $white;
   color: #3c4043;
+  @at-root .ns-dark & {
+    color: $white;
+  }
 }

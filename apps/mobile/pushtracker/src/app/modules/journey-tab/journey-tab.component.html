@@ -55,8 +55,6 @@
       [items]="journeyItems"
       (loadMoreItems)="onLoadMoreItems($event)"
       class="list-group"
-      [backgroundColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
-      [separatorColor]="CURRENT_THEME === APP_THEMES.DEFAULT ? '#fff' : '#202125'"
       *ngIf="journeyItemsLoaded"
     >
       <ng-template let-item="item" let-odd="odd" let-even="even">

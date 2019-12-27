@@ -3,17 +3,29 @@
 
 .home-tab-layout {
   @extend .HOME_TAB_LAYOUT_BASE;
-  background-color: $white;
+  @include colorize($background-color: background);
+
+  GridLayout {
+    @at-root .ns-dark & {
+      color: $white;
+    }
+  }
 
   .info-btn {
     @extend .INFO_BTN_BASE;
     color: $dark-grey;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 
   .distance-remaining-circle {
     @extend .DISTANCE_REMAINING_CIRCLE_BASE;
     // background-image: linear-gradient(to bottom, #606c88, #3f4c6b);
     background-image: linear-gradient(to bottom, #0067a6, #004f7e);
+    @at-root .ns-dark & {
+      background-image: linear-gradient(to bottom, #3d4b6d, #3f4e6b);
+    }
 
     label {
       color: $white;
@@ -27,9 +39,15 @@
     }
     .max-value {
       color: $dark-grey;
+      @at-root .ns-dark & {
+        color: darken($white, 0.1);
+      }
     }
     .description {
       color: $dark-grey;
+      @at-root .ns-dark & {
+        color: darken($white, 0.1);
+      }
     }
   }
 
@@ -41,12 +59,10 @@
     .detail-value {
       font-size: 18;
       font-weight: bold;
-      color: $black;
     }
 
     .detail-description {
       font-size: 10;
-      color: $black;
     }
   }
 
@@ -54,18 +70,24 @@
     @extend .CHART_LAYOUT_BASE;
 
     .title {
-      color: $black;
     }
 
     RadCartesianChart {
-      background-color: $white;
+      @include colorize($background-color: background);
       color: $black;
+      @at-root .ns-dark & {
+        color: $white;
+      }
     }
   }
-
+  FlexboxLayout {
+    @at-root .ns-dark & {
+      color: $white;
+    }
+    
+  }
   .goal-value {
     font-style: italic;
-    color: $black;
     font-weight: bold;
   }
 

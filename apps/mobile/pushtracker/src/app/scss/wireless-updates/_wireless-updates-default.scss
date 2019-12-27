@@ -10,7 +10,6 @@ $retry-color: #db4537;
 
 .wireless-updates-layout {
   @extend .WIRELESS_UPDATES_LAYOUT_BASE;
-  background-color: $white;
 
   .update-label {
     @extend .UPDATE_LABEL_BASE;
@@ -19,7 +18,6 @@ $retry-color: #db4537;
 
   .update-stack-layout {
     @extend .UPDATE_STACK_LAYOUT_BASE;
-    background: $white;
   }
 
   .update-button {
@@ -43,7 +41,6 @@ $retry-color: #db4537;
   .update-status-label {
     @extend .UPDATE_STATUS_LABEL_BASE;
     text-align: center;
-    color: $black;
   }
 
   .action-start {

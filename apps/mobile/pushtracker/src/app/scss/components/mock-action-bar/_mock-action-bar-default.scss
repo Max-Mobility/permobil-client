@@ -4,21 +4,21 @@
 // ActionBar
 .action-bar {
   @extend .ACTION_BAR_BASE;
-  color: $black;
-  background-color: $white;
-
+  @include colorize($background-color: background);
   .nav-btn {
     @extend .BACK_BTN_BASE;
-    color: $black;
   }
 
   .title {
     @extend .ACTION_BAR_TITLE_BASE;
-    color: $black;
+    @include colorize($color: primary);
   }
 
   .action-item-btn {
     @extend .ACTION_BAR_BUTTON_BASE;
     color: #3c4043;
+    @at-root .ns-dark & {
+      color: $white;
+    }
   }
 }
