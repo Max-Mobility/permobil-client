@@ -23,7 +23,7 @@ export class SettingsViewModel extends Observable {
     super();
     this._settingsService = settingsService;
     this._settingsService.loadSettings();
-    const wearOsLayout = page.getViewById('wearOsLayout') as WearOsLayout;
+    const wearOsLayout: WearOsLayout = page.getViewById('wearOsLayout');
     const res = configureLayout(wearOsLayout);
     this.chinSize = res.chinSize;
     this.insetPadding = res.insetPadding;
@@ -45,7 +45,7 @@ export class SettingsViewModel extends Observable {
     this._tempSwitchControlSettings.copy(
       this._settingsService.switchControlSettings
     );
-    const tappedId = (args.object as any).id as string;
+    const tappedId = args.object.id as string;
     this.activeSettingToChange = tappedId.toLowerCase();
     switch (this.activeSettingToChange) {
       case 'maxspeed':

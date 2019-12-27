@@ -746,7 +746,7 @@ export class MainViewModel extends Observable {
       Log.D('requesting user data');
       // now request user data
       this.showSynchronizing();
-      const userData = (await this.kinveyService.getUserData()) as any;
+      const userData = await this.kinveyService.getUserData();
       // Log.D('userInfo', JSON.stringify(userData, null, 2));
       // save stuff for display
       const userName = `${userData.first_name}\n${userData.last_name}`;

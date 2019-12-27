@@ -186,7 +186,7 @@ export class UpdatesViewModel extends Observable {
       // get references to update circle to control spin state
       this.updateProgressCircle = this._updatesPage.getViewById(
         'updateProgressCircle'
-      ) as AnimatedCircle;
+      );
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
       Sentry.captureException(err);
@@ -748,7 +748,10 @@ export class UpdatesViewModel extends Observable {
     if (doCancelOta && this.smartDrive) {
       if (this._otaStarted) {
         await new Promise((resolve, reject) => {
-          this.smartDrive.once(SmartDrive.smartdrive_ota_stopped_event, resolve);
+          this.smartDrive.once(
+            SmartDrive.smartdrive_ota_stopped_event,
+            resolve
+          );
           this.smartDrive.cancelOTA();
           setTimeout(resolve, 10000);
         });

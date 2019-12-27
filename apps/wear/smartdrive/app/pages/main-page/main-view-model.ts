@@ -1,14 +1,5 @@
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
-import {
-  Color,
-  EventData,
-  Frame,
-  GridLayout,
-  Observable,
-  ShowModalOptions,
-  StackLayout,
-  View
-} from '@nativescript/core';
+import { Color, EventData, Frame, GridLayout, Observable, ShowModalOptions, StackLayout, View } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
 import { screen } from '@nativescript/core/platform';
@@ -30,23 +21,9 @@ import { Sentry } from 'nativescript-sentry';
 import * as themes from 'nativescript-themes';
 import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
-import {
-  Acceleration,
-  SmartDrive,
-  SmartDriveException,
-  StoredAcceleration,
-  TapDetector
-} from '../../models';
+import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import {
-  BluetoothService,
-  SmartDriveKinveyService,
-  SensorChangedEventData,
-  SensorService,
-  SERVICES,
-  SettingsService,
-  SqliteService
-} from '../../services';
+import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -1424,7 +1401,7 @@ export class MainViewModel extends Observable {
       if (
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
-        this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
+        this.watchBeingWorn = parsedData.d.state !== 0.0;
         if (!this._settingsService.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             sentryBreadCrumb('Watch not being worn - disabling power assist!');

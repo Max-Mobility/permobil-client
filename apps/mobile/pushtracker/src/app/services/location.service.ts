@@ -40,7 +40,7 @@ export class LocationService {
     return new Promise((resolve, reject) => {
       const userLoc = `${coord.longitude},${coord.latitude}`;
       const user = Kinvey.User.getActiveUser();
-      const userData = ((user && user.data) || {}) as any;
+      const userData: any = (user && user.data) || {};
       const lang = userData.language ? '&language=' + userData.language : '';
       const query =
         'https://api.mapbox.com/geocoding/v5/mapbox.places/' +
