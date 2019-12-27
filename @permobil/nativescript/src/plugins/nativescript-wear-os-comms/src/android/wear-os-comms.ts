@@ -10,8 +10,8 @@ import { CallbackFunction, Common } from '../wear-os-comms.common';
 ])
 class CapabilityListener extends androidx.fragment.app.FragmentActivity
   implements
-  com.google.android.gms.wearable.CapabilityClient
-    .OnCapabilityChangedListener {
+    com.google.android.gms.wearable.CapabilityClient
+      .OnCapabilityChangedListener {
   public callback: CallbackFunction = null;
   constructor() {
     super();
@@ -669,7 +669,7 @@ export class WearOsComms extends Common {
     try {
       if (WearOsComms._bluetooth) {
         await WearOsComms._bluetooth.stopAdvertising();
-        await WearOsComms.deleteService();
+        WearOsComms.deleteService();
         await WearOsComms._bluetooth.stopGattServer();
       }
     } catch (err) {
@@ -767,7 +767,9 @@ export class WearOsComms extends Common {
         const d = WearOsComms._bluetooth.makeDescriptor({
           UUID: duuid
         });
-        d.setValue(new Array<any>([0x00, 0x00]));
+        d.setValue(
+          new Array<any>([0x00, 0x00])
+        );
         // WearOsComms.log('Making descriptor: ' + duuid);
         return d;
       });
