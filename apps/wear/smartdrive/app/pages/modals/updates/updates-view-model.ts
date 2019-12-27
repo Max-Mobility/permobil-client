@@ -517,7 +517,7 @@ export class UpdatesViewModel extends Observable {
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
-    const maxes = mds.reduce((maxes, md) => {
+    const allMaxes = mds.reduce((maxes, md) => {
       const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
       const fwName = md['_filename'];
       if (!maxes[fwName]) maxes[fwName] = 0;
@@ -531,7 +531,7 @@ export class UpdatesViewModel extends Observable {
       const fwName = f['_filename'];
       const current = this.currentVersions[fwName];
       const currentVersion = current && current.version;
-      const isMax = v === maxes[fwName];
+      const isMax = v === allMaxes[fwName];
       return isMax && (!current || v > currentVersion);
     });
     // @ts-ignore
@@ -748,7 +748,10 @@ export class UpdatesViewModel extends Observable {
     if (doCancelOta && this.smartDrive) {
       if (this._otaStarted) {
         await new Promise((resolve, reject) => {
-          this.smartDrive.once(SmartDrive.smartdrive_ota_stopped_event, resolve);
+          this.smartDrive.once(
+            SmartDrive.smartdrive_ota_stopped_event,
+            resolve
+          );
           this.smartDrive.cancelOTA();
           setTimeout(resolve, 10000);
         });
