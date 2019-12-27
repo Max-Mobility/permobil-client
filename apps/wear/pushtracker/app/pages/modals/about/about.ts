@@ -1,4 +1,4 @@
-import { Observable, Page, ShownModallyData } from '@nativescript/core';
+import { Page, ShownModallyData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { screen } from '@nativescript/core/platform';
@@ -55,7 +55,7 @@ export function onShownModally(args: ShownModallyData) {
   Log.D('data', data);
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
   wearOsLayout = page.getViewById('wearOsLayout');
   configureLayout(wearOsLayout);
