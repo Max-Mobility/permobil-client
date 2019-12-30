@@ -53,7 +53,6 @@ android:
   - sys-img-armeabi-v7a-android-21
 
 before_script:
-- ssh-add $GITHUB_SSH_KEY
 - sudo pip install --upgrade pip
 - sudo pip install six
 
