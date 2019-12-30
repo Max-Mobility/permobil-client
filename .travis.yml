@@ -1,17 +1,74 @@
 dist: trusty
 
+stages:
+  - lint
+  - sonar
+  - build sd.w
+  - build pt.w
+  # - tests
+
+matrix:
+  include:
+    # Lint
+    - stage: lint
+      language: node_js
+      os: linux
+      node_js: "10"
+      script: npm run tslint
+    # Sonar
+    - stage: sonar
+      script: sonar-scanner
+    # Build SmartDrive.Wear
+    - stage: build sd.w
+      env:
+        - BuildAndroid="29"
+        - NodeJs="8"
+        - Type="TypeScript"
+      language: android
+      dist: trusty
+      os: linux
+      jdk: oraclejdk8
+      before_install: nvm install 8
+      script: cd apps/wear/smartdrive && tns build android --env.uglify
+    # Build PushTracker.Wear
+    - stage: build pt.w
+      env:
+        - BuildAndroid="29"
+        - NodeJs="8"
+        - Type="TypeScript"
+      language: android
+      dist: trusty
+      os: linux
+      jdk: oraclejdk8
+      before_install: nvm install 8
+      script: cd apps/wear/pushtracker && tns build android --env.uglify
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-29.0.2
+    - android-21
+    - android-29
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-21
+
+before_script:
+  - "sudo pip install --upgrade pip"
+  - "sudo pip install six"
+
+install:
+  - echo no | npm i && npm i -g nativescript
+  - tns usage-reporting disable
+  - tns error-reporting disable
+
+# SonarCloud
 addons:
   sonarcloud:
     organization: "max-mobility"
     token:
       secure: "eX55JkQVMP7sz5i4wSZmUqpW+aydy7T4tBoLy2EmYB4LQKZxWVCO1Vk9lwOUYl/FWOt/ZiPBPo7RDDZi46wb+WPfPGeajPBJzqkV8yn6gTt1tmX8Fuu/po1yqtoDzCk4Lb3/n4l3hW8yNkutJ17kOuf2QRAMf9vehudc/vQjyicLnPHqF0VwB4NvhH+r1VWREwoL5yX1JjgxF5TFvHg0gfNvd60LGFFQ9Q3bcLyWYMGJ4lFdgI6kzFBC7qA4iPOnBHh8zc/lTCZD4KUgvMfmzwW4Of0xjs6GIaPyqQwwbptptP9x1UsDfB9Kw3BuQ7eejncRifGjW3wWmGhmJaXGsz98NX/C/GGuRLUKtoFDLTMHIYH+6l1txUnSwZMhW3EDqn5JoF33XkIvAVTfWbPd7C39vgvGaVJY1N93LDslhHrEPOvll3KJfoOIX9JreLy4Fdnl2KjBA44iDdAXyAu+MMP1jbHuB6H+IPVgP5/mdkC1WLKKmISnFiDz//+H2mwNg5GqQmxGktKc5LZalgXDz0A1/yzBrHVSY+9HgmpEBGqAhxm/Ikms+IFajjqXpX467vwILzsspMughWFNpAGkQJu0fHHet+oM6ZLDT91igidqMWceNYWAABvimI+1ON2aIZPzMcGSEXN2qhjuyslbsgKqKh3bX5RBK0IpMc/vP88="
 
-install:
-  - npm install
-
 cache:
   directories:
     - '$HOME/.sonar/cache'
-
-script:
-  - sonar-scanner
