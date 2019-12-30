@@ -517,7 +517,7 @@ export class UpdatesViewModel extends Observable {
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
-    const allMaxes = mds.reduce((maxes, md) => {
+    const reducedMaxes = mds.reduce((maxes, md) => {
       const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
       const fwName = md['_filename'];
       if (!maxes[fwName]) maxes[fwName] = 0;
@@ -531,7 +531,7 @@ export class UpdatesViewModel extends Observable {
       const fwName = f['_filename'];
       const current = this.currentVersions[fwName];
       const currentVersion = current && current.version;
-      const isMax = v === allMaxes[fwName];
+      const isMax = v === reducedMaxes[fwName];
       return isMax && (!current || v > currentVersion);
     });
     // @ts-ignore
