@@ -7,14 +7,14 @@ import { KinveyService } from '../../../../../@permobil/nativescript/src/service
 export class SmartDriveKinveyService extends KinveyService {
   // for backwards compatibility - see:
   // https://github.com/Max-Mobility/permobil-client/issues/661
-  private oldUserStorageKey: string = 'com.permobil.smartdrive.wearos.user.data';
+  private static OldUserStorageKey: string = 'com.permobil.smartdrive.wearos.user.data';
 
   constructor() {
     super();
     // for backwards compatibility - see:
     // https://github.com/Max-Mobility/permobil-client/issues/661
     if (!this.user) {
-      this.user = LS.getItem(this.oldUserStorageKey) || null;
+      this.user = LS.getItem(SmartDriveKinveyService.OldUserStorageKey) || null;
     }
   }
 
