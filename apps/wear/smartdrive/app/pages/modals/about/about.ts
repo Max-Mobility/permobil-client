@@ -1,4 +1,4 @@
-import { Observable, Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
+import { Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
 import { fromObject } from '@nativescript/core/data/observable';
 import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
@@ -75,7 +75,7 @@ export function onShownModally(args: ShownModallyData) {
   data.databaseId = SmartDriveKinveyService.api_app_key;
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
   const wearOsLayout = (<unknown>(
     page.getViewById('wearOsLayout')

@@ -9,7 +9,7 @@ export function promptUserForSpeech() {
       // create the intent
       const intent = new android.content.Intent(
         android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH
-      ) as android.content.Intent;
+      );
       intent.putExtra(
         android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL,
         android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
@@ -26,7 +26,7 @@ export function promptUserForSpeech() {
             const intentData = args.intent as android.content.Intent;
             const results = intentData.getStringArrayListExtra(
               android.speech.RecognizerIntent.EXTRA_RESULTS
-            ) as java.util.ArrayList<string>;
+            );
             Log.D('printing spoken results');
             Log.D('size of results list: ' + results.size());
             Log.D('is results empty: ' + results.isEmpty());

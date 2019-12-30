@@ -186,7 +186,7 @@ export class UpdatesViewModel extends Observable {
       // get references to update circle to control spin state
       this.updateProgressCircle = this._updatesPage.getViewById(
         'updateProgressCircle'
-      ) as AnimatedCircle;
+      );
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
       Sentry.captureException(err);

@@ -71,9 +71,11 @@ export class ChangeSettingsViewModel extends Observable {
   onConfirmChangesTap() {
     // SAVE THE VALUE to local data for the setting user has selected
     this.saveSettings();
-    if (this.activeSettingToChange !== 'watchrequired' &&
+    if (
+      this.activeSettingToChange !== 'watchrequired' &&
       this.activeSettingToChange !== 'units' &&
-      this.activeSettingToChange !== 'pushsensitivity') {
+      this.activeSettingToChange !== 'pushsensitivity'
+    ) {
       this.sendSettings();
     }
     //   // now update any display that needs settings:
@@ -121,7 +123,9 @@ export class ChangeSettingsViewModel extends Observable {
     let value = null;
     switch (this.activeSettingToChange) {
       case 'pushsensitivity':
-        this.changeSettingKeyValue = `${(this._pushSensitivity * 100).toFixed(0)} %`;
+        this.changeSettingKeyValue = `${(this._pushSensitivity * 100).toFixed(
+          0
+        )} %`;
         break;
       case 'coastgoal':
         this.changeSettingKeyValue =
@@ -176,7 +180,7 @@ export class ChangeSettingsViewModel extends Observable {
     const sharedPreferences = androidUtils
       .getApplicationContext()
       .getSharedPreferences('prefs.db', 0) as android.content.SharedPreferences;
-    const editor = sharedPreferences.edit() as android.content.SharedPreferences.Editor;
+    const editor = sharedPreferences.edit();
     // save units - for complications
     editor.putString(
       prefix + com.permobil.pushtracker.Datastore.UNITS_KEY,
@@ -257,7 +261,7 @@ export class ChangeSettingsViewModel extends Observable {
       // https://support.kinvey.com/support/tickets/6897
       Log.D('requesting user data');
       // now request user data
-      const userData = (await this._kinveyService.getUserData()) as any;
+      const userData = await this._kinveyService.getUserData();
       const values = this._settings.toUser();
       Object.keys(values).forEach(k => {
         userData[k] = values[k];

@@ -1401,7 +1401,7 @@ export class MainViewModel extends Observable {
       if (
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
-        this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
+        this.watchBeingWorn = parsedData.d.state !== 0.0;
         if (!this._settingsService.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             sentryBreadCrumb('Watch not being worn - disabling power assist!');
