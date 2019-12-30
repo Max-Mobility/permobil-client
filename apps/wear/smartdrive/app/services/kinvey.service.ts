@@ -1,12 +1,21 @@
 import { device } from '@nativescript/core/platform';
 import { Injectable } from 'injection-js';
+import * as LS from 'nativescript-localstorage';
 import { KinveyService } from '../../../../../@permobil/nativescript/src/services/kinvey.service';
 
 @Injectable()
 export class SmartDriveKinveyService extends KinveyService {
+  // for backwards compatibility - see:
+  // https://github.com/Max-Mobility/permobil-client/issues/661
+  private static OldUserStorageKey: string = 'com.permobil.smartdrive.wearos.user.data';
 
   constructor() {
     super();
+    // for backwards compatibility - see:
+    // https://github.com/Max-Mobility/permobil-client/issues/661
+    if (!this.user) {
+      this.user = LS.getItem(SmartDriveKinveyService.OldUserStorageKey) || null;
+    }
   }
 
   private reformatForDb(o: any) {
