@@ -1,6 +1,7 @@
 {
   "main": "app.js",
   "android": {
+    "handleTimeZoneChanges": true,
     "v8Flags": "--nolazy --expose_gc",
     "markingMode": "none",
     "codeCache": "true",
