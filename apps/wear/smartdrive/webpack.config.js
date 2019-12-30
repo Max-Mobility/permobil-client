@@ -19,8 +19,8 @@ const hashSalt = Date.now().toString();
 module.exports = env => {
   // Add your custom Activities, Services and other Android app components here.
   const appComponents = [
-    'tns-core-modules/ui/frame',
-    'tns-core-modules/ui/frame/activity',
+    '@nativescript/core/ui/frame',
+    '@nativescript/core/ui/frame/activity',
     resolve(
       __dirname,
       'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
@@ -92,19 +92,6 @@ module.exports = env => {
   const externals = nsWebpack.getConvertedExternals(env.externals);
 
   const appFullPath = resolve(projectRoot, appPath);
-  const hasRootLevelScopedModules = nsWebpack.hasRootLevelScopedModules({
-    projectDir: projectRoot
-  });
-  let coreModulesPackageName = 'tns-core-modules';
-  const alias = {
-    '~': appFullPath,
-    'tns-core-modules': '@nativescript/core'
-  };
-
-  if (hasRootLevelScopedModules) {
-    coreModulesPackageName = '@nativescript/core';
-    alias['tns-core-modules'] = coreModulesPackageName;
-  }
   const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
 
   const entryModule = nsWebpack.getEntryModule(appFullPath, platform);
@@ -183,12 +170,15 @@ module.exports = env => {
       extensions: ['.ts', '.js', '.scss', '.css'],
       // Resolve {N} system modules from tns-core-modules
       modules: [
-        resolve(__dirname, `node_modules/${coreModulesPackageName}`),
+        resolve(__dirname, 'node_modules/tns-core-modules'),
         resolve(__dirname, 'node_modules'),
-        `node_modules/${coreModulesPackageName}`,
+        'node_modules/tns-core-modules',
         'node_modules'
       ],
-      alias,
+      alias: {
+        '~': appFullPath,
+        'tns-core-modules': '@nativescript/core'
+      },
       // resolve symlinks to symlinked modules
       symlinks: true
     },
@@ -242,6 +232,8 @@ module.exports = env => {
               semicolons: !isAnySourceMapEnabled
             },
             compress: {
+              drop_console: true,
+              drop_debugger: true,
               // The Android SBG has problems parsing the output
               // when these options are enabled
               collapse_vars: platform !== 'android',
@@ -287,12 +279,15 @@ module.exports = env => {
 
         {
           test: /\.css$/,
-          use: 'nativescript-dev-webpack/css2json-loader'
+          use: { loader: 'css-loader', options: { url: false } }
         },
 
         {
           test: /\.scss$/,
-          use: ['nativescript-dev-webpack/css2json-loader', 'sass-loader']
+          use: [
+            { loader: 'css-loader', options: { url: false } },
+            'sass-loader'
+          ]
         },
 
         {

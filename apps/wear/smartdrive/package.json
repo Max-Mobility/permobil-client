@@ -44,7 +44,7 @@
   "devDependencies": {
     "@types/lodash": "~4.14.145",
     "mkdirp": "~0.5.1",
-    "nativescript-dev-webpack": "~1.4.0",
+    "nativescript-dev-webpack": "1.3.0",
     "nativescript-hook": "~0.2.5",
     "nativescript-worker-loader": "~0.10.0",
     "node-sass": "4.13.0",
