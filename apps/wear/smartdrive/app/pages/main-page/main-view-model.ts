@@ -2483,16 +2483,19 @@ export class MainViewModel extends Observable {
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
-          // const usageDate = dates[index];
           if (index > -1) {
-            usageInfo[index] = obj;
+            const usageDate = dates[index];
+            const sameDay = isSameDay(usageDate, objDate);
+            if (sameDay) {
+              usageInfo[index] = obj;
+            }
           }
         });
         return usageInfo;
       })
       .catch(err => {
         Sentry.captureException(err);
-        console.log('error getting recent info:', err);
+        console.error('error getting recent info:', err);
         return usageInfo;
       });
   }
