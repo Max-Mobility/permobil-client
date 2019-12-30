@@ -2478,10 +2478,12 @@ export class MainViewModel extends Observable {
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
-          const usageDate = dates[index];
-          const sameDay = isSameDay(usageDate, objDate);
-          if (index > -1 && sameDay) {
-            usageInfo[index] = obj;
+          if (index > -1) {
+            const usageDate = dates[index];
+            const sameDay = isSameDay(usageDate, objDate);
+            if (sameDay) {
+              usageInfo[index] = obj;
+            }
           }
         });
         return usageInfo;
