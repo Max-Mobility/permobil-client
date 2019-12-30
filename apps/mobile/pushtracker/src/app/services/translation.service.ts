@@ -45,7 +45,7 @@ export class TranslationService extends Observable {
       }
 
       // get the max version of each file
-      const maxes = kinveyResponse.reduce((maxes, metadata) => {
+      const reducedMaxes = kinveyResponse.reduce((maxes, metadata) => {
         const v = metadata['_version'];
         const fName = metadata['_filename'];
         if (!maxes[fName]) maxes[fName] = 0.0;
@@ -60,7 +60,7 @@ export class TranslationService extends Observable {
         const fName = f['_filename'];
         const current = this.currentVersions[fName];
         const currentVersion = current && current.version;
-        const isMax = v === maxes[fName];
+        const isMax = v === reducedMaxes[fName];
         return isMax && (!current || v > currentVersion);
       });
 
@@ -123,7 +123,7 @@ export class TranslationService extends Observable {
       versions = JSON.parse(
         appSettings.getString(TranslationService.CURRENT_VERSIONS_KEY, '{}')
       );
-    } catch (err) { }
+    } catch (err) {}
     const objs = Object.values(versions);
     if (objs.length) {
       // for each language we got, try to load the file. If we have
@@ -169,8 +169,7 @@ export class TranslationService extends Observable {
     const i18nFolder = knownFolders.documents().getFolder('i18n');
     const download = new DownloadProgress();
     const destFilePath = path.join(i18nFolder.path, f._filename);
-    const file = await download
-      .downloadFile(url, null, destFilePath);
+    const file = await download.downloadFile(url, null, destFilePath);
     return file;
   }
 }

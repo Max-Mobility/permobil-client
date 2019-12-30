@@ -1,5 +1,6 @@
 import { Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
 import { fromObject } from '@nativescript/core/data/observable';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';

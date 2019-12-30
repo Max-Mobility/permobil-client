@@ -1447,7 +1447,7 @@ export class MainViewModel extends Observable {
     // average every 4 points to get a reading
     if (this._previousData.length === this._previousDataLength) {
       // determine the average acceleration and timestamp
-      const total = this._previousData.reduce((total, e) => {
+      const accelerationTotal = this._previousData.reduce((total, e) => {
         total.accel.x += e.accel.x;
         total.accel.y += e.accel.y;
         total.accel.z += e.accel.z;
@@ -1473,14 +1473,15 @@ export class MainViewModel extends Observable {
 
       // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
-        x: total.accel.x >= 0 ? max.accel.x : min.accel.x,
-        y: total.accel.y >= 0 ? max.accel.y : min.accel.y,
-        z: total.accel.z >= 0 ? max.accel.z : min.accel.z
+        x: accelerationTotal.accel.x >= 0 ? max.accel.x : min.accel.x,
+        y: accelerationTotal.accel.y >= 0 ? max.accel.y : min.accel.y,
+        z: accelerationTotal.accel.z >= 0 ? max.accel.z : min.accel.z
       };
 
       // compute the average timestamp of our stored higher-frequency
       // data
-      const averageTimestamp = total.timestamp / this._previousDataLength;
+      const averageTimestamp =
+        accelerationTotal.timestamp / this._previousDataLength;
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold

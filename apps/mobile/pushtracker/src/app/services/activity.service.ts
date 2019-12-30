@@ -1,10 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  DataStoreType as DataStoreType,
-  DataStore as KinveyDataStore,
-  Query as KinveyQuery,
-  User as KinveyUser
-} from 'kinvey-nativescript-sdk';
+import { DataStore as KinveyDataStore, DataStoreType as DataStoreType, Query as KinveyQuery, User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { LoggingService } from './logging.service';
 
 @Injectable()
@@ -147,7 +142,7 @@ export class ActivityService {
   }
 }
 
-namespace ActivityService {
+namespace ActivityServiceNS {
   export interface Data {
     coast_time_avg: number;
     coast_time_total: number;
