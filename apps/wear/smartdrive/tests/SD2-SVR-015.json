@@ -1,434 +1,304 @@
 {
-	"number": "015",
-	"name": "Tap Detection",
-	"reports": [
-		{
-			"number": "005",
-			"revision": "A",
-			"description": "Multi-surface Tapping",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Fast hard tapping",
-					"preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap forcefully 20 times in 30 seconds on a hard surface, e.g., handrim.",
-						"Tap forcefully 20 times in 30 seconds on a soft surface, e.g., thigh."
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Fast soft tapping",
-					"preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap softly 20 times in 30 seconds on a hard surface, e.g., handrim.",
-						"Tap softly 20 times in 30 seconds on a soft surface, e.g., thigh."
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Slow hard tapping",
-					"preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap forcefully 20 times in 60 seconds on a hard surface, e.g., handrim.",
-						"Tap forcefully 20 times in 60 seconds on a soft surface, e.g., thigh."
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Slow soft tapping",
-					"preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap softly 20 times in 60 seconds on a hard surface, e.g., handrim.",
-						"Tap softly 20 times in 60 seconds on a soft surface, e.g., thigh."
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		},
-		{
-			"number": "006",
-			"revision": "A",
-			"description": "Multi-orientation Tapping",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Left-hand sideways tapping",
-					"preconditions": "Tester has worn the PushTracker E2 on the left hand, seated on a manual wheelchair, and set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap 20 times sideways into the wheelchair handrim",
-						"Tap 20 times vertically onto the wheelchair tire"
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Right-hand sideways tapping",
-					"preconditions": "Tester has worn the PushTracker E2 on the right hand, seated on a manual wheelchair, and set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Tap 20 times sideways into the wheelchair handrim",
-						"Tap 20 times vertically onto the wheelchair tire"
-					],
-					"acceptanceCriteria": [
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
-						"The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		},
-		{
-			"number": "007",
-			"revision": "A",
-			"description": "Tap Detection and SmartDrive Activation",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Double tap on handrim",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start in stationary position and double tap on handrim"
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should activate and initiate ramping process. The SmartDrive should ramp to its max-speed setting."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Tap continuously on handrim",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start in stationary position and tap continuously on handrim"
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should not activate."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Perform normal, common hand movements",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start in stationary position and move hands normally, e.g., typing, talking to people"
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should not activate."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Pushing on indoor/outdoor surfaces such as carpets, sidewalks, etc.",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start in stationary position push wheelchair in indoor and outdoor ground surfaces e.g., carpets, sidewalks"
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should not activate."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		},
-		{
-			"number": "008",
-			"revision": "A",
-			"description": "SmartDrive Deactivation",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Tap continuously on handrim",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start the SmartDrive motor and get into motion. Tap continuously on handrim"
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should deactivate and stop."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Keep hands on handrim while traveling on indoor and outdoor ground surfaces, e.g., carpets, sidewalks, etc.",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
-					"methods": [
-						"Start the SmartDrive motor and get into motion. Holds hand on handrim while moving."
-					],
-					"acceptanceCriteria": [
-						"The SmartDrive motor should not deactivate."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		},
-		{
-			"number": "009",
-			"revision": "A",
-			"description": "Equivalence Tests compared against v1.0.00 of the SmartDrive Wear OS app.",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Tap Detection Accuracy compared against v1.0.00 of the SmartDrive Wear OS app for System Version PWDR.190618.001.A1",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. The PushTracker E2 must use system version PWDR.190618.001.A1.",
-					"methods": [
-						"Set the tap sensitivity to 10% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
-						"Set the tap sensitivity to 70% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
-						"Set the tap sensitivity to 100% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app."
-					],
-					"acceptanceCriteria": [
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				},
-				{
-					"name": "Tap Detection Accuracy compared against v1.0.00 of the SmartDrive Wear OS app for System Version OWDT.181031.001",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. The PushTracker E2 must use system version OWDT.181031.001.",
-					"methods": [
-						"Set the tap sensitivity to 10% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
-						"Set the tap sensitivity to 70% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
-						"Set the tap sensitivity to 100% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app."
-					],
-					"acceptanceCriteria": [
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-						"The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		},
-		{
-			"number": "010",
-			"revision": "A",
-			"description": "Equivalence Tests compared against the original PushTracker.",
-			"testerName": "Tester",
-			"testLevel": "Software Item",
-			"requirements": [
-				{
-					"name": "",
-					"description": ""
-				}
-			],
-			"tests": [
-				{
-					"name": "Tap Detection Accuracy compared against the original PushTracker",
-					"preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. Use default tap sensitivity of 70% on the PushTracker E2 and a default tap sensivitiy of 100% on the original PushTracker for this test.",
-					"methods": [
-						"Tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker."
-					],
-					"acceptanceCriteria": [
-						"The number of detected taps between the two systems should differ by no more than 5%, e.g., 19 taps using PushTracker E2 and 20 taps using the original PushTracker or vice versa."
-					],
-					"results": [
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS",
-						"PASS"
-					],
-					"finalResult": true
-				}
-			],
-			"notes": "",
-			"startDate": "",
-			"endDate": ""
-		}
-	]
+  "number": "015",
+  "name": "Tap Detection",
+  "reports": [
+    {
+      "number": "005",
+      "revision": "A",
+      "description": "Multi-surface Tapping",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Fast hard tapping",
+          "preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap forcefully 20 times in 30 seconds on a hard surface, e.g., handrim.",
+            "Tap forcefully 20 times in 30 seconds on a soft surface, e.g., thigh."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Fast soft tapping",
+          "preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap softly 20 times in 30 seconds on a hard surface, e.g., handrim.",
+            "Tap softly 20 times in 30 seconds on a soft surface, e.g., thigh."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Slow hard tapping",
+          "preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap forcefully 20 times in 60 seconds on a hard surface, e.g., handrim.",
+            "Tap forcefully 20 times in 60 seconds on a soft surface, e.g., thigh."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Slow soft tapping",
+          "preconditions": "Tester has set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap softly 20 times in 60 seconds on a hard surface, e.g., handrim.",
+            "Tap softly 20 times in 60 seconds on a soft surface, e.g., thigh."
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    },
+    {
+      "number": "006",
+      "revision": "A",
+      "description": "Multi-orientation Tapping",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Left-hand sideways tapping",
+          "preconditions": "Tester has worn the PushTracker E2 on the left hand, seated on a manual wheelchair, and set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap 20 times sideways into the wheelchair handrim",
+            "Tap 20 times vertically onto the wheelchair tire"
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Right-hand sideways tapping",
+          "preconditions": "Tester has worn the PushTracker E2 on the right hand, seated on a manual wheelchair, and set (1) the PushTracker E2 in tap training mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Tap 20 times sideways into the wheelchair handrim",
+            "Tap 20 times vertically onto the wheelchair tire"
+          ],
+          "acceptanceCriteria": [
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
+            "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    },
+    {
+      "number": "007",
+      "revision": "A",
+      "description": "Tap Detection and SmartDrive Activation",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Double tap on handrim",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": ["Start in stationary position and double tap on handrim"],
+          "acceptanceCriteria": [
+            "The SmartDrive motor should activate and initiate ramping process. The SmartDrive should ramp to its max-speed setting."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Tap continuously on handrim",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Start in stationary position and tap continuously on handrim"
+          ],
+          "acceptanceCriteria": ["The SmartDrive motor should not activate."],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Perform normal, common hand movements",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Start in stationary position and move hands normally, e.g., typing, talking to people"
+          ],
+          "acceptanceCriteria": ["The SmartDrive motor should not activate."],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Pushing on indoor/outdoor surfaces such as carpets, sidewalks, etc.",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Start in stationary position push wheelchair in indoor and outdoor ground surfaces e.g., carpets, sidewalks"
+          ],
+          "acceptanceCriteria": ["The SmartDrive motor should not activate."],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    },
+    {
+      "number": "008",
+      "revision": "A",
+      "description": "SmartDrive Deactivation",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tap continuously on handrim",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Start the SmartDrive motor and get into motion. Tap continuously on handrim"
+          ],
+          "acceptanceCriteria": [
+            "The SmartDrive motor should deactivate and stop."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Keep hands on handrim while traveling on indoor and outdoor ground surfaces, e.g., carpets, sidewalks, etc.",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, seated on a manual wheelchair that is equipped with a SmartDrive and set (1) the PushTracker E2 in power-assist mode and set (2) the default tap sensitivity is set to 70%.",
+          "methods": [
+            "Start the SmartDrive motor and get into motion. Holds hand on handrim while moving."
+          ],
+          "acceptanceCriteria": ["The SmartDrive motor should not deactivate."],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    },
+    {
+      "number": "009",
+      "revision": "A",
+      "description": "Equivalence Tests compared against v1.0.00 of the SmartDrive Wear OS app.",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tap Detection Accuracy compared against v1.0.00 of the SmartDrive Wear OS app for System Version PWDR.190618.001.A1",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. The PushTracker E2 must use system version PWDR.190618.001.A1.",
+          "methods": [
+            "Set the tap sensitivity to 10% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
+            "Set the tap sensitivity to 70% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
+            "Set the tap sensitivity to 100% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app."
+          ],
+          "acceptanceCriteria": [
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        },
+        {
+          "name": "Tap Detection Accuracy compared against v1.0.00 of the SmartDrive Wear OS app for System Version OWDT.181031.001",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. The PushTracker E2 must use system version OWDT.181031.001.",
+          "methods": [
+            "Set the tap sensitivity to 10% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
+            "Set the tap sensitivity to 70% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app.",
+            "Set the tap sensitivity to 100% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app."
+          ],
+          "acceptanceCriteria": [
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
+            "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    },
+    {
+      "number": "010",
+      "revision": "A",
+      "description": "Equivalence Tests compared against the original PushTracker.",
+      "testerName": "Tester",
+      "testLevel": "Software Item",
+      "requirements": [
+        {
+          "name": "",
+          "description": ""
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tap Detection Accuracy compared against the original PushTracker",
+          "preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. Use default tap sensitivity of 70% on the PushTracker E2 and a default tap sensivitiy of 100% on the original PushTracker for this test.",
+          "methods": [
+            "Tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker."
+          ],
+          "acceptanceCriteria": [
+            "The number of detected taps between the two systems should differ by no more than 5%, e.g., 19 taps using PushTracker E2 and 20 taps using the original PushTracker or vice versa."
+          ],
+          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "finalResult": true
+        }
+      ],
+      "notes": "",
+      "startDate": "",
+      "endDate": ""
+    }
+  ]
 }
