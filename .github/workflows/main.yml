@@ -40,6 +40,7 @@ jobs:
           tns error-reporting disable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRIVATE_KEYS_SSH_TOKEN: ${{ secrets.PRIVATE_KEYS_SSH_TOKEN }}
 
       - name: Lint
         run: npm run tslint
