@@ -11,7 +11,6 @@ on: [push]
 #       - "releases/*"
 
 jobs:
-
   analysisAndBuild:
     name: Analysis
 
@@ -19,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: webfactory/ssh-agent
+      - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@v0.1.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -27,8 +26,7 @@ jobs:
       - name: Set Node.js 10.x
         uses: actions/setup-node@v1
         with:
-          node-version: 10
-          registry-url: https://registry.npmjs.org/
+          node-version: "10.x"
 
       - name: Setup Permobil-Client
         run: |
@@ -40,7 +38,7 @@ jobs:
       - name: Lint
         run: npm run tslint
 
-      - name: Set Up JDK 1.8
+      - name: Setup JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
