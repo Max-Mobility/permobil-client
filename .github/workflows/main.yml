@@ -31,15 +31,16 @@ jobs:
           version: 10.x
 
       - name: NPM Install
-        run: echo no | npm i && npm i -g nativescript
-          # tns usage-reporting disable
-          # tns error-reporting disable
+        run: |
+          echo no | npm i && npm i -g nativescript
+          tns usage-reporting disable
+          tns error-reporting disable
 
       - name: Lint
         run: npm run tslint
 
       - name: SonarCloud Scan
-      - uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
