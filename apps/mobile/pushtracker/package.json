@@ -16,7 +16,7 @@
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
     "@maxmobility/nativescript-wear-os-comms": "file:../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/wear-os-comms-0.1.3-rc3.tgz",
-    "@maxmobility/private-keys": "autochair/maxmobility-private-keys#master",
+    "@maxmobility/private-keys": "github:autochair/maxmobility-private-keys#master",
     "@nativescript/core": "~6.3.2",
     "@ngx-translate/core": "~11.0.1",
     "@nstudio/nativescript-loading-indicator": "~1.0.0",
