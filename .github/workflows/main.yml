@@ -11,13 +11,6 @@ on: [push]
 #       - "releases/*"
 
 jobs:
-  # setupProject:
-  #   name: Project Setup
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Lint
-  #       run: npm i && npm run setup.all.non-global
 
   analysisAndBuild:
     name: Analysis
@@ -31,10 +24,10 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Set Node.js 12.x
+      - name: Set Node.js 10.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 10
           registry-url: https://registry.npmjs.org/
 
       - name: Setup Permobil-Client
@@ -43,9 +36,6 @@ jobs:
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRIVATE_KEYS_SSH_TOKEN: ${{ secrets.PRIVATE_KEYS_SSH_TOKEN }}
 
       - name: Lint
         run: npm run tslint
