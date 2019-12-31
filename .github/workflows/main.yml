@@ -26,6 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - name: Setup Permobil-Client
+        run: npm i && npm run setup.all.non-global
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set Node.js 12.x
         uses: actions/setup-node@v1
         with:
@@ -42,7 +47,6 @@ jobs:
           echo no | npm i && npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
-          tns doctor
 
       - name: Lint
         run: npm run tslint
