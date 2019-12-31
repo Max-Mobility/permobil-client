@@ -19,11 +19,12 @@ jobs:
   #     - name: Lint
   #       run: npm i && npm run setup.all.non-global
 
-  sonarCloudTrigger:
-    name: SonarCloud
+  codeAnalysis:
+    name: Analysis
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: sonarsource/sonarcloud-github-action@master
 
       - name: Set Node.js 10.x
         uses: actions/setup-node@master
@@ -31,21 +32,22 @@ jobs:
           version: 10.x
 
       - name: NPM Install
-        run: npm i
+        run: |
+          echo no | npm i && npm i -g nativescript
+          tns usage-reporting disable
+          tns error-reporting disable
+      - name: Lint
+        run: npm run tslint
 
       - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  tsLint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Lint
-        run: npm i && npm run tslint
+      - name: Build SD.W
+        run: cd apps/wear/smartdrive && tns build android --env.uglify
+
+  
   # build:
   #   runs-on: ubuntu-latest
   #   steps:
