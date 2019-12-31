@@ -24,7 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-        run: npm i
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
