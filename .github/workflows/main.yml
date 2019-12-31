@@ -1,4 +1,4 @@
-name: CI
+name: Analysis & Build
 
 # Trigger the workflow on push or pull request
 on: [push]
@@ -19,7 +19,7 @@ jobs:
   #     - name: Lint
   #       run: npm i && npm run setup.all.non-global
 
-  codeAnalysis:
+  analysisAndBuild:
     name: Analysis
     runs-on: ubuntu-latest
     steps:
@@ -31,10 +31,9 @@ jobs:
           version: 10.x
 
       - name: NPM Install
-        run: |
-          echo no | npm i && npm i -g nativescript
-          tns usage-reporting disable
-          tns error-reporting disable
+        run: echo no | npm i && npm i -g nativescript
+          # tns usage-reporting disable
+          # tns error-reporting disable
 
       - name: Lint
         run: npm run tslint
@@ -47,15 +46,15 @@ jobs:
 
       - name: Build SD.W
         run: cd apps/wear/smartdrive && tns build android --env.uglify
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: SonarCloud Analysis
-  #       run: sonar-scanner
-  #     - name: Run a multi-line script
-  #       run: |
-  #         sonar-scanner
+      # build:
+      #   runs-on: ubuntu-latest
+      #   steps:
+      #     - uses: actions/checkout@v1
+      #     - name: SonarCloud Analysis
+      #       run: sonar-scanner
+      - name: Run a multi-line script
+        run: |
+          sonar-scanner
   #     - name: SonarCloud Scan
   #       uses: SonarSource/sonarcloud-github-action@v1.1
   #       run: sonar-scanner
