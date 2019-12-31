@@ -1,17 +1,29 @@
 name: CI
 
-on: [push]
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
 
 jobs:
-  build:
-
+  sonarCloudTrigger:
+    name: SonarCloud Trigger
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+      - uses: actions/checkout@master
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: SonarCloud Analysis
+  #       run: sonar-scanner
+  #     - name: Run a multi-line script
+  #       run: |
+  #         sonar-scanner
+  #     - name: SonarCloud Scan
+  #       uses: SonarSource/sonarcloud-github-action@v1.1
+  #       run: sonar-scanner
