@@ -39,6 +39,7 @@ jobs:
           echo no | npm i && npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
+          tns doctor
 
       - name: Lint
         run: npm run tslint
@@ -50,7 +51,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Build SD.W
-        run: cd apps/wear/smartdrive && tns build android --env.uglify
+        run: |
+          cd apps/wear/smartdrive
+          tns build android --env.uglify
       # build:
       #   runs-on: ubuntu-latest
       #   steps:
