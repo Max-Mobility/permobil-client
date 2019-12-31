@@ -1,14 +1,14 @@
 name: CI
 
 # Trigger the workflow on push or pull request
-# on: [push]
+on: [push]
 
-on: # rebuild any PRs and main branch changes
-  pull_request:
-  push:
-    branches:
-      - master
-      - "releases/*"
+# on: # rebuild any PRs and main branch changes
+#   pull_request:
+#   push:
+#     branches:
+#       - master
+#       - "releases/*"
 
 jobs:
   # setupProject:
@@ -20,11 +20,11 @@ jobs:
   #       run: npm i && npm run setup.all.non-global
 
   sonarCloudTrigger:
-    name: SonarCloud Trigger
+    name: SonarCloud
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
       - name: SonarCloud Scan
+      - uses: actions/checkout@v1
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
