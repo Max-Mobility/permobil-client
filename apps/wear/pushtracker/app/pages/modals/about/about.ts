@@ -1,4 +1,4 @@
-import { Observable, Page, ShownModallyData } from '@nativescript/core';
+import { Page, ShownModallyData } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
 import { screen } from '@nativescript/core/platform';
@@ -9,20 +9,20 @@ import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
 import { DataKeys } from '../../../enums';
-import { KinveyService } from '../../../services';
+import { PushTrackerKinveyService } from '../../../services';
 import { getSerialNumber, saveSerialNumber } from '../../../utils';
 
 let closeCallback;
 let page: Page;
 let wearOsLayout: WearOsLayout;
-let kinveyService: KinveyService;
+let kinveyService: PushTrackerKinveyService;
 
 // values for UI databinding via bindingContext
 const data = {
   insetPadding: 0,
   chinSize: 0,
   watchSerialNumber: '---',
-  appVersion: KinveyService.api_app_key,
+  appVersion: PushTrackerKinveyService.api_app_key,
   databaseId: '---',
   userName: '---',
   userEmail: '---'
@@ -36,7 +36,7 @@ export function onShownModally(args: ShownModallyData) {
   Log.D('about-page onShownModally');
   page = args.object as Page;
 
-  kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as PushTrackerKinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   // get the device serial number
@@ -50,12 +50,12 @@ export function onShownModally(args: ShownModallyData) {
   data.appVersion = versionName;
 
   // get the database id
-  data.databaseId = KinveyService.api_app_key;
+  data.databaseId = PushTrackerKinveyService.api_app_key;
 
   Log.D('data', data);
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
   wearOsLayout = page.getViewById('wearOsLayout');
   configureLayout(wearOsLayout);
@@ -84,6 +84,7 @@ export async function onSerialNumberTap(_: any) {
       kinveyService.watch_serial_number = watchSerialNumber;
     } catch (err) {}
   } else {
+    Log.D('Already has permission.');
   }
 }
 

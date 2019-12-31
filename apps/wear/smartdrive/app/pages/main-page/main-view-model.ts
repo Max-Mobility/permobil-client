@@ -23,7 +23,7 @@ import { Vibrate } from 'nativescript-vibrate';
 import { DataKeys } from '../../enums';
 import { Acceleration, SmartDrive, SmartDriveException, StoredAcceleration, TapDetector } from '../../models';
 import { PowerAssist, SmartDriveData } from '../../namespaces';
-import { BluetoothService, KinveyService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SqliteService } from '../../services';
+import { BluetoothService, SensorChangedEventData, SensorService, SERVICES, SettingsService, SmartDriveKinveyService, SqliteService } from '../../services';
 import { isNetworkAvailable, sentryBreadCrumb } from '../../utils';
 import { updatesViewModel } from '../modals/updates/updates-page';
 
@@ -140,7 +140,6 @@ export class MainViewModel extends Observable {
   private CHARGING_WORK_PERIOD_MS = 1 * 60 * 1000;
   private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
   private _lastChartDay = null;
-  private _showDebugChartData = false;
 
   /**
    * User interaction objects
@@ -152,7 +151,7 @@ export class MainViewModel extends Observable {
   private _bluetoothService: BluetoothService;
   private _sensorService: SensorService;
   private _sqliteService: SqliteService;
-  private _kinveyService: KinveyService;
+  private _kinveyService: SmartDriveKinveyService;
   private _settingsService: SettingsService;
   private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
@@ -219,7 +218,7 @@ export class MainViewModel extends Observable {
 
   // #region "Public Functions"
 
-  onMainPageLoaded(args: EventData) {
+  async onMainPageLoaded(args: EventData) {
     sentryBreadCrumb('onMainPageLoaded');
     try {
       if (!this.hasAppliedTheme) {
@@ -236,17 +235,12 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      this._init().then(() => {
-        Log.D('init finished in the main-view-model');
-      });
+      await this._init();
+      Log.D('init finished in the main-view-model');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
     }
-  }
-
-  toggleDebug() {
-    // this.displayDebug = !this.displayDebug;
   }
 
   customWOLInsetLoaded(args: EventData) {
@@ -285,7 +279,7 @@ export class MainViewModel extends Observable {
       }
     }
     // try to send the data to synchronize
-    this._onNetworkAvailable();
+    await this._onNetworkAvailable();
     // if we got here then we have valid authorization!
     this._showConfirmation(
       android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
@@ -554,8 +548,7 @@ export class MainViewModel extends Observable {
     this._enablingPowerAssist = false;
   }
 
-  debugChartTap() {
-    // this._showDebugChartData = !this._showDebugChartData;
+  handleChartTap() {
     this._updateChartData();
   }
 
@@ -647,7 +640,7 @@ export class MainViewModel extends Observable {
     this._bluetoothService = injector.get(BluetoothService);
     this._sensorService = injector.get(SensorService);
     this._sqliteService = injector.get(SqliteService);
-    this._kinveyService = injector.get(KinveyService);
+    this._kinveyService = injector.get(SmartDriveKinveyService);
     this._settingsService = injector.get(SettingsService);
 
     // initialize data storage for usage, errors, settings
@@ -782,7 +775,9 @@ export class MainViewModel extends Observable {
     // permissions were rejected
     const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
     const reasons = [];
-    const neededPermissions = this.permissionsNeeded.filter(p => !hasPermission(p));
+    const neededPermissions = this.permissionsNeeded.filter(
+      p => !hasPermission(p)
+    );
     const reasoning = {
       [android.Manifest.permission.ACCESS_COARSE_LOCATION]: L(
         'permissions-reasons.coarse-location'
@@ -791,7 +786,7 @@ export class MainViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
@@ -999,6 +994,11 @@ export class MainViewModel extends Observable {
         'com.permobil.smartdrive.wearos.smartdrive.data',
         this.smartDrive.data()
       );
+      // save the updated smartdrive battery
+      appSettings.setNumber(DataKeys.SD_BATTERY, this.smartDrive.battery);
+    } else {
+      // make sure we have 0 battery saved
+      appSettings.setNumber(DataKeys.SD_BATTERY, 0);
     }
   }
 
@@ -1384,11 +1384,9 @@ export class MainViewModel extends Observable {
   private _doWhileCharged() {
     // Since we're not sending a lot of data, we'll not bother
     // requesting network
-    try {
-      this._onNetworkAvailable();
-    } catch (err) {
+    this._onNetworkAvailable().catch(err => {
       sentryBreadCrumb('Error sending data to server: ' + err);
-    }
+    });
   }
 
   /**
@@ -1408,7 +1406,7 @@ export class MainViewModel extends Observable {
       if (
         parsedData.s === android.hardware.Sensor.TYPE_LOW_LATENCY_OFFBODY_DETECT
       ) {
-        this.watchBeingWorn = (parsedData.d as any).state !== 0.0;
+        this.watchBeingWorn = parsedData.d.state !== 0.0;
         if (!this._settingsService.disableWearCheck) {
           if (!this.watchBeingWorn && this.powerAssistActive) {
             sentryBreadCrumb('Watch not being worn - disabling power assist!');
@@ -1456,7 +1454,7 @@ export class MainViewModel extends Observable {
     // average every 4 points to get a reading
     if (this._previousData.length === this._previousDataLength) {
       // determine the average acceleration and timestamp
-      const total = this._previousData.reduce((total, e) => {
+      const accelerationTotal = this._previousData.reduce((total, e) => {
         total.accel.x += e.accel.x;
         total.accel.y += e.accel.y;
         total.accel.z += e.accel.z;
@@ -1492,15 +1490,15 @@ export class MainViewModel extends Observable {
 
       // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
-        x: total.accel.x >= 0 ? max.x : min.x,
-        y: total.accel.y >= 0 ? max.y : min.y,
-        z: total.accel.z >= 0 ? max.z : min.z
+        x: accelerationTotal.accel.x >= 0 ? max.x : min.x,
+        y: accelerationTotal.accel.y >= 0 ? max.y : min.y,
+        z: accelerationTotal.accel.z >= 0 ? max.z : min.z
       };
 
       // compute the average timestamp of our stored higher-frequency
       // data
-      const averageTimestamp = total.timestamp / this._previousDataLength;
-
+      const averageTimestamp =
+        accelerationTotal.timestamp / this._previousDataLength;
       // reset the length of the data
       this._previousData = [];
       // set tap sensitivity threshold
@@ -1679,8 +1677,10 @@ export class MainViewModel extends Observable {
 
   private async _updateDistanceChart(sdData: any[]) {
     try {
-      const todayCaseStart = sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceStartName];
-      const todayCaseEnd = sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceName];
+      const todayCaseStart =
+        sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceStartName];
+      const todayCaseEnd =
+        sdData[sdData.length - 1][SmartDriveData.Info.CoastDistanceName];
       if (todayCaseEnd > todayCaseStart) {
         // save today's current distance to storage for complication to use
         appSettings.setNumber(
@@ -1706,7 +1706,7 @@ export class MainViewModel extends Observable {
           value: dist
         };
       });
-      distanceData.map(data => {
+      distanceData.forEach(data => {
         data.value = (100.0 * data.value) / (maxDist || 1);
         // @ts-ignore
         if (data.value) data.value += '%';
@@ -1734,7 +1734,7 @@ export class MainViewModel extends Observable {
       // set the range factor to be default (half way between the min/max)
       let rangeFactor = (this.minRangeFactor + this.maxRangeFactor) / 2.0;
       if (sdData && sdData.length) {
-        sdData.map(e => {
+        sdData.forEach(e => {
           const start = e[SmartDriveData.Info.DriveDistanceStartName];
           const end = e[SmartDriveData.Info.DriveDistanceName];
           if (end > start && start > 0) {
@@ -2438,7 +2438,7 @@ export class MainViewModel extends Observable {
     try {
       // aggregate the data
       const data = {};
-      sdData.map(e => {
+      sdData.forEach(e => {
         // record the date
         const driveStart = e[SmartDriveData.Info.DriveDistanceStartName];
         const totalStart = e[SmartDriveData.Info.CoastDistanceStartName];
@@ -2490,48 +2490,29 @@ export class MainViewModel extends Observable {
 
   private async _getUsageInfoFromDatabase(numDays: number) {
     const dates = SmartDriveData.Info.getPastDates(numDays);
-    // have to start at 1 so that they're valid
-    let coastDistance = 1;
-    let driveDistance = 1;
     const usageInfo = dates.map(d => {
-      if (this._showDebugChartData) {
-        const battery = Math.random() * 50 + 30;
-        const mileDiff = (battery * (Math.random() * 2.0 + 6.0)) / 100.0;
-        const newDrive = driveDistance + SmartDrive.milesToMotorTicks(mileDiff);
-        const newCoast = coastDistance + SmartDrive.milesToCaseTicks(mileDiff);
-        const info = SmartDriveData.Info.newInfo(
-          null,
-          d,
-          battery,
-          newDrive,
-          newCoast,
-          driveDistance,
-          coastDistance
-        );
-        driveDistance = newDrive;
-        coastDistance = newCoast;
-        return info;
-      } else {
-        return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
-      }
+      return SmartDriveData.Info.newInfo(null, d, 0, 0, 0);
     });
     return this._getRecentInfoFromDatabase(numDays)
       .then((objs: any[]) => {
-        objs.map((o: any) => {
+        objs.forEach((o: any) => {
           // @ts-ignore
           const obj = SmartDriveData.Info.loadInfo(...o);
           const objDate = new Date(obj.date);
           const index = closestIndexTo(objDate, dates);
-          // const usageDate = dates[index];
           if (index > -1) {
-            usageInfo[index] = obj;
+            const usageDate = dates[index];
+            const sameDay = isSameDay(usageDate, objDate);
+            if (sameDay) {
+              usageInfo[index] = obj;
+            }
           }
         });
         return usageInfo;
       })
       .catch(err => {
         Sentry.captureException(err);
-        console.log('error getting recent info:', err);
+        console.error('error getting recent info:', err);
         return usageInfo;
       });
   }

@@ -1,15 +1,12 @@
-import { Observable, Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
-import * as application from '@nativescript/core/application';
-import * as appSettings from '@nativescript/core/application-settings';
+import { Page, ShowModalOptions, ShownModallyData } from '@nativescript/core';
 import { fromObject } from '@nativescript/core/data/observable';
+import { alert } from '@nativescript/core/ui/dialogs';
 import { ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Log } from '@permobil/core';
 import { L } from '@permobil/nativescript';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
 import { WearOsLayout } from 'nativescript-wear-os';
-import { DataKeys } from '../../../enums';
-import { SmartDriveException } from '../../../models';
-import { KinveyService } from '../../../services';
+import { SmartDriveKinveyService } from '../../../services';
 import { configureLayout, getSerialNumber, sentryBreadCrumb } from '../../../utils';
 
 let closeCallback;
@@ -23,7 +20,7 @@ const data = {
   chinSize: 0,
   smartDriveSerialNumber: '---',
   watchSerialNumber: '---',
-  appVersion: KinveyService.api_app_key,
+  appVersion: SmartDriveKinveyService.api_app_key,
   databaseId: '---',
   userName: '---',
   userEmail: '---',
@@ -42,7 +39,7 @@ export function onShownModally(args: ShownModallyData) {
 
   _showingModal = false;
 
-  kinveyService = args.context.kinveyService as KinveyService;
+  kinveyService = args.context.kinveyService as SmartDriveKinveyService;
   closeCallback = args.closeCallback; // the closeCallback handles closing the modal
 
   data.userName =
@@ -75,10 +72,10 @@ export function onShownModally(args: ShownModallyData) {
   data.appVersion = versionName;
 
   // get the database id
-  data.databaseId = KinveyService.api_app_key;
+  data.databaseId = SmartDriveKinveyService.api_app_key;
 
   // set the pages bindingContext
-  page.bindingContext = fromObject(data) as Observable;
+  page.bindingContext = fromObject(data);
 
   const wearOsLayout = (<unknown>(
     page.getViewById('wearOsLayout')
@@ -149,10 +146,7 @@ export async function onSDSerialNumberTap() {
 function _updateSerialNumber() {
   const p = android.Manifest.permission.READ_PHONE_STATE;
   if (hasPermission(p)) {
-    page.bindingContext.set(
-      'watchSerialNumber',
-      getSerialNumber() || '---'
-    );
+    page.bindingContext.set('watchSerialNumber', getSerialNumber() || '---');
   }
 }
 
@@ -166,7 +160,7 @@ export async function onWatchSerialNumberTap() {
       okButtonText: L('buttons.ok')
     });
     try {
-      await requestPermissions([p], () => { });
+      await requestPermissions([p], () => {});
     } catch (permissionsObj) {
       // could not get the permission
     }

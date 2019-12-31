@@ -3,22 +3,22 @@ import { ModalDialogService, RouterExtensions } from '@nativescript/angular';
 import { Color, EventData, ImageSource, Label, Page, StackLayout } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { isAndroid, screen } from '@nativescript/core/platform';
-import { action, prompt, PromptOptions } from '@nativescript/core/ui/dialogs';
+import { action } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { subYears } from 'date-fns';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { DateTimePicker, DateTimePickerStyle } from 'nativescript-datetimepicker';
+import * as LS from 'nativescript-localstorage';
 import { BottomSheetOptions, BottomSheetService } from 'nativescript-material-bottomsheet/angular';
 import { Toasty } from 'nativescript-toasty';
-import * as LS from 'nativescript-localstorage';
 import { ActivityGoalSettingComponent, DeviceSetupComponent, PrivacyPolicyComponent } from '..';
-import { PushTrackerUser } from '../../models';
 import { APP_THEMES, CHAIR_MAKE, CHAIR_TYPE, CONFIGURATIONS, DISTANCE_UNITS, GENDERS, HEIGHT_UNITS, STORAGE_KEYS, WEIGHT_UNITS } from '../../enums';
+import { PushTrackerUser } from '../../models';
 import { LoggingService, PushTrackerUserService, SettingsService, ThemeService } from '../../services';
-import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, poundsToKilograms, YYYY_MM_DD, milesToKilometers } from '../../utils';
-import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
+import { centimetersToFeetInches, convertToMilesIfUnitPreferenceIsMiles, enableDefaultTheme, feetInchesToCentimeters, kilogramsToPounds, milesToKilometers, poundsToKilograms, YYYY_MM_DD } from '../../utils';
 import { Ratings } from '../../utils/ratings-utils';
+import { ListPickerSheetComponent, TextFieldSheetComponent } from '../shared/components';
 
 @Component({
   selector: 'profile-tab',
@@ -112,8 +112,10 @@ export class ProfileTabComponent {
     try {
       await this.user.me();
     } catch (err) {
-      this._logService.logBreadCrumb(ProfileTabComponent.name,
-        'Failed to refresh user from kinvey');
+      this._logService.logBreadCrumb(
+        ProfileTabComponent.name,
+        'Failed to refresh user from kinvey'
+      );
     }
 
     // WARNING: There's an important assumption here
@@ -154,15 +156,19 @@ export class ProfileTabComponent {
 
   showRateMeDialog() {
     const ratings = new Ratings({
-        id: 'PUSHTRACKER.RATER.COUNT',
-        showOnCount: 100,
-        title: this._translateService.instant('dialogs.ratings.title'),
-        text: this._translateService.instant('dialogs.ratings.text'),
-        agreeButtonText: this._translateService.instant('dialogs.ratings.agree'),
-        remindButtonText: this._translateService.instant('dialogs.ratings.remind'),
-        declineButtonText: this._translateService.instant('dialogs.ratings.decline'),
-        androidPackageId: 'com.permobil.pushtracker',
-        iTunesAppId: '1121427802'
+      id: 'PUSHTRACKER.RATER.COUNT',
+      showOnCount: 100,
+      title: this._translateService.instant('dialogs.ratings.title'),
+      text: this._translateService.instant('dialogs.ratings.text'),
+      agreeButtonText: this._translateService.instant('dialogs.ratings.agree'),
+      remindButtonText: this._translateService.instant(
+        'dialogs.ratings.remind'
+      ),
+      declineButtonText: this._translateService.instant(
+        'dialogs.ratings.decline'
+      ),
+      androidPackageId: 'com.permobil.pushtracker',
+      iTunesAppId: '1121427802'
     });
     ratings.init();
     ratings.prompt();
@@ -363,7 +369,9 @@ export class ProfileTabComponent {
               activity_goal_coast_time: result
             });
           } else if (key === STORAGE_KEYS.DISTANCE_ACTIVITY_GOAL) {
-            if (this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES) {
+            if (
+              this.user.data.distance_unit_preference === DISTANCE_UNITS.MILES
+            ) {
               // user input is in miles, convert to km before saving in
               // DB
               result = milesToKilometers(result);
@@ -443,7 +451,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.first-name'),
-        description: this._translateService.instant('general.first-name-description'),
+        description: this._translateService.instant(
+          'general.first-name-description'
+        ),
         text: firstName
       }
     };
@@ -485,7 +495,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.last-name'),
-        description: this._translateService.instant('general.last-name-description'),
+        description: this._translateService.instant(
+          'general.last-name-description'
+        ),
         text: lastName
       }
     };
@@ -539,7 +551,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.gender'),
-        description: this._translateService.instant('general.gender-description'),
+        description: this._translateService.instant(
+          'general.gender-description'
+        ),
         primaryItems: this.gendersTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -578,10 +592,10 @@ export class ProfileTabComponent {
       text = weight.toFixed(1);
     }
 
-    const _validateWeightFromText = function(text) {
-      if (text || text !== '') {
+    const _validateWeightFromText = (value: string) => {
+      if (value || value !== '') {
         // Attempt to parse as float
-        const newWeight = parseFloat(text);
+        const newWeight = parseFloat(value);
         // If weight is negative, discard new value
         if (newWeight < 0.0) return;
         if (newWeight > 0 && newWeight <= 1400) {
@@ -601,7 +615,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.weight'),
-        description: this._translateService.instant('general.weight-description'),
+        description: this._translateService.instant(
+          'general.weight-description'
+        ),
         text: text,
         suffix: suffix,
         keyboardType: 'number'
@@ -634,7 +650,8 @@ export class ProfileTabComponent {
     );
     this._setActiveDataBox(args);
 
-    const listPickerNeedsSecondary = this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES;
+    const listPickerNeedsSecondary =
+      this.user.data.height_unit_preference === HEIGHT_UNITS.FEET_AND_INCHES;
 
     let primaryIndex = 0;
     let secondaryIndex = 0;
@@ -674,7 +691,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('general.height'),
-        description: this._translateService.instant('general.height-description'),
+        description: this._translateService.instant(
+          'general.height-description'
+        ),
         primaryItems,
         primaryIndex,
         secondaryItems,
@@ -730,7 +749,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('profile-tab.chair-type'),
-        description: this._translateService.instant('profile-tab.chair-type-description'),
+        description: this._translateService.instant(
+          'profile-tab.chair-type-description'
+        ),
         primaryItems: this.chairTypesTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -777,7 +798,9 @@ export class ProfileTabComponent {
       dismissOnBackgroundTap: true,
       context: {
         title: this._translateService.instant('profile-tab.chair-make'),
-        description: this._translateService.instant('profile-tab.chair-make-description'),
+        description: this._translateService.instant(
+          'profile-tab.chair-make-description'
+        ),
         primaryItems: this.chairMakesTranslated,
         primaryIndex,
         listPickerNeedsSecondary: false
@@ -874,7 +897,7 @@ export class ProfileTabComponent {
         animated: true,
         viewContainerRef: this._vcRef
       })
-      .then(() => { })
+      .then(() => {})
       .catch(err => {
         this._logService.logException(err);
       });
@@ -945,7 +968,7 @@ export class ProfileTabComponent {
       error => {
         this._logService.logException(error);
       },
-      () => { }
+      () => {}
     );
   }
 
@@ -1019,8 +1042,12 @@ export class ProfileTabComponent {
       );
       setTimeout(() => {
         alert({
-          title: this._translateService.instant('profile-tab.network-error.title'),
-          message: this._translateService.instant('profile-tab.network-error.message'),
+          title: this._translateService.instant(
+            'profile-tab.network-error.title'
+          ),
+          message: this._translateService.instant(
+            'profile-tab.network-error.message'
+          ),
           okButtonText: this._translateService.instant('profile-tab.ok')
         });
       }, 1000);
@@ -1088,7 +1115,9 @@ export class ProfileTabComponent {
     if (this.user.data.weight === 0) {
       this.displayWeight = '';
     } else {
-      this.displayWeight = this._displayWeightInKilograms(this.user.data.weight);
+      this.displayWeight = this._displayWeightInKilograms(
+        this.user.data.weight
+      );
       // convert from metric weight (as stored in Kinvey) to user preferred unit
       if (this.user.data.weight_unit_preference === WEIGHT_UNITS.POUNDS) {
         this.displayWeight = this._displayWeightInPounds(
@@ -1174,9 +1203,7 @@ export class ProfileTabComponent {
         weight: weight // user's preferred unit is Kg. Save as is
       });
       if (didUpdate) {
-        this.displayWeight = this._displayWeightInKilograms(
-          weight
-        );
+        this.displayWeight = this._displayWeightInKilograms(weight);
       }
     } else {
       // User's preferred unit is lbs
@@ -1186,9 +1213,7 @@ export class ProfileTabComponent {
         weight: poundsToKilograms(weight)
       });
       if (didUpdate) {
-        this.displayWeight = this._displayWeightInPounds(
-          weight
-        );
+        this.displayWeight = this._displayWeightInPounds(weight);
       }
     }
   }

@@ -16,7 +16,7 @@ import { Sentry } from 'nativescript-sentry';
 import { DataBroadcastReceiver } from '../../data-broadcast-receiver';
 import { DataKeys } from '../../enums';
 import { DailyActivity, Profile } from '../../namespaces';
-import { KinveyService, SqliteService } from '../../services';
+import { PushTrackerKinveyService, SqliteService } from '../../services';
 import { applyTheme, getSerialNumber, loadSerialNumber, saveSerialNumber, sentryBreadCrumb } from '../../utils';
 
 const dateLocales = {
@@ -35,8 +35,6 @@ const dateLocales = {
 };
 
 declare const com: any;
-
-const debug: boolean = false;
 
 export class MainViewModel extends Observable {
   // #region "Public Members for UI"
@@ -120,7 +118,7 @@ export class MainViewModel extends Observable {
    * User interaction objects
    */
   private sqliteService: SqliteService;
-  private kinveyService: KinveyService;
+  private kinveyService: PushTrackerKinveyService;
 
   // permissions for the app
   private permissionsNeeded: any[] = [];
@@ -158,9 +156,8 @@ export class MainViewModel extends Observable {
     }
     // now init the ui
     try {
-      this._init().then(() => {
-        Log.D('init finished in the main-view-model');
-      });
+      await this._init();
+      Log.D('init finished in the main-view-model');
     } catch (err) {
       Sentry.captureException(err);
       Log.E('activity init error:', err);
@@ -252,24 +249,6 @@ export class MainViewModel extends Observable {
     btn.showModal(aboutPage, option);
   }
 
-  debugTap() {
-    /*
-    debug = !debug;
-    if (debug) {
-      this.currentPushCount = Math.random() * 2000 + 1000;
-      this.distanceGoalValue = Math.random() * 10.0 + 2.0;
-      this.distanceGoalCurrentValue = debug
-        ? Math.random() * this.distanceGoalValue
-        : 0;
-      this.coastGoalValue = Math.random() * 10 + 2.0;
-      this.coastGoalCurrentValue = Math.random() * this.coastGoalValue;
-    } else {
-      this._loadCurrentActivityData();
-    }
-    this._updateDisplay();
-    */
-  }
-
   async onConnectPushTrackerTap() {
     if (!this.kinveyService.hasAuth()) {
       const validAuth = await this._updateAuthorization();
@@ -323,10 +302,10 @@ export class MainViewModel extends Observable {
     sentryBreadCrumb('Creating services...');
     const injector = ReflectiveInjector.resolveAndCreate([
       SqliteService,
-      KinveyService
+      PushTrackerKinveyService
     ]);
     this.sqliteService = injector.get(SqliteService);
-    this.kinveyService = injector.get(KinveyService);
+    this.kinveyService = injector.get(PushTrackerKinveyService);
     sentryBreadCrumb('All Services created.');
 
     // initialize data storage for usage, errors, settings
@@ -414,7 +393,7 @@ export class MainViewModel extends Observable {
         if (data[today]) {
           currentDist = data[today].total || 0.0;
         }
-        Object.keys(data).map(k => {
+        Object.keys(data).forEach(k => {
           const total = data[k].total;
           if (total > maxDist) maxDist = total;
         });
@@ -767,7 +746,7 @@ export class MainViewModel extends Observable {
       Log.D('requesting user data');
       // now request user data
       this.showSynchronizing();
-      const userData = (await this.kinveyService.getUserData()) as any;
+      const userData = await this.kinveyService.getUserData();
       // Log.D('userInfo', JSON.stringify(userData, null, 2));
       // save stuff for display
       const userName = `${userData.first_name}\n${userData.last_name}`;
@@ -1034,18 +1013,11 @@ export class MainViewModel extends Observable {
   private async _getActivityInfoFromDatabase(numDays: number) {
     const dates = DailyActivity.Info.getPastDates(numDays);
     const activityInfo = dates.map((d: Date) => {
-      if (debug) {
-        const pushes = Math.random() * 3000 + 1000;
-        const coast = Math.random() * 10.0 + 0.5;
-        const distance = Math.random() * 5.0 + 1.0;
-        return DailyActivity.Info.newInfo(d, pushes, coast, distance);
-      } else {
-        return DailyActivity.Info.newInfo(d, 0, 0, 0);
-      }
+      return DailyActivity.Info.newInfo(d, 0, 0, 0);
     });
     try {
       const objs = await this._getRecentInfoFromDatabase(numDays + 1);
-      objs.map((o: any) => {
+      objs.forEach((o: any) => {
         // @ts-ignore
         const obj = DailyActivity.Info.loadInfo(...o);
         // have to ts-ignore since we're using the java defs.

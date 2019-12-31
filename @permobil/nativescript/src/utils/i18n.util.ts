@@ -37,8 +37,10 @@ const languagePath = function(language: string) {
 const load = async function(language?: string) {
   const languagesToLoad = [];
   if (language) {
-    // only load the specified language
+    // load the specified language
     languagesToLoad.push(language);
+    // and load english as a backup
+    languagesToLoad.push('en');
   } else {
     // load the languages found in the folder
     const langFiles = await Folder.fromPath(i18nPath)
@@ -49,7 +51,7 @@ const load = async function(language?: string) {
     languagesToLoad.push(...langFiles);
   }
   // now actually load the language files
-  languagesToLoad.map(async l => {
+  languagesToLoad.forEach(async l => {
     try {
       const fname = languagePath(l);
       const file = File.fromPath(fname);
@@ -92,16 +94,13 @@ const get = function(k, obj) {
 };
 
 const L = function(...args: any[]) {
-  // console.log(lang, !!translations[lang], args.length);
+  let translated = get(args[0], translations['en']) || args[0];
   try {
-    if (lang && translations[lang] && args.length) {
-      return get(args[0], translations[lang]) || args[0];
-    } else if (args.length) {
-      return args[0];
-    }
-  } catch (err) {
-    return args[0];
+    translated = get(args[0], translations[lang]) || args[0];
+  } catch {
+    // do nothing - we have our defaults
   }
+  return translated;
 };
 
 const applicationResources = getResources();
