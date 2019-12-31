@@ -23,20 +23,20 @@ jobs:
     name: SonarCloud Trigger
     runs-on: ubuntu-latest
     steps:
-      - name: SonarCloud Scan
       - uses: actions/checkout@v1
-      - uses: sonarsource/sonarcloud-github-action@master
-      - env:
+        run: npm i
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: npm i
   tsLint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Lint
       - uses: actions/checkout@v1
-      - run: npm i && npm run tslint
+      - name: Lint
+        run: npm i && npm run tslint
   # build:
   #   runs-on: ubuntu-latest
   #   steps:
