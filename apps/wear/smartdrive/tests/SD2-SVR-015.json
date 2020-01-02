@@ -211,7 +211,7 @@
             "number": "009",
             "revision": "A",
             "description": "Equivalence Tests compared against v1.0.00 of the SmartDrive Wear OS app.",
-            "testerName": "Tester",
+            "testerName": "Xing Wei",
             "testLevel": "Software Item",
             "requirements": [{
                 "name": "",
@@ -250,9 +250,13 @@
                     "finalResult": true
                 }
             ],
-            "notes": "",
-            "startDate": "",
-            "endDate": ""
+            "notes": [
+                "System Version PWDR.190618.001.A1, 10% sensitivity, v1.0.00 SmartDrive Wear OS app: 15 taps detected out of 20 taps, current version SmartDrive Wear OS app: 20 taps detected out of 20 taps.",
+                "System Version PWDR.190618.001.A1, 10% sensitivity, v1.0.00 SmartDrive Wear OS app: 18 taps detected out of 20 taps, current version SmartDrive Wear OS app: 20 taps detected out of 20 taps.",
+                "System Version PWDR.190618.001.A1, 10% sensitivity, v1.0.00 SmartDrive Wear OS app: 16 taps detected out of 20 taps, current version SmartDrive Wear OS app: 20 taps detected out of 20 taps."
+            ],
+            "startDate": "2020-01-02",
+            "endDate": "2020-01-02"
         },
         {
             "number": "010",
