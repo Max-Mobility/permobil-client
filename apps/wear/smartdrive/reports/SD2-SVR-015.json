@@ -6,7 +6,7 @@
     "revision": "A",
     "description": "Multi-surface Tapping",
     "testerName": "William Emfinger",
-    "testLevel": "Software Item",
+    "testLevel": "System",
     "requirements": [
       {
         "name": "SD2-SRS-5-B",
@@ -119,7 +119,7 @@
                 "revision": "A",
                 "description": "Multi-orientation Tapping",
                 "testerName": "William Emfinger",
-                "testLevel": "Software Item",
+                "testLevel": "System",
                 "requirements": [
                   {
                     "name": "SD2-SRS-5-B",
@@ -204,7 +204,7 @@
                 "revision": "A",
                 "description": "Tap Detection and SmartDrive Activation",
                 "testerName": "William Emfinger",
-                "testLevel": "Software Item",
+                "testLevel": "System",
                 "requirements": [
                   {
                     "name": "SD2-SRS-5-B",
@@ -301,7 +301,7 @@
                 "revision": "A",
                 "description": "SmartDrive Deactivation",
                 "testerName": "William Emfinger",
-                "testLevel": "Software Item",
+                "testLevel": "System",
                 "requirements": [
                   {
                     "name": "SD2-SRS-5-B",
@@ -380,7 +380,7 @@
                 "revision": "A",
                 "description": "Equivalence Tests compared against v1.0.00 of the SmartDrive Wear OS app.",
                 "testerName": "Xing Wei",
-                "testLevel": "Software Item",
+                "testLevel": "System",
                 "requirements": [
                   {
                     "name": "SD2-SRS-5-B",
@@ -469,7 +469,7 @@
                 "revision": "A",
                 "description": "Equivalence Tests compared against the original PushTracker.",
                 "testerName": "Xing Wei",
-                "testLevel": "Software Item",
+                "testLevel": "System",
                 "requirements": [
                   {
                     "name": "SD2-SRS-5-B",
