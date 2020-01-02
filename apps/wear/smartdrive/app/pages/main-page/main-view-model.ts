@@ -1434,6 +1434,13 @@ export class MainViewModel extends Observable {
     if (!this.watchBeingWorn && !this._settingsService.disableWearCheck) {
       return;
     }
+    // scale the acceleration values if we're not up to date
+    if (!this.systemIsUpToDate) {
+      const factor = 4.0;
+      acceleration.x *= factor;
+      acceleration.y *= factor;
+      acceleration.z *= factor;
+    }
     // add the data to our accel history
     this._previousData.push({
       accel: acceleration,
@@ -1453,29 +1460,39 @@ export class MainViewModel extends Observable {
         total.accel.z += e.accel.z;
         total.timestamp += e.timestamp;
         return total;
+      }, {
+        accel: { x: 0, y: 0, z: 0 },
+        timestamp: 0
       });
 
-      const max = this._previousData.reduce((element1, element2) => {
-        const _max: StoredAcceleration = element1;
-        _max.accel.x = Math.max(element1.accel.x, element2.accel.x);
-        _max.accel.y = Math.max(element1.accel.y, element2.accel.y);
-        _max.accel.z = Math.max(element1.accel.z, element2.accel.z);
+      const firstAccel = this._previousData[0].accel;
+      const max = this._previousData.reduce((_max, e) => {
+        _max.x = Math.max(_max.x, e.accel.x);
+        _max.y = Math.max(_max.y, e.accel.y);
+        _max.z = Math.max(_max.z, e.accel.z);
         return _max;
+      }, {
+        x: firstAccel.x,
+        y: firstAccel.y,
+        z: firstAccel.z
       });
 
-      const min = this._previousData.reduce((element1, element2) => {
-        const _min: StoredAcceleration = element1;
-        _min.accel.x = Math.min(element1.accel.x, element2.accel.x);
-        _min.accel.y = Math.min(element1.accel.y, element2.accel.y);
-        _min.accel.z = Math.min(element1.accel.z, element2.accel.z);
+      const min = this._previousData.reduce((_min, e) => {
+        _min.x = Math.min(_min.x, e.accel.x);
+        _min.y = Math.min(_min.y, e.accel.y);
+        _min.z = Math.min(_min.z, e.accel.z);
         return _min;
+      }, {
+        x: firstAccel.x,
+        y: firstAccel.y,
+        z: firstAccel.z
       });
 
       // determine whether to use the max or the min of the data
       const signedMaxAccel: Acceleration = {
-        x: accelerationTotal.accel.x >= 0 ? max.accel.x : min.accel.x,
-        y: accelerationTotal.accel.y >= 0 ? max.accel.y : min.accel.y,
-        z: accelerationTotal.accel.z >= 0 ? max.accel.z : min.accel.z
+        x: accelerationTotal.accel.x >= 0 ? max.x : min.x,
+        y: accelerationTotal.accel.y >= 0 ? max.y : min.y,
+        z: accelerationTotal.accel.z >= 0 ? max.z : min.z
       };
 
       // compute the average timestamp of our stored higher-frequency
@@ -1487,8 +1504,7 @@ export class MainViewModel extends Observable {
       // set tap sensitivity threshold
       this.tapDetector.setSensitivity(
         this._settingsService.settings.tapSensitivity,
-        this.motorOn,
-        this.systemIsUpToDate
+        this.motorOn
       );
       // now run the tap detector
       const didTap = this.tapDetector.detectTap(
@@ -1542,7 +1558,7 @@ export class MainViewModel extends Observable {
     }
     this.tapTimeoutId = setTimeout(() => {
       this.hasTapped = false;
-    }, (TapDetector.TapLockoutTimeMs * 3) / 2);
+    }, TapDetector.TapLockoutTimeMs);
     // vibrate for tap
     if (this.powerAssistActive || this.isTraining) {
       this._vibrator.cancel();
