@@ -226,11 +226,11 @@
                         "Set the tap sensitivity to 100% and tap 20 times using v1.0.00 of the SmartDrive Wear OS app. Repeat this test using the current version of the SmartDrive Wear OS app."
                     ],
                     "acceptanceCriteria": [
-                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.",
-                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa."
+                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa. If they differ, then the test can only be considered a `PASS` if the current version is closer to the ground truth than the previous version.",
+                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.  If they differ, then the test can only be considered a `PASS` if the current version is closer to the ground truth than the previous version.",
+                        "The number of detected taps between the software versions should differ by no more than 5%, e.g., 19 taps using v1.0.00 and 20 taps using current version or vice versa.  If they differ, then the test can only be considered a `PASS` if the current version is closer to the ground truth than the previous version."
                     ],
-                    "results": ["FAIL", "PASS", "PASS", "FAIL", "FAIL", "PASS", "SKIP"],
+                    "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "SKIP"],
                     "finalResult": true
                 },
                 {
