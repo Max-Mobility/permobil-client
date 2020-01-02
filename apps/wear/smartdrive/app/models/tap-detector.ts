@@ -17,7 +17,7 @@ export interface StoredAcceleration {
 type TimeStamp = number;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 100;
+  public static TapLockoutTimeMs: number = 150;
   public static TapLockoutTimeNs: number =
     TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
