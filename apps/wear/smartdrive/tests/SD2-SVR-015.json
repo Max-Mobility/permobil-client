@@ -126,7 +126,7 @@
       "number": "007",
       "revision": "A",
       "description": "Tap Detection and SmartDrive Activation",
-      "testerName": "Tester",
+      "testerName": "William Emfinger",
       "testLevel": "Software Item",
       "requirements": [
         {
@@ -142,7 +142,7 @@
           "acceptanceCriteria": [
             "The SmartDrive motor should activate and initiate ramping process. The SmartDrive should ramp to its max-speed setting."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -152,7 +152,7 @@
             "Start in stationary position and tap continuously on handrim"
           ],
           "acceptanceCriteria": ["The SmartDrive motor should not activate."],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -162,7 +162,7 @@
             "Start in stationary position and move hands normally, e.g., typing, talking to people"
           ],
           "acceptanceCriteria": ["The SmartDrive motor should not activate."],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -172,19 +172,19 @@
             "Start in stationary position push wheelchair in indoor and outdoor ground surfaces e.g., carpets, sidewalks"
           ],
           "acceptanceCriteria": ["The SmartDrive motor should not activate."],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         }
       ],
       "notes": "",
-      "startDate": "",
-      "endDate": ""
+      "startDate": "2020-01-02",
+      "endDate": "2020-01-02"
     },
     {
       "number": "008",
       "revision": "A",
       "description": "SmartDrive Deactivation",
-      "testerName": "Tester",
+      "testerName": "William Emfinger",
       "testLevel": "Software Item",
       "requirements": [
         {
@@ -202,7 +202,7 @@
           "acceptanceCriteria": [
             "The SmartDrive motor should deactivate and stop."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -212,13 +212,13 @@
             "Start the SmartDrive motor and get into motion. Holds hand on handrim while moving."
           ],
           "acceptanceCriteria": ["The SmartDrive motor should not deactivate."],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         }
       ],
       "notes": "",
-      "startDate": "",
-      "endDate": ""
+      "startDate": "2020-01-02",
+      "endDate": "2020-01-02"
     },
     {
       "number": "009",
