@@ -1558,7 +1558,7 @@ export class MainViewModel extends Observable {
     }
     this.tapTimeoutId = setTimeout(() => {
       this.hasTapped = false;
-    }, (TapDetector.TapLockoutTimeMs * 3) / 2);
+    }, TapDetector.TapLockoutTimeMs);
     // vibrate for tap
     if (this.powerAssistActive || this.isTraining) {
       this._vibrator.cancel();
