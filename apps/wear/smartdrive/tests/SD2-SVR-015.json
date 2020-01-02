@@ -270,11 +270,9 @@
             }],
             "tests": [{
                 "name": "Tap Detection Accuracy compared against the original PushTracker",
-                "preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode.",
+                "preconditions": "Tester has worn the PushTracker E2 on their primary hand, and set the PushTracker E2 in tap-training mode. Use default tap sensitivity of 70% on the PushTracker E2 and a default tap sensivitiy of 100% on the original PushTracker for this test.",
                 "methods": [
-                    "Set the tap sensitivity to 10% and tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker.",
-                    "Set the tap sensitivity to 70% and tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker.",
-                    "Set the tap sensitivity to 100% and tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker."
+                    "Tap 20 times using the current version of the SmartDrive Wear OS app on the PushTracker E2. Repeat this test using the original PushTracker."
                 ],
                 "acceptanceCriteria": [
                     "The number of detected taps between the two systems should differ by no more than 5%, e.g., 19 taps using PushTracker E2 and 20 taps using the original PushTracker or vice versa."
