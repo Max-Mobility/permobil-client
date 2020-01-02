@@ -6,7 +6,7 @@
       "number": "005",
       "revision": "A",
       "description": "Multi-surface Tapping",
-      "testerName": "Tester",
+      "testerName": "William Emfinger",
       "testLevel": "Software Item",
       "requirements": [
         {
@@ -26,7 +26,7 @@
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -40,7 +40,7 @@
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -54,7 +54,7 @@
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         },
         {
@@ -68,13 +68,13 @@
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap.",
             "The PushTracker E2 must vibrate 20 times and flash red for each detected tap."
           ],
-          "results": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+          "results": ["PASS", "PASS", "PASS", "SKIP", "SKIP", "SKIP", "SKIP"],
           "finalResult": true
         }
       ],
       "notes": "",
-      "startDate": "",
-      "endDate": ""
+      "startDate": "2020-01-01",
+      "endDate": "2020-01-01"
     },
     {
       "number": "006",
