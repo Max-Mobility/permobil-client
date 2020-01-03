@@ -13,7 +13,6 @@ import { ReflectiveInjector } from 'injection-js';
 import clamp from 'lodash/clamp';
 import last from 'lodash/last';
 import once from 'lodash/once';
-import throttle from 'lodash/throttle';
 import * as LS from 'nativescript-localstorage';
 import { Pager } from 'nativescript-pager';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -77,6 +76,11 @@ export class MainViewModel extends Observable {
   @Prop() isTraining: boolean = false;
 
   /**
+   * Data related to today's usage specifically
+   */
+  private _todaysUsage: any;
+
+  /**
    * Data to bind to the Battery Usage Chart repeater.
    */
   @Prop() batteryChartData: any[];
@@ -138,7 +142,6 @@ export class MainViewModel extends Observable {
   private _ringTimerId = null;
   private RING_TIMER_INTERVAL_MS = 500;
   private CHARGING_WORK_PERIOD_MS = 1 * 60 * 1000;
-  private DATABASE_SAVE_INTERVAL_MS = 10 * 1000;
   private _lastChartDay = null;
 
   /**
@@ -153,7 +156,6 @@ export class MainViewModel extends Observable {
   private _sqliteService: SqliteService;
   private _kinveyService: SmartDriveKinveyService;
   private _settingsService: SettingsService;
-  private _throttledSmartDriveSaveFn: any = null;
   private _onceSendSmartDriveSettings: any = null;
   // Used for doing work while charing
   private chargingWorkTimeoutId: any = null;
@@ -655,13 +657,6 @@ export class MainViewModel extends Observable {
 
     // handle application lifecycle events
     this._registerAppEventHandlers();
-
-    // make throttled save function - not called more than once every 10 seconds
-    this._throttledSmartDriveSaveFn = throttle(
-      this._saveSmartDriveData,
-      this.DATABASE_SAVE_INTERVAL_MS,
-      { leading: true, trailing: false }
-    );
 
     // regiter for system updates related to battery / time UI
     this._registerForBatteryUpdates();
@@ -1193,7 +1188,7 @@ export class MainViewModel extends Observable {
     );
   }
 
-  private _onNewDay() {
+  private async _onNewDay() {
     if (this.smartDrive) {
       // it's a new day, reset smartdrive battery to 0
       this.smartDrive.battery = 0;
@@ -1207,12 +1202,12 @@ export class MainViewModel extends Observable {
   private _registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this._updateTimeDisplay();
-    const timeReceiverCallback = (_1, _2) => {
+    const timeReceiverCallback = async (_1, _2) => {
       try {
         this._updateTimeDisplay();
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
-          this._onNewDay();
+          await this._onNewDay();
           this._updateChartData();
         }
       } catch (error) {
@@ -2270,11 +2265,8 @@ export class MainViewModel extends Observable {
     // only check against 1 so that we filter out charging and only
     // get decreases due to driving / while connected
     if (batteryChange === 1) {
-      // cancel previous invocations of the save so that the next
-      // one definitely saves the battery increment
-      this._throttledSmartDriveSaveFn.flush();
       // save to the database
-      this._throttledSmartDriveSaveFn({
+      this._saveSmartDriveData({
         battery: 1,
         driveDistance: this.smartDrive.driveDistance,
         coastDistance: this.smartDrive.coastDistance
@@ -2299,7 +2291,7 @@ export class MainViewModel extends Observable {
 
     if (coastDistance !== currentCoast || driveDistance !== currentDrive) {
       // save to the database
-      this._throttledSmartDriveSaveFn({
+      this._saveSmartDriveData({
         battery: 0,
         driveDistance: this.smartDrive.driveDistance,
         coastDistance: this.smartDrive.coastDistance
@@ -2368,8 +2360,8 @@ export class MainViewModel extends Observable {
       // save state to LS
       this._saveSmartDriveStateToLS();
       // now save to database
-      const driveDistance = args.driveDistance || 0;
-      const coastDistance = args.coastDistance || 0;
+      const driveDistance = args.driveDistance || this.smartDrive?.driveDistance || 0;
+      const coastDistance = args.coastDistance || this.smartDrive?.coastDistance || 0;
       const battery = args.battery || 0;
       if (driveDistance === 0 && coastDistance === 0 && battery === 0) {
         return;
@@ -2389,17 +2381,11 @@ export class MainViewModel extends Observable {
           }
         );
       } else {
-        const newEntry = SmartDriveData.Info.newInfo(
-          undefined,
-          new Date(),
-          battery,
-          driveDistance,
-          coastDistance
-        );
-        // this is the first record, so we create it
-        await this._sqliteService.insertIntoTable(
-          SmartDriveData.Info.TableName,
-          newEntry
+        // should not come here - _getTodaysUsageFromDatabase loads /
+        // creates as needed - but if it encounters an exception then
+        // it will not have an id - so we will try to make it again...
+        this._todaysUsage = await this._makeTodaysUsage(
+          battery, driveDistance, coastDistance
         );
       }
       // update the estimated range (doesn't use weekly usage info -
@@ -2414,24 +2400,61 @@ export class MainViewModel extends Observable {
     }
   }
 
-  private async _getTodaysUsageInfoFromDatabase() {
+  private async _makeTodaysUsage(battery?: number, drive?: number, coast?: number) {
+    if (!drive || !coast) {
+      // try to use our smartdrive's existing drive / coast to
+      // initialize the data, fall back on 0 if necessary
+      drive = this.smartDrive?.driveDistance || 0;
+      coast = this.smartDrive?.coastDistance || 0;
+    }
+    const newEntry = SmartDriveData.Info.newInfo(undefined,
+      new Date(),
+      battery,
+      drive,
+      coast);
     try {
-      const e = await this._sqliteService.getLast(
+      const id = await this._sqliteService.insertIntoTable(
         SmartDriveData.Info.TableName,
-        SmartDriveData.Info.IdName
+        newEntry
       );
-      const date = new Date((e && e[1]) || null);
-      if (e && e[1] && isToday(date)) {
-        // @ts-ignore
-        return SmartDriveData.Info.loadInfo(...e);
-      } else {
-        return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
-      }
+      newEntry[SmartDriveData.Info.IdName] = id;
     } catch (err) {
       Sentry.captureException(err);
-      // nothing was found
-      return SmartDriveData.Info.newInfo(undefined, new Date(), 0, 0, 0);
     }
+    return newEntry;
+  }
+
+  private async _getTodaysUsageInfoFromDatabase() {
+    if (this._todaysUsage) {
+      // check to see it is actually today and create a new one if
+      // needed
+      if (isToday(this._todaysUsage[SmartDriveData.Info.DateName])) {
+        return this._todaysUsage;
+      } else {
+        this._todaysUsage = await this._makeTodaysUsage();
+      }
+    } else {
+      // try to load it from the db and create it if one cannot be
+      // found
+      try {
+        const e = await this._sqliteService.getLast(
+          SmartDriveData.Info.TableName,
+          SmartDriveData.Info.IdName
+        );
+        const date = new Date((e && e[1]) || null);
+        if (e && e[1] && isToday(date)) {
+          // @ts-ignore
+          this._todaysUsage = SmartDriveData.Info.loadInfo(...e);
+        } else {
+          this._todaysUsage = await this._makeTodaysUsage();
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        // nothing was found
+        this._todaysUsage = await this._makeTodaysUsage();
+      }
+    }
+    return this._todaysUsage;
   }
 
   private async _updateSharedUsageInfo(sdData: any[]) {
