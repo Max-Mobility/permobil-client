@@ -29,16 +29,16 @@
   "change-notes": {
     "pt": {
       "2_0": [
-        "",
-        ""
+        "Aggiunta la possibilità di visualizzare la potenza della connessione Bluetooth SmartDrive più recente nel menu Impostazioni \"Informazioni\"",
+        "Aggiunto supporto per l'invio e la ricezione di configurazioni SmartDrive SwitchControl da / verso l'app PushTracker Mobile e SmartDrive"
       ]
     },
     "sd": {
       "2_0": [
-        "",
-        "",
-        "",
-        ""
+        "\"Aggiunta l'indicazione dinamica del pulsante SwitchControl in modo che i LED dei pulsanti indicano lo stato di assistenza e guida\n - Se PushTracker / E2 è collegato e / o il controllo dell'interruttore è abilitato, i LED lampeggeranno in diversi schemi.\n - Se il motore sta guidando i LED saranno fissi. \"",
+        "\"SmartDrive può essere configurato in modalità SwitchControl momentanea o bloccata\n - Nella modalità momentanea predefinita, SmartDrive inizierà a guidare il motore aumentando la sua velocità alla velocità massima SwitchControl configurata solo mentre si tiene premuto uno dei pulsanti.\n - In modalità Latched, SmartDrive inizierà ad aumentare la sua velocità fino alla velocità massima SwitchControl configurata mentre si tiene premuto uno dei pulsanti. Quando si rilascia il pulsante premuto, SmartDrive rimarrà alla guida alla velocità corrente. Disattiva la guida premendo un pulsante. \"",
+        "SmartDrive SwitchControl ha la propria impostazione Max Speed configurabile che è indipendente dall'impostazione Max Speed per PushTracker / E2",
+        "\"SmartDrive è ora configurato per emettere un segnale acustico ogni volta che il suo stato viene modificato in accensione assistita\n - Questo cambio di stato può essere da un pulsante PushTracker / E2 e SwitchControl.\n - Questa impostazione di indicazione può essere disattivata tramite l'app SmartDrive MX2 sul PushTracker E2 o utilizzando l'app PushTracker Mobile sullo smartphone se non si dispone di un E2. \""
       ]
     }
   },
