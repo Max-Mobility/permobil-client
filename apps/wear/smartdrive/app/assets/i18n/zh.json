@@ -90,21 +90,21 @@
     "too-many-smartdrives-found": "找到了多個SmartDrives。配對時，確保附近只有一個開啓的SmartDrive。"
   },
   "languages": {
-    "cs": "",
+    "cs": "捷克",
     "da": "丹麥語",
     "de": "德語",
     "en": "英語",
     "es": "西班牙語",
-    "fi": "",
+    "fi": "芬蘭",
     "fr": "法語",
     "it": "義大利語",
     "ja": "日語",
     "ko": "韓語",
     "nb": "挪威語[Bokmål]",
     "nl": "荷蘭語",
-    "pl": "",
-    "pt": "",
-    "sv": "",
+    "pl": "拋光",
+    "pt": "葡萄牙語",
+    "sv": "瑞典",
     "zh": "漢語[繁體]"
   },
   "menu": {
