@@ -26,6 +26,22 @@
     "enable": "Activer",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Ajouté la possibilité d'afficher la dernière puissance de connexion Bluetooth SmartDrive dans le menu de configuration \"A propos de\"",
+        "\"\nAjout de la prise en charge de l'envoi et de la réception des configurations SmartDrive SwitchControl vers et depuis l'application PushTracker Mobile app et SmartDrive\""
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Ajout d'une indication dynamique sur les LEDs des boutons de tierce personnes pour signaler l'assistance électrique et l'état de conduite\n - Si PushTracker / E2 est connecté et / ou si les boutons de tierce personne sont activées, les LEDs clignoteront selon différents motifs.\n - Si le moteur tourne, les LEDs seront allumées.\"",
+        "\"SmartDrive peut être configuré en mode momentané ou maintenu sur les bouton de commande tierce personnes\n - En mode Momentané par défaut, la SmartDrive démarre le moteur en augmentant sa vitesse jusqu'à la vitesse maximale configurée sur les boutons de tierce personne tout en maintenant un des boutons enfoncé.\n - En mode maintenu, la SmartDrive commence à augmenter sa vitesse jusqu'à la vitesse maximale configurée des bouton de tierce personne pendant que l'un des boutons est maintenu enfoncé. Lorsque vous relâchez le bouton, la SmartDrive continue à rouler à la vitesse actuelle. Désactivez la conduite en appuyant sur un bouton.\"",
+        "Les boutons de tierce personne de la SmartDrive ont leur propre réglage de vitesse maximum configurable qui est indépendant du réglage de vitesse maximum pour le PushTracker / E2",
+        "\"SmartDrive est maintenant configuré pour émettre un bip sonore chaque fois que son état est modifié pour que l'assistance d'alimentation soit activée\n - Ce changement d'état peut provenir d'un PushTracker / E2 et d'un ou plusieurs boutons de commande tierce personnes.\n - Ce réglage d'indication peut être désactivé soit via l'application SmartDrive MX2+ sur votre PushTracker E2, soit via l'application PushTracker Mobile sur votre smartphone si vous n'avez pas de E2.\""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "Utilisation quotidienne de la batterie SmartDrive (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Plusieurs SmartDrives trouvées. Assurez-vous qu’il n’y a qu’une seule SmartDrive à proximité lors du couplage."
   },
   "languages": {
+    "cs": "",
     "da": "Danois",
     "de": "Allemand",
     "en": "Anglais",
     "es": "Espagnol",
+    "fi": "",
     "fr": "Français",
     "it": "Italien",
     "ja": "Japonais",
     "ko": "Coréen",
     "nb": "Norvégien [Bokmål]",
     "nl": "Néerlandais",
-    "nn": "Norvégien [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "suédois",
     "zh": "Chinois [traditionnel]"
   },

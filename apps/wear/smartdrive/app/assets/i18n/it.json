@@ -26,6 +26,22 @@
     "enable": "Abilitare",
     "ok": "Ok"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "",
+        ""
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "Uso della batteria SmartDrive ogni giorno (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Sono stati trovati più SmartDrive. Accertarsi che sia presente un solo SmartDrive nelle vicinanze durante l'associazione."
   },
   "languages": {
+    "cs": "",
     "da": "danese",
     "de": "Tedesco",
     "en": "Inglese",
     "es": "Spagnolo",
+    "fi": "",
     "fr": "Francese",
     "it": "Italiano",
     "ja": "giapponese",
     "ko": "coreano",
     "nb": "Norvegese [Bokmål]",
     "nl": "olandese",
-    "nn": "Norvegese [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "svedese",
     "zh": "Cinese tradizionale]"
   },

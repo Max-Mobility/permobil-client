@@ -26,6 +26,22 @@
     "enable": "Aktiver",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Tilføjet mulighed for at se de nyeste SmartDrive Bluetooth-forbindelsers styrke til \"Om\" i indstillingsmenuen",
+        "Tilføjet support til at sende og modtage SmartDrive SwitchControl-konfigurationer til / fra PushTracker Mobile-app og SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Tilføjet dynamisk SwitchControl-knapindikation, så knap-LED(er) viser strømforsyning og kørselstilstand\n - Hvis PushTracker / E2 er tilsluttet og / eller SwitchControl er aktiveret, blinker LED(er) i forskellige mønstre.\n - Hvis motoren kører, vil LED(er) have konstant lys.\"",
+        "\"SmartDrive kan konfigureres til Momentary eller Latched SwitchControl-tilstande\n - I standardtilstanden (Momentary) starter SmartDrive motoren med at øge dens hastighed til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede.\n - I låst tilstand, (Latched)  starter SmartDrive med at øge hastigheden op til den konfigurerede SwitchControl Max Speed, mens en af knapperne holdes nede. Når den holdte knap slippes, bliver SmartDrive ved med at køre med den aktuelle hastighed. Deaktiver kørslen ved at trykke på en knap.\"",
+        "SmartDrive SwitchControl har sin egen konfigurerbare Max Speed indstilling, som er uafhængig af Max Speed indstillingen for PushTracker / E2",
+        "\"SmartDrive er nu konfigureret til at bippe en gang, hver gang dens status ændres til strømforsyning TIL\n - Denne statusændring kan være fra en PushTracker / E2- og SwitchControl-knap (er).\n - Denne statusindstilling kan deaktiveres enten via SmartDrive MX2+ -appen på din PushTracker E2 eller ved hjælp af PushTracker Mobile-appen på din smartphone, hvis du ikke har en E2. \""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive batteri dagligt forbrug (%)"
@@ -35,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "",
-    "odometer": ""
+    "battery-level": "Batteriniveau",
+    "odometer": "Kilometertæller"
   },
   "error-history": {
     "errors": {
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Flere SmartDrives fundet. Sørg for, at der kun er en SmartDrive på i nærheden, når du parrer."
   },
   "languages": {
+    "cs": "",
     "da": "Dansk",
     "de": "Tysk",
     "en": "Engelsk",
     "es": "Spansk",
+    "fi": "",
     "fr": "Fransk",
     "it": "Italiensk",
     "ja": "Japansk",
     "ko": "Koreansk",
     "nb": "Norsk [bokmål]",
     "nl": "Hollandsk",
-    "nn": "Norsk [nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "Svensk",
     "zh": "Kinesisk [traditionelt]"
   },

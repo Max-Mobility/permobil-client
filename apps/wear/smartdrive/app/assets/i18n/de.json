@@ -26,6 +26,22 @@
     "enable": "Aktivieren",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Möglichkeit die Stärke der letzten SmartDrive-Bluetoothverbindungen einzusehen ist dem \"Über\" Menü hinzugefügt worden",
+        "Support für Senden und Empfangen von SmartDrive SwitchControls Konfigurationen zu und von der Pushtracker Mobil app und dem SmartDrive hinzugeführt"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"SwitchControl LEDs werden als dynamische Anzeige für den Fahrmodus eingesetzt\n - Wenn Pushtracker  /E2 angeschlossen ist und/oder SwitchControl eingeschaltet ist, dann leuchten die LEDs in verschiedenen Mustern.\n - Wenn Motor läuft sind LEDs permanent an.\"",
+        "\"SmartDrive kann für kurzzeitigen oder verriegelten Modus konfiguriert werden\n - Als Standard ist der kurzzeitige Modus voreingestellt. SmartDrive beschleunigt bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird.\n - Im verriegelten Modus beschleunigt der SmartDrive bis zur eingestellten Höchsgeschwindigkeit, solange wie einer der beiden SwitchControls gedrückt wird. Wird der gedrückte SwitchControl losgelassen, wird die erreichte Geschwindigkeit gehalten. Das Fahren wird durch erneutes Drücken deaktiviert.\"",
+        "Die Maximalgeschwindigkeit für die SwitchControls kann unabhängig der Maximalgeschwindigkeit für Pushtracker / E2 eingestellt werden",
+        "\"SmartDrive zeigt jetzt durch einen Signalton den Wechsel in den Power Assist Modus \"\"Ein\"\" an\n - Der Statuswechsel kann durch Pushtracker/E2 und/oder SwitchControls erfolgen.\n - Diese Anzeige kann entweder durch die SmartDrive MX2+ App auf dem Pushtracker E2 oder durch die Pushtracker Mobile App auf dem Smartphone  deaktiviert werden.\""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "Täglicher Verbrauch des SmartDrive-Akkus (%)"
@@ -35,8 +51,8 @@
     }
   },
   "complications": {
-    "battery-level": "",
-    "odometer": ""
+    "battery-level": "Batterieanzeige",
+    "odometer": "Kilometerzähler"
   },
   "error-history": {
     "errors": {
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Mehrere SmartDrives gefunden. Vergewissern Sie sich, dass sich beim Koppeln nur ein SmartDrive in der Nähe befindet."
   },
   "languages": {
+    "cs": "",
     "da": "Dänisch",
     "de": "Deutsch",
     "en": "Englisch",
     "es": "Spanisch",
+    "fi": "",
     "fr": "Französisch",
     "it": "Italienisch",
     "ja": "Japanisch",
     "ko": "Koreanisch",
     "nb": "Norwegisch [Bokmål]",
     "nl": "Niederländisch",
-    "nn": "Norwegisch [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "Schwedisch",
     "zh": "Chinesisch [Traditionell]"
   },

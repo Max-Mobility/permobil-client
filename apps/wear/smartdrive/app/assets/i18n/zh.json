@@ -26,6 +26,22 @@
     "enable": "啟用",
     "ok": "好"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "關於”設置選單中增加了查看最新的SmartDrive藍牙連接強度的功能",
+        "增加支持-可用於推送和接收SmartDrive線控配置到/從PushTracker移動端應用和SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"增加了動態線控按鈕指示，使按鈕LED顯示電動輔助和驅動狀態\n - 如果PushTracker / E2被連接和/或線控被啟動，LED(s)將以不同的模式閃爍。\n - 如果馬達在驅動，LED(s)將是穩定的。\"",
+        "\"SmartDrive可以配置為長按行駛或定速行駛缐控模式 \n - 在預設的長按行駛模式下，只有當其中一個按鈕被按住時，SmartDrive才會透過將速度提升到配置的缐控最大速度來啟動馬達。 -在定速行駛模式下，當其中一個按鈕是被按住時，SmartDrive將速度提升到配置的缐控最大速度。當鬆開按鈕時，SmartDrive將保持當前速度行駛。再次按下按鈕便停止驅動。\"",
+        "SmartDrive線控有自己的可配置的最大速度設置，可不同於PushTracker / E2最高速度設置",
+        "\"SmartDrive配置為每當狀態為開啟時便發出一次蜂鳴聲\n - 這種狀態的開啟來自於PushTracker / E2和(或)線控按鈕(s)。\n - 這種指示設置可以透過你的PushTracker E2上的SmartDrive MX2+應用程式停用，如果你沒有E2，也可以使用你的智能手機上的PushTracker移動應用程序來停用。\""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive電池每日使用量（%）"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "找到了多個SmartDrives。配對時，確保附近只有一個SmartDrive。"
   },
   "languages": {
+    "cs": "",
     "da": "丹麥",
     "de": "德語",
     "en": "英語",
     "es": "西班牙語",
+    "fi": "",
     "fr": "法國",
     "it": "意大利",
     "ja": "日本",
     "ko": "朝鮮的",
     "nb": "挪威語[Bokmål]",
     "nl": "荷蘭人",
-    "nn": "挪威語[尼諾斯克]",
+    "pl": "",
+    "pt": "",
     "sv": "瑞典",
     "zh": "中國傳統的"
   },

@@ -26,6 +26,22 @@
     "enable": "Aktivera",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Adderad funktion att se de senaste SmartDrive Bluetooth anlutningarnas styrka under \"Om\" i inställningsmenyn",
+        "Adderad support för att skicka och ta emot SmartDrive SwitchControl-konfigurationer från / till PushTracker Mobil appen och SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Dynamisk SwitchControl-knappindikering, LED-lampor indikerar effektstöd och körläge\n - Om PushTracker / E2 är ansluten och / eller SwitchControl är aktiverad kommer LED -lampor att blinka i olika mönster.\n - Om motorn kör kommer LED-indikeringen att vara ett fast ljus.\"",
+        "\"SmartDrive med SwitchControl kan konfigureras till läge Momentary eller Latched\n - I standardmomentläget (Momentary) kommer SmartDrive att börja köra motorn genom att höja hastigheten upp till den konfigurerade Max hastigheten endast medan en av knapparna hålls intryckt\n - I låst läge (Latched) kommer SmartDrive att börja höja hastigheten till den konfigurerade Max hastigheten medan en av knapparna hålls intryckt. När den hållna knappen släpps kommer SmartDrive att fortsätta köra med aktuell hastighet. Deaktivera körningen genom att trycka på en knapp. \"",
+        "SmartDrive SwitchControl har en egen konfigurerbar inställning för Max hastighet som är oberoende av inställningen Max hastigheten för PushTracker / E2",
+        "\"SmartDrive är nu konfigurerat för att pipa en gång när dess status ändras till  Smartdrive PÅ\n - Denna statusändring kan komma från en PushTracker / E2- och SwitchControl-knappar.\n - Denna indikationsinställning kan avaktiveras antingen via SmartDrive MX2+ appen på din PushTracker E2 eller med PushTracker Mobil appen på din smartphone om du inte har en E2. \""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive Daglig batteriförbrukning (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Flera SmartDrives hittade. Se till att det bara finns en SmartDrive på i närheten när du par kopplar."
   },
   "languages": {
+    "cs": "",
     "da": "Danska",
     "de": "Tyska",
     "en": "Engelska",
     "es": "Spanska",
+    "fi": "",
     "fr": "Franska",
     "it": "Italienska",
     "ja": "Japanska",
     "ko": "Koreanska",
     "nb": "Norska [bokmål]",
     "nl": "Holländska",
-    "nn": "Norska [nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "Svenska",
     "zh": "Kineiska [Traditionell]"
   },

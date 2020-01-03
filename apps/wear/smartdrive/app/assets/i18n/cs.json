@@ -26,6 +26,22 @@
     "enable": "",
     "ok": ""
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "",
+        ""
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": ""
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": ""
   },
   "languages": {
+    "cs": "",
     "da": "",
     "de": "",
     "en": "",
     "es": "",
+    "fi": "",
     "fr": "",
     "it": "",
     "ja": "",
     "ko": "",
     "nb": "",
     "nl": "",
-    "nn": "",
+    "pl": "",
+    "pt": "",
     "sv": "",
     "zh": ""
   },

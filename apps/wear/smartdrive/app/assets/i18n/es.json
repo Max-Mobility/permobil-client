@@ -26,6 +26,22 @@
     "enable": "Encendido",
     "ok": "De acuerdo"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Se ha añadido poder ver la fuerza de conexión Bluetooth SmartDrive más reciente al menú de configuración \"Acerca de\"",
+        "Agregado soporte  para enviar y recibir configuraciones de control de interruptor de / al SmartDrive desde las aplicaciones móviles PushTracker y SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Se agregó una indicación dinámica del botón SwitchControl para que los LED del botón indiquen la asistencia eléctrica y el estado de conducción\n - Si el PushTracker / E2 está conectado y / o el control del interruptor está habilitado, los LED parpadearán en diferentes patrones.\n - Si el motor está en marcha, los LED estarán encendidos.\"",
+        "\"SmartDrive se puede configurar en modos de control de interruptor momentáneo o bloqueado\n - En el modo Momentáneo predeterminado, el SmartDrive iniciará la marcha y el motor irá aumentando su velocidad a la velocidad máxima configurada de SwitchControl, solo mientras se mantiene presionado uno de los botones.\n - En el modo fijo, el SmartDrive comenzará a aumentar su velocidad a la velocidad máxima configurada de SwitchControl mientras se mantiene presionado uno de los botones. Cuando se suelta el botón retenido, el SmartDrive seguirá continuará la marcha a la velocidad actual. Desactive la conducción presionando un botón.\"",
+        "SmartDrive SwitchControl tiene su propia configuración de velocidad máxima configurable, que es independiente de la configuración de velocidad máxima para PushTracker / E2",
+        "\"SmartDrive ahora está configurado para emitir un pitido cada vez que cambia su estado a encendido \n - Este cambio de estado puede ser desde la PushTracker / E2 y desde el botón SwitchControl.\n - Esta configuración de indicación se puede deshabilitar a través de la aplicación SmartDrive MX2+ en su PushTracker E2 o usando la aplicación PushTracker Mobile en su teléfono inteligente si no tiene un E2.\""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "Uso de la batería del SmartDrive a diario (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Se han encontrado cerca otros SmartDrives. Asegúrese de que solo haya uno en las proximidades cuando realice el emparejamiento."
   },
   "languages": {
+    "cs": "",
     "da": "Danés",
     "de": "Alemán",
     "en": "Inglés",
     "es": "Español",
+    "fi": "",
     "fr": "Francés",
     "it": "Italiano",
     "ja": "Japonés",
     "ko": "Coreano",
     "nb": "Noruego [Bokmål]",
     "nl": "Holandés",
-    "nn": "Noruego [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "sueco",
     "zh": "Chino [Tradicional]"
   },

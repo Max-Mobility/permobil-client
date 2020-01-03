@@ -26,6 +26,22 @@
     "enable": "Enable",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Added ability to view most recent SmartDrive Bluetooth connection strength to the \"About\" Settings Menu",
+        "Added support for sending and receiving SmartDrive SwitchControl configurations to / from PushTracker Mobile app and SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Added dynamic SwitchControl button indication so button LED(s) indicate power assist and driving state\n - If PushTracker / E2 is connected and / or switch control is enabled LED(s) will flash in different patterns.\n - If motor is driving LED(s) will be solid.\"",
+        "\"SmartDrive can be configured to Momentary or Latched SwitchControl Modes\n - In the default Momentary Mode the SmartDrive will start driving the motor by ramping up its speed to the configured SwitchControl Max Speed only while one of the buttons is being held.\n - In Latched Mode, the SmartDrive will start ramping up its speed to the configured SwitchControl Max Speed while one of the buttons is being held. When the held button is released, the SmartDrive will remain driving at the current speed. Deactivate the driving by pressing a button.\"",
+        "SmartDrive SwitchControl has its own configurable Max Speed setting which is independent of the Max Speed setting for the PushTracker / E2",
+        "\"SmartDrive is now configured to beep once whenever its state is changed to power assist ON\n - This state change can be from a PushTracker / E2 and SwitchControl button(s).\n - This indication setting can be disabled either through the SmartDrive MX2+ app on your PushTracker E2 or using the PushTracker Mobile app on your smartphone if you do not have an E2.\""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive Battery Usage Daily (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Multiple SmartDrives found. Make sure there is only one SmartDrive on in the vicinity when pairing."
   },
   "languages": {
+    "cs": "",
     "da": "Danish",
     "de": "German",
     "en": "English",
     "es": "Spanish",
+    "fi": "",
     "fr": "French",
     "it": "Italian",
     "ja": "Japanese",
     "ko": "Korean",
     "nb": "Norwegian [Bokmål]",
     "nl": "Dutch",
-    "nn": "Norwegian [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "Swedish",
     "zh": "Chinese [Traditional]"
   },

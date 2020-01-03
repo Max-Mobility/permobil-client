@@ -26,6 +26,22 @@
     "enable": "Vrijgeven",
     "ok": "OK"
   },
+  "change-notes": {
+    "pt": {
+      "2_0": [
+        "Mogelijkheid toegevoegd om de meest recente SmartDrive Bluetooth-verbindingssterkte te bekijken in het instellingenmenu \"Over\"",
+        "Ondersteuning toegevoegd voor het verzenden en ontvangen van SmartDrive SwitchControl-configuraties van / naar PushTracker Mobile-app en SmartDrive"
+      ]
+    },
+    "sd": {
+      "2_0": [
+        "\"Dynamische Knoppenbesturing-indicatie toegevoegd, zoals de LED ('s) in de knoppen power assist en rijstatus aangeven\n - Als PushTracker / E2 is aangesloten en / of schakelbesturing is ingeschakeld, knipperen LED ('s) in verschillende patronen.\n - Als de motor aan het rijden is, branden de LED ('s) continu. \"",
+        "\"SmartDrive kan worden geconfigureerd voor Direct of Geschakeld knoppenbesturing mode \n - In de Direct-mode start de SmartDrive de motor bij het indrukken en vasthouden van een van de knoppen door de snelheid op te voeren naar de ingestelde Max Snelheid Knoppenbesturing. Deactiveer het rijden door de knop los te laten. \n - In de vergrendelde modus zal de SmartDrive bij het indrukken en vasthouden van een van de knoppen zijn snelheid verhogen naar de ingestelde Max Snelheid Knoppenbesturing. Wanneer de vastgehouden knop wordt losgelaten, blijft de SmartDrive rijden met de huidige snelheid. Deactiveer het rijden door op een knop te drukken.\"",
+        "SmartDrive Knoppenbesturing heeft zijn eigen instelbare  Maximum Snelheid instelling die onafhankelijk is van de Maximum Snelheid instelling voor de PushTracker / E2",
+        "\"SmartDrive is nu geconfigureerd om één keer te piepen wanneer de status wordt gewijzigd in Power Assist ON\n - Deze statusverandering kan van een PushTracker / E2 en Knoppenbesturing zijn.\n - Deze indicatie-instelling kan worden uitgeschakeld via de SmartDrive MX2 + -app op uw PushTracker E2 of via de PushTracker Mobile-app op uw smartphone als u geen E2 hebt. \""
+      ]
+    }
+  },
   "charts": {
     "battery": {
       "title": "SmartDrive Batterij dagelijks gebruik (%)"
@@ -74,17 +90,20 @@
     "too-many-smartdrives-found": "Meerdere SmartDrives gevonden. Zorg ervoor dat er slechts één SmartDrive ingeschakeld is tijdens het koppelen."
   },
   "languages": {
+    "cs": "",
     "da": "Deens",
     "de": "Duits",
     "en": "Engels",
     "es": "Spaans",
+    "fi": "",
     "fr": "Frans",
     "it": "Italiaans",
     "ja": "Japans",
     "ko": "Koreaans",
     "nb": "Noors [Bokmål]",
     "nl": "Nederlands",
-    "nn": "Noors [Nynorsk]",
+    "pl": "",
+    "pt": "",
     "sv": "Zweeds",
     "zh": "Chinese [Traditional]"
   },
