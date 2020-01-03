@@ -224,7 +224,7 @@
     "initializing": "初始化更新…",
     "status": "更新狀態",
     "success": "SmartDrive更新成功完成！",
-    "timeout": "SmartDrive更新超時。",
+    "timeout": "SmartDrive更新已逾時。",
     "up-to-date": "SmartDrive是最新的！",
     "version": "版"
   },

@@ -1,0 +1,240 @@
+{
+  "about": {
+    "database": "ID bazy danych",
+    "sd-ble-version": "Wersja SmartDrive Bluetooth (BT)",
+    "sd-mcu-version": "Wersja SmartDrive MCU (SD)",
+    "sd-serial-number": "Numer seryjny SmartDrive",
+    "smartdrive-serial-number-info": "Aby uzyskać dostęp do numeru seryjnego SmartDrive, musisz połączyć się z aplikacją mobilną PushTracker.",
+    "title": "Informacje",
+    "version": "Wersja aplikacji SmartDrive MX2 Wear OS (SW)",
+    "watch-serial-number": "Numer seryjny smartwatcha"
+  },
+  "app-connection": {
+    "completed": "",
+    "connecting": "",
+    "identifier": "",
+    "preface": "",
+    "receiving": ""
+  },
+  "buttons": {
+    "allow": "",
+    "back": "",
+    "cancel": "",
+    "deny": "",
+    "disable": "",
+    "dismiss": "",
+    "enable": "",
+    "ok": ""
+  },
+  "charts": {
+    "battery": {
+      "title": ""
+    },
+    "distance": {
+      "title": ""
+    }
+  },
+  "error-history": {
+    "errors": {
+      "batteryvoltage": "",
+      "bledisconnect": "",
+      "gyrorange": "",
+      "motorphases": "",
+      "otaunavailable": "",
+      "overcurrent": "",
+      "overtemperature": ""
+    },
+    "loading": "",
+    "no-errors": "",
+    "title": ""
+  },
+  "failures": {
+    "app-connection": {
+      "credentials": "",
+      "logout": "",
+      "timeout": ""
+    },
+    "connect": "",
+    "could-not-enable-tap-sensor": "",
+    "getting-error": "",
+    "must-wear-watch": "",
+    "no-network": "",
+    "no-smartdrive-paired": "",
+    "no-smartdrives-found": "",
+    "permissions": "",
+    "saving-error": "",
+    "saving-usage": "",
+    "scan": "",
+    "send-settings": "",
+    "title": "",
+    "too-many-smartdrives-found": ""
+  },
+  "languages": {
+    "da": "",
+    "de": "",
+    "en": "",
+    "es": "",
+    "fr": "",
+    "it": "",
+    "ja": "",
+    "ko": "",
+    "nb": "",
+    "nl": "",
+    "nn": "",
+    "sv": "",
+    "zh": ""
+  },
+  "menu": {
+    "about": "",
+    "settings": "",
+    "title": "",
+    "training": "",
+    "updates": ""
+  },
+  "ota": {
+    "action": {
+      "cancel": "",
+      "close": "",
+      "force": "",
+      "pause": "",
+      "resume": "",
+      "retry": "",
+      "start": ""
+    },
+    "sd": {
+      "state": {
+        "awaiting-ble-ready": "",
+        "awaiting-connection": "",
+        "awaiting-mcu-ready": "",
+        "awaiting-versions": "",
+        "canceled": "",
+        "canceling": "",
+        "comm-failure": "",
+        "complete": "",
+        "failed": "",
+        "not-started": "",
+        "rebooting-ble": "",
+        "rebooting-mcu": "",
+        "timeout": "",
+        "updating-ble": "",
+        "updating-mcu": "",
+        "verifying": ""
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "",
+    "phone-state": ""
+  },
+  "permissions-request": {
+    "title": ""
+  },
+  "power-assist": {
+    "activate": "",
+    "deactivate": "",
+    "estimated-range": "",
+    "exit-training": "",
+    "speed": "",
+    "stop": ""
+  },
+  "sd": {
+    "settings": {
+      "power-assist-buzzer": {
+        "disabled": "",
+        "enabled": ""
+      },
+      "units": {
+        "english": "",
+        "metric": ""
+      }
+    },
+    "switch-settings": {
+      "mode": {
+        "latching": "",
+        "momentary": ""
+      }
+    }
+  },
+  "settings": {
+    "acceleration": "",
+    "connect-pushtracker": "",
+    "control-mode": "",
+    "description": {
+      "acceleration": "",
+      "controlmode": "",
+      "maxspeed": "",
+      "powerassistbuzzer": "",
+      "switchcontrolmode": "",
+      "switchcontrolspeed": "",
+      "tapsensitivity": "",
+      "units": "",
+      "wearcheck": ""
+    },
+    "error-history": "",
+    "information": "",
+    "max-speed": "",
+    "pair-smartdrive": "",
+    "paired-to-smartdrive": "",
+    "power-assist-buzzer": "",
+    "scanning": "",
+    "select-smartdrive": "",
+    "tap-sensitivity": "",
+    "title": "",
+    "units": "",
+    "watch-required": {
+      "title": "",
+      "values": {
+        "disabled": "",
+        "enabled": ""
+      }
+    }
+  },
+  "switch-control": {
+    "max-speed": "",
+    "mode": ""
+  },
+  "units": {
+    "distance": {
+      "english": "",
+      "metric": ""
+    },
+    "english": "",
+    "metric": "",
+    "speed": {
+      "english": "",
+      "metric": ""
+    }
+  },
+  "updates": {
+    "canceled": "",
+    "changes": "",
+    "checking-for-updates": "",
+    "communications-failed": "",
+    "connecting-to-smartdrive": "",
+    "downloading-new-firmwares": "",
+    "errors": {
+      "connecting": "",
+      "connection-failure": "",
+      "downloading": "",
+      "getting": "",
+      "saving": "",
+      "timeout": ""
+    },
+    "failed": "",
+    "initializing": "",
+    "status": "",
+    "success": "",
+    "timeout": "",
+    "up-to-date": "",
+    "version": ""
+  },
+  "warnings": {
+    "saved-settings": {
+      "message": "",
+      "title": ""
+    },
+    "title": {
+      "notice": ""
+    }
+  }
+}
