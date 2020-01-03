@@ -1,14 +1,5 @@
 import { Observable } from '@nativescript/core';
-import {
-  ConnectOptions,
-  DisconnectOptions,
-  ReadOptions,
-  ReadResult,
-  StartNotifyingOptions,
-  StartScanningOptions,
-  StopNotifyingOptions,
-  WriteOptions
-} from './common';
+import { ConnectOptions, DisconnectOptions, ReadOptions, ReadResult, StartNotifyingOptions, StartScanningOptions, StopNotifyingOptions, WriteOptions } from './common';
 
 export declare class BluetoothCommon extends Observable {
   constructor();
@@ -17,6 +8,7 @@ export declare class BluetoothCommon extends Observable {
   static peripheral_connected_event: string;
   static peripheral_disconnected_event: string;
   static peripheral_failed_to_connect_event: string;
+  static bluetooth_authorization_event: string;
   static centralmanager_updated_state_event: string;
   static centralmanager_restore_state_event: string;
   static peripheralmanager_restore_state_event: string;
@@ -322,6 +314,7 @@ export declare enum IBluetoothEvents {
   peripheral_connected_event = 'peripheral_connected_event',
   peripheral_disconnected_event = 'peripheral_disconnected_event',
   peripheral_failed_to_connect_event = 'peripheral_failed_to_connect_event',
+  bluetooth_authorization_event = 'bluetooth_authorization_event',
   centralmanager_updated_state_event = 'centralmanager_updated_state_event',
   centralmanager_restore_state_event = 'centralmanager_restore_state_event',
   peripheralmanager_restore_state_event = 'peripheralmanager_restore_state_event',

@@ -9,30 +9,52 @@ export interface Acceleration {
   z: number;
 }
 
+export interface StoredAcceleration {
+  accel: Acceleration;
+  timestamp: number;
+}
+
 type TimeStamp = number;
 
 export class TapDetector {
-  public static TapLockoutTimeMs: number = 100;
+  public static TapLockoutTimeMs: number = 150;
   public static TapLockoutTimeNs: number =
     TapDetector.TapLockoutTimeMs * 1000 * 1000;
 
   public tapDetectorModelFileName: string = 'tapDetectorLSTM.tflite';
 
   /**
-   * Higher-level tap detection configuration
+   * Higher-level model prediction thresholds for determining if the
+   * TFLite model thinks there was a tap
    */
   private minPredictionThreshold: number = 0.5;
   private maxPredictionThreshold: number = 1.0;
-  private predictionThreshold: number = 0.5; // tap prediction confidence
-  private predictionThresholdOnOffDiff: number = 0.2; // prediction confidence difference when motor on/off
-  private predictionThresholdDynamic: number = 0.5; // calculated prediction confidence
+  // subtracted from predictionThreshold when motor on to produce
+  // predictionThresholdDynamic
+  private predictionThresholdOnOffDiff: number = 0.2;
+  // base prediction threshold calculated from min/max/sensitivity -
+  // default value does not matter
+  private predictionThreshold: number;
+  // actual dynamic prediction threshold used for comparison - uses
+  // predictionThreshold ( - onOffDiff ) depending on motor state
+  private predictionThresholdDynamic: number;
 
-  private jerkThresholdDynamic: number = 30.0; // calculated tap jerk threshold
-  private jerkThresholdOnOffDiff: number = 10.0; // tap jerk threshold difference when motor on/off
-  private jerkThreshold: number = 30.0; // tap jerk threshold value
-  private maxJerkThreshold: number = 70.0;
-  private minJerkThreshold: number = 30.0;
-  private systemVersionJerkFactor: number = 3.5;
+  /**
+   * Higher-level hard-coded tap prediction thresholds for determining
+   * if the jerk measured from the raw data indicates that there was a
+   * tap
+   */
+  private maxJerkThreshold: number = 35.0;
+  private minJerkThreshold: number = 15.0;
+  // subtracted from jerkThreshold when motor on to produce
+  // jerkThresholdDynamic
+  private jerkThresholdOnOffDiff: number = (this.maxJerkThreshold - this.minJerkThreshold) * 0.25;
+  // base jerk threshold calculated from min/max/sensitivity - default
+  // value does not matter
+  private jerkThreshold: number;
+  // actual dynamic jerk threshold used for comparison - uses
+  // jerkThreshold ( - onOffDiff ) depending on motor state
+  private jerkThresholdDynamic: number;
 
   private lastTapTime: TimeStamp; // timestamp of last detected tap
 
@@ -135,10 +157,10 @@ export class TapDetector {
         if (inputShapes[i] !== inputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): input tensor ${dataType} at ${i}  misconfigured!\n` +
-              '  Expected shape of ' +
-              inputShapes[i] +
-              ' but got ' +
-              inputShape[1]
+            '  Expected shape of ' +
+            inputShapes[i] +
+            ' but got ' +
+            inputShape[1]
           );
         }
       }
@@ -153,10 +175,10 @@ export class TapDetector {
         if (outputShapes[i] !== outputShape[1]) {
           Log.E(
             `TapDetector::TapDetector(): output tensor ${dataType} at ${i}  misconfigured!\n` +
-              '  Expected shape of ' +
-              outputShapes[i] +
-              ' but got ' +
-              outputShape[1]
+            '  Expected shape of ' +
+            outputShapes[i] +
+            ' but got ' +
+            outputShape[1]
           );
         }
       }
@@ -182,27 +204,18 @@ export class TapDetector {
    * @param sensitivity [number]: [0-100] percent sensitivity.
    * @param motorOn [boolean]: increase sensitivity from setting if
    *                           motor is on.
-   * @param systemUpToDate [boolean]: modify sensitivity range (to be
-   *                                  more sensitive) if system is not
-   *                                  up to date
    */
   public setSensitivity(
     sensitivity: number,
-    motorOn: boolean,
-    systemUpToDate: boolean
+    motorOn: boolean
   ) {
     // ensure sensitivity is in range [0, 100]
     sensitivity = Math.min(100, Math.max(sensitivity, 0));
 
-    let _maxJerk = this.maxJerkThreshold;
-    let _minJerk = this.minJerkThreshold;
+    const _maxJerk = this.maxJerkThreshold;
+    const _minJerk = this.minJerkThreshold;
     const _maxPrediction = this.maxPredictionThreshold;
     const _minPrediction = this.minPredictionThreshold;
-    // update jerk range if system is not up to date
-    if (!systemUpToDate) {
-      _maxJerk = this.maxJerkThreshold / this.systemVersionJerkFactor;
-      _minJerk = this.minJerkThreshold / this.systemVersionJerkFactor;
-    }
 
     const scaleFactor = sensitivity / 100.0;
     // update jerk threshold
@@ -287,17 +300,17 @@ export class TapDetector {
 
     // Check that inputRawHistory max-min > jerkThresholdDynamic
     const minZ = this.inputRawHistory.reduce(
-      (min, accel) => (accel.z < min ? accel.z : min),
+      (min, accel) => Math.min(accel.z, min),
       this.inputRawHistory[0].z
     );
     const maxZ = this.inputRawHistory.reduce(
-      (max, accel) => (accel.z > max ? accel.z : max),
+      (max, accel) => Math.max(accel.z, max),
       this.inputRawHistory[0].z
     );
     const jerk = maxZ - minZ;
     this.updateJerkHistory(jerk);
     const maxJerk = this.jerkHistory.reduce(
-      (max, jerk) => (jerk > max ? jerk : max),
+      (max, jerk) => Math.max(jerk, max),
       this.jerkHistory[0]
     );
     const isJerkAboveThreshold = maxJerk > this.jerkThresholdDynamic;

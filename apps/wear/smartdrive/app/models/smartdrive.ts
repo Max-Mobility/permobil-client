@@ -1222,8 +1222,8 @@ export class SmartDrive extends DeviceBase {
     // ms (1 hz) while connected and the motor is off
     const motorTicks = p.data('motorDistance');
     const caseTicks = p.data('caseDistance');
-    const motorMiles = SmartDrive.motorTicksToMiles(motorTicks);
-    const caseMiles = SmartDrive.caseTicksToMiles(caseTicks);
+    // const motorMiles = SmartDrive.motorTicksToMiles(motorTicks);
+    // const caseMiles = SmartDrive.caseTicksToMiles(caseTicks);
     /* Distance Info
            struct {
            uint64_t   motorDistance;  // Cumulative Drive distance in ticks.

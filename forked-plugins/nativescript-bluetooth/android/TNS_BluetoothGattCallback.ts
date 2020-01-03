@@ -64,22 +64,16 @@ export class TNS_BluetoothGattCallback extends android.bluetooth
       const servicesJs = [];
       const btChar = android.bluetooth.BluetoothGattCharacteristic;
       for (let i = 0; i < services.size(); i++) {
-        const service = services.get(
-          i
-        ) as android.bluetooth.BluetoothGattService;
+        const service = services.get(i);
         const characteristics = service.getCharacteristics();
         const characteristicsJs = [];
         for (let j = 0; j < characteristics.size(); j++) {
-          const characteristic = characteristics.get(
-            j
-          ) as android.bluetooth.BluetoothGattCharacteristic;
+          const characteristic = characteristics.get(j);
           const props = characteristic.getProperties();
           const descriptors = characteristic.getDescriptors();
           const descriptorsJs = [];
           for (let k = 0; k < descriptors.size(); k++) {
-            const descriptor = descriptors.get(
-              k
-            ) as android.bluetooth.BluetoothGattCharacteristic;
+            const descriptor = descriptors.get(k);
             const descriptorJs = {
               UUID: this._owner.get().uuidToString(descriptor.getUuid()),
               value: descriptor.getValue(), // always empty btw

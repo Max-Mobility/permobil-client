@@ -1,4 +1,7 @@
+export type CallbackFunction = (args?: any) => void;
+
 export class Common {
+
   // bluetooth services / characteristics for wearos <-> ios
   // communications
   public static ServiceUUID: string = 'a04cfcb6-5dc5-4a27-bd04-e2dd0cb1ff44';

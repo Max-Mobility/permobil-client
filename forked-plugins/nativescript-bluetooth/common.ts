@@ -58,6 +58,8 @@ export class BluetoothCommon extends Observable {
   static peripheral_failed_to_connect_event =
     'peripheral_failed_to_connect_event';
 
+  static bluetooth_authorization_event = 'bluetooth_authorization_event';
+
   static centralmanager_updated_state_event =
     'centralmanager_updated_state_event';
   static centralmanager_restore_state_event =
@@ -543,6 +545,7 @@ export enum IBluetoothEvents {
   peripheral_failed_to_connect_event = 'peripheral_failed_to_connect_event',
   centralmanager_updated_state_event = 'centralmanager_updated_state_event',
   centralmanager_restore_state_event = 'centralmanager_restore_state_event',
+  bluetooth_authorization_event = 'bluetooth_authorization_event',
   peripheralmanager_restore_state_event = 'peripheralmanager_restore_state_event',
   peripheralmanager_update_state_event = 'peripheralmanager_update_state_event',
   peripheralmanager_did_add_event = 'peripheralmanager_did_add_event',

@@ -1,6 +1,6 @@
 import * as appSettings from '@nativescript/core/application-settings';
 import { Bluetooth } from 'nativescript-bluetooth';
-import { Common } from '../wear-os-comms.common';
+import { CallbackFunction, Common } from '../wear-os-comms.common';
 
 export class WearOsComms extends Common {
   private static _bluetooth: Bluetooth = new Bluetooth();
@@ -9,10 +9,11 @@ export class WearOsComms extends Common {
   private static pairedCompanion: string = null;
 
   // callbacks for when the wear os device sends us data
-  private static _onConnectedCallback: any = null;
-  private static _onDisconnectedCallback: any = null;
-  private static _onMessageReceivedCallback: any = null;
-  private static _onDataReceivedCallback: any = null;
+  private static _cancelCallback: CallbackFunction = null;
+  private static _onConnectedCallback: CallbackFunction = null;
+  private static _onDisconnectedCallback: CallbackFunction = null;
+  private static _onMessageReceivedCallback: CallbackFunction = null;
+  private static _onDataReceivedCallback: CallbackFunction = null;
 
   private static _debugOutputEnabled = false;
 
@@ -25,19 +26,19 @@ export class WearOsComms extends Common {
     WearOsComms._bluetooth.debug = WearOsComms._debugOutputEnabled;
   }
 
-  public static registerMessageCallback(cb: any) {
+  public static registerMessageCallback(cb: CallbackFunction) {
     WearOsComms._onMessageReceivedCallback = cb;
   }
 
-  public static registerDataCallback(cb: any) {
+  public static registerDataCallback(cb: CallbackFunction) {
     WearOsComms._onDataReceivedCallback = cb;
   }
 
-  public static registerConnectedCallback(cb: any) {
+  public static registerConnectedCallback(cb: CallbackFunction) {
     WearOsComms._onConnectedCallback = cb;
   }
 
-  public static registerDisconnectedCallback(cb: any) {
+  public static registerDisconnectedCallback(cb: CallbackFunction) {
     WearOsComms._onDisconnectedCallback = cb;
   }
 
@@ -100,6 +101,19 @@ export class WearOsComms extends Common {
         return;
       }
       WearOsComms.log('found previously saved companion:', companion);
+
+      // set the cancel callback
+      WearOsComms._cancelCallback = () => {
+        try {
+          WearOsComms._bluetooth.disconnect({
+            UUID: companion.identifier.UUIDString
+          });
+        } catch (err) {
+          WearOsComms.error(`Error disconnecting in cancel callback: ${err}`);
+        }
+        resolve(false);
+      };
+
       const tid = setTimeout(() => {
         WearOsComms.error('timeout connecting to:', companion);
         reject(new Error('Connect timeout!'));
@@ -224,6 +238,12 @@ export class WearOsComms extends Common {
     // onCompanionDiscoveredCallback
     return new Promise(async (resolve, reject) => {
       try {
+        // set the cancel callback
+        WearOsComms._cancelCallback = () => {
+          WearOsComms._bluetooth.stopScanning();
+          resolve(null);
+        };
+
         const companions = [];
         await WearOsComms._bluetooth.startScanning({
           serviceUUIDs: [WearOsComms.ServiceUUID],
@@ -250,6 +270,12 @@ export class WearOsComms extends Common {
     // onCompanionDiscoveredCallback
     return new Promise(async (resolve, reject) => {
       try {
+        // set the cancel callback
+        WearOsComms._cancelCallback = () => {
+          WearOsComms._bluetooth.stopScanning();
+          resolve(null);
+        };
+
         await WearOsComms._bluetooth.startScanning({
           serviceUUIDs: [WearOsComms.ServiceUUID],
           seconds: timeoutSeconds,
@@ -271,6 +297,11 @@ export class WearOsComms extends Common {
     });
   }
 
+  public static cancelOperations() {
+    WearOsComms._cancelCallback && WearOsComms._cancelCallback();
+    WearOsComms._cancelCallback = null;
+  }
+
   private static scanForCompanion(
     companionUUID: string,
     timeoutSeconds: number
@@ -279,6 +310,12 @@ export class WearOsComms extends Common {
     // onCompanionDiscoveredCallback
     return new Promise(async (resolve, reject) => {
       try {
+        // set the cancel callback
+        WearOsComms._cancelCallback = () => {
+          WearOsComms._bluetooth.stopScanning();
+          resolve(null);
+        };
+
         await WearOsComms._bluetooth.startScanning({
           serviceUUIDs: [WearOsComms.ServiceUUID],
           seconds: timeoutSeconds,

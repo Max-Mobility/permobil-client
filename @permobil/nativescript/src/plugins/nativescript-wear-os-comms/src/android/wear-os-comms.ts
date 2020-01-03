@@ -2,7 +2,7 @@ import * as appSettings from '@nativescript/core/application-settings';
 import { ad, ad as androidUtils } from '@nativescript/core/utils/utils';
 import { Bluetooth } from 'nativescript-bluetooth';
 import { ResultReceiver } from './ResultReceiver';
-import { Common } from '../wear-os-comms.common';
+import { CallbackFunction, Common } from '../wear-os-comms.common';
 
 @JavaProxy('com.permobil.WearOsComms.CapabilityListener')
 @Interfaces([
@@ -12,7 +12,7 @@ class CapabilityListener extends androidx.fragment.app.FragmentActivity
   implements
     com.google.android.gms.wearable.CapabilityClient
       .OnCapabilityChangedListener {
-  public callback: any = null;
+  public callback: CallbackFunction = null;
   constructor() {
     super();
   }
@@ -32,10 +32,14 @@ export class WearOsComms extends Common {
   // paired phone is not running android
   private static _bluetooth: Bluetooth = null;
   private static _companionService: any = null;
-  private static _onConnectedCallback: any = null;
-  private static _onDisconnectedCallback: any = null;
-  private static _onMessageReceivedCallback: any = null;
-  private static _onDataReceivedCallback: any = null;
+
+  // callback functions
+  private static _cancelCallback: CallbackFunction = null;
+  private static _onConnectedCallback: CallbackFunction = null;
+  private static _onDisconnectedCallback: CallbackFunction = null;
+  private static _onMessageReceivedCallback: CallbackFunction = null;
+  private static _onDataReceivedCallback: CallbackFunction = null;
+
   private static _mResultReceiver = new ResultReceiver(
     new android.os.Handler()
   );
@@ -55,19 +59,19 @@ export class WearOsComms extends Common {
     super();
   }
 
-  public static registerConnectedCallback(cb: any) {
+  public static registerConnectedCallback(cb: CallbackFunction) {
     WearOsComms._onConnectedCallback = cb;
   }
 
-  public static registerDisconnectedCallback(cb: any) {
+  public static registerDisconnectedCallback(cb: CallbackFunction) {
     WearOsComms._onDisconnectedCallback = cb;
   }
 
-  public static registerMessageCallback(cb: any) {
+  public static registerMessageCallback(cb: CallbackFunction) {
     WearOsComms._onMessageReceivedCallback = cb;
   }
 
-  public static registerDataCallback(cb: any) {
+  public static registerDataCallback(cb: CallbackFunction) {
     WearOsComms._onDataReceivedCallback = cb;
   }
 
@@ -117,7 +121,7 @@ export class WearOsComms extends Common {
       .addCategory(android.content.Intent.CATEGORY_BROWSABLE)
       .setData(android.net.Uri.parse(WearOsComms._playStorePrefix + appUri));
     // now iterate through the nodes without the app and open it in the play store
-    nodesWithoutApp.map(n => {
+    nodesWithoutApp.forEach(n => {
       com.google.android.wearable.intent.RemoteIntent.startRemoteActivity(
         ad.getApplicationContext(),
         intent,
@@ -382,12 +386,13 @@ export class WearOsComms extends Common {
         context
       ).getConnectedNodes();
       let tid = null;
+      const resolveEarly = () => {
+        WearOsComms._nodesConnected = [];
+        resolve([]);
+      };
+      WearOsComms._cancelCallback = resolveEarly;
       if (timeout !== undefined && timeout > 0) {
-        tid = setTimeout(() => {
-          WearOsComms.error('Timed out searching for connected devices');
-          WearOsComms._nodesConnected = [];
-          resolve([]);
-        }, timeout);
+        tid = setTimeout(resolveEarly, timeout);
       }
       nodeTaskList.addOnCompleteListener(
         new com.google.android.gms.tasks.OnCompleteListener({
@@ -577,6 +582,11 @@ export class WearOsComms extends Common {
     return null;
   }
 
+  public static async cancelOperations() {
+    WearOsComms._cancelCallback && WearOsComms._cancelCallback();
+    WearOsComms._cancelCallback = null;
+  }
+
   public static saveCompanion(address: string) {
     if (address && address.length) {
       WearOsComms.pairedCompanion = address;
@@ -659,7 +669,7 @@ export class WearOsComms extends Common {
     try {
       if (WearOsComms._bluetooth) {
         await WearOsComms._bluetooth.stopAdvertising();
-        await WearOsComms.deleteService();
+        WearOsComms.deleteService();
         await WearOsComms._bluetooth.stopGattServer();
       }
     } catch (err) {
@@ -757,12 +767,14 @@ export class WearOsComms extends Common {
         const d = WearOsComms._bluetooth.makeDescriptor({
           UUID: duuid
         });
-        d.setValue(new Array<any>([0x00, 0x00]));
+        d.setValue(
+          new Array<any>([0x00, 0x00])
+        );
         // WearOsComms.log('Making descriptor: ' + duuid);
         return d;
       });
 
-      descriptors.map(d => {
+      descriptors.forEach(d => {
         c.addDescriptor(d);
       });
 
@@ -779,7 +791,7 @@ export class WearOsComms extends Common {
       return c;
     });
     WearOsComms.log('Adding characteristics to service!');
-    characteristics.map(c =>
+    characteristics.forEach(c =>
       WearOsComms._companionService.addCharacteristic(c)
     );
   }

@@ -234,7 +234,7 @@ export namespace Profile {
 
     copy(s: any) {
       // from a settings class exactly like this
-      Object.keys(Profile.Settings.Defaults).map(k => this.copyKey(k, s));
+      Object.keys(Profile.Settings.Defaults).forEach(k => this.copyKey(k, s));
     }
 
     diff(s: any): boolean {

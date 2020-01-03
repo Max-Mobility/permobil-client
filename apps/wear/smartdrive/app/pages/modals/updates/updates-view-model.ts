@@ -18,7 +18,7 @@ import * as themes from 'nativescript-themes';
 import { DataKeys } from '../../../enums';
 import { SmartDrive, SmartDriveException } from '../../../models';
 import { SmartDriveData } from '../../../namespaces';
-import { BluetoothService, KinveyService, SqliteService } from '../../../services';
+import { BluetoothService, SmartDriveKinveyService, SqliteService } from '../../../services';
 import { sentryBreadCrumb } from '../../../utils';
 
 const ambientTheme = require('../../../scss/theme-ambient.css').toString();
@@ -74,7 +74,7 @@ export class UpdatesViewModel extends Observable {
   private hasAppliedTheme: boolean = false;
 
   private _bluetoothService: BluetoothService;
-  private _kinveyService: KinveyService;
+  private _kinveyService: SmartDriveKinveyService;
   private _sqliteService: SqliteService;
   private _closeCallback: any;
 
@@ -146,7 +146,7 @@ export class UpdatesViewModel extends Observable {
   async onUpdatesPageLoaded(
     page: Page,
     _bluetoothService: BluetoothService,
-    _kinveyService: KinveyService,
+    _kinveyService: SmartDriveKinveyService,
     _sqliteService: SqliteService,
     _closeCallback: any
   ) {
@@ -186,13 +186,13 @@ export class UpdatesViewModel extends Observable {
       // get references to update circle to control spin state
       this.updateProgressCircle = this._updatesPage.getViewById(
         'updateProgressCircle'
-      ) as AnimatedCircle;
+      );
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
       Sentry.captureException(err);
     }
     try {
-      this.checkForUpdates();
+      await this.checkForUpdates();
     } catch (err) {
       sentryBreadCrumb('onUpdatesPageLoaded::error: ' + err);
     }
@@ -256,7 +256,7 @@ export class UpdatesViewModel extends Observable {
         'permissions-reasons.phone-state'
       )
     };
-    neededPermissions.map(r => {
+    neededPermissions.forEach(r => {
       reasons.push(reasoning[r]);
     });
     if (neededPermissions && neededPermissions.length > 0) {
@@ -517,7 +517,7 @@ export class UpdatesViewModel extends Observable {
     let promises = [];
     const files = [];
     // get the max firmware version for each firmware
-    const maxes = mds.reduce((maxes, md) => {
+    const reducedMaxes = mds.reduce((maxes, md) => {
       const v = SmartDriveData.Firmwares.versionStringToByte(md['version']);
       const fwName = md['_filename'];
       if (!maxes[fwName]) maxes[fwName] = 0;
@@ -531,7 +531,7 @@ export class UpdatesViewModel extends Observable {
       const fwName = f['_filename'];
       const current = this.currentVersions[fwName];
       const currentVersion = current && current.version;
-      const isMax = v === maxes[fwName];
+      const isMax = v === reducedMaxes[fwName];
       return isMax && (!current || v > currentVersion);
     });
     // @ts-ignore
@@ -748,7 +748,10 @@ export class UpdatesViewModel extends Observable {
     if (doCancelOta && this.smartDrive) {
       if (this._otaStarted) {
         await new Promise((resolve, reject) => {
-          this.smartDrive.once(SmartDrive.smartdrive_ota_stopped_event, resolve);
+          this.smartDrive.once(
+            SmartDrive.smartdrive_ota_stopped_event,
+            resolve
+          );
           this.smartDrive.cancelOTA();
           setTimeout(resolve, 10000);
         });

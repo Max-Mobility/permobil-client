@@ -33,9 +33,7 @@ export class CBPeripheralDelegateImpl extends NSObject
     this._owner = owner;
     CLog(
       CLogTypes.info,
-      `CBPeripheralDelegateImpl.initWithCallback ---- this._owner: ${
-        this._owner
-      }`
+      `CBPeripheralDelegateImpl.initWithCallback ---- this._owner: ${this._owner}`
     );
     this._callback = callback;
     this._servicesWithCharacteristics = [];
@@ -196,17 +194,13 @@ export class CBPeripheralDelegateImpl extends NSObject
     // TODO extract details, see https://github.com/randdusing/cordova-plugin-bluetoothle/blob/master/src/ios/BluetoothLePlugin.m#L1844
     CLog(
       CLogTypes.info,
-      `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- characteristic.descriptors: ${
-        characteristic.descriptors
-      }`
+      `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- characteristic.descriptors: ${characteristic.descriptors}`
     );
     for (let i = 0; i < characteristic.descriptors.count; i++) {
       const descriptor = characteristic.descriptors.objectAtIndex(i);
       CLog(
         CLogTypes.info,
-        `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- char desc UUID: ${
-          descriptor.UUID.UUIDString
-        }`
+        `CBPeripheralDelegateImpl.peripheralDidDiscoverDescriptorsForCharacteristicError ---- char desc UUID: ${descriptor.UUID.UUIDString}`
       );
     }
 
@@ -418,9 +412,7 @@ export class CBPeripheralDelegateImpl extends NSObject
       const desc = descs.objectAtIndex(i);
       CLog(
         CLogTypes.info,
-        `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${
-          desc.value
-        }`
+        `CBPeripheralDelegateImpl._getDescriptors ---- descriptor value: ${desc.value}`
       );
       descsJs.push({
         UUID: desc.UUID.UUIDString,

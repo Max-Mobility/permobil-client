@@ -1,415 +1,408 @@
 {
   "sd-battery": "SmartDrive Battery",
   "pt-battery": "PushTracker Battery",
-	"actions": {
-		"keep-both-settings": "Do not change either settings.",
-		"overwrite-local-settings": "Overwrite app's settings.",
-		"overwrite-remote-settings": "Overwrite PushTracker's settings."
-	},
-	"activity-tab-component": {
-		"day": "Day",
-		"month": "Month",
-		"title": "My activity",
-		"week": "Week"
-	},
-	"app-info-component": {
-		"sections": [
-			{
-				"lottie": "trophy.json",
-				"text": "SmartDrive and PushTracker technologies produce and deliver the following activity statistics designed to facilitate independence, increase activity, and promote optimal health.",
-				"title": "Activity"
-			},
-			{
-				"text": "It's important to set goals since they give you long-term vision and short-term motivation. Increasing your coast time and your distance traveled, while monitoring your number of pushes is the purpose of the activity and goal tracking within the PushTracker app.",
-				"title": "Goals"
-			},
-			{
-				"lottie": "wheelchair.json",
-				"text": "This represents how many times a person pushes the wheel of their wheelchair during mobility. The fewer the pushes, the less demand on the person in the chair. The pushes reported by the PushTracker app are measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
-				"title": "Pushing"
-			},
-			{
-				"text": "Coast time represents the time between pushes. A greater time between pushes means you go further without as much demand on your muscles and joints. The coast time reported by the PushTracker app is measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
-				"title": "Coast time"
-			},
-			{
-				"lottie": "bullseye.json",
-				"text": "Distance tracks how far you go each day. SmartDrive allows people to go further by providing an assist when they need it. The distance reported by the PushTracker app is gathered from the SmartDrive via data that the SmartDrive MX2+ WearOS app has sent to the server.",
-				"title": "Distance"
-			},
-			{
-				"text": "Between pushing thousands of times a day, transferring to multiple surfaces and reaching above 90 degrees frequently, manual chair users put a lot of strain on their shoulders and upper extremities. While we can't control everything—we can control how many pushes a person using a manual wheelchair needs to perform in to participate to the fullest.",
-				"title": "Your Health"
-			}
-		],
-		"title": "Permobil SmartDrive"
-	},
-	"bluetooth": {
-		"service-failure": "Unable to start the bluetooth service."
-	},
-	"configuration": {
-		"pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
-		"pushtracker-with-smartdrive": "PushTracker with SmartDrive",
-		"switch-control-with-smartdrive": "Switch Control with SmartDrive",
-		"title": "Configuration"
-	},
-	"days": {
-		"friday": "Friday",
-		"monday": "Monday",
-		"saturday": "Saturday",
-		"sunday": "Sunday",
-		"thursday": "Thursday",
-		"tuesday": "Tuesday",
-		"wednesday": "Wednesday"
-	},
-	"days-abbreviated": {
-		"friday": "Fri",
-		"monday": "Mon",
-		"saturday": "Sat",
-		"sunday": "Sun",
-		"thursday": "Thu",
-		"tuesday": "Tue",
-		"wednesday": "Wed"
-	},
-	"device-setup": {
-		"connection-successful": "Connection successful!",
-		"do-later": "Do this later",
-		"done": "Done",
-		"e2": {
-			"authorization-sent": "Authorization sent to\n",
-			"connecting": "Connecting to\n",
-			"failures": {
-				"app-not-installed": "PushTracker WearOS app not installed.",
-				"bluetooth": "Bluetooth failure.",
-				"connect": "Could not connect to\n",
-				"none-found": "No PushTracker E2s found.",
-				"none-selected": "No PushTracker E2s selected for pairing.",
-				"scanning": "Could not find PushTracker E2.",
-				"sending": "Could not send authorization to:\n"
-			},
-			"finding-app": "Searching for PushTracker WearOS app on companion device...",
-			"finding-devices": "Searching for PushTracker E2 companion devices...",
-			"found-pairing-info": "Found pairing info for PushTracker E2",
-			"must-select-error": {
-				"message": "You must select a PushTracker E2 for pairing for the PushTracker Mobile app to access and view your activity data.",
-				"title": "Pairing Notice"
-			},
-			"repair": "Pair a new PushTracker E2",
-			"scanning": "Scanning for PushTracker E2...",
-			"select-device": "Select PushTracker E2",
-			"sending-authorization": "Sending authorization to\n"
-		},
-		"finish": "Finish",
-		"next": "Next",
-		"pairing": "Paired! Waiting for Connection...",
-		"previous": "Prev",
-		"pushtracker-e2-with-smartdrive": {
-			"AndroidText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed and have granted it the required permissions.\n\nIf you have trouble connecting to or communicating with the PushTracker WearOS or SmartDrive MX2+ WearOS apps on your PushTracker E2, please ensure that the bluetooth radios on both your PushTracker E2 and your Android phone are enabled and your PushTracker E2 is successfully paired and connected to your WearOS app on your phone.",
-			"IOSText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed, open, and have granted it the required permissions on your E2.  Please ensure that bluetooth is enabled on both your E2 and your iPhone.",
-			"IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button at the top of the 'Profile' page.",
-			"Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
-			"Label": "Connect PushTracker E2"
-		},
-		"pushtracker-with-smartdrive": {
-			"IconText": "The PushTracker Status button shows the PushTracker connection status. You can find this button in the Profile settings page.",
-			"Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
-			"Label": "Pair & Connect PushTracker",
-			"Text": "Press either button on the PushTracker to power on the device. Press and hold the right raised button for 3 seconds to enter the settings menu.\n\nPress the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button.\n\nPress the left raised button to pair with mobile."
-		},
-		"retry": "Retry",
-		"skip": "Skip for now",
-		"title": "Device Setup",
-		"waiting-for-pairing-request": "Waiting for Pairing Request..."
-	},
-	"dialogs": {
-		"camera": "Camera",
-		"cancel": "Cancel",
-		"close": "Close",
-		"confirm": "Confirm",
-		"confirm-photo-delete": "Are you sure you want to remove this photo?",
-		"no": "No",
-		"ok": "OK",
-		"sms": "Text message",
-		"success": "Success!",
-		"warning": "Warning",
-		"yes": "Yes",
-		"yes-delete": "Yes, delete",
-		"yes-login": "Yes, login!",
-		"ratings": {
-			"title": "Tell us what you think",
-			"text": "How would you rate your PushTracker experience?",
-			"agree": "Rate It Now",
-			"remind": "Remind Me Later",
-			"decline": "No, Thanks"
-		}
-	},
-	"failures": {
-		"permissions": "Could not perform the requested action - permissions were not granted."
-	},
-	"general": {
-		"acceleration": "Acceleration",
-		"afternoon": "afternoon",
-    "app-info": "PushTracker Info",
+  "actions": {
+    "keep-both-settings": "Do not change either settings.",
+    "overwrite-local-settings": "Overwrite app's settings.",
+    "overwrite-remote-settings": "Overwrite PushTracker's settings."
+  },
+  "activity-tab-component": {
+    "day": "Day",
+    "month": "Month",
+    "title": "My activity",
+    "week": "Week"
+  },
+  "app-info-component": {
+    "sections": [
+      {
+        "lottie": "trophy.json",
+        "text": "SmartDrive and PushTracker technologies produce and deliver the following activity statistics designed to facilitate independence, increase activity, and promote optimal health.",
+        "title": "Activity"
+      },
+      {
+        "text": "It's important to set goals since they give you long-term vision and short-term motivation. Increasing your coast time and your distance traveled, while monitoring your number of pushes is the purpose of the activity and goal tracking within the PushTracker app.",
+        "title": "Goals"
+      },
+      {
+        "lottie": "wheelchair.json",
+        "text": "This represents how many times a person pushes the wheel of their wheelchair during mobility. The fewer the pushes, the less demand on the person in the chair. The pushes reported by the PushTracker app are measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
+        "title": "Pushing"
+      },
+      {
+        "text": "Coast time represents the time between pushes. A greater time between pushes means you go further without as much demand on your muscles and joints. The coast time reported by the PushTracker app is measured by and gathered from either the PushTracker WearOS app or the PushTracker wristband.",
+        "title": "Coast time"
+      },
+      {
+        "lottie": "bullseye.json",
+        "text": "Distance tracks how far you go each day. SmartDrive allows people to go further by providing an assist when they need it. The distance reported by the PushTracker app is gathered from the SmartDrive via data that the SmartDrive MX2+ WearOS app has sent to the server.",
+        "title": "Distance"
+      },
+      {
+        "text": "Between pushing thousands of times a day, transferring to multiple surfaces and reaching above 90 degrees frequently, manual chair users put a lot of strain on their shoulders and upper extremities. While we can't control everything—we can control how many pushes a person using a manual wheelchair needs to perform in to participate to the fullest.",
+        "title": "Your Health"
+      }
+    ],
+    "title": "Permobil SmartDrive"
+  },
+  "bluetooth": {
+    "service-failure": "Unable to start the bluetooth service.",
+    "ios-open-settings": "PushTracker does not have permission to use Bluetooth on this device, would you like to open Settings for this device to enable Bluetooth permission?"
+  },
+  "configuration": {
+    "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
+    "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
+    "switch-control-with-smartdrive": "Switch Control with SmartDrive",
+    "title": "Configuration"
+  },
+  "days": {
+    "friday": "Friday",
+    "monday": "Monday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "thursday": "Thursday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday"
+  },
+  "days-abbreviated": {
+    "friday": "Fri",
+    "monday": "Mon",
+    "saturday": "Sat",
+    "sunday": "Sun",
+    "thursday": "Thu",
+    "tuesday": "Tue",
+    "wednesday": "Wed"
+  },
+  "device-setup": {
+    "connection-successful": "Connection successful!",
+    "do-later": "Do this later",
+    "done": "Done",
+    "e2": {
+      "authorization-sent": "Authorization sent to\n",
+      "connecting": "Connecting to\n",
+      "failures": {
+        "app-not-installed": "PushTracker WearOS app not installed.",
+        "bluetooth": "Bluetooth failure.",
+        "connect": "Could not connect to\n",
+        "none-found": "No PushTracker E2s found.",
+        "none-selected": "No PushTracker E2s selected for pairing.",
+        "scanning": "Could not find PushTracker E2.",
+        "sending": "Could not send authorization to:\n"
+      },
+      "finding-app": "Searching for PushTracker WearOS app on companion device...",
+      "finding-devices": "Searching for PushTracker E2 companion devices...",
+      "found-pairing-info": "Found pairing info for PushTracker E2",
+      "must-select-error": {
+        "message": "You must select a PushTracker E2 for pairing for the PushTracker Mobile app to access and view your activity data.",
+        "title": "Pairing Notice"
+      },
+      "repair": "Pair a new PushTracker E2",
+      "scanning": "Scanning for PushTracker E2...",
+      "select-device": "Select PushTracker E2",
+      "sending-authorization": "Sending authorization to\n"
+    },
+    "finish": "Finish",
+    "next": "Next",
+    "pairing": "Paired! Waiting for Connection...",
+    "previous": "Prev",
+    "pushtracker-e2-with-smartdrive": {
+      "AndroidText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed and have granted it the required permissions.\n\nIf you have trouble connecting to or communicating with the PushTracker WearOS or SmartDrive MX2+ WearOS apps on your PushTracker E2, please ensure that the bluetooth radios on both your PushTracker E2 and your Android phone are enabled and your PushTracker E2 is successfully paired and connected to your WearOS app on your phone.",
+      "IOSText": "To properly find and pair with your PushTracker E2, you must have the PushTracker WearOS app installed, open, and have granted it the required permissions on your E2.  Please ensure that bluetooth is enabled on both your E2 and your iPhone.",
+      "IconText": "The PushTracker E2 button is used to send authorization information to your TicWatch E2. You can find this button at the top of the 'Profile' page.",
+      "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Connect PushTracker E2"
+    },
+    "pushtracker-with-smartdrive": {
+      "IconText": "The PushTracker Status button shows the PushTracker connection status. You can find this button in the Profile settings page.",
+      "Image": "~/app/assets/images/gifs/PT-APP-CONNECT2.gif",
+      "Label": "Pair & Connect PushTracker",
+      "Text": "Press either button on the PushTracker to power on the device. Press and hold the right raised button for 3 seconds to enter the settings menu.\n\nPress the right raised button to scroll through the menu items until you see the 'Pair with Mobile' button.\n\nPress the left raised button to pair with mobile."
+    },
+    "retry": "Retry",
+    "skip": "Skip for now",
+    "title": "Device Setup",
+    "waiting-for-pairing-request": "Waiting for Pairing Request..."
+  },
+  "dialogs": {
+    "camera": "Camera",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "confirm-photo-delete": "Are you sure you want to remove this photo?",
+    "no": "No",
+    "ok": "OK",
+    "sms": "Text message",
+    "success": "Success!",
+    "warning": "Warning",
+    "yes": "Yes",
+    "yes-delete": "Yes, delete",
+    "yes-login": "Yes, login!",
+    "ratings": {
+      "title": "Tell us what you think",
+      "text": "How would you rate your PushTracker experience?",
+      "agree": "Rate It Now",
+      "remind": "Remind Me Later",
+      "decline": "No, Thanks"
+    }
+  },
+  "failures": {
+    "permissions": "Could not perform the requested action - permissions were not granted."
+  },
+  "general": {
+    "acceleration": "Acceleration",
+    "afternoon": "afternoon",
+    "app-info": "PushTracker Mobile App Info",
     "app-version-display": "Version",
-		"birthday": "Birthday",
-		"cancel": "Cancel",
-		"chair-type": "Chair Type",
-		"change-pass": "Change Password",
-		"check-email": "Check your email for instructions on resetting your password.",
-		"coast-time": "Coast Time",
-		"coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the number of seconds between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
-		"day": "Day",
-		"disable-power-assist-beep": "Disable Power Assist Beep",
-		"disabled": "Disabled",
-		"display": "Display",
-		"distance": "Distance",
-		"distance-description": "The daily goal you want to meet or exceed for distance traveled as measured by your SmartDrive. Get out there and be active!",
-		"drive-distance": "Drive Distance",
-		"email": "Email",
-		"email-error": "is not a valid email address.",
-		"email-invalid": "Email is invalid",
-		"email-required": "Email is required.",
-		"email-sent": "Email Sent",
-		"enabled": "Enabled",
-		"error": "Error",
-		"ez-on": "EZ-ON",
-		"first-name": "First Name",
-		"first-name-description": "We use your first and last name to provide better technical support.",
-		"forgot-password": "Forgot Password",
-		"gender": "Gender",
-		"gender-description": "You can optionally provide your gender by which you wish to be identified.",
-		"height": "Height",
-		"height-description": "You can optionally provide your height. If you provided consent, then we may use this information for research purposes. If you don't know your exact height, enter your best guess.",
-		"home": "Home",
-		"journey": "Journey",
-		"kilometers": "Kilometers",
-		"km-driven-today": "kilometers driven today",
-		"km-this-week": "kilometers this week",
-		"km-today": "kilometers today",
-		"last-name": "Last Name",
-		"last-name-description": "We use your first and last name to provide better technical support.",
-		"loading": "Loading...",
-		"login": "Login",
-		"logout": "Logout",
-		"max-speed": "Max Speed",
-		"meters": "Meters",
-		"mi": "mi",
-		"miles": "Miles",
-		"miles-driven-today": "miles driven today",
-		"miles-this-week": "miles this week",
-		"miles-today": "miles today",
-		"mode": "Mode",
-		"month": "Month",
-		"odometer": "miles total",
-		"odometer-km": "kilometers total",
-		"ok": "OK",
-		"password": "Password",
-		"password-change": "Change Password?",
-		"password-change-confirm": "Are you sure you want to change your password?",
-		"password-required": "Password is required.",
-		"power-assist-beep": "Power Assist Beep",
-		"profile": "Profile",
-		"push-count": "Push Count",
-		"push-count-description": "The number of pushes of your manual wheelchair you have performed each day.",
-		"pushes": "pushes",
-		"pushes-today": "pushes today",
-		"pushtracker-connected": "PushTracker connected",
-		"pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration.\n\nYou can see plots of hourly activity only with the PushTracker E2.",
-		"pushtracker-disconnected": "PushTracker disconnected",
-		"pushtracker-paired": "PushTracker paired",
-		"reset-acct": "Reset Account",
-		"reset-pass-desc": "To reset your password, enter the email for your account. You will receive an email with instructions to reset your password.",
-		"roll": "roll",
-		"sign-in-error-1": "An error occurred during sign in. Check your email and password.",
-		"sign-in-error-2": "Invalid email and/or password. Please try again.",
-		"sign-out": "Sign Out",
-		"sign-out-confirm": "Are you sure you want to sign out?",
-		"signing-in": "Signing in...",
-		"smartdrive": "SmartDrive",
-		"start": "Start",
-		"stop": "Stop",
-		"submit": "Submit",
-		"submitting": "Submitting...",
-		"success": "Success",
-		"switch-control-max-speed": "Switch Control Max Speed",
-		"switch-control-mode": "Switch Control Mode",
-		"tap-sensitivity": "Tap Sensitivity",
-		"time-format": "Time Format",
-		"today": "Today",
-		"travel": "Travel",
-		"units": "Units",
-		"user-name": "User Name",
-		"week": "Week",
-		"weight": "Weight",
-		"weight-description": "You can optionally provide your weight. If you provided consent, then we may use this information for research and technical support purposes. If you don't know your exact weight, enter your best guess."
-	},
-	"home-tab": {
-		"coast-for": "Coast for",
-		"day-names": [
-			"Sun",
-			"Mon",
-			"Tue",
-			"Wed",
-			"Thu",
-			"Fri",
-			"Sat"
-		],
-		"going-strong": "Going strong!",
-		"kilometers-to-go": "kilometers to go",
-		"km-per-day": "kilometers per day",
-		"left": "left",
-		"mi-per-day": "miles per day",
-		"miles-to-go": "miles to go",
-		"off-to-a-good-start": "Off to a good start",
-		"only": "Only",
-		"reached-all-goals": "Reached all your goals, you're amazing!",
-		"reached-coast-time-goal": "Reached coast time goal, way to go!",
-		"reached-distance-goal": "Reached distance goal, way to go!",
-		"seconds": "seconds",
-		"seconds-left": "seconds left to reach your coast time goal!",
-		"seconds-per-day": "seconds per day",
-		"title": "Home",
-		"travel": "Travel",
-		"welcome-back": "Welcome back"
-	},
-	"journey-tab": {
-		"afternoon": "Afternoon",
-		"drive": "drive",
-		"evening": "Evening",
-		"morning": "Morning",
-		"night": "Night",
-		"no-data-available": "No data available",
-		"no-more-data": "No more data",
-		"pushes": "pushes",
-		"roll": "roll",
-		"title": "Journey",
-		"today": "Today",
-		"yesterday": "Yesterday"
-	},
-	"languages": {
-		"de": "German",
-		"en": "English",
-		"es": "Spanish",
-		"fr": "French",
-		"it": "Italian",
-		"ja": "Japanese",
-		"ko": "Korean",
-		"nl": "Dutch",
-		"ru": "Russian",
-		"sv": "Swedish",
-		"zh-CN": "Chinese (Traditional)"
-	},
-	"months": {
-		"april": "April",
-		"august": "August",
-		"december": "December",
-		"february": "February",
-		"january": "January",
-		"july": "July",
-		"june": "June",
-		"march": "March",
-		"may": "May",
-		"november": "November",
-		"october": "October",
-		"september": "September"
-	},
-	"months-abbreviated": {
-		"april": "Apr",
-		"august": "Aug",
-		"december": "Dec",
-		"february": "Feb",
-		"january": "Jan",
-		"july": "Jul",
-		"june": "Jun",
-		"march": "Mar",
-		"may": "May",
-		"november": "Nov",
-		"october": "Oct",
-		"september": "Sep"
-	},
-	"my-activity-component": {
-		"title": "My Activity"
-	},
-	"ota": {
-		"action": {
-			"cancel": "Cancel",
-			"force": "Force",
-			"pause": "Pause",
-			"resume": "Resume",
-			"retry": "Retry",
-			"scan": "Scan",
-			"start": "Start"
-		},
-		"pt": {
-			"state": {
-				"already-uptodate": "Already up to date. Select Force to update anyway.",
-				"awaiting-ready": "Waiting on PushTracker",
-				"awaiting-version": "Awaiting Version",
-				"canceled": "Canceled",
-				"canceling": "Canceling",
-				"complete": "Complete",
-				"detected-pt": "Detected PushTracker!",
-				"failed": "Failed",
-				"not-started": "Not Started",
-				"rebooting": "Rebooting, please re-pair and re-connect your PushTracker",
-				"timeout": "Timeout",
-				"updating": "Updating PushTracker",
-				"verifying-update": "Verifying"
-			}
-		},
-		"sd": {
-			"state": {
-				"already-uptodate": "Already up to date. Select Force to update anyway.",
-				"awaiting-ble-ready": "Waiting on BT",
-				"awaiting-connection": "Waiting for Connection",
-				"awaiting-mcu-ready": "Waiting on SmartDrive",
-				"awaiting-versions": "Waiting for Versions",
-				"canceled": "Canceled",
-				"canceling": "Canceling",
-				"comm-failure": "Communications Error - SmartDrive reboot required",
-				"complete": "Complete",
-				"detected-sd": "Detected SmartDrive!",
-				"failed": "Failed",
-				"not-started": "Not Started",
-				"rebooting-ble": "Rebooting BT",
-				"rebooting-mcu": "Rebooting SmartDrive",
-				"timeout": "Timeout",
-				"updating-ble": "Updating BT",
-				"updating-mcu": "Updating SmartDrive",
-				"verifying": "Verifying"
-			}
-		},
-		"warnings": {
-			"leaving": {
-				"message": "Warning: you are leaving the OTA page during an OTA - this will cancel all ongoing OTAs! Are you sure you want to leave?",
-				"title": "Warning"
-			},
-			"multiple-devices": {
-				"message": "Warning: It is recommended to perform an OTA on one device at a time. Please allow a device to complete updating before starting any additional OTAs.",
-				"title": "Multiple Devices"
-			},
-			"starting": {
-				"message": "Warning: you should not leave this page while you are performing OTA firmware updates of the SmartDrive or PushTracker. If you leave this page or kill the app, the OTAs will be cancelled or may fail.",
-				"title": "Starting OTA"
-			}
-		}
-	},
-	"permissions-reasons": {
-		"coarse-location": "To communicate with your SmartDrive / PushTracker using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data."
-	},
-	"permissions-request": {
-		"title": "Permissions Request Notice"
-	},
-	"profile-settings": {
-		"connected-a-smartdrive": "Connected with SmartDrive",
-		"detected-a-smartdrive": "Detected a SmartDrive!",
-		"error-sending-settings": "Error sending settings",
-		"language": "Language",
-		"scanning-for-smartdrives": "Scanning for SmartDrives...",
-		"sending-settings": "Sending SmartDrive settings...",
-		"sync-successful": "Updated SmartDrive settings!",
-		"theme": "Theme",
-		"time-format": "Time Format",
+    "birthday": "Birthday",
+    "cancel": "Cancel",
+    "chair-type": "Chair Type",
+    "change-pass": "Change Password",
+    "check-email": "Check your email for instructions on resetting your password.",
+    "coast-time": "Coast Time",
+    "coast-time-description": "The daily goal you want to meet or exceed for coast time in seconds. Coast time is the number of seconds between pushes of your manual wheelchair - the longer you coast the more efficient your pushing is!",
+    "day": "Day",
+    "disable-power-assist-beep": "Disable Power Assist Beep",
+    "disabled": "Disabled",
+    "display": "Display",
+    "distance": "Distance",
+    "distance-description": "The daily goal you want to meet or exceed for distance traveled as measured by your SmartDrive. Get out there and be active!",
+    "drive-distance": "Drive Distance",
+    "email": "Email",
+    "email-error": "is not a valid email address.",
+    "email-invalid": "Email is invalid",
+    "email-required": "Email is required.",
+    "email-sent": "Email Sent",
+    "enabled": "Enabled",
+    "error": "Error",
+    "ez-on": "EZ-ON",
+    "first-name": "First Name",
+    "first-name-description": "We use your first and last name to provide better technical support.",
+    "forgot-password": "Forgot Password",
+    "gender": "Gender",
+    "gender-description": "You can optionally provide your gender by which you wish to be identified.",
+    "height": "Height",
+    "height-description": "You can optionally provide your height. If you provided consent, then we may use this information for research purposes. If you don't know your exact height, enter your best guess.",
+    "home": "Home",
+    "journey": "Journey",
+    "kilometers": "Kilometers",
+    "km-driven-today": "kilometers driven today",
+    "km-this-week": "kilometers this week",
+    "km-today": "kilometers today",
+    "last-name": "Last Name",
+    "last-name-description": "We use your first and last name to provide better technical support.",
+    "loading": "Loading...",
+    "login": "Login",
+    "logout": "Logout",
+    "max-speed": "Max Speed",
+    "meters": "Meters",
+    "mi": "mi",
+    "miles": "Miles",
+    "miles-driven-today": "miles driven today",
+    "miles-this-week": "miles this week",
+    "miles-today": "miles today",
+    "mode": "Mode",
+    "month": "Month",
+    "odometer": "miles total",
+    "odometer-km": "kilometers total",
+    "ok": "OK",
+    "password": "Password",
+    "password-change": "Change Password?",
+    "password-change-confirm": "Are you sure you want to change your password?",
+    "password-required": "Password is required.",
+    "power-assist-beep": "Power Assist Beep",
+    "profile": "Profile",
+    "push-count": "Push Count",
+    "push-count-description": "The number of pushes of your manual wheelchair you have performed each day.",
+    "pushes": "pushes",
+    "pushes-today": "pushes today",
+    "pushtracker-connected": "PushTracker connected",
+    "pushtracker-daily-activity-unavailable": "Sorry! Hourly activity tracking is not available in your current configuration.\n\nYou can see plots of hourly activity only with the PushTracker E2.",
+    "pushtracker-disconnected": "PushTracker disconnected",
+    "pushtracker-paired": "PushTracker paired",
+    "reset-acct": "Reset Account",
+    "reset-pass-desc": "To reset your password, enter the email for your account. You will receive an email with instructions to reset your password.",
+    "roll": "roll",
+    "sign-in-error-1": "An error occurred during sign in. Check your email and password.",
+    "sign-in-error-2": "Invalid email and/or password. Please try again.",
+    "sign-out": "Sign Out",
+    "sign-out-confirm": "Are you sure you want to sign out?",
+    "signing-in": "Signing in...",
+    "smartdrive": "SmartDrive",
+    "start": "Start",
+    "stop": "Stop",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success": "Success",
+    "switch-control-max-speed": "Switch Control Max Speed",
+    "switch-control-mode": "Switch Control Mode",
+    "tap-sensitivity": "Tap Sensitivity",
+    "time-format": "Time Format",
+    "today": "Today",
+    "travel": "Travel",
+    "units": "Units",
+    "user-name": "User Name",
+    "week": "Week",
+    "weight": "Weight",
+    "weight-description": "You can optionally provide your weight. If you provided consent, then we may use this information for research and technical support purposes. If you don't know your exact weight, enter your best guess."
+  },
+  "home-tab": {
+    "coast-for": "Coast for",
+    "day-names": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "going-strong": "Going strong!",
+    "kilometers-to-go": "kilometers to go",
+    "km-per-day": "kilometers per day",
+    "left": "left",
+    "mi-per-day": "miles per day",
+    "miles-to-go": "miles to go",
+    "off-to-a-good-start": "Off to a good start",
+    "only": "Only",
+    "reached-all-goals": "Reached all your goals, you're amazing!",
+    "reached-coast-time-goal": "Reached coast time goal, way to go!",
+    "reached-distance-goal": "Reached distance goal, way to go!",
+    "seconds": "seconds",
+    "seconds-left": "seconds left to reach your coast time goal!",
+    "seconds-per-day": "seconds per day",
+    "title": "Home",
+    "travel": "Travel",
+    "welcome-back": "Welcome back"
+  },
+  "journey-tab": {
+    "afternoon": "Afternoon",
+    "drive": "drive",
+    "evening": "Evening",
+    "morning": "Morning",
+    "night": "Night",
+    "no-data-available": "No data available",
+    "no-more-data": "No more data",
+    "pushes": "pushes",
+    "roll": "roll",
+    "title": "Journey",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "languages": {
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "nl": "Dutch",
+    "ru": "Russian",
+    "sv": "Swedish",
+    "zh-CN": "Chinese (Traditional)"
+  },
+  "months": {
+    "april": "April",
+    "august": "August",
+    "december": "December",
+    "february": "February",
+    "january": "January",
+    "july": "July",
+    "june": "June",
+    "march": "March",
+    "may": "May",
+    "november": "November",
+    "october": "October",
+    "september": "September"
+  },
+  "months-abbreviated": {
+    "april": "Apr",
+    "august": "Aug",
+    "december": "Dec",
+    "february": "Feb",
+    "january": "Jan",
+    "july": "Jul",
+    "june": "Jun",
+    "march": "Mar",
+    "may": "May",
+    "november": "Nov",
+    "october": "Oct",
+    "september": "Sep"
+  },
+  "my-activity-component": {
+    "title": "My Activity"
+  },
+  "ota": {
+    "action": {
+      "cancel": "Cancel",
+      "force": "Force",
+      "pause": "Pause",
+      "resume": "Resume",
+      "retry": "Retry",
+      "scan": "Scan",
+      "start": "Start"
+    },
+    "pt": {
+      "state": {
+        "already-uptodate": "Already up to date. Select Force to update anyway.",
+        "awaiting-ready": "Waiting on PushTracker",
+        "awaiting-version": "Awaiting Version",
+        "canceled": "Canceled",
+        "canceling": "Canceling",
+        "complete": "Complete",
+        "detected-pt": "Detected PushTracker!",
+        "failed": "Failed",
+        "not-started": "Not Started",
+        "rebooting": "Rebooting, please re-pair and re-connect your PushTracker",
+        "timeout": "Timeout",
+        "updating": "Updating PushTracker",
+        "verifying-update": "Verifying"
+      }
+    },
+    "sd": {
+      "state": {
+        "already-uptodate": "Already up to date. Select Force to update anyway.",
+        "awaiting-ble-ready": "Waiting on BT",
+        "awaiting-connection": "Waiting for Connection",
+        "awaiting-mcu-ready": "Waiting on SmartDrive",
+        "awaiting-versions": "Waiting for Versions",
+        "canceled": "Canceled",
+        "canceling": "Canceling",
+        "comm-failure": "Communications Error - SmartDrive reboot required",
+        "complete": "Complete",
+        "detected-sd": "Detected SmartDrive!",
+        "failed": "Failed",
+        "not-started": "Not Started",
+        "rebooting-ble": "Rebooting BT",
+        "rebooting-mcu": "Rebooting SmartDrive",
+        "timeout": "Timeout",
+        "updating-ble": "Updating BT",
+        "updating-mcu": "Updating SmartDrive",
+        "verifying": "Verifying"
+      }
+    },
+    "warnings": {
+      "leaving": {
+        "message": "Warning: you are leaving the OTA page during an OTA - this will cancel all ongoing OTAs! Are you sure you want to leave?",
+        "title": "Warning"
+      },
+      "multiple-devices": {
+        "message": "Warning: It is recommended to perform an OTA on one device at a time. Please allow a device to complete updating before starting any additional OTAs.",
+        "title": "Multiple Devices"
+      },
+      "starting": {
+        "message": "Warning: you should not leave this page while you are performing OTA firmware updates of the SmartDrive or PushTracker. If you leave this page or kill the app, the OTAs will be cancelled or may fail.",
+        "title": "Starting OTA"
+      }
+    }
+  },
+  "permissions-reasons": {
+    "coarse-location": "To communicate with your SmartDrive / PushTracker using Bluetooth we require you to allow the Location permission [ACCESS_COARSE_LOCATION] on the following screen. From this permission Permobil will not be accessing your location data."
+  },
+  "permissions-request": {
+    "title": "Permissions Request Notice"
+  },
+  "profile-settings": {
+    "connected-a-smartdrive": "Connected with SmartDrive",
+    "detected-a-smartdrive": "Detected a SmartDrive!",
+    "error-sending-settings": "Error sending settings",
+    "language": "Language",
+    "scanning-for-smartdrives": "Scanning for SmartDrives...",
+    "sending-settings": "Sending SmartDrive settings...",
+    "sync-successful": "Updated SmartDrive settings!",
+    "theme": "Theme",
+    "time-format": "Time Format",
     "update-notice": {
       "title": "Update Notice",
       "both-settings-require-update": "Your PushTracker and SmartDrive are out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your PushTracker and SmartDrive to enable these settings.",
@@ -419,136 +412,136 @@
       "smartdrive-settings-require-update": "Your SmartDrive is out of date and will discard and ignore some of the settings you are trying to change. Please perform a wireless update of your SmartDrive to enable these settings.",
       "smartdrive-out-of-date": "Updates are available for your SmartDrive, please perform a wireless update of your SmartDrive to get the full functionality of your SmartDrive."
     },
-		"watch-status-alert-message": {
-			"busy": "PushTracker is busy",
-			"connected": "PushTracker is connected",
-			"disconnected": "PushTracker is disconnected",
-			"paired": "PushTracker is paired",
-			"ready": "PushTracker is ready",
-			"unknown": "PushTracker status is unknown"
-		},
-		"watch-status-alert-title": "PushTracker Status"
-	},
-	"profile-tab": {
-		"about-you": "About You",
-		"activity-goals": "Activity Goals",
+    "watch-status-alert-message": {
+      "busy": "PushTracker is busy",
+      "connected": "PushTracker is connected",
+      "disconnected": "PushTracker is disconnected",
+      "paired": "PushTracker is paired",
+      "ready": "PushTracker is ready",
+      "unknown": "PushTracker status is unknown"
+    },
+    "watch-status-alert-title": "PushTracker Status"
+  },
+  "profile-tab": {
+    "about-you": "About You",
+    "activity-goals": "Activity Goals",
     "bad-pushtracker-serial-message": "Invalid pushtracker serial number entered, please ensure you are scanning / entering the serial number on your PushTracker wristband.",
     "bad-smartdrive-serial-message": "Invalid SmartDrive serial number entered, please ensure you are scanning / entering the serial number on your SmartDrive drive unit.",
-		"cancel": "Cancel",
-		"cancel-scan": "Cancel Scan",
-		"chair-make": "Chair Make",
-		"chair-make-description": "You can optionally provide the make of your chair. If you provided consent, then we may use this information for research and technical support purposes.",
-		"chair-makes": {
-			"colours": "Colours",
-			"invacare-kuschall": "Invacare / Küschall",
-			"karman": "Karman",
-			"ki": "Ki",
-			"motion-composites": "Motion Composites",
-			"other": "Other",
-			"panthera": "Panthera",
-			"quickie-sopur-rgk": "Quickie / Sopur / RGK",
-			"tilite": "TiLite",
-			"top-end": "Top End"
-		},
-		"chair-type": "Chair Type",
-		"chair-type-description": "You can optionally provide the type of chair you use. If you provided consent, then we may use this information for research and technical support purposes.",
-		"chair-types": {
-			"folding": "Folding",
-			"pediatric": "Pediatric",
-			"rigid": "Rigid"
-		},
-		"coast-time-units": "seconds",
-		"configuration-change-dialog-message": "Login required. You will be redirected to the login page.",
-		"configuration-change-dialog-title": "Changing Control Configuration",
-		"configurations": {
-			"pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
-			"pushtracker-with-smartdrive": "PushTracker with SmartDrive",
-			"switch-control-with-smartdrive": "Switch Control with SmartDrive"
-		},
-		"control-configuration": "Control Configuration",
-		"control-configuration-description": "Configures the PushTracker app to present the most relevant options and information to you depending on what SmartDrive hardware you have.",
-		"device-serial-numbers": "Device Serial Numbers",
-		"distance-units-km": "kilometers",
-		"distance-units-mi": "miles",
-		"edit-first-name": "Edit first name",
-		"edit-last-name": "Edit last name",
-		"first-name": "first name",
-		"gender": {
-			"female": "Female",
-			"male": "Male",
-			"non-binary": "Non-Binary / third gender",
-			"other": "Other",
-			"prefer-not-to-say": "Prefer not to say"
-		},
-		"last-name": "last name",
+    "cancel": "Cancel",
+    "cancel-scan": "Cancel Scan",
+    "chair-make": "Chair Make",
+    "chair-make-description": "You can optionally provide the make of your chair. If you provided consent, then we may use this information for research and technical support purposes.",
+    "chair-makes": {
+      "colours": "Colours",
+      "invacare-kuschall": "Invacare / Küschall",
+      "karman": "Karman",
+      "ki": "Ki",
+      "motion-composites": "Motion Composites",
+      "other": "Other",
+      "panthera": "Panthera",
+      "quickie-sopur-rgk": "Quickie / Sopur / RGK",
+      "tilite": "TiLite",
+      "top-end": "Top End"
+    },
+    "chair-type": "Chair Type",
+    "chair-type-description": "You can optionally provide the type of chair you use. If you provided consent, then we may use this information for research and technical support purposes.",
+    "chair-types": {
+      "folding": "Folding",
+      "pediatric": "Pediatric",
+      "rigid": "Rigid"
+    },
+    "coast-time-units": "seconds",
+    "configuration-change-dialog-message": "Login required. You will be redirected to the login page.",
+    "configuration-change-dialog-title": "Changing Control Configuration",
+    "configurations": {
+      "pushtracker-e2-with-smartdrive": "PushTracker E2 with SmartDrive",
+      "pushtracker-with-smartdrive": "PushTracker with SmartDrive",
+      "switch-control-with-smartdrive": "Switch Control with SmartDrive"
+    },
+    "control-configuration": "Control Configuration",
+    "control-configuration-description": "Configures the PushTracker app to present the most relevant options and information to you depending on what SmartDrive hardware you have.",
+    "device-serial-numbers": "Device Serial Numbers",
+    "distance-units-km": "kilometers",
+    "distance-units-mi": "miles",
+    "edit-first-name": "Edit first name",
+    "edit-last-name": "Edit last name",
+    "first-name": "first name",
+    "gender": {
+      "female": "Female",
+      "male": "Male",
+      "non-binary": "Non-Binary / third gender",
+      "other": "Other",
+      "prefer-not-to-say": "Prefer not to say"
+    },
+    "last-name": "last name",
     "network-error": {
       "title": "Network Error",
       "message": "Unable to connect to server, please make sure your device has an internet connection."
     },
-		"ok": "OK",
-		"per-day": "per day",
-		"pushtracker": "PushTracker",
-		"pushtracker-e2": "PushTracker E2",
-		"pushtracker-e2-serial-number": "PushTracker E2 Serial Number",
-		"pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
-		"pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
-		"pushtracker-serial-number": "PushTracker Serial Number",
-		"pushtracker-serial-number-description": "You can find the PushTracker serial number on the label on the underside of your PushTracker. We use your PushTracker serial number to provide better technical support to you.",
-		"scan-msg": "Scan a",
-		"sd-or-pt": "SmartDrive or PushTracker",
-		"set-goal": "Set goal",
-		"smartdrive": "SmartDrive",
-		"smartdrive-serial-number": "SmartDrive Serial Number",
-		"smartdrive-serial-number-description": "You can find the SmartDrive serial number on the label on the underside of your SmartDrive. We use your SmartDrive serial number to provide better technical support to you.",
-		"title": "Profile"
-	},
-	"push-settings-different": {
-		"message": "Please select from the options below how to resolve differences between the settings.",
-		"title": "App and PushTracker Push Settings Differ"
-	},
-	"sd": {
-		"switch-settings": {
-			"mode": {
-				"latching": "Latched",
-				"momentary": "Momentary"
-			}
-		}
-	},
-	"settings-component": {
-		"no-smartdrive-message": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby. This change has not been committed to a SmartDrive.",
-		"no-smartdrive-title": "No SmartDrive detected!",
-		"scan-again": "Scan Again",
-		"sync-button": "Sync with SmartDrive",
-		"title": "Settings"
-	},
-	"settings-different": {
-		"message": "Please select from the options below how to resolve differences between the settings.",
-		"title": "App and PushTracker Settings Differ"
-	},
-	"sign-up": {
-		"birthdate-required": "Birth date is required.",
-		"creating-account": "Creating your account...",
-		"first-name-required": "First name is required.",
-		"last-name-required": "Last name is required.",
-		"must-agree-and-read": "You must agree to the user agreement and read the privacy policy to sign up.",
-		"sign-up-error": "Could not sign up: ",
-		"sign-up-success": "Your user-name is:",
-		"title": "Sign Up",
-		"user-exists": "An account already exists for this email."
-	},
-	"support-component": {
+    "ok": "OK",
+    "per-day": "per day",
+    "pushtracker": "PushTracker",
+    "pushtracker-e2": "PushTracker E2",
+    "pushtracker-e2-serial-number": "PushTracker E2 Serial Number",
+    "pushtracker-e2-serial-number-dialog-message": "The PushTracker E2 serial number is acquired from its WearOS app and cannot be modified here.",
+    "pushtracker-e2-serial-number-dialog-title": "PushTracker E2 Serial Number",
+    "pushtracker-serial-number": "PushTracker Serial Number",
+    "pushtracker-serial-number-description": "You can find the PushTracker serial number on the label on the underside of your PushTracker. We use your PushTracker serial number to provide better technical support to you.",
+    "scan-msg": "Scan a",
+    "sd-or-pt": "SmartDrive or PushTracker",
+    "set-goal": "Set goal",
+    "smartdrive": "SmartDrive",
+    "smartdrive-serial-number": "SmartDrive Serial Number",
+    "smartdrive-serial-number-description": "You can find the SmartDrive serial number on the label on the underside of your SmartDrive. We use your SmartDrive serial number to provide better technical support to you.",
+    "title": "Profile"
+  },
+  "push-settings-different": {
+    "message": "Please select from the options below how to resolve differences between the settings.",
+    "title": "App and PushTracker Push Settings Differ"
+  },
+  "sd": {
+    "switch-settings": {
+      "mode": {
+        "latching": "Latched",
+        "momentary": "Momentary"
+      }
+    }
+  },
+  "settings-component": {
+    "no-smartdrive-message": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby. This change has not been committed to a SmartDrive.",
+    "no-smartdrive-title": "No SmartDrive detected!",
+    "scan-again": "Scan Again",
+    "sync-button": "Sync with SmartDrive",
+    "title": "Settings"
+  },
+  "settings-different": {
+    "message": "Please select from the options below how to resolve differences between the settings.",
+    "title": "App and PushTracker Settings Differ"
+  },
+  "sign-up": {
+    "birthdate-required": "Birth date is required.",
+    "creating-account": "Creating your account...",
+    "first-name-required": "First name is required.",
+    "last-name-required": "Last name is required.",
+    "must-agree-and-read": "You must agree to the user agreement and read the privacy policy to sign up.",
+    "sign-up-error": "Could not sign up: ",
+    "sign-up-success": "Your user-name is:",
+    "title": "Sign Up",
+    "user-exists": "An account already exists for this email."
+  },
+  "support-component": {
     "category": {
       "title": "Category",
       "description": "Select the category of support items you would like to view.",
       "all": "All Categories"
     },
     "search-hint": "Enter search term...",
-		"faqs": [
+    "faqs": [
       {
         "category": "Setup & Installation",
         "a": "There is an initial setup process to get your PushTracker E2 ready to pair and connect. Refer to the video below for more information on setup and a playlist of how-to videos.",
         "q": "How do I set up my new PushTracker E2?",
-        "links": [ "https://permobilus.com/howtosmartdrive" ]
+        "links": ["https://permobilus.com/howtosmartdrive"]
       },
       {
         "category": "Setup & Installation",
@@ -604,13 +597,13 @@
         "category": "Updates",
         "a": "Yes. To get full functionality of your SmartDrive, use the PushTracker E2 to perform a wireless update. Refer to the video below for step by step instructions.",
         "q": "I recently purchased the new PushTracker E2. Do I need to update my SmartDrive?",
-        "links": [ "https://permobilus.com/howtosmartdrive" ]
+        "links": ["https://permobilus.com/howtosmartdrive"]
       },
       {
         "category": "Connectivity",
         "a": "If it is the first time pairing, you can pair your SmartDrive and PushTracker E2 by just tapping the green \"turn power assist on\" button. At any point you can use the \"Pair SmartDrive\" function in the settings menu.",
         "q": "How do I pair my SmartDrive to my PushTracker E2?",
-        "links": [ "https://permobilus.com/howtosmartdrive" ]
+        "links": ["https://permobilus.com/howtosmartdrive"]
       },
       {
         "category": "Connectivity",
@@ -661,7 +654,7 @@
         "category": "Usability",
         "a": "Your first point of contact if you are having issues is the dealer who provided you with the SmartDrive. Our customer support staff can also help at support.smartdrive@permobil.com.",
         "q": "Who do I contact when my SmartDrive is not working right?",
-        "links": [ "support.smartdrive@permobil.com" ]
+        "links": ["support.smartdrive@permobil.com"]
       },
       {
         "category": "Usability",
@@ -677,151 +670,154 @@
         "category": "Procurement & Funding",
         "a": "We have an LMN generator on EZ-TI (Permobil TiLite manual wheelchair configurator) and a landing page (link below). You can also reach out to our funding experts at us_funding@permobil.com.",
         "q": "Where can I find resources on documentation/letters of medical necessity?",
-        "links": [ "https://www.permobillmn.com/login.php", "us_funding@permobil.com" ]
+        "links": [
+          "https://www.permobillmn.com/login.php",
+          "us_funding@permobil.com"
+        ]
       },
       {
         "category": "Procurement & Funding",
         "a": "You can go through your dealer to purchase a PushTracker E2.  You can also purchase it now on Amazon or other internet retailers (search Mobvoi TicWatch E2).  And after January 1st 2020, you will also be able to purchase it directly from Permobil by contacting sales.smartdrive@permobil.com.",
         "q": "Where can I get a new PushTrackerE2? Do I have to use a dealer?",
-        "links": [ "sales.smartdrive@permobil.com" ]
+        "links": ["sales.smartdrive@permobil.com"]
       },
       {
         "category": "Procurement & Funding",
         "a": "If you have an original PushTracker and a SmartDrive that is MX2+, you qualify for an upgrade. If you received your original PushTracker on or after Aug 1st, 2019, you qualify for a free upgrade. If you received it before Aug. 1st 2019, then you qualify for a $40 discount off MSRP, which equals $160.",
         "q": "Is there a way for me to trade in or upgrade my current PushTracker?"
       },
-			{
+      {
         "category": "Other",
-				"a": "Generally, you should check these things: 1) that you are in MX2+ mode, 2) that your SmartDrive is powered on, 3) that power assist is on, and 4) that the PushTracker is connected to your SmartDrive (the PushTracker will flash blue) - if all of these are true, then a double tap will engage the motor.",
-				"q": "Why isn't my SmartDrive engaging?"
-			},
-			{
+        "a": "Generally, you should check these things: 1) that you are in MX2+ mode, 2) that your SmartDrive is powered on, 3) that power assist is on, and 4) that the PushTracker is connected to your SmartDrive (the PushTracker will flash blue) - if all of these are true, then a double tap will engage the motor.",
+        "q": "Why isn't my SmartDrive engaging?"
+      },
+      {
         "category": "Other",
-				"a": "Unfortunately, no - the SmartDrive is incapable of providing any braking for your chair. This means that after you deactivate the motor you will need to manually grab the hand-rims and bring your chair to a stop.  This also means that your SmartDrive cannot slow you down going down a ramp or a hill.",
-				"q": "Can my SmartDrive slow me down?"
-			},
-			{
+        "a": "Unfortunately, no - the SmartDrive is incapable of providing any braking for your chair. This means that after you deactivate the motor you will need to manually grab the hand-rims and bring your chair to a stop.  This also means that your SmartDrive cannot slow you down going down a ramp or a hill.",
+        "q": "Can my SmartDrive slow me down?"
+      },
+      {
         "category": "Other",
-				"a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the PushTracker app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!",
-				"q": "Why won't my original PushTracker connect to my phone?"
-			},
-			{
+        "a": "If you are using Android then it might be because the phone has saved the pairing information - which will prevent the PushTracker from establishing a solid connection.  To fix this, simply open your phone's Bluetooth settings menu and click 'Forget' on the PushTracker that shows up in that menu.  Once you have done that, restart the PushTracker app and the PushTracker should be able to reliably connect - without needing to re-pair to the phone!",
+        "q": "Why won't my original PushTracker connect to my phone?"
+      },
+      {
         "category": "Other",
-				"a": "The SmartDrive is safe for children to use - but we do recommend the best way to ensure safety is to train them on proper tapping and braking techniques. Moreover, we have included the ability to limit the max speed of the SmartDrive (from 0.5 miles per hour all the way up to 5.5 miles per hour) as well as the acceleration of the SmartDrive. For someone who is just learning to push or to use a SmartDrive, we recommend setting both very low.",
-				"q": "How can I make the SmartDrive safe for children?"
-			},
-			{
+        "a": "The SmartDrive is safe for children to use - but we do recommend the best way to ensure safety is to train them on proper tapping and braking techniques. Moreover, we have included the ability to limit the max speed of the SmartDrive (from 0.5 miles per hour all the way up to 5.5 miles per hour) as well as the acceleration of the SmartDrive. For someone who is just learning to push or to use a SmartDrive, we recommend setting both very low.",
+        "q": "How can I make the SmartDrive safe for children?"
+      },
+      {
         "category": "Other",
-				"a": "You should be active and go out into the world! With pushing however, unlike the general advice with walking (where people really cannot walk too much) - people CAN push too much! If you push too much then you will be more likely to get pain and injury in your arms and shoulders - which may limit your mobility and independence.  With the SmartDrive you are still able to push around in your chair as you normally would - you can now go farther faster and with less effort! Use it when you need to get somewhere fast or up a big hill - don't kill your shoulders if you don't have to! Enjoy your journey with your SmartDrive!",
-				"q": "Why should I want a SmartDrive?"
-			}
-		],
-		"title": "Support"
-	},
-	"switch-control-settings-different": {
-		"message": "Please select from the options below how to resolve differences between the settings.",
-		"title": "App and PushTracker Switch Control Settings Differ"
-	},
-	"units": {
-		"centimeters": "Centimeters",
-		"cm": "cm",
-		"feet-inches": "Feet & inches",
-		"ft": "ft",
-		"in": "in",
-		"kg": "kg",
-		"kilograms": "Kilograms",
-		"kilometers": "Kilometers",
-		"km": "km",
-		"lbs": "lbs",
-		"mi": "mi",
-		"miles": "Miles",
-		"pounds": "Pounds",
-		"pushes": "pushes",
-		"s": "s",
-		"time": {
-			"am-pm": "AM/PM",
-			"military": "24-hour"
-		}
-	},
-	"updates-info-component": {
-		"title": "Firmware Updates"
-	},
-	"user": {
-		"accept": {
-			"accept-error": {
-				"message": "You must read and accept the agreement and privacy notice to register an account!",
-				"title": "Agreement Error"
-			},
-			"agreement-button": "View End User Agreement",
-			"header": "You must accept the end user agreement and read the privacy notice to be able to activate and use the PushTracker (Android / iOS), PushTracker (WearOS), and SmartDrive MX2+ (WearOS) apps.",
-			"privacy-brief": "Permobil uses the data you provide us to provide you insight into your activity over time.\n\nYour data will be encrypted and stored securely in the United States.\n\nWe never sell your personal data to anyone or give anyone access to your personal data without your consent.\n\nIf you have any questions or would like to have your data changed or deleted please contact us at privacy@permobil.com.\n\nFor more information please refer to our full privacy notice.",
-			"privacy-button": "View Privacy Notice",
-			"privacy-policy": "I have read and understood the privacy notice",
-			"privacy-policy-title": "Accept Privacy Notice",
-			"user-agreement": "I have read, understood, and agree to the end user agreement",
-			"user-agreement-title": "Accept End User Agreement"
-		},
-		"consent": {
-			"beta-test": "I opt into firmware beta testing and understand the associated risks.",
-			"header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Profile' page of the application and pressing the privacy (shield) button.",
-			"product-development": "I give my consent to the usage of my data for research as described in the privacy notice",
-			"research": "I give my consent to the usage of my data for product development as described in the privacy notice"
-		},
-		"consent-form-title": "Your Privacy",
-		"end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
-		"privacy-policy-contact-email": "privacy@permobil.com",
-		"privacy-policy-site": "https://privacy.permobil.com"
-	},
-	"wearos-comms": {
-		"errors": {
-			"bluetooth-error": {
-				"message": "Could not search for PushTracker E2 devices - please ensure bluetooth is enabled on your phone and that you have given the PushTracker app location / bluetooth permissions.",
-				"title": "Bluetooth Error"
-			},
-			"pte2-connection-error": {
-				"message": "Could not find / connect to your PushTracker E2 - please ensure your phone and PushTracker E2 are both on with their bluetooth enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
-				"title": "Error Connecting to PushTracker E2"
-			},
-			"pte2-not-installed": {
-				"message": "You must have the PushTracker WearOS app installed on your PushTracker E2. You must also provide the permissions required by the PushTracker WearOS app and PushTracker mobile app.",
-				"title": "PushTracker WearOS Not Installed"
-			},
-			"pte2-not-setup": {
-				"message": "You must have a Mobvoi TicWatch E2 / PushTracker E2 WearOS smartwatch setup and paired to your smartphone through the WearOS mobile app.",
-				"title": "No PushTracker E2s Setup"
-			},
-			"pte2-scan-error": {
-				"message": "Could not find any PushTracker E2 devices. please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
-				"title": "Error Scanning for PushTracker E2"
-			},
-			"pte2-send-error": {
-				"message": "Could not send data to your PushTracker E2 - please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
-				"title": "Error Synchronizing Account"
-			}
-		},
-		"messages": {
-			"pte2-sync-successful": "Successfully synchronized account with your PushTracker E2",
-			"synchronizing": "Synchronizing...",
-			"synchronizing-long": "Synchronizing account information with your PushTracker E2, please wait."
-		}
-	},
-	"wireless-updates": {
-		"error": "Error",
-		"messages": {
-			"more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry",
-			"more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
-			"no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
-			"no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
-			"pushtracker-connected": "PushTracker connected!",
-			"pushtracker-disconnected": "PushTracker disconnected!"
-		},
-		"state": {
-			"firmware-download-failed": "Firmware Download Failed!",
-			"more-than-one-pushtracker-detected": "More than one PushTracker detected!",
-			"more-than-one-smartdrive-detected": "More than one SmartDrive detected!",
-			"no-pushtracker-detected": "No PushTracker detected!",
-			"no-smartdrives-detected": "No SmartDrives detected!"
-		},
-		"title": "Wireless Updates"
-	}
+        "a": "You should be active and go out into the world! With pushing however, unlike the general advice with walking (where people really cannot walk too much) - people CAN push too much! If you push too much then you will be more likely to get pain and injury in your arms and shoulders - which may limit your mobility and independence.  With the SmartDrive you are still able to push around in your chair as you normally would - you can now go farther faster and with less effort! Use it when you need to get somewhere fast or up a big hill - don't kill your shoulders if you don't have to! Enjoy your journey with your SmartDrive!",
+        "q": "Why should I want a SmartDrive?"
+      }
+    ],
+    "title": "Support"
+  },
+  "switch-control-settings-different": {
+    "message": "Please select from the options below how to resolve differences between the settings.",
+    "title": "App and PushTracker Switch Control Settings Differ"
+  },
+  "units": {
+    "centimeters": "Centimeters",
+    "cm": "cm",
+    "feet-inches": "Feet & inches",
+    "ft": "ft",
+    "in": "in",
+    "kg": "kg",
+    "kilograms": "Kilograms",
+    "kilometers": "Kilometers",
+    "km": "km",
+    "lbs": "lbs",
+    "mi": "mi",
+    "miles": "Miles",
+    "pounds": "Pounds",
+    "pushes": "pushes",
+    "s": "s",
+    "time": {
+      "am-pm": "AM/PM",
+      "military": "24-hour"
+    }
+  },
+  "updates-info-component": {
+    "title": "Firmware Updates"
+  },
+  "user": {
+    "accept": {
+      "accept-error": {
+        "message": "You must read and accept the agreement and privacy notice to register an account!",
+        "title": "Agreement Error"
+      },
+      "agreement-button": "View End User Agreement",
+      "header": "You must accept the end user agreement and read the privacy notice to be able to activate and use the PushTracker (Android / iOS), PushTracker (WearOS), and SmartDrive MX2+ (WearOS) apps.",
+      "privacy-brief": "Permobil uses the data you provide us to provide you insight into your activity over time.\n\nYour data will be encrypted and stored securely in the United States.\n\nWe never sell your personal data to anyone or give anyone access to your personal data without your consent.\n\nIf you have any questions or would like to have your data changed or deleted please contact us at privacy@permobil.com.\n\nFor more information please refer to our full privacy notice.",
+      "privacy-button": "View Privacy Notice",
+      "privacy-policy": "I have read and understood the privacy notice",
+      "privacy-policy-title": "Accept Privacy Notice",
+      "user-agreement": "I have read, understood, and agree to the end user agreement",
+      "user-agreement-title": "Accept End User Agreement"
+    },
+    "consent": {
+      "beta-test": "I opt into firmware beta testing and understand the associated risks.",
+      "header": "You can give or withdraw any of your consents at any time during the use of the service by going to the 'Profile' page of the application and pressing the privacy (shield) button.",
+      "product-development": "I give my consent to the usage of my data for research as described in the privacy notice",
+      "research": "I give my consent to the usage of my data for product development as described in the privacy notice"
+    },
+    "consent-form-title": "Your Privacy",
+    "end-user-agreement-site": "https://privacy.permobil.com/our-products.html#collapseEight",
+    "privacy-policy-contact-email": "privacy@permobil.com",
+    "privacy-policy-site": "https://privacy.permobil.com"
+  },
+  "wearos-comms": {
+    "errors": {
+      "bluetooth-error": {
+        "message": "Could not search for PushTracker E2 devices - please ensure bluetooth is enabled on your phone and that you have given the PushTracker app location / bluetooth permissions.",
+        "title": "Bluetooth Error"
+      },
+      "pte2-connection-error": {
+        "message": "Could not find / connect to your PushTracker E2 - please ensure your phone and PushTracker E2 are both on with their bluetooth enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Connecting to PushTracker E2"
+      },
+      "pte2-not-installed": {
+        "message": "You must have the PushTracker WearOS app installed on your PushTracker E2. You must also provide the permissions required by the PushTracker WearOS app and PushTracker mobile app.",
+        "title": "PushTracker WearOS Not Installed"
+      },
+      "pte2-not-setup": {
+        "message": "You must have a Mobvoi TicWatch E2 / PushTracker E2 WearOS smartwatch setup and paired to your smartphone through the WearOS mobile app.",
+        "title": "No PushTracker E2s Setup"
+      },
+      "pte2-scan-error": {
+        "message": "Could not find any PushTracker E2 devices. please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Scanning for PushTracker E2"
+      },
+      "pte2-send-error": {
+        "message": "Could not send data to your PushTracker E2 - please ensure your PushTracker E2 is on and its bluetooth is enabled. Also ensure that your PushTracker WearOS app is open on your PushTracker E2.",
+        "title": "Error Synchronizing Account"
+      }
+    },
+    "messages": {
+      "pte2-sync-successful": "Successfully synchronized account with your PushTracker E2",
+      "synchronizing": "Synchronizing...",
+      "synchronizing-long": "Synchronizing account information with your PushTracker E2, please wait."
+    }
+  },
+  "wireless-updates": {
+    "error": "Error",
+    "messages": {
+      "more-than-one-pushtracker-connected": "More than one PushTracker connected! Please disconnect all but one of the PushTrackers and retry",
+      "more-than-one-smartdrive-detected": "More than one SmartDrive detected! Please switch OFF all but one of the SmartDrives and retry",
+      "no-pushtracker-detected": "Failed to detect a PushTracker. Please make sure that your PushTracker is paired and then connected to the app.",
+      "no-smartdrives-detected": "Failed to detect a SmartDrive. Please make sure that your SmartDrive is switched ON and nearby.",
+      "pushtracker-connected": "PushTracker connected!",
+      "pushtracker-disconnected": "PushTracker disconnected!"
+    },
+    "state": {
+      "firmware-download-failed": "Firmware Download Failed!",
+      "more-than-one-pushtracker-detected": "More than one PushTracker detected!",
+      "more-than-one-smartdrive-detected": "More than one SmartDrive detected!",
+      "no-pushtracker-detected": "No PushTracker detected!",
+      "no-smartdrives-detected": "No SmartDrives detected!"
+    },
+    "title": "Wireless Updates"
+  }
 }

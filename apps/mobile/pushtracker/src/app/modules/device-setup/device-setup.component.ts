@@ -1,11 +1,11 @@
-import { Component, NgZone, OnInit, Optional } from '@angular/core';
+import { Component, NgZone, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { WearOsComms } from '@maxmobility/nativescript-wear-os-comms';
 import { ModalDialogParams } from '@nativescript/angular';
-import { isAndroid, Page } from '@nativescript/core';
+import { isAndroid, isIOS, Page } from '@nativescript/core';
 import * as application from '@nativescript/core/application';
 import * as appSettings from '@nativescript/core/application-settings';
-import { action, alert } from '@nativescript/core/ui/dialogs';
+import { action, alert, confirm } from '@nativescript/core/ui/dialogs';
 import { TranslateService } from '@ngx-translate/core';
 import { User as KinveyUser } from 'kinvey-nativescript-sdk';
 import { hasPermission, requestPermissions } from 'nativescript-permissions';
@@ -22,16 +22,18 @@ import { BluetoothService, LoggingCategory, LoggingService } from '../../service
   moduleId: module.id,
   templateUrl: './device-setup.component.html'
 })
-export class DeviceSetupComponent implements OnInit {
+export class DeviceSetupComponent {
   APP_THEMES = APP_THEMES;
   CONFIGURATIONS = CONFIGURATIONS;
   CURRENT_THEME: string;
   user: PushTrackerUser;
   slide = undefined;
-  bluetoothAdvertised = false;
-  pushTracker: PushTracker;
   // Done button
   paired: boolean = false;
+  connected: boolean = false;
+  setupComplete: boolean = false;
+  doThisLater: boolean = false; // do this later - cancel ops;
+  // messages
   statusMessage: string = this._translateService.instant(
     'device-setup.waiting-for-pairing-request'
   );
@@ -66,77 +68,87 @@ export class DeviceSetupComponent implements OnInit {
       STORAGE_KEYS.APP_THEME,
       APP_THEMES.DEFAULT
     );
+
+    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
+    this.init();
   }
 
-  async ngOnInit() {
-    this.user = KinveyUser.getActiveUser() as PushTrackerUser;
-    if (
-      !this.slide &&
-      this.user &&
-      this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE
-    ) {
-      // OG PushTracker configuration
-      this.slide = this._translateService.instant(
-        'device-setup.pushtracker-with-smartdrive'
-      );
-
-      // Check for already connected PushTrackers
-      this.onPushTrackerConnected();
-
-      if (!this.pushTracker && !this.bluetoothAdvertised) {
-        this._logService.logBreadCrumb(
-          DeviceSetupComponent.name,
-          'Asking for Bluetooth Permission'
-        );
-        this._askForPermissions()
-          .then(() => {
-            if (!this._bluetoothService.advertising) {
-              this._logService.logBreadCrumb(
-                DeviceSetupComponent.name,
-                'Starting Bluetooth'
-              );
-              // start the bluetooth service
-              return this._bluetoothService.advertise();
-            }
-          })
-          .catch(err => {
-            this._logService.logException(err);
-          });
-        this.bluetoothAdvertised = true;
-      }
-
-      this._bluetoothService.on(
-        BluetoothService.pushtracker_connected,
-        this.onPushTrackerConnected,
-        this
-      );
-
-      this._bluetoothService.on(
-        BluetoothService.pushtracker_disconnected,
-        this.onPushTrackerDisconnected,
-        this
-      );
+  async init() {
+    const config = this.user && this.user.data && this.user.data.control_configuration;
+    if (config === CONFIGURATIONS.PUSHTRACKER_WITH_SMARTDRIVE) {
+      this.initPushTracker();
+    } else if (config === CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE) {
+      this.initPushTrackerE2();
     }
+  }
 
-    if (
-      !this.slide &&
-      this.user &&
-      this.user.data.control_configuration ===
-      CONFIGURATIONS.PUSHTRACKER_E2_WITH_SMARTDRIVE
-    ) {
-      // PushTracker E2/ WearOS configuration
-      this.slide = this._translateService.instant(
-        'device-setup.pushtracker-e2-with-smartdrive'
-      );
-      try {
-        await WearOsComms.initPhone();
-      } catch (err) {
-        console.error('error initializing phone:', err);
-      }
+  async initPushTracker() {
+    // OG PushTracker configuration
+    this.slide = this._translateService.instant(
+      'device-setup.pushtracker-with-smartdrive'
+    );
+
+    this.registerBluetoothEvents();
+    this.updatePushTrackerState();
+
+    if (!this._bluetoothService.advertising) {
+      this._askForPermissions()
+        .then((didGetPermissions) => {
+          if (didGetPermissions) {
+            this._logService.logBreadCrumb(
+              DeviceSetupComponent.name,
+              'Starting Bluetooth'
+            );
+            // start the bluetooth service
+            return this._bluetoothService.advertise();
+          }
+        })
+        .catch(err => {
+          this._logService.logException(err);
+        });
+    }
+  }
+
+  async initPushTrackerE2() {
+    // PushTracker E2/ WearOS configuration
+    this.slide = this._translateService.instant(
+      'device-setup.pushtracker-e2-with-smartdrive'
+    );
+    try {
+      await WearOsComms.initPhone();
       // start looking for E2
       this._onPushTrackerE2();
+    } catch (err) {
+      this._logService.logBreadCrumb(
+        DeviceSetupComponent.name,
+        `Error initializing phone wear-os-comms: ${err}`
+      );
     }
+  }
+
+  unregisterBluetoothEvents() {
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_added,
+      this.updatePushTrackerState.bind(this)
+    );
+
+    this._bluetoothService.off(
+      BluetoothService.pushtracker_connected,
+      this.updatePushTrackerState.bind(this)
+    );
+  }
+
+  registerBluetoothEvents() {
+    this.unregisterBluetoothEvents();
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_added,
+      this.updatePushTrackerState.bind(this)
+    );
+
+    this._bluetoothService.on(
+      BluetoothService.pushtracker_connected,
+      this.updatePushTrackerState.bind(this)
+    );
   }
 
   isAndroid(): boolean {
@@ -160,112 +172,122 @@ export class DeviceSetupComponent implements OnInit {
   }
 
   onDoLaterTap(args) {
+    // set flag that user has canceled this operation
+    this.doThisLater = true;
+    // make sure we stop whatever work we might have started
+    WearOsComms.cancelOperations();
     this.onDoneTap(args);
   }
 
-  private async _askForPermissions() {
-    if (isAndroid) {
-      // determine if we have shown the permissions request
-      const hasShownRequest =
-        appSettings.getBoolean(
-          STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST
-        ) || false;
-      // will throw an error if permissions are denied, else will
-      // return either true or a permissions object detailing all the
-      // granted permissions. The error thrown details which
-      // permissions were rejected
-      const blePermission = android.Manifest.permission.ACCESS_COARSE_LOCATION;
-      const reasons = [];
-      const activity: android.app.Activity =
-        application.android.startActivity ||
-        application.android.foregroundActivity;
-      const neededPermissions = this.permissionsNeeded.filter(
-        p =>
-          !hasPermission(p) &&
-          (activity.shouldShowRequestPermissionRationale(p) || !hasShownRequest)
-      );
-      // update the has-shown-request
-      appSettings.setBoolean(
-        STORAGE_KEYS.SHOULD_SHOW_BLE_PERMISSION_REQUEST,
-        true
-      );
-      const reasoning = {
-        [android.Manifest.permission
-          .ACCESS_COARSE_LOCATION]: this._translateService.instant(
-            'permissions-reasons.coarse-location'
-          )
-      };
-      neededPermissions.forEach(r => {
-        reasons.push(reasoning[r]);
+  private async _confirmToOpenSettingsOnIOS() {
+    if (isIOS) {
+      const confirmResult = await confirm({
+        message: this._translateService.instant('bluetooth.ios-open-settings'),
+        cancelable: true,
+        okButtonText: this._translateService.instant('dialogs.yes'),
+        cancelButtonText: this._translateService.instant('dialogs.no')
       });
-      if (neededPermissions && neededPermissions.length > 0) {
-        await alert({
-          title: this._translateService.instant('permissions-request.title'),
-          message: reasons.join('\n\n'),
-          okButtonText: this._translateService.instant('general.ok')
-        });
-        try {
-          await requestPermissions(neededPermissions, () => { });
-          return true;
-        } catch (permissionsObj) {
-          const hasBlePermission =
-            permissionsObj[blePermission] || hasPermission(blePermission);
-          if (hasBlePermission) {
-            return true;
-          } else {
-            throw this._translateService.instant('failures.permissions');
-          }
-        }
-      } else if (hasPermission(blePermission)) {
-        return Promise.resolve(true);
+
+      if (confirmResult === true) {
+        // open Settings on iOS for this device
+        UIApplication.sharedApplication.openURL(
+          NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+        );
       } else {
-        throw this._translateService.instant('failures.permissions');
+        this._logService.logBreadCrumb(
+          DeviceSetupComponent.name,
+          'User declined to open Settings to enable Bluetooth.'
+        );
       }
     }
   }
 
-  private onPushTrackerConnected() {
-    if (!this.pushTracker) {
-      const trackers = BluetoothService.PushTrackers.filter((val, _1, _2) => {
-        return val.connected;
+  private async _askForPermissions() {
+    const hasPermission = await this._bluetoothService.hasPermissions();
+    if (hasPermission) {
+      return true;
+    }
+    this._logService.logBreadCrumb(
+      DeviceSetupComponent.name,
+      'Asking for Bluetooth Permission'
+    );
+    if (isAndroid) {
+      // only show our permissions alert on android - on iOS the
+      // system has already shown the permissions request at this
+      // point, and the text for it comes from Info.plist
+      await alert({
+        title: this._translateService.instant(
+          'permissions-request.title'
+        ),
+        message: this._translateService.instant(
+          'permissions-reasons.coarse-location'
+        ),
+        okButtonText: this._translateService.instant('general.ok')
       });
-      if (trackers.length === 0) {
+      const perm = await this._bluetoothService.requestPermissions();
+      return perm;
+    } else if (isIOS) {
+      this._confirmToOpenSettingsOnIOS();
+      return false;
+    }
+  }
+
+  private registerPushTrackerEvents(pt: PushTracker) {
+    // unregister to make sure we don't register multiple times
+    pt.off(
+      PushTracker.daily_info_event,
+      this.onPushTrackerDailyInfoEvent.bind(this)
+    );
+    // now register for the events we're interested in
+    pt.on(
+      PushTracker.daily_info_event,
+      this.onPushTrackerDailyInfoEvent.bind(this)
+    );
+  }
+
+  private updatePushTrackerState() {
+    this._zone.run(() => {
+      if (this.setupComplete) {
+        this.statusMessage = this._translateService.instant(
+          'device-setup.connection-successful'
+        );
+        this.showDoneButton = true;
         return;
-      } else if (trackers.length > 1) {
-        return;
+      }
+      // a pt has been paired if we have at least one known pushtracker
+      this.paired = BluetoothService.PushTrackers.length > 0;
+      if (!this.paired) {
+        // there are no pushtrackers we are aware of - set the status
+        // message to indicate we are waiting for pushtrackers
+        this.statusMessage = this._translateService.instant(
+          'device-setup.waiting-for-pairing-request'
+        );
       } else {
-        trackers.forEach(tracker => {
-          this.pushTracker = tracker;
-          this.paired = true;
+        // we are aware of pushtrackers - register for their events
+        BluetoothService.PushTrackers.forEach(this.registerPushTrackerEvents.bind(this));
+        // now see if any are currently connected
+        const pts = BluetoothService.PushTrackers.filter(pt => pt.connected);
+        if (pts.length === 0) {
+          // we have known pushtrackers, but non are currently connected
+          // - set the status message to indicate we are waiting for
+          // connection
           this.statusMessage = this._translateService.instant(
             'device-setup.pairing'
           );
-          this.pushTracker.on(
-            PushTracker.daily_info_event,
-            this.onPushTrackerDailyInfoEvent,
-            this
+        } else {
+          // update state
+          this.connected = true;
+          this.setupComplete = true;
+          // we have at least one pushtracker known and currently
+          // connected - set the status message to indicate we are
+          // successfully connected
+          this.statusMessage = this._translateService.instant(
+            'device-setup.connection-successful'
           );
-        });
-        this._logService.logBreadCrumb(
-          DeviceSetupComponent.name,
-          'PushTracker successfully connected!'
-        );
-        this._logService.logBreadCrumb(
-          DeviceSetupComponent.name,
-          'Set showDoneButton to true'
-        );
+          this.showDoneButton = true;
+        }
       }
-    } else {
-      this.paired = true;
-      this.statusMessage = this._translateService.instant(
-        'device-setup.pairing'
-      );
-      this.pushTracker.on(
-        PushTracker.daily_info_event,
-        this.onPushTrackerDailyInfoEvent,
-        this
-      );
-    }
+    });
   }
 
   private onPushTrackerDailyInfoEvent() {
@@ -273,40 +295,12 @@ export class DeviceSetupComponent implements OnInit {
       DeviceSetupComponent.name,
       'PushTracker daily_info_event received!'
     );
-    this.paired = true;
-    this.statusMessage = this._translateService.instant(
-      'device-setup.connection-successful'
-    );
     // We just received a daily info event
     // Our connection with the OG PushTracker is solid
-    this._zone.run(() => {
-      this.showDoneButton = true;
-    });
-  }
-
-  private onPushTrackerDisconnected() {
-    this._logService.logBreadCrumb(
-      DeviceSetupComponent.name,
-      'PushTracker disconnected!'
-    );
-
-    if (this.pushTracker && this.pushTracker.ableToSend && this.paired) {
-      // We were able to send and got disconnected
-      this.paired = false;
-      this.statusMessage = this._translateService.instant(
-        'device-setup.waiting-for-pairing-request'
-      );
-      this.pushTracker = null;
-    } else if (!this.pushTracker && !this.paired) {
-      this.statusMessage = this._translateService.instant(
-        'device-setup.pairing'
-      );
-    }
-
-    this._zone.run(() => {
-      this.showDoneButton = false;
-    });
-    return;
+    this.paired = true;
+    this.connected = true;
+    this.setupComplete = true;
+    this.updatePushTrackerState();
   }
 
   private async _onPushTrackerE2() {
@@ -339,6 +333,11 @@ export class DeviceSetupComponent implements OnInit {
     const nodesWithApp = await WearOsComms.findDevicesWithApp(
       this.CAPABILITY_WEAR_APP
     );
+
+    // return immediately - the previous call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (nodesWithApp.length >= 1) {
       const node = nodesWithApp[0];
       const name = node.getDisplayName();
@@ -386,6 +385,10 @@ export class DeviceSetupComponent implements OnInit {
       'device-setup.e2.finding-devices'
     );
     const nodesConnected = await WearOsComms.findDevicesConnected(10000);
+
+    // return immediately - the previous call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
 
     // if there are not companion devices connected, inform the
     // user they need to set up a PushTracker E2 with the WearOS app
@@ -442,6 +445,11 @@ export class DeviceSetupComponent implements OnInit {
     WearOsComms.clearCompanion();
     // find possible companions for pairing
     const possiblePeripherals = await this._getListOfCompanions();
+
+    // return immediately - the previous call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (possiblePeripherals === null || possiblePeripherals === undefined) {
       // search failed, let them know
       await alert({
@@ -513,6 +521,11 @@ export class DeviceSetupComponent implements OnInit {
     this.statusMessage =
       this._translateService.instant('device-setup.e2.connecting') + `${name}`;
     const didConnect = await this._connectCompanion();
+
+    // return immediately - the previous call may have taken a while
+    // - during which the user may have pressed 'Do this Later'
+    if (this.doThisLater) return;
+
     if (didConnect) {
       this.statusMessage =
         this._translateService.instant(

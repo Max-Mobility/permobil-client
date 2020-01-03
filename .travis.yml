@@ -1,0 +1,17 @@
+dist: trusty
+
+addons:
+  sonarcloud:
+    organization: "max-mobility"
+    token:
+      secure: "eX55JkQVMP7sz5i4wSZmUqpW+aydy7T4tBoLy2EmYB4LQKZxWVCO1Vk9lwOUYl/FWOt/ZiPBPo7RDDZi46wb+WPfPGeajPBJzqkV8yn6gTt1tmX8Fuu/po1yqtoDzCk4Lb3/n4l3hW8yNkutJ17kOuf2QRAMf9vehudc/vQjyicLnPHqF0VwB4NvhH+r1VWREwoL5yX1JjgxF5TFvHg0gfNvd60LGFFQ9Q3bcLyWYMGJ4lFdgI6kzFBC7qA4iPOnBHh8zc/lTCZD4KUgvMfmzwW4Of0xjs6GIaPyqQwwbptptP9x1UsDfB9Kw3BuQ7eejncRifGjW3wWmGhmJaXGsz98NX/C/GGuRLUKtoFDLTMHIYH+6l1txUnSwZMhW3EDqn5JoF33XkIvAVTfWbPd7C39vgvGaVJY1N93LDslhHrEPOvll3KJfoOIX9JreLy4Fdnl2KjBA44iDdAXyAu+MMP1jbHuB6H+IPVgP5/mdkC1WLKKmISnFiDz//+H2mwNg5GqQmxGktKc5LZalgXDz0A1/yzBrHVSY+9HgmpEBGqAhxm/Ikms+IFajjqXpX467vwILzsspMughWFNpAGkQJu0fHHet+oM6ZLDT91igidqMWceNYWAABvimI+1ON2aIZPzMcGSEXN2qhjuyslbsgKqKh3bX5RBK0IpMc/vP88="
+
+install:
+  - npm install
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+
+script:
+  - sonar-scanner

@@ -4,8 +4,9 @@ import { Injectable } from '@angular/core';
 import { isAndroid, isIOS, Observable, ObservableArray } from '@nativescript/core';
 import * as appSettings from '@nativescript/core/application-settings';
 import { fromObject } from '@nativescript/core/data/observable';
-import { Packet } from '@permobil/core';
+import { Log, Packet } from '@permobil/core';
 import { Bluetooth, BondState, ConnectionState, Device } from 'nativescript-bluetooth';
+import { check as checkPermission, request as requestPermission } from 'nativescript-perms';
 import { STORAGE_KEYS } from '../enums';
 import { PushTracker, SmartDrive } from '../models';
 import { LoggingService } from './logging.service';
@@ -25,15 +26,15 @@ export class BluetoothService extends Observable {
   static AppServiceUUID = '9358ac8f-6343-4a31-b4e0-4b13a2b45d86';
   static PushTrackers = new ObservableArray<PushTracker>();
   static SmartDrives = new ObservableArray<SmartDrive>();
-
-  public static advertise_success = 'advertise_success';
-  public static advertise_error = 'advertise_error';
-  public static pushtracker_added = 'pushtracker_added';
-  public static pushtracker_connected = 'pushtracker_connected';
-  public static pushtracker_disconnected = 'pushtracker_disconnected';
-  public static smartdrive_connected = 'smartdrive_connected';
-  public static smartdrive_disconnected = 'smartdrive_disconnected';
-  public static pushtracker_status_changed = 'pushtracker_status_changed';
+  static advertise_success = 'advertise_success';
+  static advertise_error = 'advertise_error';
+  static pushtracker_added = 'pushtracker_added';
+  static pushtracker_connected = 'pushtracker_connected';
+  static pushtracker_disconnected = 'pushtracker_disconnected';
+  static smartdrive_connected = 'smartdrive_connected';
+  static smartdrive_disconnected = 'smartdrive_disconnected';
+  static pushtracker_status_changed = 'pushtracker_status_changed';
+  static bluetooth_authorization_event = 'bluetooth_authorization_event';
 
   /**
    * Observable to monitor the push tracker connectivity status. The MaxActionBar uses this to display the correct icon.
@@ -177,6 +178,15 @@ export class BluetoothService extends Observable {
       this.onAdvertiseSuccess,
       this
     );
+
+    // iOS ONLY event for SDK 13x+
+    if (isIOS) {
+      this._bluetooth.on(
+        Bluetooth.bluetooth_authorization_event,
+        this.onBluetoothAuthEvent,
+        this
+      );
+    }
   }
 
   clearEventListeners() {
@@ -193,6 +203,10 @@ export class BluetoothService extends Observable {
     this._bluetooth.off(Bluetooth.characteristic_read_request_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_failure_event);
     this._bluetooth.off(Bluetooth.bluetooth_advertise_success_event);
+    this._bluetooth.off(Bluetooth.centralmanager_updated_state_event);
+    if (isIOS) {
+      this._bluetooth.off(Bluetooth.bluetooth_authorization_event);
+    }
   }
 
   clearSmartDrives() {
@@ -230,21 +244,32 @@ export class BluetoothService extends Observable {
     this.initialized = true;
   }
 
-  async advertise(): Promise<any> {
+  async advertise() {
     if (this.advertising) {
-      return Promise.resolve();
+      return; // we no longer return a boolean
     }
+    this.advertising = true;
+
     // check to make sure that bluetooth is enabled, or this will
     // always fail and we don't need to show the error
     const result = await this._bluetooth.isBluetoothEnabled();
 
-    if (isAndroid && result === false) {
-      try {
-        await this._bluetooth.enable();
-      } catch (err) {
+    if (result === false) {
+      if (isAndroid) {
+        try {
+          await this._bluetooth.enable();
+        } catch (err) {
+          this.sendEvent(BluetoothService.advertise_error, { error: err });
+          this._logService.logException(err);
+          this.advertising = false;
+          throw err;
+        }
+      } else if (isIOS) {
+        // can't do anything about it on ios
+        const err = new Error('Bluetooth not Enabled');
         this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._logService.logException(err);
-        return;
+        this.advertising = false;
+        throw err;
       }
     }
 
@@ -255,8 +280,8 @@ export class BluetoothService extends Observable {
     // now add them back
     this.addServices();
 
-    await this._bluetooth
-      .startAdvertising({
+    try {
+      await this._bluetooth.startAdvertising({
         UUID: BluetoothService.AppServiceUUID,
         settings: {
           connectable: true
@@ -264,19 +289,16 @@ export class BluetoothService extends Observable {
         data: {
           includeDeviceName: true
         }
-      })
-      .catch(err => {
-        this.sendEvent(BluetoothService.advertise_error, { error: err });
-        this._logService.logException(err);
       });
+    } catch (err) {
+      this.advertising = false;
+      this.sendEvent(BluetoothService.advertise_error, { error: err });
+      this._logService.logException(err);
+      throw err;
+    }
 
     this._bluetooth.addService(this.AppService);
-
-    this.advertising = true;
-
     this.sendEvent(BluetoothService.advertise_success);
-
-    return Promise.resolve();
   }
 
   scanForAny(timeout: number = 4): Promise<any> {
@@ -369,9 +391,9 @@ export class BluetoothService extends Observable {
     return this._bluetooth.disconnect(args);
   }
 
-  discoverServices(_: any) { }
+  discoverServices(_: any) {}
 
-  discoverCharacteristics(_: any) { }
+  discoverCharacteristics(_: any) {}
 
   startNotifying(opts: any) {
     return this._bluetooth.startNotifying(opts);
@@ -379,6 +401,45 @@ export class BluetoothService extends Observable {
 
   stopNotifying(opts: any) {
     return this._bluetooth.stopNotifying(opts);
+  }
+
+  public async getIOSPermissions() {
+    if (isIOS) {
+      return await checkPermission('bluetooth');
+    } else {
+      throw new Error('Unsupported operation when not on iOS');
+    }
+  }
+
+  public async hasPermissions() {
+    let _has = false;
+    if (isAndroid) {
+      _has = await this._bluetooth.hasCoarseLocationPermission();
+    } else if (isIOS) {
+      const result = await checkPermission('bluetooth');
+      _has = result === 'authorized';
+    }
+    this._logService.logBreadCrumb(BluetoothService.name, `_has: ${_has}`);
+    return _has;
+  }
+
+  public async requestPermissions() {
+    const _hasPerms = await this.hasPermissions();
+    this._logService.logBreadCrumb(
+      BluetoothService.name,
+      `has perms: ${_hasPerms}`
+    );
+    if (isAndroid) {
+      try {
+        await this._bluetooth.requestCoarseLocationPermission();
+        return true;
+      } catch (err) {
+        return false;
+      }
+    } else if (isIOS) {
+      const status = await requestPermission('bluetooth');
+      return status === 'authorized';
+    }
   }
 
   public requestConnectionPriority(address: string, priority: number) {
@@ -407,15 +468,16 @@ export class BluetoothService extends Observable {
     return Promise.resolve();
   }
 
-  restart(): Promise<any> {
-    return this.stop()
-      .then(() => {
-        return this.advertise();
-      })
-      .catch(_ => {
-        this.initialized = false;
-        this.advertising = false;
-      });
+  async restart(): Promise<boolean> {
+    try {
+      await this.stop();
+      await this.advertise();
+      return true;
+    } catch (err) {
+      this.initialized = false;
+      this.advertising = false;
+      return false;
+    }
   }
 
   // private functions
@@ -424,7 +486,7 @@ export class BluetoothService extends Observable {
     this._logService.logBreadCrumb(
       BluetoothService.name,
       'Failed to advertise',
-      args
+      args && 'data' in args ? args.data : null // avoid passing null into the NSDictionary for Sentry
     );
     // nothing
   }
@@ -435,6 +497,13 @@ export class BluetoothService extends Observable {
       'Succeeded in advertising!'
     );
     // nothing
+  }
+
+  private onBluetoothAuthEvent(args: any) {
+    Log.D('Bluetooth Auth Event', args.data);
+    // make sure to relay the event so others listening for it will
+    // receive it
+    this.sendEvent(BluetoothService.bluetooth_authorization_event, args.data);
   }
 
   private onBondStatusChange(args: any): void {
@@ -472,7 +541,7 @@ export class BluetoothService extends Observable {
     }
   }
 
-  private onDeviceNameChange(_: any): void { }
+  private onDeviceNameChange(_: any): void {}
 
   private onDeviceUuidChange(_: any): void {
     // TODO: This function doesn't work (android BT impl returns null)
@@ -612,7 +681,7 @@ export class BluetoothService extends Observable {
     p.destroy();
   }
 
-  private onCharacteristicReadRequest(_: any): void { }
+  private onCharacteristicReadRequest(_: any): void {}
 
   // service controls
   private deleteServices() {
