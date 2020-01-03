@@ -1188,7 +1188,7 @@ export class MainViewModel extends Observable {
     );
   }
 
-  private async _onNewDay() {
+  private _onNewDay() {
     if (this.smartDrive) {
       // it's a new day, reset smartdrive battery to 0
       this.smartDrive.battery = 0;
@@ -1202,12 +1202,12 @@ export class MainViewModel extends Observable {
   private _registerForTimeUpdates() {
     // monitor the clock / system time for display and logging:
     this._updateTimeDisplay();
-    const timeReceiverCallback = async (_1, _2) => {
+    const timeReceiverCallback = (_1, _2) => {
       try {
         this._updateTimeDisplay();
         // update charts if date has changed
         if (!isSameDay(new Date(), this._lastChartDay)) {
-          await this._onNewDay();
+          this._onNewDay();
           this._updateChartData();
         }
       } catch (error) {
