@@ -34,6 +34,10 @@
       "title": "SmartDrive Distanse daglig kjøring"
     }
   },
+  "complications": {
+    "battery-level": "Kilometerteller",
+    "odometer": "Batterinivå"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD-batterispenning",

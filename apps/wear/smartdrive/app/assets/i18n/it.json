@@ -34,6 +34,10 @@
       "title": "Distanza SmartDrive percorsa quotidianamente"
     }
   },
+  "complications": {
+    "battery-level": "Odometro",
+    "odometer": "Livello della batteria"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] Tensione batteria SD",

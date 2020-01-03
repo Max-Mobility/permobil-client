@@ -34,6 +34,10 @@
       "title": "SmartDrive distancia recorrida diariamente"
     }
   },
+  "complications": {
+    "battery-level": "Cuentakilómetros",
+    "odometer": "Nivel de bateria"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] Voltaje de la batería SD",

@@ -34,6 +34,10 @@
       "title": "Distance quotidienne parcourue"
     }
   },
+  "complications": {
+    "battery-level": "Odomètre",
+    "odometer": "Niveau de batterie"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD Niveau de tension de la batterie",

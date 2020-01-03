@@ -34,6 +34,10 @@
       "title": "Täglich zurückgelegte SmartDrive-Distanz"
     }
   },
+  "complications": {
+    "battery-level": "",
+    "odometer": ""
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD-Batteriespannung",

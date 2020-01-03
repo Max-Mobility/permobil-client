@@ -34,6 +34,10 @@
       "title": "SmartDrive Distance Traveled Daily"
     }
   },
+  "complications": {
+    "battery-level": "Battery Level",
+    "odometer": "Odometer"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD Battery Voltage",
@@ -218,7 +222,7 @@
       "downloading": "Error downloading updates.",
       "getting": "Error searching for updates.",
       "saving": "Error saving updates data.",
-      "timeout": "SmartDrive updates timed out."
+      "timeout": "SmartDrive updates has timed out."
     },
     "failed": "SmartDrive updates failed.",
     "initializing": "Initializing updates",

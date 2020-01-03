@@ -34,6 +34,10 @@
       "title": "毎日のSmartDrive走行距離"
     }
   },
+  "complications": {
+    "battery-level": "走行距離",
+    "odometer": "バッテリーレベル"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR：001] SDバッテリー電圧",

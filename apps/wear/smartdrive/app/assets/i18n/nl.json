@@ -34,6 +34,10 @@
       "title": "SmartDrive Dagelijks afgelegde afstand"
     }
   },
+  "complications": {
+    "battery-level": "Kilometerteller",
+    "odometer": "Batterijniveau"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD Batterijspanning",

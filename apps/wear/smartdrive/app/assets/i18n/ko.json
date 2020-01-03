@@ -34,6 +34,10 @@
       "title": "일일 주행거리"
     }
   },
+  "complications": {
+    "battery-level": "주행거리",
+    "odometer": "배터리 레벨"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR : 001] 배터리 전압",

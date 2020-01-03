@@ -34,6 +34,10 @@
       "title": "SmartDrive每日行程距離"
     }
   },
+  "complications": {
+    "battery-level": "里程表",
+    "odometer": "電池電量"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR：001] SD電池電壓",

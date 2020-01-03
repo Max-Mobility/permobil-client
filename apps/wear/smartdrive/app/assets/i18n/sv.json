@@ -34,6 +34,10 @@
       "title": "SmartDrive Dagliga körsträcka"
     }
   },
+  "complications": {
+    "battery-level": "Distansmätare",
+    "odometer": "Batterinivå"
+  },
   "error-history": {
     "errors": {
       "batteryvoltage": "[ERR: 001] SD Batterispänning",
