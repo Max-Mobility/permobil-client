@@ -63,7 +63,7 @@
   },
   "homepage": "https://github.com/eddyverbruggen/nativescript-bluetooth",
   "devDependencies": {
-    "@nativescript/core": "~6.3.2",
+    "@nativescript/core": "../../node_modules/@nativescript/core",
     "tns-platform-declarations": "../../node_modules/tns-platform-declarations",
     "typescript": "../../node_modules/typescript"
   }

@@ -91,7 +91,7 @@
     "//************************** end PushTracker Wear": "***************************"
   },
   "dependencies": {
-    "tns-core-modules": "~6.3.2"
+    "@nativescript/core": "~6.3.2"
   },
   "devDependencies": {
     "node-fetch": "~2.0.0",
