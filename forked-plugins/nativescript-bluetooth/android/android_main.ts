@@ -16,10 +16,10 @@ declare let global: any;
 
 const AppPackageName = useAndroidX()
   ? global.androidx.core.app
-  : (android.support.v4 as any).app;
+  : ((android as any).support.v4 as any).app;
 const ContentPackageName = useAndroidX()
   ? global.androidx.core.content
-  : (android.support.v4 as any).content;
+  : ((android as any).support.v4 as any).content;
 
 function useAndroidX() {
   return global.androidx && global.androidx.appcompat;

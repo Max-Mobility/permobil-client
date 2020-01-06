@@ -1,7 +1,3 @@
-// LEAVE THIS D.TS ref to provide the JavaProxy, WeakRef, etc. to the android side of this plugin
-// removing will likely break the CI setup step
-/// <reference path="../node_modules/tns-core-modules/nativescript-core.d.ts" />
-
 import { CLog, CLogTypes } from '../common';
 import { Bluetooth } from './android_main';
 
