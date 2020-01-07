@@ -2,7 +2,7 @@
 /// <reference path="./typings/sentry-api.android.d.ts" />
 
 import * as utils from '@nativescript/core/utils/utils';
-import { BreadCrumb, ExceptionOptions, MessageOptions, SentryUser } from './';
+import { BreadCrumb, ExceptionOptions, MessageOptions, SentryUser } from './sentry.common';
 
 export class Sentry {
   public static init(dsn: string) {

@@ -1,5 +1,5 @@
 import { ErrorHandler, Inject, Injectable } from '@angular/core';
-import { Sentry } from '../';
+import { Sentry } from '../sentry.android';
 import { SentryService } from './app.module';
 
 @Injectable()
