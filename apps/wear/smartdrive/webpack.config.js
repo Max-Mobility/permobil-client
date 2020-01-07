@@ -23,33 +23,33 @@ module.exports = env => {
     '@nativescript/core/ui/frame/activity',
     resolve(
       __dirname,
-      'node_modules/@maxmobility/nativescript-wear-os-comms/android/ResultReceiver'
+      '../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/android/ResultReceiver'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_AdvertiseCallback'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_AdvertiseCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BluetoothGattCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BluetoothGattServerCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_BroadcastReceiver'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_BroadcastReceiver'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_LeScanCallback'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_LeScanCallback'
     ),
     resolve(
       __dirname,
-      'node_modules/nativescript-bluetooth/android/TNS_ScanCallback'
+      '../../../forked-plugins/nativescript-bluetooth/android/TNS_ScanCallback'
     ),
-    resolve(__dirname, 'app/main-activity')
+    resolve(__dirname, './app/main-activity')
   ];
 
   const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
@@ -92,6 +92,18 @@ module.exports = env => {
   const externals = nsWebpack.getConvertedExternals(env.externals);
 
   const appFullPath = resolve(projectRoot, appPath);
+  const hasRootLevelScopedModules = nsWebpack.hasRootLevelScopedModules({
+    projectDir: projectRoot
+  });
+  let coreModulesPackageName = 'tns-core-modules';
+  const alias = {
+    '~': appFullPath
+  };
+
+  if (hasRootLevelScopedModules) {
+    coreModulesPackageName = '@nativescript/core';
+    alias['tns-core-modules'] = coreModulesPackageName;
+  }
   const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
 
   const entryModule = nsWebpack.getEntryModule(appFullPath, platform);
@@ -170,15 +182,12 @@ module.exports = env => {
       extensions: ['.ts', '.js', '.scss', '.css'],
       // Resolve {N} system modules from tns-core-modules
       modules: [
-        resolve(__dirname, 'node_modules/tns-core-modules'),
+        resolve(__dirname, `node_modules/${coreModulesPackageName}`),
         resolve(__dirname, 'node_modules'),
-        'node_modules/tns-core-modules',
+        `node_modules/${coreModulesPackageName}`,
         'node_modules'
       ],
-      alias: {
-        '~': appFullPath,
-        'tns-core-modules': '@nativescript/core'
-      },
+      alias,
       // resolve symlinks to symlinked modules
       symlinks: true
     },
@@ -279,15 +288,12 @@ module.exports = env => {
 
         {
           test: /\.css$/,
-          use: { loader: 'css-loader', options: { url: false } }
+          use: 'nativescript-dev-webpack/css2json-loader'
         },
 
         {
           test: /\.scss$/,
-          use: [
-            { loader: 'css-loader', options: { url: false } },
-            'sass-loader'
-          ]
+          use: ['nativescript-dev-webpack/css2json-loader', 'sass-loader']
         },
 
         {

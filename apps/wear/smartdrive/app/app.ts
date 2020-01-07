@@ -1,6 +1,6 @@
 ﻿import * as application from '@nativescript/core/application';
 import { getDefaultLang, load, use } from '@permobil/nativescript';
-import { Sentry } from 'nativescript-sentry';
+import { Sentry } from 'forked-plugins/ns-sentry';
 
 console.time('App_Start_Time');
 

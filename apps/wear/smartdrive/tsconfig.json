@@ -12,18 +12,36 @@
     "noImplicitUseStrict": true,
     "declaration": false,
     "lib": ["es6", "dom", "es2015.iterable"],
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "~/*": ["app/*"],
-      "@permobil/*": ["../../permobil/*"],
-      "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
+      "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"],
+      "@permobil/*": ["../../../@permobil/*"],
+      "@permobil/core/*": ["../../../@permobil/core/*"],
+      "@permobil/nativescript/*": ["../../../@permobil/nativescript/*"],
+      "@nativescript/core": [
+        "../../../forked-plugins/nativescript-core-6.3.2-swipe-modals"
+      ],
+      "@nativescript/core/*": [
+        "../../../forked-plugins/nativescript-core-6.3.2-swipe-modals/*"
+      ],
+      "@maxmobility/nativescript-wear-os-comms": [
+        "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src"
+      ],
+      "forked-plugins/ns-animated-circle": [
+        "../../../forked-plugins/nativescript-animated-circle"
+      ],
+      "forked-plugins/ns-auto-fit-text": [
+        "../../../forked-plugins/nativescript-auto-fit-text"
+      ],
+      "forked-plugins/ns-sentry": [
+        "../../../forked-plugins/nativescript-sentry"
+      ],
+      "forked-plugins/ns-bluetooth": [
+        "../../../forked-plugins/nativescript-bluetooth"
+      ],
+      "forked-plugins/ns-pager": ["../../../forked-plugins/nativescript-pager"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "platforms",
-    "nativescript-bluetooth",
-    "tools",
-    "hooks"
-  ]
+  "exclude": ["node_modules", "platforms", "tools", "hooks"]
 }

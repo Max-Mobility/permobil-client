@@ -1,0 +1,123 @@
+{
+  "_from": "nativescript-pager@~11.0.11",
+  "_id": "nativescript-pager@11.0.11",
+  "_inBundle": false,
+  "_integrity": "sha512-A1FcNEPDU4Sr66azblQ4Z1I86/ZOBi+Oq+0C21c4HNnPbz8CttUvNxvh+WA4XP/698HeffB9RCXdaW2s+pATQA==",
+  "_location": "/nativescript-pager",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "nativescript-pager@~11.0.11",
+    "name": "nativescript-pager",
+    "escapedName": "nativescript-pager",
+    "rawSpec": "~11.0.11",
+    "saveSpec": null,
+    "fetchSpec": "~11.0.11"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/nativescript-pager/-/nativescript-pager-11.0.11.tgz",
+  "_shasum": "30ac85932baf26c5bfd631bd29321e633e88d6e2",
+  "_spec": "nativescript-pager@~11.0.11",
+  "_where": "/Users/bradmartin/projects/permobil-client/apps/wear/smartdrive",
+  "author": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com"
+  },
+  "bootstrapper": "nativescript-plugin-seed",
+  "bugs": {
+    "url": "https://github.com/triniwiz/nativescript-pager/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Shiva Prasad",
+      "email": "sp@shiv19.com",
+      "url": "https://shiv19.com"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "A Carousel/Pager plugin for NativeScript",
+  "devDependencies": {
+    "@angular/common": "~8.1.2",
+    "@angular/compiler": "~8.1.2",
+    "@angular/compiler-cli": "~8.1.2",
+    "@angular/core": "~8.1.2",
+    "@angular/forms": "~8.1.2",
+    "@angular/platform-browser": "~8.1.2",
+    "@angular/platform-browser-dynamic": "~8.1.2",
+    "@angular/router": "~8.1.2",
+    "@types/react": "^16.8.24",
+    "@types/react-reconciler": "^0.18.0",
+    "nativescript-angular": "~8.0.2",
+    "nativescript-vue": "~2.3.0",
+    "prompt": "^1.0.0",
+    "react": "^16.8.6",
+    "react-nativescript": "^0.10.0",
+    "rimraf": "^2.6.3",
+    "rxjs": "^6.5.2",
+    "tns-core-modules": "^6.0.1",
+    "tns-platform-declarations": "^6.0.1",
+    "tslint": "^5.18.0",
+    "typescript": "~3.4.5",
+    "vue": "^2.6.10",
+    "zone.js": "^0.9.1"
+  },
+  "homepage": "https://github.com/triniwiz/nativescript-pager",
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "pager",
+    "viewpager",
+    "UIPageViewController",
+    "slides",
+    "Carousel",
+    "ng",
+    "angular",
+    "vue",
+    "nativescript-angular",
+    "nativescript-vue"
+  ],
+  "license": "Apache-2.0",
+  "main": "pager",
+  "name": "nativescript-pager",
+  "nativescript": {
+    "platforms": {
+      "android": "6.0.0",
+      "ios": "6.0.1"
+    }
+  },
+  "scripts": {
+    "build": "npm i && ngc",
+    "ci.tslint": "npm i && tslint '**/*.ts' --config '../tslint.json' --exclude '**/+(node_modules|platforms)/**'",
+    "clean": "cd ../demo && rimraf hooks node_modules platforms && cd ../demo-ng && rimraf hooks node_modules platforms && cd ../src && rimraf node_modules && npm run plugin.link",
+    "debug.demo.ios": "npm i && npm run tsc && cd ../demo && tns debug ios",
+    "demo.android": "npm i && npm run tsc && cd ../demo && tns run android --no-hmr",
+    "demo.ios": "npm i && npm run tsc && cd ../demo && tns run ios --no-hmr",
+    "demo.ng.android": "npm i && npm run tsc && cd ../demo-ng && tns run android",
+    "demo.ng.android.aot": "npm i && npm run tsc && cd ../demo-ng && tns run android  --env.aot --env.uglify",
+    "demo.ng.ios": "npm i && npm run tsc && cd ../demo-ng && tns run ios ",
+    "demo.ng.ios.aot": "npm i && npm run tsc && cd ../demo-ng && tns run ios  --env.aot --env.uglify",
+    "demo.reset": "cd ../demo && rimraf platforms && cd ../demo-ng && rimraf platforms && cd ../demo-vue && npm run clean",
+    "demo.vue.android": "npm i && npm run tsc && cd ../demo-vue && tns run android ",
+    "demo.vue.ios": "npm i && npm run tsc && cd ../demo-vue && tns run ios ",
+    "ngc": "npm i && npm run ngc.clean && node --max-old-space-size=8192 node_modules/.bin/ngc -noEmitOnError -skipLibCheck -p tsconfig.json",
+    "ngc.clean": "find ./ angular/ -name '*.metadata.json' -delete",
+    "plugin.link": "npm link && cd ../demo && npm link nativescript-pager && cd ../demo-ng && npm link nativescript-pager && cd ../src",
+    "plugin.prepare": "npm run tsc && cd ../demo && tns plugin remove nativescript-pager && tns plugin add ../src && cd ../demo-ng && tns plugin remove nativescript-pager && tns plugin add ../src",
+    "plugin.tscwatch": "npm run tsc -- -w",
+    "test.android": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build android && tns test android --justlaunch",
+    "test.ios": "npm i && npm run tsc && npm run tslint && cd ../demo && tns build ios && tns test ios --justlaunch",
+    "test.ng.android": "npm i && npm run tsc && npm run tslint && cd ../demo-ng && tns build android && tns test android --justlaunch",
+    "test.ng.ios": "npm i && npm run tsc && npm run tslint && cd ../demo-ng && tns build ios && tns test ios --justlaunch",
+    "tsc": "tsc -skipLibCheck",
+    "tslint": "cd .. && tslint \"**/*.ts\" --config tslint.json --exclude \"**/+(node_modules|platforms)/**\""
+  },
+  "typings": "pager.d.ts",
+  "version": "11.0.11"
+}
