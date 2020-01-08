@@ -1,25 +1,15 @@
-name: CI
+name: App Builds
 
 # Trigger the workflow on push or pull request
 on: [push]
 
 jobs:
-  analysisAndBuild:
-    name: Analysis
+  lintAndBuild:
+    name: Build Apps
 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-
-      # - name: Cache node modules
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
 
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@v0.1.1
@@ -46,11 +36,10 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v1.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Install PIP #PIP needed for iOS builds and for TNS CLI to configure correctly on macOS
+        run: |
+          sudo pip install --upgrade pip
+          sudo pip install six
 
       # - name: Build SD.W
       #   run: |
