@@ -11,7 +11,7 @@
     "setup.all.non-global": "npm i && npm run setup.forked.plugins && npm run setup.mobile && npm run setup.wear && npm run setup.@permobil",
     "setup.mobile": "npm run setup.pt.mobile",
     "setup.se.mobile": "cd apps/mobile/smart-eval && npm i && tsc",
-    "setup.pt.mobile": "cd apps/mobile/pushtracker && npm ci && tsc",
+    "setup.pt.mobile": "cd apps/mobile/pushtracker && npm i && tsc",
     "setup.wear": "npm run setup.sd.wear && npm run setup.pt.wear",
     "setup.sd.wear": "cd apps/wear/smartdrive && npm i && npm run scss && tsc",
     "setup.pt.wear": "cd apps/wear/pushtracker && npm i && npm run scss && tsc",
