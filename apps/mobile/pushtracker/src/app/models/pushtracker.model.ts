@@ -1,9 +1,9 @@
-import { File, isIOS, knownFolders, Observable, path } from '@nativescript/core';
+import { File, isIOS, knownFolders, path } from '@nativescript/core';
+import * as timer from '@nativescript/core/timer';
 import { bindingTypeToString, Device, Packet } from '@permobil/core';
-import { DownloadProgress } from 'nativescript-download-progress';
 import { differenceInCalendarDays } from 'date-fns';
-import * as timer from 'tns-core-modules/timer';
 import throttle from 'lodash/throttle';
+import { DownloadProgress } from 'nativescript-download-progress';
 import { BluetoothService } from '../services';
 import { DeviceBase } from './device-base.model';
 
@@ -92,11 +92,10 @@ export class PushTracker extends DeviceBase {
       this.fromObject(obj);
     }
 
-    this._throttledSendTime = throttle(
-      this.sendTime.bind(this),
-      1000,
-      { leading: false, trailing: true }
-    );
+    this._throttledSendTime = throttle(this.sendTime.bind(this), 1000, {
+      leading: false,
+      trailing: true
+    });
   }
 
   toString(): string {
@@ -494,7 +493,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => { });
+                ).catch(_ => {});
               }
               break;
             case PushTracker.OTAState.updating:
@@ -532,7 +531,7 @@ export class PushTracker extends DeviceBase {
                   'OTADevice',
                   'PacketOTAType',
                   'PushTracker'
-                ).catch(_ => { });
+                ).catch(_ => {});
               } else if (this.ableToSend && haveVersion) {
                 this.otaState = PushTracker.OTAState.verifying_update;
               }
@@ -573,7 +572,7 @@ export class PushTracker extends DeviceBase {
                       this.otaState = PushTracker.OTAState.canceled;
                     }
                   })
-                  .catch(_ => { });
+                  .catch(_ => {});
               } else {
                 // now update the ota state
                 this.otaState = PushTracker.OTAState.canceled;
@@ -617,7 +616,9 @@ export class PushTracker extends DeviceBase {
       p.data(dataKey, boundData);
     }
     console.log(
-      `\n\n PushTracker.model Sending ${Type}::${SubType} (${p.toString()}) to ${this.address} \n\n`
+      `\n\n PushTracker.model Sending ${Type}::${SubType} (${p.toString()}) to ${
+        this.address
+      } \n\n`
     );
     const transmitData = p.writableBuffer();
     p.destroy();
@@ -946,7 +947,6 @@ export class PushTracker extends DeviceBase {
       this._throttledSendTime();
     }
 
-
     // don't check against month being truthy - it can be 0 -
     // https://github.com/Max-Mobility/permobil-client/issues/583
     if (year && diff >= 0) {
@@ -1046,10 +1046,7 @@ export namespace PushTrackerData {
 
     export function getFileName(firmware: string): string {
       const firmwares = knownFolders.documents().getFolder('firmwares'); // creates Documents/firmwares if it doesn't exist
-      return path.join(
-        firmwares.path,
-        firmware
-      );
+      return path.join(firmwares.path, firmware);
     }
 
     export function loadFirmware(
