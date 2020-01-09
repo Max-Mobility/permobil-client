@@ -1,7 +1,10 @@
 {
   "main": "app.js",
   "nativescript": {
-    "id": "com.permobil.smartdrive.wearos"
+    "id": "com.permobil.smartdrive.wearos",
+    "tns-android": {
+      "version": "6.3.1"
+    }
   },
   "scripts": {
     "scss": "node-sass ./app/scss -o ./app/scss",
@@ -28,13 +31,12 @@
     "nativescript-ui-listview": "~8.0.1",
     "nativescript-vibrate": "~2.1.3",
     "nativescript-wear-os": "~2.1.1",
-    "reflect-metadata": "~0.1.13",
-    "tns-core-modules": "~6.2.3"
+    "reflect-metadata": "~0.1.13"
   },
   "devDependencies": {
     "@types/lodash": "~4.14.145",
     "mkdirp": "~0.5.1",
-    "nativescript-dev-webpack": "1.4.0",
+    "nativescript-dev-webpack": "1.4.1",
     "nativescript-hook": "~0.2.5",
     "nativescript-worker-loader": "~0.10.0",
     "node-sass": "4.13.0",
@@ -43,6 +45,6 @@
     "sass-loader": "^8.0.0",
     "tns-platform-declarations": "~6.3.2",
     "tslint": "~5.20.1",
-    "typescript": "~3.7.3"
+    "typescript": "~3.7.4"
   }
 }

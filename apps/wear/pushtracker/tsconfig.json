@@ -19,6 +19,12 @@
       "*": ["./node_modules/tns-core-modules/*", "./node_modules/*"]
     }
   },
+  "include": [
+    "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
+    "../../../forked-plugins/nativescript-bluetooth/**/*.ts",
+    "../../../forked-plugins/nativescript-animated-circle/*.ts",
+    "../../../forked-plugins/nativescript-sentry/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "platforms",

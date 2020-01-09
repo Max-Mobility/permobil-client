@@ -1,7 +1,7 @@
 name: App Builds
 
 # Trigger the workflow on push or pull request
-on: [push]
+on: [push, pull_request]
 
 jobs:
   lintAndBuild:
@@ -15,11 +15,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.1.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      # - name: Set Node.js 10.x
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: "10.x"
 
       - name: Setup Permobil-Client
         run: |
@@ -43,12 +38,17 @@ jobs:
           sudo pip install --upgrade pip
           sudo pip install six
 
-      # - name: Build SD.W
-      #   run: |
-      #     cd apps/wear/smartdrive
-      #     tns build android --env.uglify
+      - name: Build SD.W
+        run: |
+          cd apps/wear/smartdrive
+          tns build android
+
+      - name: Build PT.W
+        run: |
+          cd apps/wear/pushtracker
+          tns build android
 
       - name: Build PT.M
         run: |
           cd apps/mobile/pushtracker
-          tns build android --env.uglify --env.aot
+          tns build android --env.aot

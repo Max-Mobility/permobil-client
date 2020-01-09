@@ -28,15 +28,13 @@
   "include": [
     "./src/app/**/*.module.ts",
     "../../../@permobil/nativescript/src/plugins/nativescript-wear-os-comms/src/**/*.ts",
+    "../../../@permobil/nativescript/src/**/*.ts",
     "../../../forked-plugins/nativescript-bluetooth/**/*.ts",
     "../../../forked-plugins/nativescript-animated-circle/*.ts",
     "../../../forked-plugins/nativescript-perms/src/*.ts",
     "../../../forked-plugins/nativescript-sentry/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "platforms",
-  ],
+  "exclude": ["node_modules", "platforms"],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true // disabling for now to use TS 3.7.3 which should be fine with Angular and available in Q1 with NG9 release
   }
