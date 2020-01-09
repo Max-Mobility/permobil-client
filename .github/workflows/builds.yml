@@ -23,6 +23,8 @@ jobs:
 
       - name: Setup Permobil-Client
         run: |
+          node -v
+          npm -v
           npm i && npm i -g rimraf && npm i -g typescript && npm run nuki && npm run setup.all.non-global
           echo no | npm i -g nativescript
           tns usage-reporting disable
