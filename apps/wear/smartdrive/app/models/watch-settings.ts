@@ -115,5 +115,5 @@ export class WatchSettings {
 export namespace WatchSettings {
   export enum Display {
     Label, Value
-  };
+  }
 }
