@@ -17,10 +17,10 @@ jobs:
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@support-multiple-keys
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}, ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
-      - name: Add Keys for Private Deps
-        run: ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }} && ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
+      # - name: Add Keys for Private Deps
+      #   run: ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }} && ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
 
       - name: Setup Permobil-Client
         run: |
