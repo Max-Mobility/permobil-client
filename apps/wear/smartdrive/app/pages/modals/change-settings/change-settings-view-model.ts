@@ -8,7 +8,7 @@ export class ChangeSettingsViewModel extends Observable {
   @Prop() chinSize = 0;
   @Prop() tempSettings = new Device.Settings();
   @Prop() tempSwitchControlSettings = new Device.SwitchControlSettings();
-  @Prop() tempWatchSettings = new WatchSettings();;
+  @Prop() tempWatchSettings = new WatchSettings();
   /**
    * SmartDrive Settings UI:
    */

@@ -63,7 +63,7 @@ export class WatchSettings {
   }
 
   displayValue(key: string): string {
-    let timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
+    const timeSeconds = (this.powerAssistTimeoutMinutes).toFixed(0);
     let displayString = undefined;
     switch (key) {
       case 'wear-check':
