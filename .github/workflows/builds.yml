@@ -20,11 +20,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add Keys for Private Deps
-        with: # Set the secret as an input
-          SQLITE_COMMERCIAL_SSH_TOKEN: ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
-          SQLITE_ENCRYPTED_SSH_TOKEN: ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
-        run: ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
-          ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
+        run: ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }} && ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
 
       - name: Setup Permobil-Client
         run: |
