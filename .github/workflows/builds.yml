@@ -1,7 +1,7 @@
 name: App Builds
 
 # Trigger the workflow on push or pull request
-on: [push, pull_request]
+on: [push]
 
 jobs:
   lintAndBuild:
@@ -18,12 +18,10 @@ jobs:
 
       - name: Setup Permobil-Client
         run: |
-          node -v
-          npm -v
-          npm i && npm i -g rimraf && npm i -g typescript && npm run nuki && npm run setup.all.non-global
           echo no | npm i -g nativescript
           tns usage-reporting disable
           tns error-reporting disable
+          npm i && npm i -g rimraf && npm i -g typescript && npm run nuki && npm run setup.all.non-global
 
       - name: Lint
         run: npm run tslint
@@ -38,6 +36,11 @@ jobs:
           sudo pip install --upgrade pip
           sudo pip install six
 
+      - name: Build PT.M
+        run: |
+          cd apps/mobile/pushtracker
+          tns build android --env.aot
+
       - name: Build SD.W
         run: |
           cd apps/wear/smartdrive
@@ -47,8 +50,3 @@ jobs:
         run: |
           cd apps/wear/pushtracker
           tns build android
-
-      - name: Build PT.M
-        run: |
-          cd apps/mobile/pushtracker
-          tns build android --env.aot
