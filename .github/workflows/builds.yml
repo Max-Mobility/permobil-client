@@ -14,7 +14,9 @@ jobs:
       - name: Setup SSH-Agent
         uses: webfactory/ssh-agent@support-multiple-keys
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY | secrets.SQLITE_ENCRYPTED_SSH_TOKEN | secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }},
+            ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }},
+            ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
       # - name: Add Keys for Private Deps
       #   with: # Set the secret as an input
