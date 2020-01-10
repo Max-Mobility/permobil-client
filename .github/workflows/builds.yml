@@ -12,14 +12,17 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Setup SSH-Agent
-        uses: webfactory/ssh-agent@v0.1.1
+        uses: webfactory/ssh-agent@support-multiple-keys
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY, secrets.SQLITE_ENCRYPTED_SSH_TOKEN, secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
 
-      - name: Add Keys for Private Deps
-        run: |
-          ssh-add - <<< ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
-          ssh-add - <<< ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
+      # - name: Add Keys for Private Deps
+      #   with: # Set the secret as an input
+      #     SQLITE_COMMERCIAL_SSH_TOKEN: ${{ secrets.SQLITE_COMMERCIAL_SSH_TOKEN }}
+      #     SQLITE_ENCRYPTED_SSH_TOKEN: ${{ secrets.SQLITE_ENCRYPTED_SSH_TOKEN }}
+      #   run: |
+      #     ssh-add - <<< ${{ SQLITE_COMMERCIAL_SSH_TOKEN }}
+      #     ssh-add - <<< ${{ SQLITE_ENCRYPTED_SSH_TOKEN }}
 
       - name: Setup Permobil-Client
         run: |
