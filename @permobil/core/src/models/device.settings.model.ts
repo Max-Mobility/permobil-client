@@ -1,6 +1,8 @@
 import { bindingTypeToString } from '../packet';
 import { mod } from '../utils';
 import { Observable } from '@nativescript/core';
+// REDO?
+import { L } from '../../../nativescript/src/utils/i18n.util';
 
 export namespace Device {
   // Standard Device Settings:
@@ -79,6 +81,89 @@ export namespace Device {
         0
       );
       return flags;
+    }
+
+    displayLabel(key: string): string {
+      let displayString = undefined;
+      switch (key) {
+        case 'maxspeed':
+        case 'Max Speed':
+        case 'max-speed':
+          displayString = L('settings.max-speed');
+          break;
+        case 'acceleration':
+        case 'Acceleration':
+          displayString = L('settings.acceleration');
+          break;
+        case 'tapsensitivity':
+        case 'tap-sensitivity':
+        case 'Tap Sensitivity':
+          displayString = L('settings.tap-sensitivity');
+          break;
+        case 'powerassistbuzzer':
+        case 'power-assist-buzzer':
+        case 'Power Assist Buzzer':
+          displayString = L(
+            'settings.power-assist-buzzer'
+          );
+          break;
+        case 'controlmode':
+        case 'control-mode':
+        case 'Control Mode':
+          displayString = L('settings.control-mode');
+          break;
+        case 'units':
+        case 'Units':
+          displayString = L('settings.units');
+          break;
+      }
+      return displayString;
+    }
+
+    displayValue(key: string): string {
+      let translationKey = '';
+      let displayString = undefined;
+      switch (key) {
+        case 'maxspeed':
+        case 'Max Speed':
+        case 'max-speed':
+          displayString = `${this.maxSpeed} %`;
+          break;
+        case 'acceleration':
+        case 'Acceleration':
+          displayString = `${this.acceleration} %`;
+          break;
+        case 'tapsensitivity':
+        case 'tap-sensitivity':
+        case 'Tap Sensitivity':
+          displayString = `${this.tapSensitivity} %`;
+          break;
+        case 'powerassistbuzzer':
+        case 'power-assist-buzzer':
+        case 'Power Assist Buzzer':
+          if (this.disablePowerAssistBeep) {
+            displayString = L(
+              'sd.settings.power-assist-buzzer.disabled'
+            );
+          } else {
+            displayString = L(
+              'sd.settings.power-assist-buzzer.enabled'
+            );
+          }
+          break;
+        case 'controlmode':
+        case 'control-mode':
+        case 'Control Mode':
+          displayString = `${this.controlMode}`;
+          break;
+        case 'units':
+        case 'Units':
+          translationKey =
+            'sd.settings.units.' + this.units.toLowerCase();
+          displayString = L(translationKey);
+          break;
+      }
+      return displayString;
     }
 
     increase(key: string, increment: number = 10): void {
@@ -276,6 +361,44 @@ export namespace Device {
 
     constructor() {
       super();
+    }
+
+    displayLabel(key: string): string {
+      let displayString = undefined;
+      switch (key) {
+        case 'switchcontrolspeed':
+        case 'switch-control-speed':
+        case 'Switch Control Speed':
+          displayString = L('switch-control.max-speed');
+          break;
+        case 'switchcontrolmode':
+        case 'switch-control-mode':
+        case 'Switch Control Mode':
+          displayString = L('switch-control.mode');
+          break;
+      }
+      return displayString;
+    }
+
+    displayValue(key: string): string {
+      let translationKey = '';
+      let displayString = undefined;
+      switch (key) {
+        case 'switchcontrolspeed':
+        case 'switch-control-speed':
+        case 'Switch Control Speed':
+          displayString = `${this.maxSpeed} %`;
+          break;
+        case 'switchcontrolmode':
+        case 'switch-control-mode':
+        case 'Switch Control Mode':
+          translationKey =
+            'sd.switch-settings.mode.' +
+            this.mode.toLowerCase();
+          displayString = L(translationKey);
+          break;
+      }
+      return displayString;
     }
 
     increase(key: string, increment: number = 10): void {
